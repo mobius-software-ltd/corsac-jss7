@@ -29,8 +29,6 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELSequence1Impl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatDataImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.testng.annotations.Test;
 

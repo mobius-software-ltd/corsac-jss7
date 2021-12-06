@@ -24,11 +24,14 @@ package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UpdateLocationResponse;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 /**
@@ -40,7 +43,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class UpdateLocationResponseImplV1 extends MobilityMessageImpl implements UpdateLocationResponse {
 	private static final long serialVersionUID = 1L;
 
-	private ISDNAddressStringImpl hlrNumber;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = ISDNAddressStringImpl.class)
+	private ISDNAddressString hlrNumber;
     
 	private long mapProtocolVersion;
 
@@ -52,7 +56,7 @@ public class UpdateLocationResponseImplV1 extends MobilityMessageImpl implements
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public UpdateLocationResponseImplV1(long mapProtocolVersion, ISDNAddressStringImpl hlrNumber) {
+    public UpdateLocationResponseImplV1(long mapProtocolVersion, ISDNAddressString hlrNumber) {
         this.mapProtocolVersion = mapProtocolVersion;
         this.hlrNumber = hlrNumber;
     }
@@ -65,11 +69,11 @@ public class UpdateLocationResponseImplV1 extends MobilityMessageImpl implements
         return MAPOperationCode.updateLocation;
     }
 
-    public ISDNAddressStringImpl getHlrNumber() {
+    public ISDNAddressString getHlrNumber() {
         return hlrNumber;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return null;
     }
 

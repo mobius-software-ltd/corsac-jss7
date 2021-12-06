@@ -26,11 +26,12 @@ import org.restcomm.protocols.ss7.map.MessageImpl;
 import org.restcomm.protocols.ss7.map.api.MAPDialog;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MAPDialogMobility;
 import org.restcomm.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeResponse_Mobility;
 import org.restcomm.protocols.ss7.map.api.service.oam.ActivateTraceModeResponse_Oam;
 import org.restcomm.protocols.ss7.map.api.service.oam.MAPDialogOam;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -46,8 +47,8 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class ActivateTraceModeResponseImpl extends MessageImpl implements ActivateTraceModeResponse_Oam,ActivateTraceModeResponse_Mobility {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
     private ASNNull traceSupportIndicator;
@@ -55,7 +56,7 @@ public class ActivateTraceModeResponseImpl extends MessageImpl implements Activa
     public ActivateTraceModeResponseImpl() {
     }
 
-    public ActivateTraceModeResponseImpl(MAPExtensionContainerImpl extensionContainer, boolean traceSupportIndicator) {
+    public ActivateTraceModeResponseImpl(MAPExtensionContainer extensionContainer, boolean traceSupportIndicator) {
 
         this.extensionContainer = extensionContainer;
         
@@ -74,7 +75,7 @@ public class ActivateTraceModeResponseImpl extends MessageImpl implements Activa
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 

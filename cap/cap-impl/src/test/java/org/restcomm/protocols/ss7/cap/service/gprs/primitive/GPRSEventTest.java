@@ -28,7 +28,6 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
 import org.testng.annotations.Test;
 

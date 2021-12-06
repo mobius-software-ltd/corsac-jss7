@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.errors;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -36,11 +36,11 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  */
 public interface MAPErrorMessageUnknownSubscriber extends MAPErrorMessage {
 
-	MAPExtensionContainerImpl getExtensionContainer();
+	MAPExtensionContainer getExtensionContainer();
 
     UnknownSubscriberDiagnostic getUnknownSubscriberDiagnostic();
 
-    void setExtensionContainer(MAPExtensionContainerImpl extensionContainer);
+    void setExtensionContainer(MAPExtensionContainer extensionContainer);
 
     void setUnknownSubscriberDiagnostic(UnknownSubscriberDiagnostic unknownSubscriberDiagnostic);
 

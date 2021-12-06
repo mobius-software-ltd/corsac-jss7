@@ -28,12 +28,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.gap.BasicGapCriteriaImpl;
-import org.restcomm.protocols.ss7.cap.api.gap.BasicGapCriteriaWrapperImpl;
-import org.restcomm.protocols.ss7.cap.api.gap.CalledAddressAndServiceImpl;
-import org.restcomm.protocols.ss7.cap.api.gap.CallingAddressAndServiceImpl;
-import org.restcomm.protocols.ss7.cap.api.gap.GapOnServiceImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.testng.annotations.Test;

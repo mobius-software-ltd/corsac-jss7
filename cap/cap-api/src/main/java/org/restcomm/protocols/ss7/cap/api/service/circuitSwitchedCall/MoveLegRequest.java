@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 
 /**
@@ -53,5 +53,5 @@ public interface MoveLegRequest extends CircuitSwitchedCallMessage {
 
     LegID getLegIDToMove();
 
-    CAPExtensionsImpl getExtensions();
+    CAPExtensions getExtensions();
 }

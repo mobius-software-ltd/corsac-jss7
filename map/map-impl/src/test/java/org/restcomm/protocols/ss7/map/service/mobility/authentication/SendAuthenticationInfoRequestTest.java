@@ -30,11 +30,12 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.PlmnIdImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSynchronisationInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSynchronisationInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.RequestingNodeType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.SendAuthenticationInfoRequest;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.PlmnIdImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -79,7 +80,7 @@ public class SendAuthenticationInfoRequestTest {
         assertTrue(result.getResult() instanceof SendAuthenticationInfoRequest);
         SendAuthenticationInfoRequest asc = (SendAuthenticationInfoRequest)result.getResult();
         
-        IMSIImpl imsi = asc.getImsi();
+        IMSI imsi = asc.getImsi();
         assertTrue(imsi.getData().equals("111222333444"));
         assertEquals(asc.getRequestingNodeType(), RequestingNodeType.vlr);
         assertEquals(asc.getNumberOfRequestedVectors(), 4);
@@ -108,7 +109,7 @@ public class SendAuthenticationInfoRequestTest {
 
         assertNull(asc.getRequestingPlmnId());
 
-        ReSynchronisationInfoImpl rsi = asc.getReSynchronisationInfo();
+        ReSynchronisationInfo rsi = asc.getReSynchronisationInfo();
         assertTrue(Arrays.equals(rsi.getRand(), ReSynchronisationInfoTest.getRandData()));
         assertTrue(Arrays.equals(rsi.getAuts(), ReSynchronisationInfoTest.getAutsData()));
 

@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.service.callhandling;
 
+import java.util.List;
+
 import org.restcomm.protocols.ss7.map.MAPDialogImpl;
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
@@ -30,41 +32,39 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.MAPServiceBase;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCIImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.AllowedServicesImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CCBSIndicatorsImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallDiversionTreatmentIndicatorImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CamelInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.ExtendedRoutingInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCI;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.AllowedServices;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CCBSIndicators;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfo;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallDiversionTreatmentIndicator;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CamelInfo;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.ExtendedRoutingInfo;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.InterrogationType;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.MAPDialogCallHandling;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfo;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.SendRoutingInformationResponse;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.SuppressMTSSImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.SuppressMTSS;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.UnavailabilityCause;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ISTSupportIndicator;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingAreaImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingArea;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.NumberPortabilityStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-
-import java.util.List;
 
 /*
  *
@@ -83,19 +83,19 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
     protected static final int version = 3;
 
     protected MAPDialogCallHandlingImpl(MAPApplicationContext appCntx, Dialog tcapDialog, MAPProviderImpl mapProviderImpl,
-            MAPServiceBase mapService, AddressStringImpl origReference, AddressStringImpl destReference) {
+            MAPServiceBase mapService, AddressString origReference, AddressString destReference) {
         super(appCntx, tcapDialog, mapProviderImpl, mapService, origReference, destReference);
     }
 
-    public Long addSendRoutingInformationRequest(ISDNAddressStringImpl msisdn, CUGCheckInfoImpl cugCheckInfo,
-            Integer numberOfForwarding, ExternalSignalInfoImpl networkSignalInfo) throws MAPException {
+    public Long addSendRoutingInformationRequest(ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
+            Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException {
         return this.addSendRoutingInformationRequest(_Timer_Default, msisdn, cugCheckInfo, numberOfForwarding, null, false,
                 null, null, null, null, null, networkSignalInfo, null, false, null, null, false, null, null, null, false, null,
                 false, false, false, false, null, null, null, false, null);
     }
 
-    public Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressStringImpl msisdn, CUGCheckInfoImpl cugCheckInfo,
-            Integer numberOfForwarding, ExternalSignalInfoImpl networkSignalInfo) throws MAPException {
+    public Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
+            Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException {
 
         return this.addSendRoutingInformationRequest(customInvokeTimeout, msisdn, cugCheckInfo, numberOfForwarding, null,
                 false, null, null, null, null, null, networkSignalInfo, null, false, null, null, false, null, null, null,
@@ -104,16 +104,16 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
     }
 
     @Override
-    public Long addSendRoutingInformationRequest(ISDNAddressStringImpl msisdn, CUGCheckInfoImpl cugCheckInfo,
+    public Long addSendRoutingInformationRequest(ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
             Integer numberOfForwarding, InterrogationType interrogationType, boolean orInterrogation, Integer orCapability,
-            ISDNAddressStringImpl gmscAddress, CallReferenceNumberImpl callReferenceNumber, ForwardingReason forwardingReason,
-            ExtBasicServiceCodeImpl basicServiceGroup, ExternalSignalInfoImpl networkSignalInfo, CamelInfoImpl camelInfo,
-            boolean suppressionOfAnnouncement, MAPExtensionContainerImpl extensionContainer, AlertingPatternImpl alertingPattern,
-            boolean ccbsCall, Integer supportedCCBSPhase, ExtExternalSignalInfoImpl additionalSignalInfo,
+            ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber, ForwardingReason forwardingReason,
+            ExtBasicServiceCode basicServiceGroup, ExternalSignalInfo networkSignalInfo, CamelInfo camelInfo,
+            boolean suppressionOfAnnouncement, MAPExtensionContainer extensionContainer, AlertingPattern alertingPattern,
+            boolean ccbsCall, Integer supportedCCBSPhase, ExtExternalSignalInfo additionalSignalInfo,
             ISTSupportIndicator istSupportIndicator, boolean prePagingSupported,
-            CallDiversionTreatmentIndicatorImpl callDiversionTreatmentIndicator, boolean longFTNSupported, boolean suppressVtCSI,
-            boolean suppressIncomingCallBarring, boolean gsmSCFInitiatedCall, ExtBasicServiceCodeImpl basicServiceGroup2,
-            ExternalSignalInfoImpl networkSignalInfo2, SuppressMTSSImpl supressMTSS, boolean mtRoamingRetrySupported,
+            CallDiversionTreatmentIndicator callDiversionTreatmentIndicator, boolean longFTNSupported, boolean suppressVtCSI,
+            boolean suppressIncomingCallBarring, boolean gsmSCFInitiatedCall, ExtBasicServiceCode basicServiceGroup2,
+            ExternalSignalInfo networkSignalInfo2, SuppressMTSS supressMTSS, boolean mtRoamingRetrySupported,
             EMLPPPriority callPriority) throws MAPException {
 
         return this
@@ -127,16 +127,16 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
     }
 
     @Override
-    public Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressStringImpl msisdn, CUGCheckInfoImpl cugCheckInfo,
+    public Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
             Integer numberOfForwarding, InterrogationType interrogationType, boolean orInterrogation, Integer orCapability,
-            ISDNAddressStringImpl gmscAddress, CallReferenceNumberImpl callReferenceNumber, ForwardingReason forwardingReason,
-            ExtBasicServiceCodeImpl basicServiceGroup, ExternalSignalInfoImpl networkSignalInfo, CamelInfoImpl camelInfo,
-            boolean suppressionOfAnnouncement, MAPExtensionContainerImpl extensionContainer, AlertingPatternImpl alertingPattern,
-            boolean ccbsCall, Integer supportedCCBSPhase, ExtExternalSignalInfoImpl additionalSignalInfo,
+            ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber, ForwardingReason forwardingReason,
+            ExtBasicServiceCode basicServiceGroup, ExternalSignalInfo networkSignalInfo, CamelInfo camelInfo,
+            boolean suppressionOfAnnouncement, MAPExtensionContainer extensionContainer, AlertingPattern alertingPattern,
+            boolean ccbsCall, Integer supportedCCBSPhase, ExtExternalSignalInfo additionalSignalInfo,
             ISTSupportIndicator istSupportIndicator, boolean prePagingSupported,
-            CallDiversionTreatmentIndicatorImpl callDiversionTreatmentIndicator, boolean longFTNSupported, boolean suppressVtCSI,
-            boolean suppressIncomingCallBarring, boolean gsmSCFInitiatedCall, ExtBasicServiceCodeImpl basicServiceGroup2,
-            ExternalSignalInfoImpl networkSignalInfo2, SuppressMTSSImpl supressMTSS, boolean mtRoamingRetrySupported,
+            CallDiversionTreatmentIndicator callDiversionTreatmentIndicator, boolean longFTNSupported, boolean suppressVtCSI,
+            boolean suppressIncomingCallBarring, boolean gsmSCFInitiatedCall, ExtBasicServiceCode basicServiceGroup2,
+            ExternalSignalInfo networkSignalInfo2, SuppressMTSS supressMTSS, boolean mtRoamingRetrySupported,
             EMLPPPriority callPriority) throws MAPException {
 
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
@@ -163,12 +163,12 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
         return this.sendDataComponent(null, null, null, timeout.longValue(), (long)MAPOperationCode.sendRoutingInfo,req, true, false);        
     }
 
-    public void addSendRoutingInformationResponse(long invokeId, IMSIImpl imsi, CUGCheckInfoImpl cugCheckInfo, RoutingInfoImpl routingInfo2)
+    public void addSendRoutingInformationResponse(long invokeId, IMSI imsi, CUGCheckInfo cugCheckInfo, RoutingInfo routingInfo2)
             throws MAPException {
     	this.doAddSendRoutingInformationResponse(invokeId, imsi, cugCheckInfo, routingInfo2);
     }
     
-    protected void doAddSendRoutingInformationResponse(long invokeId, IMSIImpl imsi, CUGCheckInfoImpl cugCheckInfo, RoutingInfoImpl routingInfo2) throws MAPException {
+    protected void doAddSendRoutingInformationResponse(long invokeId, IMSI imsi, CUGCheckInfo cugCheckInfo, RoutingInfo routingInfo2) throws MAPException {
 
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.locationInfoRetrievalContext)
@@ -183,14 +183,14 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
     }
 
     @Override
-    public void addSendRoutingInformationResponse(long invokeId, IMSIImpl imsi, ExtendedRoutingInfoImpl extRoutingInfo,
-            CUGCheckInfoImpl cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfoImpl subscriberInfo, List<SSCodeImpl> ssList,
-            ExtBasicServiceCodeImpl basicService, boolean forwardingInterrogationRequired, ISDNAddressStringImpl vmscAddress,
-            MAPExtensionContainerImpl extensionContainer, NAEAPreferredCIImpl naeaPreferredCI, CCBSIndicatorsImpl ccbsIndicators,
-            ISDNAddressStringImpl msisdn, NumberPortabilityStatus nrPortabilityStatus, Integer istAlertTimer,
-            SupportedCamelPhasesImpl supportedCamelPhases, OfferedCamel4CSIsImpl offeredCamel4CSIs, RoutingInfoImpl routingInfo2,
-            List<SSCodeImpl> ssList2, ExtBasicServiceCodeImpl basicService2, AllowedServicesImpl allowedServices,
-            UnavailabilityCause unavailabilityCause, boolean releaseResourcesSupported, ExternalSignalInfoImpl gsmBearerCapability)
+    public void addSendRoutingInformationResponse(long invokeId, IMSI imsi, ExtendedRoutingInfo extRoutingInfo,
+            CUGCheckInfo cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfo subscriberInfo, List<SSCode> ssList,
+            ExtBasicServiceCode basicService, boolean forwardingInterrogationRequired, ISDNAddressString vmscAddress,
+            MAPExtensionContainer extensionContainer, NAEAPreferredCI naeaPreferredCI, CCBSIndicators ccbsIndicators,
+            ISDNAddressString msisdn, NumberPortabilityStatus nrPortabilityStatus, Integer istAlertTimer,
+            SupportedCamelPhases supportedCamelPhases, OfferedCamel4CSIs offeredCamel4CSIs, RoutingInfo routingInfo2,
+            List<SSCode> ssList2, ExtBasicServiceCode basicService2, AllowedServices allowedServices,
+            UnavailabilityCause unavailabilityCause, boolean releaseResourcesSupported, ExternalSignalInfo gsmBearerCapability)
             throws MAPException {
         doAddSendRoutingInformationResponse(false, invokeId, imsi, extRoutingInfo, cugCheckInfo, cugSubscriptionFlag,
                 subscriberInfo, ssList, basicService, forwardingInterrogationRequired, vmscAddress, extensionContainer,
@@ -200,14 +200,14 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
     }
 
     @Override
-    public void addSendRoutingInformationResponse_NonLast(long invokeId, IMSIImpl imsi, ExtendedRoutingInfoImpl extRoutingInfo,
-            CUGCheckInfoImpl cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfoImpl subscriberInfo, List<SSCodeImpl> ssList,
-            ExtBasicServiceCodeImpl basicService, boolean forwardingInterrogationRequired, ISDNAddressStringImpl vmscAddress,
-            MAPExtensionContainerImpl extensionContainer, NAEAPreferredCIImpl naeaPreferredCI, CCBSIndicatorsImpl ccbsIndicators,
-            ISDNAddressStringImpl msisdn, NumberPortabilityStatus nrPortabilityStatus, Integer istAlertTimer,
-            SupportedCamelPhasesImpl supportedCamelPhases, OfferedCamel4CSIsImpl offeredCamel4CSIs, RoutingInfoImpl routingInfo2,
-            List<SSCodeImpl> ssList2, ExtBasicServiceCodeImpl basicService2, AllowedServicesImpl allowedServices,
-            UnavailabilityCause unavailabilityCause, boolean releaseResourcesSupported, ExternalSignalInfoImpl gsmBearerCapability)
+    public void addSendRoutingInformationResponse_NonLast(long invokeId, IMSI imsi, ExtendedRoutingInfo extRoutingInfo,
+            CUGCheckInfo cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfo subscriberInfo, List<SSCode> ssList,
+            ExtBasicServiceCode basicService, boolean forwardingInterrogationRequired, ISDNAddressString vmscAddress,
+            MAPExtensionContainer extensionContainer, NAEAPreferredCI naeaPreferredCI, CCBSIndicators ccbsIndicators,
+            ISDNAddressString msisdn, NumberPortabilityStatus nrPortabilityStatus, Integer istAlertTimer,
+            SupportedCamelPhases supportedCamelPhases, OfferedCamel4CSIs offeredCamel4CSIs, RoutingInfo routingInfo2,
+            List<SSCode> ssList2, ExtBasicServiceCode basicService2, AllowedServices allowedServices,
+            UnavailabilityCause unavailabilityCause, boolean releaseResourcesSupported, ExternalSignalInfo gsmBearerCapability)
             throws MAPException {
         doAddSendRoutingInformationResponse(true, invokeId, imsi, extRoutingInfo, cugCheckInfo, cugSubscriptionFlag,
                 subscriberInfo, ssList, basicService, forwardingInterrogationRequired, vmscAddress, extensionContainer,
@@ -216,15 +216,15 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
                 releaseResourcesSupported, gsmBearerCapability);
     }
 
-    protected void doAddSendRoutingInformationResponse(boolean nonLast, long invokeId, IMSIImpl imsi,
-            ExtendedRoutingInfoImpl extRoutingInfo, CUGCheckInfoImpl cugCheckInfo, boolean cugSubscriptionFlag,
-            SubscriberInfoImpl subscriberInfo, List<SSCodeImpl> ssList, ExtBasicServiceCodeImpl basicService,
-            boolean forwardingInterrogationRequired, ISDNAddressStringImpl vmscAddress, MAPExtensionContainerImpl extensionContainer,
-            NAEAPreferredCIImpl naeaPreferredCI, CCBSIndicatorsImpl ccbsIndicators, ISDNAddressStringImpl msisdn,
-            NumberPortabilityStatus nrPortabilityStatus, Integer istAlertTimer, SupportedCamelPhasesImpl supportedCamelPhases,
-            OfferedCamel4CSIsImpl offeredCamel4CSIs, RoutingInfoImpl routingInfo2, List<SSCodeImpl> ssList2,
-            ExtBasicServiceCodeImpl basicService2, AllowedServicesImpl allowedServices, UnavailabilityCause unavailabilityCause,
-            boolean releaseResourcesSupported, ExternalSignalInfoImpl gsmBearerCapability) throws MAPException {
+    protected void doAddSendRoutingInformationResponse(boolean nonLast, long invokeId, IMSI imsi,
+            ExtendedRoutingInfo extRoutingInfo, CUGCheckInfo cugCheckInfo, boolean cugSubscriptionFlag,
+            SubscriberInfo subscriberInfo, List<SSCode> ssList, ExtBasicServiceCode basicService,
+            boolean forwardingInterrogationRequired, ISDNAddressString vmscAddress, MAPExtensionContainer extensionContainer,
+            NAEAPreferredCI naeaPreferredCI, CCBSIndicators ccbsIndicators, ISDNAddressString msisdn,
+            NumberPortabilityStatus nrPortabilityStatus, Integer istAlertTimer, SupportedCamelPhases supportedCamelPhases,
+            OfferedCamel4CSIs offeredCamel4CSIs, RoutingInfo routingInfo2, List<SSCode> ssList2,
+            ExtBasicServiceCode basicService2, AllowedServices allowedServices, UnavailabilityCause unavailabilityCause,
+            boolean releaseResourcesSupported, ExternalSignalInfo gsmBearerCapability) throws MAPException {
 
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.locationInfoRetrievalContext)
@@ -244,14 +244,14 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
     }
 
     @Override
-    public Long addProvideRoamingNumberRequest(IMSIImpl imsi, ISDNAddressStringImpl mscNumber, ISDNAddressStringImpl msisdn, LMSIImpl lmsi,
-            ExternalSignalInfoImpl gsmBearerCapability, ExternalSignalInfoImpl networkSignalInfo, boolean suppressionOfAnnouncement,
-            ISDNAddressStringImpl gmscAddress, CallReferenceNumberImpl callReferenceNumber, boolean orInterrogation,
-            MAPExtensionContainerImpl extensionContainer, AlertingPatternImpl alertingPattern, boolean ccbsCall,
-            SupportedCamelPhasesImpl supportedCamelPhasesInInterrogatingNode, ExtExternalSignalInfoImpl additionalSignalInfo,
+    public Long addProvideRoamingNumberRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString msisdn, LMSI lmsi,
+            ExternalSignalInfo gsmBearerCapability, ExternalSignalInfo networkSignalInfo, boolean suppressionOfAnnouncement,
+            ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber, boolean orInterrogation,
+            MAPExtensionContainer extensionContainer, AlertingPattern alertingPattern, boolean ccbsCall,
+            SupportedCamelPhases supportedCamelPhasesInInterrogatingNode, ExtExternalSignalInfo additionalSignalInfo,
             boolean orNotSupportedInGMSC, boolean prePagingSupported, boolean longFTNSupported, boolean suppressVtCsi,
-            OfferedCamel4CSIsImpl offeredCamel4CSIsInInterrogatingNode, boolean mtRoamingRetrySupported, PagingAreaImpl pagingArea,
-            EMLPPPriority callPriority, boolean mtrfIndicator, ISDNAddressStringImpl oldMSCNumber) throws MAPException {
+            OfferedCamel4CSIs offeredCamel4CSIsInInterrogatingNode, boolean mtRoamingRetrySupported, PagingArea pagingArea,
+            EMLPPPriority callPriority, boolean mtrfIndicator, ISDNAddressString oldMSCNumber) throws MAPException {
         return this.addProvideRoamingNumberRequest(_Timer_Default, imsi, mscNumber, msisdn, lmsi, gsmBearerCapability,
                 networkSignalInfo, suppressionOfAnnouncement, gmscAddress, callReferenceNumber, orInterrogation,
                 extensionContainer, alertingPattern, ccbsCall, supportedCamelPhasesInInterrogatingNode, additionalSignalInfo,
@@ -261,15 +261,15 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
     }
 
     @Override
-    public Long addProvideRoamingNumberRequest(int customInvokeTimeout, IMSIImpl imsi, ISDNAddressStringImpl mscNumber,
-            ISDNAddressStringImpl msisdn, LMSIImpl lmsi, ExternalSignalInfoImpl gsmBearerCapability, ExternalSignalInfoImpl networkSignalInfo,
-            boolean suppressionOfAnnouncement, ISDNAddressStringImpl gmscAddress, CallReferenceNumberImpl callReferenceNumber,
-            boolean orInterrogation, MAPExtensionContainerImpl extensionContainer, AlertingPatternImpl alertingPattern,
-            boolean ccbsCall, SupportedCamelPhasesImpl supportedCamelPhasesInInterrogatingNode,
-            ExtExternalSignalInfoImpl additionalSignalInfo, boolean orNotSupportedInGMSC, boolean prePagingSupported,
-            boolean longFTNSupported, boolean suppressVtCsi, OfferedCamel4CSIsImpl offeredCamel4CSIsInInterrogatingNode,
-            boolean mtRoamingRetrySupported, PagingAreaImpl pagingArea, EMLPPPriority callPriority, boolean mtrfIndicator,
-            ISDNAddressStringImpl oldMSCNumber) throws MAPException {
+    public Long addProvideRoamingNumberRequest(int customInvokeTimeout, IMSI imsi, ISDNAddressString mscNumber,
+    		ISDNAddressString msisdn, LMSI lmsi, ExternalSignalInfo gsmBearerCapability, ExternalSignalInfo networkSignalInfo,
+            boolean suppressionOfAnnouncement, ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber,
+            boolean orInterrogation, MAPExtensionContainer extensionContainer, AlertingPattern alertingPattern,
+            boolean ccbsCall, SupportedCamelPhases supportedCamelPhasesInInterrogatingNode,
+            ExtExternalSignalInfo additionalSignalInfo, boolean orNotSupportedInGMSC, boolean prePagingSupported,
+            boolean longFTNSupported, boolean suppressVtCsi, OfferedCamel4CSIs offeredCamel4CSIsInInterrogatingNode,
+            boolean mtRoamingRetrySupported, PagingArea pagingArea, EMLPPPriority callPriority, boolean mtrfIndicator,
+            ISDNAddressString oldMSCNumber) throws MAPException {
 
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.roamingNumberEnquiryContext)
@@ -295,7 +295,7 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
     }
 
     @Override
-    public void addProvideRoamingNumberResponse(long invokeId, ISDNAddressStringImpl roamingNumber)
+    public void addProvideRoamingNumberResponse(long invokeId, ISDNAddressString roamingNumber)
             throws MAPException {
 
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
@@ -309,8 +309,8 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
     }
     
     @Override
-    public void addProvideRoamingNumberResponse(long invokeId, ISDNAddressStringImpl roamingNumber,
-    		MAPExtensionContainerImpl extensionContainer, boolean releaseResourcesSupported, ISDNAddressStringImpl vmscAddress)
+    public void addProvideRoamingNumberResponse(long invokeId, ISDNAddressString roamingNumber,
+    		MAPExtensionContainer extensionContainer, boolean releaseResourcesSupported, ISDNAddressString vmscAddress)
             throws MAPException {
 
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
@@ -325,12 +325,12 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
     }
 
     @Override
-    public Long addIstCommandRequest(IMSIImpl imsi, MAPExtensionContainerImpl extensionContainer) throws MAPException {
+    public Long addIstCommandRequest(IMSI imsi, MAPExtensionContainer extensionContainer) throws MAPException {
         return this.addIstCommandRequest(_Timer_Default, imsi, extensionContainer);
     }
 
     @Override
-    public Long addIstCommandRequest(int customInvokeTimeout, IMSIImpl imsi, MAPExtensionContainerImpl extensionContainer) throws MAPException {
+    public Long addIstCommandRequest(int customInvokeTimeout, IMSI imsi, MAPExtensionContainer extensionContainer) throws MAPException {
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.ServiceTerminationContext)
                 || (vers != MAPApplicationContextVersion.version3))
@@ -348,7 +348,7 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
     }
 
     @Override
-    public void addIstCommandResponse(long invokeId, MAPExtensionContainerImpl extensionContainer) throws MAPException {
+    public void addIstCommandResponse(long invokeId, MAPExtensionContainer extensionContainer) throws MAPException {
 
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.ServiceTerminationContext)

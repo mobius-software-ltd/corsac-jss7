@@ -30,12 +30,10 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MNPInfoResImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.NumberPortabilityStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RouteingNumberImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

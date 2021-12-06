@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.map.service.supplementary;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.DeactivateSSResponse;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfo;
 
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
@@ -45,8 +45,17 @@ public class DeactivateSSResponseImpl extends SupplementaryMessageImpl implement
     public DeactivateSSResponseImpl() {
     }
 
-    public DeactivateSSResponseImpl(SSInfoImpl ssInfo) {
-        this.ssInfo = ssInfo;
+    public DeactivateSSResponseImpl(SSInfo ssInfo) {
+    	if(ssInfo instanceof SSInfoImpl)
+    		this.ssInfo=(SSInfoImpl)ssInfo;
+    	else if(ssInfo!=null) {
+    		if(ssInfo.getCallBarringInfo()!=null)
+    			this.ssInfo=new SSInfoImpl(ssInfo.getCallBarringInfo());
+    		else if(ssInfo.getForwardingInfo()!=null)
+    			this.ssInfo=new SSInfoImpl(ssInfo.getForwardingInfo());
+    		else
+    			this.ssInfo=new SSInfoImpl(ssInfo.getSsData());
+    	}
     }
 
     @Override
@@ -60,7 +69,7 @@ public class DeactivateSSResponseImpl extends SupplementaryMessageImpl implement
     }
 
     @Override
-    public SSInfoImpl getSsInfo() {
+    public SSInfo getSsInfo() {
         return ssInfo;
     }
 

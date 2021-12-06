@@ -30,13 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CauseValueImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTdpCriteriaImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CauseValue;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmTriggerDetectionPoint;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.TBcsmCamelTdpCriteriaImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -71,17 +69,17 @@ public class TBcsmCamelTdpCriteriaTest {
 
         assertNotNull(prim.getBasicServiceCriteria());
         assertEquals(prim.getBasicServiceCriteria().size(), 2);
-        ExtBasicServiceCodeImpl basicServiceOne = prim.getBasicServiceCriteria().get(0);
+        ExtBasicServiceCode basicServiceOne = prim.getBasicServiceCriteria().get(0);
         assertNotNull(basicServiceOne);
         assertEquals(basicServiceOne.getExtBearerService().getBearerServiceCodeValue(),
                 BearerServiceCodeValue.padAccessCA_9600bps);
 
-        ExtBasicServiceCodeImpl basicServiceTwo = prim.getBasicServiceCriteria().get(1);
+        ExtBasicServiceCode basicServiceTwo = prim.getBasicServiceCriteria().get(1);
         assertNotNull(basicServiceTwo);
         assertEquals(basicServiceTwo.getExtTeleservice().getTeleserviceCodeValue(),
                 TeleserviceCodeValue.allSpeechTransmissionServices);
 
-        List<CauseValueImpl> oCauseValueCriteria = prim.getTCauseValueCriteria();
+        List<CauseValue> oCauseValueCriteria = prim.getTCauseValueCriteria();
         assertNotNull(oCauseValueCriteria);
         assertEquals(oCauseValueCriteria.size(), 2);
         assertNotNull(oCauseValueCriteria.get(0));
@@ -96,7 +94,7 @@ public class TBcsmCamelTdpCriteriaTest {
     	parser.replaceClass(TBcsmCamelTdpCriteriaImpl.class);
     	
         TBcsmTriggerDetectionPoint tBcsmTriggerDetectionPoint = TBcsmTriggerDetectionPoint.tBusy;
-        ArrayList<ExtBasicServiceCodeImpl> basicServiceCriteria = new ArrayList<ExtBasicServiceCodeImpl>();
+        List<ExtBasicServiceCode> basicServiceCriteria = new ArrayList<ExtBasicServiceCode>();
         ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
         ExtTeleserviceCodeImpl extTeleservice = new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allSpeechTransmissionServices);
         ExtBasicServiceCodeImpl basicServiceOne = new ExtBasicServiceCodeImpl(b);
@@ -104,7 +102,7 @@ public class TBcsmCamelTdpCriteriaTest {
         basicServiceCriteria.add(basicServiceOne);
         basicServiceCriteria.add(basicServiceTwo);
 
-        ArrayList<CauseValueImpl> tCauseValueCriteria = new ArrayList<CauseValueImpl>();
+        List<CauseValue> tCauseValueCriteria = new ArrayList<CauseValue>();
         tCauseValueCriteria.add(new CauseValueImpl(7));
         tCauseValueCriteria.add(new CauseValueImpl(6));
         TBcsmCamelTdpCriteriaImpl prim = new TBcsmCamelTdpCriteriaImpl(tBcsmTriggerDetectionPoint, basicServiceCriteria,

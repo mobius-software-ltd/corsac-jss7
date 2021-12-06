@@ -23,8 +23,8 @@
 package org.restcomm.protocols.ss7.map.api.errors;
 
 import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpduImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpdu;
 
 
 /**
@@ -57,7 +57,7 @@ public interface MAPErrorMessageSMDeliveryFailure extends MAPErrorMessage {
 
     byte[] getSignalInfo();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     long getMapProtocolVersion();
 
@@ -65,12 +65,12 @@ public interface MAPErrorMessageSMDeliveryFailure extends MAPErrorMessage {
 
     void setSignalInfo(byte[] signalInfo);
 
-    void setExtensionContainer(MAPExtensionContainerImpl extensionContainer);
+    void setExtensionContainer(MAPExtensionContainer extensionContainer);
 
     void setMapProtocolVersion(long mapProtocolVersion);
 
-    SmsDeliverReportTpduImpl getSmsDeliverReportTpdu() throws MAPException;
+    SmsDeliverReportTpdu getSmsDeliverReportTpdu() throws MAPException;
 
-    void setSmsDeliverReportTpdu(SmsDeliverReportTpduImpl tpdu) throws MAPException;
+    void setSmsDeliverReportTpdu(SmsDeliverReportTpdu tpdu) throws MAPException;
 
 }

@@ -27,41 +27,31 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.EsiGprs.DetachSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiGprs.DisconnectSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiGprs.PDPContextEstablishmentAcknowledgementSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiGprs.PDPContextEstablishmentSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiGprs.PdpContextChangeOfPositionSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointNameImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.EndUserAddressImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationWrapperImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoSExtensionImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoSImpl;
+import org.restcomm.protocols.ss7.cap.EsiGprs.DetachSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.EsiGprs.DisconnectSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.EsiGprs.PDPContextEstablishmentAcknowledgementSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.EsiGprs.PDPContextEstablishmentSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.EsiGprs.PdpContextChangeOfPositionSpecificInformationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.InitiatingEntity;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPAddressImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPInitiationType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeNumberImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeNumberValue;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeOrganizationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeOrganizationValue;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfServiceImpl;
+import org.restcomm.protocols.ss7.cap.primitives.TimeAndTimezoneImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingIDImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeodeticInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSChargingIDImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeodeticInformationImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RAIdentityImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LSAIdentityImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.QoSSubscribedImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -193,15 +183,15 @@ public class GPRSEventSpecificInformationTest {
         assertTrue(result.getResult() instanceof GPRSEventSpecificInformationWrapperImpl);
         
         prim = (GPRSEventSpecificInformationWrapperImpl)result.getResult();
-        assertTrue(Arrays.equals(prim.getGPRSEventSpecificInformation().getPdpContextchangeOfPositionSpecificInformation().getAccessPointName().getData(),
+        assertTrue(Arrays.equals(prim.getGPRSEventSpecificInformation().getPdpContextChangeOfPositionSpecificInformation().getAccessPointName().getData(),
                 this.getAccessPointNameData()));
-        assertTrue(Arrays.equals(prim.getGPRSEventSpecificInformation().getPdpContextchangeOfPositionSpecificInformation().getChargingID().getData(),
+        assertTrue(Arrays.equals(prim.getGPRSEventSpecificInformation().getPdpContextChangeOfPositionSpecificInformation().getChargingID().getData(),
                 this.getEncodedchargingId()));
-        assertEquals(prim.getGPRSEventSpecificInformation().getPdpContextchangeOfPositionSpecificInformation().getLocationInformationGPRS()
+        assertEquals(prim.getGPRSEventSpecificInformation().getPdpContextChangeOfPositionSpecificInformation().getLocationInformationGPRS()
                 .getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength().getMCC(), 250);
-        assertEquals(prim.getGPRSEventSpecificInformation().getPdpContextchangeOfPositionSpecificInformation().getLocationInformationGPRS()
+        assertEquals(prim.getGPRSEventSpecificInformation().getPdpContextChangeOfPositionSpecificInformation().getLocationInformationGPRS()
                 .getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength().getMNC(), 1);
-        assertEquals(prim.getGPRSEventSpecificInformation().getPdpContextchangeOfPositionSpecificInformation().getLocationInformationGPRS()
+        assertEquals(prim.getGPRSEventSpecificInformation().getPdpContextChangeOfPositionSpecificInformation().getLocationInformationGPRS()
                 .getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength().getLac(), 4444);
 
         // Option 3

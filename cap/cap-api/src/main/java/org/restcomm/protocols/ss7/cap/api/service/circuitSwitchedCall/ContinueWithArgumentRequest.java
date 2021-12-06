@@ -24,16 +24,16 @@ package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ContinueWithArgumentArgExtensionImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCap;
+import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCap;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ContinueWithArgumentArgExtension;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfo;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
 import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Carrier;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
 
 /**
  *
@@ -76,32 +76,32 @@ SuppressionOfAnnouncement ::= NULL
  */
 public interface ContinueWithArgumentRequest extends CircuitSwitchedCallMessage {
 
-    AlertingPatternCapImpl getAlertingPattern();
+    AlertingPatternCap getAlertingPattern();
 
-    CAPExtensionsImpl getExtensions();
+    CAPExtensions getExtensions();
 
-    ServiceInteractionIndicatorsTwoImpl getServiceInteractionIndicatorsTwo();
+    ServiceInteractionIndicatorsTwo getServiceInteractionIndicatorsTwo();
 
     CallingPartysCategoryInap getCallingPartysCategory();
 
-    List<GenericNumberCapImpl> getGenericNumbers();
+    List<GenericNumberCap> getGenericNumbers();
 
-    CUGInterlockImpl getCugInterlock();
+    CUGInterlock getCugInterlock();
 
     boolean getCugOutgoingAccess();
 
-    LocationNumberCapImpl getChargeNumber();
+    LocationNumberCap getChargeNumber();
 
-    CarrierImpl getCarrier();
+    Carrier getCarrier();
 
     boolean getSuppressionOfAnnouncement();
 
-    NAOliInfoImpl getNaOliInfo();
+    NAOliInfo getNaOliInfo();
 
     boolean getBorInterrogationRequested();
 
     boolean getSuppressOCsi();
 
-    ContinueWithArgumentArgExtensionImpl getContinueWithArgumentArgExtension();
+    ContinueWithArgumentArgExtension getContinueWithArgumentArgExtension();
 
 }

@@ -27,11 +27,12 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CallInformationRequestRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ASNRequestedInformationTypeImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationType;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationTypeWrapperImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ASNRequestedInformationTypeImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.RequestedInformationTypeWrapperImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.restcomm.protocols.ss7.inap.primitives.SendingLegIDImpl;
 import org.restcomm.protocols.ss7.inap.primitives.SendingLegIDWrapperImpl;
@@ -54,8 +55,8 @@ public class CallInformationRequestRequestImpl extends CircuitSwitchedCallMessag
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
     private RequestedInformationTypeWrapperImpl requestedInformationTypeList;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
     private SendingLegIDWrapperImpl legID;
@@ -64,7 +65,7 @@ public class CallInformationRequestRequestImpl extends CircuitSwitchedCallMessag
     }
 
     public CallInformationRequestRequestImpl(List<RequestedInformationType> requestedInformationTypeList,
-            CAPExtensionsImpl extensions, LegType legID) {
+            CAPExtensions extensions, LegType legID) {
     	
     	if(requestedInformationTypeList!=null) {
     		List<ASNRequestedInformationTypeImpl> typesList=new ArrayList<ASNRequestedInformationTypeImpl>();
@@ -105,7 +106,7 @@ public class CallInformationRequestRequestImpl extends CircuitSwitchedCallMessag
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 

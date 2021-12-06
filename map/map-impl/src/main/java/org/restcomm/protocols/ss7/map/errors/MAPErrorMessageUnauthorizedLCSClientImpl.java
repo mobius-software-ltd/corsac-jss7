@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
-import org.restcomm.protocols.ss7.map.api.errors.ASNUnauthorizedLCSClientDiagnosticImpl;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageUnauthorizedLCSClient;
 import org.restcomm.protocols.ss7.map.api.errors.UnauthorizedLCSClientDiagnostic;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -42,11 +42,11 @@ public class MAPErrorMessageUnauthorizedLCSClientImpl extends MAPErrorMessageImp
         MAPErrorMessageUnauthorizedLCSClient {
  	private ASNUnauthorizedLCSClientDiagnosticImpl unauthorizedLCSClientDiagnostic;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
 
     public MAPErrorMessageUnauthorizedLCSClientImpl(UnauthorizedLCSClientDiagnostic unauthorizedLCSClientDiagnostic,
-            MAPExtensionContainerImpl extensionContainer) {
+    		MAPExtensionContainer extensionContainer) {
         super((long) MAPErrorCode.unauthorizedLCSClient);
 
         this.unauthorizedLCSClientDiagnostic = new ASNUnauthorizedLCSClientDiagnosticImpl();
@@ -73,7 +73,7 @@ public class MAPErrorMessageUnauthorizedLCSClientImpl extends MAPErrorMessageImp
         return this.unauthorizedLCSClientDiagnostic.getType();
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -82,7 +82,7 @@ public class MAPErrorMessageUnauthorizedLCSClientImpl extends MAPErrorMessageImp
         this.unauthorizedLCSClientDiagnostic.setType(unauthorizedLCSClientDiagnostic);
     }
 
-    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 

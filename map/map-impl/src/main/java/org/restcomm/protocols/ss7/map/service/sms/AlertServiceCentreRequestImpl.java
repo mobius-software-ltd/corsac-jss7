@@ -24,9 +24,11 @@ package org.restcomm.protocols.ss7.map.service.sms;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.service.sms.AlertServiceCentreRequest;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -41,11 +43,11 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class AlertServiceCentreRequestImpl extends SmsMessageImpl implements AlertServiceCentreRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-	private ISDNAddressStringImpl msisdn;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0, defaultImplementation = ISDNAddressStringImpl.class)
+	private ISDNAddressString msisdn;
     
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
-	private AddressStringImpl serviceCentreAddress;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1, defaultImplementation = AddressStringImpl.class)
+	private AddressString serviceCentreAddress;
     private int operationCode;
 
     public AlertServiceCentreRequestImpl() {
@@ -56,7 +58,7 @@ public class AlertServiceCentreRequestImpl extends SmsMessageImpl implements Ale
         this.operationCode = operationCode;
     }
 
-    public AlertServiceCentreRequestImpl(ISDNAddressStringImpl msisdn, AddressStringImpl serviceCentreAddress) {
+    public AlertServiceCentreRequestImpl(ISDNAddressString msisdn, AddressString serviceCentreAddress) {
         this.msisdn = msisdn;
         this.serviceCentreAddress = serviceCentreAddress;
     }
@@ -72,11 +74,11 @@ public class AlertServiceCentreRequestImpl extends SmsMessageImpl implements Ale
         return this.operationCode;
     }
 
-    public ISDNAddressStringImpl getMsisdn() {
+    public ISDNAddressString getMsisdn() {
         return this.msisdn;
     }
 
-    public AddressStringImpl getServiceCentreAddress() {
+    public AddressString getServiceCentreAddress() {
         return this.serviceCentreAddress;
     }
 

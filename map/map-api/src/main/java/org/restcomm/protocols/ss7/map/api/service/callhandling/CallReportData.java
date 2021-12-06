@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -41,6 +41,6 @@ public interface CallReportData extends Serializable {
 
     CallOutcome getCallOutcome();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
 }

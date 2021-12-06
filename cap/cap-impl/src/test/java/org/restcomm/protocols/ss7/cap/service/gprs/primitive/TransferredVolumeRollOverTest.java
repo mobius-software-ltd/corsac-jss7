@@ -28,9 +28,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ROVolumeIfTariffSwitchImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferVolumeRollOverWrapperImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferredVolumeRollOverImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -57,15 +54,15 @@ public class TransferredVolumeRollOverTest {
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(TransferVolumeRollOverWrapperImpl.class);
+    	parser.replaceClass(TransferredVolumeRollOverWrapperImpl.class);
     	
     	byte[] rawData = this.getData();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof TransferVolumeRollOverWrapperImpl);
+        assertTrue(result.getResult() instanceof TransferredVolumeRollOverWrapperImpl);
         
-        TransferVolumeRollOverWrapperImpl prim = (TransferVolumeRollOverWrapperImpl)result.getResult();        
+        TransferredVolumeRollOverWrapperImpl prim = (TransferredVolumeRollOverWrapperImpl)result.getResult();        
         assertNull(prim.getTransferredVolumeRollOver().getROVolumeIfTariffSwitch());
         assertEquals(prim.getTransferredVolumeRollOver().getROVolumeIfNoTariffSwitch().intValue(), 25);
 
@@ -74,9 +71,9 @@ public class TransferredVolumeRollOverTest {
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof TransferVolumeRollOverWrapperImpl);
+        assertTrue(result.getResult() instanceof TransferredVolumeRollOverWrapperImpl);
         
-        prim = (TransferVolumeRollOverWrapperImpl)result.getResult();  
+        prim = (TransferredVolumeRollOverWrapperImpl)result.getResult();  
         assertNull(prim.getTransferredVolumeRollOver().getROVolumeIfNoTariffSwitch());
         assertEquals(prim.getTransferredVolumeRollOver().getROVolumeIfTariffSwitch().getROVolumeSinceLastTariffSwitch().intValue(), 12);
         assertEquals(prim.getTransferredVolumeRollOver().getROVolumeIfTariffSwitch().getROVolumeTariffSwitchInterval().intValue(), 24);
@@ -85,11 +82,11 @@ public class TransferredVolumeRollOverTest {
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(TransferVolumeRollOverWrapperImpl.class);
+    	parser.replaceClass(TransferredVolumeRollOverWrapperImpl.class);
     	
     	// Option 1
         TransferredVolumeRollOverImpl prim = new TransferredVolumeRollOverImpl(new Integer(25));
-        TransferVolumeRollOverWrapperImpl wrapper = new TransferVolumeRollOverWrapperImpl(prim);
+        TransferredVolumeRollOverWrapperImpl wrapper = new TransferredVolumeRollOverWrapperImpl(prim);
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(wrapper);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -99,7 +96,7 @@ public class TransferredVolumeRollOverTest {
         // Option 2
         ROVolumeIfTariffSwitchImpl volumeIfTariffSwitch = new ROVolumeIfTariffSwitchImpl(new Integer(12), new Integer(24));
         prim = new TransferredVolumeRollOverImpl(volumeIfTariffSwitch);
-        wrapper = new TransferVolumeRollOverWrapperImpl(prim);
+        wrapper = new TransferredVolumeRollOverWrapperImpl(prim);
         rawData = this.getData2();
         buffer=parser.encode(wrapper);
         encodedData = new byte[buffer.readableBytes()];

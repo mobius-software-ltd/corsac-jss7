@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.sms;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -77,15 +77,13 @@ ReadyForSM-Arg ::= SEQUENCE {
  *
  */
 public interface ReadyForSMRequest extends SmsMessage {
-
-    IMSIImpl getImsi();
+	IMSI getImsi();
 
     AlertReason getAlertReason();
 
     boolean getAlertReasonIndicator();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     boolean getAdditionalAlertReasonIndicator();
-
 }

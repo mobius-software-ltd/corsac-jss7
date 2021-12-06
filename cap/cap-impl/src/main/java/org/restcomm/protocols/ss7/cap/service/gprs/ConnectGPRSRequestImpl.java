@@ -24,8 +24,10 @@ package org.restcomm.protocols.ss7.cap.service.gprs;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.ConnectGPRSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointNameImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointName;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.AccessPointNameImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -40,28 +42,28 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ConnectGPRSRequestImpl extends GprsMessageImpl implements ConnectGPRSRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC ,tag = 0,constructed = false,index = -1)
-    private AccessPointNameImpl accessPointName;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC ,tag = 0,constructed = false,index = -1,defaultImplementation = AccessPointNameImpl.class)
+    private AccessPointName accessPointName;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC ,tag = 1,constructed = false,index = -1)
-    private PDPIDImpl pdpID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC ,tag = 1,constructed = false,index = -1,defaultImplementation = PDPIDImpl.class)
+    private PDPID pdpID;
 
     public ConnectGPRSRequestImpl() {
     }
 
-    public ConnectGPRSRequestImpl(AccessPointNameImpl accessPointName, PDPIDImpl pdpID) {
+    public ConnectGPRSRequestImpl(AccessPointName accessPointName, PDPID pdpID) {
         super();
         this.accessPointName = accessPointName;
         this.pdpID = pdpID;
     }
 
     @Override
-    public AccessPointNameImpl getAccessPointName() {
+    public AccessPointName getAccessPointName() {
         return this.accessPointName;
     }
 
     @Override
-    public PDPIDImpl getPDPID() {
+    public PDPID getPDPID() {
         return this.pdpID;
     }
 

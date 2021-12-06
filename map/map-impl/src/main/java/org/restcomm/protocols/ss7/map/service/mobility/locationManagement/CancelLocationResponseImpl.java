@@ -24,11 +24,13 @@ package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.CancelLocationResponse;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -40,12 +42,13 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class CancelLocationResponseImpl extends MobilityMessageImpl implements CancelLocationResponse {
 	private static final long serialVersionUID = 1L;
 
-	private MAPExtensionContainerImpl extensionContainer;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
     
     public CancelLocationResponseImpl() {
     }
 
-    public CancelLocationResponseImpl(MAPExtensionContainerImpl extensionContainer) {
+    public CancelLocationResponseImpl(MAPExtensionContainer extensionContainer) {
         super();
         this.extensionContainer = extensionContainer;
     }
@@ -61,7 +64,7 @@ public class CancelLocationResponseImpl extends MobilityMessageImpl implements C
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

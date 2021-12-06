@@ -29,12 +29,14 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -101,7 +103,7 @@ public class ResetRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        ArrayList<IMSIImpl> hlrList = new ArrayList<IMSIImpl>();
+        List<IMSI> hlrList = new ArrayList<IMSI>();
         IMSIImpl imsi = new IMSIImpl("1234001");
         hlrList.add(imsi);
         prim = new ResetRequestImpl(null, hlrNumber, hlrList, 2);

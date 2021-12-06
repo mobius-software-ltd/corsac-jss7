@@ -31,18 +31,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CallTypeCriteria;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CauseValueImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DestinationNumberCriteriaImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CauseValue;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DestinationNumberCriteria;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MatchType;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmCamelTdpCriteriaImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmTriggerDetectionPoint;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -59,8 +58,11 @@ import io.netty.buffer.Unpooled;
  */
 public class OBcsmCamelTdpCriteriaTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 93, 10, 1, 2, -96, 28, -128, 1, 1, -95, 12, 4, 4, -111, 34, 50, -12, 4, 4, -111, 34, 50, -11, -94, 9, 2, 1, 2, 2, 1, 4, 2, 1, 1, -95, 3, -126, 1, 38, -126, 1, 0, -93, 3, 4, 1, 7, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+	public byte[] getData() {
+        return new byte[] { 48, 87, 10, 1, 2, -96, 28, -128, 1, 1, -95, 12, 4, 4, -111, 34, 50, -12, 4, 4, -111, 34, 50, -11,
+                -94, 9, 2, 1, 2, 2, 1, 4, 2, 1, 1, -95, 3, -126, 1, 38, -126, 1, 0, -93, 3, 4, 1, 7, -92, 39, -96, 32, 48, 10,
+                6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95,
+                3, 31, 32, 33 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -74,17 +76,17 @@ public class OBcsmCamelTdpCriteriaTest {
         assertTrue(result.getResult() instanceof OBcsmCamelTdpCriteriaImpl);
         OBcsmCamelTdpCriteriaImpl prim = (OBcsmCamelTdpCriteriaImpl)result.getResult();
         
-        DestinationNumberCriteriaImpl destinationNumberCriteria = prim.getDestinationNumberCriteria();
+        DestinationNumberCriteria destinationNumberCriteria = prim.getDestinationNumberCriteria();
 
-        List<ISDNAddressStringImpl> destinationNumberList = destinationNumberCriteria.getDestinationNumberList();
+        List<ISDNAddressString> destinationNumberList = destinationNumberCriteria.getDestinationNumberList();
         assertNotNull(destinationNumberList);
         assertEquals(destinationNumberList.size(), 2);
-        ISDNAddressStringImpl destinationNumberOne = destinationNumberList.get(0);
+        ISDNAddressString destinationNumberOne = destinationNumberList.get(0);
         assertNotNull(destinationNumberOne);
         assertTrue(destinationNumberOne.getAddress().equals("22234"));
         assertEquals(destinationNumberOne.getAddressNature(), AddressNature.international_number);
         assertEquals(destinationNumberOne.getNumberingPlan(), NumberingPlan.ISDN);
-        ISDNAddressStringImpl destinationNumberTwo = destinationNumberList.get(1);
+        ISDNAddressString destinationNumberTwo = destinationNumberList.get(1);
         assertNotNull(destinationNumberTwo);
         assertTrue(destinationNumberTwo.getAddress().equals("22235"));
         assertEquals(destinationNumberTwo.getAddressNature(), AddressNature.international_number);
@@ -101,11 +103,11 @@ public class OBcsmCamelTdpCriteriaTest {
 
         assertNotNull(prim.getBasicServiceCriteria());
         assertEquals(prim.getBasicServiceCriteria().size(), 1);
-        ExtBasicServiceCodeImpl basicService = prim.getBasicServiceCriteria().get(0);
+        ExtBasicServiceCode basicService = prim.getBasicServiceCriteria().get(0);
         assertNotNull(basicService);
         assertEquals(basicService.getExtBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_9600bps);
         assertEquals(prim.getCallTypeCriteria(), CallTypeCriteria.forwarded);
-        List<CauseValueImpl> oCauseValueCriteria = prim.getOCauseValueCriteria();
+        List<CauseValue> oCauseValueCriteria = prim.getOCauseValueCriteria();
         assertNotNull(oCauseValueCriteria);
         assertEquals(oCauseValueCriteria.size(), 1);
         assertNotNull(oCauseValueCriteria.get(0));
@@ -124,10 +126,10 @@ public class OBcsmCamelTdpCriteriaTest {
                 NumberingPlan.ISDN, "22234");
         ISDNAddressStringImpl destinationNumberTwo = new ISDNAddressStringImpl(AddressNature.international_number,
                 NumberingPlan.ISDN, "22235");
-        ArrayList<ISDNAddressStringImpl> destinationNumberList = new ArrayList<ISDNAddressStringImpl>();
+        List<ISDNAddressString> destinationNumberList = new ArrayList<ISDNAddressString>();
         destinationNumberList.add(destinationNumberOne);
         destinationNumberList.add(destinationNumberTwo);
-        ArrayList<Integer> destinationNumberLengthList = new ArrayList<Integer>();
+        List<Integer> destinationNumberLengthList = new ArrayList<Integer>();
         destinationNumberLengthList.add(2);
         destinationNumberLengthList.add(4);
         destinationNumberLengthList.add(1);
@@ -136,13 +138,13 @@ public class OBcsmCamelTdpCriteriaTest {
 
         ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
         ExtBasicServiceCodeImpl basicService = new ExtBasicServiceCodeImpl(b);
-        ArrayList<ExtBasicServiceCodeImpl> basicServiceCriteria = new ArrayList<ExtBasicServiceCodeImpl>();
+        List<ExtBasicServiceCode> basicServiceCriteria = new ArrayList<ExtBasicServiceCode>();
         basicServiceCriteria.add(basicService);
 
         CallTypeCriteria callTypeCriteria = CallTypeCriteria.forwarded;
-        ArrayList<CauseValueImpl> oCauseValueCriteria = new ArrayList<CauseValueImpl>();
+        List<CauseValue> oCauseValueCriteria = new ArrayList<CauseValue>();
         oCauseValueCriteria.add(new CauseValueImpl(7));
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         OBcsmCamelTdpCriteriaImpl prim = new OBcsmCamelTdpCriteriaImpl(oBcsmTriggerDetectionPoint, destinationNumberCriteria,
                 basicServiceCriteria, callTypeCriteria, oCauseValueCriteria, extensionContainer);

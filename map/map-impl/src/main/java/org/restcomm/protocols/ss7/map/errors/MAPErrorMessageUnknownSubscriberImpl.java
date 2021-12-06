@@ -22,13 +22,14 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
-import org.restcomm.protocols.ss7.map.api.errors.ASNUnknownSubscriberDiagnosticImpl;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageUnknownSubscriber;
 import org.restcomm.protocols.ss7.map.api.errors.UnknownSubscriberDiagnostic;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -38,11 +39,13 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageUnknownSubscriberImpl extends MAPErrorMessageImpl implements MAPErrorMessageUnknownSubscriber {
- 	private MAPExtensionContainerImpl extensionContainer;
+ 	
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
  	
     private ASNUnknownSubscriberDiagnosticImpl unknownSubscriberDiagnostic;
 
-    public MAPErrorMessageUnknownSubscriberImpl(MAPExtensionContainerImpl extensionContainer,
+    public MAPErrorMessageUnknownSubscriberImpl(MAPExtensionContainer extensionContainer,
             UnknownSubscriberDiagnostic unknownSubscriberDiagnostic) {
         super((long) MAPErrorCode.unknownSubscriber);
 
@@ -63,7 +66,7 @@ public class MAPErrorMessageUnknownSubscriberImpl extends MAPErrorMessageImpl im
         return this;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -74,7 +77,7 @@ public class MAPErrorMessageUnknownSubscriberImpl extends MAPErrorMessageImpl im
         return this.unknownSubscriberDiagnostic.getType();
     }
 
-    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 

@@ -27,249 +27,251 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.primitives.ASNPCSExtentionImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
+import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentity;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressAddressType;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNSubaddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtensionImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEACICImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNSubaddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtension;
+import org.restcomm.protocols.ss7.map.api.primitives.NAEACIC;
+import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCI;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkIdentificationPlanValue;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkIdentificationTypeValue;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.primitives.PlmnIdImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.TMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.TimeImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CamelInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CamelRoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.ExtendedRoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.GmscCamelSubscriptionInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.UUDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.UUIImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.UUIndicatorImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumberImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinitionImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentificationImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.PlmnId;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
+import org.restcomm.protocols.ss7.map.api.primitives.TMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.Time;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfo;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CamelInfo;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CamelRoutingInfo;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.ExtendedRoutingInfo;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingData;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.GmscCamelSubscriptionInfo;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfo;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.UUData;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.UUI;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.UUIndicator;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformation;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumber;
+import org.restcomm.protocols.ss7.map.api.service.lsm.Area;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinition;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfo;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentification;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
-import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredLocationEventTypeImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredmtlrDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientExternalIDImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientIDImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredLocationEventType;
+import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredmtlrData;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformation;
+import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningData;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientExternalID;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientID;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientInternalID;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientNameImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientName;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientType;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSCodewordImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSCodeword;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSFormatIndicator;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSPrivacyCheckImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSQoSImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSRequestorIDImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfo;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSPrivacyCheck;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSQoS;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSRequestorID;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LocationEstimateType;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LocationTypeImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LocationType;
 import org.restcomm.protocols.ss7.map.api.service.lsm.OccurrenceInfo;
-import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.PositioningDataInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfo;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PositioningDataInformation;
 import org.restcomm.protocols.ss7.map.api.service.lsm.PrivacyCheckRelatedAction;
 import org.restcomm.protocols.ss7.map.api.service.lsm.RANTechnology;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNListImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMN;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNList;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTime;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTimeCategory;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTimeImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgPCSExtensionsImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.SupportedGADShapesImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgPCSExtensions;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddress;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SupportedGADShapes;
 import org.restcomm.protocols.ss7.map.api.service.lsm.TerminationCause;
-import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimateImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationQuintupletImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetListImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTripletImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CKImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CksnImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContextImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpcAvImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAuthenticationSetListImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.IKImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KcImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.QuintupletListImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSynchronisationInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletListImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSecurityContextDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.RequestedEquipmentInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuAImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuBImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.EPSInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.IMSIWithLMSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ISRInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningData;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfo;
+import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimate;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationQuintuplet;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetList;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTriplet;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CK;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Cksn;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContext;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpcAv;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAuthenticationSetList;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.IK;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Kc;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.QuintupletList;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSynchronisationInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletList;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSecurityContextData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.RequestedEquipmentInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIu;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuA;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuB;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.AgeIndicator;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.EPSInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.IMSIWithLMSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ISRInformation;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ISTSupportIndicator;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LACImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationAreaImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PDNGWUpdateImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingAreaImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SGSNCapabilityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SuperChargerInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeaturesImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedLCSCapabilitySetsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedRATTypesImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapabilityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LAC;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationArea;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PDNGWUpdate;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingArea;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SGSNCapability;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SuperChargerInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeatures;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedLCSCapabilitySets;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedRATTypes;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapability;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AdditionalRequestedCAMELSubscriptionInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationRequest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationResponse;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CAMELSubscriptionInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallBarringDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallForwardingDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallHoldDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallWaitingDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClipDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClirDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CAMELSubscriptionInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallBarringData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallForwardingData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallHoldData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallWaitingData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClipData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClirData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.DomainType;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EUtranCgiImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EctDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ExtCwFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingIDImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClassImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeodeticInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EUtranCgi;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EctData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ExtCwFeature;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingID;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClass;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeodeticInformation;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeographicalInformation;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LIPAPermission;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationEPSImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationNumberMapImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MNPInfoResImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2Impl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSISDNBSImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSNetworkCapabilityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSRadioAccessCapabilityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationEPS;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationNumberMap;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MNPInfoRes;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSISDNBS;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSNetworkCapability;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSRadioAccessCapability;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.NotReachableReason;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.NumberPortabilityStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ODBInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContextImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContextInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ODBInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContext;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContextInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberState;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberStateImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberStateChoise;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentity;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedCAMELSubscriptionInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedSubscriptionInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RouteingNumberImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedSubscriptionInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RouteingNumber;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SIPTOPermission;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberState;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateChoice;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TAIdImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TEIDImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TransactionIdImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.UserCSGInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TAId;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TEID;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TransactionId;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.UserCSGInformation;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.*;
-import org.restcomm.protocols.ss7.map.api.service.oam.AreaScopeImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.BMSCEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.BMSCInterfaceListImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.AreaScope;
+import org.restcomm.protocols.ss7.map.api.service.oam.BMSCEventList;
+import org.restcomm.protocols.ss7.map.api.service.oam.BMSCInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.BssRecordType;
-import org.restcomm.protocols.ss7.map.api.service.oam.ENBInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.GGSNEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.GGSNInterfaceListImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.ENBInterfaceList;
+import org.restcomm.protocols.ss7.map.api.service.oam.GGSNEventList;
+import org.restcomm.protocols.ss7.map.api.service.oam.GGSNInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.HlrRecordType;
 import org.restcomm.protocols.ss7.map.api.service.oam.JobType;
-import org.restcomm.protocols.ss7.map.api.service.oam.ListOfMeasurementsImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.ListOfMeasurements;
 import org.restcomm.protocols.ss7.map.api.service.oam.LoggingDuration;
 import org.restcomm.protocols.ss7.map.api.service.oam.LoggingInterval;
-import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfigurationImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MGWEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MGWInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MMEEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MMEInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MSCSEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MSCSInterfaceListImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfiguration;
+import org.restcomm.protocols.ss7.map.api.service.oam.MGWEventList;
+import org.restcomm.protocols.ss7.map.api.service.oam.MGWInterfaceList;
+import org.restcomm.protocols.ss7.map.api.service.oam.MMEEventList;
+import org.restcomm.protocols.ss7.map.api.service.oam.MMEInterfaceList;
+import org.restcomm.protocols.ss7.map.api.service.oam.MSCSEventList;
+import org.restcomm.protocols.ss7.map.api.service.oam.MSCSInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.MscRecordType;
-import org.restcomm.protocols.ss7.map.api.service.oam.PGWEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.PGWInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.RNCInterfaceListImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.PGWEventList;
+import org.restcomm.protocols.ss7.map.api.service.oam.PGWInterfaceList;
+import org.restcomm.protocols.ss7.map.api.service.oam.RNCInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.ReportAmount;
 import org.restcomm.protocols.ss7.map.api.service.oam.ReportInterval;
-import org.restcomm.protocols.ss7.map.api.service.oam.ReportingTriggerImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.SGSNEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.SGSNInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.SGWEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.SGWInterfaceListImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.ReportingTrigger;
+import org.restcomm.protocols.ss7.map.api.service.oam.SGSNEventList;
+import org.restcomm.protocols.ss7.map.api.service.oam.SGSNInterfaceList;
+import org.restcomm.protocols.ss7.map.api.service.oam.SGWEventList;
+import org.restcomm.protocols.ss7.map.api.service.oam.SGWInterfaceList;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepth;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepthListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceReferenceImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceTypeImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepthList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceType;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceTypeInvokingEvent;
-import org.restcomm.protocols.ss7.map.api.service.sms.CorrelationIDImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.IpSmGwGuidanceImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.LocationInfoWithLMSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.MWStatusImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DAImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OAImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_SMEAImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SipUriImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.CCBSFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.CorrelationID;
+import org.restcomm.protocols.ss7.map.api.service.sms.IpSmGwGuidance;
+import org.restcomm.protocols.ss7.map.api.service.sms.LocationInfoWithLMSI;
+import org.restcomm.protocols.ss7.map.api.service.sms.MWStatus;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DA;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OA;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_SMEA;
+import org.restcomm.protocols.ss7.map.api.service.sms.SipUri;
+import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfo;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.CCBSFeature;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringFeature;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringInfo;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CliRestrictionOption;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptionsImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.GenericServiceInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeature;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingInfo;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptions;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.GenericServiceInfo;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.OverrideCategory;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.PasswordImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.Password;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ProcessUnstructuredSSRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ProcessUnstructuredSSResponse;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSSubscriptionOptionImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSData;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfo;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSSubscriptionOption;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNotifyRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNotifyResponse;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSResponse;
-import org.restcomm.protocols.ss7.map.api.smstpdu.AddressFieldImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpduImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
+import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpdu;
 import org.restcomm.protocols.ss7.tcap.asn.comp.GeneralProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  *
@@ -280,19 +282,19 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 public interface MAPParameterFactory {
 
     ProcessUnstructuredSSRequest createProcessUnstructuredSSRequestIndication(CBSDataCodingScheme ussdDataCodingSch,
-    		USSDStringImpl ussdString, AlertingPatternImpl alertingPattern, ISDNAddressStringImpl msISDNAddressStringImpl);
+    		USSDString ussdString, AlertingPattern alertingPattern, ISDNAddressString msISDNAddressString);
 
     ProcessUnstructuredSSResponse createProcessUnstructuredSSResponseIndication(
-            CBSDataCodingScheme ussdDataCodingScheme, USSDStringImpl ussdString);
+            CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString);
 
     UnstructuredSSRequest createUnstructuredSSRequestIndication(CBSDataCodingScheme ussdDataCodingSch,
-    		USSDStringImpl ussdString, AlertingPatternImpl alertingPattern, ISDNAddressStringImpl msISDNAddressStringImpl);
+    		USSDString ussdString, AlertingPattern alertingPattern, ISDNAddressString msISDNAddressString);
 
     UnstructuredSSResponse createUnstructuredSSRequestIndication(CBSDataCodingScheme ussdDataCodingScheme,
-    		USSDStringImpl ussdString);
+    		USSDString ussdString);
 
     UnstructuredSSNotifyRequest createUnstructuredSSNotifyRequestIndication(CBSDataCodingScheme ussdDataCodingSch,
-    		USSDStringImpl ussdString, AlertingPatternImpl alertingPattern, ISDNAddressStringImpl msISDNAddressStringImpl);
+    		USSDString ussdString, AlertingPattern alertingPattern, ISDNAddressString msISDNAddressString);
 
     UnstructuredSSNotifyResponse createUnstructuredSSNotifyResponseIndication();
 
@@ -303,7 +305,7 @@ public interface MAPParameterFactory {
      * @param ussdString The USSD String
      * @return new instance of {@link USSDString}
      */
-    USSDStringImpl createUSSDString(String ussdString) throws MAPException;
+    USSDString createUSSDString(String ussdString) throws MAPException;
 
     /**
      * Creates a new instance of {@link USSDString} using the passed {@link java.nio.charset.Charset} for encoding the passed
@@ -313,7 +315,7 @@ public interface MAPParameterFactory {
      * @param charSet The Charset used for encoding the passed USSD String
      * @return new instance of {@link USSDString}
      */
-    USSDStringImpl createUSSDString(String ussdString, CBSDataCodingScheme dataCodingScheme, Charset gsm8Charset)
+    USSDString createUSSDString(String ussdString, CBSDataCodingScheme dataCodingScheme, Charset gsm8Charset)
             throws MAPException;
 
     /**
@@ -323,7 +325,7 @@ public interface MAPParameterFactory {
      * @param ussdString The USSD String
      * @return new instance of {@link USSDString}
      */
-    USSDStringImpl createUSSDString(byte[] ussdString);
+    USSDString createUSSDString(byte[] ussdString);
 
     /**
      * Creates a new instance of {@link USSDString} using the passed {@link java.nio.charset.Charset} for encoding the passed
@@ -333,7 +335,7 @@ public interface MAPParameterFactory {
      * @param charSet The Charset used for encoding the passed USSD String byte[]
      * @return new instance of {@link USSDString}
      */
-    USSDStringImpl createUSSDString(byte[] ussdString, CBSDataCodingScheme dataCodingScheme, Charset gsm8Charset);
+    USSDString createUSSDString(byte[] ussdString, CBSDataCodingScheme dataCodingScheme, Charset gsm8Charset);
 
     /**
      * Creates a new instance of {@link AddressString}
@@ -343,7 +345,7 @@ public interface MAPParameterFactory {
      * @param address The actual address (number)
      * @return new instance of {@link AddressString}
      */
-    AddressStringImpl createAddressString(AddressNature addNature, NumberingPlan numPlan, String address);
+    AddressString createAddressString(AddressNature addNature, NumberingPlan numPlan, String address);
 
     /**
      * Creates a new instance of {@link AddressString}
@@ -355,12 +357,12 @@ public interface MAPParameterFactory {
      * @param address The actual address (number)
      * @return new instance of {@link AddressString}
      */
-    AddressStringImpl createAddressString(boolean extension, AddressNature addNature, NumberingPlan numPlan, String address);
+    AddressString createAddressString(boolean extension, AddressNature addNature, NumberingPlan numPlan, String address);
 
-    ISDNAddressStringImpl createISDNAddressString(AddressNature addNature, NumberingPlan numPlan, String address);
-    ISDNAddressStringImpl createISDNAddressString(boolean extension, AddressNature addNature, NumberingPlan numPlan, String address);
+    ISDNAddressString createISDNAddressString(AddressNature addNature, NumberingPlan numPlan, String address);
+    ISDNAddressString createISDNAddressString(boolean extension, AddressNature addNature, NumberingPlan numPlan, String address);
 
-    FTNAddressStringImpl createFTNAddressStringImpl(AddressNature addNature, NumberingPlan numPlan, String address);
+    FTNAddressString createFTNAddressString(AddressNature addNature, NumberingPlan numPlan, String address);
 
     /**
      * Creates a new instance of {@link IMSI}
@@ -368,9 +370,9 @@ public interface MAPParameterFactory {
      * @param data whole data string
      * @return new instance of {@link IMSI}
      */
-    IMSIImpl createIMSI(String data);
+    IMSI createIMSI(String data);
 
-    IMEIImpl createIMEI(String imei);
+    IMEI createIMEI(String imei);
 
     /**
      * Creates a new instance of {@link LMSI}
@@ -379,7 +381,7 @@ public interface MAPParameterFactory {
      *
      * @return new instance of {@link LMSI}
      */
-    LMSIImpl createLMSI(byte[] data);
+    LMSI createLMSI(byte[] data);
 
     /**
      * Creates a new instance of {@link SM_RP_DA} with imsi parameter
@@ -387,7 +389,7 @@ public interface MAPParameterFactory {
      * @param imsi
      * @return
      */
-    SM_RP_DAImpl createSM_RP_DA(IMSIImpl imsi);
+    SM_RP_DA createSM_RP_DA(IMSI imsi);
 
     /**
      * Creates a new instance of {@link SM_RP_DA} with lmsi parameter
@@ -395,7 +397,7 @@ public interface MAPParameterFactory {
      * @param lmsi
      * @return
      */
-    SM_RP_DAImpl createSM_RP_DA(LMSIImpl lmsi);
+    SM_RP_DA createSM_RP_DA(LMSI lmsi);
 
     /**
      * Creates a new instance of {@link SM_RP_DA} with serviceCentreAddressDA parameter
@@ -403,14 +405,14 @@ public interface MAPParameterFactory {
      * @param serviceCentreAddressDA
      * @return
      */
-    SM_RP_DAImpl createSM_RP_DA(AddressStringImpl serviceCentreAddressDA);
+    SM_RP_DA createSM_RP_DA(AddressString serviceCentreAddressDA);
 
     /**
      * Creates a new instance of {@link SM_RP_DA} with noSM_RP_DA parameter
      *
      * @return
      */
-    SM_RP_DAImpl createSM_RP_DA();
+    SM_RP_DA createSM_RP_DA();
 
     /**
      * Creates a new instance of {@link SM_RP_OA} with msisdn parameter
@@ -418,7 +420,7 @@ public interface MAPParameterFactory {
      * @param msisdn
      * @return
      */
-    SM_RP_OAImpl createSM_RP_OA_Msisdn(ISDNAddressStringImpl msisdn);
+    SM_RP_OA createSM_RP_OA_Msisdn(ISDNAddressString msisdn);
 
     /**
      * Creates a new instance of {@link SM_RP_OA} with serviceCentreAddressOA parameter
@@ -426,27 +428,27 @@ public interface MAPParameterFactory {
      * @param serviceCentreAddressOA
      * @return
      */
-    SM_RP_OAImpl createSM_RP_OA_ServiceCentreAddressOA(AddressStringImpl serviceCentreAddressOA);
+    SM_RP_OA createSM_RP_OA_ServiceCentreAddressOA(AddressString serviceCentreAddressOA);
 
     /**
      * Creates a new instance of {@link SM_RP_OA} with noSM_RP_OA parameter
      *
      * @return
      */
-    SM_RP_OAImpl createSM_RP_OA();
+    SM_RP_OA createSM_RP_OA();
 
-    SmsSignalInfoImpl createSmsSignalInfo(byte[] data, Charset gsm8Charset);
+    SmsSignalInfo createSmsSignalInfo(byte[] data, Charset gsm8Charset);
 
-    SmsSignalInfoImpl createSmsSignalInfo(SmsTpduImpl data, Charset gsm8Charset) throws MAPException;
+    SmsSignalInfo createSmsSignalInfo(SmsTpdu data, Charset gsm8Charset) throws MAPException;
 
-    SM_RP_SMEAImpl createSM_RP_SMEA(byte[] data);
+    SM_RP_SMEA createSM_RP_SMEA(byte[] data);
 
-    SM_RP_SMEAImpl createSM_RP_SMEA(AddressFieldImpl addressField) throws MAPException;
+    SM_RP_SMEA createSM_RP_SMEA(AddressField addressField) throws MAPException;
 
-    MWStatusImpl createMWStatus(boolean scAddressNotIncluded, boolean mnrfSet, boolean mcefSet, boolean mnrgSet);
+    MWStatus createMWStatus(boolean scAddressNotIncluded, boolean mnrfSet, boolean mcefSet, boolean mnrgSet);
 
-    LocationInfoWithLMSIImpl createLocationInfoWithLMSI(ISDNAddressStringImpl networkNodeNumber, LMSIImpl lmsi, MAPExtensionContainerImpl extensionContainer,
-            boolean gprsNodeIndicator, AdditionalNumberImpl additionalNumber);
+    LocationInfoWithLMSI createLocationInfoWithLMSI(ISDNAddressString networkNodeNumber, LMSI lmsi, MAPExtensionContainer extensionContainer,
+            boolean gprsNodeIndicator, AdditionalNumber additionalNumber);
 
     /**
      * Creates a new instance of {@link MAPPrivateExtension} for {@link MAPExtensionContainer}
@@ -455,433 +457,433 @@ public interface MAPParameterFactory {
      * @param data PrivateExtension data (ASN.1 encoded byte array with tag bytes)
      * @return
      */
-    MAPPrivateExtensionImpl createMAPPrivateExtension(List<Long> oId, Object data);
+    MAPPrivateExtension createMAPPrivateExtension(List<Long> oId, ByteBuf data);
 
     /**
      * @param privateExtensionList List of PrivateExtensions
      * @param pcsExtensions pcsExtensions value (ASN.1 encoded byte array without tag byte)
      * @return
      */
-    MAPExtensionContainerImpl createMAPExtensionContainer(List<MAPPrivateExtensionImpl> privateExtensionList,
-            ASNPCSExtentionImpl pcsExtensions);
+    MAPExtensionContainer createMAPExtensionContainer(List<MAPPrivateExtension> privateExtensionList,
+            ByteBuf pcsExtensions);
 
-    CellGlobalIdOrServiceAreaIdOrLAIImpl createCellGlobalIdOrServiceAreaIdOrLAI(
-            CellGlobalIdOrServiceAreaIdFixedLengthImpl cellGlobalIdOrServiceAreaIdFixedLength);
+    CellGlobalIdOrServiceAreaIdOrLAI createCellGlobalIdOrServiceAreaIdOrLAI(
+            CellGlobalIdOrServiceAreaIdFixedLength cellGlobalIdOrServiceAreaIdFixedLength);
 
-    CellGlobalIdOrServiceAreaIdOrLAIImpl createCellGlobalIdOrServiceAreaIdOrLAI(LAIFixedLengthImpl laiFixedLength);
+    CellGlobalIdOrServiceAreaIdOrLAI createCellGlobalIdOrServiceAreaIdOrLAI(LAIFixedLength laiFixedLength);
 
-    CellGlobalIdOrServiceAreaIdFixedLengthImpl createCellGlobalIdOrServiceAreaIdFixedLength(byte[] data);
+    CellGlobalIdOrServiceAreaIdFixedLength createCellGlobalIdOrServiceAreaIdFixedLength(byte[] data);
 
-    CellGlobalIdOrServiceAreaIdFixedLengthImpl createCellGlobalIdOrServiceAreaIdFixedLength(int mcc, int mnc, int lac,
+    CellGlobalIdOrServiceAreaIdFixedLength createCellGlobalIdOrServiceAreaIdFixedLength(int mcc, int mnc, int lac,
             int cellId) throws MAPException;
 
-    LAIFixedLengthImpl createLAIFixedLength(byte[] data);
+    LAIFixedLength createLAIFixedLength(byte[] data);
 
-    LAIFixedLengthImpl createLAIFixedLength(int mcc, int mnc, int lac) throws MAPException;
+    LAIFixedLength createLAIFixedLength(int mcc, int mnc, int lac) throws MAPException;
 
-    CallReferenceNumberImpl createCallReferenceNumber(byte[] data);
+    CallReferenceNumber createCallReferenceNumber(byte[] data);
 
-    LocationInformationImpl createLocationInformation(Integer ageOfLocationInformation,
-            GeographicalInformationImpl geographicalInformation, ISDNAddressStringImpl vlrNumber, LocationNumberMapImpl locationNumber,
-            CellGlobalIdOrServiceAreaIdOrLAIImpl cellGlobalIdOrServiceAreaIdOrLAI, MAPExtensionContainerImpl extensionContainer,
-            LSAIdentityImpl selectedLSAId, ISDNAddressStringImpl mscNumber, GeodeticInformationImpl geodeticInformation,
-            boolean currentLocationRetrieved, boolean saiPresent, LocationInformationEPSImpl locationInformationEPS,
-            UserCSGInformationImpl userCSGInformation);
+    LocationInformation createLocationInformation(Integer ageOfLocationInformation,
+            GeographicalInformation geographicalInformation, ISDNAddressString vlrNumber, LocationNumberMap locationNumber,
+            CellGlobalIdOrServiceAreaIdOrLAI cellGlobalIdOrServiceAreaIdOrLAI, MAPExtensionContainer extensionContainer,
+            LSAIdentity selectedLSAId, ISDNAddressString mscNumber, GeodeticInformation geodeticInformation,
+            boolean currentLocationRetrieved, boolean saiPresent, LocationInformationEPS locationInformationEPS,
+            UserCSGInformation userCSGInformation);
 
-    LocationNumberMapImpl createLocationNumberMap(byte[] data);
+    LocationNumberMap createLocationNumberMap(byte[] data);
 
-    LocationNumberMapImpl createLocationNumberMap(LocationNumber locationNumber) throws MAPException;
+    LocationNumberMap createLocationNumberMap(LocationNumber locationNumber) throws MAPException;
 
-    SubscriberStateImpl createSubscriberState(SubscriberStateChoice subscriberStateChoice,
+    SubscriberState createSubscriberState(SubscriberStateChoice subscriberStateChoice,
             NotReachableReason notReachableReason);
 
-    PlmnIdImpl createPlmnId(byte[] data);
+    PlmnId createPlmnId(byte[] data);
 
-    PlmnIdImpl createPlmnId(int mcc, int mnc);
+    PlmnId createPlmnId(int mcc, int mnc);
 
-    GSNAddressImpl createGSNAddress(byte[] data);
+    GSNAddress createGSNAddress(byte[] data);
 
-    GSNAddressImpl createGSNAddress(GSNAddressAddressType addressType, byte[] addressData) throws MAPException;
+    GSNAddress createGSNAddress(GSNAddressAddressType addressType, byte[] addressData) throws MAPException;
 
-    AuthenticationTripletImpl createAuthenticationTriplet(byte[] rand, byte[] sres, byte[] kc);
+    AuthenticationTriplet createAuthenticationTriplet(byte[] rand, byte[] sres, byte[] kc);
 
-    AuthenticationQuintupletImpl createAuthenticationQuintuplet(byte[] rand, byte[] xres, byte[] ck, byte[] ik, byte[] autn);
+    AuthenticationQuintuplet createAuthenticationQuintuplet(byte[] rand, byte[] xres, byte[] ck, byte[] ik, byte[] autn);
 
-    TripletListImpl createTripletList(List<AuthenticationTripletImpl> authenticationTriplets);
+    TripletList createTripletList(List<AuthenticationTriplet> authenticationTriplets);
 
-    QuintupletListImpl createQuintupletList(List<AuthenticationQuintupletImpl> quintupletList);
+    QuintupletList createQuintupletList(List<AuthenticationQuintuplet> quintupletList);
 
-    AuthenticationSetListImpl createAuthenticationSetList(TripletListImpl tripletList,long mapVersion);
+    AuthenticationSetList createAuthenticationSetList(TripletList tripletList,long mapVersion);
 
-    AuthenticationSetListImpl createAuthenticationSetList(QuintupletListImpl quintupletList);
+    AuthenticationSetList createAuthenticationSetList(QuintupletList quintupletList);
 
-    ReSynchronisationInfoImpl createReSynchronisationInfo(byte[] rand, byte[] auts);
+    ReSynchronisationInfo createReSynchronisationInfo(byte[] rand, byte[] auts);
 
-    EpsAuthenticationSetListImpl createEpsAuthenticationSetList(List<EpcAvImpl> epcAv);
+    EpsAuthenticationSetList createEpsAuthenticationSetList(List<EpcAv> epcAv);
 
-    EpcAvImpl createEpcAv(byte[] rand, byte[] xres, byte[] autn, byte[] kasme, MAPExtensionContainerImpl extensionContainer);
+    EpcAv createEpcAv(byte[] rand, byte[] xres, byte[] autn, byte[] kasme, MAPExtensionContainer extensionContainer);
 
-    VLRCapabilityImpl createVlrCapability(SupportedCamelPhasesImpl supportedCamelPhases,
-    		MAPExtensionContainerImpl extensionContainer, boolean solsaSupportIndicator, ISTSupportIndicator istSupportIndicator,
-            SuperChargerInfoImpl superChargerSupportedInServingNetworkEntity, boolean longFtnSupported,
-            SupportedLCSCapabilitySetsImpl supportedLCSCapabilitySets, OfferedCamel4CSIsImpl offeredCamel4CSIs,
-            SupportedRATTypesImpl supportedRATTypesIndicator, boolean longGroupIDSupported, boolean mtRoamingForwardingSupported);
+    VLRCapability createVlrCapability(SupportedCamelPhases supportedCamelPhases,
+    		MAPExtensionContainer extensionContainer, boolean solsaSupportIndicator, ISTSupportIndicator istSupportIndicator,
+            SuperChargerInfo superChargerSupportedInServingNetworkEntity, boolean longFtnSupported,
+            SupportedLCSCapabilitySets supportedLCSCapabilitySets, OfferedCamel4CSIs offeredCamel4CSIs,
+            SupportedRATTypes supportedRATTypesIndicator, boolean longGroupIDSupported, boolean mtRoamingForwardingSupported);
 
-    SupportedCamelPhasesImpl createSupportedCamelPhases(boolean phase1, boolean phase2, boolean phase3, boolean phase4);
+    SupportedCamelPhases createSupportedCamelPhases(boolean phase1, boolean phase2, boolean phase3, boolean phase4);
 
-    SuperChargerInfoImpl createSuperChargerInfo();
+    SuperChargerInfo createSuperChargerInfo();
 
-    SuperChargerInfoImpl createSuperChargerInfo(byte[] subscriberDataStored);
+    SuperChargerInfo createSuperChargerInfo(byte[] subscriberDataStored);
 
-    SupportedLCSCapabilitySetsImpl createSupportedLCSCapabilitySets(boolean lcsCapabilitySetRelease98_99,
+    SupportedLCSCapabilitySets createSupportedLCSCapabilitySets(boolean lcsCapabilitySetRelease98_99,
             boolean lcsCapabilitySetRelease4, boolean lcsCapabilitySetRelease5, boolean lcsCapabilitySetRelease6,
             boolean lcsCapabilitySetRelease7);
 
-    OfferedCamel4CSIsImpl createOfferedCamel4CSIs(boolean oCsi, boolean dCsi, boolean vtCsi, boolean tCsi, boolean mtSMSCsi,
+    OfferedCamel4CSIs createOfferedCamel4CSIs(boolean oCsi, boolean dCsi, boolean vtCsi, boolean tCsi, boolean mtSMSCsi,
             boolean mgCsi, boolean psiEnhancements);
 
-    SupportedRATTypesImpl createSupportedRATTypes(boolean utran, boolean geran, boolean gan, boolean i_hspa_evolution,
+    SupportedRATTypes createSupportedRATTypes(boolean utran, boolean geran, boolean gan, boolean i_hspa_evolution,
             boolean e_utran);
 
-    ADDInfoImpl createADDInfo(IMEIImpl imeisv, boolean skipSubscriberDataUpdate);
+    ADDInfo createADDInfo(IMEI imeisv, boolean skipSubscriberDataUpdate);
 
-    PagingAreaImpl createPagingArea(List<LocationAreaImpl> locationAreas);
+    PagingArea createPagingArea(List<LocationArea> locationAreas);
 
-    LACImpl createLAC(byte[] data);
+    LAC createLAC(byte[] data);
 
-    LACImpl createLAC(int lac) throws MAPException;
+    LAC createLAC(int lac) throws MAPException;
 
-    LocationAreaImpl createLocationArea(LAIFixedLengthImpl laiFixedLength);
+    LocationArea createLocationArea(LAIFixedLength laiFixedLength);
 
-    LocationAreaImpl createLocationArea(LACImpl lac);
+    LocationArea createLocationArea(LAC lac);
 
-    AnyTimeInterrogationRequest createAnyTimeInterrogationRequest(SubscriberIdentityImpl subscriberIdentity,
-            RequestedInfoImpl requestedInfo, ISDNAddressStringImpl gsmSCFAddress, MAPExtensionContainerImpl extensionContainer);
+    AnyTimeInterrogationRequest createAnyTimeInterrogationRequest(SubscriberIdentity subscriberIdentity,
+            RequestedInfo requestedInfo, ISDNAddressString gsmSCFAddress, MAPExtensionContainer extensionContainer);
 
-    AnyTimeInterrogationResponse createAnyTimeInterrogationResponse(SubscriberInfoImpl subscriberInfo,
-    		MAPExtensionContainerImpl extensionContainer);
+    AnyTimeInterrogationResponse createAnyTimeInterrogationResponse(SubscriberInfo subscriberInfo,
+    		MAPExtensionContainer extensionContainer);
 
-    DiameterIdentityImpl createDiameterIdentity(byte[] data);
+    DiameterIdentity createDiameterIdentity(byte[] data);
 
-    SubscriberIdentityImpl createSubscriberIdentity(IMSIImpl imsi);
+    SubscriberIdentity createSubscriberIdentity(IMSI imsi);
 
-    SubscriberIdentityImpl createSubscriberIdentity(ISDNAddressStringImpl msisdn);
+    SubscriberIdentity createSubscriberIdentity(ISDNAddressString msisdn);
 
-    APNImpl createAPN(byte[] data);
+    APN createAPN(byte[] data);
 
-    APNImpl createAPN(String data) throws MAPException;
+    APN createAPN(String data) throws MAPException;
 
-    PDPAddressImpl createPDPAddress(byte[] data);
+    PDPAddress createPDPAddress(byte[] data);
 
-    PDPTypeImpl createPDPType(byte[] data);
+    PDPType createPDPType(byte[] data);
 
-    PDPTypeImpl createPDPType(PDPTypeValue data);
+    PDPType createPDPType(PDPTypeValue data);
 
-    PDPContextInfoImpl createPDPContextInfo(int pdpContextIdentifier, boolean pdpContextActive, PDPTypeImpl pdpType,
-            PDPAddressImpl pdpAddress, APNImpl apnSubscribed, APNImpl apnInUse, Integer asapi, TransactionIdImpl transactionId,
-            TEIDImpl teidForGnAndGp, TEIDImpl teidForIu, GSNAddressImpl ggsnAddress, ExtQoSSubscribedImpl qosSubscribed,
-            ExtQoSSubscribedImpl qosRequested, ExtQoSSubscribedImpl qosNegotiated, GPRSChargingIDImpl chargingId,
-            ChargingCharacteristicsImpl chargingCharacteristics, GSNAddressImpl rncAddress, MAPExtensionContainerImpl extensionContainer,
-            Ext2QoSSubscribedImpl qos2Subscribed, Ext2QoSSubscribedImpl qos2Requested, Ext2QoSSubscribedImpl qos2Negotiated,
-            Ext3QoSSubscribedImpl qos3Subscribed, Ext3QoSSubscribedImpl qos3Requested, Ext3QoSSubscribedImpl qos3Negotiated,
-            Ext4QoSSubscribedImpl qos4Subscribed, Ext4QoSSubscribedImpl qos4Requested, Ext4QoSSubscribedImpl qos4Negotiated,
-            ExtPDPTypeImpl extPdpType, PDPAddressImpl extPdpAddress);
+    PDPContextInfo createPDPContextInfo(int pdpContextIdentifier, boolean pdpContextActive, PDPType pdpType,
+            PDPAddress pdpAddress, APN apnSubscribed, APN apnInUse, Integer asapi, TransactionId transactionId,
+            TEID teidForGnAndGp, TEID teidForIu, GSNAddress ggsnAddress, ExtQoSSubscribed qosSubscribed,
+            ExtQoSSubscribed qosRequested, ExtQoSSubscribed qosNegotiated, GPRSChargingID chargingId,
+            ChargingCharacteristics chargingCharacteristics, GSNAddress rncAddress, MAPExtensionContainer extensionContainer,
+            Ext2QoSSubscribed qos2Subscribed, Ext2QoSSubscribed qos2Requested, Ext2QoSSubscribed qos2Negotiated,
+            Ext3QoSSubscribed qos3Subscribed, Ext3QoSSubscribed qos3Requested, Ext3QoSSubscribed qos3Negotiated,
+            Ext4QoSSubscribed qos4Subscribed, Ext4QoSSubscribed qos4Requested, Ext4QoSSubscribed qos4Negotiated,
+            ExtPDPType extPdpType, PDPAddress extPdpAddress);
 
-    PDPContextImpl createPDPContext(int pdpContextId, PDPTypeImpl pdpType, PDPAddressImpl pdpAddress, QoSSubscribedImpl qosSubscribed,
-            boolean vplmnAddressAllowed, APNImpl apn, MAPExtensionContainerImpl extensionContainer, ExtQoSSubscribedImpl extQoSSubscribed,
-            ChargingCharacteristicsImpl chargingCharacteristics, Ext2QoSSubscribedImpl ext2QoSSubscribed,
-            Ext3QoSSubscribedImpl ext3QoSSubscribed, Ext4QoSSubscribedImpl ext4QoSSubscribed, APNOIReplacementImpl apnoiReplacement,
-            ExtPDPTypeImpl extpdpType, PDPAddressImpl extpdpAddress, SIPTOPermission sipToPermission, LIPAPermission lipaPermission);
+    PDPContext createPDPContext(int pdpContextId, PDPType pdpType, PDPAddress pdpAddress, QoSSubscribed qosSubscribed,
+            boolean vplmnAddressAllowed, APN apn, MAPExtensionContainer extensionContainer, ExtQoSSubscribed extQoSSubscribed,
+            ChargingCharacteristics chargingCharacteristics, Ext2QoSSubscribed ext2QoSSubscribed,
+            Ext3QoSSubscribed ext3QoSSubscribed, Ext4QoSSubscribed ext4QoSSubscribed, APNOIReplacement apnoiReplacement,
+            ExtPDPType extpdpType, PDPAddress extpdpAddress, SIPTOPermission sipToPermission, LIPAPermission lipaPermission);
 
-    APNOIReplacementImpl createAPNOIReplacement(byte[] data);
+    APNOIReplacement createAPNOIReplacement(byte[] data);
 
-    QoSSubscribedImpl createQoSSubscribed(byte[] data);
+    QoSSubscribed createQoSSubscribed(byte[] data);
 
-    QoSSubscribedImpl createQoSSubscribed(QoSSubscribed_ReliabilityClass reliabilityClass, QoSSubscribed_DelayClass delayClass,
+    QoSSubscribed createQoSSubscribed(QoSSubscribed_ReliabilityClass reliabilityClass, QoSSubscribed_DelayClass delayClass,
             QoSSubscribed_PrecedenceClass precedenceClass, QoSSubscribed_PeakThroughput peakThroughput, QoSSubscribed_MeanThroughput meanThroughput);
 
-    LSAIdentityImpl createLSAIdentity(byte[] data);
+    LSAIdentity createLSAIdentity(byte[] data);
 
-    GPRSChargingIDImpl createGPRSChargingID(byte[] data);
+    GPRSChargingID createGPRSChargingID(byte[] data);
 
-    ChargingCharacteristicsImpl createChargingCharacteristics(byte[] data);
+    ChargingCharacteristics createChargingCharacteristics(byte[] data);
 
-    ChargingCharacteristicsImpl createChargingCharacteristics(boolean isNormalCharging, boolean isPrepaidCharging, boolean isFlatRateChargingCharging,
+    ChargingCharacteristics createChargingCharacteristics(boolean isNormalCharging, boolean isPrepaidCharging, boolean isFlatRateChargingCharging,
             boolean isChargingByHotBillingCharging);
 
-    ExtQoSSubscribedImpl createExtQoSSubscribed(byte[] data);
+    ExtQoSSubscribed createExtQoSSubscribed(byte[] data);
 
-    ExtQoSSubscribedImpl createExtQoSSubscribed(int allocationRetentionPriority, ExtQoSSubscribed_DeliveryOfErroneousSdus deliveryOfErroneousSdus,
-            ExtQoSSubscribed_DeliveryOrder deliveryOrder, ExtQoSSubscribed_TrafficClass trafficClass, ExtQoSSubscribed_MaximumSduSizeImpl maximumSduSize,
-            ExtQoSSubscribed_BitRateImpl maximumBitRateForUplink, ExtQoSSubscribed_BitRateImpl maximumBitRateForDownlink, ExtQoSSubscribed_ResidualBER residualBER,
+    ExtQoSSubscribed createExtQoSSubscribed(int allocationRetentionPriority, ExtQoSSubscribed_DeliveryOfErroneousSdus deliveryOfErroneousSdus,
+            ExtQoSSubscribed_DeliveryOrder deliveryOrder, ExtQoSSubscribed_TrafficClass trafficClass, ExtQoSSubscribed_MaximumSduSize maximumSduSize,
+            ExtQoSSubscribed_BitRate maximumBitRateForUplink, ExtQoSSubscribed_BitRate maximumBitRateForDownlink, ExtQoSSubscribed_ResidualBER residualBER,
             ExtQoSSubscribed_SduErrorRatio sduErrorRatio, ExtQoSSubscribed_TrafficHandlingPriority trafficHandlingPriority,
-            ExtQoSSubscribed_TransferDelayImpl transferDelay, ExtQoSSubscribed_BitRateImpl guaranteedBitRateForUplink,
-            ExtQoSSubscribed_BitRateImpl guaranteedBitRateForDownlink);
+            ExtQoSSubscribed_TransferDelay transferDelay, ExtQoSSubscribed_BitRate guaranteedBitRateForUplink,
+            ExtQoSSubscribed_BitRate guaranteedBitRateForDownlink);
 
-    Ext2QoSSubscribedImpl createExt2QoSSubscribed(byte[] data);
+    Ext2QoSSubscribed createExt2QoSSubscribed(byte[] data);
 
-    Ext2QoSSubscribedImpl createExt2QoSSubscribed(Ext2QoSSubscribed_SourceStatisticsDescriptor sourceStatisticsDescriptor, boolean optimisedForSignallingTraffic,
-            ExtQoSSubscribed_BitRateExtendedImpl maximumBitRateForDownlinkExtended, ExtQoSSubscribed_BitRateExtendedImpl guaranteedBitRateForDownlinkExtended);
+    Ext2QoSSubscribed createExt2QoSSubscribed(Ext2QoSSubscribed_SourceStatisticsDescriptor sourceStatisticsDescriptor, boolean optimisedForSignallingTraffic,
+            ExtQoSSubscribed_BitRateExtended maximumBitRateForDownlinkExtended, ExtQoSSubscribed_BitRateExtended guaranteedBitRateForDownlinkExtended);
 
-    Ext3QoSSubscribedImpl createExt3QoSSubscribed(byte[] data);
+    Ext3QoSSubscribed createExt3QoSSubscribed(byte[] data);
 
-    Ext3QoSSubscribedImpl createExt3QoSSubscribed(ExtQoSSubscribed_BitRateExtendedImpl maximumBitRateForUplinkExtended,
-            ExtQoSSubscribed_BitRateExtendedImpl guaranteedBitRateForUplinkExtended);
+    Ext3QoSSubscribed createExt3QoSSubscribed(ExtQoSSubscribed_BitRateExtended maximumBitRateForUplinkExtended,
+            ExtQoSSubscribed_BitRateExtended guaranteedBitRateForUplinkExtended);
 
-    Ext4QoSSubscribedImpl createExt4QoSSubscribed(int data);
+    Ext4QoSSubscribed createExt4QoSSubscribed(int data);
 
-    ExtPDPTypeImpl createExtPDPType(byte[] data);
+    ExtPDPType createExtPDPType(byte[] data);
 
-    TransactionIdImpl createTransactionId(byte[] data);
+    TransactionId createTransactionId(byte[] data);
 
-    TAIdImpl createTAId(byte[] data);
+    TAId createTAId(byte[] data);
 
-    RAIdentityImpl createRAIdentity(byte[] data);
+    RAIdentity createRAIdentity(byte[] data);
 
-    EUtranCgiImpl createEUtranCgi(byte[] data);
+    EUtranCgi createEUtranCgi(byte[] data);
 
-    TEIDImpl createTEID(byte[] data);
+    TEID createTEID(byte[] data);
 
-    GPRSMSClassImpl createGPRSMSClass(MSNetworkCapabilityImpl mSNetworkCapability,
-            MSRadioAccessCapabilityImpl mSRadioAccessCapability);
+    GPRSMSClass createGPRSMSClass(MSNetworkCapability mSNetworkCapability,
+            MSRadioAccessCapability mSRadioAccessCapability);
 
-    GeographicalInformationImpl createGeographicalInformation(byte[] data);
+    GeographicalInformation createGeographicalInformation(byte[] data);
 
-    GeographicalInformationImpl createGeographicalInformation(double latitude, double longitude, double uncertainty)
+    GeographicalInformation createGeographicalInformation(double latitude, double longitude, double uncertainty)
             throws MAPException;
 
-    GeodeticInformationImpl createGeodeticInformation(byte[] data);
+    GeodeticInformation createGeodeticInformation(byte[] data);
 
-    GeodeticInformationImpl createGeodeticInformation(int screeningAndPresentationIndicators, double latitude,
+    GeodeticInformation createGeodeticInformation(int screeningAndPresentationIndicators, double latitude,
             double longitude, double uncertainty, int confidence) throws MAPException;
 
-    LocationInformationEPSImpl createLocationInformationEPS(EUtranCgiImpl eUtranCellGlobalIdentity, TAIdImpl trackingAreaIdentity,
-    		MAPExtensionContainerImpl extensionContainer, GeographicalInformationImpl geographicalInformation,
-            GeodeticInformationImpl geodeticInformation, boolean currentLocationRetrieved, Integer ageOfLocationInformation,
-            DiameterIdentityImpl mmeName);
+    LocationInformationEPS createLocationInformationEPS(EUtranCgi eUtranCellGlobalIdentity, TAId trackingAreaIdentity,
+    		MAPExtensionContainer extensionContainer, GeographicalInformation geographicalInformation,
+            GeodeticInformation geodeticInformation, boolean currentLocationRetrieved, Integer ageOfLocationInformation,
+            DiameterIdentity mmeName);
 
-    LocationInformationGPRSImpl createLocationInformationGPRS(
-            CellGlobalIdOrServiceAreaIdOrLAIImpl cellGlobalIdOrServiceAreaIdOrLAI, RAIdentityImpl routeingAreaIdentity,
-            GeographicalInformationImpl geographicalInformation, ISDNAddressStringImpl sgsnNumber, LSAIdentityImpl selectedLSAIdentity,
-            MAPExtensionContainerImpl extensionContainer, boolean saiPresent, GeodeticInformationImpl geodeticInformation,
+    LocationInformationGPRS createLocationInformationGPRS(
+            CellGlobalIdOrServiceAreaIdOrLAI cellGlobalIdOrServiceAreaIdOrLAI, RAIdentity routeingAreaIdentity,
+            GeographicalInformation geographicalInformation, ISDNAddressString sgsnNumber, LSAIdentity selectedLSAIdentity,
+            MAPExtensionContainer extensionContainer, boolean saiPresent, GeodeticInformation geodeticInformation,
             boolean currentLocationRetrieved, Integer ageOfLocationInformation);
 
-    MSNetworkCapabilityImpl createMSNetworkCapability(byte[] data);
+    MSNetworkCapability createMSNetworkCapability(byte[] data);
 
-    MSRadioAccessCapabilityImpl createMSRadioAccessCapability(byte[] data);
+    MSRadioAccessCapability createMSRadioAccessCapability(byte[] data);
 
-    MSClassmark2Impl createMSClassmark2(byte[] data);
+    MSClassmark2 createMSClassmark2(byte[] data);
 
-    MNPInfoResImpl createMNPInfoRes(RouteingNumberImpl routeingNumber, IMSIImpl imsi, ISDNAddressStringImpl msisdn,
-            NumberPortabilityStatus numberPortabilityStatus, MAPExtensionContainerImpl extensionContainer);
+    MNPInfoRes createMNPInfoRes(RouteingNumber routeingNumber, IMSI imsi, ISDNAddressString msisdn,
+            NumberPortabilityStatus numberPortabilityStatus, MAPExtensionContainer extensionContainer);
 
-    RequestedInfoImpl createRequestedInfo(boolean locationInformation, boolean subscriberState,
-    		MAPExtensionContainerImpl extensionContainer, boolean currentLocation, DomainType requestedDomain, boolean imei,
+    RequestedInfo createRequestedInfo(boolean locationInformation, boolean subscriberState,
+    		MAPExtensionContainer extensionContainer, boolean currentLocation, DomainType requestedDomain, boolean imei,
             boolean msClassmark, boolean mnpRequestedInfo);
 
-    RouteingNumberImpl createRouteingNumber(String data);
+    RouteingNumber createRouteingNumber(String data);
 
-    SubscriberInfoImpl createSubscriberInfo(LocationInformationImpl locationInformation, SubscriberStateImpl subscriberState,
-    		MAPExtensionContainerImpl extensionContainer, LocationInformationGPRSImpl locationInformationGPRS,
-    		PSSubscriberStateImpl psSubscriberState, IMEIImpl imei, MSClassmark2Impl msClassmark2, GPRSMSClassImpl gprsMSClass,
-            MNPInfoResImpl mnpInfoRes);
+    SubscriberInfo createSubscriberInfo(LocationInformation locationInformation, SubscriberState subscriberState,
+    		MAPExtensionContainer extensionContainer, LocationInformationGPRS locationInformationGPRS,
+    		PSSubscriberState psSubscriberState, IMEI imei, MSClassmark2 msClassmark2, GPRSMSClass gprsMSClass,
+            MNPInfoRes mnpInfoRes);
 
-    UserCSGInformationImpl createUserCSGInformation(CSGIdImpl csgId, MAPExtensionContainerImpl extensionContainer,
+    UserCSGInformation createUserCSGInformation(CSGId csgId, MAPExtensionContainer extensionContainer,
             Integer accessMode, Integer cmi);
 
-    PSSubscriberStateImpl createPSSubscriberState(PSSubscriberState choice, NotReachableReason netDetNotReachable,
-            List<PDPContextInfoImpl> pdpContextInfoList);
+    PSSubscriberState createPSSubscriberState(PSSubscriberStateChoise choice, NotReachableReason netDetNotReachable,
+            List<PDPContextInfo> pdpContextInfoList);
 
-    AddGeographicalInformationImpl createAddGeographicalInformation(byte[] data);
+    AddGeographicalInformation createAddGeographicalInformation(byte[] data);
 
-    AddGeographicalInformationImpl createAddGeographicalInformation_EllipsoidPointWithUncertaintyCircle(double latitude,
+    AddGeographicalInformation createAddGeographicalInformation_EllipsoidPointWithUncertaintyCircle(double latitude,
             double longitude, double uncertainty) throws MAPException;
 
-    AddGeographicalInformationImpl createAddGeographicalInformation_EllipsoidPointWithUncertaintyEllipse(double latitude,
+    AddGeographicalInformation createAddGeographicalInformation_EllipsoidPointWithUncertaintyEllipse(double latitude,
             double longitude, double uncertaintySemiMajorAxis, double uncertaintySemiMinorAxis, double angleOfMajorAxis,
             int confidence) throws MAPException;
 
-    AddGeographicalInformationImpl createAddGeographicalInformation_EllipsoidPointWithAltitudeAndUncertaintyEllipsoid(
+    AddGeographicalInformation createAddGeographicalInformation_EllipsoidPointWithAltitudeAndUncertaintyEllipsoid(
             double latitude, double longitude, double uncertaintySemiMajorAxis, double uncertaintySemiMinorAxis,
             double angleOfMajorAxis, int confidence, int altitude, double uncertaintyAltitude) throws MAPException;
 
-    AddGeographicalInformationImpl createAddGeographicalInformation_EllipsoidArc(double latitude, double longitude,
+    AddGeographicalInformation createAddGeographicalInformation_EllipsoidArc(double latitude, double longitude,
             int innerRadius, double uncertaintyRadius, double offsetAngle, double includedAngle, int confidence)
             throws MAPException;
 
-    AddGeographicalInformationImpl createAddGeographicalInformation_EllipsoidPoint(double latitude, double longitude)
+    AddGeographicalInformation createAddGeographicalInformation_EllipsoidPoint(double latitude, double longitude)
             throws MAPException;
 
-    AdditionalNumberImpl createAdditionalNumberMscNumber(ISDNAddressStringImpl mSCNumber);
+    AdditionalNumber createAdditionalNumberMscNumber(ISDNAddressString mSCNumber);
 
-    AdditionalNumberImpl createAdditionalNumberSgsnNumber(ISDNAddressStringImpl sGSNNumber);
+    AdditionalNumber createAdditionalNumberSgsnNumber(ISDNAddressString sGSNNumber);
 
-    AreaDefinitionImpl createAreaDefinition(List<AreaImpl> areaList);
+    AreaDefinition createAreaDefinition(List<Area> areaList);
 
-    AreaEventInfoImpl createAreaEventInfo(AreaDefinitionImpl areaDefinition, OccurrenceInfo occurrenceInfo, Integer intervalTime);
+    AreaEventInfo createAreaEventInfo(AreaDefinition areaDefinition, OccurrenceInfo occurrenceInfo, Integer intervalTime);
 
-    AreaIdentificationImpl createAreaIdentification(byte[] data);
+    AreaIdentification createAreaIdentification(byte[] data);
 
-    AreaIdentificationImpl createAreaIdentification(AreaType type, int mcc, int mnc, int lac, int Rac_CellId_UtranCellId)
+    AreaIdentification createAreaIdentification(AreaType type, int mcc, int mnc, int lac, int Rac_CellId_UtranCellId)
             throws MAPException;
 
-    AreaImpl createArea(AreaType areaType, AreaIdentificationImpl areaIdentification);
+    Area createArea(AreaType areaType, AreaIdentification areaIdentification);
 
-    DeferredLocationEventTypeImpl createDeferredLocationEventType(boolean msAvailable, boolean enteringIntoArea,
+    DeferredLocationEventType createDeferredLocationEventType(boolean msAvailable, boolean enteringIntoArea,
             boolean leavingFromArea, boolean beingInsideArea);
 
-    DeferredmtlrDataImpl createDeferredmtlrData(DeferredLocationEventTypeImpl deferredLocationEventType,
-            TerminationCause terminationCause, LCSLocationInfoImpl lcsLocationInfo);
+    DeferredmtlrData createDeferredmtlrData(DeferredLocationEventType deferredLocationEventType,
+            TerminationCause terminationCause, LCSLocationInfo lcsLocationInfo);
 
-    ExtGeographicalInformationImpl createExtGeographicalInformation(byte[] data);
+    ExtGeographicalInformation createExtGeographicalInformation(byte[] data);
 
-    ExtGeographicalInformationImpl createExtGeographicalInformation_EllipsoidPointWithUncertaintyCircle(double latitude,
+    ExtGeographicalInformation createExtGeographicalInformation_EllipsoidPointWithUncertaintyCircle(double latitude,
             double longitude, double uncertainty) throws MAPException;
 
-    ExtGeographicalInformationImpl createExtGeographicalInformation_EllipsoidPointWithUncertaintyEllipse(double latitude,
+    ExtGeographicalInformation createExtGeographicalInformation_EllipsoidPointWithUncertaintyEllipse(double latitude,
             double longitude, double uncertaintySemiMajorAxis, double uncertaintySemiMinorAxis, double angleOfMajorAxis,
             int confidence) throws MAPException;
 
-    ExtGeographicalInformationImpl createExtGeographicalInformation_EllipsoidPointWithAltitudeAndUncertaintyEllipsoid(
+    ExtGeographicalInformation createExtGeographicalInformation_EllipsoidPointWithAltitudeAndUncertaintyEllipsoid(
             double latitude, double longitude, double uncertaintySemiMajorAxis, double uncertaintySemiMinorAxis,
             double angleOfMajorAxis, int confidence, int altitude, double uncertaintyAltitude) throws MAPException;
 
-    ExtGeographicalInformationImpl createExtGeographicalInformation_EllipsoidArc(double latitude, double longitude,
+    ExtGeographicalInformation createExtGeographicalInformation_EllipsoidArc(double latitude, double longitude,
             int innerRadius, double uncertaintyRadius, double offsetAngle, double includedAngle, int confidence)
             throws MAPException;
 
-    ExtGeographicalInformationImpl createExtGeographicalInformation_EllipsoidPoint(double latitude, double longitude)
+    ExtGeographicalInformation createExtGeographicalInformation_EllipsoidPoint(double latitude, double longitude)
             throws MAPException;
 
-    GeranGANSSpositioningDataImpl createGeranGANSSpositioningData(byte[] data);
+    GeranGANSSpositioningData createGeranGANSSpositioningData(byte[] data);
 
-    LCSClientIDImpl createLCSClientID(LCSClientType lcsClientType, LCSClientExternalIDImpl lcsClientExternalID,
-            LCSClientInternalID lcsClientInternalID, LCSClientNameImpl lcsClientName, AddressStringImpl lcsClientDialedByMS,
-            APNImpl lcsAPN, LCSRequestorIDImpl lcsRequestorID);
+    LCSClientID createLCSClientID(LCSClientType lcsClientType, LCSClientExternalID lcsClientExternalID,
+            LCSClientInternalID lcsClientInternalID, LCSClientName lcsClientName, AddressString lcsClientDialedByMS,
+            APN lcsAPN, LCSRequestorID lcsRequestorID);
 
-    LCSClientExternalIDImpl createLCSClientExternalID(final ISDNAddressStringImpl externalAddress,
-            final MAPExtensionContainerImpl extensionContainer);
+    LCSClientExternalID createLCSClientExternalID(final ISDNAddressString externalAddress,
+            final MAPExtensionContainer extensionContainer);
 
-    LCSClientNameImpl createLCSClientName(CBSDataCodingScheme dataCodingScheme, USSDStringImpl nameString,
+    LCSClientName createLCSClientName(CBSDataCodingScheme dataCodingScheme, USSDString nameString,
             LCSFormatIndicator lcsFormatIndicator);
 
-    LCSCodewordImpl createLCSCodeword(CBSDataCodingScheme dataCodingScheme, USSDStringImpl lcsCodewordString);
+    LCSCodeword createLCSCodeword(CBSDataCodingScheme dataCodingScheme, USSDString lcsCodewordString);
 
-    LCSLocationInfoImpl createLCSLocationInfo(ISDNAddressStringImpl networkNodeNumber, LMSIImpl lmsi,
-    		MAPExtensionContainerImpl extensionContainer, boolean gprsNodeIndicator, AdditionalNumberImpl additionalNumber,
-            SupportedLCSCapabilitySetsImpl supportedLCSCapabilitySets, SupportedLCSCapabilitySetsImpl additionalLCSCapabilitySets,
-            DiameterIdentityImpl mmeName, DiameterIdentityImpl aaaServerName);
+    LCSLocationInfo createLCSLocationInfo(ISDNAddressString networkNodeNumber, LMSI lmsi,
+    		MAPExtensionContainer extensionContainer, boolean gprsNodeIndicator, AdditionalNumber additionalNumber,
+            SupportedLCSCapabilitySets supportedLCSCapabilitySets, SupportedLCSCapabilitySets additionalLCSCapabilitySets,
+            DiameterIdentity mmeName, DiameterIdentity aaaServerName);
 
-    LCSPrivacyCheckImpl createLCSPrivacyCheck(PrivacyCheckRelatedAction callSessionUnrelated,
+    LCSPrivacyCheck createLCSPrivacyCheck(PrivacyCheckRelatedAction callSessionUnrelated,
             PrivacyCheckRelatedAction callSessionRelated);
 
-    LCSQoSImpl createLCSQoS(Integer horizontalAccuracy, Integer verticalAccuracy, boolean verticalCoordinateRequest,
-            ResponseTimeImpl responseTime, MAPExtensionContainerImpl extensionContainer);
+    LCSQoS createLCSQoS(Integer horizontalAccuracy, Integer verticalAccuracy, boolean verticalCoordinateRequest,
+            ResponseTime responseTime, MAPExtensionContainer extensionContainer);
 
-    LCSRequestorIDImpl createLCSRequestorID(CBSDataCodingScheme dataCodingScheme, USSDStringImpl requestorIDString,
+    LCSRequestorID createLCSRequestorID(CBSDataCodingScheme dataCodingScheme, USSDString requestorIDString,
             LCSFormatIndicator lcsFormatIndicator);
 
-    LocationTypeImpl createLocationType(final LocationEstimateType locationEstimateType,
-            final DeferredLocationEventTypeImpl deferredLocationEventType);
+    LocationType createLocationType(final LocationEstimateType locationEstimateType,
+            final DeferredLocationEventType deferredLocationEventType);
 
-    PeriodicLDRInfoImpl createPeriodicLDRInfo(int reportingAmount, int reportingInterval);
+    PeriodicLDRInfo createPeriodicLDRInfo(int reportingAmount, int reportingInterval);
 
-    PositioningDataInformationImpl createPositioningDataInformation(byte[] data);
+    PositioningDataInformation createPositioningDataInformation(byte[] data);
 
-    ReportingPLMNImpl createReportingPLMN(PlmnIdImpl plmnId, RANTechnology ranTechnology, boolean ranPeriodicLocationSupport);
+    ReportingPLMN createReportingPLMN(PlmnId plmnId, RANTechnology ranTechnology, boolean ranPeriodicLocationSupport);
 
-    ReportingPLMNListImpl createReportingPLMNList(boolean plmnListPrioritized, List<ReportingPLMNImpl> plmnList);
+    ReportingPLMNList createReportingPLMNList(boolean plmnListPrioritized, List<ReportingPLMN> plmnList);
 
-    ResponseTimeImpl createResponseTime(ResponseTimeCategory responseTimeCategory);
+    ResponseTime createResponseTime(ResponseTimeCategory responseTimeCategory);
 
-    ServingNodeAddressImpl createServingNodeAddressMscNumber(ISDNAddressStringImpl mscNumber);
+    ServingNodeAddress createServingNodeAddressMscNumber(ISDNAddressString mscNumber);
 
-    ServingNodeAddressImpl createServingNodeAddressSgsnNumber(ISDNAddressStringImpl sgsnNumber);
+    ServingNodeAddress createServingNodeAddressSgsnNumber(ISDNAddressString sgsnNumber);
 
-    ServingNodeAddressImpl createServingNodeAddressMmeNumber(DiameterIdentityImpl mmeNumber);
+    ServingNodeAddress createServingNodeAddressMmeNumber(DiameterIdentity mmeNumber);
 
-    SLRArgExtensionContainerImpl createSLRArgExtensionContainer(List<MAPPrivateExtensionImpl> privateExtensionList,
-            SLRArgPCSExtensionsImpl slrArgPcsExtensions);
+    SLRArgExtensionContainer createSLRArgExtensionContainer(List<MAPPrivateExtension> privateExtensionList,
+    		SLRArgPCSExtensions slrArgPcsExtensions);
 
-    SLRArgPCSExtensionsImpl createSLRArgPCSExtensions(boolean naEsrkRequest);
+    SLRArgPCSExtensions createSLRArgPCSExtensions(boolean naEsrkRequest);
 
-    SupportedGADShapesImpl createSupportedGADShapes(boolean ellipsoidPoint, boolean ellipsoidPointWithUncertaintyCircle,
+    SupportedGADShapes createSupportedGADShapes(boolean ellipsoidPoint, boolean ellipsoidPointWithUncertaintyCircle,
             boolean ellipsoidPointWithUncertaintyEllipse, boolean polygon, boolean ellipsoidPointWithAltitude,
             boolean ellipsoidPointWithAltitudeAndUncertaintyElipsoid, boolean ellipsoidArc);
 
-    UtranGANSSpositioningDataImpl createUtranGANSSpositioningData(byte[] data);
+    UtranGANSSpositioningData createUtranGANSSpositioningData(byte[] data);
 
-    UtranPositioningDataInfoImpl createUtranPositioningDataInfo(byte[] data);
+    UtranPositioningDataInfo createUtranPositioningDataInfo(byte[] data);
 
-    VelocityEstimateImpl createVelocityEstimate(byte[] data);
+    VelocityEstimate createVelocityEstimate(byte[] data);
 
-    VelocityEstimateImpl createVelocityEstimate_HorizontalVelocity(int horizontalSpeed, int bearing) throws MAPException;
+    VelocityEstimate createVelocityEstimate_HorizontalVelocity(int horizontalSpeed, int bearing) throws MAPException;
 
-    VelocityEstimateImpl createVelocityEstimate_HorizontalWithVerticalVelocity(int horizontalSpeed, int bearing,
+    VelocityEstimate createVelocityEstimate_HorizontalWithVerticalVelocity(int horizontalSpeed, int bearing,
             int verticalSpeed) throws MAPException;
 
-    VelocityEstimateImpl createVelocityEstimate_HorizontalVelocityWithUncertainty(int horizontalSpeed, int bearing,
+    VelocityEstimate createVelocityEstimate_HorizontalVelocityWithUncertainty(int horizontalSpeed, int bearing,
             int uncertaintyHorizontalSpeed) throws MAPException;
 
-    VelocityEstimateImpl createVelocityEstimate_HorizontalWithVerticalVelocityAndUncertainty(int horizontalSpeed,
+    VelocityEstimate createVelocityEstimate_HorizontalWithVerticalVelocityAndUncertainty(int horizontalSpeed,
             int bearing, int verticalSpeed, int uncertaintyHorizontalSpeed, int uncertaintyVerticalSpeed) throws MAPException;
 
-    ExtBasicServiceCodeImpl createExtBasicServiceCode(ExtBearerServiceCodeImpl extBearerServiceCode);
+    ExtBasicServiceCode createExtBasicServiceCode(ExtBearerServiceCode extBearerServiceCode);
 
-    ExtBasicServiceCodeImpl createExtBasicServiceCode(ExtTeleserviceCodeImpl extTeleserviceCode);
+    ExtBasicServiceCode createExtBasicServiceCode(ExtTeleserviceCode extTeleserviceCode);
 
-    ExtBearerServiceCodeImpl createExtBearerServiceCode(byte[] data);
+    ExtBearerServiceCode createExtBearerServiceCode(byte[] data);
 
-    ExtBearerServiceCodeImpl createExtBearerServiceCode(BearerServiceCodeValue value);
+    ExtBearerServiceCode createExtBearerServiceCode(BearerServiceCodeValue value);
 
-    BearerServiceCodeImpl createBearerServiceCode(int data);
+    BearerServiceCode createBearerServiceCode(int data);
 
-    BearerServiceCodeImpl createBearerServiceCode(BearerServiceCodeValue value);
+    BearerServiceCode createBearerServiceCode(BearerServiceCodeValue value);
 
-    ExtTeleserviceCodeImpl createExtTeleserviceCode(byte[] data);
+    ExtTeleserviceCode createExtTeleserviceCode(byte[] data);
 
-    ExtTeleserviceCodeImpl createExtTeleserviceCode(TeleserviceCodeValue value);
+    ExtTeleserviceCode createExtTeleserviceCode(TeleserviceCodeValue value);
 
-    TeleserviceCodeImpl createTeleserviceCode(int data);
+    TeleserviceCode createTeleserviceCode(int data);
 
-    TeleserviceCodeImpl createTeleserviceCode(TeleserviceCodeValue value);
+    TeleserviceCode createTeleserviceCode(TeleserviceCodeValue value);
 
-    CamelRoutingInfoImpl createCamelRoutingInfo(ForwardingDataImpl forwardingData,
-            GmscCamelSubscriptionInfoImpl gmscCamelSubscriptionInfo, MAPExtensionContainerImpl extensionContainer);
+    CamelRoutingInfo createCamelRoutingInfo(ForwardingData forwardingData,
+            GmscCamelSubscriptionInfo gmscCamelSubscriptionInfo, MAPExtensionContainer extensionContainer);
 
-    GmscCamelSubscriptionInfoImpl createGmscCamelSubscriptionInfo(TCSIImpl tCsi, OCSIImpl oCsi,
-    		MAPExtensionContainerImpl extensionContainer, List<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList,
-            List<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList, DCSIImpl dCsi);
+    GmscCamelSubscriptionInfo createGmscCamelSubscriptionInfo(TCSI tCsi, OCSI oCsi,
+    		MAPExtensionContainer extensionContainer, List<OBcsmCamelTdpCriteria> oBcsmCamelTDPCriteriaList,
+            List<TBcsmCamelTdpCriteria> tBcsmCamelTdpCriteriaList, DCSI dCsi);
 
-    TCSIImpl createTCSI(List<TBcsmCamelTDPDataImpl> tBcsmCamelTDPDataList, MAPExtensionContainerImpl extensionContainer,
+    TCSI createTCSI(List<TBcsmCamelTDPData> tBcsmCamelTDPDataList, MAPExtensionContainer extensionContainer,
             Integer camelCapabilityHandling, boolean notificationToCSE, boolean csiActive);
 
-    OCSIImpl createOCSI(List<OBcsmCamelTDPDataImpl> oBcsmCamelTDPDataList, MAPExtensionContainerImpl extensionContainer,
+    OCSI createOCSI(List<OBcsmCamelTDPData> oBcsmCamelTDPDataList, MAPExtensionContainer extensionContainer,
             Integer camelCapabilityHandling, boolean notificationToCSE, boolean csiActive);
 
-    TBcsmCamelTDPDataImpl createTBcsmCamelTDPData(TBcsmTriggerDetectionPoint tBcsmTriggerDetectionPoint, long serviceKey,
-            ISDNAddressStringImpl gsmSCFAddress, DefaultCallHandling defaultCallHandling, MAPExtensionContainerImpl extensionContainer);
+    TBcsmCamelTDPData createTBcsmCamelTDPData(TBcsmTriggerDetectionPoint tBcsmTriggerDetectionPoint, long serviceKey,
+            ISDNAddressString gsmSCFAddress, DefaultCallHandling defaultCallHandling, MAPExtensionContainer extensionContainer);
 
-    OBcsmCamelTDPDataImpl createOBcsmCamelTDPData(OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint, long serviceKey,
-            ISDNAddressStringImpl gsmSCFAddress, DefaultCallHandling defaultCallHandling, MAPExtensionContainerImpl extensionContainer);
+    OBcsmCamelTDPData createOBcsmCamelTDPData(OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint, long serviceKey,
+            ISDNAddressString gsmSCFAddress, DefaultCallHandling defaultCallHandling, MAPExtensionContainer extensionContainer);
 
-    CamelInfoImpl createCamelInfo(SupportedCamelPhasesImpl supportedCamelPhases, boolean suppressTCSI,
-    		MAPExtensionContainerImpl extensionContainer, OfferedCamel4CSIsImpl offeredCamel4CSIs);
+    CamelInfo createCamelInfo(SupportedCamelPhases supportedCamelPhases, boolean suppressTCSI,
+    		MAPExtensionContainer extensionContainer, OfferedCamel4CSIs offeredCamel4CSIs);
 
-    CUGInterlockImpl createCUGInterlock(byte[] data);
+    CUGInterlock createCUGInterlock(byte[] data);
 
-    CUGCheckInfoImpl createCUGCheckInfo(CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess,
-    		MAPExtensionContainerImpl extensionContainer);
+    CUGCheckInfo createCUGCheckInfo(CUGInterlock cugInterlock, boolean cugOutgoingAccess,
+    		MAPExtensionContainer extensionContainer);
 
-    SSCodeImpl createSSCode(SupplementaryCodeValue value);
+    SSCode createSSCode(SupplementaryCodeValue value);
 
-    SSCodeImpl createSSCode(int data);
+    SSCode createSSCode(int data);
 
-    SSStatusImpl createSSStatus(boolean qBit, boolean pBit, boolean rBit, boolean aBit);
+    SSStatus createSSStatus(boolean qBit, boolean pBit, boolean rBit, boolean aBit);
 
-    BasicServiceCodeImpl createBasicServiceCode(TeleserviceCodeImpl teleservice);
+    BasicServiceCode createBasicServiceCode(TeleserviceCode teleservice);
 
-    BasicServiceCodeImpl createBasicServiceCode(BearerServiceCodeImpl bearerService);
+    BasicServiceCode createBasicServiceCode(BearerServiceCode bearerService);
 
     Problem createProblemGeneral(GeneralProblemType prob);
 
@@ -891,76 +893,76 @@ public interface MAPParameterFactory {
 
     Problem createProblemError(ReturnErrorProblemType prob);
 
-    RequestedEquipmentInfoImpl createRequestedEquipmentInfo(boolean equipmentStatus, boolean bmuef);
+    RequestedEquipmentInfo createRequestedEquipmentInfo(boolean equipmentStatus, boolean bmuef);
 
-    UESBIIuImpl createUESBIIu(UESBIIuAImpl uesbiIuA, UESBIIuBImpl uesbiIuB);
+    UESBIIu createUESBIIu(UESBIIuA uesbiIuA, UESBIIuB uesbiIuB);
 
-    CUGFeatureImpl createCUGFeature(ExtBasicServiceCodeImpl basicService, Integer preferentialCugIndicator,
-            InterCUGRestrictionsImpl interCugRestrictions, MAPExtensionContainerImpl extensionContainer);
+    CUGFeature createCUGFeature(ExtBasicServiceCode basicService, Integer preferentialCugIndicator,
+            InterCUGRestrictions interCugRestrictions, MAPExtensionContainer extensionContainer);
 
-    CUGInfoImpl createCUGInfo(List<CUGSubscriptionImpl> cugSubscriptionList, List<CUGFeatureImpl> cugFeatureList,
-    		MAPExtensionContainerImpl extensionContainer);
+    CUGInfo createCUGInfo(List<CUGSubscription> cugSubscriptionList, List<CUGFeature> cugFeatureList,
+    		MAPExtensionContainer extensionContainer);
 
-    CUGSubscriptionImpl createCUGSubscription(int cugIndex, CUGInterlockImpl cugInterlock, IntraCUGOptions intraCugOptions,
-            List<ExtBasicServiceCodeImpl> basicService, MAPExtensionContainerImpl extensionContainer);
+    CUGSubscription createCUGSubscription(int cugIndex, CUGInterlock cugInterlock, IntraCUGOptions intraCugOptions,
+            List<ExtBasicServiceCode> basicService, MAPExtensionContainer extensionContainer);
 
-    EMLPPInfoImpl createEMLPPInfo(int maximumentitledPriority, int defaultPriority, MAPExtensionContainerImpl extensionContainer);
+    EMLPPInfo createEMLPPInfo(int maximumentitledPriority, int defaultPriority, MAPExtensionContainer extensionContainer);
 
-    ExtCallBarInfoImpl createExtCallBarInfo(SSCodeImpl ssCode, List<ExtCallBarringFeatureImpl> callBarringFeatureList,
-    		MAPExtensionContainerImpl extensionContainer);
+    ExtCallBarInfo createExtCallBarInfo(SSCode ssCode, List<ExtCallBarringFeature> callBarringFeatureList,
+    		MAPExtensionContainer extensionContainer);
 
-    ExtCallBarringFeatureImpl createExtCallBarringFeature(ExtBasicServiceCodeImpl basicService, ExtSSStatusImpl ssStatus,
-    		MAPExtensionContainerImpl extensionContainer);
+    ExtCallBarringFeature createExtCallBarringFeature(ExtBasicServiceCode basicService, ExtSSStatus ssStatus,
+    		MAPExtensionContainer extensionContainer);
 
-    ExtForwFeatureImpl createExtForwFeature(ExtBasicServiceCodeImpl basicService, ExtSSStatusImpl ssStatus,
-            ISDNAddressStringImpl forwardedToNumber, ISDNSubaddressStringImpl forwardedToSubaddress, ExtForwOptionsImpl forwardingOptions,
-            Integer noReplyConditionTime, MAPExtensionContainerImpl extensionContainer, FTNAddressStringImpl longForwardedToNumber);
+    ExtForwFeature createExtForwFeature(ExtBasicServiceCode basicService, ExtSSStatus ssStatus,
+            ISDNAddressString forwardedToNumber, ISDNSubaddressString forwardedToSubaddress, ExtForwOptions forwardingOptions,
+            Integer noReplyConditionTime, MAPExtensionContainer extensionContainer, FTNAddressString longForwardedToNumber);
 
-    ExtForwInfoImpl createExtForwInfo(SSCodeImpl ssCode, List<ExtForwFeatureImpl> forwardingFeatureList,
-    		MAPExtensionContainerImpl extensionContainer);
+    ExtForwInfo createExtForwInfo(SSCode ssCode, List<ExtForwFeature> forwardingFeatureList,
+    		MAPExtensionContainer extensionContainer);
 
-    ExtForwOptionsImpl createExtForwOptions(boolean notificationToForwardingParty, boolean redirectingPresentation,
+    ExtForwOptions createExtForwOptions(boolean notificationToForwardingParty, boolean redirectingPresentation,
             boolean notificationToCallingParty, ExtForwOptionsForwardingReason extForwOptionsForwardingReason);
 
-    ExtForwOptionsImpl createExtForwOptions(byte[] data);
+    ExtForwOptions createExtForwOptions(byte[] data);
 
-    ExtSSDataImpl createExtSSData(SSCodeImpl ssCode, ExtSSStatusImpl ssStatus, SSSubscriptionOptionImpl ssSubscriptionOption,
-            List<ExtBasicServiceCodeImpl> basicServiceGroupList, MAPExtensionContainerImpl extensionContainer);
+    ExtSSData createExtSSData(SSCode ssCode, ExtSSStatus ssStatus, SSSubscriptionOption ssSubscriptionOption,
+            List<ExtBasicServiceCode> basicServiceGroupList, MAPExtensionContainer extensionContainer);
 
-    ExtSSInfoImpl createExtSSInfo(ExtForwInfoImpl forwardingInfo);
+    ExtSSInfo createExtSSInfo(ExtForwInfo forwardingInfo);
 
-    ExtSSInfoImpl createExtSSInfo(ExtCallBarInfoImpl callBarringInfo);
+    ExtSSInfo createExtSSInfo(ExtCallBarInfo callBarringInfo);
 
-    ExtSSInfoImpl createExtSSInfo(CUGInfoImpl cugInfo);
+    ExtSSInfo createExtSSInfo(CUGInfo cugInfo);
 
-    ExtSSInfoImpl createExtSSInfo(ExtSSDataImpl ssData);
+    ExtSSInfo createExtSSInfo(ExtSSData ssData);
 
-    ExtSSInfoImpl createExtSSInfo(EMLPPInfoImpl emlppInfo);
+    ExtSSInfo createExtSSInfo(EMLPPInfo emlppInfo);
 
-    ExtSSStatusImpl createExtSSStatus(boolean bitQ, boolean bitP, boolean bitR, boolean bitA);
+    ExtSSStatus createExtSSStatus(boolean bitQ, boolean bitP, boolean bitR, boolean bitA);
 
-    ExtSSStatusImpl createExtSSStatus(byte data);
+    ExtSSStatus createExtSSStatus(byte data);
 
-    GPRSSubscriptionDataImpl createGPRSSubscriptionData(boolean completeDataListIncluded,
-            List<PDPContextImpl> gprsDataList, MAPExtensionContainerImpl extensionContainer, APNOIReplacementImpl apnOiReplacement);
+    GPRSSubscriptionData createGPRSSubscriptionData(boolean completeDataListIncluded,
+            List<PDPContext> gprsDataList, MAPExtensionContainer extensionContainer, APNOIReplacement apnOiReplacement);
 
-    SSSubscriptionOptionImpl createSSSubscriptionOption(CliRestrictionOption cliRestrictionOption);
+    SSSubscriptionOption createSSSubscriptionOption(CliRestrictionOption cliRestrictionOption);
 
-    SSSubscriptionOptionImpl createSSSubscriptionOption(OverrideCategory overrideCategory);
+    SSSubscriptionOption createSSSubscriptionOption(OverrideCategory overrideCategory);
 
-    InterCUGRestrictionsImpl createInterCUGRestrictions(InterCUGRestrictionsValue val);
+    InterCUGRestrictions createInterCUGRestrictions(InterCUGRestrictionsValue val);
 
-    InterCUGRestrictionsImpl createInterCUGRestrictions(int data);
+    InterCUGRestrictions createInterCUGRestrictions(int data);
 
-    ZoneCodeImpl createZoneCode(int value);
+    ZoneCode createZoneCode(int value);
 
-    ZoneCodeImpl createZoneCode(byte[] data);
+    ZoneCode createZoneCode(byte[] data);
 
-    AgeIndicatorImpl createAgeIndicator(byte[] data);
+    AgeIndicator createAgeIndicator(byte[] data);
 
-    CSAllocationRetentionPriorityImpl createCSAllocationRetentionPriority(int data);
+    CSAllocationRetentionPriority createCSAllocationRetentionPriority(int data);
 
-    SupportedFeaturesImpl createSupportedFeatures(boolean odbAllApn, boolean odbHPLMNApn, boolean odbVPLMNApn,
+    SupportedFeatures createSupportedFeatures(boolean odbAllApn, boolean odbHPLMNApn, boolean odbVPLMNApn,
             boolean odbAllOg, boolean odbAllInternationalOg, boolean odbAllIntOgNotToHPLMNCountry, boolean odbAllInterzonalOg,
             boolean odbAllInterzonalOgNotToHPLMNCountry, boolean odbAllInterzonalOgandInternatOgNotToHPLMNCountry,
             boolean regSub, boolean trace, boolean lcsAllPrivExcep, boolean lcsUniversal, boolean lcsCallSessionRelated,
@@ -968,96 +970,96 @@ public interface MAPParameterFactory {
             boolean lcsBasicSelfLocation, boolean lcsAutonomousSelfLocation, boolean lcsTransferToThirdParty, boolean smMoPp,
             boolean barringOutgoingCalls, boolean baoc, boolean boic, boolean boicExHC);
 
-    AccessRestrictionDataImpl createAccessRestrictionData(boolean utranNotAllowed, boolean geranNotAllowed,
+    AccessRestrictionData createAccessRestrictionData(boolean utranNotAllowed, boolean geranNotAllowed,
             boolean ganNotAllowed, boolean iHspaEvolutionNotAllowed, boolean eUtranNotAllowed,
             boolean hoToNon3GPPAccessNotAllowed);
 
-    AdditionalSubscriptionsImpl createAdditionalSubscriptions(boolean privilegedUplinkRequest,
+    AdditionalSubscriptions createAdditionalSubscriptions(boolean privilegedUplinkRequest,
             boolean emergencyUplinkRequest, boolean emergencyReset);
 
-    AMBRImpl createAMBR(int maxRequestedBandwidthUL, int maxRequestedBandwidthDL, MAPExtensionContainerImpl extensionContainer);
+    AMBR createAMBR(int maxRequestedBandwidthUL, int maxRequestedBandwidthDL, MAPExtensionContainer extensionContainer);
 
-    APNConfigurationImpl createAPNConfiguration(int contextId, PDNTypeImpl pDNType, PDPAddressImpl servedPartyIPIPv4Address,
-            APNImpl apn, EPSQoSSubscribedImpl ePSQoSSubscribed, PDNGWIdentityImpl pdnGwIdentity, PDNGWAllocationType pdnGwAllocationType,
-            boolean vplmnAddressAllowed, ChargingCharacteristicsImpl chargingCharacteristics, AMBRImpl ambr,
-            List<SpecificAPNInfoImpl> specificAPNInfoList, MAPExtensionContainerImpl extensionContainer,
-            PDPAddressImpl servedPartyIPIPv6Address, APNOIReplacementImpl apnOiReplacement, SIPTOPermission siptoPermission,
+    APNConfiguration createAPNConfiguration(int contextId, PDNType pDNType, PDPAddress servedPartyIPIPv4Address,
+            APN apn, EPSQoSSubscribed ePSQoSSubscribed, PDNGWIdentity pdnGwIdentity, PDNGWAllocationType pdnGwAllocationType,
+            boolean vplmnAddressAllowed, ChargingCharacteristics chargingCharacteristics, AMBR ambr,
+            List<SpecificAPNInfo> specificAPNInfoList, MAPExtensionContainer extensionContainer,
+            PDPAddress servedPartyIPIPv6Address, APNOIReplacement apnOiReplacement, SIPTOPermission siptoPermission,
             LIPAPermission lipaPermission);
 
-    APNConfigurationProfileImpl createAPNConfigurationProfile(int defaultContext, boolean completeDataListIncluded,
-            List<APNConfigurationImpl> ePSDataList, MAPExtensionContainerImpl extensionContainer);
+    APNConfigurationProfile createAPNConfigurationProfile(int defaultContext, boolean completeDataListIncluded,
+            List<APNConfiguration> ePSDataList, MAPExtensionContainer extensionContainer);
 
-    CSGSubscriptionDataImpl createCSGSubscriptionData(CSGIdImpl csgId, TimeImpl expirationDate,
-    		MAPExtensionContainerImpl extensionContainer, List<APNImpl> lipaAllowedAPNList);
+    CSGSubscriptionData createCSGSubscriptionData(CSGId csgId, Time expirationDate,
+    		MAPExtensionContainer extensionContainer, List<APN> lipaAllowedAPNList);
 
-    DCSIImpl createDCSI(List<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriaList, Integer camelCapabilityHandling,
-    		MAPExtensionContainerImpl extensionContainer, boolean notificationToCSE, boolean csiActive);
+    DCSI createDCSI(List<DPAnalysedInfoCriterium> dpAnalysedInfoCriteriaList, Integer camelCapabilityHandling,
+    		MAPExtensionContainer extensionContainer, boolean notificationToCSE, boolean csiActive);
 
-    DestinationNumberCriteriaImpl createDestinationNumberCriteria(MatchType matchType,
-            List<ISDNAddressStringImpl> destinationNumberList, List<Integer> destinationNumberLengthList);
+    DestinationNumberCriteria createDestinationNumberCriteria(MatchType matchType,
+            List<ISDNAddressString> destinationNumberList, List<Integer> destinationNumberLengthList);
 
-    DPAnalysedInfoCriteriumImpl createDPAnalysedInfoCriterium(ISDNAddressStringImpl dialledNumber, long serviceKey,
-            ISDNAddressStringImpl gsmSCFAddress, DefaultCallHandling defaultCallHandling, MAPExtensionContainerImpl extensionContainer);
+    DPAnalysedInfoCriterium createDPAnalysedInfoCriterium(ISDNAddressString dialledNumber, long serviceKey,
+            ISDNAddressString gsmSCFAddress, DefaultCallHandling defaultCallHandling, MAPExtensionContainer extensionContainer);
 
-    EPSQoSSubscribedImpl createEPSQoSSubscribed(QoSClassIdentifier qoSClassIdentifier,
-            AllocationRetentionPriorityImpl allocationRetentionPriority, MAPExtensionContainerImpl extensionContainer);
+    EPSQoSSubscribed createEPSQoSSubscribed(QoSClassIdentifier qoSClassIdentifier,
+            AllocationRetentionPriority allocationRetentionPriority, MAPExtensionContainer extensionContainer);
 
-    EPSSubscriptionDataImpl createEPSSubscriptionData(APNOIReplacementImpl apnOiReplacement, Integer rfspId, AMBRImpl ambr,
-            APNConfigurationProfileImpl apnConfigurationProfile, ISDNAddressStringImpl stnSr, MAPExtensionContainerImpl extensionContainer,
+    EPSSubscriptionData createEPSSubscriptionData(APNOIReplacement apnOiReplacement, Integer rfspId, AMBR ambr,
+            APNConfigurationProfile apnConfigurationProfile, ISDNAddressString stnSr, MAPExtensionContainer extensionContainer,
             boolean mpsCSPriority, boolean mpsEPSPriority);
 
-    ExternalClientImpl createExternalClient(LCSClientExternalIDImpl clientIdentity, GMLCRestriction gmlcRestriction,
-            NotificationToMSUser notificationToMSUser, MAPExtensionContainerImpl extensionContainer);
+    ExternalClient createExternalClient(LCSClientExternalID clientIdentity, GMLCRestriction gmlcRestriction,
+            NotificationToMSUser notificationToMSUser, MAPExtensionContainer extensionContainer);
 
-    FQDNImpl createFQDN(byte[] data);
+    FQDN createFQDN(byte[] data);
 
-    GPRSCamelTDPDataImpl createGPRSCamelTDPData(GPRSTriggerDetectionPoint gprsTriggerDetectionPoint, long serviceKey,
-            ISDNAddressStringImpl gsmSCFAddress, DefaultGPRSHandling defaultSessionHandling,
-            MAPExtensionContainerImpl extensionContainer);
+    GPRSCamelTDPData createGPRSCamelTDPData(GPRSTriggerDetectionPoint gprsTriggerDetectionPoint, long serviceKey,
+            ISDNAddressString gsmSCFAddress, DefaultGPRSHandling defaultSessionHandling,
+            MAPExtensionContainer extensionContainer);
 
-    GPRSCSIImpl createGPRSCSI(List<GPRSCamelTDPDataImpl> gprsCamelTDPDataList, Integer camelCapabilityHandling,
-    		MAPExtensionContainerImpl extensionContainer, boolean notificationToCSE, boolean csiActive);
+    GPRSCSI createGPRSCSI(List<GPRSCamelTDPData> gprsCamelTDPDataList, Integer camelCapabilityHandling,
+    		MAPExtensionContainer extensionContainer, boolean notificationToCSE, boolean csiActive);
 
-    LCSInformationImpl createLCSInformation(List<ISDNAddressStringImpl> gmlcList,
-            List<LCSPrivacyClassImpl> lcsPrivacyExceptionList, List<MOLRClassImpl> molrList,
-            List<LCSPrivacyClassImpl> addLcsPrivacyExceptionList);
+    LCSInformation createLCSInformation(List<ISDNAddressString> gmlcList,
+            List<LCSPrivacyClass> lcsPrivacyExceptionList, List<MOLRClass> molrList,
+            List<LCSPrivacyClass> addLcsPrivacyExceptionList);
 
-    LCSPrivacyClassImpl createLCSPrivacyClass(SSCodeImpl ssCode, ExtSSStatusImpl ssStatus,
-            NotificationToMSUser notificationToMSUser, List<ExternalClientImpl> externalClientList,
-            List<LCSClientInternalID> plmnClientList, MAPExtensionContainerImpl extensionContainer,
-            List<ExternalClientImpl> extExternalClientList, List<ServiceTypeImpl> serviceTypeList);
+    LCSPrivacyClass createLCSPrivacyClass(SSCode ssCode, ExtSSStatus ssStatus,
+            NotificationToMSUser notificationToMSUser, List<ExternalClient> externalClientList,
+            List<LCSClientInternalID> plmnClientList, MAPExtensionContainer extensionContainer,
+            List<ExternalClient> extExternalClientList, List<ServiceType> serviceTypeList);
 
-    LSADataImpl createLSAData(LSAIdentityImpl lsaIdentity, LSAAttributesImpl lsaAttributes, boolean lsaActiveModeIndicator,
-    		MAPExtensionContainerImpl extensionContainer);
+    LSAData createLSAData(LSAIdentity lsaIdentity, LSAAttributes lsaAttributes, boolean lsaActiveModeIndicator,
+    		MAPExtensionContainer extensionContainer);
 
-    LSAInformationImpl createLSAInformation(boolean completeDataListIncluded, LSAOnlyAccessIndicator lsaOnlyAccessIndicator,
-            List<LSADataImpl> lsaDataList, MAPExtensionContainerImpl extensionContainer);
+    LSAInformation createLSAInformation(boolean completeDataListIncluded, LSAOnlyAccessIndicator lsaOnlyAccessIndicator,
+            List<LSAData> lsaDataList, MAPExtensionContainer extensionContainer);
 
-    MCSIImpl createMCSI(List<MMCodeImpl> mobilityTriggers, long serviceKey, ISDNAddressStringImpl gsmSCFAddress,
-    		MAPExtensionContainerImpl extensionContainer, boolean notificationToCSE, boolean csiActive);
+    MCSI createMCSI(List<MMCode> mobilityTriggers, long serviceKey, ISDNAddressString gsmSCFAddress,
+    		MAPExtensionContainer extensionContainer, boolean notificationToCSE, boolean csiActive);
 
-    MCSSInfoImpl createMCSSInfo(SSCodeImpl ssCode, ExtSSStatusImpl ssStatus, int nbrSB, int nbrUser,
-    		MAPExtensionContainerImpl extensionContainer);
+    MCSSInfo createMCSSInfo(SSCode ssCode, ExtSSStatus ssStatus, int nbrSB, int nbrUser,
+    		MAPExtensionContainer extensionContainer);
 
-    MGCSIImpl createMGCSI(List<MMCodeImpl> mobilityTriggers, long serviceKey, ISDNAddressStringImpl gsmSCFAddress,
-    		MAPExtensionContainerImpl extensionContainer, boolean notificationToCSE, boolean csiActive);
+    MGCSI createMGCSI(List<MMCode> mobilityTriggers, long serviceKey, ISDNAddressString gsmSCFAddress,
+    		MAPExtensionContainer extensionContainer, boolean notificationToCSE, boolean csiActive);
 
-    MMCodeImpl createMMCode(MMCodeValue value);
+    MMCode createMMCode(MMCodeValue value);
 
-    MOLRClassImpl createMOLRClass(SSCodeImpl ssCode, ExtSSStatusImpl ssStatus, MAPExtensionContainerImpl extensionContainer);
+    MOLRClass createMOLRClass(SSCode ssCode, ExtSSStatus ssStatus, MAPExtensionContainer extensionContainer);
 
-    MTsmsCAMELTDPCriteriaImpl createMTsmsCAMELTDPCriteria(SMSTriggerDetectionPoint smsTriggerDetectionPoint,
+    MTsmsCAMELTDPCriteria createMTsmsCAMELTDPCriteria(SMSTriggerDetectionPoint smsTriggerDetectionPoint,
             List<MTSMSTPDUType> tPDUTypeCriterion);
 
-    OBcsmCamelTdpCriteriaImpl createOBcsmCamelTdpCriteria(OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint,
-            DestinationNumberCriteriaImpl destinationNumberCriteria, List<ExtBasicServiceCodeImpl> basicServiceCriteria,
-            CallTypeCriteria callTypeCriteria, List<CauseValueImpl> oCauseValueCriteria,
-            MAPExtensionContainerImpl extensionContainer);
+    OBcsmCamelTdpCriteria createOBcsmCamelTdpCriteria(OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint,
+            DestinationNumberCriteria destinationNumberCriteria, List<ExtBasicServiceCode> basicServiceCriteria,
+            CallTypeCriteria callTypeCriteria, List<CauseValue> oCauseValueCriteria,
+            MAPExtensionContainer extensionContainer);
 
-    ODBDataImpl createODBData(ODBGeneralDataImpl oDBGeneralData, ODBHPLMNDataImpl odbHplmnData,
-    		MAPExtensionContainerImpl extensionContainer);
+    ODBData createODBData(ODBGeneralData oDBGeneralData, ODBHPLMNData odbHplmnData,
+    		MAPExtensionContainer extensionContainer);
 
-    ODBGeneralDataImpl createODBGeneralData(boolean allOGCallsBarred, boolean internationalOGCallsBarred,
+    ODBGeneralData createODBGeneralData(boolean allOGCallsBarred, boolean internationalOGCallsBarred,
             boolean internationalOGCallsNotToHPLMNCountryBarred, boolean interzonalOGCallsBarred,
             boolean interzonalOGCallsNotToHPLMNCountryBarred,
             boolean interzonalOGCallsAndInternationalOGCallsNotToHPLMNCountryBarred,
@@ -1071,316 +1073,316 @@ public interface MAPParameterFactory {
             boolean registrationInterzonalCFBarred, boolean registrationInterzonalCFNotToHPLMNBarred,
             boolean registrationInternationalCFBarred);
 
-    ODBHPLMNDataImpl createODBHPLMNData(boolean plmnSpecificBarringType1, boolean plmnSpecificBarringType2,
+    ODBHPLMNData createODBHPLMNData(boolean plmnSpecificBarringType1, boolean plmnSpecificBarringType2,
             boolean plmnSpecificBarringType3, boolean plmnSpecificBarringType4);
 
-    PDNGWIdentityImpl createPDNGWIdentity(PDPAddressImpl pdnGwIpv4Address, PDPAddressImpl pdnGwIpv6Address, FQDNImpl pdnGwName,
-    		MAPExtensionContainerImpl extensionContainer);
+    PDNGWIdentity createPDNGWIdentity(PDPAddress pdnGwIpv4Address, PDPAddress pdnGwIpv6Address, FQDN pdnGwName,
+    		MAPExtensionContainer extensionContainer);
 
-    PDNTypeImpl createPDNType(PDNTypeValue value);
+    PDNType createPDNType(PDNTypeValue value);
 
-    PDNTypeImpl createPDNType(int data);
+    PDNType createPDNType(int data);
 
-    ServiceTypeImpl createServiceType(int serviceTypeIdentity, GMLCRestriction gmlcRestriction,
-            NotificationToMSUser notificationToMSUser, MAPExtensionContainerImpl extensionContainer);
+    ServiceType createServiceType(int serviceTypeIdentity, GMLCRestriction gmlcRestriction,
+            NotificationToMSUser notificationToMSUser, MAPExtensionContainer extensionContainer);
 
-    SGSNCAMELSubscriptionInfoImpl createSGSNCAMELSubscriptionInfo(GPRSCSIImpl gprsCsi, SMSCSIImpl moSmsCsi,
-    		MAPExtensionContainerImpl extensionContainer, SMSCSIImpl mtSmsCsi,
-            List<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList, MGCSIImpl mgCsi);
+    SGSNCAMELSubscriptionInfo createSGSNCAMELSubscriptionInfo(GPRSCSI gprsCsi, SMSCSI moSmsCsi,
+    		MAPExtensionContainer extensionContainer, SMSCSI mtSmsCsi,
+            List<MTsmsCAMELTDPCriteria> mtSmsCamelTdpCriteriaList, MGCSI mgCsi);
 
-    SMSCAMELTDPDataImpl createSMSCAMELTDPData(SMSTriggerDetectionPoint smsTriggerDetectionPoint, long serviceKey,
-            ISDNAddressStringImpl gsmSCFAddress, DefaultSMSHandling defaultSMSHandling, MAPExtensionContainerImpl extensionContainer);
+    SMSCAMELTDPData createSMSCAMELTDPData(SMSTriggerDetectionPoint smsTriggerDetectionPoint, long serviceKey,
+            ISDNAddressString gsmSCFAddress, DefaultSMSHandling defaultSMSHandling, MAPExtensionContainer extensionContainer);
 
-    SMSCSIImpl createSMSCSI(List<SMSCAMELTDPDataImpl> smsCamelTdpDataList, Integer camelCapabilityHandling,
-    		MAPExtensionContainerImpl extensionContainer, boolean notificationToCSE, boolean csiActive);
+    SMSCSI createSMSCSI(List<SMSCAMELTDPData> smsCamelTdpDataList, Integer camelCapabilityHandling,
+    		MAPExtensionContainer extensionContainer, boolean notificationToCSE, boolean csiActive);
 
-    SpecificAPNInfoImpl createSpecificAPNInfo(APNImpl apn, PDNGWIdentityImpl pdnGwIdentity, MAPExtensionContainerImpl extensionContainer);
+    SpecificAPNInfo createSpecificAPNInfo(APN apn, PDNGWIdentity pdnGwIdentity, MAPExtensionContainer extensionContainer);
 
-    SSCamelDataImpl createSSCamelData(List<SSCodeImpl> ssEventList, ISDNAddressStringImpl gsmSCFAddress,
-    		MAPExtensionContainerImpl extensionContainer);
+    SSCamelData createSSCamelData(List<SSCode> ssEventList, ISDNAddressString gsmSCFAddress,
+    		MAPExtensionContainer extensionContainer);
 
-    SSCSIImpl createSSCSI(SSCamelDataImpl ssCamelData, MAPExtensionContainerImpl extensionContainer, boolean notificationToCSE,
+    SSCSI createSSCSI(SSCamelData ssCamelData, MAPExtensionContainer extensionContainer, boolean notificationToCSE,
             boolean csiActive);
 
-    TBcsmCamelTdpCriteriaImpl createTBcsmCamelTdpCriteria(TBcsmTriggerDetectionPoint tBcsmTriggerDetectionPoint,
-            List<ExtBasicServiceCodeImpl> basicServiceCriteria, List<CauseValueImpl> tCauseValueCriteria); // /
+    TBcsmCamelTdpCriteria createTBcsmCamelTdpCriteria(TBcsmTriggerDetectionPoint tBcsmTriggerDetectionPoint,
+            List<ExtBasicServiceCode> basicServiceCriteria, List<CauseValue> tCauseValueCriteria); // /
 
-    VlrCamelSubscriptionInfoImpl createVlrCamelSubscriptionInfo(OCSIImpl oCsi, MAPExtensionContainerImpl extensionContainer,
-            SSCSIImpl ssCsi, List<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList, boolean tifCsi, MCSIImpl mCsi, SMSCSIImpl smsCsi,
-            TCSIImpl vtCsi, List<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList, DCSIImpl dCsi, SMSCSIImpl mtSmsCSI,
-            List<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList);
+    VlrCamelSubscriptionInfo createVlrCamelSubscriptionInfo(OCSI oCsi, MAPExtensionContainer extensionContainer,
+            SSCSI ssCsi, List<OBcsmCamelTdpCriteria> oBcsmCamelTDPCriteriaList, boolean tifCsi, MCSI mCsi, SMSCSI smsCsi,
+            TCSI vtCsi, List<TBcsmCamelTdpCriteria> tBcsmCamelTdpCriteriaList, DCSI dCsi, SMSCSI mtSmsCSI,
+            List<MTsmsCAMELTDPCriteria> mtSmsCamelTdpCriteriaList);
 
-    VoiceBroadcastDataImpl createVoiceBroadcastData(GroupIdImpl groupId, boolean broadcastInitEntitlement,
-    		MAPExtensionContainerImpl extensionContainer, LongGroupIdImpl longGroupId);
+    VoiceBroadcastData createVoiceBroadcastData(GroupId groupId, boolean broadcastInitEntitlement,
+    		MAPExtensionContainer extensionContainer, LongGroupId longGroupId);
 
-    VoiceGroupCallDataImpl createVoiceGroupCallData(GroupIdImpl groupId, MAPExtensionContainerImpl extensionContainer,
-            AdditionalSubscriptionsImpl additionalSubscriptions, AdditionalInfoImpl additionalInfo, LongGroupIdImpl longGroupId);
+    VoiceGroupCallData createVoiceGroupCallData(GroupId groupId, MAPExtensionContainer extensionContainer,
+            AdditionalSubscriptions additionalSubscriptions, AdditionalInfo additionalInfo, LongGroupId longGroupId);
 
-    ISDNSubaddressStringImpl createISDNSubaddressString(byte[] data);
+    ISDNSubaddressString createISDNSubaddressString(byte[] data);
 
-    CauseValueImpl createCauseValue(CauseValueCodeValue value);
+    CauseValue createCauseValue(CauseValueCodeValue value);
 
-    CauseValueImpl createCauseValue(int data);
+    CauseValue createCauseValue(int data);
 
-    GroupIdImpl createGroupId(String data);
+    GroupId createGroupId(String data);
 
-    LongGroupIdImpl createLongGroupId(String data);
+    LongGroupId createLongGroupId(String data);
 
-    LSAAttributesImpl createLSAAttributes(LSAIdentificationPriorityValue value, boolean preferentialAccessAvailable,
+    LSAAttributes createLSAAttributes(LSAIdentificationPriorityValue value, boolean preferentialAccessAvailable,
             boolean activeModeSupportAvailable);
 
-    LSAAttributesImpl createLSAAttributes(int data);
+    LSAAttributes createLSAAttributes(int data);
 
-    TimeImpl createTime(int year, int month, int day, int hour, int minute, int second);
+    Time createTime(int year, int month, int day, int hour, int minute, int second);
 
-    TimeImpl createTime(byte[] data);
+    Time createTime(byte[] data);
 
-    NAEACICImpl createNAEACIC(String carrierCode, NetworkIdentificationPlanValue networkIdentificationPlanValue,
+    NAEACIC createNAEACIC(String carrierCode, NetworkIdentificationPlanValue networkIdentificationPlanValue,
             NetworkIdentificationTypeValue networkIdentificationTypeValue) throws MAPException;
 
-    NAEACICImpl createNAEACIC(byte[] data);
+    NAEACIC createNAEACIC(byte[] data);
 
-    NAEAPreferredCIImpl createNAEAPreferredCI(NAEACICImpl naeaPreferredCIC, MAPExtensionContainerImpl extensionContainer);
+    NAEAPreferredCI createNAEAPreferredCI(NAEACIC naeaPreferredCIC, MAPExtensionContainer extensionContainer);
 
-    CategoryImpl createCategory(int data);
+    Category createCategory(int data);
 
-    CategoryImpl createCategory(CategoryValue data);
+    Category createCategory(CategoryValue data);
 
-    RoutingInfoImpl createRoutingInfo(ISDNAddressStringImpl roamingNumber);
+    RoutingInfo createRoutingInfo(ISDNAddressString roamingNumber);
 
-    RoutingInfoImpl createRoutingInfo(ForwardingDataImpl forwardingData);
+    RoutingInfo createRoutingInfo(ForwardingData forwardingData);
 
-    ExtendedRoutingInfoImpl createExtendedRoutingInfo(RoutingInfoImpl routingInfo);
+    ExtendedRoutingInfo createExtendedRoutingInfo(RoutingInfo routingInfo);
 
-    ExtendedRoutingInfoImpl createExtendedRoutingInfo(CamelRoutingInfoImpl camelRoutingInfo);
+    ExtendedRoutingInfo createExtendedRoutingInfo(CamelRoutingInfo camelRoutingInfo);
 
-    TMSIImpl createTMSI(byte[] data);
+    TMSI createTMSI(byte[] data);
 
-    CKImpl createCK(byte[] data);
+    CK createCK(byte[] data);
 
-    CksnImpl createCksn(int data);
+    Cksn createCksn(int data);
 
-    CurrentSecurityContextImpl createCurrentSecurityContext(GSMSecurityContextDataImpl gsmSecurityContextData);
+    CurrentSecurityContext createCurrentSecurityContext(GSMSecurityContextData gsmSecurityContextData);
 
-    CurrentSecurityContextImpl createCurrentSecurityContext(UMTSSecurityContextDataImpl umtsSecurityContextData);
+    CurrentSecurityContext createCurrentSecurityContext(UMTSSecurityContextData umtsSecurityContextData);
 
-    GSMSecurityContextDataImpl createGSMSecurityContextData(KcImpl kc, CksnImpl cksn);
+    GSMSecurityContextData createGSMSecurityContextData(Kc kc, Cksn cksn);
 
-    IKImpl createIK(byte[] data);
+    IK createIK(byte[] data);
 
-    KcImpl createKc(byte[] data);
+    Kc createKc(byte[] data);
 
-    KSIImpl createKSI(int data);
+    KSI createKSI(int data);
 
-    UMTSSecurityContextDataImpl createUMTSSecurityContextData(CKImpl ck, IKImpl ik, KSIImpl ksi);
+    UMTSSecurityContextData createUMTSSecurityContextData(CK ck, IK ik, KSI ksi);
 
-    EPSInfoImpl createEPSInfo(PDNGWUpdateImpl pndGwUpdate);
+    EPSInfo createEPSInfo(PDNGWUpdate pndGwUpdate);
 
-    EPSInfoImpl createEPSInfo(ISRInformationImpl isrInformation);
+    EPSInfo createEPSInfo(ISRInformation isrInformation);
 
-    ISRInformationImpl createISRInformation(boolean updateMME, boolean cancelSGSN, boolean initialAttachIndicator);
+    ISRInformation createISRInformation(boolean updateMME, boolean cancelSGSN, boolean initialAttachIndicator);
 
-    PDNGWUpdateImpl createPDNGWUpdate(APNImpl apn, PDNGWIdentityImpl pdnGwIdentity, Integer contextId,
-    		MAPExtensionContainerImpl extensionContainer);
+    PDNGWUpdate createPDNGWUpdate(APN apn, PDNGWIdentity pdnGwIdentity, Integer contextId,
+    		MAPExtensionContainer extensionContainer);
 
-    SGSNCapabilityImpl createSGSNCapability(boolean solsaSupportIndicator, MAPExtensionContainerImpl extensionContainer,
-            SuperChargerInfoImpl superChargerSupportedInServingNetworkEntity, boolean gprsEnhancementsSupportIndicator,
-            SupportedCamelPhasesImpl supportedCamelPhases, SupportedLCSCapabilitySetsImpl supportedLCSCapabilitySets,
-            OfferedCamel4CSIsImpl offeredCamel4CSIs, boolean smsCallBarringSupportIndicator,
-            SupportedRATTypesImpl supportedRATTypesIndicator, SupportedFeaturesImpl supportedFeatures, boolean tAdsDataRetrieval,
+    SGSNCapability createSGSNCapability(boolean solsaSupportIndicator, MAPExtensionContainer extensionContainer,
+            SuperChargerInfo superChargerSupportedInServingNetworkEntity, boolean gprsEnhancementsSupportIndicator,
+            SupportedCamelPhases supportedCamelPhases, SupportedLCSCapabilitySets supportedLCSCapabilitySets,
+            OfferedCamel4CSIs offeredCamel4CSIs, boolean smsCallBarringSupportIndicator,
+            SupportedRATTypes supportedRATTypesIndicator, SupportedFeatures supportedFeatures, boolean tAdsDataRetrieval,
             Boolean homogeneousSupportOfIMSVoiceOverPSSessions);
 
-    OfferedCamel4FunctionalitiesImpl createOfferedCamel4Functionalities(boolean initiateCallAttempt, boolean splitLeg, boolean moveLeg, boolean disconnectLeg,
+    OfferedCamel4Functionalities createOfferedCamel4Functionalities(boolean initiateCallAttempt, boolean splitLeg, boolean moveLeg, boolean disconnectLeg,
             boolean entityReleased, boolean dfcWithArgument, boolean playTone, boolean dtmfMidCall, boolean chargingIndicator, boolean alertingDP,
             boolean locationAtAlerting, boolean changeOfPositionDP, boolean orInteractions, boolean warningToneEnhancements, boolean cfEnhancements,
             boolean subscribedEnhancedDialledServices, boolean servingNetworkEnhancedDialledServices, boolean criteriaForChangeOfPositionDP,
             boolean serviceChangeDP, boolean collectInformation);
 
-    GPRSSubscriptionDataWithdrawImpl createGPRSSubscriptionDataWithdraw(boolean allGPRSData);
+    GPRSSubscriptionDataWithdraw createGPRSSubscriptionDataWithdraw(boolean allGPRSData);
 
-    GPRSSubscriptionDataWithdrawImpl createGPRSSubscriptionDataWithdraw(List<Integer> contextIdList);
+    GPRSSubscriptionDataWithdraw createGPRSSubscriptionDataWithdraw(List<Integer> contextIdList);
 
-    LSAInformationWithdrawImpl createLSAInformationWithdraw(boolean allLSAData);
+    LSAInformationWithdraw createLSAInformationWithdraw(boolean allLSAData);
 
-    LSAInformationWithdrawImpl createLSAInformationWithdraw(List<LSAIdentityImpl> lsaIdentityList);
+    LSAInformationWithdraw createLSAInformationWithdraw(List<LSAIdentity> lsaIdentityList);
 
-    SpecificCSIWithdrawImpl createSpecificCSIWithdraw(boolean OCsi, boolean SsCsi, boolean TifCsi, boolean DCsi, boolean VtCsi, boolean MoSmsCsi, boolean MCsi,
+    SpecificCSIWithdraw createSpecificCSIWithdraw(boolean OCsi, boolean SsCsi, boolean TifCsi, boolean DCsi, boolean VtCsi, boolean MoSmsCsi, boolean MCsi,
             boolean GprsCsi, boolean TCsi, boolean MtSmsCsi, boolean MgCsi, boolean OImCsi, boolean DImCsi, boolean VtImCsi);
 
-    EPSSubscriptionDataWithdrawImpl createEPSSubscriptionDataWithdraw(boolean allEpsData);
+    EPSSubscriptionDataWithdraw createEPSSubscriptionDataWithdraw(boolean allEpsData);
 
-    EPSSubscriptionDataWithdrawImpl createEPSSubscriptionDataWithdraw(List<Integer> contextIdList);
+    EPSSubscriptionDataWithdraw createEPSSubscriptionDataWithdraw(List<Integer> contextIdList);
 
-    SSInfoImpl createSSInfo(ForwardingInfoImpl forwardingInfo);
+    SSInfo createSSInfo(ForwardingInfo forwardingInfo);
 
-    SSInfoImpl createSSInfo(CallBarringInfoImpl callBarringInfo);
+    SSInfo createSSInfo(CallBarringInfo callBarringInfo);
 
-    SSInfoImpl createSSInfo(SSDataImpl ssData);
+    SSInfo createSSInfo(SSData ssData);
 
-    CallBarringFeatureImpl createCallBarringFeature(BasicServiceCodeImpl basicService, SSStatusImpl ssStatus);
+    CallBarringFeature createCallBarringFeature(BasicServiceCode basicService, SSStatus ssStatus);
 
-    ForwardingFeatureImpl createForwardingFeature(BasicServiceCodeImpl basicService, SSStatusImpl ssStatus, ISDNAddressStringImpl torwardedToNumber,
-            ISDNAddressStringImpl forwardedToSubaddress, ForwardingOptionsImpl forwardingOptions, Integer noReplyConditionTime, FTNAddressStringImpl longForwardedToNumber);
+    ForwardingFeature createForwardingFeature(BasicServiceCode basicService, SSStatus ssStatus, ISDNAddressString torwardedToNumber,
+            ISDNAddressString forwardedToSubaddress, ForwardingOptions forwardingOptions, Integer noReplyConditionTime, FTNAddressString longForwardedToNumber);
 
-    ForwardingInfoImpl createForwardingInfo(SSCodeImpl ssCode, List<ForwardingFeatureImpl> forwardingFeatureList);
+    ForwardingInfo createForwardingInfo(SSCode ssCode, List<ForwardingFeature> forwardingFeatureList);
 
-    SSDataImpl createSSData(SSCodeImpl ssCode, SSStatusImpl ssStatus, SSSubscriptionOptionImpl ssSubscriptionOption, List<BasicServiceCodeImpl> basicServiceGroupList,
+    SSData createSSData(SSCode ssCode, SSStatus ssStatus, SSSubscriptionOption ssSubscriptionOption, List<BasicServiceCode> basicServiceGroupList,
             EMLPPPriority defaultPriority, Integer nbrUser);
 
-    CallBarringInfoImpl createCallBarringInfo(SSCodeImpl ssCode, List<CallBarringFeatureImpl> callBarringFeatureList);
+    CallBarringInfo createCallBarringInfo(SSCode ssCode, List<CallBarringFeature> callBarringFeatureList);
 
-    SSForBSCodeImpl createSSForBSCode(SSCodeImpl ssCode, BasicServiceCodeImpl basicService, boolean longFtnSupported);
+    SSForBSCode createSSForBSCode(SSCode ssCode, BasicServiceCode basicService, boolean longFtnSupported);
 
-    CCBSFeatureImpl createCCBSFeature(Integer ccbsIndex, ISDNAddressStringImpl bSubscriberNumber, ISDNAddressStringImpl bSubscriberSubaddress,
-            BasicServiceCodeImpl basicServiceCode);
+    CCBSFeature createCCBSFeature(Integer ccbsIndex, ISDNAddressString bSubscriberNumber, ISDNAddressString bSubscriberSubaddress,
+            BasicServiceCode basicServiceCode);
 
-    GenericServiceInfoImpl createGenericServiceInfo(SSStatusImpl ssStatus, CliRestrictionOption cliRestrictionOption, EMLPPPriority maximumEntitledPriority,
-            EMLPPPriority defaultPriority, List<CCBSFeatureImpl> ccbsFeatureList, Integer nbrSB, Integer nbrUser, Integer nbrSN);
+    GenericServiceInfo createGenericServiceInfo(SSStatus ssStatus, CliRestrictionOption cliRestrictionOption, EMLPPPriority maximumEntitledPriority,
+            EMLPPPriority defaultPriority, List<CCBSFeature> ccbsFeatureList, Integer nbrSB, Integer nbrUser, Integer nbrSN);
 
-    TraceReferenceImpl createTraceReference(byte[] data);
+    TraceReference createTraceReference(byte[] data);
 
-    TraceTypeImpl createTraceType(int data);
+    TraceType createTraceType(int data);
 
-    TraceTypeImpl createTraceType(BssRecordType bssRecordType, MscRecordType mscRecordType, TraceTypeInvokingEvent traceTypeInvokingEvent,
+    TraceType createTraceType(BssRecordType bssRecordType, MscRecordType mscRecordType, TraceTypeInvokingEvent traceTypeInvokingEvent,
             boolean priorityIndication);
 
-    TraceTypeImpl createTraceType(HlrRecordType hlrRecordType, TraceTypeInvokingEvent traceTypeInvokingEvent, boolean priorityIndication);
+    TraceType createTraceType(HlrRecordType hlrRecordType, TraceTypeInvokingEvent traceTypeInvokingEvent, boolean priorityIndication);
 
-    TraceDepthListImpl createTraceDepthList(TraceDepth mscSTraceDepth, TraceDepth mgwTraceDepth, TraceDepth sgsnTraceDepth, TraceDepth ggsnTraceDepth,
+    TraceDepthList createTraceDepthList(TraceDepth mscSTraceDepth, TraceDepth mgwTraceDepth, TraceDepth sgsnTraceDepth, TraceDepth ggsnTraceDepth,
             TraceDepth rncTraceDepth, TraceDepth bmscTraceDepth, TraceDepth mmeTraceDepth, TraceDepth sgwTraceDepth, TraceDepth pgwTraceDepth,
             TraceDepth enbTraceDepth);
 
-    TraceNETypeListImpl createTraceNETypeList(boolean mscS, boolean mgw, boolean sgsn, boolean ggsn, boolean rnc, boolean bmSc, boolean mme, boolean sgw,
+    TraceNETypeList createTraceNETypeList(boolean mscS, boolean mgw, boolean sgsn, boolean ggsn, boolean rnc, boolean bmSc, boolean mme, boolean sgw,
             boolean pgw, boolean enb);
 
-    MSCSInterfaceListImpl createMSCSInterfaceList(boolean a, boolean iu, boolean mc, boolean mapG, boolean mapB, boolean mapE, boolean mapF, boolean cap,
+    MSCSInterfaceList createMSCSInterfaceList(boolean a, boolean iu, boolean mc, boolean mapG, boolean mapB, boolean mapE, boolean mapF, boolean cap,
             boolean mapD, boolean mapC);
 
-    MGWInterfaceListImpl createMGWInterfaceList(boolean mc, boolean nbUp, boolean iuUp);
+    MGWInterfaceList createMGWInterfaceList(boolean mc, boolean nbUp, boolean iuUp);
 
-    SGSNInterfaceListImpl createSGSNInterfaceList(boolean gb, boolean iu, boolean gn, boolean mapGr, boolean mapGd, boolean mapGf, boolean gs, boolean ge,
+    SGSNInterfaceList createSGSNInterfaceList(boolean gb, boolean iu, boolean gn, boolean mapGr, boolean mapGd, boolean mapGf, boolean gs, boolean ge,
             boolean s3, boolean s4, boolean s6d);
 
-    GGSNInterfaceListImpl createGGSNInterfaceList(boolean gn, boolean gi, boolean gmb);
+    GGSNInterfaceList createGGSNInterfaceList(boolean gn, boolean gi, boolean gmb);
 
-    RNCInterfaceListImpl createRNCInterfaceList(boolean iu, boolean iur, boolean iub, boolean uu);
+    RNCInterfaceList createRNCInterfaceList(boolean iu, boolean iur, boolean iub, boolean uu);
 
-    BMSCInterfaceListImpl createBMSCInterfaceList(boolean gmb);
+    BMSCInterfaceList createBMSCInterfaceList(boolean gmb);
 
-    MMEInterfaceListImpl createMMEInterfaceList(boolean s1Mme, boolean s3, boolean s6a, boolean s10, boolean s11);
+    MMEInterfaceList createMMEInterfaceList(boolean s1Mme, boolean s3, boolean s6a, boolean s10, boolean s11);
 
-    SGWInterfaceListImpl createSGWInterfaceList(boolean s4, boolean s5, boolean s8b, boolean s11, boolean gxc);
+    SGWInterfaceList createSGWInterfaceList(boolean s4, boolean s5, boolean s8b, boolean s11, boolean gxc);
 
-    PGWInterfaceListImpl createPGWInterfaceList(boolean s2a, boolean s2b, boolean s2c, boolean s5, boolean s6b, boolean gx, boolean s8b, boolean sgi);
+    PGWInterfaceList createPGWInterfaceList(boolean s2a, boolean s2b, boolean s2c, boolean s5, boolean s6b, boolean gx, boolean s8b, boolean sgi);
 
-    ENBInterfaceListImpl createENBInterfaceList(boolean s1Mme, boolean x2, boolean uu);
+    ENBInterfaceList createENBInterfaceList(boolean s1Mme, boolean x2, boolean uu);
 
-    TraceInterfaceListImpl createTraceInterfaceList(MSCSInterfaceListImpl mscSList, MGWInterfaceListImpl mgwList, SGSNInterfaceListImpl sgsnList, GGSNInterfaceListImpl ggsnList,
-            RNCInterfaceListImpl rncList, BMSCInterfaceListImpl bmscList, MMEInterfaceListImpl mmeList, SGWInterfaceListImpl sgwList, PGWInterfaceListImpl pgwList,
-            ENBInterfaceListImpl enbList);
+    TraceInterfaceList createTraceInterfaceList(MSCSInterfaceList mscSList, MGWInterfaceList mgwList, SGSNInterfaceList sgsnList, GGSNInterfaceList ggsnList,
+            RNCInterfaceList rncList, BMSCInterfaceList bmscList, MMEInterfaceList mmeList, SGWInterfaceList sgwList, PGWInterfaceList pgwList,
+            ENBInterfaceList enbList);
 
-    MSCSEventListImpl createMSCSEventList(boolean moMtCall, boolean moMtSms, boolean luImsiAttachImsiDetach, boolean handovers, boolean ss);
+    MSCSEventList createMSCSEventList(boolean moMtCall, boolean moMtSms, boolean luImsiAttachImsiDetach, boolean handovers, boolean ss);
 
-    MGWEventListImpl createMGWEventList(boolean context);
+    MGWEventList createMGWEventList(boolean context);
 
-    SGSNEventListImpl createSGSNEventList(boolean pdpContext, boolean moMtSms, boolean rauGprsAttachGprsDetach, boolean mbmsContext);
+    SGSNEventList createSGSNEventList(boolean pdpContext, boolean moMtSms, boolean rauGprsAttachGprsDetach, boolean mbmsContext);
 
-    GGSNEventListImpl createGGSNEventList(boolean pdpContext, boolean mbmsContext);
+    GGSNEventList createGGSNEventList(boolean pdpContext, boolean mbmsContext);
 
-    BMSCEventListImpl createBMSCEventList(boolean mbmsMulticastServiceActivation);
+    BMSCEventList createBMSCEventList(boolean mbmsMulticastServiceActivation);
 
-    MMEEventListImpl createMMEEventList(boolean ueInitiatedPDNconectivityRequest, boolean serviceRequestts, boolean initialAttachTrackingAreaUpdateDetach,
+    MMEEventList createMMEEventList(boolean ueInitiatedPDNconectivityRequest, boolean serviceRequestts, boolean initialAttachTrackingAreaUpdateDetach,
             boolean ueInitiatedPDNdisconnection, boolean bearerActivationModificationDeletion, boolean handover);
 
-    SGWEventListImpl createSGWEventList(boolean pdnConnectionCreation, boolean pdnConnectionTermination, boolean bearerActivationModificationDeletion);
+    SGWEventList createSGWEventList(boolean pdnConnectionCreation, boolean pdnConnectionTermination, boolean bearerActivationModificationDeletion);
 
-    PGWEventListImpl createPGWEventList(boolean pdnConnectionCreation, boolean pdnConnectionTermination, boolean bearerActivationModificationDeletion);
+    PGWEventList createPGWEventList(boolean pdnConnectionCreation, boolean pdnConnectionTermination, boolean bearerActivationModificationDeletion);
 
-    TraceEventListImpl createTraceEventList(MSCSEventListImpl mscSList, MGWEventListImpl mgwList, SGSNEventListImpl sgsnList, GGSNEventListImpl ggsnList, BMSCEventListImpl bmscList,
-            MMEEventListImpl mmeList, SGWEventListImpl sgwList, PGWEventListImpl pgwList);
+    TraceEventList createTraceEventList(MSCSEventList mscSList, MGWEventList mgwList, SGSNEventList sgsnList, GGSNEventList ggsnList, BMSCEventList bmscList,
+            MMEEventList mmeList, SGWEventList sgwList, PGWEventList pgwList);
 
-    GlobalCellIdImpl createGlobalCellId(byte[] data);
+    GlobalCellId createGlobalCellId(byte[] data);
 
-    GlobalCellIdImpl createGlobalCellId(int mcc, int mnc, int lac, int cellId) throws MAPException;
+    GlobalCellId createGlobalCellId(int mcc, int mnc, int lac, int cellId) throws MAPException;
 
-    AreaScopeImpl createAreaScope(List<GlobalCellIdImpl> cgiList, List<EUtranCgiImpl> eUtranCgiList, List<RAIdentityImpl> routingAreaIdList,
-            List<LAIFixedLengthImpl> locationAreaIdList, List<TAIdImpl> trackingAreaIdList, MAPExtensionContainerImpl extensionContainer);
+    AreaScope createAreaScope(List<GlobalCellId> cgiList, List<EUtranCgi> eUtranCgiList, List<RAIdentity> routingAreaIdList,
+            List<LAIFixedLength> locationAreaIdList, List<TAId> trackingAreaIdList, MAPExtensionContainer extensionContainer);
 
-    ListOfMeasurementsImpl createListOfMeasurements(byte[] data);
+    ListOfMeasurements createListOfMeasurements(byte[] data);
 
-    ReportingTriggerImpl createReportingTrigger(int data);
+    ReportingTrigger createReportingTrigger(int data);
 
-    MDTConfigurationImpl createMDTConfiguration(JobType jobType, AreaScopeImpl areaScope, ListOfMeasurementsImpl listOfMeasurements, ReportingTriggerImpl reportingTrigger,
+    MDTConfiguration createMDTConfiguration(JobType jobType, AreaScope areaScope, ListOfMeasurements listOfMeasurements, ReportingTrigger reportingTrigger,
             ReportInterval reportInterval, ReportAmount reportAmount, Integer eventThresholdRSRP, Integer eventThresholdRSRQ, LoggingInterval loggingInterval,
-            LoggingDuration loggingDuration, MAPExtensionContainerImpl extensionContainer);
+            LoggingDuration loggingDuration, MAPExtensionContainer extensionContainer);
 
-    UUDataImpl createUUData(UUIndicatorImpl uuIndicator, UUIImpl uuI, boolean uusCFInteraction, MAPExtensionContainerImpl extensionContainer);
+    UUData createUUData(UUIndicator uuIndicator, UUI uuI, boolean uusCFInteraction, MAPExtensionContainer extensionContainer);
 
-    UUIImpl createUUI(byte[] data);
+    UUI createUUI(byte[] data);
 
-    UUIndicatorImpl createUUIndicator(int data);
+    UUIndicator createUUIndicator(int data);
 
-    CUGIndexImpl createCUGIndex(int data);
+    CUGIndex createCUGIndex(int data);
 
-    ExtQoSSubscribed_MaximumSduSizeImpl createExtQoSSubscribed_MaximumSduSize_SourceValue(int data);
+    ExtQoSSubscribed_MaximumSduSize createExtQoSSubscribed_MaximumSduSize_SourceValue(int data);
 
-    ExtQoSSubscribed_MaximumSduSizeImpl createExtQoSSubscribed_MaximumSduSize(int data);
+    ExtQoSSubscribed_MaximumSduSize createExtQoSSubscribed_MaximumSduSize(int data);
 
-    ExtQoSSubscribed_BitRateImpl createExtQoSSubscribed_BitRate_SourceValue(int data);
+    ExtQoSSubscribed_BitRate createExtQoSSubscribed_BitRate_SourceValue(int data);
 
-    ExtQoSSubscribed_BitRateImpl createExtQoSSubscribed_BitRate(int data);
+    ExtQoSSubscribed_BitRate createExtQoSSubscribed_BitRate(int data);
 
-    ExtQoSSubscribed_TransferDelayImpl createExtQoSSubscribed_TransferDelay_SourceValue(int data);
+    ExtQoSSubscribed_TransferDelay createExtQoSSubscribed_TransferDelay_SourceValue(int data);
 
-    ExtQoSSubscribed_TransferDelayImpl createExtQoSSubscribed_TransferDelay(int data);
+    ExtQoSSubscribed_TransferDelay createExtQoSSubscribed_TransferDelay(int data);
 
-    ExtQoSSubscribed_BitRateExtendedImpl createExtQoSSubscribed_BitRateExtended_SourceValue(int data);
+    ExtQoSSubscribed_BitRateExtended createExtQoSSubscribed_BitRateExtended_SourceValue(int data);
 
-    ExtQoSSubscribed_BitRateExtendedImpl createExtQoSSubscribed_BitRateExtended(int data);
+    ExtQoSSubscribed_BitRateExtended createExtQoSSubscribed_BitRateExtended(int data);
 
-    ExtQoSSubscribed_BitRateExtendedImpl createExtQoSSubscribed_BitRateExtended_UseNotExtended();
+    ExtQoSSubscribed_BitRateExtended createExtQoSSubscribed_BitRateExtended_UseNotExtended();
 
-    PasswordImpl createPassword(String data);
+    Password createPassword(String data);
 
-    IMSIWithLMSIImpl createIMSIWithLMSI(IMSIImpl imsi, LMSIImpl lmsi);
+    IMSIWithLMSI createIMSIWithLMSI(IMSI imsi, LMSI lmsi);
 
-    CAMELSubscriptionInfoImpl createCAMELSubscriptionInfo(OCSIImpl oCsi, List<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTdpCriteriaList, DCSIImpl dCsi, TCSIImpl tCsi,
-            List<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList, TCSIImpl vtCsi, List<TBcsmCamelTdpCriteriaImpl> vtBcsmCamelTdpCriteriaList,
-            boolean tifCsi, boolean tifCsiNotificationToCSE, GPRSCSIImpl gprsCsi, SMSCSIImpl smsCsi, SSCSIImpl ssCsi, MCSIImpl mCsi, MAPExtensionContainerImpl extensionContainer,
-            SpecificCSIWithdrawImpl specificCSIWithdraw, SMSCSIImpl mtSmsCsi, List<MTsmsCAMELTDPCriteriaImpl> mTsmsCAMELTDPCriteriaList, MGCSIImpl mgCsi, OCSIImpl oImCsi,
-            List<OBcsmCamelTdpCriteriaImpl> oImBcsmCamelTdpCriteriaList, DCSIImpl dImCsi, TCSIImpl vtImCsi, List<TBcsmCamelTdpCriteriaImpl> vtImBcsmCamelTdpCriteriaList);
+    CAMELSubscriptionInfo createCAMELSubscriptionInfo(OCSI oCsi, List<OBcsmCamelTdpCriteria> oBcsmCamelTdpCriteriaList, DCSI dCsi, TCSI tCsi,
+            List<TBcsmCamelTdpCriteria> tBcsmCamelTdpCriteriaList, TCSI vtCsi, List<TBcsmCamelTdpCriteria> vtBcsmCamelTdpCriteriaList,
+            boolean tifCsi, boolean tifCsiNotificationToCSE, GPRSCSI gprsCsi, SMSCSI smsCsi, SSCSI ssCsi, MCSI mCsi, MAPExtensionContainer extensionContainer,
+            SpecificCSIWithdraw specificCSIWithdraw, SMSCSI mtSmsCsi, List<MTsmsCAMELTDPCriteria> mTsmsCAMELTDPCriteriaList, MGCSI mgCsi, OCSI oImCsi,
+            List<OBcsmCamelTdpCriteria> oImBcsmCamelTdpCriteriaList, DCSI dImCsi, TCSI vtImCsi, List<TBcsmCamelTdpCriteria> vtImBcsmCamelTdpCriteriaList);
 
-    CallBarringDataImpl createCallBarringData(List<ExtCallBarringFeatureImpl> callBarringFeatureList, PasswordImpl password, Integer wrongPasswordAttemptsCounter,
-            boolean notificationToCSE, MAPExtensionContainerImpl extensionContainer);
+    CallBarringData createCallBarringData(List<ExtCallBarringFeature> callBarringFeatureList, Password password, Integer wrongPasswordAttemptsCounter,
+            boolean notificationToCSE, MAPExtensionContainer extensionContainer);
 
-    CallForwardingDataImpl createCallForwardingData(List<ExtForwFeatureImpl> forwardingFeatureList, boolean notificationToCSE, MAPExtensionContainerImpl extensionContainer);
+    CallForwardingData createCallForwardingData(List<ExtForwFeature> forwardingFeatureList, boolean notificationToCSE, MAPExtensionContainer extensionContainer);
 
-    CallHoldDataImpl createCallHoldData(ExtSSStatusImpl ssStatus, boolean notificationToCSE);
+    CallHoldData createCallHoldData(ExtSSStatus ssStatus, boolean notificationToCSE);
 
-    CallWaitingDataImpl createCallWaitingData(List<ExtCwFeatureImpl> cwFeatureList, boolean notificationToCSE);
+    CallWaitingData createCallWaitingData(List<ExtCwFeature> cwFeatureList, boolean notificationToCSE);
 
-    ClipDataImpl createClipData(ExtSSStatusImpl ssStatus, OverrideCategory overrideCategory, boolean notificationToCSE);
+    ClipData createClipData(ExtSSStatus ssStatus, OverrideCategory overrideCategory, boolean notificationToCSE);
 
-    ClirDataImpl createClirData(ExtSSStatusImpl ssStatus, CliRestrictionOption cliRestrictionOption, boolean notificationToCSE);
+    ClirData createClirData(ExtSSStatus ssStatus, CliRestrictionOption cliRestrictionOption, boolean notificationToCSE);
 
-    EctDataImpl createEctData(ExtSSStatusImpl ssStatus, boolean notificationToCSE);
+    EctData createEctData(ExtSSStatus ssStatus, boolean notificationToCSE);
 
-    ExtCwFeatureImpl createExtCwFeature(ExtBasicServiceCodeImpl basicService, ExtSSStatusImpl ssStatus);
+    ExtCwFeature createExtCwFeature(ExtBasicServiceCode basicService, ExtSSStatus ssStatus);
 
-    MSISDNBSImpl createMSISDNBS(ISDNAddressStringImpl msisdn, List<ExtBasicServiceCodeImpl> basicServiceList, MAPExtensionContainerImpl extensionContainer);
+    MSISDNBS createMSISDNBS(ISDNAddressString msisdn, List<ExtBasicServiceCode> basicServiceList, MAPExtensionContainer extensionContainer);
 
-    ODBInfoImpl createODBInfo(ODBDataImpl odbData, boolean notificationToCSE, MAPExtensionContainerImpl extensionContainer);
+    ODBInfo createODBInfo(ODBData odbData, boolean notificationToCSE, MAPExtensionContainer extensionContainer);
 
-    RequestedSubscriptionInfoImpl createRequestedSubscriptionInfo(SSForBSCodeImpl requestedSSInfo, boolean odb, RequestedCAMELSubscriptionInfo requestedCAMELSubscriptionInfo,
-            boolean supportedVlrCamelPhases, boolean supportedSgsnCamelPhases, MAPExtensionContainerImpl extensionContainer,
+    RequestedSubscriptionInfo createRequestedSubscriptionInfo(SSForBSCode requestedSSInfo, boolean odb, RequestedCAMELSubscriptionInfo requestedCAMELSubscriptionInfo,
+            boolean supportedVlrCamelPhases, boolean supportedSgsnCamelPhases, MAPExtensionContainer extensionContainer,
             AdditionalRequestedCAMELSubscriptionInfo additionalRequestedCamelSubscriptionInfo, boolean msisdnBsList, boolean csgSubscriptionDataRequested,
             boolean cwInfo, boolean clipInfo, boolean clirInfo, boolean holdInfo, boolean ectInfo);
 
-    IpSmGwGuidanceImpl createIpSmGwGuidance(int minimumDeliveryTimeValue, int recommendedDeliveryTimeValue,
-    		MAPExtensionContainerImpl extensionContainer);
+    IpSmGwGuidance createIpSmGwGuidance(int minimumDeliveryTimeValue, int recommendedDeliveryTimeValue,
+    		MAPExtensionContainer extensionContainer);
 
-    CorrelationIDImpl createCorrelationID(IMSIImpl hlrId, SipUriImpl sipUriA, SipUriImpl sipUriB);
+    CorrelationID createCorrelationID(IMSI hlrId, SipUri sipUriA, SipUri sipUriB);
 
-    SipUriImpl createSipUri();
+    SipUri createSipUri();
 
 }

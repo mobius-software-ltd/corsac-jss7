@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -41,12 +41,11 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  */
 public interface StatusReportRequest extends CallHandlingMessage {
 
-    IMSIImpl getImsi();
+    IMSI getImsi();
 
     EventReportData getEventReportData();
 
     CallReportData getCallReportData();
 
-    MAPExtensionContainerImpl getExtensionContainer();
-
+    MAPExtensionContainer getExtensionContainer();
 }

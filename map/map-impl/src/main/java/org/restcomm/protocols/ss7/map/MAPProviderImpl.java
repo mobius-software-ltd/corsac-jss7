@@ -51,14 +51,14 @@ import org.restcomm.protocols.ss7.map.api.dialog.MAPDialogState;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPNoticeProblemDiagnostic;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPProviderAbortReason;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPRefuseReason;
-import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoiseImpl;
+import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
 import org.restcomm.protocols.ss7.map.api.dialog.Reason;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckData;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageFactory;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.MAPServiceCallHandling;
 import org.restcomm.protocols.ss7.map.api.service.lsm.MAPServiceLsm;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MAPServiceMobility;
@@ -1053,12 +1053,12 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
             }
         }
 
-        AddressStringImpl destReference = null;
-        AddressStringImpl origReference = null;
-        MAPExtensionContainerImpl extensionContainer = null;
+        AddressString destReference = null;
+        AddressString origReference = null;
+        MAPExtensionContainer extensionContainer = null;
         boolean eriStyle = false;
-        AddressStringImpl eriMsisdn = null;
-        AddressStringImpl eriVlrNo = null;
+        AddressString eriMsisdn = null;
+        AddressString eriVlrNo = null;
 
         UserInformation userInfo = tcBeginIndication.getUserInformation();
         if (userInfo == null) {
@@ -1365,7 +1365,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
                 }
             }
 
-            MAPExtensionContainerImpl extensionContainer = null;
+            MAPExtensionContainer extensionContainer = null;
 
             // Parse MapAcceptInfo if it exists - we ignore all errors here
             UserInformation userInfo = tcContinueIndication.getUserInformation();
@@ -1497,7 +1497,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
             // Fire MAPAcceptInfo
             mapDialogImpl.setState(MAPDialogState.ACTIVE);
 
-            MAPExtensionContainerImpl extensionContainer = null;
+            MAPExtensionContainer extensionContainer = null;
             // Parse MapAcceptInfo or MapCloseInfo if it exists - we
             // ignore all errors here
             UserInformation userInfo = tcEndIndication.getUserInformation();
@@ -1668,10 +1668,10 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         UserInformation userInfo = tcUserAbortIndication.getUserInformation();
         ParsePduResult parsePduResult = ParsePduResult.NoUserInfo;
         MAPRefuseReason mapRefuseReason = MAPRefuseReason.NoReasonGiven;
-        MAPUserAbortChoiseImpl mapUserAbortChoice = null;
+        MAPUserAbortChoice mapUserAbortChoice = null;
         MAPProviderAbortReason mapProviderAbortReason = null;
         MAPAbortProviderReason abortProviderReason = MAPAbortProviderReason.AbnormalMAPDialogueFromPeer;
-        MAPExtensionContainerImpl extensionContainer = null;
+        MAPExtensionContainer extensionContainer = null;
 
         if (userInfo != null) {
             // Checking userInfo.Oid==MAP_DialogueAS
@@ -2082,23 +2082,23 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         }
     }
 
-    private void deliverDialogRequest(MAPDialog mapDialog, AddressStringImpl destReference, AddressStringImpl origReference,
-            MAPExtensionContainerImpl extensionContainer) {
+    private void deliverDialogRequest(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
+            MAPExtensionContainer extensionContainer) {
     	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
         while(iterator.hasNext()) {
         	iterator.next().onDialogRequest(mapDialog, destReference, origReference, extensionContainer);
         }
     }
 
-    private void deliverDialogRequestEri(MAPDialog mapDialog, AddressStringImpl destReference, AddressStringImpl origReference,
-            AddressStringImpl eriMsisdn, AddressStringImpl eriVlrNo) {
+    private void deliverDialogRequestEri(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
+            AddressString eriMsisdn, AddressString eriVlrNo) {
     	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
         while(iterator.hasNext()) {
         	iterator.next().onDialogRequestEricsson(mapDialog, destReference, origReference, eriMsisdn, eriVlrNo);
         }
     }
 
-    private void deliverDialogAccept(MAPDialog mapDialog, MAPExtensionContainerImpl extensionContainer) {
+    private void deliverDialogAccept(MAPDialog mapDialog, MAPExtensionContainer extensionContainer) {
     	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
         while(iterator.hasNext()) {
         	iterator.next().onDialogAccept(mapDialog, extensionContainer);
@@ -2106,7 +2106,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
     }
 
     private void deliverDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
-            ApplicationContextName alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer) {
+            ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
     	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
         while(iterator.hasNext()) {
         	iterator.next().onDialogReject(mapDialog, refuseReason, alternativeApplicationContext, extensionContainer);
@@ -2121,15 +2121,15 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
     }
 
     private void deliverDialogProviderAbort(MAPDialog mapDialog, MAPAbortProviderReason abortProviderReason,
-            MAPAbortSource abortSource, MAPExtensionContainerImpl extensionContainer) {
+            MAPAbortSource abortSource, MAPExtensionContainer extensionContainer) {
     	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
         while(iterator.hasNext()) {
         	iterator.next().onDialogProviderAbort(mapDialog, abortProviderReason, abortSource, extensionContainer);
         }
     }
 
-    private void deliverDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoiseImpl userReason,
-            MAPExtensionContainerImpl extensionContainer) {
+    private void deliverDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoice userReason,
+            MAPExtensionContainer extensionContainer) {
     	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
         while(iterator.hasNext()) {
         	iterator.next().onDialogUserAbort(mapDialog, userReason, extensionContainer);
@@ -2157,9 +2157,9 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         }
     }
 
-    protected void fireTCBegin(Dialog tcapDialog, ApplicationContextName acn, AddressStringImpl destReference,
-            AddressStringImpl origReference, MAPExtensionContainerImpl mapExtensionContainer, boolean isEriStyle, AddressStringImpl eriMsisdn,
-            AddressStringImpl vlrNoEri, boolean returnMessageOnError) throws MAPException {
+    protected void fireTCBegin(Dialog tcapDialog, ApplicationContextName acn, AddressString destReference,
+            AddressString origReference, MAPExtensionContainer mapExtensionContainer, boolean isEriStyle, AddressString eriMsisdn,
+            AddressString vlrNoEri, boolean returnMessageOnError) throws MAPException {
 
         TCBeginRequest tcBeginReq = encodeTCBegin(tcapDialog, acn, destReference, origReference, mapExtensionContainer,
                 isEriStyle, eriMsisdn, vlrNoEri);
@@ -2174,9 +2174,9 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
     }
 
-    protected TCBeginRequest encodeTCBegin(Dialog tcapDialog, ApplicationContextName acn, AddressStringImpl destReference,
-            AddressStringImpl origReference, MAPExtensionContainerImpl mapExtensionContainer, boolean eriStyle, AddressStringImpl eriMsisdn,
-            AddressStringImpl eriVlrNo) throws MAPException {
+    protected TCBeginRequest encodeTCBegin(Dialog tcapDialog, ApplicationContextName acn, AddressString destReference,
+            AddressString origReference, MAPExtensionContainer mapExtensionContainer, boolean eriStyle, AddressString eriMsisdn,
+            AddressString eriVlrNo) throws MAPException {
 
         TCBeginRequest tcBeginReq = this.getTCAPProvider().getDialogPrimitiveFactory().createBegin(tcapDialog);
 
@@ -2202,7 +2202,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
     }
 
     protected void fireTCContinue(Dialog tcapDialog, Boolean sendMapAcceptInfo, ApplicationContextName acn,
-            MAPExtensionContainerImpl mapExtensionContainer, boolean returnMessageOnError) throws MAPException {
+            MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError) throws MAPException {
 
         TCContinueRequest tcContinueReq = encodeTCContinue(tcapDialog, sendMapAcceptInfo, acn, mapExtensionContainer);
         if (returnMessageOnError)
@@ -2216,7 +2216,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
     }
 
     protected TCContinueRequest encodeTCContinue(Dialog tcapDialog, Boolean sendMapAcceptInfo, ApplicationContextName acn,
-            MAPExtensionContainerImpl mapExtensionContainer) throws MAPException {
+    		MAPExtensionContainer mapExtensionContainer) throws MAPException {
         TCContinueRequest tcContinueReq = this.getTCAPProvider().getDialogPrimitiveFactory().createContinue(tcapDialog);
 
         // we do not set ApplicationContextName if MAP Version 1
@@ -2237,7 +2237,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
     }
 
     protected void fireTCEnd(Dialog tcapDialog, Boolean sendMapCloseInfo, boolean prearrangedEnd, ApplicationContextName acn,
-            MAPExtensionContainerImpl mapExtensionContainer, boolean returnMessageOnError) throws MAPException {
+            MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError) throws MAPException {
 
         TCEndRequest endRequest = encodeTCEnd(tcapDialog, sendMapCloseInfo, prearrangedEnd, acn, mapExtensionContainer);
         if (returnMessageOnError)
@@ -2251,7 +2251,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
     }
 
     protected TCEndRequest encodeTCEnd(Dialog tcapDialog, Boolean sendMapCloseInfo, boolean prearrangedEnd,
-            ApplicationContextName acn, MAPExtensionContainerImpl mapExtensionContainer) throws MAPException {
+            ApplicationContextName acn, MAPExtensionContainer mapExtensionContainer) throws MAPException {
         TCEndRequest endRequest = this.getTCAPProvider().getDialogPrimitiveFactory().createEnd(tcapDialog);
 
         if (!prearrangedEnd) {
@@ -2285,7 +2285,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
      * @param alternativeApplicationContext
      * @throws MAPException
      */
-    private void fireTCAbortACNNotSupported(Dialog tcapDialog, MAPExtensionContainerImpl mapExtensionContainer,
+    private void fireTCAbortACNNotSupported(Dialog tcapDialog, MAPExtensionContainer mapExtensionContainer,
             ApplicationContextName alternativeApplicationContext, boolean returnMessageOnError) throws MAPException {
 
         if (tcapDialog.getApplicationContextName() == null) // MAP V1
@@ -2325,7 +2325,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
      * @param mapExtensionContainer
      * @throws MAPException
      */
-    protected void fireTCAbortRefused(Dialog tcapDialog, Reason reason, MAPExtensionContainerImpl mapExtensionContainer,
+    protected void fireTCAbortRefused(Dialog tcapDialog, Reason reason, MAPExtensionContainer mapExtensionContainer,
             boolean returnMessageOnError) throws MAPException {
 
         if (tcapDialog.getApplicationContextName() == null) // MAP V1
@@ -2399,7 +2399,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
      * @throws MAPException
      */
     protected void fireTCAbortProvider(Dialog tcapDialog, MAPProviderAbortReason mapProviderAbortReason,
-            MAPExtensionContainerImpl mapExtensionContainer, boolean returnMessageOnError) throws MAPException {
+    		MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError) throws MAPException {
 
         if (tcapDialog.getApplicationContextName() == null) // MAP V1
             this.fireTCAbortV1(tcapDialog, returnMessageOnError);

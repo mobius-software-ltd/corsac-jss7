@@ -14,10 +14,10 @@ import org.restcomm.protocols.ss7.map.api.dialog.MAPAbortProviderReason;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPAbortSource;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPNoticeProblemDiagnostic;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPRefuseReason;
-import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoiseImpl;
+import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.IstCommandRequest;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.IstCommandResponse;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.MAPServiceCallHandlingListener;
@@ -137,34 +137,34 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
         this.observerdEvents.add(te);
     }
 
-    public void onDialogRequest(MAPDialog mapDialog, AddressStringImpl destReference, AddressStringImpl origReference,
-            MAPExtensionContainerImpl extensionContainer) {
+    public void onDialogRequest(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
+            MAPExtensionContainer extensionContainer) {
         this.logger.debug("onDialogRequest");
         TestEvent te = TestEvent.createReceivedEvent(EventType.DialogRequest, mapDialog, sequence++);
         this.observerdEvents.add(te);
     }
 
-    public void onDialogAccept(MAPDialog mapDialog, MAPExtensionContainerImpl extensionContainer) {
+    public void onDialogAccept(MAPDialog mapDialog, MAPExtensionContainer extensionContainer) {
         this.logger.debug("onDialogAccept");
         TestEvent te = TestEvent.createReceivedEvent(EventType.DialogAccept, mapDialog, sequence++);
         this.observerdEvents.add(te);
     }
 
     public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
-            ApplicationContextName alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer) {
+            ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
         this.logger.debug("onDialogReject");
         TestEvent te = TestEvent.createReceivedEvent(EventType.DialogReject, mapDialog, sequence++);
         this.observerdEvents.add(te);
     }
 
-    public void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoiseImpl userReason, MAPExtensionContainerImpl extensionContainer) {
+    public void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoice userReason, MAPExtensionContainer extensionContainer) {
         this.logger.debug("onDialogUserAbort");
         TestEvent te = TestEvent.createReceivedEvent(EventType.DialogUserAbort, mapDialog, sequence++);
         this.observerdEvents.add(te);
     }
 
     public void onDialogProviderAbort(MAPDialog mapDialog, MAPAbortProviderReason abortProviderReason,
-            MAPAbortSource abortSource, MAPExtensionContainerImpl extensionContainer) {
+            MAPAbortSource abortSource, MAPExtensionContainer extensionContainer) {
         this.logger.debug("onDialogProviderAbort");
         TestEvent te = TestEvent.createReceivedEvent(EventType.DialogProviderAbort, mapDialog, sequence++);
         this.observerdEvents.add(te);
@@ -384,8 +384,8 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
      * org.restcomm.protocols.ss7.map.api.primitives.AddressString, org.restcomm.protocols.ss7.map.api.primitives.IMSI,
      * org.restcomm.protocols.ss7.map.api.primitives.AddressString)
      */
-    public void onDialogRequestEricsson(MAPDialog mapDialog, AddressStringImpl destReference, AddressStringImpl origReference,
-            AddressStringImpl eriImsi, AddressStringImpl eriVlrNo) {
+    public void onDialogRequestEricsson(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
+            AddressString eriImsi, AddressString eriVlrNo) {
         this.logger.debug("onDialogRequestEricsson");
         TestEvent te = TestEvent.createReceivedEvent(EventType.DialogEricssonRequest, mapDialog, sequence++);
         this.observerdEvents.add(te);

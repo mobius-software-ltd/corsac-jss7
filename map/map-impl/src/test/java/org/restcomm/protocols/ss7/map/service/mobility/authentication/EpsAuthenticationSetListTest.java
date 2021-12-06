@@ -30,8 +30,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpcAvImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAuthenticationSetListImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpcAv;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAuthenticationSetList;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -70,7 +70,7 @@ public class EpsAuthenticationSetListTest {
         assertTrue(result.getResult() instanceof EpsAuthenticationSetListImpl);
         EpsAuthenticationSetListImpl asc = (EpsAuthenticationSetListImpl)result.getResult();
         
-        List<EpcAvImpl> epcAvs = asc.getEpcAv();
+        List<EpcAv> epcAvs = asc.getEpcAv();
         assertEquals(epcAvs.size(), 2);
 
         assertTrue(Arrays.equals(epcAvs.get(0).getRand(), EpcAvTest.getRandData()));
@@ -91,10 +91,10 @@ public class EpsAuthenticationSetListTest {
 
         EpcAvImpl d1 = new EpcAvImpl(EpcAvTest.getRandData(), EpcAvTest.getXresData(), EpcAvTest.getAutnData(),EpcAvTest.getKasmeData(), null);
         EpcAvImpl d2 = new EpcAvImpl(EpcAvTest.getRandData(), getXresData(), EpcAvTest.getAutnData(), EpcAvTest.getKasmeData(),null);
-        ArrayList<EpcAvImpl> arr = new ArrayList<EpcAvImpl>();
+        List<EpcAv> arr = new ArrayList<EpcAv>();
         arr.add(d1);
         arr.add(d2);
-        EpsAuthenticationSetListImpl asc = new EpsAuthenticationSetListImpl(arr);
+        EpsAuthenticationSetList asc = new EpsAuthenticationSetListImpl(arr);
 
         byte[] data=getEncodedData();
         ByteBuf buffer=parser.encode(asc);

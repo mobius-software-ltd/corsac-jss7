@@ -24,9 +24,11 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SendChargingInformationRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.restcomm.protocols.ss7.inap.primitives.SendingLegIDImpl;
 import org.restcomm.protocols.ss7.inap.primitives.SendingLegIDWrapperImpl;
@@ -45,20 +47,20 @@ public class SendChargingInformationRequestImpl extends CircuitSwitchedCallMessa
         SendChargingInformationRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-    private SCIBillingChargingCharacteristicsImpl sciBillingChargingCharacteristics;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1,defaultImplementation = SCIBillingChargingCharacteristicsImpl.class)
+    private SCIBillingChargingCharacteristics sciBillingChargingCharacteristics;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1)
     private SendingLegIDWrapperImpl partyToCharge;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
 
     public SendChargingInformationRequestImpl() {
     }
 
-    public SendChargingInformationRequestImpl(SCIBillingChargingCharacteristicsImpl sciBillingChargingCharacteristics,
-    		LegType partyToCharge, CAPExtensionsImpl extensions) {
+    public SendChargingInformationRequestImpl(SCIBillingChargingCharacteristics sciBillingChargingCharacteristics,
+    		LegType partyToCharge, CAPExtensions extensions) {
         this.sciBillingChargingCharacteristics = sciBillingChargingCharacteristics;
         
         if(partyToCharge!=null)
@@ -78,7 +80,7 @@ public class SendChargingInformationRequestImpl extends CircuitSwitchedCallMessa
     }
 
     @Override
-    public SCIBillingChargingCharacteristicsImpl getSCIBillingChargingCharacteristics() {
+    public SCIBillingChargingCharacteristics getSCIBillingChargingCharacteristics() {
         return sciBillingChargingCharacteristics;
     }
 
@@ -91,7 +93,7 @@ public class SendChargingInformationRequestImpl extends CircuitSwitchedCallMessa
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 

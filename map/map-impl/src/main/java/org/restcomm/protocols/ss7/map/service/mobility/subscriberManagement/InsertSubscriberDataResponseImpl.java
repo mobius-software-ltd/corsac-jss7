@@ -26,21 +26,20 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeaturesImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ASNRegionalSubscriptionResponse;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeListWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeListWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeatures;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.InsertSubscriberDataResponse;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.RegionalSubscriptionResponse;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeListWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SupportedFeaturesImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeListWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -64,23 +63,23 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1)
     private SSCodeListWrapperImpl ssList = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
-    private ODBGeneralDataImpl odbGeneralData = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1,defaultImplementation = ODBGeneralDataImpl.class)
+    private ODBGeneralData odbGeneralData = null;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
     private ASNRegionalSubscriptionResponse regionalSubscriptionResponse = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1)
-    private SupportedCamelPhasesImpl supportedCamelPhases = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1, defaultImplementation = SupportedCamelPhasesImpl.class)
+    private SupportedCamelPhases supportedCamelPhases = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1)
-    private OfferedCamel4CSIsImpl offeredCamel4CSIs = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1, defaultImplementation = OfferedCamel4CSIsImpl.class)
+    private OfferedCamel4CSIs offeredCamel4CSIs = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1)
-    private SupportedFeaturesImpl supportedFeatures = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1, defaultImplementation = SupportedFeaturesImpl.class)
+    private SupportedFeatures supportedFeatures = null;
 
     private long mapProtocolVersion;
 
@@ -94,8 +93,8 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
     }
 
     // For outgoing messages - MAP V2
-    public InsertSubscriberDataResponseImpl(long mapProtocolVersion, List<ExtTeleserviceCodeImpl> teleserviceList,
-            List<ExtBearerServiceCodeImpl> bearerServiceList, List<SSCodeImpl> ssList, ODBGeneralDataImpl odbGeneralData,
+    public InsertSubscriberDataResponseImpl(long mapProtocolVersion, List<ExtTeleserviceCode> teleserviceList,
+            List<ExtBearerServiceCode> bearerServiceList, List<SSCode> ssList, ODBGeneralData odbGeneralData,
             RegionalSubscriptionResponse regionalSubscriptionResponse) {
         this.mapProtocolVersion = mapProtocolVersion;
         
@@ -117,10 +116,10 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
     }
 
     // For outgoing messages - MAP V3
-    public InsertSubscriberDataResponseImpl(long mapProtocolVersion, List<ExtTeleserviceCodeImpl> teleserviceList,
-            List<ExtBearerServiceCodeImpl> bearerServiceList, List<SSCodeImpl> ssList, ODBGeneralDataImpl odbGeneralData,
-            RegionalSubscriptionResponse regionalSubscriptionResponse, SupportedCamelPhasesImpl supportedCamelPhases,
-            MAPExtensionContainerImpl extensionContainer, OfferedCamel4CSIsImpl offeredCamel4CSIs, SupportedFeaturesImpl supportedFeatures) {
+    public InsertSubscriberDataResponseImpl(long mapProtocolVersion, List<ExtTeleserviceCode> teleserviceList,
+            List<ExtBearerServiceCode> bearerServiceList, List<SSCode> ssList, ODBGeneralData odbGeneralData,
+            RegionalSubscriptionResponse regionalSubscriptionResponse, SupportedCamelPhases supportedCamelPhases,
+            MAPExtensionContainer extensionContainer, OfferedCamel4CSIs offeredCamel4CSIs, SupportedFeatures supportedFeatures) {
 
         this.mapProtocolVersion = mapProtocolVersion;
         
@@ -159,7 +158,7 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
     }
 
     @Override
-    public List<ExtTeleserviceCodeImpl> getTeleserviceList() {
+    public List<ExtTeleserviceCode> getTeleserviceList() {
     	if(this.teleserviceList==null)
     		return null;
     	
@@ -167,7 +166,7 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
     }
 
     @Override
-    public List<ExtBearerServiceCodeImpl> getBearerServiceList() {
+    public List<ExtBearerServiceCode> getBearerServiceList() {
     	if(this.bearerServiceList==null)
     		return null;
     	
@@ -175,7 +174,7 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
     }
 
     @Override
-    public List<SSCodeImpl> getSSList() {
+    public List<SSCode> getSSList() {
     	if(this.ssList==null)
     		return null;
     	
@@ -183,7 +182,7 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
     }
 
     @Override
-    public ODBGeneralDataImpl getODBGeneralData() {
+    public ODBGeneralData getODBGeneralData() {
         return this.odbGeneralData;
     }
 
@@ -196,22 +195,22 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
     }
 
     @Override
-    public SupportedCamelPhasesImpl getSupportedCamelPhases() {
+    public SupportedCamelPhases getSupportedCamelPhases() {
         return this.supportedCamelPhases;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
     @Override
-    public OfferedCamel4CSIsImpl getOfferedCamel4CSIs() {
+    public OfferedCamel4CSIs getOfferedCamel4CSIs() {
         return this.offeredCamel4CSIs;
     }
 
     @Override
-    public SupportedFeaturesImpl getSupportedFeatures() {
+    public SupportedFeatures getSupportedFeatures() {
         return this.supportedFeatures;
     }
 
@@ -227,7 +226,7 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
         if (this.teleserviceList != null && this.teleserviceList.getExtTeleserviceCode()!=null) {
             sb.append("teleserviceList=[");
             boolean firstItem = true;
-            for (ExtTeleserviceCodeImpl be : this.teleserviceList.getExtTeleserviceCode()) {
+            for (ExtTeleserviceCode be : this.teleserviceList.getExtTeleserviceCode()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -240,7 +239,7 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
         if (this.bearerServiceList != null && this.bearerServiceList.getExtBearerServiceCode()!=null) {
             sb.append("bearerServiceList=[");
             boolean firstItem = true;
-            for (ExtBearerServiceCodeImpl be : this.bearerServiceList.getExtBearerServiceCode()) {
+            for (ExtBearerServiceCode be : this.bearerServiceList.getExtBearerServiceCode()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -253,7 +252,7 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
         if (this.ssList != null && this.ssList.getSSCode()!=null) {
             sb.append("ssList=[");
             boolean firstItem = true;
-            for (SSCodeImpl be : this.ssList.getSSCode()) {
+            for (SSCode be : this.ssList.getSSCode()) {
                 if (firstItem)
                     firstItem = false;
                 else

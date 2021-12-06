@@ -28,11 +28,11 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DPAnalysedInfoCriteriumImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultCallHandling;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -49,8 +49,10 @@ import io.netty.buffer.Unpooled;
  */
 public class DPAnalysedInfoCriteriumTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 65, 4, 4, -111, 34, 50, -12, 2, 1, 7, 4, 4, -111, 34, 50, -11, 2, 1, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+	public byte[] getData() {
+        return new byte[] { 48, 59, 4, 4, -111, 34, 50, -12, 2, 1, 7, 4, 4, -111, 34, 50, -11, 2, 1, 0, 48, 39, -96, 32, 48,
+                10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26,
+                -95, 3, 31, 32, 33 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -64,13 +66,13 @@ public class DPAnalysedInfoCriteriumTest {
         assertTrue(result.getResult() instanceof DPAnalysedInfoCriteriumImpl);
         DPAnalysedInfoCriteriumImpl prim = (DPAnalysedInfoCriteriumImpl)result.getResult(); 
         
-        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
-        ISDNAddressStringImpl dialledNumber = prim.getDialledNumber();
+        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
+        ISDNAddressString dialledNumber = prim.getDialledNumber();
         assertTrue(dialledNumber.getAddress().equals("22234"));
         assertEquals(dialledNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(dialledNumber.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(prim.getServiceKey(), 7);
-        ISDNAddressStringImpl gsmSCFAddress = prim.getGsmSCFAddress();
+        ISDNAddressString gsmSCFAddress = prim.getGsmSCFAddress();
         assertTrue(gsmSCFAddress.getAddress().equals("22235"));
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
@@ -83,7 +85,7 @@ public class DPAnalysedInfoCriteriumTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(DPAnalysedInfoCriteriumImpl.class);
     	                
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         ISDNAddressStringImpl dialledNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22234");

@@ -19,10 +19,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive;
-
-import java.io.Serializable;
 
 /**
 *
@@ -37,10 +34,8 @@ DpSpecificCriteria {PARAMETERS-BOUND : bound} ::= CHOICE {
 -- When all digits are collected, the SSF reports the event to the SCF.
 -- The SCF may set a timer in the SSF for the No Answer event. If the user does not answer the call
 -- within the allotted time, the SSF reports the event to the SCF
-
 NumberOfDigits ::= INTEGER (1..255)
 -- Indicates the number of digits to be collected
-
 ApplicationTimer ::=INTEGER (0..2047)
 -- Used by the SCF to set a timer in the SSF. The timer is in seconds.
 </code>
@@ -49,7 +44,7 @@ ApplicationTimer ::=INTEGER (0..2047)
 * @author sergey vetyutnev
 *
 */
-public interface DpSpecificCriteria extends Serializable {
+public interface DpSpecificCriteria {
 
     Integer getNumberOfDigits();
 

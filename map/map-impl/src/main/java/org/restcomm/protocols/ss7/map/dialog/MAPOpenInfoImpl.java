@@ -22,8 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.dialog;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -57,26 +59,28 @@ public class MAPOpenInfoImpl {
 	protected static final int ERI_MSISDN_TAG = 0x02;
     protected static final int ERI_NLR_NO_TAG = 0x03;
 
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,index=-1)
-    private AddressStringImpl destReference;
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=false,index=-1)
-    private AddressStringImpl origReference;
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,index=-1, defaultImplementation = AddressStringImpl.class)
+    private AddressString destReference;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=false,index=-1, defaultImplementation = AddressStringImpl.class)
+    private AddressString origReference;
+    
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
 
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x02,constructed=false,index=-1)
-    private AddressStringImpl eriMsisdn;
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x03,constructed=false,index=-1)
-    private AddressStringImpl eriVlrNo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x02,constructed=false,index=-1, defaultImplementation = AddressStringImpl.class)
+    private AddressString eriMsisdn;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x03,constructed=false,index=-1, defaultImplementation = AddressStringImpl.class)
+    private AddressString eriVlrNo;
 
-    public AddressStringImpl getDestReference() {
+    public AddressString getDestReference() {
         return this.destReference;
     }
 
-    public AddressStringImpl getOrigReference() {
+    public AddressString getOrigReference() {
         return this.origReference;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 
@@ -84,31 +88,31 @@ public class MAPOpenInfoImpl {
         return this.eriMsisdn!=null;
     }
 
-    public AddressStringImpl getEriMsisdn() {
+    public AddressString getEriMsisdn() {
         return eriMsisdn;
     }
 
-    public AddressStringImpl getEriVlrNo() {
+    public AddressString getEriVlrNo() {
         return eriVlrNo;
     }
 
-    public void setDestReference(AddressStringImpl destReference) {
+    public void setDestReference(AddressString destReference) {
         this.destReference = destReference;
     }
 
-    public void setOrigReference(AddressStringImpl origReference) {
+    public void setOrigReference(AddressString origReference) {
         this.origReference = origReference;
     }
 
-    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 
-    public void setEriMsisdn(AddressStringImpl eriMsisdn) {
+    public void setEriMsisdn(AddressString eriMsisdn) {
         this.eriMsisdn = eriMsisdn;
     }
 
-    public void setEriVlrNo(AddressStringImpl eriVlrNo) {
+    public void setEriVlrNo(AddressString eriVlrNo) {
         this.eriVlrNo = eriVlrNo;
     }
 

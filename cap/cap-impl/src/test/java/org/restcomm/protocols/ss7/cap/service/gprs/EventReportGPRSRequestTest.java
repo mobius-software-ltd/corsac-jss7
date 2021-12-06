@@ -29,23 +29,24 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.EsiGprs.PdpContextChangeOfPositionSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.EsiGprs.PdpContextChangeOfPositionSpecificInformationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeodeticInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentityImpl;
+import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeodeticInformationImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RAIdentityImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LSAIdentityImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -134,13 +135,13 @@ public class EventReportGPRSRequestTest {
         assertNull(prim.getMiscGPRSInfo().getDpAssignment());
         assertEquals(prim.getMiscGPRSInfo().getMessageType(), MiscCallInfoMessageType.request);
 
-        assertNotNull(prim.getGPRSEventSpecificInformation().getPdpContextchangeOfPositionSpecificInformation()
+        assertNotNull(prim.getGPRSEventSpecificInformation().getPdpContextChangeOfPositionSpecificInformation()
                 .getLocationInformationGPRS());
-        ISDNAddressStringImpl sgsn = prim.getGPRSEventSpecificInformation().getPdpContextchangeOfPositionSpecificInformation()
+        ISDNAddressString sgsn = prim.getGPRSEventSpecificInformation().getPdpContextChangeOfPositionSpecificInformation()
                 .getLocationInformationGPRS().getSGSNNumber();
         assertTrue(sgsn.getAddress().equals("553496629995"));
 
-        assertNull(prim.getGPRSEventSpecificInformation().getPdpContextchangeOfPositionSpecificInformation()
+        assertNull(prim.getGPRSEventSpecificInformation().getPdpContextChangeOfPositionSpecificInformation()
                 .getQualityOfService());
 
     }

@@ -29,19 +29,21 @@ import static org.testng.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeaturesImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeatures;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.RegionalSubscriptionResponse;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SupportedFeaturesImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -57,8 +59,8 @@ import io.netty.buffer.Unpooled;
  */
 public class InsertSubscriberDataResponseTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 87, -95, 3, 4, 1, 16, -94, 3, 4, 1, 38, -93, 3, 4, 1, 0, -124, 5, 4, 74, -43, 85, 80, -123, 1, 1, -122, 2, 4, -16, -89, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -120, 2, 1, -2, -119, 5, 6, 85, 85, 85, 64 };
+	public byte[] getData() {
+        return new byte[] { 48, 81, -95, 3, 4, 1, 16, -94, 3, 4, 1, 38, -93, 3, 4, 1, 0, -124, 5, 4, 74, -43, 85, 80, -123, 1, 1, -122, 2, 4, -16, -89, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -120, 2, 1, -2, -119, 5, 6, 85, 85, 85, 64 };
     };
 
     public byte[] getData1() {
@@ -78,27 +80,27 @@ public class InsertSubscriberDataResponseTest {
         InsertSubscriberDataResponseImpl prim = (InsertSubscriberDataResponseImpl)result.getResult();
         
         // teleserviceList
-        List<ExtTeleserviceCodeImpl> teleserviceList = prim.getTeleserviceList();
+        List<ExtTeleserviceCode> teleserviceList = prim.getTeleserviceList();
         assertNotNull(teleserviceList);
         assertEquals(teleserviceList.size(), 1);
-        ExtTeleserviceCodeImpl extTeleserviceCode = teleserviceList.get(0);
+        ExtTeleserviceCode extTeleserviceCode = teleserviceList.get(0);
         assertEquals(extTeleserviceCode.getTeleserviceCodeValue(), TeleserviceCodeValue.allSpeechTransmissionServices);
 
         // bearerServiceList
-        List<ExtBearerServiceCodeImpl> bearerServiceList = prim.getBearerServiceList();
+        List<ExtBearerServiceCode> bearerServiceList = prim.getBearerServiceList();
         assertNotNull(bearerServiceList);
         assertEquals(bearerServiceList.size(), 1);
-        ExtBearerServiceCodeImpl extBearerServiceCode = bearerServiceList.get(0);
+        ExtBearerServiceCode extBearerServiceCode = bearerServiceList.get(0);
         assertEquals(extBearerServiceCode.getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_9600bps);
 
         // ssList
-        List<SSCodeImpl> ssList = prim.getSSList();
+        List<SSCode> ssList = prim.getSSList();
         assertNotNull(ssList);
         assertEquals(ssList.size(), 1);
-        SSCodeImpl ssCode = ssList.get(0);
+        SSCode ssCode = ssList.get(0);
         assertEquals(ssCode.getSupplementaryCodeValue(), SupplementaryCodeValue.allSS);
 
-        ODBGeneralDataImpl odbGeneralData = prim.getODBGeneralData();
+        ODBGeneralData odbGeneralData = prim.getODBGeneralData();
         assertTrue(!odbGeneralData.getAllOGCallsBarred());
         assertTrue(odbGeneralData.getInternationalOGCallsBarred());
         assertTrue(!odbGeneralData.getInternationalOGCallsNotToHPLMNCountryBarred());
@@ -131,7 +133,7 @@ public class InsertSubscriberDataResponseTest {
 
         assertEquals(prim.getRegionalSubscriptionResponse(), RegionalSubscriptionResponse.tooManyZoneCodes);
 
-        SupportedCamelPhasesImpl supportedCamelPhases = prim.getSupportedCamelPhases();
+        SupportedCamelPhases supportedCamelPhases = prim.getSupportedCamelPhases();
         assertTrue(supportedCamelPhases.getPhase1Supported());
         assertTrue(supportedCamelPhases.getPhase2Supported());
         assertTrue(supportedCamelPhases.getPhase3Supported());
@@ -140,7 +142,7 @@ public class InsertSubscriberDataResponseTest {
         assertNotNull(prim.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
 
-        OfferedCamel4CSIsImpl offeredCamel4CSIs = prim.getOfferedCamel4CSIs();
+        OfferedCamel4CSIs offeredCamel4CSIs = prim.getOfferedCamel4CSIs();
         assertTrue(offeredCamel4CSIs.getDCsi());
         assertTrue(offeredCamel4CSIs.getMgCsi());
         assertTrue(offeredCamel4CSIs.getMtSmsCsi());
@@ -149,7 +151,7 @@ public class InsertSubscriberDataResponseTest {
         assertTrue(offeredCamel4CSIs.getTCsi());
         assertTrue(offeredCamel4CSIs.getVtCsi());
 
-        SupportedFeaturesImpl supportedFeatures = prim.getSupportedFeatures();
+        SupportedFeatures supportedFeatures = prim.getSupportedFeatures();
         assertTrue(!supportedFeatures.getOdbAllApn());
         assertTrue(supportedFeatures.getOdbHPLMNApn());
         assertTrue(!supportedFeatures.getOdbVPLMNApn());
@@ -248,17 +250,17 @@ public class InsertSubscriberDataResponseTest {
     	// Start ISD Response Vesrion 3 Test
 
         // teleserviceList
-        ArrayList<ExtTeleserviceCodeImpl> teleserviceList = new ArrayList<ExtTeleserviceCodeImpl>();
+        List<ExtTeleserviceCode> teleserviceList = new ArrayList<ExtTeleserviceCode>();
         ExtTeleserviceCodeImpl extTeleservice = new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allSpeechTransmissionServices);
         teleserviceList.add(extTeleservice);
 
         // bearerServiceList
-        ArrayList<ExtBearerServiceCodeImpl> bearerServiceList = new ArrayList<ExtBearerServiceCodeImpl>();
+        List<ExtBearerServiceCode> bearerServiceList = new ArrayList<ExtBearerServiceCode>();
         ExtBearerServiceCodeImpl extBearerServiceCode = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
         bearerServiceList.add(extBearerServiceCode);
 
         // ssList
-        ArrayList<SSCodeImpl> ssList = new ArrayList<SSCodeImpl>();
+        List<SSCode> ssList = new ArrayList<SSCode>();
         SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.allSS);
         ssList.add(ssCode);
 
@@ -270,7 +272,7 @@ public class InsertSubscriberDataResponseTest {
 
         SupportedCamelPhasesImpl supportedCamelPhases = new SupportedCamelPhasesImpl(true, true, true, true);
 
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         OfferedCamel4CSIsImpl offeredCamel4CSIs = new OfferedCamel4CSIsImpl(true, true, true, true, true, true, true);
 

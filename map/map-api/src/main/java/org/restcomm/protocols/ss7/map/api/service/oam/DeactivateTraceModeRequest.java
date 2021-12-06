@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.oam;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -47,12 +47,12 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  */
 public interface DeactivateTraceModeRequest extends OamMessage {
 
-    IMSIImpl getImsi();
+    IMSI getImsi();
 
-    TraceReferenceImpl getTraceReference();
+    TraceReference getTraceReference();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
-    TraceReference2Impl getTraceReference2();
+    TraceReference2 getTraceReference2();
 
 }

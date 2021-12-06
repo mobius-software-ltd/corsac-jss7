@@ -57,20 +57,21 @@ import org.restcomm.protocols.ss7.map.api.errors.RoamingNotAllowedCause;
 import org.restcomm.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
 import org.restcomm.protocols.ss7.map.api.errors.UnauthorizedLCSClientDiagnostic;
 import org.restcomm.protocols.ss7.map.api.errors.UnknownSubscriberDiagnostic;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
-import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.FailureCauseImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifierImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpduImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpdu;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TeleserviceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSStatusImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.DataCodingSchemeImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.FailureCauseImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.ProtocolIdentifierImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.SmsDeliverReportTpduImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.UserDataImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorImpl;
@@ -78,7 +79,6 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -92,26 +92,26 @@ import io.netty.buffer.Unpooled;
  */
 public class MAPErrorMessageTest {
 	
-	byte[] dataExtContainerFull = { (byte)-93, 55, 2, 1, 1, 2, 1, 36, 48, 47, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33 };
+	byte[] dataExtContainerFull = { (byte)-93, 49, 2, 1, 1, 2, 1, 36, 48, 41, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33 };
     byte[] dataSMDeliveryFailure = { (byte)-93, 11, 2, 1, 1, 2, 1, 32, 48, 3, 10, 1, 5 };
-    byte[] dataSMDeliveryFailureFull = {(byte)-93, 74, 2, 1, 1, 2, 1, 32, 48, 66, 10, 1, 4, 4, 14, 0, (byte)-43, 7, 127, (byte)-10, 8, 1, 2, 0, 0, 0, 9, 9, 9, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33};
+    byte[] dataSMDeliveryFailureFull = {(byte)-93, 68, 2, 1, 1, 2, 1, 32, 48, 60, 10, 1, 4, 4, 14, 0, -43, 7, 127, -10, 8, 1, 2, 0, 0, 0, 9, 9, 9, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33};
     byte[] dataSMDeliveryFailureV1 = {(byte)-93, 9, 2, 1, 1, 2, 1, 32, 10, 1, 1};
     byte[] dataAbsentSubscriberSM = {(byte)-93, 11, 2, 1, 1, 2, 1, 6, 48, 3, 2, 1, 1};
-    byte[] dataAbsentSubscriberSMFull = {(byte)-93, 61, 2, 1, 1, 2, 1, 6, 48, 53, 2, 1, 0, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, (byte)-128, 1, 6 };
+    byte[] dataAbsentSubscriberSMFull = {(byte)-93, 55, 2, 1, 1, 2, 1, 6, 48, 47, 2, 1, 0, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 1, 6 };
     byte[] dataSystemFailure = {(byte)-93, 9, 2, 1, 1, 2, 1, 34, 10, 1, 0};
-    byte[] dataSystemFailureFull = {(byte)-93, 61, 2, 1, 1, 2, 1, 34, 48, 53, 10, 1, 2, (byte)-128, 1, 3, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33};
+    byte[] dataSystemFailureFull = {(byte)-93, 55, 2, 1, 1, 2, 1, 34, 48, 47, 10, 1, 2, (byte) 128, 1, 3, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33};
     byte[] dataCallBarred = {(byte)-93, 11, 2, 1, 1, 2, 1, 13, 48, 3, 10, 1, 1};
-    byte[] dataCallBarredFull = {(byte)-93, 60, 2, 1, 1, 2, 1, 13, 48, 52, 10, 1, 1, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, (byte)-127, 0};
-    byte[] dataFacilityNotSupFull = {(byte)-93, 59, 2, 1, 1, 2, 1, 21, 48, 51, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, (byte)-128, 0, (byte)-127, 0 };
-    byte[] dataUnknownSubscriberFull = {(byte)-93, 58, 2, 1, 1, 2, 1, 1, 48, 50, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, 10, 1, 1 };
-    byte[] dataSubscriberBusyForMTSMSFull = {(byte)-93, 57, 2, 1, 1, 2, 1, 31, 48, 49, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, 5, 0};
-    byte[] dataAbsentSubscriberFull = {(byte)-93, 58, 2, 1, 1, 2, 1, 27, 48, 50, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, (byte)-128, 1, 3};
+    byte[] dataCallBarredFull = {(byte)-93, 54, 2, 1, 1, 2, 1, 13, 48, 46, 10, 1, 1, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 129, 0};
+    byte[] dataFacilityNotSupFull = {(byte)-93, 53, 2, 1, 1, 2, 1, 21, 48, 45, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 0, (byte) 129, 0 };
+    byte[] dataUnknownSubscriberFull = {(byte)-93, 52, 2, 1, 1, 2, 1, 1, 48, 44, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, 10, 1, 1 };
+    byte[] dataSubscriberBusyForMTSMSFull = {(byte)-93, 51, 2, 1, 1, 2, 1, 31, 48, 43, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, 5, 0};
+    byte[] dataAbsentSubscriberFull = {(byte)-93, 52, 2, 1, 1, 2, 1, 27, 48, 44, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 1, 3};
     byte[] dataAbsentSubscriberV1 = {(byte)-93, 9, 2, 1, 1, 2, 1, 27, 1, 1, -1};
-    byte[] dataUnauthorizedLCSClientFull = {(byte)-93, 58, 2, 1, 1, 2, 1, 53, 48, 50, (byte)-128, 1, 2, (byte)-95, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33};
-    byte[] dataPositionMethodFailureFull = {(byte)-93, 58, 2, 1, 1, 2, 1, 54, 48, 50, (byte)-128, 1, 4, (byte)-95, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33};
-    byte[] dataBusySubscriberFull = {(byte)-93, 59, 2, 1, 1, 2, 1, 45, 48, 51, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, (byte)-128, 0, (byte)-127, 0};
-    byte[] dataCUGRejectFull = {(byte)-93, 58, 2, 1, 1, 2, 1, 15, 48, 50, 10, 1, 1, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33};
-    byte[] dataRoamingNotAllowedFull = {(byte)-93, 61, 2, 1, 1, 2, 1, 8, 48, 53, 10, 1, 0, 48, 45, (byte)-96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte)-95, 5, 4, 3, 31, 32, 33, (byte)-128, 1, 0};
+    byte[] dataUnauthorizedLCSClientFull = {(byte)-93, 52, 2, 1, 1, 2, 1, 53, 48, 44, (byte) 128, 1, 2, (byte) 161, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33};
+    byte[] dataPositionMethodFailureFull = {(byte)-93, 52, 2, 1, 1, 2, 1, 54, 48, 44, (byte) 128, 1, 4, (byte) 161, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33};
+    byte[] dataBusySubscriberFull = {(byte)-93, 53, 2, 1, 1, 2, 1, 45, 48, 45, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 0, (byte) 129, 0};
+    byte[] dataCUGRejectFull = {(byte)-93, 52, 2, 1, 1, 2, 1, 15, 48, 44, 10, 1, 1, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33};
+    byte[] dataRoamingNotAllowedFull = {(byte)-93, 55, 2, 1, 1, 2, 1, 8, 48, 47, 10, 1, 0, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 1, 0};
     byte[] dataSsErrorStatusFull = {(byte)-93, 11, 2, 1, 1, 2, 1, 17, 48, 3, 4, 1, 6};
     byte[] dataSsIncompatibilityFull = {(byte)-93, 17, 2, 1, 1, 2, 1, 20, 48, 9, (byte)-127, 1, 33, (byte)-125, 1, 17, (byte)-124, 1, 9};
     byte[] dataPwRegistrationFailureFull = {(byte)-93, 9, 2, 1, 1, 2, 1, 37, 10, 1, 2};
@@ -227,15 +227,15 @@ public class MAPErrorMessageTest {
         
         MAPErrorMessageExtensionContainerImpl errContainer=(MAPErrorMessageExtensionContainerImpl)re.getParameter();
         assertNotNull(errContainer.getExtensionContainer());        
-        MAPExtensionContainerImpl innerContainer =  errContainer.getExtensionContainer();
+        MAPExtensionContainer innerContainer =  errContainer.getExtensionContainer();
         assertNotNull(innerContainer.getPrivateExtensionList());
         assertNotNull(innerContainer.getPcsExtensions());
         assertEquals(innerContainer.getPrivateExtensionList().size(),3);
-        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(0).getData());
         assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
-        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(2).getData());
         
-        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        assertNotNull(innerContainer.getPcsExtensions()); 
 
         //SM FAILURE
         result=parser.decode(Unpooled.wrappedBuffer(dataSMDeliveryFailure));
@@ -277,16 +277,16 @@ public class MAPErrorMessageTest {
         assertNotNull(innerContainer.getPrivateExtensionList());
         assertNotNull(innerContainer.getPcsExtensions());
         assertEquals(innerContainer.getPrivateExtensionList().size(),3);
-        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(0).getData());
         assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
-        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(2).getData());
         
-        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        assertNotNull(innerContainer.getPcsExtensions()); 
         
         assertEquals(emSMDeliveryFailure.getSMEnumeratedDeliveryFailureCause(), SMEnumeratedDeliveryFailureCause.scCongestion);
         assertNotNull(emSMDeliveryFailure.getSignalInfo());
         assertNotNull(emSMDeliveryFailure.getExtensionContainer());
-        SmsDeliverReportTpduImpl tpdu = emSMDeliveryFailure.getSmsDeliverReportTpdu();
+        SmsDeliverReportTpdu tpdu = emSMDeliveryFailure.getSmsDeliverReportTpdu();
         assertEquals(tpdu.getFailureCause().getCode(), 0xd5);
         assertEquals(tpdu.getParameterIndicator().getCode(), 7);
         assertEquals(tpdu.getProtocolIdentifier().getCode(), 127);
@@ -351,11 +351,11 @@ public class MAPErrorMessageTest {
         assertNotNull(innerContainer.getPrivateExtensionList());
         assertNotNull(innerContainer.getPcsExtensions());
         assertEquals(innerContainer.getPrivateExtensionList().size(),3);
-        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(0).getData());
         assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
-        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(2).getData());
         
-        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        assertNotNull(innerContainer.getPcsExtensions()); 
         
         assertEquals(emAbsentSubscriberSMImpl.getAbsentSubscriberDiagnosticSM(),AbsentSubscriberDiagnosticSM.NoPagingResponseViaTheMSC);
         assertEquals(emAbsentSubscriberSMImpl.getAdditionalAbsentSubscriberDiagnosticSM(),AbsentSubscriberDiagnosticSM.GPRSDetached);
@@ -399,11 +399,11 @@ public class MAPErrorMessageTest {
         assertNotNull(innerContainer.getPrivateExtensionList());
         assertNotNull(innerContainer.getPcsExtensions());
         assertEquals(innerContainer.getPrivateExtensionList().size(),3);
-        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(0).getData());
         assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
-        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(2).getData());
         
-        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        assertNotNull(innerContainer.getPcsExtensions()); 
         
         assertEquals(emSystemFailure.getMapProtocolVersion(), 3);
         assertEquals(emSystemFailure.getNetworkResource(), NetworkResource.vlr);
@@ -448,11 +448,11 @@ public class MAPErrorMessageTest {
         assertNotNull(innerContainer.getPrivateExtensionList());
         assertNotNull(innerContainer.getPcsExtensions());
         assertEquals(innerContainer.getPrivateExtensionList().size(),3);
-        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(0).getData());
         assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
-        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(2).getData());
         
-        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        assertNotNull(innerContainer.getPcsExtensions()); 
         
         assertEquals(emCallBarred.getMapProtocolVersion(), 3);
         assertEquals(emCallBarred.getCallBarringCause(), CallBarringCause.operatorBarring);
@@ -478,11 +478,11 @@ public class MAPErrorMessageTest {
         assertNotNull(innerContainer.getPrivateExtensionList());
         assertNotNull(innerContainer.getPcsExtensions());
         assertEquals(innerContainer.getPrivateExtensionList().size(),3);
-        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(0).getData());
         assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
-        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(2).getData());
         
-        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        assertNotNull(innerContainer.getPcsExtensions()); 
         
         assertEquals((boolean) emFacilityNotSup.getShapeOfLocationEstimateNotSupported(), true);
         assertEquals((boolean) emFacilityNotSup.getNeededLcsCapabilityNotSupportedInServingNode(), true);
@@ -507,11 +507,11 @@ public class MAPErrorMessageTest {
         assertNotNull(innerContainer.getPrivateExtensionList());
         assertNotNull(innerContainer.getPcsExtensions());
         assertEquals(innerContainer.getPrivateExtensionList().size(),3);
-        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(0).getData());
         assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
-        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(2).getData());
         
-        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        assertNotNull(innerContainer.getPcsExtensions()); 
         
         assertEquals(emUnknownSubscriber.getUnknownSubscriberDiagnostic(), UnknownSubscriberDiagnostic.gprsSubscriptionUnknown);
         
@@ -535,11 +535,11 @@ public class MAPErrorMessageTest {
         assertNotNull(innerContainer.getPrivateExtensionList());
         assertNotNull(innerContainer.getPcsExtensions());
         assertEquals(innerContainer.getPrivateExtensionList().size(),3);
-        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(0).getData());
         assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
-        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(2).getData());
         
-        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        assertNotNull(innerContainer.getPcsExtensions()); 
         
         assertEquals((boolean) emSubscriberBusyForMtSms.getGprsConnectionSuspended(), true);
         
@@ -563,11 +563,11 @@ public class MAPErrorMessageTest {
         assertNotNull(innerContainer.getPrivateExtensionList());
         assertNotNull(innerContainer.getPcsExtensions());
         assertEquals(innerContainer.getPrivateExtensionList().size(),3);
-        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(0).getData());
         assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
-        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(2).getData());
         
-        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        assertNotNull(innerContainer.getPcsExtensions()); 
         
         assertEquals(emAbsentSubscriber.getAbsentSubscriberReason(), AbsentSubscriberReason.purgedMS);
         assertNull(emAbsentSubscriber.getMwdSet());
@@ -610,11 +610,11 @@ public class MAPErrorMessageTest {
         assertNotNull(innerContainer.getPrivateExtensionList());
         assertNotNull(innerContainer.getPcsExtensions());
         assertEquals(innerContainer.getPrivateExtensionList().size(),3);
-        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(0).getData());
         assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
-        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(2).getData());
         
-        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        assertNotNull(innerContainer.getPcsExtensions()); 
         
         assertEquals(emUnauthorizedLCSClient.getUnauthorizedLCSClientDiagnostic(),UnauthorizedLCSClientDiagnostic.callToClientNotSetup);
         
@@ -638,11 +638,11 @@ public class MAPErrorMessageTest {
         assertNotNull(innerContainer.getPrivateExtensionList());
         assertNotNull(innerContainer.getPcsExtensions());
         assertEquals(innerContainer.getPrivateExtensionList().size(),3);
-        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(0).getData());
         assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
-        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(2).getData());
         
-        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        assertNotNull(innerContainer.getPcsExtensions()); 
         
         assertEquals(emPositionMethodFailure.getPositionMethodFailureDiagnostic(),PositionMethodFailureDiagnostic.locationProcedureNotCompleted);
         
@@ -666,11 +666,11 @@ public class MAPErrorMessageTest {
         assertNotNull(innerContainer.getPrivateExtensionList());
         assertNotNull(innerContainer.getPcsExtensions());
         assertEquals(innerContainer.getPrivateExtensionList().size(),3);
-        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(0).getData());
         assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
-        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(2).getData());
         
-        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        assertNotNull(innerContainer.getPcsExtensions()); 
         
         assertTrue(emBusySubscriber.getCcbsPossible());
         assertTrue(emBusySubscriber.getCcbsBusy());
@@ -695,11 +695,11 @@ public class MAPErrorMessageTest {
         assertNotNull(innerContainer.getPrivateExtensionList());
         assertNotNull(innerContainer.getPcsExtensions());
         assertEquals(innerContainer.getPrivateExtensionList().size(),3);
-        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(0).getData());
         assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
-        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(2).getData());
         
-        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        assertNotNull(innerContainer.getPcsExtensions()); 
         
         assertEquals(emCUGReject.getCUGRejectCause(), CUGRejectCause.subscriberNotMemberOfCUG);
         
@@ -723,11 +723,11 @@ public class MAPErrorMessageTest {
         assertNotNull(innerContainer.getPrivateExtensionList());
         assertNotNull(innerContainer.getPcsExtensions());
         assertEquals(innerContainer.getPrivateExtensionList().size(),3);
-        assertTrue(innerContainer.getPrivateExtensionList().get(0).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(0).getData());
         assertNull(innerContainer.getPrivateExtensionList().get(1).getData());
-        assertTrue(innerContainer.getPrivateExtensionList().get(2).getData() instanceof ASNOctetString);
+        assertNotNull(innerContainer.getPrivateExtensionList().get(2).getData());
         
-        assertTrue(innerContainer.getPcsExtensions().getValue() instanceof ASNOctetString); 
+        assertNotNull(innerContainer.getPcsExtensions()); 
         
         assertEquals(emRoamingNotAllowed.getRoamingNotAllowedCause(), RoamingNotAllowedCause.plmnRoamingNotAllowed);
         assertEquals(emRoamingNotAllowed.getAdditionalRoamingNotAllowedCause(),AdditionalRoamingNotAllowedCause.supportedRATTypesNotAllowed);

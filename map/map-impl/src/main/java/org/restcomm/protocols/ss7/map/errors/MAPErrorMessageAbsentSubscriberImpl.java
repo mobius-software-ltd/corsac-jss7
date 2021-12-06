@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
-import org.restcomm.protocols.ss7.map.api.errors.ASNAbsentSubscriberReasonImpl;
 import org.restcomm.protocols.ss7.map.api.errors.AbsentSubscriberReason;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageAbsentSubscriber;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -40,7 +40,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageAbsentSubscriberImpl extends MAPErrorMessageImpl implements MAPErrorMessageAbsentSubscriber {
 	
-    private MAPExtensionContainerImpl extensionContainer;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private ASNAbsentSubscriberReasonImpl absentSubscriberReason;
@@ -51,7 +52,7 @@ public class MAPErrorMessageAbsentSubscriberImpl extends MAPErrorMessageImpl imp
      * @param extensionContainer
      * @param absentSubscriberReason
      */
-    public MAPErrorMessageAbsentSubscriberImpl(MAPExtensionContainerImpl extensionContainer,
+    public MAPErrorMessageAbsentSubscriberImpl(MAPExtensionContainer extensionContainer,
             AbsentSubscriberReason absentSubscriberReason) {
         super((long) MAPErrorCode.absentSubscriber);
 
@@ -74,7 +75,7 @@ public class MAPErrorMessageAbsentSubscriberImpl extends MAPErrorMessageImpl imp
         return this;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -85,7 +86,7 @@ public class MAPErrorMessageAbsentSubscriberImpl extends MAPErrorMessageImpl imp
         return this.absentSubscriberReason.getType();
     }
 
-    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 

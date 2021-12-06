@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -35,6 +35,5 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface SendEndSignalResponse extends MobilityMessage {
 
-	MAPExtensionContainerImpl getExtensionContainer();
-
+	MAPExtensionContainer getExtensionContainer();
 }

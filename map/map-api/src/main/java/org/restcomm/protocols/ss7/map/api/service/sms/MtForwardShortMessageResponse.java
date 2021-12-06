@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.sms;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -34,8 +34,7 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  */
 public interface MtForwardShortMessageResponse extends SmsMessage {
 
-    SmsSignalInfoImpl getSM_RP_UI();
+	SmsSignalInfo getSM_RP_UI();
 
-    MAPExtensionContainerImpl getExtensionContainer();
-
+    MAPExtensionContainer getExtensionContainer();
 }

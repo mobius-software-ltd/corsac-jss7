@@ -27,12 +27,7 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalSubscriptionsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GroupIdImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LongGroupIdImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceGroupCallDataImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -49,16 +44,21 @@ import io.netty.buffer.Unpooled;
  */
 public class VoiceGroupCallDataTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 66, 4, 3, -1, -1, -1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128, -127, 4, -11, -1, -1, -1 };
+	public byte[] getData() {
+        return new byte[] { 48, 60, 4, 3, -1, -1, -1, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3,
+                42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128,
+                -127, 4, -11, -1, -1, -1 };
     };
 
     public byte[] getData2() {
-        return new byte[] { 48, 60, 4, 3, -12, -1, -1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128 };
+        return new byte[] { 48, 54, 4, 3, -12, -1, -1, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6,
+                3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128 };
     };
 
     public byte[] getData3() {
-        return new byte[] { 48, 66, 4, 3, -1, -1, -1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128, -127, 4, -11, -1, -1, -1 };
+        return new byte[] { 48, 60, 4, 3, -1, -1, -1, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3,
+                42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128,
+                -127, 4, -11, -1, -1, -1 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -124,7 +124,7 @@ public class VoiceGroupCallDataTest {
     	parser.replaceClass(VoiceGroupCallDataImpl.class);
     	// Option 1
         GroupIdImpl groupId = new GroupIdImpl("4");
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         LongGroupIdImpl longGroupId = new LongGroupIdImpl("5");
         AdditionalSubscriptionsImpl additionalSubscriptions = new AdditionalSubscriptionsImpl(true, false, true);
         AdditionalInfoImpl additionalInfo = new AdditionalInfoImpl();

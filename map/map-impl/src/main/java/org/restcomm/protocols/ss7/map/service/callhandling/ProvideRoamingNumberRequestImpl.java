@@ -24,20 +24,30 @@ package org.restcomm.protocols.ss7.map.service.callhandling;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ASNEMLPPPriorityImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ProvideRoamingNumberRequest;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingAreaImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingArea;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
+import org.restcomm.protocols.ss7.map.primitives.ASNEMLPPPriorityImpl;
+import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.primitives.ExtExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.primitives.ExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PagingAreaImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -53,50 +63,50 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl implements ProvideRoamingNumberRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1,defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
-    private ISDNAddressStringImpl mscNumber;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString mscNumber;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
-    private ISDNAddressStringImpl msisdn;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString msisdn;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
-    private LMSIImpl lmsi;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1, defaultImplementation = LMSIImpl.class)
+    private LMSI lmsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=true,index=-1)
-    private ExternalSignalInfoImpl gsmBearerCapability;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=true,index=-1, defaultImplementation = ExternalSignalInfoImpl.class)
+    private ExternalSignalInfo gsmBearerCapability;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1)
-    private ExternalSignalInfoImpl networkSignalInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1, defaultImplementation = ExternalSignalInfoImpl.class)
+    private ExternalSignalInfo networkSignalInfo;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1)
     private ASNNull suppressionOfAnnouncement;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1)
-    private ISDNAddressStringImpl gmscAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString gmscAddress;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1)
-    private CallReferenceNumberImpl callReferenceNumber;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1, defaultImplementation = CallReferenceNumberImpl.class)
+    private CallReferenceNumber callReferenceNumber;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=false,index=-1)
     private ASNNull orInterrogation;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1)
-    private AlertingPatternImpl alertingPattern;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1, defaultImplementation = AlertingPatternImpl.class)
+    private AlertingPattern alertingPattern;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=false,index=-1)
     private ASNNull ccbsCall;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=false,index=-1)
-    private SupportedCamelPhasesImpl supportedCamelPhasesInInterrogatingNode;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=false,index=-1, defaultImplementation = SupportedCamelPhasesImpl.class)
+    private SupportedCamelPhases supportedCamelPhasesInInterrogatingNode;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=true,index=-1)
-    private ExtExternalSignalInfoImpl additionalSignalInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=true,index=-1, defaultImplementation = ExtExternalSignalInfoImpl.class)
+    private ExtExternalSignalInfo additionalSignalInfo;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=false,index=-1)
     private ASNNull orNotSupportedInGMSC;
@@ -110,14 +120,14 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=19,constructed=false,index=-1)
     private ASNNull suppressVtCsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=20,constructed=false,index=-1)
-    private OfferedCamel4CSIsImpl offeredCamel4CSIsInInterrogatingNode;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=20,constructed=false,index=-1, defaultImplementation = OfferedCamel4CSIsImpl.class)
+    private OfferedCamel4CSIs offeredCamel4CSIsInInterrogatingNode;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=21,constructed=false,index=-1)
     private ASNNull mtRoamingRetrySupported;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=22,constructed=true,index=-1)
-    private PagingAreaImpl pagingArea;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=22,constructed=true,index=-1, defaultImplementation = PagingAreaImpl.class)
+    private PagingArea pagingArea;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=23,constructed=false,index=-1)
     private ASNEMLPPPriorityImpl callPriority;
@@ -125,8 +135,8 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=24,constructed=false,index=-1)
     private ASNNull mtrfIndicator;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=25,constructed=false,index=-1)
-    private ISDNAddressStringImpl oldMSCNumber;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=25,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString oldMSCNumber;
     
     private long mapProtocolVersion;
 
@@ -134,14 +144,14 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     	this.mapProtocolVersion=3;
     }
     
-    public ProvideRoamingNumberRequestImpl(IMSIImpl imsi, ISDNAddressStringImpl mscNumber, ISDNAddressStringImpl msisdn, LMSIImpl lmsi,
-            ExternalSignalInfoImpl gsmBearerCapability, ExternalSignalInfoImpl networkSignalInfo, boolean suppressionOfAnnouncement,
-            ISDNAddressStringImpl gmscAddress, CallReferenceNumberImpl callReferenceNumber, boolean orInterrogation,
-            MAPExtensionContainerImpl extensionContainer, AlertingPatternImpl alertingPattern, boolean ccbsCall,
-            SupportedCamelPhasesImpl supportedCamelPhasesInInterrogatingNode, ExtExternalSignalInfoImpl additionalSignalInfo,
+    public ProvideRoamingNumberRequestImpl(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString msisdn, LMSI lmsi,
+    		ExternalSignalInfo gsmBearerCapability, ExternalSignalInfo networkSignalInfo, boolean suppressionOfAnnouncement,
+            ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber, boolean orInterrogation,
+            MAPExtensionContainer extensionContainer, AlertingPattern alertingPattern, boolean ccbsCall,
+            SupportedCamelPhases supportedCamelPhasesInInterrogatingNode, ExtExternalSignalInfo additionalSignalInfo,
             boolean orNotSupportedInGMSC, boolean prePagingSupported, boolean longFTNSupported, boolean suppressVtCsi,
-            OfferedCamel4CSIsImpl offeredCamel4CSIsInInterrogatingNode, boolean mtRoamingRetrySupported, PagingAreaImpl pagingArea,
-            EMLPPPriority callPriority, boolean mtrfIndicator, ISDNAddressStringImpl oldMSCNumber, long mapProtocolVersion) {
+            OfferedCamel4CSIs offeredCamel4CSIsInInterrogatingNode, boolean mtRoamingRetrySupported, PagingArea pagingArea,
+            EMLPPPriority callPriority, boolean mtrfIndicator, ISDNAddressString oldMSCNumber, long mapProtocolVersion) {
         super();
         this.imsi = imsi;
         this.mscNumber = mscNumber;
@@ -214,32 +224,32 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return this.imsi;
     }
 
     @Override
-    public ISDNAddressStringImpl getMscNumber() {
+    public ISDNAddressString getMscNumber() {
         return this.mscNumber;
     }
 
     @Override
-    public ISDNAddressStringImpl getMsisdn() {
+    public ISDNAddressString getMsisdn() {
         return this.msisdn;
     }
 
     @Override
-    public LMSIImpl getLmsi() {
+    public LMSI getLmsi() {
         return this.lmsi;
     }
 
     @Override
-    public ExternalSignalInfoImpl getGsmBearerCapability() {
+    public ExternalSignalInfo getGsmBearerCapability() {
         return this.gsmBearerCapability;
     }
 
     @Override
-    public ExternalSignalInfoImpl getNetworkSignalInfo() {
+    public ExternalSignalInfo getNetworkSignalInfo() {
         return this.networkSignalInfo;
     }
 
@@ -249,12 +259,12 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     }
 
     @Override
-    public ISDNAddressStringImpl getGmscAddress() {
+    public ISDNAddressString getGmscAddress() {
         return this.gmscAddress;
     }
 
     @Override
-    public CallReferenceNumberImpl getCallReferenceNumber() {
+    public CallReferenceNumber getCallReferenceNumber() {
         return this.callReferenceNumber;
     }
 
@@ -264,12 +274,12 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
     @Override
-    public AlertingPatternImpl getAlertingPattern() {
+    public AlertingPattern getAlertingPattern() {
         return this.alertingPattern;
     }
 
@@ -279,12 +289,12 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     }
 
     @Override
-    public SupportedCamelPhasesImpl getSupportedCamelPhasesInInterrogatingNode() {
+    public SupportedCamelPhases getSupportedCamelPhasesInInterrogatingNode() {
         return this.supportedCamelPhasesInInterrogatingNode;
     }
 
     @Override
-    public ExtExternalSignalInfoImpl getAdditionalSignalInfo() {
+    public ExtExternalSignalInfo getAdditionalSignalInfo() {
         return this.additionalSignalInfo;
     }
 
@@ -309,7 +319,7 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     }
 
     @Override
-    public OfferedCamel4CSIsImpl getOfferedCamel4CSIsInInterrogatingNode() {
+    public OfferedCamel4CSIs getOfferedCamel4CSIsInInterrogatingNode() {
         return this.offeredCamel4CSIsInInterrogatingNode;
     }
 
@@ -319,7 +329,7 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     }
 
     @Override
-    public PagingAreaImpl getPagingArea() {
+    public PagingArea getPagingArea() {
         return this.pagingArea;
     }
 
@@ -337,7 +347,7 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     }
 
     @Override
-    public ISDNAddressStringImpl getOldMSCNumber() {
+    public ISDNAddressString getOldMSCNumber() {
         return this.oldMSCNumber;
     }
 

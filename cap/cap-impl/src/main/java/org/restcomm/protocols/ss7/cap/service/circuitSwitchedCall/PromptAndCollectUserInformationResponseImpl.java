@@ -24,8 +24,9 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.Digits;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.PromptAndCollectUserInformationResponse;
+import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -41,13 +42,13 @@ public class PromptAndCollectUserInformationResponseImpl extends CircuitSwitched
         PromptAndCollectUserInformationResponse {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 0,constructed = false,index = -1)
-    public DigitsImpl digitsResponse;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 0,constructed = false,index = -1,defaultImplementation = DigitsImpl.class)
+    public Digits digitsResponse;
 
     public PromptAndCollectUserInformationResponseImpl() {
     }
 
-    public PromptAndCollectUserInformationResponseImpl(DigitsImpl digitsResponse) {
+    public PromptAndCollectUserInformationResponseImpl(Digits digitsResponse) {
         this.digitsResponse = digitsResponse;
     }
 
@@ -62,7 +63,7 @@ public class PromptAndCollectUserInformationResponseImpl extends CircuitSwitched
     }
 
     @Override
-    public DigitsImpl getDigitsResponse() {
+    public Digits getDigitsResponse() {
     	if(digitsResponse!=null)
     		digitsResponse.setIsGenericDigits();
     	

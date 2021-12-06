@@ -31,22 +31,23 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientExternalIDImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientExternalID;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientInternalID;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExternalClientImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExternalClient;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GMLCRestriction;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LCSInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LCSPrivacyClassImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MOLRClassImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LCSPrivacyClass;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MOLRClass;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.NotificationToMSUser;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ServiceTypeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ServiceType;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.lsm.LCSClientExternalIDImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -62,8 +63,61 @@ import io.netty.buffer.Unpooled;
  */
 public class LCSInformationTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, -126, 7, 41, -96, 6, 4, 4, -111, 34, 50, -11, -95, -126, 5, -128, 48, -126, 1, 92, 4, 1, 33, 4, 1, 10, -128, 1, 3, -95, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 6, 10, 1, 0, 10, 1, 1, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -92, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -91, 58, 48, 56, 2, 1, 1, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 48, -126, 1, 92, 4, 1, 96, 4, 1, 10, -128, 1, 3, -95, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 6, 10, 1, 0, 10, 1, 1, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -92, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -91, 58, 48, 56, 2, 1, 1, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 48, -126, 1, 92, 4, 1, 32, 4, 1, 10, -128, 1, 3, -95, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 6, 10, 1, 0, 10, 1, 1, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -92, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -91, 58, 48, 56, 2, 1, 1, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 48, -126, 1, 92, 4, 1, 16, 4, 1, 10, -128, 1, 3, -95, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 6, 10, 1, 0, 10, 1, 1, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -92, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -91, 58, 48, 56, 2, 1, 1, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 55, 48, 53, 4, 1, 33, 4, 1, 10, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -93, -126, 1, 96, 48, -126, 1, 92, 4, 1, 33, 4, 1, 10, -128, 1, 3, -95, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 6, 10, 1, 0, 10, 1, 1, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -92, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -91, 58, 48, 56, 2, 1, 1, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+	public byte[] getData() {
+        return new byte[] { 48, (byte) 130, 6, 111, (byte) 160, 6, 4, 4, (byte) 145, 34, 50, (byte) 245, (byte) 161, (byte) 130, 4, (byte) 240, 48, (byte) 130,
+                1, 56, 4, 1, 33, 4, 1, 10, (byte) 128, 1, 3, (byte) 161, 98, 48, 96, 48, 47, (byte) 128, 4, (byte) 145, 34, 34, (byte) 248, (byte) 161, 39,
+                (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161,
+                3, 31, 32, 33, (byte) 128, 1, 0, (byte) 129, 1, 3, (byte) 162, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42,
+                3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 162, 6, 10, 1, 0, 10, 1, 1, (byte) 163, 39, (byte) 160,
+                32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32,
+                33, (byte) 164, 98, 48, 96, 48, 47, (byte) 128, 4, (byte) 145, 34, 34, (byte) 248, (byte) 161, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11,
+                12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 1, 0, (byte) 129,
+                1, 3, (byte) 162, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23,
+                24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 165, 52, 48, 50, 2, 1, 1, (byte) 128, 1, 0, (byte) 129, 1, 3, (byte) 162, 39, (byte) 160, 32, 48,
+                10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, 48,
+                (byte) 130, 1, 56, 4, 1, 96, 4, 1, 10, (byte) 128, 1, 3, (byte) 161, 98, 48, 96, 48, 47, (byte) 128, 4, (byte) 145, 34, 34, (byte) 248,
+                (byte) 161, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25,
+                26, (byte) 161, 3, 31, 32, 33, (byte) 128, 1, 0, (byte) 129, 1, 3, (byte) 162, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
+                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 162, 6, 10, 1, 0, 10, 1, 1,
+                (byte) 163, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25,
+                26, (byte) 161, 3, 31, 32, 33, (byte) 164, 98, 48, 96, 48, 47, (byte) 128, 4, (byte) 145, 34, 34, (byte) 248, (byte) 161, 39, (byte) 160, 32,
+                48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33,
+                (byte) 128, 1, 0, (byte) 129, 1, 3, (byte) 162, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11,
+                6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 165, 52, 48, 50, 2, 1, 1, (byte) 128, 1, 0, (byte) 129, 1, 3,
+                (byte) 162, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25,
+                26, (byte) 161, 3, 31, 32, 33, 48, (byte) 130, 1, 56, 4, 1, 32, 4, 1, 10, (byte) 128, 1, 3, (byte) 161, 98, 48, 96, 48, 47, (byte) 128, 4,
+                (byte) 145, 34, 34, (byte) 248, (byte) 161, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6,
+                3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 1, 0, (byte) 129, 1, 3, (byte) 162, 39, (byte) 160, 32, 48, 10, 6,
+                3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 162,
+                6, 10, 1, 0, 10, 1, 1, (byte) 163, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3,
+                5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 164, 98, 48, 96, 48, 47, (byte) 128, 4, (byte) 145, 34, 34, (byte) 248,
+                (byte) 161, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25,
+                26, (byte) 161, 3, 31, 32, 33, (byte) 128, 1, 0, (byte) 129, 1, 3, (byte) 162, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
+                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 165, 52, 48, 50, 2, 1, 1, (byte) 128,
+                1, 0, (byte) 129, 1, 3, (byte) 162, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3,
+                5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, 48, (byte) 130, 1, 56, 4, 1, 16, 4, 1, 10, (byte) 128, 1, 3, (byte) 161, 98, 48, 96, 48,
+                47, (byte) 128, 4, (byte) 145, 34, 34, (byte) 248, (byte) 161, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42,
+                3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 1, 0, (byte) 129, 1, 3, (byte) 162, 39,
+                (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161,
+                3, 31, 32, 33, (byte) 162, 6, 10, 1, 0, 10, 1, 1, (byte) 163, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42,
+                3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 164, 98, 48, 96, 48, 47, (byte) 128, 4, (byte) 145, 34,
+                34, (byte) 248, (byte) 161, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21,
+                22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 1, 0, (byte) 129, 1, 3, (byte) 162, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11,
+                12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 165, 52, 48, 50, 2, 1,
+                1, (byte) 128, 1, 0, (byte) 129, 1, 3, (byte) 162, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48,
+                11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 162, 49, 48, 47, 4, 1, 33, 4, 1, 10, (byte) 160, 39, (byte) 160,
+                32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32,
+                33, (byte) 163, (byte) 130, 1, 60, 48, (byte) 130, 1, 56, 4, 1, 33, 4, 1, 10, (byte) 128, 1, 3, (byte) 161, 98, 48, 96, 48, 47, (byte) 128, 4,
+                (byte) 145, 34, 34, (byte) 248, (byte) 161, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6,
+                3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 128, 1, 0, (byte) 129, 1, 3, (byte) 162, 39, (byte) 160, 32, 48, 10, 6,
+                3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 162,
+                6, 10, 1, 0, 10, 1, 1, (byte) 163, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3,
+                5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 164, 98, 48, 96, 48, 47, (byte) 128, 4, (byte) 145, 34, 34, (byte) 248,
+                (byte) 161, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25,
+                26, (byte) 161, 3, 31, 32, 33, (byte) 128, 1, 0, (byte) 129, 1, 3, (byte) 162, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
+                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 165, 52, 48, 50, 2, 1, 1, (byte) 128,
+                1, 0, (byte) 129, 1, 3, (byte) 162, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3,
+                5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -78,22 +132,22 @@ public class LCSInformationTest {
         LCSInformationImpl prim = (LCSInformationImpl)result.getResult();
         
         // start gmlcList
-        List<ISDNAddressStringImpl> gmlcList = prim.getGmlcList();
+        List<ISDNAddressString> gmlcList = prim.getGmlcList();
         assertNotNull(gmlcList);
         assertEquals(gmlcList.size(), 1);
-        ISDNAddressStringImpl isdnAddressString = gmlcList.get(0);
+        ISDNAddressString isdnAddressString = gmlcList.get(0);
         assertTrue(isdnAddressString.getAddress().equals("22235"));
         assertEquals(isdnAddressString.getAddressNature(), AddressNature.international_number);
         assertEquals(isdnAddressString.getNumberingPlan(), NumberingPlan.ISDN);
         // end gmlcList
 
         // start lcsPrivacyExceptionList
-        List<LCSPrivacyClassImpl> lcsPrivacyExceptionList = prim.getLcsPrivacyExceptionList();
+        List<LCSPrivacyClass> lcsPrivacyExceptionList = prim.getLcsPrivacyExceptionList();
         assertNotNull(lcsPrivacyExceptionList);
         assertEquals(lcsPrivacyExceptionList.size(), 4);
-        LCSPrivacyClassImpl lcsPrivacyClass = lcsPrivacyExceptionList.get(0);
+        LCSPrivacyClass lcsPrivacyClass = lcsPrivacyExceptionList.get(0);
         assertEquals(lcsPrivacyClass.getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.cfu);
-        ExtSSStatusImpl ssStatus = lcsPrivacyClass.getSsStatus();
+        ExtSSStatus ssStatus = lcsPrivacyClass.getSsStatus();
         assertFalse(ssStatus.getBitA());
         assertFalse(ssStatus.getBitP());
         assertTrue(ssStatus.getBitQ());
@@ -101,13 +155,13 @@ public class LCSInformationTest {
 
         assertEquals(lcsPrivacyClass.getNotificationToMSUser(), NotificationToMSUser.locationNotAllowed);
 
-        List<ExternalClientImpl> externalClientList = lcsPrivacyClass.getExternalClientList();
+        List<ExternalClient> externalClientList = lcsPrivacyClass.getExternalClientList();
         assertNotNull(externalClientList);
         assertEquals(externalClientList.size(), 1);
-        ExternalClientImpl externalClient = externalClientList.get(0);
-        MAPExtensionContainerImpl extensionContainerExternalClient = externalClient.getExtensionContainer();
-        LCSClientExternalIDImpl clientIdentity = externalClient.getClientIdentity();
-        ISDNAddressStringImpl externalAddress = clientIdentity.getExternalAddress();
+        ExternalClient externalClient = externalClientList.get(0);
+        MAPExtensionContainer extensionContainerExternalClient = externalClient.getExtensionContainer();
+        LCSClientExternalID clientIdentity = externalClient.getClientIdentity();
+        ISDNAddressString externalAddress = clientIdentity.getExternalAddress();
         assertTrue(externalAddress.getAddress().equals("22228"));
         assertEquals(externalAddress.getAddressNature(), AddressNature.international_number);
         assertEquals(externalAddress.getNumberingPlan(), NumberingPlan.ISDN);
@@ -124,7 +178,7 @@ public class LCSInformationTest {
         assertEquals(plmnClientList.get(0), LCSClientInternalID.broadcastService);
         assertEquals(plmnClientList.get(1), LCSClientInternalID.oandMHPLMN);
 
-        List<ExternalClientImpl> extExternalClientList = lcsPrivacyClass.getExtExternalClientList();
+        List<ExternalClient> extExternalClientList = lcsPrivacyClass.getExtExternalClientList();
         assertNotNull(extExternalClientList);
         assertEquals(extExternalClientList.size(), 1);
         externalClient = extExternalClientList.get(0);
@@ -140,10 +194,10 @@ public class LCSInformationTest {
         assertNotNull(externalClient.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(externalClient.getExtensionContainer()));
 
-        List<ServiceTypeImpl> serviceTypeList = lcsPrivacyClass.getServiceTypeList();
+        List<ServiceType> serviceTypeList = lcsPrivacyClass.getServiceTypeList();
         assertNotNull(serviceTypeList);
         assertEquals(serviceTypeList.size(), 1);
-        ServiceTypeImpl serviceType = serviceTypeList.get(0);
+        ServiceType serviceType = serviceTypeList.get(0);
         assertEquals(serviceType.getServiceTypeIdentity(), 1);
         assertEquals(serviceType.getGMLCRestriction(), GMLCRestriction.gmlcList);
         assertEquals(serviceType.getNotificationToMSUser(), NotificationToMSUser.locationNotAllowed);
@@ -155,10 +209,10 @@ public class LCSInformationTest {
         // end lcsPrivacyExceptionList
 
         // start molrlist
-        List<MOLRClassImpl> molrList = prim.getMOLRList();
+        List<MOLRClass> molrList = prim.getMOLRList();
         assertNotNull(molrList);
         assertEquals(molrList.size(), 1);
-        MOLRClassImpl molrClass = molrList.get(0);
+        MOLRClass molrClass = molrList.get(0);
         assertEquals(molrClass.getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.cfu);
         assertFalse(molrClass.getSsStatus().getBitA());
         assertFalse(molrClass.getSsStatus().getBitP());
@@ -169,7 +223,7 @@ public class LCSInformationTest {
         // end testing molr list
 
         // start addLcsPrivacyExceptionList
-        List<LCSPrivacyClassImpl> addLcsPrivacyExceptionList = prim.getAddLcsPrivacyExceptionList();
+        List<LCSPrivacyClass> addLcsPrivacyExceptionList = prim.getAddLcsPrivacyExceptionList();
         assertNotNull(addLcsPrivacyExceptionList);
         assertEquals(addLcsPrivacyExceptionList.size(), 1);
         lcsPrivacyClass = addLcsPrivacyExceptionList.get(0);
@@ -241,18 +295,18 @@ public class LCSInformationTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(LCSInformationImpl.class);
     	
-        ArrayList<ISDNAddressStringImpl> gmlcList = new ArrayList<ISDNAddressStringImpl>();
+        List<ISDNAddressString> gmlcList = new ArrayList<ISDNAddressString>();
         ISDNAddressStringImpl isdnAddressString = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22235");
         gmlcList.add(isdnAddressString);
 
-        ArrayList<LCSPrivacyClassImpl> lcsPrivacyExceptionList = new ArrayList<LCSPrivacyClassImpl>();
+        List<LCSPrivacyClass> lcsPrivacyExceptionList = new ArrayList<LCSPrivacyClass>();
         SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.cfu);
         ExtSSStatusImpl ssStatus = new ExtSSStatusImpl(true, false, true, false);
         NotificationToMSUser notificationToMSUser = NotificationToMSUser.locationNotAllowed;
-        ArrayList<ExternalClientImpl> externalClientList = new ArrayList<ExternalClientImpl>();
+        List<ExternalClient> externalClientList = new ArrayList<ExternalClient>();
 
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         ISDNAddressStringImpl externalAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22228");
         LCSClientExternalIDImpl clientIdentity = new LCSClientExternalIDImpl(externalAddress, extensionContainer);
@@ -261,16 +315,16 @@ public class LCSInformationTest {
                 extensionContainer);
         externalClientList.add(externalClient);
 
-        ArrayList<LCSClientInternalID> plmnClientList = new ArrayList<LCSClientInternalID>();
+        List<LCSClientInternalID> plmnClientList = new ArrayList<LCSClientInternalID>();
         LCSClientInternalID lcsClientInternalIdOne = LCSClientInternalID.broadcastService;
         LCSClientInternalID lcsClientInternalIdTwo = LCSClientInternalID.oandMHPLMN;
         plmnClientList.add(lcsClientInternalIdOne);
         plmnClientList.add(lcsClientInternalIdTwo);
 
-        ArrayList<ExternalClientImpl> extExternalClientList = new ArrayList<ExternalClientImpl>();
+        List<ExternalClient> extExternalClientList = new ArrayList<ExternalClient>();
         extExternalClientList.add(externalClient);
 
-        ArrayList<ServiceTypeImpl> serviceTypeList = new ArrayList<ServiceTypeImpl>();
+        List<ServiceType> serviceTypeList = new ArrayList<ServiceType>();
         int serviceTypeIdentity = 1;
         ServiceTypeImpl serviceType = new ServiceTypeImpl(serviceTypeIdentity, gmlcRestriction, notificationToMSUser,
                 extensionContainer);
@@ -293,11 +347,11 @@ public class LCSInformationTest {
         lcsPrivacyExceptionList.add(lcsPrivacyClassThree);
         lcsPrivacyExceptionList.add(lcsPrivacyClassFour);
 
-        ArrayList<MOLRClassImpl> molrList = new ArrayList<MOLRClassImpl>();
+        List<MOLRClass> molrList = new ArrayList<MOLRClass>();
         MOLRClassImpl molrClass = new MOLRClassImpl(ssCode, ssStatus, extensionContainer);
         molrList.add(molrClass);
 
-        ArrayList<LCSPrivacyClassImpl> addLcsPrivacyExceptionList = new ArrayList<LCSPrivacyClassImpl>();
+        List<LCSPrivacyClass> addLcsPrivacyExceptionList = new ArrayList<LCSPrivacyClass>();
         addLcsPrivacyExceptionList.add(lcsPrivacyClassOne);
 
         LCSInformationImpl prim = new LCSInformationImpl(gmlcList, lcsPrivacyExceptionList, molrList,

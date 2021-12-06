@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -38,13 +38,13 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  */
 public interface ProvideRoamingNumberResponse extends CallHandlingMessage {
 
-     ISDNAddressStringImpl getRoamingNumber();
+	ISDNAddressString getRoamingNumber();
 
-     MAPExtensionContainerImpl getExtensionContainer();
+     MAPExtensionContainer getExtensionContainer();
 
      boolean getReleaseResourcesSupported();
 
-     ISDNAddressStringImpl getVmscAddress();
+     ISDNAddressString getVmscAddress();
 
      long getMapProtocolVersion();
 

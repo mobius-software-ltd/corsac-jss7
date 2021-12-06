@@ -23,10 +23,13 @@ package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PurgeMSRequest;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -42,15 +45,18 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class PurgeMSRequestImplV3 extends MobilityMessageImpl implements PurgeMSRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-	private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0, defaultImplementation = IMSIImpl.class)
+	private IMSI imsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private ISDNAddressStringImpl vlrNumber;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString vlrNumber;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
-    private ISDNAddressStringImpl sgsnNumber;
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString sgsnNumber;
+    
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
+    
     private long mapProtocolVersion;
 
     public PurgeMSRequestImplV3() {
@@ -62,8 +68,8 @@ public class PurgeMSRequestImplV3 extends MobilityMessageImpl implements PurgeMS
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public PurgeMSRequestImplV3(IMSIImpl imsi, ISDNAddressStringImpl vlrNumber, ISDNAddressStringImpl sgsnNumber,
-            MAPExtensionContainerImpl extensionContainer, long mapProtocolVersion) {
+    public PurgeMSRequestImplV3(IMSI imsi, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber,
+    		MAPExtensionContainer extensionContainer, long mapProtocolVersion) {
         super();
         this.imsi = imsi;
         this.vlrNumber = vlrNumber;
@@ -83,22 +89,22 @@ public class PurgeMSRequestImplV3 extends MobilityMessageImpl implements PurgeMS
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return this.imsi;
     }
 
     @Override
-    public ISDNAddressStringImpl getVlrNumber() {
+    public ISDNAddressString getVlrNumber() {
         return this.vlrNumber;
     }
 
     @Override
-    public ISDNAddressStringImpl getSgsnNumber() {
+    public ISDNAddressString getSgsnNumber() {
         return this.sgsnNumber;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

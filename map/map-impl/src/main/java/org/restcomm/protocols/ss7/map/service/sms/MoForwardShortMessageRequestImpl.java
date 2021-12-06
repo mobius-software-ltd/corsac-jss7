@@ -24,13 +24,15 @@ package org.restcomm.protocols.ss7.map.service.sms;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.sms.ForwardShortMessageRequest;
 import org.restcomm.protocols.ss7.map.api.service.sms.MoForwardShortMessageRequest;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DAImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OAImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DA;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OA;
+import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfo;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -48,35 +50,76 @@ public class MoForwardShortMessageRequestImpl extends SmsMessageImpl implements 
 	private static final long serialVersionUID = 1L;
 
 	@ASNChoise
-    private SM_RP_DAImpl sm_RP_DA;
+    private SM_RP_DAImpl sM_RP_DA;
 	
 	@ASNChoise
-    private SM_RP_OAImpl sm_RP_OA;
+    private SM_RP_OAImpl sM_RP_OA;
 	
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=2)
-	private SmsSignalInfoImpl sm_RP_UI;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=2, defaultImplementation = SmsSignalInfoImpl.class)
+	private SmsSignalInfo sm_RP_UI;
     
-	private MAPExtensionContainerImpl extensionContainer;
-    private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
+    
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = IMSIImpl.class)
+	private IMSI imsi;
 
     private ASNNull moreMessagesToSend;
 
     public MoForwardShortMessageRequestImpl() {
     }
 
-    public MoForwardShortMessageRequestImpl(SM_RP_DAImpl sm_RP_DA, SM_RP_OAImpl sm_RP_OA, SmsSignalInfoImpl sm_RP_UI,
-            MAPExtensionContainerImpl extensionContainer, IMSIImpl imsi) {
-        this.sm_RP_DA = sm_RP_DA;
-        this.sm_RP_OA = sm_RP_OA;
+    public MoForwardShortMessageRequestImpl(SM_RP_DA sM_RP_DA, SM_RP_OA sM_RP_OA, SmsSignalInfo sm_RP_UI,
+            MAPExtensionContainer extensionContainer, IMSI imsi) {
+    	if(sM_RP_DA instanceof SM_RP_DAImpl)
+        	this.sM_RP_DA=(SM_RP_DAImpl)sM_RP_DA;
+        else if(sM_RP_DA!=null) {
+        	if(sM_RP_DA.getIMSI()!=null)
+            	this.sM_RP_DA = new SM_RP_DAImpl(sM_RP_DA.getIMSI());
+            else if(sM_RP_DA.getLMSI()!=null)
+            	this.sM_RP_DA = new SM_RP_DAImpl(sM_RP_DA.getLMSI());
+            else if(sM_RP_DA.getServiceCentreAddressDA()!=null)
+            	this.sM_RP_DA = new SM_RP_DAImpl(sM_RP_DA.getServiceCentreAddressDA());
+        }
+        
+        if(sM_RP_OA instanceof SM_RP_OAImpl)
+        	this.sM_RP_OA=(SM_RP_OAImpl)sM_RP_OA;
+        else if(sM_RP_OA!=null) {
+        	this.sM_RP_OA = new SM_RP_OAImpl();
+            if(sM_RP_OA.getMsisdn()!=null)
+            	this.sM_RP_OA.setMsisdn(sM_RP_OA.getMsisdn());
+            else if(sM_RP_OA.getServiceCentreAddressOA()!=null)
+            	this.sM_RP_OA.setServiceCentreAddressOA(sM_RP_OA.getServiceCentreAddressOA());
+        }
+        
         this.sm_RP_UI = (SmsSignalInfoImpl) sm_RP_UI;
         this.extensionContainer = extensionContainer;
         this.imsi = imsi;
     }
     
-    public MoForwardShortMessageRequestImpl(SM_RP_DAImpl sM_RP_DA, SM_RP_OAImpl sM_RP_OA, SmsSignalInfoImpl sM_RP_UI,
+    public MoForwardShortMessageRequestImpl(SM_RP_DA sM_RP_DA, SM_RP_OA sM_RP_OA, SmsSignalInfo sM_RP_UI,
             boolean moreMessagesToSend) {
-        this.sm_RP_DA = sM_RP_DA;
-        this.sm_RP_OA = sM_RP_OA;
+    	if(sM_RP_DA instanceof SM_RP_DAImpl)
+        	this.sM_RP_DA=(SM_RP_DAImpl)sM_RP_DA;
+        else if(sM_RP_DA!=null) {
+        	if(sM_RP_DA.getIMSI()!=null)
+            	this.sM_RP_DA = new SM_RP_DAImpl(sM_RP_DA.getIMSI());
+            else if(sM_RP_DA.getLMSI()!=null)
+            	this.sM_RP_DA = new SM_RP_DAImpl(sM_RP_DA.getLMSI());
+            else if(sM_RP_DA.getServiceCentreAddressDA()!=null)
+            	this.sM_RP_DA = new SM_RP_DAImpl(sM_RP_DA.getServiceCentreAddressDA());
+        }
+        
+        if(sM_RP_OA instanceof SM_RP_OAImpl)
+        	this.sM_RP_OA=(SM_RP_OAImpl)sM_RP_OA;
+        else if(sM_RP_OA!=null) {
+        	this.sM_RP_OA = new SM_RP_OAImpl();
+            if(sM_RP_OA.getMsisdn()!=null)
+            	this.sM_RP_OA.setMsisdn(sM_RP_OA.getMsisdn());
+            else if(sM_RP_OA.getServiceCentreAddressOA()!=null)
+            	this.sM_RP_OA.setServiceCentreAddressOA(sM_RP_OA.getServiceCentreAddressOA());
+        }
+        
         this.sm_RP_UI = (SmsSignalInfoImpl) sM_RP_UI;
         
         if(moreMessagesToSend)
@@ -91,23 +134,23 @@ public class MoForwardShortMessageRequestImpl extends SmsMessageImpl implements 
         return MAPOperationCode.mo_forwardSM;
     }
 
-    public SM_RP_DAImpl getSM_RP_DA() {
-        return this.sm_RP_DA;
+    public SM_RP_DA getSM_RP_DA() {
+        return this.sM_RP_DA;
     }
 
-    public SM_RP_OAImpl getSM_RP_OA() {
-        return this.sm_RP_OA;
+    public SM_RP_OA getSM_RP_OA() {
+        return this.sM_RP_OA;
     }
 
-    public SmsSignalInfoImpl getSM_RP_UI() {
+    public SmsSignalInfo getSM_RP_UI() {
         return this.sm_RP_UI;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
-    public IMSIImpl getIMSI() {
+    public IMSI getIMSI() {
         return this.imsi;
     }
 
@@ -124,13 +167,13 @@ public class MoForwardShortMessageRequestImpl extends SmsMessageImpl implements 
             sb.append("DialogId=").append(this.getMAPDialog().getLocalDialogId());
         }
 
-        if (this.sm_RP_DA != null) {
+        if (this.sM_RP_DA != null) {
             sb.append(", sm_RP_DA=");
-            sb.append(this.sm_RP_DA.toString());
+            sb.append(this.sM_RP_DA.toString());
         }
-        if (this.sm_RP_OA != null) {
+        if (this.sM_RP_OA != null) {
             sb.append(", sm_RP_OA=");
-            sb.append(this.sm_RP_OA.toString());
+            sb.append(this.sM_RP_OA.toString());
         }
         if (this.sm_RP_UI != null) {
             sb.append(", sm_RP_UI=[");

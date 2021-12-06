@@ -24,8 +24,10 @@ package org.restcomm.protocols.ss7.cap.service.gprs;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.ApplyChargingGPRSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingCharacteristics;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -41,20 +43,20 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 public class ApplyChargingGPRSRequestImpl extends GprsMessageImpl implements ApplyChargingGPRSRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
-    private ChargingCharacteristicsImpl chargingCharacteristics;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1,defaultImplementation = ChargingCharacteristicsImpl.class)
+    private ChargingCharacteristics chargingCharacteristics;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
     private ASNInteger tariffSwitchInterval;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
-    private PDPIDImpl pdpID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1,defaultImplementation = PDPIDImpl.class)
+    private PDPID pdpID;
 
     public ApplyChargingGPRSRequestImpl() {
     }
 
-    public ApplyChargingGPRSRequestImpl(ChargingCharacteristicsImpl chargingCharacteristics, Integer tariffSwitchInterval,
-            PDPIDImpl pdpID) {
+    public ApplyChargingGPRSRequestImpl(ChargingCharacteristics chargingCharacteristics, Integer tariffSwitchInterval,
+            PDPID pdpID) {
         super();
         this.chargingCharacteristics = chargingCharacteristics;
         
@@ -67,7 +69,7 @@ public class ApplyChargingGPRSRequestImpl extends GprsMessageImpl implements App
     }
 
     @Override
-    public ChargingCharacteristicsImpl getChargingCharacteristics() {
+    public ChargingCharacteristics getChargingCharacteristics() {
         return this.chargingCharacteristics;
     }
 
@@ -80,7 +82,7 @@ public class ApplyChargingGPRSRequestImpl extends GprsMessageImpl implements App
     }
 
     @Override
-    public PDPIDImpl getPDPID() {
+    public PDPID getPDPID() {
         return this.pdpID;
     }
 

@@ -24,10 +24,11 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.ASNTimerIDImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.primitives.TimerID;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ResetTimerRequest;
+import org.restcomm.protocols.ss7.cap.primitives.ASNTimerIDImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -49,8 +50,8 @@ public class ResetTimerRequestImpl extends CircuitSwitchedCallMessageImpl implem
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
     private ASNInteger timerValue;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
     private ASNInteger callSegmentID;
@@ -58,7 +59,7 @@ public class ResetTimerRequestImpl extends CircuitSwitchedCallMessageImpl implem
     public ResetTimerRequestImpl() {
     }
 
-    public ResetTimerRequestImpl(TimerID timerID, int timerValue, CAPExtensionsImpl extensions, Integer callSegmentID) {
+    public ResetTimerRequestImpl(TimerID timerID, int timerValue, CAPExtensions extensions, Integer callSegmentID) {
     	if(timerID!=null) {
     		this.timerID = new ASNTimerIDImpl();
     		this.timerID.setType(timerID);
@@ -102,7 +103,7 @@ public class ResetTimerRequestImpl extends CircuitSwitchedCallMessageImpl implem
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 

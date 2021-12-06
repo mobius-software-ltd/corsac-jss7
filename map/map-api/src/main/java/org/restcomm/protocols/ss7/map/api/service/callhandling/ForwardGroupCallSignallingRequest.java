@@ -23,10 +23,10 @@
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AccessNetworkSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalInfo;
+import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfo;
 
 /**
  *
@@ -46,7 +46,7 @@ import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfoImpl;
  */
 public interface ForwardGroupCallSignallingRequest extends CallHandlingMessage {
 
-     IMSIImpl getImsi();
+     IMSI getImsi();
 
      boolean getUplinkRequestAck();
 
@@ -58,17 +58,17 @@ public interface ForwardGroupCallSignallingRequest extends CallHandlingMessage {
 
      boolean getUplinkReleaseCommand();
 
-     MAPExtensionContainerImpl getExtensionContainer();
+     MAPExtensionContainer getExtensionContainer();
 
      StateAttributes getStateAttributes();
 
      TalkerPriority getTalkerPriority();
 
-     AdditionalInfoImpl getAdditionalInfo();
+     AdditionalInfo getAdditionalInfo();
 
      boolean getEmergencyModeResetCommandFlag();
 
-     SmsSignalInfoImpl getSmRpUi();
+     SmsSignalInfo getSmRpUi();
 
      AccessNetworkSignalInfo getAnApdu();
 

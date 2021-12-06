@@ -29,7 +29,7 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
@@ -68,7 +68,8 @@ public class IstCommandResponseTest {
     }
 
     private byte[] getData2() {
-        return new byte[] { 48, 47, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 41, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42,
+                3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33 };
     }
 
     public byte[] getData1() {
@@ -110,7 +111,7 @@ public class IstCommandResponseTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         // extensionContainer
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         sri = new IstCommandResponseImpl(extensionContainer);
         data=getData2();
         buffer=parser.encode(sri);

@@ -24,7 +24,8 @@ package org.restcomm.protocols.ss7.cap.service.gprs;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.CancelGPRSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -39,19 +40,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class CancelGPRSRequestImpl extends GprsMessageImpl implements CancelGPRSRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-    private PDPIDImpl pdpID;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1,defaultImplementation = PDPIDImpl.class)
+    private PDPID pdpID;
 
     public CancelGPRSRequestImpl() {
     }
 
-    public CancelGPRSRequestImpl(PDPIDImpl pdpID) {
+    public CancelGPRSRequestImpl(PDPID pdpID) {
         super();
         this.pdpID = pdpID;
     }
 
     @Override
-    public PDPIDImpl getPDPID() {
+    public PDPID getPDPID() {
         return this.pdpID;
     }
 

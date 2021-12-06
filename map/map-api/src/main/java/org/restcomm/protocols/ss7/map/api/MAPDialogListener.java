@@ -26,9 +26,9 @@ import org.restcomm.protocols.ss7.map.api.dialog.MAPAbortProviderReason;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPAbortSource;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPNoticeProblemDiagnostic;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPRefuseReason;
-import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoiseImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 
 /**
@@ -46,28 +46,28 @@ public interface MAPDialogListener {
     /**
      * When T_BEGIN received. If MAP user rejects this dialog it should call MAPDialog.refuse()
      */
-    void onDialogRequest(MAPDialog mapDialog, AddressStringImpl destReference, AddressStringImpl origReference,
-    		MAPExtensionContainerImpl extensionContainer);
+    void onDialogRequest(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
+    		MAPExtensionContainer extensionContainer);
 
     /**
      * When T_BEGIN received. If MAP user rejects this dialog it should call This eveent is the onDialogRequest() method for
      * Ericsson-style ASN.1 syntax MAPDialog.refuse()
      */
-    void onDialogRequestEricsson(MAPDialog mapDialog, AddressStringImpl destReference, AddressStringImpl origReference,
-            AddressStringImpl eriMsisdn, AddressStringImpl eriVlrNo);
+    void onDialogRequestEricsson(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
+            AddressString eriMsisdn, AddressString eriVlrNo);
 
     /**
      * When T_CONTINUE or T_END received with dialogueResponse DialoguePDU (AARE-apdu) (dialog accepted) this is called before
      * ComponentPortion is called
      */
-    void onDialogAccept(MAPDialog mapDialog, MAPExtensionContainerImpl extensionContainer);
+    void onDialogAccept(MAPDialog mapDialog, MAPExtensionContainer extensionContainer);
 
     /**
      * When T_U_ABORT received as the response to T_BEGIN
      *
      */
     void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
-            ApplicationContextName alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer);
+            ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer);
 
     // void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason, MAPProviderError providerError,
     // ApplicationContextName alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer);
@@ -76,14 +76,14 @@ public interface MAPDialogListener {
      * When T_ABORT received NOT as the response to T_BEGIN
      *
      */
-    void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoiseImpl userReason, MAPExtensionContainerImpl extensionContainer);
+    void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoice userReason, MAPExtensionContainer extensionContainer);
 
     /**
      * When T_ABORT received NOT as the response to T_BEGIN
      *
      */
     void onDialogProviderAbort(MAPDialog mapDialog, MAPAbortProviderReason abortProviderReason,
-            MAPAbortSource abortSource, MAPExtensionContainerImpl extensionContainer);
+            MAPAbortSource abortSource, MAPExtensionContainer extensionContainer);
 
     /**
      * When T_CLOSE received If T_CLOSE is the response to T-BEGIN, onDialogRequest() if called first, then ComponentPortion is

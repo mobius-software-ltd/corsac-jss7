@@ -27,15 +27,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.service.oam.BMSCEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.GGSNEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MGWEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MMEEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MSCSEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.PGWEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.SGSNEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.SGWEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventListImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

@@ -24,12 +24,16 @@ package org.restcomm.protocols.ss7.map.service.mobility.faultRecovery;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.faultRecovery.RestoreDataRequest;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapabilityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapability;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.VLRCapabilityImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -45,15 +49,17 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class RestoreDataRequestImpl extends MobilityMessageImpl implements RestoreDataRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-    private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
-    private LMSIImpl lmsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = LMSIImpl.class)
+	private LMSI lmsi;
     
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1)
-    private VLRCapabilityImpl vlrCapability;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1, defaultImplementation = VLRCapabilityImpl.class)
+    private VLRCapability vlrCapability;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1)
     private ASNNull restorationIndicator;
@@ -61,7 +67,7 @@ public class RestoreDataRequestImpl extends MobilityMessageImpl implements Resto
     public RestoreDataRequestImpl() {
     }
 
-    public RestoreDataRequestImpl(IMSIImpl imsi, LMSIImpl lmsi, VLRCapabilityImpl vlrCapability, MAPExtensionContainerImpl extensionContainer, boolean restorationIndicator) {
+    public RestoreDataRequestImpl(IMSI imsi, LMSI lmsi, VLRCapability vlrCapability, MAPExtensionContainer extensionContainer, boolean restorationIndicator) {
         this.imsi = imsi;
         this.lmsi = lmsi;
         this.vlrCapability = vlrCapability;
@@ -80,22 +86,22 @@ public class RestoreDataRequestImpl extends MobilityMessageImpl implements Resto
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return this.imsi;
     }
 
     @Override
-    public LMSIImpl getLmsi() {
+    public LMSI getLmsi() {
         return this.lmsi;
     }
 
     @Override
-    public VLRCapabilityImpl getVLRCapability() {
+    public VLRCapability getVLRCapability() {
         return this.vlrCapability;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

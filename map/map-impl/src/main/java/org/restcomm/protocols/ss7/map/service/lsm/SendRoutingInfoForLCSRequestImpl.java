@@ -24,11 +24,13 @@ package org.restcomm.protocols.ss7.map.service.lsm;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
 import org.restcomm.protocols.ss7.map.api.service.lsm.SendRoutingInfoForLCSRequest;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.primitives.SubscriberIdentityWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -43,14 +45,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class SendRoutingInfoForLCSRequestImpl extends LsmMessageImpl implements SendRoutingInfoForLCSRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=0)
-    private ISDNAddressStringImpl mlcNumber;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=0, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString mlcNumber;
 
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=1)
     private SubscriberIdentityWrapperImpl targetMS;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
     /**
      *
@@ -63,7 +65,7 @@ public class SendRoutingInfoForLCSRequestImpl extends LsmMessageImpl implements 
      * @param targetMS
      * @param mlcNumber
      */
-    public SendRoutingInfoForLCSRequestImpl(ISDNAddressStringImpl mlcNumber, SubscriberIdentityImpl targetMS) {
+    public SendRoutingInfoForLCSRequestImpl(ISDNAddressString mlcNumber, SubscriberIdentity targetMS) {
         super();
         if(targetMS!=null)
         	this.targetMS = new SubscriberIdentityWrapperImpl(targetMS);
@@ -75,8 +77,8 @@ public class SendRoutingInfoForLCSRequestImpl extends LsmMessageImpl implements 
      * @param targetMS
      * @param mlcNumber
      */
-    public SendRoutingInfoForLCSRequestImpl(ISDNAddressStringImpl mlcNumber, SubscriberIdentityImpl targetMS,
-            MAPExtensionContainerImpl extensionContainer) {
+    public SendRoutingInfoForLCSRequestImpl(ISDNAddressString mlcNumber, SubscriberIdentity targetMS,
+    		MAPExtensionContainer extensionContainer) {
         this(mlcNumber, targetMS);
         this.extensionContainer = extensionContainer;
     }
@@ -94,7 +96,7 @@ public class SendRoutingInfoForLCSRequestImpl extends LsmMessageImpl implements 
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SendRoutingInforForLCSRequestIndication#getMLCNumber()
      */
-    public ISDNAddressStringImpl getMLCNumber() {
+    public ISDNAddressString getMLCNumber() {
         return this.mlcNumber;
     }
 
@@ -103,7 +105,7 @@ public class SendRoutingInfoForLCSRequestImpl extends LsmMessageImpl implements 
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SendRoutingInforForLCSRequestIndication#getTargetMS()
      */
-    public SubscriberIdentityImpl getTargetMS() {
+    public SubscriberIdentity getTargetMS() {
     	if(this.targetMS==null)
     		return null;
     	
@@ -115,7 +117,7 @@ public class SendRoutingInfoForLCSRequestImpl extends LsmMessageImpl implements 
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SendRoutingInforForLCSRequestIndication#getExtensionContainer()
      */
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

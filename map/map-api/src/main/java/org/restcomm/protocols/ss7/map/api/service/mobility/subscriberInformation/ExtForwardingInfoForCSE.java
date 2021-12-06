@@ -25,9 +25,9 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformatio
 import java.io.Serializable;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeature;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 
 /**
  *
@@ -49,12 +49,12 @@ Ext-ForwFeatureList ::= SEQUENCE SIZE (1..32) OF Ext-ForwFeature
  */
 public interface ExtForwardingInfoForCSE extends Serializable {
 
-	SSCodeImpl getSsCode();
+	SSCode getSsCode();
 
-    List<ExtForwFeatureImpl> getForwardingFeatureList();
+    List<ExtForwFeature> getForwardingFeatureList();
 
     boolean getNotificationToCSE();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
 }

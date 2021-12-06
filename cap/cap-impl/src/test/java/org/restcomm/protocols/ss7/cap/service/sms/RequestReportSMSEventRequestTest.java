@@ -30,11 +30,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEventImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEvent;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.SMSEventImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -81,9 +82,9 @@ public class RequestReportSMSEventRequestTest {
     	parser.replaceClass(RequestReportSMSEventRequestImpl.class);
     	
     	SMSEventImpl smsEvent = new SMSEventImpl(EventTypeSMS.oSmsSubmission, MonitorMode.notifyAndContinue);
-        List<SMSEventImpl> smsEvents = new ArrayList<SMSEventImpl>();
+        List<SMSEvent> smsEvents = new ArrayList<SMSEvent>();
         smsEvents.add(smsEvent);
-        CAPExtensionsImpl extensions = CAPExtensionsTest.createTestCAPExtensions();
+        CAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
         
         RequestReportSMSEventRequestImpl prim = new RequestReportSMSEventRequestImpl(smsEvents, extensions);
         byte[] rawData = this.getData();

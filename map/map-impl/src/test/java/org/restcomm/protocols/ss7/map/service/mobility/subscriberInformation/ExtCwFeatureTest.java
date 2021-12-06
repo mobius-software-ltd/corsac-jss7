@@ -6,11 +6,12 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ExtCwFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtSSStatusImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -35,10 +36,10 @@ public class ExtCwFeatureTest {
         assertTrue(result.getResult() instanceof ExtCwFeatureImpl);
         ExtCwFeatureImpl extCwFeature = (ExtCwFeatureImpl)result.getResult();
 
-        ExtBasicServiceCodeImpl extBasicServiceCode = extCwFeature.getBasicService();
+        ExtBasicServiceCode extBasicServiceCode = extCwFeature.getBasicService();
         assertEquals(extBasicServiceCode.getExtTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.allShortMessageServices);
 
-        ExtSSStatusImpl extSSStatus = extCwFeature.getSsStatus();
+        ExtSSStatus extSSStatus = extCwFeature.getSsStatus();
         assertTrue(extSSStatus.getBitQ());
         assertTrue(extSSStatus.getBitP());
         assertFalse(extSSStatus.getBitR());

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.primitives;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressAddressType;
 import org.testng.annotations.Test;

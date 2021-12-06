@@ -29,17 +29,16 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.AreaScopeImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
+import org.restcomm.protocols.ss7.map.api.service.oam.AreaScope;
 import org.restcomm.protocols.ss7.map.api.service.oam.JobType;
-import org.restcomm.protocols.ss7.map.api.service.oam.ListOfMeasurementsImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.LoggingDuration;
 import org.restcomm.protocols.ss7.map.api.service.oam.LoggingInterval;
-import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfigurationImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.ReportAmount;
 import org.restcomm.protocols.ss7.map.api.service.oam.ReportInterval;
-import org.restcomm.protocols.ss7.map.api.service.oam.ReportingTriggerImpl;
+import org.restcomm.protocols.ss7.map.primitives.GlobalCellIdImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -61,7 +60,9 @@ public class MDTConfigurationTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 90, 10, 1, 2, 48, 11, -96, 9, 4, 7, 33, -16, 16, 7, -48, 4, 87, 4, 4, 11, 12, 13, 14, -128, 1, 121, 10, 1, 20, -127, 1, 6, 2, 1, 10, -126, 1, 11, -125, 1, 4, -124, 1, 2, -91, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 84, 10, 1, 2, 48, 11, (byte) 160, 9, 4, 7, 33, (byte) 240, 16, 7, (byte) 208, 4, 87, 4, 4, 11, 12, 13, 14, (byte) 128, 1, 121,
+                10, 1, 20, (byte) 129, 1, 6, 2, 1, 10, (byte) 130, 1, 11, (byte) 131, 1, 4, (byte) 132, 1, 2, (byte) 165, 39, (byte) 160, 32, 48, 10, 6, 3, 42,
+                3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33 };
     }
 
     private byte[] getListOfMeasurements() {
@@ -133,10 +134,10 @@ public class MDTConfigurationTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        ArrayList<GlobalCellIdImpl> cgiList = new ArrayList<GlobalCellIdImpl>();
+        List<GlobalCellId> cgiList = new ArrayList<GlobalCellId>();
         GlobalCellIdImpl globalCellId = new GlobalCellIdImpl(120, 1, 2000, 1111); // int mcc, int mnc, int lac, int cellId
         cgiList.add(globalCellId);
-        AreaScopeImpl areaScope = new AreaScopeImpl(cgiList, null, null, null, null, null);
+        AreaScope areaScope = new AreaScopeImpl(cgiList, null, null, null, null, null);
         ListOfMeasurementsImpl listOfMeasurements = new ListOfMeasurementsImpl(getListOfMeasurements());
         ReportingTriggerImpl reportingTrigger = new ReportingTriggerImpl(121);
         asc = new MDTConfigurationImpl(JobType.traceOnly, areaScope, listOfMeasurements, reportingTrigger, ReportInterval.lte2048ms, ReportAmount.d64, 10, 11,

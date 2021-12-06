@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.map.errors;
 import org.restcomm.protocols.ss7.map.api.errors.AbsentSubscriberReason;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageAbsentSubscriber;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -83,7 +83,7 @@ MAPErrorMessageAbsentSubscriber {
     }
 
 	@Override
-	public MAPExtensionContainerImpl getExtensionContainer() {
+	public MAPExtensionContainer getExtensionContainer() {
 		return null;
 	}
 
@@ -93,7 +93,7 @@ MAPErrorMessageAbsentSubscriber {
 	}
 
 	@Override
-	public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {		
+	public void setExtensionContainer(MAPExtensionContainer extensionContainer) {		
 	}
 
 	@Override

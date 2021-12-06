@@ -15,18 +15,15 @@ import org.restcomm.protocols.ss7.map.api.MAPMessage;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.MAPProvider;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPAbortProviderReason;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPAbortSource;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPNoticeProblemDiagnostic;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPRefuseReason;
-import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoiseImpl;
+import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ActivateSSRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ActivateSSResponse;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.DeactivateSSRequest;
@@ -49,6 +46,10 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNo
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNotifyResponse;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSResponse;
+import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
@@ -104,7 +105,7 @@ public class UssdClientExample implements MAPDialogListener, MAPServiceSupplemen
         // The Charset is null, here we let system use default Charset (UTF-7 as
         // explained in GSM 03.38. However if MAP User wants, it can set its own
         // impl of Charset
-        USSDStringImpl ussdString = paramFact.createUSSDString(ussdMessage, null, null);
+        USSDString ussdString = paramFact.createUSSDString(ussdMessage, null, null);
 
         currentMapDialog.addProcessUnstructuredSSRequest(ussdDataCodingScheme, ussdString, alertingPattern, msisdn);
         // This will initiate the TC-BEGIN with INVOKE component
@@ -112,7 +113,7 @@ public class UssdClientExample implements MAPDialogListener, MAPServiceSupplemen
     }
 
     public void onProcessUnstructuredSSResponse(ProcessUnstructuredSSResponse ind) {
-        USSDStringImpl ussdString = ind.getUSSDString();
+        USSDString ussdString = ind.getUSSDString();
         try {
             ussdString.getString(null);
             // processing USSD response
@@ -172,30 +173,30 @@ public class UssdClientExample implements MAPDialogListener, MAPServiceSupplemen
 
     }
 
-    public void onDialogRequest(MAPDialog mapDialog, AddressStringImpl destReference, AddressStringImpl origReference,
-            MAPExtensionContainerImpl extensionContainer) {
+    public void onDialogRequest(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
+            MAPExtensionContainer extensionContainer) {
         // TODO Auto-generated method stub
 
     }
 
-    public void onDialogRequestEricsson(MAPDialog mapDialog, AddressStringImpl destReference, AddressStringImpl origReference,
-            AddressStringImpl eriImsi, AddressStringImpl eriVlrNo) {
+    public void onDialogRequestEricsson(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
+            AddressString eriImsi, AddressString eriVlrNo) {
         // TODO Auto-generated method stub
 
     }
 
-    public void onDialogAccept(MAPDialog mapDialog, MAPExtensionContainerImpl extensionContainer) {
+    public void onDialogAccept(MAPDialog mapDialog, MAPExtensionContainer extensionContainer) {
         // TODO Auto-generated method stub
 
     }
 
-    public void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoiseImpl userReason, MAPExtensionContainerImpl extensionContainer) {
+    public void onDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoice userReason, MAPExtensionContainer extensionContainer) {
         // TODO Auto-generated method stub
 
     }
 
     public void onDialogProviderAbort(MAPDialog mapDialog, MAPAbortProviderReason abortProviderReason,
-            MAPAbortSource abortSource, MAPExtensionContainerImpl extensionContainer) {
+            MAPAbortSource abortSource, MAPExtensionContainer extensionContainer) {
         // TODO Auto-generated method stub
 
     }
@@ -220,7 +221,7 @@ public class UssdClientExample implements MAPDialogListener, MAPServiceSupplemen
 
     @Override
     public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
-            ApplicationContextName alternativeApplicationContext, MAPExtensionContainerImpl extensionContainer) {
+            ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
         // TODO Auto-generated method stub
 
     }

@@ -29,11 +29,12 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DAImpl;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -76,7 +77,7 @@ public class SM_RP_DATest {
         assertTrue(result.getResult() instanceof SM_RP_DAImpl);
         SM_RP_DAImpl da = (SM_RP_DAImpl)result.getResult();
         
-        AddressStringImpl nnm = da.getServiceCentreAddressDA();
+        AddressString nnm = da.getServiceCentreAddressDA();
         assertEquals(nnm.getAddressNature(), AddressNature.international_number);
         assertEquals(nnm.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(nnm.getAddress(), "121359609600");
@@ -95,7 +96,7 @@ public class SM_RP_DATest {
         assertTrue(result.getResult() instanceof SM_RP_DAImpl);
         da = (SM_RP_DAImpl)result.getResult();
 
-        IMSIImpl imsi = da.getIMSI();
+        IMSI imsi = da.getIMSI();
         assertEquals(imsi.getData(), "041040222161547");
         
         rawData = getEncodedData_No();

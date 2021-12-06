@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -43,12 +43,11 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface PerformSubsequentHandoverRequest extends MobilityMessage {
 
-    GlobalCellIdImpl getTargetCellId();
+    GlobalCellId getTargetCellId();
 
-    GlobalCellIdImpl getServingCellId();
+    GlobalCellId getServingCellId();
 
-    ISDNAddressStringImpl getTargetMSCNumber();
+    ISDNAddressString getTargetMSCNumber();
 
     ClassmarkInfo getClassmarkInfo();
-
 }

@@ -25,7 +25,8 @@ package org.restcomm.protocols.ss7.cap.service.sms;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.sms.FurnishChargingInformationSMSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELSequence1SMSImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELSequence1SMS;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.FCIBCCCAMELSequence1SMSImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -41,18 +42,18 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class FurnishChargingInformationSMSRequestImpl extends SmsMessageImpl implements FurnishChargingInformationSMSRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index=-1)
-	private FCIBCCCAMELSequence1SMSImpl FCIBCCCAMELsequence1;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index=-1,defaultImplementation = FCIBCCCAMELSequence1SMSImpl.class)
+	private FCIBCCCAMELSequence1SMS FCIBCCCAMELsequence1;
 
     public FurnishChargingInformationSMSRequestImpl() {
     }
 
-    public FurnishChargingInformationSMSRequestImpl(FCIBCCCAMELSequence1SMSImpl fciBCCCAMELsequence1) {
+    public FurnishChargingInformationSMSRequestImpl(FCIBCCCAMELSequence1SMS fciBCCCAMELsequence1) {
         this.FCIBCCCAMELsequence1 = fciBCCCAMELsequence1;
     }
 
     @Override
-    public FCIBCCCAMELSequence1SMSImpl getFCIBCCCAMELsequence1() {
+    public FCIBCCCAMELSequence1SMS getFCIBCCCAMELsequence1() {
         return this.FCIBCCCAMELsequence1;
     }
 

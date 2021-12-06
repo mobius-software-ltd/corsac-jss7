@@ -25,7 +25,8 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.FurnishChargingInformationRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELSequence1Impl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELSequence1;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.FCIBCCCAMELSequence1Impl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -41,13 +42,13 @@ public class FurnishChargingInformationRequestImpl extends CircuitSwitchedCallMe
         FurnishChargingInformationRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
-    private FCIBCCCAMELSequence1Impl FCIBCCCAMELsequence1;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1,defaultImplementation = FCIBCCCAMELSequence1Impl.class)
+    private FCIBCCCAMELSequence1 FCIBCCCAMELsequence1;
 
     public FurnishChargingInformationRequestImpl() {
     }
 
-    public FurnishChargingInformationRequestImpl(FCIBCCCAMELSequence1Impl FCIBCCCAMELsequence1) {
+    public FurnishChargingInformationRequestImpl(FCIBCCCAMELSequence1 FCIBCCCAMELsequence1) {
         this.FCIBCCCAMELsequence1 = FCIBCCCAMELsequence1;
     }
 
@@ -62,7 +63,7 @@ public class FurnishChargingInformationRequestImpl extends CircuitSwitchedCallMe
     }
 
     @Override
-    public FCIBCCCAMELSequence1Impl getFCIBCCCAMELsequence1() {
+    public FCIBCCCAMELSequence1 getFCIBCCCAMELsequence1() {
         return this.FCIBCCCAMELsequence1;
     }
 

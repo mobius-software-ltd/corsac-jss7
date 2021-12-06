@@ -24,12 +24,12 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformatio
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNSubaddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNSubaddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 
 /**
  *
@@ -60,20 +60,20 @@ Ext-NoRepCondTime ::= INTEGER (1..100)
  */
 public interface ModificationRequestForCFInfo extends Serializable {
 
-	SSCodeImpl getSsCode();
+	SSCode getSsCode();
 
-    ExtBasicServiceCodeImpl getBasicService();
+    ExtBasicServiceCode getBasicService();
 
-    ExtSSStatusImpl getSsStatus();
+    ExtSSStatus getSsStatus();
 
-    AddressStringImpl getForwardedToNumber();
+    AddressString getForwardedToNumber();
 
-    ISDNSubaddressStringImpl getForwardedToSubaddress();
+    ISDNSubaddressString getForwardedToSubaddress();
 
     Integer getNoReplyConditionTime();
 
     ModificationInstruction getModifyNotificationToCSE();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
 }

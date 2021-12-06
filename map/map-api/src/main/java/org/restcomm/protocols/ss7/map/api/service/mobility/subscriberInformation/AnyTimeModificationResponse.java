@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -52,22 +52,22 @@ public interface AnyTimeModificationResponse extends MobilityMessage {
 
     ExtSSInfoForCSE getSsInfoForCSE();
 
-    CAMELSubscriptionInfoImpl getCamelSubscriptionInfo();
+    CAMELSubscriptionInfo getCamelSubscriptionInfo();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
-    ODBInfoImpl getOdbInfo();
+    ODBInfo getOdbInfo();
 
-    CallWaitingDataImpl getCwData();
+    CallWaitingData getCwData();
 
-    CallHoldDataImpl getChData();
+    CallHoldData getChData();
 
-    ClipDataImpl getClipData();
+    ClipData getClipData();
 
-    ClirDataImpl getClirData();
+    ClirData getClirData();
 
-    EctDataImpl getEctData();
+    EctData getEctData();
 
-    AddressStringImpl getServiceCentreAddress();
+    AddressString getServiceCentreAddress();
 
 }

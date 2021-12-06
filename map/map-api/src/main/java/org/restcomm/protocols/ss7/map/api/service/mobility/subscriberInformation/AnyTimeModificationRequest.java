@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -69,9 +69,9 @@ AnyTimeModificationArg ::= SEQUENCE {
  */
 public interface AnyTimeModificationRequest extends MobilityMessage {
 
-	SubscriberIdentityImpl getSubscriberIdentity();
+	SubscriberIdentity getSubscriberIdentity();
 
-    ISDNAddressStringImpl getGsmSCFAddress();
+    ISDNAddressString getGsmSCFAddress();
 
     ModificationRequestForCFInfo getModificationRequestForCfInfo();
 
@@ -79,7 +79,7 @@ public interface AnyTimeModificationRequest extends MobilityMessage {
 
     ModificationRequestForCSI getModificationRequestForCSI();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     boolean getLongFTNSupported();
 

@@ -28,10 +28,9 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingCategory;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingLevel;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

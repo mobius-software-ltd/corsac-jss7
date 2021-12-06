@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4FunctionalitiesImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4Functionalities;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
 
 /**
  *
@@ -41,11 +41,11 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
  */
 public interface InitiateCallAttemptResponse extends CircuitSwitchedCallMessage {
 
-    SupportedCamelPhasesImpl getSupportedCamelPhases();
+    SupportedCamelPhases getSupportedCamelPhases();
 
-    OfferedCamel4FunctionalitiesImpl getOfferedCamel4Functionalities();
+    OfferedCamel4Functionalities getOfferedCamel4Functionalities();
 
-    CAPExtensionsImpl getExtensions();
+    CAPExtensions getExtensions();
 
     boolean getReleaseCallArgExtensionAllowed();
 

@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfo;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSend;
 
 /**
  *
@@ -59,13 +59,13 @@ numOfCSs ::= 127
  */
 public interface PromptAndCollectUserInformationRequest extends CircuitSwitchedCallMessage {
 
-    CollectedInfoImpl getCollectedInfo();
+    CollectedInfo getCollectedInfo();
 
     Boolean getDisconnectFromIPForbidden();
 
-    InformationToSendImpl getInformationToSend();
+    InformationToSend getInformationToSend();
 
-    CAPExtensionsImpl getExtensions();
+    CAPExtensions getExtensions();
 
     Integer getCallSegmentID();
 

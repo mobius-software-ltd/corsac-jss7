@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -82,13 +82,13 @@ Identity ::= CHOICE {
  */
 public interface CancelLocationRequest extends MobilityMessage {
 
-    IMSIImpl getImsi();
+	IMSI getImsi();
 
-    IMSIWithLMSIImpl getImsiWithLmsi();
+	IMSIWithLMSI getImsiWithLmsi();
 
     CancellationType getCancellationType();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     TypeOfUpdate getTypeOfUpdate();
 
@@ -96,12 +96,11 @@ public interface CancelLocationRequest extends MobilityMessage {
 
     boolean getMtrfSupportedAndNotAuthorized();
 
-    ISDNAddressStringImpl getNewMSCNumber();
+    ISDNAddressString getNewMSCNumber();
 
-    ISDNAddressStringImpl getNewVLRNumber();
+    ISDNAddressString getNewVLRNumber();
 
-    LMSIImpl getNewLmsi();
+    LMSI getNewLmsi();
 
     long getMapProtocolVersion();
-
 }

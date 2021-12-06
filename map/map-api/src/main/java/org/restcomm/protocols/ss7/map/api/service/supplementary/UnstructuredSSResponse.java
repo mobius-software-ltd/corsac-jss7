@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 
 /**
  *
@@ -37,6 +37,6 @@ public interface UnstructuredSSResponse extends SupplementaryMessage {
 
     CBSDataCodingScheme getDataCodingScheme();
 
-    USSDStringImpl getUSSDString();
+    USSDString getUSSDString();
 
 }

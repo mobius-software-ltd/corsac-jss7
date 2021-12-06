@@ -29,10 +29,8 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.BurstImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.BurstListImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AudibleIndicatorImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AudibleIndicatorWrapperImpl;
+import org.restcomm.protocols.ss7.cap.primitives.BurstImpl;
+import org.restcomm.protocols.ss7.cap.primitives.BurstListImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

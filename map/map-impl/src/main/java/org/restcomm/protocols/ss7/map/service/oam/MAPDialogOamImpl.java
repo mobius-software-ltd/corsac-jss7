@@ -29,21 +29,21 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContextName;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.oam.MAPDialogOam;
 import org.restcomm.protocols.ss7.map.api.service.oam.MAPServiceOam;
-import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfigurationImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepthListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference2Impl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceReferenceImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceTypeImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfiguration;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepthList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference2;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceType;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 
 /**
@@ -55,24 +55,24 @@ public class MAPDialogOamImpl extends MAPDialogImpl implements MAPDialogOam {
 	private static final long serialVersionUID = 1L;
 
 	protected MAPDialogOamImpl(MAPApplicationContext appCntx, Dialog tcapDialog, MAPProviderImpl mapProviderImpl,
-            MAPServiceOam mapService, AddressStringImpl origReference, AddressStringImpl destReference) {
+            MAPServiceOam mapService, AddressString origReference, AddressString destReference) {
         super(appCntx, tcapDialog, mapProviderImpl, mapService, origReference, destReference);
     }
 
 
     @Override
-    public Long addActivateTraceModeRequest(IMSIImpl imsi, TraceReferenceImpl traceReference, TraceTypeImpl traceType, AddressStringImpl omcId,
-            MAPExtensionContainerImpl extensionContainer, TraceReference2Impl traceReference2, TraceDepthListImpl traceDepthList, TraceNETypeListImpl traceNeTypeList,
-            TraceInterfaceListImpl traceInterfaceList, TraceEventListImpl traceEventList, GSNAddressImpl traceCollectionEntity, MDTConfigurationImpl mdtConfiguration)
+    public Long addActivateTraceModeRequest(IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
+            MAPExtensionContainer extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList,
+            TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration)
             throws MAPException {
         return this.addActivateTraceModeRequest(_Timer_Default, imsi, traceReference, traceType, omcId, extensionContainer, traceReference2, traceDepthList,
                 traceNeTypeList, traceInterfaceList, traceEventList, traceCollectionEntity, mdtConfiguration);
     }
 
     @Override
-    public Long addActivateTraceModeRequest(int customInvokeTimeout, IMSIImpl imsi, TraceReferenceImpl traceReference, TraceTypeImpl traceType, AddressStringImpl omcId,
-            MAPExtensionContainerImpl extensionContainer, TraceReference2Impl traceReference2, TraceDepthListImpl traceDepthList, TraceNETypeListImpl traceNeTypeList,
-            TraceInterfaceListImpl traceInterfaceList, TraceEventListImpl traceEventList, GSNAddressImpl traceCollectionEntity, MDTConfigurationImpl mdtConfiguration)
+    public Long addActivateTraceModeRequest(int customInvokeTimeout, IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
+            MAPExtensionContainer extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList,
+            TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration)
             throws MAPException {
 
         boolean isTracingContext = false;
@@ -106,7 +106,7 @@ public class MAPDialogOamImpl extends MAPDialogImpl implements MAPDialogOam {
     }
 
     @Override
-    public void addActivateTraceModeResponse(long invokeId, MAPExtensionContainerImpl extensionContainer, boolean traceSupportIndicator) throws MAPException {
+    public void addActivateTraceModeResponse(long invokeId, MAPExtensionContainer extensionContainer, boolean traceSupportIndicator) throws MAPException {
         boolean isTracingContext = false;
         boolean isNetworkLocUpContext = false;
         boolean isGprsLocationUpdateContext = false;
@@ -134,12 +134,12 @@ public class MAPDialogOamImpl extends MAPDialogImpl implements MAPDialogOam {
     }
 
     @Override
-    public Long addSendImsiRequest(ISDNAddressStringImpl msisdn) throws MAPException {
+    public Long addSendImsiRequest(ISDNAddressString msisdn) throws MAPException {
         return this.addSendImsiRequest(_Timer_Default, msisdn);
     }
 
     @Override
-    public Long addSendImsiRequest(int customInvokeTimeout, ISDNAddressStringImpl msisdn) throws MAPException {
+    public Long addSendImsiRequest(int customInvokeTimeout, ISDNAddressString msisdn) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.imsiRetrievalContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2))
             throw new MAPException("Bad application context name for sendImsiRequest: must be imsiRetrievalContext_V2");
@@ -155,7 +155,7 @@ public class MAPDialogOamImpl extends MAPDialogImpl implements MAPDialogOam {
     }
 
     @Override
-    public void addSendImsiResponse(long invokeId, IMSIImpl imsi) throws MAPException {
+    public void addSendImsiResponse(long invokeId, IMSI imsi) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.imsiRetrievalContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2))
             throw new MAPException("Bad application context name for addSendImsiResponse: must be imsiRetrievalContext_V2");

@@ -22,23 +22,23 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.sms;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumberImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
+import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressStringImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPProtocolIdentifierImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPShortMessageSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriodImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClassImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2Impl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPDataCodingScheme;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPProtocolIdentifier;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPShortMessageSpecificInfo;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriod;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClass;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2;
 
 /**
  *
@@ -86,42 +86,42 @@ public interface InitialDPSMSRequest extends SmsMessage {
 
     int getServiceKey();
 
-    CalledPartyBCDNumberImpl getDestinationSubscriberNumber();
+    CalledPartyBCDNumber getDestinationSubscriberNumber();
 
-    SMSAddressStringImpl getCallingPartyNumber();
+    SMSAddressString getCallingPartyNumber();
 
     EventTypeSMS getEventTypeSMS();
 
-    IMSIImpl getImsi();
+    IMSI getImsi();
 
-    LocationInformationImpl getLocationInformationMSC();
+    LocationInformation getLocationInformationMSC();
 
-    LocationInformationGPRSImpl getLocationInformationGPRS();
+    LocationInformationGPRS getLocationInformationGPRS();
 
-    ISDNAddressStringImpl getSMSCAddress();
+    ISDNAddressString getSMSCAddress();
 
-    TimeAndTimezoneImpl getTimeAndTimezone();
+    TimeAndTimezone getTimeAndTimezone();
 
-    TPShortMessageSpecificInfoImpl getTPShortMessageSpecificInfo();
+    TPShortMessageSpecificInfo getTPShortMessageSpecificInfo();
 
-    TPProtocolIdentifierImpl getTPProtocolIdentifier();
+    TPProtocolIdentifier getTPProtocolIdentifier();
 
-    TPDataCodingSchemeImpl getTPDataCodingScheme();
+    TPDataCodingScheme getTPDataCodingScheme();
 
-    TPValidityPeriodImpl getTPValidityPeriod();
+    TPValidityPeriod getTPValidityPeriod();
 
-    CAPExtensionsImpl getExtensions();
+    CAPExtensions getExtensions();
 
-    CallReferenceNumberImpl getSmsReferenceNumber();
+    CallReferenceNumber getSmsReferenceNumber();
 
-    ISDNAddressStringImpl getMscAddress();
+    ISDNAddressString getMscAddress();
 
-    ISDNAddressStringImpl getSgsnNumber();
+    ISDNAddressString getSgsnNumber();
 
-    MSClassmark2Impl getMSClassmark2();
+    MSClassmark2 getMSClassmark2();
 
-    GPRSMSClassImpl getGPRSMSClass();
+    GPRSMSClass getGPRSMSClass();
 
-    IMEIImpl getImei();
-    ISDNAddressStringImpl getCalledPartyNumber();
+    IMEI getImei();
+    ISDNAddressString getCalledPartyNumber();
 }

@@ -22,17 +22,17 @@
 
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingAreaImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingArea;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
 
 /**
  *
@@ -70,35 +70,35 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
  */
 public interface ProvideRoamingNumberRequest extends CallHandlingMessage {
 
-     IMSIImpl getImsi();
+	 IMSI getImsi();
 
-     ISDNAddressStringImpl getMscNumber();
+     ISDNAddressString getMscNumber();
 
-     ISDNAddressStringImpl getMsisdn();
+     ISDNAddressString getMsisdn();
 
-     LMSIImpl getLmsi();
+     LMSI getLmsi();
 
-     ExternalSignalInfoImpl getGsmBearerCapability();
+     ExternalSignalInfo getGsmBearerCapability();
 
-     ExternalSignalInfoImpl getNetworkSignalInfo();
+     ExternalSignalInfo getNetworkSignalInfo();
 
      boolean getSuppressionOfAnnouncement();
 
-     ISDNAddressStringImpl getGmscAddress();
+     ISDNAddressString getGmscAddress();
 
-     CallReferenceNumberImpl getCallReferenceNumber();
+     CallReferenceNumber getCallReferenceNumber();
 
      boolean getOrInterrogation();
 
-     MAPExtensionContainerImpl getExtensionContainer();
+     MAPExtensionContainer getExtensionContainer();
 
-     AlertingPatternImpl getAlertingPattern();
+     AlertingPattern getAlertingPattern();
 
      boolean getCcbsCall();
 
-     SupportedCamelPhasesImpl getSupportedCamelPhasesInInterrogatingNode();
+     SupportedCamelPhases getSupportedCamelPhasesInInterrogatingNode();
 
-     ExtExternalSignalInfoImpl getAdditionalSignalInfo();
+     ExtExternalSignalInfo getAdditionalSignalInfo();
 
      boolean getOrNotSupportedInGMSC();
 
@@ -108,17 +108,17 @@ public interface ProvideRoamingNumberRequest extends CallHandlingMessage {
 
      boolean getSuppressVtCsi();
 
-     OfferedCamel4CSIsImpl getOfferedCamel4CSIsInInterrogatingNode();
+     OfferedCamel4CSIs getOfferedCamel4CSIsInInterrogatingNode();
 
      boolean getMtRoamingRetrySupported();
 
-     PagingAreaImpl getPagingArea();
+     PagingArea getPagingArea();
 
      EMLPPPriority getCallPriority();
 
      boolean getMtrfIndicator();
 
-     ISDNAddressStringImpl getOldMSCNumber();
+     ISDNAddressString getOldMSCNumber();
 
      long getMapProtocolVersion();
 

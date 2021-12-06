@@ -30,11 +30,13 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.DomainType;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfo;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.SubscriberIdentityImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -63,14 +65,14 @@ public class AnyTimeInterrogationRequestTest {
         assertTrue(result.getResult() instanceof AnyTimeInterrogationRequestImpl);
         AnyTimeInterrogationRequestImpl anyTimeInt = (AnyTimeInterrogationRequestImpl)result.getResult();
 
-        SubscriberIdentityImpl subsId = anyTimeInt.getSubscriberIdentity();
-        ISDNAddressStringImpl isdnAddress = subsId.getMSISDN();
+        SubscriberIdentity subsId = anyTimeInt.getSubscriberIdentity();
+        ISDNAddressString isdnAddress = subsId.getMSISDN();
         assertEquals(isdnAddress.getAddress(), "553499775190");
 
-        ISDNAddressStringImpl gscmSCFAddress = anyTimeInt.getGsmSCFAddress();
+        ISDNAddressString gscmSCFAddress = anyTimeInt.getGsmSCFAddress();
         assertEquals(gscmSCFAddress.getAddress(), "553496629943");
 
-        RequestedInfoImpl requestedInfo = anyTimeInt.getRequestedInfo();
+        RequestedInfo requestedInfo = anyTimeInt.getRequestedInfo();
         assertTrue(requestedInfo.getLocationInformation());
         assertTrue(requestedInfo.getSubscriberState());
         DomainType domainType = requestedInfo.getRequestedDomain();

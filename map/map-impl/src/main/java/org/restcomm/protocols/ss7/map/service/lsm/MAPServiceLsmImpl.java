@@ -38,7 +38,7 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.map.api.MAPServiceListener;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckData;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckResult;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.map.api.service.lsm.MAPDialogLsm;
 import org.restcomm.protocols.ss7.map.api.service.lsm.MAPServiceLsm;
 import org.restcomm.protocols.ss7.map.api.service.lsm.MAPServiceLsmListener;
@@ -78,13 +78,13 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
      * org.restcomm.protocols.ss7.map.api.dialog.AddressString, org.restcomm.protocols.ss7.sccp.parameter.SccpAddress,
      * org.restcomm.protocols.ss7.map.api.dialog.AddressString)
      */
-    public MAPDialogLsm createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference,
-            SccpAddress destAddress, AddressStringImpl destReference) throws MAPException {
+    public MAPDialogLsm createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
+            SccpAddress destAddress, AddressString destReference) throws MAPException {
         return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
     }
 
-    public MAPDialogLsm createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference,
-            SccpAddress destAddress, AddressStringImpl destReference, Long localTrId) throws MAPException {
+    public MAPDialogLsm createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
+            SccpAddress destAddress, AddressString destReference, Long localTrId) throws MAPException {
         // We cannot create a dialog if the service is not activated
         if (!this.isActivated())
             throw new MAPException("Cannot create MAPDialogLsm because MAPServiceLsm is not activated");

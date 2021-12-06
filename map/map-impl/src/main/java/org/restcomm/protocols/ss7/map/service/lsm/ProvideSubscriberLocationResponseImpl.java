@@ -24,21 +24,20 @@ package org.restcomm.protocols.ss7.map.service.lsm;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ASNAccuracyFulfilmentIndicator;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AccuracyFulfilmentIndicator;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.PositioningDataInformationImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformation;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformation;
+import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningData;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PositioningDataInformation;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ProvideSubscriberLocationResponse;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimateImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddress;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningData;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfo;
+import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimate;
+import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -55,26 +54,26 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implements ProvideSubscriberLocationResponse {
 	private static final long serialVersionUID = 1L;
-    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-    private ExtGeographicalInformationImpl locationEstimate;    
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0, defaultImplementation = ExtGeographicalInformationImpl.class)
+    private ExtGeographicalInformation locationEstimate;    
     
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private ASNInteger ageOfLocationEstimate;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
-    private AddGeographicalInformationImpl additionalLocationEstimate;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1, defaultImplementation = AddGeographicalInformationImpl.class)
+    private AddGeographicalInformation additionalLocationEstimate;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
     private ASNNull deferredMTLRResponseIndicator;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
-    private PositioningDataInformationImpl geranPositioningData;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1, defaultImplementation = PositioningDataInformationImpl.class)
+    private PositioningDataInformation geranPositioningData;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
-    private UtranPositioningDataInfoImpl utranPositioningData;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1, defaultImplementation = UtranPositioningDataInfoImpl.class)
+    private UtranPositioningDataInfo utranPositioningData;
 
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1)
     private CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl cellGlobalIdOrServiceAreaIdOrLAIWrapped;
@@ -85,17 +84,17 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1)
     private ASNAccuracyFulfilmentIndicator accuracyFulfilmentIndicator;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1)
-    private VelocityEstimateImpl velocityEstimate;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1, defaultImplementation = VelocityEstimateImpl.class)
+    private VelocityEstimate velocityEstimate;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=false,index=-1)
     private ASNNull moLrShortCircuitIndicator;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=false,index=-1)
-    private GeranGANSSpositioningDataImpl geranGANSSpositioningData;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=false,index=-1, defaultImplementation = GeranGANSSpositioningDataImpl.class)
+    private GeranGANSSpositioningData geranGANSSpositioningData;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1)
-    private UtranGANSSpositioningDataImpl utranGANSSpositioningData;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1, defaultImplementation = UtranGANSSpositioningDataImpl.class)
+    private UtranGANSSpositioningData utranGANSSpositioningData;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=true,index=-1)
     private ServingNodeAddressWrapperImpl targetServingNodeForHandover;
@@ -108,14 +107,14 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
         super();
     }
 
-    public ProvideSubscriberLocationResponseImpl(ExtGeographicalInformationImpl locationEstimate,
-            PositioningDataInformationImpl geranPositioningData, UtranPositioningDataInfoImpl utranPositioningData,
-            Integer ageOfLocationEstimate, AddGeographicalInformationImpl additionalLocationEstimate,
-            MAPExtensionContainerImpl extensionContainer, boolean deferredMTLRResponseIndicator,
-            CellGlobalIdOrServiceAreaIdOrLAIImpl cellGlobalIdOrServiceAreaIdOrLAI, boolean saiPresent,
-            AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimateImpl velocityEstimate,
-            boolean moLrShortCircuitIndicator, GeranGANSSpositioningDataImpl geranGANSSpositioningData,
-            UtranGANSSpositioningDataImpl utranGANSSpositioningData, ServingNodeAddressImpl targetServingNodeForHandover) {
+    public ProvideSubscriberLocationResponseImpl(ExtGeographicalInformation locationEstimate,
+    		PositioningDataInformation geranPositioningData, UtranPositioningDataInfo utranPositioningData,
+            Integer ageOfLocationEstimate, AddGeographicalInformation additionalLocationEstimate,
+            MAPExtensionContainer extensionContainer, boolean deferredMTLRResponseIndicator,
+            CellGlobalIdOrServiceAreaIdOrLAI cellGlobalIdOrServiceAreaIdOrLAI, boolean saiPresent,
+            AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimate velocityEstimate,
+            boolean moLrShortCircuitIndicator, GeranGANSSpositioningData geranGANSSpositioningData,
+            UtranGANSSpositioningData utranGANSSpositioningData, ServingNodeAddress targetServingNodeForHandover) {
         super();
 
         this.locationEstimate = locationEstimate;
@@ -169,7 +168,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationResponseIndication#getLocationEstimate()
      */
-    public ExtGeographicalInformationImpl getLocationEstimate() {
+    public ExtGeographicalInformation getLocationEstimate() {
         return this.locationEstimate;
     }
 
@@ -179,7 +178,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      * @see org.restcomm.protocols.ss7.map.api.service.lsm.
      * ProvideSubscriberLocationResponseIndication#getGeranPositioningData()
      */
-    public PositioningDataInformationImpl getGeranPositioningData() {
+    public PositioningDataInformation getGeranPositioningData() {
         return this.geranPositioningData;
     }
 
@@ -189,7 +188,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      * @see org.restcomm.protocols.ss7.map.api.service.lsm.
      * ProvideSubscriberLocationResponseIndication#getUtranPositioningData()
      */
-    public UtranPositioningDataInfoImpl getUtranPositioningData() {
+    public UtranPositioningDataInfo getUtranPositioningData() {
         return this.utranPositioningData;
     }
 
@@ -212,7 +211,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationResponseIndication
      * #getAdditionalLocationEstimate()
      */
-    public AddGeographicalInformationImpl getAdditionalLocationEstimate() {
+    public AddGeographicalInformation getAdditionalLocationEstimate() {
         return this.additionalLocationEstimate;
     }
 
@@ -221,7 +220,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationResponseIndication#getExtensionContainer()
      */
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -241,7 +240,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationResponseIndication
      * #getCellGlobalIdOrServiceAreaIdOrLAI()
      */
-    public CellGlobalIdOrServiceAreaIdOrLAIImpl getCellIdOrSai() {
+    public CellGlobalIdOrServiceAreaIdOrLAI getCellIdOrSai() {
     	if(this.cellGlobalIdOrServiceAreaIdOrLAIWrapped!=null)
     		return this.cellGlobalIdOrServiceAreaIdOrLAIWrapped.getCellGlobalIdOrServiceAreaIdOrLAI();
     	
@@ -270,7 +269,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
         return this.accuracyFulfilmentIndicator.getType();
     }
 
-    public VelocityEstimateImpl getVelocityEstimate() {
+    public VelocityEstimate getVelocityEstimate() {
         return velocityEstimate;
     }
 
@@ -278,15 +277,15 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
         return moLrShortCircuitIndicator!=null;
     }
 
-    public GeranGANSSpositioningDataImpl getGeranGANSSpositioningData() {
+    public GeranGANSSpositioningData getGeranGANSSpositioningData() {
         return geranGANSSpositioningData;
     }
 
-    public UtranGANSSpositioningDataImpl getUtranGANSSpositioningData() {
+    public UtranGANSSpositioningData getUtranGANSSpositioningData() {
         return utranGANSSpositioningData;
     }
 
-    public ServingNodeAddressImpl getTargetServingNodeForHandover() {
+    public ServingNodeAddress getTargetServingNodeForHandover() {
     	if(this.targetServingNodeForHandover==null)
     		return null;
     	

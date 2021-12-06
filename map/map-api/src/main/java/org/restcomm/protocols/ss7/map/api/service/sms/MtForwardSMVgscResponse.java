@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.sms;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -40,12 +40,12 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  */
 public interface MtForwardSMVgscResponse extends SmsMessage {
 
-    SmsSignalInfoImpl getSM_RP_UI();
+    SmsSignalInfo getSM_RP_UI();
 
-    List<ISDNAddressStringImpl> getDispatcherList();
+    List<ISDNAddressString> getDispatcherList();
 
     boolean getOngoingCall();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
 }

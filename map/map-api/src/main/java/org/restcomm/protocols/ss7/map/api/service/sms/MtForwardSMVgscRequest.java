@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.map.api.service.sms;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ASCICallReference;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -43,10 +43,10 @@ public interface MtForwardSMVgscRequest extends SmsMessage {
 
     ASCICallReference getAsciCallReference();
 
-    SM_RP_OAImpl getSM_RP_OA();
+    SM_RP_OA getSM_RP_OA();
 
-    SmsSignalInfoImpl getSM_RP_UI();
+    SmsSignalInfo getSM_RP_UI();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
 }

@@ -22,13 +22,12 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
-import org.restcomm.protocols.ss7.map.api.errors.ASNAdditionalRoamingNotAllowedCauseImpl;
-import org.restcomm.protocols.ss7.map.api.errors.ASNRoamingNotAllowedCauseImpl;
 import org.restcomm.protocols.ss7.map.api.errors.AdditionalRoamingNotAllowedCause;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageRoamingNotAllowed;
 import org.restcomm.protocols.ss7.map.api.errors.RoamingNotAllowedCause;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -42,13 +41,15 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageRoamingNotAllowedImpl extends MAPErrorMessageImpl implements MAPErrorMessageRoamingNotAllowed {
 	private ASNRoamingNotAllowedCauseImpl roamingNotAllowedCause;
-    private MAPExtensionContainerImpl extensionContainer;
+    
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private ASNAdditionalRoamingNotAllowedCauseImpl additionalRoamingNotAllowedCause;
 
     public MAPErrorMessageRoamingNotAllowedImpl(RoamingNotAllowedCause roamingNotAllowedCause,
-            MAPExtensionContainerImpl extensionContainer, AdditionalRoamingNotAllowedCause additionalRoamingNotAllowedCause) {
+    		MAPExtensionContainer extensionContainer, AdditionalRoamingNotAllowedCause additionalRoamingNotAllowedCause) {
         super((long) MAPErrorCode.roamingNotAllowed);
 
         this.roamingNotAllowedCause =new ASNRoamingNotAllowedCauseImpl();
@@ -79,7 +80,7 @@ public class MAPErrorMessageRoamingNotAllowedImpl extends MAPErrorMessageImpl im
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 
@@ -102,7 +103,7 @@ public class MAPErrorMessageRoamingNotAllowedImpl extends MAPErrorMessageImpl im
     }
 
     @Override
-    public void setExtensionContainer(MAPExtensionContainerImpl val) {
+    public void setExtensionContainer(MAPExtensionContainer val) {
         extensionContainer = val;
     }
 

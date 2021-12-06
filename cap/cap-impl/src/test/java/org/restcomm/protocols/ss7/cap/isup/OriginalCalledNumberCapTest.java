@@ -28,7 +28,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.OriginalCalledNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
 import org.testng.annotations.Test;

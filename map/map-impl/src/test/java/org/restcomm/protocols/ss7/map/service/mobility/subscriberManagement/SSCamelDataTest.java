@@ -30,13 +30,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SSCamelDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SSCamelData;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -52,8 +54,9 @@ import io.netty.buffer.Unpooled;
  */
 public class SSCamelDataTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 58, 48, 3, 4, 1, 96, 4, 4, -111, 34, 50, -11, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+	public byte[] getData() {
+        return new byte[] { 48, 52, 48, 3, 4, 1, 96, 4, 4, -111, 34, 50, -11, -96, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12,
+                13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -67,14 +70,14 @@ public class SSCamelDataTest {
         assertTrue(result.getResult() instanceof SSCamelDataImpl);
         SSCamelDataImpl prim = (SSCamelDataImpl)result.getResult();
         
-        List<SSCodeImpl> ssEventList = prim.getSsEventList();
+        List<SSCode> ssEventList = prim.getSsEventList();
         assertNotNull(ssEventList);
         assertEquals(ssEventList.size(), 1);
-        SSCodeImpl one = ssEventList.get(0);
+        SSCode one = ssEventList.get(0);
         assertNotNull(one);
         assertEquals(one.getSupplementaryCodeValue(), SupplementaryCodeValue.allCommunityOfInterestSS);
 
-        ISDNAddressStringImpl gsmSCFAddress = prim.getGsmSCFAddress();
+        ISDNAddressString gsmSCFAddress = prim.getGsmSCFAddress();
         assertTrue(gsmSCFAddress.getAddress().equals("22235"));
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
@@ -88,12 +91,12 @@ public class SSCamelDataTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SSCamelDataImpl.class);
     	
-        ArrayList<SSCodeImpl> ssEventList = new ArrayList<SSCodeImpl>();
+        List<SSCode> ssEventList = new ArrayList<SSCode>();
         ssEventList.add(new SSCodeImpl(SupplementaryCodeValue.allCommunityOfInterestSS.getCode()));
         ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22235");
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        SSCamelDataImpl prim = new SSCamelDataImpl(ssEventList, gsmSCFAddress, extensionContainer);
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        SSCamelData prim = new SSCamelDataImpl(ssEventList, gsmSCFAddress, extensionContainer);
 
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];

@@ -24,7 +24,8 @@ package org.restcomm.protocols.ss7.cap.service.gprs;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.FurnishChargingInformationGPRSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELFCIGPRSBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELFCIGPRSBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.CAMELFCIGPRSBillingChargingCharacteristicsImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -39,19 +40,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class FurnishChargingInformationGPRSRequestImpl extends GprsMessageImpl implements FurnishChargingInformationGPRSRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,index = -1)
-    private CAMELFCIGPRSBillingChargingCharacteristicsImpl fciGPRSBillingChargingCharacteristics;
+	@ASNProperty(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,index = -1, defaultImplementation = CAMELFCIGPRSBillingChargingCharacteristicsImpl.class)
+    private CAMELFCIGPRSBillingChargingCharacteristics fciGPRSBillingChargingCharacteristics;
 
     public FurnishChargingInformationGPRSRequestImpl() {
     }
 
     public FurnishChargingInformationGPRSRequestImpl(
-            CAMELFCIGPRSBillingChargingCharacteristicsImpl fciGPRSBillingChargingCharacteristics) {
+    		CAMELFCIGPRSBillingChargingCharacteristics fciGPRSBillingChargingCharacteristics) {
         super();
         this.fciGPRSBillingChargingCharacteristics = fciGPRSBillingChargingCharacteristics;
     }
 
-    public CAMELFCIGPRSBillingChargingCharacteristicsImpl getFCIGPRSBillingChargingCharacteristics() {
+    public CAMELFCIGPRSBillingChargingCharacteristics getFCIGPRSBillingChargingCharacteristics() {
         return this.fciGPRSBillingChargingCharacteristics;
     }
 

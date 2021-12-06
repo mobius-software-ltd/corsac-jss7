@@ -32,25 +32,129 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNSubaddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEACICImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentity;
+import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCI;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.primitives.TimeImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientExternalIDImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientExternalID;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientInternalID;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.AgeIndicator;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LIPAPermission;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContextImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContext;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SIPTOPermission;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.*;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AMBR;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APN;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNConfiguration;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNConfigurationProfile;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNOIReplacement;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AccessRestrictionData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AllocationRetentionPriority;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSAllocationRetentionPriority;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CallTypeCriteria;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Category;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CauseValue;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ChargingCharacteristics;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DPAnalysedInfoCriterium;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultCallHandling;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultGPRSHandling;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultSMSHandling;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DestinationNumberCriteria;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EMLPPInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSQoSSubscribed;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSSubscriptionData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext2QoSSubscribed;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext3QoSSubscribed;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext4QoSSubscribed;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtCallBarInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeature;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwOptionsForwardingReason;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtPDPType;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExternalClient;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.FQDN;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GMLCRestriction;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCamelTDPData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSTriggerDetectionPoint;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LCSInformation;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LCSPrivacyClass;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformation;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAOnlyAccessIndicator;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MCSSInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MGCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCodeValue;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MOLRClass;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MTSMSTPDUType;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MTsmsCAMELTDPCriteria;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MatchType;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.NetworkAccessMode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.NotificationToMSUser;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmCamelTDPData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmCamelTdpCriteria;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmTriggerDetectionPoint;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBHPLMNData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDNGWAllocationType;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDNGWIdentity;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDNTypeValue;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPAddress;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPType;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSClassIdentifier;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSSubscribed;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SGSNCAMELSubscriptionInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCAMELTDPData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSTriggerDetectionPoint;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SSCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SSCamelData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ServiceType;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SpecificAPNInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SubscriberStatus;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTDPData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTdpCriteria;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmTriggerDetectionPoint;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VlrCamelSubscriptionInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceBroadcastData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceGroupCallData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
+import org.restcomm.protocols.ss7.map.primitives.DiameterIdentityImpl;
+import org.restcomm.protocols.ss7.map.primitives.FTNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNSubaddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.primitives.NAEACICImpl;
+import org.restcomm.protocols.ss7.map.primitives.NAEAPreferredCIImpl;
+import org.restcomm.protocols.ss7.map.primitives.TimeImpl;
+import org.restcomm.protocols.ss7.map.service.lsm.LCSClientExternalIDImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.AgeIndicatorImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.PDPContextImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.TBcsmCamelTdpCriteriaImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -66,12 +170,15 @@ import io.netty.buffer.Unpooled;
  */
 public class InsertSubscriberDataRequestTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, -126, 18, 121, -128, 5, 17, 17, 33, 34, 34, -127, 4, -111, 34, 50, -12, -126, 1, 5, -125, 1, 1, -92, 3, 4, 1, 38, -90, 3, 4, 1, 16, -89, -127, -124, -96, -127, -127, 4, 1, 0, 48, 77, 48, 75, -126, 1, 38, -124, 1, 15, -123, 4, -111, 34, 34, -8, -120, 2, 2, 5, -122, 1, -92, -121, 1, 2, -87, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -118, 4, -111, 34, 34, -9, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -88, 58, 3, 5, 4, 74, -43, 85, 80, 3, 2, 4, 80, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -119, 0, -86, 4, 4, 2, 0, 2, -85, 62, 48, 60, 4, 3, -1, -1, -1, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 4, -11, -1, -1, -1, -84, 68, 48, 66, 4, 3, -1, -1, -1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128, -127, 4, -11, -1, -1, -1, -83, -126, 3, 18, -96, 23, 48, 18, 48, 16, 10, 1, 4, 2, 1, 3, -128, 5, -111, 17, 34, 51, -13, -127, 1, 1, -128, 1, 2, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 111, 48, 58, 48, 3, 4, 1, 96, 4, 4, -111, 34, 50, -11, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 0, -127, 0, -92, 98, 48, 96, 10, 1, 2, -96, 28, -128, 1, 1, -95, 12, 4, 4, -111, 34, 50, -12, 4, 4, -111, 34, 50, -11, -94, 9, 2, 1, 2, 2, 1, 4, 2, 1, 1, -95, 6, -126, 1, 38, -125, 1, 16, -126, 1, 0, -93, 3, 4, 1, 7, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -91, 68, 48, 6, 4, 1, -125, 4, 1, 2, 2, 1, 3, -128, 4, -111, 34, 50, -11, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -126, 0, -125, 0, -90, 120, -96, 64, 48, 62, -128, 1, 1, -127, 1, 3, -126, 4, -111, 34, 50, -11, -125, 1, 0, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 8, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 0, -124, 0, -89, 22, 48, 17, 48, 15, 10, 1, 12, 2, 1, 3, -128, 4, -111, 34, 50, -11, -127, 1, 1, -128, 1, 2, -88, 21, 48, 19, 10, 1, 13, -96, 6, -126, 1, 38, -125, 1, 16, -95, 6, 4, 1, 7, 4, 1, 6, -87, 123, -96, 67, 48, 65, 4, 4, -111, 34, 50, -12, 2, 1, 7, 4, 4, -111, 34, 50, -11, 2, 1, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 2, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 0, -124, 0, -86, 120, -96, 64, 48, 62, -128, 1, 1, -127, 1, 3, -126, 4, -111, 34, 50, -11, -125, 1, 0, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 8, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 0, -124, 0, -85, 13, 48, 11, 10, 1, 1, -96, 6, 10, 1, 0, 10, 1, 2, -82, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -81, 52, -128, 3, 15, 48, 5, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -80, -127, -81, -95, 115, 48, 113, 2, 1, 1, -112, 2, 5, 3, -111, 3, 5, 6, 7, -110, 3, 4, 7, 7, -108, 2, 6, 7, -75, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 2, 1, 7, -127, 2, 6, 5, -126, 2, 1, 8, -125, 2, 2, 6, -124, 1, 2, -123, 9, 48, 12, 17, 17, 119, 22, 62, 34, 12, -122, 2, 6, 5, -121, 3, 4, 6, 5, -120, 1, 0, -119, 1, 2, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 9, 48, 12, 17, 17, 119, 22, 62, 34, 12, -105, 0, -104, 1, 0, -71, 113, 5, 0, -127, 1, 1, -94, 59, 48, 57, -128, 3, 12, 34, 26, -127, 1, 5, -126, 0, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -107, 0, -74, -126, 7, 41, -96, 6, 4, 4, -111, 34, 50, -11, -95, -126, 5, -128, 48, -126, 1, 92, 4, 1, 0, 4, 1, 15, -128, 1, 3, -95, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 6, 10, 1, 0, 10, 1, 1, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -92, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -91, 58, 48, 56, 2, 1, 1, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 48, -126, 1, 92, 4, 1, 96, 4, 1, 15, -128, 1, 3, -95, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 6, 10, 1, 0, 10, 1, 1, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -92, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -91, 58, 48, 56, 2, 1, 1, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 48, -126, 1, 92, 4, 1, 32, 4, 1, 15, -128, 1, 3, -95, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 6, 10, 1, 0, 10, 1, 1, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -92, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -91, 58, 48, 56, 2, 1, 1, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 48, -126, 1, 92, 4, 1, 16, 4, 1, 15, -128, 1, 3, -95, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 6, 10, 1, 0, 10, 1, 1, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -92, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -91, 58, 48, 56, 2, 1, 1, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 55, 48, 53, 4, 1, 0, 4, 1, 15, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -93, -126, 1, 96, 48, -126, 1, 92, 4, 1, 0, 4, 1, 15, -128, 1, 3, -95, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 6, 10, 1, 0, 10, 1, 1, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -92, 110, 48, 108, 48, 53, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -91, 58, 48, 56, 2, 1, 1, -128, 1, 0, -127, 1, 3, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -102, 1, 21, -101, 1, 48, -68, 59, -128, 1, 0, -127, 1, 15, -126, 1, 2, -125, 1, 4, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -99, 1, 4, -79, -126, 1, -18, -96, 120, -96, 64, 48, 62, -128, 1, 2, -127, 1, 3, -126, 4, -111, 34, 50, -11, -125, 1, 1, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 8, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 0, -124, 0, -95, 120, -96, 64, 48, 62, -128, 1, 1, -127, 1, 3, -126, 4, -111, 34, 50, -11, -125, 1, 0, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 8, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 0, -124, 0, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -93, 116, -96, 64, 48, 62, -128, 1, 1, -127, 1, 3, -126, 4, -111, 34, 50, -11, -125, 1, 0, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 8, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -92, 13, 48, 11, 10, 1, 1, -96, 6, 10, 1, 0, 10, 1, 2, -91, 68, 48, 6, 4, 1, -125, 4, 1, 2, 2, 1, 3, -128, 4, -111, 34, 50, -11, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -126, 0, -125, 0, -110, 2, 6, 5, -109, 2, 2, 84, -108, 1, -1, -65, 31, -126, 2, -125, -128, 9, 48, 12, 17, 17, 119, 22, 62, 34, 12, -126, 1, 4, -93, 53, -128, 1, 2, -127, 1, 4, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -92, -126, 2, 1, 2, 1, 2, 5, 0, -95, -126, 1, -55, 48, -126, 1, -59, -128, 1, 1, -127, 1, 1, -126, 3, 5, 6, 7, -125, 2, 6, 7, -92, 108, -128, 1, 1, -95, 56, -128, 1, 1, -127, 1, -1, -126, 1, -1, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -91, 69, -128, 3, 5, 6, 7, -127, 3, 5, 6, 7, -126, 10, 4, 1, 6, 8, 3, 2, 5, 6, 1, 7, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -122, 1, 1, -120, 2, 6, 5, -87, 53, -128, 1, 2, -127, 1, 4, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -86, 124, 48, 122, -128, 2, 6, 7, -95, 69, -128, 3, 5, 6, 7, -127, 3, 5, 6, 7, -126, 10, 4, 1, 6, 8, 3, 2, 5, 6, 1, 7, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -85, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -116, 3, 5, 6, 7, -115, 9, 48, 12, 17, 17, 119, 22, 62, 34, 12, -114, 1, 0, -113, 1, 2, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -122, 4, -111, 34, 34, -8, -91, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -121, 0, -120, 0, -65, 32, 68, 48, 66, 3, 5, 5, -128, 0, 0, 32, 4, 4, 10, 22, 41, 34, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -96, 4, 4, 2, 6, 7, -97, 33, 0, -97, 34, 4, -111, 34, 34, -8, -97, 35, 9, 41, 42, 43, 44, 45, 46, 47, 48, 49, -97, 36, 1, 2, -97, 37, 0, -97, 38, 1, -1, -97, 39, 1, 2};
+	public byte[] getData() {
+        return new byte[] { 48, -126, 16, -63, -128, 5, 17, 17, 33, 34, 34, -127, 4, -111, 34, 50, -12, -126, 1, 5, -125, 1, 1, -92, 3, 4, 1, 38, -90, 3, 4, 1, 16, -89, 119, -96, 117, 4, 1, 0, 48, 71, 48, 69, -126, 1, 38, -124, 1, 15, -123, 4, -111, 34, 34, -8, -120, 2, 2, 5, -122, 1, -92, -121, 1, 2, -87, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -118, 4, -111, 34, 34, -9, -96, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -88, 52, 3, 5, 4, 74, -43, 85, 80, 3, 2, 4, 80, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -119, 0, -86, 4, 4, 2, 0, 2, -85, 56, 48, 54, 4, 3, -1, -1, -1, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 4, -11, -1, -1, -1, -84, 62, 48, 60, 4, 3, -1, -1, -1, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128, -127, 4, -11, -1, -1, -1, -83, -126, 2, -48, -96, 23, 48, 18, 48, 16, 10, 1, 4, 2, 1, 3, -128, 5, -111, 17, 34, 51, -13, -127, 1, 1, -128, 1, 2, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -94, 99, 48, 52, 48, 3, 4, 1, 96, 4, 4, -111, 34, 50, -11, -96, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 0, -127, 0, -92, 92, 48, 90, 10, 1, 2, -96, 28, -128, 1, 1, -95, 12, 4, 4, -111, 34, 50, -12, 4, 4, -111, 34, 50, -11, -94, 9, 2, 1, 2, 2, 1, 4, 2, 1, 1, -95, 6, -126, 1, 38, -125, 1, 16, -126, 1, 0, -93, 3, 4, 1, 7, -92, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -91, 62, 48, 6, 4, 1, -125, 4, 1, 2, 2, 1, 3, -128, 4, -111, 34, 50, -11, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -126, 0, -125, 0, -90, 108, -96, 58, 48, 56, -128, 1, 1, -127, 1, 3, -126, 4, -111, 34, 50, -11, -125, 1, 0, -92, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 8, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -125, 0, -124, 0, -89, 22, 48, 17, 48, 15, 10, 1, 12, 2, 1, 3, -128, 4, -111, 34, 50, -11, -127, 1, 1, -128, 1, 2, -88, 21, 48, 19, 10, 1, 13, -96, 6, -126, 1, 38, -125, 1, 16, -95, 6, 4, 1, 7, 4, 1, 6, -87, 111, -96, 61, 48, 59, 4, 4, -111, 34, 50, -12, 2, 1, 7, 4, 4, -111, 34, 50, -11, 2, 1, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 2, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -125, 0, -124, 0, -86, 108, -96, 58, 48, 56, -128, 1, 1, -127, 1, 3, -126, 4, -111, 34, 50, -11, -125, 1, 0, -92, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 8, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -125, 0, -124, 0, -85, 13, 48, 11, 10, 1, 1, -96, 6, 10, 1, 0, 10, 1, 2, -82, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -81, 46, -128, 3, 15, 48, 5, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -80, -127, -93, -95, 109, 48, 107, 2, 1, 1, -112, 2, 5, 3, -111, 3, 5, 6, 7, -110, 3, 4, 7, 7, -108, 2, 6, 7, -75, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 2, 1, 7, -127, 2, 6, 5, -126, 2, 1, 8, -125, 2, 2, 6, -124, 1, 2, -123, 9, 48, 12, 17, 17, 119, 22, 62, 34, 12, -122, 2, 6, 5, -121, 3, 4, 6, 5, -120, 1, 0, -119, 1, 2, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -125, 9, 48, 12, 17, 17, 119, 22, 62, 34, 12, -105, 0, -104, 1, 0, -71, 101, 5, 0, -127, 1, 1, -94, 53, 48, 51, -128, 3, 12, 34, 26, -127, 1, 5, -126, 0, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -107, 0, -74, -126, 6, 111, -96, 6, 4, 4, -111, 34, 50, -11, -95, -126, 4, -16, 48, -126, 1, 56, 4, 1, 0, 4, 1, 15, -128, 1, 3, -95, 98, 48, 96, 48, 47, -128, 4, -111, 34, 34, -8, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -94, 6, 10, 1, 0, 10, 1, 1, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -92, 98, 48, 96, 48, 47, -128, 4, -111, 34, 34, -8, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -91, 52, 48, 50, 2, 1, 1, -128, 1, 0, -127, 1, 3, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 48, -126, 1, 56, 4, 1, 96, 4, 1, 15, -128, 1, 3, -95, 98, 48, 96, 48, 47, -128, 4, -111, 34, 34, -8, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -94, 6, 10, 1, 0, 10, 1, 1, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -92, 98, 48, 96, 48, 47, -128, 4, -111, 34, 34, -8, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -91, 52, 48, 50, 2, 1, 1, -128, 1, 0, -127, 1, 3, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 48, -126, 1, 56, 4, 1, 32, 4, 1, 15, -128, 1, 3, -95, 98, 48, 96, 48, 47, -128, 4, -111, 34, 34, -8, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -94, 6, 10, 1, 0, 10, 1, 1, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -92, 98, 48, 96, 48, 47, -128, 4, -111, 34, 34, -8, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -91, 52, 48, 50, 2, 1, 1, -128, 1, 0, -127, 1, 3, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 48, -126, 1, 56, 4, 1, 16, 4, 1, 15, -128, 1, 3, -95, 98, 48, 96, 48, 47, -128, 4, -111, 34, 34, -8, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -94, 6, 10, 1, 0, 10, 1, 1, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -92, 98, 48, 96, 48, 47, -128, 4, -111, 34, 34, -8, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -91, 52, 48, 50, 2, 1, 1, -128, 1, 0, -127, 1, 3, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -94, 49, 48, 47, 4, 1, 0, 4, 1, 15, -96, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -93, -126, 1, 60, 48, -126, 1, 56, 4, 1, 0, 4, 1, 15, -128, 1, 3, -95, 98, 48, 96, 48, 47, -128, 4, -111, 34, 34, -8, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -94, 6, 10, 1, 0, 10, 1, 1, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -92, 98, 48, 96, 48, 47, -128, 4, -111, 34, 34, -8, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 1, 0, -127, 1, 3, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -91, 52, 48, 50, 2, 1, 1, -128, 1, 0, -127, 1, 3, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -102, 1, 21, -101, 1, 48, -68, 53, -128, 1, 0, -127, 1, 15, -126, 1, 2, -125, 1, 4, -92, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -99, 1, 4, -79, -126, 1, -66, -96, 108, -96, 58, 48, 56, -128, 1, 2, -127, 1, 3, -126, 4, -111, 34, 50, -11, -125, 1, 1, -92, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 8, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -125, 0, -124, 0, -95, 108, -96, 58, 48, 56, -128, 1, 1, -127, 1, 3, -126, 4, -111, 34, 50, -11, -125, 1, 0, -92, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 8, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -125, 0, -124, 0, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -93, 104, -96, 58, 48, 56, -128, 1, 1, -127, 1, 3, -126, 4, -111, 34, 50, -11, -125, 1, 0, -92, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 8, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -92, 13, 48, 11, 10, 1, 1, -96, 6, 10, 1, 0, 10, 1, 2, -91, 62, 48, 6, 4, 1, -125, 4, 1, 2, 2, 1, 3, -128, 4, -111, 34, 50, -11, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -126, 0, -125, 0, -110, 2, 6, 5, -109, 2, 2, 84, -108, 1, -1, -65, 31, -126, 2, 71, -128, 9, 48, 12, 17, 17, 119, 22, 62, 34, 12, -126, 1, 4, -93, 47, -128, 1, 2, -127, 1, 4, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -92, -126, 1, -47, 2, 1, 2, 5, 0, -95, -126, 1, -97, 48, -126, 1, -101, -128, 1, 1, -127, 1, 1, -126, 3, 5, 6, 7, -125, 2, 6, 7, -92, 96, -128, 1, 1, -95, 50, -128, 1, 1, -127, 1, -1, -126, 1, -1, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -91, 63, -128, 3, 5, 6, 7, -127, 3, 5, 6, 7, -126, 10, 4, 1, 6, 8, 3, 2, 5, 6, 1, 7, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -122, 1, 1, -120, 2, 6, 5, -87, 47, -128, 1, 2, -127, 1, 4, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -86, 112, 48, 110, -128, 2, 6, 7, -95, 63, -128, 3, 5, 6, 7, -127, 3, 5, 6, 7, -126, 10, 4, 1, 6, 8, 3, 2, 5, 6, 1, 7, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -85, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -116, 3, 5, 6, 7, -115, 9, 48, 12, 17, 17, 119, 22, 62, 34, 12, -114, 1, 0, -113, 1, 2, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -122, 4, -111, 34, 34, -8, -91, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -121, 0, -120, 0, -65, 32, 62, 48, 60, 3, 5, 5, -128, 0, 0, 32, 4, 4, 10, 22, 41, 34, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -96, 4, 4, 2, 6, 7, -97, 33, 0, -97, 34, 4, -111, 34, 34, -8, -97, 35, 9, 41, 42, 43, 44, 45, 46, 47, 48, 49, -97, 36, 1, 2, -97, 37, 0, -97, 38, 1, -1, -97, 39, 1, 2
+
+        };
     }
 
     private byte[] getData1() {
-        return new byte[] { 48, -126, 4, -124, -128, 5, 17, 17, 33, 34, 34, -127, 4, -111, 34, 50, -12, -126, 1, 5, -125, 1, 1, -92, 3, 4, 1, 38, -90, 3, 4, 1, 16, -89, -127, -124, -96, -127, -127, 4, 1, 0, 48, 77, 48, 75, -126, 1, 38, -124, 1, 15, -123, 4, -111, 34, 34, -8, -120, 2, 2, 5, -122, 1, -92, -121, 1, 2, -87, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -118, 4, -111, 34, 34, -9, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -88, 58, 3, 5, 4, 74, -43, 85, 80, 3, 2, 4, 80, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -119, 0, -86, 4, 4, 2, 0, 2, -85, 62, 48, 60, 4, 3, -1, -1, -1, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 4, -11, -1, -1, -1, -84, 68, 48, 66, 4, 3, -1, -1, -1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128, -127, 4, -11, -1, -1, -1, -83, -126, 3, 18, -96, 23, 48, 18, 48, 16, 10, 1, 4, 2, 1, 3, -128, 5, -111, 17, 34, 51, -13, -127, 1, 1, -128, 1, 2, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 111, 48, 58, 48, 3, 4, 1, 96, 4, 4, -111, 34, 50, -11, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 0, -127, 0, -92, 98, 48, 96, 10, 1, 2, -96, 28, -128, 1, 1, -95, 12, 4, 4, -111, 34, 50, -12, 4, 4, -111, 34, 50, -11, -94, 9, 2, 1, 2, 2, 1, 4, 2, 1, 1, -95, 6, -126, 1, 38, -125, 1, 16, -126, 1, 0, -93, 3, 4, 1, 7, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -91, 68, 48, 6, 4, 1, -125, 4, 1, 2, 2, 1, 3, -128, 4, -111, 34, 50, -11, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -126, 0, -125, 0, -90, 120, -96, 64, 48, 62, -128, 1, 1, -127, 1, 3, -126, 4, -111, 34, 50, -11, -125, 1, 0, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 8, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 0, -124, 0, -89, 22, 48, 17, 48, 15, 10, 1, 12, 2, 1, 3, -128, 4, -111, 34, 50, -11, -127, 1, 1, -128, 1, 2, -88, 21, 48, 19, 10, 1, 13, -96, 6, -126, 1, 38, -125, 1, 16, -95, 6, 4, 1, 7, 4, 1, 6, -87, 123, -96, 67, 48, 65, 4, 4, -111, 34, 50, -12, 2, 1, 7, 4, 4, -111, 34, 50, -11, 2, 1, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 2, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 0, -124, 0, -86, 120, -96, 64, 48, 62, -128, 1, 1, -127, 1, 3, -126, 4, -111, 34, 50, -11, -125, 1, 0, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 8, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 0, -124, 0, -85, 13, 48, 11, 10, 1, 1, -96, 6, 10, 1, 0, 10, 1, 2 };
+        return new byte[] { 48, -126, 4, 34, -128, 5, 17, 17, 33, 34, 34, -127, 4, -111, 34, 50, -12, -126, 1, 5, -125, 1, 1, -92, 3, 4, 1, 38, -90, 3, 4, 1, 16, -89, 119, -96, 117, 4, 1, 0, 48, 71, 48, 69, -126, 1, 38, -124, 1, 15, -123, 4, -111, 34, 34, -8, -120, 2, 2, 5, -122, 1, -92, -121, 1, 2, -87, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -118, 4, -111, 34, 34, -9, -96, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -88, 52, 3, 5, 4, 74, -43, 85, 80, 3, 2, 4, 80, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -119, 0, -86, 4, 4, 2, 0, 2, -85, 56, 48, 54, 4, 3, -1, -1, -1, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 4, -11, -1, -1, -1, -84, 62, 48, 60, 4, 3, -1, -1, -1, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 3, 2, 5, -96, -128, 2, 7, -128, -127, 4, -11, -1, -1, -1, -83, -126, 2, -48, -96, 23, 48, 18, 48, 16, 10, 1, 4, 2, 1, 3, -128, 5, -111, 17, 34, 51, -13, -127, 1, 1, -128, 1, 2, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -94, 99, 48, 52, 48, 3, 4, 1, 96, 4, 4, -111, 34, 50, -11, -96, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 0, -127, 0, -92, 92, 48, 90, 10, 1, 2, -96, 28, -128, 1, 1, -95, 12, 4, 4, -111, 34, 50, -12, 4, 4, -111, 34, 50, -11, -94, 9, 2, 1, 2, 2, 1, 4, 2, 1, 1, -95, 6, -126, 1, 38, -125, 1, 16, -126, 1, 0, -93, 3, 4, 1, 7, -92, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -91, 62, 48, 6, 4, 1, -125, 4, 1, 2, 2, 1, 3, -128, 4, -111, 34, 50, -11, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -126, 0, -125, 0, -90, 108, -96, 58, 48, 56, -128, 1, 1, -127, 1, 3, -126, 4, -111, 34, 50, -11, -125, 1, 0, -92, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 8, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -125, 0, -124, 0, -89, 22, 48, 17, 48, 15, 10, 1, 12, 2, 1, 3, -128, 4, -111, 34, 50, -11, -127, 1, 1, -128, 1, 2, -88, 21, 48, 19, 10, 1, 13, -96, 6, -126, 1, 38, -125, 1, 16, -95, 6, 4, 1, 7, 4, 1, 6, -87, 111, -96, 61, 48, 59, 4, 4, -111, 34, 50, -12, 2, 1, 7, 4, 4, -111, 34, 50, -11, 2, 1, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 2, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -125, 0, -124, 0, -86, 108, -96, 58, 48, 56, -128, 1, 1, -127, 1, 3, -126, 4, -111, 34, 50, -11, -125, 1, 0, -92, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 8, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -125, 0, -124, 0, -85, 13, 48, 11, 10, 1, 1, -96, 6, 10, 1, 0, 10, 1, 2
+ };
     }
 
     private byte[] getISDNSubaddressStringData() {
@@ -159,17 +266,17 @@ public class InsertSubscriberDataRequestTest {
         InsertSubscriberDataRequestImpl prim = (InsertSubscriberDataRequestImpl)result.getResult(); 
         
         // imsi
-        IMSIImpl imsi = prim.getImsi();
+        IMSI imsi = prim.getImsi();
         assertTrue(imsi.getData().equals("1111122222"));
 
         // msisdn
-        ISDNAddressStringImpl msisdn = prim.getMsisdn();
+        ISDNAddressString msisdn = prim.getMsisdn();
         assertTrue(msisdn.getAddress().equals("22234"));
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
 
         // category
-        CategoryImpl category = prim.getCategory();
+        Category category = prim.getCategory();
         assertEquals(category.getData(), 5);
 
         // subscriberStatus
@@ -177,30 +284,30 @@ public class InsertSubscriberDataRequestTest {
         assertEquals(subscriberStatus, SubscriberStatus.operatorDeterminedBarring);
 
         // bearerServiceList
-        List<ExtBearerServiceCodeImpl> bearerServiceList = prim.getBearerServiceList();
+        List<ExtBearerServiceCode> bearerServiceList = prim.getBearerServiceList();
         assertNotNull(bearerServiceList);
         assertEquals(bearerServiceList.size(), 1);
-        ExtBearerServiceCodeImpl extBearerServiceCode = bearerServiceList.get(0);
+        ExtBearerServiceCode extBearerServiceCode = bearerServiceList.get(0);
         assertEquals(extBearerServiceCode.getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_9600bps);
 
         // teleserviceList
-        List<ExtTeleserviceCodeImpl> teleserviceList = prim.getTeleserviceList();
+        List<ExtTeleserviceCode> teleserviceList = prim.getTeleserviceList();
         assertNotNull(teleserviceList);
         assertEquals(teleserviceList.size(), 1);
-        ExtTeleserviceCodeImpl extTeleserviceCode = teleserviceList.get(0);
+        ExtTeleserviceCode extTeleserviceCode = teleserviceList.get(0);
         assertEquals(extTeleserviceCode.getTeleserviceCodeValue(), TeleserviceCodeValue.allSpeechTransmissionServices);
 
         // start provisionedSS
-        List<ExtSSInfoImpl> provisionedSS = prim.getProvisionedSS();
+        List<ExtSSInfo> provisionedSS = prim.getProvisionedSS();
         assertNotNull(provisionedSS);
         assertEquals(provisionedSS.size(), 1);
-        ExtSSInfoImpl extSSInfo = provisionedSS.get(0);
+        ExtSSInfo extSSInfo = provisionedSS.get(0);
 
-        ExtForwInfoImpl forwardingInfo = extSSInfo.getForwardingInfo();
-        ExtCallBarInfoImpl callBarringInfo = extSSInfo.getCallBarringInfo();
-        CUGInfoImpl cugInfo = extSSInfo.getCugInfo();
-        ExtSSDataImpl ssData = extSSInfo.getSsData();
-        EMLPPInfoImpl emlppInfo = extSSInfo.getEmlppInfo();
+        ExtForwInfo forwardingInfo = extSSInfo.getForwardingInfo();
+        ExtCallBarInfo callBarringInfo = extSSInfo.getCallBarringInfo();
+        CUGInfo cugInfo = extSSInfo.getCugInfo();
+        ExtSSData ssData = extSSInfo.getSsData();
+        EMLPPInfo emlppInfo = extSSInfo.getEmlppInfo();
 
         assertNotNull(forwardingInfo);
         assertNull(callBarringInfo);
@@ -211,10 +318,10 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(forwardingInfo.getExtensionContainer()));
         assertEquals(forwardingInfo.getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.allSS);
 
-        List<ExtForwFeatureImpl> forwardingFeatureList = forwardingInfo.getForwardingFeatureList();
+        List<ExtForwFeature> forwardingFeatureList = forwardingInfo.getForwardingFeatureList();
         assertNotNull(forwardingFeatureList);
         assertEquals(forwardingFeatureList.size(), 1);
-        ExtForwFeatureImpl extForwFeature = forwardingFeatureList.get(0);
+        ExtForwFeature extForwFeature = forwardingFeatureList.get(0);
         assertNotNull(extForwFeature);
 
         assertEquals(extForwFeature.getBasicService().getExtBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_9600bps);
@@ -225,7 +332,7 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(extForwFeature.getSsStatus().getBitQ());
         assertTrue(extForwFeature.getSsStatus().getBitR());
 
-        ISDNAddressStringImpl forwardedToNumber = extForwFeature.getForwardedToNumber();
+        ISDNAddressString forwardedToNumber = extForwFeature.getForwardedToNumber();
         assertNotNull(forwardedToNumber);
         assertTrue(forwardedToNumber.getAddress().equals("22228"));
         assertEquals(forwardedToNumber.getAddressNature(), AddressNature.international_number);
@@ -238,7 +345,7 @@ public class InsertSubscriberDataRequestTest {
         assertEquals(extForwFeature.getForwardingOptions().getExtForwOptionsForwardingReason(), ExtForwOptionsForwardingReason.msBusy);
         assertNotNull(extForwFeature.getNoReplyConditionTime());
         assertEquals(extForwFeature.getNoReplyConditionTime().intValue(), 2);
-        FTNAddressStringImpl longForwardedToNumber = extForwFeature.getLongForwardedToNumber();
+        FTNAddressString longForwardedToNumber = extForwFeature.getLongForwardedToNumber();
         assertNotNull(longForwardedToNumber);
         assertTrue(longForwardedToNumber.getAddress().equals("22227"));
         assertEquals(longForwardedToNumber.getAddressNature(), AddressNature.international_number);
@@ -246,8 +353,8 @@ public class InsertSubscriberDataRequestTest {
         // end provisionedSS
 
         // start odbData
-        ODBDataImpl odbData = prim.getODBData();
-        ODBGeneralDataImpl oDBGeneralData = odbData.getODBGeneralData();
+        ODBData odbData = prim.getODBData();
+        ODBGeneralData oDBGeneralData = odbData.getODBGeneralData();
         assertTrue(!oDBGeneralData.getAllOGCallsBarred());
         assertTrue(oDBGeneralData.getInternationalOGCallsBarred());
         assertTrue(!oDBGeneralData.getInternationalOGCallsNotToHPLMNCountryBarred());
@@ -277,7 +384,7 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(!oDBGeneralData.getRegistrationInterzonalCFBarred());
         assertTrue(oDBGeneralData.getRegistrationInterzonalCFNotToHPLMNBarred());
         assertTrue(!oDBGeneralData.getRegistrationInternationalCFBarred());
-        ODBHPLMNDataImpl odbHplmnData = odbData.getOdbHplmnData();
+        ODBHPLMNData odbHplmnData = odbData.getOdbHplmnData();
         assertTrue(!odbHplmnData.getPlmnSpecificBarringType1());
         assertTrue(odbHplmnData.getPlmnSpecificBarringType2());
         assertTrue(!odbHplmnData.getPlmnSpecificBarringType3());
@@ -290,18 +397,18 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(prim.getRoamingRestrictionDueToUnsupportedFeature());
 
         // start regionalSubscriptionData
-        List<ZoneCodeImpl> regionalSubscriptionData = prim.getRegionalSubscriptionData();
+        List<ZoneCode> regionalSubscriptionData = prim.getRegionalSubscriptionData();
         assertNotNull(regionalSubscriptionData);
         assertEquals(regionalSubscriptionData.size(), 1);
-        ZoneCodeImpl zoneCode = regionalSubscriptionData.get(0);
+        ZoneCode zoneCode = regionalSubscriptionData.get(0);
         assertEquals(zoneCode.getIntValue(), 2);
         // end regionalSubscriptionData
 
         // start vbsSubscriptionData
-        List<VoiceBroadcastDataImpl> vbsSubscriptionData = prim.getVbsSubscriptionData();
+        List<VoiceBroadcastData> vbsSubscriptionData = prim.getVbsSubscriptionData();
         assertNotNull(vbsSubscriptionData);
         assertEquals(vbsSubscriptionData.size(), 1);
-        VoiceBroadcastDataImpl voiceBroadcastData = vbsSubscriptionData.get(0);
+        VoiceBroadcastData voiceBroadcastData = vbsSubscriptionData.get(0);
         assertTrue(voiceBroadcastData.getGroupId().getGroupId().equals(""));
         assertTrue(voiceBroadcastData.getLongGroupId().getLongGroupId().equals("5"));
         assertTrue(voiceBroadcastData.getBroadcastInitEntitlement());
@@ -310,10 +417,10 @@ public class InsertSubscriberDataRequestTest {
         // end vbsSubscriptionData
 
         // start vgcsSubscriptionData
-        List<VoiceGroupCallDataImpl> vgcsSubscriptionData = prim.getVgcsSubscriptionData();
+        List<VoiceGroupCallData> vgcsSubscriptionData = prim.getVgcsSubscriptionData();
         assertNotNull(vgcsSubscriptionData);
         assertEquals(vgcsSubscriptionData.size(), 1);
-        VoiceGroupCallDataImpl voiceGroupCallData = vgcsSubscriptionData.get(0);
+        VoiceGroupCallData voiceGroupCallData = vgcsSubscriptionData.get(0);
         assertTrue(voiceGroupCallData.getGroupId().getGroupId().equals(""));
         assertTrue(voiceGroupCallData.getLongGroupId().getLongGroupId().equals("5"));
         assertNotNull(voiceGroupCallData.getExtensionContainer());
@@ -326,12 +433,12 @@ public class InsertSubscriberDataRequestTest {
         // end vgcsSubscriptionData
 
         // start vlrCamelSubscriptionInfo
-        VlrCamelSubscriptionInfoImpl vlrCamelSubscriptionInfo = prim.getVlrCamelSubscriptionInfo();
+        VlrCamelSubscriptionInfo vlrCamelSubscriptionInfo = prim.getVlrCamelSubscriptionInfo();
 
-        OCSIImpl oCsi = vlrCamelSubscriptionInfo.getOCsi();
-        List<OBcsmCamelTDPDataImpl> lst = oCsi.getOBcsmCamelTDPDataList();
+        OCSI oCsi = vlrCamelSubscriptionInfo.getOCsi();
+        List<OBcsmCamelTDPData> lst = oCsi.getOBcsmCamelTDPDataList();
         assertEquals(lst.size(), 1);
-        OBcsmCamelTDPDataImpl cd = lst.get(0);
+        OBcsmCamelTDPData cd = lst.get(0);
         assertEquals(cd.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.routeSelectFailure);
         assertEquals(cd.getServiceKey(), 3);
         assertEquals(cd.getGsmSCFAddress().getAddressNature(), AddressNature.international_number);
@@ -348,16 +455,16 @@ public class InsertSubscriberDataRequestTest {
         assertNotNull(vlrCamelSubscriptionInfo.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(vlrCamelSubscriptionInfo.getExtensionContainer()));
 
-        SSCSIImpl ssCsi = vlrCamelSubscriptionInfo.getSsCsi();
-        SSCamelDataImpl ssCamelData = ssCsi.getSsCamelData();
+        SSCSI ssCsi = vlrCamelSubscriptionInfo.getSsCsi();
+        SSCamelData ssCamelData = ssCsi.getSsCamelData();
 
-        List<SSCodeImpl> ssEventList = ssCamelData.getSsEventList();
+        List<SSCode> ssEventList = ssCamelData.getSsEventList();
         assertNotNull(ssEventList);
         assertEquals(ssEventList.size(), 1);
-        SSCodeImpl one = ssEventList.get(0);
+        SSCode one = ssEventList.get(0);
         assertNotNull(one);
         assertEquals(one.getSupplementaryCodeValue(), SupplementaryCodeValue.allCommunityOfInterestSS);
-        ISDNAddressStringImpl gsmSCFAddress = ssCamelData.getGsmSCFAddress();
+        ISDNAddressString gsmSCFAddress = ssCamelData.getGsmSCFAddress();
         assertTrue(gsmSCFAddress.getAddress().equals("22235"));
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
@@ -367,22 +474,22 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(ssCsi.getCsiActive());
         assertTrue(ssCsi.getNotificationToCSE());
 
-        List<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList = vlrCamelSubscriptionInfo.getOBcsmCamelTDPCriteriaList();
+        List<OBcsmCamelTdpCriteria> oBcsmCamelTDPCriteriaList = vlrCamelSubscriptionInfo.getOBcsmCamelTDPCriteriaList();
         assertNotNull(oBcsmCamelTDPCriteriaList);
         assertEquals(oBcsmCamelTDPCriteriaList.size(), 1);
-        OBcsmCamelTdpCriteriaImpl oBcsmCamelTdpCriteria = oBcsmCamelTDPCriteriaList.get(0);
+        OBcsmCamelTdpCriteria oBcsmCamelTdpCriteria = oBcsmCamelTDPCriteriaList.get(0);
         assertNotNull(oBcsmCamelTdpCriteria);
 
-        DestinationNumberCriteriaImpl destinationNumberCriteria = oBcsmCamelTdpCriteria.getDestinationNumberCriteria();
-        List<ISDNAddressStringImpl> destinationNumberList = destinationNumberCriteria.getDestinationNumberList();
+        DestinationNumberCriteria destinationNumberCriteria = oBcsmCamelTdpCriteria.getDestinationNumberCriteria();
+        List<ISDNAddressString> destinationNumberList = destinationNumberCriteria.getDestinationNumberList();
         assertNotNull(destinationNumberList);
         assertEquals(destinationNumberList.size(), 2);
-        ISDNAddressStringImpl destinationNumberOne = destinationNumberList.get(0);
+        ISDNAddressString destinationNumberOne = destinationNumberList.get(0);
         assertNotNull(destinationNumberOne);
         assertTrue(destinationNumberOne.getAddress().equals("22234"));
         assertEquals(destinationNumberOne.getAddressNature(), AddressNature.international_number);
         assertEquals(destinationNumberOne.getNumberingPlan(), NumberingPlan.ISDN);
-        ISDNAddressStringImpl destinationNumberTwo = destinationNumberList.get(1);
+        ISDNAddressString destinationNumberTwo = destinationNumberList.get(1);
         assertNotNull(destinationNumberTwo);
         assertTrue(destinationNumberTwo.getAddress().equals("22235"));
         assertEquals(destinationNumberTwo.getAddressNature(), AddressNature.international_number);
@@ -397,16 +504,16 @@ public class InsertSubscriberDataRequestTest {
         assertEquals(oBcsmCamelTdpCriteria.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.collectedInfo);
         assertNotNull(oBcsmCamelTdpCriteria.getBasicServiceCriteria());
         assertEquals(oBcsmCamelTdpCriteria.getBasicServiceCriteria().size(), 2);
-        ExtBasicServiceCodeImpl basicServiceOne = oBcsmCamelTdpCriteria.getBasicServiceCriteria().get(0);
+        ExtBasicServiceCode basicServiceOne = oBcsmCamelTdpCriteria.getBasicServiceCriteria().get(0);
         assertNotNull(basicServiceOne);
         assertEquals(basicServiceOne.getExtBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_9600bps);
 
-        ExtBasicServiceCodeImpl basicServiceTwo = oBcsmCamelTdpCriteria.getBasicServiceCriteria().get(1);
+        ExtBasicServiceCode basicServiceTwo = oBcsmCamelTdpCriteria.getBasicServiceCriteria().get(1);
         assertNotNull(basicServiceTwo);
         assertEquals(basicServiceTwo.getExtTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.allSpeechTransmissionServices);
 
         assertEquals(oBcsmCamelTdpCriteria.getCallTypeCriteria(), CallTypeCriteria.forwarded);
-        List<CauseValueImpl> oCauseValueCriteria = oBcsmCamelTdpCriteria.getOCauseValueCriteria();
+        List<CauseValue> oCauseValueCriteria = oBcsmCamelTdpCriteria.getOCauseValueCriteria();
         assertNotNull(oCauseValueCriteria);
         assertEquals(oCauseValueCriteria.size(), 1);
         assertNotNull(oCauseValueCriteria.get(0));
@@ -414,19 +521,19 @@ public class InsertSubscriberDataRequestTest {
 
         assertFalse(vlrCamelSubscriptionInfo.getTifCsi());
 
-        MCSIImpl mCsi = vlrCamelSubscriptionInfo.getMCsi();
-        List<MMCodeImpl> mobilityTriggers = mCsi.getMobilityTriggers();
+        MCSI mCsi = vlrCamelSubscriptionInfo.getMCsi();
+        List<MMCode> mobilityTriggers = mCsi.getMobilityTriggers();
         assertNotNull(mobilityTriggers);
         assertEquals(mobilityTriggers.size(), 2);
-        MMCodeImpl mmCode = mobilityTriggers.get(0);
+        MMCode mmCode = mobilityTriggers.get(0);
         assertNotNull(mmCode);
         assertEquals(MMCodeValue.GPRSAttach, mmCode.getMMCodeValue());
-        MMCodeImpl mmCode2 = mobilityTriggers.get(1);
+        MMCode mmCode2 = mobilityTriggers.get(1);
         assertNotNull(mmCode2);
         assertEquals(MMCodeValue.IMSIAttach, mmCode2.getMMCodeValue());
         assertNotNull(mCsi.getServiceKey());
         assertEquals(mCsi.getServiceKey(), 3);
-        ISDNAddressStringImpl gsmSCFAddressTwo = mCsi.getGsmSCFAddress();
+        ISDNAddressString gsmSCFAddressTwo = mCsi.getGsmSCFAddress();
         assertTrue(gsmSCFAddressTwo.getAddress().equals("22235"));
         assertEquals(gsmSCFAddressTwo.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddressTwo.getNumberingPlan(), NumberingPlan.ISDN);
@@ -435,15 +542,15 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(mCsi.getCsiActive());
         assertTrue(mCsi.getNotificationToCSE());
 
-        SMSCSIImpl smsCsi = vlrCamelSubscriptionInfo.getSmsCsi();
-        List<SMSCAMELTDPDataImpl> smsCamelTdpDataList = smsCsi.getSmsCamelTdpDataList();
+        SMSCSI smsCsi = vlrCamelSubscriptionInfo.getSmsCsi();
+        List<SMSCAMELTDPData> smsCamelTdpDataList = smsCsi.getSmsCamelTdpDataList();
         assertNotNull(smsCamelTdpDataList);
         assertEquals(smsCamelTdpDataList.size(), 1);
-        SMSCAMELTDPDataImpl smsCAMELTDPData = smsCamelTdpDataList.get(0);
+        SMSCAMELTDPData smsCAMELTDPData = smsCamelTdpDataList.get(0);
         assertNotNull(smsCAMELTDPData);
         assertEquals(smsCAMELTDPData.getServiceKey(), 3);
         assertEquals(smsCAMELTDPData.getSMSTriggerDetectionPoint(), SMSTriggerDetectionPoint.smsCollectedInfo);
-        ISDNAddressStringImpl gsmSCFAddressSmsCAMELTDPData = smsCAMELTDPData.getGsmSCFAddress();
+        ISDNAddressString gsmSCFAddressSmsCAMELTDPData = smsCAMELTDPData.getGsmSCFAddress();
         assertTrue(gsmSCFAddressSmsCAMELTDPData.getAddress().equals("22235"));
         assertEquals(gsmSCFAddressSmsCAMELTDPData.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddressSmsCAMELTDPData.getNumberingPlan(), NumberingPlan.ISDN);
@@ -454,10 +561,10 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(smsCsi.getNotificationToCSE());
         assertEquals(smsCsi.getCamelCapabilityHandling().intValue(), 8);
 
-        TCSIImpl vtCsi = vlrCamelSubscriptionInfo.getVtCsi();
-        List<TBcsmCamelTDPDataImpl> tbcsmCamelTDPDatalst = vtCsi.getTBcsmCamelTDPDataList();
+        TCSI vtCsi = vlrCamelSubscriptionInfo.getVtCsi();
+        List<TBcsmCamelTDPData> tbcsmCamelTDPDatalst = vtCsi.getTBcsmCamelTDPDataList();
         assertEquals(lst.size(), 1);
-        TBcsmCamelTDPDataImpl tbcsmCamelTDPData = tbcsmCamelTDPDatalst.get(0);
+        TBcsmCamelTDPData tbcsmCamelTDPData = tbcsmCamelTDPDatalst.get(0);
         assertEquals(tbcsmCamelTDPData.getTBcsmTriggerDetectionPoint(), TBcsmTriggerDetectionPoint.termAttemptAuthorized);
         assertEquals(tbcsmCamelTDPData.getServiceKey(), 3);
         assertEquals(tbcsmCamelTDPData.getGsmSCFAddress().getAddressNature(), AddressNature.international_number);
@@ -470,17 +577,17 @@ public class InsertSubscriberDataRequestTest {
         assertFalse(vtCsi.getNotificationToCSE());
         assertFalse(vtCsi.getCsiActive());
 
-        List<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList = vlrCamelSubscriptionInfo.getTBcsmCamelTdpCriteriaList();
+        List<TBcsmCamelTdpCriteria> tBcsmCamelTdpCriteriaList = vlrCamelSubscriptionInfo.getTBcsmCamelTdpCriteriaList();
         assertNotNull(tBcsmCamelTdpCriteriaList);
         assertEquals(tBcsmCamelTdpCriteriaList.size(), 1);
         assertNotNull(tBcsmCamelTdpCriteriaList.get(0));
-        TBcsmCamelTdpCriteriaImpl tbcsmCamelTdpCriteria = tBcsmCamelTdpCriteriaList.get(0);
+        TBcsmCamelTdpCriteria tbcsmCamelTdpCriteria = tBcsmCamelTdpCriteriaList.get(0);
         assertEquals(tbcsmCamelTdpCriteria.getTBcsmTriggerDetectionPoint(), TBcsmTriggerDetectionPoint.tBusy);
         assertNotNull(tbcsmCamelTdpCriteria.getBasicServiceCriteria());
         assertEquals(tbcsmCamelTdpCriteria.getBasicServiceCriteria().size(), 2);
         assertNotNull(tbcsmCamelTdpCriteria.getBasicServiceCriteria().get(0));
         assertNotNull(tbcsmCamelTdpCriteria.getBasicServiceCriteria().get(1));
-        List<CauseValueImpl> oCauseValueCriteriaLst = tbcsmCamelTdpCriteria.getTCauseValueCriteria();
+        List<CauseValue> oCauseValueCriteriaLst = tbcsmCamelTdpCriteria.getTCauseValueCriteria();
         assertNotNull(oCauseValueCriteriaLst);
         assertEquals(oCauseValueCriteriaLst.size(), 2);
         assertNotNull(oCauseValueCriteriaLst.get(0));
@@ -488,18 +595,18 @@ public class InsertSubscriberDataRequestTest {
         assertNotNull(oCauseValueCriteriaLst.get(1));
         assertEquals(oCauseValueCriteriaLst.get(1).getData(), 6);
 
-        DCSIImpl dCsi = vlrCamelSubscriptionInfo.getDCsi();
-        List<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriaList = dCsi.getDPAnalysedInfoCriteriaList();
+        DCSI dCsi = vlrCamelSubscriptionInfo.getDCsi();
+        List<DPAnalysedInfoCriterium> dpAnalysedInfoCriteriaList = dCsi.getDPAnalysedInfoCriteriaList();
         assertNotNull(dpAnalysedInfoCriteriaList);
         assertEquals(dpAnalysedInfoCriteriaList.size(), 1);
-        DPAnalysedInfoCriteriumImpl dpAnalysedInfoCriterium = dpAnalysedInfoCriteriaList.get(0);
+        DPAnalysedInfoCriterium dpAnalysedInfoCriterium = dpAnalysedInfoCriteriaList.get(0);
         assertNotNull(dpAnalysedInfoCriterium);
-        ISDNAddressStringImpl dialledNumber = dpAnalysedInfoCriterium.getDialledNumber();
+        ISDNAddressString dialledNumber = dpAnalysedInfoCriterium.getDialledNumber();
         assertTrue(dialledNumber.getAddress().equals("22234"));
         assertEquals(dialledNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(dialledNumber.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(dpAnalysedInfoCriterium.getServiceKey(), 7);
-        ISDNAddressStringImpl gsmSCFAddressDp = dpAnalysedInfoCriterium.getGsmSCFAddress();
+        ISDNAddressString gsmSCFAddressDp = dpAnalysedInfoCriterium.getGsmSCFAddress();
         assertTrue(gsmSCFAddressDp.getAddress().equals("22235"));
         assertEquals(gsmSCFAddressDp.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddressDp.getNumberingPlan(), NumberingPlan.ISDN);
@@ -510,15 +617,15 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(dCsi.getCsiActive());
         assertTrue(dCsi.getNotificationToCSE());
 
-        SMSCSIImpl mtSmsCSI = vlrCamelSubscriptionInfo.getMtSmsCSI();
-        List<SMSCAMELTDPDataImpl> smsCamelTdpDataListOfmtSmsCSI = mtSmsCSI.getSmsCamelTdpDataList();
+        SMSCSI mtSmsCSI = vlrCamelSubscriptionInfo.getMtSmsCSI();
+        List<SMSCAMELTDPData> smsCamelTdpDataListOfmtSmsCSI = mtSmsCSI.getSmsCamelTdpDataList();
         assertNotNull(smsCamelTdpDataListOfmtSmsCSI);
         assertEquals(smsCamelTdpDataListOfmtSmsCSI.size(), 1);
-        SMSCAMELTDPDataImpl smsCAMELTDPDataOfMtSmsCSI = smsCamelTdpDataListOfmtSmsCSI.get(0);
+        SMSCAMELTDPData smsCAMELTDPDataOfMtSmsCSI = smsCamelTdpDataListOfmtSmsCSI.get(0);
         assertNotNull(smsCAMELTDPDataOfMtSmsCSI);
         assertEquals(smsCAMELTDPDataOfMtSmsCSI.getServiceKey(), 3);
         assertEquals(smsCAMELTDPDataOfMtSmsCSI.getSMSTriggerDetectionPoint(), SMSTriggerDetectionPoint.smsCollectedInfo);
-        ISDNAddressStringImpl gsmSCFAddressOfMtSmsCSI = smsCAMELTDPDataOfMtSmsCSI.getGsmSCFAddress();
+        ISDNAddressString gsmSCFAddressOfMtSmsCSI = smsCAMELTDPDataOfMtSmsCSI.getGsmSCFAddress();
         assertTrue(gsmSCFAddressOfMtSmsCSI.getAddress().equals("22235"));
         assertEquals(gsmSCFAddressOfMtSmsCSI.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddressOfMtSmsCSI.getNumberingPlan(), NumberingPlan.ISDN);
@@ -530,10 +637,10 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(mtSmsCSI.getNotificationToCSE());
         assertEquals(mtSmsCSI.getCamelCapabilityHandling().intValue(), 8);
 
-        List<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList = vlrCamelSubscriptionInfo.getMtSmsCamelTdpCriteriaList();
+        List<MTsmsCAMELTDPCriteria> mtSmsCamelTdpCriteriaList = vlrCamelSubscriptionInfo.getMtSmsCamelTdpCriteriaList();
         assertNotNull(mtSmsCamelTdpCriteriaList);
         assertEquals(mtSmsCamelTdpCriteriaList.size(), 1);
-        MTsmsCAMELTDPCriteriaImpl mtsmsCAMELTDPCriteria = mtSmsCamelTdpCriteriaList.get(0);
+        MTsmsCAMELTDPCriteria mtsmsCAMELTDPCriteria = mtSmsCamelTdpCriteriaList.get(0);
 
         List<MTSMSTPDUType> tPDUTypeCriterion = mtsmsCAMELTDPCriteria.getTPDUTypeCriterion();
         assertNotNull(tPDUTypeCriterion);
@@ -549,54 +656,54 @@ public class InsertSubscriberDataRequestTest {
         // end vlrCamelSubscriptionInfo
 
         // start naeaPreferredCI
-        NAEAPreferredCIImpl naeaPreferredCI = prim.getNAEAPreferredCI();
+        NAEAPreferredCI naeaPreferredCI = prim.getNAEAPreferredCI();
         assertEquals(naeaPreferredCI.getNaeaPreferredCIC().getData(), this.getNAEACICIData());
         assertNotNull(naeaPreferredCI.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(naeaPreferredCI.getExtensionContainer()));
         // end naeaPreferredCI
 
         // start gprsSubscriptionData
-        GPRSSubscriptionDataImpl gprsSubscriptionData = prim.getGPRSSubscriptionData();
+        GPRSSubscriptionData gprsSubscriptionData = prim.getGPRSSubscriptionData();
 
         assertTrue(!gprsSubscriptionData.getCompleteDataListIncluded());
-        List<PDPContextImpl> gprsDataList = gprsSubscriptionData.getGPRSDataList();
+        List<PDPContext> gprsDataList = gprsSubscriptionData.getGPRSDataList();
         assertNotNull(gprsDataList);
         assertEquals(gprsDataList.size(), 1);
-        PDPContextImpl pdpContext = gprsDataList.get(0);
+        PDPContext pdpContext = gprsDataList.get(0);
         assertNotNull(pdpContext);
-        APNImpl apn = pdpContext.getAPN();
+        APN apn = pdpContext.getAPN();
         assertTrue(Arrays.equals(apn.getData(), this.getAPNData()));
-        APNOIReplacementImpl apnoiReplacement = pdpContext.getAPNOIReplacement();
+        APNOIReplacement apnoiReplacement = pdpContext.getAPNOIReplacement();
         assertTrue(Arrays.equals(apnoiReplacement.getData(), this.getAPNOIReplacementData()));
-        ChargingCharacteristicsImpl chargingCharacteristics = pdpContext.getChargingCharacteristics();
+        ChargingCharacteristics chargingCharacteristics = pdpContext.getChargingCharacteristics();
         assertTrue(Arrays.equals(chargingCharacteristics.getData(), this.getChargingCharacteristicsData()));
 
-        Ext2QoSSubscribedImpl ext2QoSSubscribed = pdpContext.getExt2QoSSubscribed();
+        Ext2QoSSubscribed ext2QoSSubscribed = pdpContext.getExt2QoSSubscribed();
         assertTrue(Arrays.equals(ext2QoSSubscribed.getData(), this.getExt2QoSSubscribedData()));
-        Ext3QoSSubscribedImpl ext3QoSSubscribed = pdpContext.getExt3QoSSubscribed();
+        Ext3QoSSubscribed ext3QoSSubscribed = pdpContext.getExt3QoSSubscribed();
         assertTrue(Arrays.equals(ext3QoSSubscribed.getData(), this.getExt3QoSSubscribedData()));
-        Ext4QoSSubscribedImpl ext4QoSSubscribed = pdpContext.getExt4QoSSubscribed();
-        assertEquals(ext4QoSSubscribed.getData(), 2);
-        MAPExtensionContainerImpl pdpContextExtensionContainer = pdpContext.getExtensionContainer();
+        Ext4QoSSubscribed ext4QoSSubscribed = pdpContext.getExt4QoSSubscribed();
+        assertEquals(ext4QoSSubscribed.getData(), new Integer(2));
+        MAPExtensionContainer pdpContextExtensionContainer = pdpContext.getExtensionContainer();
         assertNotNull(pdpContextExtensionContainer);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(pdpContextExtensionContainer));
-        PDPAddressImpl extpdpAddress = pdpContext.getExtPDPAddress();
+        PDPAddress extpdpAddress = pdpContext.getExtPDPAddress();
         assertTrue(Arrays.equals(extpdpAddress.getData(), this.getPDPAddressData2()));
-        ExtPDPTypeImpl extpdpType = pdpContext.getExtPDPType();
+        ExtPDPType extpdpType = pdpContext.getExtPDPType();
         assertTrue(Arrays.equals(extpdpType.getData(), this.getExtPDPTypeData()));
-        ExtQoSSubscribedImpl extQoSSubscribed = pdpContext.getExtQoSSubscribed();
+        ExtQoSSubscribed extQoSSubscribed = pdpContext.getExtQoSSubscribed();
         assertTrue(Arrays.equals(extQoSSubscribed.getData(), this.getExtQoSSubscribedData()));
         assertEquals(pdpContext.getLIPAPermission(), LIPAPermission.lipaConditional);
-        PDPAddressImpl pdpAddress = pdpContext.getPDPAddress();
+        PDPAddress pdpAddress = pdpContext.getPDPAddress();
         assertTrue(Arrays.equals(pdpAddress.getData(), this.getPDPAddressData()));
         assertEquals(pdpContext.getPDPContextId(), 1);
-        PDPTypeImpl pdpType = pdpContext.getPDPType();
+        PDPType pdpType = pdpContext.getPDPType();
         assertTrue(Arrays.equals(pdpType.getData(), this.getPDPTypeData()));
-        QoSSubscribedImpl qosSubscribed = pdpContext.getQoSSubscribed();
+        QoSSubscribed qosSubscribed = pdpContext.getQoSSubscribed();
         assertTrue(Arrays.equals(qosSubscribed.getData(), this.getQoSSubscribedData()));
         assertEquals(pdpContext.getSIPTOPermission(), SIPTOPermission.siptoAllowed);
 
-        APNOIReplacementImpl apnOiReplacement = gprsSubscriptionData.getApnOiReplacement();
+        APNOIReplacement apnOiReplacement = gprsSubscriptionData.getApnOiReplacement();
         assertNotNull(apnOiReplacement);
         assertTrue(Arrays.equals(apnOiReplacement.getData(), this.getAPNOIReplacementData()));
         assertNotNull(gprsSubscriptionData.getExtensionContainer());
@@ -610,13 +717,13 @@ public class InsertSubscriberDataRequestTest {
         assertEquals(prim.getNetworkAccessMode(), NetworkAccessMode.packetAndCircuit);
 
         // start lsaInformation
-        LSAInformationImpl lsaInformation = prim.getLSAInformation();
+        LSAInformation lsaInformation = prim.getLSAInformation();
         assertTrue(lsaInformation.getCompleteDataListIncluded());
         assertEquals(lsaInformation.getLSAOnlyAccessIndicator(), LSAOnlyAccessIndicator.accessOutsideLSAsRestricted);
-        List<LSADataImpl> lsaDataList = lsaInformation.getLSADataList();
+        List<LSAData> lsaDataList = lsaInformation.getLSADataList();
         assertNotNull(lsaDataList);
         assertEquals(lsaDataList.size(), 1);
-        LSADataImpl lsaData = lsaDataList.get(0);
+        LSAData lsaData = lsaDataList.get(0);
         assertTrue(Arrays.equals(lsaData.getLSAIdentity().getData(), this.getDataLSAIdentity()));
         assertEquals(lsaData.getLSAAttributes().getData(), 5);
         assertTrue(lsaData.getLsaActiveModeIndicator());
@@ -630,20 +737,20 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(prim.getLmuIndicator());
 
         // lcsPrivacyClass
-        LCSInformationImpl lcsInformation = prim.getLCSInformation();
-        List<ISDNAddressStringImpl> gmlcList = lcsInformation.getGmlcList();
+        LCSInformation lcsInformation = prim.getLCSInformation();
+        List<ISDNAddressString> gmlcList = lcsInformation.getGmlcList();
         assertNotNull(gmlcList);
         assertEquals(gmlcList.size(), 1);
-        ISDNAddressStringImpl isdnAddressString = gmlcList.get(0);
+        ISDNAddressString isdnAddressString = gmlcList.get(0);
         assertTrue(isdnAddressString.getAddress().equals("22235"));
         assertEquals(isdnAddressString.getAddressNature(), AddressNature.international_number);
         assertEquals(isdnAddressString.getNumberingPlan(), NumberingPlan.ISDN);
-        List<LCSPrivacyClassImpl> lcsPrivacyExceptionList = lcsInformation.getLcsPrivacyExceptionList();
+        List<LCSPrivacyClass> lcsPrivacyExceptionList = lcsInformation.getLcsPrivacyExceptionList();
         assertNotNull(lcsPrivacyExceptionList);
         assertEquals(lcsPrivacyExceptionList.size(), 4);
-        LCSPrivacyClassImpl lcsPrivacyClass = lcsPrivacyExceptionList.get(0);
+        LCSPrivacyClass lcsPrivacyClass = lcsPrivacyExceptionList.get(0);
         assertEquals(lcsPrivacyClass.getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.allSS);
-        ExtSSStatusImpl ssStatus = lcsPrivacyClass.getSsStatus();
+        ExtSSStatus ssStatus = lcsPrivacyClass.getSsStatus();
         assertTrue(ssStatus.getBitA());
         assertTrue(ssStatus.getBitP());
         assertTrue(ssStatus.getBitQ());
@@ -651,13 +758,13 @@ public class InsertSubscriberDataRequestTest {
 
         assertEquals(lcsPrivacyClass.getNotificationToMSUser(), NotificationToMSUser.locationNotAllowed);
 
-        List<ExternalClientImpl> externalClientList = lcsPrivacyClass.getExternalClientList();
+        List<ExternalClient> externalClientList = lcsPrivacyClass.getExternalClientList();
         assertNotNull(externalClientList);
         assertEquals(externalClientList.size(), 1);
-        ExternalClientImpl externalClient = externalClientList.get(0);
-        MAPExtensionContainerImpl extensionContainerExternalClient = externalClient.getExtensionContainer();
-        LCSClientExternalIDImpl clientIdentity = externalClient.getClientIdentity();
-        ISDNAddressStringImpl externalAddress = clientIdentity.getExternalAddress();
+        ExternalClient externalClient = externalClientList.get(0);
+        MAPExtensionContainer extensionContainerExternalClient = externalClient.getExtensionContainer();
+        LCSClientExternalID clientIdentity = externalClient.getClientIdentity();
+        ISDNAddressString externalAddress = clientIdentity.getExternalAddress();
         assertTrue(externalAddress.getAddress().equals("22228"));
         assertEquals(externalAddress.getAddressNature(), AddressNature.international_number);
         assertEquals(externalAddress.getNumberingPlan(), NumberingPlan.ISDN);
@@ -674,7 +781,7 @@ public class InsertSubscriberDataRequestTest {
         assertEquals(plmnClientList.get(0), LCSClientInternalID.broadcastService);
         assertEquals(plmnClientList.get(1), LCSClientInternalID.oandMHPLMN);
 
-        List<ExternalClientImpl> extExternalClientList = lcsPrivacyClass.getExtExternalClientList();
+        List<ExternalClient> extExternalClientList = lcsPrivacyClass.getExtExternalClientList();
         assertNotNull(extExternalClientList);
         assertEquals(extExternalClientList.size(), 1);
         externalClient = extExternalClientList.get(0);
@@ -690,10 +797,10 @@ public class InsertSubscriberDataRequestTest {
         assertNotNull(externalClient.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(externalClient.getExtensionContainer()));
 
-        List<ServiceTypeImpl> serviceTypeList = lcsPrivacyClass.getServiceTypeList();
+        List<ServiceType> serviceTypeList = lcsPrivacyClass.getServiceTypeList();
         assertNotNull(serviceTypeList);
         assertEquals(serviceTypeList.size(), 1);
-        ServiceTypeImpl serviceType = serviceTypeList.get(0);
+        ServiceType serviceType = serviceTypeList.get(0);
         assertEquals(serviceType.getServiceTypeIdentity(), 1);
         assertEquals(serviceType.getGMLCRestriction(), GMLCRestriction.gmlcList);
         assertEquals(serviceType.getNotificationToMSUser(), NotificationToMSUser.locationNotAllowed);
@@ -702,10 +809,10 @@ public class InsertSubscriberDataRequestTest {
 
         assertNotNull(lcsPrivacyClass.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(lcsPrivacyClass.getExtensionContainer()));
-        List<MOLRClassImpl> molrList = lcsInformation.getMOLRList();
+        List<MOLRClass> molrList = lcsInformation.getMOLRList();
         assertNotNull(molrList);
         assertEquals(molrList.size(), 1);
-        MOLRClassImpl molrClass = molrList.get(0);
+        MOLRClass molrClass = molrList.get(0);
         assertEquals(molrClass.getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.allSS);
         assertTrue(molrClass.getSsStatus().getBitA());
         assertTrue(molrClass.getSsStatus().getBitP());
@@ -714,7 +821,7 @@ public class InsertSubscriberDataRequestTest {
         assertNotNull(molrClass.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(molrClass.getExtensionContainer()));
 
-        List<LCSPrivacyClassImpl> addLcsPrivacyExceptionList = lcsInformation.getAddLcsPrivacyExceptionList();
+        List<LCSPrivacyClass> addLcsPrivacyExceptionList = lcsInformation.getAddLcsPrivacyExceptionList();
         assertNotNull(addLcsPrivacyExceptionList);
         assertEquals(addLcsPrivacyExceptionList.size(), 1);
         lcsPrivacyClass = addLcsPrivacyExceptionList.get(0);
@@ -784,13 +891,13 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(prim.getIstAlertTimer().equals(Integer.valueOf(21)));
 
         // superChargerSupportedInHLR
-        AgeIndicatorImpl superChargerSupportedInHLR = prim.getSuperChargerSupportedInHLR();
+        AgeIndicator superChargerSupportedInHLR = prim.getSuperChargerSupportedInHLR();
         assertEquals(superChargerSupportedInHLR.getData(), this.getAgeIndicatorData());
 
         // start mcSsInfo
-        MCSSInfoImpl mcSsInfo = prim.getMcSsInfo();
+        MCSSInfo mcSsInfo = prim.getMcSsInfo();
         assertEquals(mcSsInfo.getSSCode().getSupplementaryCodeValue(), SupplementaryCodeValue.allSS);
-        ExtSSStatusImpl ssStatusMcSsInfo = mcSsInfo.getSSStatus();
+        ExtSSStatus ssStatusMcSsInfo = mcSsInfo.getSSStatus();
         assertTrue(ssStatusMcSsInfo.getBitA());
         assertTrue(ssStatusMcSsInfo.getBitP());
         assertTrue(ssStatusMcSsInfo.getBitQ());
@@ -803,20 +910,20 @@ public class InsertSubscriberDataRequestTest {
         // end mcSsInfo
 
         // csAllocationRetentionPriority
-        CSAllocationRetentionPriorityImpl csAllocationRetentionPriority = prim.getCSAllocationRetentionPriority();
+        CSAllocationRetentionPriority csAllocationRetentionPriority = prim.getCSAllocationRetentionPriority();
         assertEquals(csAllocationRetentionPriority.getData(), 4);
 
         // end sgsnCamelSubscriptionInfo
-        SGSNCAMELSubscriptionInfoImpl sgsnCamelSubscriptionInfo = prim.getSgsnCamelSubscriptionInfo();
+        SGSNCAMELSubscriptionInfo sgsnCamelSubscriptionInfo = prim.getSgsnCamelSubscriptionInfo();
 
         // sgsnCamelSubscriptionInfo
-        GPRSCSIImpl gprsCsi = sgsnCamelSubscriptionInfo.getGprsCsi();
+        GPRSCSI gprsCsi = sgsnCamelSubscriptionInfo.getGprsCsi();
         assertNotNull(gprsCsi.getGPRSCamelTDPDataList());
         assertEquals(gprsCsi.getGPRSCamelTDPDataList().size(), 1);
-        GPRSCamelTDPDataImpl gprsCamelTDPData = gprsCsi.getGPRSCamelTDPDataList().get(0);
+        GPRSCamelTDPData gprsCamelTDPData = gprsCsi.getGPRSCamelTDPDataList().get(0);
 
-        MAPExtensionContainerImpl extensionContainergprsCamelTDPData = gprsCamelTDPData.getExtensionContainer();
-        ISDNAddressStringImpl gsmSCFAddressSgsnCamelSubscriptionInfo = gprsCamelTDPData.getGsmSCFAddress();
+        MAPExtensionContainer extensionContainergprsCamelTDPData = gprsCamelTDPData.getExtensionContainer();
+        ISDNAddressString gsmSCFAddressSgsnCamelSubscriptionInfo = gprsCamelTDPData.getGsmSCFAddress();
         assertTrue(gsmSCFAddressSgsnCamelSubscriptionInfo.getAddress().equals("22235"));
         assertEquals(gsmSCFAddressSgsnCamelSubscriptionInfo.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddressSgsnCamelSubscriptionInfo.getNumberingPlan(), NumberingPlan.ISDN);
@@ -834,15 +941,15 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(gprsCsi.getCsiActive());
         assertTrue(gprsCsi.getNotificationToCSE());
 
-        SMSCSIImpl moSmsCsi = sgsnCamelSubscriptionInfo.getMoSmsCsi();
-        List<SMSCAMELTDPDataImpl> smsCamelTdpDataListSgsnCamelSubscriptionInfo = moSmsCsi.getSmsCamelTdpDataList();
+        SMSCSI moSmsCsi = sgsnCamelSubscriptionInfo.getMoSmsCsi();
+        List<SMSCAMELTDPData> smsCamelTdpDataListSgsnCamelSubscriptionInfo = moSmsCsi.getSmsCamelTdpDataList();
         assertNotNull(smsCamelTdpDataListSgsnCamelSubscriptionInfo);
         assertEquals(smsCamelTdpDataListSgsnCamelSubscriptionInfo.size(), 1);
-        SMSCAMELTDPDataImpl oneSgsnCamelSubscriptionInfo = smsCamelTdpDataListSgsnCamelSubscriptionInfo.get(0);
+        SMSCAMELTDPData oneSgsnCamelSubscriptionInfo = smsCamelTdpDataListSgsnCamelSubscriptionInfo.get(0);
         assertNotNull(oneSgsnCamelSubscriptionInfo);
         assertEquals(oneSgsnCamelSubscriptionInfo.getServiceKey(), 3);
         assertEquals(oneSgsnCamelSubscriptionInfo.getSMSTriggerDetectionPoint(), SMSTriggerDetectionPoint.smsCollectedInfo);
-        ISDNAddressStringImpl gsmSCFAddressMoSmsCsi = oneSgsnCamelSubscriptionInfo.getGsmSCFAddress();
+        ISDNAddressString gsmSCFAddressMoSmsCsi = oneSgsnCamelSubscriptionInfo.getGsmSCFAddress();
         assertTrue(gsmSCFAddressMoSmsCsi.getAddress().equals("22235"));
         assertEquals(gsmSCFAddressMoSmsCsi.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddressMoSmsCsi.getNumberingPlan(), NumberingPlan.ISDN);
@@ -855,15 +962,15 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(moSmsCsi.getNotificationToCSE());
         assertEquals(moSmsCsi.getCamelCapabilityHandling().intValue(), 8);
 
-        SMSCSIImpl mtSmsCsi = sgsnCamelSubscriptionInfo.getMtSmsCsi();
-        List<SMSCAMELTDPDataImpl> smsCamelTdpDataListMtSmsCsi = mtSmsCsi.getSmsCamelTdpDataList();
+        SMSCSI mtSmsCsi = sgsnCamelSubscriptionInfo.getMtSmsCsi();
+        List<SMSCAMELTDPData> smsCamelTdpDataListMtSmsCsi = mtSmsCsi.getSmsCamelTdpDataList();
         assertNotNull(smsCamelTdpDataListMtSmsCsi);
         assertEquals(smsCamelTdpDataListMtSmsCsi.size(), 1);
-        SMSCAMELTDPDataImpl oneSmsCamelTdpDataListMtSmsCsi = smsCamelTdpDataListMtSmsCsi.get(0);
+        SMSCAMELTDPData oneSmsCamelTdpDataListMtSmsCsi = smsCamelTdpDataListMtSmsCsi.get(0);
         assertNotNull(oneSmsCamelTdpDataListMtSmsCsi);
         assertEquals(oneSmsCamelTdpDataListMtSmsCsi.getServiceKey(), 3);
         assertEquals(oneSmsCamelTdpDataListMtSmsCsi.getSMSTriggerDetectionPoint(), SMSTriggerDetectionPoint.smsCollectedInfo);
-        ISDNAddressStringImpl gsmSCFAddressmtSmsCsi = oneSgsnCamelSubscriptionInfo.getGsmSCFAddress();
+        ISDNAddressString gsmSCFAddressmtSmsCsi = oneSgsnCamelSubscriptionInfo.getGsmSCFAddress();
         assertTrue(gsmSCFAddressmtSmsCsi.getAddress().equals("22235"));
         assertEquals(gsmSCFAddressmtSmsCsi.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddressmtSmsCsi.getNumberingPlan(), NumberingPlan.ISDN);
@@ -876,10 +983,10 @@ public class InsertSubscriberDataRequestTest {
         assertFalse(mtSmsCsi.getNotificationToCSE());
         assertEquals(mtSmsCsi.getCamelCapabilityHandling().intValue(), 8);
 
-        List<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaListSgsnCamelSubscriptionInfo = sgsnCamelSubscriptionInfo.getMtSmsCamelTdpCriteriaList();
+        List<MTsmsCAMELTDPCriteria> mtSmsCamelTdpCriteriaListSgsnCamelSubscriptionInfo = sgsnCamelSubscriptionInfo.getMtSmsCamelTdpCriteriaList();
         assertNotNull(mtSmsCamelTdpCriteriaListSgsnCamelSubscriptionInfo);
         assertEquals(mtSmsCamelTdpCriteriaListSgsnCamelSubscriptionInfo.size(), 1);
-        MTsmsCAMELTDPCriteriaImpl mtSmsCAMELTDPCriteria = mtSmsCamelTdpCriteriaListSgsnCamelSubscriptionInfo.get(0);
+        MTsmsCAMELTDPCriteria mtSmsCAMELTDPCriteria = mtSmsCamelTdpCriteriaListSgsnCamelSubscriptionInfo.get(0);
 
         List<MTSMSTPDUType> tPDUTypeCriterionSgsnCamelSubscriptionInfo = mtSmsCAMELTDPCriteria.getTPDUTypeCriterion();
         assertNotNull(tPDUTypeCriterionSgsnCamelSubscriptionInfo);
@@ -893,21 +1000,21 @@ public class InsertSubscriberDataRequestTest {
         assertEquals(twoMTSMSTPDUType, MTSMSTPDUType.smsSTATUSREPORT);
         assertEquals(mtSmsCAMELTDPCriteria.getSMSTriggerDetectionPoint(), SMSTriggerDetectionPoint.smsCollectedInfo);
 
-        MGCSIImpl mgCsi = sgsnCamelSubscriptionInfo.getMgCsi();
+        MGCSI mgCsi = sgsnCamelSubscriptionInfo.getMgCsi();
 
-        List<MMCodeImpl> mobilityTriggersSgsnCamelSubscriptionInfo = mgCsi.getMobilityTriggers();
+        List<MMCode> mobilityTriggersSgsnCamelSubscriptionInfo = mgCsi.getMobilityTriggers();
         assertNotNull(mobilityTriggersSgsnCamelSubscriptionInfo);
         assertEquals(mobilityTriggersSgsnCamelSubscriptionInfo.size(), 2);
-        MMCodeImpl oneMMCode = mobilityTriggersSgsnCamelSubscriptionInfo.get(0);
+        MMCode oneMMCode = mobilityTriggersSgsnCamelSubscriptionInfo.get(0);
         assertNotNull(oneMMCode);
         assertEquals(oneMMCode.getMMCodeValue(), MMCodeValue.GPRSAttach);
-        MMCodeImpl twoMMCode = mobilityTriggers.get(1);
+        MMCode twoMMCode = mobilityTriggers.get(1);
         assertNotNull(twoMMCode);
         assertEquals(twoMMCode.getMMCodeValue(), MMCodeValue.IMSIAttach);
 
         assertEquals(mgCsi.getServiceKey(), 3);
 
-        ISDNAddressStringImpl gsmSCFAddressMgCsi = mgCsi.getGsmSCFAddress();
+        ISDNAddressString gsmSCFAddressMgCsi = mgCsi.getGsmSCFAddress();
         assertTrue(gsmSCFAddressMgCsi.getAddress().equals("22235"));
         assertEquals(gsmSCFAddressMgCsi.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddressMgCsi.getNumberingPlan(), NumberingPlan.ISDN);
@@ -922,11 +1029,11 @@ public class InsertSubscriberDataRequestTest {
         // end sgsnCamelSubscriptionInfo
 
         // chargingCharacteristics
-        ChargingCharacteristicsImpl chargingCharacteristicsISD = prim.getChargingCharacteristics();
+        ChargingCharacteristics chargingCharacteristicsISD = prim.getChargingCharacteristics();
         assertTrue(Arrays.equals(chargingCharacteristicsISD.getData(), this.getChargingCharacteristicsData()));
 
         // start accessRestrictionData
-        AccessRestrictionDataImpl accessRestrictionData = prim.getAccessRestrictionData();
+        AccessRestrictionData accessRestrictionData = prim.getAccessRestrictionData();
         assertTrue(!accessRestrictionData.getUtranNotAllowed());
         assertTrue(accessRestrictionData.getGeranNotAllowed());
         assertTrue(!accessRestrictionData.getGanNotAllowed());
@@ -941,15 +1048,15 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(icsIndicator);
 
         // start epsSubscriptionData
-        EPSSubscriptionDataImpl epsSubscriptionData = prim.getEpsSubscriptionData();
-        AMBRImpl ambrepsSubscriptionData = epsSubscriptionData.getAmbr();
-        MAPExtensionContainerImpl extensionContainerambrambrepsSubscriptionData = ambrepsSubscriptionData.getExtensionContainer();
+        EPSSubscriptionData epsSubscriptionData = prim.getEpsSubscriptionData();
+        AMBR ambrepsSubscriptionData = epsSubscriptionData.getAmbr();
+        MAPExtensionContainer extensionContainerambrambrepsSubscriptionData = ambrepsSubscriptionData.getExtensionContainer();
         assertEquals(ambrepsSubscriptionData.getMaxRequestedBandwidthDL(), 4);
         assertEquals(ambrepsSubscriptionData.getMaxRequestedBandwidthUL(), 2);
         assertNotNull(extensionContainerambrambrepsSubscriptionData);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainerambrambrepsSubscriptionData));
         assertTrue(Arrays.equals(epsSubscriptionData.getApnOiReplacement().getData(), this.getAPNOIReplacementData()));
-        MAPExtensionContainerImpl epsSubscriptionDataMAPExtensionContainer = epsSubscriptionData.getExtensionContainer();
+        MAPExtensionContainer epsSubscriptionDataMAPExtensionContainer = epsSubscriptionData.getExtensionContainer();
         assertNotNull(epsSubscriptionDataMAPExtensionContainer);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(epsSubscriptionDataMAPExtensionContainer));
 
@@ -958,34 +1065,34 @@ public class InsertSubscriberDataRequestTest {
 
         assertEquals(epsSubscriptionData.getRfspId().intValue(), 4);
 
-        ISDNAddressStringImpl stnSr = epsSubscriptionData.getStnSr();
+        ISDNAddressString stnSr = epsSubscriptionData.getStnSr();
         assertTrue(stnSr.getAddress().equals("22228"));
         assertEquals(stnSr.getAddressNature(), AddressNature.international_number);
         assertEquals(stnSr.getNumberingPlan(), NumberingPlan.ISDN);
 
-        APNConfigurationProfileImpl apnConfigurationProfile = epsSubscriptionData.getAPNConfigurationProfile();
+        APNConfigurationProfile apnConfigurationProfile = epsSubscriptionData.getAPNConfigurationProfile();
 
         assertEquals(apnConfigurationProfile.getDefaultContext(), 2);
         assertTrue(apnConfigurationProfile.getCompleteDataListIncluded());
-        MAPExtensionContainerImpl apnConfigurationProfileExtensionContainer = apnConfigurationProfile.getExtensionContainer();
+        MAPExtensionContainer apnConfigurationProfileExtensionContainer = apnConfigurationProfile.getExtensionContainer();
         assertNotNull(apnConfigurationProfileExtensionContainer);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(apnConfigurationProfileExtensionContainer));
 
-        List<APNConfigurationImpl> ePSDataList = apnConfigurationProfile.getEPSDataList();
+        List<APNConfiguration> ePSDataList = apnConfigurationProfile.getEPSDataList();
         assertNotNull(ePSDataList);
         assertEquals(ePSDataList.size(), 1);
 
-        APNConfigurationImpl apnConfiguration = ePSDataList.get(0);
+        APNConfiguration apnConfiguration = ePSDataList.get(0);
         assertEquals(apnConfiguration.getContextId(), 1);
         assertEquals(apnConfiguration.getPDNType().getPDNTypeValue(), PDNTypeValue.IPv4);
-        PDPAddressImpl servedPartyIPIPv4Address = apnConfiguration.getServedPartyIPIPv4Address();
+        PDPAddress servedPartyIPIPv4Address = apnConfiguration.getServedPartyIPIPv4Address();
         assertNotNull(servedPartyIPIPv4Address);
         assertTrue(Arrays.equals(this.getPDPAddressData(), servedPartyIPIPv4Address.getData()));
         assertTrue(Arrays.equals(apnConfiguration.getApn().getData(), this.getAPNData()));
 
-        EPSQoSSubscribedImpl ePSQoSSubscribed = apnConfiguration.getEPSQoSSubscribed();
-        AllocationRetentionPriorityImpl allocationRetentionPriority = ePSQoSSubscribed.getAllocationRetentionPriority();
-        MAPExtensionContainerImpl extensionContainerePSQoSSubscribed = ePSQoSSubscribed.getExtensionContainer();
+        EPSQoSSubscribed ePSQoSSubscribed = apnConfiguration.getEPSQoSSubscribed();
+        AllocationRetentionPriority allocationRetentionPriority = ePSQoSSubscribed.getAllocationRetentionPriority();
+        MAPExtensionContainer extensionContainerePSQoSSubscribed = ePSQoSSubscribed.getExtensionContainer();
         assertEquals(allocationRetentionPriority.getPriorityLevel(), 1);
         assertTrue(allocationRetentionPriority.getPreEmptionCapability());
         assertTrue(allocationRetentionPriority.getPreEmptionVulnerability());
@@ -996,14 +1103,14 @@ public class InsertSubscriberDataRequestTest {
         assertEquals(ePSQoSSubscribed.getQoSClassIdentifier(), QoSClassIdentifier.QCI_1);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainerePSQoSSubscribed));
 
-        PDNGWIdentityImpl pdnGWIdentity = apnConfiguration.getPdnGwIdentity();
-        PDPAddressImpl pdnGwIpv4Address = pdnGWIdentity.getPdnGwIpv4Address();
+        PDNGWIdentity pdnGWIdentity = apnConfiguration.getPdnGwIdentity();
+        PDPAddress pdnGwIpv4Address = pdnGWIdentity.getPdnGwIpv4Address();
         assertNotNull(pdnGwIpv4Address);
         assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv4Address.getData()));
-        PDPAddressImpl pdnGwIpv6Address = pdnGWIdentity.getPdnGwIpv6Address();
+        PDPAddress pdnGwIpv6Address = pdnGWIdentity.getPdnGwIpv6Address();
         assertNotNull(pdnGwIpv6Address);
         assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv6Address.getData()));
-        FQDNImpl pdnGwName = pdnGWIdentity.getPdnGwName();
+        FQDN pdnGwName = pdnGWIdentity.getPdnGwName();
         assertNotNull(pdnGwName);
         assertTrue(Arrays.equals(this.getFQDNData(), pdnGwName.getData()));
         assertNotNull(pdnGWIdentity.getExtensionContainer());
@@ -1013,37 +1120,37 @@ public class InsertSubscriberDataRequestTest {
         assertFalse(apnConfiguration.getVplmnAddressAllowed());
         assertTrue(Arrays.equals(this.getChargingCharacteristicsData(), apnConfiguration.getChargingCharacteristics().getData()));
 
-        AMBRImpl ambr = apnConfiguration.getAmbr();
-        MAPExtensionContainerImpl extensionContainerambr = ambr.getExtensionContainer();
+        AMBR ambr = apnConfiguration.getAmbr();
+        MAPExtensionContainer extensionContainerambr = ambr.getExtensionContainer();
         assertEquals(ambr.getMaxRequestedBandwidthDL(), 4);
         assertEquals(ambr.getMaxRequestedBandwidthUL(), 2);
         assertNotNull(extensionContainerambr);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainerambr));
 
-        List<SpecificAPNInfoImpl> specificAPNInfoList = apnConfiguration.getSpecificAPNInfoList();
+        List<SpecificAPNInfo> specificAPNInfoList = apnConfiguration.getSpecificAPNInfoList();
         assertNotNull(specificAPNInfoList);
         assertEquals(specificAPNInfoList.size(), 1);
-        SpecificAPNInfoImpl specificAPNInfo = specificAPNInfoList.get(0);
+        SpecificAPNInfo specificAPNInfo = specificAPNInfoList.get(0);
 
-        PDNGWIdentityImpl pdnGWIdentitySpecificAPNInfo = specificAPNInfo.getPdnGwIdentity();
-        PDPAddressImpl pdnGwIpv4AddressSpecificAPNInfo = pdnGWIdentitySpecificAPNInfo.getPdnGwIpv4Address();
+        PDNGWIdentity pdnGWIdentitySpecificAPNInfo = specificAPNInfo.getPdnGwIdentity();
+        PDPAddress pdnGwIpv4AddressSpecificAPNInfo = pdnGWIdentitySpecificAPNInfo.getPdnGwIpv4Address();
         assertNotNull(pdnGwIpv4AddressSpecificAPNInfo);
         assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv4AddressSpecificAPNInfo.getData()));
-        PDPAddressImpl pdnGwIpv6AddressSpecificAPNInfo = pdnGWIdentitySpecificAPNInfo.getPdnGwIpv6Address();
+        PDPAddress pdnGwIpv6AddressSpecificAPNInfo = pdnGWIdentitySpecificAPNInfo.getPdnGwIpv6Address();
         assertNotNull(pdnGwIpv6AddressSpecificAPNInfo);
         assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv6AddressSpecificAPNInfo.getData()));
-        FQDNImpl pdnGwNameSpecificAPNInfo = pdnGWIdentitySpecificAPNInfo.getPdnGwName();
+        FQDN pdnGwNameSpecificAPNInfo = pdnGWIdentitySpecificAPNInfo.getPdnGwName();
         assertNotNull(pdnGwNameSpecificAPNInfo);
         assertTrue(Arrays.equals(this.getFQDNData(), pdnGwNameSpecificAPNInfo.getData()));
         assertNotNull(pdnGWIdentitySpecificAPNInfo.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(pdnGWIdentitySpecificAPNInfo.getExtensionContainer()));
-        MAPExtensionContainerImpl extensionContainerspecificAPNInfo = specificAPNInfo.getExtensionContainer();
+        MAPExtensionContainer extensionContainerspecificAPNInfo = specificAPNInfo.getExtensionContainer();
         assertNotNull(extensionContainerspecificAPNInfo);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainerspecificAPNInfo));
 
         assertTrue(Arrays.equals(specificAPNInfo.getAPN().getData(), this.getAPNData()));
 
-        PDPAddressImpl servedPartyIPIPv6Address = apnConfiguration.getServedPartyIPIPv6Address();
+        PDPAddress servedPartyIPIPv6Address = apnConfiguration.getServedPartyIPIPv6Address();
         assertNotNull(servedPartyIPIPv6Address);
         assertTrue(Arrays.equals(this.getPDPAddressData(), servedPartyIPIPv6Address.getData()));
         assertTrue(Arrays.equals(this.getAPNOIReplacementData(), apnConfiguration.getApnOiReplacement().getData()));
@@ -1054,10 +1161,10 @@ public class InsertSubscriberDataRequestTest {
         // end epsSubscriptionData
 
         // start csgSubscriptionDataList
-        List<CSGSubscriptionDataImpl> csgSubscriptionDataList = prim.getCsgSubscriptionDataList();
+        List<CSGSubscriptionData> csgSubscriptionDataList = prim.getCsgSubscriptionDataList();
         assertNotNull(csgSubscriptionDataList);
         assertEquals(csgSubscriptionDataList.size(), 1);
-        CSGSubscriptionDataImpl csgSubscriptionData = csgSubscriptionDataList.get(0);
+        CSGSubscriptionData csgSubscriptionData = csgSubscriptionDataList.get(0);
 
         assertTrue(csgSubscriptionData.getCsgId().isBitSet(0));
         assertFalse(csgSubscriptionData.getCsgId().isBitSet(1));
@@ -1066,7 +1173,7 @@ public class InsertSubscriberDataRequestTest {
 
         assertTrue(Arrays.equals(csgSubscriptionData.getExpirationDate().getData(), this.getTimeData()));
 
-        List<APNImpl> lipaAllowedAPNList = csgSubscriptionData.getLipaAllowedAPNList();
+        List<APN> lipaAllowedAPNList = csgSubscriptionData.getLipaAllowedAPNList();
         assertNotNull(lipaAllowedAPNList);
         assertEquals(lipaAllowedAPNList.size(), 1);
         assertTrue(Arrays.equals(lipaAllowedAPNList.get(0).getData(), this.getAPNData()));
@@ -1078,7 +1185,7 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(prim.getUeReachabilityRequestIndicator());
 
         // start sgsnNumber
-        ISDNAddressStringImpl sgsnNumber = prim.getSgsnNumber();
+        ISDNAddressString sgsnNumber = prim.getSgsnNumber();
         assertNotNull(sgsnNumber);
         assertTrue(sgsnNumber.getAddress().equals("22228"));
         assertEquals(sgsnNumber.getAddressNature(), AddressNature.international_number);
@@ -1086,7 +1193,7 @@ public class InsertSubscriberDataRequestTest {
         // end sgsnNumber
 
         // mmeName
-        DiameterIdentityImpl mmeName = prim.getMmeName();
+        DiameterIdentity mmeName = prim.getMmeName();
         assertTrue(Arrays.equals(mmeName.getData(), this.getDiameterIdentity()));
 
         // SubscribedPeriodicRAUTAUtimer
@@ -1104,7 +1211,7 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(prim.getSubscribedPeriodicLAUtimer().equals(Long.valueOf(2)));
 
         // extensionContainer
-        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
         assertNotNull(extensionContainer);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
         // End ISD MAP Protocol Version 3 message Testing
@@ -1514,7 +1621,7 @@ public class InsertSubscriberDataRequestTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(InsertSubscriberDataRequestImpl.class);
     	
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         IMSIImpl imsi = new IMSIImpl("1111122222");
         ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22234");
@@ -1522,19 +1629,19 @@ public class InsertSubscriberDataRequestTest {
         SubscriberStatus subscriberStatus = SubscriberStatus.operatorDeterminedBarring;
 
         // bearerServiceList
-        ArrayList<ExtBearerServiceCodeImpl> bearerServiceList = new ArrayList<ExtBearerServiceCodeImpl>();
+        List<ExtBearerServiceCode> bearerServiceList = new ArrayList<ExtBearerServiceCode>();
         ExtBearerServiceCodeImpl extBearerServiceCode = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
         bearerServiceList.add(extBearerServiceCode);
 
         // teleserviceList
-        ArrayList<ExtTeleserviceCodeImpl> teleserviceList = new ArrayList<ExtTeleserviceCodeImpl>();
+        List<ExtTeleserviceCode> teleserviceList = new ArrayList<ExtTeleserviceCode>();
         ExtTeleserviceCodeImpl extTeleservice = new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allSpeechTransmissionServices);
         teleserviceList.add(extTeleservice);
 
         // provisionedSS
-        ArrayList<ExtSSInfoImpl> provisionedSS = new ArrayList<ExtSSInfoImpl>();
+        List<ExtSSInfo> provisionedSS = new ArrayList<ExtSSInfo>();
         SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.allSS);
-        ArrayList<ExtForwFeatureImpl> forwardingFeatureList = new ArrayList<ExtForwFeatureImpl>();
+        List<ExtForwFeature> forwardingFeatureList = new ArrayList<ExtForwFeature>();
         ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
         ExtBasicServiceCodeImpl basicService = new ExtBasicServiceCodeImpl(b);
         ExtSSStatusImpl ssStatus = new ExtSSStatusImpl(true, true, true, true);
@@ -1546,7 +1653,7 @@ public class InsertSubscriberDataRequestTest {
         ExtForwFeatureImpl extForwFeature = new ExtForwFeatureImpl(basicService, ssStatus, forwardedToNumber, forwardedToSubaddress, forwardingOptions,
                 noReplyConditionTime, extensionContainer, longForwardedToNumber);
         forwardingFeatureList.add(extForwFeature);
-        ExtForwInfoImpl forwardingInfo = new ExtForwInfoImpl(ssCode, forwardingFeatureList, extensionContainer);
+        ExtForwInfo forwardingInfo = new ExtForwInfoImpl(ssCode, forwardingFeatureList, extensionContainer);
         ExtSSInfoImpl extSSInfo = new ExtSSInfoImpl(forwardingInfo);
         provisionedSS.add(extSSInfo);
 
@@ -1560,12 +1667,12 @@ public class InsertSubscriberDataRequestTest {
         boolean roamingRestrictionDueToUnsupportedFeature = true;
 
         // regionalSubscriptionData
-        ArrayList<ZoneCodeImpl> regionalSubscriptionData = new ArrayList<ZoneCodeImpl>();
+        List<ZoneCode> regionalSubscriptionData = new ArrayList<ZoneCode>();
         ZoneCodeImpl zoneCode = new ZoneCodeImpl(2);
         regionalSubscriptionData.add(zoneCode);
 
         // vbsSubscriptionData
-        ArrayList<VoiceBroadcastDataImpl> vbsSubscriptionData = new ArrayList<VoiceBroadcastDataImpl>();
+        List<VoiceBroadcastData> vbsSubscriptionData = new ArrayList<VoiceBroadcastData>();
         GroupIdImpl groupId = new GroupIdImpl("4");
         boolean broadcastInitEntitlement = true;
         LongGroupIdImpl longGroupId = new LongGroupIdImpl("5");
@@ -1573,7 +1680,7 @@ public class InsertSubscriberDataRequestTest {
         vbsSubscriptionData.add(voiceBroadcastData);
 
         // vgcsSubscriptionData
-        ArrayList<VoiceGroupCallDataImpl> vgcsSubscriptionData = new ArrayList<VoiceGroupCallDataImpl>();
+        List<VoiceGroupCallData> vgcsSubscriptionData = new ArrayList<VoiceGroupCallData>();
         AdditionalSubscriptionsImpl additionalSubscriptions = new AdditionalSubscriptionsImpl(true, false, true);
         AdditionalInfoImpl additionalInfo = new AdditionalInfoImpl();
         additionalInfo.setBit(0);
@@ -1583,24 +1690,24 @@ public class InsertSubscriberDataRequestTest {
 
         // start vlrCamelSubscriptionInfo
         TBcsmTriggerDetectionPoint tBcsmTriggerDetectionPoint = TBcsmTriggerDetectionPoint.tBusy;
-        ArrayList<ExtBasicServiceCodeImpl> basicServiceCriteria = new ArrayList<ExtBasicServiceCodeImpl>();
+        List<ExtBasicServiceCode> basicServiceCriteria = new ArrayList<ExtBasicServiceCode>();
         ExtBasicServiceCodeImpl basicServiceOne = new ExtBasicServiceCodeImpl(b);
         ExtBasicServiceCodeImpl basicServiceTwo = new ExtBasicServiceCodeImpl(extTeleservice);
         basicServiceCriteria.add(basicServiceOne);
         basicServiceCriteria.add(basicServiceTwo);
 
-        ArrayList<CauseValueImpl> tCauseValueCriteria = new ArrayList<CauseValueImpl>();
+        List<CauseValue> tCauseValueCriteria = new ArrayList<CauseValue>();
         tCauseValueCriteria.add(new CauseValueImpl(7));
         tCauseValueCriteria.add(new CauseValueImpl(6));
 
         ISDNAddressStringImpl gsmSCFAddressOne = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1122333");
         OBcsmCamelTDPDataImpl cind = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.routeSelectFailure, 3, gsmSCFAddressOne,
                 DefaultCallHandling.releaseCall, null);
-        ArrayList<OBcsmCamelTDPDataImpl> lst = new ArrayList<OBcsmCamelTDPDataImpl>();
+        List<OBcsmCamelTDPData> lst = new ArrayList<OBcsmCamelTDPData>();
         lst.add(cind);
 
         OCSIImpl oCsi = new OCSIImpl(lst, null, 2, false, false);
-        ArrayList<SSCodeImpl> ssEventList = new ArrayList<SSCodeImpl>();
+        List<SSCode> ssEventList = new ArrayList<SSCode>();
         ssEventList.add(new SSCodeImpl(SupplementaryCodeValue.allCommunityOfInterestSS.getCode()));
         ISDNAddressStringImpl gsmSCFAddressTwo = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22235");
         SSCamelDataImpl ssCamelData = new SSCamelDataImpl(ssEventList, gsmSCFAddressTwo, extensionContainer);
@@ -1609,14 +1716,14 @@ public class InsertSubscriberDataRequestTest {
 
         SSCSIImpl ssCsi = new SSCSIImpl(ssCamelData, extensionContainer, notificationToCSE, csiActive);
 
-        ArrayList<OBcsmCamelTdpCriteriaImpl> oBcsmCamelTDPCriteriaList = new ArrayList<OBcsmCamelTdpCriteriaImpl>();
+        List<OBcsmCamelTdpCriteria> oBcsmCamelTDPCriteriaList = new ArrayList<OBcsmCamelTdpCriteria>();
         OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint = OBcsmTriggerDetectionPoint.collectedInfo;
         ISDNAddressStringImpl destinationNumberOne = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22234");
         ISDNAddressStringImpl destinationNumberTwo = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22235");
-        ArrayList<ISDNAddressStringImpl> destinationNumberList = new ArrayList<ISDNAddressStringImpl>();
+        List<ISDNAddressString> destinationNumberList = new ArrayList<ISDNAddressString>();
         destinationNumberList.add(destinationNumberOne);
         destinationNumberList.add(destinationNumberTwo);
-        ArrayList<Integer> destinationNumberLengthList = new ArrayList<Integer>();
+        List<Integer> destinationNumberLengthList = new ArrayList<Integer>();
         destinationNumberLengthList.add(2);
         destinationNumberLengthList.add(4);
         destinationNumberLengthList.add(1);
@@ -1624,7 +1731,7 @@ public class InsertSubscriberDataRequestTest {
                 destinationNumberLengthList);
 
         CallTypeCriteria callTypeCriteria = CallTypeCriteria.forwarded;
-        ArrayList<CauseValueImpl> oCauseValueCriteria = new ArrayList<CauseValueImpl>();
+        List<CauseValue> oCauseValueCriteria = new ArrayList<CauseValue>();
         oCauseValueCriteria.add(new CauseValueImpl(7));
 
         OBcsmCamelTdpCriteriaImpl oBcsmCamelTdpCriteria = new OBcsmCamelTdpCriteriaImpl(oBcsmTriggerDetectionPoint, destinationNumberCriteria,
@@ -1633,7 +1740,7 @@ public class InsertSubscriberDataRequestTest {
 
         boolean tifCsi = false;
 
-        ArrayList<MMCodeImpl> mobilityTriggers = new ArrayList<MMCodeImpl>();
+        List<MMCode> mobilityTriggers = new ArrayList<MMCode>();
         Long serviceKey = 3L;
         ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22235");
         ;
@@ -1645,7 +1752,7 @@ public class InsertSubscriberDataRequestTest {
         SMSTriggerDetectionPoint smsTriggerDetectionPoint = SMSTriggerDetectionPoint.smsCollectedInfo;
         DefaultSMSHandling defaultSMSHandling = DefaultSMSHandling.continueTransaction;
 
-        ArrayList<SMSCAMELTDPDataImpl> smsCamelTdpDataList = new ArrayList<SMSCAMELTDPDataImpl>();
+        List<SMSCAMELTDPData> smsCamelTdpDataList = new ArrayList<SMSCAMELTDPData>();
         SMSCAMELTDPDataImpl smsCAMELTDPData = new SMSCAMELTDPDataImpl(smsTriggerDetectionPoint, serviceKey, gsmSCFAddress, defaultSMSHandling,
                 extensionContainer);
         smsCamelTdpDataList.add(smsCAMELTDPData);
@@ -1656,12 +1763,12 @@ public class InsertSubscriberDataRequestTest {
 
         TBcsmCamelTDPDataImpl tBcsmCamelTDPData = new TBcsmCamelTDPDataImpl(TBcsmTriggerDetectionPoint.termAttemptAuthorized, 3, gsmSCFAddress,
                 DefaultCallHandling.releaseCall, null);
-        ArrayList<TBcsmCamelTDPDataImpl> tBcsmCamelTDPDatalst = new ArrayList<TBcsmCamelTDPDataImpl>();
+        List<TBcsmCamelTDPData> tBcsmCamelTDPDatalst = new ArrayList<TBcsmCamelTDPData>();
         tBcsmCamelTDPDatalst.add(tBcsmCamelTDPData);
         TCSIImpl vtCsi = new TCSIImpl(tBcsmCamelTDPDatalst, null, 2, false, false);
 
         TBcsmCamelTdpCriteriaImpl tBcsmCamelTdpCriteria = new TBcsmCamelTdpCriteriaImpl(tBcsmTriggerDetectionPoint, basicServiceCriteria, tCauseValueCriteria);
-        ArrayList<TBcsmCamelTdpCriteriaImpl> tBcsmCamelTdpCriteriaList = new ArrayList<TBcsmCamelTdpCriteriaImpl>();
+        List<TBcsmCamelTdpCriteria> tBcsmCamelTdpCriteriaList = new ArrayList<TBcsmCamelTdpCriteria>();
         tBcsmCamelTdpCriteriaList.add(tBcsmCamelTdpCriteria);
 
         ISDNAddressStringImpl dialledNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22234");
@@ -1669,14 +1776,14 @@ public class InsertSubscriberDataRequestTest {
         DPAnalysedInfoCriteriumImpl dpAnalysedInfoCriterium = new DPAnalysedInfoCriteriumImpl(dialledNumber, 7, gsmSCFAddress,
                 DefaultCallHandling.continueCall, extensionContainer);
 
-        ArrayList<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriaList = new ArrayList<DPAnalysedInfoCriteriumImpl>();
+        List<DPAnalysedInfoCriterium> dpAnalysedInfoCriteriaList = new ArrayList<DPAnalysedInfoCriterium>();
         dpAnalysedInfoCriteriaList.add(dpAnalysedInfoCriterium);
 
         DCSIImpl dCsi = new DCSIImpl(dpAnalysedInfoCriteriaList, 2, extensionContainer, true, true);
 
         SMSCSIImpl mtSmsCSI = new SMSCSIImpl(smsCamelTdpDataList, camelCapabilityHandling, extensionContainer, notificationToCSE, csiActive);
-        ArrayList<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList = new ArrayList<MTsmsCAMELTDPCriteriaImpl>();
-        ArrayList<MTSMSTPDUType> tPDUTypeCriterion = new ArrayList<MTSMSTPDUType>();
+        List<MTsmsCAMELTDPCriteria> mtSmsCamelTdpCriteriaList = new ArrayList<MTsmsCAMELTDPCriteria>();
+        List<MTSMSTPDUType> tPDUTypeCriterion = new ArrayList<MTSMSTPDUType>();
         tPDUTypeCriterion.add(MTSMSTPDUType.smsDELIVER);
         tPDUTypeCriterion.add(MTSMSTPDUType.smsSTATUSREPORT);
 
@@ -1713,7 +1820,7 @@ public class InsertSubscriberDataRequestTest {
         PDPContextImpl pdpContext = new PDPContextImpl(pdpContextId, pdpType, pdpAddress, qosSubscribed, vplmnAddressAllowed, apn, extensionContainer,
                 extQoSSubscribed, chargingCharacteristics, ext2QoSSubscribed, ext3QoSSubscribed, ext4QoSSubscribed, apnoiReplacement, extpdpType,
                 extpdpAddress, sipToPermission, lipaPermission);
-        ArrayList<PDPContextImpl> gprsDataList = new ArrayList<PDPContextImpl>();
+        List<PDPContext> gprsDataList = new ArrayList<PDPContext>();
         gprsDataList.add(pdpContext);
 
         APNOIReplacementImpl apnOiReplacement = new APNOIReplacementImpl(this.getAPNOIReplacementData());
@@ -1729,7 +1836,7 @@ public class InsertSubscriberDataRequestTest {
         // start lsaInformation
         boolean completeDataListIncluded = true;
         LSAOnlyAccessIndicator lsaOnlyAccessIndicator = LSAOnlyAccessIndicator.accessOutsideLSAsRestricted;
-        ArrayList<LSADataImpl> lsaDataList = new ArrayList<LSADataImpl>();
+        List<LSAData> lsaDataList = new ArrayList<LSAData>();
         LSAIdentityImpl lsaIdentity = new LSAIdentityImpl(this.getDataLSAIdentity());
         LSAAttributesImpl lsaAttributes = new LSAAttributesImpl(5);
         boolean lsaActiveModeIndicator = true;
@@ -1742,29 +1849,29 @@ public class InsertSubscriberDataRequestTest {
         boolean lmuIndicator = true;
 
         // start lcsInformation
-        ArrayList<ISDNAddressStringImpl> gmlcList = new ArrayList<ISDNAddressStringImpl>();
+        List<ISDNAddressString> gmlcList = new ArrayList<ISDNAddressString>();
         ISDNAddressStringImpl isdnAddressString = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22235");
         gmlcList.add(isdnAddressString);
 
-        ArrayList<LCSPrivacyClassImpl> lcsPrivacyExceptionList = new ArrayList<LCSPrivacyClassImpl>();
+        List<LCSPrivacyClass> lcsPrivacyExceptionList = new ArrayList<LCSPrivacyClass>();
         NotificationToMSUser notificationToMSUser = NotificationToMSUser.locationNotAllowed;
-        ArrayList<ExternalClientImpl> externalClientList = new ArrayList<ExternalClientImpl>();
+        List<ExternalClient> externalClientList = new ArrayList<ExternalClient>();
         ISDNAddressStringImpl externalAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22228");
         LCSClientExternalIDImpl clientIdentity = new LCSClientExternalIDImpl(externalAddress, extensionContainer);
         GMLCRestriction gmlcRestriction = GMLCRestriction.gmlcList;
         ExternalClientImpl externalClient = new ExternalClientImpl(clientIdentity, gmlcRestriction, notificationToMSUser, extensionContainer);
         externalClientList.add(externalClient);
 
-        ArrayList<LCSClientInternalID> plmnClientList = new ArrayList<LCSClientInternalID>();
+        List<LCSClientInternalID> plmnClientList = new ArrayList<LCSClientInternalID>();
         LCSClientInternalID lcsClientInternalIdOne = LCSClientInternalID.broadcastService;
         LCSClientInternalID lcsClientInternalIdTwo = LCSClientInternalID.oandMHPLMN;
         plmnClientList.add(lcsClientInternalIdOne);
         plmnClientList.add(lcsClientInternalIdTwo);
 
-        ArrayList<ExternalClientImpl> extExternalClientList = new ArrayList<ExternalClientImpl>();
+        List<ExternalClient> extExternalClientList = new ArrayList<ExternalClient>();
         extExternalClientList.add(externalClient);
 
-        ArrayList<ServiceTypeImpl> serviceTypeList = new ArrayList<ServiceTypeImpl>();
+        List<ServiceType> serviceTypeList = new ArrayList<ServiceType>();
         int serviceTypeIdentity = 1;
         ServiceTypeImpl serviceType = new ServiceTypeImpl(serviceTypeIdentity, gmlcRestriction, notificationToMSUser, extensionContainer);
         serviceTypeList.add(serviceType);
@@ -1786,11 +1893,11 @@ public class InsertSubscriberDataRequestTest {
         lcsPrivacyExceptionList.add(lcsPrivacyClassThree);
         lcsPrivacyExceptionList.add(lcsPrivacyClassFour);
 
-        ArrayList<MOLRClassImpl> molrList = new ArrayList<MOLRClassImpl>();
+        List<MOLRClass> molrList = new ArrayList<MOLRClass>();
         MOLRClassImpl molrClass = new MOLRClassImpl(ssCode, ssStatus, extensionContainer);
         molrList.add(molrClass);
 
-        ArrayList<LCSPrivacyClassImpl> addLcsPrivacyExceptionList = new ArrayList<LCSPrivacyClassImpl>();
+        List<LCSPrivacyClass> addLcsPrivacyExceptionList = new ArrayList<LCSPrivacyClass>();
         addLcsPrivacyExceptionList.add(lcsPrivacyClassOne);
 
         LCSInformationImpl lcsInformation = new LCSInformationImpl(gmlcList, lcsPrivacyExceptionList, molrList, addLcsPrivacyExceptionList);
@@ -1814,7 +1921,7 @@ public class InsertSubscriberDataRequestTest {
         DefaultGPRSHandling defaultSessionHandling = DefaultGPRSHandling.releaseTransaction;
         GPRSCamelTDPDataImpl gprsCamelTDPData = new GPRSCamelTDPDataImpl(gprsTriggerDetectionPoint, serviceKey, gsmSCFAddress, defaultSessionHandling,
                 extensionContainer);
-        ArrayList<GPRSCamelTDPDataImpl> gprsCamelTDPDataList = new ArrayList<GPRSCamelTDPDataImpl>();
+        List<GPRSCamelTDPData> gprsCamelTDPDataList = new ArrayList<GPRSCamelTDPData>();
         gprsCamelTDPDataList.add(gprsCamelTDPData);
         GPRSCSIImpl gprsCsi = new GPRSCSIImpl(gprsCamelTDPDataList, camelCapabilityHandling, extensionContainer, notificationToCSE, csiActive);
         SMSCSIImpl moSmsCsi = new SMSCSIImpl(smsCamelTdpDataList, camelCapabilityHandling, extensionContainer, notificationToCSE, csiActive);
@@ -1834,7 +1941,7 @@ public class InsertSubscriberDataRequestTest {
         Integer rfspId = 4;
         AMBRImpl ambr = new AMBRImpl(2, 4, extensionContainer);
         int defaultContext = 2;
-        ArrayList<APNConfigurationImpl> ePSDataList = new ArrayList<APNConfigurationImpl>();
+        List<APNConfiguration> ePSDataList = new ArrayList<APNConfiguration>();
         int contextId = 1;
         PDNTypeImpl pDNType = new PDNTypeImpl(PDNTypeValue.IPv4);
         PDPAddressImpl servedPartyIPIPv4Address = new PDPAddressImpl(this.getPDPAddressData());
@@ -1847,7 +1954,7 @@ public class InsertSubscriberDataRequestTest {
         PDNGWIdentityImpl pdnGwIdentity = new PDNGWIdentityImpl(pdnGwIpv4Address, pdnGwIpv6Address, pdnGwName, extensionContainer);
         PDNGWAllocationType pdnGwAllocationType = PDNGWAllocationType._dynamic;
         SpecificAPNInfoImpl specificAPNInfo = new SpecificAPNInfoImpl(apn, pdnGwIdentity, extensionContainer);
-        ArrayList<SpecificAPNInfoImpl> specificAPNInfoList = new ArrayList<SpecificAPNInfoImpl>();
+        List<SpecificAPNInfo> specificAPNInfoList = new ArrayList<SpecificAPNInfo>();
         specificAPNInfoList.add(specificAPNInfo);
         PDPAddressImpl servedPartyIPIPv6Address = new PDPAddressImpl(this.getPDPAddressData());
         SIPTOPermission siptoPermission = SIPTOPermission.siptoAllowed;
@@ -1865,12 +1972,12 @@ public class InsertSubscriberDataRequestTest {
         // end epsSubscriptionData
 
         // start csgSubscriptionDataList
-        ArrayList<CSGSubscriptionDataImpl> csgSubscriptionDataList = new ArrayList<CSGSubscriptionDataImpl>();       
+        List<CSGSubscriptionData> csgSubscriptionDataList = new ArrayList<CSGSubscriptionData>();       
         CSGIdImpl csgId = new CSGIdImpl();
         csgId.setBit(0);
         csgId.setBit(26);
         TimeImpl expirationDate = new TimeImpl(this.getTimeData());
-        ArrayList<APNImpl> lipaAllowedAPNList = new ArrayList<APNImpl>();
+        List<APN> lipaAllowedAPNList = new ArrayList<APN>();
         lipaAllowedAPNList.add(apn);
         CSGSubscriptionDataImpl csgSubscriptionData = new CSGSubscriptionDataImpl(csgId, expirationDate, extensionContainer, lipaAllowedAPNList);
         csgSubscriptionDataList.add(csgSubscriptionData);
@@ -1908,7 +2015,7 @@ public class InsertSubscriberDataRequestTest {
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
-        byte[] rawData=this.getData();        
+        byte[] rawData=this.getData();   
         assertTrue(Arrays.equals(encodedData, rawData));
 
         prim = new InsertSubscriberDataRequestImpl(2, imsi, msisdn, category, subscriberStatus, bearerServiceList, teleserviceList, provisionedSS, odbData,

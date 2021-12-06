@@ -22,19 +22,17 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ASNAccessType;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ASNFailureCause;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AccessType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationFailureReportRequest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.FailureCause;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -42,6 +40,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -52,28 +53,30 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl implements AuthenticationFailureReportRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-    private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
     @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=10,constructed=false,index=1)
     private ASNFailureCause failureCause;
     
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
+    
     private ASNBoolean reAttempt;
     private ASNAccessType accessType;
     private ASNOctetString rand;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private ISDNAddressStringImpl vlrNumber;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString vlrNumber;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
-    private ISDNAddressStringImpl sgsnNumber;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString sgsnNumber;
 
     public AuthenticationFailureReportRequestImpl() {
     }
 
-    public AuthenticationFailureReportRequestImpl(IMSIImpl imsi, FailureCause failureCause, MAPExtensionContainerImpl extensionContainer, Boolean reAttempt,
-            AccessType accessType, byte[] rand, ISDNAddressStringImpl vlrNumber, ISDNAddressStringImpl sgsnNumber) {
+    public AuthenticationFailureReportRequestImpl(IMSI imsi, FailureCause failureCause, MAPExtensionContainer extensionContainer, Boolean reAttempt,
+            AccessType accessType, byte[] rand, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber) {
         this.imsi = imsi;
         
         if(failureCause!=null) {
@@ -113,7 +116,7 @@ public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl 
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return imsi;
     }
 
@@ -126,7 +129,7 @@ public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl 
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 
@@ -161,12 +164,12 @@ public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl 
     }
 
     @Override
-    public ISDNAddressStringImpl getVlrNumber() {
+    public ISDNAddressString getVlrNumber() {
         return vlrNumber;
     }
 
     @Override
-    public ISDNAddressStringImpl getSgsnNumber() {
+    public ISDNAddressString getSgsnNumber() {
         return sgsnNumber;
     }
 

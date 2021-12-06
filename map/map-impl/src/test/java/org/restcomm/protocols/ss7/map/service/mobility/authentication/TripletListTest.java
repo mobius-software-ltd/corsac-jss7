@@ -28,9 +28,9 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTripletImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletListImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTriplet;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -108,7 +108,7 @@ public class TripletListTest {
 
         AuthenticationTripletImpl d1 = new AuthenticationTripletImpl(AuthenticationTripletTest.getRandData(),
                 AuthenticationTripletTest.getSresData(), AuthenticationTripletTest.getKcData());
-        ArrayList<AuthenticationTripletImpl> arr = new ArrayList<AuthenticationTripletImpl>();
+        List<AuthenticationTriplet> arr = new ArrayList<AuthenticationTriplet>();
         arr.add(d1);
         TripletListImpl asc = new TripletListImpl(arr);
 
@@ -121,7 +121,7 @@ public class TripletListTest {
         d1 = new AuthenticationTripletImpl(AuthenticationTripletTest.getRandData(), AuthenticationTripletTest.getSresData(),
                 AuthenticationTripletTest.getKcData());
         AuthenticationTripletImpl d2 = new AuthenticationTripletImpl(getRandData(), getSresData(), getKcData());
-        arr = new ArrayList<AuthenticationTripletImpl>();
+        arr = new ArrayList<AuthenticationTriplet>();
         arr.add(d1);
         arr.add(d2);
         asc = new TripletListImpl(arr);

@@ -24,10 +24,11 @@ package org.restcomm.protocols.ss7.map.service.supplementary;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.datacoding.ASNCBSDataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ProcessUnstructuredSSResponse;
+import org.restcomm.protocols.ss7.map.datacoding.ASNCBSDataCodingSchemeImpl;
+import org.restcomm.protocols.ss7.map.primitives.USSDStringImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -45,14 +46,14 @@ public class ProcessUnstructuredSSResponseImpl extends SupplementaryMessageImpl 
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
 	private ASNCBSDataCodingSchemeImpl ussdDataCodingSch;
 	
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
-	private USSDStringImpl ussdString;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1,defaultImplementation = USSDStringImpl.class)
+	private USSDString ussdString;
 	
 	public ProcessUnstructuredSSResponseImpl() {
         super();
     }
 
-    public ProcessUnstructuredSSResponseImpl(CBSDataCodingScheme ussdDataCodingSch, USSDStringImpl ussdString) {
+    public ProcessUnstructuredSSResponseImpl(CBSDataCodingScheme ussdDataCodingSch, USSDString ussdString) {
     	if(ussdDataCodingSch!=null)
     		this.ussdDataCodingSch=new ASNCBSDataCodingSchemeImpl(ussdDataCodingSch);
     	
@@ -76,7 +77,7 @@ public class ProcessUnstructuredSSResponseImpl extends SupplementaryMessageImpl 
 	}
 
 	@Override
-	public USSDStringImpl getUSSDString() {
+	public USSDString getUSSDString() {
 		return ussdString;
 	}
 

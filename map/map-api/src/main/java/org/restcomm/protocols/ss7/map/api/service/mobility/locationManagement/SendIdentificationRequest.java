@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.TMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.TMSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -78,24 +78,23 @@ HopCounter ::= INTEGER (0..3)
  */
 public interface SendIdentificationRequest extends MobilityMessage {
 
-    TMSIImpl getTmsi();
+    TMSI getTmsi();
 
     Integer getNumberOfRequestedVectors();
 
     boolean getSegmentationProhibited();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
-    ISDNAddressStringImpl getMscNumber();
+    ISDNAddressString getMscNumber();
 
-    LAIFixedLengthImpl getPreviousLAI();
+    LAIFixedLength getPreviousLAI();
 
     Integer getHopCounter();
 
     boolean getMtRoamingForwardingSupported();
 
-    ISDNAddressStringImpl getNewVLRNumber();
+    ISDNAddressString getNewVLRNumber();
 
-    LMSIImpl getNewLmsi();
-
+    LMSI getNewLmsi();
 }

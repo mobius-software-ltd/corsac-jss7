@@ -31,21 +31,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.gap.BasicGapCriteriaImpl;
-import org.restcomm.protocols.ss7.cap.api.gap.CalledAddressAndServiceImpl;
-import org.restcomm.protocols.ss7.cap.api.gap.CompoundCriteriaImpl;
-import org.restcomm.protocols.ss7.cap.api.gap.GapCriteriaImpl;
-import org.restcomm.protocols.ss7.cap.api.gap.GapIndicatorsImpl;
-import org.restcomm.protocols.ss7.cap.api.gap.GapTreatmentImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.primitives.CriticalityType;
-import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionFieldImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.ScfIDImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionField;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ControlType;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InbandInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDImpl;
+import org.restcomm.protocols.ss7.cap.gap.BasicGapCriteriaImpl;
+import org.restcomm.protocols.ss7.cap.gap.CalledAddressAndServiceImpl;
+import org.restcomm.protocols.ss7.cap.gap.CompoundCriteriaImpl;
+import org.restcomm.protocols.ss7.cap.gap.GapCriteriaImpl;
+import org.restcomm.protocols.ss7.cap.gap.GapIndicatorsImpl;
+import org.restcomm.protocols.ss7.cap.gap.GapTreatmentImpl;
+import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.primitives.ExtensionFieldImpl;
+import org.restcomm.protocols.ss7.cap.primitives.ScfIDImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InbandInfoImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InformationToSendImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.MessageIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -166,10 +168,10 @@ public class CallGapRequestTest {
         InformationToSendImpl informationToSend = new InformationToSendImpl(inbandInfo);
         GapTreatmentImpl gapTreatment = new GapTreatmentImpl(informationToSend);
 
-        List<ExtensionFieldImpl> fieldsList = new ArrayList<>();
+        List<ExtensionField> fieldsList = new ArrayList<>();
         ExtensionFieldImpl extensionField = new ExtensionFieldImpl(Integer.MIN_VALUE, CriticalityType.typeIgnore, getDigitsData2());
         fieldsList.add(extensionField);
-        CAPExtensionsImpl cAPExtensions = new CAPExtensionsImpl(fieldsList);
+        CAPExtensions cAPExtensions = new CAPExtensionsImpl(fieldsList);
 
         CallGapRequestImpl elem = new CallGapRequestImpl(gapCriteria, gapIndicators, ControlType.sCPOverloaded, gapTreatment, cAPExtensions);
         byte[] rawData = this.getData();

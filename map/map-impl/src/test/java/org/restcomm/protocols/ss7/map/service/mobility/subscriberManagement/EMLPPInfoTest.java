@@ -27,8 +27,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EMLPPInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -45,8 +44,9 @@ import io.netty.buffer.Unpooled;
  */
 public class EMLPPInfoTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 53, 2, 1, 2, 2, 1, 1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+	public byte[] getData() {
+        return new byte[] { 48, 47, 2, 1, 2, 2, 1, 1, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3,
+                42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -60,7 +60,7 @@ public class EMLPPInfoTest {
         assertTrue(result.getResult() instanceof EMLPPInfoImpl);
         EMLPPInfoImpl prim = (EMLPPInfoImpl)result.getResult(); 
         
-        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
         assertTrue(prim.getMaximumentitledPriority() == 2);
         assertTrue(prim.getDefaultPriority() == 1);
         assertNotNull(extensionContainer);
@@ -72,7 +72,7 @@ public class EMLPPInfoTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(EMLPPInfoImpl.class);
     	                
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         EMLPPInfoImpl prim = new EMLPPInfoImpl(2, 1, extensionContainer);
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];

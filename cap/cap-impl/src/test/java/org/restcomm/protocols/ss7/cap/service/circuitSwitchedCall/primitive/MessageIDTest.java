@@ -30,11 +30,7 @@ import static org.testng.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDTextImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDWrapperImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariableMessageImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePart;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -158,7 +154,7 @@ public class MessageIDTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        ArrayList<VariablePartImpl> variableParts = new ArrayList<VariablePartImpl>();
+        ArrayList<VariablePart> variableParts = new ArrayList<VariablePart>();
         VariablePartImpl vp = new VariablePartImpl(28);
         variableParts.add(vp);
         VariableMessageImpl vm = new VariableMessageImpl(99, variableParts);

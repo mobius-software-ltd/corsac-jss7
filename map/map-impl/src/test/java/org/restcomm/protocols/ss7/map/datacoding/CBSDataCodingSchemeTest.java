@@ -28,7 +28,6 @@ import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingGroup;
-import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSNationalLanguage;
 import org.restcomm.protocols.ss7.map.api.smstpdu.CharacterSet;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemaMessageClass;

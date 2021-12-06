@@ -24,10 +24,12 @@ package org.restcomm.protocols.ss7.map.service.sms;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.sms.ReadyForSMResponse;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -39,12 +41,13 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ReadyForSMResponseImpl extends SmsMessageImpl implements ReadyForSMResponse {
 	private static final long serialVersionUID = 1L;
 
-    private MAPExtensionContainerImpl extensionContainer;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
 
     public ReadyForSMResponseImpl() {
     }
 
-    public ReadyForSMResponseImpl(MAPExtensionContainerImpl extensionContainer) {
+    public ReadyForSMResponseImpl(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 
@@ -59,7 +62,7 @@ public class ReadyForSMResponseImpl extends SmsMessageImpl implements ReadyForSM
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 

@@ -29,9 +29,7 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.ProtocolId;
-import org.restcomm.protocols.ss7.map.api.primitives.SignalInfoImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;

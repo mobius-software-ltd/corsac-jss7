@@ -21,22 +21,24 @@
  */
 package org.restcomm.protocols.ss7.map.errors;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
 import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.errors.ASNSMEnumeratedDeliveryFailureCauseImpl;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSMDeliveryFailure;
 import org.restcomm.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpduImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpduImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpdu;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpduType;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.SmsDeliverReportTpduImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.SmsTpduImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -48,11 +50,13 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
 	private long mapProtocolVersion = 3;
     private ASNSMEnumeratedDeliveryFailureCauseImpl sMEnumeratedDeliveryFailureCause;
     private ASNOctetString signalInfo;
-    private MAPExtensionContainerImpl extensionContainer;
+   
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
 
     public MAPErrorMessageSMDeliveryFailureImpl(long mapProtocolVersion,
             SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, byte[] signalInfo,
-            MAPExtensionContainerImpl extensionContainer) {
+            MAPExtensionContainer extensionContainer) {
         super((long) MAPErrorCode.smDeliveryFailure);
 
         this.mapProtocolVersion = mapProtocolVersion;
@@ -94,7 +98,7 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
         return this.mapProtocolVersion;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -116,7 +120,7 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
     	}
     }
 
-    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 
@@ -132,7 +136,7 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
         return this;
     }
 
-    public SmsDeliverReportTpduImpl getSmsDeliverReportTpdu() throws MAPException {
+    public SmsDeliverReportTpdu getSmsDeliverReportTpdu() throws MAPException {
         if (this.signalInfo != null) {
             SmsTpduImpl smsTpdu = SmsTpduImpl.createInstance(this.signalInfo.getValue(), true, null);
             if (smsTpdu.getSmsTpduType() == SmsTpduType.SMS_DELIVER_REPORT) {
@@ -143,7 +147,7 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
         return null;
     }
 
-    public void setSmsDeliverReportTpdu(SmsDeliverReportTpduImpl tpdu) throws MAPException {
+    public void setSmsDeliverReportTpdu(SmsDeliverReportTpdu tpdu) throws MAPException {
     	ByteBuf buf=Unpooled.buffer();
     	tpdu.encodeData(buf);
     	byte[] data=new byte[buf.readableBytes()];

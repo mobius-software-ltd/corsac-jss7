@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformatio
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -53,7 +53,7 @@ public interface ModificationRequestForCSI extends Serializable {
 
     ModificationInstruction getModifyCSIState();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     AdditionalRequestedCAMELSubscriptionInfo getAdditionalRequestedCamelSubscriptionInfo();
 

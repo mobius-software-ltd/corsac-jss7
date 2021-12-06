@@ -7,13 +7,13 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallWaitingDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ExtCwFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ExtCwFeature;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtSSStatusImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -42,7 +42,7 @@ public class CallWaitingDataTest {
         assertEquals(callWaitingData.getCwFeatureList().size(), 1);
         assertTrue(callWaitingData.getNotificationToCSE());
 
-        ExtCwFeatureImpl extCwFeature = callWaitingData.getCwFeatureList().get(0);
+        ExtCwFeature extCwFeature = callWaitingData.getCwFeatureList().get(0);
         assertNotNull(extCwFeature.getSsStatus());
         assertTrue(extCwFeature.getSsStatus().getBitQ());
         assertTrue(extCwFeature.getSsStatus().getBitP());
@@ -59,7 +59,7 @@ public class CallWaitingDataTest {
         ExtBasicServiceCodeImpl extBasicServiceCode = new ExtBasicServiceCodeImpl(new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allTeleservices));
         final ExtCwFeatureImpl extCwFeature = new ExtCwFeatureImpl(extBasicServiceCode, new ExtSSStatusImpl(true, true, true, true));
         
-        ArrayList<ExtCwFeatureImpl> extCwFeatureList=new ArrayList<ExtCwFeatureImpl>();
+        List<ExtCwFeature> extCwFeatureList=new ArrayList<ExtCwFeature>();
         extCwFeatureList.add(extCwFeature);
         CallWaitingDataImpl callWaitingData = new CallWaitingDataImpl(extCwFeatureList, true);
 

@@ -32,14 +32,13 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumberImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedLCSCapabilitySetsImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedLCSCapabilitySets;
+import org.restcomm.protocols.ss7.map.primitives.DiameterIdentityImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SupportedLCSCapabilitySetsImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -79,7 +78,10 @@ public class LCSLocationInfoTest {
     }
 
     public byte[] getEncodedData() {
-        return new byte[] { 48, 102, 4, 5, -111, 85, 22, 9, 112, -128, 4, 11, 12, 13, 14, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -126, 0, -93, 8, -128, 6, -111, 34, 34, 17, 34, 34, -124, 2, 6, -64, -123, 2, 5, -32, -122, 9, 21, 22, 23, 23, 25, 26, 27, 28, 29, -120, 9, 31, 32, 33, 33, 35, 36, 37, 38, 39 };
+        return new byte[] { 48, 96, 4, 5, -111, 85, 22, 9, 112, -128, 4, 11, 12, 13, 14, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3,
+                4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32,
+                33, -126, 0, -93, 8, -128, 6, -111, 34, 34, 17, 34, 34, -124, 2, 6, -64, -123, 2, 5, -32, -122, 9, 21, 22, 23,
+                23, 25, 26, 27, 28, 29, -120, 9, 31, 32, 33, 33, 35, 36, 37, 38, 39 };
     }
 
     public byte[] getDataLmsi() {
@@ -106,7 +108,7 @@ public class LCSLocationInfoTest {
         assertTrue(result.getResult() instanceof LCSLocationInfoImpl);
         LCSLocationInfoImpl imp = (LCSLocationInfoImpl)result.getResult();
         
-        ISDNAddressStringImpl networkNodeNumber = imp.getNetworkNodeNumber();
+        ISDNAddressString networkNodeNumber = imp.getNetworkNodeNumber();
         assertEquals(networkNodeNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlan.ISDN);
         assertTrue(networkNodeNumber.getAddress().equals("55619007"));
@@ -118,13 +120,13 @@ public class LCSLocationInfoTest {
         assertTrue(imp.getAdditionalNumber().getMSCNumber().getAddress().equals("2222112222"));
         assertNull(imp.getAdditionalNumber().getSGSNNumber());
 
-        SupportedLCSCapabilitySetsImpl supportedLCSCapabilitySets = imp.getSupportedLCSCapabilitySets();
+        SupportedLCSCapabilitySets supportedLCSCapabilitySets = imp.getSupportedLCSCapabilitySets();
         assertTrue(supportedLCSCapabilitySets.getCapabilitySetRelease98_99());
         assertTrue(supportedLCSCapabilitySets.getCapabilitySetRelease4());
         assertFalse(supportedLCSCapabilitySets.getCapabilitySetRelease5());
         assertFalse(supportedLCSCapabilitySets.getCapabilitySetRelease6());
 
-        SupportedLCSCapabilitySetsImpl additionalLCSCapabilitySets = imp.getAdditionalLCSCapabilitySets();
+        SupportedLCSCapabilitySets additionalLCSCapabilitySets = imp.getAdditionalLCSCapabilitySets();
         assertTrue(additionalLCSCapabilitySets.getCapabilitySetRelease98_99());
         assertTrue(additionalLCSCapabilitySets.getCapabilitySetRelease4());
         assertTrue(additionalLCSCapabilitySets.getCapabilitySetRelease5());
@@ -141,10 +143,10 @@ public class LCSLocationInfoTest {
     	
         byte[] data = getEncodedData();
 
-        ISDNAddressStringImpl networkNodeNumber = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
+        ISDNAddressString networkNodeNumber = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "55619007");
         LMSIImpl lmsi = new LMSIImpl(getDataLmsi());
-        ISDNAddressStringImpl mscNumber = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
+        ISDNAddressString mscNumber = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "2222112222");
         AdditionalNumberImpl additionalNumber = new AdditionalNumberImpl(mscNumber, null);
         SupportedLCSCapabilitySetsImpl supportedLCSCapabilitySets = new SupportedLCSCapabilitySetsImpl(true, true, false,

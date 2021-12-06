@@ -25,8 +25,10 @@ package org.restcomm.protocols.ss7.map.service.supplementary;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.InterrogateSSRequest;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCode;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 /**
@@ -38,12 +40,13 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class InterrogateSSRequestImpl extends SupplementaryMessageImpl implements InterrogateSSRequest {
 	private static final long serialVersionUID = 1L;
 
-	private SSForBSCodeImpl ssForBSCode;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = SSForBSCodeImpl.class)
+	private SSForBSCode ssForBSCode;
     
     public InterrogateSSRequestImpl() {
     }
 
-    public InterrogateSSRequestImpl(SSForBSCodeImpl ssForBSCode) {
+    public InterrogateSSRequestImpl(SSForBSCode ssForBSCode) {
         this.ssForBSCode = ssForBSCode;
     }
 
@@ -58,7 +61,7 @@ public class InterrogateSSRequestImpl extends SupplementaryMessageImpl implement
     }
 
     @Override
-    public SSForBSCodeImpl getSsForBSCode() {
+    public SSForBSCode getSsForBSCode() {
         return ssForBSCode;
     }
 

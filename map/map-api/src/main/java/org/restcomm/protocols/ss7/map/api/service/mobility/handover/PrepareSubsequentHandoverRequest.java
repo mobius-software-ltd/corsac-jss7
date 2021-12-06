@@ -23,10 +23,10 @@
 package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AccessNetworkSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -55,9 +55,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface PrepareSubsequentHandoverRequest extends MobilityMessage {
 
-    GlobalCellIdImpl getTargetCellId();
+    GlobalCellId getTargetCellId();
 
-    ISDNAddressStringImpl getTargetMSCNumber();
+    ISDNAddressString getTargetMSCNumber();
 
     RNCId getTargetRNCId();
 
@@ -65,13 +65,13 @@ public interface PrepareSubsequentHandoverRequest extends MobilityMessage {
 
     Integer getSelectedRabId();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     GERANClassmark getGERANClassmark();
 
     boolean getRabConfigurationIndicator();
 
     // MAP V2
-    ExternalSignalInfoImpl getBssAPDU();
+    ExternalSignalInfo getBssAPDU();
 
 }

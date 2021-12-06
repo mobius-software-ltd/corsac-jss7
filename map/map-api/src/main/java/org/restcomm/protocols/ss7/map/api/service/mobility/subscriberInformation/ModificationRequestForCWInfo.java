@@ -24,9 +24,9 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformatio
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
 
 /**
  *
@@ -46,12 +46,12 @@ ModificationRequestFor-CW-Info ::= SEQUENCE {
  */
 public interface ModificationRequestForCWInfo extends Serializable {
 
-    ExtBasicServiceCodeImpl getBasicService();
+    ExtBasicServiceCode getBasicService();
 
-    ExtSSStatusImpl getSsStatus();
+    ExtSSStatus getSsStatus();
 
     ModificationInstruction getModifyNotificationToCSE();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
 }

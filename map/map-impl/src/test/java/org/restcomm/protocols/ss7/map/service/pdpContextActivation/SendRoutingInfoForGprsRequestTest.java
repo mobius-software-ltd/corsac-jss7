@@ -31,10 +31,10 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressAddressType;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -56,7 +56,9 @@ public class SendRoutingInfoForGprsRequestTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 70, -128, 7, 17, 17, 33, 34, 34, 51, -13, -127, 5, 4, -64, -88, 4, 22, -126, 5, -111, -120, -120, 0, 0, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 64, (byte) 128, 7, 17, 17, 33, 34, 34, 51, (byte) 243, (byte) 129, 5, 4, (byte) 192, (byte) 168, 4, 22, (byte) 130, 5,
+                (byte) 145, (byte) 136, (byte) 136, 0, 0, (byte) 163, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6,
+                48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33 };
     }
 
     private byte[] getAddressData() {

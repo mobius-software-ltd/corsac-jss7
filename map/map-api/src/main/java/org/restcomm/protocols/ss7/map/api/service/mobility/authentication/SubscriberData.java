@@ -25,14 +25,14 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.authentication;
 import java.io.Serializable;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CategoryImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBDataImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Category;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SubscriberStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfo;
 
 /**
  *
@@ -56,22 +56,22 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfoImpl;
  */
 public interface SubscriberData extends Serializable {
 
-    ISDNAddressStringImpl getMsisdn();
+    ISDNAddressString getMsisdn();
 
-    CategoryImpl getCategory();
+    Category getCategory();
 
     SubscriberStatus getSubscriberStatus();
 
-    List<BearerServiceCodeImpl> getBearerServiceList();
+    List<BearerServiceCode> getBearerServiceList();
 
-    List<TeleserviceCodeImpl> getTeleserviceList();
+    List<TeleserviceCode> getTeleserviceList();
 
-    List<SSInfoImpl> getProvisionedSS();
+    List<SSInfo> getProvisionedSS();
 
-    ODBDataImpl getOdbData();
+    ODBData getOdbData();
 
     boolean getRoamingRestrictionDueToUnsupportedFeature();
 
-    List<ZoneCodeImpl> getRegionalSubscriptionData();
+    List<ZoneCode> getRegionalSubscriptionData();
 
 }

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.errors;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -43,13 +43,13 @@ public interface MAPErrorMessageRoamingNotAllowed extends MAPErrorMessage {
 
     RoamingNotAllowedCause getRoamingNotAllowedCause();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     AdditionalRoamingNotAllowedCause getAdditionalRoamingNotAllowedCause();
 
     void setRoamingNotAllowedCause(RoamingNotAllowedCause val);
 
-    void setExtensionContainer(MAPExtensionContainerImpl val);
+    void setExtensionContainer(MAPExtensionContainer val);
 
     void setAdditionalRoamingNotAllowedCause(AdditionalRoamingNotAllowedCause val);
 

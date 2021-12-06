@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -55,6 +55,5 @@ public interface CodecList extends Serializable {
 
     Codec getCodec8();
 
-    MAPExtensionContainerImpl getExtensionContainer();
-
+    MAPExtensionContainer getExtensionContainer();
 }

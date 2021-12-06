@@ -29,12 +29,12 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DAImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OAImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DA;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OA;
+import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfo;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -72,9 +72,9 @@ public class ForwardShortMessageRequestTest {
         assertTrue(result.getResult() instanceof MoForwardShortMessageRequestImpl);
         MoForwardShortMessageRequestImpl ind = (MoForwardShortMessageRequestImpl)result.getResult();   
         
-        SM_RP_DAImpl da = ind.getSM_RP_DA();
-        SM_RP_OAImpl oa = ind.getSM_RP_OA();
-        SmsSignalInfoImpl ui = ind.getSM_RP_UI();
+        SM_RP_DA da = ind.getSM_RP_DA();
+        SM_RP_OA oa = ind.getSM_RP_OA();
+        SmsSignalInfo ui = ind.getSM_RP_UI();
         assertEquals(AddressNature.international_number, da.getServiceCentreAddressDA().getAddressNature());
         assertEquals(NumberingPlan.ISDN, da.getServiceCentreAddressDA().getNumberingPlan());
         assertEquals("223334990223", da.getServiceCentreAddressDA().getAddress());

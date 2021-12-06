@@ -22,14 +22,14 @@
 
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.TMSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LongGroupIdImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.TMSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LongGroupId;
 
 /**
  *
@@ -50,24 +50,23 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
  */
 public interface SendGroupCallInfoRequest extends CallHandlingMessage {
 
-     RequestedInfoImpl getRequestedInfo();
+     RequestedInfo getRequestedInfo();
 
-     LongGroupIdImpl getGroupId();
+     LongGroupId getGroupId();
 
-     ExtTeleserviceCodeImpl getTeleservice();
+     ExtTeleserviceCode getTeleservice();
 
-     GlobalCellIdImpl getCellId();
+     GlobalCellId getCellId();
 
-     IMSIImpl getImsi();
+     IMSI getImsi();
 
-     TMSIImpl getTmsi();
+     TMSI getTmsi();
 
-     AdditionalInfoImpl getAdditionalInfo();
+     AdditionalInfo getAdditionalInfo();
 
      TalkerPriority getTalkerPriority();
 
      byte[] getCksn();
 
-     MAPExtensionContainerImpl getExtensionContainer();
-
+     MAPExtensionContainer getExtensionContainer();
 }

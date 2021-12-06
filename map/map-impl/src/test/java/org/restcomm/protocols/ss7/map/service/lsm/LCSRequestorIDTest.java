@@ -32,10 +32,9 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSFormatIndicator;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSRequestorIDImpl;
+import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -121,7 +120,7 @@ public class LCSRequestorIDTest {
     	
         byte[] data = getData();
 
-        USSDStringImpl nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
+        USSDString nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
         LCSRequestorIDImpl lcsRequestorID = new LCSRequestorIDImpl(new CBSDataCodingSchemeImpl(0x0f), nameString, null);
         ByteBuf buffer=parser.encode(lcsRequestorID);
         byte[] encodedData = new byte[buffer.readableBytes()];

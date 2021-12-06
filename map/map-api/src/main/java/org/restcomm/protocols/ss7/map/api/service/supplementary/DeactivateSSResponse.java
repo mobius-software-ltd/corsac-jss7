@@ -35,6 +35,6 @@ package org.restcomm.protocols.ss7.map.api.service.supplementary;
  */
 public interface DeactivateSSResponse extends SupplementaryMessage {
 
-    SSInfoImpl getSsInfo();
+	SSInfo getSsInfo();
 
 }

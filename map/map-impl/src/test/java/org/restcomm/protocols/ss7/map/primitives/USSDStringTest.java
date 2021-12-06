@@ -30,10 +30,9 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingGroup;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSNationalLanguage;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.CharacterSet;
+import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;

@@ -40,7 +40,7 @@ import org.restcomm.protocols.ss7.inap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.inap.api.primitives.INAPExtensions;
 import org.restcomm.protocols.ss7.inap.api.primitives.TerminalType;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CGEncountered;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CalledPartyBCDNumberImpl;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CalledPartyBCDNumber;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CallingPartyBusinessGroupID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Carrier;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.GenericNumbers;
@@ -51,12 +51,12 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.USIInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.USIServiceIndicator;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberState;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
 
 /**
 *
@@ -251,18 +251,18 @@ public interface InitialDPRequest {
 
     Carrier getCarrier();
 
-    IMSIImpl getIMSI();
+    IMSI getIMSI();
 
-    SubscriberStateImpl getSubscriberState();
+    SubscriberState getSubscriberState();
 
-    LocationInformationImpl getLocationInformation();
+    LocationInformation getLocationInformation();
 
-    ExtBasicServiceCodeImpl getExtBasicServiceCode();
+    ExtBasicServiceCode getExtBasicServiceCode();
 
-    CallReferenceNumberImpl getCallReferenceNumber();
+    CallReferenceNumber getCallReferenceNumber();
 
-    ISDNAddressStringImpl getMscAddress();
+    ISDNAddressString getMscAddress();
 
-    CalledPartyBCDNumberImpl getCalledPartyBCDNumber();
+    CalledPartyBCDNumber getCalledPartyBCDNumber();
 
 }

@@ -19,32 +19,34 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
+import java.util.List;
+
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeSubscriptionInterrogationResponse;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CAMELSubscriptionInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallBarringDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallForwardingDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallHoldDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallWaitingDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClipDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClirDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EctDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSISDNBSImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSISDNBSListWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ODBInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionDataListWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CAMELSubscriptionInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallBarringData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallForwardingData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallHoldData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallWaitingData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClipData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClirData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EctData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSISDNBS;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ODBInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CSGSubscriptionDataListWrapperImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-
-import java.util.List;
 
 /**
  * Created by vsubbotin on 24/05/16.
@@ -53,32 +55,32 @@ import java.util.List;
 public class AnyTimeSubscriptionInterrogationResponseImpl extends MobilityMessageImpl implements AnyTimeSubscriptionInterrogationResponse {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
-    private CallForwardingDataImpl callForwardingData;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1,defaultImplementation = CallForwardingDataImpl.class)
+    private CallForwardingData callForwardingData;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1)
-    private CallBarringDataImpl callBarringData;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1,defaultImplementation = CallBarringDataImpl.class)
+    private CallBarringData callBarringData;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1)
-    private ODBInfoImpl odbInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1,defaultImplementation = ODBInfoImpl.class)
+    private ODBInfo odbInfo;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=true,index=-1)
-    private CAMELSubscriptionInfoImpl camelSubscriptionInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=true,index=-1,defaultImplementation = CAMELSubscriptionInfoImpl.class)
+    private CAMELSubscriptionInfo camelSubscriptionInfo;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
-    private SupportedCamelPhasesImpl supportedVlrCamelPhases;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1, defaultImplementation = SupportedCamelPhasesImpl.class)
+    private SupportedCamelPhases supportedVlrCamelPhases;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1)
-    private SupportedCamelPhasesImpl supportedSgsnCamelPhases;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1, defaultImplementation = SupportedCamelPhasesImpl.class)
+    private SupportedCamelPhases supportedSgsnCamelPhases;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1)
-    private OfferedCamel4CSIsImpl offeredCamel4CSIsInVlr;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1, defaultImplementation = OfferedCamel4CSIsImpl.class)
+    private OfferedCamel4CSIs offeredCamel4CSIsInVlr;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1)
-    private OfferedCamel4CSIsImpl offeredCamel4CSIsInSgsn;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1, defaultImplementation = OfferedCamel4CSIsImpl.class)
+    private OfferedCamel4CSIs offeredCamel4CSIsInSgsn;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=true,index=-1)
     private MSISDNBSListWrapperImpl msisdnBsList;
@@ -86,30 +88,30 @@ public class AnyTimeSubscriptionInterrogationResponseImpl extends MobilityMessag
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=true,index=-1)
     private CSGSubscriptionDataListWrapperImpl csgSubscriptionDataList;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=true,index=-1)
-    private CallWaitingDataImpl cwData;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=true,index=-1,defaultImplementation = CallWaitingDataImpl.class)
+    private CallWaitingData cwData;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=true,index=-1)
-    private CallHoldDataImpl chData;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=true,index=-1,defaultImplementation = CallHoldDataImpl.class)
+    private CallHoldData chData;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=true,index=-1)
-    private ClipDataImpl clipData;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=true,index=-1,defaultImplementation = ClipDataImpl.class)
+    private ClipData clipData;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=true,index=-1)
-    private ClirDataImpl clirData;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=true,index=-1,defaultImplementation = ClirDataImpl.class)
+    private ClirData clirData;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=true,index=-1)
-    private EctDataImpl ectData;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=true,index=-1,defaultImplementation = EctDataImpl.class)
+    private EctData ectData;
     
     public AnyTimeSubscriptionInterrogationResponseImpl() {
         super();
     }
 
-    public AnyTimeSubscriptionInterrogationResponseImpl(CallForwardingDataImpl callForwardingData, CallBarringDataImpl callBarringData, ODBInfoImpl odbInfo,
-            CAMELSubscriptionInfoImpl camelSubscriptionInfo, SupportedCamelPhasesImpl supportedVlrCamelPhases, SupportedCamelPhasesImpl supportedSgsnCamelPhases,
-            MAPExtensionContainerImpl extensionContainer, OfferedCamel4CSIsImpl offeredCamel4CSIsInVlr, OfferedCamel4CSIsImpl offeredCamel4CSIsInSgsn,
-            List<MSISDNBSImpl> msisdnBsList, List<CSGSubscriptionDataImpl> csgSubscriptionDataList, CallWaitingDataImpl cwData, CallHoldDataImpl chData,
-            ClipDataImpl clipData, ClirDataImpl clirData, EctDataImpl ectData) {
+    public AnyTimeSubscriptionInterrogationResponseImpl(CallForwardingData callForwardingData, CallBarringData callBarringData, ODBInfo odbInfo,
+            CAMELSubscriptionInfo camelSubscriptionInfo, SupportedCamelPhases supportedVlrCamelPhases, SupportedCamelPhases supportedSgsnCamelPhases,
+            MAPExtensionContainer extensionContainer, OfferedCamel4CSIs offeredCamel4CSIsInVlr, OfferedCamel4CSIs offeredCamel4CSIsInSgsn,
+            List<MSISDNBS> msisdnBsList, List<CSGSubscriptionData> csgSubscriptionDataList, CallWaitingData cwData, CallHoldData chData,
+            ClipData clipData, ClirData clirData, EctData ectData) {
         super();
         this.callForwardingData = callForwardingData;
         this.callBarringData = callBarringData;
@@ -134,73 +136,73 @@ public class AnyTimeSubscriptionInterrogationResponseImpl extends MobilityMessag
         this.ectData = ectData;
     }
 
-    public CallForwardingDataImpl getCallForwardingData() {
+    public CallForwardingData getCallForwardingData() {
         return this.callForwardingData;
     }
 
-    public CallBarringDataImpl getCallBarringData() {
+    public CallBarringData getCallBarringData() {
         return this.callBarringData;
     }
 
-    public ODBInfoImpl getOdbInfo() {
+    public ODBInfo getOdbInfo() {
         return this.odbInfo;
     }
 
-    public CAMELSubscriptionInfoImpl getCamelSubscriptionInfo() {
+    public CAMELSubscriptionInfo getCamelSubscriptionInfo() {
         return this.camelSubscriptionInfo;
     }
 
-    public SupportedCamelPhasesImpl getsupportedVlrCamelPhases() {
+    public SupportedCamelPhases getsupportedVlrCamelPhases() {
         return this.supportedVlrCamelPhases;
     }
 
-    public SupportedCamelPhasesImpl getsupportedSgsnCamelPhases() {
+    public SupportedCamelPhases getsupportedSgsnCamelPhases() {
         return this.supportedSgsnCamelPhases;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
-    public OfferedCamel4CSIsImpl getOfferedCamel4CSIsInVlr() {
+    public OfferedCamel4CSIs getOfferedCamel4CSIsInVlr() {
         return this.offeredCamel4CSIsInVlr;
     }
 
-    public OfferedCamel4CSIsImpl getOfferedCamel4CSIsInSgsn() {
+    public OfferedCamel4CSIs getOfferedCamel4CSIsInSgsn() {
         return this.offeredCamel4CSIsInSgsn;
     }
 
-    public List<MSISDNBSImpl> getMsisdnBsList() {
+    public List<MSISDNBS> getMsisdnBsList() {
     	if(this.msisdnBsList==null)
     		return null;
     	
         return this.msisdnBsList.getMSISDNBS();
     }
 
-    public List<CSGSubscriptionDataImpl> getCsgSubscriptionDataList() {
+    public List<CSGSubscriptionData> getCsgSubscriptionDataList() {
     	if(this.csgSubscriptionDataList==null)
     		return null;
     	
         return this.csgSubscriptionDataList.getCSGSubscriptionDataList();
     }
 
-    public CallWaitingDataImpl getCwData() {
+    public CallWaitingData getCwData() {
         return this.cwData;
     }
 
-    public CallHoldDataImpl getChData() {
+    public CallHoldData getChData() {
         return this.chData;
     }
 
-    public ClipDataImpl getClipData() {
+    public ClipData getClipData() {
         return this.clipData;
     }
 
-    public ClirDataImpl getClirData() {
+    public ClirData getClirData() {
         return this.clirData;
     }
 
-    public EctDataImpl getEctData() {
+    public EctData getEctData() {
         return this.ectData;
     }
 
@@ -256,7 +258,7 @@ public class AnyTimeSubscriptionInterrogationResponseImpl extends MobilityMessag
         if (this.msisdnBsList != null && this.msisdnBsList.getMSISDNBS()!=null) {
             sb.append(", msisdnBsList=[");
             boolean firstItem = true;
-            for (MSISDNBSImpl msisdnbs: msisdnBsList.getMSISDNBS()) {
+            for (MSISDNBS msisdnbs: msisdnBsList.getMSISDNBS()) {
                 if (firstItem) {
                     firstItem = false;
                 } else {
@@ -269,7 +271,7 @@ public class AnyTimeSubscriptionInterrogationResponseImpl extends MobilityMessag
         if (this.csgSubscriptionDataList != null && this.csgSubscriptionDataList.getCSGSubscriptionDataList()!=null) {
             sb.append(", csgSubscriptionDataList=[");
             boolean firstItem = true;
-            for (CSGSubscriptionDataImpl csgSubscriptionData: csgSubscriptionDataList.getCSGSubscriptionDataList()) {
+            for (CSGSubscriptionData csgSubscriptionData: csgSubscriptionDataList.getCSGSubscriptionDataList()) {
                 if (firstItem) {
                     firstItem = false;
                 } else {

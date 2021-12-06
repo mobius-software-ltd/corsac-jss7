@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -43,12 +43,11 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  */
 public interface SetReportingStateRequest extends CallHandlingMessage {
 
-    IMSIImpl getImsi();
+    IMSI getImsi();
 
-    LMSIImpl getLmsi();
+    LMSI getLmsi();
 
     ReportingState getCcbsMonitoring();
 
-    MAPExtensionContainerImpl getExtensionContainer();
-
+    MAPExtensionContainer getExtensionContainer();
 }

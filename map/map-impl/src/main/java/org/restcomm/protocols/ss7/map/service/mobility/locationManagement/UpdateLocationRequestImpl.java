@@ -24,15 +24,20 @@ package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingAreaImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingArea;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UpdateLocationRequest;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapabilityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapability;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -49,25 +54,26 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class UpdateLocationRequestImpl extends MobilityMessageImpl implements UpdateLocationRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-    private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=1)
-    private ISDNAddressStringImpl mscNumber;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=1,defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString mscNumber;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=1)
-    private ISDNAddressStringImpl roamingNumber;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=1,defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString roamingNumber;
     
-    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=2)
-    private ISDNAddressStringImpl vlrNumber;
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=2,defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString vlrNumber;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=false,index=-1)
-    private LMSIImpl lmsi;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=false,index=-1, defaultImplementation = LMSIImpl.class)
+    private LMSI lmsi;
     
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1)
-    private VLRCapabilityImpl vlrCapability;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1, defaultImplementation = VLRCapabilityImpl.class)
+    private VLRCapability vlrCapability;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=false,index=-1)
     private ASNNull informPreviousNetworkEntity;
@@ -75,14 +81,14 @@ public class UpdateLocationRequestImpl extends MobilityMessageImpl implements Up
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1)
     private ASNNull csLCSNotSupportedByUE;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
-    private GSNAddressImpl vGmlcAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1, defaultImplementation = GSNAddressImpl.class)
+    private GSNAddress vGmlcAddress;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=true,index=-1)
-    private ADDInfoImpl addInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=true,index=-1, defaultImplementation = ADDInfoImpl.class)
+    private ADDInfo addInfo;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=true,index=-1)
-    private PagingAreaImpl pagingArea;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=true,index=-1, defaultImplementation = PagingAreaImpl.class)
+    private PagingArea pagingArea;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=false,index=-1)
     private ASNNull skipSubscriberDataUpdate;
@@ -100,10 +106,10 @@ public class UpdateLocationRequestImpl extends MobilityMessageImpl implements Up
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public UpdateLocationRequestImpl(long mapProtocolVersion, IMSIImpl imsi, ISDNAddressStringImpl mscNumber,
-            ISDNAddressStringImpl roamingNumber, ISDNAddressStringImpl vlrNumber, LMSIImpl lmsi, MAPExtensionContainerImpl extensionContainer,
-            VLRCapabilityImpl vlrCapability, boolean informPreviousNetworkEntity, boolean csLCSNotSupportedByUE,
-            GSNAddressImpl vGmlcAddress, ADDInfoImpl addInfo, PagingAreaImpl pagingArea, boolean skipSubscriberDataUpdate,
+    public UpdateLocationRequestImpl(long mapProtocolVersion, IMSI imsi, ISDNAddressString mscNumber,
+    		ISDNAddressString roamingNumber, ISDNAddressString vlrNumber, LMSI lmsi, MAPExtensionContainer extensionContainer,
+    		VLRCapability vlrCapability, boolean informPreviousNetworkEntity, boolean csLCSNotSupportedByUE,
+            GSNAddress vGmlcAddress, ADDInfo addInfo, PagingArea pagingArea, boolean skipSubscriberDataUpdate,
             boolean restorationIndicator) {
         this.mapProtocolVersion = mapProtocolVersion;
         this.imsi = imsi;
@@ -139,31 +145,31 @@ public class UpdateLocationRequestImpl extends MobilityMessageImpl implements Up
         return MAPOperationCode.updateLocation;
     }
 
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return imsi;
     }
 
-    public ISDNAddressStringImpl getMscNumber() {
+    public ISDNAddressString getMscNumber() {
         return mscNumber;
     }
 
-    public ISDNAddressStringImpl getRoamingNumber() {
+    public ISDNAddressString getRoamingNumber() {
         return roamingNumber;
     }
 
-    public ISDNAddressStringImpl getVlrNumber() {
+    public ISDNAddressString getVlrNumber() {
         return vlrNumber;
     }
 
-    public LMSIImpl getLmsi() {
+    public LMSI getLmsi() {
         return lmsi;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 
-    public VLRCapabilityImpl getVlrCapability() {
+    public VLRCapability getVlrCapability() {
         return vlrCapability;
     }
 
@@ -175,15 +181,15 @@ public class UpdateLocationRequestImpl extends MobilityMessageImpl implements Up
         return csLCSNotSupportedByUE!=null;
     }
 
-    public GSNAddressImpl getVGmlcAddress() {
+    public GSNAddress getVGmlcAddress() {
         return vGmlcAddress;
     }
 
-    public ADDInfoImpl getADDInfo() {
+    public ADDInfo getADDInfo() {
         return addInfo;
     }
 
-    public PagingAreaImpl getPagingArea() {
+    public PagingArea getPagingArea() {
         return pagingArea;
     }
 

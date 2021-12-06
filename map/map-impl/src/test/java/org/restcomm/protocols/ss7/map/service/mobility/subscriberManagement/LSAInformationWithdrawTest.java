@@ -22,13 +22,16 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationWithdrawImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentity;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -96,7 +99,7 @@ public class LSAInformationWithdrawTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        ArrayList<LSAIdentityImpl> arr = new ArrayList<LSAIdentityImpl>();
+        List<LSAIdentity> arr = new ArrayList<LSAIdentity>();
         LSAIdentityImpl lsaId = new LSAIdentityImpl(getLsaIdData());
         arr.add(lsaId);
         asc = new LSAInformationWithdrawImpl(arr);

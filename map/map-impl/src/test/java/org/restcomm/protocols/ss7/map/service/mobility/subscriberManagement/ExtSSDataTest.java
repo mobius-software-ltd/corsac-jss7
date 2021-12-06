@@ -29,19 +29,18 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSData;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CliRestrictionOption;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.OverrideCategory;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSSubscriptionOptionImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSSubscriptionOptionImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -57,12 +56,16 @@ import io.netty.buffer.Unpooled;
  */
 public class ExtSSDataTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 61, 4, 1, 0, -124, 1, 5, -126, 1, 0, 48, 3, -126, 1, 38, -91, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+	public byte[] getData() {
+        return new byte[] { 48, 55, 4, 1, 0, -124, 1, 5, -126, 1, 0, 48, 3, -126, 1, 38, -91, 39, -96, 32, 48, 10, 6, 3, 42, 3,
+                4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32,
+                33 };
     };
 
     public byte[] getData1() {
-        return new byte[] { 48, 61, 4, 1, 0, -124, 1, 5, -127, 1, 1, 48, 3, -126, 1, 38, -91, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 55, 4, 1, 0, -124, 1, 5, -127, 1, 1, 48, 3, -126, 1, 38, -91, 39, -96, 32, 48, 10, 6, 3, 42, 3,
+                4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32,
+                33 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -76,7 +79,7 @@ public class ExtSSDataTest {
         assertTrue(result.getResult() instanceof ExtSSDataImpl);
         ExtSSDataImpl prim = (ExtSSDataImpl)result.getResult();
         
-        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
         assertEquals(prim.getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.allSS);
         assertNotNull(prim.getSsStatus());
         assertTrue(prim.getSsStatus().getBitA());
@@ -89,7 +92,7 @@ public class ExtSSDataTest {
         assertNull(prim.getSSSubscriptionOption().getOverrideCategory());
 
         assertEquals(prim.getBasicServiceGroupList().size(), 1);
-        ExtBasicServiceCodeImpl ebsc = prim.getBasicServiceGroupList().get(0);
+        ExtBasicServiceCode ebsc = prim.getBasicServiceGroupList().get(0);
         assertEquals(ebsc.getExtBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_9600bps);
 
         assertNotNull(extensionContainer);
@@ -126,7 +129,7 @@ public class ExtSSDataTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ExtSSDataImpl.class);
     	
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.allSS);
         ExtSSStatusImpl ssStatus = new ExtSSStatusImpl(false, true, false, true);
 
@@ -134,10 +137,10 @@ public class ExtSSDataTest {
 
         ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
         ExtBasicServiceCodeImpl basicService = new ExtBasicServiceCodeImpl(b);
-        ArrayList<ExtBasicServiceCodeImpl> basicServiceGroupList = new ArrayList<ExtBasicServiceCodeImpl>();
+        List<ExtBasicServiceCode> basicServiceGroupList = new ArrayList<ExtBasicServiceCode>();
         basicServiceGroupList.add(basicService);
 
-        ExtSSDataImpl prim = new ExtSSDataImpl(ssCode, ssStatus, ssSubscriptionOption, basicServiceGroupList,
+        ExtSSData prim = new ExtSSDataImpl(ssCode, ssStatus, ssSubscriptionOption, basicServiceGroupList,
                 extensionContainer);
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];

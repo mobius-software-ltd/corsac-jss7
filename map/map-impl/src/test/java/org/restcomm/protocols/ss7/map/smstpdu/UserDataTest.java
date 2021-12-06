@@ -31,9 +31,6 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataImpl;
 import org.testng.annotations.Test;
 
 /**

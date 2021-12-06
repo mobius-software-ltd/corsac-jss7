@@ -26,26 +26,35 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCapWrapperImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCapImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCap;
+import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
+import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCap;
+import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCap;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ConnectRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCap;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfo;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
+import org.restcomm.protocols.ss7.cap.isup.GenericNumberCapWrapperImpl;
+import org.restcomm.protocols.ss7.cap.isup.LocationNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.isup.OriginalCalledNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.isup.RedirectingPartyIDCapImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
 import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
 import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Carrier;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
 import org.restcomm.protocols.ss7.inap.isup.CallingPartysCategoryInapImpl;
 import org.restcomm.protocols.ss7.inap.isup.RedirectionInformationInapImpl;
-import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.primitives.LegIDWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGInterlockImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -61,26 +70,26 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implements ConnectRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
-    private DestinationRoutingAddressImpl destinationRoutingAddress;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1, defaultImplementation = DestinationRoutingAddressImpl.class)
+    private DestinationRoutingAddress destinationRoutingAddress;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private AlertingPatternCapImpl alertingPattern;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1, defaultImplementation = AlertingPatternCapImpl.class)
+    private AlertingPatternCap alertingPattern;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = false,index = -1)
-    private OriginalCalledNumberCapImpl originalCalledPartyID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = false,index = -1,defaultImplementation = OriginalCalledNumberCapImpl.class)
+    private OriginalCalledNumberCap originalCalledPartyID;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 11,constructed = false,index = -1)
-    private CarrierImpl carrier;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 11,constructed = false,index = -1,defaultImplementation = CarrierImpl.class)
+    private Carrier carrier;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 28,constructed = false,index = -1, defaultImplementation = CallingPartysCategoryInapImpl.class)
     private CallingPartysCategoryInap callingPartysCategory;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 29,constructed = false,index = -1)
-    private RedirectingPartyIDCapImpl redirectingPartyID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 29,constructed = false,index = -1,defaultImplementation = RedirectingPartyIDCapImpl.class)
+    private RedirectingPartyIDCap redirectingPartyID;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 30,constructed = false,index = -1, defaultImplementation = RedirectionInformationInapImpl.class)
     private RedirectionInformationInap redirectionInformation;
@@ -88,17 +97,17 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 14,constructed = true,index = -1)
     private GenericNumberCapWrapperImpl genericNumbers;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 15,constructed = true,index = -1)
-    private ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 15,constructed = true,index = -1, defaultImplementation = ServiceInteractionIndicatorsTwoImpl.class)
+    private ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 19,constructed = false,index = -1)
-    private LocationNumberCapImpl chargeNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 19,constructed = false,index = -1, defaultImplementation = LocationNumberCapImpl.class)
+    private LocationNumberCap chargeNumber;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 21,constructed = true,index = -1)
     private LegIDWrapperImpl legToBeConnected;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 31,constructed = false,index = -1)
-    private CUGInterlockImpl cugInterlock;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 31,constructed = false,index = -1,defaultImplementation = CUGInterlockImpl.class)
+    private CUGInterlock cugInterlock;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 32,constructed = false,index = -1)
     private ASNNull cugOutgoingAccess;
@@ -109,8 +118,8 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 56,constructed = false,index = -1)
     private ASNNull ocsIApplicable;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 57,constructed = false,index = -1)
-    private NAOliInfoImpl naoliInfo;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 57,constructed = false,index = -1,defaultImplementation = NAOliInfoImpl.class)
+    private NAOliInfo naoliInfo;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 58,constructed = false,index = -1)
     private ASNNull borInterrogationRequested;
@@ -121,13 +130,13 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
     public ConnectRequestImpl() {
     }
 
-    public ConnectRequestImpl(DestinationRoutingAddressImpl destinationRoutingAddress, AlertingPatternCapImpl alertingPattern,
-            OriginalCalledNumberCapImpl originalCalledPartyID, CAPExtensionsImpl extensions, CarrierImpl carrier,
-            CallingPartysCategoryInap callingPartysCategory, RedirectingPartyIDCapImpl redirectingPartyID,
-            RedirectionInformationInap redirectionInformation, List<GenericNumberCapImpl> genericNumbers,
-            ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, LocationNumberCapImpl chargeNumber,
-            LegID legToBeConnected, CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, boolean suppressionOfAnnouncement,
-            boolean ocsIApplicable, NAOliInfoImpl naoliInfo, boolean borInterrogationRequested, boolean suppressNCSI) {
+    public ConnectRequestImpl(DestinationRoutingAddress destinationRoutingAddress, AlertingPatternCap alertingPattern,
+            OriginalCalledNumberCap originalCalledPartyID, CAPExtensions extensions, Carrier carrier,
+            CallingPartysCategoryInap callingPartysCategory, RedirectingPartyIDCap redirectingPartyID,
+            RedirectionInformationInap redirectionInformation, List<GenericNumberCap> genericNumbers,
+            ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, LocationNumberCap chargeNumber,
+            LegID legToBeConnected, CUGInterlock cugInterlock, boolean cugOutgoingAccess, boolean suppressionOfAnnouncement,
+            boolean ocsIApplicable, NAOliInfo naoliInfo, boolean borInterrogationRequested, boolean suppressNCSI) {
         this.destinationRoutingAddress = destinationRoutingAddress;
         this.alertingPattern = alertingPattern;
         this.originalCalledPartyID = originalCalledPartyID;
@@ -177,27 +186,27 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
     }
 
     @Override
-    public DestinationRoutingAddressImpl getDestinationRoutingAddress() {
+    public DestinationRoutingAddress getDestinationRoutingAddress() {
         return destinationRoutingAddress;
     }
 
     @Override
-    public AlertingPatternCapImpl getAlertingPattern() {
+    public AlertingPatternCap getAlertingPattern() {
         return alertingPattern;
     }
 
     @Override
-    public OriginalCalledNumberCapImpl getOriginalCalledPartyID() {
+    public OriginalCalledNumberCap getOriginalCalledPartyID() {
         return originalCalledPartyID;
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 
     @Override
-    public CarrierImpl getCarrier() {
+    public Carrier getCarrier() {
         return carrier;
     }
 
@@ -207,7 +216,7 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
     }
 
     @Override
-    public RedirectingPartyIDCapImpl getRedirectingPartyID() {
+    public RedirectingPartyIDCap getRedirectingPartyID() {
         return redirectingPartyID;
     }
 
@@ -217,7 +226,7 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
     }
 
     @Override
-    public List<GenericNumberCapImpl> getGenericNumbers() {
+    public List<GenericNumberCap> getGenericNumbers() {
     	if(genericNumbers==null)
     		return null;
     	
@@ -225,17 +234,17 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
     }
 
     @Override
-    public ServiceInteractionIndicatorsTwoImpl getServiceInteractionIndicatorsTwo() {
+    public ServiceInteractionIndicatorsTwo getServiceInteractionIndicatorsTwo() {
         return serviceInteractionIndicatorsTwo;
     }
 
     @Override
-    public LocationNumberCapImpl getChargeNumber() {
+    public LocationNumberCap getChargeNumber() {
         return chargeNumber;
     }
 
     @Override
-    public LegIDImpl getLegToBeConnected() {
+    public LegID getLegToBeConnected() {
     	if(legToBeConnected==null)
     		return null;
     	
@@ -243,7 +252,7 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
     }
 
     @Override
-    public CUGInterlockImpl getCUGInterlock() {
+    public CUGInterlock getCUGInterlock() {
         return cugInterlock;
     }
 
@@ -263,7 +272,7 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
     }
 
     @Override
-    public NAOliInfoImpl getNAOliInfo() {
+    public NAOliInfo getNAOliInfo() {
         return naoliInfo;
     }
 
@@ -319,7 +328,7 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
         if (this.genericNumbers != null && this.genericNumbers.getGenericNumberCap()!=null) {
             sb.append(", genericNumbers=[");
             boolean isFirst = true;
-            for (GenericNumberCapImpl gnc : this.genericNumbers.getGenericNumberCap()) {
+            for (GenericNumberCap gnc : this.genericNumbers.getGenericNumberCap()) {
                 if (isFirst)
                     isFirst = false;
                 else

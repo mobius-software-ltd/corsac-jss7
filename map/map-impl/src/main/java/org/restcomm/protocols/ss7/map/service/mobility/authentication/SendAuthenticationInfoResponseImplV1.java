@@ -24,9 +24,9 @@ package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetListImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAuthenticationSetListImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetList;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAuthenticationSetList;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.SendAuthenticationInfoResponse;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
@@ -55,9 +55,16 @@ public class SendAuthenticationInfoResponseImplV1 extends MobilityMessageImpl im
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public SendAuthenticationInfoResponseImplV1(long mapProtocolVersion, AuthenticationSetListImpl authenticationSetList) {
+    public SendAuthenticationInfoResponseImplV1(long mapProtocolVersion, AuthenticationSetList authenticationSetList) {
         this.mapProtocolVersion = mapProtocolVersion;
-        this.authenticationSetList = authenticationSetList;
+        if(authenticationSetList instanceof AuthenticationSetListImpl)
+        	this.authenticationSetList=(AuthenticationSetListImpl)authenticationSetList;
+        if(authenticationSetList!=null) {
+        	if(authenticationSetList.getQuintupletList()!=null)
+        		this.authenticationSetList = new AuthenticationSetListImpl(authenticationSetList.getQuintupletList());
+        	else if(authenticationSetList.getTripletList()!=null)
+        		this.authenticationSetList = new AuthenticationSetListImpl(authenticationSetList.getTripletList(), mapProtocolVersion);
+        }
     }
 
     public MAPMessageType getMessageType() {
@@ -68,15 +75,15 @@ public class SendAuthenticationInfoResponseImplV1 extends MobilityMessageImpl im
         return MAPOperationCode.sendAuthenticationInfo;
     }
 
-    public AuthenticationSetListImpl getAuthenticationSetList() {
+    public AuthenticationSetList getAuthenticationSetList() {
         return authenticationSetList;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return null;
     }
 
-    public EpsAuthenticationSetListImpl getEpsAuthenticationSetList() {
+    public EpsAuthenticationSetList getEpsAuthenticationSetList() {
         return null;
     }
 

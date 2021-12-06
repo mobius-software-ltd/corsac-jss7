@@ -23,9 +23,9 @@
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -58,13 +58,13 @@ ProvideSubscriberInfoArg ::= SEQUENCE {
  */
 public interface ProvideSubscriberInfoRequest extends MobilityMessage {
 
-    IMSIImpl getImsi();
+	IMSI getImsi();
 
-    LMSIImpl getLmsi();
+	LMSI getLmsi();
 
-    RequestedInfoImpl getRequestedInfo();
+	RequestedInfo getRequestedInfo();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     EMLPPPriority getCallPriority();
 

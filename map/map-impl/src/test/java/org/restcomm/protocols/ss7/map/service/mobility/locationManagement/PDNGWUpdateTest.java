@@ -27,11 +27,10 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PDNGWUpdateImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDNGWIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.PDNGWIdentityImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -48,7 +47,10 @@ import io.netty.buffer.Unpooled;
 public class PDNGWUpdateTest {
 
     public byte[] getData() {
-        return new byte[] { 48, 104, -128, 3, 18, 32, 6, -95, 47, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -126, 1, 2, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 92, -128, 3, 18, 32, 6, -95, 41, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
+                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -126, 1, 2, -93, 39,
+                -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23,
+                24, 25, 26, -95, 3, 31, 32, 33 };
     };
 
     public byte[] getAPNData() {
@@ -78,7 +80,7 @@ public class PDNGWUpdateTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(PDNGWUpdateImpl.class);
     	
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         APNImpl apn = new APNImpl(getAPNData());
         PDNGWIdentityImpl pdnGwIdentity = new PDNGWIdentityImpl(null, null, null, extensionContainer);
         PDNGWUpdateImpl prim = new PDNGWUpdateImpl(apn, pdnGwIdentity, 2, extensionContainer);

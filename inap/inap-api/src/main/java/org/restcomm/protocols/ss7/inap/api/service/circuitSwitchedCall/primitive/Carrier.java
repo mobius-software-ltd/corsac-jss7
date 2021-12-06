@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive;
 
-import java.io.Serializable;
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
 *
@@ -46,7 +47,8 @@ bound.&minCarrierLength ..bound.&maxCarrierLength))
 * @author sergey vetyutnev
 *
 */
-public interface Carrier extends Serializable {
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
+public interface Carrier {
 
     byte[] getData();
 

@@ -24,19 +24,20 @@ package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ASNUESRVCCCapabilityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ASNUsedRatTypeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.EPSInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.EPSInfoWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SGSNCapabilityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.EPSInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SGSNCapability;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UESRVCCCapability;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UpdateGprsLocationRequest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UsedRATType;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -53,19 +54,20 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class UpdateGprsLocationRequestImpl extends MobilityMessageImpl implements UpdateGprsLocationRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-	private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0, defaultImplementation = IMSIImpl.class)
+	private IMSI imsi;
     
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
-	private ISDNAddressStringImpl sgsnNumber;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1, defaultImplementation = ISDNAddressStringImpl.class)
+	private ISDNAddressString sgsnNumber;
     
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=2)
-	private GSNAddressImpl sgsnAddress;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=2, defaultImplementation = GSNAddressImpl.class)
+	private GSNAddress sgsnAddress;
 	
-    private MAPExtensionContainerImpl extensionContainer;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1)
-    private SGSNCapabilityImpl sgsnCapability;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1, defaultImplementation = SGSNCapabilityImpl.class)
+    private SGSNCapability sgsnCapability;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
     private ASNNull informPreviousNetworkEntity;
@@ -73,11 +75,11 @@ public class UpdateGprsLocationRequestImpl extends MobilityMessageImpl implement
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
     private ASNNull psLCSNotSupportedByUE;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
-    private GSNAddressImpl vGmlcAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1, defaultImplementation = GSNAddressImpl.class)
+    private GSNAddress vGmlcAddress;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=true,index=-1)
-    private ADDInfoImpl addInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=true,index=-1, defaultImplementation = ADDInfoImpl.class)
+    private ADDInfo addInfo;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=true,index=-1)
     private EPSInfoWrapperImpl epsInfo;
@@ -113,9 +115,9 @@ public class UpdateGprsLocationRequestImpl extends MobilityMessageImpl implement
         super();
     }
 
-    public UpdateGprsLocationRequestImpl(IMSIImpl imsi, ISDNAddressStringImpl sgsnNumber, GSNAddressImpl sgsnAddress,
-            MAPExtensionContainerImpl extensionContainer, SGSNCapabilityImpl sgsnCapability, boolean informPreviousNetworkEntity,
-            boolean psLCSNotSupportedByUE, GSNAddressImpl vGmlcAddress, ADDInfoImpl addInfo, EPSInfoImpl epsInfo,
+    public UpdateGprsLocationRequestImpl(IMSI imsi, ISDNAddressString sgsnNumber, GSNAddress sgsnAddress,
+    		MAPExtensionContainer extensionContainer, SGSNCapability sgsnCapability, boolean informPreviousNetworkEntity,
+            boolean psLCSNotSupportedByUE, GSNAddress vGmlcAddress, ADDInfo addInfo, EPSInfo epsInfo,
             boolean servingNodeTypeIndicator, boolean skipSubscriberDataUpdate, UsedRATType usedRATType,
             boolean gprsSubscriptionDataNotNeeded, boolean nodeTypeIndicator, boolean areaRestricted,
             boolean ueReachableIndicator, boolean epsSubscriptionDataNotNeeded, UESRVCCCapability uesrvccCapability,
@@ -182,27 +184,27 @@ public class UpdateGprsLocationRequestImpl extends MobilityMessageImpl implement
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return this.imsi;
     }
 
     @Override
-    public ISDNAddressStringImpl getSgsnNumber() {
+    public ISDNAddressString getSgsnNumber() {
         return this.sgsnNumber;
     }
 
     @Override
-    public GSNAddressImpl getSgsnAddress() {
+    public GSNAddress getSgsnAddress() {
         return this.sgsnAddress;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
     @Override
-    public SGSNCapabilityImpl getSGSNCapability() {
+    public SGSNCapability getSGSNCapability() {
         return this.sgsnCapability;
     }
 
@@ -217,17 +219,17 @@ public class UpdateGprsLocationRequestImpl extends MobilityMessageImpl implement
     }
 
     @Override
-    public GSNAddressImpl getVGmlcAddress() {
+    public GSNAddress getVGmlcAddress() {
         return this.vGmlcAddress;
     }
 
     @Override
-    public ADDInfoImpl getADDInfo() {
+    public ADDInfo getADDInfo() {
         return this.addInfo;
     }
 
     @Override
-    public EPSInfoImpl getEPSInfo() {
+    public EPSInfo getEPSInfo() {
     	if(this.epsInfo==null)
     		return null;
     	

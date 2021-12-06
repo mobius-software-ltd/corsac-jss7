@@ -40,7 +40,7 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.map.api.MAPServiceListener;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckData;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckResult;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.map.api.service.oam.ActivateTraceModeRequest_Oam;
 import org.restcomm.protocols.ss7.map.api.service.oam.ActivateTraceModeResponse_Oam;
 import org.restcomm.protocols.ss7.map.api.service.oam.MAPDialogOam;
@@ -72,13 +72,13 @@ public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceO
     /*
      * Creating a new outgoing MAP OAM dialog and adding it to the MAPProvider.dialog collection
      */
-    public MAPDialogOam createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference, SccpAddress destAddress,
-            AddressStringImpl destReference) throws MAPException {
+    public MAPDialogOam createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
+    		AddressString destReference) throws MAPException {
         return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
     }
 
-    public MAPDialogOam createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference, SccpAddress destAddress,
-            AddressStringImpl destReference, Long localTrId) throws MAPException {
+    public MAPDialogOam createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
+    		AddressString destReference, Long localTrId) throws MAPException {
 
         // We cannot create a dialog if the service is not activated
         if (!this.isActivated())

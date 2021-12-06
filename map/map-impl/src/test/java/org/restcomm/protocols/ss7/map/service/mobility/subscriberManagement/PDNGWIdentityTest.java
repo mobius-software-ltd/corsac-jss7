@@ -27,10 +27,9 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.FQDNImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDNGWIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPAddressImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.FQDN;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPAddress;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -47,8 +46,10 @@ import io.netty.buffer.Unpooled;
  */
 public class PDNGWIdentityTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 69, -128, 3, 5, 6, 7, -127, 3, 5, 6, 7, -126, 10, 4, 1, 6, 8, 3, 2, 5, 6, 1, 7, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+	public byte[] getData() {
+        return new byte[] { 48, 63, -128, 3, 5, 6, 7, -127, 3, 5, 6, 7, -126, 10, 4, 1, 6, 8, 3, 2, 5, 6, 1, 7, -93, 39, -96,
+                32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24,
+                25, 26, -95, 3, 31, 32, 33 };
     };
 
     public byte[] getPDPAddressData() {
@@ -70,17 +71,17 @@ public class PDNGWIdentityTest {
         assertTrue(result.getResult() instanceof PDNGWIdentityImpl);
         PDNGWIdentityImpl prim = (PDNGWIdentityImpl)result.getResult();
         
-        PDPAddressImpl pdnGwIpv4Address = prim.getPdnGwIpv4Address();
+        PDPAddress pdnGwIpv4Address = prim.getPdnGwIpv4Address();
         assertNotNull(pdnGwIpv4Address);
         assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv4Address.getData()));
-        PDPAddressImpl pdnGwIpv6Address = prim.getPdnGwIpv6Address();
+        PDPAddress pdnGwIpv6Address = prim.getPdnGwIpv6Address();
         assertNotNull(pdnGwIpv6Address);
         assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv6Address.getData()));
-        FQDNImpl pdnGwName = prim.getPdnGwName();
+        FQDN pdnGwName = prim.getPdnGwName();
         assertNotNull(pdnGwName);
         assertTrue(Arrays.equals(this.getFQDNData(), pdnGwName.getData()));
 
-        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
         assertNotNull(extensionContainer);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
     }
@@ -90,7 +91,7 @@ public class PDNGWIdentityTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(PDNGWIdentityImpl.class);
     	
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         PDPAddressImpl pdnGwIpv4Address = new PDPAddressImpl(this.getPDPAddressData());
         PDPAddressImpl pdnGwIpv6Address = new PDPAddressImpl(this.getPDPAddressData());
         FQDNImpl pdnGwName = new FQDNImpl(this.getFQDNData());

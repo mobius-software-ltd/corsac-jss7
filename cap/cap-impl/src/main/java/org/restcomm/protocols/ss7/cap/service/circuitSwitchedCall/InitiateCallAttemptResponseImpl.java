@@ -24,10 +24,13 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.InitiateCallAttemptResponse;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4FunctionalitiesImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4Functionalities;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4FunctionalitiesImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -44,14 +47,14 @@ public class InitiateCallAttemptResponseImpl extends CircuitSwitchedCallMessageI
         InitiateCallAttemptResponse {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-    private SupportedCamelPhasesImpl supportedCamelPhases;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1, defaultImplementation = SupportedCamelPhasesImpl.class)
+    private SupportedCamelPhases supportedCamelPhases;
     
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private OfferedCamel4FunctionalitiesImpl offeredCamel4Functionalities;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1, defaultImplementation = OfferedCamel4FunctionalitiesImpl.class)
+    private OfferedCamel4Functionalities offeredCamel4Functionalities;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
     private ASNNull releaseCallArgExtensionAllowed;
@@ -59,8 +62,8 @@ public class InitiateCallAttemptResponseImpl extends CircuitSwitchedCallMessageI
     public InitiateCallAttemptResponseImpl() {
     }
 
-    public InitiateCallAttemptResponseImpl(SupportedCamelPhasesImpl supportedCamelPhases,
-            OfferedCamel4FunctionalitiesImpl offeredCamel4Functionalities, CAPExtensionsImpl extensions,
+    public InitiateCallAttemptResponseImpl(SupportedCamelPhases supportedCamelPhases,
+            OfferedCamel4Functionalities offeredCamel4Functionalities, CAPExtensions extensions,
             boolean releaseCallArgExtensionAllowed) {
         this.supportedCamelPhases = supportedCamelPhases;
         this.offeredCamel4Functionalities = offeredCamel4Functionalities;
@@ -109,17 +112,17 @@ public class InitiateCallAttemptResponseImpl extends CircuitSwitchedCallMessageI
     }
 
     @Override
-    public SupportedCamelPhasesImpl getSupportedCamelPhases() {
+    public SupportedCamelPhases getSupportedCamelPhases() {
         return supportedCamelPhases;
     }
 
     @Override
-    public OfferedCamel4FunctionalitiesImpl getOfferedCamel4Functionalities() {
+    public OfferedCamel4Functionalities getOfferedCamel4Functionalities() {
         return offeredCamel4Functionalities;
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 

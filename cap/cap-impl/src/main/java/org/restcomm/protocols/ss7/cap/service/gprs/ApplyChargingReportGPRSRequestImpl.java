@@ -24,12 +24,14 @@ package org.restcomm.protocols.ss7.cap.service.gprs;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.ApplyChargingReportGPRSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResultImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResultWrapperImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingRollOverImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingRollOverWrapperImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfServiceImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResult;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingRollOver;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfService;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ChargingResultWrapperImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ChargingRollOverWrapperImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.QualityOfServiceImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -48,14 +50,14 @@ public class ApplyChargingReportGPRSRequestImpl extends GprsMessageImpl implemen
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 0,constructed = true,index = -1)
     private ChargingResultWrapperImpl chargingResult;
 
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 1,constructed = true,index = -1)
-    private QualityOfServiceImpl qualityOfService;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 1,constructed = true,index = -1,defaultImplementation = QualityOfServiceImpl.class)
+    private QualityOfService qualityOfService;
 
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 2,constructed = false,index = -1)
     private ASNBoolean active;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 3,constructed = false,index = -1)
-    private PDPIDImpl pdpID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 3,constructed = false,index = -1,defaultImplementation = PDPIDImpl.class)
+    private PDPID pdpID;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 4,constructed = true,index = -1)
     private ChargingRollOverWrapperImpl chargingRollOver;
@@ -63,8 +65,8 @@ public class ApplyChargingReportGPRSRequestImpl extends GprsMessageImpl implemen
     public ApplyChargingReportGPRSRequestImpl() {
     }
 
-    public ApplyChargingReportGPRSRequestImpl(ChargingResultImpl chargingResult, QualityOfServiceImpl qualityOfService, boolean active,
-            PDPIDImpl pdpID, ChargingRollOverImpl chargingRollOver) {
+    public ApplyChargingReportGPRSRequestImpl(ChargingResult chargingResult, QualityOfService qualityOfService, boolean active,
+            PDPID pdpID, ChargingRollOver chargingRollOver) {
         super();
         
         if(chargingResult!=null)
@@ -82,7 +84,7 @@ public class ApplyChargingReportGPRSRequestImpl extends GprsMessageImpl implemen
     }
 
     @Override
-    public ChargingResultImpl getChargingResult() {
+    public ChargingResult getChargingResult() {
     	if(this.chargingResult==null)
     		return null;
     	
@@ -90,7 +92,7 @@ public class ApplyChargingReportGPRSRequestImpl extends GprsMessageImpl implemen
     }
 
     @Override
-    public QualityOfServiceImpl getQualityOfService() {
+    public QualityOfService getQualityOfService() {
         return this.qualityOfService;
     }
 
@@ -103,12 +105,12 @@ public class ApplyChargingReportGPRSRequestImpl extends GprsMessageImpl implemen
     }
 
     @Override
-    public PDPIDImpl getPDPID() {
+    public PDPID getPDPID() {
         return this.pdpID;
     }
 
     @Override
-    public ChargingRollOverImpl getChargingRollOver() {
+    public ChargingRollOver getChargingRollOver() {
     	if(this.chargingRollOver==null)
     		return null;
     	

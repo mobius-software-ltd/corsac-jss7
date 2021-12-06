@@ -24,31 +24,36 @@ package org.restcomm.protocols.ss7.map.service.lsm;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ASNLCSPriority;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientIDImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSCodewordImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfo;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientID;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSCodeword;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSPriority;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSPrivacyCheckImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSQoSImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LocationTypeImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSPrivacyCheck;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSQoS;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LocationType;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfo;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ProvideSubscriberLocationRequest;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNListImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.SupportedGADShapesImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ASNSingleByte;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNList;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SupportedGADShapes;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 
 /**
  * @author amit bhayani
@@ -59,41 +64,41 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl implements ProvideSubscriberLocationRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=0)
-    private LocationTypeImpl locationType;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=0, defaultImplementation = LocationTypeImpl.class)
+    private LocationType locationType;
     
-    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
-    private ISDNAddressStringImpl mlcNumber;
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString mlcNumber;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1)
-    private LCSClientIDImpl lcsClientID;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1, defaultImplementation = LCSClientIDImpl.class)
+    private LCSClientID lcsClientID;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
     private ASNNull privacyOverride;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
-    private IMSIImpl imsi;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
-    private ISDNAddressStringImpl msisdn;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString msisdn;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
-    private LMSIImpl lmsi;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1, defaultImplementation = LMSIImpl.class)
+    private LMSI lmsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
-    private IMEIImpl imei;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1, defaultImplementation = IMEIImpl.class)
+    private IMEI imei;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1)
     private ASNLCSPriority lcsPriority;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,index=-1)
-    private LCSQoSImpl lcsQoS;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,index=-1, defaultImplementation = LCSQoSImpl.class)
+    private LCSQoS lcsQoS;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1)
-    private SupportedGADShapesImpl supportedGADShapes;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1, defaultImplementation = SupportedGADShapesImpl.class)
+    private SupportedGADShapes supportedGADShapes;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=false,index=-1)
     private ASNSingleByte lcsReferenceNumber;
@@ -101,26 +106,26 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=false,index=-1)
     private ASNInteger lcsServiceTypeID;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=true,index=-1)
-    private LCSCodewordImpl lcsCodeword;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=true,index=-1, defaultImplementation = LCSCodewordImpl.class)
+    private LCSCodeword lcsCodeword;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=true,index=-1)
-    private LCSPrivacyCheckImpl lcsPrivacyCheck;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=true,index=-1, defaultImplementation = LCSPrivacyCheckImpl.class)
+    private LCSPrivacyCheck lcsPrivacyCheck;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=true,index=-1)
-    private AreaEventInfoImpl areaEventInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=true,index=-1, defaultImplementation = AreaEventInfoImpl.class)
+    private AreaEventInfo areaEventInfo;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=false,index=-1)
-    private GSNAddressImpl hgmlcAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=false,index=-1, defaultImplementation = GSNAddressImpl.class)
+    private GSNAddress hgmlcAddress;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=false,index=-1)
     private ASNNull moLrShortCircuitIndicator;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=17,constructed=true,index=-1)
-    private PeriodicLDRInfoImpl periodicLDRInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=17,constructed=true,index=-1, defaultImplementation = PeriodicLDRInfoImpl.class)
+    private PeriodicLDRInfo periodicLDRInfo;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=18,constructed=true,index=-1)
-    private ReportingPLMNListImpl reportingPLMNList;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=18,constructed=true,index=-1, defaultImplementation = ReportingPLMNListImpl.class)
+    private ReportingPLMNList reportingPLMNList;
 
     /**
      *
@@ -149,12 +154,12 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      * @param areaEventInfo
      * @param hgmlcAddress
      */
-    public ProvideSubscriberLocationRequestImpl(LocationTypeImpl locationType, ISDNAddressStringImpl mlcNumber,
-            LCSClientIDImpl lcsClientID, boolean privacyOverride, IMSIImpl imsi, ISDNAddressStringImpl msisdn, LMSIImpl lmsi, IMEIImpl imei,
-            LCSPriority lcsPriority, LCSQoSImpl lcsQoS, MAPExtensionContainerImpl extensionContainer,
-            SupportedGADShapesImpl supportedGADShapes, Integer lcsReferenceNumber, Integer lcsServiceTypeID,
-            LCSCodewordImpl lcsCodeword, LCSPrivacyCheckImpl lcsPrivacyCheck, AreaEventInfoImpl areaEventInfo, GSNAddressImpl hgmlcAddress,
-            boolean moLrShortCircuitIndicator, PeriodicLDRInfoImpl periodicLDRInfo, ReportingPLMNListImpl reportingPLMNList) {
+    public ProvideSubscriberLocationRequestImpl(LocationType locationType, ISDNAddressString mlcNumber,
+    		LCSClientID lcsClientID, boolean privacyOverride, IMSI imsi, ISDNAddressString msisdn, LMSI lmsi, IMEI imei,
+            LCSPriority lcsPriority, LCSQoS lcsQoS, MAPExtensionContainer extensionContainer,
+            SupportedGADShapes supportedGADShapes, Integer lcsReferenceNumber, Integer lcsServiceTypeID,
+            LCSCodeword lcsCodeword, LCSPrivacyCheck lcsPrivacyCheck, AreaEventInfo areaEventInfo, GSNAddress hgmlcAddress,
+            boolean moLrShortCircuitIndicator, PeriodicLDRInfo periodicLDRInfo, ReportingPLMNList reportingPLMNList) {
         super();
         this.locationType = locationType;
         this.mlcNumber = mlcNumber;
@@ -212,7 +217,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationRequestIndication#getLocationType()
      */
-    public LocationTypeImpl getLocationType() {
+    public LocationType getLocationType() {
         return this.locationType;
     }
 
@@ -221,7 +226,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationRequestIndication#getMlcNumber()
      */
-    public ISDNAddressStringImpl getMlcNumber() {
+    public ISDNAddressString getMlcNumber() {
         return this.mlcNumber;
     }
 
@@ -230,7 +235,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationRequestIndication#getLCSClientID()
      */
-    public LCSClientIDImpl getLCSClientID() {
+    public LCSClientID getLCSClientID() {
         return this.lcsClientID;
     }
 
@@ -248,7 +253,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationRequestIndication#getIMSI()
      */
-    public IMSIImpl getIMSI() {
+    public IMSI getIMSI() {
         return this.imsi;
     }
 
@@ -257,7 +262,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationRequestIndication#getMSISDN()
      */
-    public ISDNAddressStringImpl getMSISDN() {
+    public ISDNAddressString getMSISDN() {
         return this.msisdn;
     }
 
@@ -266,7 +271,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationRequestIndication#getLMSI()
      */
-    public LMSIImpl getLMSI() {
+    public LMSI getLMSI() {
         return this.lmsi;
     }
 
@@ -287,7 +292,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationRequestIndication#getLCSQoS()
      */
-    public LCSQoSImpl getLCSQoS() {
+    public LCSQoS getLCSQoS() {
         return this.lcsQoS;
     }
 
@@ -296,7 +301,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationRequestIndication#getIMEI()
      */
-    public IMEIImpl getIMEI() {
+    public IMEI getIMEI() {
         return this.imei;
     }
 
@@ -305,7 +310,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationRequestIndication#getExtensionContainer()
      */
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -314,7 +319,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationRequestIndication#getSupportedGADShapes()
      */
-    public SupportedGADShapesImpl getSupportedGADShapes() {
+    public SupportedGADShapes getSupportedGADShapes() {
         return this.supportedGADShapes;
     }
 
@@ -335,7 +340,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationRequestIndication#getLCSCodeword()
      */
-    public LCSCodewordImpl getLCSCodeword() {
+    public LCSCodeword getLCSCodeword() {
         return this.lcsCodeword;
     }
 
@@ -356,7 +361,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationRequestIndication#getLCSPrivacyCheck()
      */
-    public LCSPrivacyCheckImpl getLCSPrivacyCheck() {
+    public LCSPrivacyCheck getLCSPrivacyCheck() {
         return this.lcsPrivacyCheck;
     }
 
@@ -365,7 +370,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationRequestIndication#getAreaEventInfo()
      */
-    public AreaEventInfoImpl getAreaEventInfo() {
+    public AreaEventInfo getAreaEventInfo() {
         return this.areaEventInfo;
     }
 
@@ -374,7 +379,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. ProvideSubscriberLocationRequestIndication#getHGMLCAddress()
      */
-    public GSNAddressImpl getHGMLCAddress() {
+    public GSNAddress getHGMLCAddress() {
         return this.hgmlcAddress;
     }
 
@@ -382,11 +387,11 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
         return moLrShortCircuitIndicator!=null;
     }
 
-    public PeriodicLDRInfoImpl getPeriodicLDRInfo() {
+    public PeriodicLDRInfo getPeriodicLDRInfo() {
         return periodicLDRInfo;
     }
 
-    public ReportingPLMNListImpl getReportingPLMNList() {
+    public ReportingPLMNList getReportingPLMNList() {
         return reportingPLMNList;
     }
 

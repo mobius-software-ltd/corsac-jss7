@@ -24,8 +24,11 @@ package org.restcomm.protocols.ss7.cap.service.sms;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.sms.ReleaseSMSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.RPCauseImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.RPCause;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.RPCauseImpl;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 /**
@@ -37,9 +40,10 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class ReleaseSMSRequestImpl extends SmsMessageImpl implements ReleaseSMSRequest {
 	private static final long serialVersionUID = 1L;
 	
-	private RPCauseImpl rpCause;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = RPCauseImpl.class)
+	private RPCause rpCause;
 
-    public ReleaseSMSRequestImpl(RPCauseImpl rpCause) {
+    public ReleaseSMSRequestImpl(RPCause rpCause) {
         super();
         this.rpCause = rpCause;
     }
@@ -49,7 +53,7 @@ public class ReleaseSMSRequestImpl extends SmsMessageImpl implements ReleaseSMSR
     }
 
     @Override
-    public RPCauseImpl getRPCause() {
+    public RPCause getRPCause() {
         return this.rpCause;
     }
 

@@ -23,11 +23,15 @@ package org.restcomm.protocols.ss7.cap.service.sms;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumberImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
 import org.restcomm.protocols.ss7.cap.api.service.sms.ConnectSMSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CalledPartyBCDNumberImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.SMSAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -42,24 +46,24 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ConnectSMSRequestImpl extends SmsMessageImpl implements ConnectSMSRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-    private SMSAddressStringImpl callingPartysNumber;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1,defaultImplementation = SMSAddressStringImpl.class)
+    private SMSAddressString callingPartysNumber;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private CalledPartyBCDNumberImpl destinationSubscriberNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1,defaultImplementation = CalledPartyBCDNumberImpl.class)
+    private CalledPartyBCDNumber destinationSubscriberNumber;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
-    private ISDNAddressStringImpl smscAddress;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString smscAddress;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
 
     public ConnectSMSRequestImpl() {
         super();
     }
 
-    public ConnectSMSRequestImpl(SMSAddressStringImpl callingPartysNumber,
-            CalledPartyBCDNumberImpl destinationSubscriberNumber, ISDNAddressStringImpl smscAddress, CAPExtensionsImpl extensions) {
+    public ConnectSMSRequestImpl(SMSAddressString callingPartysNumber,
+            CalledPartyBCDNumber destinationSubscriberNumber, ISDNAddressString smscAddress, CAPExtensions extensions) {
         super();
         this.callingPartysNumber = callingPartysNumber;
         this.destinationSubscriberNumber = destinationSubscriberNumber;
@@ -68,22 +72,22 @@ public class ConnectSMSRequestImpl extends SmsMessageImpl implements ConnectSMSR
     }
 
     @Override
-    public SMSAddressStringImpl getCallingPartysNumber() {
+    public SMSAddressString getCallingPartysNumber() {
         return this.callingPartysNumber;
     }
 
     @Override
-    public CalledPartyBCDNumberImpl getDestinationSubscriberNumber() {
+    public CalledPartyBCDNumber getDestinationSubscriberNumber() {
         return this.destinationSubscriberNumber;
     }
 
     @Override
-    public ISDNAddressStringImpl getSMSCAddress() {
+    public ISDNAddressString getSMSCAddress() {
         return this.smscAddress;
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return this.extensions;
     }
 

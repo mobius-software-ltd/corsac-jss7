@@ -28,9 +28,10 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationQuintupletImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.QuintupletListImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationQuintuplet;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.QuintupletList;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -78,9 +79,9 @@ public class QuintupletListTest {
     	parser.replaceClass(QuintupletListImpl.class);
 
         AuthenticationQuintupletImpl d1 = new AuthenticationQuintupletImpl(AuthenticationQuintupletTest.getRandData(),AuthenticationQuintupletTest.getXresData(), AuthenticationQuintupletTest.getCkData(),AuthenticationQuintupletTest.getIkData(), AuthenticationQuintupletTest.getAutnData());
-        ArrayList<AuthenticationQuintupletImpl> arr = new ArrayList<AuthenticationQuintupletImpl>();
+        List<AuthenticationQuintuplet> arr = new ArrayList<AuthenticationQuintuplet>();
         arr.add(d1);
-        QuintupletListImpl asc = new QuintupletListImpl(arr);
+        QuintupletList asc = new QuintupletListImpl(arr);
 
         byte[] data=getEncodedData();
         ByteBuf buffer=parser.encode(asc);

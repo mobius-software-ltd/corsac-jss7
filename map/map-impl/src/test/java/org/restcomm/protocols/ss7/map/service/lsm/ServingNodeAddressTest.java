@@ -32,10 +32,10 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentity;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.DiameterIdentityImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -80,7 +80,7 @@ public class ServingNodeAddressTest {
         assertTrue(result.getResult() instanceof ServingNodeAddressImpl);
         ServingNodeAddressImpl impl = (ServingNodeAddressImpl)result.getResult();
         
-        ISDNAddressStringImpl isdnAdd = impl.getMscNumber();
+        ISDNAddressString isdnAdd = impl.getMscNumber();
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
         assertEquals(isdnAdd.getNumberingPlan(), NumberingPlan.ISDN);
         assertTrue(isdnAdd.getAddress().equals("13579000"));
@@ -106,7 +106,7 @@ public class ServingNodeAddressTest {
         assertTrue(result.getResult() instanceof ServingNodeAddressImpl);
         impl = (ServingNodeAddressImpl)result.getResult();
 
-        DiameterIdentityImpl di = impl.getMmeNumber();
+        DiameterIdentity di = impl.getMmeNumber();
         assertTrue(Arrays.equals(di.getData(), getDataDiameterIdentity()));
         assertNull(impl.getMscNumber());
         assertNull(impl.getSgsnNumber());
@@ -117,7 +117,7 @@ public class ServingNodeAddressTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ServingNodeAddressImpl.class);
     	
-        ISDNAddressStringImpl isdnAdd = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
+        ISDNAddressString isdnAdd = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "13579000");
         ServingNodeAddressImpl impl = new ServingNodeAddressImpl(isdnAdd, true);
 

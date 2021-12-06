@@ -32,10 +32,11 @@ import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ProvideRoamingNumberResponse;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
@@ -74,7 +75,9 @@ public class ProvideRoamingNumberResponseTest {
     }
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 65, 4, 7, -111, -108, -120, 115, 0, -110, -14, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 4, 7, -111, -110, 17, 19, 50, 19, -15 };
+        return new byte[] { 48, 59, 4, 7, -111, -108, -120, 115, 0, -110, -14, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12,
+                13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 4, 7,
+                -111, -110, 17, 19, 50, 19, -15 };
     }
 
     private byte[] getEncodedData1() {
@@ -82,7 +85,9 @@ public class ProvideRoamingNumberResponseTest {
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { 48, 67, 4, 7, -111, -108, -120, 115, 0, -110, -14, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 5, 0, 4, 7, -111, -110, 17, 19, 50, 19, -15 };
+        return new byte[] { 48, 61, 4, 7, -111, -108, -120, 115, 0, -110, -14, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12,
+                13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 5, 0, 4,
+                7, -111, -110, 17, 19, 50, 19, -15 };
     }
 
     @Test(groups = { "functional.decode", "service.callhandling" })
@@ -97,10 +102,10 @@ public class ProvideRoamingNumberResponseTest {
         assertTrue(result.getResult() instanceof ProvideRoamingNumberResponse);
         ProvideRoamingNumberResponse prn = (ProvideRoamingNumberResponse)result.getResult();
         
-        ISDNAddressStringImpl roamingNumber = prn.getRoamingNumber();
-        MAPExtensionContainerImpl extensionContainer = prn.getExtensionContainer();
+        ISDNAddressString roamingNumber = prn.getRoamingNumber();
+        MAPExtensionContainer extensionContainer = prn.getExtensionContainer();
         boolean releaseResourcesSupported = prn.getReleaseResourcesSupported();
-        ISDNAddressStringImpl vmscAddress = prn.getVmscAddress();
+        ISDNAddressString vmscAddress = prn.getVmscAddress();
         long mapProtocolVersion = prn.getMapProtocolVersion();
 
         assertNotNull(roamingNumber);
@@ -173,7 +178,7 @@ public class ProvideRoamingNumberResponseTest {
 
         ISDNAddressStringImpl roamingNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "49883700292");
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         boolean releaseResourcesSupported = false;
         ISDNAddressStringImpl vmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "29113123311");

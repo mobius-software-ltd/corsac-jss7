@@ -31,15 +31,14 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberState;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateChoice;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateImpl;
+import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -63,7 +62,8 @@ public class AnyTimeInterrogationResponseTest {
             (byte) 0x86, 0x07, (byte) 0x91, 0x55, 0x43, 0x69, 0x26, (byte) 0x99, 0x01, (byte) 0x89, 0x00, (byte) 0xa1, 0x02,
             (byte) 0x80, 0x00 };
 
-    byte[] dataFull = new byte[] { 48, 53, 48, 4, -95, 2, -128, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+    byte[] dataFull = new byte[] { 48, 47, 48, 4, -95, 2, -128, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
+            48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
 
     byte[] dataGeoInfo = new byte[] { 16, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -80,9 +80,9 @@ public class AnyTimeInterrogationResponseTest {
         assertTrue(result.getResult() instanceof AnyTimeInterrogationResponseImpl);
         AnyTimeInterrogationResponseImpl atiResponse = (AnyTimeInterrogationResponseImpl)result.getResult();
 
-        SubscriberInfoImpl subscriberInfo = atiResponse.getSubscriberInfo();
+        SubscriberInfo subscriberInfo = atiResponse.getSubscriberInfo();
 
-        LocationInformationImpl locInfo = subscriberInfo.getLocationInformation();
+        LocationInformation locInfo = subscriberInfo.getLocationInformation();
         assertNotNull(locInfo);
         assertEquals((int) locInfo.getAgeOfLocationInformation(), 1);
         assertTrue(Arrays.equals(locInfo.getGeographicalInformation().getData(), dataGeoInfo));
@@ -99,7 +99,7 @@ public class AnyTimeInterrogationResponseTest {
         assertEquals(locInfo.getMscNumber().getNumberingPlan(), NumberingPlan.ISDN);
         assertTrue(locInfo.getSaiPresent());
 
-        SubscriberStateImpl subState = subscriberInfo.getSubscriberState();
+        SubscriberState subState = subscriberInfo.getSubscriberState();
         assertEquals(subState.getSubscriberStateChoice(), SubscriberStateChoice.assumedIdle);
         assertNull(atiResponse.getExtensionContainer());
 

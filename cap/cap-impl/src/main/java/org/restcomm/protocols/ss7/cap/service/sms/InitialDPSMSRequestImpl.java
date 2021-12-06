@@ -24,25 +24,41 @@ package org.restcomm.protocols.ss7.cap.service.sms;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumberImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
+import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
 import org.restcomm.protocols.ss7.cap.api.service.sms.InitialDPSMSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.ASNEventTypeSMSImpl;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressStringImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPProtocolIdentifierImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPShortMessageSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriodImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClassImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2Impl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPDataCodingScheme;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPProtocolIdentifier;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPShortMessageSpecificInfo;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriod;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CalledPartyBCDNumberImpl;
+import org.restcomm.protocols.ss7.cap.primitives.TimeAndTimezoneImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.ASNEventTypeSMSImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.SMSAddressStringImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPDataCodingSchemeImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPProtocolIdentifierImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPShortMessageSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPValidityPeriodImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClass;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2;
+import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.service.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSMSClassImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.MSClassmark2Impl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -61,78 +77,78 @@ public class InitialDPSMSRequestImpl extends SmsMessageImpl implements InitialDP
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
     private ASNInteger serviceKey;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private CalledPartyBCDNumberImpl destinationSubscriberNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1,defaultImplementation = CalledPartyBCDNumberImpl.class)
+    private CalledPartyBCDNumber destinationSubscriberNumber;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
-    private SMSAddressStringImpl callingPartyNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1,defaultImplementation = SMSAddressStringImpl.class)
+    private SMSAddressString callingPartyNumber;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
     private ASNEventTypeSMSImpl eventTypeSMS;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = false,index = -1)
-    private IMSIImpl imsi;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = false,index = -1,defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = true,index = -1)
-    private LocationInformationImpl  locationInformationMSC;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = true,index = -1,defaultImplementation = LocationInformationImpl.class)
+    private LocationInformation  locationInformationMSC;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = true,index = -1)
-    private LocationInformationGPRSImpl locationInformationGPRS;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = true,index = -1,defaultImplementation = LocationInformationGPRSImpl.class)
+    private LocationInformationGPRS locationInformationGPRS;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = false,index = -1)
-    private ISDNAddressStringImpl smscCAddress;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = false,index = -1,defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString smscCAddress;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false,index = -1)
-    private TimeAndTimezoneImpl timeAndTimezone;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false,index = -1,defaultImplementation = TimeAndTimezoneImpl.class)
+    private TimeAndTimezone timeAndTimezone;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 9,constructed = false,index = -1)
-    private TPShortMessageSpecificInfoImpl tPShortMessageSpecificInfo;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 9,constructed = false,index = -1,defaultImplementation = TPShortMessageSpecificInfoImpl.class)
+    private TPShortMessageSpecificInfo tPShortMessageSpecificInfo;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = false,index = -1)
-    private TPProtocolIdentifierImpl tPProtocolIdentifier;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = false,index = -1,defaultImplementation = TPProtocolIdentifierImpl.class)
+    private TPProtocolIdentifier tPProtocolIdentifier;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 11,constructed = false,index = -1)
-    private TPDataCodingSchemeImpl tPDataCodingScheme;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 11,constructed = false,index = -1,defaultImplementation = TPDataCodingSchemeImpl.class)
+    private TPDataCodingScheme tPDataCodingScheme;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 12,constructed = false,index = -1)
-    private TPValidityPeriodImpl tPValidityPeriod;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 12,constructed = false,index = -1,defaultImplementation = TPValidityPeriodImpl.class)
+    private TPValidityPeriod tPValidityPeriod;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 13,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 13,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 14,constructed = false,index = -1)
-    private CallReferenceNumberImpl smsReferenceNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 14,constructed = false,index = -1,defaultImplementation = CallReferenceNumberImpl.class)
+    private CallReferenceNumber smsReferenceNumber;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 15,constructed = false,index = -1)
-    private ISDNAddressStringImpl mscAddress;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 15,constructed = false,index = -1,defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString mscAddress;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 16,constructed = false,index = -1)
-    private ISDNAddressStringImpl sgsnNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 16,constructed = false,index = -1,defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString sgsnNumber;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 17,constructed = false,index = -1)
-    private MSClassmark2Impl mSClassmark2;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 17,constructed = false,index = -1,defaultImplementation = MSClassmark2Impl.class)
+    private MSClassmark2 mSClassmark2;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 18,constructed = true,index = -1)
-    private GPRSMSClassImpl gprsMSClass;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 18,constructed = true,index = -1, defaultImplementation = GPRSMSClassImpl.class)
+    private GPRSMSClass gprsMSClass;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 19,constructed = false,index = -1)
-    private IMEIImpl imei;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 19,constructed = false,index = -1,defaultImplementation = IMEIImpl.class)
+    private IMEI imei;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 20,constructed = false,index = -1)
-    private ISDNAddressStringImpl calledPartyNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 20,constructed = false,index = -1,defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString calledPartyNumber;
 
     public InitialDPSMSRequestImpl() {
         super();
     }
 
-    public InitialDPSMSRequestImpl(int serviceKey, CalledPartyBCDNumberImpl destinationSubscriberNumber,
-            SMSAddressStringImpl callingPartyNumber, EventTypeSMS eventTypeSMS, IMSIImpl imsi,
-            LocationInformationImpl locationInformationMSC, LocationInformationGPRSImpl locationInformationGPRS,
-            ISDNAddressStringImpl smscCAddress, TimeAndTimezoneImpl timeAndTimezone,
-            TPShortMessageSpecificInfoImpl tPShortMessageSpecificInfo, TPProtocolIdentifierImpl tPProtocolIdentifier,
-            TPDataCodingSchemeImpl tPDataCodingScheme, TPValidityPeriodImpl tPValidityPeriod, CAPExtensionsImpl extensions,
-            CallReferenceNumberImpl smsReferenceNumber, ISDNAddressStringImpl mscAddress, ISDNAddressStringImpl sgsnNumber,
-            MSClassmark2Impl mSClassmark2, GPRSMSClassImpl gprsMSClass, IMEIImpl imei, ISDNAddressStringImpl calledPartyNumber) {
+    public InitialDPSMSRequestImpl(int serviceKey, CalledPartyBCDNumber destinationSubscriberNumber,
+            SMSAddressString callingPartyNumber, EventTypeSMS eventTypeSMS, IMSI imsi,
+            LocationInformation locationInformationMSC, LocationInformationGPRS locationInformationGPRS,
+            ISDNAddressString smscCAddress, TimeAndTimezone timeAndTimezone,
+            TPShortMessageSpecificInfo tPShortMessageSpecificInfo, TPProtocolIdentifier tPProtocolIdentifier,
+            TPDataCodingScheme tPDataCodingScheme, TPValidityPeriod tPValidityPeriod, CAPExtensions extensions,
+            CallReferenceNumber smsReferenceNumber, ISDNAddressString mscAddress, ISDNAddressString sgsnNumber,
+            MSClassmark2 mSClassmark2, GPRSMSClass gprsMSClass, IMEI imei, ISDNAddressString calledPartyNumber) {
         super();
         this.serviceKey = new ASNInteger();
         this.serviceKey.setValue(Long.valueOf(serviceKey));
@@ -173,12 +189,12 @@ public class InitialDPSMSRequestImpl extends SmsMessageImpl implements InitialDP
     }
 
     @Override
-    public CalledPartyBCDNumberImpl getDestinationSubscriberNumber() {
+    public CalledPartyBCDNumber getDestinationSubscriberNumber() {
         return this.destinationSubscriberNumber;
     }
 
     @Override
-    public SMSAddressStringImpl getCallingPartyNumber() {
+    public SMSAddressString getCallingPartyNumber() {
         return this.callingPartyNumber;
     }
 
@@ -191,87 +207,87 @@ public class InitialDPSMSRequestImpl extends SmsMessageImpl implements InitialDP
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return this.imsi;
     }
 
     @Override
-    public LocationInformationImpl getLocationInformationMSC() {
+    public LocationInformation getLocationInformationMSC() {
         return this.locationInformationMSC;
     }
 
     @Override
-    public LocationInformationGPRSImpl getLocationInformationGPRS() {
+    public LocationInformationGPRS getLocationInformationGPRS() {
         return this.locationInformationGPRS;
     }
 
     @Override
-    public ISDNAddressStringImpl getSMSCAddress() {
+    public ISDNAddressString getSMSCAddress() {
         return this.smscCAddress;
     }
 
     @Override
-    public TimeAndTimezoneImpl getTimeAndTimezone() {
+    public TimeAndTimezone getTimeAndTimezone() {
         return this.timeAndTimezone;
     }
 
     @Override
-    public TPShortMessageSpecificInfoImpl getTPShortMessageSpecificInfo() {
+    public TPShortMessageSpecificInfo getTPShortMessageSpecificInfo() {
         return this.tPShortMessageSpecificInfo;
     }
 
     @Override
-    public TPProtocolIdentifierImpl getTPProtocolIdentifier() {
+    public TPProtocolIdentifier getTPProtocolIdentifier() {
         return this.tPProtocolIdentifier;
     }
 
     @Override
-    public TPDataCodingSchemeImpl getTPDataCodingScheme() {
+    public TPDataCodingScheme getTPDataCodingScheme() {
         return this.tPDataCodingScheme;
     }
 
     @Override
-    public TPValidityPeriodImpl getTPValidityPeriod() {
+    public TPValidityPeriod getTPValidityPeriod() {
         return this.tPValidityPeriod;
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return this.extensions;
     }
 
     @Override
-    public CallReferenceNumberImpl getSmsReferenceNumber() {
+    public CallReferenceNumber getSmsReferenceNumber() {
         return this.smsReferenceNumber;
     }
 
     @Override
-    public ISDNAddressStringImpl getMscAddress() {
+    public ISDNAddressString getMscAddress() {
         return this.mscAddress;
     }
 
     @Override
-    public ISDNAddressStringImpl getSgsnNumber() {
+    public ISDNAddressString getSgsnNumber() {
         return this.sgsnNumber;
     }
 
     @Override
-    public MSClassmark2Impl getMSClassmark2() {
+    public MSClassmark2 getMSClassmark2() {
         return this.mSClassmark2;
     }
 
     @Override
-    public GPRSMSClassImpl getGPRSMSClass() {
+    public GPRSMSClass getGPRSMSClass() {
         return this.gprsMSClass;
     }
 
     @Override
-    public IMEIImpl getImei() {
+    public IMEI getImei() {
         return this.imei;
     }
 
     @Override
-    public ISDNAddressStringImpl getCalledPartyNumber() {
+    public ISDNAddressString getCalledPartyNumber() {
         return this.calledPartyNumber;
     }
 

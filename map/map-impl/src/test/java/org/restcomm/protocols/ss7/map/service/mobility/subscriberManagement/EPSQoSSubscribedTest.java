@@ -28,9 +28,8 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AllocationRetentionPriorityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSQoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AllocationRetentionPriority;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSClassIdentifier;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
@@ -48,8 +47,11 @@ import io.netty.buffer.Unpooled;
  */
 public class EPSQoSSubscribedTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 108, -128, 1, 1, -95, 56, -128, 1, 1, -127, 1, -1, -126, 1, -1, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+	public byte[] getData() {
+        return new byte[] { 48, 96, -128, 1, 1, -95, 50, -128, 1, 1, -127, 1, -1, -126, 1, -1, -93, 39, -96, 32, 48, 10, 6, 3,
+                42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3,
+                31, 32, 33, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3,
+                42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -63,8 +65,8 @@ public class EPSQoSSubscribedTest {
         assertTrue(result.getResult() instanceof EPSQoSSubscribedImpl);
         EPSQoSSubscribedImpl prim = (EPSQoSSubscribedImpl)result.getResult(); 
         
-        AllocationRetentionPriorityImpl allocationRetentionPriority = prim.getAllocationRetentionPriority();
-        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
+        AllocationRetentionPriority allocationRetentionPriority = prim.getAllocationRetentionPriority();
+        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
         assertEquals(allocationRetentionPriority.getPriorityLevel(), 1);
         assertTrue(allocationRetentionPriority.getPreEmptionCapability());
         assertTrue(allocationRetentionPriority.getPreEmptionVulnerability());
@@ -81,7 +83,7 @@ public class EPSQoSSubscribedTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(EPSQoSSubscribedImpl.class);
     	                
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         QoSClassIdentifier qoSClassIdentifier = QoSClassIdentifier.QCI_1;
         AllocationRetentionPriorityImpl allocationRetentionPriority = new AllocationRetentionPriorityImpl(1, Boolean.TRUE,
                 Boolean.TRUE, extensionContainer);

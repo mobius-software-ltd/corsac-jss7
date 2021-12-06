@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.map.service.supplementary;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ASNGuidanceInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.GetPasswordRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.GuidanceInfo;
 

@@ -28,18 +28,14 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.EPSInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ISRInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SGSNCapabilityImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UESRVCCCapability;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UsedRATType;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -57,7 +53,12 @@ import io.netty.buffer.Unpooled;
 public class UpdateGprsLocationRequestTest {
 
     public byte[] getData() {
-        return new byte[] { 48, -127, -93, 4, 3, 17, 33, 34, 4, 4, -111, 34, 34, -8, 4, 6, 23, 5, 38, 48, 81, 5, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -96, 49, 5, 0, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 0, -126, 0, -125, 6, 23, 5, 38, 48, 81, 5, -92, 6, -128, 4, 33, 67, 33, 67, -91, 4, -127, 2, 5, -32, -122, 0, -121, 0, -120, 1, 2, -119, 0, -118, 0, -117, 0, -116, 0, -115, 0, -114, 1, 1 };
+        return new byte[] { 48, -127, -105, 4, 3, 17, 33, 34, 4, 4, -111, 34, 34, -8, 4, 6, 23, 5, 38, 48, 81, 5, 48, 39, -96,
+                32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24,
+                25, 26, -95, 3, 31, 32, 33, -96, 43, 5, 0, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5,
+                6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 0, -126, 0, -125, 6,
+                23, 5, 38, 48, 81, 5, -92, 6, -128, 4, 33, 67, 33, 67, -91, 4, -127, 2, 5, -32, -122, 0, -121, 0, -120, 1, 2,
+                -119, 0, -118, 0, -117, 0, -116, 0, -115, 0, -114, 1, 1 };
     };
 
     public byte[] getGSNAddressData() {
@@ -108,7 +109,7 @@ public class UpdateGprsLocationRequestTest {
         ISDNAddressStringImpl sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22228");
         GSNAddressImpl sgsnAddress = new GSNAddressImpl(getGSNAddressData());
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         SGSNCapabilityImpl sgsnCapability = new SGSNCapabilityImpl(true, extensionContainer, null, false, null, null, null, false,
                 null, null, false, null);
         boolean informPreviousNetworkEntity = true;

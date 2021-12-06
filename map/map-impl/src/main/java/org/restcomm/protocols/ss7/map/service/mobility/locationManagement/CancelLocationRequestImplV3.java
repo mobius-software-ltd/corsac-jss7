@@ -24,16 +24,18 @@ package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ASNCancellationTypeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ASNTypeOfUpdateImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.CancelLocationRequest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.CancellationType;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.IMSIWithLMSIImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.IMSIWithLMSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.TypeOfUpdate;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -50,14 +52,16 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class CancelLocationRequestImplV3 extends MobilityMessageImpl implements CancelLocationRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-	private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0, defaultImplementation = IMSIImpl.class)
+	private IMSI imsi;
     
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=0)
-	private IMSIWithLMSIImpl imsiWithLmsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=0, defaultImplementation = IMSIWithLMSIImpl.class)
+	private IMSIWithLMSI imsiWithLmsi;
 	
     private ASNCancellationTypeImpl cancellationType;
-    private MAPExtensionContainerImpl extensionContainer;
+    
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private ASNTypeOfUpdateImpl typeOfUpdate;
@@ -68,14 +72,14 @@ public class CancelLocationRequestImplV3 extends MobilityMessageImpl implements 
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
     private ASNNull mtrfSupportedAndNotAuthorized;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
-    private ISDNAddressStringImpl newMSCNumber;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString newMSCNumber;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
-    private ISDNAddressStringImpl newVLRNumber;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString newVLRNumber;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
-    private LMSIImpl newLmsi;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1, defaultImplementation = LMSIImpl.class)
+    private LMSI newLmsi;
     private long mapProtocolVersion;
 
     public CancelLocationRequestImplV3() {
@@ -86,10 +90,10 @@ public class CancelLocationRequestImplV3 extends MobilityMessageImpl implements 
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public CancelLocationRequestImplV3(IMSIImpl imsi, IMSIWithLMSIImpl imsiWithLmsi, CancellationType cancellationType,
-            MAPExtensionContainerImpl extensionContainer, TypeOfUpdate typeOfUpdate, boolean mtrfSupportedAndAuthorized,
-            boolean mtrfSupportedAndNotAuthorized, ISDNAddressStringImpl newMSCNumber, ISDNAddressStringImpl newVLRNumber,
-            LMSIImpl newLmsi, long mapProtocolVersion) {
+    public CancelLocationRequestImplV3(IMSI imsi, IMSIWithLMSI imsiWithLmsi, CancellationType cancellationType,
+    		MAPExtensionContainer extensionContainer, TypeOfUpdate typeOfUpdate, boolean mtrfSupportedAndAuthorized,
+            boolean mtrfSupportedAndNotAuthorized, ISDNAddressString newMSCNumber, ISDNAddressString newVLRNumber,
+            LMSI newLmsi, long mapProtocolVersion) {
         super();
         if(imsi!=null)
         	this.imsi = imsi;
@@ -131,12 +135,12 @@ public class CancelLocationRequestImplV3 extends MobilityMessageImpl implements 
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return this.imsi;
     }
 
     @Override
-    public IMSIWithLMSIImpl getImsiWithLmsi() {
+    public IMSIWithLMSI getImsiWithLmsi() {
         return this.imsiWithLmsi;
     }
 
@@ -149,7 +153,7 @@ public class CancelLocationRequestImplV3 extends MobilityMessageImpl implements 
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -172,17 +176,17 @@ public class CancelLocationRequestImplV3 extends MobilityMessageImpl implements 
     }
 
     @Override
-    public ISDNAddressStringImpl getNewMSCNumber() {
+    public ISDNAddressString getNewMSCNumber() {
         return this.newMSCNumber;
     }
 
     @Override
-    public ISDNAddressStringImpl getNewVLRNumber() {
+    public ISDNAddressString getNewVLRNumber() {
         return this.newVLRNumber;
     }
 
     @Override
-    public LMSIImpl getNewLmsi() {
+    public LMSI getNewLmsi() {
         return this.newLmsi;
     }
 

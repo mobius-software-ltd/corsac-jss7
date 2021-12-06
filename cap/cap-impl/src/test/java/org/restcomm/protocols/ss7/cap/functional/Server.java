@@ -34,16 +34,17 @@ import org.restcomm.protocols.ss7.cap.api.CAPProvider;
 import org.restcomm.protocols.ss7.cap.api.CAPStack;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGprsReferenceNumber;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessageFactory;
-import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEventImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEvent;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.RequestReportBCSMEventRequest;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.RequestReportGPRSEventRequest;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEvent;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.RequestReportBCSMEventRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.RequestReportGPRSEventRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPParameterFactory;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
@@ -103,8 +104,8 @@ public class Server extends EventTestHarness {
 
     public RequestReportBCSMEventRequest getRequestReportBCSMEventRequest() {
 
-        List<BCSMEventImpl> bcsmEventList = new ArrayList<BCSMEventImpl>();
-        BCSMEventImpl ev = this.capParameterFactory.createBCSMEvent(EventTypeBCSM.routeSelectFailure,
+        List<BCSMEvent> bcsmEventList = new ArrayList<BCSMEvent>();
+        BCSMEvent ev = this.capParameterFactory.createBCSMEvent(EventTypeBCSM.routeSelectFailure,
                 MonitorMode.notifyAndContinue, null, null, false);
         bcsmEventList.add(ev);
         ev = this.capParameterFactory.createBCSMEvent(EventTypeBCSM.oCalledPartyBusy, MonitorMode.interrupted, null, null,
@@ -130,12 +131,12 @@ public class Server extends EventTestHarness {
     }
 
     public RequestReportGPRSEventRequest getRequestReportGPRSEventRequest() {
-        List<GPRSEventImpl> gprsEvent = new ArrayList<GPRSEventImpl>();
+        List<GPRSEvent> gprsEvent = new ArrayList<GPRSEvent>();
         GPRSEventImpl event = new GPRSEventImpl(GPRSEventType.attachChangeOfPosition, MonitorMode.notifyAndContinue);
         gprsEvent.add(event);
         PDPIDImpl pdpID = new PDPIDImpl(2);
 
-        RequestReportGPRSEventRequestImpl res = new RequestReportGPRSEventRequestImpl(gprsEvent, pdpID);
+        RequestReportGPRSEventRequest res = new RequestReportGPRSEventRequestImpl(gprsEvent, pdpID);
         return res;
     }
 

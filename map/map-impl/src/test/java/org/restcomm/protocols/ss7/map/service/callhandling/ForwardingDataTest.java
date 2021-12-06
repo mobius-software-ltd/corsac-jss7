@@ -31,11 +31,12 @@ import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptionsImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptions;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.ForwardingOptionsImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -84,8 +85,8 @@ public class ForwardingDataTest {
         assertTrue(result.getResult() instanceof ForwardingDataImpl);
         ForwardingDataImpl forwardingData = (ForwardingDataImpl)result.getResult();
         
-        ForwardingOptionsImpl forwardingOptions = forwardingData.getForwardingOptions();
-        ISDNAddressStringImpl isdnAdd = forwardingData.getForwardedToNumber();
+        ForwardingOptions forwardingOptions = forwardingData.getForwardingOptions();
+        ISDNAddressString isdnAdd = forwardingData.getForwardedToNumber();
 
         assertNotNull(isdnAdd);
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);

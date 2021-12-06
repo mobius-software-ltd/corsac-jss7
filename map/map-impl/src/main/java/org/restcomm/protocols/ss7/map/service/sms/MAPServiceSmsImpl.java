@@ -40,7 +40,7 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.map.api.MAPServiceListener;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckData;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckResult;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.map.api.service.sms.AlertServiceCentreRequest;
 import org.restcomm.protocols.ss7.map.api.service.sms.AlertServiceCentreResponse;
 import org.restcomm.protocols.ss7.map.api.service.sms.ForwardShortMessageRequest;
@@ -83,13 +83,13 @@ public class MAPServiceSmsImpl extends MAPServiceBaseImpl implements MAPServiceS
     /*
      * Creating a new outgoing MAP SMS dialog and adding it to the MAPProvider.dialog collection
      */
-    public MAPDialogSms createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference, SccpAddress destAddress,
-            AddressStringImpl destReference) throws MAPException {
+    public MAPDialogSms createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
+    		AddressString destReference) throws MAPException {
         return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
     }
 
-    public MAPDialogSms createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference, SccpAddress destAddress,
-            AddressStringImpl destReference, Long localTrId) throws MAPException {
+    public MAPDialogSms createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
+    		AddressString destReference, Long localTrId) throws MAPException {
 
         // We cannot create a dialog if the service is not activated
         if (!this.isActivated())

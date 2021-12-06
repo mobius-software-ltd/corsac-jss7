@@ -23,8 +23,8 @@
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AccessNetworkSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalInfo;
 
 /**
  *
@@ -49,11 +49,11 @@ public interface ProcessGroupCallSignallingRequest extends CallHandlingMessage {
 
      boolean getReleaseGroupCall();
 
-     MAPExtensionContainerImpl getExtensionContainer();
+     MAPExtensionContainer getExtensionContainer();
 
      TalkerPriority getTalkerPriority();
 
-     AdditionalInfoImpl getAdditionalInfo();
+     AdditionalInfo getAdditionalInfo();
 
      boolean getEmergencyModeResetCommandFlag();
 

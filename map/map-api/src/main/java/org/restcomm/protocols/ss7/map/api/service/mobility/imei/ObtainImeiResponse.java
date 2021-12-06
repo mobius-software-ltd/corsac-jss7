@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.imei;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -38,6 +38,5 @@ IMEI                                C           C(=)
 */
 public interface ObtainImeiResponse extends MobilityMessage {
 
-    IMEIImpl getImei();
-
+    IMEI getImei();
 }

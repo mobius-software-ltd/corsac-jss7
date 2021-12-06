@@ -27,10 +27,11 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.primitives.CriticalityType;
-import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionFieldImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionField;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -70,7 +71,7 @@ public class CAPExtensionsTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CAPExtensionsImpl.class);
     	
-    	CAPExtensionsImpl elem = createTestCAPExtensions();
+    	CAPExtensions elem = createTestCAPExtensions();
     	byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -78,22 +79,22 @@ public class CAPExtensionsTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    public static CAPExtensionsImpl createTestCAPExtensions() {
+    public static CAPExtensions createTestCAPExtensions() {
         ExtensionFieldImpl a1 = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, new byte[] {});
         ExtensionFieldImpl a2 = new ExtensionFieldImpl(3, CriticalityType.typeAbort, new byte[] { -1 });
-        ArrayList<ExtensionFieldImpl> flds = new ArrayList<ExtensionFieldImpl>();
+        List<ExtensionField> flds = new ArrayList<ExtensionField>();
         flds.add(a1);
         flds.add(a2);
-        CAPExtensionsImpl elem = new CAPExtensionsImpl(flds);
+        CAPExtensions elem = new CAPExtensionsImpl(flds);
         return elem;
     }
 
-    public static boolean checkTestCAPExtensions(CAPExtensionsImpl elem) {
+    public static boolean checkTestCAPExtensions(CAPExtensions elem) {
         if (elem.getExtensionFields() == null || elem.getExtensionFields().size() != 2)
             return false;
 
-        ExtensionFieldImpl a1 = elem.getExtensionFields().get(0);
-        ExtensionFieldImpl a2 = elem.getExtensionFields().get(1);
+        ExtensionField a1 = elem.getExtensionFields().get(0);
+        ExtensionField a2 = elem.getExtensionFields().get(1);
         if (a1.getLocalCode() != 2 || a2.getLocalCode() != 3)
             return false;
         if (a1.getCriticalityType() != CriticalityType.typeIgnore || a2.getCriticalityType() != CriticalityType.typeAbort)

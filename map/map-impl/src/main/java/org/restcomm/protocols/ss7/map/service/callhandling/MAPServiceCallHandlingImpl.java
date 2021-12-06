@@ -38,7 +38,7 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.map.api.MAPServiceListener;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckData;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckResult;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.IstCommandRequest;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.IstCommandResponse;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.MAPDialogCallHandling;
@@ -72,14 +72,14 @@ public class MAPServiceCallHandlingImpl extends MAPServiceBaseImpl implements MA
     }
 
     @Override
-    public MAPDialogCallHandling createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference, SccpAddress destAddress,
-            AddressStringImpl destReference) throws MAPException {
+    public MAPDialogCallHandling createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
+            AddressString destReference) throws MAPException {
         return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
     }
 
     @Override
-    public MAPDialogCallHandling createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference, SccpAddress destAddress,
-            AddressStringImpl destReference, Long localTrId) throws MAPException {
+    public MAPDialogCallHandling createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
+            AddressString destReference, Long localTrId) throws MAPException {
 
         // We cannot create a dialog if the service is not activated
         if (!this.isActivated())

@@ -24,11 +24,13 @@ package org.restcomm.protocols.ss7.map.service.sms;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.sms.MtForwardShortMessageResponse;
-import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfo;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -40,14 +42,17 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class MtForwardShortMessageResponseImpl extends SmsMessageImpl implements MtForwardShortMessageResponse {
 	private static final long serialVersionUID = 1L;
 	
-	private SmsSignalInfoImpl sM_RP_UI;
-    private MAPExtensionContainerImpl extensionContainer;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = SmsSignalInfoImpl.class)
+	private SmsSignalInfo sM_RP_UI;
+    
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
 
     public MtForwardShortMessageResponseImpl() {
     }
 
-    public MtForwardShortMessageResponseImpl(SmsSignalInfoImpl sM_RP_UI, MAPExtensionContainerImpl extensionContainer) {
-        this.sM_RP_UI = (SmsSignalInfoImpl) sM_RP_UI;
+    public MtForwardShortMessageResponseImpl(SmsSignalInfo sM_RP_UI, MAPExtensionContainer extensionContainer) {
+        this.sM_RP_UI = sM_RP_UI;
         this.extensionContainer = extensionContainer;
     }
 
@@ -59,11 +64,11 @@ public class MtForwardShortMessageResponseImpl extends SmsMessageImpl implements
         return MAPOperationCode.mt_forwardSM;
     }
 
-    public SmsSignalInfoImpl getSM_RP_UI() {
+    public SmsSignalInfo getSM_RP_UI() {
         return this.sM_RP_UI;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

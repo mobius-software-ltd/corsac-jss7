@@ -32,6 +32,6 @@ package org.restcomm.protocols.ss7.map.api.service.supplementary;
  */
 public interface RegisterCCEntryResponse extends SupplementaryMessage {
 
-    CCBSFeatureImpl getCcbsFeature();
+    CCBSFeature getCcbsFeature();
 
 }

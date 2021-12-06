@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 
 /**
@@ -44,10 +44,10 @@ import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
  */
 public interface SendChargingInformationRequest extends CircuitSwitchedCallMessage {
 
-    SCIBillingChargingCharacteristicsImpl getSCIBillingChargingCharacteristics();
+    SCIBillingChargingCharacteristics getSCIBillingChargingCharacteristics();
 
     LegType getPartyToCharge();
 
-    CAPExtensionsImpl getExtensions();
+    CAPExtensions getExtensions();
 
 }

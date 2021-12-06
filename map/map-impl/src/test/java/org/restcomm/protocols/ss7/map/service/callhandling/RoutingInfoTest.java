@@ -31,12 +31,13 @@ import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptionsImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingData;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptions;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.ForwardingOptionsImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -88,7 +89,7 @@ public class RoutingInfoTest {
         assertTrue(result.getResult() instanceof RoutingInfoImpl);
         RoutingInfoImpl routeInfo = (RoutingInfoImpl)result.getResult();
         
-        ISDNAddressStringImpl isdnAdd = routeInfo.getRoamingNumber();
+        ISDNAddressString isdnAdd = routeInfo.getRoamingNumber();
 
         assertNotNull(isdnAdd);
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
@@ -101,9 +102,9 @@ public class RoutingInfoTest {
         assertTrue(result.getResult() instanceof RoutingInfoImpl);
         routeInfo = (RoutingInfoImpl)result.getResult();
         
-        ForwardingDataImpl _forwardingData = routeInfo.getForwardingData();
-        ForwardingOptionsImpl _forwardingOptions = _forwardingData.getForwardingOptions();
-        ISDNAddressStringImpl _isdnAdd = _forwardingData.getForwardedToNumber();
+        ForwardingData _forwardingData = routeInfo.getForwardingData();
+        ForwardingOptions _forwardingOptions = _forwardingData.getForwardingOptions();
+        ISDNAddressString _isdnAdd = _forwardingData.getForwardedToNumber();
 
         assertNotNull(_isdnAdd);
         assertEquals(_isdnAdd.getAddressNature(), AddressNature.international_number);

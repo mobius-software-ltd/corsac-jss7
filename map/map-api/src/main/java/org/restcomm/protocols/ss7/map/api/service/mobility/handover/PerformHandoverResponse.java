@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -36,8 +36,7 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface PerformHandoverResponse extends MobilityMessage {
 
-    ISDNAddressStringImpl getHandoverNumber();
+    ISDNAddressString getHandoverNumber();
 
-    ExternalSignalInfoImpl getAccessSignalInfo();
-
+    ExternalSignalInfo getAccessSignalInfo();
 }

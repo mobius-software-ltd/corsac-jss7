@@ -24,11 +24,13 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddressImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddressWrapperImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddress;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ApplyChargingRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.cap.primitives.AChChargingAddressWrapperImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.restcomm.protocols.ss7.inap.primitives.SendingLegIDImpl;
 import org.restcomm.protocols.ss7.inap.primitives.SendingLegIDWrapperImpl;
@@ -47,14 +49,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl implements ApplyChargingRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-    private CAMELAChBillingChargingCharacteristicsImpl aChBillingChargingCharacteristics;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1,defaultImplementation = CAMELAChBillingChargingCharacteristicsImpl.class)
+    private CAMELAChBillingChargingCharacteristics aChBillingChargingCharacteristics;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
     private SendingLegIDWrapperImpl partyToCharge;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 50,constructed = true,index = -1)
     private AChChargingAddressWrapperImpl aChChargingAddress;
@@ -62,8 +64,8 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
     public ApplyChargingRequestImpl() {
     }
 
-    public ApplyChargingRequestImpl(CAMELAChBillingChargingCharacteristicsImpl aChBillingChargingCharacteristics,
-    		LegType partyToCharge, CAPExtensionsImpl extensions, AChChargingAddressImpl aChChargingAddress) {
+    public ApplyChargingRequestImpl(CAMELAChBillingChargingCharacteristics aChBillingChargingCharacteristics,
+    		LegType partyToCharge, CAPExtensions extensions, AChChargingAddress aChChargingAddress) {
         this.aChBillingChargingCharacteristics = aChBillingChargingCharacteristics;
         
         if(partyToCharge!=null)
@@ -86,7 +88,7 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
     }
 
     @Override
-    public CAMELAChBillingChargingCharacteristicsImpl getAChBillingChargingCharacteristics() {
+    public CAMELAChBillingChargingCharacteristics getAChBillingChargingCharacteristics() {
         return aChBillingChargingCharacteristics;
     }
 
@@ -99,12 +101,12 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 
     @Override
-    public AChChargingAddressImpl getAChChargingAddress() {
+    public AChChargingAddress getAChChargingAddress() {
     	if(aChChargingAddress==null)
     		return null;
     	

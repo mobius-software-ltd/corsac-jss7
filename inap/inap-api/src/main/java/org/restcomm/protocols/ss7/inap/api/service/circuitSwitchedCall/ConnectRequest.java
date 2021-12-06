@@ -45,7 +45,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ScfID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
 
 /**
 *
@@ -148,7 +148,7 @@ public interface ConnectRequest {
 
     DestinationRoutingAddress getDestinationRoutingAddress();
 
-    AlertingPatternImpl getAlertingPattern();
+    AlertingPattern getAlertingPattern();
 
     Digits getCorrelationID();
 

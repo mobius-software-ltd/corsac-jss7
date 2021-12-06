@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.sms;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -60,15 +60,15 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  */
 public interface ReportSMDeliveryStatusRequest extends SmsMessage {
 
-    ISDNAddressStringImpl getMsisdn();
+    ISDNAddressString getMsisdn();
 
-    AddressStringImpl getServiceCentreAddress();
+    AddressString getServiceCentreAddress();
 
     SMDeliveryOutcome getSMDeliveryOutcome();
 
     Integer getAbsentSubscriberDiagnosticSM();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     boolean getGprsSupportIndicator();
 

@@ -24,12 +24,15 @@ package org.restcomm.protocols.ss7.map.service.supplementary;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.datacoding.ASNCBSDataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNotifyRequest;
+import org.restcomm.protocols.ss7.map.datacoding.ASNCBSDataCodingSchemeImpl;
+import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.USSDStringImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -46,13 +49,14 @@ public class UnstructuredSSNotifyRequestImpl extends SupplementaryMessageImpl im
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
 	private ASNCBSDataCodingSchemeImpl ussdDataCodingSch;
 	
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
-	private USSDStringImpl ussdString;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1, defaultImplementation = USSDStringImpl.class)
+	private USSDString ussdString;
 	
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-	private ISDNAddressStringImpl msISDNAddressStringImpl = null;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+	private ISDNAddressString msISDNAddressString = null;
     
-	private AlertingPatternImpl alertingPattern = null;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1, defaultImplementation = AlertingPatternImpl.class)
+	private AlertingPattern alertingPattern = null;
 
     /**
      * @param ussdDataCodingSch
@@ -62,14 +66,14 @@ public class UnstructuredSSNotifyRequestImpl extends SupplementaryMessageImpl im
         super();
     }
 
-    public UnstructuredSSNotifyRequestImpl(CBSDataCodingScheme ussdDataCodingSch, USSDStringImpl ussdString,
-            AlertingPatternImpl alertingPattern, ISDNAddressStringImpl msISDNAddressStringImpl) {
+    public UnstructuredSSNotifyRequestImpl(CBSDataCodingScheme ussdDataCodingSch, USSDString ussdString,
+    		AlertingPattern alertingPattern, ISDNAddressString msISDNAddressString) {
     	if(ussdDataCodingSch!=null)
     		this.ussdDataCodingSch=new ASNCBSDataCodingSchemeImpl(ussdDataCodingSch);
     	
         this.ussdString=ussdString;
         this.alertingPattern = alertingPattern;
-        this.msISDNAddressStringImpl = msISDNAddressStringImpl;
+        this.msISDNAddressString = msISDNAddressString;
     }
 
     public MAPMessageType getMessageType() {
@@ -89,7 +93,7 @@ public class UnstructuredSSNotifyRequestImpl extends SupplementaryMessageImpl im
 	}
 
 	@Override
-	public USSDStringImpl getUSSDString() {
+	public USSDString getUSSDString() {
 		return ussdString;
 	}
 
@@ -99,8 +103,8 @@ public class UnstructuredSSNotifyRequestImpl extends SupplementaryMessageImpl im
      * @see org.restcomm.protocols.ss7.map.api.service.supplementary.
      * ProcessUnstructuredSSRequestIndication#getMSISDNAddressStringImpl()
      */
-    public ISDNAddressStringImpl getMSISDNAddressStringImpl() {
-        return this.msISDNAddressStringImpl;
+    public ISDNAddressString getMSISDNAddressStringImpl() {
+        return this.msISDNAddressString;
     }
 
     /*
@@ -109,7 +113,7 @@ public class UnstructuredSSNotifyRequestImpl extends SupplementaryMessageImpl im
      * @see org.restcomm.protocols.ss7.map.api.service.supplementary.
      * ProcessUnstructuredSSRequestIndication#getAlertingPattern()
      */
-    public AlertingPatternImpl getAlertingPattern() {
+    public AlertingPattern getAlertingPattern() {
         return this.alertingPattern;
     }
 
@@ -136,9 +140,9 @@ public class UnstructuredSSNotifyRequestImpl extends SupplementaryMessageImpl im
             sb.append(", alertingPattern=");
             sb.append(alertingPattern.toString());
         }
-        if (msISDNAddressStringImpl != null) {
+        if (msISDNAddressString != null) {
             sb.append(", msisdn=");
-            sb.append(msISDNAddressStringImpl.toString());
+            sb.append(msISDNAddressString.toString());
         }
 
         sb.append("]");

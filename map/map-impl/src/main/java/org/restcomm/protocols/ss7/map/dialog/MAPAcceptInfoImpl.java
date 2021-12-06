@@ -22,9 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.dialog;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -39,13 +41,15 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=true,lengthIndefinite=false)
 public class MAPAcceptInfoImpl {
-	private MAPExtensionContainerImpl extensionContainer;
+	
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
 
-	public MAPExtensionContainerImpl getExtensionContainer() {
+	public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 
-    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 }

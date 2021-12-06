@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.oam;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 
 /**
  *
@@ -45,6 +45,6 @@ ARGUMENT ISDN-AddressStringImpl
  */
 public interface SendImsiRequest extends OamMessage {
 
-    ISDNAddressStringImpl getMsisdn();
+    ISDNAddressString getMsisdn();
 
 }

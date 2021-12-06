@@ -26,8 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext3QoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_BitRateExtendedImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_BitRateExtended;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -83,8 +82,8 @@ public class Ext3QoSSubscribedTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(Ext3QoSSubscribedImpl.class);
     	
-        ExtQoSSubscribed_BitRateExtendedImpl maximumBitRateForUplinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(16000, false);
-        ExtQoSSubscribed_BitRateExtendedImpl guaranteedBitRateForUplinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(256000, false);
+        ExtQoSSubscribed_BitRateExtended maximumBitRateForUplinkExtended = new ExtQoSSubscribed_BitRateExtended(16000, false);
+        ExtQoSSubscribed_BitRateExtended guaranteedBitRateForUplinkExtended = new ExtQoSSubscribed_BitRateExtended(256000, false);
         Ext3QoSSubscribedImpl prim = new Ext3QoSSubscribedImpl(maximumBitRateForUplinkExtended, guaranteedBitRateForUplinkExtended);
 
         ByteBuf buffer=parser.encode(prim);
@@ -93,8 +92,8 @@ public class Ext3QoSSubscribedTest {
         assertEquals(encodedData, this.getData1());
 
 
-        maximumBitRateForUplinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(50000, false);
-        guaranteedBitRateForUplinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(0, true);
+        maximumBitRateForUplinkExtended = new ExtQoSSubscribed_BitRateExtended(50000, false);
+        guaranteedBitRateForUplinkExtended = new ExtQoSSubscribed_BitRateExtended(0, true);
         prim = new Ext3QoSSubscribedImpl(maximumBitRateForUplinkExtended, guaranteedBitRateForUplinkExtended);
 
         buffer=parser.encode(prim);

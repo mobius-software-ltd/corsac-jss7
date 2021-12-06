@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 
 /**
  *
@@ -38,14 +38,14 @@ import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
  */
 public interface CCBSData extends Serializable {
 
-    CCBSFeatureImpl getCcbsFeature();
+    CCBSFeature getCcbsFeature();
 
-    ISDNAddressStringImpl getTranslatedBNumber();
+    ISDNAddressString getTranslatedBNumber();
 
     ServiceIndicator getServiceIndicator();
 
-    ExternalSignalInfoImpl getCallInfo();
+    ExternalSignalInfo getCallInfo();
 
-    ExternalSignalInfoImpl getNetworkSignalInfo();
+    ExternalSignalInfo getNetworkSignalInfo();
 
 }

@@ -30,9 +30,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredLocationEventTypeImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LocationEstimateType;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LocationTypeImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;

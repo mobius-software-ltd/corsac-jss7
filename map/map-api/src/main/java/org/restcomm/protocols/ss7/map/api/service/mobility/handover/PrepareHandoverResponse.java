@@ -25,9 +25,9 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AccessNetworkSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -51,7 +51,7 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface PrepareHandoverResponse extends MobilityMessage {
 
-    ISDNAddressStringImpl getHandoverNumber();
+    ISDNAddressString getHandoverNumber();
 
     List<RelocationNumber> getRelocationNumberList();
 
@@ -65,7 +65,7 @@ public interface PrepareHandoverResponse extends MobilityMessage {
 
     ChosenRadioResourceInformation getChosenRadioResourceInformation();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     Codec getIuSelectedCodec();
 
@@ -76,6 +76,6 @@ public interface PrepareHandoverResponse extends MobilityMessage {
     AoIPCodecsList getAoipAvailableCodecsListMap();
 
     // this parameter is for MAP V2 only
-    ExternalSignalInfoImpl getBssAPDU();
+    ExternalSignalInfo getBssAPDU();
 
 }

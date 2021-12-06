@@ -24,9 +24,11 @@ package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.UpdateGprsLocationResponse;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -43,11 +45,13 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class UpdateGprsLocationResponseImpl extends MobilityMessageImpl implements UpdateGprsLocationResponse {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-    private ISDNAddressStringImpl hlrNumber;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString hlrNumber;
     
-    private MAPExtensionContainerImpl extensionContainer;
-    private ASNNull addCapability;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true, index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
+    
+	private ASNNull addCapability;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private ASNNull sgsnMmeSeparationSupported;
@@ -56,7 +60,7 @@ public class UpdateGprsLocationResponseImpl extends MobilityMessageImpl implemen
         super();
     }
 
-    public UpdateGprsLocationResponseImpl(ISDNAddressStringImpl hlrNumber, MAPExtensionContainerImpl extensionContainer,
+    public UpdateGprsLocationResponseImpl(ISDNAddressString hlrNumber, MAPExtensionContainer extensionContainer,
             boolean addCapability, boolean sgsnMmeSeparationSupported) {
         super();
         this.hlrNumber = hlrNumber;
@@ -70,12 +74,12 @@ public class UpdateGprsLocationResponseImpl extends MobilityMessageImpl implemen
     }
 
     @Override
-    public ISDNAddressStringImpl getHlrNumber() {
+    public ISDNAddressString getHlrNumber() {
         return hlrNumber;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

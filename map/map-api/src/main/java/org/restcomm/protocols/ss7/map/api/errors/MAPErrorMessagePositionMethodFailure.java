@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.errors;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -41,10 +41,10 @@ public interface MAPErrorMessagePositionMethodFailure extends MAPErrorMessage {
 
     PositionMethodFailureDiagnostic getPositionMethodFailureDiagnostic();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     void setPositionMethodFailureDiagnostic(PositionMethodFailureDiagnostic positionMethodFailureDiagnostic);
 
-    void setExtensionContainer(MAPExtensionContainerImpl extensionContainer);
+    void setExtensionContainer(MAPExtensionContainer extensionContainer);
 
 }

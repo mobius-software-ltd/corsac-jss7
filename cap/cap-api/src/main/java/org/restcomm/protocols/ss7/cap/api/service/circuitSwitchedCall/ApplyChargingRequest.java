@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddressImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddress;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 
 /**
@@ -62,12 +62,12 @@ ApplyChargingArg {PARAMETERS-BOUND : bound} ::= SEQUENCE {
  */
 public interface ApplyChargingRequest extends CircuitSwitchedCallMessage {
 
-    CAMELAChBillingChargingCharacteristicsImpl getAChBillingChargingCharacteristics();
+    CAMELAChBillingChargingCharacteristics getAChBillingChargingCharacteristics();
 
     LegType getPartyToCharge();
 
-    CAPExtensionsImpl getExtensions();
+    CAPExtensions getExtensions();
 
-    AChChargingAddressImpl getAChChargingAddress();
+    AChChargingAddress getAChChargingAddress();
 
 }

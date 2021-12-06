@@ -26,13 +26,12 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeListWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeatureListWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.GenericServiceInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeature;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.GenericServiceInfo;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.InterrogateSSResponse;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BasicServiceCodeListWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -47,8 +46,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class InterrogateSSResponseImpl extends SupplementaryMessageImpl implements InterrogateSSResponse {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private SSStatusImpl ssStatus;    
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = SSStatusImpl.class)
+    private SSStatus ssStatus;    
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1)
     private BasicServiceCodeListWrapperImpl basicServiceGroupList;    
@@ -56,27 +55,27 @@ public class InterrogateSSResponseImpl extends SupplementaryMessageImpl implemen
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1)
     private ForwardingFeatureListWrapperImpl forwardingFeatureList;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=true,index=-1)
-    private GenericServiceInfoImpl genericServiceInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=true,index=-1, defaultImplementation = GenericServiceInfoImpl.class)
+    private GenericServiceInfo genericServiceInfo;
 
     public InterrogateSSResponseImpl() {
     }
 
-    public InterrogateSSResponseImpl(SSStatusImpl ssStatus) {
+    public InterrogateSSResponseImpl(SSStatus ssStatus) {
         this.ssStatus = ssStatus;
     }
 
-    public InterrogateSSResponseImpl(List<BasicServiceCodeImpl> basicServiceGroupList, boolean doommyPar) {
+    public InterrogateSSResponseImpl(List<BasicServiceCode> basicServiceGroupList, boolean doommyPar) {
     	if(basicServiceGroupList!=null)
     		this.basicServiceGroupList = new BasicServiceCodeListWrapperImpl(basicServiceGroupList);
     }
 
-    public InterrogateSSResponseImpl(List<ForwardingFeatureImpl> forwardingFeatureList) {
+    public InterrogateSSResponseImpl(List<ForwardingFeature> forwardingFeatureList) {
     	if(forwardingFeatureList!=null)
     		this.forwardingFeatureList = new ForwardingFeatureListWrapperImpl(forwardingFeatureList);
     }
 
-    public InterrogateSSResponseImpl(GenericServiceInfoImpl genericServiceInfo) {
+    public InterrogateSSResponseImpl(GenericServiceInfo genericServiceInfo) {
         this.genericServiceInfo = genericServiceInfo;
     }
 
@@ -91,12 +90,12 @@ public class InterrogateSSResponseImpl extends SupplementaryMessageImpl implemen
     }
 
     @Override
-    public SSStatusImpl getSsStatus() {
+    public SSStatus getSsStatus() {
         return ssStatus;
     }
 
     @Override
-    public List<BasicServiceCodeImpl> getBasicServiceGroupList() {
+    public List<BasicServiceCode> getBasicServiceGroupList() {
     	if(basicServiceGroupList==null)
     		return null;
     	
@@ -104,7 +103,7 @@ public class InterrogateSSResponseImpl extends SupplementaryMessageImpl implemen
     }
 
     @Override
-    public List<ForwardingFeatureImpl> getForwardingFeatureList() {
+    public List<ForwardingFeature> getForwardingFeatureList() {
     	if(forwardingFeatureList==null)
     		return null;
     	
@@ -112,7 +111,7 @@ public class InterrogateSSResponseImpl extends SupplementaryMessageImpl implemen
     }
 
     @Override
-    public GenericServiceInfoImpl getGenericServiceInfo() {
+    public GenericServiceInfo getGenericServiceInfo() {
         return genericServiceInfo;
     }
 
@@ -129,7 +128,7 @@ public class InterrogateSSResponseImpl extends SupplementaryMessageImpl implemen
         if (this.basicServiceGroupList != null && this.basicServiceGroupList.getBasicServiceCodes()!=null) {
             sb.append("basicServiceGroupList=[");
             boolean firstItem = true;
-            for (BasicServiceCodeImpl be : this.basicServiceGroupList.getBasicServiceCodes()) {
+            for (BasicServiceCode be : this.basicServiceGroupList.getBasicServiceCodes()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -141,7 +140,7 @@ public class InterrogateSSResponseImpl extends SupplementaryMessageImpl implemen
         if (this.forwardingFeatureList != null && this.forwardingFeatureList.getForwardingFeatures()!=null) {
             sb.append("forwardingFeatureList=[");
             boolean firstItem = true;
-            for (ForwardingFeatureImpl be : this.forwardingFeatureList.getForwardingFeatures()) {
+            for (ForwardingFeature be : this.forwardingFeatureList.getForwardingFeatures()) {
                 if (firstItem)
                     firstItem = false;
                 else

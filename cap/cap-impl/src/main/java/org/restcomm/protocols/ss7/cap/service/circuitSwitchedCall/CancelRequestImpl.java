@@ -25,8 +25,8 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CancelRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallSegmentToCancelImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CancelRequestChoisempl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallSegmentToCancel;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CancelRequestChoisempl;
 
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
@@ -56,7 +56,7 @@ public class CancelRequestImpl extends CircuitSwitchedCallMessageImpl implements
         this.cancelRequestChoise = new CancelRequestChoisempl(allRequests);
     }
 
-    public CancelRequestImpl(CallSegmentToCancelImpl callSegmentToCancel) {
+    public CancelRequestImpl(CallSegmentToCancel callSegmentToCancel) {
         this.cancelRequestChoise = new CancelRequestChoisempl(callSegmentToCancel);
     }
 
@@ -87,7 +87,7 @@ public class CancelRequestImpl extends CircuitSwitchedCallMessageImpl implements
     }
 
     @Override
-    public CallSegmentToCancelImpl getCallSegmentToCancel() {
+    public CallSegmentToCancel getCallSegmentToCancel() {
         if(cancelRequestChoise==null)
         	return null;
         

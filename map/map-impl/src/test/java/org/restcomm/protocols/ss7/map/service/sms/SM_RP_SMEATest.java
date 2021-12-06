@@ -28,10 +28,10 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_SMEAImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.AddressFieldImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
+import org.restcomm.protocols.ss7.map.smstpdu.AddressFieldImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -74,7 +74,7 @@ public class SM_RP_SMEATest {
         assertTrue(result.getResult() instanceof SM_RP_SMEAImpl);
         SM_RP_SMEAImpl da = (SM_RP_SMEAImpl)result.getResult();
 
-        AddressFieldImpl af = da.getAddressField();
+        AddressField af = da.getAddressField();
 
         assertEquals(af.getTypeOfNumber(), TypeOfNumber.Alphanumeric);
         assertEquals(af.getNumberingPlanIdentification(), NumberingPlanIdentification.Unknown);

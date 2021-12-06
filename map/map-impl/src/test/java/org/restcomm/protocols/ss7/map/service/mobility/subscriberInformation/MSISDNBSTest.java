@@ -7,15 +7,17 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSISDNBSImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -28,7 +30,9 @@ import io.netty.buffer.Unpooled;
  * @author vadim subbotin
  */
 public class MSISDNBSTest {
-    private byte[] data = {48, 60, 4, 6, -111, 17, 33, 34, 51, -13, -96, 3, -125, 1, 96, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33};
+    private byte[] data = {48, 54, 4, 6, -111, 17, 33, 34, 51, -13, -96, 3, -125, 1, 96, -95, 39, -96, 32, 48, 10, 6,
+            3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95,
+            3, 31, 32, 33};
 
     @Test(groups = {"functional.decode", "subscriberInformation"})
     public void testDecode() throws Exception {
@@ -45,11 +49,11 @@ public class MSISDNBSTest {
         assertEquals(msisdnbs.getBasicServiceList().size(), 1);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(msisdnbs.getExtensionContainer()));
 
-        ExtBasicServiceCodeImpl extBasicServiceCode = msisdnbs.getBasicServiceList().get(0);
+        ExtBasicServiceCode extBasicServiceCode = msisdnbs.getBasicServiceList().get(0);
         assertEquals(extBasicServiceCode.getExtTeleservice().getTeleserviceCodeValue(),
                 TeleserviceCodeValue.allFacsimileTransmissionServices);
 
-        ISDNAddressStringImpl msisdn = msisdnbs.getMsisdn();
+        ISDNAddressString msisdn = msisdnbs.getMsisdn();
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(msisdn.getAddress(), "111222333");
@@ -65,7 +69,7 @@ public class MSISDNBSTest {
         final ExtBasicServiceCodeImpl extBasicServiceCode = new ExtBasicServiceCodeImpl(
                 new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allFacsimileTransmissionServices));
         
-        ArrayList<ExtBasicServiceCodeImpl> extBasicServiceCodeList=new ArrayList<ExtBasicServiceCodeImpl>();
+        List<ExtBasicServiceCode> extBasicServiceCodeList=new ArrayList<ExtBasicServiceCode>();
         extBasicServiceCodeList.add(extBasicServiceCode);
         MSISDNBSImpl msisdnbs = new MSISDNBSImpl(msisdn, extBasicServiceCodeList,MAPExtensionContainerTest.GetTestExtensionContainer());
 

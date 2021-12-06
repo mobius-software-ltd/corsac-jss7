@@ -30,9 +30,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEventImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEvent;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
+import org.restcomm.protocols.ss7.cap.primitives.BCSMEventImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
@@ -142,7 +143,7 @@ public class RequestReportBCSMEventRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(RequestReportBCSMEventRequestImpl.class);
     	
-        List<BCSMEventImpl> bcsmEventList = new ArrayList<BCSMEventImpl>();
+        List<BCSMEvent> bcsmEventList = new ArrayList<BCSMEvent>();
         LegIDImpl legID = new LegIDImpl(null, LegType.leg2);
         BCSMEventImpl be = new BCSMEventImpl(EventTypeBCSM.routeSelectFailure, MonitorMode.interrupted, legID, null, false);
         bcsmEventList.add(be);

@@ -30,13 +30,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultSMSHandling;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCAMELTDPDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCSIImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCAMELTDPData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSTriggerDetectionPoint;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -53,8 +53,11 @@ import io.netty.buffer.Unpooled;
  */
 public class SMSCSITest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 116, -96, 64, 48, 62, -128, 1, 1, -127, 1, 4, -126, 4, -111, 34, 50, -11, -125, 1, 0, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 8, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+	public byte[] getData() {
+        return new byte[] { 48, 104, -96, 58, 48, 56, -128, 1, 1, -127, 1, 4, -126, 4, -111, 34, 50, -11, -125, 1, 0, -92, 39,
+                -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23,
+                24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 8, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48,
+                5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -68,14 +71,14 @@ public class SMSCSITest {
         assertTrue(result.getResult() instanceof SMSCSIImpl);
         SMSCSIImpl prim = (SMSCSIImpl)result.getResult();
         
-        List<SMSCAMELTDPDataImpl> smsCamelTdpDataList = prim.getSmsCamelTdpDataList();
+        List<SMSCAMELTDPData> smsCamelTdpDataList = prim.getSmsCamelTdpDataList();
         assertNotNull(smsCamelTdpDataList);
         assertEquals(smsCamelTdpDataList.size(), 1);
-        SMSCAMELTDPDataImpl one = smsCamelTdpDataList.get(0);
+        SMSCAMELTDPData one = smsCamelTdpDataList.get(0);
         assertNotNull(one);
         assertEquals(one.getServiceKey(), 4);
         assertEquals(one.getSMSTriggerDetectionPoint(), SMSTriggerDetectionPoint.smsCollectedInfo);
-        ISDNAddressStringImpl gsmSCFAddress = one.getGsmSCFAddress();
+        ISDNAddressString gsmSCFAddress = one.getGsmSCFAddress();
         assertTrue(gsmSCFAddress.getAddress().equals("22235"));
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
@@ -95,7 +98,7 @@ public class SMSCSITest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SMSCSIImpl.class);
     	
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         SMSTriggerDetectionPoint smsTriggerDetectionPoint = SMSTriggerDetectionPoint.smsCollectedInfo;
         long serviceKey = 4;
@@ -104,7 +107,7 @@ public class SMSCSITest {
         ;
         DefaultSMSHandling defaultSMSHandling = DefaultSMSHandling.continueTransaction;
 
-        ArrayList<SMSCAMELTDPDataImpl> smsCamelTdpDataList = new ArrayList<SMSCAMELTDPDataImpl>();
+        List<SMSCAMELTDPData> smsCamelTdpDataList = new ArrayList<SMSCAMELTDPData>();
         SMSCAMELTDPDataImpl smsCAMELTDPData = new SMSCAMELTDPDataImpl(smsTriggerDetectionPoint, serviceKey, gsmSCFAddress,
                 defaultSMSHandling, extensionContainer);
         smsCamelTdpDataList.add(smsCAMELTDPData);

@@ -31,10 +31,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DestinationNumberCriteriaImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MatchType;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -66,15 +66,15 @@ public class DestinationNumberCriteriaTest {
         assertTrue(result.getResult() instanceof DestinationNumberCriteriaImpl);
         DestinationNumberCriteriaImpl prim = (DestinationNumberCriteriaImpl)result.getResult(); 
         
-        List<ISDNAddressStringImpl> destinationNumberList = prim.getDestinationNumberList();
+        List<ISDNAddressString> destinationNumberList = prim.getDestinationNumberList();
         assertNotNull(destinationNumberList);
         assertEquals(destinationNumberList.size(), 2);
-        ISDNAddressStringImpl destinationNumberOne = destinationNumberList.get(0);
+        ISDNAddressString destinationNumberOne = destinationNumberList.get(0);
         assertNotNull(destinationNumberOne);
         assertTrue(destinationNumberOne.getAddress().equals("22234"));
         assertEquals(destinationNumberOne.getAddressNature(), AddressNature.international_number);
         assertEquals(destinationNumberOne.getNumberingPlan(), NumberingPlan.ISDN);
-        ISDNAddressStringImpl destinationNumberTwo = destinationNumberList.get(1);
+        ISDNAddressString destinationNumberTwo = destinationNumberList.get(1);
         assertNotNull(destinationNumberTwo);
         assertTrue(destinationNumberTwo.getAddress().equals("22235"));
         assertEquals(destinationNumberTwo.getAddressNature(), AddressNature.international_number);
@@ -98,7 +98,7 @@ public class DestinationNumberCriteriaTest {
         ISDNAddressStringImpl destinationNumberTwo = new ISDNAddressStringImpl(AddressNature.international_number,
                 NumberingPlan.ISDN, "22235");
 
-        ArrayList<ISDNAddressStringImpl> destinationNumberList = new ArrayList<ISDNAddressStringImpl>();
+        List<ISDNAddressString> destinationNumberList = new ArrayList<ISDNAddressString>();
         destinationNumberList.add(destinationNumberOne);
         destinationNumberList.add(destinationNumberTwo);
         ArrayList<Integer> destinationNumberLengthList = new ArrayList<Integer>();

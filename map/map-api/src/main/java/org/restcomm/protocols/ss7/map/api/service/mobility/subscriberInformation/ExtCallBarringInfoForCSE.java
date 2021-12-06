@@ -25,10 +25,10 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformatio
 import java.io.Serializable;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtCallBarringFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.PasswordImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtCallBarringFeature;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.Password;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 
 /**
  *
@@ -54,16 +54,16 @@ WrongPasswordAttemptsCounter ::= INTEGER (0..4)
  */
 public interface ExtCallBarringInfoForCSE extends Serializable {
 
-	SSCodeImpl getSsCode();
+	SSCode getSsCode();
 
-    List<ExtCallBarringFeatureImpl> getCallBarringFeatureList();
+    List<ExtCallBarringFeature> getCallBarringFeatureList();
 
-    PasswordImpl getPassword();
+    Password getPassword();
 
     Integer getWrongPasswordAttemptsCounter();
 
     boolean getNotificationToCSE();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
 }

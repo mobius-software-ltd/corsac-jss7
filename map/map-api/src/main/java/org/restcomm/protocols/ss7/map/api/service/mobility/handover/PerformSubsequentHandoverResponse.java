@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -35,6 +35,5 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface PerformSubsequentHandoverResponse extends MobilityMessage {
 
-    ExternalSignalInfoImpl getAccessSignalInfo();
-
+    ExternalSignalInfo getAccessSignalInfo();
 }

@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.map.api.service.oam;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessage;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -41,7 +41,7 @@ ActivateTraceModeRes ::= SEQUENCE {
  */
 public interface ActivateTraceModeResponse_Base extends MAPMessage{
 
-	MAPExtensionContainerImpl getExtensionContainer();
+	MAPExtensionContainer getExtensionContainer();
 
     boolean getTraceSupportIndicator();
 

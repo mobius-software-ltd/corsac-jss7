@@ -29,7 +29,6 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.DomainType;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfoImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -47,7 +46,9 @@ public class RequestedInfoTest {
 
     // Real Trace
     byte[] data = new byte[] { 48, 0x04, (byte) 0x80, 0x00, (byte) 0x81, 0x00 };
-    byte[] dataFull = new byte[] { 48, 62, -128, 0, -127, 0, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 0, -124, 1, 1, -122, 0, -123, 0, -121, 0 };
+    byte[] dataFull = new byte[] { 48, 56, -128, 0, -127, 0, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48,
+            5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -125, 0, -124, 1, 1, -122,
+            0, -123, 0, -121, 0 };
 
     @Test(groups = { "functional.decode", "subscriberInformation" })
     public void testDecode() throws Exception {

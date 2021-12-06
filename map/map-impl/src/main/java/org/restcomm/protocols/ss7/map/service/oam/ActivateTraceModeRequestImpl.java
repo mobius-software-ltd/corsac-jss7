@@ -26,22 +26,26 @@ import org.restcomm.protocols.ss7.map.MessageImpl;
 import org.restcomm.protocols.ss7.map.api.MAPDialog;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MAPDialogMobility;
 import org.restcomm.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeRequest_Mobility;
 import org.restcomm.protocols.ss7.map.api.service.oam.ActivateTraceModeRequest_Oam;
 import org.restcomm.protocols.ss7.map.api.service.oam.MAPDialogOam;
-import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfigurationImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepthListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference2Impl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceReferenceImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceTypeImpl;
+import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfiguration;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepthList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeList;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference2;
+import org.restcomm.protocols.ss7.map.api.service.oam.TraceType;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -56,48 +60,48 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ActivateTraceModeRequestImpl extends MessageImpl implements ActivateTraceModeRequest_Oam,ActivateTraceModeRequest_Mobility {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1,defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
-    private TraceReferenceImpl traceReference;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1, defaultImplementation = TraceReferenceImpl.class)
+    private TraceReference traceReference;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
-    private TraceTypeImpl traceType;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1, defaultImplementation = TraceTypeImpl.class)
+    private TraceType traceType;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
-    private AddressStringImpl omcId;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1, defaultImplementation = AddressStringImpl.class)
+    private AddressString omcId;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
-    private TraceReference2Impl traceReference2;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1, defaultImplementation = TraceReference2Impl.class)
+    private TraceReference2 traceReference2;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1)
-    private TraceDepthListImpl traceDepthList;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1, defaultImplementation = TraceDepthListImpl.class)
+    private TraceDepthList traceDepthList;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1)
-    private TraceNETypeListImpl traceNeTypeList;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1, defaultImplementation = TraceNETypeListImpl.class)
+    private TraceNETypeList traceNeTypeList;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=true,index=-1)
-    private TraceInterfaceListImpl traceInterfaceList;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=true,index=-1, defaultImplementation = TraceInterfaceListImpl.class)
+    private TraceInterfaceList traceInterfaceList;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=true,index=-1)
-    private TraceEventListImpl traceEventList;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=true,index=-1, defaultImplementation = TraceEventListImpl.class)
+    private TraceEventList traceEventList;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=false,index=-1)
-    private GSNAddressImpl traceCollectionEntity;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=false,index=-1, defaultImplementation = GSNAddressImpl.class)
+    private GSNAddress traceCollectionEntity;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=true,index=-1)
-    private MDTConfigurationImpl mdtConfiguration;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=true,index=-1,defaultImplementation = MDTConfigurationImpl.class)
+    private MDTConfiguration mdtConfiguration;
 
     public ActivateTraceModeRequestImpl() {
     }
 
-    public ActivateTraceModeRequestImpl(IMSIImpl imsi, TraceReferenceImpl traceReference, TraceTypeImpl traceType, AddressStringImpl omcId,
-            MAPExtensionContainerImpl extensionContainer, TraceReference2Impl traceReference2, TraceDepthListImpl traceDepthList, TraceNETypeListImpl traceNeTypeList,
-            TraceInterfaceListImpl traceInterfaceList, TraceEventListImpl traceEventList, GSNAddressImpl traceCollectionEntity, MDTConfigurationImpl mdtConfiguration) {
+    public ActivateTraceModeRequestImpl(IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
+    		MAPExtensionContainer extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList,
+            TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration) {
 
         this.imsi = imsi;
         this.traceReference = traceReference;
@@ -134,62 +138,62 @@ public class ActivateTraceModeRequestImpl extends MessageImpl implements Activat
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return imsi;
     }
 
     @Override
-    public TraceReferenceImpl getTraceReference() {
+    public TraceReference getTraceReference() {
         return traceReference;
     }
 
     @Override
-    public TraceTypeImpl getTraceType() {
+    public TraceType getTraceType() {
         return traceType;
     }
 
     @Override
-    public AddressStringImpl getOmcId() {
+    public AddressString getOmcId() {
         return omcId;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 
     @Override
-    public TraceReference2Impl getTraceReference2() {
+    public TraceReference2 getTraceReference2() {
         return traceReference2;
     }
 
     @Override
-    public TraceDepthListImpl getTraceDepthList() {
+    public TraceDepthList getTraceDepthList() {
         return traceDepthList;
     }
 
     @Override
-    public TraceNETypeListImpl getTraceNeTypeList() {
+    public TraceNETypeList getTraceNeTypeList() {
         return traceNeTypeList;
     }
 
     @Override
-    public TraceInterfaceListImpl getTraceInterfaceList() {
+    public TraceInterfaceList getTraceInterfaceList() {
         return traceInterfaceList;
     }
 
     @Override
-    public TraceEventListImpl getTraceEventList() {
+    public TraceEventList getTraceEventList() {
         return traceEventList;
     }
 
     @Override
-    public GSNAddressImpl getTraceCollectionEntity() {
+    public GSNAddress getTraceCollectionEntity() {
         return traceCollectionEntity;
     }
 
     @Override
-    public MDTConfigurationImpl getMdtConfiguration() {
+    public MDTConfiguration getMdtConfiguration() {
         return mdtConfiguration;
     }
 

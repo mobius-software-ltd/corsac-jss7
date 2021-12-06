@@ -23,9 +23,9 @@
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 
 /**
  *
@@ -74,9 +74,9 @@ public interface UnstructuredSSRequest extends SupplementaryMessage {
      *
      * @return
      */
-    USSDStringImpl getUSSDString();
+    USSDString getUSSDString();
 
-    ISDNAddressStringImpl getMSISDNAddressStringImpl();
+    ISDNAddressString getMSISDNAddressStringImpl();
 
-    AlertingPatternImpl getAlertingPattern();
+    AlertingPattern getAlertingPattern();
 }

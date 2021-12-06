@@ -29,10 +29,11 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.apache.log4j.Logger;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CamelInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -74,7 +75,8 @@ public class CamelInfoTest {
     }
 
     public static byte[] getDataFull() {
-        return new byte[] { -85, 57, 3, 2, 6, -64, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 2, 1, -86 };
+        return new byte[] { -85, 51, 3, 2, 6, -64, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6,
+                3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 2, 1, -86 };
     }
 
     @Test(groups = { "functional.decode", "service.callhandling" })
@@ -88,7 +90,7 @@ public class CamelInfoTest {
         assertTrue(result.getResult() instanceof CamelInfoImpl);
         CamelInfoImpl impl = (CamelInfoImpl)result.getResult();
         
-        SupportedCamelPhasesImpl scf = impl.getSupportedCamelPhases();
+        SupportedCamelPhases scf = impl.getSupportedCamelPhases();
         assertTrue(scf.getPhase1Supported());
         assertTrue(scf.getPhase2Supported());
         assertTrue(scf.getPhase3Supported());
@@ -112,7 +114,7 @@ public class CamelInfoTest {
 
         assertTrue(impl.getSuppressTCSI());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(impl.getExtensionContainer()));
-        OfferedCamel4CSIsImpl ofc = impl.getOfferedCamel4CSIs();
+        OfferedCamel4CSIs ofc = impl.getOfferedCamel4CSIs();
         assertTrue(ofc.getOCsi());
         assertFalse(ofc.getDCsi());
         assertTrue(ofc.getVtCsi());

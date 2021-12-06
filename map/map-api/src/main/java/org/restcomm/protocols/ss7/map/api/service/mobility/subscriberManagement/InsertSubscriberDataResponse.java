@@ -24,10 +24,10 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeaturesImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeatures;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 
 /**
  *
@@ -72,22 +72,22 @@ SS-List ::= SEQUENCE SIZE (1..30) OF SS-Code
  */
 public interface InsertSubscriberDataResponse extends MobilityMessage {
 
-    List<ExtTeleserviceCodeImpl> getTeleserviceList();
+    List<ExtTeleserviceCode> getTeleserviceList();
 
-    List<ExtBearerServiceCodeImpl> getBearerServiceList();
+    List<ExtBearerServiceCode> getBearerServiceList();
 
-    List<SSCodeImpl> getSSList();
+    List<SSCode> getSSList();
 
-    ODBGeneralDataImpl getODBGeneralData();
+    ODBGeneralData getODBGeneralData();
 
     RegionalSubscriptionResponse getRegionalSubscriptionResponse();
 
-    SupportedCamelPhasesImpl getSupportedCamelPhases();
+    SupportedCamelPhases getSupportedCamelPhases();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
-    OfferedCamel4CSIsImpl getOfferedCamel4CSIs();
+    OfferedCamel4CSIs getOfferedCamel4CSIs();
 
-    SupportedFeaturesImpl getSupportedFeatures();
+    SupportedFeatures getSupportedFeatures();
 
 }

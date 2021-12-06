@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.errors;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -38,11 +38,11 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  */
 public interface MAPErrorMessageSubscriberBusyForMtSms extends MAPErrorMessage {
 
-	MAPExtensionContainerImpl getExtensionContainer();
+	MAPExtensionContainer getExtensionContainer();
 
     Boolean getGprsConnectionSuspended();
 
-    void setExtensionContainer(MAPExtensionContainerImpl extensionContainer);
+    void setExtensionContainer(MAPExtensionContainer extensionContainer);
 
     void setGprsConnectionSuspended(Boolean gprsConnectionSuspended);
 

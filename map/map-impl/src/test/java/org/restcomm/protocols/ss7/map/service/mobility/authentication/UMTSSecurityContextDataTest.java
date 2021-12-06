@@ -27,10 +27,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CKImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.IKImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSecurityContextDataImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

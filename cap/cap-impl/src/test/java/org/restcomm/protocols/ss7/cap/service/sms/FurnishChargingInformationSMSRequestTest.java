@@ -29,8 +29,9 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELSequence1SMSImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMSImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELSequence1SMS;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.FCIBCCCAMELSequence1SMSImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.FreeFormatDataSMSImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -67,7 +68,7 @@ public class FurnishChargingInformationSMSRequestTest {
         assertTrue(result.getResult() instanceof FurnishChargingInformationSMSRequestImpl);
         
         FurnishChargingInformationSMSRequestImpl prim = (FurnishChargingInformationSMSRequestImpl)result.getResult();        
-        FCIBCCCAMELSequence1SMSImpl fcIBCCCAMELsequence1 = prim.getFCIBCCCAMELsequence1();
+        FCIBCCCAMELSequence1SMS fcIBCCCAMELsequence1 = prim.getFCIBCCCAMELsequence1();
         assertNotNull(fcIBCCCAMELsequence1);
         assertTrue(Arrays.equals(fcIBCCCAMELsequence1.getFreeFormatData().getData(), this.getFreeFormatData()));
         assertEquals(fcIBCCCAMELsequence1.getAppendFreeFormatData(), AppendFreeFormatData.append);

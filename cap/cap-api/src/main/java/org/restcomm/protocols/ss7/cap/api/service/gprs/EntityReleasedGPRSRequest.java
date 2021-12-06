@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.gprs;
 
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSCauseImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSCause;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 
 /**
  *
@@ -43,8 +43,8 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
  */
 public interface EntityReleasedGPRSRequest extends GprsMessage {
 
-    GPRSCauseImpl getGPRSCause();
+    GPRSCause getGPRSCause();
 
-    PDPIDImpl getPDPID();
+    PDPID getPDPID();
 
 }

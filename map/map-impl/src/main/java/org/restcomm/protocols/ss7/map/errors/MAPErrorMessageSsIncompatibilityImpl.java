@@ -24,9 +24,12 @@ package org.restcomm.protocols.ss7.map.errors;
 
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSsIncompatibility;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSStatusImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -40,22 +43,31 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageSsIncompatibilityImpl extends MAPErrorMessageImpl implements MAPErrorMessageSsIncompatibility {
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
-    private SSCodeImpl ssCode;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1, defaultImplementation = SSCodeImpl.class)
+    private SSCode ssCode;
     
 	@ASNChoise
 	private BasicServiceCodeImpl basicService;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
-    private SSStatusImpl ssStatus;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1, defaultImplementation = SSStatusImpl.class)
+    private SSStatus ssStatus;
 
     protected String _PrimitiveName = "MAPErrorMessageSsIncompatibility";
 
-    public MAPErrorMessageSsIncompatibilityImpl(SSCodeImpl ssCode, BasicServiceCodeImpl basicService, SSStatusImpl ssStatus) {
+    public MAPErrorMessageSsIncompatibilityImpl(SSCode ssCode, BasicServiceCode basicService, SSStatus ssStatus) {
         super((long) MAPErrorCode.ssIncompatibility);
 
         this.ssCode = ssCode;
-        this.basicService = basicService;
+
+        if(basicService instanceof BasicServiceCodeImpl)
+    		this.basicService=(BasicServiceCodeImpl)basicService;
+    	else if(basicService!=null) {
+    		if(basicService.getBearerService()!=null)
+    			this.basicService = new BasicServiceCodeImpl(basicService.getBearerService());
+    		else 
+    			this.basicService = new BasicServiceCodeImpl(basicService.getTeleservice());
+    	}
+        
         this.ssStatus = ssStatus;
     }
 
@@ -72,32 +84,41 @@ public class MAPErrorMessageSsIncompatibilityImpl extends MAPErrorMessageImpl im
     }
 
     @Override
-    public SSCodeImpl getSSCode() {
+    public SSCode getSSCode() {
         return ssCode;
     }
 
     @Override
-    public BasicServiceCodeImpl getBasicService() {
+    public BasicServiceCode getBasicService() {
         return basicService;
     }
 
     @Override
-    public SSStatusImpl getSSStatus() {
+    public SSStatus getSSStatus() {
         return ssStatus;
     }
 
     @Override
-    public void setSSCode(SSCodeImpl val) {
+    public void setSSCode(SSCode val) {
         ssCode = val;
     }
 
     @Override
-    public void setBasicService(BasicServiceCodeImpl val) {
-        basicService = val;
+    public void setBasicService(BasicServiceCode val) {
+    	 if(basicService instanceof BasicServiceCodeImpl)
+     		this.basicService=(BasicServiceCodeImpl)basicService;
+     	else if(basicService!=null) {
+     		if(basicService.getBearerService()!=null)
+     			this.basicService = new BasicServiceCodeImpl(basicService.getBearerService());
+     		else 
+     			this.basicService = new BasicServiceCodeImpl(basicService.getTeleservice());
+     	}
+     	else
+     		this.basicService=null;
     }
 
     @Override
-    public void setSSStatus(SSStatusImpl val) {
+    public void setSSStatus(SSStatus val) {
         ssStatus = val;
     }
 

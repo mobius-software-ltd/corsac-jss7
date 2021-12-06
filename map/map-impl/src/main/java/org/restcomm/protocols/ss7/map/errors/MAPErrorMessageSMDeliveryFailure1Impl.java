@@ -26,8 +26,9 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSMDeliveryFailure;
 import org.restcomm.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpduImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpdu;
+import org.restcomm.protocols.ss7.map.smstpdu.SmsDeliverReportTpduImpl;
 
 /**
  *
@@ -90,7 +91,7 @@ MAPErrorMessageSMDeliveryFailure {
     }
 
 	@Override
-	public MAPExtensionContainerImpl getExtensionContainer() {
+	public MAPExtensionContainer getExtensionContainer() {
 		return null;
 	}
 
@@ -109,7 +110,7 @@ MAPErrorMessageSMDeliveryFailure {
 	}
 
 	@Override
-	public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
+	public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
 	}
 
 	@Override
@@ -123,7 +124,7 @@ MAPErrorMessageSMDeliveryFailure {
 	}
 
 	@Override
-	public void setSmsDeliverReportTpdu(SmsDeliverReportTpduImpl tpdu)
+	public void setSmsDeliverReportTpdu(SmsDeliverReportTpdu tpdu)
 			throws MAPException {		
 	}
 }

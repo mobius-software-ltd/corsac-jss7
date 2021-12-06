@@ -30,39 +30,39 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.MAPServiceBase;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AccuracyFulfilmentIndicator;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredmtlrDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientIDImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSCodewordImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformation;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfo;
+import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredmtlrData;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformation;
+import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningData;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientID;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSCodeword;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSEvent;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfo;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSPriority;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSPrivacyCheckImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSQoSImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LocationTypeImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSPrivacyCheck;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSQoS;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LocationType;
 import org.restcomm.protocols.ss7.map.api.service.lsm.MAPDialogLsm;
-import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.PositioningDataInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNListImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.SupportedGADShapesImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimateImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfo;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PositioningDataInformation;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNList;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddress;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SupportedGADShapes;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningData;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfo;
+import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimate;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 
 /**
@@ -81,7 +81,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * @param destReference
      */
     protected MAPDialogLsmImpl(MAPApplicationContext appCntx, Dialog tcapDialog, MAPProviderImpl mapProviderImpl,
-            MAPServiceBase mapService, AddressStringImpl origReference, AddressStringImpl destReference) {
+            MAPServiceBase mapService, AddressString origReference, AddressString destReference) {
         super(appCntx, tcapDialog, mapProviderImpl, mapService, origReference, destReference);
     }
 
@@ -100,12 +100,12 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * org.restcomm.protocols.ss7.map.api.service.lsm.LCSPrivacyCheck,
      * org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfo, byte[])
      */
-    public Long addProvideSubscriberLocationRequest(LocationTypeImpl locationType, ISDNAddressStringImpl mlcNumber,
-            LCSClientIDImpl lcsClientID, boolean privacyOverride, IMSIImpl imsi, ISDNAddressStringImpl msisdn, LMSIImpl lmsi, IMEIImpl imei,
-            LCSPriority lcsPriority, LCSQoSImpl lcsQoS, MAPExtensionContainerImpl extensionContainer,
-            SupportedGADShapesImpl supportedGADShapes, Integer lcsReferenceNumber, Integer lcsServiceTypeID,
-            LCSCodewordImpl lcsCodeword, LCSPrivacyCheckImpl lcsPrivacyCheck, AreaEventInfoImpl areaEventInfo, GSNAddressImpl hgmlcAddress,
-            boolean moLrShortCircuitIndicator, PeriodicLDRInfoImpl periodicLDRInfo, ReportingPLMNListImpl reportingPLMNList)
+    public Long addProvideSubscriberLocationRequest(LocationType locationType, ISDNAddressString mlcNumber,
+            LCSClientID lcsClientID, boolean privacyOverride, IMSI imsi, ISDNAddressString msisdn, LMSI lmsi, IMEI imei,
+            LCSPriority lcsPriority, LCSQoS lcsQoS, MAPExtensionContainer extensionContainer,
+            SupportedGADShapes supportedGADShapes, Integer lcsReferenceNumber, Integer lcsServiceTypeID,
+            LCSCodeword lcsCodeword, LCSPrivacyCheck lcsPrivacyCheck, AreaEventInfo areaEventInfo, GSNAddress hgmlcAddress,
+            boolean moLrShortCircuitIndicator, PeriodicLDRInfo periodicLDRInfo, ReportingPLMNList reportingPLMNList)
             throws MAPException {
         return this.addProvideSubscriberLocationRequest(_Timer_Default, locationType, mlcNumber, lcsClientID, privacyOverride,
                 imsi, msisdn, lmsi, imei, lcsPriority, lcsQoS, extensionContainer, supportedGADShapes, lcsReferenceNumber,
@@ -113,12 +113,12 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
                 periodicLDRInfo, reportingPLMNList);
     }
 
-    public Long addProvideSubscriberLocationRequest(int customInvokeTimeout, LocationTypeImpl locationType,
-            ISDNAddressStringImpl mlcNumber, LCSClientIDImpl lcsClientID, boolean privacyOverride, IMSIImpl imsi, ISDNAddressStringImpl msisdn,
-            LMSIImpl lmsi, IMEIImpl imei, LCSPriority lcsPriority, LCSQoSImpl lcsQoS, MAPExtensionContainerImpl extensionContainer,
-            SupportedGADShapesImpl supportedGADShapes, Integer lcsReferenceNumber, Integer lcsServiceTypeID,
-            LCSCodewordImpl lcsCodeword, LCSPrivacyCheckImpl lcsPrivacyCheck, AreaEventInfoImpl areaEventInfo, GSNAddressImpl hgmlcAddress,
-            boolean moLrShortCircuitIndicator, PeriodicLDRInfoImpl periodicLDRInfo, ReportingPLMNListImpl reportingPLMNList)
+    public Long addProvideSubscriberLocationRequest(int customInvokeTimeout, LocationType locationType,
+            ISDNAddressString mlcNumber, LCSClientID lcsClientID, boolean privacyOverride, IMSI imsi, ISDNAddressString msisdn,
+            LMSI lmsi, IMEI imei, LCSPriority lcsPriority, LCSQoS lcsQoS, MAPExtensionContainer extensionContainer,
+            SupportedGADShapes supportedGADShapes, Integer lcsReferenceNumber, Integer lcsServiceTypeID,
+            LCSCodeword lcsCodeword, LCSPrivacyCheck lcsPrivacyCheck, AreaEventInfo areaEventInfo, GSNAddress hgmlcAddress,
+            boolean moLrShortCircuitIndicator, PeriodicLDRInfo periodicLDRInfo, ReportingPLMNList reportingPLMNList)
             throws MAPException {
 
         if (locationType == null || mlcNumber == null) {
@@ -153,14 +153,14 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * java.lang.Boolean, org.restcomm.protocols.ss7.map.api.service.lsm. CellGlobalIdOrServiceAreaIdOrLAI, java.lang.Boolean,
      * org.restcomm.protocols .ss7.map.api.service.lsm.AccuracyFulfilmentIndicator)
      */
-    public void addProvideSubscriberLocationResponse(long invokeId, ExtGeographicalInformationImpl locationEstimate,
-            PositioningDataInformationImpl geranPositioningData, UtranPositioningDataInfoImpl utranPositioningData,
-            Integer ageOfLocationEstimate, AddGeographicalInformationImpl additionalLocationEstimate,
-            MAPExtensionContainerImpl extensionContainer, boolean deferredMTLRResponseIndicator,
-            CellGlobalIdOrServiceAreaIdOrLAIImpl cellGlobalIdOrServiceAreaIdOrLAI, boolean saiPresent,
-            AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimateImpl velocityEstimate,
-            boolean moLrShortCircuitIndicator, GeranGANSSpositioningDataImpl geranGANSSpositioningData,
-            UtranGANSSpositioningDataImpl utranGANSSpositioningData, ServingNodeAddressImpl targetServingNodeForHandover)
+    public void addProvideSubscriberLocationResponse(long invokeId, ExtGeographicalInformation locationEstimate,
+            PositioningDataInformation geranPositioningData, UtranPositioningDataInfo utranPositioningData,
+            Integer ageOfLocationEstimate, AddGeographicalInformation additionalLocationEstimate,
+            MAPExtensionContainer extensionContainer, boolean deferredMTLRResponseIndicator,
+            CellGlobalIdOrServiceAreaIdOrLAI cellGlobalIdOrServiceAreaIdOrLAI, boolean saiPresent,
+            AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimate velocityEstimate,
+            boolean moLrShortCircuitIndicator, GeranGANSSpositioningData geranGANSSpositioningData,
+            UtranGANSSpositioningData utranGANSSpositioningData, ServingNodeAddress targetServingNodeForHandover)
             throws MAPException {
 
         if (locationEstimate == null) {
@@ -192,17 +192,17 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * java.lang.String, org.restcomm.protocols.ss7.map.api.service.lsm. CellGlobalIdOrServiceAreaIdOrLAI, java.lang.String,
      * int, boolean, org.restcomm .protocols.ss7.map.api.service.lsm.AccuracyFulfilmentIndicator)
      */
-    public Long addSubscriberLocationReportRequest(LCSEvent lcsEvent, LCSClientIDImpl lcsClientID, LCSLocationInfoImpl lcsLocationInfo,
-            ISDNAddressStringImpl msisdn, IMSIImpl imsi, IMEIImpl imei, ISDNAddressStringImpl naEsrd, ISDNAddressStringImpl naEsrk,
-            ExtGeographicalInformationImpl locationEstimate, Integer ageOfLocationEstimate,
-            SLRArgExtensionContainerImpl slrArgExtensionContainer, AddGeographicalInformationImpl addLocationEstimate,
-            DeferredmtlrDataImpl deferredmtlrData, Integer lcsReferenceNumber, PositioningDataInformationImpl geranPositioningData,
-            UtranPositioningDataInfoImpl utranPositioningData, CellGlobalIdOrServiceAreaIdOrLAIImpl cellIdOrSai,
-            GSNAddressImpl hgmlcAddress, Integer lcsServiceTypeID, boolean saiPresent, boolean pseudonymIndicator,
-            AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimateImpl velocityEstimate, Integer sequenceNumber,
-            PeriodicLDRInfoImpl periodicLDRInfo, boolean moLrShortCircuitIndicator,
-            GeranGANSSpositioningDataImpl geranGANSSpositioningData, UtranGANSSpositioningDataImpl utranGANSSpositioningData,
-            ServingNodeAddressImpl targetServingNodeForHandover) throws MAPException {
+    public Long addSubscriberLocationReportRequest(LCSEvent lcsEvent, LCSClientID lcsClientID, LCSLocationInfo lcsLocationInfo,
+    		ISDNAddressString msisdn, IMSI imsi, IMEI imei, ISDNAddressString naEsrd, ISDNAddressString naEsrk,
+            ExtGeographicalInformation locationEstimate, Integer ageOfLocationEstimate,
+            SLRArgExtensionContainer slrArgExtensionContainer, AddGeographicalInformation addLocationEstimate,
+            DeferredmtlrData deferredmtlrData, Integer lcsReferenceNumber, PositioningDataInformation geranPositioningData,
+            UtranPositioningDataInfo utranPositioningData, CellGlobalIdOrServiceAreaIdOrLAI cellIdOrSai,
+            GSNAddress hgmlcAddress, Integer lcsServiceTypeID, boolean saiPresent, boolean pseudonymIndicator,
+            AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimate velocityEstimate, Integer sequenceNumber,
+            PeriodicLDRInfo periodicLDRInfo, boolean moLrShortCircuitIndicator,
+            GeranGANSSpositioningData geranGANSSpositioningData, UtranGANSSpositioningData utranGANSSpositioningData,
+            ServingNodeAddress targetServingNodeForHandover) throws MAPException {
         return this.addSubscriberLocationReportRequest(_Timer_Default, lcsEvent, lcsClientID, lcsLocationInfo, msisdn, imsi,
                 imei, naEsrd, naEsrk, locationEstimate, ageOfLocationEstimate, slrArgExtensionContainer, addLocationEstimate,
                 deferredmtlrData, lcsReferenceNumber, geranPositioningData, utranPositioningData, cellIdOrSai, hgmlcAddress,
@@ -211,17 +211,17 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
                 utranGANSSpositioningData, targetServingNodeForHandover);
     }
 
-    public Long addSubscriberLocationReportRequest(int customInvokeTimeout, LCSEvent lcsEvent, LCSClientIDImpl lcsClientID,
-            LCSLocationInfoImpl lcsLocationInfo, ISDNAddressStringImpl msisdn, IMSIImpl imsi, IMEIImpl imei, ISDNAddressStringImpl naEsrd,
-            ISDNAddressStringImpl naEsrk, ExtGeographicalInformationImpl locationEstimate, Integer ageOfLocationEstimate,
-            SLRArgExtensionContainerImpl slrArgExtensionContainer, AddGeographicalInformationImpl addLocationEstimate,
-            DeferredmtlrDataImpl deferredmtlrData, Integer lcsReferenceNumber, PositioningDataInformationImpl geranPositioningData,
-            UtranPositioningDataInfoImpl utranPositioningData, CellGlobalIdOrServiceAreaIdOrLAIImpl cellIdOrSai,
-            GSNAddressImpl hgmlcAddress, Integer lcsServiceTypeID, boolean saiPresent, boolean pseudonymIndicator,
-            AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimateImpl velocityEstimate, Integer sequenceNumber,
-            PeriodicLDRInfoImpl periodicLDRInfo, boolean moLrShortCircuitIndicator,
-            GeranGANSSpositioningDataImpl geranGANSSpositioningData, UtranGANSSpositioningDataImpl utranGANSSpositioningData,
-            ServingNodeAddressImpl targetServingNodeForHandover) throws MAPException {
+    public Long addSubscriberLocationReportRequest(int customInvokeTimeout, LCSEvent lcsEvent, LCSClientID lcsClientID,
+            LCSLocationInfo lcsLocationInfo, ISDNAddressString msisdn, IMSI imsi, IMEI imei, ISDNAddressString naEsrd,
+            ISDNAddressString naEsrk, ExtGeographicalInformation locationEstimate, Integer ageOfLocationEstimate,
+            SLRArgExtensionContainer slrArgExtensionContainer, AddGeographicalInformation addLocationEstimate,
+            DeferredmtlrData deferredmtlrData, Integer lcsReferenceNumber, PositioningDataInformation geranPositioningData,
+            UtranPositioningDataInfo utranPositioningData, CellGlobalIdOrServiceAreaIdOrLAI cellIdOrSai,
+            GSNAddress hgmlcAddress, Integer lcsServiceTypeID, boolean saiPresent, boolean pseudonymIndicator,
+            AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimate velocityEstimate, Integer sequenceNumber,
+            PeriodicLDRInfo periodicLDRInfo, boolean moLrShortCircuitIndicator,
+            GeranGANSSpositioningData geranGANSSpositioningData, UtranGANSSpositioningData utranGANSSpositioningData,
+            ServingNodeAddress targetServingNodeForHandover) throws MAPException {
 
         if (lcsEvent == null || lcsClientID == null || lcsLocationInfo == null) {
             throw new MAPException("Mandatroy parameters lCSEvent, lCSClientID or lCSLocationInfo cannot be null");
@@ -253,8 +253,8 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * org.restcomm.protocols.ss7.map.api.dialog.MAPExtensionContainer,
      * org.restcomm.protocols.ss7.map.api.dialog.AddressString, org.restcomm.protocols.ss7.map.api.dialog.AddressString)
      */
-    public void addSubscriberLocationReportResponse(long invokeId, ISDNAddressStringImpl naEsrd, ISDNAddressStringImpl naEsrk,
-            MAPExtensionContainerImpl extensionContainer) throws MAPException {
+    public void addSubscriberLocationReportResponse(long invokeId, ISDNAddressString naEsrd, ISDNAddressString naEsrk,
+    		MAPExtensionContainer extensionContainer) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.locationSvcEnquiryContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3)
@@ -274,13 +274,13 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * org.restcomm.protocols.ss7.map.api.service.lsm.SubscriberIdentity,
      * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer)
      */
-    public Long addSendRoutingInfoForLCSRequest(ISDNAddressStringImpl mlcNumber, SubscriberIdentityImpl targetMS,
-            MAPExtensionContainerImpl extensionContainer) throws MAPException {
+    public Long addSendRoutingInfoForLCSRequest(ISDNAddressString mlcNumber, SubscriberIdentity targetMS,
+    		MAPExtensionContainer extensionContainer) throws MAPException {
         return this.addSendRoutingInfoForLCSRequest(_Timer_Default, mlcNumber, targetMS, extensionContainer);
     }
 
-    public Long addSendRoutingInfoForLCSRequest(int customInvokeTimeout, ISDNAddressStringImpl mlcNumber,
-            SubscriberIdentityImpl targetMS, MAPExtensionContainerImpl extensionContainer) throws MAPException {
+    public Long addSendRoutingInfoForLCSRequest(int customInvokeTimeout, ISDNAddressString mlcNumber,
+            SubscriberIdentity targetMS, MAPExtensionContainer extensionContainer) throws MAPException {
 
         if (mlcNumber == null || targetMS == null) {
             throw new MAPException("Mandatroy parameters mlcNumber or targetMS cannot be null");
@@ -308,9 +308,9 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfo,
      * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer, byte[], byte[], byte[], byte[])
      */
-    public void addSendRoutingInfoForLCSResponse(long invokeId, SubscriberIdentityImpl targetMS, LCSLocationInfoImpl lcsLocationInfo,
-            MAPExtensionContainerImpl extensionContainer, GSNAddressImpl vgmlcAddress, GSNAddressImpl hGmlcAddress, GSNAddressImpl pprAddress,
-            GSNAddressImpl additionalVGmlcAddress) throws MAPException {
+    public void addSendRoutingInfoForLCSResponse(long invokeId, SubscriberIdentity targetMS, LCSLocationInfo lcsLocationInfo,
+    		MAPExtensionContainer extensionContainer, GSNAddress vgmlcAddress, GSNAddress hGmlcAddress, GSNAddress pprAddress,
+            GSNAddress additionalVGmlcAddress) throws MAPException {
 
         if (targetMS == null || lcsLocationInfo == null) {
             throw new MAPException("Mandatroy parameters targetMS or lcsLocationInfo cannot be null");

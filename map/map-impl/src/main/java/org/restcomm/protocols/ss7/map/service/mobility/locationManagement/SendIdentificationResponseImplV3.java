@@ -24,13 +24,16 @@ package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetListImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContextImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContextWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetList;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContext;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationResponse;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.CurrentSecurityContextWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -46,7 +49,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class SendIdentificationResponseImplV3 extends MobilityMessageImpl implements SendIdentificationResponse {
 	private static final long serialVersionUID = 1L;
 
-	private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = IMSIImpl.class)
+	private IMSI imsi;
     
     @ASNChoise
     private AuthenticationSetListImpl authenticationSetList;
@@ -54,8 +58,9 @@ public class SendIdentificationResponseImplV3 extends MobilityMessageImpl implem
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1)
     private CurrentSecurityContextWrapperImpl currentSecurityContext;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
+    
     private long mapProtocolVersion;
 
     public SendIdentificationResponseImplV3() {
@@ -67,11 +72,19 @@ public class SendIdentificationResponseImplV3 extends MobilityMessageImpl implem
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public SendIdentificationResponseImplV3(IMSIImpl imsi, AuthenticationSetListImpl authenticationSetList,
-            CurrentSecurityContextImpl currentSecurityContext, MAPExtensionContainerImpl extensionContainer, long mapProtocolVersion) {
+    public SendIdentificationResponseImplV3(IMSI imsi, AuthenticationSetList authenticationSetList,
+            CurrentSecurityContext currentSecurityContext, MAPExtensionContainer extensionContainer, long mapProtocolVersion) {
         super();
         this.imsi = imsi;
-        this.authenticationSetList = authenticationSetList;
+
+        if(authenticationSetList instanceof AuthenticationSetListImpl)
+        	this.authenticationSetList=(AuthenticationSetListImpl)authenticationSetList;
+        if(authenticationSetList!=null) {
+        	if(authenticationSetList.getQuintupletList()!=null)
+        		this.authenticationSetList = new AuthenticationSetListImpl(authenticationSetList.getQuintupletList());
+        	else if(authenticationSetList.getTripletList()!=null)
+        		this.authenticationSetList = new AuthenticationSetListImpl(authenticationSetList.getTripletList(), mapProtocolVersion);
+        }
         
         if(currentSecurityContext!=null)
         	this.currentSecurityContext = new CurrentSecurityContextWrapperImpl(currentSecurityContext);
@@ -91,17 +104,17 @@ public class SendIdentificationResponseImplV3 extends MobilityMessageImpl implem
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return this.imsi;
     }
 
     @Override
-    public AuthenticationSetListImpl getAuthenticationSetList() {
+    public AuthenticationSetList getAuthenticationSetList() {
         return this.authenticationSetList;
     }
 
     @Override
-    public CurrentSecurityContextImpl getCurrentSecurityContext() {
+    public CurrentSecurityContext getCurrentSecurityContext() {
     	if(this.currentSecurityContext==null)
     		return null;
     	
@@ -109,7 +122,7 @@ public class SendIdentificationResponseImplV3 extends MobilityMessageImpl implem
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

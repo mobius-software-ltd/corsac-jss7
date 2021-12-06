@@ -28,7 +28,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.service.sms.IpSmGwGuidanceImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -51,7 +50,8 @@ public class IpSmGwGuidanceTest {
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] {48, 53, 2, 1, 30, 2, 1, 40, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33};
+        return new byte[] {48, 47,2,1,30,2,1,40,48,39,-96,32,48,10,6,3,42,3,4,11,12,13,14,15,
+                48,5,6,3,42,3,6,48,11,6,3,42,3,5,21,22,23,24,25,26,-95,3,31,32,33};
     }
 
     @Test(groups = { "functional.decode", "service.sms" })

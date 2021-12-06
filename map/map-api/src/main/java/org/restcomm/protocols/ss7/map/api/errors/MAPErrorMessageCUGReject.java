@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.errors;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -39,10 +39,10 @@ public interface MAPErrorMessageCUGReject extends MAPErrorMessage {
 
     CUGRejectCause getCUGRejectCause();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     void setCUGRejectCause(CUGRejectCause val);
 
-    void setExtensionContainer(MAPExtensionContainerImpl val);
+    void setExtensionContainer(MAPExtensionContainer val);
 
 }

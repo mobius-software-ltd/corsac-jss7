@@ -25,11 +25,11 @@ package org.restcomm.protocols.ss7.map.api;
 import java.io.Serializable;
 
 import org.restcomm.protocols.ss7.map.api.dialog.MAPDialogState;
-import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoiseImpl;
+import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
 import org.restcomm.protocols.ss7.map.api.dialog.Reason;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
@@ -108,21 +108,21 @@ public interface MAPDialog extends Serializable {
      *
      * @return
      */
-    AddressStringImpl getReceivedOrigReference();
+    AddressString getReceivedOrigReference();
 
     /**
      * Return received DestReference from MAPOpenInfo or null if no OrigReference has been received
      *
      * @return
      */
-    AddressStringImpl getReceivedDestReference();
+    AddressString getReceivedDestReference();
 
     /**
      * Return received ExtensionContainer from MAPOpenInfo or null if no OrigReference has been received
      *
      * @return
      */
-    MAPExtensionContainerImpl getReceivedExtensionContainer();
+    MAPExtensionContainer getReceivedExtensionContainer();
 
     /**
      * @return NetworkId to which virtual network Dialog belongs to
@@ -194,7 +194,7 @@ public interface MAPDialog extends Serializable {
      * Set ExtentionContainer that will be send in 1) T-BEGIN 2) T-CONTINUE or T-END if it is response to the T-BEGIN 3) T-ABORT
      * If no Dialogue control APDU is sending - ExtentionContainer will also not be sent
      */
-    void setExtentionContainer(MAPExtensionContainerImpl extContainer);
+    void setExtentionContainer(MAPExtensionContainer extContainer);
 
     /**
      * This is equivalent of MAP User issuing the MAP_DELIMITER Service Request. send() is called to explicitly request the
@@ -247,7 +247,7 @@ public interface MAPDialog extends Serializable {
      *
      * @param userReason
      */
-    void abort(MAPUserAbortChoiseImpl mapUserAbortChoice) throws MAPException;
+    void abort(MAPUserAbortChoice mapUserAbortChoice) throws MAPException;
 
     /**
      * Send T_U_ABORT with MAP-RefuseInfo
@@ -353,7 +353,7 @@ public interface MAPDialog extends Serializable {
      * @param eriMsisdn
      * @param eriVlrNo
      */
-    void addEricssonData(AddressStringImpl eriMsisdn, AddressStringImpl eriVlrNo);
+    void addEricssonData(AddressString eriMsisdn, AddressString eriVlrNo);
 
     /**
     * Return the value of the IdleTaskTimeout of the TCAP Dialog in milliseconds.

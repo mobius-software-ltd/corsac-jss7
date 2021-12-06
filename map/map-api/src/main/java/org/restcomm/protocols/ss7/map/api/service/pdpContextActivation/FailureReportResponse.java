@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.pdpContextActivation;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -36,8 +36,8 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  */
 public interface FailureReportResponse extends PdpContextActivationMessage {
 
-    GSNAddressImpl getGgsnAddress();
+    GSNAddress getGgsnAddress();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
 }

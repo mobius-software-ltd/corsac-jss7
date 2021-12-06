@@ -24,10 +24,10 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ASNRegionalSubscriptionResponse;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DeleteSubscriberDataResponse;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.RegionalSubscriptionResponse;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -45,12 +45,14 @@ public class DeleteSubscriberDataResponseImpl extends MobilityMessageImpl implem
 
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private ASNRegionalSubscriptionResponse regionalSubscriptionResponse;
-    private MAPExtensionContainerImpl extensionContainer;
+   
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
 
     public DeleteSubscriberDataResponseImpl() {
     }
 
-    public DeleteSubscriberDataResponseImpl(RegionalSubscriptionResponse regionalSubscriptionResponse, MAPExtensionContainerImpl extensionContainer) {
+    public DeleteSubscriberDataResponseImpl(RegionalSubscriptionResponse regionalSubscriptionResponse, MAPExtensionContainer extensionContainer) {
     	if(regionalSubscriptionResponse!=null) {
     		this.regionalSubscriptionResponse = new ASNRegionalSubscriptionResponse();
     		this.regionalSubscriptionResponse.setType(regionalSubscriptionResponse);;
@@ -69,7 +71,7 @@ public class DeleteSubscriberDataResponseImpl extends MobilityMessageImpl implem
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 

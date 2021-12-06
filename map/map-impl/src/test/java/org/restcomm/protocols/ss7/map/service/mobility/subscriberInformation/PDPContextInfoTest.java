@@ -29,20 +29,16 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingIDImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContextInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TEIDImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TransactionIdImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext3QoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext4QoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtPDPTypeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPAddressImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPTypeImpl;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext3QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext4QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtPDPTypeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.PDPAddressImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.PDPTypeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -198,9 +194,9 @@ public class PDPContextInfoTest {
         assertTrue(Arrays.equals(impl.getQos3Subscribed().getData(), this.getEncodedqos3Subscribed()));
         assertTrue(Arrays.equals(impl.getQos3Requested().getData(), this.getEncodedqos3Requested()));
         assertTrue(Arrays.equals(impl.getQos3Negotiated().getData(), this.getEncodedqos3Negotiated()));
-        assertEquals(impl.getQos4Subscribed().getData(), 91);
-        assertEquals(impl.getQos4Requested().getData(), 92);
-        assertEquals(impl.getQos4Negotiated().getData(), 93);
+        assertEquals(impl.getQos4Subscribed().getData(), new Integer(91));
+        assertEquals(impl.getQos4Requested().getData(), new Integer(92));
+        assertEquals(impl.getQos4Negotiated().getData(), new Integer(93));
         assertTrue(Arrays.equals(impl.getExtPdpType().getData(), this.getEncodedExtPDPType()));
         assertTrue(Arrays.equals(impl.getExtPdpAddress().getData(), this.getEncodedExtPdpAddress()));
 

@@ -24,12 +24,13 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.PromptAndCollectUserInformationRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfoWrapperImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSendWrapperImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfo;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSend;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CollectedInfoWrapperImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InformationToSendWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -56,8 +57,8 @@ public class PromptAndCollectUserInformationRequestImpl extends CircuitSwitchedC
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
     private InformationToSendWrapperImpl informationToSend;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = false,index = -1)
     private ASNInteger callSegmentID;
@@ -68,8 +69,8 @@ public class PromptAndCollectUserInformationRequestImpl extends CircuitSwitchedC
     public PromptAndCollectUserInformationRequestImpl() {
     }
 
-    public PromptAndCollectUserInformationRequestImpl(CollectedInfoImpl collectedInfo, Boolean disconnectFromIPForbidden,
-            InformationToSendImpl informationToSend, CAPExtensionsImpl extensions, Integer callSegmentID,
+    public PromptAndCollectUserInformationRequestImpl(CollectedInfo collectedInfo, Boolean disconnectFromIPForbidden,
+            InformationToSend informationToSend, CAPExtensions extensions, Integer callSegmentID,
             Boolean requestAnnouncementStartedNotification) {
     	
     	if(collectedInfo!=null)
@@ -107,7 +108,7 @@ public class PromptAndCollectUserInformationRequestImpl extends CircuitSwitchedC
     }
 
     @Override
-    public CollectedInfoImpl getCollectedInfo() {
+    public CollectedInfo getCollectedInfo() {
     	if(collectedInfo==null)
     		return null;
     	
@@ -123,7 +124,7 @@ public class PromptAndCollectUserInformationRequestImpl extends CircuitSwitchedC
     }
 
     @Override
-    public InformationToSendImpl getInformationToSend() {
+    public InformationToSend getInformationToSend() {
     	if(informationToSend==null)
     		return null;
     	
@@ -131,7 +132,7 @@ public class PromptAndCollectUserInformationRequestImpl extends CircuitSwitchedC
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 

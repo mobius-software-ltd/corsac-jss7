@@ -30,11 +30,12 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AccessType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.FailureCause;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -56,7 +57,9 @@ public class AuthenticationFailureReportRequestTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 94, 4, 6, 17, 33, 34, 51, 67, 68, 10, 1, 1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 1, 1, -1, 10, 1, 2, 4, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, -128, 4, -111, 17, 17, 51, -127, 4, -111, 17, 17, 68 };
+        return new byte[] { 48, 88, 4, 6, 17, 33, 34, 51, 67, 68, 10, 1, 1, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6,
+                48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 1, 1, -1, 10, 1, 2, 4, 16, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14,
+                15, 16, -128, 4, -111, 17, 17, 51, -127, 4, -111, 17, 17, 68 };
     }
 
     private byte[] getRandBalue() {
@@ -74,7 +77,7 @@ public class AuthenticationFailureReportRequestTest {
         assertTrue(result.getResult() instanceof AuthenticationFailureReportRequestImpl);
         AuthenticationFailureReportRequestImpl asc = (AuthenticationFailureReportRequestImpl)result.getResult();
         
-        IMSIImpl imsi = asc.getImsi();
+        IMSI imsi = asc.getImsi();
         assertTrue(imsi.getData().equals("111222333444"));
         assertEquals(asc.getFailureCause(), FailureCause.wrongUserResponse);
         assertNull(asc.getExtensionContainer());

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.errors;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -38,13 +38,13 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  */
 public interface MAPErrorMessageBusySubscriber extends MAPErrorMessage {
 
-	MAPExtensionContainerImpl getExtensionContainer();
+	MAPExtensionContainer getExtensionContainer();
 
     boolean getCcbsPossible();
 
     boolean getCcbsBusy();
 
-    void setExtensionContainer(MAPExtensionContainerImpl val);
+    void setExtensionContainer(MAPExtensionContainer val);
 
     void setCcbsPossible(boolean val);
 

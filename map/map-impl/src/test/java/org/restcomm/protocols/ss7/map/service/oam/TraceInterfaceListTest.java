@@ -27,17 +27,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.service.oam.BMSCInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.ENBInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.GGSNInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MGWInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MMEInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MSCSInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.PGWInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.RNCInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.SGSNInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.SGWInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceListImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

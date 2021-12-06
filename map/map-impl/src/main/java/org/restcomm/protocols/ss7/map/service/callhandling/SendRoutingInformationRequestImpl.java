@@ -24,27 +24,31 @@ package org.restcomm.protocols.ss7.map.service.callhandling;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ASNEMLPPPriorityImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.ASNInterrogationTypeImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallDiversionTreatmentIndicatorImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CamelInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfo;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallDiversionTreatmentIndicator;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CamelInfo;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.InterrogationType;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.SendRoutingInformationRequest;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.SuppressMTSSImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ASNISTSupportIndicatorImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.SuppressMTSS;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ISTSupportIndicator;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ASNForwardingReasonImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
+import org.restcomm.protocols.ss7.map.primitives.ASNEMLPPPriorityImpl;
+import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.primitives.ExtExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.primitives.ExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.ASNISTSupportIndicatorImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeWrapperImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.ASNForwardingReasonImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -61,11 +65,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl implements SendRoutingInformationRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private ISDNAddressStringImpl msisdn;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1,defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString msisdn;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
-    private CUGCheckInfoImpl cugCheckInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1, defaultImplementation = CUGCheckInfoImpl.class)
+    private CUGCheckInfo cugCheckInfo;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
     private ASNInteger numberOfForwarding;
@@ -79,11 +83,11 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
     private ASNInteger orCapability;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1)
-    private ISDNAddressStringImpl gmscAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1,defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString gmscAddress;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1)
-    private CallReferenceNumberImpl callReferenceNumber;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1, defaultImplementation = CallReferenceNumberImpl.class)
+    private CallReferenceNumber callReferenceNumber;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1)
     private ASNForwardingReasonImpl forwardingReason;
@@ -91,20 +95,20 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=true,index=-1)
     private ExtBasicServiceCodeWrapperImpl basicServiceGroup;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=true,index=-1)
-    private ExternalSignalInfoImpl networkSignalInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=true,index=-1, defaultImplementation = ExternalSignalInfoImpl.class)
+    private ExternalSignalInfo networkSignalInfo;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=true,index=-1)    
-    private CamelInfoImpl camelInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=true,index=-1, defaultImplementation = CamelInfoImpl.class)    
+    private CamelInfo camelInfo;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1)    
     private ASNNull suppressionOfAnnouncement;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=true,index=-1)    
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)    
+    private MAPExtensionContainer extensionContainer;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=false,index=-1)    
-    private AlertingPatternImpl alertingPattern;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=false,index=-1, defaultImplementation = AlertingPatternImpl.class)    
+    private AlertingPattern alertingPattern;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=false,index=-1)    
     private ASNNull ccbsCall;
@@ -112,8 +116,8 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=false,index=-1)    
     private ASNInteger supportedCCBSPhase;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=17,constructed=true,index=-1)    
-    private ExtExternalSignalInfoImpl additionalSignalInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=17,constructed=true,index=-1, defaultImplementation = ExtExternalSignalInfoImpl.class)    
+    private ExtExternalSignalInfo additionalSignalInfo;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=18,constructed=false,index=-1)    
     private ASNISTSupportIndicatorImpl istSupportIndicator;
@@ -121,8 +125,8 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=19,constructed=false,index=-1)    
     private ASNNull prePagingSupported;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=20,constructed=false,index=-1)    
-    private CallDiversionTreatmentIndicatorImpl callDiversionTreatmentIndicator;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=20,constructed=false,index=-1, defaultImplementation = CallDiversionTreatmentIndicatorImpl.class)    
+    private CallDiversionTreatmentIndicator callDiversionTreatmentIndicator;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=21,constructed=false,index=-1)    
     private ASNNull longFTNSupported;
@@ -139,11 +143,11 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=25,constructed=true,index=-1)    
     private ExtBasicServiceCodeWrapperImpl basicServiceGroup2;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=26,constructed=true,index=-1)    
-    private ExternalSignalInfoImpl networkSignalInfo2;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=26,constructed=true,index=-1, defaultImplementation = ExternalSignalInfoImpl.class)    
+    private ExternalSignalInfo networkSignalInfo2;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=27,constructed=false,index=-1)    
-    private SuppressMTSSImpl suppressMTSS;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=27,constructed=false,index=-1, defaultImplementation = SuppressMTSSImpl.class)    
+    private SuppressMTSS suppressMTSS;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=28,constructed=false,index=-1)    
     private ASNNull mtRoamingRetrySupported;
@@ -161,13 +165,13 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public SendRoutingInformationRequestImpl(ISDNAddressStringImpl msisdn, ISDNAddressStringImpl gmscAddress,
-            InterrogationType interrogationType, MAPExtensionContainerImpl extensionContainer) {
+    public SendRoutingInformationRequestImpl(ISDNAddressString msisdn, ISDNAddressString gmscAddress,
+            InterrogationType interrogationType, MAPExtensionContainer extensionContainer) {
         this(3, msisdn, gmscAddress, interrogationType, extensionContainer);
     }
 
-    public SendRoutingInformationRequestImpl(long mapProtocolVersion, ISDNAddressStringImpl msisdn, ISDNAddressStringImpl gmscAddress,
-            InterrogationType interrogationType, MAPExtensionContainerImpl extensionContainer) {
+    public SendRoutingInformationRequestImpl(long mapProtocolVersion, ISDNAddressString msisdn, ISDNAddressString gmscAddress,
+            InterrogationType interrogationType, MAPExtensionContainer extensionContainer) {
         this.msisdn = msisdn;
         this.gmscAddress = gmscAddress;
         
@@ -180,16 +184,16 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public SendRoutingInformationRequestImpl(long mapProtocolVersion, ISDNAddressStringImpl msisdn, CUGCheckInfoImpl cugCheckInfo,
+    public SendRoutingInformationRequestImpl(long mapProtocolVersion, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
             Integer numberOfForwarding, InterrogationType interrogationType, boolean orInterrogation, Integer orCapability,
-            ISDNAddressStringImpl gmscAddress, CallReferenceNumberImpl callReferenceNumber, ForwardingReason forwardingReason,
-            ExtBasicServiceCodeImpl basicServiceGroup, ExternalSignalInfoImpl networkSignalInfo, CamelInfoImpl camelInfo,
-            boolean suppressionOfAnnouncement, MAPExtensionContainerImpl extensionContainer, AlertingPatternImpl alertingPattern,
-            boolean ccbsCall, Integer supportedCCBSPhase, ExtExternalSignalInfoImpl additionalSignalInfo,
+            ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber, ForwardingReason forwardingReason,
+            ExtBasicServiceCode basicServiceGroup, ExternalSignalInfo networkSignalInfo, CamelInfo camelInfo,
+            boolean suppressionOfAnnouncement, MAPExtensionContainer extensionContainer, AlertingPattern alertingPattern,
+            boolean ccbsCall, Integer supportedCCBSPhase, ExtExternalSignalInfo additionalSignalInfo,
             ISTSupportIndicator istSupportIndicator, boolean prePagingSupported,
-            CallDiversionTreatmentIndicatorImpl callDiversionTreatmentIndicator, boolean longFTNSupported, boolean suppressVtCSI,
-            boolean suppressIncomingCallBarring, boolean gsmSCFInitiatedCall, ExtBasicServiceCodeImpl basicServiceGroup2,
-            ExternalSignalInfoImpl networkSignalInfo2, SuppressMTSSImpl suppressMTSS, boolean mtRoamingRetrySupported,
+            CallDiversionTreatmentIndicator callDiversionTreatmentIndicator, boolean longFTNSupported, boolean suppressVtCSI,
+            boolean suppressIncomingCallBarring, boolean gsmSCFInitiatedCall, ExtBasicServiceCode basicServiceGroup2,
+            ExternalSignalInfo networkSignalInfo2, SuppressMTSS suppressMTSS, boolean mtRoamingRetrySupported,
             EMLPPPriority callPriority) {
 
         if (mapProtocolVersion >= 3) {
@@ -294,12 +298,12 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     }
 
     @Override
-    public ISDNAddressStringImpl getMsisdn() {
+    public ISDNAddressString getMsisdn() {
         return this.msisdn;
     }
 
     @Override
-    public CUGCheckInfoImpl getCUGCheckInfo() {
+    public CUGCheckInfo getCUGCheckInfo() {
         return this.cugCheckInfo;
     }
 
@@ -333,12 +337,12 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     }
 
     @Override
-    public ISDNAddressStringImpl getGmscOrGsmSCFAddress() {
+    public ISDNAddressString getGmscOrGsmSCFAddress() {
         return this.gmscAddress;
     }
 
     @Override
-    public CallReferenceNumberImpl getCallReferenceNumber() {
+    public CallReferenceNumber getCallReferenceNumber() {
         return this.callReferenceNumber;
     }
 
@@ -351,7 +355,7 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     }
 
     @Override
-    public ExtBasicServiceCodeImpl getBasicServiceGroup() {
+    public ExtBasicServiceCode getBasicServiceGroup() {
     	if(this.basicServiceGroup==null)
     		return null;
     	
@@ -359,12 +363,12 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     }
 
     @Override
-    public ExternalSignalInfoImpl getNetworkSignalInfo() {
+    public ExternalSignalInfo getNetworkSignalInfo() {
         return this.networkSignalInfo;
     }
 
     @Override
-    public CamelInfoImpl getCamelInfo() {
+    public CamelInfo getCamelInfo() {
         return this.camelInfo;
     }
 
@@ -374,12 +378,12 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
     @Override
-    public AlertingPatternImpl getAlertingPattern() {
+    public AlertingPattern getAlertingPattern() {
         return this.alertingPattern;
     }
 
@@ -397,7 +401,7 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     }
 
     @Override
-    public ExtExternalSignalInfoImpl getAdditionalSignalInfo() {
+    public ExtExternalSignalInfo getAdditionalSignalInfo() {
         return this.additionalSignalInfo;
     }
 
@@ -415,7 +419,7 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     }
 
     @Override
-    public CallDiversionTreatmentIndicatorImpl getCallDiversionTreatmentIndicator() {
+    public CallDiversionTreatmentIndicator getCallDiversionTreatmentIndicator() {
         return this.callDiversionTreatmentIndicator;
     }
 
@@ -440,7 +444,7 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     }
 
     @Override
-    public ExtBasicServiceCodeImpl getBasicServiceGroup2() {
+    public ExtBasicServiceCode getBasicServiceGroup2() {
     	if(this.basicServiceGroup2==null)
     		return null;
     	
@@ -448,12 +452,12 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     }
 
     @Override
-    public ExternalSignalInfoImpl getNetworkSignalInfo2() {
+    public ExternalSignalInfo getNetworkSignalInfo2() {
         return this.networkSignalInfo2;
     }
 
     @Override
-    public SuppressMTSSImpl getSuppressMTSS() {
+    public SuppressMTSS getSuppressMTSS() {
         return this.suppressMTSS;
     }
 

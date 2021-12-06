@@ -31,11 +31,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.DateAndTimeImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationType;
+import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
+import org.restcomm.protocols.ss7.cap.primitives.DateAndTimeImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.RequestedInformationImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.testng.annotations.Test;
 
@@ -128,7 +129,7 @@ public class CallInformationReportRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CallInformationReportRequestImpl.class);
     	
-        List<RequestedInformationImpl> requestedInformationList = new ArrayList<RequestedInformationImpl>();
+        List<RequestedInformation> requestedInformationList = new ArrayList<RequestedInformation>();
         RequestedInformationImpl ri = new RequestedInformationImpl(RequestedInformationType.callConnectedElapsedTime, 0);
         requestedInformationList.add(ri);
         DateAndTimeImpl callStopTimeValue = new DateAndTimeImpl(2011, 12, 30, 10, 7, 18);

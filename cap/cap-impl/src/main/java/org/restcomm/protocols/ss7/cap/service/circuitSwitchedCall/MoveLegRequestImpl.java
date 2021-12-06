@@ -24,8 +24,9 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.MoveLegRequest;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 import org.restcomm.protocols.ss7.inap.primitives.LegIDWrapperImpl;
 
@@ -45,13 +46,13 @@ public class MoveLegRequestImpl extends CircuitSwitchedCallMessageImpl implement
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
     private LegIDWrapperImpl legIDToMove;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
 
     public MoveLegRequestImpl() {
     }
 
-    public MoveLegRequestImpl(LegID legIDToMove, CAPExtensionsImpl extensions) {
+    public MoveLegRequestImpl(LegID legIDToMove, CAPExtensions extensions) {
     	
     	if(legIDToMove!=null)
     		this.legIDToMove = new LegIDWrapperImpl(legIDToMove);
@@ -76,7 +77,7 @@ public class MoveLegRequestImpl extends CircuitSwitchedCallMessageImpl implement
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 

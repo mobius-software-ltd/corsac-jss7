@@ -24,11 +24,13 @@ package org.restcomm.protocols.ss7.map.service.sms;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.IpSmGwGuidanceImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.LocationInfoWithLMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.sms.IpSmGwGuidance;
+import org.restcomm.protocols.ss7.map.api.service.sms.LocationInfoWithLMSI;
 import org.restcomm.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMResponse;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -44,26 +46,26 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
 public class SendRoutingInfoForSMResponseImpl extends SmsMessageImpl implements SendRoutingInfoForSMResponse {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-    private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=1)
-    private LocationInfoWithLMSIImpl locationInfoWithLMSI;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=1, defaultImplementation = LocationInfoWithLMSIImpl.class)
+    private LocationInfoWithLMSI locationInfoWithLMSI;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
     private ASNBoolean mwdSet;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=true,index=-1)
-    private IpSmGwGuidanceImpl ipSmGwGuidance;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=true,index=-1, defaultImplementation = IpSmGwGuidanceImpl.class)
+    private IpSmGwGuidance ipSmGwGuidance;
 
     public SendRoutingInfoForSMResponseImpl() {
     }
 
-    public SendRoutingInfoForSMResponseImpl(IMSIImpl imsi, LocationInfoWithLMSIImpl locationInfoWithLMSI,
-            MAPExtensionContainerImpl extensionContainer, Boolean mwdSet, IpSmGwGuidanceImpl ipSmGwGuidance) {
+    public SendRoutingInfoForSMResponseImpl(IMSI imsi, LocationInfoWithLMSI locationInfoWithLMSI,
+    		MAPExtensionContainer extensionContainer, Boolean mwdSet, IpSmGwGuidance ipSmGwGuidance) {
         this.imsi = imsi;
         this.locationInfoWithLMSI = locationInfoWithLMSI;
         this.extensionContainer = extensionContainer;
@@ -84,15 +86,15 @@ public class SendRoutingInfoForSMResponseImpl extends SmsMessageImpl implements 
         return MAPOperationCode.sendRoutingInfoForSM;
     }
 
-    public IMSIImpl getIMSI() {
+    public IMSI getIMSI() {
         return this.imsi;
     }
 
-    public LocationInfoWithLMSIImpl getLocationInfoWithLMSI() {
+    public LocationInfoWithLMSI getLocationInfoWithLMSI() {
         return this.locationInfoWithLMSI;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -103,7 +105,7 @@ public class SendRoutingInfoForSMResponseImpl extends SmsMessageImpl implements 
         return mwdSet.getValue();
     }
 
-    public IpSmGwGuidanceImpl getIpSmGwGuidance() {
+    public IpSmGwGuidance getIpSmGwGuidance() {
         return ipSmGwGuidance;
     }
 

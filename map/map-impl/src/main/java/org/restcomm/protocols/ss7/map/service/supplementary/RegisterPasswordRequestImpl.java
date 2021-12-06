@@ -25,8 +25,10 @@ package org.restcomm.protocols.ss7.map.service.supplementary;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.RegisterPasswordRequest;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 /**
@@ -38,12 +40,13 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class RegisterPasswordRequestImpl extends SupplementaryMessageImpl implements RegisterPasswordRequest {
 	private static final long serialVersionUID = 1L;
 
-	private SSCodeImpl ssCode;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = SSCodeImpl.class)
+	private SSCode ssCode;
 
     public RegisterPasswordRequestImpl() {
     }
 
-    public RegisterPasswordRequestImpl(SSCodeImpl ssCode) {
+    public RegisterPasswordRequestImpl(SSCode ssCode) {
         this.ssCode = ssCode;
     }
 
@@ -59,7 +62,7 @@ public class RegisterPasswordRequestImpl extends SupplementaryMessageImpl implem
     }
 
     @Override
-    public SSCodeImpl getSsCode() {
+    public SSCode getSsCode() {
         return ssCode;
     }
 

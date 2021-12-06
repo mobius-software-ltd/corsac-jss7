@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallSegmentToCancelImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallSegmentToCancel;
 
 /**
  *
@@ -47,6 +47,6 @@ public interface CancelRequest extends CircuitSwitchedCallMessage {
 
     boolean getAllRequests();
 
-    CallSegmentToCancelImpl getCallSegmentToCancel();
+    CallSegmentToCancel getCallSegmentToCancel();
 
 }

@@ -30,23 +30,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultGPRSHandling;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultSMSHandling;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCamelTDPDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCamelTDPData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSTriggerDetectionPoint;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MGCSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MGCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MMCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MTSMSTPDUType;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MTsmsCAMELTDPCriteriaImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SGSNCAMELSubscriptionInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCAMELTDPDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCSIImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MTsmsCAMELTDPCriteria;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCAMELTDPData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSCSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSTriggerDetectionPoint;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -63,8 +63,23 @@ import io.netty.buffer.Unpooled;
  */
 public class SGSNCAMELSubscriptionInfoTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, -126, 1, -18, -96, 120, -96, 64, 48, 62, -128, 1, 2, -127, 1, 2, -126, 4, -111, 34, 34, -8, -125, 1, 1, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 4, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 0, -124, 0, -95, 120, -96, 64, 48, 62, -128, 1, 1, -127, 1, 2, -126, 4, -111, 34, 34, -8, -125, 1, 0, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 4, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 0, -124, 0, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -93, 116, -96, 64, 48, 62, -128, 1, 1, -127, 1, 2, -126, 4, -111, 34, 34, -8, -125, 1, 0, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 4, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -92, 13, 48, 11, 10, 1, 1, -96, 6, 10, 1, 0, 10, 1, 2, -91, 68, 48, 6, 4, 1, -125, 4, 1, 2, 2, 1, 3, -128, 4, -111, 34, 34, -8, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -126, 0, -125, 0 };
+	public byte[] getData() {
+        return new byte[] { 48, -126, 1, -66, -96, 108, -96, 58, 48, 56, -128, 1, 2, -127, 1, 2, -126, 4, -111, 34, 34, -8,
+                -125, 1, 1, -92, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3,
+                42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 4, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11,
+                12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33,
+                -125, 0, -124, 0, -95, 108, -96, 58, 48, 56, -128, 1, 1, -127, 1, 2, -126, 4, -111, 34, 34, -8, -125, 1, 0,
+                -92, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5,
+                21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 4, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13,
+                14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -125, 0,
+                -124, 0, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42,
+                3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -93, 104, -96, 58, 48, 56, -128, 1, 1, -127, 1, 2, -126, 4,
+                -111, 34, 34, -8, -125, 1, 0, -92, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3,
+                6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 4, -94, 39, -96, 32, 48, 10, 6,
+                3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3,
+                31, 32, 33, -92, 13, 48, 11, 10, 1, 1, -96, 6, 10, 1, 0, 10, 1, 2, -91, 62, 48, 6, 4, 1, -125, 4, 1, 2, 2, 1,
+                3, -128, 4, -111, 34, 34, -8, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3,
+                6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -126, 0, -125, 0 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -79,13 +94,13 @@ public class SGSNCAMELSubscriptionInfoTest {
         SGSNCAMELSubscriptionInfoImpl prim = (SGSNCAMELSubscriptionInfoImpl)result.getResult();
         
         // start gprsCsi
-        GPRSCSIImpl gprsCsi = prim.getGprsCsi();
+        GPRSCSI gprsCsi = prim.getGprsCsi();
         assertNotNull(gprsCsi.getGPRSCamelTDPDataList());
         assertEquals(gprsCsi.getGPRSCamelTDPDataList().size(), 1);
-        GPRSCamelTDPDataImpl gprsCamelTDPData = gprsCsi.getGPRSCamelTDPDataList().get(0);
+        GPRSCamelTDPData gprsCamelTDPData = gprsCsi.getGPRSCamelTDPDataList().get(0);
 
-        MAPExtensionContainerImpl extensionContainergprsCamelTDPData = gprsCamelTDPData.getExtensionContainer();
-        ISDNAddressStringImpl gsmSCFAddress = gprsCamelTDPData.getGsmSCFAddress();
+        MAPExtensionContainer extensionContainergprsCamelTDPData = gprsCamelTDPData.getExtensionContainer();
+        ISDNAddressString gsmSCFAddress = gprsCamelTDPData.getGsmSCFAddress();
         assertTrue(gsmSCFAddress.getAddress().equals("22228"));
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
@@ -105,15 +120,15 @@ public class SGSNCAMELSubscriptionInfoTest {
         // end gprsCsi
 
         // start moSmsCsi
-        SMSCSIImpl moSmsCsi = prim.getMoSmsCsi();
-        List<SMSCAMELTDPDataImpl> smsCamelTdpDataList = moSmsCsi.getSmsCamelTdpDataList();
+        SMSCSI moSmsCsi = prim.getMoSmsCsi();
+        List<SMSCAMELTDPData> smsCamelTdpDataList = moSmsCsi.getSmsCamelTdpDataList();
         assertNotNull(smsCamelTdpDataList);
         assertEquals(smsCamelTdpDataList.size(), 1);
-        SMSCAMELTDPDataImpl one = smsCamelTdpDataList.get(0);
+        SMSCAMELTDPData one = smsCamelTdpDataList.get(0);
         assertNotNull(one);
         assertEquals(one.getServiceKey(), 2);
         assertEquals(one.getSMSTriggerDetectionPoint(), SMSTriggerDetectionPoint.smsCollectedInfo);
-        ISDNAddressStringImpl gsmSCFAddressMoSmsCsi = one.getGsmSCFAddress();
+        ISDNAddressString gsmSCFAddressMoSmsCsi = one.getGsmSCFAddress();
         assertTrue(gsmSCFAddressMoSmsCsi.getAddress().equals("22228"));
         assertEquals(gsmSCFAddressMoSmsCsi.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddressMoSmsCsi.getNumberingPlan(), NumberingPlan.ISDN);
@@ -128,15 +143,15 @@ public class SGSNCAMELSubscriptionInfoTest {
         // end moSmsCsi
 
         // start mtSmsCsi
-        SMSCSIImpl mtSmsCsi = prim.getMtSmsCsi();
-        List<SMSCAMELTDPDataImpl> smsCamelTdpDataListMtSmsCsi = mtSmsCsi.getSmsCamelTdpDataList();
+        SMSCSI mtSmsCsi = prim.getMtSmsCsi();
+        List<SMSCAMELTDPData> smsCamelTdpDataListMtSmsCsi = mtSmsCsi.getSmsCamelTdpDataList();
         assertNotNull(smsCamelTdpDataListMtSmsCsi);
         assertEquals(smsCamelTdpDataListMtSmsCsi.size(), 1);
-        SMSCAMELTDPDataImpl oneSmsCamelTdpDataListMtSmsCsi = smsCamelTdpDataListMtSmsCsi.get(0);
+        SMSCAMELTDPData oneSmsCamelTdpDataListMtSmsCsi = smsCamelTdpDataListMtSmsCsi.get(0);
         assertNotNull(oneSmsCamelTdpDataListMtSmsCsi);
         assertEquals(oneSmsCamelTdpDataListMtSmsCsi.getServiceKey(), 2);
         assertEquals(oneSmsCamelTdpDataListMtSmsCsi.getSMSTriggerDetectionPoint(), SMSTriggerDetectionPoint.smsCollectedInfo);
-        ISDNAddressStringImpl gsmSCFAddressmtSmsCsi = one.getGsmSCFAddress();
+        ISDNAddressString gsmSCFAddressmtSmsCsi = one.getGsmSCFAddress();
         assertTrue(gsmSCFAddressmtSmsCsi.getAddress().equals("22228"));
         assertEquals(gsmSCFAddressmtSmsCsi.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddressmtSmsCsi.getNumberingPlan(), NumberingPlan.ISDN);
@@ -151,10 +166,10 @@ public class SGSNCAMELSubscriptionInfoTest {
         // end mtSmsCsi
 
         // start mtSmsCamelTdpCriteriaList
-        List<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList = prim.getMtSmsCamelTdpCriteriaList();
+        List<MTsmsCAMELTDPCriteria> mtSmsCamelTdpCriteriaList = prim.getMtSmsCamelTdpCriteriaList();
         assertNotNull(mtSmsCamelTdpCriteriaList);
         assertEquals(mtSmsCamelTdpCriteriaList.size(), 1);
-        MTsmsCAMELTDPCriteriaImpl mtSmsCAMELTDPCriteria = mtSmsCamelTdpCriteriaList.get(0);
+        MTsmsCAMELTDPCriteria mtSmsCAMELTDPCriteria = mtSmsCamelTdpCriteriaList.get(0);
 
         List<MTSMSTPDUType> tPDUTypeCriterion = mtSmsCAMELTDPCriteria.getTPDUTypeCriterion();
         assertNotNull(tPDUTypeCriterion);
@@ -170,20 +185,20 @@ public class SGSNCAMELSubscriptionInfoTest {
         // end mtSmsCamelTdpCriteriaList
 
         // start mgCsi
-        MGCSIImpl mgCsi = prim.getMgCsi();
-        List<MMCodeImpl> mobilityTriggers = mgCsi.getMobilityTriggers();
+        MGCSI mgCsi = prim.getMgCsi();
+        List<MMCode> mobilityTriggers = mgCsi.getMobilityTriggers();
         assertNotNull(mobilityTriggers);
         assertEquals(mobilityTriggers.size(), 2);
-        MMCodeImpl oneMMCode = mobilityTriggers.get(0);
+        MMCode oneMMCode = mobilityTriggers.get(0);
         assertNotNull(oneMMCode);
         assertEquals(oneMMCode.getMMCodeValue(), MMCodeValue.GPRSAttach);
-        MMCodeImpl twoMMCode = mobilityTriggers.get(1);
+        MMCode twoMMCode = mobilityTriggers.get(1);
         assertNotNull(twoMMCode);
         assertEquals(twoMMCode.getMMCodeValue(), MMCodeValue.IMSIAttach);
 
         assertEquals(mgCsi.getServiceKey(), 3);
 
-        ISDNAddressStringImpl gsmSCFAddressMgCsi = mgCsi.getGsmSCFAddress();
+        ISDNAddressString gsmSCFAddressMgCsi = mgCsi.getGsmSCFAddress();
         assertTrue(gsmSCFAddressMgCsi.getAddress().equals("22228"));
         assertEquals(gsmSCFAddressMgCsi.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddressMgCsi.getNumberingPlan(), NumberingPlan.ISDN);
@@ -194,7 +209,7 @@ public class SGSNCAMELSubscriptionInfoTest {
         assertTrue(mgCsi.getNotificationToCSE());
         // end mgCsi
 
-        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
         assertNotNull(extensionContainer);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
     }
@@ -204,7 +219,7 @@ public class SGSNCAMELSubscriptionInfoTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SGSNCAMELSubscriptionInfoImpl.class);
     	
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         // start gprsCsi
         GPRSTriggerDetectionPoint gprsTriggerDetectionPoint = GPRSTriggerDetectionPoint.attachChangeOfPosition;
@@ -216,7 +231,7 @@ public class SGSNCAMELSubscriptionInfoTest {
         GPRSCamelTDPDataImpl gprsCamelTDPData = new GPRSCamelTDPDataImpl(gprsTriggerDetectionPoint, serviceKey, gsmSCFAddress,
                 defaultSessionHandling, extensionContainer);
 
-        ArrayList<GPRSCamelTDPDataImpl> gprsCamelTDPDataList = new ArrayList<GPRSCamelTDPDataImpl>();
+        List<GPRSCamelTDPData> gprsCamelTDPDataList = new ArrayList<GPRSCamelTDPData>();
         gprsCamelTDPDataList.add(gprsCamelTDPData);
         Integer camelCapabilityHandling = 4;
         boolean notificationToCSE = true;
@@ -230,7 +245,7 @@ public class SGSNCAMELSubscriptionInfoTest {
         SMSTriggerDetectionPoint smsTriggerDetectionPoint = SMSTriggerDetectionPoint.smsCollectedInfo;
         DefaultSMSHandling defaultSMSHandling = DefaultSMSHandling.continueTransaction;
 
-        ArrayList<SMSCAMELTDPDataImpl> smsCamelTdpDataList = new ArrayList<SMSCAMELTDPDataImpl>();
+        List<SMSCAMELTDPData> smsCamelTdpDataList = new ArrayList<SMSCAMELTDPData>();
         SMSCAMELTDPDataImpl smsCAMELTDPData = new SMSCAMELTDPDataImpl(smsTriggerDetectionPoint, serviceKey, gsmSCFAddress,
                 defaultSMSHandling, extensionContainer);
         smsCamelTdpDataList.add(smsCAMELTDPData);
@@ -244,8 +259,8 @@ public class SGSNCAMELSubscriptionInfoTest {
         // end mtSmsCsi
 
         // start mtSmsCamelTdpCriteriaList
-        ArrayList<MTsmsCAMELTDPCriteriaImpl> mtSmsCamelTdpCriteriaList = new ArrayList<MTsmsCAMELTDPCriteriaImpl>();
-        ArrayList<MTSMSTPDUType> tPDUTypeCriterion = new ArrayList<MTSMSTPDUType>();
+        List<MTsmsCAMELTDPCriteria> mtSmsCamelTdpCriteriaList = new ArrayList<MTsmsCAMELTDPCriteria>();
+        List<MTSMSTPDUType> tPDUTypeCriterion = new ArrayList<MTSMSTPDUType>();
         tPDUTypeCriterion.add(MTSMSTPDUType.smsDELIVER);
         tPDUTypeCriterion.add(MTSMSTPDUType.smsSTATUSREPORT);
         MTsmsCAMELTDPCriteriaImpl mtSmsCAMELTDPCriteria = new MTsmsCAMELTDPCriteriaImpl(smsTriggerDetectionPoint, tPDUTypeCriterion);
@@ -253,7 +268,7 @@ public class SGSNCAMELSubscriptionInfoTest {
         // end mtSmsCamelTdpCriteriaList
 
         // start mgCsi
-        ArrayList<MMCodeImpl> mobilityTriggers = new ArrayList<MMCodeImpl>();
+        List<MMCode> mobilityTriggers = new ArrayList<MMCode>();
         mobilityTriggers.add(new MMCodeImpl(MMCodeValue.GPRSAttach));
         mobilityTriggers.add(new MMCodeImpl(MMCodeValue.IMSIAttach));
 

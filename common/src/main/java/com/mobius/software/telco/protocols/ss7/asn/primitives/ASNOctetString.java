@@ -1,5 +1,12 @@
 package com.mobius.software.telco.protocols.ss7.asn.primitives;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+
 /*
  * Mobius Software LTD
  * Copyright 2019, Mobius Software LTD and individual contributors
@@ -27,13 +34,6 @@ package com.mobius.software.telco.protocols.ss7.asn.primitives;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
-import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public class ASNOctetString {
@@ -84,7 +84,11 @@ public class ASNOctetString {
                     first = false;
                 else
                     sb.append(", ");
-                sb.append(b & 0xFF);
+                
+                if((b & 0xFF)<=127)
+                	sb.append(b & 0xFF);
+                else
+                	sb.append("-").append(256 - b & 0xFF);
             }
         }
 

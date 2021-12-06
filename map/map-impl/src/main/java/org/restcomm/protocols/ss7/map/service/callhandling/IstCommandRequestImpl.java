@@ -24,9 +24,11 @@ package org.restcomm.protocols.ss7.map.service.callhandling;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.IstCommandRequest;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -41,13 +43,13 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class IstCommandRequestImpl extends CallHandlingMessageImpl implements IstCommandRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
 
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
 
-    public IstCommandRequestImpl(IMSIImpl imsi, MAPExtensionContainerImpl extensionContainer) {
+    public IstCommandRequestImpl(IMSI imsi, MAPExtensionContainer extensionContainer) {
         this.imsi = imsi;
         this.extensionContainer = extensionContainer;
     }
@@ -56,12 +58,12 @@ public class IstCommandRequestImpl extends CallHandlingMessageImpl implements Is
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return imsi;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 

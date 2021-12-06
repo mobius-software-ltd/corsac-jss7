@@ -10,42 +10,42 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CAMELSubscriptionInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallBarringDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallForwardingDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallHoldDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallWaitingDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClipDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClirDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EctDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ExtCwFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSISDNBSImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ODBInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CAMELSubscriptionInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallBarringData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallForwardingData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ExtCwFeature;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSISDNBS;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ODBInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGIdImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultCallHandling;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtCallBarringFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmCamelTDPDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtCallBarringFeature;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeature;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmCamelTDPData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmTriggerDetectionPoint;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OCSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBHPLMNDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CliRestrictionOption;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.OverrideCategory;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.PasswordImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CSGIdImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CSGSubscriptionDataImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtCallBarringFeatureImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtForwFeatureImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtSSStatusImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OBcsmCamelTDPDataImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OCSIImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ODBDataImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ODBGeneralDataImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ODBHPLMNDataImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.PasswordImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -58,7 +58,7 @@ import io.netty.buffer.Unpooled;
  * @author vadim subbotin
  */
 public class AnyTimeSubscriptionInterrogationResponseTest {
-    private byte[] data = { 48, -127, -36, -95, 13, 48, 11, 48, 9, -126, 1, 0, -124, 1, 15, -121, 1, 10, -94, 21, 48, 8, 48, 6, -126, 1, 96, -124, 1, 8, 18, 4, 48, 48, 48, 48, 2, 1, 3, 5, 0, -93, 13, 48, 9, 3, 3, 2, -1, -4, 3, 2, 4, -16, 5, 0, -92, 32, -96, 26, 48, 19, 48, 17, 10, 1, 2, 2, 1, 20, -128, 6, -111, 33, 67, 101, -121, 9, -127, 1, 0, -128, 1, 5, -126, 0, -121, 0, -120, 0, -123, 2, 4, -16, -122, 2, 6, -64, -89, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -120, 2, 1, -2, -119, 2, 4, -16, -86, 16, 48, 14, 4, 7, -111, -105, 97, 33, 67, 101, -9, -96, 3, -125, 1, 0, -85, 6, 48, 4, 3, 2, 0, 0, -84, 12, -95, 10, 48, 8, -95, 3, -126, 1, 96, -126, 1, 8, -83, 5, -127, 1, 4, -126, 0, -82, 6, -127, 1, 4, -126, 1, 0, -81, 8, -127, 1, 4, -126, 1, 0, -125, 0, -80, 3, -127, 1, 4 };
+    private byte[] data = { 48, -127, -42, -95, 13, 48, 11, 48, 9, -126, 1, 0, -124, 1, 15, -121, 1, 10, -94, 21, 48, 8, 48, 6, -126, 1, 96, -124, 1, 8, 18, 4, 48, 48, 48, 48, 2, 1, 3, 5, 0, -93, 13, 48, 9, 3, 3, 2, -1, -4, 3, 2, 4, -16, 5, 0, -92, 32, -96, 26, 48, 19, 48, 17, 10, 1, 2, 2, 1, 20, -128, 6, -111, 33, 67, 101, -121, 9, -127, 1, 0, -128, 1, 5, -126, 0, -121, 0, -120, 0, -123, 2, 4, -16, -122, 2, 6, -64, -89, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -120, 2, 1, -2, -119, 2, 4, -16, -86, 16, 48, 14, 4, 7, -111, -105, 97, 33, 67, 101, -9, -96, 3, -125, 1, 0, -85, 6, 48, 4, 3, 2, 0, 0, -84, 12, -95, 10, 48, 8, -95, 3, -126, 1, 96, -126, 1, 8, -83, 5, -127, 1, 4, -126, 0, -82, 6, -127, 1, 4, -126, 1, 0, -81, 8, -127, 1, 4, -126, 1, 0, -125, 0, -80, 3, -127, 1, 4 };
 
     @Test(groups = { "functional.decode", "subscriberInformation" })
     public void testDecode() throws Exception {
@@ -72,12 +72,12 @@ public class AnyTimeSubscriptionInterrogationResponseTest {
 
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(response.getExtensionContainer()));
 
-        CallForwardingDataImpl callForwardingData = response.getCallForwardingData();
+        CallForwardingData callForwardingData = response.getCallForwardingData();
         assertNotNull(callForwardingData.getForwardingFeatureList());
         assertEquals(callForwardingData.getForwardingFeatureList().size(), 1);
         assertFalse(callForwardingData.getNotificationToCSE());
 
-        ExtForwFeatureImpl extForwFeature = callForwardingData.getForwardingFeatureList().get(0);
+        ExtForwFeature extForwFeature = callForwardingData.getForwardingFeatureList().get(0);
         assertEquals(extForwFeature.getBasicService().getExtBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.allBearerServices);
         assertTrue(extForwFeature.getSsStatus().getBitQ());
         assertTrue(extForwFeature.getSsStatus().getBitP());
@@ -85,32 +85,32 @@ public class AnyTimeSubscriptionInterrogationResponseTest {
         assertTrue(extForwFeature.getSsStatus().getBitA());
         assertEquals(extForwFeature.getNoReplyConditionTime().intValue(), 10);
 
-        CallBarringDataImpl callBarringData = response.getCallBarringData();
+        CallBarringData callBarringData = response.getCallBarringData();
         assertNotNull(callBarringData.getCallBarringFeatureList());
         assertEquals(callBarringData.getCallBarringFeatureList().size(), 1);
         assertEquals(callBarringData.getPassword().getData(), "0000");
         assertEquals(callBarringData.getWrongPasswordAttemptsCounter().intValue(), 3);
         assertTrue(callBarringData.getNotificationToCSE());
 
-        ExtCallBarringFeatureImpl extCallBarringFeature = callBarringData.getCallBarringFeatureList().get(0);
+        ExtCallBarringFeature extCallBarringFeature = callBarringData.getCallBarringFeatureList().get(0);
         assertEquals(extCallBarringFeature.getBasicService().getExtBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.allAsynchronousServices);
         assertTrue(extCallBarringFeature.getSsStatus().getBitQ());
         assertFalse(extCallBarringFeature.getSsStatus().getBitP());
         assertFalse(extCallBarringFeature.getSsStatus().getBitR());
         assertFalse(extCallBarringFeature.getSsStatus().getBitA());
 
-        ODBInfoImpl odbInfo = response.getOdbInfo();
+        ODBInfo odbInfo = response.getOdbInfo();
         assertNotNull(odbInfo.getOdbData());
         assertTrue(odbInfo.getNotificationToCSE());
 
-        CAMELSubscriptionInfoImpl camelSubscriptionInfo = response.getCamelSubscriptionInfo();
+        CAMELSubscriptionInfo camelSubscriptionInfo = response.getCamelSubscriptionInfo();
         assertNotNull(camelSubscriptionInfo.getOCsi());
         assertTrue(camelSubscriptionInfo.getTifCsi());
         assertTrue(camelSubscriptionInfo.getTifCsiNotificationToCSE());
         assertNotNull(camelSubscriptionInfo.getOCsi().getOBcsmCamelTDPDataList());
         assertEquals(camelSubscriptionInfo.getOCsi().getOBcsmCamelTDPDataList().size(), 1);
 
-        OBcsmCamelTDPDataImpl oBcsmCamelTDPData = camelSubscriptionInfo.getOCsi().getOBcsmCamelTDPDataList().get(0);
+        OBcsmCamelTDPData oBcsmCamelTDPData = camelSubscriptionInfo.getOCsi().getOBcsmCamelTDPDataList().get(0);
         assertEquals(oBcsmCamelTDPData.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.collectedInfo);
         assertEquals(oBcsmCamelTDPData.getServiceKey(), 20);
         assertEquals(oBcsmCamelTDPData.getDefaultCallHandling(), DefaultCallHandling.continueCall);
@@ -118,11 +118,11 @@ public class AnyTimeSubscriptionInterrogationResponseTest {
 
         assertNotNull(response.getMsisdnBsList());
         assertEquals(response.getMsisdnBsList().size(), 1);
-        MSISDNBSImpl msisdnbs = response.getMsisdnBsList().get(0);
+        MSISDNBS msisdnbs = response.getMsisdnBsList().get(0);
         assertEquals(msisdnbs.getMsisdn().getAddress(), "79161234567");
         assertNotNull(msisdnbs.getBasicServiceList());
         assertEquals(msisdnbs.getBasicServiceList().size(), 1);
-        ExtBasicServiceCodeImpl basicServiceCode = msisdnbs.getBasicServiceList().get(0);
+        ExtBasicServiceCode basicServiceCode = msisdnbs.getBasicServiceList().get(0);
         assertEquals(basicServiceCode.getExtTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.allTeleservices);
 
         assertNotNull(response.getCwData());
@@ -131,7 +131,7 @@ public class AnyTimeSubscriptionInterrogationResponseTest {
         assertNotNull(response.getClirData());
         assertNotNull(response.getEctData());
 
-        List<CSGSubscriptionDataImpl> csgSubscriptionDataList = response.getCsgSubscriptionDataList();
+        List<CSGSubscriptionData> csgSubscriptionDataList = response.getCsgSubscriptionDataList();
         assertNotNull(csgSubscriptionDataList.get(0).getCsgId());
     }
 
@@ -143,14 +143,14 @@ public class AnyTimeSubscriptionInterrogationResponseTest {
         final ExtForwFeatureImpl extForwFeature = new ExtForwFeatureImpl(new ExtBasicServiceCodeImpl(
                 new ExtBearerServiceCodeImpl(BearerServiceCodeValue.allBearerServices)),
                 new ExtSSStatusImpl(true, true, true, true), null, null, null, 10, null, null);
-        ArrayList<ExtForwFeatureImpl> extForwFeatureList=new ArrayList<ExtForwFeatureImpl>();
+        List<ExtForwFeature> extForwFeatureList=new ArrayList<ExtForwFeature>();
         extForwFeatureList.add(extForwFeature);
         CallForwardingDataImpl callForwardingData = new CallForwardingDataImpl(extForwFeatureList, false, null);
 
         final ExtCallBarringFeatureImpl extCallBarringFeature = new ExtCallBarringFeatureImpl(new ExtBasicServiceCodeImpl(
                 new ExtBearerServiceCodeImpl(BearerServiceCodeValue.allAsynchronousServices)), new ExtSSStatusImpl(true, false, false, false), null);
         
-        ArrayList<ExtCallBarringFeatureImpl> extCallBarringFeatureList=new ArrayList<ExtCallBarringFeatureImpl>();
+        List<ExtCallBarringFeature> extCallBarringFeatureList=new ArrayList<ExtCallBarringFeature>();
         extCallBarringFeatureList.add(extCallBarringFeature);
         CallBarringDataImpl callBarringData = new CallBarringDataImpl(extCallBarringFeatureList,new PasswordImpl("0000"), 3, true, null);
 
@@ -163,7 +163,7 @@ public class AnyTimeSubscriptionInterrogationResponseTest {
         final OBcsmCamelTDPDataImpl oBcsmCamelTDPData = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.collectedInfo, 20, gsmSCFAddress,
                 DefaultCallHandling.continueCall, null);
         
-        ArrayList<OBcsmCamelTDPDataImpl> oBcsmCamelTDPDataList=new ArrayList<OBcsmCamelTDPDataImpl>();
+        List<OBcsmCamelTDPData> oBcsmCamelTDPDataList=new ArrayList<OBcsmCamelTDPData>();
         oBcsmCamelTDPDataList.add(oBcsmCamelTDPData);
         OCSIImpl ocsi = new OCSIImpl(oBcsmCamelTDPDataList, null, 5, false, true);
         CAMELSubscriptionInfoImpl camelSubscriptionInfo = new CAMELSubscriptionInfoImpl(ocsi, null, null, null, null, null, null, true, true,
@@ -171,14 +171,14 @@ public class AnyTimeSubscriptionInterrogationResponseTest {
 
         ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79161234567");
         final ExtBasicServiceCodeImpl basicServiceCode = new ExtBasicServiceCodeImpl(new ExtTeleserviceCodeImpl(TeleserviceCodeValue.allTeleservices));
-        ArrayList<ExtBasicServiceCodeImpl> extBasicServiceCodeList=new ArrayList<ExtBasicServiceCodeImpl>();
+        List<ExtBasicServiceCode> extBasicServiceCodeList=new ArrayList<ExtBasicServiceCode>();
         extBasicServiceCodeList.add(basicServiceCode);
         final MSISDNBSImpl msisdnbs = new MSISDNBSImpl(msisdn, extBasicServiceCodeList, null);
 
         final ExtCwFeatureImpl extCwFeature = new ExtCwFeatureImpl(new ExtBasicServiceCodeImpl(new ExtBearerServiceCodeImpl(
                 BearerServiceCodeValue.allAsynchronousServices)), new ExtSSStatusImpl(true, false, false, false));
         
-        ArrayList<ExtCwFeatureImpl> extCwFeatureList=new ArrayList<ExtCwFeatureImpl>();
+        List<ExtCwFeature> extCwFeatureList=new ArrayList<ExtCwFeature>();
         extCwFeatureList.add(extCwFeature);
         CallWaitingDataImpl callWaitingData = new CallWaitingDataImpl(extCwFeatureList, false);
 
@@ -190,12 +190,12 @@ public class AnyTimeSubscriptionInterrogationResponseTest {
 
         EctDataImpl ectData = new EctDataImpl(new ExtSSStatusImpl(false, true, false, false), false);
 
-        ArrayList<CSGSubscriptionDataImpl> csgSubscriptionDataList = new ArrayList<CSGSubscriptionDataImpl>();
+        List<CSGSubscriptionData> csgSubscriptionDataList = new ArrayList<CSGSubscriptionData>();
         CSGIdImpl csgId = new CSGIdImpl();
         CSGSubscriptionDataImpl csgSubscriptionData = new CSGSubscriptionDataImpl(csgId, null, null, null);
         csgSubscriptionDataList.add(csgSubscriptionData);
         
-        ArrayList<MSISDNBSImpl> msisdnBSList=new ArrayList<MSISDNBSImpl>();
+        List<MSISDNBS> msisdnBSList=new ArrayList<MSISDNBS>();
         msisdnBSList.add(msisdnbs);
         AnyTimeSubscriptionInterrogationResponseImpl response = new AnyTimeSubscriptionInterrogationResponseImpl(callForwardingData,
                 callBarringData, odbInfo, camelSubscriptionInfo, new SupportedCamelPhasesImpl(true, true, true, true),

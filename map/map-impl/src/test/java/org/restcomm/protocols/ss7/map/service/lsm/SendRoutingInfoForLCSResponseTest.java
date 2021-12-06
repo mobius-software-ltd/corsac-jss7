@@ -33,13 +33,14 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfo;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.primitives.SubscriberIdentityImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -85,7 +86,10 @@ public class SendRoutingInfoForLCSResponseTest {
     }
 
     public byte[] getEncodedDataFull() {
-        return new byte[] { 48, 95, -96, 9, -127, 7, -111, 85, 22, 40, -127, 0, 112, -95, 7, 4, 5, -111, 85, 22, 9, 0, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 5, 11, 12, 13, 14, 15, -124, 5, 21, 22, 23, 24, 25, -123, 5, 31, 32, 33, 34, 35, -122, 5, 41, 42, 43, 44, 45 };
+        return new byte[] { 48, 89, -96, 9, -127, 7, -111, 85, 22, 40, -127, 0, 112, -95, 7, 4, 5, -111, 85, 22, 9, 0, -94, 39,
+                -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23,
+                24, 25, 26, -95, 3, 31, 32, 33, -125, 5, 11, 12, 13, 14, 15, -124, 5, 21, 22, 23, 24, 25, -123, 5, 31, 32, 33,
+                34, 35, -122, 5, 41, 42, 43, 44, 45 };
     }
 
     public byte[] getEncodedGSNAddress1() {
@@ -115,11 +119,11 @@ public class SendRoutingInfoForLCSResponseTest {
         assertTrue(result.getResult() instanceof SendRoutingInfoForLCSResponseImpl);
         SendRoutingInfoForLCSResponseImpl impl = (SendRoutingInfoForLCSResponseImpl)result.getResult();
 
-        SubscriberIdentityImpl subsIdent = impl.getTargetMS();
+        SubscriberIdentity subsIdent = impl.getTargetMS();
         assertNotNull(subsIdent);
 
-        IMSIImpl imsi = subsIdent.getIMSI();
-        ISDNAddressStringImpl msisdn = subsIdent.getMSISDN();
+        IMSI imsi = subsIdent.getIMSI();
+        ISDNAddressString msisdn = subsIdent.getMSISDN();
 
         assertNotNull(msisdn);
         assertNull(imsi);
@@ -128,10 +132,10 @@ public class SendRoutingInfoForLCSResponseTest {
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
         assertTrue(msisdn.getAddress().equals("556182180007"));
 
-        LCSLocationInfoImpl lcsLocInfo = impl.getLCSLocationInfo();
+        LCSLocationInfo lcsLocInfo = impl.getLCSLocationInfo();
         assertNotNull(lcsLocInfo);
 
-        ISDNAddressStringImpl networkNodeNumber = lcsLocInfo.getNetworkNodeNumber();
+        ISDNAddressString networkNodeNumber = lcsLocInfo.getNetworkNodeNumber();
         assertNotNull(networkNodeNumber);
         assertEquals(networkNodeNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlan.ISDN);
@@ -183,11 +187,11 @@ public class SendRoutingInfoForLCSResponseTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SendRoutingInfoForLCSResponseImpl.class);
     	
-        ISDNAddressStringImpl msisdn = this.MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
+        ISDNAddressString msisdn = this.MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "556182180007");
         SubscriberIdentityImpl subsIdent = new SubscriberIdentityImpl(msisdn);
 
-        ISDNAddressStringImpl networkNodeNumber = this.MAPParameterFactory.createISDNAddressString(
+        ISDNAddressString networkNodeNumber = this.MAPParameterFactory.createISDNAddressString(
                 AddressNature.international_number, NumberingPlan.ISDN, "55619000");
 
         LCSLocationInfoImpl lcsLocInfo = new LCSLocationInfoImpl(networkNodeNumber, null, null, false, null, null, null, null, null);

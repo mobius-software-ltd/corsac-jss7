@@ -39,7 +39,7 @@ import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.map.api.MAPServiceListener;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckData;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckResult;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ActivateSSRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ActivateSSResponse;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.DeactivateSSRequest;
@@ -91,13 +91,13 @@ public class MAPServiceSupplementaryImpl extends MAPServiceBaseImpl implements M
      * Creating a new outgoing MAP Supplementary dialog and adding it to the MAPProvider.dialog collection
      *
      */
-    public MAPDialogSupplementary createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference, SccpAddress destAddress,
-            AddressStringImpl destReference) throws MAPException {
+    public MAPDialogSupplementary createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
+    		AddressString destReference) throws MAPException {
         return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
     }
 
-    public MAPDialogSupplementary createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressStringImpl origReference, SccpAddress destAddress,
-            AddressStringImpl destReference, Long localTrId) throws MAPException {
+    public MAPDialogSupplementary createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
+    		AddressString destReference, Long localTrId) throws MAPException {
 
         // We cannot create a dialog if the service is not activated
         if (!this.isActivated())

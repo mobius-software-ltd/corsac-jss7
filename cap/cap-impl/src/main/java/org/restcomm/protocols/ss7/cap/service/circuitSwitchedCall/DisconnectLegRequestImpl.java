@@ -24,11 +24,12 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.DisconnectLegRequest;
+import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
-import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.inap.primitives.LegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -47,16 +48,16 @@ public class DisconnectLegRequestImpl extends CircuitSwitchedCallMessageImpl imp
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
     private LegIDWrapperImpl legToBeReleased;
 
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private CauseCapImpl releaseCause;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1, defaultImplementation = CauseCapImpl.class)
+    private CauseCap releaseCause;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
 
     public DisconnectLegRequestImpl() {
     }
 
-    public DisconnectLegRequestImpl(LegID legToBeReleased, CauseCapImpl releaseCause, CAPExtensionsImpl extensions) {
+    public DisconnectLegRequestImpl(LegID legToBeReleased, CauseCap releaseCause, CAPExtensions extensions) {
     	
     	if(legToBeReleased!=null)
     		this.legToBeReleased = new LegIDWrapperImpl(legToBeReleased);
@@ -73,18 +74,18 @@ public class DisconnectLegRequestImpl extends CircuitSwitchedCallMessageImpl imp
         return CAPOperationCode.disconnectLeg;
     }
 
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 
-    public LegIDImpl getLegToBeReleased() {
+    public LegID getLegToBeReleased() {
     	if(legToBeReleased==null)
     		return null;
     	
         return legToBeReleased.getLegID();
     }
 
-    public CauseCapImpl getReleaseCause() {
+    public CauseCap getReleaseCause() {
         return releaseCause;
     }
 

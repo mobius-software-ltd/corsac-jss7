@@ -30,17 +30,17 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.sms.CorrelationIDImpl;
 import org.restcomm.protocols.ss7.map.api.service.sms.SMDeliveryNotIntended;
 import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_MTI;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_SMEAImpl;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -66,7 +66,9 @@ public class SendRoutingInfoForSMRequestTest {
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { 48, 76, -128, 6, -111, 17, 33, 34, 51, -13, -127, 1, -1, -126, 3, -72, 68, 68, -90, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -121, 0, -120, 1, 1, -119, 6, -111, 105, 49, 3, -105, 97 };
+        return new byte[] { 48, 70, -128, 6, -111, 17, 33, 34, 51, -13, -127, 1, -1, -126, 3, -72, 68, 68, -90, 39, -96, 32,
+                48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25,
+                26, -95, 3, 31, 32, 33, -121, 0, -120, 1, 1, -119, 6, -111, 105, 49, 3, -105, 97 };
     }
 
     private byte[] getEncodedData1() {
@@ -100,12 +102,12 @@ public class SendRoutingInfoForSMRequestTest {
         assertTrue(result.getResult() instanceof SendRoutingInfoForSMRequestImpl);
         SendRoutingInfoForSMRequestImpl ind = (SendRoutingInfoForSMRequestImpl)result.getResult();  
         
-        ISDNAddressStringImpl msisdn = ind.getMsisdn();
+        ISDNAddressString msisdn = ind.getMsisdn();
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(msisdn.getAddress(), "13457745551");
         assertEquals((boolean) ind.getSm_RP_PRI(), false);
-        AddressStringImpl sca = ind.getServiceCentreAddress();
+        AddressString sca = ind.getServiceCentreAddress();
         assertEquals(sca.getAddressNature(), AddressNature.international_number);
         assertEquals(sca.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(sca.getAddress(), "9821113333");

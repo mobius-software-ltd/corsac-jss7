@@ -24,12 +24,14 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationRequest;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfo;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.primitives.SubscriberIdentityWrapperImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -47,21 +49,21 @@ public class AnyTimeInterrogationRequestImpl extends MobilityMessageImpl impleme
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1)
     private SubscriberIdentityWrapperImpl subscriberIdentity;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
-    private RequestedInfoImpl requestedInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1, defaultImplementation = RequestedInfoImpl.class)
+    private RequestedInfo requestedInfo;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
-    private ISDNAddressStringImpl gsmSCFAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString gsmSCFAddress;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
 
     public AnyTimeInterrogationRequestImpl() {
 
     }
 
-    public AnyTimeInterrogationRequestImpl(SubscriberIdentityImpl subscriberIdentity, RequestedInfoImpl requestedInfo,
-            ISDNAddressStringImpl gsmSCFAddress, MAPExtensionContainerImpl extensionContainer) {
+    public AnyTimeInterrogationRequestImpl(SubscriberIdentity subscriberIdentity, RequestedInfo requestedInfo,
+            ISDNAddressString gsmSCFAddress, MAPExtensionContainer extensionContainer) {
     	
     	if(subscriberIdentity!=null)
     		this.subscriberIdentity = new SubscriberIdentityWrapperImpl(subscriberIdentity);
@@ -77,7 +79,7 @@ public class AnyTimeInterrogationRequestImpl extends MobilityMessageImpl impleme
      * @see org.restcomm.protocols.ss7.map.api.service.subscriberInformation.
      * AnyTimeInterrogationRequestIndication#getSubscriberIdentity()
      */
-    public SubscriberIdentityImpl getSubscriberIdentity() {
+    public SubscriberIdentity getSubscriberIdentity() {
     	if(this.subscriberIdentity==null)
     		return null;
         
@@ -90,7 +92,7 @@ public class AnyTimeInterrogationRequestImpl extends MobilityMessageImpl impleme
      * @see org.restcomm.protocols.ss7.map.api.service.subscriberInformation.
      * AnyTimeInterrogationRequestIndication#getRequestedInfo()
      */
-    public RequestedInfoImpl getRequestedInfo() {
+    public RequestedInfo getRequestedInfo() {
         return this.requestedInfo;
     }
 
@@ -100,7 +102,7 @@ public class AnyTimeInterrogationRequestImpl extends MobilityMessageImpl impleme
      * @see org.restcomm.protocols.ss7.map.api.service.subscriberInformation.
      * AnyTimeInterrogationRequestIndication#getGsmSCFAddress()
      */
-    public ISDNAddressStringImpl getGsmSCFAddress() {
+    public ISDNAddressString getGsmSCFAddress() {
         return this.gsmSCFAddress;
     }
 
@@ -110,7 +112,7 @@ public class AnyTimeInterrogationRequestImpl extends MobilityMessageImpl impleme
      * @see org.restcomm.protocols.ss7.map.api.service.subscriberInformation.
      * AnyTimeInterrogationRequestIndication#getExtensionContainer()
      */
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

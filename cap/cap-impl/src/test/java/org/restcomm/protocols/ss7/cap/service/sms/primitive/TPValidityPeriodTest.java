@@ -27,10 +27,10 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriodImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStampImpl;
+import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStamp;
 import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriodFormat;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriodImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.AbsoluteTimeStampImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.ValidityPeriodImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -84,7 +84,7 @@ public class TPValidityPeriodTest {
         prim = (TPValidityPeriodImpl)result.getResult(); 
         vp = prim.getValidityPeriod();
         assertEquals(vp.getValidityPeriodFormat(), ValidityPeriodFormat.fieldPresentAbsoluteFormat);
-        AbsoluteTimeStampImpl afv = vp.getAbsoluteFormatValue();
+        AbsoluteTimeStamp afv = vp.getAbsoluteFormatValue();
         assertEquals(afv.getYear(), 13);
         assertEquals(afv.getMonth(), 3);
         assertEquals(afv.getDay(), 1);

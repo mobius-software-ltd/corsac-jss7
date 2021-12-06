@@ -28,15 +28,17 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultGPRSHandling;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCamelTDPDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCamelTDPData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSTriggerDetectionPoint;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -53,8 +55,11 @@ import io.netty.buffer.Unpooled;
  */
 public class GPRSCSITest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 120, -96, 64, 48, 62, -128, 1, 2, -127, 1, 2, -126, 4, -111, 34, 34, -8, -125, 1, 1, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 4, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 0, -124, 0 };
+	public byte[] getData() {
+        return new byte[] { 48, 108, -96, 58, 48, 56, -128, 1, 2, -127, 1, 2, -126, 4, -111, 34, 34, -8, -125, 1, 1, -92, 39,
+                -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23,
+                24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 4, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48,
+                5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -125, 0, -124, 0 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -70,10 +75,10 @@ public class GPRSCSITest {
         
         assertNotNull(prim.getGPRSCamelTDPDataList());
         assertEquals(prim.getGPRSCamelTDPDataList().size(), 1);
-        GPRSCamelTDPDataImpl gprsCamelTDPData = prim.getGPRSCamelTDPDataList().get(0);
+        GPRSCamelTDPData gprsCamelTDPData = prim.getGPRSCamelTDPDataList().get(0);
 
-        MAPExtensionContainerImpl extensionContainergprsCamelTDPData = gprsCamelTDPData.getExtensionContainer();
-        ISDNAddressStringImpl gsmSCFAddress = gprsCamelTDPData.getGsmSCFAddress();
+        MAPExtensionContainer extensionContainergprsCamelTDPData = gprsCamelTDPData.getExtensionContainer();
+        ISDNAddressString gsmSCFAddress = gprsCamelTDPData.getGsmSCFAddress();
         assertTrue(gsmSCFAddress.getAddress().equals("22228"));
         assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
         assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
@@ -98,7 +103,7 @@ public class GPRSCSITest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(GPRSCSIImpl.class);
     	        
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         GPRSTriggerDetectionPoint gprsTriggerDetectionPoint = GPRSTriggerDetectionPoint.attachChangeOfPosition;
         long serviceKey = 2;
         ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
@@ -108,13 +113,13 @@ public class GPRSCSITest {
         GPRSCamelTDPDataImpl gprsCamelTDPData = new GPRSCamelTDPDataImpl(gprsTriggerDetectionPoint, serviceKey, gsmSCFAddress,
                 defaultSessionHandling, extensionContainer);
 
-        ArrayList<GPRSCamelTDPDataImpl> gprsCamelTDPDataList = new ArrayList<GPRSCamelTDPDataImpl>();
+        List<GPRSCamelTDPData> gprsCamelTDPDataList = new ArrayList<GPRSCamelTDPData>();
         gprsCamelTDPDataList.add(gprsCamelTDPData);
         Integer camelCapabilityHandling = 4;
         boolean notificationToCSE = true;
         boolean csiActive = true;
 
-        GPRSCSIImpl prim = new GPRSCSIImpl(gprsCamelTDPDataList, camelCapabilityHandling, extensionContainer,
+        GPRSCSI prim = new GPRSCSIImpl(gprsCamelTDPDataList, camelCapabilityHandling, extensionContainer,
                 notificationToCSE, csiActive);
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];

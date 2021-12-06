@@ -26,22 +26,20 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DeleteSubscriberDataRequest;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSSubscriptionDataWithdrawImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSSubscriptionDataWithdrawWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeListWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionDataWithdrawImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionDataWithdrawWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationWithdrawImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationWithdrawWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SpecificCSIWithdrawImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeListWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSSubscriptionDataWithdraw;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionDataWithdraw;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationWithdraw;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SpecificCSIWithdraw;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeListWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -57,8 +55,8 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl implements DeleteSubscriberDataRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=0)
-    private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=0, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
     private ExtBasicServiceCodeListWrapperImpl basicServiceList;    
@@ -69,8 +67,8 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
     private ASNNull roamingRestrictionDueToUnsupportedFeature;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
-    private ZoneCodeImpl regionalSubscriptionIdentifier;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1, defaultImplementation = ZoneCodeImpl.class)
+    private ZoneCode regionalSubscriptionIdentifier;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1)
     private ASNNull vbsGroupIndication;
@@ -81,8 +79,8 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1)
     private ASNNull camelSubscriptionInfoWithdraw;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=true,index=-1)
     private GPRSSubscriptionDataWithdrawWrapperImpl gprsSubscriptionDataWithdraw;
@@ -99,8 +97,8 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=false,index=-1)
     private ASNNull istInformationWithdraw;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=false,index=-1)
-    private SpecificCSIWithdrawImpl specificCSIWithdraw;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=false,index=-1,defaultImplementation = SpecificCSIWithdrawImpl.class)
+    private SpecificCSIWithdraw specificCSIWithdraw;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=false,index=-1)
     private ASNNull chargingCharacteristicsWithdraw;
@@ -120,12 +118,12 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     public DeleteSubscriberDataRequestImpl() {
     }
 
-    public DeleteSubscriberDataRequestImpl(IMSIImpl imsi, List<ExtBasicServiceCodeImpl> basicServiceList, List<SSCodeImpl> ssList,
-            boolean roamingRestrictionDueToUnsupportedFeature, ZoneCodeImpl regionalSubscriptionIdentifier, boolean vbsGroupIndication,
-            boolean vgcsGroupIndication, boolean camelSubscriptionInfoWithdraw, MAPExtensionContainerImpl extensionContainer,
-            GPRSSubscriptionDataWithdrawImpl gprsSubscriptionDataWithdraw, boolean roamingRestrictedInSgsnDueToUnsuppportedFeature,
-            LSAInformationWithdrawImpl lsaInformationWithdraw, boolean gmlcListWithdraw, boolean istInformationWithdraw, SpecificCSIWithdrawImpl specificCSIWithdraw,
-            boolean chargingCharacteristicsWithdraw, boolean stnSrWithdraw, EPSSubscriptionDataWithdrawImpl epsSubscriptionDataWithdraw,
+    public DeleteSubscriberDataRequestImpl(IMSI imsi, List<ExtBasicServiceCode> basicServiceList, List<SSCode> ssList,
+            boolean roamingRestrictionDueToUnsupportedFeature, ZoneCode regionalSubscriptionIdentifier, boolean vbsGroupIndication,
+            boolean vgcsGroupIndication, boolean camelSubscriptionInfoWithdraw, MAPExtensionContainer extensionContainer,
+            GPRSSubscriptionDataWithdraw gprsSubscriptionDataWithdraw, boolean roamingRestrictedInSgsnDueToUnsuppportedFeature,
+            LSAInformationWithdraw lsaInformationWithdraw, boolean gmlcListWithdraw, boolean istInformationWithdraw, SpecificCSIWithdraw specificCSIWithdraw,
+            boolean chargingCharacteristicsWithdraw, boolean stnSrWithdraw, EPSSubscriptionDataWithdraw epsSubscriptionDataWithdraw,
             boolean apnOiReplacementWithdraw, boolean csgSubscriptionDeleted) {
         this.imsi = imsi;
         
@@ -193,20 +191,20 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return imsi;
     }
 
     @Override
-    public List<ExtBasicServiceCodeImpl> getBasicServiceList() {
+    public List<ExtBasicServiceCode> getBasicServiceList() {
     	if(basicServiceList==null)
     		return null;
     	
-        return basicServiceList.getExtBasicServiceCodeImpl();
+        return basicServiceList.getExtBasicServiceCode();
     }
 
     @Override
-    public List<SSCodeImpl> getSsList() {
+    public List<SSCode> getSsList() {
     	if(ssList==null)
     		return null;
     	
@@ -219,7 +217,7 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public ZoneCodeImpl getRegionalSubscriptionIdentifier() {
+    public ZoneCode getRegionalSubscriptionIdentifier() {
         return regionalSubscriptionIdentifier;
     }
 
@@ -239,12 +237,12 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 
     @Override
-    public GPRSSubscriptionDataWithdrawImpl getGPRSSubscriptionDataWithdraw() {
+    public GPRSSubscriptionDataWithdraw getGPRSSubscriptionDataWithdraw() {
     	if(gprsSubscriptionDataWithdraw==null)
     		return null;
     	
@@ -257,7 +255,7 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public LSAInformationWithdrawImpl getLSAInformationWithdraw() {
+    public LSAInformationWithdraw getLSAInformationWithdraw() {
     	if(lsaInformationWithdraw==null)
     		return null;
     	
@@ -275,7 +273,7 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public SpecificCSIWithdrawImpl getSpecificCSIWithdraw() {
+    public SpecificCSIWithdraw getSpecificCSIWithdraw() {
         return specificCSIWithdraw;
     }
 
@@ -290,7 +288,7 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public EPSSubscriptionDataWithdrawImpl getEPSSubscriptionDataWithdraw() {
+    public EPSSubscriptionDataWithdraw getEPSSubscriptionDataWithdraw() {
     	if(epsSubscriptionDataWithdraw==null)
     		return null;
     	
@@ -317,10 +315,10 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
             sb.append(imsi.toString());
             sb.append(", ");
         }
-        if (this.basicServiceList != null && this.basicServiceList.getExtBasicServiceCodeImpl()!=null) {
+        if (this.basicServiceList != null && this.basicServiceList.getExtBasicServiceCode()!=null) {
             sb.append("basicServiceList=[");
             boolean firstItem = true;
-            for (ExtBasicServiceCodeImpl be : this.basicServiceList.getExtBasicServiceCodeImpl()) {
+            for (ExtBasicServiceCode be : this.basicServiceList.getExtBasicServiceCode()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -332,7 +330,7 @@ public class DeleteSubscriberDataRequestImpl extends MobilityMessageImpl impleme
         if (this.ssList != null && this.ssList.getSSCode()!=null) {
             sb.append("ssList=[");
             boolean firstItem = true;
-            for (SSCodeImpl be : this.ssList.getSSCode()) {
+            for (SSCode be : this.ssList.getSSCode()) {
                 if (firstItem)
                     firstItem = false;
                 else

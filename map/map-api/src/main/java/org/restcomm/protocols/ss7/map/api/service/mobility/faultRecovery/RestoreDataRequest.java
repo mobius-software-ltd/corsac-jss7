@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.faultRecovery;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapabilityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapability;
 
 /**
  * <p>
@@ -74,13 +74,13 @@ MAP V2: RestoreDataArg ::= SEQUENCE {
  */
 public interface RestoreDataRequest extends MobilityMessage {
 
-    IMSIImpl getImsi();
+	IMSI getImsi();
 
-    LMSIImpl getLmsi();
+	LMSI getLmsi();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
-    VLRCapabilityImpl getVLRCapability();
+    VLRCapability getVLRCapability();
 
     boolean getRestorationIndicator();
 

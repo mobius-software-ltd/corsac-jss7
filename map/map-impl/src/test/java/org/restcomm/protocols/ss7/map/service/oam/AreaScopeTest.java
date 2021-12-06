@@ -29,14 +29,20 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellIdImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EUtranCgiImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TAIdImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.AreaScopeImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EUtranCgi;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentity;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TAId;
+import org.restcomm.protocols.ss7.map.api.service.oam.AreaScope;
+import org.restcomm.protocols.ss7.map.primitives.GlobalCellIdImpl;
+import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.EUtranCgiImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RAIdentityImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.TAIdImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -57,7 +63,10 @@ public class AreaScopeTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 97, -96, 9, 4, 7, 82, -16, 112, 69, -32, 87, -84, -95, 9, 4, 7, 1, 2, 3, 4, 5, 6, 7, -94, 8, 4, 6, 11, 12, 13, 14, 15, 16, -93, 7, 4, 5, 81, -16, 17, 13, 5, -92, 7, 4, 5, 21, 22, 23, 24, 25, -91, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 91, (byte) 160, 9, 4, 7, 82, (byte) 240, 112, 69, (byte) 224, 87, (byte) 172, (byte) 161, 9, 4, 7, 1, 2, 3, 4, 5, 6, 7,
+                (byte) 162, 8, 4, 6, 11, 12, 13, 14, 15, 16, (byte) 163, 7, 4, 5, 81, (byte) 240, 17, 13, 5, (byte) 164, 7, 4, 5, 21, 22, 23, 24, 25,
+                (byte) 165, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25,
+                26, (byte) 161, 3, 31, 32, 33 };
     }
 
     private byte[] getEUtranCgiData() {
@@ -128,10 +137,10 @@ public class AreaScopeTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AreaScopeImpl.class);
     	
-        ArrayList<GlobalCellIdImpl> cgiList = new ArrayList<GlobalCellIdImpl>();
-        GlobalCellIdImpl gci = new GlobalCellIdImpl(250, 7, 17888, 22444); // int mcc, int mnc, int lac, int cellId
+        List<GlobalCellId> cgiList = new ArrayList<GlobalCellId>();
+        GlobalCellId gci = new GlobalCellIdImpl(250, 7, 17888, 22444); // int mcc, int mnc, int lac, int cellId
         cgiList.add(gci);
-        AreaScopeImpl asc = new AreaScopeImpl(cgiList, null, null, null, null, null);
+        AreaScope asc = new AreaScopeImpl(cgiList, null, null, null, null, null);
 
         ByteBuf buffer=parser.encode(asc);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -139,16 +148,16 @@ public class AreaScopeTest {
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        ArrayList<EUtranCgiImpl> eUtranCgiList = new ArrayList<EUtranCgiImpl>();
+        List<EUtranCgi> eUtranCgiList = new ArrayList<EUtranCgi>();
         EUtranCgiImpl eUtranCgi = new EUtranCgiImpl(getEUtranCgiData());
         eUtranCgiList.add(eUtranCgi);
-        ArrayList<RAIdentityImpl> routingAreaIdList = new ArrayList<RAIdentityImpl>();
+        List<RAIdentity> routingAreaIdList = new ArrayList<RAIdentity>();
         RAIdentityImpl raIdentity = new RAIdentityImpl(getRAIdentity());
         routingAreaIdList.add(raIdentity);
-        ArrayList<LAIFixedLengthImpl> locationAreaIdList = new ArrayList<LAIFixedLengthImpl>();
+        List<LAIFixedLength> locationAreaIdList = new ArrayList<LAIFixedLength>();
         LAIFixedLengthImpl laiFixedLength = new LAIFixedLengthImpl(150, 11, 3333); // int mcc, int mnc, int lac
         locationAreaIdList.add(laiFixedLength);
-        ArrayList<TAIdImpl> trackingAreaIdList = new ArrayList<TAIdImpl>();
+        List<TAId> trackingAreaIdList = new ArrayList<TAId>();
         TAIdImpl taId = new TAIdImpl(getTAId());
         trackingAreaIdList.add(taId);
         asc = new AreaScopeImpl(cgiList, eUtranCgiList, routingAreaIdList, locationAreaIdList, trackingAreaIdList,

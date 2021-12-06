@@ -28,9 +28,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferVolumeWrapperImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferredVolumeImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.VolumeIfTariffSwitchImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -57,15 +54,15 @@ public class TransferredVolumeTest {
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(TransferVolumeWrapperImpl.class);
+    	parser.replaceClass(TransferredVolumeWrapperImpl.class);
     	
     	byte[] rawData = this.getData();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof TransferVolumeWrapperImpl);
+        assertTrue(result.getResult() instanceof TransferredVolumeWrapperImpl);
         
-        TransferVolumeWrapperImpl prim = (TransferVolumeWrapperImpl)result.getResult();        
+        TransferredVolumeWrapperImpl prim = (TransferredVolumeWrapperImpl)result.getResult();        
         assertEquals(prim.getTransferredVolume().getVolumeIfNoTariffSwitch().longValue(), 25);
         assertNull(prim.getTransferredVolume().getVolumeIfTariffSwitch());
 
@@ -74,9 +71,9 @@ public class TransferredVolumeTest {
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof TransferVolumeWrapperImpl);
+        assertTrue(result.getResult() instanceof TransferredVolumeWrapperImpl);
         
-        prim = (TransferVolumeWrapperImpl)result.getResult(); 
+        prim = (TransferredVolumeWrapperImpl)result.getResult(); 
         assertNull(prim.getTransferredVolume().getVolumeIfNoTariffSwitch());
         assertEquals(prim.getTransferredVolume().getVolumeIfTariffSwitch().getVolumeSinceLastTariffSwitch(), 12);
         assertEquals(prim.getTransferredVolume().getVolumeIfTariffSwitch().getVolumeTariffSwitchInterval().longValue(), 24);
@@ -85,11 +82,11 @@ public class TransferredVolumeTest {
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(TransferVolumeWrapperImpl.class);
+    	parser.replaceClass(TransferredVolumeWrapperImpl.class);
     	
     	// Option 1
         TransferredVolumeImpl prim = new TransferredVolumeImpl(new Long(25));
-        TransferVolumeWrapperImpl wrapper = new TransferVolumeWrapperImpl(prim);
+        TransferredVolumeWrapperImpl wrapper = new TransferredVolumeWrapperImpl(prim);
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(wrapper);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -99,7 +96,7 @@ public class TransferredVolumeTest {
         // Option 2
         VolumeIfTariffSwitchImpl volumeIfTariffSwitch = new VolumeIfTariffSwitchImpl(12, new Long(24));
         prim = new TransferredVolumeImpl(volumeIfTariffSwitch);
-        wrapper = new TransferVolumeWrapperImpl(prim);
+        wrapper = new TransferredVolumeWrapperImpl(prim);
         rawData = this.getData2();
         buffer=parser.encode(wrapper);
         encodedData = new byte[buffer.readableBytes()];

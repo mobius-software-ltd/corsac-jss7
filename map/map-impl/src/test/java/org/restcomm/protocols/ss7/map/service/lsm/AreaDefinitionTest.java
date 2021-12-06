@@ -33,9 +33,7 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinitionImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentificationImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.Area;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
@@ -91,7 +89,7 @@ public class AreaDefinitionTest {
         assertTrue(result.getResult() instanceof AreaDefinitionImpl);
         AreaDefinitionImpl areaDef = (AreaDefinitionImpl)result.getResult();
 
-        List<AreaImpl> areaList = areaDef.getAreaList();
+        List<Area> areaList = areaDef.getAreaList();
 
         assertNotNull(areaList);
         assertEquals(areaList.size(), 2);
@@ -118,7 +116,7 @@ public class AreaDefinitionTest {
         AreaImpl area1 = new AreaImpl(AreaType.utranCellId, ai1);
         AreaImpl area2 = new AreaImpl(AreaType.routingAreaId, ai2);
 
-        ArrayList<AreaImpl> areaList = new ArrayList<AreaImpl>();
+        List<Area> areaList = new ArrayList<Area>();
         areaList.add(area1);
         areaList.add(area2);
         AreaDefinitionImpl areaDef = new AreaDefinitionImpl(areaList);

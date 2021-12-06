@@ -25,10 +25,11 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.sms.RequestReportSMSEventRequest;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEventImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEventWrapperImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEvent;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.SMSEventWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -46,10 +47,10 @@ public class RequestReportSMSEventRequestImpl extends SmsMessageImpl implements 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
     private SMSEventWrapperImpl smsEvents;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
 
-    public RequestReportSMSEventRequestImpl(List<SMSEventImpl> smsEvents, CAPExtensionsImpl extensions) {
+    public RequestReportSMSEventRequestImpl(List<SMSEvent> smsEvents, CAPExtensions extensions) {
         super();
         
         if(smsEvents!=null)
@@ -63,7 +64,7 @@ public class RequestReportSMSEventRequestImpl extends SmsMessageImpl implements 
     }
 
     @Override
-    public List<SMSEventImpl> getSMSEvents() {
+    public List<SMSEvent> getSMSEvents() {
     	if(this.smsEvents==null)
     		return null;
     	
@@ -71,7 +72,7 @@ public class RequestReportSMSEventRequestImpl extends SmsMessageImpl implements 
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return this.extensions;
     }
 
@@ -94,7 +95,7 @@ public class RequestReportSMSEventRequestImpl extends SmsMessageImpl implements 
         if (this.smsEvents != null && this.smsEvents.getSMSEvents()!=null) {
             sb.append(", smsEvents=[");
             int i1 = 0;
-            for (SMSEventImpl evt : this.smsEvents.getSMSEvents()) {
+            for (SMSEvent evt : this.smsEvents.getSMSEvents()) {
                 if (i1 == 0)
                     i1 = 1;
                 else

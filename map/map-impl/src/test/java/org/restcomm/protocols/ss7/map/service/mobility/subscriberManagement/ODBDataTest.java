@@ -27,10 +27,9 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBHPLMNDataImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBHPLMNData;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -47,8 +46,9 @@ import io.netty.buffer.Unpooled;
  */
 public class ODBDataTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 58, 3, 5, 4, 74, -43, 85, 80, 3, 2, 4, 80, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+	public byte[] getData() {
+        return new byte[] { 48, 52, 3, 5, 4, 74, -43, 85, 80, 3, 2, 4, 80, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13,
+                14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -62,7 +62,7 @@ public class ODBDataTest {
         assertTrue(result.getResult() instanceof ODBDataImpl);
         ODBDataImpl prim = (ODBDataImpl)result.getResult();
         
-        ODBGeneralDataImpl oDBGeneralData = prim.getODBGeneralData();
+        ODBGeneralData oDBGeneralData = prim.getODBGeneralData();
         assertTrue(!oDBGeneralData.getAllOGCallsBarred());
         assertTrue(oDBGeneralData.getInternationalOGCallsBarred());
         assertTrue(!oDBGeneralData.getInternationalOGCallsNotToHPLMNCountryBarred());
@@ -93,7 +93,7 @@ public class ODBDataTest {
         assertTrue(oDBGeneralData.getRegistrationInterzonalCFNotToHPLMNBarred());
         assertTrue(!oDBGeneralData.getRegistrationInternationalCFBarred());
 
-        ODBHPLMNDataImpl odbHplmnData = prim.getOdbHplmnData();
+        ODBHPLMNData odbHplmnData = prim.getOdbHplmnData();
 
         assertTrue(!odbHplmnData.getPlmnSpecificBarringType1());
         assertTrue(odbHplmnData.getPlmnSpecificBarringType2());
@@ -112,7 +112,7 @@ public class ODBDataTest {
                 false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false,
                 true, false);
         ODBHPLMNDataImpl odbHplmnData = new ODBHPLMNDataImpl(false, true, false, true);
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         ODBDataImpl prim = new ODBDataImpl(oDBGeneralData, odbHplmnData, extensionContainer);
         ByteBuf buffer=parser.encode(prim);

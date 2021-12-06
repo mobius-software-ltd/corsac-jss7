@@ -32,24 +32,21 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNSubaddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeature;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwOptionsForwardingReason;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwOptionsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
+import org.restcomm.protocols.ss7.map.primitives.FTNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNSubaddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -65,8 +62,12 @@ import io.netty.buffer.Unpooled;
  */
 public class ExtForwInfoTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, -127, -127, 4, 1, 0, 48, 77, 48, 75, -126, 1, 38, -124, 1, 3, -123, 4, -111, 34, 34, -8, -120, 2, 2, 5, -122, 1, -92, -121, 1, 2, -87, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -118, 4, -111, 34, 34, -9, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+	public byte[] getData() {
+        return new byte[] { 48, 117, 4, 1, 0, 48, 71, 48, 69, -126, 1, 38, -124, 1, 3, -123, 4, -111, 34, 34, -8, -120, 2, 2,
+                5, -122, 1, -92, -121, 1, 2, -87, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3,
+                6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -118, 4, -111, 34, 34, -9, -96, 39, -96,
+                32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24,
+                25, 26, -95, 3, 31, 32, 33 };
     };
 
     public byte[] getData2() {
@@ -89,13 +90,13 @@ public class ExtForwInfoTest {
         assertTrue(result.getResult() instanceof ExtForwInfoImpl);
         ExtForwInfoImpl prim = (ExtForwInfoImpl)result.getResult();
         
-        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
         assertEquals(prim.getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.allSS);
 
-        List<ExtForwFeatureImpl> forwardingFeatureList = prim.getForwardingFeatureList();
+        List<ExtForwFeature> forwardingFeatureList = prim.getForwardingFeatureList();
         assertNotNull(forwardingFeatureList);
         assertTrue(forwardingFeatureList.size() == 1);
-        ExtForwFeatureImpl extForwFeature = forwardingFeatureList.get(0);
+        ExtForwFeature extForwFeature = forwardingFeatureList.get(0);
         assertNotNull(extForwFeature);
 
         assertEquals(extForwFeature.getBasicService().getExtBearerService().getBearerServiceCodeValue(),
@@ -107,7 +108,7 @@ public class ExtForwInfoTest {
         assertTrue(!extForwFeature.getSsStatus().getBitQ());
         assertTrue(extForwFeature.getSsStatus().getBitR());
 
-        ISDNAddressStringImpl forwardedToNumber = extForwFeature.getForwardedToNumber();
+        ISDNAddressString forwardedToNumber = extForwFeature.getForwardedToNumber();
         assertNotNull(forwardedToNumber);
         assertTrue(forwardedToNumber.getAddress().equals("22228"));
         assertEquals(forwardedToNumber.getAddressNature(), AddressNature.international_number);
@@ -121,7 +122,7 @@ public class ExtForwInfoTest {
                 .getCode());
         assertNotNull(extForwFeature.getNoReplyConditionTime());
         assertTrue(extForwFeature.getNoReplyConditionTime().equals(2));
-        FTNAddressStringImpl longForwardedToNumber = extForwFeature.getLongForwardedToNumber();
+        FTNAddressString longForwardedToNumber = extForwFeature.getLongForwardedToNumber();
         assertNotNull(longForwardedToNumber);
         assertTrue(longForwardedToNumber.getAddress().equals("22227"));
         assertEquals(longForwardedToNumber.getAddressNature(), AddressNature.international_number);
@@ -158,7 +159,7 @@ public class ExtForwInfoTest {
     	
         ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
         ExtBasicServiceCodeImpl basicService = new ExtBasicServiceCodeImpl(b);
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         ExtSSStatusImpl ssStatus = new ExtSSStatusImpl(false, false, true, true);
         ISDNAddressStringImpl forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22228");
@@ -172,9 +173,9 @@ public class ExtForwInfoTest {
                 forwardedToSubaddress, forwardingOptions, noReplyConditionTime, extensionContainer, longForwardedToNumber);
 
         SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.allSS);
-        ArrayList<ExtForwFeatureImpl> forwardingFeatureList = new ArrayList<ExtForwFeatureImpl>();
+        List<ExtForwFeature> forwardingFeatureList = new ArrayList<ExtForwFeature>();
         forwardingFeatureList.add(extForwFeature);
-        ExtForwInfoImpl prim = new ExtForwInfoImpl(ssCode, forwardingFeatureList, extensionContainer);
+        ExtForwInfo prim = new ExtForwInfoImpl(ssCode, forwardingFeatureList, extensionContainer);
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
@@ -189,7 +190,7 @@ public class ExtForwInfoTest {
         extForwFeature = new ExtForwFeatureImpl(basicService, ssStatus, forwardedToNumber, null, forwardingOptions, null, null,
                 null);
         ssCode = new SSCodeImpl(43);
-        forwardingFeatureList = new ArrayList<ExtForwFeatureImpl>();
+        forwardingFeatureList = new ArrayList<ExtForwFeature>();
         forwardingFeatureList.add(extForwFeature);
         prim = new ExtForwInfoImpl(ssCode, forwardingFeatureList, null);
         buffer=parser.encode(prim);

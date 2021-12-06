@@ -24,14 +24,17 @@ package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.PlmnIdImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSynchronisationInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.PlmnId;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSynchronisationInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.RequestingNodeType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.SendAuthenticationInfoRequest;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 /**
@@ -43,7 +46,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class SendAuthenticationInfoRequestImplV1 extends MobilityMessageImpl implements SendAuthenticationInfoRequest {
 	private static final long serialVersionUID = 1L;
 
-	private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = IMSIImpl.class)
+	private IMSI imsi;
     
     private long mapProtocolVersion=1;
 
@@ -55,7 +59,7 @@ public class SendAuthenticationInfoRequestImplV1 extends MobilityMessageImpl imp
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public SendAuthenticationInfoRequestImplV1(long mapProtocolVersion, IMSIImpl imsi) {
+    public SendAuthenticationInfoRequestImplV1(long mapProtocolVersion, IMSI imsi) {
         this.mapProtocolVersion = mapProtocolVersion;
         this.imsi = imsi;
     }
@@ -68,7 +72,7 @@ public class SendAuthenticationInfoRequestImplV1 extends MobilityMessageImpl imp
         return MAPOperationCode.sendAuthenticationInfo;
     }
 
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return imsi;
     }
 
@@ -84,11 +88,11 @@ public class SendAuthenticationInfoRequestImplV1 extends MobilityMessageImpl imp
         return false;
     }
 
-    public ReSynchronisationInfoImpl getReSynchronisationInfo() {
+    public ReSynchronisationInfo getReSynchronisationInfo() {
         return null;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return null;
     }
 
@@ -96,7 +100,7 @@ public class SendAuthenticationInfoRequestImplV1 extends MobilityMessageImpl imp
     	return null;
     }
 
-    public PlmnIdImpl getRequestingPlmnId() {
+    public PlmnId getRequestingPlmnId() {
         return null;
     }
 

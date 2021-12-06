@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.map.api.service.lsm;
 
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
 
 /**
  *
@@ -71,21 +71,21 @@ public interface SubscriberLocationReportRequest extends LsmMessage {
 
     LCSEvent getLCSEvent();
 
-    LCSClientIDImpl getLCSClientID();
+    LCSClientID getLCSClientID();
 
-    LCSLocationInfoImpl getLCSLocationInfo();
+    LCSLocationInfo getLCSLocationInfo();
 
-    ISDNAddressStringImpl getMSISDN();
+    ISDNAddressString getMSISDN();
 
-    IMSIImpl getIMSI();
+    IMSI getIMSI();
 
-    IMEIImpl getIMEI();
+    IMEI getIMEI();
 
-    ISDNAddressStringImpl getNaESRD();
+    ISDNAddressString getNaESRD();
 
-    ISDNAddressStringImpl getNaESRK();
+    ISDNAddressString getNaESRK();
 
-    ExtGeographicalInformationImpl getLocationEstimate();
+    ExtGeographicalInformation getLocationEstimate();
 
     /**
      * AgeOfLocationInformation ::= INTEGER (0..32767) -- the value represents the elapsed time in minutes since the last --
@@ -97,7 +97,7 @@ public interface SubscriberLocationReportRequest extends LsmMessage {
      */
     Integer getAgeOfLocationEstimate();
 
-    SLRArgExtensionContainerImpl getSLRArgExtensionContainer();
+    SLRArgExtensionContainer getSLRArgExtensionContainer();
 
     /**
      * Add-GeographicalInformation ::= OCTET STRING (SIZE (1..maxAdd-GeographicalInformation)) -- Refers to geographical
@@ -116,9 +116,9 @@ public interface SubscriberLocationReportRequest extends LsmMessage {
      *
      * @return
      */
-    AddGeographicalInformationImpl getAdditionalLocationEstimate();
+    AddGeographicalInformation getAdditionalLocationEstimate();
 
-    DeferredmtlrDataImpl getDeferredmtlrData();
+    DeferredmtlrData getDeferredmtlrData();
 
     /**
      * LCS-ReferenceNumber::= OCTET STRING (SIZE(1))
@@ -136,7 +136,7 @@ public interface SubscriberLocationReportRequest extends LsmMessage {
      *
      * @return
      */
-    PositioningDataInformationImpl getGeranPositioningData();
+    PositioningDataInformation getGeranPositioningData();
 
     /**
      * UtranPositioningDataInfo ::= OCTET STRING (SIZE (3..maxUtranPositioningDataInfo)) -- Refers to the Position Data defined
@@ -147,16 +147,16 @@ public interface SubscriberLocationReportRequest extends LsmMessage {
      *
      * @return
      */
-    UtranPositioningDataInfoImpl getUtranPositioningData();
+    UtranPositioningDataInfo getUtranPositioningData();
 
-    CellGlobalIdOrServiceAreaIdOrLAIImpl getCellGlobalIdOrServiceAreaIdOrLAI();
+    CellGlobalIdOrServiceAreaIdOrLAI getCellGlobalIdOrServiceAreaIdOrLAI();
 
     /**
      * GSN-Address ::= OCTET STRING (SIZE (5..17)) -- Octets are coded according to TS 3GPP TS 23.003 [17]
      *
      * @return
      */
-    GSNAddressImpl getHGMLCAddress();
+    GSNAddress getHGMLCAddress();
 
     /**
      * LCSServiceTypeID ::= INTEGER (0..127) -- the integer values 0-63 are reserved for Standard LCS service types -- the
@@ -172,22 +172,21 @@ public interface SubscriberLocationReportRequest extends LsmMessage {
 
     AccuracyFulfilmentIndicator getAccuracyFulfilmentIndicator();
 
-    VelocityEstimateImpl getVelocityEstimate();
+    VelocityEstimate getVelocityEstimate();
 
     Integer getSequenceNumber();
 
-    PeriodicLDRInfoImpl getPeriodicLDRInfo();
+    PeriodicLDRInfo getPeriodicLDRInfo();
 
     boolean getMoLrShortCircuitIndicator();
 
-    GeranGANSSpositioningDataImpl getGeranGANSSpositioningData();
+    GeranGANSSpositioningData getGeranGANSSpositioningData();
 
-    UtranGANSSpositioningDataImpl getUtranGANSSpositioningData();
+    UtranGANSSpositioningData getUtranGANSSpositioningData();
 
-    ServingNodeAddressImpl getTargetServingNodeForHandover();
+    ServingNodeAddress getTargetServingNodeForHandover();
 
-    LMSIImpl getLMSI();
+    LMSI getLMSI();
 
-    ReportingPLMNListImpl getReportingPLMNList();
-
+    ReportingPLMNList getReportingPLMNList();
 }

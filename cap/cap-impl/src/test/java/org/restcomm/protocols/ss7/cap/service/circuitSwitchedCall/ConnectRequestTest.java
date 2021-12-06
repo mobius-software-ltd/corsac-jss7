@@ -32,20 +32,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCapImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
+import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCap;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ConferenceTreatmentIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ForwardServiceInteractionIndImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.isup.GenericNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.isup.LocationNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.isup.OriginalCalledNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.isup.RedirectingPartyIDCapImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ForwardServiceInteractionIndImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
 import org.restcomm.protocols.ss7.inap.isup.CallingPartysCategoryInapImpl;
 import org.restcomm.protocols.ss7.inap.isup.RedirectionInformationInapImpl;
 import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
@@ -55,8 +57,8 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectionInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingCategory;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
+import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGInterlockImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -264,7 +266,7 @@ public class ConnectRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ConnectRequestImpl.class);
     	
-        List<CalledPartyNumberCapImpl> calledPartyNumbers = new ArrayList<CalledPartyNumberCapImpl>();
+        List<CalledPartyNumberCap> calledPartyNumbers = new ArrayList<CalledPartyNumberCap>();
         CalledPartyNumberImpl cpn = new CalledPartyNumberImpl(2, "972201", 1, 2);
         CalledPartyNumberCapImpl calledPartyNumber = new CalledPartyNumberCapImpl(cpn);
         calledPartyNumbers.add(calledPartyNumber);
@@ -278,7 +280,7 @@ public class ConnectRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        ArrayList<GenericNumberCapImpl> genericNumbers = new ArrayList<GenericNumberCapImpl>();
+        List<GenericNumberCap> genericNumbers = new ArrayList<GenericNumberCap>();
         GenericNumberCapImpl genericNumberCap = new GenericNumberCapImpl(getDataGenericNumber());
         genericNumbers.add(genericNumberCap);
         elem = new ConnectRequestImpl(destinationRoutingAddress, null, null, null, null, null, null, null, genericNumbers,

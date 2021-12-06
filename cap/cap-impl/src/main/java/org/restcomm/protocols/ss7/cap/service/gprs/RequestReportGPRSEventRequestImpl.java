@@ -26,9 +26,10 @@ import java.util.List;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.RequestReportGPRSEventRequest;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GprsEventWrapperImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEvent;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GprsEventWrapperImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -46,14 +47,14 @@ public class RequestReportGPRSEventRequestImpl extends GprsMessageImpl implement
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
     private GprsEventWrapperImpl gprsEvent;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private PDPIDImpl pdpID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1, defaultImplementation = PDPIDImpl.class)
+    private PDPID pdpID;
 
     public RequestReportGPRSEventRequestImpl() {
         super();
     }
 
-    public RequestReportGPRSEventRequestImpl(List<GPRSEventImpl> gprsEvent, PDPIDImpl pdpID) {
+    public RequestReportGPRSEventRequestImpl(List<GPRSEvent> gprsEvent, PDPID pdpID) {
         super();
         
         if(gprsEvent!=null)
@@ -63,7 +64,7 @@ public class RequestReportGPRSEventRequestImpl extends GprsMessageImpl implement
     }
 
     @Override
-    public List<GPRSEventImpl> getGPRSEvent() {
+    public List<GPRSEvent> getGPRSEvent() {
     	if(this.gprsEvent==null)
     		return null;
     	
@@ -71,7 +72,7 @@ public class RequestReportGPRSEventRequestImpl extends GprsMessageImpl implement
     }
 
     @Override
-    public PDPIDImpl getPDPID() {
+    public PDPID getPDPID() {
         return this.pdpID;
     }
 
@@ -94,7 +95,7 @@ public class RequestReportGPRSEventRequestImpl extends GprsMessageImpl implement
         if (this.gprsEvent != null && this.gprsEvent.getGPRSEvents()!=null) {
             sb.append(", gprsEvent=[");
             boolean firstItem = true;
-            for (GPRSEventImpl be : this.gprsEvent.getGPRSEvents()) {
+            for (GPRSEvent be : this.gprsEvent.getGPRSEvents()) {
                 if (firstItem)
                     firstItem = false;
                 else

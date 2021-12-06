@@ -32,9 +32,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEvent;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -72,7 +73,7 @@ public class RequestReportGPRSEventRequestTest {
         assertTrue(result.getResult() instanceof RequestReportGPRSEventRequestImpl);
         
         RequestReportGPRSEventRequestImpl prim = (RequestReportGPRSEventRequestImpl)result.getResult();        
-        List<GPRSEventImpl> gprsEvent = prim.getGPRSEvent();
+        List<GPRSEvent> gprsEvent = prim.getGPRSEvent();
         assertNotNull(gprsEvent);
         assertEquals(gprsEvent.size(), 1);
         assertEquals(gprsEvent.get(0).getGPRSEventType(), GPRSEventType.attachChangeOfPosition);
@@ -92,7 +93,7 @@ public class RequestReportGPRSEventRequestTest {
         assertTrue(result.getResult() instanceof RequestReportGPRSEventRequestImpl);
         
         RequestReportGPRSEventRequestImpl prim = (RequestReportGPRSEventRequestImpl)result.getResult();        
-        List<GPRSEventImpl> gprsEvent = prim.getGPRSEvent();
+        List<GPRSEvent> gprsEvent = prim.getGPRSEvent();
         assertNotNull(gprsEvent);
         assertEquals(gprsEvent.size(), 4);
 
@@ -116,7 +117,7 @@ public class RequestReportGPRSEventRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(RequestReportGPRSEventRequestImpl.class);
     	
-        List<GPRSEventImpl> gprsEvent = new ArrayList<GPRSEventImpl>();
+        List<GPRSEvent> gprsEvent = new ArrayList<GPRSEvent>();
         GPRSEventImpl event = new GPRSEventImpl(GPRSEventType.attachChangeOfPosition, MonitorMode.notifyAndContinue);
         gprsEvent.add(event);
         PDPIDImpl pdpID = new PDPIDImpl(2);
@@ -134,7 +135,7 @@ public class RequestReportGPRSEventRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(RequestReportGPRSEventRequestImpl.class);
     	
-        List<GPRSEventImpl> gprsEvent = new ArrayList<GPRSEventImpl>();
+        List<GPRSEvent> gprsEvent = new ArrayList<GPRSEvent>();
         GPRSEventImpl event1 = new GPRSEventImpl(GPRSEventType.pdpContextEstablishment, MonitorMode.interrupted);
         GPRSEventImpl event2 = new GPRSEventImpl(GPRSEventType.pdpContextEstablishmentAcknowledgement, MonitorMode.interrupted);
         GPRSEventImpl event3 = new GPRSEventImpl(GPRSEventType.disonnect, MonitorMode.interrupted);

@@ -29,43 +29,45 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointNameImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.EndUserAddressImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoSExtensionImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSQoSImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPAddressImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPInitiationType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeNumberImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeNumberValue;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeOrganizationImpl;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeOrganizationValue;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfServiceImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.SGSNCapabilitiesImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
+import org.restcomm.protocols.ss7.cap.primitives.TimeAndTimezoneImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.AccessPointNameImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.EndUserAddressImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSQoSExtensionImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSQoSImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPAddressImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPTypeNumberImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPTypeOrganizationImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.QualityOfServiceImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.SGSNCapabilitiesImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingIDImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClassImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeodeticInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSNetworkCapabilityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSRadioAccessCapabilityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClass;
+import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSChargingIDImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSMSClassImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeodeticInformationImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeographicalInformationImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.MSNetworkCapabilityImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.MSRadioAccessCapabilityImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RAIdentityImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LSAIdentityImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.QoSSubscribedImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -180,7 +182,7 @@ public class InitialDpGprsRequestTest {
         assertEquals(prim.getGPRSEventType(), GPRSEventType.attachChangeOfPosition);
 
         // msisdn
-        ISDNAddressStringImpl msisdn = prim.getMsisdn();
+        ISDNAddressString msisdn = prim.getMsisdn();
         assertTrue(msisdn.getAddress().equals("22234"));
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
@@ -198,7 +200,7 @@ public class InitialDpGprsRequestTest {
         assertEquals(prim.getTimeAndTimezone().getTimeZone(), 0);
 
         // gprsMSClass
-        GPRSMSClassImpl gprsMSClass = prim.getGPRSMSClass();
+        GPRSMSClass gprsMSClass = prim.getGPRSMSClass();
         assertTrue(Arrays.equals(gprsMSClass.getMSNetworkCapability().getData(), this.getEncodedDataNetworkCapability()));
         assertTrue(Arrays
                 .equals(gprsMSClass.getMSRadioAccessCapability().getData(), this.getEncodedDataRadioAccessCapability()));
@@ -278,7 +280,7 @@ public class InitialDpGprsRequestTest {
         assertEquals(prim.getGPRSEventType(), GPRSEventType.pdpContextEstablishmentAcknowledgement);
 
         // msisdn
-        ISDNAddressStringImpl msisdn = prim.getMsisdn();
+        ISDNAddressString msisdn = prim.getMsisdn();
         assertTrue(msisdn.getAddress().equals("553499739025"));
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
@@ -358,7 +360,7 @@ public class InitialDpGprsRequestTest {
         PDPInitiationType pdpInitiationType = PDPInitiationType.networkInitiated;
 
         // extensions
-        CAPExtensionsImpl extensions = CAPExtensionsTest.createTestCAPExtensions();
+        CAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
 
         // GSNAddress
         GSNAddressImpl gsnAddress = new GSNAddressImpl(this.getGSNAddressData());

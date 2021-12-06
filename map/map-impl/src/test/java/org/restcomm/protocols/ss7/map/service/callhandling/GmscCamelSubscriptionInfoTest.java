@@ -32,16 +32,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.GmscCamelSubscriptionInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultCallHandling;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmCamelTDPDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmCamelTDPData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OBcsmTriggerDetectionPoint;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OCSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTDPDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTDPData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmTriggerDetectionPoint;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TCSIImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TCSI;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OBcsmCamelTDPDataImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OCSIImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TBcsmCamelTDPDataImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TCSIImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -73,10 +76,10 @@ public class GmscCamelSubscriptionInfoTest {
         assertTrue(result.getResult() instanceof GmscCamelSubscriptionInfoImpl);
         GmscCamelSubscriptionInfoImpl ind = (GmscCamelSubscriptionInfoImpl)result.getResult();
         
-        TCSIImpl tcsi = ind.getTCsi();
-        List<TBcsmCamelTDPDataImpl> lst = tcsi.getTBcsmCamelTDPDataList();
+        TCSI tcsi = ind.getTCsi();
+        List<TBcsmCamelTDPData> lst = tcsi.getTBcsmCamelTDPDataList();
         assertEquals(lst.size(), 1);
-        TBcsmCamelTDPDataImpl cd = lst.get(0);
+        TBcsmCamelTDPData cd = lst.get(0);
         assertEquals(cd.getTBcsmTriggerDetectionPoint(), TBcsmTriggerDetectionPoint.termAttemptAuthorized);
         assertEquals(cd.getServiceKey(), 3);
         assertEquals(cd.getGsmSCFAddress().getAddressNature(), AddressNature.international_number);
@@ -90,10 +93,10 @@ public class GmscCamelSubscriptionInfoTest {
         assertFalse(tcsi.getNotificationToCSE());
         assertFalse(tcsi.getCsiActive());
 
-        OCSIImpl ocsi = ind.getOCsi();
-        List<OBcsmCamelTDPDataImpl> lst2 = ocsi.getOBcsmCamelTDPDataList();
+        OCSI ocsi = ind.getOCsi();
+        List<OBcsmCamelTDPData> lst2 = ocsi.getOBcsmCamelTDPDataList();
         assertEquals(lst2.size(), 1);
-        OBcsmCamelTDPDataImpl cd2 = lst2.get(0);
+        OBcsmCamelTDPData cd2 = lst2.get(0);
         assertEquals(cd2.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.collectedInfo);
         assertEquals(cd2.getServiceKey(), 3);
         assertEquals(cd2.getGsmSCFAddress().getAddressNature(), AddressNature.international_number);
@@ -117,15 +120,15 @@ public class GmscCamelSubscriptionInfoTest {
                 "1122333");
         TBcsmCamelTDPDataImpl cind = new TBcsmCamelTDPDataImpl(TBcsmTriggerDetectionPoint.termAttemptAuthorized, 3,
                 gsmSCFAddress, DefaultCallHandling.releaseCall, null);
-        ArrayList<TBcsmCamelTDPDataImpl> lst = new ArrayList<TBcsmCamelTDPDataImpl>();
+        List<TBcsmCamelTDPData> lst = new ArrayList<TBcsmCamelTDPData>();
         lst.add(cind);
-        TCSIImpl ctsi = new TCSIImpl(lst, null, 2, false, false);
+        TCSI ctsi = new TCSIImpl(lst, null, 2, false, false);
 
         OBcsmCamelTDPDataImpl oind = new OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint.collectedInfo, 3, gsmSCFAddress,
                 DefaultCallHandling.releaseCall, null);
-        ArrayList<OBcsmCamelTDPDataImpl> lst2 = new ArrayList<OBcsmCamelTDPDataImpl>();
+        List<OBcsmCamelTDPData> lst2 = new ArrayList<OBcsmCamelTDPData>();
         lst2.add(oind);
-        OCSIImpl otsi = new OCSIImpl(lst2, null, 2, false, false);
+        OCSI otsi = new OCSIImpl(lst2, null, 2, false, false);
 
         GmscCamelSubscriptionInfoImpl ind = new GmscCamelSubscriptionInfoImpl(ctsi, otsi, null, null, null, null);
 

@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -48,25 +48,25 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface UpdateGprsLocationRequest extends MobilityMessage {
 
-    IMSIImpl getImsi();
+	IMSI getImsi();
 
-    ISDNAddressStringImpl getSgsnNumber();
+    ISDNAddressString getSgsnNumber();
 
-    GSNAddressImpl getSgsnAddress();
+    GSNAddress getSgsnAddress();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
-    SGSNCapabilityImpl getSGSNCapability();
+    SGSNCapability getSGSNCapability();
 
     boolean getInformPreviousNetworkEntity();
 
     boolean getPsLCSNotSupportedByUE();
 
-    GSNAddressImpl getVGmlcAddress();
+    GSNAddress getVGmlcAddress();
 
-    ADDInfoImpl getADDInfo();
+    ADDInfo getADDInfo();
 
-    EPSInfoImpl getEPSInfo();
+    EPSInfo getEPSInfo();
 
     boolean getServingNodeTypeIndicator();
 

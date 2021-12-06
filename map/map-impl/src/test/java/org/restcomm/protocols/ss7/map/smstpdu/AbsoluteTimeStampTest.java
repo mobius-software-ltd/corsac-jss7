@@ -27,7 +27,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStampImpl;
 import org.testng.annotations.Test;
 
 import io.netty.buffer.ByteBuf;

@@ -24,13 +24,16 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ASNEMLPPPriorityImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoRequest;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfo;
+import org.restcomm.protocols.ss7.map.primitives.ASNEMLPPPriorityImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -46,17 +49,17 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ProvideSubscriberInfoRequestImpl extends MobilityMessageImpl implements ProvideSubscriberInfoRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
-    private LMSIImpl lmsi;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1, defaultImplementation = LMSIImpl.class)
+    private LMSI lmsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1)
-    private RequestedInfoImpl requestedInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1, defaultImplementation = RequestedInfoImpl.class)
+    private RequestedInfo requestedInfo;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;    
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
     private ASNEMLPPPriorityImpl callPriority;
@@ -64,7 +67,7 @@ public class ProvideSubscriberInfoRequestImpl extends MobilityMessageImpl implem
     public ProvideSubscriberInfoRequestImpl() {
     }
 
-    public ProvideSubscriberInfoRequestImpl(IMSIImpl imsi, LMSIImpl lmsi, RequestedInfoImpl requestedInfo, MAPExtensionContainerImpl extensionContainer,
+    public ProvideSubscriberInfoRequestImpl(IMSI imsi, LMSI lmsi, RequestedInfo requestedInfo, MAPExtensionContainer extensionContainer,
             EMLPPPriority callPriority) {
         this.imsi = imsi;
         this.lmsi = lmsi;
@@ -88,22 +91,22 @@ public class ProvideSubscriberInfoRequestImpl extends MobilityMessageImpl implem
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return imsi;
     }
 
     @Override
-    public LMSIImpl getLmsi() {
+    public LMSI getLmsi() {
         return lmsi;
     }
 
     @Override
-    public RequestedInfoImpl getRequestedInfo() {
+    public RequestedInfo getRequestedInfo() {
         return requestedInfo;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 

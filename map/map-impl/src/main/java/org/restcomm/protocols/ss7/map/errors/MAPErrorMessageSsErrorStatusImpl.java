@@ -24,11 +24,11 @@ package org.restcomm.protocols.ss7.map.errors;
 
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSsErrorStatus;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ASNSingleByte;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 
 /**
  *

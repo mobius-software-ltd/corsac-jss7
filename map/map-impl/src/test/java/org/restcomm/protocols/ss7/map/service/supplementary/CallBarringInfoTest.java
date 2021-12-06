@@ -22,15 +22,18 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringFeature;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringInfo;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.testng.annotations.Test;
 
@@ -90,11 +93,11 @@ public class CallBarringInfoTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CallBarringInfoImpl.class);
     	
-        ArrayList<CallBarringFeatureImpl> forwardingFeatureList = new ArrayList<CallBarringFeatureImpl>();
-        SSStatusImpl ssStatus = new SSStatusImpl(true, true, true, false);
-        CallBarringFeatureImpl callBarringFeature = new CallBarringFeatureImpl(null, ssStatus);
+        List<CallBarringFeature> forwardingFeatureList = new ArrayList<CallBarringFeature>();
+        SSStatus ssStatus = new SSStatusImpl(true, true, true, false);
+        CallBarringFeature callBarringFeature = new CallBarringFeatureImpl(null, ssStatus);
         forwardingFeatureList.add(callBarringFeature);
-        CallBarringInfoImpl impl = new CallBarringInfoImpl(null, forwardingFeatureList);
+        CallBarringInfo impl = new CallBarringInfoImpl(null, forwardingFeatureList);
         ByteBuf buffer=parser.encode(impl);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);

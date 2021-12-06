@@ -28,9 +28,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEACICImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -47,8 +45,8 @@ import io.netty.buffer.Unpooled;
 public class NAEAPreferredCITest {
 
     public byte[] getData() {
-        return new byte[] { 48, 52, -128, 3, 15, 48, 5, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6,
-                3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 46, -128, 3, 15, 48, 5, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6,
+                3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     };
 
     public byte[] getNAEACICIData() {
@@ -67,7 +65,7 @@ public class NAEAPreferredCITest {
         assertTrue(result.getResult() instanceof NAEAPreferredCIImpl);
         NAEAPreferredCIImpl prim = (NAEAPreferredCIImpl)result.getResult();
         
-        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
         assertEquals(prim.getNaeaPreferredCIC().getData(), this.getNAEACICIData());
         assertNotNull(extensionContainer);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
@@ -78,7 +76,7 @@ public class NAEAPreferredCITest {
     	ASNParser parser=new ASNParser(false);
     	parser.replaceClass(NAEAPreferredCIImpl.class);
     	
-    	MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+    	MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         NAEACICImpl naeaPreferredCIC = new NAEACICImpl(this.getNAEACICIData());
         NAEAPreferredCIImpl prim = new NAEAPreferredCIImpl(naeaPreferredCIC, extensionContainer);
         ByteBuf buffer=parser.encode(prim);

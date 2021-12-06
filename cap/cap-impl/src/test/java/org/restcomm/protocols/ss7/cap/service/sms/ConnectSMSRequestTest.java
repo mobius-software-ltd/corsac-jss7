@@ -27,13 +27,16 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumberImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressStringImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
+import org.restcomm.protocols.ss7.cap.primitives.CalledPartyBCDNumberImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.SMSAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -67,8 +70,8 @@ public class ConnectSMSRequestTest {
         assertTrue(result.getResult() instanceof ConnectSMSRequestImpl);
         
         ConnectSMSRequestImpl prim = (ConnectSMSRequestImpl)result.getResult();        
-        CalledPartyBCDNumberImpl destinationSubscriberNumber = prim.getDestinationSubscriberNumber();
-        SMSAddressStringImpl callingPartyNumber = prim.getCallingPartysNumber();
+        CalledPartyBCDNumber destinationSubscriberNumber = prim.getDestinationSubscriberNumber();
+        SMSAddressString callingPartyNumber = prim.getCallingPartysNumber();
 
         assertNotNull(destinationSubscriberNumber);
         assertTrue(destinationSubscriberNumber.getAddress().equals("41788005047"));
@@ -76,7 +79,7 @@ public class ConnectSMSRequestTest {
         assertNotNull(callingPartyNumber);
         assertTrue(callingPartyNumber.getAddress().equals("1234567891234567"));
 
-        ISDNAddressStringImpl smscAddress = prim.getSMSCAddress();
+        ISDNAddressString smscAddress = prim.getSMSCAddress();
         assertNotNull(smscAddress);
         assertTrue(smscAddress.getAddress().equals("2207750008"));
 
@@ -96,7 +99,7 @@ public class ConnectSMSRequestTest {
                 AddressNature.international_number, NumberingPlan.ISDN, "41788005047");
         ISDNAddressStringImpl smscAddress = new ISDNAddressStringImpl(AddressNature.international_number,
                 NumberingPlan.ISDN, "2207750008");
-        CAPExtensionsImpl extensions = CAPExtensionsTest.createTestCAPExtensions();
+        CAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
 
         ConnectSMSRequestImpl prim = new ConnectSMSRequestImpl(callingPartysNumber, destinationSubscriberNumber,
                 smscAddress, extensions);

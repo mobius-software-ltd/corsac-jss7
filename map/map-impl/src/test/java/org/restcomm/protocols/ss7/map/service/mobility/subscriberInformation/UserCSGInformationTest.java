@@ -28,9 +28,8 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.UserCSGInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGIdImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CSGIdImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -47,7 +46,8 @@ import io.netty.buffer.Unpooled;
 public class UserCSGInformationTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 60, -128, 5, 5, -128, 0, 0, 32, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -126, 1, 2, -125, 1, 3 };
+        return new byte[] { 48, 54, -128, 5, 5, -128, 0, 0, 32, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
+                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -126, 1, 2, -125, 1, 3 };
     }
 
     @Test(groups = { "functional.decode", "subscriberInformation" })

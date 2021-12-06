@@ -30,29 +30,40 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingCategory;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfo;
 import org.restcomm.protocols.ss7.map.api.primitives.ExtProtocolId;
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.primitives.ProtocolId;
-import org.restcomm.protocols.ss7.map.api.primitives.SignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LACImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationAreaImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingAreaImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationArea;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingArea;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
+import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.primitives.ExtExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.primitives.ExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.primitives.SignalInfoImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.LACImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.LocationAreaImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PagingAreaImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -90,15 +101,38 @@ public class ProvideRoamingNumberRequestTest {
     }
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, -126, 1, 29, -128, 8, 16, 33, 2, 2, 16, -119, 34, -9, -127, 4, -111, 34, 34, -8, -126, 4, -111, 34, 34, -9, -124, 4, 0, 3, 98, 39, -91, 56, 10, 1, 2, 4, 4, 10, 20, 30, 40, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -90, 56, 10, 1, 2, 4, 4, 10, 20, 30, 40, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -120, 4, -111, 34, 34, -10, -119, 5, 19, -6, 61, 61, -22, -85, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -116, 1, 8, -113, 2, 6, -64, -82, 53, 4, 4, 10, 20, 30, 40, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -108, 2, 1, 14, -74, 4, -127, 2, 0, 123, -105, 1, 0, -103, 4, -111, 34, 34, -11 };
+        return new byte[] { 48, -126, 1, 5, -128, 8, 16, 33, 2, 2, 16, -119, 34, -9, -127, 4, -111, 34, 34, -8, -126, 4, -111,
+                34, 34, -9, -124, 4, 0, 3, 98, 39, -91, 50, 10, 1, 2, 4, 4, 10, 20, 30, 40, 48, 39, -96, 32, 48, 10, 6, 3, 42,
+                3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31,
+                32, 33, -90, 50, 10, 1, 2, 4, 4, 10, 20, 30, 40, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
+                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -120, 4, -111, 34,
+                34, -10, -119, 5, 19, -6, 61, 61, -22, -85, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6,
+                3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -116, 1, 8, -113, 2, 6, -64,
+                -82, 47, 4, 4, 10, 20, 30, 40, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3,
+                6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -108, 2, 1, 14, -74, 4, -127, 2, 0, 123,
+                -105, 1, 0, -103, 4, -111, 34, 34, -11 };
     }
 
     private byte[] getEncodedData1() {
-        return new byte[] { 48, -127, -112, -128, 8, 16, 33, 2, 2, 16, -119, 34, -9, -127, 4, -111, 34, 34, -8, -126, 4, -111, 34, 34, -9, -124, 4, 0, 3, 98, 39, -91, 56, 10, 1, 2, 4, 4, 10, 20, 30, 40, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -90, 56, 10, 1, 2, 4, 4, 10, 20, 30, 40, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, -127, -124, -128, 8, 16, 33, 2, 2, 16, -119, 34, -9, -127, 4, -111, 34, 34, -8, -126, 4, -111,
+                34, 34, -9, -124, 4, 0, 3, 98, 39, -91, 50, 10, 1, 2, 4, 4, 10, 20, 30, 40, 48, 39, -96, 32, 48, 10, 6, 3, 42,
+                3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31,
+                32, 33, -90, 50, 10, 1, 2, 4, 4, 10, 20, 30, 40, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
+                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { 48, -126, 1, 47, -128, 8, 16, 33, 2, 2, 16, -119, 34, -9, -127, 4, -111, 34, 34, -8, -126, 4, -111, 34, 34, -9, -124, 4, 0, 3, 98, 39, -91, 56, 10, 1, 2, 4, 4, 10, 20, 30, 40, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -90, 56, 10, 1, 2, 4, 4, 10, 20, 30, 40, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -121, 0, -120, 4, -111, 34, 34, -10, -119, 5, 19, -6, 61, 61, -22, -118, 0, -85, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -116, 1, 8, -115, 0, -113, 2, 6, -64, -82, 53, 4, 4, 10, 20, 30, 40, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -112, 0, -111, 0, -110, 0, -109, 0, -108, 2, 1, 14, -107, 0, -74, 4, -127, 2, 0, 123, -105, 1, 0, -104, 0, -103, 4, -111, 34, 34, -11 };
+        return new byte[] { 48, -126, 1, 23, -128, 8, 16, 33, 2, 2, 16, -119, 34, -9, -127, 4, -111, 34, 34, -8, -126, 4, -111,
+                34, 34, -9, -124, 4, 0, 3, 98, 39, -91, 50, 10, 1, 2, 4, 4, 10, 20, 30, 40, 48, 39, -96, 32, 48, 10, 6, 3, 42,
+                3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31,
+                32, 33, -90, 50, 10, 1, 2, 4, 4, 10, 20, 30, 40, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
+                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -121, 0, -120, 4,
+                -111, 34, 34, -10, -119, 5, 19, -6, 61, 61, -22, -118, 0, -85, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13,
+                14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -116, 1, 8,
+                -115, 0, -113, 2, 6, -64, -82, 47, 4, 4, 10, 20, 30, 40, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13,
+                14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -112, 0,
+                -111, 0, -110, 0, -109, 0, -108, 2, 1, 14, -107, 0, -74, 4, -127, 2, 0, 123, -105, 1, 0, -104, 0, -103, 4,
+                -111, 34, 34, -11 };
     }
 
     public byte[] getDataLmsi() {
@@ -121,31 +155,31 @@ public class ProvideRoamingNumberRequestTest {
         ProvideRoamingNumberRequestImpl prn = (ProvideRoamingNumberRequestImpl)result.getResult();
         
         assertEquals(prn.getMapProtocolVersion(), 3);
-        IMSIImpl imsi = prn.getImsi();
-        ISDNAddressStringImpl mscNumber = prn.getMscNumber();
-        ISDNAddressStringImpl msisdn = prn.getMsisdn();
-        LMSIImpl lmsi = prn.getLmsi();
-        ExternalSignalInfoImpl gsmBearerCapability = prn.getGsmBearerCapability();
-        ExternalSignalInfoImpl networkSignalInfo = prn.getNetworkSignalInfo();
+        IMSI imsi = prn.getImsi();
+        ISDNAddressString mscNumber = prn.getMscNumber();
+        ISDNAddressString msisdn = prn.getMsisdn();
+        LMSI lmsi = prn.getLmsi();
+        ExternalSignalInfo gsmBearerCapability = prn.getGsmBearerCapability();
+        ExternalSignalInfo networkSignalInfo = prn.getNetworkSignalInfo();
         boolean suppressionOfAnnouncement = prn.getSuppressionOfAnnouncement();
-        ISDNAddressStringImpl gmscAddress = prn.getGmscAddress();
-        CallReferenceNumberImpl callReferenceNumber = prn.getCallReferenceNumber();
+        ISDNAddressString gmscAddress = prn.getGmscAddress();
+        CallReferenceNumber callReferenceNumber = prn.getCallReferenceNumber();
         boolean orInterrogation = prn.getOrInterrogation();
-        MAPExtensionContainerImpl extensionContainer = prn.getExtensionContainer();
-        AlertingPatternImpl alertingPattern = prn.getAlertingPattern();
+        MAPExtensionContainer extensionContainer = prn.getExtensionContainer();
+        AlertingPattern alertingPattern = prn.getAlertingPattern();
         boolean ccbsCall = prn.getCcbsCall();
-        SupportedCamelPhasesImpl supportedCamelPhasesInInterrogatingNode = prn.getSupportedCamelPhasesInInterrogatingNode();
-        ExtExternalSignalInfoImpl additionalSignalInfo = prn.getAdditionalSignalInfo();
+        SupportedCamelPhases supportedCamelPhasesInInterrogatingNode = prn.getSupportedCamelPhasesInInterrogatingNode();
+        ExtExternalSignalInfo additionalSignalInfo = prn.getAdditionalSignalInfo();
         boolean orNotSupportedInGMSC = prn.getOrNotSupportedInGMSC();
         boolean prePagingSupported = prn.getPrePagingSupported();
         boolean longFTNSupported = prn.getLongFTNSupported();
         boolean suppressVtCsi = prn.getSuppressVtCsi();
-        OfferedCamel4CSIsImpl offeredCamel4CSIsInInterrogatingNode = prn.getOfferedCamel4CSIsInInterrogatingNode();
+        OfferedCamel4CSIs offeredCamel4CSIsInInterrogatingNode = prn.getOfferedCamel4CSIsInInterrogatingNode();
         boolean mtRoamingRetrySupported = prn.getMtRoamingRetrySupported();
-        PagingAreaImpl pagingArea = prn.getPagingArea();
+        PagingArea pagingArea = prn.getPagingArea();
         EMLPPPriority callPriority = prn.getCallPriority();
         boolean mtrfIndicator = prn.getMtrfIndicator();
-        ISDNAddressStringImpl oldMSCNumber = prn.getOldMSCNumber();
+        ISDNAddressString oldMSCNumber = prn.getOldMSCNumber();
         long mapProtocolVersion = prn.getMapProtocolVersion();
 
         assertNotNull(imsi);
@@ -347,7 +381,7 @@ public class ProvideRoamingNumberRequestTest {
         ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22227");
         LMSIImpl lmsi = new LMSIImpl(getDataLmsi());
 
-        MAPExtensionContainerImpl extensionContainerForExtSigInfo = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainerForExtSigInfo = MAPExtensionContainerTest.GetTestExtensionContainer();
         byte[] data_ = new byte[] { 10, 20, 30, 40 };
         SignalInfoImpl signalInfo = new SignalInfoImpl(data_);
         ProtocolId protocolId = ProtocolId.gsm_0806;
@@ -361,11 +395,11 @@ public class ProvideRoamingNumberRequestTest {
                 "22226");
         CallReferenceNumberImpl callReferenceNumber = new CallReferenceNumberImpl(getCallReferenceNumber());
         boolean orInterrogation = false;
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingCategory.Category5);
         boolean ccbsCall = false;
         SupportedCamelPhasesImpl supportedCamelPhasesInInterrogatingNode = new SupportedCamelPhasesImpl(true, true, false, false);
-        MAPExtensionContainerImpl extensionContainerforAddSigInfo = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainerforAddSigInfo = MAPExtensionContainerTest.GetTestExtensionContainer();
         ExtExternalSignalInfoImpl additionalSignalInfo = new ExtExternalSignalInfoImpl(signalInfo,
                 ExtProtocolId.getExtProtocolId(0), extensionContainerforAddSigInfo);
         boolean orNotSupportedInGMSC = false;
@@ -375,7 +409,7 @@ public class ProvideRoamingNumberRequestTest {
         OfferedCamel4CSIsImpl offeredCamel4CSIsInInterrogatingNode = new OfferedCamel4CSIsImpl(false, false, false, false,
                 true, true, true);
         boolean mtRoamingRetrySupported = false;
-        ArrayList<LocationAreaImpl> locationAreas = new ArrayList<LocationAreaImpl>();
+        List<LocationArea> locationAreas = new ArrayList<LocationArea>();
         LACImpl lac = new LACImpl(123);
         LocationAreaImpl la = new LocationAreaImpl(lac);
         locationAreas.add(la);

@@ -29,12 +29,12 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DAImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OAImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DA;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OA;
+import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfo;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -58,7 +58,9 @@ public class MtForwardShortMessageRequestTest {
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { 48, 76, -128, 8, 1, -128, 56, 67, 84, 101, 118, -9, -124, 6, -111, 17, 17, 33, 34, 34, 4, 7, 11, 22, 33, 44, 55, 66, 77, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 70, -128, 8, 1, -128, 56, 67, 84, 101, 118, -9, -124, 6, -111, 17, 17, 33, 34, 34, 4, 7, 11,
+                22, 33, 44, 55, 66, 77, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3,
+                6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     }
 
     @Test(groups = { "functional.decode", "service.sms" })
@@ -72,9 +74,9 @@ public class MtForwardShortMessageRequestTest {
         assertTrue(result.getResult() instanceof MtForwardShortMessageRequestImpl);
         MtForwardShortMessageRequestImpl ind = (MtForwardShortMessageRequestImpl)result.getResult();   
         
-        SM_RP_DAImpl da = ind.getSM_RP_DA();
-        SM_RP_OAImpl oa = ind.getSM_RP_OA();
-        SmsSignalInfoImpl ui = ind.getSM_RP_UI();
+        SM_RP_DA da = ind.getSM_RP_DA();
+        SM_RP_OA oa = ind.getSM_RP_OA();
+        SmsSignalInfo ui = ind.getSM_RP_UI();
         // assertEquals( (long) da.getIMSI().getMCC(),11);
         // assertEquals( (long) da.getIMSI().getMNC(),22);
         assertEquals(da.getIMSI().getData(), "011222221128514");

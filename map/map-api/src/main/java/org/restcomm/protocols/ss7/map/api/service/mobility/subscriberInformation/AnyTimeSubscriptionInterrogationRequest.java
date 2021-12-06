@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -44,7 +44,7 @@ anyTimeSubscriptionInterrogation OPERATION ::= {
 AnyTimeSubscriptionInterrogationArg ::= SEQUENCE {
   subscriberIdentity          [0] SubscriberIdentity,
   requestedSubscriptionInfo   [1] RequestedSubscriptionInfo,
-  gsmSCF-Address              [2] ISDN-AddressStringImpl,
+  gsmSCF-Address              [2] ISDN-AddressString,
   extensionContainer          [3] ExtensionContainer OPTIONAL,
   longFTN-Supported           [4] NULL OPTIONAL,
   ...
@@ -57,13 +57,13 @@ AnyTimeSubscriptionInterrogationArg ::= SEQUENCE {
  */
 public interface AnyTimeSubscriptionInterrogationRequest extends MobilityMessage {
 
-    SubscriberIdentityImpl getSubscriberIdentity();
+	SubscriberIdentity getSubscriberIdentity();
 
-    RequestedSubscriptionInfoImpl getRequestedSubscriptionInfo();
+    RequestedSubscriptionInfo getRequestedSubscriptionInfo();
 
-    ISDNAddressStringImpl getGsmScfAddress();
+    ISDNAddressString getGsmScfAddress();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     boolean getLongFTNSupported();
 

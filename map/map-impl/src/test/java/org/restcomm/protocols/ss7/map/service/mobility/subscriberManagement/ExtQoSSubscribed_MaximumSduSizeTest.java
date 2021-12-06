@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_MaximumSduSizeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_MaximumSduSize;
 import org.testng.annotations.Test;
 
 /**
@@ -37,56 +37,56 @@ public class ExtQoSSubscribed_MaximumSduSizeTest {
     @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
     public void testDecode() throws Exception {
 
-        ExtQoSSubscribed_MaximumSduSizeImpl prim = new ExtQoSSubscribed_MaximumSduSizeImpl(0, true);
+        ExtQoSSubscribed_MaximumSduSize prim = new ExtQoSSubscribed_MaximumSduSize(0, true);
         assertEquals(prim.getMaximumSduSize(), 0);
 
-        prim = new ExtQoSSubscribed_MaximumSduSizeImpl(1, true);
+        prim = new ExtQoSSubscribed_MaximumSduSize(1, true);
         assertEquals(prim.getMaximumSduSize(), 10);
 
-        prim = new ExtQoSSubscribed_MaximumSduSizeImpl(149, true);
+        prim = new ExtQoSSubscribed_MaximumSduSize(149, true);
         assertEquals(prim.getMaximumSduSize(), 1490);
 
-        prim = new ExtQoSSubscribed_MaximumSduSizeImpl(150, true);
+        prim = new ExtQoSSubscribed_MaximumSduSize(150, true);
         assertEquals(prim.getMaximumSduSize(), 1500);
 
-        prim = new ExtQoSSubscribed_MaximumSduSizeImpl(151, true);
+        prim = new ExtQoSSubscribed_MaximumSduSize(151, true);
         assertEquals(prim.getMaximumSduSize(), 1502);
 
-        prim = new ExtQoSSubscribed_MaximumSduSizeImpl(152, true);
+        prim = new ExtQoSSubscribed_MaximumSduSize(152, true);
         assertEquals(prim.getMaximumSduSize(), 1510);
 
-        prim = new ExtQoSSubscribed_MaximumSduSizeImpl(153, true);
+        prim = new ExtQoSSubscribed_MaximumSduSize(153, true);
         assertEquals(prim.getMaximumSduSize(), 1520);
 
-        prim = new ExtQoSSubscribed_MaximumSduSizeImpl(154, true);
+        prim = new ExtQoSSubscribed_MaximumSduSize(154, true);
         assertEquals(prim.getMaximumSduSize(), 0);
     }
 
     @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
     public void testEncode() throws Exception {
 
-        ExtQoSSubscribed_MaximumSduSizeImpl prim = new ExtQoSSubscribed_MaximumSduSizeImpl(0, false);
+        ExtQoSSubscribed_MaximumSduSize prim = new ExtQoSSubscribed_MaximumSduSize(0, false);
         assertEquals(prim.getSourceData(), 0);
 
-        prim = new ExtQoSSubscribed_MaximumSduSizeImpl(10, false);
+        prim = new ExtQoSSubscribed_MaximumSduSize(10, false);
         assertEquals(prim.getSourceData(), 1);
 
-        prim = new ExtQoSSubscribed_MaximumSduSizeImpl(1490, false);
+        prim = new ExtQoSSubscribed_MaximumSduSize(1490, false);
         assertEquals(prim.getSourceData(), 149);
 
-        prim = new ExtQoSSubscribed_MaximumSduSizeImpl(1500, false);
+        prim = new ExtQoSSubscribed_MaximumSduSize(1500, false);
         assertEquals(prim.getSourceData(), 150);
 
-        prim = new ExtQoSSubscribed_MaximumSduSizeImpl(1502, false);
+        prim = new ExtQoSSubscribed_MaximumSduSize(1502, false);
         assertEquals(prim.getSourceData(), 151);
 
-        prim = new ExtQoSSubscribed_MaximumSduSizeImpl(1510, false);
+        prim = new ExtQoSSubscribed_MaximumSduSize(1510, false);
         assertEquals(prim.getSourceData(), 152);
 
-        prim = new ExtQoSSubscribed_MaximumSduSizeImpl(1520, false);
+        prim = new ExtQoSSubscribed_MaximumSduSize(1520, false);
         assertEquals(prim.getSourceData(), 153);
 
-        prim = new ExtQoSSubscribed_MaximumSduSizeImpl(2000, false);
+        prim = new ExtQoSSubscribed_MaximumSduSize(2000, false);
         assertEquals(prim.getSourceData(), 0);
     }
 

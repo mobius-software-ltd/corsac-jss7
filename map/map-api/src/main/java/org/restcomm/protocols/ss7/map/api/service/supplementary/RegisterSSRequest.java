@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
 
 /**
  *
@@ -65,13 +65,13 @@ MC-Bearers ::= INTEGER (1..7)
  */
 public interface RegisterSSRequest extends SupplementaryMessage {
 
-	SSCodeImpl getSsCode();
+	SSCode getSsCode();
 
-    BasicServiceCodeImpl getBasicService();
+    BasicServiceCode getBasicService();
 
-    AddressStringImpl getForwardedToNumber();
+    AddressString getForwardedToNumber();
 
-    ISDNAddressStringImpl getForwardedToSubaddress();
+    ISDNAddressString getForwardedToSubaddress();
 
     Integer getNoReplyConditionTime();
 
@@ -79,6 +79,6 @@ public interface RegisterSSRequest extends SupplementaryMessage {
 
     Integer getNbrUser();
 
-    ISDNAddressStringImpl getLongFTNSupported();
+    ISDNAddressString getLongFTNSupported();
 
 }

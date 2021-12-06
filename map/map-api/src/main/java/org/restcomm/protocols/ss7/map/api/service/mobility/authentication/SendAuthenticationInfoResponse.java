@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.authentication;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -42,11 +42,11 @@ MAP V2: SendAuthenticationInfoRes ::= AuthenticationSetList
  */
 public interface SendAuthenticationInfoResponse extends MobilityMessage {
 
-    AuthenticationSetListImpl getAuthenticationSetList();
+    AuthenticationSetList getAuthenticationSetList();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
-    EpsAuthenticationSetListImpl getEpsAuthenticationSetList();
+    EpsAuthenticationSetList getEpsAuthenticationSetList();
 
     long getMapProtocolVersion();
 

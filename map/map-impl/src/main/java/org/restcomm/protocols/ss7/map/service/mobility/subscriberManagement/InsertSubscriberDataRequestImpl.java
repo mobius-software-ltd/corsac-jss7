@@ -26,44 +26,41 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ASNNetworkAccessMode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ASNSubscriberStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AccessRestrictionDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AgeIndicatorImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSAllocationRetentionPriorityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionDataListWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CategoryImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSSubscriptionDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeListWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSInfoListWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCodeListWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionDataImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentity;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.AgeIndicator;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AccessRestrictionData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSAllocationRetentionPriority;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Category;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ChargingCharacteristics;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EPSSubscriptionData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.InsertSubscriberDataRequest;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LCSInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MCSSInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LCSInformation;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformation;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.MCSSInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.NetworkAccessMode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SGSNCAMELSubscriptionInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SGSNCAMELSubscriptionInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SubscriberStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VlrCamelSubscriptionInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceBroadcastDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceBroadcastDataListWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceGroupCallDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceGroupCallDataListWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCodeListWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VlrCamelSubscriptionInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceBroadcastData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.VoiceGroupCallData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCode;
+import org.restcomm.protocols.ss7.map.primitives.DiameterIdentityImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.primitives.NAEAPreferredCIImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.AgeIndicatorImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -81,14 +78,14 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl implements InsertSubscriberDataRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private IMSIImpl imsi = null;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
-    private ISDNAddressStringImpl msisdn = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString msisdn = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
-    private CategoryImpl category = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1, defaultImplementation = CategoryImpl.class)
+    private Category category = null;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
     private ASNSubscriberStatus subscriberStatus = null;       
@@ -102,8 +99,8 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,index=-1)
     private ExtSSInfoListWrapperImpl provisionedSS = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=true,index=-1)
-    private ODBDataImpl odbData = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=true,index=-1,defaultImplementation = ODBDataImpl.class)
+    private ODBData odbData = null;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1)
     private ASNNull roamingRestrictionDueToUnsupportedFeature = null;
@@ -117,17 +114,17 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=true,index=-1)
     private VoiceGroupCallDataListWrapperImpl vgcsSubscriptionData = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=true,index=-1)
-    private VlrCamelSubscriptionInfoImpl vlrCamelSubscriptionInfo = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=true,index=-1,defaultImplementation = VlrCamelSubscriptionInfoImpl.class)
+    private VlrCamelSubscriptionInfo vlrCamelSubscriptionInfo = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=true,index=-1)
-    private NAEAPreferredCIImpl naeaPreferredCI = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=true,index=-1, defaultImplementation = NAEAPreferredCIImpl.class)
+    private NAEAPreferredCI naeaPreferredCI = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=true,index=-1)
-    private GPRSSubscriptionDataImpl gprsSubscriptionData = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=true,index=-1, defaultImplementation = GPRSSubscriptionDataImpl.class)
+    private GPRSSubscriptionData gprsSubscriptionData = null;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=23,constructed=false,index=-1)
     private ASNNull roamingRestrictedInSgsnDueToUnsupportedFeature = null;
@@ -135,41 +132,41 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=24,constructed=false,index=-1)
     private ASNNetworkAccessMode networkAccessMode = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=25,constructed=true,index=-1)
-    private LSAInformationImpl lsaInformation = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=25,constructed=true,index=-1, defaultImplementation = LSAInformationImpl.class)
+    private LSAInformation lsaInformation = null;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=21,constructed=false,index=-1)
     private ASNNull lmuIndicator = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=22,constructed=true,index=-1)
-    private LCSInformationImpl lcsInformation = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=22,constructed=true,index=-1, defaultImplementation = LCSInformationImpl.class)
+    private LCSInformation lcsInformation = null;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=26,constructed=false,index=-1)
     private ASNInteger istAlertTimer = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=27,constructed=false,index=-1)
-    private AgeIndicatorImpl superChargerSupportedInHLR = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=27,constructed=false,index=-1, defaultImplementation = AgeIndicatorImpl.class)
+    private AgeIndicator superChargerSupportedInHLR = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=28,constructed=true,index=-1)
-    private MCSSInfoImpl mcSsInfo = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=28,constructed=true,index=-1, defaultImplementation = MCSSInfoImpl.class)
+    private MCSSInfo mcSsInfo = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=29,constructed=false,index=-1)
-    private CSAllocationRetentionPriorityImpl csAllocationRetentionPriority = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=29,constructed=false,index=-1, defaultImplementation = CSAllocationRetentionPriorityImpl.class)
+    private CSAllocationRetentionPriority csAllocationRetentionPriority = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=17,constructed=true,index=-1)
-    private SGSNCAMELSubscriptionInfoImpl sgsnCamelSubscriptionInfo = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=17,constructed=true,index=-1, defaultImplementation = SGSNCAMELSubscriptionInfoImpl.class)
+    private SGSNCAMELSubscriptionInfo sgsnCamelSubscriptionInfo = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=18,constructed=false,index=-1)
-    private ChargingCharacteristicsImpl chargingCharacteristics = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=18,constructed=false,index=-1, defaultImplementation = ChargingCharacteristicsImpl.class)
+    private ChargingCharacteristics chargingCharacteristics = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=19,constructed=false,index=-1)
-    private AccessRestrictionDataImpl accessRestrictionData = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=19,constructed=false,index=-1, defaultImplementation = AccessRestrictionDataImpl.class)
+    private AccessRestrictionData accessRestrictionData = null;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=20,constructed=false,index=-1)
     private ASNBoolean icsIndicator = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=31,constructed=true,index=-1)
-    private EPSSubscriptionDataImpl epsSubscriptionData = null;    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=31,constructed=true,index=-1, defaultImplementation = EPSSubscriptionDataImpl.class)
+    private EPSSubscriptionData epsSubscriptionData = null;    
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=32,constructed=true,index=-1)
     private CSGSubscriptionDataListWrapperImpl csgSubscriptionDataList = null;
@@ -177,11 +174,11 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=33,constructed=false,index=-1)
     private ASNNull ueReachabilityRequestIndicator = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=34,constructed=false,index=-1)
-    private ISDNAddressStringImpl sgsnNumber = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=34,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString sgsnNumber = null;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=35,constructed=false,index=-1)
-    private DiameterIdentityImpl mmeName = null;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=35,constructed=false,index=-1, defaultImplementation = DiameterIdentityImpl.class)
+    private DiameterIdentity mmeName = null;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=36,constructed=false,index=-1)
     private ASNInteger subscribedPeriodicRAUTAUtimer = null;
@@ -207,12 +204,12 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     // For outgoing messages - MAP V2
-    public InsertSubscriberDataRequestImpl(long mapProtocolVersion, IMSIImpl imsi, ISDNAddressStringImpl msisdn, CategoryImpl category,
-            SubscriberStatus subscriberStatus, List<ExtBearerServiceCodeImpl> bearerServiceList,
-            List<ExtTeleserviceCodeImpl> teleserviceList, List<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
-            boolean roamingRestrictionDueToUnsupportedFeature, List<ZoneCodeImpl> regionalSubscriptionData,
-            List<VoiceBroadcastDataImpl> vbsSubscriptionData, List<VoiceGroupCallDataImpl> vgcsSubscriptionData,
-            VlrCamelSubscriptionInfoImpl vlrCamelSubscriptionInfo) {
+    public InsertSubscriberDataRequestImpl(long mapProtocolVersion, IMSI imsi, ISDNAddressString msisdn, Category category,
+            SubscriberStatus subscriberStatus, List<ExtBearerServiceCode> bearerServiceList,
+            List<ExtTeleserviceCode> teleserviceList, List<ExtSSInfo> provisionedSS, ODBData odbData,
+            boolean roamingRestrictionDueToUnsupportedFeature, List<ZoneCode> regionalSubscriptionData,
+            List<VoiceBroadcastData> vbsSubscriptionData, List<VoiceGroupCallData> vgcsSubscriptionData,
+            VlrCamelSubscriptionInfo vlrCamelSubscriptionInfo) {
         this.mapProtocolVersion = mapProtocolVersion;
         this.imsi = imsi;
         this.msisdn = msisdn;
@@ -250,20 +247,20 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     // For outgoing messages - MAP V3
-    public InsertSubscriberDataRequestImpl(long mapProtocolVersion, IMSIImpl imsi, ISDNAddressStringImpl msisdn, CategoryImpl category,
-            SubscriberStatus subscriberStatus, List<ExtBearerServiceCodeImpl> bearerServiceList,
-            List<ExtTeleserviceCodeImpl> teleserviceList, List<ExtSSInfoImpl> provisionedSS, ODBDataImpl odbData,
-            boolean roamingRestrictionDueToUnsupportedFeature, List<ZoneCodeImpl> regionalSubscriptionData,
-            List<VoiceBroadcastDataImpl> vbsSubscriptionData, List<VoiceGroupCallDataImpl> vgcsSubscriptionData,
-            VlrCamelSubscriptionInfoImpl vlrCamelSubscriptionInfo, MAPExtensionContainerImpl extensionContainer,
-            NAEAPreferredCIImpl naeaPreferredCI, GPRSSubscriptionDataImpl gprsSubscriptionData,
+    public InsertSubscriberDataRequestImpl(long mapProtocolVersion, IMSI imsi, ISDNAddressString msisdn, Category category,
+            SubscriberStatus subscriberStatus, List<ExtBearerServiceCode> bearerServiceList,
+            List<ExtTeleserviceCode> teleserviceList, List<ExtSSInfo> provisionedSS, ODBData odbData,
+            boolean roamingRestrictionDueToUnsupportedFeature, List<ZoneCode> regionalSubscriptionData,
+            List<VoiceBroadcastData> vbsSubscriptionData, List<VoiceGroupCallData> vgcsSubscriptionData,
+            VlrCamelSubscriptionInfo vlrCamelSubscriptionInfo, MAPExtensionContainer extensionContainer,
+            NAEAPreferredCI naeaPreferredCI, GPRSSubscriptionData gprsSubscriptionData,
             boolean roamingRestrictedInSgsnDueToUnsupportedFeature, NetworkAccessMode networkAccessMode,
-            LSAInformationImpl lsaInformation, boolean lmuIndicator, LCSInformationImpl lcsInformation, Integer istAlertTimer,
-            AgeIndicatorImpl superChargerSupportedInHLR, MCSSInfoImpl mcSsInfo,
-            CSAllocationRetentionPriorityImpl csAllocationRetentionPriority, SGSNCAMELSubscriptionInfoImpl sgsnCamelSubscriptionInfo,
-            ChargingCharacteristicsImpl chargingCharacteristics, AccessRestrictionDataImpl accessRestrictionData, Boolean icsIndicator,
-            EPSSubscriptionDataImpl epsSubscriptionData, List<CSGSubscriptionDataImpl> csgSubscriptionDataList,
-            boolean ueReachabilityRequestIndicator, ISDNAddressStringImpl sgsnNumber, DiameterIdentityImpl mmeName,
+            LSAInformation lsaInformation, boolean lmuIndicator, LCSInformation lcsInformation, Integer istAlertTimer,
+            AgeIndicator superChargerSupportedInHLR, MCSSInfo mcSsInfo,
+            CSAllocationRetentionPriority csAllocationRetentionPriority, SGSNCAMELSubscriptionInfo sgsnCamelSubscriptionInfo,
+            ChargingCharacteristics chargingCharacteristics, AccessRestrictionData accessRestrictionData, Boolean icsIndicator,
+            EPSSubscriptionData epsSubscriptionData, List<CSGSubscriptionData> csgSubscriptionDataList,
+            boolean ueReachabilityRequestIndicator, ISDNAddressString sgsnNumber, DiameterIdentity mmeName,
             Long subscribedPeriodicRAUTAUtimer, boolean vplmnLIPAAllowed, Boolean mdtUserConsent,
             Long subscribedPeriodicLAUtimer) {
 
@@ -385,17 +382,17 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return this.imsi;
     }
 
     @Override
-    public ISDNAddressStringImpl getMsisdn() {
+    public ISDNAddressString getMsisdn() {
         return this.msisdn;
     }
 
     @Override
-    public CategoryImpl getCategory() {
+    public Category getCategory() {
         return this.category;
     }
 
@@ -408,7 +405,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public List<ExtBearerServiceCodeImpl> getBearerServiceList() {
+    public List<ExtBearerServiceCode> getBearerServiceList() {
     	if(this.bearerServiceList==null)
     		return null;
     	
@@ -416,7 +413,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public List<ExtTeleserviceCodeImpl> getTeleserviceList() {
+    public List<ExtTeleserviceCode> getTeleserviceList() {
     	if(this.teleserviceList==null)
     		return null;
     				
@@ -424,7 +421,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public List<ExtSSInfoImpl> getProvisionedSS() {
+    public List<ExtSSInfo> getProvisionedSS() {
     	if(this.provisionedSS==null)
     		return null;
     	
@@ -432,7 +429,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public ODBDataImpl getODBData() {
+    public ODBData getODBData() {
         return this.odbData;
     }
 
@@ -442,7 +439,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public List<ZoneCodeImpl> getRegionalSubscriptionData() {
+    public List<ZoneCode> getRegionalSubscriptionData() {
     	if(this.regionalSubscriptionData==null)
     		return null;
     	
@@ -450,7 +447,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public List<VoiceBroadcastDataImpl> getVbsSubscriptionData() {
+    public List<VoiceBroadcastData> getVbsSubscriptionData() {
     	if(this.vbsSubscriptionData==null)
     		return null;
     	
@@ -458,7 +455,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public List<VoiceGroupCallDataImpl> getVgcsSubscriptionData() {
+    public List<VoiceGroupCallData> getVgcsSubscriptionData() {
     	if(this.vgcsSubscriptionData==null)
     		return null;
     	
@@ -466,22 +463,22 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public VlrCamelSubscriptionInfoImpl getVlrCamelSubscriptionInfo() {
+    public VlrCamelSubscriptionInfo getVlrCamelSubscriptionInfo() {
         return this.vlrCamelSubscriptionInfo;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
     @Override
-    public NAEAPreferredCIImpl getNAEAPreferredCI() {
+    public NAEAPreferredCI getNAEAPreferredCI() {
         return this.naeaPreferredCI;
     }
 
     @Override
-    public GPRSSubscriptionDataImpl getGPRSSubscriptionData() {
+    public GPRSSubscriptionData getGPRSSubscriptionData() {
         return this.gprsSubscriptionData;
     }
 
@@ -499,7 +496,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public LSAInformationImpl getLSAInformation() {
+    public LSAInformation getLSAInformation() {
         return this.lsaInformation;
     }
 
@@ -509,7 +506,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public LCSInformationImpl getLCSInformation() {
+    public LCSInformation getLCSInformation() {
         return this.lcsInformation;
     }
 
@@ -522,32 +519,32 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public AgeIndicatorImpl getSuperChargerSupportedInHLR() {
+    public AgeIndicator getSuperChargerSupportedInHLR() {
         return this.superChargerSupportedInHLR;
     }
 
     @Override
-    public MCSSInfoImpl getMcSsInfo() {
+    public MCSSInfo getMcSsInfo() {
         return this.mcSsInfo;
     }
 
     @Override
-    public CSAllocationRetentionPriorityImpl getCSAllocationRetentionPriority() {
+    public CSAllocationRetentionPriority getCSAllocationRetentionPriority() {
         return this.csAllocationRetentionPriority;
     }
 
     @Override
-    public SGSNCAMELSubscriptionInfoImpl getSgsnCamelSubscriptionInfo() {
+    public SGSNCAMELSubscriptionInfo getSgsnCamelSubscriptionInfo() {
         return this.sgsnCamelSubscriptionInfo;
     }
 
     @Override
-    public ChargingCharacteristicsImpl getChargingCharacteristics() {
+    public ChargingCharacteristics getChargingCharacteristics() {
         return this.chargingCharacteristics;
     }
 
     @Override
-    public AccessRestrictionDataImpl getAccessRestrictionData() {
+    public AccessRestrictionData getAccessRestrictionData() {
         return this.accessRestrictionData;
     }
 
@@ -560,12 +557,12 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public EPSSubscriptionDataImpl getEpsSubscriptionData() {
+    public EPSSubscriptionData getEpsSubscriptionData() {
         return this.epsSubscriptionData;
     }
 
     @Override
-    public List<CSGSubscriptionDataImpl> getCsgSubscriptionDataList() {
+    public List<CSGSubscriptionData> getCsgSubscriptionDataList() {
     	if(this.csgSubscriptionDataList==null)
     		return null;
     	
@@ -578,12 +575,12 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     }
 
     @Override
-    public ISDNAddressStringImpl getSgsnNumber() {
+    public ISDNAddressString getSgsnNumber() {
         return this.sgsnNumber;
     }
 
     @Override
-    public DiameterIdentityImpl getMmeName() {
+    public DiameterIdentity getMmeName() {
         return this.mmeName;
     }
 
@@ -648,7 +645,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
         if (this.bearerServiceList != null && this.bearerServiceList.getExtBearerServiceCode()!=null) {
             sb.append("bearerServiceList=[");
             boolean firstItem = true;
-            for (ExtBearerServiceCodeImpl be : this.bearerServiceList.getExtBearerServiceCode()) {
+            for (ExtBearerServiceCode be : this.bearerServiceList.getExtBearerServiceCode()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -661,7 +658,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
         if (this.teleserviceList != null && this.teleserviceList.getExtTeleserviceCode()!=null) {
             sb.append("teleserviceList=[");
             boolean firstItem = true;
-            for (ExtTeleserviceCodeImpl be : this.teleserviceList.getExtTeleserviceCode()) {
+            for (ExtTeleserviceCode be : this.teleserviceList.getExtTeleserviceCode()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -674,7 +671,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
         if (this.provisionedSS != null && this.provisionedSS.getExtSSInfo()!=null) {
             sb.append("provisionedSS=[");
             boolean firstItem = true;
-            for (ExtSSInfoImpl be : this.provisionedSS.getExtSSInfo()) {
+            for (ExtSSInfo be : this.provisionedSS.getExtSSInfo()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -697,7 +694,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
         if (this.regionalSubscriptionData != null && this.regionalSubscriptionData.getZoneCode()!=null) {
             sb.append("regionalSubscriptionData=[");
             boolean firstItem = true;
-            for (ZoneCodeImpl be : this.regionalSubscriptionData.getZoneCode()) {
+            for (ZoneCode be : this.regionalSubscriptionData.getZoneCode()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -710,7 +707,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
         if (this.vbsSubscriptionData != null && this.vbsSubscriptionData.getVoiceBroadcastData()!=null) {
             sb.append("vbsSubscriptionData=[");
             boolean firstItem = true;
-            for (VoiceBroadcastDataImpl be : this.vbsSubscriptionData.getVoiceBroadcastData()) {
+            for (VoiceBroadcastData be : this.vbsSubscriptionData.getVoiceBroadcastData()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -723,7 +720,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
         if (this.vgcsSubscriptionData != null && this.vgcsSubscriptionData.getVoiceGroupCallData()!=null) {
             sb.append("vgcsSubscriptionData=[");
             boolean firstItem = true;
-            for (VoiceGroupCallDataImpl be : this.vgcsSubscriptionData.getVoiceGroupCallData()) {
+            for (VoiceGroupCallData be : this.vgcsSubscriptionData.getVoiceGroupCallData()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -846,7 +843,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
         if (this.csgSubscriptionDataList != null && this.csgSubscriptionDataList.getCSGSubscriptionDataList()!=null) {
             sb.append("csgSubscriptionDataList=[");
             boolean firstItem = true;
-            for (CSGSubscriptionDataImpl be : this.csgSubscriptionDataList.getCSGSubscriptionDataList()) {
+            for (CSGSubscriptionData be : this.csgSubscriptionDataList.getCSGSubscriptionDataList()) {
                 if (firstItem)
                     firstItem = false;
                 else

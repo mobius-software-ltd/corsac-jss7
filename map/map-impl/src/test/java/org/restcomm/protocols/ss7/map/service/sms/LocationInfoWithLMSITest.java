@@ -30,12 +30,12 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumberImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.LocationInfoWithLMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.lsm.AdditionalNumberImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -56,7 +56,9 @@ public class LocationInfoWithLMSITest {
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { -96, 73, -127, 6, -88, 33, 67, 101, -121, 9, 4, 4, 4, 3, 2, 1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -123, 0, -90, 8, -127, 6, -71, -119, 103, 69, 35, -15 };
+        return new byte[] { -96, 67, (byte) 129, 6, (byte) 168, 33, 67, 101, (byte) 135, 9, 4, 4, 4, 3, 2, 1, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42,
+                3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 133, 0,
+                (byte) 166, 8, (byte) 129, 6, (byte) 185, (byte) 137, 103, 69, 35, (byte) 241 };
     }
 
     @Test(groups = { "functional.decode", "service.sms" })
@@ -70,7 +72,7 @@ public class LocationInfoWithLMSITest {
         assertTrue(result.getResult() instanceof LocationInfoWithLMSIImpl);
         LocationInfoWithLMSIImpl liw = (LocationInfoWithLMSIImpl)result.getResult();
         
-        ISDNAddressStringImpl nnm = liw.getNetworkNodeNumber();
+        ISDNAddressString nnm = liw.getNetworkNodeNumber();
         assertEquals(nnm.getAddressNature(), AddressNature.international_number);
         assertEquals(nnm.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(nnm.getAddress(), "79033700222");

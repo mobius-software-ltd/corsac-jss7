@@ -24,16 +24,25 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.ScfIDImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
+import org.restcomm.protocols.ss7.cap.api.isup.Digits;
+import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
+import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCap;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.primitives.ScfID;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.EstablishTemporaryConnectionRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfo;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
+import org.restcomm.protocols.ss7.cap.isup.CallingPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.cap.isup.LocationNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.isup.OriginalCalledNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.primitives.ScfIDImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Carrier;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -50,49 +59,49 @@ public class EstablishTemporaryConnectionRequestImpl extends CircuitSwitchedCall
         EstablishTemporaryConnectionRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-    private DigitsImpl assistingSSPIPRoutingAddress;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1,defaultImplementation = DigitsImpl.class)
+    private Digits assistingSSPIPRoutingAddress;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private DigitsImpl correlationID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1,defaultImplementation = DigitsImpl.class)
+    private Digits correlationID;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
-    private ScfIDImpl scfID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1,defaultImplementation = ScfIDImpl.class)
+    private ScfID scfID;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = false,index = -1)
-    private CarrierImpl carrier;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = false,index = -1,defaultImplementation = CarrierImpl.class)
+    private Carrier carrier;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = true,index = -1)
-    private ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = true,index = -1,defaultImplementation = ServiceInteractionIndicatorsTwoImpl.class)
+    private ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = true,index = -1)
-    private ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo2;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = true,index = -1,defaultImplementation = ServiceInteractionIndicatorsTwoImpl.class)
+    private ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo2;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = false,index = -1)
     private ASNInteger callSegmentID;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 50,constructed = false,index = -1)
-    private NAOliInfoImpl naOliInfo;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 50,constructed = false,index = -1,defaultImplementation = NAOliInfoImpl.class)
+    private NAOliInfo naOliInfo;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 51,constructed = false,index = -1)
-    private LocationNumberCapImpl chargeNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 51,constructed = false,index = -1,defaultImplementation = LocationNumberCapImpl.class)
+    private LocationNumberCap chargeNumber;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 52,constructed = false,index = -1)
-    private OriginalCalledNumberCapImpl originalCalledPartyID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 52,constructed = false,index = -1,defaultImplementation = OriginalCalledNumberCapImpl.class)
+    private OriginalCalledNumberCap originalCalledPartyID;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 53,constructed = false,index = -1)
-    private CallingPartyNumberCapImpl callingPartyNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 53,constructed = false,index = -1,defaultImplementation = CallingPartyNumberCapImpl.class)
+    private CallingPartyNumberCap callingPartyNumber;
 
     public EstablishTemporaryConnectionRequestImpl() {        
     }
 
-    public EstablishTemporaryConnectionRequestImpl(DigitsImpl assistingSSPIPRoutingAddress, DigitsImpl correlationID, ScfIDImpl scfID,
-            CAPExtensionsImpl extensions, CarrierImpl carrier, ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo,
-            Integer callSegmentID, NAOliInfoImpl naOliInfo, LocationNumberCapImpl chargeNumber,
-            OriginalCalledNumberCapImpl originalCalledPartyID, CallingPartyNumberCapImpl callingPartyNumber) {
+    public EstablishTemporaryConnectionRequestImpl(Digits assistingSSPIPRoutingAddress, Digits correlationID, ScfID scfID,
+            CAPExtensions extensions, Carrier carrier, ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo,
+            Integer callSegmentID, NAOliInfo naOliInfo, LocationNumberCap chargeNumber,
+            OriginalCalledNumberCap originalCalledPartyID, CallingPartyNumberCap callingPartyNumber) {
         this.assistingSSPIPRoutingAddress = assistingSSPIPRoutingAddress;
         this.correlationID = correlationID;
         this.scfID = scfID;
@@ -111,10 +120,10 @@ public class EstablishTemporaryConnectionRequestImpl extends CircuitSwitchedCall
         this.callingPartyNumber = callingPartyNumber;
     }
     
-    public EstablishTemporaryConnectionRequestImpl(DigitsImpl assistingSSPIPRoutingAddress, DigitsImpl correlationID, ScfIDImpl scfID,
-            CAPExtensionsImpl extensions, CarrierImpl carrier, ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo,
-            NAOliInfoImpl naOliInfo, LocationNumberCapImpl chargeNumber,
-            OriginalCalledNumberCapImpl originalCalledPartyID, CallingPartyNumberCapImpl callingPartyNumber) {
+    public EstablishTemporaryConnectionRequestImpl(Digits assistingSSPIPRoutingAddress, Digits correlationID, ScfID scfID,
+            CAPExtensions extensions, Carrier carrier, ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo,
+            NAOliInfo naOliInfo, LocationNumberCap chargeNumber,
+            OriginalCalledNumberCap originalCalledPartyID, CallingPartyNumberCap callingPartyNumber) {
         this.assistingSSPIPRoutingAddress = assistingSSPIPRoutingAddress;
         this.correlationID = correlationID;
         this.scfID = scfID;
@@ -138,7 +147,7 @@ public class EstablishTemporaryConnectionRequestImpl extends CircuitSwitchedCall
     }
 
     @Override
-    public DigitsImpl getAssistingSSPIPRoutingAddress() {
+    public Digits getAssistingSSPIPRoutingAddress() {
     	if(assistingSSPIPRoutingAddress!=null)
     		assistingSSPIPRoutingAddress.setIsGenericNumber();
     	
@@ -146,7 +155,7 @@ public class EstablishTemporaryConnectionRequestImpl extends CircuitSwitchedCall
     }
 
     @Override
-    public DigitsImpl getCorrelationID() {
+    public Digits getCorrelationID() {
     	if(correlationID!=null)
     		correlationID.setIsGenericDigits();
     	
@@ -154,22 +163,22 @@ public class EstablishTemporaryConnectionRequestImpl extends CircuitSwitchedCall
     }
 
     @Override
-    public ScfIDImpl getScfID() {
+    public ScfID getScfID() {
         return scfID;
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 
     @Override
-    public CarrierImpl getCarrier() {
+    public Carrier getCarrier() {
         return carrier;
     }
 
     @Override
-    public ServiceInteractionIndicatorsTwoImpl getServiceInteractionIndicatorsTwo() {
+    public ServiceInteractionIndicatorsTwo getServiceInteractionIndicatorsTwo() {
     	if(serviceInteractionIndicatorsTwo!=null)
     		return serviceInteractionIndicatorsTwo;
     	
@@ -185,22 +194,22 @@ public class EstablishTemporaryConnectionRequestImpl extends CircuitSwitchedCall
     }
 
     @Override
-    public NAOliInfoImpl getNAOliInfo() {
+    public NAOliInfo getNAOliInfo() {
         return naOliInfo;
     }
 
     @Override
-    public LocationNumberCapImpl getChargeNumber() {
+    public LocationNumberCap getChargeNumber() {
         return chargeNumber;
     }
 
     @Override
-    public OriginalCalledNumberCapImpl getOriginalCalledPartyID() {
+    public OriginalCalledNumberCap getOriginalCalledPartyID() {
         return originalCalledPartyID;
     }
 
     @Override
-    public CallingPartyNumberCapImpl getCallingPartyNumber() {
+    public CallingPartyNumberCap getCallingPartyNumber() {
         return callingPartyNumber;
     }
 

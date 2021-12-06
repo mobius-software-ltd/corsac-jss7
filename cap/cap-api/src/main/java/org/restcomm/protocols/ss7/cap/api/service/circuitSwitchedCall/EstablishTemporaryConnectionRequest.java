@@ -22,15 +22,15 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.ScfIDImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
+import org.restcomm.protocols.ss7.cap.api.isup.Digits;
+import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
+import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCap;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.primitives.ScfID;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfo;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Carrier;
 
 /**
  *
@@ -76,31 +76,31 @@ public interface EstablishTemporaryConnectionRequest extends CircuitSwitchedCall
      *
      * @return
      */
-    DigitsImpl getAssistingSSPIPRoutingAddress();
+    Digits getAssistingSSPIPRoutingAddress();
 
     /**
      * Use Digits.getGenericDigits() for CorrelationID
      *
      * @return
      */
-    DigitsImpl getCorrelationID();
+    Digits getCorrelationID();
 
-    ScfIDImpl getScfID();
+    ScfID getScfID();
 
-    CAPExtensionsImpl getExtensions();
+    CAPExtensions getExtensions();
 
-    CarrierImpl getCarrier();
+    Carrier getCarrier();
 
-    ServiceInteractionIndicatorsTwoImpl getServiceInteractionIndicatorsTwo();
+    ServiceInteractionIndicatorsTwo getServiceInteractionIndicatorsTwo();
 
     Integer getCallSegmentID();
 
-    NAOliInfoImpl getNAOliInfo();
+    NAOliInfo getNAOliInfo();
 
-    LocationNumberCapImpl getChargeNumber();
+    LocationNumberCap getChargeNumber();
 
-    OriginalCalledNumberCapImpl getOriginalCalledPartyID();
+    OriginalCalledNumberCap getOriginalCalledPartyID();
 
-    CallingPartyNumberCapImpl getCallingPartyNumber();
+    CallingPartyNumberCap getCallingPartyNumber();
 
 }

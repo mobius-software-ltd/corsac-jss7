@@ -29,7 +29,6 @@ import static org.testng.Assert.assertTrue;
 
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CliRestrictionOption;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.OverrideCategory;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSSubscriptionOptionImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

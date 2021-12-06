@@ -24,9 +24,10 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationResponse;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -41,10 +42,11 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class AnyTimeInterrogationResponseImpl extends MobilityMessageImpl implements AnyTimeInterrogationResponse {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=0)
-	private SubscriberInfoImpl subscriberInfo;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=0, defaultImplementation = SubscriberInfoImpl.class)
+	private SubscriberInfo subscriberInfo;
 	
-    private MAPExtensionContainerImpl extensionContainer;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
 
     /**
      *
@@ -56,7 +58,7 @@ public class AnyTimeInterrogationResponseImpl extends MobilityMessageImpl implem
      * @param subscriberInfo
      * @param extensionContainer
      */
-    public AnyTimeInterrogationResponseImpl(SubscriberInfoImpl subscriberInfo, MAPExtensionContainerImpl extensionContainer) {
+    public AnyTimeInterrogationResponseImpl(SubscriberInfo subscriberInfo, MAPExtensionContainer extensionContainer) {
         super();
         this.subscriberInfo = subscriberInfo;
         this.extensionContainer = extensionContainer;
@@ -86,7 +88,7 @@ public class AnyTimeInterrogationResponseImpl extends MobilityMessageImpl implem
      * @see org.restcomm.protocols.ss7.map.api.service.subscriberInformation.
      * AnyTimeInterrogationResponseIndication#getSubscriberInfo()
      */
-    public SubscriberInfoImpl getSubscriberInfo() {
+    public SubscriberInfo getSubscriberInfo() {
         return this.subscriberInfo;
     }
 
@@ -96,7 +98,7 @@ public class AnyTimeInterrogationResponseImpl extends MobilityMessageImpl implem
      * @see org.restcomm.protocols.ss7.map.api.service.subscriberInformation.
      * AnyTimeInterrogationResponseIndication#getExtensionContainer()
      */
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

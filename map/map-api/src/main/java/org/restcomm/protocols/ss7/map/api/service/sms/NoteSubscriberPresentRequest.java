@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.sms;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 
 /**
  *
@@ -42,7 +42,5 @@ ARGUMENT imsi IMSI
  *
  */
 public interface NoteSubscriberPresentRequest extends SmsMessage {
-
-    IMSIImpl getIMSI();
-
+	IMSI getIMSI();
 }

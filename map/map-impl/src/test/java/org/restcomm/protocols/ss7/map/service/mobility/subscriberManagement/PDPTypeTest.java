@@ -26,7 +26,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPTypeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPTypeValue;
 import org.testng.annotations.Test;
 

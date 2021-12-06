@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformatio
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBDataImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBData;
 
 /**
  *
@@ -44,10 +44,10 @@ ModificationRequestFor-ODB-data ::= SEQUENCE {
  */
 public interface ModificationRequestForODBdata extends Serializable {
 
-    ODBDataImpl getOdbData();
+    ODBData getOdbData();
 
     ModificationInstruction getModifyNotificationToCSE();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
 }

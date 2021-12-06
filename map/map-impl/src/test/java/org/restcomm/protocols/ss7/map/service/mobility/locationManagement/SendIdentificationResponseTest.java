@@ -28,19 +28,23 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetListImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTripletImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CksnImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContextImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KcImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletListImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSecurityContextDataImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTriplet;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletList;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSecurityContextData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationResponse;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationTripletImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.CksnImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.CurrentSecurityContextImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.GSMSecurityContextDataImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.KcImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.TripletListImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -62,7 +66,10 @@ public class SendIdentificationResponseTest {
     };
 
     public byte[] getData2() {
-        return new byte[] { -93, 112, 4, 8, 16, 33, 2, 2, 16, -119, 34, -9, -96, 36, 48, 34, 4, 16, 15, -2, 18, -92, -49, 43, -35, -71, -78, -98, 109, 83, -76, -87, 77, -128, 4, 4, -32, 82, -17, -14, 4, 8, 31, 72, -93, 97, 78, -17, -52, 0, -94, 15, -96, 13, 4, 8, 31, 72, -93, 97, 78, -17, -52, 0, 4, 1, 4, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { -93, 106, 4, 8, 16, 33, 2, 2, 16, -119, 34, -9, -96, 36, 48, 34, 4, 16, 15, -2, 18, -92, -49, 43,
+                -35, -71, -78, -98, 109, 83, -76, -87, 77, -128, 4, 4, -32, 82, -17, -14, 4, 8, 31, 72, -93, 97, 78, -17, -52,
+                0, -94, 15, -96, 13, 4, 8, 31, 72, -93, 97, 78, -17, -52, 0, 4, 1, 4, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4,
+                11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     };
 
     static protected byte[] getRandData() {
@@ -109,8 +116,8 @@ public class SendIdentificationResponseTest {
         assertEquals(prim.getAuthenticationSetList().getTripletList().getAuthenticationTriplets().size(), 1);
         assertNull(prim.getAuthenticationSetList().getQuintupletList());
 
-        GSMSecurityContextDataImpl gsm = prim.getCurrentSecurityContext().getGSMSecurityContextData();
-        UMTSSecurityContextDataImpl umts = prim.getCurrentSecurityContext().getUMTSSecurityContextData();
+        GSMSecurityContextData gsm = prim.getCurrentSecurityContext().getGSMSecurityContextData();
+        UMTSSecurityContextData umts = prim.getCurrentSecurityContext().getUMTSSecurityContextData();
         assertNull(umts);
         assertTrue(Arrays.equals(gsm.getKc().getData(), SendIdentificationResponseTest.getKcData()));
         assertEquals(gsm.getCksn().getData(), 4);
@@ -128,15 +135,15 @@ public class SendIdentificationResponseTest {
     	// version 2
         IMSIImpl imsi = new IMSIImpl("011220200198227");
 
-        ArrayList<AuthenticationTripletImpl> ats = new ArrayList<AuthenticationTripletImpl>();
+        List<AuthenticationTriplet> ats = new ArrayList<AuthenticationTriplet>();
         AuthenticationTripletImpl at = new AuthenticationTripletImpl(SendIdentificationResponseTest.getRandData(),
                 SendIdentificationResponseTest.getSresData(), SendIdentificationResponseTest.getKcData());
         ats.add(at);
-        TripletListImpl tl = new TripletListImpl(ats);
+        TripletList tl = new TripletListImpl(ats);
         AuthenticationSetListImpl authenticationSetList = new AuthenticationSetListImpl(tl,2);
         
         CurrentSecurityContextImpl currentSecurityContext = null;
-        MAPExtensionContainerImpl extensionContainer = null;
+        MAPExtensionContainer extensionContainer = null;
         SendIdentificationResponse prim = new SendIdentificationResponseImplV1(imsi, authenticationSetList, 2);
         byte[] data=getData1();
         ByteBuf buffer=parser.encode(prim);
@@ -147,7 +154,7 @@ public class SendIdentificationResponseTest {
         // version 3
         imsi = new IMSIImpl("011220200198227");
 
-        ats = new ArrayList<AuthenticationTripletImpl>();
+        ats = new ArrayList<AuthenticationTriplet>();
         at = new AuthenticationTripletImpl(SendIdentificationResponseTest.getRandData(),
                 SendIdentificationResponseTest.getSresData(), SendIdentificationResponseTest.getKcData());
         ats.add(at);

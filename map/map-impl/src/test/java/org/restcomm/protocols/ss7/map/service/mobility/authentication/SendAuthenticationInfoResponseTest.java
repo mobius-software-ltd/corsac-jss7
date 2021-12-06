@@ -29,13 +29,14 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetListImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTripletImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpcAvImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAuthenticationSetListImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetList;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTriplet;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpcAv;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAuthenticationSetList;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.SendAuthenticationInfoResponse;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletListImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletList;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -79,7 +80,7 @@ public class SendAuthenticationInfoResponseTest {
         assertTrue(result.getResult() instanceof SendAuthenticationInfoResponse);
         SendAuthenticationInfoResponse asc = (SendAuthenticationInfoResponse)result.getResult();
         
-        AuthenticationSetListImpl asl = asc.getAuthenticationSetList();
+        AuthenticationSetList asl = asc.getAuthenticationSetList();
         assertEquals(asl.getTripletList().getAuthenticationTriplets().size(), 1);
         assertNull(asl.getQuintupletList());
 
@@ -95,7 +96,7 @@ public class SendAuthenticationInfoResponseTest {
         asl = asc.getAuthenticationSetList();
         assertNull(asl);
 
-        EpsAuthenticationSetListImpl easl = asc.getEpsAuthenticationSetList();
+        EpsAuthenticationSetList easl = asc.getEpsAuthenticationSetList();
         assertEquals(easl.getEpcAv().size(), 1);
         assertTrue(Arrays.equals(easl.getEpcAv().get(0).getRand(), EpcAvTest.getRandData()));
         assertTrue(Arrays.equals(easl.getEpcAv().get(0).getXres(), EpcAvTest.getXresData()));
@@ -126,10 +127,10 @@ public class SendAuthenticationInfoResponseTest {
     	parser.replaceClass(SendAuthenticationInfoResponseImplV3.class);
     	parser.replaceClass(SendAuthenticationInfoResponseImplV1.class);
     
-        ArrayList<AuthenticationTripletImpl> ats = new ArrayList<AuthenticationTripletImpl>();
+        List<AuthenticationTriplet> ats = new ArrayList<AuthenticationTriplet>();
         AuthenticationTripletImpl at = new AuthenticationTripletImpl(AuthenticationTripletTest.getRandData(), AuthenticationTripletTest.getSresData(), AuthenticationTripletTest.getKcData());
         ats.add(at);
-        TripletListImpl tl = new TripletListImpl(ats);
+        TripletList tl = new TripletListImpl(ats);
         AuthenticationSetListImpl asl = new AuthenticationSetListImpl(tl,3);
         SendAuthenticationInfoResponse asc = new SendAuthenticationInfoResponseImplV3(3, asl, null, null);
         
@@ -140,9 +141,9 @@ public class SendAuthenticationInfoResponseTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         EpcAvImpl d1 = new EpcAvImpl(EpcAvTest.getRandData(), EpcAvTest.getXresData(), EpcAvTest.getAutnData(), EpcAvTest.getKasmeData(), null);
-        ArrayList<EpcAvImpl> epcAvs = new ArrayList<EpcAvImpl>();
+        List<EpcAv> epcAvs = new ArrayList<EpcAv>();
         epcAvs.add(d1);
-        EpsAuthenticationSetListImpl easl = new EpsAuthenticationSetListImpl(epcAvs);
+        EpsAuthenticationSetList easl = new EpsAuthenticationSetListImpl(epcAvs);
         asc = new SendAuthenticationInfoResponseImplV3(3, null, null, easl);
 
         data=getEncodedData_V3_Eps();
@@ -151,7 +152,7 @@ public class SendAuthenticationInfoResponseTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        ats = new ArrayList<AuthenticationTripletImpl>();
+        ats = new ArrayList<AuthenticationTriplet>();
         at = new AuthenticationTripletImpl(TripletListTest.getRandData(), TripletListTest.getSresData(),
                 TripletListTest.getKcData());
         ats.add(at);

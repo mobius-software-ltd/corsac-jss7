@@ -27,7 +27,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.primitives.TimerID;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.testng.annotations.Test;
@@ -75,7 +75,7 @@ public class ResetTimerSMSRequestTest {
     	    	
         TimerID timerID = TimerID.tssf;
         int timerValue = 2;
-        CAPExtensionsImpl extensions = CAPExtensionsTest.createTestCAPExtensions();
+        CAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
         
         ResetTimerSMSRequestImpl prim = new ResetTimerSMSRequestImpl(timerID, timerValue, extensions);
         byte[] rawData = this.getData();

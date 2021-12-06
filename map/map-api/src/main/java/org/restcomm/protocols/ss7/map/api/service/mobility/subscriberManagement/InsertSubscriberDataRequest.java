@@ -24,12 +24,13 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentity;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.AgeIndicator;
 
 /**
  *
@@ -79,7 +80,7 @@ MAP V3: InsertSubscriberDataArg ::= SEQUENCE {
   eps-SubscriptionData           [31] EPS-SubscriptionData OPTIONAL,
   csg-SubscriptionDataList       [32] CSG-SubscriptionDataList OPTIONAL,
   ue-ReachabilityRequestIndicator [33] NULL OPTIONAL,
-  sgsn-Number                    [34] ISDN-AddressStringImpl OPTIONAL,
+  sgsn-Number                    [34] ISDN-AddressString OPTIONAL,
   mme-Name                       [35] DiameterIdentity OPTIONAL,
   subscribedPeriodicRAUTAUtimer  [36] SubscribedPeriodicRAUTAUtimer OPTIONAL,
   vplmnLIPAAllowed               [37] NULL OPTIONAL,
@@ -97,7 +98,7 @@ InsertSubscriberDataArg ::= SEQUENCE {
 }
 
 SubscriberData ::= SEQUENCE {
-  msisdn             [1] ISDN-AddressStringImpl OPTIONAL,
+  msisdn             [1] ISDN-AddressString OPTIONAL,
   category           [2] Category OPTIONAL,
   subscriberStatus   [3] SubscriberStatus OPTIONAL,
   bearerServiceList  [4] BearerServiceList OPTIONAL,
@@ -145,73 +146,73 @@ SubscribedPeriodicLAUtimer ::= INTEGER (0..4294967295)
  */
 public interface InsertSubscriberDataRequest extends MobilityMessage {
 
-    IMSIImpl getImsi();
+	IMSI getImsi();
 
-    ISDNAddressStringImpl getMsisdn();
+    ISDNAddressString getMsisdn();
 
-    CategoryImpl getCategory();
+    Category getCategory();
 
     SubscriberStatus getSubscriberStatus();
 
-    List<ExtBearerServiceCodeImpl> getBearerServiceList();
+    List<ExtBearerServiceCode> getBearerServiceList();
 
-    List<ExtTeleserviceCodeImpl> getTeleserviceList();
+    List<ExtTeleserviceCode> getTeleserviceList();
 
-    List<ExtSSInfoImpl> getProvisionedSS();
+    List<ExtSSInfo> getProvisionedSS();
 
-    ODBDataImpl getODBData();
+    ODBData getODBData();
 
     boolean getRoamingRestrictionDueToUnsupportedFeature();
 
-    List<ZoneCodeImpl> getRegionalSubscriptionData();
+    List<ZoneCode> getRegionalSubscriptionData();
 
-    List<VoiceBroadcastDataImpl> getVbsSubscriptionData();
+    List<VoiceBroadcastData> getVbsSubscriptionData();
 
-    List<VoiceGroupCallDataImpl> getVgcsSubscriptionData();
+    List<VoiceGroupCallData> getVgcsSubscriptionData();
 
-    VlrCamelSubscriptionInfoImpl getVlrCamelSubscriptionInfo();
+    VlrCamelSubscriptionInfo getVlrCamelSubscriptionInfo();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
-    NAEAPreferredCIImpl getNAEAPreferredCI();
+    NAEAPreferredCI getNAEAPreferredCI();
 
-    GPRSSubscriptionDataImpl getGPRSSubscriptionData();
+    GPRSSubscriptionData getGPRSSubscriptionData();
 
     boolean getRoamingRestrictedInSgsnDueToUnsupportedFeature();
 
     NetworkAccessMode getNetworkAccessMode();
 
-    LSAInformationImpl getLSAInformation();
+    LSAInformation getLSAInformation();
 
     boolean getLmuIndicator();
 
-    LCSInformationImpl getLCSInformation();
+    LCSInformation getLCSInformation();
 
     Integer getIstAlertTimer();
 
-    AgeIndicatorImpl getSuperChargerSupportedInHLR();
+    AgeIndicator getSuperChargerSupportedInHLR();
 
-    MCSSInfoImpl getMcSsInfo();
+    MCSSInfo getMcSsInfo();
 
-    CSAllocationRetentionPriorityImpl getCSAllocationRetentionPriority();
+    CSAllocationRetentionPriority getCSAllocationRetentionPriority();
 
-    SGSNCAMELSubscriptionInfoImpl getSgsnCamelSubscriptionInfo();
+    SGSNCAMELSubscriptionInfo getSgsnCamelSubscriptionInfo();
 
-    ChargingCharacteristicsImpl getChargingCharacteristics();
+    ChargingCharacteristics getChargingCharacteristics();
 
-    AccessRestrictionDataImpl getAccessRestrictionData();
+    AccessRestrictionData getAccessRestrictionData();
 
     Boolean getIcsIndicator();
 
-    EPSSubscriptionDataImpl getEpsSubscriptionData();
+    EPSSubscriptionData getEpsSubscriptionData();
 
-    List<CSGSubscriptionDataImpl> getCsgSubscriptionDataList();
+    List<CSGSubscriptionData> getCsgSubscriptionDataList();
 
     boolean getUeReachabilityRequestIndicator();
 
-    ISDNAddressStringImpl getSgsnNumber();
+    ISDNAddressString getSgsnNumber();
 
-    DiameterIdentityImpl getMmeName();
+    DiameterIdentity getMmeName();
 
     Long getSubscribedPeriodicRAUTAUtimer();
 

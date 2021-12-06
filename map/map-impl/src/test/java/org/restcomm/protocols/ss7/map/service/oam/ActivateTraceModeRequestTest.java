@@ -30,23 +30,13 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressAddressType;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.oam.JobType;
-import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfigurationImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MSCSEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.MSCSInterfaceListImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepth;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepthListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceEventListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceInterfaceListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceNETypeListImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference2Impl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceReferenceImpl;
-import org.restcomm.protocols.ss7.map.api.service.oam.TraceTypeImpl;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -68,7 +58,11 @@ public class ActivateTraceModeRequestTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 111, -128, 7, 51, 51, 35, 34, 34, 0, 17, -127, 1, 11, -126, 1, 55, -125, 6, -111, 17, 17, 49, 51, 51, -92, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -123, 3, 12, 13, 14, -90, 6, -128, 1, 2, -127, 1, 0, -121, 2, 4, 16, -88, 4, -128, 2, 6, 64, -87, 4, -128, 2, 7, -128, -118, 5, 4, -64, -88, 4, 1, -85, 3, 10, 1, 3 };
+        return new byte[] { 48, 105, (byte) 128, 7, 51, 51, 35, 34, 34, 0, 17, (byte) 129, 1, 11, (byte) 130, 1, 55, (byte) 131, 6, (byte) 145, 17, 17, 49, 51,
+                51, (byte) 164, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24,
+                25, 26, (byte) 161, 3, 31, 32, 33, (byte) 133, 3, 12, 13, 14, (byte) 166, 6, (byte) 128, 1, 2, (byte) 129, 1, 0, (byte) 135, 2, 4, 16,
+                (byte) 168, 4, (byte) 128, 2, 6, 64, (byte) 169, 4, (byte) 128, 2, 7, (byte) 128, (byte) 138, 5, 4, (byte) 192, (byte) 168, 4, 1,
+                (byte) 171, 3, 10, 1, 3 };
     }
 
     private byte[] getTraceReferenceData() {

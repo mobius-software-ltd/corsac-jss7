@@ -24,13 +24,15 @@ package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.PlmnIdImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ASNRequestingNodeType;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSynchronisationInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.PlmnId;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSynchronisationInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.RequestingNodeType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.SendAuthenticationInfoRequest;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.primitives.PlmnIdImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -48,8 +50,8 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl implements SendAuthenticationInfoRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=0)
-    private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=0, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=2,constructed=false,index=1)
 	private ASNInteger numberOfRequestedVectors;
@@ -59,16 +61,17 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
     private ASNNull immediateResponsePreferred;
     
-    private ReSynchronisationInfoImpl reSynchronisationInfo;
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = ReSynchronisationInfoImpl.class)
+    private ReSynchronisationInfo reSynchronisationInfo;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
     private ASNRequestingNodeType requestingNodeType;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
-    private PlmnIdImpl requestingPlmnId;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1,defaultImplementation = PlmnIdImpl.class)
+    private PlmnId requestingPlmnId;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
     private ASNInteger numberOfRequestedAdditionalVectors;
@@ -86,9 +89,9 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public SendAuthenticationInfoRequestImplV3(long mapProtocolVersion, IMSIImpl imsi, int numberOfRequestedVectors,
-            boolean segmentationProhibited, boolean immediateResponsePreferred, ReSynchronisationInfoImpl reSynchronisationInfo,
-            MAPExtensionContainerImpl extensionContainer, RequestingNodeType requestingNodeType, PlmnIdImpl requestingPlmnId,
+    public SendAuthenticationInfoRequestImplV3(long mapProtocolVersion, IMSI imsi, int numberOfRequestedVectors,
+            boolean segmentationProhibited, boolean immediateResponsePreferred, ReSynchronisationInfo reSynchronisationInfo,
+            MAPExtensionContainer extensionContainer, RequestingNodeType requestingNodeType, PlmnId requestingPlmnId,
             Integer numberOfRequestedAdditionalVectors, boolean additionalVectorsAreForEPS) {
         this.mapProtocolVersion = mapProtocolVersion;
         this.imsi = imsi;
@@ -129,7 +132,7 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
         return MAPOperationCode.sendAuthenticationInfo;
     }
 
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return imsi;
     }
 
@@ -148,11 +151,11 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
         return immediateResponsePreferred!=null;
     }
 
-    public ReSynchronisationInfoImpl getReSynchronisationInfo() {
+    public ReSynchronisationInfo getReSynchronisationInfo() {
         return reSynchronisationInfo;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 
@@ -163,7 +166,7 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
         return requestingNodeType.getType();
     }
 
-    public PlmnIdImpl getRequestingPlmnId() {
+    public PlmnId getRequestingPlmnId() {
         return requestingPlmnId;
     }
 

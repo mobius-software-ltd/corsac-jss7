@@ -24,8 +24,9 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.DisconnectForwardConnectionWithArgumentRequest;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -45,13 +46,13 @@ public class DisconnectForwardConnectionWithArgumentRequestImpl extends CircuitS
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
     private ASNInteger callSegmentID;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
 
     public DisconnectForwardConnectionWithArgumentRequestImpl() {
     }
 
-    public DisconnectForwardConnectionWithArgumentRequestImpl(Integer callSegmentId, CAPExtensionsImpl extensions) {
+    public DisconnectForwardConnectionWithArgumentRequestImpl(Integer callSegmentId, CAPExtensions extensions) {
     	if(callSegmentId!=null) {
     		this.callSegmentID = new ASNInteger();
     		this.callSegmentID.setValue(callSegmentId.longValue());
@@ -98,7 +99,7 @@ public class DisconnectForwardConnectionWithArgumentRequestImpl extends CircuitS
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 

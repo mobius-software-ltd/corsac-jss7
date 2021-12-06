@@ -32,35 +32,31 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNSubaddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGSubscriptionImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EMLPPInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtCallBarInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtCallBarringFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGFeature;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGSubscription;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.EMLPPInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtCallBarInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtCallBarringFeature;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwFeature;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwOptionsForwardingReason;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwOptionsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.InterCUGRestrictionsImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.IntraCUGOptions;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CliRestrictionOption;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSSubscriptionOptionImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
+import org.restcomm.protocols.ss7.map.primitives.FTNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNSubaddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSSubscriptionOptionImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -76,24 +72,39 @@ import io.netty.buffer.Unpooled;
  */
 public class ExtSSInfoTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, -127, -124, -96, -127, -127, 4, 1, 0, 48, 77, 48, 75, -126, 1, 38, -124, 1, 3, -123, 4, -111, 34, 34, -8, -120, 2, 2, 5, -122, 1, -92, -121, 1, 2, -87, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -118, 4, -111, 34, 34, -9, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+	public byte[] getData() {
+        return new byte[] { 48, 119, -96, 117, 4, 1, 0, 48, 71, 48, 69, -126, 1, 38, -124, 1, 3, -123, 4, -111, 34, 34, -8, -120, 2, 2,
+                5, -122, 1, -92, -121, 1, 2, -87, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3,
+                6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -118, 4, -111, 34, 34, -9, -96, 39, -96,
+                32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24,
+                25, 26, -95, 3, 31, 32, 33 };
     };
 
     public byte[] getData1() {
-        return new byte[] { 48, 109, -95, 107, 4, 1, 0, 48, 55, 48, 53, -126, 1, 38, -124, 1, 3, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 97, -95, 95, 4, 1, 0, 48, 49, 48, 47, -126, 1, 38, -124, 1, 3, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4,
+                11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33,
+                48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21,
+                22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     };
 
     public byte[] getData2() {
-        return new byte[] { 48, -127, -78, -94, -127, -81, 48, 66, 48, 64, 2, 1, 1, 4, 4, 1, 2, 3, 4, 10, 1, 0, 48, 3, -126, 1, 38, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 48, 58, 48, 56, -126, 1, 38, 2, 1, 1, 4, 1, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, -127, -96, -94, -127, -99, 48, 60, 48, 58, 2, 1, 1, 4, 4, 1, 2, 3, 4, 10, 1, 0, 48, 3, -126, 1, 38, -96, 39,
+                -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23,
+                24, 25, 26, -95, 3, 31, 32, 33, 48, 52, 48, 50, -126, 1, 38, 2, 1, 1, 4, 1, 0, 48, 39, -96, 32, 48, 10, 6, 3,
+                42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3,
+                31, 32, 33, -96, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3,
+                42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     };
 
     public byte[] getData3() {
-        return new byte[] { 48, 63, -93, 61, 4, 1, 0, -124, 1, 3, -126, 1, 0, 48, 3, -126, 1, 38, -91, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 57, -93, 55, 4, 1, 0, -124, 1, 3, -126, 1, 0, 48, 3, -126, 1, 38, -91, 39, -96, 32, 48, 10, 6, 3, 42,
+                3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31,
+                32, 33 };
     };
 
     public byte[] getData4() {
-        return new byte[] { 48, 55, -92, 53, 2, 1, 2, 2, 1, 1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 49, -92, 47, 2, 1, 2, 2, 1, 1, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6,
+                3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     };
 
     private byte[] getISDNSubaddressStringData() {
@@ -116,11 +127,11 @@ public class ExtSSInfoTest {
         assertTrue(result.getResult() instanceof ExtSSInfoImpl);
         ExtSSInfoImpl prim = (ExtSSInfoImpl)result.getResult();
         
-        ExtForwInfoImpl forwardingInfo = prim.getForwardingInfo();
-        ExtCallBarInfoImpl callBarringInfo = prim.getCallBarringInfo();
-        CUGInfoImpl cugInfo = prim.getCugInfo();
-        ExtSSDataImpl ssData = prim.getSsData();
-        EMLPPInfoImpl emlppInfo = prim.getEmlppInfo();
+        ExtForwInfo forwardingInfo = prim.getForwardingInfo();
+        ExtCallBarInfo callBarringInfo = prim.getCallBarringInfo();
+        CUGInfo cugInfo = prim.getCugInfo();
+        ExtSSData ssData = prim.getSsData();
+        EMLPPInfo emlppInfo = prim.getEmlppInfo();
 
         assertNotNull(forwardingInfo);
         assertNull(callBarringInfo);
@@ -128,14 +139,14 @@ public class ExtSSInfoTest {
         assertNull(ssData);
         assertNull(emlppInfo);
 
-        MAPExtensionContainerImpl extensionContainer = forwardingInfo.getExtensionContainer();
+        MAPExtensionContainer extensionContainer = forwardingInfo.getExtensionContainer();
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
         assertEquals(forwardingInfo.getSsCode().getSupplementaryCodeValue(), SupplementaryCodeValue.allSS);
 
-        List<ExtForwFeatureImpl> forwardingFeatureList = forwardingInfo.getForwardingFeatureList();
+        List<ExtForwFeature> forwardingFeatureList = forwardingInfo.getForwardingFeatureList();
         assertNotNull(forwardingFeatureList);
         assertEquals(forwardingFeatureList.size(), 1);
-        ExtForwFeatureImpl extForwFeature = forwardingFeatureList.get(0);
+        ExtForwFeature extForwFeature = forwardingFeatureList.get(0);
         assertNotNull(extForwFeature);
 
         assertEquals(extForwFeature.getBasicService().getExtBearerService().getBearerServiceCodeValue(),
@@ -147,7 +158,7 @@ public class ExtSSInfoTest {
         assertTrue(!extForwFeature.getSsStatus().getBitQ());
         assertTrue(extForwFeature.getSsStatus().getBitR());
 
-        ISDNAddressStringImpl forwardedToNumber = extForwFeature.getForwardedToNumber();
+        ISDNAddressString forwardedToNumber = extForwFeature.getForwardedToNumber();
         assertNotNull(forwardedToNumber);
         assertTrue(forwardedToNumber.getAddress().equals("22228"));
         assertEquals(forwardedToNumber.getAddressNature(), AddressNature.international_number);
@@ -161,7 +172,7 @@ public class ExtSSInfoTest {
                 ExtForwOptionsForwardingReason.msBusy);
         assertNotNull(extForwFeature.getNoReplyConditionTime());
         assertEquals(extForwFeature.getNoReplyConditionTime().intValue(), 2);
-        FTNAddressStringImpl longForwardedToNumber = extForwFeature.getLongForwardedToNumber();
+        FTNAddressString longForwardedToNumber = extForwFeature.getLongForwardedToNumber();
         assertNotNull(longForwardedToNumber);
         assertTrue(longForwardedToNumber.getAddress().equals("22227"));
         assertEquals(longForwardedToNumber.getAddressNature(), AddressNature.international_number);
@@ -286,7 +297,7 @@ public class ExtSSInfoTest {
     	        
         ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
         ExtBasicServiceCodeImpl basicService = new ExtBasicServiceCodeImpl(b);
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         ExtSSStatusImpl ssStatus = new ExtSSStatusImpl(false, false, true, true);
         ISDNAddressStringImpl forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22228");
@@ -300,28 +311,28 @@ public class ExtSSInfoTest {
                 forwardedToSubaddress, forwardingOptions, noReplyConditionTime, extensionContainer, longForwardedToNumber);
 
         SSCodeImpl ssCode = new SSCodeImpl(SupplementaryCodeValue.allSS);
-        ArrayList<ExtForwFeatureImpl> forwardingFeatureList = new ArrayList<ExtForwFeatureImpl>();
+        List<ExtForwFeature> forwardingFeatureList = new ArrayList<ExtForwFeature>();
         forwardingFeatureList.add(extForwFeature);
-        ExtForwInfoImpl forwardingInfo = new ExtForwInfoImpl(ssCode, forwardingFeatureList, extensionContainer);
+        ExtForwInfo forwardingInfo = new ExtForwInfoImpl(ssCode, forwardingFeatureList, extensionContainer);
 
         ExtCallBarringFeatureImpl callBarringFeature = new ExtCallBarringFeatureImpl(basicService, ssStatus, extensionContainer);
-        ArrayList<ExtCallBarringFeatureImpl> callBarringFeatureList = new ArrayList<ExtCallBarringFeatureImpl>();
+        List<ExtCallBarringFeature> callBarringFeatureList = new ArrayList<ExtCallBarringFeature>();
         callBarringFeatureList.add(callBarringFeature);
 
-        ExtCallBarInfoImpl callBarringInfo = new ExtCallBarInfoImpl(ssCode, callBarringFeatureList, extensionContainer);
+        ExtCallBarInfo callBarringInfo = new ExtCallBarInfoImpl(ssCode, callBarringFeatureList, extensionContainer);
 
         Integer preferentialCugIndicator = 1;
         InterCUGRestrictionsImpl interCugRestrictions = new InterCUGRestrictionsImpl(0);
         CUGFeatureImpl cugFeature = new CUGFeatureImpl(basicService, preferentialCugIndicator, interCugRestrictions,
                 extensionContainer);
-        ArrayList<CUGFeatureImpl> cugFeatureList = new ArrayList<CUGFeatureImpl>();
+        List<CUGFeature> cugFeatureList = new ArrayList<CUGFeature>();
         cugFeatureList.add(cugFeature);
 
-        ArrayList<CUGSubscriptionImpl> cugSubscriptionList = new ArrayList<CUGSubscriptionImpl>();
+        List<CUGSubscription> cugSubscriptionList = new ArrayList<CUGSubscription>();
         int cugIndex = 1;
         CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getcugData());
         IntraCUGOptions intraCugOptions = IntraCUGOptions.getInstance(0);
-        ArrayList<ExtBasicServiceCodeImpl> basicServiceList = new ArrayList<ExtBasicServiceCodeImpl>();
+        List<ExtBasicServiceCode> basicServiceList = new ArrayList<ExtBasicServiceCode>();
         basicServiceList.add(basicService);
         CUGSubscriptionImpl cugSubscription = new CUGSubscriptionImpl(cugIndex, cugInterlock, intraCugOptions,
                 basicServiceList, extensionContainer);
@@ -331,7 +342,7 @@ public class ExtSSInfoTest {
 
         SSSubscriptionOptionImpl ssSubscriptionOption = new SSSubscriptionOptionImpl(CliRestrictionOption.permanent);
 
-        ArrayList<ExtBasicServiceCodeImpl> basicServiceGroupList = new ArrayList<ExtBasicServiceCodeImpl>();
+        List<ExtBasicServiceCode> basicServiceGroupList = new ArrayList<ExtBasicServiceCode>();
         basicServiceGroupList.add(basicService);
 
         ExtSSDataImpl ssData = new ExtSSDataImpl(ssCode, ssStatus, ssSubscriptionOption, basicServiceGroupList, extensionContainer);

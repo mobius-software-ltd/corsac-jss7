@@ -23,15 +23,17 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.gap.GapCriteriaImpl;
-import org.restcomm.protocols.ss7.cap.api.gap.GapCriteriaWrapperImpl;
-import org.restcomm.protocols.ss7.cap.api.gap.GapIndicatorsImpl;
-import org.restcomm.protocols.ss7.cap.api.gap.GapTreatmentImpl;
-import org.restcomm.protocols.ss7.cap.api.gap.GapTreatmentWrapperImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.gap.GapCriteria;
+import org.restcomm.protocols.ss7.cap.api.gap.GapIndicators;
+import org.restcomm.protocols.ss7.cap.api.gap.GapTreatment;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CallGapRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ASNControlTypeImpl;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ControlType;
+import org.restcomm.protocols.ss7.cap.gap.GapCriteriaWrapperImpl;
+import org.restcomm.protocols.ss7.cap.gap.GapIndicatorsImpl;
+import org.restcomm.protocols.ss7.cap.gap.GapTreatmentWrapperImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ASNControlTypeImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -48,8 +50,8 @@ public class CallGapRequestImpl extends CircuitSwitchedCallMessageImpl implement
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
     private GapCriteriaWrapperImpl gapCriteria;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1)
-    private GapIndicatorsImpl gapIndicators;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1,defaultImplementation = GapIndicatorsImpl.class)
+    private GapIndicators gapIndicators;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
     private ASNControlTypeImpl controlType;
@@ -57,14 +59,14 @@ public class CallGapRequestImpl extends CircuitSwitchedCallMessageImpl implement
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
     private GapTreatmentWrapperImpl gapTreatment;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1)
-    private CAPExtensionsImpl capExtensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions capExtensions;
 
     public CallGapRequestImpl() {
     }
 
-    public CallGapRequestImpl(GapCriteriaImpl gapCriteria, GapIndicatorsImpl gapIndicators, ControlType controlType, GapTreatmentImpl gapTreatment,
-            CAPExtensionsImpl capExtension) {
+    public CallGapRequestImpl(GapCriteria gapCriteria, GapIndicators gapIndicators, ControlType controlType, GapTreatment gapTreatment,
+            CAPExtensions capExtension) {
     	
     	if(gapCriteria!=null)
     		this.gapCriteria = new GapCriteriaWrapperImpl(gapCriteria);
@@ -92,14 +94,14 @@ public class CallGapRequestImpl extends CircuitSwitchedCallMessageImpl implement
         return CAPOperationCode.callGap;
     }
 
-    public GapCriteriaImpl getGapCriteria() {
+    public GapCriteria getGapCriteria() {
     	if(gapCriteria==null)
     		return null;
     	
         return gapCriteria.getGapCriteria();
     }
 
-    public GapIndicatorsImpl getGapIndicators() {
+    public GapIndicators getGapIndicators() {
         return gapIndicators;
     }
 
@@ -110,14 +112,14 @@ public class CallGapRequestImpl extends CircuitSwitchedCallMessageImpl implement
         return controlType.getType();
     }
 
-    public GapTreatmentImpl getGapTreatment() {
+    public GapTreatment getGapTreatment() {
     	if(gapTreatment==null)
     		return null;
     	
         return gapTreatment.getGapTreatment();
     }
 
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return capExtensions;
     }
 

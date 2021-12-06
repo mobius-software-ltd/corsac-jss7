@@ -29,21 +29,21 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LACImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationAreaImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingAreaImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedLCSCapabilitySetsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapabilityImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationArea;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingArea;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapability;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -60,16 +60,21 @@ import io.netty.buffer.Unpooled;
  */
 public class UpdateLocationRequestTest {
 
-    private byte[] getEncodedData() {
-        return new byte[] { 48, 25, 4, 5, 17, 17, 33, 34, 34, -127, 4, -111, 34, 34, -8, 4, 4, -111, 34, 34, -7, -90, 4, -123, 2, 7, -128 };
+	private byte[] getEncodedData() {
+        return new byte[] { 48, 25, 4, 5, 17, 17, 33, 34, 34, -127, 4, -111, 34, 34, -8, 4, 4, -111, 34, 34, -7, -90, 4, -123,
+                2, 7, -128 };
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 86, 4, 5, 17, 17, 33, 34, 51, -127, 4, -111, 34, 34, -8, 4, 4, -111, 34, 34, -7, -118, 4, 1, 3, 5, 8, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -90, 4, -123, 2, 7, -128, -117, 0, -116, 0, -113, 0, -112, 0 };
+        return new byte[] { 48, 80, 4, 5, 17, 17, 33, 34, 51, -127, 4, -111, 34, 34, -8, 4, 4, -111, 34, 34, -7, -118, 4, 1, 3,
+                5, 8, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3,
+                5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -90, 4, -123, 2, 7, -128, -117, 0, -116, 0, -113, 0, -112, 0 };
     }
 
     private byte[] getEncodedData3() {
-        return new byte[] { 48, 65, 4, 5, 17, 17, 33, 34, 51, -127, 4, -111, 34, 34, -8, 4, 4, -111, 34, 34, -7, -118, 4, 1, 3, 5, 8, -90, 4, -123, 2, 7, -128, -117, 0, -116, 0, -126, 6, 1, 1, 1, 1, 1, 1, -83, 10, -128, 8, 33, 67, 101, -121, 9, -112, 120, -10, -82, 4, -127, 2, 0, 123, -113, 0, -112, 0 };
+        return new byte[] { 48, 65, 4, 5, 17, 17, 33, 34, 51, -127, 4, -111, 34, 34, -8, 4, 4, -111, 34, 34, -7, -118, 4, 1, 3,
+                5, 8, -90, 4, -123, 2, 7, -128, -117, 0, -116, 0, -126, 6, 1, 1, 1, 1, 1, 1, -83, 10, -128, 8, 33, 67, 101,
+                -121, 9, -112, 120, -10, -82, 4, -127, 2, 0, 123, -113, 0, -112, 0 };
     }
 
     private byte[] getEncodedData_V1() {
@@ -95,21 +100,21 @@ public class UpdateLocationRequestTest {
         assertTrue(result.getResult() instanceof UpdateLocationRequestImpl);
         UpdateLocationRequestImpl asc = (UpdateLocationRequestImpl)result.getResult();
         
-        IMSIImpl imsi = asc.getImsi();
+        IMSI imsi = asc.getImsi();
         assertTrue(imsi.getData().equals("1111122222"));
 
         assertNull(asc.getRoamingNumber());
-        ISDNAddressStringImpl mscNumber = asc.getMscNumber();
+        ISDNAddressString mscNumber = asc.getMscNumber();
         assertTrue(mscNumber.getAddress().equals("22228"));
         assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
 
-        ISDNAddressStringImpl vlrNumber = asc.getVlrNumber();
+        ISDNAddressString vlrNumber = asc.getVlrNumber();
         assertTrue(vlrNumber.getAddress().equals("22229"));
         assertEquals(vlrNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(vlrNumber.getNumberingPlan(), NumberingPlan.ISDN);
 
-        VLRCapabilityImpl vlrCap = asc.getVlrCapability();
+        VLRCapability vlrCap = asc.getVlrCapability();
         assertTrue(vlrCap.getSupportedLCSCapabilitySets().getCapabilitySetRelease98_99());
         assertFalse(vlrCap.getSupportedLCSCapabilitySets().getCapabilitySetRelease4());
 
@@ -201,7 +206,7 @@ public class UpdateLocationRequestTest {
         assertTrue(imsi.getData().equals("1111122233"));
 
         assertNull(asc.getMscNumber());
-        ISDNAddressStringImpl roamingNumber = asc.getRoamingNumber();
+        ISDNAddressString roamingNumber = asc.getRoamingNumber();
         assertTrue(roamingNumber.getAddress().equals("22220"));
         assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
@@ -250,7 +255,7 @@ public class UpdateLocationRequestTest {
         vlrCap = new VLRCapabilityImpl(null, null, false, null, null, false, supportedLCSCapabilitySets, null, null, false,
                 false);
         LMSIImpl lmsi = new LMSIImpl(getLmsiData());
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         asc = new UpdateLocationRequestImpl(3, imsi, mscNumber, null, vlrNumber, lmsi, extensionContainer, vlrCap, true, true,
                 null, null, null, true, true);
 
@@ -263,11 +268,11 @@ public class UpdateLocationRequestTest {
         GSNAddressImpl vGmlcAddress = new GSNAddressImpl(getGSNAddressData());
         IMEIImpl imeisv = new IMEIImpl("123456789009876");
         ADDInfoImpl addInfo = new ADDInfoImpl(imeisv, false);
-        ArrayList<LocationAreaImpl> locationAreas = new ArrayList<LocationAreaImpl>();
+        List<LocationArea> locationAreas = new ArrayList<LocationArea>();
         LACImpl lac = new LACImpl(123);
         LocationAreaImpl la = new LocationAreaImpl(lac);
         locationAreas.add(la);
-        PagingAreaImpl pagingArea = new PagingAreaImpl(locationAreas);
+        PagingArea pagingArea = new PagingAreaImpl(locationAreas);
         asc = new UpdateLocationRequestImpl(3, imsi, mscNumber, null, vlrNumber, lmsi, null, vlrCap, true, true, vGmlcAddress,
                 addInfo, pagingArea, true, true);
 

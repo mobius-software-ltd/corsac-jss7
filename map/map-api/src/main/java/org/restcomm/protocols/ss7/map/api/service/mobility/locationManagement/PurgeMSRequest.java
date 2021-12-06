@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -63,12 +63,11 @@ MAP V2: PurgeMS-Arg ::= SEQUENCE {
  */
 public interface PurgeMSRequest extends MobilityMessage {
 
-    IMSIImpl getImsi();
+	IMSI getImsi();
 
-    ISDNAddressStringImpl getVlrNumber();
+    ISDNAddressString getVlrNumber();
 
-    ISDNAddressStringImpl getSgsnNumber();
+    ISDNAddressString getSgsnNumber();
 
-    MAPExtensionContainerImpl getExtensionContainer();
-
+    MAPExtensionContainer getExtensionContainer();
 }

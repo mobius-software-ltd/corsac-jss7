@@ -24,10 +24,11 @@ package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetListImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAuthenticationSetListImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetList;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAuthenticationSetList;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.SendAuthenticationInfoResponse;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -47,10 +48,11 @@ public class SendAuthenticationInfoResponseImplV3 extends MobilityMessageImpl im
 	@ASNChoise
     private AuthenticationSetListImpl authenticationSetList;
     
-    private MAPExtensionContainerImpl extensionContainer;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1)    
-    private EpsAuthenticationSetListImpl epsAuthenticationSetList;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1, defaultImplementation = EpsAuthenticationSetListImpl.class)    
+    private EpsAuthenticationSetList epsAuthenticationSetList;
     
     private long mapProtocolVersion;
 
@@ -62,10 +64,19 @@ public class SendAuthenticationInfoResponseImplV3 extends MobilityMessageImpl im
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public SendAuthenticationInfoResponseImplV3(long mapProtocolVersion, AuthenticationSetListImpl authenticationSetList,
-            MAPExtensionContainerImpl extensionContainer, EpsAuthenticationSetListImpl epsAuthenticationSetList) {
+    public SendAuthenticationInfoResponseImplV3(long mapProtocolVersion, AuthenticationSetList authenticationSetList,
+    		MAPExtensionContainer extensionContainer, EpsAuthenticationSetList epsAuthenticationSetList) {
         this.mapProtocolVersion = mapProtocolVersion;
-        this.authenticationSetList = authenticationSetList;
+
+        if(authenticationSetList instanceof AuthenticationSetListImpl)
+        	this.authenticationSetList=(AuthenticationSetListImpl)authenticationSetList;
+        if(authenticationSetList!=null) {
+        	if(authenticationSetList.getQuintupletList()!=null)
+        		this.authenticationSetList = new AuthenticationSetListImpl(authenticationSetList.getQuintupletList());
+        	else if(authenticationSetList.getTripletList()!=null)
+        		this.authenticationSetList = new AuthenticationSetListImpl(authenticationSetList.getTripletList(), mapProtocolVersion);
+        }
+        
         this.extensionContainer = extensionContainer;
         this.epsAuthenticationSetList = epsAuthenticationSetList;
     }
@@ -78,15 +89,15 @@ public class SendAuthenticationInfoResponseImplV3 extends MobilityMessageImpl im
         return MAPOperationCode.sendAuthenticationInfo;
     }
 
-    public AuthenticationSetListImpl getAuthenticationSetList() {
+    public AuthenticationSetList getAuthenticationSetList() {
         return authenticationSetList;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 
-    public EpsAuthenticationSetListImpl getEpsAuthenticationSetList() {
+    public EpsAuthenticationSetList getEpsAuthenticationSetList() {
         return epsAuthenticationSetList;
     }
 

@@ -24,12 +24,14 @@ package org.restcomm.protocols.ss7.map.service.sms;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.ASNSMDeliveryOutcome;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.sms.ReportSMDeliveryStatusRequest;
 import org.restcomm.protocols.ss7.map.api.service.sms.SMDeliveryOutcome;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -46,11 +48,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class ReportSMDeliveryStatusRequestImpl extends SmsMessageImpl implements ReportSMDeliveryStatusRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-    private ISDNAddressStringImpl msisdn;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString msisdn;
     
-    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
-    private AddressStringImpl serviceCentreAddress;
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1, defaultImplementation = AddressStringImpl.class)
+    private AddressString serviceCentreAddress;
     
     @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=10,constructed=false,index=2)
     private ASNSMDeliveryOutcome sMDeliveryOutcome;
@@ -58,8 +60,8 @@ public class ReportSMDeliveryStatusRequestImpl extends SmsMessageImpl implements
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private ASNInteger absentSubscriberDiagnosticSM;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
     private ASNNull gprsSupportIndicator;
@@ -76,9 +78,9 @@ public class ReportSMDeliveryStatusRequestImpl extends SmsMessageImpl implements
     public ReportSMDeliveryStatusRequestImpl() {        
     }
 
-    public ReportSMDeliveryStatusRequestImpl(ISDNAddressStringImpl msisdn,
-            AddressStringImpl serviceCentreAddress, SMDeliveryOutcome sMDeliveryOutcome, Integer absentSubscriberDiagnosticSM,
-            MAPExtensionContainerImpl extensionContainer, boolean gprsSupportIndicator, boolean deliveryOutcomeIndicator,
+    public ReportSMDeliveryStatusRequestImpl(ISDNAddressString msisdn,
+    		AddressString serviceCentreAddress, SMDeliveryOutcome sMDeliveryOutcome, Integer absentSubscriberDiagnosticSM,
+            MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator, boolean deliveryOutcomeIndicator,
             SMDeliveryOutcome additionalSMDeliveryOutcome, Integer additionalAbsentSubscriberDiagnosticSM) {
         this.msisdn = msisdn;
         this.serviceCentreAddress = serviceCentreAddress;
@@ -120,11 +122,11 @@ public class ReportSMDeliveryStatusRequestImpl extends SmsMessageImpl implements
         return MAPOperationCode.reportSM_DeliveryStatus;
     }
 
-    public ISDNAddressStringImpl getMsisdn() {
+    public ISDNAddressString getMsisdn() {
         return this.msisdn;
     }
 
-    public AddressStringImpl getServiceCentreAddress() {
+    public AddressString getServiceCentreAddress() {
         return this.serviceCentreAddress;
     }
 
@@ -142,7 +144,7 @@ public class ReportSMDeliveryStatusRequestImpl extends SmsMessageImpl implements
         return this.absentSubscriberDiagnosticSM.getValue().intValue();
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

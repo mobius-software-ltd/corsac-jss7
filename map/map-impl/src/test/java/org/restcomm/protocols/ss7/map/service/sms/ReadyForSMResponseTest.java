@@ -44,7 +44,8 @@ import io.netty.buffer.Unpooled;
 public class ReadyForSMResponseTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 47, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 41, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22,
+                23, 24, 25, 26, (byte) 161, 3, 31, 32, 33  };
     }
 
     @Test(groups = { "functional.decode", "service.sms" })

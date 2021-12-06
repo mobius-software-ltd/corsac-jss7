@@ -24,10 +24,12 @@ package org.restcomm.protocols.ss7.map.service.sms;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.sms.InformServiceCentreRequest;
-import org.restcomm.protocols.ss7.map.api.service.sms.MWStatusImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.MWStatus;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -43,9 +45,14 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 public class InformServiceCentreRequestImpl extends SmsMessageImpl implements InformServiceCentreRequest {
 	private static final long serialVersionUID = 1L;
 
-	private ISDNAddressStringImpl storedMSISDN;
-    private MWStatusImpl mwStatus;
-    private MAPExtensionContainerImpl extensionContainer;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+	private ISDNAddressString storedMSISDN;
+    
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=3,constructed=false,index=-1, defaultImplementation = MWStatusImpl.class)
+	private MWStatus mwStatus;
+    
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
     
     private ASNInteger absentSubscriberDiagnosticSM;
     
@@ -55,8 +62,8 @@ public class InformServiceCentreRequestImpl extends SmsMessageImpl implements In
     public InformServiceCentreRequestImpl() {
     }
 
-    public InformServiceCentreRequestImpl(ISDNAddressStringImpl storedMSISDN, MWStatusImpl mwStatus,
-            MAPExtensionContainerImpl extensionContainer, Integer absentSubscriberDiagnosticSM,
+    public InformServiceCentreRequestImpl(ISDNAddressString storedMSISDN, MWStatus mwStatus,
+            MAPExtensionContainer extensionContainer, Integer absentSubscriberDiagnosticSM,
             Integer additionalAbsentSubscriberDiagnosticSM) {
         this.storedMSISDN = storedMSISDN;
         this.mwStatus = mwStatus;
@@ -81,15 +88,15 @@ public class InformServiceCentreRequestImpl extends SmsMessageImpl implements In
         return MAPOperationCode.informServiceCentre;
     }
 
-    public ISDNAddressStringImpl getStoredMSISDN() {
+    public ISDNAddressString getStoredMSISDN() {
         return this.storedMSISDN;
     }
 
-    public MWStatusImpl getMwStatus() {
+    public MWStatus getMwStatus() {
         return this.mwStatus;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

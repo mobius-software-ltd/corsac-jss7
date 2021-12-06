@@ -29,14 +29,13 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsFailureSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsSubmissionSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsDeliverySpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsFailureSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMSImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMSWrapperImpl;
+import org.restcomm.protocols.ss7.cap.EsiSms.OSmsFailureSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.EsiSms.OSmsSubmissionSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.EsiSms.TSmsDeliverySpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.EsiSms.TSmsFailureSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsFailureSpecificInfo;
+import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsFailureSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.MOSMSCause;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.MTSMSCauseImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -81,7 +80,7 @@ public class EventSpecificInformationSMSTest {
         
         EventSpecificInformationSMSWrapperImpl prim = (EventSpecificInformationSMSWrapperImpl)result.getResult();        
         assertNotNull(prim.getEventSpecificInformationSMS().getOSmsFailureSpecificInfo());
-		OSmsFailureSpecificInfoImpl oSmsFailureSpecificInfo = prim.getEventSpecificInformationSMS().getOSmsFailureSpecificInfo();
+		OSmsFailureSpecificInfo oSmsFailureSpecificInfo = prim.getEventSpecificInformationSMS().getOSmsFailureSpecificInfo();
 		assertEquals(oSmsFailureSpecificInfo.getFailureCause(), MOSMSCause.facilityNotSupported);
 		assertNull(prim.getEventSpecificInformationSMS().getOSmsSubmissionSpecificInfo());
 		assertNull(prim.getEventSpecificInformationSMS().getTSmsFailureSpecificInfo());
@@ -111,7 +110,7 @@ public class EventSpecificInformationSMSTest {
 		assertNull(prim.getEventSpecificInformationSMS().getOSmsFailureSpecificInfo());
 		assertNull(prim.getEventSpecificInformationSMS().getOSmsSubmissionSpecificInfo());
 		assertNotNull(prim.getEventSpecificInformationSMS().getTSmsFailureSpecificInfo());
-		TSmsFailureSpecificInfoImpl tSmsFailureSpecificInfo = prim.getEventSpecificInformationSMS().getTSmsFailureSpecificInfo();
+		TSmsFailureSpecificInfo tSmsFailureSpecificInfo = prim.getEventSpecificInformationSMS().getTSmsFailureSpecificInfo();
 		assertEquals(tSmsFailureSpecificInfo.getFailureCause().getData(),6);
 		assertNull(prim.getEventSpecificInformationSMS().getTSmsDeliverySpecificInfo());
 		

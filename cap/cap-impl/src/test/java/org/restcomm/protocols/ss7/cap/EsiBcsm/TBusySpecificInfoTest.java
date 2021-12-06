@@ -28,11 +28,12 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TBusySpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMWrapperImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
+import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMWrapperImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
@@ -69,14 +70,14 @@ public class TBusySpecificInfoTest {
         assertTrue(result.getResult() instanceof EventSpecificInformationBCSMWrapperImpl);
         
         EventSpecificInformationBCSMWrapperImpl wrapper = (EventSpecificInformationBCSMWrapperImpl)result.getResult();
-        EventSpecificInformationBCSMImpl elem = wrapper.getEventSpecificInformationBCSM();
+        EventSpecificInformationBCSM elem = wrapper.getEventSpecificInformationBCSM();
         CauseIndicators ci = elem.getTBusySpecificInfo().getBusyCause().getCauseIndicators();
         assertEquals(ci.getCauseValue(), 16);
         assertEquals(ci.getCodingStandard(), 0);
         assertEquals(ci.getLocation(), 4);
         assertTrue(elem.getTBusySpecificInfo().getCallForwarded());
         assertTrue(elem.getTBusySpecificInfo().getRouteNotPermitted());
-        CalledPartyNumberCapImpl fdn = elem.getTBusySpecificInfo().getForwardingDestinationNumber();
+        CalledPartyNumberCap fdn = elem.getTBusySpecificInfo().getForwardingDestinationNumber();
         CalledPartyNumber cpn = fdn.getCalledPartyNumber();
         assertTrue(cpn.getAddress().endsWith("111222333"));
         assertEquals(cpn.getNatureOfAddressIndicator(), 0);

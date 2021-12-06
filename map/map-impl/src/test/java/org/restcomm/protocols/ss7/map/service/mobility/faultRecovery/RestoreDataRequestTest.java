@@ -29,11 +29,14 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapabilityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.VLRCapability;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.VLRCapabilityImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -54,7 +57,9 @@ public class RestoreDataRequestTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 70, 4, 7, 17, 33, 34, 51, 67, 68, 85, 4, 4, 22, 33, 44, 55, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -90, 4, -128, 2, 6, -64, -121, 0 };
+        return new byte[] { 48, 64, 4, 7, 17, 33, 34, 51, 67, 68, 85, 4, 4, 22, 33, 44, 55, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
+                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 166, 4, (byte) 128, 2, 6, (byte) 192,
+                (byte) 135, 0 };
     }
 
     private byte[] getLmsiData() {
@@ -72,7 +77,7 @@ public class RestoreDataRequestTest {
         assertTrue(result.getResult() instanceof RestoreDataRequestImpl);
         RestoreDataRequestImpl prim = (RestoreDataRequestImpl)result.getResult();
         
-        IMSIImpl imsi = prim.getImsi();
+        IMSI imsi = prim.getImsi();
         assertTrue(imsi.getData().equals("11122233344455"));
 
         assertNull(prim.getLmsi());
@@ -92,8 +97,8 @@ public class RestoreDataRequestTest {
 
         assertEquals(prim.getLmsi().getData(), getLmsiData());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
-        VLRCapabilityImpl vlrCapability = prim.getVLRCapability();
-        SupportedCamelPhasesImpl supportedCamelPhases = vlrCapability.getSupportedCamelPhases();
+        VLRCapability vlrCapability = prim.getVLRCapability();
+        SupportedCamelPhases supportedCamelPhases = vlrCapability.getSupportedCamelPhases();
         assertTrue(supportedCamelPhases.getPhase1Supported());
         assertTrue(supportedCamelPhases.getPhase2Supported());
         assertFalse(supportedCamelPhases.getPhase3Supported());

@@ -32,9 +32,7 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -85,7 +83,7 @@ public class CellGlobalIdOrServiceAreaIdOrLAITest {
         assertNotNull(cellGlobalIdOrServiceAreaIdOrLAI.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength());
         assertNull(cellGlobalIdOrServiceAreaIdOrLAI.getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength());
         
-        CellGlobalIdOrServiceAreaIdFixedLengthImpl lai = cellGlobalIdOrServiceAreaIdOrLAI.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength();
+        CellGlobalIdOrServiceAreaIdFixedLength lai = cellGlobalIdOrServiceAreaIdOrLAI.getCellGlobalIdOrServiceAreaIdOrLAI().getCellGlobalIdOrServiceAreaIdFixedLength();
         assertEquals(lai.getMCC(), 506);
         assertEquals(lai.getMNC(), 700);
         assertEquals(lai.getLac(), 0x0809);

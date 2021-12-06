@@ -25,8 +25,10 @@ package org.restcomm.protocols.ss7.map.service.supplementary;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.GetPasswordResponse;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.PasswordImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.Password;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 /**
@@ -38,12 +40,13 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class GetPasswordResponseImpl extends SupplementaryMessageImpl implements GetPasswordResponse {
 	private static final long serialVersionUID = 1L;
 
-	private PasswordImpl password;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=18,constructed=false,index=-1,defaultImplementation = PasswordImpl.class)
+	private Password password;
 
     public GetPasswordResponseImpl() {
     }
 
-    public GetPasswordResponseImpl(PasswordImpl password) {
+    public GetPasswordResponseImpl(Password password) {
         this.password = password;
     }
 
@@ -59,7 +62,7 @@ public class GetPasswordResponseImpl extends SupplementaryMessageImpl implements
     }
 
     @Override
-    public PasswordImpl getPassword() {
+    public Password getPassword() {
         return password;
     }
 

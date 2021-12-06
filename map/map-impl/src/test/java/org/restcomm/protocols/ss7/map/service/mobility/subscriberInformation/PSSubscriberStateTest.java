@@ -29,11 +29,11 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.NotReachableReason;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContextInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberState;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberStateImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContextInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberStateChoise;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -72,7 +72,7 @@ public class PSSubscriberStateTest {
         assertTrue(result.getResult() instanceof PSSubscriberStateImpl);
         PSSubscriberStateImpl impl = (PSSubscriberStateImpl)result.getResult();
         
-        assertEquals(impl.getChoice(), PSSubscriberState.psDetached);
+        assertEquals(impl.getChoice(), PSSubscriberStateChoise.psDetached);
         assertNull(impl.getPDPContextInfoList());
         assertNull(impl.getNetDetNotReachable());
 
@@ -82,7 +82,7 @@ public class PSSubscriberStateTest {
         assertTrue(result.getResult() instanceof PSSubscriberStateImpl);
         impl = (PSSubscriberStateImpl)result.getResult();
         
-        assertEquals(impl.getChoice(), PSSubscriberState.psPDPActiveReachableForPaging);
+        assertEquals(impl.getChoice(), PSSubscriberStateChoise.psPDPActiveReachableForPaging);
         assertEquals(impl.getPDPContextInfoList().size(), 2);
         assertEquals(impl.getPDPContextInfoList().get(0).getPdpContextIdentifier(), 5);
         assertEquals(impl.getPDPContextInfoList().get(1).getPdpContextIdentifier(), 6);
@@ -94,7 +94,7 @@ public class PSSubscriberStateTest {
         assertTrue(result.getResult() instanceof PSSubscriberStateImpl);
         impl = (PSSubscriberStateImpl)result.getResult();
         
-        assertEquals(impl.getChoice(), PSSubscriberState.netDetNotReachable);
+        assertEquals(impl.getChoice(), PSSubscriberStateChoise.netDetNotReachable);
         assertNull(impl.getPDPContextInfoList());
         assertEquals(impl.getNetDetNotReachable(), NotReachableReason.msPurged);
 
@@ -105,28 +105,28 @@ public class PSSubscriberStateTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(PSSubscriberStateImpl.class);
     	
-        PSSubscriberStateImpl impl = new PSSubscriberStateImpl(PSSubscriberState.psDetached, null, null);
+        PSSubscriberStateImpl impl = new PSSubscriberStateImpl(PSSubscriberStateChoise.psDetached, null, null);
         ByteBuf buffer=parser.encode(impl);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         byte[] rawData = getEncodedDataDetached();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        ArrayList<PDPContextInfoImpl> pdpContextInfoList = new ArrayList<PDPContextInfoImpl>();
+        List<PDPContextInfo> pdpContextInfoList = new ArrayList<PDPContextInfo>();
         PDPContextInfoImpl ci1 = new PDPContextInfoImpl(5, false, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         PDPContextInfoImpl ci2 = new PDPContextInfoImpl(6, false, null, null, null, null, null, null, null, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         pdpContextInfoList.add(ci1);
         pdpContextInfoList.add(ci2);
-        impl = new PSSubscriberStateImpl(PSSubscriberState.psPDPActiveReachableForPaging, null, pdpContextInfoList);
+        impl = new PSSubscriberStateImpl(PSSubscriberStateChoise.psPDPActiveReachableForPaging, null, pdpContextInfoList);
         buffer=parser.encode(impl);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         rawData = getEncodedDataActiveReachableForPaging();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        impl = new PSSubscriberStateImpl(PSSubscriberState.netDetNotReachable, NotReachableReason.msPurged, null);
+        impl = new PSSubscriberStateImpl(PSSubscriberStateChoise.netDetNotReachable, NotReachableReason.msPurged, null);
         buffer=parser.encode(impl);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);

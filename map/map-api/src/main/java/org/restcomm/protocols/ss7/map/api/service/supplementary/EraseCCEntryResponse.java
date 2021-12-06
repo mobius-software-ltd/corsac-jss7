@@ -32,8 +32,8 @@ package org.restcomm.protocols.ss7.map.api.service.supplementary;
  */
 public interface EraseCCEntryResponse extends SupplementaryMessage {
 
-	SSCodeImpl getSsEvent();
+	SSCode getSsEvent();
 
-    SSStatusImpl getSsStatus();
+    SSStatus getSsStatus();
 
 }

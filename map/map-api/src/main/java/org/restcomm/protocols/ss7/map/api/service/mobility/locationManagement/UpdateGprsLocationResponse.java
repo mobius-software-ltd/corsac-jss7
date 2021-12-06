@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -37,9 +37,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface UpdateGprsLocationResponse extends MobilityMessage {
 
-    ISDNAddressStringImpl getHlrNumber();
+    ISDNAddressString getHlrNumber();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     boolean getAddCapability();
 

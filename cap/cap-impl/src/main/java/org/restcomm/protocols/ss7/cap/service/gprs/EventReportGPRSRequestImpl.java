@@ -24,11 +24,12 @@ package org.restcomm.protocols.ss7.cap.service.gprs;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.EventReportGPRSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ASNGPRSEventTypeImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationWrapperImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformation;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ASNGPRSEventTypeImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventSpecificInformationWrapperImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
 
@@ -54,14 +55,14 @@ public class EventReportGPRSRequestImpl extends GprsMessageImpl implements Event
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
     private GPRSEventSpecificInformationWrapperImpl gprsEventSpecificInformation;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
-    private PDPIDImpl pdpID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1, defaultImplementation = PDPIDImpl.class)
+    private PDPID pdpID;
 
     public EventReportGPRSRequestImpl() {
     }
 
     public EventReportGPRSRequestImpl(GPRSEventType gprsEventType, MiscCallInfo miscGPRSInfo,
-            GPRSEventSpecificInformationImpl gprsEventSpecificInformation, PDPIDImpl pdpID) {
+            GPRSEventSpecificInformation gprsEventSpecificInformation, PDPID pdpID) {
         super();
         
         if(gprsEventType!=null) {
@@ -91,7 +92,7 @@ public class EventReportGPRSRequestImpl extends GprsMessageImpl implements Event
     }
 
     @Override
-    public GPRSEventSpecificInformationImpl getGPRSEventSpecificInformation() {
+    public GPRSEventSpecificInformation getGPRSEventSpecificInformation() {
     	if(this.gprsEventSpecificInformation==null)
     		return null;
     	
@@ -99,7 +100,7 @@ public class EventReportGPRSRequestImpl extends GprsMessageImpl implements Event
     }
 
     @Override
-    public PDPIDImpl getPDPID() {
+    public PDPID getPDPID() {
         return this.pdpID;
     }
 

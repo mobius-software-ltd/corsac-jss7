@@ -22,9 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
-import java.io.Serializable;
-
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -35,10 +33,10 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  * @author sergey vetyutnev
  *
  */
-public interface EventReportData extends Serializable {
+public interface EventReportData {
 
      CCBSSubscriberStatus getCcbsSubscriberStatus();
 
-     MAPExtensionContainerImpl getExtensionContainer();
+     MAPExtensionContainer getExtensionContainer();
 
 }

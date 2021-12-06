@@ -22,18 +22,21 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeature;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingInfo;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -92,10 +95,10 @@ public class ForwardingInfoTest {
         
         TeleserviceCodeImpl teleservice = new TeleserviceCodeImpl(TeleserviceCodeValue.allVoiceGroupCallServices);
         BasicServiceCodeImpl basicService = new BasicServiceCodeImpl(teleservice);
-        ArrayList<ForwardingFeatureImpl> forwardingFeatureList = new ArrayList<ForwardingFeatureImpl>();
+        List<ForwardingFeature> forwardingFeatureList = new ArrayList<ForwardingFeature>();
         ForwardingFeatureImpl forwardingFeature = new ForwardingFeatureImpl(basicService, null, null, null, null, null, null);
         forwardingFeatureList.add(forwardingFeature);
-        ForwardingInfoImpl impl = new ForwardingInfoImpl(null, forwardingFeatureList);
+        ForwardingInfo impl = new ForwardingInfoImpl(null, forwardingFeatureList);
         ByteBuf buffer=parser.encode(impl);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);

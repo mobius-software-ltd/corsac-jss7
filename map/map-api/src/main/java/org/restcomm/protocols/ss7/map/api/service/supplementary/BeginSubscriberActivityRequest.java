@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 
 /**
  *
@@ -38,8 +38,8 @@ import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
  */
 public interface BeginSubscriberActivityRequest extends SupplementaryMessage {
 
-    IMSIImpl getImsi();
+    IMSI getImsi();
 
-    ISDNAddressStringImpl getOriginatingEntityNumber();
+    ISDNAddressString getOriginatingEntityNumber();
 
 }

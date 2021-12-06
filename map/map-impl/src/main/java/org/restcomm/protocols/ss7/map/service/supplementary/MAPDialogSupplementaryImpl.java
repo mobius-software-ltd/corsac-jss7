@@ -32,22 +32,22 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.GenericServiceInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeature;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.GenericServiceInfo;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.GuidanceInfo;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.MAPDialogSupplementary;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.MAPServiceSupplementary;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.PasswordImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.Password;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCode;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfo;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 
 /**
@@ -61,27 +61,27 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
 	private static final long serialVersionUID = 1L;
 
 	protected MAPDialogSupplementaryImpl(MAPApplicationContext appCntx, Dialog tcapDialog, MAPProviderImpl mapProviderImpl,
-            MAPServiceSupplementary mapService, AddressStringImpl origReference, AddressStringImpl destReference) {
+            MAPServiceSupplementary mapService, AddressString origReference, AddressString destReference) {
         super(appCntx, tcapDialog, mapProviderImpl, mapService, origReference, destReference);
     }
 
-    public Long addProcessUnstructuredSSRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDStringImpl ussdString,
-            AlertingPatternImpl alertingPatter, ISDNAddressStringImpl msisdn) throws MAPException {
+    public Long addProcessUnstructuredSSRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString,
+            AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException {
         return this.addProcessUnstructuredSSRequest(_Timer_Default, ussdDataCodingScheme, ussdString, alertingPatter, msisdn);
     }
 
 
     @Override
-    public Long addRegisterSSRequest(SSCodeImpl ssCode, BasicServiceCodeImpl basicService, AddressStringImpl forwardedToNumber, ISDNAddressStringImpl forwardedToSubaddress,
-            Integer noReplyConditionTime, EMLPPPriority defaultPriority, Integer nbrUser, ISDNAddressStringImpl longFTNSupported) throws MAPException {
+    public Long addRegisterSSRequest(SSCode ssCode, BasicServiceCode basicService, AddressString forwardedToNumber, ISDNAddressString forwardedToSubaddress,
+            Integer noReplyConditionTime, EMLPPPriority defaultPriority, Integer nbrUser, ISDNAddressString longFTNSupported) throws MAPException {
         return this.addRegisterSSRequest(_Timer_Default, ssCode, basicService, forwardedToNumber, forwardedToSubaddress, noReplyConditionTime, defaultPriority,
                 nbrUser, longFTNSupported);
     }
 
     @Override
-    public Long addRegisterSSRequest(int customInvokeTimeout, SSCodeImpl ssCode, BasicServiceCodeImpl basicService, AddressStringImpl forwardedToNumber,
-            ISDNAddressStringImpl forwardedToSubaddress, Integer noReplyConditionTime, EMLPPPriority defaultPriority, Integer nbrUser,
-            ISDNAddressStringImpl longFTNSupported) throws MAPException {
+    public Long addRegisterSSRequest(int customInvokeTimeout, SSCode ssCode, BasicServiceCode basicService, AddressString forwardedToNumber,
+            ISDNAddressString forwardedToSubaddress, Integer noReplyConditionTime, EMLPPPriority defaultPriority, Integer nbrUser,
+            ISDNAddressString longFTNSupported) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addRegisterSSRequest: must be networkFunctionalSsContext_V2");
@@ -98,7 +98,7 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public void addRegisterSSResponse(long invokeId, SSInfoImpl ssInfo) throws MAPException {
+    public void addRegisterSSResponse(long invokeId, SSInfo ssInfo) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addRegisterSSResponse: must be networkFunctionalSsContext_V2");
@@ -111,12 +111,12 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public Long addEraseSSRequest(SSForBSCodeImpl ssForBSCode) throws MAPException {
+    public Long addEraseSSRequest(SSForBSCode ssForBSCode) throws MAPException {
         return this.addEraseSSRequest(_Timer_Default, ssForBSCode);
     }
 
     @Override
-    public Long addEraseSSRequest(int customInvokeTimeout, SSForBSCodeImpl ssForBSCode) throws MAPException {
+    public Long addEraseSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addEraseSSRequest: must be networkFunctionalSsContext_V2");
@@ -132,7 +132,7 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public void addEraseSSResponse(long invokeId, SSInfoImpl ssInfo) throws MAPException {
+    public void addEraseSSResponse(long invokeId, SSInfo ssInfo) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addEraseSSResponse: must be networkFunctionalSsContext_V2");
@@ -146,12 +146,12 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public Long addActivateSSRequest(SSForBSCodeImpl ssForBSCode) throws MAPException {
+    public Long addActivateSSRequest(SSForBSCode ssForBSCode) throws MAPException {
         return this.addActivateSSRequest(_Timer_Default, ssForBSCode);
     }
 
     @Override
-    public Long addActivateSSRequest(int customInvokeTimeout, SSForBSCodeImpl ssForBSCode) throws MAPException {
+    public Long addActivateSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addActivateSSRequest: must be networkFunctionalSsContext_V2");
@@ -167,7 +167,7 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public void addActivateSSResponse(long invokeId, SSInfoImpl ssInfo) throws MAPException {
+    public void addActivateSSResponse(long invokeId, SSInfo ssInfo) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addActivateSSResponse: must be networkFunctionalSsContext_V2");
@@ -180,12 +180,12 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public Long addDeactivateSSRequest(SSForBSCodeImpl ssForBSCode) throws MAPException {
+    public Long addDeactivateSSRequest(SSForBSCode ssForBSCode) throws MAPException {
         return this.addDeactivateSSRequest(_Timer_Default, ssForBSCode);
     }
 
     @Override
-    public Long addDeactivateSSRequest(int customInvokeTimeout, SSForBSCodeImpl ssForBSCode) throws MAPException {
+    public Long addDeactivateSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addDeactivateSSRequest: must be networkFunctionalSsContext_V2");
@@ -201,7 +201,7 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public void addDeactivateSSResponse(long invokeId, SSInfoImpl ssInfo) throws MAPException {
+    public void addDeactivateSSResponse(long invokeId, SSInfo ssInfo) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addDeactivateSSResponse: must be networkFunctionalSsContext_V2");
@@ -214,12 +214,12 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public Long addInterrogateSSRequest(SSForBSCodeImpl ssForBSCode) throws MAPException {
+    public Long addInterrogateSSRequest(SSForBSCode ssForBSCode) throws MAPException {
         return this.addInterrogateSSRequest(_Timer_Default, ssForBSCode);
     }
 
     @Override
-    public Long addInterrogateSSRequest(int customInvokeTimeout, SSForBSCodeImpl ssForBSCode) throws MAPException {
+    public Long addInterrogateSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addInterrogateSSRequest: must be networkFunctionalSsContext_V2");
@@ -235,7 +235,7 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public void addInterrogateSSResponse_SSStatus(long invokeId, SSStatusImpl ssStatus) throws MAPException {
+    public void addInterrogateSSResponse_SSStatus(long invokeId, SSStatus ssStatus) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addInterrogateSSResponse: must be networkFunctionalSsContext_V2");
@@ -245,7 +245,7 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public void addInterrogateSSResponse_BasicServiceGroupList(long invokeId, List<BasicServiceCodeImpl> basicServiceGroupList) throws MAPException {
+    public void addInterrogateSSResponse_BasicServiceGroupList(long invokeId, List<BasicServiceCode> basicServiceGroupList) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addInterrogateSSResponse: must be networkFunctionalSsContext_V2");
@@ -255,7 +255,7 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public void addInterrogateSSResponse_ForwardingFeatureList(long invokeId, List<ForwardingFeatureImpl> forwardingFeatureList) throws MAPException {
+    public void addInterrogateSSResponse_ForwardingFeatureList(long invokeId, List<ForwardingFeature> forwardingFeatureList) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addInterrogateSSResponse: must be networkFunctionalSsContext_V2");
@@ -265,7 +265,7 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public void addInterrogateSSResponse_GenericServiceInfo(long invokeId, GenericServiceInfoImpl genericServiceInfo) throws MAPException {
+    public void addInterrogateSSResponse_GenericServiceInfo(long invokeId, GenericServiceInfo genericServiceInfo) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addInterrogateSSResponse: must be networkFunctionalSsContext_V2");
@@ -296,7 +296,7 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public void addGetPasswordResponse(long invokeId, PasswordImpl password) throws MAPException {
+    public void addGetPasswordResponse(long invokeId, Password password) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addGetPasswordResponse: must be networkFunctionalSsContext_V2");
@@ -306,12 +306,12 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public Long addRegisterPasswordRequest(SSCodeImpl ssCode) throws MAPException {
+    public Long addRegisterPasswordRequest(SSCode ssCode) throws MAPException {
         return this.addRegisterPasswordRequest(_Timer_Default, ssCode);
     }
 
     @Override
-    public Long addRegisterPasswordRequest(int customInvokeTimeout, SSCodeImpl ssCode) throws MAPException {
+    public Long addRegisterPasswordRequest(int customInvokeTimeout, SSCode ssCode) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addRegisterPasswordRequest: must be networkFunctionalSsContext_V2");
@@ -327,7 +327,7 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     }
 
     @Override
-    public void addRegisterPasswordResponse(long invokeId, PasswordImpl password) throws MAPException {
+    public void addRegisterPasswordResponse(long invokeId, Password password) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.networkFunctionalSsContext)
                 || this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2)
             throw new MAPException("Bad application context name for addRegisterPasswordResponse: must be networkFunctionalSsContext_V2");
@@ -338,7 +338,7 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
 
 
     public Long addProcessUnstructuredSSRequest(int customInvokeTimeout, CBSDataCodingScheme ussdDataCodingScheme,
-            USSDStringImpl ussdString, AlertingPatternImpl alertingPatter, ISDNAddressStringImpl msisdn) throws MAPException {
+            USSDString ussdString, AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException {
 
         Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
@@ -351,19 +351,19 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
         return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.processUnstructuredSS_Request, req, true, false);
     }
 
-    public void addProcessUnstructuredSSResponse(long invokeId, CBSDataCodingScheme ussdDataCodingScheme, USSDStringImpl ussdString)
+    public void addProcessUnstructuredSSResponse(long invokeId, CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString)
             throws MAPException {
         ProcessUnstructuredSSResponseImpl req = new ProcessUnstructuredSSResponseImpl(ussdDataCodingScheme, ussdString);
         this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.processUnstructuredSS_Request, req, false, true);
     }
 
-    public Long addUnstructuredSSRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDStringImpl ussdString,
-            AlertingPatternImpl alertingPatter, ISDNAddressStringImpl msisdn) throws MAPException {
+    public Long addUnstructuredSSRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString,
+            AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException {
         return this.addUnstructuredSSRequest(_Timer_Default, ussdDataCodingScheme, ussdString, alertingPatter, msisdn);
     }
 
     public Long addUnstructuredSSRequest(int customInvokeTimeout, CBSDataCodingScheme ussdDataCodingScheme,
-            USSDStringImpl ussdString, AlertingPatternImpl alertingPatter, ISDNAddressStringImpl msisdn) throws MAPException {
+            USSDString ussdString, AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException {
 
         Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
@@ -375,13 +375,13 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
         return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.unstructuredSS_Request, req, true, false);
     }
 
-    public Long addUnstructuredSSNotifyRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDStringImpl ussdString,
-            AlertingPatternImpl alertingPatter, ISDNAddressStringImpl msisdn) throws MAPException {
+    public Long addUnstructuredSSNotifyRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString,
+            AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException {
         return this.addUnstructuredSSNotifyRequest(_Timer_Default, ussdDataCodingScheme, ussdString, alertingPatter, msisdn);
     }
 
     public Long addUnstructuredSSNotifyRequest(int customInvokeTimeout, CBSDataCodingScheme ussdDataCodingScheme,
-            USSDStringImpl ussdString, AlertingPatternImpl alertingPatter, ISDNAddressStringImpl msisdn) throws MAPException {
+            USSDString ussdString, AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException {
 
         Integer customTimeout;
         if (customInvokeTimeout == _Timer_Default)
@@ -396,7 +396,7 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
         return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.unstructuredSS_Notify, req, true, false);
     }
 
-    public void addUnstructuredSSResponse(long invokeId, CBSDataCodingScheme ussdDataCodingScheme, USSDStringImpl ussdString)
+    public void addUnstructuredSSResponse(long invokeId, CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString)
             throws MAPException {
 
     	UnstructuredSSResponseImpl req=null;

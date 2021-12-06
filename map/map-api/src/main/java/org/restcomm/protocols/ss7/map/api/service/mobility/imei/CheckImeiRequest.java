@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.imei;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -48,11 +48,11 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface CheckImeiRequest extends MobilityMessage {
 
-    IMEIImpl getIMEI();
+	IMEI getIMEI();
 
-    IMSIImpl getIMSI();
+    IMSI getIMSI();
     
-    RequestedEquipmentInfoImpl getRequestedEquipmentInfo();
+    RequestedEquipmentInfo getRequestedEquipmentInfo();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 }

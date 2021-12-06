@@ -24,9 +24,12 @@ package org.restcomm.protocols.ss7.map.service.oam;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.service.oam.SendImsiResponse;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 
@@ -39,12 +42,13 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class SendImsiResponseImpl extends OamMessageImpl implements SendImsiResponse {
 	private static final long serialVersionUID = 1L;
 
-	private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = IMSIImpl.class)
+	private IMSI imsi;
 
     public SendImsiResponseImpl() {
     }
 
-    public SendImsiResponseImpl(IMSIImpl imsi) {
+    public SendImsiResponseImpl(IMSI imsi) {
         this.imsi = imsi;
     }
 
@@ -59,7 +63,7 @@ public class SendImsiResponseImpl extends OamMessageImpl implements SendImsiResp
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return this.imsi;
     }
 

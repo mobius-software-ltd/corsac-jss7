@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
-import org.restcomm.protocols.ss7.map.api.errors.ASNCallBaringCauseImpl;
 import org.restcomm.protocols.ss7.map.api.errors.CallBarringCause;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageCallBarred;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -42,13 +42,15 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class MAPErrorMessageCallBarredImpl extends MAPErrorMessageImpl implements MAPErrorMessageCallBarred {
 	private long mapProtocolVersion=3;
     private ASNCallBaringCauseImpl callBarringCause;
-    private MAPExtensionContainerImpl extensionContainer;
+    
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
     private ASNNull unauthorisedMessageOriginator;
 
     public MAPErrorMessageCallBarredImpl(long mapProtocolVersion, CallBarringCause callBarringCause,
-    		MAPExtensionContainerImpl extensionContainer, Boolean unauthorisedMessageOriginator) {
+    		MAPExtensionContainer extensionContainer, Boolean unauthorisedMessageOriginator) {
         super((long) MAPErrorCode.callBarred);
 
         this.mapProtocolVersion = mapProtocolVersion;
@@ -80,7 +82,7 @@ public class MAPErrorMessageCallBarredImpl extends MAPErrorMessageImpl implement
         return this.callBarringCause.getType();
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -101,7 +103,7 @@ public class MAPErrorMessageCallBarredImpl extends MAPErrorMessageImpl implement
     	}
     }
 
-    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 

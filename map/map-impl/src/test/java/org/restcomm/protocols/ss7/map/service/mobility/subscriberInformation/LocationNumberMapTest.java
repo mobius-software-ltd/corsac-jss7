@@ -30,7 +30,6 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationNumberMapImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

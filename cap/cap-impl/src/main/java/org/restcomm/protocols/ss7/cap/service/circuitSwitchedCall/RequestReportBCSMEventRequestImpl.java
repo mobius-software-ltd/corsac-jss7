@@ -26,10 +26,11 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEventImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEventWrapperImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEvent;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.RequestReportBCSMEventRequest;
+import org.restcomm.protocols.ss7.cap.primitives.BCSMEventWrapperImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -47,13 +48,13 @@ public class RequestReportBCSMEventRequestImpl extends CircuitSwitchedCallMessag
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
     private BCSMEventWrapperImpl bcsmEventList;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
 
     public RequestReportBCSMEventRequestImpl() {
     }
 
-    public RequestReportBCSMEventRequestImpl(List<BCSMEventImpl> bcsmEventList, CAPExtensionsImpl extensions) {
+    public RequestReportBCSMEventRequestImpl(List<BCSMEvent> bcsmEventList, CAPExtensions extensions) {
     	if(bcsmEventList!=null)
     		this.bcsmEventList = new BCSMEventWrapperImpl(bcsmEventList);
     	
@@ -71,7 +72,7 @@ public class RequestReportBCSMEventRequestImpl extends CircuitSwitchedCallMessag
     }
 
     @Override
-    public List<BCSMEventImpl> getBCSMEventList() {
+    public List<BCSMEvent> getBCSMEventList() {
     	if(bcsmEventList==null)
     		return null;
     	
@@ -79,7 +80,7 @@ public class RequestReportBCSMEventRequestImpl extends CircuitSwitchedCallMessag
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 
@@ -93,7 +94,7 @@ public class RequestReportBCSMEventRequestImpl extends CircuitSwitchedCallMessag
         if (this.bcsmEventList != null && this.bcsmEventList.getBCSMEvents()!=null) {
             sb.append(", bcsmEventList=[");
             boolean firstItem = true;
-            for (BCSMEventImpl be : this.bcsmEventList.getBCSMEvents()) {
+            for (BCSMEvent be : this.bcsmEventList.getBCSMEvents()) {
                 if (firstItem)
                     firstItem = false;
                 else

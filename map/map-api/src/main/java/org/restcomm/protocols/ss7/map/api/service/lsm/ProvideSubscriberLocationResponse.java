@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.lsm;
 
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
 <code>
@@ -75,34 +75,34 @@ AgeOfLocationInformation ::= INTEGER (0..32767)
  */
 public interface ProvideSubscriberLocationResponse extends LsmMessage {
 
-    ExtGeographicalInformationImpl getLocationEstimate();
+	ExtGeographicalInformation getLocationEstimate();
 
-    PositioningDataInformationImpl getGeranPositioningData();
+	PositioningDataInformation getGeranPositioningData();
 
-    UtranPositioningDataInfoImpl getUtranPositioningData();
+    UtranPositioningDataInfo getUtranPositioningData();
 
     Integer getAgeOfLocationEstimate();
 
-    AddGeographicalInformationImpl getAdditionalLocationEstimate();
+    AddGeographicalInformation getAdditionalLocationEstimate();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     boolean getDeferredMTLRResponseIndicator();
 
-    CellGlobalIdOrServiceAreaIdOrLAIImpl getCellIdOrSai();
+    CellGlobalIdOrServiceAreaIdOrLAI getCellIdOrSai();
 
     boolean getSaiPresent();
 
     AccuracyFulfilmentIndicator getAccuracyFulfilmentIndicator();
 
-    VelocityEstimateImpl getVelocityEstimate();
+    VelocityEstimate getVelocityEstimate();
 
     boolean getMoLrShortCircuitIndicator();
 
-    GeranGANSSpositioningDataImpl getGeranGANSSpositioningData();
+    GeranGANSSpositioningData getGeranGANSSpositioningData();
 
-    UtranGANSSpositioningDataImpl getUtranGANSSpositioningData();
+    UtranGANSSpositioningData getUtranGANSSpositioningData();
 
-    ServingNodeAddressImpl getTargetServingNodeForHandover();
+    ServingNodeAddress getTargetServingNodeForHandover();
 
 }

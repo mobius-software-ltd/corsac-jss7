@@ -28,12 +28,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.smstpdu.AddressFieldImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.CommandDataImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.CommandTypeImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifierImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsCommandTpduImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.testng.annotations.Test;
 

@@ -24,43 +24,63 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCapImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.ASNEventTypeBCSMImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumberImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
+import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
+import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
+import org.restcomm.protocols.ss7.cap.api.isup.Digits;
+import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
+import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCap;
+import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCap;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.InitialDPRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ASNCGEncounteredImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapabilityImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapabilityWrapperImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapability;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CGEncountered;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilities;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtension;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
+import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.isup.CallingPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
+import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.cap.isup.LocationNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.isup.OriginalCalledNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.isup.RedirectingPartyIDCapImpl;
+import org.restcomm.protocols.ss7.cap.primitives.ASNEventTypeBCSMImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CalledPartyBCDNumberImpl;
+import org.restcomm.protocols.ss7.cap.primitives.TimeAndTimezoneImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ASNCGEncounteredImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.BearerCapabilityWrapperImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
 import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
 import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
 import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Carrier;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
 import org.restcomm.protocols.ss7.inap.isup.CallingPartysCategoryInapImpl;
 import org.restcomm.protocols.ss7.inap.isup.HighLayerCompatibilityInapImpl;
 import org.restcomm.protocols.ss7.inap.isup.RedirectionInformationInapImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGIndexImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberState;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGIndex;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.service.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.SubscriberStateWrapperImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGIndexImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGInterlockImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -80,11 +100,11 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = 0)
     private ASNInteger serviceKey;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
-    private CalledPartyNumberCapImpl calledPartyNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1, defaultImplementation = CalledPartyNumberCapImpl.class)
+    private CalledPartyNumberCap calledPartyNumber;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
-    private CallingPartyNumberCapImpl callingPartyNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1, defaultImplementation = CallingPartyNumberCapImpl.class)
+    private CallingPartyNumberCap callingPartyNumber;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = false,index = -1, defaultImplementation = CallingPartysCategoryInapImpl.class)
     private CallingPartysCategoryInap callingPartysCategory;
@@ -92,23 +112,23 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = false,index = -1)
     private ASNCGEncounteredImpl cgEncountered;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false,index = -1)
-    private IPSSPCapabilitiesImpl IPSSPCapabilities;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false,index = -1, defaultImplementation = IPSSPCapabilitiesImpl.class)
+    private IPSSPCapabilities IPSSPCapabilities;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = false,index = -1)
-    private LocationNumberCapImpl locationNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = false,index = -1, defaultImplementation = LocationNumberCapImpl.class)
+    private LocationNumberCap locationNumber;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 12,constructed = false,index = -1)
-    private OriginalCalledNumberCapImpl originalCalledPartyID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 12,constructed = false,index = -1, defaultImplementation = OriginalCalledNumberCapImpl.class)
+    private OriginalCalledNumberCap originalCalledPartyID;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 15,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 15,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 23,constructed = false,index = -1, defaultImplementation = HighLayerCompatibilityInapImpl.class)
     private HighLayerCompatibilityInap highLayerCompatibility;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 25,constructed = false,index = -1)
-    private DigitsImpl additionalCallingPartyNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 25,constructed = false,index = -1, defaultImplementation = DigitsImpl.class)
+    private Digits additionalCallingPartyNumber;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 27,constructed = true,index = -1)
     private BearerCapabilityWrapperImpl bearerCapability;
@@ -116,59 +136,59 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 28,constructed = false,index = -1)
     private ASNEventTypeBCSMImpl eventTypeBCSM;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 29,constructed = false,index = -1)
-    private RedirectingPartyIDCapImpl redirectingPartyID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 29,constructed = false,index = -1,defaultImplementation = RedirectingPartyIDCapImpl.class)
+    private RedirectingPartyIDCap redirectingPartyID;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 30,constructed = false,index = -1, defaultImplementation = RedirectionInformationInapImpl.class)
     private RedirectionInformationInap redirectionInformation;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 17,constructed = false,index = -1)
-    private CauseCapImpl cause;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 17,constructed = false,index = -1,defaultImplementation = CauseCapImpl.class)
+    private CauseCap cause;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 32,constructed = true,index = -1)
-    private ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 32,constructed = true,index = -1,defaultImplementation = ServiceInteractionIndicatorsTwoImpl.class)
+    private ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 37,constructed = false,index = -1)
-    private CarrierImpl carrier;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 37,constructed = false,index = -1,defaultImplementation = CarrierImpl.class)
+    private Carrier carrier;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 45,constructed = false,index = -1)
-    private CUGIndexImpl cugIndex;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 45,constructed = false,index = -1,defaultImplementation = CUGIndexImpl.class)
+    private CUGIndex cugIndex;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 46,constructed = false,index = -1)
-    private CUGInterlockImpl cugInterlock;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 46,constructed = false,index = -1,defaultImplementation = CUGInterlockImpl.class)
+    private CUGInterlock cugInterlock;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 47,constructed = false,index = -1)
     private ASNNull cugOutgoingAccess;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 50,constructed = false,index = -1)
-    private IMSIImpl imsi;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 50,constructed = false,index = -1, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 51,constructed = true,index = -1)
     private SubscriberStateWrapperImpl subscriberState;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 52,constructed = true,index = -1)
-    private LocationInformationImpl locationInformation;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 52,constructed = true,index = -1, defaultImplementation = LocationInformationImpl.class)
+    private LocationInformation locationInformation;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 53,constructed = true,index = -1)
     private ExtBasicServiceCodeWrapperImpl extBasicServiceCode;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 54,constructed = false,index = -1)
-    private CallReferenceNumberImpl callReferenceNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 54,constructed = false,index = -1, defaultImplementation = CallReferenceNumberImpl.class)
+    private CallReferenceNumber callReferenceNumber;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 55,constructed = false,index = -1)
-    private ISDNAddressStringImpl mscAddress;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 55,constructed = false,index = -1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString mscAddress;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 56,constructed = false,index = -1)
-    private CalledPartyBCDNumberImpl calledPartyBCDNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 56,constructed = false,index = -1, defaultImplementation = CalledPartyBCDNumberImpl.class)
+    private CalledPartyBCDNumber calledPartyBCDNumber;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 57,constructed = false,index = -1)
-    private TimeAndTimezoneImpl timeAndTimezone;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 57,constructed = false,index = -1, defaultImplementation = TimeAndTimezoneImpl.class)
+    private TimeAndTimezone timeAndTimezone;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 58,constructed = false,index = -1)
     private ASNNull callForwardingSSPending;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 59,constructed = true,index = -1)
-    private InitialDPArgExtensionImpl initialDPArgExtension;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 59,constructed = true,index = -1, defaultImplementation = InitialDPArgExtensionImpl.class)
+    private InitialDPArgExtension initialDPArgExtension;
 
     /**
      * This constructor is only for deserialisation purpose
@@ -176,18 +196,18 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     public InitialDPRequestImpl() {
     }
 
-    public InitialDPRequestImpl(int serviceKey, CalledPartyNumberCapImpl calledPartyNumber,
-            CallingPartyNumberCapImpl callingPartyNumber, CallingPartysCategoryInap callingPartysCategory,
-            CGEncountered cgEncountered, IPSSPCapabilitiesImpl IPSSPCapabilities, LocationNumberCapImpl locationNumber,
-            OriginalCalledNumberCapImpl originalCalledPartyID, CAPExtensionsImpl extensions,
-            HighLayerCompatibilityInap highLayerCompatibility, DigitsImpl additionalCallingPartyNumber,
-            BearerCapabilityImpl bearerCapability, EventTypeBCSM eventTypeBCSM, RedirectingPartyIDCapImpl redirectingPartyID,
-            RedirectionInformationInap redirectionInformation, CauseCapImpl cause,
-            ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, CarrierImpl carrier, CUGIndexImpl cugIndex,
-            CUGInterlockImpl cugInterlock, boolean cugOutgoingAccess, IMSIImpl imsi, SubscriberStateImpl subscriberState,
-            LocationInformationImpl locationInformation, ExtBasicServiceCodeImpl extBasicServiceCode,
-            CallReferenceNumberImpl callReferenceNumber, ISDNAddressStringImpl mscAddress, CalledPartyBCDNumberImpl calledPartyBCDNumber,
-            TimeAndTimezoneImpl timeAndTimezone, boolean callForwardingSSPending, InitialDPArgExtensionImpl initialDPArgExtension) {
+    public InitialDPRequestImpl(int serviceKey, CalledPartyNumberCap calledPartyNumber,
+            CallingPartyNumberCap callingPartyNumber, CallingPartysCategoryInap callingPartysCategory,
+            CGEncountered cgEncountered, IPSSPCapabilities IPSSPCapabilities, LocationNumberCap locationNumber,
+            OriginalCalledNumberCap originalCalledPartyID, CAPExtensions extensions,
+            HighLayerCompatibilityInap highLayerCompatibility, Digits additionalCallingPartyNumber,
+            BearerCapability bearerCapability, EventTypeBCSM eventTypeBCSM, RedirectingPartyIDCap redirectingPartyID,
+            RedirectionInformationInap redirectionInformation, CauseCap cause,
+            ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Carrier carrier, CUGIndex cugIndex,
+            CUGInterlock cugInterlock, boolean cugOutgoingAccess, IMSI imsi, SubscriberState subscriberState,
+            LocationInformation locationInformation, ExtBasicServiceCode extBasicServiceCode,
+            CallReferenceNumber callReferenceNumber, ISDNAddressString mscAddress, CalledPartyBCDNumber calledPartyBCDNumber,
+            TimeAndTimezone timeAndTimezone, boolean callForwardingSSPending, InitialDPArgExtension initialDPArgExtension) {
         
     	this.serviceKey = new ASNInteger();
     	this.serviceKey.setValue(Long.valueOf(serviceKey));
@@ -267,12 +287,12 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     @Override
-    public CalledPartyNumberCapImpl getCalledPartyNumber() {
+    public CalledPartyNumberCap getCalledPartyNumber() {
         return this.calledPartyNumber;
     }
 
     @Override
-    public CallingPartyNumberCapImpl getCallingPartyNumber() {
+    public CallingPartyNumberCap getCallingPartyNumber() {
         return callingPartyNumber;
     }
 
@@ -290,22 +310,22 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     @Override
-    public IPSSPCapabilitiesImpl getIPSSPCapabilities() {
+    public IPSSPCapabilities getIPSSPCapabilities() {
         return IPSSPCapabilities;
     }
 
     @Override
-    public LocationNumberCapImpl getLocationNumber() {
+    public LocationNumberCap getLocationNumber() {
         return locationNumber;
     }
 
     @Override
-    public OriginalCalledNumberCapImpl getOriginalCalledPartyID() {
+    public OriginalCalledNumberCap getOriginalCalledPartyID() {
         return originalCalledPartyID;
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 
@@ -315,7 +335,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     @Override
-    public DigitsImpl getAdditionalCallingPartyNumber() {
+    public Digits getAdditionalCallingPartyNumber() {
     	if(additionalCallingPartyNumber!=null)
     		additionalCallingPartyNumber.setIsGenericNumber();
     	
@@ -323,7 +343,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     @Override
-    public BearerCapabilityImpl getBearerCapability() {
+    public BearerCapability getBearerCapability() {
     	if(bearerCapability==null)
     		return null;
     	
@@ -339,7 +359,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     @Override
-    public RedirectingPartyIDCapImpl getRedirectingPartyID() {
+    public RedirectingPartyIDCap getRedirectingPartyID() {
         return redirectingPartyID;
     }
 
@@ -349,27 +369,27 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     @Override
-    public CauseCapImpl getCause() {
+    public CauseCap getCause() {
         return cause;
     }
 
     @Override
-    public ServiceInteractionIndicatorsTwoImpl getServiceInteractionIndicatorsTwo() {
+    public ServiceInteractionIndicatorsTwo getServiceInteractionIndicatorsTwo() {
         return serviceInteractionIndicatorsTwo;
     }
 
     @Override
-    public CarrierImpl getCarrier() {
+    public Carrier getCarrier() {
         return carrier;
     }
 
     @Override
-    public CUGIndexImpl getCugIndex() {
+    public CUGIndex getCugIndex() {
         return cugIndex;
     }
 
     @Override
-    public CUGInterlockImpl getCugInterlock() {
+    public CUGInterlock getCugInterlock() {
         return cugInterlock;
     }
 
@@ -379,12 +399,12 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     @Override
-    public IMSIImpl getIMSI() {
+    public IMSI getIMSI() {
         return imsi;
     }
 
     @Override
-    public SubscriberStateImpl getSubscriberState() {
+    public SubscriberState getSubscriberState() {
     	if(subscriberState==null)
     		return null;
     	
@@ -392,12 +412,12 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     @Override
-    public LocationInformationImpl getLocationInformation() {
+    public LocationInformation getLocationInformation() {
         return locationInformation;
     }
 
     @Override
-    public ExtBasicServiceCodeImpl getExtBasicServiceCode() {
+    public ExtBasicServiceCode getExtBasicServiceCode() {
     	if(extBasicServiceCode==null)
     		return null;
     	
@@ -405,22 +425,22 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     @Override
-    public CallReferenceNumberImpl getCallReferenceNumber() {
+    public CallReferenceNumber getCallReferenceNumber() {
         return callReferenceNumber;
     }
 
     @Override
-    public ISDNAddressStringImpl getMscAddress() {
+    public ISDNAddressString getMscAddress() {
         return mscAddress;
     }
 
     @Override
-    public CalledPartyBCDNumberImpl getCalledPartyBCDNumber() {
+    public CalledPartyBCDNumber getCalledPartyBCDNumber() {
         return calledPartyBCDNumber;
     }
 
     @Override
-    public TimeAndTimezoneImpl getTimeAndTimezone() {
+    public TimeAndTimezone getTimeAndTimezone() {
         return timeAndTimezone;
     }
 
@@ -430,7 +450,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     @Override
-    public InitialDPArgExtensionImpl getInitialDPArgExtension() {
+    public InitialDPArgExtension getInitialDPArgExtension() {
         return initialDPArgExtension;
     }
 

@@ -24,14 +24,19 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.InitiateCallAttemptRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
+import org.restcomm.protocols.ss7.cap.isup.CallingPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 import org.restcomm.protocols.ss7.inap.primitives.LegIDWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.service.callhandling.CallReferenceNumberImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -49,11 +54,11 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
         InitiateCallAttemptRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
-    private DestinationRoutingAddressImpl destinationRoutingAddress;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1, defaultImplementation = DestinationRoutingAddressImpl.class)
+    private DestinationRoutingAddress destinationRoutingAddress;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = true,index = -1)
     private LegIDWrapperImpl legToBeCreated;
@@ -61,14 +66,14 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = false,index = -1)
     private ASNInteger newCallSegment;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 30,constructed = false,index = -1)
-    private CallingPartyNumberCapImpl callingPartyNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 30,constructed = false,index = -1, defaultImplementation = CallingPartyNumberCapImpl.class)
+    private CallingPartyNumberCap callingPartyNumber;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 51,constructed = false,index = -1)
-    private CallReferenceNumberImpl callReferenceNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 51,constructed = false,index = -1, defaultImplementation = CallReferenceNumberImpl.class)
+    private CallReferenceNumber callReferenceNumber;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 52,constructed = false,index = -1)
-    private ISDNAddressStringImpl gsmSCFAddress;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 52,constructed = false,index = -1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString gsmSCFAddress;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 53,constructed = false,index = -1)
     private ASNNull suppressTCsi;
@@ -76,10 +81,10 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
     public InitiateCallAttemptRequestImpl() {
     }
 
-    public InitiateCallAttemptRequestImpl(DestinationRoutingAddressImpl destinationRoutingAddress,
-            CAPExtensionsImpl extensions, LegID legToBeCreated, Integer newCallSegment,
-            CallingPartyNumberCapImpl callingPartyNumber, CallReferenceNumberImpl callReferenceNumber,
-            ISDNAddressStringImpl gsmSCFAddress, boolean suppressTCsi) {
+    public InitiateCallAttemptRequestImpl(DestinationRoutingAddress destinationRoutingAddress,
+            CAPExtensions extensions, LegID legToBeCreated, Integer newCallSegment,
+            CallingPartyNumberCap callingPartyNumber, CallReferenceNumber callReferenceNumber,
+            ISDNAddressString gsmSCFAddress, boolean suppressTCsi) {
         this.destinationRoutingAddress = destinationRoutingAddress;
         this.extensions = extensions;
         
@@ -152,12 +157,12 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
     }
 
     @Override
-    public DestinationRoutingAddressImpl getDestinationRoutingAddress() {
+    public DestinationRoutingAddress getDestinationRoutingAddress() {
         return destinationRoutingAddress;
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 
@@ -178,17 +183,17 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
     }
 
     @Override
-    public CallingPartyNumberCapImpl getCallingPartyNumber() {
+    public CallingPartyNumberCap getCallingPartyNumber() {
         return callingPartyNumber;
     }
 
     @Override
-    public CallReferenceNumberImpl getCallReferenceNumber() {
+    public CallReferenceNumber getCallReferenceNumber() {
         return callReferenceNumber;
     }
 
     @Override
-    public ISDNAddressStringImpl getGsmSCFAddress() {
+    public ISDNAddressString getGsmSCFAddress() {
         return gsmSCFAddress;
     }
 

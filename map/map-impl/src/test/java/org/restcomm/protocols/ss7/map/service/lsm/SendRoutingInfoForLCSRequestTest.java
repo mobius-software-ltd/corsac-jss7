@@ -33,11 +33,12 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.primitives.SubscriberIdentityImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -80,7 +81,9 @@ public class SendRoutingInfoForLCSRequestTest {
     }
 
     public byte[] getDataFull() {
-        return new byte[] { 48, 66, -128, 5, -111, 85, 22, 9, 112, -95, 10, -128, 8, 39, -108, -103, 9, 0, 0, 0, -9, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 60, -128, 5, -111, 85, 22, 9, 112, -95, 10, -128, 8, 39, -108, -103, 9, 0, 0, 0, -9, -94, 39,
+                -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23,
+                24, 25, 26, -95, 3, 31, 32, 33 };
     }
 
     @Test(groups = { "functional.decode", "service.lsm" })
@@ -94,17 +97,17 @@ public class SendRoutingInfoForLCSRequestTest {
         assertTrue(result.getResult() instanceof SendRoutingInfoForLCSRequestImpl);
         SendRoutingInfoForLCSRequestImpl rtgInfnoForLCSreqInd = (SendRoutingInfoForLCSRequestImpl)result.getResult();
 
-        ISDNAddressStringImpl mlcNum = rtgInfnoForLCSreqInd.getMLCNumber();
+        ISDNAddressString mlcNum = rtgInfnoForLCSreqInd.getMLCNumber();
         assertNotNull(mlcNum);
         assertEquals(mlcNum.getAddressNature(), AddressNature.international_number);
         assertEquals(mlcNum.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(mlcNum.getAddress(), "55619007");
 
-        SubscriberIdentityImpl subsIdent = rtgInfnoForLCSreqInd.getTargetMS();
+        SubscriberIdentity subsIdent = rtgInfnoForLCSreqInd.getTargetMS();
         assertNotNull(subsIdent);
 
-        IMSIImpl imsi = subsIdent.getIMSI();
-        ISDNAddressStringImpl msisdn = subsIdent.getMSISDN();
+        IMSI imsi = subsIdent.getIMSI();
+        ISDNAddressString msisdn = subsIdent.getMSISDN();
 
         assertNotNull(imsi);
         assertNull(msisdn);
@@ -142,10 +145,10 @@ public class SendRoutingInfoForLCSRequestTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SendRoutingInfoForLCSRequestImpl.class);
     	
-        IMSIImpl imsi = this.MAPParameterFactory.createIMSI("724999900000007");
+        IMSI imsi = this.MAPParameterFactory.createIMSI("724999900000007");
         SubscriberIdentityImpl subsIdent = new SubscriberIdentityImpl(imsi);
 
-        ISDNAddressStringImpl mlcNumber = this.MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
+        ISDNAddressString mlcNumber = this.MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "55619007");
 
         SendRoutingInfoForLCSRequestImpl rtgInfnoForLCSreqInd = new SendRoutingInfoForLCSRequestImpl(mlcNumber, subsIdent);

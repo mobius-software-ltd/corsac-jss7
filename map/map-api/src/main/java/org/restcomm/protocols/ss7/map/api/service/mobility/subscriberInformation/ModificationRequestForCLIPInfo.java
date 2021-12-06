@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformatio
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.OverrideCategory;
 
 /**
@@ -46,12 +46,12 @@ ModificationRequestFor-CLIP-Info ::= SEQUENCE {
  */
 public interface ModificationRequestForCLIPInfo extends Serializable {
 
-    ExtSSStatusImpl getSsStatus();
+    ExtSSStatus getSsStatus();
 
     OverrideCategory getOverrideCategory();
 
     ModificationInstruction getModifyNotificationToCSE();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
 }

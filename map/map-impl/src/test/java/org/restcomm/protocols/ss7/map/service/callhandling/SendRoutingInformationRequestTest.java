@@ -33,30 +33,30 @@ import java.util.Arrays;
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.map.api.primitives.AlertingCategory;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPatternImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ExtExternalSignalInfo;
 import org.restcomm.protocols.ss7.map.api.primitives.ExtProtocolId;
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.primitives.ProtocolId;
-import org.restcomm.protocols.ss7.map.api.primitives.SignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallDiversionTreatmentIndicatorImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfo;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CallDiversionTreatmentIndicatorValue;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CamelInfoImpl;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.InterrogationType;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.SuppressMTSSImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.SuppressMTSS;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ISTSupportIndicator;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
+import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.map.primitives.ExtExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.primitives.ExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.primitives.SignalInfoImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGInterlockImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -95,16 +95,26 @@ public class SendRoutingInformationRequestTest {
     }
 
     public byte[] getData1() {
-        return new byte[] { 48, -126, 1, 18, -128, 7, -111, -110, 17, 19, 50, 19, -15, -95, 55, 4, 4, 1, 2, 3, 4, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -126, 1, 5, -125, 1, 1, -124, 0, -123, 1, 5, -122, 7, -111, -108, -120, 115, 0, -110, -14, -121, 5, 19, -6, 61, 61, -22, -120, 1, 2, -87, 3, -126, 1, 22, -86, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40, -85, 4, 3, 2, 5, -32, -116, 0, -83, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -114, 1, 7, -113, 0, -112, 1, 5, -79, 56, 10, 1, 1, 4, 4, 10, 20, 30, 40, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -110, 1, 1, -109, 0, -108, 1, 2, -107, 0, -106, 0, -105, 0, -104, 0, -71, 3, -126, 1, 22, -70, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40, -101, 2, 6, -64, -100, 0, -99, 1, 1 };
+        return new byte[] { 48, -126, 1, 0, -128, 7, -111, -110, 17, 19, 50, 19, -15, -95, 49, 4, 4, 1, 2, 3, 4, 5, 0, 48, 39,
+                -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23,
+                24, 25, 26, -95, 3, 31, 32, 33, -126, 1, 5, -125, 1, 1, -124, 0, -123, 1, 5, -122, 7, -111, -108, -120, 115, 0,
+                -110, -14, -121, 5, 19, -6, 61, 61, -22, -120, 1, 2, -87, 3, -126, 1, 22, -86, 9, 10, 1, 2, 4, 4, 10, 20, 30,
+                40, -85, 4, 3, 2, 5, -32, -116, 0, -83, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3,
+                42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -114, 1, 7, -113, 0, -112, 1, 5,
+                -79, 50, 10, 1, 1, 4, 4, 10, 20, 30, 40, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6,
+                3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -110, 1, 1, -109, 0, -108, 1,
+                2, -107, 0, -106, 0, -105, 0, -104, 0, -71, 3, -126, 1, 22, -70, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40, -101, 2, 6,
+                -64, -100, 0, -99, 1, 1 };
     }
 
     public byte[] getData2() {
-        return new byte[] { 48, 80, -128, 7, -111, -110, 17, 19, 50, 19, -15, -95, 55, 4, 4, 1, 2, 3, 4, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -126, 1, 5, -86, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40 };
+        return new byte[] { 48, 74, -128, 7, -111, -110, 17, 19, 50, 19, -15, -95, 49, 4, 4, 1, 2, 3, 4, 5, 0, 48, 39, -96, 32,
+                48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25,
+                26, -95, 3, 31, 32, 33, -126, 1, 5, -86, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40 };
     }
 
     public byte[] getData3() {
-        return new byte[] { 48, 23, -128, 7, -111, -110, 17, 19, 50, 19, -15, -126, 1, 5, -86, 9, 10, 1, 2, 4, 4, 10, 20, 30,
-                40 };
+        return new byte[] { 48, 23, -128, 7, -111, -110, 17, 19, 50, 19, -15, -126, 1, 5, -86, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40 };
     }
 
     private byte[] getGugData() {
@@ -136,9 +146,9 @@ public class SendRoutingInformationRequestTest {
         assertTrue(result.getResult() instanceof SendRoutingInformationRequestImpl);
         SendRoutingInformationRequestImpl prim = (SendRoutingInformationRequestImpl)result.getResult();
         
-        ISDNAddressStringImpl msisdn = prim.getMsisdn();
+        ISDNAddressString msisdn = prim.getMsisdn();
         InterrogationType type = prim.getInterogationType();
-        ISDNAddressStringImpl gmsc = prim.getGmscOrGsmSCFAddress();
+        ISDNAddressString gmsc = prim.getGmscOrGsmSCFAddress();
 
         assertNotNull(msisdn);
         assertNotNull(type);
@@ -152,7 +162,7 @@ public class SendRoutingInformationRequestTest {
         assertEquals(type, InterrogationType.forwarding);
 
         // cugCheckInfo
-        CUGCheckInfoImpl cugCheckInfo = prim.getCUGCheckInfo();
+        CUGCheckInfo cugCheckInfo = prim.getCUGCheckInfo();
         assertTrue(Arrays.equals(cugCheckInfo.getCUGInterlock().getData(), getGugData()));
         assertTrue(cugCheckInfo.getCUGOutgoingAccess());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(cugCheckInfo.getExtensionContainer()));
@@ -184,7 +194,7 @@ public class SendRoutingInformationRequestTest {
         assertEquals(protocolId, ProtocolId.gsm_0806);
 
         // camelInfo
-        SupportedCamelPhasesImpl scf = prim.getCamelInfo().getSupportedCamelPhases();
+        SupportedCamelPhases scf = prim.getCamelInfo().getSupportedCamelPhases();
         assertTrue(scf.getPhase1Supported());
         assertTrue(scf.getPhase2Supported());
         assertTrue(scf.getPhase3Supported());
@@ -211,7 +221,7 @@ public class SendRoutingInformationRequestTest {
         assertEquals(prim.getSupportedCCBSPhase().intValue(), 5);
 
         // additionalSignalInfo
-        ExtExternalSignalInfoImpl additionalSignalInfo = prim.getAdditionalSignalInfo();
+        ExtExternalSignalInfo additionalSignalInfo = prim.getAdditionalSignalInfo();
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(additionalSignalInfo.getExtensionContainer()));
         assertEquals(additionalSignalInfo.getExtProtocolId(), ExtProtocolId.ets_300356);
         additionalSignalInfo.getSignalInfo();
@@ -245,7 +255,7 @@ public class SendRoutingInformationRequestTest {
         assertEquals(protocolId2, ProtocolId.gsm_0806);
 
         // suppressMTSS
-        SuppressMTSSImpl suppressMTSS = prim.getSuppressMTSS();
+        SuppressMTSS suppressMTSS = prim.getSuppressMTSS();
         assertTrue(suppressMTSS.getSuppressCCBS());
         assertTrue(suppressMTSS.getSuppressCUG());
 
@@ -452,7 +462,7 @@ public class SendRoutingInformationRequestTest {
         boolean suppressionOfAnnouncement = true;
 
         // extensionContainer
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         // alertingPattern
         AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingCategory.Category4);

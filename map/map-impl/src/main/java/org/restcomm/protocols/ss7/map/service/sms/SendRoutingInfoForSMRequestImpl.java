@@ -24,18 +24,21 @@ package org.restcomm.protocols.ss7.map.service.sms;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.ASNSMDeliveryNotIntended;
-import org.restcomm.protocols.ss7.map.api.service.sms.ASNSM_RP_MTI;
-import org.restcomm.protocols.ss7.map.api.service.sms.CorrelationIDImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCode;
+import org.restcomm.protocols.ss7.map.api.service.sms.CorrelationID;
 import org.restcomm.protocols.ss7.map.api.service.sms.SMDeliveryNotIntended;
 import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_MTI;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_SMEAImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_SMEA;
 import org.restcomm.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMRequest;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -53,17 +56,17 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements SendRoutingInfoForSMRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=0)
-    private ISDNAddressStringImpl msisdn;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=0, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString msisdn;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=1)
     private ASNBoolean sm_RP_PRI;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=2)
-    private AddressStringImpl serviceCentreAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=2, defaultImplementation = AddressStringImpl.class)
+    private AddressString serviceCentreAddress;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=false,index=-1)
     private ASNNull gprsSupportIndicator;
@@ -71,11 +74,11 @@ public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements S
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1)
     private ASNSM_RP_MTI sM_RP_MTI;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1)
-    private SM_RP_SMEAImpl sM_RP_SMEA;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1, defaultImplementation = SM_RP_SMEAImpl.class)
+    private SM_RP_SMEA sM_RP_SMEA;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
-    private TeleserviceCodeImpl teleservice;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1, defaultImplementation = TeleserviceCodeImpl.class)
+    private TeleserviceCode teleservice;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=false,index=-1)
     private ASNNull ipSmGwGuidanceIndicator;
@@ -89,19 +92,19 @@ public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements S
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=false,index=-1)
     private ASNNull singleAttemptDelivery;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1)
-    private IMSIImpl imsi;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=true,index=-1)
-    private CorrelationIDImpl correlationID;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=true,index=-1, defaultImplementation = CorrelationIDImpl.class)
+    private CorrelationID correlationID;
 
     public SendRoutingInfoForSMRequestImpl() {
     }
 
-    public SendRoutingInfoForSMRequestImpl(ISDNAddressStringImpl msisdn, boolean sm_RP_PRI, AddressStringImpl serviceCentreAddress,
-            MAPExtensionContainerImpl extensionContainer, boolean gprsSupportIndicator, SM_RP_MTI sM_RP_MTI, SM_RP_SMEAImpl sM_RP_SMEA,
-            SMDeliveryNotIntended smDeliveryNotIntended, boolean ipSmGwGuidanceIndicator, IMSIImpl imsi, boolean t4TriggerIndicator,
-            boolean singleAttemptDelivery, TeleserviceCodeImpl teleservice, CorrelationIDImpl correlationID) {
+    public SendRoutingInfoForSMRequestImpl(ISDNAddressString msisdn, boolean sm_RP_PRI, AddressString serviceCentreAddress,
+            MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator, SM_RP_MTI sM_RP_MTI, SM_RP_SMEA sM_RP_SMEA,
+            SMDeliveryNotIntended smDeliveryNotIntended, boolean ipSmGwGuidanceIndicator, IMSI imsi, boolean t4TriggerIndicator,
+            boolean singleAttemptDelivery, TeleserviceCode teleservice, CorrelationID correlationID) {
         this.msisdn = msisdn;
         
         this.sm_RP_PRI = new ASNBoolean();
@@ -147,7 +150,7 @@ public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements S
         return MAPOperationCode.sendRoutingInfoForSM;
     }
 
-    public ISDNAddressStringImpl getMsisdn() {
+    public ISDNAddressString getMsisdn() {
         return this.msisdn;
     }
 
@@ -158,11 +161,11 @@ public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements S
         return this.sm_RP_PRI.getValue();
     }
 
-    public AddressStringImpl getServiceCentreAddress() {
+    public AddressString getServiceCentreAddress() {
         return this.serviceCentreAddress;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -177,11 +180,11 @@ public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements S
         return this.sM_RP_MTI.getType();
     }
 
-    public SM_RP_SMEAImpl getSM_RP_SMEA() {
+    public SM_RP_SMEA getSM_RP_SMEA() {
         return this.sM_RP_SMEA;
     }
 
-    public TeleserviceCodeImpl getTeleservice() {
+    public TeleserviceCode getTeleservice() {
         return this.teleservice;
     }
 
@@ -197,7 +200,7 @@ public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements S
         return singleAttemptDelivery!=null;
     }
 
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return imsi;
     }
 
@@ -208,7 +211,7 @@ public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements S
         return smDeliveryNotIntended.getType();
     }
 
-    public CorrelationIDImpl getCorrelationID() {
+    public CorrelationID getCorrelationID() {
         return correlationID;
     }
 

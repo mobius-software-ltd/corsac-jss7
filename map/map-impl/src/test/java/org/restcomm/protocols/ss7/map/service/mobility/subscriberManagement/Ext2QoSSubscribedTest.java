@@ -26,9 +26,8 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext2QoSSubscribed_SourceStatisticsDescriptor;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_BitRateExtendedImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_BitRateExtended;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -88,8 +87,8 @@ public class Ext2QoSSubscribedTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(Ext2QoSSubscribedImpl.class);
     	
-        ExtQoSSubscribed_BitRateExtendedImpl maximumBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(16000, false);
-        ExtQoSSubscribed_BitRateExtendedImpl guaranteedBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(256000, false);
+        ExtQoSSubscribed_BitRateExtended maximumBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtended(16000, false);
+        ExtQoSSubscribed_BitRateExtended guaranteedBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtended(256000, false);
         Ext2QoSSubscribedImpl prim = new Ext2QoSSubscribedImpl(Ext2QoSSubscribed_SourceStatisticsDescriptor.speech, true, maximumBitRateForDownlinkExtended,
                 guaranteedBitRateForDownlinkExtended);
 
@@ -100,8 +99,8 @@ public class Ext2QoSSubscribedTest {
         assertEquals(encodedData, this.getData1());
 
 
-        maximumBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(84000, false);
-        guaranteedBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtendedImpl(0, true);
+        maximumBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtended(84000, false);
+        guaranteedBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtended(0, true);
         prim = new Ext2QoSSubscribedImpl(Ext2QoSSubscribed_SourceStatisticsDescriptor.unknown, false, maximumBitRateForDownlinkExtended,
                 guaranteedBitRateForDownlinkExtended);
 

@@ -22,13 +22,13 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
-import org.restcomm.protocols.ss7.map.api.errors.ASNAdditionalNetworkResourceImpl;
 import org.restcomm.protocols.ss7.map.api.errors.AdditionalNetworkResource;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSystemFailure;
-import org.restcomm.protocols.ss7.map.api.primitives.ASNNetworkResourceImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
+import org.restcomm.protocols.ss7.map.primitives.ASNNetworkResourceImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -48,9 +48,10 @@ public class MAPErrorMessageSystemFailureImpl extends MAPErrorMessageImpl implem
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private ASNAdditionalNetworkResourceImpl additionalNetworkResource;
     
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
 
-    public MAPErrorMessageSystemFailureImpl(long mapProtocolVersion, NetworkResource networkResource, AdditionalNetworkResource additionalNetworkResource, MAPExtensionContainerImpl extensionContainer) {
+    public MAPErrorMessageSystemFailureImpl(long mapProtocolVersion, NetworkResource networkResource, AdditionalNetworkResource additionalNetworkResource, MAPExtensionContainer extensionContainer) {
         super((long) MAPErrorCode.systemFailure);
 
         this.mapProtocolVersion = mapProtocolVersion;
@@ -86,7 +87,7 @@ public class MAPErrorMessageSystemFailureImpl extends MAPErrorMessageImpl implem
         return this.additionalNetworkResource.getType();
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -122,7 +123,7 @@ public class MAPErrorMessageSystemFailureImpl extends MAPErrorMessageImpl implem
 			
 	}
 
-    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 

@@ -24,8 +24,9 @@ package org.restcomm.protocols.ss7.map.service.callhandling;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.IstCommandResponse;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -40,10 +41,10 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class IstCommandResponseImpl extends CallHandlingMessageImpl implements IstCommandResponse {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1)
-	private MAPExtensionContainerImpl extensionContainer;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
 
-    public IstCommandResponseImpl(MAPExtensionContainerImpl extensionContainer) {
+    public IstCommandResponseImpl(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 
@@ -51,7 +52,7 @@ public class IstCommandResponseImpl extends CallHandlingMessageImpl implements I
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 

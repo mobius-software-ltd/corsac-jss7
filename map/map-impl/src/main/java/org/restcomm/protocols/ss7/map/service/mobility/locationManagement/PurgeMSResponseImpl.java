@@ -23,8 +23,9 @@ package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PurgeMSResponse;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -46,7 +47,9 @@ public class PurgeMSResponseImpl extends MobilityMessageImpl implements PurgeMSR
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
     private ASNNull freezePTMSI;
-    private MAPExtensionContainerImpl extensionContainer;
+    
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
     private ASNNull freezeMTMSI;
@@ -55,7 +58,7 @@ public class PurgeMSResponseImpl extends MobilityMessageImpl implements PurgeMSR
         super();
     }
 
-    public PurgeMSResponseImpl(boolean freezeTMSI, boolean freezePTMSI, MAPExtensionContainerImpl extensionContainer,
+    public PurgeMSResponseImpl(boolean freezeTMSI, boolean freezePTMSI, MAPExtensionContainer extensionContainer,
             boolean freezeMTMSI) {
         super();
         
@@ -92,7 +95,7 @@ public class PurgeMSResponseImpl extends MobilityMessageImpl implements PurgeMSR
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

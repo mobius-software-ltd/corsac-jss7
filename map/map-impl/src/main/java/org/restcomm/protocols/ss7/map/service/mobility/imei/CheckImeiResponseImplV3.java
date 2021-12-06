@@ -24,11 +24,11 @@ package org.restcomm.protocols.ss7.map.service.mobility.imei;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.ASNEquipmentStatusImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.imei.CheckImeiResponse;
 import org.restcomm.protocols.ss7.map.api.service.mobility.imei.EquipmentStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIu;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -45,10 +45,12 @@ public class CheckImeiResponseImplV3 extends MobilityMessageImpl implements Chec
 	private static final long serialVersionUID = 1L;
 
 	private ASNEquipmentStatusImpl equipmentStatus;
-    private UESBIIuImpl bmuef;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = UESBIIuImpl.class)
+	private UESBIIu bmuef;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
 
     private long mapProtocolVersion;
 
@@ -62,8 +64,8 @@ public class CheckImeiResponseImplV3 extends MobilityMessageImpl implements Chec
     }
 
     // for outgoing messages
-    public CheckImeiResponseImplV3(long mapProtocolVersion, EquipmentStatus equipmentStatus, UESBIIuImpl bmuef,
-            MAPExtensionContainerImpl extensionContainer) {
+    public CheckImeiResponseImplV3(long mapProtocolVersion, EquipmentStatus equipmentStatus, UESBIIu bmuef,
+            MAPExtensionContainer extensionContainer) {
         this.mapProtocolVersion = mapProtocolVersion;
         
         if(equipmentStatus!=null) {
@@ -98,12 +100,12 @@ public class CheckImeiResponseImplV3 extends MobilityMessageImpl implements Chec
     }
 
     @Override
-    public UESBIIuImpl getBmuef() {
+    public UESBIIu getBmuef() {
         return bmuef;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

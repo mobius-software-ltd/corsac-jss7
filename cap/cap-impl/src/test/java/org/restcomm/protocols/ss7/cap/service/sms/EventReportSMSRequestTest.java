@@ -29,12 +29,14 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsFailureSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMSImpl;
+import org.restcomm.protocols.ss7.cap.EsiSms.OSmsFailureSpecificInfoImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsFailureSpecificInfo;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.MOSMSCause;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.EventSpecificInformationSMSImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
 import org.testng.annotations.Test;
@@ -70,9 +72,9 @@ public class EventReportSMSRequestTest {
         
         EventReportSMSRequestImpl prim = (EventReportSMSRequestImpl)result.getResult();        
         assertEquals(prim.getEventTypeSMS(), EventTypeSMS.oSmsSubmission);
-        EventSpecificInformationSMSImpl eventSpecificInformationSMS = prim.getEventSpecificInformationSMS();
+        EventSpecificInformationSMS eventSpecificInformationSMS = prim.getEventSpecificInformationSMS();
         assertNotNull(eventSpecificInformationSMS.getOSmsFailureSpecificInfo());
-        OSmsFailureSpecificInfoImpl oSmsFailureSpecificInfo = eventSpecificInformationSMS.getOSmsFailureSpecificInfo();
+        OSmsFailureSpecificInfo oSmsFailureSpecificInfo = eventSpecificInformationSMS.getOSmsFailureSpecificInfo();
         assertEquals(oSmsFailureSpecificInfo.getFailureCause(), MOSMSCause.facilityNotSupported);
         assertNull(eventSpecificInformationSMS.getOSmsSubmissionSpecificInfo());
         assertNull(eventSpecificInformationSMS.getTSmsFailureSpecificInfo());
@@ -97,7 +99,7 @@ public class EventReportSMSRequestTest {
                 oSmsFailureSpecificInfo);
         MiscCallInfoImpl miscCallInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.notification, null);
 
-        CAPExtensionsImpl extensions = CAPExtensionsTest.createTestCAPExtensions();
+        CAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
 
         EventReportSMSRequestImpl prim = new EventReportSMSRequestImpl(eventTypeSMS, eventSpecificInformationSMS,
                 miscCallInfo, extensions);

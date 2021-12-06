@@ -23,12 +23,17 @@ package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.TMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.TMSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationRequest;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.primitives.TMSIImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -46,16 +51,20 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class SendIdentificationRequestImplV3 extends MobilityMessageImpl implements SendIdentificationRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-	private TMSIImpl tmsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0, defaultImplementation = TMSIImpl.class)
+	private TMSI tmsi;
     
 	private ASNInteger numberOfRequestedVectors;
     private ASNNull segmentationProhibited;
-    private MAPExtensionContainerImpl extensionContainer;
-    private ISDNAddressStringImpl mscNumber;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private LAIFixedLengthImpl previousLAI;
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
+    
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString mscNumber;
+    
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = LAIFixedLengthImpl.class)
+    private LAIFixedLength previousLAI;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
     private ASNInteger hopCounter;
@@ -63,11 +72,12 @@ public class SendIdentificationRequestImplV3 extends MobilityMessageImpl impleme
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
     private ASNNull mtRoamingForwardingSupported;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
-    private ISDNAddressStringImpl newVLRNumber;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString newVLRNumber;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
-    private LMSIImpl newLmsi;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1, defaultImplementation = LMSIImpl.class)
+    private LMSI newLmsi;
+    
     private long mapProtocolVersion;
 
     public SendIdentificationRequestImplV3() {
@@ -78,9 +88,9 @@ public class SendIdentificationRequestImplV3 extends MobilityMessageImpl impleme
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public SendIdentificationRequestImplV3(TMSIImpl tmsi, Integer numberOfRequestedVectors, boolean segmentationProhibited,
-            MAPExtensionContainerImpl extensionContainer, ISDNAddressStringImpl mscNumber, LAIFixedLengthImpl previousLAI,
-            Integer hopCounter, boolean mtRoamingForwardingSupported, ISDNAddressStringImpl newVLRNumber, LMSIImpl newLmsi,
+    public SendIdentificationRequestImplV3(TMSI tmsi, Integer numberOfRequestedVectors, boolean segmentationProhibited,
+    		MAPExtensionContainer extensionContainer, ISDNAddressString mscNumber, LAIFixedLength previousLAI,
+            Integer hopCounter, boolean mtRoamingForwardingSupported, ISDNAddressString newVLRNumber, LMSI newLmsi,
             long mapProtocolVersion) {
         super();
         this.tmsi = tmsi;
@@ -121,7 +131,7 @@ public class SendIdentificationRequestImplV3 extends MobilityMessageImpl impleme
     }
 
     @Override
-    public TMSIImpl getTmsi() {
+    public TMSI getTmsi() {
         return this.tmsi;
     }
 
@@ -139,17 +149,17 @@ public class SendIdentificationRequestImplV3 extends MobilityMessageImpl impleme
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
     @Override
-    public ISDNAddressStringImpl getMscNumber() {
+    public ISDNAddressString getMscNumber() {
         return this.mscNumber;
     }
 
     @Override
-    public LAIFixedLengthImpl getPreviousLAI() {
+    public LAIFixedLength getPreviousLAI() {
         return this.previousLAI;
     }
 
@@ -167,12 +177,12 @@ public class SendIdentificationRequestImplV3 extends MobilityMessageImpl impleme
     }
 
     @Override
-    public ISDNAddressStringImpl getNewVLRNumber() {
+    public ISDNAddressString getNewVLRNumber() {
         return this.newVLRNumber;
     }
 
     @Override
-    public LMSIImpl getNewLmsi() {
+    public LMSI getNewLmsi() {
         return this.newLmsi;
     }
 

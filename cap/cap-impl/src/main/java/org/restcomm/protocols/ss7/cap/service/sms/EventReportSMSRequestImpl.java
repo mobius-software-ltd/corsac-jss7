@@ -23,12 +23,13 @@ package org.restcomm.protocols.ss7.cap.service.sms;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.sms.EventReportSMSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.ASNEventTypeSMSImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMSImpl;
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMSWrapperImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.ASNEventTypeSMSImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.primitive.EventSpecificInformationSMSWrapperImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
 
@@ -54,11 +55,11 @@ public class EventReportSMSRequestImpl extends SmsMessageImpl implements EventRe
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1, defaultImplementation = MiscCallInfoImpl.class)
     private MiscCallInfo miscCallInfo;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
 
     public EventReportSMSRequestImpl(EventTypeSMS eventTypeSMS,
-            EventSpecificInformationSMSImpl eventSpecificInformationSMS, MiscCallInfo miscCallInfo, CAPExtensionsImpl extensions) {
+            EventSpecificInformationSMS eventSpecificInformationSMS, MiscCallInfo miscCallInfo, CAPExtensions extensions) {
         super();
         
         if(eventTypeSMS!=null) {
@@ -84,7 +85,7 @@ public class EventReportSMSRequestImpl extends SmsMessageImpl implements EventRe
         return this.eventTypeSMS.getType();
     }
 
-    public EventSpecificInformationSMSImpl getEventSpecificInformationSMS() {
+    public EventSpecificInformationSMS getEventSpecificInformationSMS() {
     	if(this.eventSpecificInformationSMS==null)
     		return null;
     	
@@ -95,7 +96,7 @@ public class EventReportSMSRequestImpl extends SmsMessageImpl implements EventRe
         return this.miscCallInfo;
     }
 
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return this.extensions;
     }
 

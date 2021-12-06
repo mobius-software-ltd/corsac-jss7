@@ -38,7 +38,7 @@ package org.restcomm.protocols.ss7.map.api.service.supplementary;
  */
 public interface RegisterCCEntryRequest extends SupplementaryMessage {
 
-	SSCodeImpl getSsCode();
+	SSCode getSsCode();
 
     CCBSData getCcbsData();
 

@@ -28,14 +28,8 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CKImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CksnImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContextImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.IKImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.KcImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSecurityContextDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSecurityContextData;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -84,8 +78,8 @@ public class CurrentSecurityContextTest {
         assertTrue(result.getResult() instanceof CurrentSecurityContextImpl);
         CurrentSecurityContextImpl prim = (CurrentSecurityContextImpl)result.getResult();
         
-        GSMSecurityContextDataImpl gsm = prim.getGSMSecurityContextData();
-        UMTSSecurityContextDataImpl umts = prim.getUMTSSecurityContextData();
+        GSMSecurityContextData gsm = prim.getGSMSecurityContextData();
+        UMTSSecurityContextData umts = prim.getUMTSSecurityContextData();
         assertNull(umts);
         assertTrue(Arrays.equals(gsm.getKc().getData(), getDataKc()));
         assertEquals(gsm.getCksn().getData(), 4);

@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
-import org.restcomm.protocols.ss7.map.api.errors.ASNAbsentSubscriberDiagnosticSMImpl;
 import org.restcomm.protocols.ss7.map.api.errors.AbsentSubscriberDiagnosticSM;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageAbsentSubscriberSM;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -43,13 +43,14 @@ public class MAPErrorMessageAbsentSubscriberSMImpl extends MAPErrorMessageImpl i
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=2,constructed=false,index=-1)
     private ASNAbsentSubscriberDiagnosticSMImpl absentSubscriberDiagnosticSM;
     
-	private MAPExtensionContainerImpl extensionContainer;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private ASNAbsentSubscriberDiagnosticSMImpl additionalAbsentSubscriberDiagnosticSM;
 
     public MAPErrorMessageAbsentSubscriberSMImpl(AbsentSubscriberDiagnosticSM absentSubscriberDiagnosticSM,
-    		MAPExtensionContainerImpl extensionContainer, AbsentSubscriberDiagnosticSM additionalAbsentSubscriberDiagnosticSM) {
+    		MAPExtensionContainer extensionContainer, AbsentSubscriberDiagnosticSM additionalAbsentSubscriberDiagnosticSM) {
         super((long) MAPErrorCode.absentSubscriberSM);
 
         if(absentSubscriberDiagnosticSM!=null){
@@ -76,7 +77,7 @@ public class MAPErrorMessageAbsentSubscriberSMImpl extends MAPErrorMessageImpl i
         return this.absentSubscriberDiagnosticSM.getType();
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -96,7 +97,7 @@ public class MAPErrorMessageAbsentSubscriberSMImpl extends MAPErrorMessageImpl i
     	}
     }
 
-    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 

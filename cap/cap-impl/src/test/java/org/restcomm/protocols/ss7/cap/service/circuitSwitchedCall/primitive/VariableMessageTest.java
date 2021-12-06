@@ -28,10 +28,9 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariableMessageImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartTimeImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePart;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -75,7 +74,7 @@ public class VariableMessageTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(VariableMessageImpl.class);
     	
-        ArrayList<VariablePartImpl> variableParts = new ArrayList<VariablePartImpl>();
+        List<VariablePart> variableParts = new ArrayList<VariablePart>();
         VariablePartImpl vp = new VariablePartImpl(111);
         variableParts.add(vp);
         VariablePartTimeImpl time = new VariablePartTimeImpl(23, 59);

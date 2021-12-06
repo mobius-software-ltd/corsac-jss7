@@ -24,10 +24,10 @@ package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -36,13 +36,13 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  * ss-InvocationNotification OPERATION ::= { --Timer m ARGUMENT SS-InvocationNotificationArg RESULT SS-InvocationNotificationRes
  * -- optional ERRORS { dataMissing | unexpectedDataValue | unknownSubscriber} CODE local:72 }
  *
- * SS-InvocationNotificationArg ::= SEQUENCE { imsi [0] IMSI, msisdn [1] ISDN-AddressStringImpl, ss-Event [2] SS-Code, -- The
+ * SS-InvocationNotificationArg ::= SEQUENCE { imsi [0] IMSI, msisdn [1] ISDN-AddressString, ss-Event [2] SS-Code, -- The
  * following SS-Code values are allowed : -- ect SS-Code ::= '00110001'B -- multiPTY SS-Code ::= '01010001'B -- cd SS-Code ::=
  * '00100100'B -- ccbs SS-Code ::= '01000100'B ss-EventSpecification [3] SS-EventSpecification OPTIONAL, extensionContainer [4]
- * ExtensionContainer OPTIONAL, ..., b-subscriberNumber [5] ISDN-AddressStringImpl OPTIONAL, ccbs-RequestState [6] CCBS-RequestState
+ * ExtensionContainer OPTIONAL, ..., b-subscriberNumber [5] ISDN-AddressString OPTIONAL, ccbs-RequestState [6] CCBS-RequestState
  * OPTIONAL }
  *
- * SS-EventSpecification ::= SEQUENCE SIZE (1..2) OF AddressStringImpl
+ * SS-EventSpecification ::= SEQUENCE SIZE (1..2) OF AddressString
  *
  *
  * @author sergey vetyutnev
@@ -50,17 +50,17 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  */
 public interface SSInvocationNotificationRequest extends SupplementaryMessage {
 
-    IMSIImpl getImsi();
+    IMSI getImsi();
 
-    ISDNAddressStringImpl getMsisdn();
+    ISDNAddressString getMsisdn();
 
-    SSCodeImpl getSsEvent();
+    SSCode getSsEvent();
 
-    List<AddressStringImpl> getSsEventSpecification();
+    List<AddressString> getSsEventSpecification();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
-    ISDNAddressStringImpl getBSubscriberNumber();
+    ISDNAddressString getBSubscriberNumber();
 
     CCBSRequestState getCcbsRequestState();
 

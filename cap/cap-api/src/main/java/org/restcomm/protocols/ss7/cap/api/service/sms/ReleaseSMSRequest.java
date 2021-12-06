@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.sms;
 
-import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.RPCauseImpl;
+import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.RPCause;
 
 /**
  *
@@ -39,6 +39,6 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.RPCauseImpl;
  */
 public interface ReleaseSMSRequest extends SmsMessage {
 
-	RPCauseImpl getRPCause();
+	RPCause getRPCause();
 
 }

@@ -27,8 +27,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CCBSIndicatorsImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -46,7 +45,8 @@ import io.netty.buffer.Unpooled;
 public class CCBSIndicatorsTest {
 
     public byte[] getData() {
-        return new byte[] { 48, 51, -128, 0, -127, 0, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 45, -128, 0, -127, 0, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6,
+                3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -60,7 +60,7 @@ public class CCBSIndicatorsTest {
         assertTrue(result.getResult() instanceof CCBSIndicatorsImpl);
         CCBSIndicatorsImpl prim = (CCBSIndicatorsImpl)result.getResult();
         
-        MAPExtensionContainerImpl extensionContainer = prim.getMAPExtensionContainer();
+        MAPExtensionContainer extensionContainer = prim.getMAPExtensionContainer();
         assertTrue(prim.getCCBSPossible());
         assertTrue(prim.getKeepCCBSCallIndicator());
         assertNotNull(extensionContainer);
@@ -72,7 +72,7 @@ public class CCBSIndicatorsTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CCBSIndicatorsImpl.class);
 
-    	MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+    	MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         CCBSIndicatorsImpl prim = new CCBSIndicatorsImpl(true, true, extensionContainer);
         byte[] data=this.getData();
         ByteBuf buffer=parser.encode(prim);

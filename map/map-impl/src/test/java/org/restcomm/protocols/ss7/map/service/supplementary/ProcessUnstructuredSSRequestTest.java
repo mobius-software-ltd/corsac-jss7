@@ -30,8 +30,9 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
+import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
+import org.restcomm.protocols.ss7.map.primitives.USSDStringImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -83,7 +84,7 @@ public class ProcessUnstructuredSSRequestTest {
         CBSDataCodingScheme dataCodingScheme = addNum.getDataCodingScheme();
         assertEquals(dataCodingScheme.getCode(), 0x0f);
 
-        USSDStringImpl ussdString = addNum.getUSSDString();
+        USSDString ussdString = addNum.getUSSDString();
         assertNotNull(ussdString);
 
         assertTrue(ussdString.getString(null).equals("*234#"));

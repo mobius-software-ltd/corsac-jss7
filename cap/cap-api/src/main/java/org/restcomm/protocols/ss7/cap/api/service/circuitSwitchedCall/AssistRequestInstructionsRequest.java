@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.Digits;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilities;
 
 /**
  *
@@ -52,9 +52,9 @@ public interface AssistRequestInstructionsRequest extends CircuitSwitchedCallMes
      *
      * @return
      */
-    DigitsImpl getCorrelationID();
+    Digits getCorrelationID();
 
-    IPSSPCapabilitiesImpl getIPSSPCapabilities();
+    IPSSPCapabilities getIPSSPCapabilities();
 
-    CAPExtensionsImpl getExtensions();
+    CAPExtensions getExtensions();
 }

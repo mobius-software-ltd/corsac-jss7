@@ -25,7 +25,6 @@ package org.restcomm.protocols.ss7.map.datacoding;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import org.restcomm.protocols.ss7.map.api.datacoding.GSMCharset;
 import org.testng.annotations.Test;
 
 /**

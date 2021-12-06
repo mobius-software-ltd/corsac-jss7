@@ -28,24 +28,18 @@ import static org.testng.Assert.assertTrue;
 
 import java.nio.charset.Charset;
 
-import org.restcomm.protocols.ss7.map.api.datacoding.GSMCharset;
-import org.restcomm.protocols.ss7.map.api.datacoding.GSMCharsetDecoder;
-import org.restcomm.protocols.ss7.map.api.datacoding.GSMCharsetDecodingData;
-import org.restcomm.protocols.ss7.map.api.datacoding.GSMCharsetEncoder;
-import org.restcomm.protocols.ss7.map.api.datacoding.GSMCharsetEncodingData;
-import org.restcomm.protocols.ss7.map.api.datacoding.Gsm7EncodingStyle;
-import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStampImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.AddressFieldImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ConcatenatedShortMessagesIdentifierImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifierImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverTpduImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderElement;
-import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataImpl;
+import org.restcomm.protocols.ss7.map.service.sms.SmsSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.AbsoluteTimeStampImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.AddressFieldImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.ConcatenatedShortMessagesIdentifierImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.DataCodingSchemeImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.ProtocolIdentifierImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.SmsDeliverTpduImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.UserDataHeaderImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.UserDataImpl;
 import org.testng.annotations.Test;
 
 import io.netty.buffer.ByteBuf;

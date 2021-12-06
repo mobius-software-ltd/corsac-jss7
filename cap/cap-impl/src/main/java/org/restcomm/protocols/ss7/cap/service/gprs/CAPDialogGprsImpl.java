@@ -30,34 +30,34 @@ import org.restcomm.protocols.ss7.cap.api.CAPApplicationContext;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.CAPServiceBase;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
 import org.restcomm.protocols.ss7.cap.api.primitives.TimerID;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.CAPDialogGprs;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointNameImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELFCIGPRSBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELSCIGPRSBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResultImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingRollOverImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.EndUserAddressImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSCauseImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointName;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELFCIGPRSBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELSCIGPRSBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingCharacteristics;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingResult;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ChargingRollOver;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.EndUserAddress;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSCause;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEvent;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformation;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPInitiationType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfServiceImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.SGSNCapabilitiesImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfService;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.SGSNCapabilities;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingIDImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClassImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingID;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClass;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentity;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 
@@ -75,12 +75,12 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addInitialDpGprsRequest(int serviceKey, GPRSEventType gprsEventType, ISDNAddressStringImpl msisdn, IMSIImpl imsi,
-            TimeAndTimezoneImpl timeAndTimezone, GPRSMSClassImpl gprsMSClass, EndUserAddressImpl endUserAddress,
-            QualityOfServiceImpl qualityOfService, AccessPointNameImpl accessPointName, RAIdentityImpl routeingAreaIdentity,
-            GPRSChargingIDImpl chargingID, SGSNCapabilitiesImpl sgsnCapabilities, LocationInformationGPRSImpl locationInformationGPRS,
-            PDPInitiationType pdpInitiationType, CAPExtensionsImpl extensions, GSNAddressImpl gsnAddress, boolean secondaryPDPContext,
-            IMEIImpl imei) throws CAPException {
+    public Long addInitialDpGprsRequest(int serviceKey, GPRSEventType gprsEventType, ISDNAddressString msisdn, IMSI imsi,
+            TimeAndTimezone timeAndTimezone, GPRSMSClass gprsMSClass, EndUserAddress endUserAddress,
+            QualityOfService qualityOfService, AccessPointName accessPointName, RAIdentity routeingAreaIdentity,
+            GPRSChargingID chargingID, SGSNCapabilities sgsnCapabilities, LocationInformationGPRS locationInformationGPRS,
+            PDPInitiationType pdpInitiationType, CAPExtensions extensions, GSNAddress gsnAddress, boolean secondaryPDPContext,
+            IMEI imei) throws CAPException {
         return addInitialDpGprsRequest(_Timer_Default, serviceKey, gprsEventType, msisdn, imsi, timeAndTimezone, gprsMSClass,
                 endUserAddress, qualityOfService, accessPointName, routeingAreaIdentity, chargingID, sgsnCapabilities,
                 locationInformationGPRS, pdpInitiationType, extensions, gsnAddress, secondaryPDPContext, imei);
@@ -88,11 +88,11 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
 
     @Override
     public Long addInitialDpGprsRequest(int customInvokeTimeout, int serviceKey, GPRSEventType gprsEventType,
-            ISDNAddressStringImpl msisdn, IMSIImpl imsi, TimeAndTimezoneImpl timeAndTimezone, GPRSMSClassImpl gprsMSClass,
-            EndUserAddressImpl endUserAddress, QualityOfServiceImpl qualityOfService, AccessPointNameImpl accessPointName,
-            RAIdentityImpl routeingAreaIdentity, GPRSChargingIDImpl chargingID, SGSNCapabilitiesImpl sgsnCapabilities,
-            LocationInformationGPRSImpl locationInformationGPRS, PDPInitiationType pdpInitiationType, CAPExtensionsImpl extensions,
-            GSNAddressImpl gsnAddress, boolean secondaryPDPContext, IMEIImpl imei) throws CAPException {
+            ISDNAddressString msisdn, IMSI imsi, TimeAndTimezone timeAndTimezone, GPRSMSClass gprsMSClass,
+            EndUserAddress endUserAddress, QualityOfService qualityOfService, AccessPointName accessPointName,
+            RAIdentity routeingAreaIdentity, GPRSChargingID chargingID, SGSNCapabilities sgsnCapabilities,
+            LocationInformationGPRS locationInformationGPRS, PDPInitiationType pdpInitiationType, CAPExtensions extensions,
+            GSNAddress gsnAddress, boolean secondaryPDPContext, IMEI imei) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF)
             throw new CAPException("Bad application context name for InitialDpGprsRequest: must be CapV3_gprsSSF_gsmSCF");
@@ -110,12 +110,12 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addRequestReportGPRSEventRequest(List<GPRSEventImpl> gprsEvent, PDPIDImpl pdpID) throws CAPException {
+    public Long addRequestReportGPRSEventRequest(List<GPRSEvent> gprsEvent, PDPID pdpID) throws CAPException {
         return addRequestReportGPRSEventRequest(_Timer_Default, gprsEvent, pdpID);
     }
 
     @Override
-    public Long addRequestReportGPRSEventRequest(int customInvokeTimeout, List<GPRSEventImpl> gprsEvent, PDPIDImpl pdpID)
+    public Long addRequestReportGPRSEventRequest(int customInvokeTimeout, List<GPRSEvent> gprsEvent, PDPID pdpID)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
@@ -134,15 +134,15 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addApplyChargingGPRSRequest(ChargingCharacteristicsImpl chargingCharacteristics, Integer tariffSwitchInterval,
-            PDPIDImpl pdpID) throws CAPException {
+    public Long addApplyChargingGPRSRequest(ChargingCharacteristics chargingCharacteristics, Integer tariffSwitchInterval,
+            PDPID pdpID) throws CAPException {
 
         return addApplyChargingGPRSRequest(_Timer_Default, chargingCharacteristics, tariffSwitchInterval, pdpID);
     }
 
     @Override
-    public Long addApplyChargingGPRSRequest(int customInvokeTimeout, ChargingCharacteristicsImpl chargingCharacteristics,
-            Integer tariffSwitchInterval, PDPIDImpl pdpID) throws CAPException {
+    public Long addApplyChargingGPRSRequest(int customInvokeTimeout, ChargingCharacteristics chargingCharacteristics,
+            Integer tariffSwitchInterval, PDPID pdpID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -161,13 +161,13 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addEntityReleasedGPRSRequest(GPRSCauseImpl gprsCause, PDPIDImpl pdpID) throws CAPException {
+    public Long addEntityReleasedGPRSRequest(GPRSCause gprsCause, PDPID pdpID) throws CAPException {
 
         return addEntityReleasedGPRSRequest(_Timer_Default, gprsCause, pdpID);
     }
 
     @Override
-    public Long addEntityReleasedGPRSRequest(int customInvokeTimeout, GPRSCauseImpl gprsCause, PDPIDImpl pdpID) throws CAPException {
+    public Long addEntityReleasedGPRSRequest(int customInvokeTimeout, GPRSCause gprsCause, PDPID pdpID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -196,13 +196,13 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addConnectGPRSRequest(AccessPointNameImpl accessPointName, PDPIDImpl pdpID) throws CAPException {
+    public Long addConnectGPRSRequest(AccessPointName accessPointName, PDPID pdpID) throws CAPException {
 
         return addConnectGPRSRequest(_Timer_Default, accessPointName, pdpID);
     }
 
     @Override
-    public Long addConnectGPRSRequest(int customInvokeTimeout, AccessPointNameImpl accessPointName, PDPIDImpl pdpID)
+    public Long addConnectGPRSRequest(int customInvokeTimeout, AccessPointName accessPointName, PDPID pdpID)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
@@ -221,13 +221,13 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addContinueGPRSRequest(PDPIDImpl pdpID) throws CAPException {
+    public Long addContinueGPRSRequest(PDPID pdpID) throws CAPException {
 
         return addContinueGPRSRequest(_Timer_Default, pdpID);
     }
 
     @Override
-    public Long addContinueGPRSRequest(int customInvokeTimeout, PDPIDImpl pdpID) throws CAPException {
+    public Long addContinueGPRSRequest(int customInvokeTimeout, PDPID pdpID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -245,13 +245,13 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addReleaseGPRSRequest(GPRSCauseImpl gprsCause, PDPIDImpl pdpID) throws CAPException {
+    public Long addReleaseGPRSRequest(GPRSCause gprsCause, PDPID pdpID) throws CAPException {
 
         return addReleaseGPRSRequest(_Timer_Default, gprsCause, pdpID);
     }
 
     @Override
-    public Long addReleaseGPRSRequest(int customInvokeTimeout, GPRSCauseImpl gprsCause, PDPIDImpl pdpID) throws CAPException {
+    public Long addReleaseGPRSRequest(int customInvokeTimeout, GPRSCause gprsCause, PDPID pdpID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -294,14 +294,14 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
 
     @Override
     public Long addFurnishChargingInformationGPRSRequest(
-            CAMELFCIGPRSBillingChargingCharacteristicsImpl fciGPRSBillingChargingCharacteristics) throws CAPException {
+            CAMELFCIGPRSBillingChargingCharacteristics fciGPRSBillingChargingCharacteristics) throws CAPException {
 
         return addFurnishChargingInformationGPRSRequest(_Timer_Default, fciGPRSBillingChargingCharacteristics);
     }
 
     @Override
     public Long addFurnishChargingInformationGPRSRequest(int customInvokeTimeout,
-            CAMELFCIGPRSBillingChargingCharacteristicsImpl fciGPRSBillingChargingCharacteristics) throws CAPException {
+            CAMELFCIGPRSBillingChargingCharacteristics fciGPRSBillingChargingCharacteristics) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -320,13 +320,13 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addCancelGPRSRequest(PDPIDImpl pdpID) throws CAPException {
+    public Long addCancelGPRSRequest(PDPID pdpID) throws CAPException {
 
         return addCancelGPRSRequest(_Timer_Default, pdpID);
     }
 
     @Override
-    public Long addCancelGPRSRequest(int customInvokeTimeout, PDPIDImpl pdpID) throws CAPException {
+    public Long addCancelGPRSRequest(int customInvokeTimeout, PDPID pdpID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -345,14 +345,14 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
 
     @Override
     public Long addSendChargingInformationGPRSRequest(
-            CAMELSCIGPRSBillingChargingCharacteristicsImpl sciGPRSBillingChargingCharacteristics) throws CAPException {
+            CAMELSCIGPRSBillingChargingCharacteristics sciGPRSBillingChargingCharacteristics) throws CAPException {
 
         return addSendChargingInformationGPRSRequest(_Timer_Default, sciGPRSBillingChargingCharacteristics);
     }
 
     @Override
     public Long addSendChargingInformationGPRSRequest(int customInvokeTimeout,
-            CAMELSCIGPRSBillingChargingCharacteristicsImpl sciGPRSBillingChargingCharacteristics) throws CAPException {
+            CAMELSCIGPRSBillingChargingCharacteristics sciGPRSBillingChargingCharacteristics) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -371,16 +371,16 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addApplyChargingReportGPRSRequest(ChargingResultImpl chargingResult, QualityOfServiceImpl qualityOfService,
-            boolean active, PDPIDImpl pdpID, ChargingRollOverImpl chargingRollOver) throws CAPException {
+    public Long addApplyChargingReportGPRSRequest(ChargingResult chargingResult, QualityOfService qualityOfService,
+            boolean active, PDPID pdpID, ChargingRollOver chargingRollOver) throws CAPException {
 
         return addApplyChargingReportGPRSRequest(_Timer_Default, chargingResult, qualityOfService, active, pdpID,
                 chargingRollOver);
     }
 
     @Override
-    public Long addApplyChargingReportGPRSRequest(int customInvokeTimeout, ChargingResultImpl chargingResult,
-            QualityOfServiceImpl qualityOfService, boolean active, PDPIDImpl pdpID, ChargingRollOverImpl chargingRollOver)
+    public Long addApplyChargingReportGPRSRequest(int customInvokeTimeout, ChargingResult chargingResult,
+            QualityOfService qualityOfService, boolean active, PDPID pdpID, ChargingRollOver chargingRollOver)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
@@ -412,14 +412,14 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
 
     @Override
     public Long addEventReportGPRSRequest(GPRSEventType gprsEventType, MiscCallInfo miscGPRSInfo,
-            GPRSEventSpecificInformationImpl gprsEventSpecificInformation, PDPIDImpl pdpID) throws CAPException {
+            GPRSEventSpecificInformation gprsEventSpecificInformation, PDPID pdpID) throws CAPException {
 
         return addEventReportGPRSRequest(_Timer_Default, gprsEventType, miscGPRSInfo, gprsEventSpecificInformation, pdpID);
     }
 
     @Override
     public Long addEventReportGPRSRequest(int customInvokeTimeout, GPRSEventType gprsEventType, MiscCallInfo miscGPRSInfo,
-            GPRSEventSpecificInformationImpl gprsEventSpecificInformation, PDPIDImpl pdpID) throws CAPException {
+            GPRSEventSpecificInformation gprsEventSpecificInformation, PDPID pdpID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)

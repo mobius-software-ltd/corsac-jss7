@@ -31,12 +31,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.GenericServiceInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeature;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -148,7 +147,7 @@ public class InterrogateSSResponseTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        List<BasicServiceCodeImpl> basicServiceGroupList = new ArrayList<BasicServiceCodeImpl>();
+        List<BasicServiceCode> basicServiceGroupList = new ArrayList<BasicServiceCode>();
         TeleserviceCodeImpl teleservice = new TeleserviceCodeImpl(TeleserviceCodeValue.allFacsimileTransmissionServices);
         BasicServiceCodeImpl item = new BasicServiceCodeImpl(teleservice);
         basicServiceGroupList.add(item);
@@ -160,7 +159,7 @@ public class InterrogateSSResponseTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        List<ForwardingFeatureImpl> forwardingFeatureList = new ArrayList<ForwardingFeatureImpl>();
+        List<ForwardingFeature> forwardingFeatureList = new ArrayList<ForwardingFeature>();
         ForwardingFeatureImpl item2 = new ForwardingFeatureImpl(null, ssStatus, null, null, null, null, null);
         forwardingFeatureList.add(item2);
         impl = new InterrogateSSResponseImpl(forwardingFeatureList);

@@ -24,40 +24,42 @@ package org.restcomm.protocols.ss7.map.service.lsm;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ASNAccuracyFulfilmentIndicator;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ASNLCSEvent;
+import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AccuracyFulfilmentIndicator;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredmtlrDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientIDImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformation;
+import org.restcomm.protocols.ss7.map.api.service.lsm.DeferredmtlrData;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformation;
+import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningData;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientID;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSEvent;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.PositioningDataInformationImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNListImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddressWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfo;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PeriodicLDRInfo;
+import org.restcomm.protocols.ss7.map.api.service.lsm.PositioningDataInformation;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNList;
+import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddress;
 import org.restcomm.protocols.ss7.map.api.service.lsm.SubscriberLocationReportRequest;
-import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimateImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ASNSingleByte;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranGANSSpositioningData;
+import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfo;
+import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimate;
+import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 
 /**
  * @author <a href="mailto:abhayani@gmail.com"> Amit Bhayani </a>
@@ -70,56 +72,56 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=10,constructed=false,index=0)
     private ASNLCSEvent lcsEvent;
     
-    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=1)
-    private LCSClientIDImpl lcsClientID;
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=1, defaultImplementation = LCSClientIDImpl.class)
+    private LCSClientID lcsClientID;
     
-    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=2)
-    private LCSLocationInfoImpl lcsLocationInfo;
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=2, defaultImplementation = LCSLocationInfoImpl.class)
+    private LCSLocationInfo lcsLocationInfo;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private ISDNAddressStringImpl msisdn;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString msisdn;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
-    private IMSIImpl imsi;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
-    private IMEIImpl imei;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1, defaultImplementation = IMEIImpl.class)
+    private IMEI imei;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
-    private ISDNAddressStringImpl naEsrd;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString naEsrd;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
-    private ISDNAddressStringImpl naEsrk;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString naEsrk;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
-    private ExtGeographicalInformationImpl locationEstimate;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1, defaultImplementation = ExtGeographicalInformationImpl.class)
+    private ExtGeographicalInformation locationEstimate;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1)
     private ASNInteger ageOfLocationEstimate;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,index=-1)
-    private SLRArgExtensionContainerImpl slrArgExtensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,index=-1, defaultImplementation = SLRArgExtensionContainerImpl.class)
+    private SLRArgExtensionContainer slrArgExtensionContainer;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1)
-    private AddGeographicalInformationImpl addLocationEstimate;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1, defaultImplementation = AddGeographicalInformationImpl.class)
+    private AddGeographicalInformation addLocationEstimate;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=true,index=-1)
-    private DeferredmtlrDataImpl deferredmtlrData;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=true,index=-1, defaultImplementation = DeferredmtlrDataImpl.class)
+    private DeferredmtlrData deferredmtlrData;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=false,index=-1)
     private ASNSingleByte lcsReferenceNumber;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=false,index=-1)
-    private PositioningDataInformationImpl geranPositioningData;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=false,index=-1, defaultImplementation = PositioningDataInformationImpl.class)
+    private PositioningDataInformation geranPositioningData;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1)
-    private UtranPositioningDataInfoImpl utranPositioningData;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1, defaultImplementation = UtranPositioningDataInfoImpl.class)
+    private UtranPositioningDataInfo utranPositioningData;
 
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=true,index=-1)
     private CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl cellGlobalIdOrServiceAreaIdOrLAIWrapped;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=false,index=-1)
-    private GSNAddressImpl hgmlcAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=false,index=-1, defaultImplementation = GSNAddressImpl.class)
+    private GSNAddress hgmlcAddress;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=false,index=-1)
     private ASNInteger lcsServiceTypeID;
@@ -133,32 +135,32 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=19,constructed=false,index=-1)
     private ASNAccuracyFulfilmentIndicator accuracyFulfilmentIndicator;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=20,constructed=false,index=-1)
-    private VelocityEstimateImpl velocityEstimate;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=20,constructed=false,index=-1, defaultImplementation = VelocityEstimateImpl.class)
+    private VelocityEstimate velocityEstimate;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=21,constructed=false,index=-1)
     private ASNInteger sequenceNumber;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=22,constructed=true,index=-1)
-    private PeriodicLDRInfoImpl periodicLDRInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=22,constructed=true,index=-1, defaultImplementation = PeriodicLDRInfoImpl.class)
+    private PeriodicLDRInfo periodicLDRInfo;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=23,constructed=false,index=-1)
     private ASNNull moLrShortCircuitIndicator;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=24,constructed=false,index=-1)
-    private GeranGANSSpositioningDataImpl geranGANSSpositioningData;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=24,constructed=false,index=-1, defaultImplementation = GeranGANSSpositioningDataImpl.class)
+    private GeranGANSSpositioningData geranGANSSpositioningData;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=25,constructed=false,index=-1)
-    private UtranGANSSpositioningDataImpl utranGANSSpositioningData;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=25,constructed=false,index=-1,defaultImplementation = UtranGANSSpositioningDataImpl.class)
+    private UtranGANSSpositioningData utranGANSSpositioningData;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=26,constructed=true,index=-1)
     private ServingNodeAddressWrapperImpl targetServingNodeForHandover;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=27,constructed=false,index=-1)
-    private LMSIImpl lmsi;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=27,constructed=false,index=-1, defaultImplementation = LMSIImpl.class)
+    private LMSI lmsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=28,constructed=true,index=-1)
-    private ReportingPLMNListImpl reportingPLMNList;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=28,constructed=true,index=-1, defaultImplementation = ReportingPLMNListImpl.class)
+    private ReportingPLMNList reportingPLMNList;
 
     /**
      *
@@ -191,17 +193,17 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * @param pseudonymIndicator
      * @param accuracyFulfilmentIndicator
      */
-    public SubscriberLocationReportRequestImpl(LCSEvent lcsEvent, LCSClientIDImpl lcsClientID, LCSLocationInfoImpl lcsLocationInfo,
-                                               ISDNAddressStringImpl msisdn, IMSIImpl imsi, IMEIImpl imei, ISDNAddressStringImpl naEsrd, ISDNAddressStringImpl naEsrk,
-                                               ExtGeographicalInformationImpl locationEstimate, Integer ageOfLocationEstimate,
-                                               SLRArgExtensionContainerImpl slrArgExtensionContainer, AddGeographicalInformationImpl addLocationEstimate,
-                                               DeferredmtlrDataImpl deferredmtlrData, Integer lcsReferenceNumber, PositioningDataInformationImpl geranPositioningData,
-                                               UtranPositioningDataInfoImpl utranPositioningData, CellGlobalIdOrServiceAreaIdOrLAIImpl cellIdOrSai,
-                                               GSNAddressImpl hgmlcAddress, Integer lcsServiceTypeID, boolean saiPresent, boolean pseudonymIndicator,
-                                               AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimateImpl velocityEstimate, Integer sequenceNumber,
-                                               PeriodicLDRInfoImpl periodicLDRInfo, boolean moLrShortCircuitIndicator,
-                                               GeranGANSSpositioningDataImpl geranGANSSpositioningData, UtranGANSSpositioningDataImpl utranGANSSpositioningData,
-                                               ServingNodeAddressImpl targetServingNodeForHandover) {
+    public SubscriberLocationReportRequestImpl(LCSEvent lcsEvent, LCSClientID lcsClientID, LCSLocationInfo lcsLocationInfo,
+                                               ISDNAddressString msisdn, IMSI imsi, IMEI imei, ISDNAddressString naEsrd, ISDNAddressString naEsrk,
+                                               ExtGeographicalInformation locationEstimate, Integer ageOfLocationEstimate,
+                                               SLRArgExtensionContainer slrArgExtensionContainer, AddGeographicalInformation addLocationEstimate,
+                                               DeferredmtlrData deferredmtlrData, Integer lcsReferenceNumber, PositioningDataInformation geranPositioningData,
+                                               UtranPositioningDataInfo utranPositioningData, CellGlobalIdOrServiceAreaIdOrLAI cellIdOrSai,
+                                               GSNAddress hgmlcAddress, Integer lcsServiceTypeID, boolean saiPresent, boolean pseudonymIndicator,
+                                               AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimate velocityEstimate, Integer sequenceNumber,
+                                               PeriodicLDRInfo periodicLDRInfo, boolean moLrShortCircuitIndicator,
+                                               GeranGANSSpositioningData geranGANSSpositioningData, UtranGANSSpositioningData utranGANSSpositioningData,
+                                               ServingNodeAddress targetServingNodeForHandover) {
         super();
         
         if(lcsEvent!=null) {
@@ -301,16 +303,16 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * @param lmsi
      * @param reportingPLMNList
      */
-    public SubscriberLocationReportRequestImpl(LCSEvent lcsEvent, LCSClientIDImpl lcsClientID, LCSLocationInfoImpl lcsLocationInfo, ISDNAddressStringImpl msisdn, IMSIImpl imsi,
-                                               IMEIImpl imei, ISDNAddressStringImpl naEsrd, ISDNAddressStringImpl naEsrk, ExtGeographicalInformationImpl locationEstimate,
-                                               Integer ageOfLocationEstimate, SLRArgExtensionContainerImpl slrArgExtensionContainer,
-                                               AddGeographicalInformationImpl addLocationEstimate, DeferredmtlrDataImpl deferredmtlrData, Integer lcsReferenceNumber,
-                                               PositioningDataInformationImpl geranPositioningData, UtranPositioningDataInfoImpl utranPositioningData,
-                                               CellGlobalIdOrServiceAreaIdOrLAIImpl cellIdOrSai, GSNAddressImpl hgmlcAddress, Integer lcsServiceTypeID, boolean saiPresent,
-                                               boolean pseudonymIndicator, AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimateImpl velocityEstimate,
-                                               Integer sequenceNumber, PeriodicLDRInfoImpl periodicLDRInfo, boolean moLrShortCircuitIndicator, GeranGANSSpositioningDataImpl geranGANSSpositioningData,
-                                               UtranGANSSpositioningDataImpl utranGANSSpositioningData, ServingNodeAddressImpl targetServingNodeForHandover, LMSIImpl lmsi,
-                                               ReportingPLMNListImpl reportingPLMNList) {
+    public SubscriberLocationReportRequestImpl(LCSEvent lcsEvent, LCSClientID lcsClientID, LCSLocationInfo lcsLocationInfo, ISDNAddressString msisdn, IMSI imsi,
+    		IMEI imei, ISDNAddressString naEsrd, ISDNAddressString naEsrk, ExtGeographicalInformation locationEstimate,
+                                               Integer ageOfLocationEstimate, SLRArgExtensionContainer slrArgExtensionContainer,
+                                               AddGeographicalInformation addLocationEstimate, DeferredmtlrData deferredmtlrData, Integer lcsReferenceNumber,
+                                               PositioningDataInformation geranPositioningData, UtranPositioningDataInfo utranPositioningData,
+                                               CellGlobalIdOrServiceAreaIdOrLAI cellIdOrSai, GSNAddress hgmlcAddress, Integer lcsServiceTypeID, boolean saiPresent,
+                                               boolean pseudonymIndicator, AccuracyFulfilmentIndicator accuracyFulfilmentIndicator, VelocityEstimate velocityEstimate,
+                                               Integer sequenceNumber, PeriodicLDRInfo periodicLDRInfo, boolean moLrShortCircuitIndicator, GeranGANSSpositioningData geranGANSSpositioningData,
+                                               UtranGANSSpositioningData utranGANSSpositioningData, ServingNodeAddress targetServingNodeForHandover, LMSI lmsi,
+                                               ReportingPLMNList reportingPLMNList) {
         super();
         
         if(lcsEvent!=null) {
@@ -412,7 +414,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getLCSClientID()
      */
-    public LCSClientIDImpl getLCSClientID() {
+    public LCSClientID getLCSClientID() {
         return this.lcsClientID;
     }
 
@@ -421,7 +423,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getLCSLocationInfo()
      */
-    public LCSLocationInfoImpl getLCSLocationInfo() {
+    public LCSLocationInfo getLCSLocationInfo() {
         return this.lcsLocationInfo;
     }
 
@@ -430,7 +432,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getMSISDN()
      */
-    public ISDNAddressStringImpl getMSISDN() {
+    public ISDNAddressString getMSISDN() {
         return this.msisdn;
     }
 
@@ -439,7 +441,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getIMSI()
      */
-    public IMSIImpl getIMSI() {
+    public IMSI getIMSI() {
         return this.imsi;
     }
 
@@ -448,7 +450,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getIMEI()
      */
-    public IMEIImpl getIMEI() {
+    public IMEI getIMEI() {
         return this.imei;
     }
 
@@ -457,7 +459,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getNaESRD()
      */
-    public ISDNAddressStringImpl getNaESRD() {
+    public ISDNAddressString getNaESRD() {
         return this.naEsrd;
     }
 
@@ -466,7 +468,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getNaESRK()
      */
-    public ISDNAddressStringImpl getNaESRK() {
+    public ISDNAddressString getNaESRK() {
         return this.naEsrk;
     }
 
@@ -475,7 +477,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getLocationEstimate()
      */
-    public ExtGeographicalInformationImpl getLocationEstimate() {
+    public ExtGeographicalInformation getLocationEstimate() {
         return this.locationEstimate;
     }
 
@@ -498,7 +500,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * @see org.restcomm.protocols.ss7.map.api.service.lsm.
      * SubscriberLocationReportRequestIndication#getSLRArgExtensionContainer()
      */
-    public SLRArgExtensionContainerImpl getSLRArgExtensionContainer() {
+    public SLRArgExtensionContainer getSLRArgExtensionContainer() {
         return this.slrArgExtensionContainer;
     }
 
@@ -508,7 +510,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * @see org.restcomm.protocols.ss7.map.api.service.lsm.
      * SubscriberLocationReportRequestIndication#getAdditionalLocationEstimate()
      */
-    public AddGeographicalInformationImpl getAdditionalLocationEstimate() {
+    public AddGeographicalInformation getAdditionalLocationEstimate() {
         return this.addLocationEstimate;
     }
 
@@ -517,7 +519,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getDeferredmtlrData()
      */
-    public DeferredmtlrDataImpl getDeferredmtlrData() {
+    public DeferredmtlrData getDeferredmtlrData() {
         return this.deferredmtlrData;
     }
 
@@ -538,7 +540,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getGeranPositioningData()
      */
-    public PositioningDataInformationImpl getGeranPositioningData() {
+    public PositioningDataInformation getGeranPositioningData() {
         return this.geranPositioningData;
     }
 
@@ -547,7 +549,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getUtranPositioningData()
      */
-    public UtranPositioningDataInfoImpl getUtranPositioningData() {
+    public UtranPositioningDataInfo getUtranPositioningData() {
         return this.utranPositioningData;
     }
 
@@ -557,7 +559,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication
      * #getCellGlobalIdOrServiceAreaIdOrLAI()
      */
-    public CellGlobalIdOrServiceAreaIdOrLAIImpl getCellGlobalIdOrServiceAreaIdOrLAI() {
+    public CellGlobalIdOrServiceAreaIdOrLAI getCellGlobalIdOrServiceAreaIdOrLAI() {
     	if(this.cellGlobalIdOrServiceAreaIdOrLAIWrapped!=null)
     		return this.cellGlobalIdOrServiceAreaIdOrLAIWrapped.getCellGlobalIdOrServiceAreaIdOrLAI();
     	
@@ -578,7 +580,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportRequestIndication#getHGMLCAddress()
      */
-    public GSNAddressImpl getHGMLCAddress() {
+    public GSNAddress getHGMLCAddress() {
         return this.hgmlcAddress;
     }
 
@@ -616,7 +618,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         return this.accuracyFulfilmentIndicator.getType();
     }
 
-    public VelocityEstimateImpl getVelocityEstimate() {
+    public VelocityEstimate getVelocityEstimate() {
         return velocityEstimate;
     }
 
@@ -627,7 +629,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         return sequenceNumber.getValue().intValue();
     }
 
-    public PeriodicLDRInfoImpl getPeriodicLDRInfo() {
+    public PeriodicLDRInfo getPeriodicLDRInfo() {
         return periodicLDRInfo;
     }
 
@@ -635,30 +637,30 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         return moLrShortCircuitIndicator!=null;
     }
 
-    public GeranGANSSpositioningDataImpl getGeranGANSSpositioningData() {
+    public GeranGANSSpositioningData getGeranGANSSpositioningData() {
         return geranGANSSpositioningData;
     }
 
-    public UtranGANSSpositioningDataImpl getUtranGANSSpositioningData() {
+    public UtranGANSSpositioningData getUtranGANSSpositioningData() {
         return utranGANSSpositioningData;
     }
 
-    public ServingNodeAddressImpl getTargetServingNodeForHandover() {
+    public ServingNodeAddress getTargetServingNodeForHandover() {
     	if(targetServingNodeForHandover==null)
     		return null;
     	
         return targetServingNodeForHandover.getServingNodeAddress();
     }
 
-    public LMSIImpl getLMSI() {
+    public LMSI getLMSI() {
         return lmsi;
     }
 
-    public void setLmsi(LMSIImpl lmsi) {
+    public void setLmsi(LMSI lmsi) {
         this.lmsi = lmsi;
     }
 
-    public ReportingPLMNListImpl getReportingPLMNList() {
+    public ReportingPLMNList getReportingPLMNList() {
         return reportingPLMNList;
     }
 

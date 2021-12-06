@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.lsm;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
 
 /**
  *
@@ -42,10 +42,10 @@ import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
  *
  */
 public interface SendRoutingInfoForLCSRequest extends LsmMessage {
-    ISDNAddressStringImpl getMLCNumber();
+    ISDNAddressString getMLCNumber();
 
-    SubscriberIdentityImpl getTargetMS();
+    SubscriberIdentity getTargetMS();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
 }

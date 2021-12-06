@@ -24,13 +24,16 @@ package org.restcomm.protocols.ss7.map.service.supplementary;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ASNEMLPPPriorityImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.RegisterSSRequest;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.primitives.ASNEMLPPPriorityImpl;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BasicServiceCodeImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -47,17 +50,17 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 public class RegisterSSRequestImpl extends SupplementaryMessageImpl implements RegisterSSRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-    private SSCodeImpl ssCode;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0, defaultImplementation = SSCodeImpl.class)
+    private SSCode ssCode;
     
     @ASNChoise
-    private BasicServiceCodeImpl basicService;
+    private BasicServiceCodeImpl basicServiceCode;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
-    private AddressStringImpl forwardedToNumber;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1, defaultImplementation = AddressStringImpl.class)
+    private AddressString forwardedToNumber;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1)
-    private ISDNAddressStringImpl forwardedToSubaddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString forwardedToSubaddress;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
     private ASNInteger noReplyConditionTime;
@@ -68,16 +71,25 @@ public class RegisterSSRequestImpl extends SupplementaryMessageImpl implements R
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1)
     private ASNInteger nbrUser;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1)
-    private ISDNAddressStringImpl longFTNSupported;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString longFTNSupported;
 
     public RegisterSSRequestImpl() {
     }
 
-    public RegisterSSRequestImpl(SSCodeImpl ssCode, BasicServiceCodeImpl basicService, AddressStringImpl forwardedToNumber, ISDNAddressStringImpl forwardedToSubaddress,
-            Integer noReplyConditionTime, EMLPPPriority defaultPriority, Integer nbrUser, ISDNAddressStringImpl longFTNSupported) {
+    public RegisterSSRequestImpl(SSCode ssCode, BasicServiceCode basicServiceCode, AddressString forwardedToNumber, ISDNAddressString forwardedToSubaddress,
+            Integer noReplyConditionTime, EMLPPPriority defaultPriority, Integer nbrUser, ISDNAddressString longFTNSupported) {
         this.ssCode = ssCode;
-        this.basicService = basicService;
+        
+        if(basicServiceCode instanceof BasicServiceCodeImpl)
+    		this.basicServiceCode=(BasicServiceCodeImpl)basicServiceCode;
+    	else if(basicServiceCode!=null) {
+    		if(basicServiceCode.getBearerService()!=null)
+    			this.basicServiceCode = new BasicServiceCodeImpl(basicServiceCode.getBearerService());
+    		else 
+    			this.basicServiceCode = new BasicServiceCodeImpl(basicServiceCode.getTeleservice());
+    	}
+        
         this.forwardedToNumber = forwardedToNumber;
         this.forwardedToSubaddress = forwardedToSubaddress;
         
@@ -108,22 +120,22 @@ public class RegisterSSRequestImpl extends SupplementaryMessageImpl implements R
     }
 
     @Override
-    public SSCodeImpl getSsCode() {
+    public SSCode getSsCode() {
         return ssCode;
     }
 
     @Override
-    public BasicServiceCodeImpl getBasicService() {
-        return basicService;
+    public BasicServiceCode getBasicService() {
+        return basicServiceCode;
     }
 
     @Override
-    public AddressStringImpl getForwardedToNumber() {
+    public AddressString getForwardedToNumber() {
         return forwardedToNumber;
     }
 
     @Override
-    public ISDNAddressStringImpl getForwardedToSubaddress() {
+    public ISDNAddressString getForwardedToSubaddress() {
         return forwardedToSubaddress;
     }
 
@@ -152,7 +164,7 @@ public class RegisterSSRequestImpl extends SupplementaryMessageImpl implements R
     }
 
     @Override
-    public ISDNAddressStringImpl getLongFTNSupported() {
+    public ISDNAddressString getLongFTNSupported() {
         return longFTNSupported;
     }
 
@@ -166,9 +178,9 @@ public class RegisterSSRequestImpl extends SupplementaryMessageImpl implements R
             sb.append(ssCode);
             sb.append(", ");
         }
-        if (this.basicService != null) {
+        if (this.basicServiceCode != null) {
             sb.append("basicService=");
-            sb.append(basicService);
+            sb.append(basicServiceCode);
             sb.append(", ");
         }
         if (this.forwardedToNumber != null) {

@@ -28,12 +28,10 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.FQDNImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDNGWIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPAddressImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SpecificAPNInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.FQDN;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDNGWIdentity;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPAddress;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -50,8 +48,11 @@ import io.netty.buffer.Unpooled;
  */
 public class SpecificAPNInfoTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 122, -128, 2, 11, 12, -95, 69, -128, 3, 5, 6, 7, -127, 3, 5, 6, 7, -126, 10, 4, 1, 6, 8, 3, 2, 5, 6, 1, 7, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+	public byte[] getData() {
+        return new byte[] { 48, 110, -128, 2, 11, 12, -95, 63, -128, 3, 5, 6, 7, -127, 3, 5, 6, 7, -126, 10, 4, 1, 6, 8, 3, 2,
+                5, 6, 1, 7, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3,
+                42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14,
+                15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     };
 
     public byte[] getPDPAddressData() {
@@ -77,20 +78,20 @@ public class SpecificAPNInfoTest {
         assertTrue(result.getResult() instanceof SpecificAPNInfoImpl);
         SpecificAPNInfoImpl prim = (SpecificAPNInfoImpl)result.getResult();
         
-        PDNGWIdentityImpl pdnGWIdentity = prim.getPdnGwIdentity();
-        PDPAddressImpl pdnGwIpv4Address = pdnGWIdentity.getPdnGwIpv4Address();
+        PDNGWIdentity pdnGWIdentity = prim.getPdnGwIdentity();
+        PDPAddress pdnGwIpv4Address = pdnGWIdentity.getPdnGwIpv4Address();
         assertNotNull(pdnGwIpv4Address);
         assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv4Address.getData()));
-        PDPAddressImpl pdnGwIpv6Address = pdnGWIdentity.getPdnGwIpv6Address();
+        PDPAddress pdnGwIpv6Address = pdnGWIdentity.getPdnGwIpv6Address();
         assertNotNull(pdnGwIpv6Address);
         assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv6Address.getData()));
-        FQDNImpl pdnGwName = pdnGWIdentity.getPdnGwName();
+        FQDN pdnGwName = pdnGWIdentity.getPdnGwName();
         assertNotNull(pdnGwName);
         assertTrue(Arrays.equals(this.getFQDNData(), pdnGwName.getData()));
         assertNotNull(pdnGWIdentity.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(pdnGWIdentity.getExtensionContainer()));
 
-        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
         assertNotNull(extensionContainer);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
 
@@ -103,7 +104,7 @@ public class SpecificAPNInfoTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SpecificAPNInfoImpl.class);
     	
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         APNImpl apn = new APNImpl(this.getDataAPN());
         PDPAddressImpl pdnGwIpv4Address = new PDPAddressImpl(this.getPDPAddressData());
         PDPAddressImpl pdnGwIpv6Address = new PDPAddressImpl(this.getPDPAddressData());

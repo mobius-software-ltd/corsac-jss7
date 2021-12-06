@@ -28,12 +28,12 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.primitives.ASNPCSExtentionImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtensionImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtension;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -42,7 +42,6 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -54,35 +53,27 @@ import io.netty.buffer.Unpooled;
 public class MAPExtensionContainerTest {
     MAPParameterFactory mapServiceFactory = new MAPParameterFactoryImpl();
 
-    public static MAPExtensionContainerImpl GetTestExtensionContainer() {
+    public static MAPExtensionContainer GetTestExtensionContainer() {
         MAPParameterFactory mapServiceFactory = new MAPParameterFactoryImpl();
 
-        ArrayList<MAPPrivateExtensionImpl> al = new ArrayList<MAPPrivateExtensionImpl>();
+        List<MAPPrivateExtension> al = new ArrayList<MAPPrivateExtension>();
         
-        ASNOctetString octetString=new ASNOctetString();
-        octetString.setValue(Unpooled.wrappedBuffer(new byte[] { 11, 12, 13, 14, 15 }));
-        al.add(mapServiceFactory.createMAPPrivateExtension(Arrays.asList(1L, 2L, 3L, 4L), octetString));
+        al.add(mapServiceFactory.createMAPPrivateExtension(Arrays.asList(1L, 2L, 3L, 4L), Unpooled.wrappedBuffer(new byte[] { 11, 12, 13, 14, 15 })));
         al.add(mapServiceFactory.createMAPPrivateExtension(Arrays.asList(1L, 2L, 3L, 6L), null));
         
-        octetString=new ASNOctetString();
-        octetString.setValue(Unpooled.wrappedBuffer(new byte[] { 21, 22, 23, 24, 25, 26 }));
-        al.add(mapServiceFactory.createMAPPrivateExtension(Arrays.asList(1L, 2L, 3L, 5L), octetString));
+        al.add(mapServiceFactory.createMAPPrivateExtension(Arrays.asList(1L, 2L, 3L, 5L), Unpooled.wrappedBuffer(new byte[] { 21, 22, 23, 24, 25, 26 })));
 
-        ASNPCSExtentionImpl pcs=new ASNPCSExtentionImpl();
-        octetString=new ASNOctetString();
-        octetString.setValue(Unpooled.wrappedBuffer(new byte[] { 31, 32, 33 }));
-        pcs.setValue(octetString);
-        MAPExtensionContainerImpl cnt = mapServiceFactory.createMAPExtensionContainer(al, pcs);
+        MAPExtensionContainer cnt = mapServiceFactory.createMAPExtensionContainer(al, Unpooled.wrappedBuffer(new byte[] { 31, 32, 33 }));
 
         return cnt;
     }
 
-    public static Boolean CheckTestExtensionContainer(MAPExtensionContainerImpl extContainer) {
+    public static Boolean CheckTestExtensionContainer(MAPExtensionContainer extContainer) {
         if (extContainer == null || extContainer.getPrivateExtensionList().size() != 3)
             return false;
 
         for (int i = 0; i < 3; i++) {
-            MAPPrivateExtensionImpl pe = extContainer.getPrivateExtensionList().get(i);
+            MAPPrivateExtension pe = extContainer.getPrivateExtensionList().get(i);
             Long[] lx = null;
             byte[] bx = null;
 
@@ -110,8 +101,7 @@ public class MAPExtensionContainerTest {
                 if (pe.getData() != null)
                     return false;
             } else {
-            	ASNOctetString octetString=(ASNOctetString)pe.getData();
-            	ByteBuf value=octetString.getValue();
+            	ByteBuf value=pe.getData();
             	byte[] data=new byte[value.readableBytes()];
             	value.readBytes(data);
             	
@@ -121,8 +111,7 @@ public class MAPExtensionContainerTest {
         }
 
         byte[] by = new byte[] { 31, 32, 33 };
-        ASNOctetString octetString=(ASNOctetString)extContainer.getPcsExtensions().getValue();
-        ByteBuf value=octetString.getValue();
+        ByteBuf value=extContainer.getPcsExtensions();
     	byte[] data=new byte[value.readableBytes()];
     	value.readBytes(data);
         if (extContainer.getPcsExtensions() == null || !Arrays.equals(data, by))
@@ -176,7 +165,7 @@ public class MAPExtensionContainerTest {
     }
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 45, (byte) 160, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13,
-                6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, (byte) 161, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11,
+                6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33 };
     }
 }

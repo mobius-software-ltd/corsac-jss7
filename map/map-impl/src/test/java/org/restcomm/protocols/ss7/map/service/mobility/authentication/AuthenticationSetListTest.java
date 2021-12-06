@@ -29,12 +29,12 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationQuintupletImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetListImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTripletImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.QuintupletListImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletListImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationQuintuplet;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTriplet;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.QuintupletList;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletList;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -100,11 +100,11 @@ public class AuthenticationSetListTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AuthenticationSetListImpl.class);
 
-        ArrayList<AuthenticationTripletImpl> ats = new ArrayList<AuthenticationTripletImpl>();
+        List<AuthenticationTriplet> ats = new ArrayList<AuthenticationTriplet>();
         AuthenticationTripletImpl at = new AuthenticationTripletImpl(AuthenticationTripletTest.getRandData(),
                 AuthenticationTripletTest.getSresData(), AuthenticationTripletTest.getKcData());
         ats.add(at);
-        TripletListImpl tl = new TripletListImpl(ats);
+        TripletList tl = new TripletListImpl(ats);
         AuthenticationSetListImpl asc = new AuthenticationSetListImpl(tl,3);        
 
         byte[] data=getEncodedData_V3_tripl();
@@ -113,7 +113,7 @@ public class AuthenticationSetListTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        ats = new ArrayList<AuthenticationTripletImpl>();
+        ats = new ArrayList<AuthenticationTriplet>();
         at = new AuthenticationTripletImpl(AuthenticationTripletTest.getRandData(), AuthenticationTripletTest.getSresData(),
                 AuthenticationTripletTest.getKcData());
         ats.add(at);
@@ -126,12 +126,12 @@ public class AuthenticationSetListTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        ArrayList<AuthenticationQuintupletImpl> qts = new ArrayList<AuthenticationQuintupletImpl>();
+        List<AuthenticationQuintuplet> qts = new ArrayList<AuthenticationQuintuplet>();
         AuthenticationQuintupletImpl qt = new AuthenticationQuintupletImpl(AuthenticationQuintupletTest.getRandData(),
                 AuthenticationQuintupletTest.getXresData(), AuthenticationQuintupletTest.getCkData(),
                 AuthenticationQuintupletTest.getIkData(), AuthenticationQuintupletTest.getAutnData());
         qts.add(qt);
-        QuintupletListImpl ql = new QuintupletListImpl(qts);
+        QuintupletList ql = new QuintupletListImpl(qts);
         asc = new AuthenticationSetListImpl(ql);
 
         data=getEncodedData_V3_q();

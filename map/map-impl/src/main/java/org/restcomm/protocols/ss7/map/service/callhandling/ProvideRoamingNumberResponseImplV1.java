@@ -24,10 +24,13 @@ package org.restcomm.protocols.ss7.map.service.callhandling;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ProvideRoamingNumberResponse;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 /**
@@ -39,14 +42,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class ProvideRoamingNumberResponseImplV1 extends CallHandlingMessageImpl implements ProvideRoamingNumberResponse {
 	private static final long serialVersionUID = 1L;
 
-	public ISDNAddressStringImpl roamingNumber;    
-    private long mapProtocolVersion;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = ISDNAddressStringImpl.class)
+	public ISDNAddressString roamingNumber;    
+    
+	private long mapProtocolVersion;
     
     public ProvideRoamingNumberResponseImplV1() {
     	this.mapProtocolVersion=2;
     }
     
-    public ProvideRoamingNumberResponseImplV1(ISDNAddressStringImpl roamingNumber, long mapProtocolVersion) {
+    public ProvideRoamingNumberResponseImplV1(ISDNAddressString roamingNumber, long mapProtocolVersion) {
         super();
         this.roamingNumber = roamingNumber;
         this.mapProtocolVersion = mapProtocolVersion;
@@ -67,12 +72,12 @@ public class ProvideRoamingNumberResponseImplV1 extends CallHandlingMessageImpl 
     }
 
     @Override
-    public ISDNAddressStringImpl getRoamingNumber() {
+    public ISDNAddressString getRoamingNumber() {
         return this.roamingNumber;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return null;
     }
 
@@ -82,7 +87,7 @@ public class ProvideRoamingNumberResponseImplV1 extends CallHandlingMessageImpl 
     }
 
     @Override
-    public ISDNAddressStringImpl getVmscAddress() {
+    public ISDNAddressString getVmscAddress() {
         return null;
     }
 

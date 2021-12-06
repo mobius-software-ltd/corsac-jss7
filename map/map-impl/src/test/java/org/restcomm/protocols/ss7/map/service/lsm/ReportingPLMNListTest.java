@@ -30,10 +30,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.PlmnIdImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.RANTechnology;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMNListImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMN;
+import org.restcomm.protocols.ss7.map.primitives.PlmnIdImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -75,10 +74,10 @@ public class ReportingPLMNListTest {
         
         assertTrue(imp.getPlmnListPrioritized());
 
-        List<ReportingPLMNImpl> al = imp.getPlmnList();
+        List<ReportingPLMN> al = imp.getPlmnList();
         assertEquals(al.size(), 2);
-        ReportingPLMNImpl p1 = al.get(0);
-        ReportingPLMNImpl p2 = al.get(1);
+        ReportingPLMN p1 = al.get(0);
+        ReportingPLMN p2 = al.get(1);
         assertTrue(Arrays.equals(p1.getPlmnId().getData(), getDataPlmnId1()));
         assertTrue(Arrays.equals(p2.getPlmnId().getData(), getDataPlmnId2()));
         assertEquals(p1.getRanTechnology(), RANTechnology.gsm);
@@ -97,7 +96,7 @@ public class ReportingPLMNListTest {
         plmnId = new PlmnIdImpl(getDataPlmnId2());
         ReportingPLMNImpl rp2 = new ReportingPLMNImpl(plmnId, RANTechnology.umts, false);
 
-        ArrayList<ReportingPLMNImpl> plmnList = new ArrayList<ReportingPLMNImpl>();
+        List<ReportingPLMN> plmnList = new ArrayList<ReportingPLMN>();
         plmnList.add(rp1);
         plmnList.add(rp2);
 

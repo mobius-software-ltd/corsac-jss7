@@ -24,11 +24,15 @@ package org.restcomm.protocols.ss7.map.service.pdpContextActivation;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.pdpContextActivation.SendRoutingInfoForGprsRequest;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -43,22 +47,22 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class SendRoutingInfoForGprsRequestImpl extends PdpContextActivationMessageImpl implements SendRoutingInfoForGprsRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
-    private GSNAddressImpl ggsnAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1, defaultImplementation = GSNAddressImpl.class)
+    private GSNAddress ggsnAddress;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
-    private ISDNAddressStringImpl ggsnNumber;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString ggsnNumber;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
 
     public SendRoutingInfoForGprsRequestImpl() {
     }
 
-    public SendRoutingInfoForGprsRequestImpl(IMSIImpl imsi, GSNAddressImpl ggsnAddress, ISDNAddressStringImpl ggsnNumber, MAPExtensionContainerImpl extensionContainer) {
+    public SendRoutingInfoForGprsRequestImpl(IMSI imsi, GSNAddress ggsnAddress, ISDNAddressString ggsnNumber, MAPExtensionContainer extensionContainer) {
         this.imsi = imsi;
         this.ggsnAddress = ggsnAddress;
         this.ggsnNumber = ggsnNumber;
@@ -76,22 +80,22 @@ public class SendRoutingInfoForGprsRequestImpl extends PdpContextActivationMessa
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return imsi;
     }
 
     @Override
-    public GSNAddressImpl getGgsnAddress() {
+    public GSNAddress getGgsnAddress() {
         return ggsnAddress;
     }
 
     @Override
-    public ISDNAddressStringImpl getGgsnNumber() {
+    public ISDNAddressString getGgsnNumber() {
         return ggsnNumber;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 
@@ -125,5 +129,4 @@ public class SendRoutingInfoForGprsRequestImpl extends PdpContextActivationMessa
 
         return sb.toString();
     }
-
 }

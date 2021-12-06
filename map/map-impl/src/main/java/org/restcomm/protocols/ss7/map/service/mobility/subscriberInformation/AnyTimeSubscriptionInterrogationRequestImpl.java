@@ -22,12 +22,14 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeSubscriptionInterrogationRequest;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedSubscriptionInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedSubscriptionInfo;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.primitives.SubscriberIdentityWrapperImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -45,14 +47,14 @@ public class AnyTimeSubscriptionInterrogationRequestImpl extends MobilityMessage
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1)
     private SubscriberIdentityWrapperImpl subscriberIdentity;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
-    private RequestedSubscriptionInfoImpl requestedSubscriptionInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1, defaultImplementation = RequestedSubscriptionInfoImpl.class)
+    private RequestedSubscriptionInfo requestedSubscriptionInfo;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
-    private ISDNAddressStringImpl gsmSCFAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString gsmSCFAddress;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1)
-    private MAPExtensionContainerImpl mapExtensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer mapExtensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
     private ASNNull isLongFTNSupported;
@@ -61,8 +63,8 @@ public class AnyTimeSubscriptionInterrogationRequestImpl extends MobilityMessage
 
     }
 
-    public AnyTimeSubscriptionInterrogationRequestImpl(SubscriberIdentityImpl subscriberIdentity, RequestedSubscriptionInfoImpl requestedSubscriptionInfo,
-            ISDNAddressStringImpl gsmSCFAddress, MAPExtensionContainerImpl mapExtensionContainer, boolean isLongFTNSupported) {
+    public AnyTimeSubscriptionInterrogationRequestImpl(SubscriberIdentity subscriberIdentity, RequestedSubscriptionInfo requestedSubscriptionInfo,
+            ISDNAddressString gsmSCFAddress, MAPExtensionContainer mapExtensionContainer, boolean isLongFTNSupported) {
        
     	if(subscriberIdentity!=null)
     		this.subscriberIdentity = new SubscriberIdentityWrapperImpl(subscriberIdentity);
@@ -75,22 +77,22 @@ public class AnyTimeSubscriptionInterrogationRequestImpl extends MobilityMessage
         	this.isLongFTNSupported = new ASNNull();
     }
 
-    public SubscriberIdentityImpl getSubscriberIdentity() {
+    public SubscriberIdentity getSubscriberIdentity() {
     	if(this.subscriberIdentity==null)
     		return null;
     	
         return this.subscriberIdentity.getSubscriberIdentity();
     }
 
-    public RequestedSubscriptionInfoImpl getRequestedSubscriptionInfo() {
+    public RequestedSubscriptionInfo getRequestedSubscriptionInfo() {
         return this.requestedSubscriptionInfo;
     }
 
-    public ISDNAddressStringImpl getGsmScfAddress() {
+    public ISDNAddressString getGsmScfAddress() {
         return this.gsmSCFAddress;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.mapExtensionContainer;
     }
 

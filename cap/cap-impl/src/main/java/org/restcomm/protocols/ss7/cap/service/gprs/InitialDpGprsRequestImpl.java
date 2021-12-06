@@ -23,25 +23,39 @@ package org.restcomm.protocols.ss7.cap.service.gprs;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezoneImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.InitialDpGprsRequest;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ASNGPRSEventTypeImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ASNPDPInitiationTypeImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointNameImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.EndUserAddressImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointName;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.EndUserAddress;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPInitiationType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfServiceImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.SGSNCapabilitiesImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingIDImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClassImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentityImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfService;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.SGSNCapabilities;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.primitives.TimeAndTimezoneImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ASNGPRSEventTypeImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ASNPDPInitiationTypeImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.AccessPointNameImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.EndUserAddressImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.QualityOfServiceImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.SGSNCapabilitiesImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingID;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClass;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentity;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSChargingIDImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSMSClassImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RAIdentityImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -64,64 +78,64 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
     private ASNGPRSEventTypeImpl gprsEventType;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
-    private ISDNAddressStringImpl msisdn;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString msisdn;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
-    private IMSIImpl imsi;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = false,index = -1)
-    private TimeAndTimezoneImpl timeAndTimezone;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = false,index = -1, defaultImplementation = TimeAndTimezoneImpl.class)
+    private TimeAndTimezone timeAndTimezone;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = true,index = -1)
-    private GPRSMSClassImpl gprsMSClass;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = true,index = -1, defaultImplementation = GPRSMSClassImpl.class)
+    private GPRSMSClass gprsMSClass;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = true,index = -1)
-    private EndUserAddressImpl endUserAddress;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = true,index = -1, defaultImplementation = EndUserAddressImpl.class)
+    private EndUserAddress endUserAddress;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = true,index = -1)
-    private QualityOfServiceImpl qualityOfService;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = true,index = -1, defaultImplementation = QualityOfServiceImpl.class)
+    private QualityOfService qualityOfService;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false,index = -1)
-    private AccessPointNameImpl accessPointName;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false,index = -1, defaultImplementation = AccessPointNameImpl.class)
+    private AccessPointName accessPointName;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 9,constructed = false,index = -1)
-    private RAIdentityImpl routeingAreaIdentity;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 9,constructed = false,index = -1, defaultImplementation = RAIdentityImpl.class)
+    private RAIdentity routeingAreaIdentity;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = false,index = -1)
-    private GPRSChargingIDImpl chargingID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = false,index = -1, defaultImplementation = GPRSChargingIDImpl.class)
+    private GPRSChargingID chargingID;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 11,constructed = false,index = -1)
-    private SGSNCapabilitiesImpl sgsnCapabilities;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 11,constructed = false,index = -1, defaultImplementation = SGSNCapabilitiesImpl.class)
+    private SGSNCapabilities sgsnCapabilities;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 12,constructed = true,index = -1)
-    private LocationInformationGPRSImpl locationInformationGPRS;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 12,constructed = true,index = -1, defaultImplementation = LocationInformationGPRSImpl.class)
+    private LocationInformationGPRS locationInformationGPRS;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 13,constructed = false,index = -1)
     private ASNPDPInitiationTypeImpl pdpInitiationType;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 14,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 14,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 15,constructed = false,index = -1)
-    private GSNAddressImpl gsnAddress;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 15,constructed = false,index = -1, defaultImplementation = GSNAddressImpl.class)
+    private GSNAddress gsnAddress;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 16,constructed = false,index = -1)
     private ASNNull secondaryPDPContext;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 17,constructed = false,index = -1)
-    private IMEIImpl imei;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 17,constructed = false,index = -1, defaultImplementation = IMEIImpl.class)
+    private IMEI imei;
 
     public InitialDpGprsRequestImpl() {
         super();
     }
 
-    public InitialDpGprsRequestImpl(int serviceKey, GPRSEventType gprsEventType, ISDNAddressStringImpl msisdn, IMSIImpl imsi,
-            TimeAndTimezoneImpl timeAndTimezone, GPRSMSClassImpl gprsMSClass, EndUserAddressImpl endUserAddress,
-            QualityOfServiceImpl qualityOfService, AccessPointNameImpl accessPointName, RAIdentityImpl routeingAreaIdentity,
-            GPRSChargingIDImpl chargingID, SGSNCapabilitiesImpl sgsnCapabilities, LocationInformationGPRSImpl locationInformationGPRS,
-            PDPInitiationType pdpInitiationType, CAPExtensionsImpl extensions, GSNAddressImpl gsnAddress, boolean secondaryPDPContext,
-            IMEIImpl imei) {
+    public InitialDpGprsRequestImpl(int serviceKey, GPRSEventType gprsEventType, ISDNAddressString msisdn, IMSI imsi,
+            TimeAndTimezone timeAndTimezone, GPRSMSClass gprsMSClass, EndUserAddress endUserAddress,
+            QualityOfService qualityOfService, AccessPointName accessPointName, RAIdentity routeingAreaIdentity,
+            GPRSChargingID chargingID, SGSNCapabilities sgsnCapabilities, LocationInformationGPRS locationInformationGPRS,
+            PDPInitiationType pdpInitiationType, CAPExtensions extensions, GSNAddress gsnAddress, boolean secondaryPDPContext,
+            IMEI imei) {
         super();
         this.serviceKey = new ASNInteger();
         this.serviceKey.setValue(Long.valueOf(serviceKey));
@@ -174,57 +188,57 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
     }
 
     @Override
-    public ISDNAddressStringImpl getMsisdn() {
+    public ISDNAddressString getMsisdn() {
         return this.msisdn;
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return this.imsi;
     }
 
     @Override
-    public TimeAndTimezoneImpl getTimeAndTimezone() {
+    public TimeAndTimezone getTimeAndTimezone() {
         return this.timeAndTimezone;
     }
 
     @Override
-    public GPRSMSClassImpl getGPRSMSClass() {
+    public GPRSMSClass getGPRSMSClass() {
         return this.gprsMSClass;
     }
 
     @Override
-    public EndUserAddressImpl getEndUserAddress() {
+    public EndUserAddress getEndUserAddress() {
         return this.endUserAddress;
     }
 
     @Override
-    public QualityOfServiceImpl getQualityOfService() {
+    public QualityOfService getQualityOfService() {
         return this.qualityOfService;
     }
 
     @Override
-    public AccessPointNameImpl getAccessPointName() {
+    public AccessPointName getAccessPointName() {
         return this.accessPointName;
     }
 
     @Override
-    public RAIdentityImpl getRouteingAreaIdentity() {
+    public RAIdentity getRouteingAreaIdentity() {
         return this.routeingAreaIdentity;
     }
 
     @Override
-    public GPRSChargingIDImpl getChargingID() {
+    public GPRSChargingID getChargingID() {
         return this.chargingID;
     }
 
     @Override
-    public SGSNCapabilitiesImpl getSGSNCapabilities() {
+    public SGSNCapabilities getSGSNCapabilities() {
         return this.sgsnCapabilities;
     }
 
     @Override
-    public LocationInformationGPRSImpl getLocationInformationGPRS() {
+    public LocationInformationGPRS getLocationInformationGPRS() {
         return this.locationInformationGPRS;
     }
 
@@ -237,12 +251,12 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return this.extensions;
     }
 
     @Override
-    public GSNAddressImpl getGSNAddress() {
+    public GSNAddress getGSNAddress() {
         return this.gsnAddress;
     }
 
@@ -252,7 +266,7 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
     }
 
     @Override
-    public IMEIImpl getImei() {
+    public IMEI getImei() {
         return this.imei;
     }
 

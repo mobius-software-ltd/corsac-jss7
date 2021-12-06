@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.sms;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -49,13 +49,13 @@ MAP V2: RoutingInfoForSM-Res::= SEQUENCE {
  */
 public interface SendRoutingInfoForSMResponse extends SmsMessage {
 
-    IMSIImpl getIMSI();
+	IMSI getIMSI();
 
-    LocationInfoWithLMSIImpl getLocationInfoWithLMSI();
+    LocationInfoWithLMSI getLocationInfoWithLMSI();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
-    IpSmGwGuidanceImpl getIpSmGwGuidance();
+    IpSmGwGuidance getIpSmGwGuidance();
 
     // for MAP V1 only
     Boolean getMwdSet();

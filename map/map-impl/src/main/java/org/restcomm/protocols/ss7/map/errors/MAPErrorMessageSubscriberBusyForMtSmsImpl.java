@@ -24,9 +24,11 @@ package org.restcomm.protocols.ss7.map.errors;
 
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSubscriberBusyForMtSms;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
@@ -39,10 +41,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class MAPErrorMessageSubscriberBusyForMtSmsImpl extends MAPErrorMessageImpl implements
         MAPErrorMessageSubscriberBusyForMtSms {
 	
-	private MAPExtensionContainerImpl extensionContainer;
-    private ASNNull gprsConnectionSuspended;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
+    
+	private ASNNull gprsConnectionSuspended;
 
-    public MAPErrorMessageSubscriberBusyForMtSmsImpl(MAPExtensionContainerImpl extensionContainer, Boolean gprsConnectionSuspended) {
+    public MAPErrorMessageSubscriberBusyForMtSmsImpl(MAPExtensionContainer extensionContainer, Boolean gprsConnectionSuspended) {
         super((long) MAPErrorCode.subscriberBusyForMTSMS);
 
         this.extensionContainer = extensionContainer;
@@ -62,7 +66,7 @@ public class MAPErrorMessageSubscriberBusyForMtSmsImpl extends MAPErrorMessageIm
         return this;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -70,7 +74,7 @@ public class MAPErrorMessageSubscriberBusyForMtSmsImpl extends MAPErrorMessageIm
         return this.gprsConnectionSuspended!=null;
     }
 
-    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 

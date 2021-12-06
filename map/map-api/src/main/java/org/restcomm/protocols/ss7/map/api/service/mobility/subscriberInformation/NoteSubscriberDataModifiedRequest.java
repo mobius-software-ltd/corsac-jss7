@@ -24,11 +24,11 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformatio
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionData;
 
 /**
  *
@@ -46,7 +46,7 @@ noteSubscriberDataModified OPERATION ::= {
 
 NoteSubscriberDataModifiedArg ::= SEQUENCE {
   imsi                    IMSI,
-  msisdn                  ISDN-AddressStringImpl,
+  msisdn                  ISDN-AddressString,
   forwardingInfoFor-CSE     [0] Ext-ForwardingInfoFor-CSE OPTIONAL,
   callBarringInfoFor-CSE    [1] Ext-CallBarringInfoFor-CSE OPTIONAL,
   odb-Info                  [2] ODB-Info OPTIONAL,
@@ -72,34 +72,34 @@ CSG-SubscriptionDataList ::= SEQUENCE SIZE (1..50) OF CSG-SubscriptionData
  */
 public interface NoteSubscriberDataModifiedRequest extends MobilityMessage {
 
-    IMSIImpl getImsi();
+    IMSI getImsi();
 
-    ISDNAddressStringImpl getMsisdn();
+    ISDNAddressString getMsisdn();
 
     ExtForwardingInfoForCSE getForwardingInfoForCSE();
 
     ExtCallBarringInfoForCSE getCallBarringInfoForCSE();
 
-    ODBInfoImpl getOdbInfo();
+    ODBInfo getOdbInfo();
 
-    CAMELSubscriptionInfoImpl getCamelSubscriptionInfo();
+    CAMELSubscriptionInfo getCamelSubscriptionInfo();
 
     boolean getAllInformationSent();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     ServingNode getUeReachable();
 
-    List<CSGSubscriptionDataImpl> getCsgSubscriptionDataList();
+    List<CSGSubscriptionData> getCsgSubscriptionDataList();
 
-    CallWaitingDataImpl getCwData();
+    CallWaitingData getCwData();
 
-    CallHoldDataImpl getChData();
+    CallHoldData getChData();
 
-    ClipDataImpl getClipData();
+    ClipData getClipData();
 
-    ClirDataImpl getClirData();
+    ClirData getClirData();
 
-    EctDataImpl getEctData();
+    EctData getEctData();
 
 }

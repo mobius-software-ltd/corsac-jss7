@@ -24,11 +24,11 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformatio
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.PasswordImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.Password;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 
 /**
  *
@@ -53,18 +53,18 @@ WrongPasswordAttemptsCounter ::= INTEGER (0..4)
  */
 public interface ModificationRequestForCBInfo extends Serializable {
 
-	SSCodeImpl getSsCode();
+	SSCode getSsCode();
 
-    ExtBasicServiceCodeImpl getBasicService();
+    ExtBasicServiceCode getBasicService();
 
-    ExtSSStatusImpl getSsStatus();
+    ExtSSStatus getSsStatus();
 
-    PasswordImpl getPassword();
+    Password getPassword();
 
     Integer getWrongPasswordAttemptsCounter();
 
     ModificationInstruction getModifyNotificationToCSE();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
 }

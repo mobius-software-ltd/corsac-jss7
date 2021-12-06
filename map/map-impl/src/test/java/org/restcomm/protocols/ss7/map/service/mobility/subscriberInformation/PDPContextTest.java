@@ -29,20 +29,19 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LIPAPermission;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContextImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SIPTOPermission;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNOIReplacementImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext3QoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext4QoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtPDPTypeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPAddressImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPTypeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSSubscribedImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNOIReplacementImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext3QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext4QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtPDPTypeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.PDPAddressImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.PDPTypeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.QoSSubscribedImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -59,7 +58,9 @@ import io.netty.buffer.Unpooled;
 public class PDPContextTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 108, 2, 1, 15, -112, 2, 11, 12, -111, 1, 21, -110, 3, 91, 92, 93, -109, 0, -108, 2, 22, 23, -75, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -128, 1, 15, -127, 2, 45, 46, -126, 1, 52, -125, 1, 55, -124, 1, 91, -123, 9, 81, 92, 83, 84, 85, 86, 87, 88, 89, -122, 2, 58, 59, -121, 1, 60, -120, 1, 1, -119, 1, 1 };
+        return new byte[] { 48, 102, 2, 1, 15, -112, 2, 11, 12, -111, 1, 21, -110, 3, 91, 92, 93, -109, 0, -108, 2, 22, 23, -75, 39, -96, 32, 48, 10, 6, 3, 42,
+                3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 1, 15, -127, 2, 45,
+                46, -126, 1, 52, -125, 1, 55, -124, 1, 91, -123, 9, 81, 92, 83, 84, 85, 86, 87, 88, 89, -122, 2, 58, 59, -121, 1, 60, -120, 1, 1, -119, 1, 1 };
     }
 
     private byte[] getEncodedPDPType() {
@@ -129,7 +130,7 @@ public class PDPContextTest {
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(impl.getExtensionContainer()));
         assertTrue(Arrays.equals(impl.getExt2QoSSubscribed().getData(), this.getEncodedqos2Subscribed()));
         assertTrue(Arrays.equals(impl.getExt3QoSSubscribed().getData(), this.getEncodedqos3Subscribed()));
-        assertEquals(impl.getExt4QoSSubscribed().getData(), 91);
+        assertEquals(impl.getExt4QoSSubscribed().getData(), new Integer(91));
         assertTrue(Arrays.equals(impl.getExtPDPType().getData(), this.getEncodedExtPDPType()));
         assertTrue(Arrays.equals(impl.getExtPDPAddress().getData(), this.getEncodedExtPdpAddress()));
         assertTrue(Arrays.equals(impl.getAPNOIReplacement().getData(), this.getAPNOIReplacement()));

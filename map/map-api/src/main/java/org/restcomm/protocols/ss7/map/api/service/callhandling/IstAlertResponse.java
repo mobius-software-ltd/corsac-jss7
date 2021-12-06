@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -43,6 +43,5 @@ public interface IstAlertResponse extends CallHandlingMessage {
 
      CallTerminationIndicator getCallTerminationIndicator();
 
-     MAPExtensionContainerImpl getExtensionContainer();
-
+     MAPExtensionContainer getExtensionContainer();
 }

@@ -24,11 +24,13 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ConnectToResourceRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.ResourceAddressImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ResourceAddressImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -48,11 +50,11 @@ public class ConnectToResourceRequestImpl extends CircuitSwitchedCallMessageImpl
 	@ASNChoise
     private ResourceAddressImpl resourceAddress;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = true,index = -1)
-    private ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = true,index = -1,defaultImplementation = ServiceInteractionIndicatorsTwoImpl.class)
+    private ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 50,constructed = false,index = -1)
     private ASNInteger callSegmentID;
@@ -60,11 +62,12 @@ public class ConnectToResourceRequestImpl extends CircuitSwitchedCallMessageImpl
     public ConnectToResourceRequestImpl() {
     }
 
-    public ConnectToResourceRequestImpl(CalledPartyNumberCapImpl resourceAddress_IPRoutingAddress, boolean resourceAddress_Null,
-            CAPExtensionsImpl extensions, ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo, Integer callSegmentID) {
+    public ConnectToResourceRequestImpl(CalledPartyNumberCap resourceAddress_IPRoutingAddress, boolean resourceAddress_Null,
+            CAPExtensions extensions, ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Integer callSegmentID) {
     	
-    	if(resourceAddress_IPRoutingAddress!=null)
+    	if(resourceAddress_IPRoutingAddress!=null) {
     		this.resourceAddress = new ResourceAddressImpl(resourceAddress_IPRoutingAddress);	
+    	}
     	else
     		this.resourceAddress = new ResourceAddressImpl(resourceAddress_Null);
         
@@ -88,7 +91,7 @@ public class ConnectToResourceRequestImpl extends CircuitSwitchedCallMessageImpl
     }
 
     @Override
-    public CalledPartyNumberCapImpl getResourceAddress_IPRoutingAddress() {
+    public CalledPartyNumberCap getResourceAddress_IPRoutingAddress() {
     	if(resourceAddress==null)
     		return null;
     	
@@ -104,12 +107,12 @@ public class ConnectToResourceRequestImpl extends CircuitSwitchedCallMessageImpl
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 
     @Override
-    public ServiceInteractionIndicatorsTwoImpl getServiceInteractionIndicatorsTwo() {
+    public ServiceInteractionIndicatorsTwo getServiceInteractionIndicatorsTwo() {
         return serviceInteractionIndicatorsTwo;
     }
 

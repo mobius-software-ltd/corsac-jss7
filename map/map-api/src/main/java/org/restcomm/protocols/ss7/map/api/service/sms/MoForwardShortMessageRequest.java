@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.sms;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -43,14 +43,13 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  */
 public interface MoForwardShortMessageRequest extends SmsMessage {
 
-    SM_RP_DAImpl getSM_RP_DA();
+    SM_RP_DA getSM_RP_DA();
 
-    SM_RP_OAImpl getSM_RP_OA();
+    SM_RP_OA getSM_RP_OA();
 
-    SmsSignalInfoImpl getSM_RP_UI();
+    SmsSignalInfo getSM_RP_UI();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
-    IMSIImpl getIMSI();
-
+    IMSI getIMSI();
 }

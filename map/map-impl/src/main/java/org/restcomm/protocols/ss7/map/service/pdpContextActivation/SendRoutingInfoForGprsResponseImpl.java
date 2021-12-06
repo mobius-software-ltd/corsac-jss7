@@ -24,9 +24,11 @@ package org.restcomm.protocols.ss7.map.service.pdpContextActivation;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.pdpContextActivation.SendRoutingInfoForGprsResponse;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -42,23 +44,23 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 public class SendRoutingInfoForGprsResponseImpl extends PdpContextActivationMessageImpl implements SendRoutingInfoForGprsResponse {
 	private static final long serialVersionUID = 1L;
 
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private GSNAddressImpl sgsnAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = GSNAddressImpl.class)
+    private GSNAddress sgsnAddress;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
-    private GSNAddressImpl ggsnAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1, defaultImplementation = GSNAddressImpl.class)
+    private GSNAddress ggsnAddress;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
     private ASNInteger mobileNotReachableReason;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
 
     public SendRoutingInfoForGprsResponseImpl() {
     }
 
-    public SendRoutingInfoForGprsResponseImpl(GSNAddressImpl sgsnAddress, GSNAddressImpl ggsnAddress, Integer mobileNotReachableReason,
-            MAPExtensionContainerImpl extensionContainer) {
+    public SendRoutingInfoForGprsResponseImpl(GSNAddress sgsnAddress, GSNAddress ggsnAddress, Integer mobileNotReachableReason,
+    		MAPExtensionContainer extensionContainer) {
         this.sgsnAddress = sgsnAddress;
         this.ggsnAddress = ggsnAddress;
         
@@ -81,12 +83,12 @@ public class SendRoutingInfoForGprsResponseImpl extends PdpContextActivationMess
     }
 
     @Override
-    public GSNAddressImpl getSgsnAddress() {
+    public GSNAddress getSgsnAddress() {
         return sgsnAddress;
     }
 
     @Override
-    public GSNAddressImpl getGgsnAddress() {
+    public GSNAddress getGgsnAddress() {
         return ggsnAddress;
     }
 
@@ -99,7 +101,7 @@ public class SendRoutingInfoForGprsResponseImpl extends PdpContextActivationMess
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 

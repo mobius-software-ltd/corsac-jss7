@@ -28,12 +28,12 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtensionImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgPCSExtensionsImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtension;
+import org.restcomm.protocols.ss7.map.primitives.MAPPrivateExtensionImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -42,7 +42,6 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -73,7 +72,7 @@ public class SLRArgExtensionContainerTest {
     }
 
     public byte[] getEncodedData() {
-        return new byte[] { 48, 16, -96, 12, 48, 10, 6, 3, 42, 22, 33, 4, 3, 1, 2, 3, -95, 0 };
+        return new byte[] { 48, 14, -96, 10, 48, 8, 6, 3, 42, 22, 33, 1, 2, 3, -95, 0 };
     }
 
     public Long[] getDataOId() {
@@ -100,7 +99,7 @@ public class SLRArgExtensionContainerTest {
         oids=imp.getPrivateExtensionList().get(0).getOId().toArray(oids);
         assertTrue(Arrays.equals(oids, getDataOId()));
         
-        ByteBuf value=((ASNOctetString)imp.getPrivateExtensionList().get(0).getData()).getValue();
+        ByteBuf value=imp.getPrivateExtensionList().get(0).getData();
         data=new byte[value.readableBytes()];
         value.readBytes(data);
         assertTrue(Arrays.equals(data, getDataPe()));
@@ -113,10 +112,8 @@ public class SLRArgExtensionContainerTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SLRArgExtensionContainerImpl.class);
     	
-        ArrayList<MAPPrivateExtensionImpl> privateExtensionList = new ArrayList<MAPPrivateExtensionImpl>();
-        ASNOctetString value=new ASNOctetString();
-        value.setValue(Unpooled.wrappedBuffer(getDataPe()));
-        MAPPrivateExtensionImpl pe = new MAPPrivateExtensionImpl(Arrays.asList(getDataOId()), value);
+        List<MAPPrivateExtension> privateExtensionList = new ArrayList<MAPPrivateExtension>();
+        MAPPrivateExtensionImpl pe = new MAPPrivateExtensionImpl(Arrays.asList(getDataOId()), Unpooled.wrappedBuffer(getDataPe()));
         privateExtensionList.add(pe);
         SLRArgPCSExtensionsImpl slrArgPcsExtensions = new SLRArgPCSExtensionsImpl(false);
 

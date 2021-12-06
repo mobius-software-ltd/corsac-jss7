@@ -29,9 +29,11 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -62,12 +64,12 @@ public class AlertServiceCentreRequestTest {
         assertTrue(result.getResult() instanceof AlertServiceCentreRequestImpl);
         AlertServiceCentreRequestImpl asc = (AlertServiceCentreRequestImpl)result.getResult();     
         
-        ISDNAddressStringImpl msisdn = asc.getMsisdn();
+        ISDNAddressString msisdn = asc.getMsisdn();
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(msisdn.getAddress(), "29113123311");
 
-        AddressStringImpl sca = asc.getServiceCentreAddress();
+        AddressString sca = asc.getServiceCentreAddress();
         assertEquals(sca.getAddressNature(), AddressNature.international_number);
         assertEquals(sca.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(sca.getAddress(), "49883700292");

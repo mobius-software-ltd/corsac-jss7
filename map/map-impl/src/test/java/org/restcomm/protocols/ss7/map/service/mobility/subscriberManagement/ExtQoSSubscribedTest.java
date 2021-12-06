@@ -26,16 +26,15 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_BitRateImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_BitRate;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_DeliveryOfErroneousSdus;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_DeliveryOrder;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_MaximumSduSizeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_MaximumSduSize;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_ResidualBER;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_SduErrorRatio;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_TrafficClass;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_TrafficHandlingPriority;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_TransferDelayImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed_TransferDelay;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -111,12 +110,12 @@ public class ExtQoSSubscribedTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ExtQoSSubscribedImpl.class);
     	
-        ExtQoSSubscribed_MaximumSduSizeImpl maximumSduSize = new ExtQoSSubscribed_MaximumSduSizeImpl(1500, false);
-        ExtQoSSubscribed_BitRateImpl maximumBitRateForUplink = new ExtQoSSubscribed_BitRateImpl(8640, false);
-        ExtQoSSubscribed_BitRateImpl maximumBitRateForDownlink = new ExtQoSSubscribed_BitRateImpl(8640, false);
-        ExtQoSSubscribed_TransferDelayImpl transferDelay = new ExtQoSSubscribed_TransferDelayImpl(0, true);
-        ExtQoSSubscribed_BitRateImpl guaranteedBitRateForUplink = new ExtQoSSubscribed_BitRateImpl(0, true);
-        ExtQoSSubscribed_BitRateImpl guaranteedBitRateForDownlink = new ExtQoSSubscribed_BitRateImpl(0, true);
+        ExtQoSSubscribed_MaximumSduSize maximumSduSize = new ExtQoSSubscribed_MaximumSduSize(1500, false);
+        ExtQoSSubscribed_BitRate maximumBitRateForUplink = new ExtQoSSubscribed_BitRate(8640, false);
+        ExtQoSSubscribed_BitRate maximumBitRateForDownlink = new ExtQoSSubscribed_BitRate(8640, false);
+        ExtQoSSubscribed_TransferDelay transferDelay = new ExtQoSSubscribed_TransferDelay(0, true);
+        ExtQoSSubscribed_BitRate guaranteedBitRateForUplink = new ExtQoSSubscribed_BitRate(0, true);
+        ExtQoSSubscribed_BitRate guaranteedBitRateForDownlink = new ExtQoSSubscribed_BitRate(0, true);
         ExtQoSSubscribedImpl prim = new ExtQoSSubscribedImpl(3, ExtQoSSubscribed_DeliveryOfErroneousSdus.erroneousSdusAreNotDelivered_No,
                 ExtQoSSubscribed_DeliveryOrder.withoutDeliveryOrderNo, ExtQoSSubscribed_TrafficClass.interactiveClass, maximumSduSize, maximumBitRateForUplink,
                 maximumBitRateForDownlink, ExtQoSSubscribed_ResidualBER._1_10_minus_5, ExtQoSSubscribed_SduErrorRatio._1_10_minus_4,
@@ -128,12 +127,12 @@ public class ExtQoSSubscribedTest {
         assertEquals(encodedData, this.getData1());
 
 
-        maximumSduSize = new ExtQoSSubscribed_MaximumSduSizeImpl(1502, false);
-        maximumBitRateForUplink = new ExtQoSSubscribed_BitRateImpl(23, false);
-        maximumBitRateForDownlink = new ExtQoSSubscribed_BitRateImpl(576, false);
-        transferDelay = new ExtQoSSubscribed_TransferDelayImpl(40, false);
-        guaranteedBitRateForUplink = new ExtQoSSubscribed_BitRateImpl(24, false);
-        guaranteedBitRateForDownlink = new ExtQoSSubscribed_BitRateImpl(25, false);
+        maximumSduSize = new ExtQoSSubscribed_MaximumSduSize(1502, false);
+        maximumBitRateForUplink = new ExtQoSSubscribed_BitRate(23, false);
+        maximumBitRateForDownlink = new ExtQoSSubscribed_BitRate(576, false);
+        transferDelay = new ExtQoSSubscribed_TransferDelay(40, false);
+        guaranteedBitRateForUplink = new ExtQoSSubscribed_BitRate(24, false);
+        guaranteedBitRateForDownlink = new ExtQoSSubscribed_BitRate(25, false);
         prim = new ExtQoSSubscribedImpl(15, ExtQoSSubscribed_DeliveryOfErroneousSdus.erroneousSdusAreDelivered_Yes,
                 ExtQoSSubscribed_DeliveryOrder.subscribeddeliveryOrder_Reserved, ExtQoSSubscribed_TrafficClass.backgroundClass, maximumSduSize, maximumBitRateForUplink,
                 maximumBitRateForDownlink, ExtQoSSubscribed_ResidualBER._5_10_minus_2, ExtQoSSubscribed_SduErrorRatio._1_10_minus_6,

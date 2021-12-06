@@ -24,8 +24,10 @@ package org.restcomm.protocols.ss7.cap.service.gprs;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.ReleaseGPRSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSCauseImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSCause;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSCauseImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -40,28 +42,28 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ReleaseGPRSRequestImpl extends GprsMessageImpl implements ReleaseGPRSRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-    private GPRSCauseImpl gprsCause;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1, defaultImplementation = GPRSCauseImpl.class)
+    private GPRSCause gprsCause;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private PDPIDImpl pdpID;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1, defaultImplementation = PDPIDImpl.class)
+    private PDPID pdpID;
 
     public ReleaseGPRSRequestImpl() {
     }
 
-    public ReleaseGPRSRequestImpl(GPRSCauseImpl gprsCause, PDPIDImpl pdpID) {
+    public ReleaseGPRSRequestImpl(GPRSCause gprsCause, PDPID pdpID) {
         super();
         this.gprsCause = gprsCause;
         this.pdpID = pdpID;
     }
 
     @Override
-    public GPRSCauseImpl getGPRSCause() {
+    public GPRSCause getGPRSCause() {
         return this.gprsCause;
     }
 
     @Override
-    public PDPIDImpl getPDPID() {
+    public PDPID getPDPID() {
         return this.pdpID;
     }
 

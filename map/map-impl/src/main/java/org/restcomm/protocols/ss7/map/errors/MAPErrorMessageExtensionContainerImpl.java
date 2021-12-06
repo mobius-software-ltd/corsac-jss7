@@ -23,9 +23,11 @@
 package org.restcomm.protocols.ss7.map.errors;
 
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -37,7 +39,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageExtensionContainerImpl extends MAPErrorMessageImpl implements MAPErrorMessageExtensionContainer {
-	private MAPExtensionContainerImpl extensionContainer;
+	
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
 
     public MAPErrorMessageExtensionContainerImpl() {
     }
@@ -46,17 +50,17 @@ public class MAPErrorMessageExtensionContainerImpl extends MAPErrorMessageImpl i
         super(errorCode);
     }
 
-    public MAPErrorMessageExtensionContainerImpl(Long errorCode, MAPExtensionContainerImpl extensionContainer) {
+    public MAPErrorMessageExtensionContainerImpl(Long errorCode, MAPExtensionContainer extensionContainer) {
         super(errorCode);
 
         this.extensionContainer = extensionContainer;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
-    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 

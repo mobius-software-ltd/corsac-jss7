@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
-import org.restcomm.protocols.ss7.map.api.errors.ASNPositionMethodFailureDiagnosticImpl;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessagePositionMethodFailure;
 import org.restcomm.protocols.ss7.map.api.errors.PositionMethodFailureDiagnostic;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -43,11 +43,11 @@ public class MAPErrorMessagePositionMethodFailureImpl extends MAPErrorMessageImp
 	
 	private ASNPositionMethodFailureDiagnosticImpl positionMethodFailureDiagnostic;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
 
     public MAPErrorMessagePositionMethodFailureImpl(PositionMethodFailureDiagnostic positionMethodFailureDiagnostic,
-            MAPExtensionContainerImpl extensionContainer) {
+    		MAPExtensionContainer extensionContainer) {
         super((long) MAPErrorCode.positionMethodFailure);
 
         this.positionMethodFailureDiagnostic = new ASNPositionMethodFailureDiagnosticImpl();
@@ -74,7 +74,7 @@ public class MAPErrorMessagePositionMethodFailureImpl extends MAPErrorMessageImp
         return this.positionMethodFailureDiagnostic.getType();
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -87,7 +87,7 @@ public class MAPErrorMessagePositionMethodFailureImpl extends MAPErrorMessageImp
     	}
     }
 
-    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 

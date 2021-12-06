@@ -6,11 +6,12 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ODBInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBHPLMNDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralData;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBHPLMNData;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ODBDataImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ODBGeneralDataImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ODBHPLMNDataImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -23,7 +24,7 @@ import io.netty.buffer.Unpooled;
  * @author vadim subbotin
  */
 public class ODBInfoTest {
-    private byte[] data = {48, 107, 48, 56, 3, 3, 2, -1, -4, 3, 2, 5, -96, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33};
+    private byte[] data = {48, 95, 48, 50, 3, 3, 2, -1, -4, 3, 2, 5, -96, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33};
 
     @Test(groups = {"functional.decode", "subscriberInformation"})
     public void testDecode() throws Exception {
@@ -40,7 +41,7 @@ public class ODBInfoTest {
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(odbInfo.getExtensionContainer()));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(odbInfo.getOdbData().getExtensionContainer()));
 
-        ODBGeneralDataImpl odbGeneralData = odbInfo.getOdbData().getODBGeneralData();
+        ODBGeneralData odbGeneralData = odbInfo.getOdbData().getODBGeneralData();
         assertTrue(odbGeneralData.getAllOGCallsBarred());
         assertTrue(odbGeneralData.getInternationalOGCallsBarred());
         assertTrue(odbGeneralData.getInternationalOGCallsNotToHPLMNCountryBarred());
@@ -71,7 +72,7 @@ public class ODBInfoTest {
         assertFalse(odbGeneralData.getRegistrationInterzonalCFNotToHPLMNBarred());
         assertFalse(odbGeneralData.getRegistrationInternationalCFBarred());
 
-        ODBHPLMNDataImpl odbhplmnData = odbInfo.getOdbData().getOdbHplmnData();
+        ODBHPLMNData odbhplmnData = odbInfo.getOdbData().getOdbHplmnData();
         assertTrue(odbhplmnData.getPlmnSpecificBarringType1());
         assertFalse(odbhplmnData.getPlmnSpecificBarringType2());
         assertTrue(odbhplmnData.getPlmnSpecificBarringType3());

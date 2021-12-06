@@ -30,10 +30,11 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.sms.MWStatusImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.MWStatus;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -55,7 +56,9 @@ public class InformServiceCentreRequestTest {
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { 48, 67, 4, 6, -111, 17, 33, 34, 51, -13, 3, 2, 4, 80, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 2, 2, 2, 43, -128, 2, 1, -68 };
+        return new byte[] { 48, 61, 4, 6, -111, 17, 33, 34, 51, -13, 3, 2, 4, 80, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11,
+                12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 2,
+                2, 2, 43, -128, 2, 1, -68 };
     }
 
     @Test(groups = { "functional.decode", "service.sms" })
@@ -69,7 +72,7 @@ public class InformServiceCentreRequestTest {
         assertTrue(result.getResult() instanceof InformServiceCentreRequestImpl);
         InformServiceCentreRequestImpl isc = (InformServiceCentreRequestImpl)result.getResult();   
         
-        MWStatusImpl mwStatus = isc.getMwStatus();
+        MWStatus mwStatus = isc.getMwStatus();
         assertNotNull(mwStatus);
         assertFalse(mwStatus.getScAddressNotIncluded());
         assertTrue(mwStatus.getMnrfSet());
@@ -82,8 +85,8 @@ public class InformServiceCentreRequestTest {
         assertTrue(result.getResult() instanceof InformServiceCentreRequestImpl);
         isc = (InformServiceCentreRequestImpl)result.getResult();   
 
-        MAPExtensionContainerImpl extensionContainer = isc.getExtensionContainer();
-        ISDNAddressStringImpl storedMSISDN = isc.getStoredMSISDN();
+        MAPExtensionContainer extensionContainer = isc.getExtensionContainer();
+        ISDNAddressString storedMSISDN = isc.getStoredMSISDN();
         mwStatus = isc.getMwStatus();
         int absentSubscriberDiagnosticSM = isc.getAbsentSubscriberDiagnosticSM();
         int additionalAbsentSubscriberDiagnosticSM = isc.getAdditionalAbsentSubscriberDiagnosticSM();

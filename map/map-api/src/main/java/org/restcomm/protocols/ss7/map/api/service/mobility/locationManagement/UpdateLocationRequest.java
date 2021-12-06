@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -61,29 +61,29 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
  */
 public interface UpdateLocationRequest extends MobilityMessage {
 
-    IMSIImpl getImsi();
+	IMSI getImsi();
 
-    ISDNAddressStringImpl getMscNumber();
+    ISDNAddressString getMscNumber();
 
-    ISDNAddressStringImpl getRoamingNumber();
+    ISDNAddressString getRoamingNumber();
 
-    ISDNAddressStringImpl getVlrNumber();
+    ISDNAddressString getVlrNumber();
 
-    LMSIImpl getLmsi();
+    LMSI getLmsi();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
-    VLRCapabilityImpl getVlrCapability();
+    VLRCapability getVlrCapability();
 
     boolean getInformPreviousNetworkEntity();
 
     boolean getCsLCSNotSupportedByUE();
 
-    GSNAddressImpl getVGmlcAddress();
+    GSNAddress getVGmlcAddress();
 
-    ADDInfoImpl getADDInfo();
+    ADDInfo getADDInfo();
 
-    PagingAreaImpl getPagingArea();
+    PagingArea getPagingArea();
 
     boolean getSkipSubscriberDataUpdate();
 

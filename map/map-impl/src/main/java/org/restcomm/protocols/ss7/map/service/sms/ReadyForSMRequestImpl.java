@@ -24,11 +24,12 @@ package org.restcomm.protocols.ss7.map.service.sms;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.ASNAlertReason;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.sms.AlertReason;
 import org.restcomm.protocols.ss7.map.api.service.sms.ReadyForSMRequest;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -44,11 +45,14 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class ReadyForSMRequestImpl extends SmsMessageImpl implements ReadyForSMRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = IMSIImpl.class)
+    private IMSI imsi;
+	
     private ASNAlertReason alertReason;
     private ASNNull alertReasonIndicator;
-    private MAPExtensionContainerImpl extensionContainer;
+    
+    @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
     private ASNNull additionalAlertReasonIndicator;
@@ -56,7 +60,7 @@ public class ReadyForSMRequestImpl extends SmsMessageImpl implements ReadyForSMR
     public ReadyForSMRequestImpl() {
     }
 
-    public ReadyForSMRequestImpl(IMSIImpl imsi, AlertReason alertReason, boolean alertReasonIndicator, MAPExtensionContainerImpl extensionContainer,
+    public ReadyForSMRequestImpl(IMSI imsi, AlertReason alertReason, boolean alertReasonIndicator, MAPExtensionContainer extensionContainer,
             boolean additionalAlertReasonIndicator) {
         this.imsi = imsi;
         
@@ -85,7 +89,7 @@ public class ReadyForSMRequestImpl extends SmsMessageImpl implements ReadyForSMR
     }
 
     @Override
-    public IMSIImpl getImsi() {
+    public IMSI getImsi() {
         return imsi;
     }
 
@@ -103,7 +107,7 @@ public class ReadyForSMRequestImpl extends SmsMessageImpl implements ReadyForSMR
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 

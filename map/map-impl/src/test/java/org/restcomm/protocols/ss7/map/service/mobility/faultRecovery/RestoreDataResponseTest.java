@@ -29,8 +29,9 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -52,7 +53,8 @@ public class RestoreDataResponseTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 56, 4, 5, -111, 17, 33, 34, -14, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 50, 4, 5, (byte) 145, 17, 33, 34, (byte) 242, 5, 0, 48, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5,
+                6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33 };
     }
 
     @Test
@@ -67,7 +69,7 @@ public class RestoreDataResponseTest {
         RestoreDataResponseImpl prim = (RestoreDataResponseImpl)result.getResult();
         
 
-        ISDNAddressStringImpl hlrNumber = prim.getHlrNumber();
+        ISDNAddressString hlrNumber = prim.getHlrNumber();
         assertTrue(hlrNumber.getAddress().equals("1112222"));
 
         assertNull(prim.getExtensionContainer());

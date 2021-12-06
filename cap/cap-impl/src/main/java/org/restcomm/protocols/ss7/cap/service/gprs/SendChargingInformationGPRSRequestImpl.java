@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.cap.service.gprs;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.SendChargingInformationGPRSRequest;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELSCIGPRSBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CamelSCIGPRSBillingCharacteristicsWrapperImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELSCIGPRSBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.cap.service.gprs.primitive.CamelSCIGPRSBillingCharacteristicsWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -47,7 +47,7 @@ public class SendChargingInformationGPRSRequestImpl extends GprsMessageImpl impl
     }
 
     public SendChargingInformationGPRSRequestImpl(
-            CAMELSCIGPRSBillingChargingCharacteristicsImpl sciGPRSBillingChargingCharacteristics) {
+            CAMELSCIGPRSBillingChargingCharacteristics sciGPRSBillingChargingCharacteristics) {
         super();
         
         if(sciGPRSBillingChargingCharacteristics!=null)
@@ -55,7 +55,7 @@ public class SendChargingInformationGPRSRequestImpl extends GprsMessageImpl impl
     }
 
     @Override
-    public CAMELSCIGPRSBillingChargingCharacteristicsImpl getSCIGPRSBillingChargingCharacteristics() {
+    public CAMELSCIGPRSBillingChargingCharacteristics getSCIGPRSBillingChargingCharacteristics() {
     	if(sciGPRSBillingChargingCharacteristics==null)
     		return null;
     	

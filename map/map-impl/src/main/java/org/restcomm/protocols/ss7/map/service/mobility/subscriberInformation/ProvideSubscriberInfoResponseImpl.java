@@ -24,9 +24,10 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoResponse;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -42,15 +43,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ProvideSubscriberInfoResponseImpl extends MobilityMessageImpl implements ProvideSubscriberInfoResponse {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=0)
-    private SubscriberInfoImpl subscriberInfo;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=0, defaultImplementation = SubscriberInfoImpl.class)
+    private SubscriberInfo subscriberInfo;
 	
-    private MAPExtensionContainerImpl extensionContainer;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
 
     public ProvideSubscriberInfoResponseImpl() {
     }
 
-    public ProvideSubscriberInfoResponseImpl(SubscriberInfoImpl subscriberInfo, MAPExtensionContainerImpl extensionContainer) {
+    public ProvideSubscriberInfoResponseImpl(SubscriberInfo subscriberInfo, MAPExtensionContainer extensionContainer) {
         this.subscriberInfo = subscriberInfo;
         this.extensionContainer = extensionContainer;
     }
@@ -64,12 +66,12 @@ public class ProvideSubscriberInfoResponseImpl extends MobilityMessageImpl imple
     }
 
     @Override
-    public SubscriberInfoImpl getSubscriberInfo() {
+    public SubscriberInfo getSubscriberInfo() {
         return subscriberInfo;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 

@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.authentication;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -61,11 +61,11 @@ RAND ::= OCTET STRING (SIZE (16))
  */
 public interface AuthenticationFailureReportRequest extends MobilityMessage {
 
-    IMSIImpl getImsi();
+	IMSI getImsi();
 
     FailureCause getFailureCause();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     Boolean getReAttempt();
 
@@ -73,8 +73,7 @@ public interface AuthenticationFailureReportRequest extends MobilityMessage {
 
     byte[] getRand();
 
-    ISDNAddressStringImpl getVlrNumber();
+    ISDNAddressString getVlrNumber();
 
-    ISDNAddressStringImpl getSgsnNumber();
-
+    ISDNAddressString getSgsnNumber();
 }

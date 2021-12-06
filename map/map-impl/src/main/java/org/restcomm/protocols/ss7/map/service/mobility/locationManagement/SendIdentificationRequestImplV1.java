@@ -23,14 +23,17 @@ package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.TMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
+import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.TMSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationRequest;
+import org.restcomm.protocols.ss7.map.primitives.TMSIImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 /**
@@ -42,7 +45,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class SendIdentificationRequestImplV1 extends MobilityMessageImpl implements SendIdentificationRequest {
 	private static final long serialVersionUID = 1L;
 
-	private TMSIImpl tmsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = TMSIImpl.class)
+	private TMSI tmsi;
     
 	private long mapProtocolVersion;
 
@@ -54,7 +58,7 @@ public class SendIdentificationRequestImplV1 extends MobilityMessageImpl impleme
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public SendIdentificationRequestImplV1(TMSIImpl tmsi, long mapProtocolVersion) {
+    public SendIdentificationRequestImplV1(TMSI tmsi, long mapProtocolVersion) {
         super();
         this.tmsi = tmsi;
         this.mapProtocolVersion = mapProtocolVersion;
@@ -71,7 +75,7 @@ public class SendIdentificationRequestImplV1 extends MobilityMessageImpl impleme
     }
 
     @Override
-    public TMSIImpl getTmsi() {
+    public TMSI getTmsi() {
         return this.tmsi;
     }
 
@@ -86,17 +90,17 @@ public class SendIdentificationRequestImplV1 extends MobilityMessageImpl impleme
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return null;
     }
 
     @Override
-    public ISDNAddressStringImpl getMscNumber() {
+    public ISDNAddressString getMscNumber() {
         return null;
     }
 
     @Override
-    public LAIFixedLengthImpl getPreviousLAI() {
+    public LAIFixedLength getPreviousLAI() {
         return null;
     }
 
@@ -111,12 +115,12 @@ public class SendIdentificationRequestImplV1 extends MobilityMessageImpl impleme
     }
 
     @Override
-    public ISDNAddressStringImpl getNewVLRNumber() {
+    public ISDNAddressString getNewVLRNumber() {
         return null;
     }
 
     @Override
-    public LMSIImpl getNewLmsi() {
+    public LMSI getNewLmsi() {
         return null;
     }
 

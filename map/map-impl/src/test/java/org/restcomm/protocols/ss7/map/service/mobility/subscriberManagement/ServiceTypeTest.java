@@ -26,10 +26,9 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GMLCRestriction;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.NotificationToMSUser;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ServiceTypeImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -46,8 +45,9 @@ import io.netty.buffer.Unpooled;
  */
 public class ServiceTypeTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 56, 2, 1, 1, -128, 1, 0, -127, 1, 1, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+	public byte[] getData() {
+        return new byte[] { 48, 50, 2, 1, 1, -128, 1, 0, -127, 1, 1, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14,
+                15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -61,7 +61,7 @@ public class ServiceTypeTest {
         assertTrue(result.getResult() instanceof ServiceTypeImpl);
         ServiceTypeImpl prim = (ServiceTypeImpl)result.getResult();
         
-        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
         assertEquals(prim.getServiceTypeIdentity(), 1);
         assertEquals(prim.getGMLCRestriction(), GMLCRestriction.gmlcList);
         assertEquals(prim.getNotificationToMSUser(), NotificationToMSUser.notifyAndVerifyLocationAllowedIfNoResponse);
@@ -75,7 +75,7 @@ public class ServiceTypeTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ServiceTypeImpl.class);
     	
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         int serviceTypeIdentity = 1;
         GMLCRestriction gmlcRestriction = GMLCRestriction.gmlcList;
         NotificationToMSUser notificationToMSUser = NotificationToMSUser.notifyAndVerifyLocationAllowedIfNoResponse;

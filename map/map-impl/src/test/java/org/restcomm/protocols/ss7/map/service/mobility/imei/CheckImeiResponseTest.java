@@ -28,12 +28,9 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.imei.CheckImeiResponse;
 import org.restcomm.protocols.ss7.map.api.service.mobility.imei.EquipmentStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuAImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuBImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -62,7 +59,8 @@ public class CheckImeiResponseTest {
 
     private byte[] getEncodedDataV3Full() {
         // TODO this is self generated trace. We need trace from operator
-        return new byte[] { 48, 60, 10, 1, 0, 48, 8, -128, 2, 7, -128, -127, 2, 0, 0, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 54, 10, 1, 0, 48, 8, -128, 2, 7, -128, -127, 2, 0, 0, -96, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4,
+                11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     }
 
     @Test(groups = { "functional.decode", "imei" })
@@ -132,7 +130,7 @@ public class CheckImeiResponseTest {
 
         bmuef = new UESBIIuImpl(impUESBIIuA, impUESBIIuB);
 
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         checkImei = new CheckImeiResponseImplV3(3, EquipmentStatus.whiteListed, bmuef, extensionContainer);
         data=getEncodedDataV3Full();

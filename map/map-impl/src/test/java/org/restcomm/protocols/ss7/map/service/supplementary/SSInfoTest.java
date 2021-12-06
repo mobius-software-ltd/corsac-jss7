@@ -29,14 +29,10 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringFeature;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeature;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -121,7 +117,7 @@ public class SSInfoTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SSInfoImpl.class);
                 
-        ArrayList<ForwardingFeatureImpl> forwardingFeatureList = new ArrayList<ForwardingFeatureImpl>();
+        List<ForwardingFeature> forwardingFeatureList = new ArrayList<ForwardingFeature>();
         SSStatusImpl ssStatus = new SSStatusImpl(false, true, false, false);
         ForwardingFeatureImpl ff = new ForwardingFeatureImpl(null, ssStatus, null, null, null, null, null);
         forwardingFeatureList.add(ff);
@@ -134,7 +130,7 @@ public class SSInfoTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        ArrayList<CallBarringFeatureImpl> callBarringFeatureList = new ArrayList<CallBarringFeatureImpl>();
+        List<CallBarringFeature> callBarringFeatureList = new ArrayList<CallBarringFeature>();
         CallBarringFeatureImpl cbf = new CallBarringFeatureImpl(null, ssStatus);
         callBarringFeatureList.add(cbf);
         CallBarringInfoImpl callBarringInfo = new CallBarringInfoImpl(null, callBarringFeatureList);

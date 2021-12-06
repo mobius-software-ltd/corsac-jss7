@@ -28,12 +28,12 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPMessage;
 import org.restcomm.protocols.ss7.map.api.MAPServiceBase;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPDialogState;
-import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoiseImpl;
+import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
 import org.restcomm.protocols.ss7.map.api.dialog.Reason;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageParameterless;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.dialog.MAPUserAbortInfoImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
@@ -67,20 +67,20 @@ public abstract class MAPDialogImpl implements MAPDialog {
     // Application Context of this Dialog
     protected MAPApplicationContext appCntx;
 
-    protected AddressStringImpl destReference;
-    protected AddressStringImpl origReference;
-    protected MAPExtensionContainerImpl extContainer = null;
-    protected AddressStringImpl receivedOrigReference;
-    protected AddressStringImpl receivedDestReference;
-    protected MAPExtensionContainerImpl receivedExtensionContainer;
+    protected AddressString destReference;
+    protected AddressString origReference;
+    protected MAPExtensionContainer extContainer = null;
+    protected AddressString receivedOrigReference;
+    protected AddressString receivedDestReference;
+    protected MAPExtensionContainer receivedExtensionContainer;
 
     protected MAPDialogState state = MAPDialogState.IDLE;
 
     // private Set<Long> incomingInvokeList = new HashSet<Long>();
 
     protected boolean eriStyle;
-    protected AddressStringImpl eriMsisdn;
-    protected AddressStringImpl eriVlrNo;
+    protected AddressString eriMsisdn;
+    protected AddressString eriVlrNo;
 
     private boolean returnMessageOnError = false;
     protected MessageType tcapMessageType;
@@ -88,7 +88,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
     private final MAPStackConfigurationManagement mapCfg;
 
     protected MAPDialogImpl(MAPApplicationContext appCntx, Dialog tcapDialog, MAPProviderImpl mapProviderImpl,
-            MAPServiceBase mapService, AddressStringImpl origReference, AddressStringImpl destReference) {
+            MAPServiceBase mapService, AddressString origReference, AddressString destReference) {
         this.appCntx = appCntx;
         this.tcapDialog = tcapDialog;
         this.mapProviderImpl = mapProviderImpl;
@@ -179,7 +179,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
             this.tcapDialog.release();
     }
 
-    public void setExtentionContainer(MAPExtensionContainerImpl extContainer) {
+    public void setExtentionContainer(MAPExtensionContainer extContainer) {
         this.extContainer = extContainer;
     }
 
@@ -206,19 +206,19 @@ public abstract class MAPDialogImpl implements MAPDialog {
     // return this.incomingInvokeList.contains(invokeId);
     // }
 
-    public AddressStringImpl getReceivedOrigReference() {
+    public AddressString getReceivedOrigReference() {
         return receivedOrigReference;
     }
 
-    public MAPExtensionContainerImpl getReceivedExtensionContainer() {
+    public MAPExtensionContainer getReceivedExtensionContainer() {
         return receivedExtensionContainer;
     }
 
-    public AddressStringImpl getReceivedDestReference() {
+    public AddressString getReceivedDestReference() {
         return receivedDestReference;
     }
 
-    public void abort(MAPUserAbortChoiseImpl userAbortChoise) throws MAPException {
+    public void abort(MAPUserAbortChoice userAbortChoise) throws MAPException {
     	MAPUserAbortInfoImpl mapUserAbortInfoImpl=new MAPUserAbortInfoImpl();
     	mapUserAbortInfoImpl.setUserAbortChoise(userAbortChoise);
     	mapUserAbortInfoImpl.setExtensionContainer(this.extContainer);
@@ -556,7 +556,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
         return sb.toString();
     }
 
-    public void addEricssonData(AddressStringImpl eriMsisdn, AddressStringImpl vlrNo) {
+    public void addEricssonData(AddressString eriMsisdn, AddressString vlrNo) {
         this.eriStyle = true;
         this.eriMsisdn = eriMsisdn;
         this.eriVlrNo = vlrNo;

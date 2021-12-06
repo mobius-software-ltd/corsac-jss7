@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 
 /**
  *
@@ -39,7 +39,7 @@ import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
  */
 public interface RelocationNumber extends Serializable {
 
-    ISDNAddressStringImpl getHandoverNumber();
+    ISDNAddressString getHandoverNumber();
 
     Integer getRABId();
 

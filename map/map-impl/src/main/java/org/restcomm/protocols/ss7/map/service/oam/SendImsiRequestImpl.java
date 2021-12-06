@@ -24,9 +24,12 @@ package org.restcomm.protocols.ss7.map.service.oam;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.service.oam.SendImsiRequest;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 /**
@@ -38,12 +41,13 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class SendImsiRequestImpl extends OamMessageImpl implements SendImsiRequest {
 	private static final long serialVersionUID = 1L;
 
-	private ISDNAddressStringImpl msisdn;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = ISDNAddressStringImpl.class)
+	private ISDNAddressString msisdn;
 
     public SendImsiRequestImpl() {
     }
 
-    public SendImsiRequestImpl(ISDNAddressStringImpl msisdn) {
+    public SendImsiRequestImpl(ISDNAddressString msisdn) {
         this.msisdn = msisdn;
     }
 
@@ -58,7 +62,7 @@ public class SendImsiRequestImpl extends OamMessageImpl implements SendImsiReque
     }
 
     @Override
-    public ISDNAddressStringImpl getMsisdn() {
+    public ISDNAddressString getMsisdn() {
         return msisdn;
     }
 

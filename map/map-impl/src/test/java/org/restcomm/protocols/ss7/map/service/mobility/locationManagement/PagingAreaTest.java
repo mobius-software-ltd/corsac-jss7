@@ -31,10 +31,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LACImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationAreaImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.PagingAreaImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LAC;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationArea;
+import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -65,15 +65,15 @@ public class PagingAreaTest {
         assertTrue(result.getResult() instanceof PagingAreaImpl);
         PagingAreaImpl prim = (PagingAreaImpl)result.getResult();
         
-        List<LocationAreaImpl> lst = prim.getLocationAreas();
+        List<LocationArea> lst = prim.getLocationAreas();
 
-        LAIFixedLengthImpl lai = lst.get(0).getLAIFixedLength();
+        LAIFixedLength lai = lst.get(0).getLAIFixedLength();
         assertEquals(lai.getMCC(), 249);
         assertEquals(lai.getMNC(), 1);
         assertEquals(lai.getLac(), 14010);
         assertNull(lst.get(0).getLAC());
 
-        LACImpl lac = lst.get(1).getLAC();
+        LAC lac = lst.get(1).getLAC();
         assertEquals(lac.getLac(), 14010);
         assertNull(lst.get(1).getLAIFixedLength());
     }
@@ -83,7 +83,7 @@ public class PagingAreaTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(PagingAreaImpl.class);
     	
-        ArrayList<LocationAreaImpl> lst = new ArrayList<LocationAreaImpl>();
+        List<LocationArea> lst = new ArrayList<LocationArea>();
         LAIFixedLengthImpl lai = new LAIFixedLengthImpl(249, 1, 14010);
         LACImpl lac = new LACImpl(14010);
         LocationAreaImpl l1 = new LocationAreaImpl(lai);

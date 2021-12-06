@@ -30,11 +30,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCBeforeAnswerImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCSubsequentImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224Impl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELSCIBillingChargingCharacteristicsAltImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -132,7 +128,7 @@ public class SCIBillingChargingCharacteristicsTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    private void testCAI_GSM0224(CAI_GSM0224Impl gsm224) {
+    private void testCAI_GSM0224(CAI_GSM0224 gsm224) {
         assertEquals((int) gsm224.getE1(), 1);
         assertEquals((int) gsm224.getE2(), 2);
         assertEquals((int) gsm224.getE3(), 3);

@@ -29,9 +29,9 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LACImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationAreaImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
+import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LAC;
+import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -66,7 +66,7 @@ public class LocationAreaTest {
         assertTrue(result.getResult() instanceof LocationAreaImpl);
         LocationAreaImpl prim = (LocationAreaImpl)result.getResult();
         
-        LAIFixedLengthImpl lai = prim.getLAIFixedLength();
+        LAIFixedLength lai = prim.getLAIFixedLength();
         assertEquals(lai.getMCC(), 249);
         assertEquals(lai.getMNC(), 1);
         assertEquals(lai.getLac(), 14010);
@@ -79,7 +79,7 @@ public class LocationAreaTest {
         prim = (LocationAreaImpl)result.getResult();
         
         assertNull(prim.getLAIFixedLength());
-        LACImpl lac = prim.getLAC();
+        LAC lac = prim.getLAC();
         assertEquals(lac.getLac(), 14010);
     }
 

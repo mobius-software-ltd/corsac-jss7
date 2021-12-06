@@ -26,15 +26,17 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ASNNetworkResourceImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIListWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
 import org.restcomm.protocols.ss7.map.api.service.mobility.faultRecovery.ResetRequest;
+import org.restcomm.protocols.ss7.map.primitives.ASNNetworkResourceImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIListWrapperImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -47,8 +49,11 @@ public class ResetRequestImpl extends MobilityMessageImpl implements ResetReques
 	private static final long serialVersionUID = 1L;
 
 	private ASNNetworkResourceImpl networkResource;
-    private ISDNAddressStringImpl hlrNumber;
-    private IMSIListWrapperImpl hlrList;
+    
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = ISDNAddressStringImpl.class)
+	private ISDNAddressString hlrNumber;
+    
+	private IMSIListWrapperImpl hlrList;
 
     private long mapProtocolVersion;
 
@@ -60,7 +65,7 @@ public class ResetRequestImpl extends MobilityMessageImpl implements ResetReques
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public ResetRequestImpl(NetworkResource networkResource, ISDNAddressStringImpl hlrNumber, List<IMSIImpl> hlrList, long mapProtocolVersion) {
+    public ResetRequestImpl(NetworkResource networkResource, ISDNAddressString hlrNumber, List<IMSI> hlrList, long mapProtocolVersion) {
         if(networkResource!=null) {
         	this.networkResource = new ASNNetworkResourceImpl();
         	this.networkResource.setType(networkResource);
@@ -97,12 +102,12 @@ public class ResetRequestImpl extends MobilityMessageImpl implements ResetReques
     }
 
     @Override
-    public ISDNAddressStringImpl getHlrNumber() {
+    public ISDNAddressString getHlrNumber() {
         return hlrNumber;
     }
 
     @Override
-    public List<IMSIImpl> getHlrList() {
+    public List<IMSI> getHlrList() {
     	if(hlrList==null)
     		return null;
     	
@@ -129,7 +134,7 @@ public class ResetRequestImpl extends MobilityMessageImpl implements ResetReques
         if (this.hlrList != null && this.hlrList.getIMSIs()!=null) {
             sb.append("hlrList=[");
             boolean firstItem = true;
-            for (IMSIImpl imsi : this.hlrList.getIMSIs()) {
+            for (IMSI imsi : this.hlrList.getIMSIs()) {
                 if (firstItem)
                     firstItem = false;
                 else

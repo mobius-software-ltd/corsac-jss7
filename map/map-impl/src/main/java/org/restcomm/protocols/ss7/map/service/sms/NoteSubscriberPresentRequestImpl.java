@@ -24,9 +24,12 @@ package org.restcomm.protocols.ss7.map.service.sms;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.map.api.service.sms.NoteSubscriberPresentRequest;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 /**
@@ -38,12 +41,13 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class NoteSubscriberPresentRequestImpl extends SmsMessageImpl implements NoteSubscriberPresentRequest {
 	private static final long serialVersionUID = 1L;
 
-	private IMSIImpl imsi;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = IMSIImpl.class)
+	private IMSI imsi;
 
     public NoteSubscriberPresentRequestImpl() {
     }
 
-    public NoteSubscriberPresentRequestImpl(IMSIImpl imsi) {
+    public NoteSubscriberPresentRequestImpl(IMSI imsi) {
         this.imsi = imsi;
     }
 
@@ -58,7 +62,7 @@ public class NoteSubscriberPresentRequestImpl extends SmsMessageImpl implements 
     }
 
     @Override
-    public IMSIImpl getIMSI() {
+    public IMSI getIMSI() {
         return imsi;
     }
 

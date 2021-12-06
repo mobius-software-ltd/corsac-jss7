@@ -26,29 +26,35 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCIImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.ASNUnavailabilityCauseImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.AllowedServicesImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CCBSIndicatorsImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.ExtendedRoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfoWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCI;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.AllowedServices;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CCBSIndicators;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfo;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.ExtendedRoutingInfo;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfo;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.SendRoutingInformationResponse;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.UnavailabilityCause;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ASNNumberPortabilityStatusImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.NumberPortabilityStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeListWrapperImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.restcomm.protocols.ss7.map.primitives.ExternalSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.primitives.NAEAPreferredCIImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.ASNNumberPortabilityStatusImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.SubscriberInfoImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeWrapperImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeListWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -66,20 +72,20 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImpl implements SendRoutingInformationResponse {
 	private static final long serialVersionUID = 1L;
 
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1)
-	private IMSIImpl imsi;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1,defaultImplementation = IMSIImpl.class)
+	private IMSI imsi;
     
 	@ASNChoise
     private ExtendedRoutingInfoImpl extRoutingInfo;
     
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1)
-	private CUGCheckInfoImpl cugCheckInfo;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1, defaultImplementation = CUGCheckInfoImpl.class)
+	private CUGCheckInfo cugCheckInfo;
     
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1)
 	private ASNNull cugSubscriptionFlag;
 	
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,index=-1)
-	private SubscriberInfoImpl subscriberInfo;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,index=-1, defaultImplementation = SubscriberInfoImpl.class)
+	private SubscriberInfo subscriberInfo;
     
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
 	private SSCodeListWrapperImpl ssList;
@@ -90,20 +96,20 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
 	private ASNNull forwardingInterrogationRequired;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1)
-	private ISDNAddressStringImpl vmscAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+	private ISDNAddressString vmscAddress;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1)
-	private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=true,index=-1)
-	private NAEAPreferredCIImpl naeaPreferredCI;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=10,constructed=true,index=-1, defaultImplementation = NAEAPreferredCIImpl.class)
+	private NAEAPreferredCI naeaPreferredCI;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=true,index=-1)
-	private CCBSIndicatorsImpl ccbsIndicators;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=11,constructed=true,index=-1, defaultImplementation = CCBSIndicatorsImpl.class)
+	private CCBSIndicators ccbsIndicators;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1)
-	private ISDNAddressStringImpl msisdn;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=12,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+	private ISDNAddressString msisdn;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=13,constructed=false,index=-1)
 	private ASNNumberPortabilityStatusImpl nrPortabilityStatus;
@@ -111,11 +117,11 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=14,constructed=false,index=-1)
 	private ASNInteger istAlertTimer;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=false,index=-1)
-	private SupportedCamelPhasesImpl supportedCamelPhases;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=false,index=-1, defaultImplementation = SupportedCamelPhasesImpl.class)
+	private SupportedCamelPhases supportedCamelPhases;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=false,index=-1)
-	private OfferedCamel4CSIsImpl offeredCamel4CSIs;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=false,index=-1, defaultImplementation = OfferedCamel4CSIsImpl.class)
+	private OfferedCamel4CSIs offeredCamel4CSIs;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=17,constructed=true,index=-1)
 	private RoutingInfoWrapperImpl routingInfo2;
@@ -126,8 +132,8 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=19,constructed=true,index=-1)
 	private ExtBasicServiceCodeWrapperImpl basicService2;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=20,constructed=false,index=-1)
-	private AllowedServicesImpl allowedServices;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=20,constructed=false,index=-1, defaultImplementation = AllowedServicesImpl.class)
+	private AllowedServices allowedServices;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=21,constructed=false,index=-1)
 	private ASNUnavailabilityCauseImpl unavailabilityCause;
@@ -135,8 +141,8 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=22,constructed=false,index=-1)
 	private ASNNull releaseResourcesSupported;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=23,constructed=true,index=-1)
-	private ExternalSignalInfoImpl gsmBearerCapability;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=23,constructed=true,index=-1, defaultImplementation = ExternalSignalInfoImpl.class)
+	private ExternalSignalInfo gsmBearerCapability;
     
     private long mapProtocolVersion;
 
@@ -154,17 +160,26 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public SendRoutingInformationResponseImplV3(long mapProtocolVersion, IMSIImpl imsi, ExtendedRoutingInfoImpl extRoutingInfo,
-            CUGCheckInfoImpl cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfoImpl subscriberInfo, List<SSCodeImpl> ssList,
-            ExtBasicServiceCodeImpl basicService, boolean forwardingInterrogationRequired, ISDNAddressStringImpl vmscAddress,
-            MAPExtensionContainerImpl extensionContainer, NAEAPreferredCIImpl naeaPreferredCI, CCBSIndicatorsImpl ccbsIndicators,
-            ISDNAddressStringImpl msisdn, NumberPortabilityStatus nrPortabilityStatus, Integer istAlertTimer,
-            SupportedCamelPhasesImpl supportedCamelPhases, OfferedCamel4CSIsImpl offeredCamel4CSIs, RoutingInfoImpl routingInfo2,
-            List<SSCodeImpl> ssList2, ExtBasicServiceCodeImpl basicService2, AllowedServicesImpl allowedServices,
-            UnavailabilityCause unavailabilityCause, boolean releaseResourcesSupported, ExternalSignalInfoImpl gsmBearerCapability) {
+    public SendRoutingInformationResponseImplV3(long mapProtocolVersion, IMSI imsi, ExtendedRoutingInfo extRoutingInfo,
+    		CUGCheckInfo cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfo subscriberInfo, List<SSCode> ssList,
+    		ExtBasicServiceCode basicService, boolean forwardingInterrogationRequired, ISDNAddressString vmscAddress,
+            MAPExtensionContainer extensionContainer, NAEAPreferredCI naeaPreferredCI, CCBSIndicators ccbsIndicators,
+            ISDNAddressString msisdn, NumberPortabilityStatus nrPortabilityStatus, Integer istAlertTimer,
+            SupportedCamelPhases supportedCamelPhases, OfferedCamel4CSIs offeredCamel4CSIs, RoutingInfo routingInfo2,
+            List<SSCode> ssList2, ExtBasicServiceCode basicService2, AllowedServices allowedServices,
+            UnavailabilityCause unavailabilityCause, boolean releaseResourcesSupported, ExternalSignalInfo gsmBearerCapability) {
 
         this.imsi = imsi;
-        this.extRoutingInfo = extRoutingInfo;
+        
+        if(extRoutingInfo instanceof ExtendedRoutingInfoImpl)
+    		this.extRoutingInfo=(ExtendedRoutingInfoImpl)extRoutingInfo;
+    	else if(extRoutingInfo!=null) {
+    		if(extRoutingInfo.getRoutingInfo()!=null)
+    			this.extRoutingInfo = new ExtendedRoutingInfoImpl(extRoutingInfo.getRoutingInfo());
+    		else
+    			this.extRoutingInfo = new ExtendedRoutingInfoImpl(extRoutingInfo.getCamelRoutingInfo());
+    	}
+        
         this.cugCheckInfo = cugCheckInfo;
         
         if(cugSubscriptionFlag)
@@ -228,17 +243,17 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     }
 
     @Override
-    public IMSIImpl getIMSI() {
+    public IMSI getIMSI() {
         return this.imsi;
     }
 
     @Override
-    public ExtendedRoutingInfoImpl getExtendedRoutingInfo() {
+    public ExtendedRoutingInfo getExtendedRoutingInfo() {
         return this.extRoutingInfo;
     }
 
     @Override
-    public CUGCheckInfoImpl getCUGCheckInfo() {
+    public CUGCheckInfo getCUGCheckInfo() {
         return this.cugCheckInfo;
     }
 
@@ -248,12 +263,12 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     }
 
     @Override
-    public SubscriberInfoImpl getSubscriberInfo() {
+    public SubscriberInfo getSubscriberInfo() {
         return this.subscriberInfo;
     }
 
     @Override
-    public List<SSCodeImpl> getSSList() {
+    public List<SSCode> getSSList() {
     	if(this.ssList==null)
     		return null;
     	
@@ -261,7 +276,7 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     }
 
     @Override
-    public ExtBasicServiceCodeImpl getBasicService() {
+    public ExtBasicServiceCode getBasicService() {
     	if(this.basicService==null)
     		return null;
     	
@@ -274,27 +289,27 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     }
 
     @Override
-    public ISDNAddressStringImpl getVmscAddress() {
+    public ISDNAddressString getVmscAddress() {
         return this.vmscAddress;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
     @Override
-    public NAEAPreferredCIImpl getNaeaPreferredCI() {
+    public NAEAPreferredCI getNaeaPreferredCI() {
         return this.naeaPreferredCI;
     }
 
     @Override
-    public CCBSIndicatorsImpl getCCBSIndicators() {
+    public CCBSIndicators getCCBSIndicators() {
         return this.ccbsIndicators;
     }
 
     @Override
-    public ISDNAddressStringImpl getMsisdn() {
+    public ISDNAddressString getMsisdn() {
         return this.msisdn;
     }
 
@@ -315,17 +330,17 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     }
 
     @Override
-    public SupportedCamelPhasesImpl getSupportedCamelPhasesInVMSC() {
+    public SupportedCamelPhases getSupportedCamelPhasesInVMSC() {
         return this.supportedCamelPhases;
     }
 
     @Override
-    public OfferedCamel4CSIsImpl getOfferedCamel4CSIsInVMSC() {
+    public OfferedCamel4CSIs getOfferedCamel4CSIsInVMSC() {
         return this.offeredCamel4CSIs;
     }
 
     @Override
-    public RoutingInfoImpl getRoutingInfo2() {
+    public RoutingInfo getRoutingInfo2() {
     	if(this.routingInfo2==null)
     		return null;
     	
@@ -333,7 +348,7 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     }
 
     @Override
-    public List<SSCodeImpl> getSSList2() {
+    public List<SSCode> getSSList2() {
     	if(this.ssList2==null)
     		return null;
     	
@@ -341,7 +356,7 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     }
 
     @Override
-    public ExtBasicServiceCodeImpl getBasicService2() {
+    public ExtBasicServiceCode getBasicService2() {
     	if(this.basicService2==null)
     		return null;
     	
@@ -349,7 +364,7 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     }
 
     @Override
-    public AllowedServicesImpl getAllowedServices() {
+    public AllowedServices getAllowedServices() {
         return this.allowedServices;
     }
 
@@ -367,7 +382,7 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     }
 
     @Override
-    public ExternalSignalInfoImpl getGsmBearerCapability() {
+    public ExternalSignalInfo getGsmBearerCapability() {
         return this.gsmBearerCapability;
     }
 
@@ -415,7 +430,7 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
         if (this.ssList != null && this.ssList.getSSCode()!=null) {
             sb.append("ssList=[");
             boolean firstItem = true;
-            for (SSCodeImpl be : this.ssList.getSSCode()) {
+            for (SSCode be : this.ssList.getSSCode()) {
                 if (firstItem)
                     firstItem = false;
                 else
@@ -486,7 +501,7 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
         if (this.ssList2 != null && this.ssList2.getSSCode()!=null) {
             sb.append("ssList2=[");
             boolean firstItem = true;
-            for (SSCodeImpl be : this.ssList2.getSSCode()) {
+            for (SSCode be : this.ssList2.getSSCode()) {
                 if (firstItem)
                     firstItem = false;
                 else

@@ -31,9 +31,8 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSCodewordImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
+import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -92,7 +91,7 @@ public class LCSCodewordTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(LCSCodewordImpl.class);
     	
-        USSDStringImpl nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
+        USSDString nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
         LCSCodewordImpl lcsCodeword = new LCSCodewordImpl(new CBSDataCodingSchemeImpl(0x0f), nameString);
         ByteBuf buffer=parser.encode(lcsCodeword);
         byte[] encodedData = new byte[buffer.readableBytes()];

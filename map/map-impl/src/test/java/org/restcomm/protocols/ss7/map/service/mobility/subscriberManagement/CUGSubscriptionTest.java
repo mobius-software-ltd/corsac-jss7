@@ -28,13 +28,12 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlockImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGSubscriptionImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGSubscription;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.IntraCUGOptions;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
@@ -52,9 +51,11 @@ import io.netty.buffer.Unpooled;
  */
 public class CUGSubscriptionTest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 64, 2, 1, 1, 4, 4, 1, 2, 3, 4, 10, 1, 0, 48, 3, -126, 1, 38, -96, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
-    };
+	public byte[] getData() {
+		return new byte[] { 48, 58, 2, 1, 1, 4, 4, 1, 2, 3, 4, 10, 1, 0, 48, 3, -126, 1, 38, -96, 39, -96, 32, 48, 10, 6, 3,
+	                42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3,
+	                31, 32, 33 };
+	};
 
     private byte[] getGugData() {
         return new byte[] { 1, 2, 3, 4 };
@@ -71,13 +72,13 @@ public class CUGSubscriptionTest {
         assertTrue(result.getResult() instanceof CUGSubscriptionImpl);
         CUGSubscriptionImpl prim = (CUGSubscriptionImpl)result.getResult(); 
         
-        MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
+        MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
         assertTrue(prim.getCUGIndex() == 1);
         assertTrue(Arrays.equals(prim.getCugInterlock().getData(), getGugData()));
         assertEquals(prim.getIntraCugOptions(), IntraCUGOptions.noCUGRestrictions);
         assertNotNull(prim.getBasicServiceGroupList());
         assertTrue(prim.getBasicServiceGroupList().size() == 1);
-        ExtBasicServiceCodeImpl bsc = prim.getBasicServiceGroupList().get(0);
+        ExtBasicServiceCode bsc = prim.getBasicServiceGroupList().get(0);
         assertNotNull(bsc);
         assertEquals(bsc.getExtBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_9600bps);
         assertNotNull(extensionContainer);
@@ -95,11 +96,11 @@ public class CUGSubscriptionTest {
         IntraCUGOptions intraCugOptions = IntraCUGOptions.noCUGRestrictions;
         ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
         ExtBasicServiceCodeImpl bs = new ExtBasicServiceCodeImpl(b);
-        ArrayList<ExtBasicServiceCodeImpl> basicService = new ArrayList<ExtBasicServiceCodeImpl>();
+        List<ExtBasicServiceCode> basicService = new ArrayList<ExtBasicServiceCode>();
         basicService.add(bs);
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
-        CUGSubscriptionImpl prim = new CUGSubscriptionImpl(cugIndex, cugInterlock, intraCugOptions, basicService,
+        CUGSubscription prim = new CUGSubscriptionImpl(cugIndex, cugInterlock, intraCugOptions, basicService,
                 extensionContainer);
 
         ByteBuf buffer=parser.encode(prim);

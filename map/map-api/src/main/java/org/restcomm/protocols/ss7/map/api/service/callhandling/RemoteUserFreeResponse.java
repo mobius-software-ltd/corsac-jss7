@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -36,6 +36,5 @@ public interface RemoteUserFreeResponse extends CallHandlingMessage {
 
      RUFOutcome getRufOutcome();
 
-     MAPExtensionContainerImpl getExtensionContainer();
-
+     MAPExtensionContainer getExtensionContainer();
 }

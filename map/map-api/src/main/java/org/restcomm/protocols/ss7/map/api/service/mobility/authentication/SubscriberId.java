@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.authentication;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.TMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.TMSI;
 
 /**
  *
@@ -37,8 +37,8 @@ import org.restcomm.protocols.ss7.map.api.primitives.TMSIImpl;
  */
 public interface SubscriberId extends Serializable {
 
-    IMSIImpl getImsi();
+    IMSI getImsi();
 
-    TMSIImpl getTmsi();
+    TMSI getTmsi();
 
 }

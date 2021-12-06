@@ -28,17 +28,15 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CliRestrictionOption;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatusImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.SSSubscriptionOptionImpl;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -94,7 +92,7 @@ public class SSDataTest {
         SSStatusImpl ssStatus = new SSStatusImpl(true, false, true, false);
         SSSubscriptionOptionImpl ssSubscriptionOption = new SSSubscriptionOptionImpl(CliRestrictionOption.temporaryDefaultAllowed);
 
-        ArrayList<BasicServiceCodeImpl> basicServiceGroupList = new ArrayList<BasicServiceCodeImpl>();
+        List<BasicServiceCode> basicServiceGroupList = new ArrayList<BasicServiceCode>();
         TeleserviceCodeImpl teleserviceCode = new TeleserviceCodeImpl(TeleserviceCodeValue.facsimileGroup4);
         BasicServiceCodeImpl bsc = new BasicServiceCodeImpl(teleserviceCode);
         basicServiceGroupList.add(bsc);

@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.api.service.oam;
 
-import java.io.Serializable;
-
 /**
  *
  TracePropagationList ::= SEQUENCE { traceReference [0] TraceReference OPTIONAL, traceType [1] TraceType OPTIONAL,
@@ -36,30 +34,30 @@ import java.io.Serializable;
  * @author sergey vetyutnev
  *
  */
-public interface TracePropagationList extends Serializable {
+public interface TracePropagationList {
 
-    TraceReferenceImpl getTraceReference();
+    TraceReference getTraceReference();
 
-    TraceTypeImpl getTraceType();
+    TraceType getTraceType();
 
-    TraceReference2Impl getTraceReference2();
+    TraceReference2 getTraceReference2();
 
     TraceRecordingSessionReference getTraceRecordingSessionReference();
 
     TraceDepth getTraceDepth();
 
-    RNCInterfaceListImpl getRNCInterfaceList();
+    RNCInterfaceList getRNCInterfaceList();
 
     TraceDepth getMscSTraceDepth();
 
-    MSCSInterfaceListImpl getMscSInterfaceList();
+    MSCSInterfaceList getMscSInterfaceList();
 
-    MSCSEventListImpl getMSCSEventList();
+    MSCSEventList getMSCSEventList();
 
     TraceDepth getMgwTraceDepth();
 
-    MGWInterfaceListImpl getMGWInterfaceList();
+    MGWInterfaceList getMGWInterfaceList();
 
-    MGWEventListImpl getMGWEventList();
+    MGWEventList getMGWEventList();
 
 }

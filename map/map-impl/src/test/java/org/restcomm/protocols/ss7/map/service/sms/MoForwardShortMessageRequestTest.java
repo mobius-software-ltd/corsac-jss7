@@ -30,14 +30,15 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DAImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OAImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DA;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OA;
+import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfo;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -71,7 +72,10 @@ public class MoForwardShortMessageRequestTest {
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { 48, 86, -128, 8, 2, 1, 17, 50, 84, 118, -104, -16, -124, 6, -74, 16, 50, 84, 118, -104, 4, 9, 11, 22, 33, 44, 55, 66, 77, 88, 99, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 4, 8, 66, -128, 24, 33, 50, 67, 84, -11 };
+        return new byte[] { 48, 80, -128, 8, 2, 1, 17, 50, 84, 118, -104, -16, -124, 6, -74, 16, 50, 84, 118, -104, 4, 9, 11,
+                22, 33, 44, 55, 66, 77, 88, 99, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42,
+                3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 4, 8, 66, -128, 24, 33, 50, 67, 84,
+                -11 };
     }
 
     @Test(groups = { "functional.decode", "service.sms" })
@@ -85,9 +89,9 @@ public class MoForwardShortMessageRequestTest {
         assertTrue(result.getResult() instanceof MoForwardShortMessageRequestImpl);
         MoForwardShortMessageRequestImpl ind = (MoForwardShortMessageRequestImpl)result.getResult();   
         
-        SM_RP_DAImpl da = ind.getSM_RP_DA();
-        SM_RP_OAImpl oa = ind.getSM_RP_OA();
-        SmsSignalInfoImpl ui = ind.getSM_RP_UI();
+        SM_RP_DA da = ind.getSM_RP_DA();
+        SM_RP_OA oa = ind.getSM_RP_OA();
+        SmsSignalInfo ui = ind.getSM_RP_UI();
         assertEquals(da.getServiceCentreAddressDA().getAddressNature(), AddressNature.international_number);
         assertEquals(da.getServiceCentreAddressDA().getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(da.getServiceCentreAddressDA().getAddress(), "223334990223");
@@ -110,7 +114,7 @@ public class MoForwardShortMessageRequestTest {
         da = ind.getSM_RP_DA();
         oa = ind.getSM_RP_OA();
         ui = ind.getSM_RP_UI();
-        IMSIImpl imsi = ind.getIMSI();
+        IMSI imsi = ind.getIMSI();
         assertEquals(da.getServiceCentreAddressDA().getAddressNature(), AddressNature.international_number);
         assertEquals(da.getServiceCentreAddressDA().getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(da.getServiceCentreAddressDA().getAddress(), "2311231234334");
@@ -230,7 +234,7 @@ public class MoForwardShortMessageRequestTest {
         sm_RP_OA = new SM_RP_OAImpl();
         sm_RP_OA.setServiceCentreAddressOA(msisdn);
         sm_RP_UI = new SmsSignalInfoImpl(new byte[] { 11, 22, 33, 44, 55, 66, 77, 88, 99 }, null);
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         imsi = new IMSIImpl("240881122334455");
         ind = new MoForwardShortMessageRequestImpl(sm_RP_DA, sm_RP_OA, sm_RP_UI, extensionContainer, imsi);
 

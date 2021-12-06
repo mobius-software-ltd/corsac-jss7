@@ -24,7 +24,8 @@ package org.restcomm.protocols.ss7.map.errors;
 
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageFacilityNotSup;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -38,7 +39,9 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageFacilityNotSupImpl extends MAPErrorMessageImpl implements MAPErrorMessageFacilityNotSup {
-	private MAPExtensionContainerImpl extensionContainer;
+	
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private ASNNull shapeOfLocationEstimateNotSupported;
@@ -46,7 +49,7 @@ public class MAPErrorMessageFacilityNotSupImpl extends MAPErrorMessageImpl imple
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
     private ASNNull neededLcsCapabilityNotSupportedInServingNode;
 
-    public MAPErrorMessageFacilityNotSupImpl(MAPExtensionContainerImpl extensionContainer,
+    public MAPErrorMessageFacilityNotSupImpl(MAPExtensionContainer extensionContainer,
             Boolean shapeOfLocationEstimateNotSupported, Boolean neededLcsCapabilityNotSupportedInServingNode) {
         super((long) MAPErrorCode.facilityNotSupported);
 
@@ -74,7 +77,7 @@ public class MAPErrorMessageFacilityNotSupImpl extends MAPErrorMessageImpl imple
         return this;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -86,7 +89,7 @@ public class MAPErrorMessageFacilityNotSupImpl extends MAPErrorMessageImpl imple
         return this.neededLcsCapabilityNotSupportedInServingNode!=null;
     }
 
-    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 

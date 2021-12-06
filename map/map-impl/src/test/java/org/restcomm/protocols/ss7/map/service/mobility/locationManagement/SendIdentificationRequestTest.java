@@ -28,14 +28,15 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.primitives.TMSIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationRequest;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.primitives.TMSIImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -56,7 +57,9 @@ public class SendIdentificationRequestTest {
     };
 
     public byte[] getData2() {
-        return new byte[] { 48, 88, 4, 4, 1, 2, 3, 4, 2, 1, 2, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 4, 4, -111, 34, 50, -12, -128, 5, 16, 97, 66, 1, 77, -127, 1, 4, -126, 0, -125, 4, -111, 34, 50, -11, -124, 4, 1, 2, 3, 4 };
+        return new byte[] { 48, 82, 4, 4, 1, 2, 3, 4, 2, 1, 2, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14,
+                15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 4, 4, -111, 34,
+                50, -12, -128, 5, 16, 97, 66, 1, 77, -127, 1, 4, -126, 0, -125, 4, -111, 34, 50, -11, -124, 4, 1, 2, 3, 4 };
     };
 
     public byte[] getDataTmsi() {
@@ -93,7 +96,7 @@ public class SendIdentificationRequestTest {
         assertTrue(prim.getNumberOfRequestedVectors().equals(2));
         assertTrue(prim.getSegmentationProhibited());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
-        ISDNAddressStringImpl mscNumber = prim.getMscNumber();
+        ISDNAddressString mscNumber = prim.getMscNumber();
         assertTrue(mscNumber.getAddress().equals("22234"));
         assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
@@ -105,7 +108,7 @@ public class SendIdentificationRequestTest {
         assertTrue(prim.getHopCounter().equals(4));
         assertTrue(prim.getMtRoamingForwardingSupported());
 
-        ISDNAddressStringImpl newVLRNumber = prim.getNewVLRNumber();
+        ISDNAddressString newVLRNumber = prim.getNewVLRNumber();
         assertTrue(newVLRNumber.getAddress().equals("22235"));
         assertEquals(newVLRNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(newVLRNumber.getNumberingPlan(), NumberingPlan.ISDN);
@@ -134,7 +137,7 @@ public class SendIdentificationRequestTest {
         tmsi = new TMSIImpl(getDataTmsi());
         Integer numberOfRequestedVectors = 2;
         boolean segmentationProhibited = true;
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         ISDNAddressStringImpl mscNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22234");
 
         LAIFixedLengthImpl previousLAI = new LAIFixedLengthImpl(11, 246, 333);

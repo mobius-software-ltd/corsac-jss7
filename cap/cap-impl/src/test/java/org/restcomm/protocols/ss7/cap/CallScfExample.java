@@ -1,6 +1,7 @@
 package org.restcomm.protocols.ss7.cap;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.naming.InitialContext;
@@ -16,8 +17,8 @@ import org.restcomm.protocols.ss7.cap.api.dialog.CAPGprsReferenceNumber;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPNoticeProblemDiagnostic;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPUserAbortReason;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessage;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEventImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
+import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEvent;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ActivityTestRequest;
@@ -58,7 +59,7 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SendChargi
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SpecializedResourceReportRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegResponse;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
@@ -135,8 +136,8 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
                 switch (this.cc.step) {
                     case initialDPRecieved:
                         // informing SSF of BCSM events processing
-                        ArrayList<BCSMEventImpl> bcsmEventList = new ArrayList<BCSMEventImpl>();
-                        BCSMEventImpl ev = this.capProvider.getCAPParameterFactory().createBCSMEvent(
+                        List<BCSMEvent> bcsmEventList = new ArrayList<BCSMEvent>();
+                        BCSMEvent ev = this.capProvider.getCAPParameterFactory().createBCSMEvent(
                                 EventTypeBCSM.routeSelectFailure, MonitorMode.notifyAndContinue, null, null, false);
                         bcsmEventList.add(ev);
                         ev = this.capProvider.getCAPParameterFactory().createBCSMEvent(EventTypeBCSM.oCalledPartyBusy,
@@ -165,16 +166,16 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
                         String newNumber = "22123124";
                         if (newNumber != null) {
                             // sending Connect to force routing the call to a new number
-                            ArrayList<CalledPartyNumberCapImpl> calledPartyNumber = new ArrayList<CalledPartyNumberCapImpl>();
+                            List<CalledPartyNumberCap> calledPartyNumber = new ArrayList<CalledPartyNumberCap>();
                             CalledPartyNumber cpn = this.capProvider.getISUPParameterFactory().createCalledPartyNumber();
                             cpn.setAddress("5599999988");
                             cpn.setNatureOfAddresIndicator(NAINumber._NAI_INTERNATIONAL_NUMBER);
                             cpn.setNumberingPlanIndicator(CalledPartyNumber._NPI_ISDN);
                             cpn.setInternalNetworkNumberIndicator(CalledPartyNumber._INN_ROUTING_ALLOWED);
-                            CalledPartyNumberCapImpl cpnc = this.capProvider.getCAPParameterFactory().createCalledPartyNumberCap(
+                            CalledPartyNumberCap cpnc = this.capProvider.getCAPParameterFactory().createCalledPartyNumberCap(
                                     cpn);
                             calledPartyNumber.add(cpnc);
-                            DestinationRoutingAddressImpl destinationRoutingAddress = this.capProvider.getCAPParameterFactory()
+                            DestinationRoutingAddress destinationRoutingAddress = this.capProvider.getCAPParameterFactory()
                                     .createDestinationRoutingAddress(calledPartyNumber);
                             currentCapDialog.addConnectRequest(destinationRoutingAddress, null, null, null, null, null, null,
                                     null, null, null, null, null, null, false, false, false, null, false, false);

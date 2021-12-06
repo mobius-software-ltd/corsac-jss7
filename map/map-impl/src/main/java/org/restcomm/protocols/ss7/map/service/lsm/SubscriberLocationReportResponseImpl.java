@@ -25,9 +25,11 @@ package org.restcomm.protocols.ss7.map.service.lsm;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.lsm.SubscriberLocationReportResponse;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -43,13 +45,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class SubscriberLocationReportResponseImpl extends LsmMessageImpl implements SubscriberLocationReportResponse {
 	private static final long serialVersionUID = 1L;
 
-	private MAPExtensionContainerImpl extensionContainer;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
 
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
-    private ISDNAddressStringImpl naEsrk;
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString naEsrk;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
-    private ISDNAddressStringImpl naEsrd;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+    private ISDNAddressString naEsrd;
     
     /**
      *
@@ -63,8 +66,8 @@ public class SubscriberLocationReportResponseImpl extends LsmMessageImpl impleme
      * @param naEsrk
      * @param extensionContainer
      */
-    public SubscriberLocationReportResponseImpl(ISDNAddressStringImpl naEsrd, ISDNAddressStringImpl naEsrk,
-            MAPExtensionContainerImpl extensionContainer) {
+    public SubscriberLocationReportResponseImpl(ISDNAddressString naEsrd, ISDNAddressString naEsrk,
+            MAPExtensionContainer extensionContainer) {
         super();
         this.naEsrd = naEsrd;
         this.naEsrk = naEsrk;
@@ -84,7 +87,7 @@ public class SubscriberLocationReportResponseImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportResponseIndication#getExtensionContainer()
      */
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -93,7 +96,7 @@ public class SubscriberLocationReportResponseImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportResponseIndication#getNaESRK()
      */
-    public ISDNAddressStringImpl getNaESRK() {
+    public ISDNAddressString getNaESRK() {
         return this.naEsrk;
     }
 
@@ -102,7 +105,7 @@ public class SubscriberLocationReportResponseImpl extends LsmMessageImpl impleme
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SubscriberLocationReportResponseIndication#getNaESRD()
      */
-    public ISDNAddressStringImpl getNaESRD() {
+    public ISDNAddressString getNaESRD() {
         return this.naEsrd;
     }
 

@@ -24,11 +24,12 @@ package org.restcomm.protocols.ss7.map.service.sms;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.sms.MtForwardShortMessageRequest;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DAImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OAImpl;
-import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DA;
+import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OA;
+import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfo;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -51,20 +52,41 @@ public class MtForwardShortMessageRequestImpl extends SmsMessageImpl implements 
 	@ASNChoise
     private SM_RP_OAImpl sM_RP_OA;
 	
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=2)
-	private SmsSignalInfoImpl sM_RP_UI;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=2, defaultImplementation = SmsSignalInfoImpl.class)
+	private SmsSignalInfo sM_RP_UI;
     
 	private ASNNull moreMessagesToSend;
-    private MAPExtensionContainerImpl extensionContainer;
+    
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
 
     public MtForwardShortMessageRequestImpl() {
     }
 
-    public MtForwardShortMessageRequestImpl(SM_RP_DAImpl sM_RP_DA, SM_RP_OAImpl sM_RP_OA, SmsSignalInfoImpl sM_RP_UI,
-            boolean moreMessagesToSend, MAPExtensionContainerImpl extensionContainer) {
-        this.sM_RP_DA = sM_RP_DA;
-        this.sM_RP_OA = sM_RP_OA;
-        this.sM_RP_UI = (SmsSignalInfoImpl) sM_RP_UI;
+    public MtForwardShortMessageRequestImpl(SM_RP_DA sM_RP_DA, SM_RP_OA sM_RP_OA, SmsSignalInfo sM_RP_UI,
+            boolean moreMessagesToSend, MAPExtensionContainer extensionContainer) {
+    	if(sM_RP_DA instanceof SM_RP_DAImpl)
+        	this.sM_RP_DA=(SM_RP_DAImpl)sM_RP_DA;
+        else if(sM_RP_DA!=null) {
+        	if(sM_RP_DA.getIMSI()!=null)
+            	this.sM_RP_DA = new SM_RP_DAImpl(sM_RP_DA.getIMSI());
+            else if(sM_RP_DA.getLMSI()!=null)
+            	this.sM_RP_DA = new SM_RP_DAImpl(sM_RP_DA.getLMSI());
+            else if(sM_RP_DA.getServiceCentreAddressDA()!=null)
+            	this.sM_RP_DA = new SM_RP_DAImpl(sM_RP_DA.getServiceCentreAddressDA());
+        }
+        
+        if(sM_RP_OA instanceof SM_RP_OAImpl)
+        	this.sM_RP_OA=(SM_RP_OAImpl)sM_RP_OA;
+        else if(sM_RP_OA!=null) {
+        	this.sM_RP_OA = new SM_RP_OAImpl();
+            if(sM_RP_OA.getMsisdn()!=null)
+            	this.sM_RP_OA.setMsisdn(sM_RP_OA.getMsisdn());
+            else if(sM_RP_OA.getServiceCentreAddressOA()!=null)
+            	this.sM_RP_OA.setServiceCentreAddressOA(sM_RP_OA.getServiceCentreAddressOA());
+        }
+        
+        this.sM_RP_UI = sM_RP_UI;
         
         if(moreMessagesToSend)
         	this.moreMessagesToSend = new ASNNull();
@@ -80,15 +102,15 @@ public class MtForwardShortMessageRequestImpl extends SmsMessageImpl implements 
         return MAPOperationCode.mt_forwardSM;
     }
 
-    public SM_RP_DAImpl getSM_RP_DA() {
+    public SM_RP_DA getSM_RP_DA() {
         return this.sM_RP_DA;
     }
 
-    public SM_RP_OAImpl getSM_RP_OA() {
+    public SM_RP_OA getSM_RP_OA() {
         return this.sM_RP_OA;
     }
 
-    public SmsSignalInfoImpl getSM_RP_UI() {
+    public SmsSignalInfo getSM_RP_UI() {
         return this.sM_RP_UI;
     }
 
@@ -96,7 +118,7 @@ public class MtForwardShortMessageRequestImpl extends SmsMessageImpl implements 
         return this.moreMessagesToSend!=null;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

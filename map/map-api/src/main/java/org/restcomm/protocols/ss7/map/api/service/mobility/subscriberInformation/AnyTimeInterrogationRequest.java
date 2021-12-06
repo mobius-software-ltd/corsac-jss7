@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -54,11 +54,11 @@ AnyTimeInterrogationArg ::= SEQUENCE {
  */
 public interface AnyTimeInterrogationRequest extends MobilityMessage {
 
-    SubscriberIdentityImpl getSubscriberIdentity();
+	SubscriberIdentity getSubscriberIdentity();
 
-    RequestedInfoImpl getRequestedInfo();
+	RequestedInfo getRequestedInfo();
 
-    ISDNAddressStringImpl getGsmSCFAddress();
+    ISDNAddressString getGsmSCFAddress();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 }

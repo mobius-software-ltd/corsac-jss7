@@ -31,18 +31,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
+import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.cap.isup.CallingPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyNumberImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.service.callhandling.CallReferenceNumberImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -85,7 +86,7 @@ public class InitiateCallAttemptRequestTest {
         
         InitiateCallAttemptRequestImpl elem = (InitiateCallAttemptRequestImpl)result.getResult();        
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().size(), 1);
-        CalledPartyNumberCapImpl cpn = elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0);
+        CalledPartyNumberCap cpn = elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0);
         assertEquals(cpn.getCalledPartyNumber().getAddress(), "2224444");
         assertEquals(cpn.getCalledPartyNumber().getNatureOfAddressIndicator(), 1);
         assertNull(elem.getExtensions());
@@ -126,7 +127,7 @@ public class InitiateCallAttemptRequestTest {
 //        int natureOfAddresIndicator, String address, int numberingPlanIndicator,
 //        int internalNetworkNumberIndicator
         CalledPartyNumberCapImpl cpn = new CalledPartyNumberCapImpl(calledPartyNumber);
-        List<CalledPartyNumberCapImpl> calledPartyNumberArr = new ArrayList<CalledPartyNumberCapImpl>();
+        List<CalledPartyNumberCap> calledPartyNumberArr = new ArrayList<CalledPartyNumberCap>();
         calledPartyNumberArr.add(cpn);
         DestinationRoutingAddressImpl destinationRoutingAddress = new DestinationRoutingAddressImpl(calledPartyNumberArr);
         InitiateCallAttemptRequestImpl elem = new InitiateCallAttemptRequestImpl(destinationRoutingAddress, null, null, null, null, null, null, false);

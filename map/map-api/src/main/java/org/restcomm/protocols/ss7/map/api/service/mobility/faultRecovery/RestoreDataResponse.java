@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.faultRecovery;
 
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -49,9 +49,9 @@ MAP V2: RestoreDataRes ::= SEQUENCE {
  */
 public interface RestoreDataResponse extends MobilityMessage {
 
-    ISDNAddressStringImpl getHlrNumber();
+    ISDNAddressString getHlrNumber();
 
     boolean getMsNotReachable();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 }

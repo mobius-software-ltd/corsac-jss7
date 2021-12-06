@@ -25,7 +25,8 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ApplyChargingReportRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeDurationChargingResultImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeDurationChargingResult;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.TimeDurationChargingResultImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -41,13 +42,13 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ApplyChargingReportRequestImpl extends CircuitSwitchedCallMessageImpl implements ApplyChargingReportRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
-    private TimeDurationChargingResultImpl timeDurationChargingResult;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1,defaultImplementation = TimeDurationChargingResultImpl.class)
+    private TimeDurationChargingResult timeDurationChargingResult;
 
     public ApplyChargingReportRequestImpl() {
     }
 
-    public ApplyChargingReportRequestImpl(TimeDurationChargingResultImpl timeDurationChargingResult) {
+    public ApplyChargingReportRequestImpl(TimeDurationChargingResult timeDurationChargingResult) {
         this.timeDurationChargingResult = timeDurationChargingResult;
     }
 
@@ -62,7 +63,7 @@ public class ApplyChargingReportRequestImpl extends CircuitSwitchedCallMessageIm
     }
 
     @Override
-    public TimeDurationChargingResultImpl getTimeDurationChargingResult() {
+    public TimeDurationChargingResult getTimeDurationChargingResult() {
         return timeDurationChargingResult;
     }
 

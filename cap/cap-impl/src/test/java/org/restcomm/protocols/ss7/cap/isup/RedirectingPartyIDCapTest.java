@@ -28,7 +28,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCapImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectingNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectingNumber;
 import org.testng.annotations.Test;

@@ -24,12 +24,13 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.ASNEventTypeBCSMImpl;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.EventReportBCSMRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMWrapperImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
+import org.restcomm.protocols.ss7.cap.primitives.ASNEventTypeBCSMImpl;
+import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMWrapperImpl;
 import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
@@ -62,14 +63,14 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1, defaultImplementation = MiscCallInfoImpl.class)
     private MiscCallInfo miscCallInfo;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = true,index = -1)
-    private CAPExtensionsImpl extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
+    private CAPExtensions extensions;
 
     public EventReportBCSMRequestImpl() {
     }
 
-    public EventReportBCSMRequestImpl(EventTypeBCSM eventTypeBCSM, EventSpecificInformationBCSMImpl eventSpecificInformationBCSM,
-            LegType legID, MiscCallInfo miscCallInfo, CAPExtensionsImpl extensions) {
+    public EventReportBCSMRequestImpl(EventTypeBCSM eventTypeBCSM, EventSpecificInformationBCSM eventSpecificInformationBCSM,
+            LegType legID, MiscCallInfo miscCallInfo, CAPExtensions extensions) {
     	
     	if(eventTypeBCSM!=null) {
     		this.eventTypeBCSM = new ASNEventTypeBCSMImpl();
@@ -105,7 +106,7 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
     }
 
     @Override
-    public EventSpecificInformationBCSMImpl getEventSpecificInformationBCSM() {
+    public EventSpecificInformationBCSM getEventSpecificInformationBCSM() {
     	if(eventSpecificInformationBCSM==null)
     		return null;
     	
@@ -126,7 +127,7 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
     }
 
     @Override
-    public CAPExtensionsImpl getExtensions() {
+    public CAPExtensions getExtensions() {
         return extensions;
     }
 

@@ -30,20 +30,21 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CamelRoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.ExtendedRoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.GmscCamelSubscriptionInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTDPDataImpl;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingData;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.GmscCamelSubscriptionInfo;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfo;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTDPData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmTriggerDetectionPoint;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TCSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TBcsmCamelTDPDataImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TCSIImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -69,7 +70,9 @@ public class ExtendedRoutingInfoTest {
     }
 
     private byte[] getData2() {
-        return new byte[] { 48, 72, -88, 70, 48, 7, -123, 5, -111, 17, 17, 33, 34, -96, 12, -96, 10, 48, 8, 48, 6, 10, 1, 12, 2, 1, 5, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48,66, -88, 64, 48, 7, -123, 5, -111, 17, 17, 33, 34, -96, 12, -96, 10, 48, 8, 48, 6, 10, 1, 12, 2, 1, 5,
+                -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5,
+                21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     }
 
     @BeforeClass
@@ -101,8 +104,8 @@ public class ExtendedRoutingInfoTest {
         assertTrue(result.getResult() instanceof ExtendedRoutingInfoImpl);
         ExtendedRoutingInfoImpl extRouteInfo = (ExtendedRoutingInfoImpl)result.getResult();
         
-        RoutingInfoImpl routeInfo = extRouteInfo.getRoutingInfo();
-        ISDNAddressStringImpl isdnAdd = routeInfo.getRoamingNumber();
+        RoutingInfo routeInfo = extRouteInfo.getRoutingInfo();
+        ISDNAddressString isdnAdd = routeInfo.getRoamingNumber();
 
         assertNotNull(isdnAdd);
         assertEquals(isdnAdd.getAddressNature(), AddressNature.international_number);
@@ -116,10 +119,10 @@ public class ExtendedRoutingInfoTest {
         assertTrue(result.getResult() instanceof ExtendedRoutingInfoImpl);
         extRouteInfo = (ExtendedRoutingInfoImpl)result.getResult();
 
-        ForwardingDataImpl fd = extRouteInfo.getCamelRoutingInfo().getForwardingData();
+        ForwardingData fd = extRouteInfo.getCamelRoutingInfo().getForwardingData();
         assertTrue(fd.getForwardedToNumber().getAddress().equals("11111222"));
         assertNull(fd.getForwardedToSubaddress());
-        GmscCamelSubscriptionInfoImpl gcs = extRouteInfo.getCamelRoutingInfo().getGmscCamelSubscriptionInfo();
+        GmscCamelSubscriptionInfo gcs = extRouteInfo.getCamelRoutingInfo().getGmscCamelSubscriptionInfo();
         assertEquals(gcs.getTCsi().getTBcsmCamelTDPDataList().get(0).getTBcsmTriggerDetectionPoint(),
                 TBcsmTriggerDetectionPoint.termAttemptAuthorized);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extRouteInfo.getCamelRoutingInfo()
@@ -148,7 +151,7 @@ public class ExtendedRoutingInfoTest {
         ISDNAddressStringImpl forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "11111222");
         ForwardingDataImpl forwardingData = new ForwardingDataImpl(forwardedToNumber, null, null, null, null);
-        ArrayList<TBcsmCamelTDPDataImpl> lst = new ArrayList<TBcsmCamelTDPDataImpl>();
+        List<TBcsmCamelTDPData> lst = new ArrayList<TBcsmCamelTDPData>();
         TBcsmCamelTDPDataImpl tb = new TBcsmCamelTDPDataImpl(TBcsmTriggerDetectionPoint.termAttemptAuthorized, 5, null, null, null);
         lst.add(tb);
         TCSIImpl tCsi = new TCSIImpl(lst, null, null, false, false);

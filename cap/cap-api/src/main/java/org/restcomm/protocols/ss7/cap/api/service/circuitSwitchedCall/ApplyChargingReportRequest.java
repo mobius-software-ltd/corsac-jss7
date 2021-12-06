@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeDurationChargingResultImpl;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeDurationChargingResult;
 
 /**
  * <p>
@@ -73,6 +73,6 @@ CAMEL-CallResult {PARAMETERS-BOUND : bound} ::= CHOICE {
  */
 public interface ApplyChargingReportRequest extends CircuitSwitchedCallMessage {
 
-    TimeDurationChargingResultImpl getTimeDurationChargingResult();
+    TimeDurationChargingResult getTimeDurationChargingResult();
 
 }

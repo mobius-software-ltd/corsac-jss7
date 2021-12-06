@@ -30,9 +30,9 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -54,7 +54,9 @@ public class ProvideSubscriberInfoRequestTest {
     }
 
     private byte[] getEncodedData2() {
-        return new byte[] { 48, 68, -128, 6, 17, 33, 34, 51, 67, 68, -127, 4, 11, 22, 33, 44, -94, 2, -128, 0, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -124, 1, 4 };
+        return new byte[] { 48, 62, (byte) 128, 6, 17, 33, 34, 51, 67, 68, (byte) 129, 4, 11, 22, 33, 44, (byte) 162, 2, (byte) 128, 0, (byte) 163, 39,
+                (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161,
+                3, 31, 32, 33, (byte) 132, 1, 4 };
     }
 
     private byte[] getLmsiData() {
@@ -72,7 +74,7 @@ public class ProvideSubscriberInfoRequestTest {
         assertTrue(result.getResult() instanceof ProvideSubscriberInfoRequestImpl);
         ProvideSubscriberInfoRequestImpl asc = (ProvideSubscriberInfoRequestImpl)result.getResult();
         
-        IMSIImpl imsi = asc.getImsi();
+        IMSI imsi = asc.getImsi();
         assertTrue(imsi.getData().equals("111222333444"));
 
         assertTrue(asc.getRequestedInfo().getLocationInformation());

@@ -23,9 +23,9 @@ package org.restcomm.protocols.ss7.cap.service.gprs;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.ASNTimerIDImpl;
 import org.restcomm.protocols.ss7.cap.api.primitives.TimerID;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.ResetTimerGPRSRequest;
+import org.restcomm.protocols.ss7.cap.primitives.ASNTimerIDImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

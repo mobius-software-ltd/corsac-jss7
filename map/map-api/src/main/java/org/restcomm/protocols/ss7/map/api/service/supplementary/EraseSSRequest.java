@@ -46,6 +46,6 @@ ARGUMENT SS-ForBS-Code
  */
 public interface EraseSSRequest extends SupplementaryMessage {
 
-    SSForBSCodeImpl getSsForBSCode();
+	SSForBSCode getSsForBSCode();
 
 }

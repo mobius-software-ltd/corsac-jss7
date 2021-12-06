@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetListImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContextImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetList;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContext;
 
 /**
 <code>
@@ -53,12 +53,12 @@ MAP V2: SendIdentificationRes ::= SEQUENCE {
  */
 public interface SendIdentificationResponse extends MobilityMessage {
 
-    IMSIImpl getImsi();
+	IMSI getImsi();
 
-    AuthenticationSetListImpl getAuthenticationSetList();
+	AuthenticationSetList getAuthenticationSetList();
 
-    CurrentSecurityContextImpl getCurrentSecurityContext();
+	CurrentSecurityContext getCurrentSecurityContext();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
 }

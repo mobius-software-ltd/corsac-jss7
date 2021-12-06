@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.oam;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
 
 /**
  *
@@ -34,7 +34,5 @@ import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
  *
  */
 public interface SendImsiResponse extends OamMessage {
-
-    IMSIImpl getImsi();
-
+	IMSI getImsi();
 }

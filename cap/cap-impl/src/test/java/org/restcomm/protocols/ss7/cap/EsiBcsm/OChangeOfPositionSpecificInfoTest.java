@@ -31,10 +31,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterionImpl;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OChangeOfPositionSpecificInfoImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterion;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OChangeOfPositionSpecificInfo;
+import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -94,7 +94,7 @@ public class OChangeOfPositionSpecificInfoTest {
     	parser.replaceClass(OChangeOfPositionSpecificInfoImpl.class);
     	
         LocationInformationImpl locationInformation = new LocationInformationImpl(200, null, null, null, null, null, null, null, null, false, false, null, null);
-        OChangeOfPositionSpecificInfoImpl elem = new OChangeOfPositionSpecificInfoImpl(locationInformation, null);
+        OChangeOfPositionSpecificInfo elem = new OChangeOfPositionSpecificInfoImpl(locationInformation, null);
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -102,7 +102,7 @@ public class OChangeOfPositionSpecificInfoTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        List<MetDPCriterionImpl> metDPCriteriaList = new ArrayList<MetDPCriterionImpl>();
+        List<MetDPCriterion> metDPCriteriaList = new ArrayList<MetDPCriterion>();
         LAIFixedLengthImpl value = new LAIFixedLengthImpl(250, 1, 33000);
         MetDPCriterionImpl met1 = new MetDPCriterionImpl(value, MetDPCriterionImpl.LAIFixedLength_Option.leavingLocationAreaId);
         metDPCriteriaList.add(met1);

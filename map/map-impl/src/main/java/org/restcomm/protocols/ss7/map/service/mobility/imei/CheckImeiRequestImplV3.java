@@ -24,11 +24,13 @@ package org.restcomm.protocols.ss7.map.service.mobility.imei;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.imei.CheckImeiRequest;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.RequestedEquipmentInfoImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.RequestedEquipmentInfo;
+import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -43,14 +45,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class CheckImeiRequestImplV3 extends MobilityMessageImpl implements CheckImeiRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-	private IMEIImpl imei = null;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0, defaultImplementation = IMEIImpl.class)
+	private IMEI imei = null;
 	
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=3,constructed=false,index=1)
-	private RequestedEquipmentInfoImpl requestedEquipmentInfo = null;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=3,constructed=false,index=1, defaultImplementation = RequestedEquipmentInfoImpl.class)
+	private RequestedEquipmentInfo requestedEquipmentInfo = null;
     
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1)
-	private MAPExtensionContainerImpl extensionContainer = null;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer = null;
 
     private long mapProtocolVersion;
 
@@ -64,8 +66,8 @@ public class CheckImeiRequestImplV3 extends MobilityMessageImpl implements Check
     }
 
     // For outgoing messages
-    public CheckImeiRequestImplV3(long mapProtocolVersion, IMEIImpl imei, RequestedEquipmentInfoImpl requestedEquipmentInfo,
-            MAPExtensionContainerImpl extensionContainer) {
+    public CheckImeiRequestImplV3(long mapProtocolVersion, IMEI imei, RequestedEquipmentInfo requestedEquipmentInfo,
+            MAPExtensionContainer extensionContainer) {
         this.mapProtocolVersion = mapProtocolVersion;
         this.imei = imei;
         this.requestedEquipmentInfo = requestedEquipmentInfo;
@@ -76,7 +78,7 @@ public class CheckImeiRequestImplV3 extends MobilityMessageImpl implements Check
         return this.mapProtocolVersion;
     }
 
-    public IMSIImpl getIMSI() {
+    public IMSI getIMSI() {
         return null;
     }
 
@@ -91,17 +93,17 @@ public class CheckImeiRequestImplV3 extends MobilityMessageImpl implements Check
     }
 
     @Override
-    public IMEIImpl getIMEI() {
+    public IMEI getIMEI() {
         return this.imei;
     }
 
     @Override
-    public RequestedEquipmentInfoImpl getRequestedEquipmentInfo() {
+    public RequestedEquipmentInfo getRequestedEquipmentInfo() {
         return this.requestedEquipmentInfo;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

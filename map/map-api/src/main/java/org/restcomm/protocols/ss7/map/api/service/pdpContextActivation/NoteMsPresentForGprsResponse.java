@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.pdpContextActivation;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 
 /**
  *
@@ -34,6 +34,6 @@ import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
  */
 public interface NoteMsPresentForGprsResponse extends PdpContextActivationMessage {
 
-	MAPExtensionContainerImpl getExtensionContainer();
+	MAPExtensionContainer getExtensionContainer();
 
 }

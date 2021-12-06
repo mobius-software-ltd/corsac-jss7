@@ -24,11 +24,10 @@ package org.restcomm.protocols.ss7.map.service.mobility.imei;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.ASNEquipmentStatusImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.imei.CheckImeiResponse;
 import org.restcomm.protocols.ss7.map.api.service.mobility.imei.EquipmentStatus;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIuImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIu;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
@@ -88,12 +87,12 @@ public class CheckImeiResponseImplV1 extends MobilityMessageImpl implements Chec
     }
 
     @Override
-    public UESBIIuImpl getBmuef() {
+    public UESBIIu getBmuef() {
         return null;
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return null;
     }
 

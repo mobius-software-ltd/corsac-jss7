@@ -28,7 +28,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimateImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityType;
 import org.testng.annotations.Test;
 

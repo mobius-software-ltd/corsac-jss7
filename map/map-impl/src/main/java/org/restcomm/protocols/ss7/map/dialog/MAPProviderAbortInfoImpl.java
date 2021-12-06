@@ -22,11 +22,12 @@
 
 package org.restcomm.protocols.ss7.map.dialog;
 
-import org.restcomm.protocols.ss7.map.api.dialog.ASNMAPProviderAbortReason;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPProviderAbortReason;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -41,7 +42,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x05,constructed=true,lengthIndefinite=false)
 public class MAPProviderAbortInfoImpl {
 	private ASNMAPProviderAbortReason mapProviderAbortReason = null;
-    private MAPExtensionContainerImpl extensionContainer;
+    
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
 
     public MAPProviderAbortInfoImpl() {
     }
@@ -53,7 +56,7 @@ public class MAPProviderAbortInfoImpl {
         return this.mapProviderAbortReason.getType();
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 
@@ -62,7 +65,7 @@ public class MAPProviderAbortInfoImpl {
         this.mapProviderAbortReason.setType(mapProvAbrtReas);
     }
 
-    public void setExtensionContainer(MAPExtensionContainerImpl extensionContainer) {
+    public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
     }
 }

@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.gprs;
 
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformationImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventSpecificInformation;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
-import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPIDImpl;
+import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
 
 /**
@@ -49,8 +49,8 @@ public interface EventReportGPRSRequest extends GprsMessage {
 
     MiscCallInfo getMiscGPRSInfo();
 
-    GPRSEventSpecificInformationImpl getGPRSEventSpecificInformation();
+    GPRSEventSpecificInformation getGPRSEventSpecificInformation();
 
-    PDPIDImpl getPDPID();
+    PDPID getPDPID();
 
 }

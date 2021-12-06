@@ -31,7 +31,6 @@ import static org.testng.Assert.fail;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentificationImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
 import org.testng.annotations.Test;
 

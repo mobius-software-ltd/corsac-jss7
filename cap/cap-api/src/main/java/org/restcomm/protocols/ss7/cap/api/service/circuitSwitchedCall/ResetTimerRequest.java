@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.primitives.TimerID;
 
 /**
@@ -62,7 +62,7 @@ public interface ResetTimerRequest extends CircuitSwitchedCallMessage {
 
     int getTimerValue();
 
-    CAPExtensionsImpl getExtensions();
+    CAPExtensions getExtensions();
 
     Integer getCallSegmentID();
 

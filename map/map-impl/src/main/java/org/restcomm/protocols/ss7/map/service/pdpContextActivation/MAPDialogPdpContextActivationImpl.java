@@ -29,11 +29,11 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContextName;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.pdpContextActivation.MAPDialogPdpContextActivation;
 import org.restcomm.protocols.ss7.map.api.service.pdpContextActivation.MAPServicePdpContextActivation;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
@@ -47,21 +47,21 @@ public class MAPDialogPdpContextActivationImpl extends MAPDialogImpl implements 
 	private static final long serialVersionUID = 1L;
 
 	protected MAPDialogPdpContextActivationImpl(MAPApplicationContext appCntx, Dialog tcapDialog,
-            MAPProviderImpl mapProviderImpl, MAPServicePdpContextActivation mapService, AddressStringImpl origReference,
-            AddressStringImpl destReference) {
+            MAPProviderImpl mapProviderImpl, MAPServicePdpContextActivation mapService, AddressString origReference,
+            AddressString destReference) {
         super(appCntx, tcapDialog, mapProviderImpl, mapService, origReference, destReference);
     }
 
 
     @Override
-    public Long addSendRoutingInfoForGprsRequest(IMSIImpl imsi, GSNAddressImpl ggsnAddress, ISDNAddressStringImpl ggsnNumber, MAPExtensionContainerImpl extensionContainer)
+    public Long addSendRoutingInfoForGprsRequest(IMSI imsi, GSNAddress ggsnAddress, ISDNAddressString ggsnNumber, MAPExtensionContainer extensionContainer)
             throws MAPException {
         return addSendRoutingInfoForGprsRequest(_Timer_Default, imsi, ggsnAddress, ggsnNumber, extensionContainer);
     }
 
     @Override
-    public Long addSendRoutingInfoForGprsRequest(int customInvokeTimeout, IMSIImpl imsi, GSNAddressImpl ggsnAddress, ISDNAddressStringImpl ggsnNumber,
-            MAPExtensionContainerImpl extensionContainer) throws MAPException {
+    public Long addSendRoutingInfoForGprsRequest(int customInvokeTimeout, IMSI imsi, GSNAddress ggsnAddress, ISDNAddressString ggsnNumber,
+            MAPExtensionContainer extensionContainer) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.gprsLocationInfoRetrievalContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3 && this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version4))
@@ -78,8 +78,8 @@ public class MAPDialogPdpContextActivationImpl extends MAPDialogImpl implements 
     }
 
     @Override
-    public void addSendRoutingInfoForGprsResponse(long invokeId, GSNAddressImpl sgsnAddress, GSNAddressImpl ggsnAddress, Integer mobileNotReachableReason,
-            MAPExtensionContainerImpl extensionContainer) throws MAPException {
+    public void addSendRoutingInfoForGprsResponse(long invokeId, GSNAddress sgsnAddress, GSNAddress ggsnAddress, Integer mobileNotReachableReason,
+            MAPExtensionContainer extensionContainer) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.gprsLocationInfoRetrievalContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3 && this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version4))

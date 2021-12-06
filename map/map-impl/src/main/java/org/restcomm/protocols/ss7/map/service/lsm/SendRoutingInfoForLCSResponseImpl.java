@@ -24,12 +24,14 @@ package org.restcomm.protocols.ss7.map.service.lsm;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentityWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfoImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfo;
 import org.restcomm.protocols.ss7.map.api.service.lsm.SendRoutingInfoForLCSResponse;
+import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.primitives.SubscriberIdentityWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -46,23 +48,23 @@ public class SendRoutingInfoForLCSResponseImpl extends LsmMessageImpl implements
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=0)
     private SubscriberIdentityWrapperImpl targetMS;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=1)
-    private LCSLocationInfoImpl lcsLocationInfo;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=1, defaultImplementation = LCSLocationInfoImpl.class)
+    private LCSLocationInfo lcsLocationInfo;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1)
-    private MAPExtensionContainerImpl extensionContainer;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+    private MAPExtensionContainer extensionContainer;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1)
-    private GSNAddressImpl vgmlcAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,index=-1, defaultImplementation = GSNAddressImpl.class)
+    private GSNAddress vgmlcAddress;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
-    private GSNAddressImpl hGmlcAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1, defaultImplementation = GSNAddressImpl.class)
+    private GSNAddress hGmlcAddress;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
-    private GSNAddressImpl pprAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1, defaultImplementation = GSNAddressImpl.class)
+    private GSNAddress pprAddress;
     
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1)
-    private GSNAddressImpl additionalVGmlcAddress;
+    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1, defaultImplementation = GSNAddressImpl.class)
+    private GSNAddress additionalVGmlcAddress;
 
     /**
      *
@@ -80,13 +82,14 @@ public class SendRoutingInfoForLCSResponseImpl extends LsmMessageImpl implements
      * @param pprAddress
      * @param additionalVGmlcAddress
      */
-    public SendRoutingInfoForLCSResponseImpl(SubscriberIdentityImpl targetMS, LCSLocationInfoImpl lcsLocationInfo,
-            MAPExtensionContainerImpl extensionContainer, GSNAddressImpl vgmlcAddress, GSNAddressImpl hGmlcAddress, GSNAddressImpl pprAddress,
-            GSNAddressImpl additionalVGmlcAddress) {
+    public SendRoutingInfoForLCSResponseImpl(SubscriberIdentity targetMS, LCSLocationInfo lcsLocationInfo,
+    		MAPExtensionContainer extensionContainer, GSNAddress vgmlcAddress, GSNAddress hGmlcAddress, GSNAddress pprAddress,
+    		GSNAddress additionalVGmlcAddress) {
         super();
         
         if(targetMS!=null)
         	this.targetMS = new SubscriberIdentityWrapperImpl(targetMS);
+        
         this.lcsLocationInfo = lcsLocationInfo;
         this.extensionContainer = extensionContainer;
         this.vgmlcAddress = vgmlcAddress;
@@ -108,7 +111,7 @@ public class SendRoutingInfoForLCSResponseImpl extends LsmMessageImpl implements
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SendRoutingInforForLCSResponseIndication#getTargetMS()
      */
-    public SubscriberIdentityImpl getTargetMS() {
+    public SubscriberIdentity getTargetMS() {
     	if(targetMS==null)
     		return null;
     	
@@ -120,7 +123,7 @@ public class SendRoutingInfoForLCSResponseImpl extends LsmMessageImpl implements
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SendRoutingInforForLCSResponseIndication#getLCSLocationInfo()
      */
-    public LCSLocationInfoImpl getLCSLocationInfo() {
+    public LCSLocationInfo getLCSLocationInfo() {
         return this.lcsLocationInfo;
     }
 
@@ -129,7 +132,7 @@ public class SendRoutingInfoForLCSResponseImpl extends LsmMessageImpl implements
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SendRoutingInforForLCSResponseIndication#getExtensionContainer()
      */
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 
@@ -138,7 +141,7 @@ public class SendRoutingInfoForLCSResponseImpl extends LsmMessageImpl implements
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SendRoutingInforForLCSResponseIndication#getVgmlcAddress()
      */
-    public GSNAddressImpl getVgmlcAddress() {
+    public GSNAddress getVgmlcAddress() {
         return this.vgmlcAddress;
     }
 
@@ -147,7 +150,7 @@ public class SendRoutingInfoForLCSResponseImpl extends LsmMessageImpl implements
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SendRoutingInforForLCSResponseIndication#getHGmlcAddress()
      */
-    public GSNAddressImpl getHGmlcAddress() {
+    public GSNAddress getHGmlcAddress() {
         return this.hGmlcAddress;
     }
 
@@ -156,7 +159,7 @@ public class SendRoutingInfoForLCSResponseImpl extends LsmMessageImpl implements
      *
      * @see org.restcomm.protocols.ss7.map.api.service.lsm. SendRoutingInforForLCSResponseIndication#getPprAddress()
      */
-    public GSNAddressImpl getPprAddress() {
+    public GSNAddress getPprAddress() {
         return this.pprAddress;
     }
 
@@ -166,7 +169,7 @@ public class SendRoutingInfoForLCSResponseImpl extends LsmMessageImpl implements
      * @see org.restcomm.protocols.ss7.map.api.service.lsm.
      * SendRoutingInforForLCSResponseIndication#getAdditionalVGmlcAddress()
      */
-    public GSNAddressImpl getAdditionalVGmlcAddress() {
+    public GSNAddress getAdditionalVGmlcAddress() {
         return this.additionalVGmlcAddress;
     }
 

@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.api.service.sms;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCode;
 
 /**
  *
@@ -80,33 +80,32 @@ MAP V2: RoutingInfoForSM-Arg ::= SEQUENCE {
  */
 public interface SendRoutingInfoForSMRequest extends SmsMessage {
 
-    ISDNAddressStringImpl getMsisdn();
+    ISDNAddressString getMsisdn();
 
     boolean getSm_RP_PRI();
 
-    AddressStringImpl getServiceCentreAddress();
+    AddressString getServiceCentreAddress();
 
-    MAPExtensionContainerImpl getExtensionContainer();
+    MAPExtensionContainer getExtensionContainer();
 
     boolean getGprsSupportIndicator();
 
     SM_RP_MTI getSM_RP_MTI();
 
-    SM_RP_SMEAImpl getSM_RP_SMEA();
+    SM_RP_SMEA getSM_RP_SMEA();
 
     SMDeliveryNotIntended getSmDeliveryNotIntended();
 
     boolean getIpSmGwGuidanceIndicator();
 
-    IMSIImpl getImsi();
+    IMSI getImsi();
 
     boolean getT4TriggerIndicator();
 
     boolean getSingleAttemptDelivery();
 
-    CorrelationIDImpl getCorrelationID();
+    CorrelationID getCorrelationID();
 
     // for MAP V1 only
-    TeleserviceCodeImpl getTeleservice();
-
+    TeleserviceCode getTeleservice();
 }

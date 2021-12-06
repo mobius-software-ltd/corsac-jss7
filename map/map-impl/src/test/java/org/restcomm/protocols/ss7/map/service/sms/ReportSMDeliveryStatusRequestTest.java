@@ -30,10 +30,12 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.service.sms.SMDeliveryOutcome;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -59,7 +61,9 @@ public class ReportSMDeliveryStatusRequestTest {
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { 48, 79, 4, 6, -72, 17, 33, 34, 51, -13, 4, 6, -111, 51, 35, 34, 17, -15, 10, 1, 2, -128, 2, 1, -68, -95, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -126, 0, -124, 1, 0, -123, 2, 2, 43 };
+        return new byte[] { 48, 73, 4, 6, -72, 17, 33, 34, 51, -13, 4, 6, -111, 51, 35, 34, 17, -15, 10, 1, 2, -128, 2, 1, -68,
+                -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5,
+                21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -126, 0, -124, 1, 0, -123, 2, 2, 43 };
     }
 
     @Test(groups = { "functional.decode", "service.sms" })
@@ -73,11 +77,11 @@ public class ReportSMDeliveryStatusRequestTest {
         assertTrue(result.getResult() instanceof ReportSMDeliveryStatusRequestImpl);
         ReportSMDeliveryStatusRequestImpl ind = (ReportSMDeliveryStatusRequestImpl)result.getResult();  
         
-        ISDNAddressStringImpl msisdn = ind.getMsisdn();
+        ISDNAddressString msisdn = ind.getMsisdn();
         assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(msisdn.getAddress(), "7222333111");
-        AddressStringImpl sca = ind.getServiceCentreAddress();
+        AddressString sca = ind.getServiceCentreAddress();
         assertEquals(sca.getAddressNature(), AddressNature.international_number);
         assertEquals(sca.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(sca.getAddress(), "100937453");

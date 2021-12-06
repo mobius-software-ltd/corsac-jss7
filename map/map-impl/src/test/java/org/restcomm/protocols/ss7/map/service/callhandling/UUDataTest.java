@@ -29,9 +29,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.service.callhandling.UUDataImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.UUIImpl;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.UUIndicatorImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -53,7 +50,8 @@ public class UUDataTest {
     }
 
     public byte[] getData2() {
-        return new byte[] { 48, 59, -128, 1, -116, -127, 5, 1, 2, 3, 4, 5, -126, 0, -93, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 53, (byte) 128, 1, (byte) 140, (byte) 129, 5, 1, 2, 3, 4, 5, (byte) 130, 0, (byte) 163, 39, (byte) 160, 32, 48, 10, 6, 3, 42,
+                3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33 };
     }
 
     public byte[] getUUIData() {
@@ -71,7 +69,7 @@ public class UUDataTest {
         assertTrue(result.getResult() instanceof UUDataImpl);
         UUDataImpl elem = (UUDataImpl)result.getResult();
         
-        assertEquals(elem.getUUIndicator().getData(), 140);
+        assertEquals(elem.getUUIndicator().getData(), new Integer(140));
         assertNull(elem.getUUI());
         assertFalse(elem.getUusCFInteraction());
         assertNull(elem.getExtensionContainer());
@@ -83,7 +81,7 @@ public class UUDataTest {
         assertTrue(result.getResult() instanceof UUDataImpl);
         elem = (UUDataImpl)result.getResult();
 
-        assertEquals(elem.getUUIndicator().getData(), 140);
+        assertEquals(elem.getUUIndicator().getData(), new Integer(140));
         assertEquals(elem.getUUI().getData(), getUUIData());
         assertTrue(elem.getUusCFInteraction());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(elem.getExtensionContainer()));

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
 /**
@@ -40,6 +40,6 @@ NoteSubscriberDataModifiedRes ::= SEQUENCE {
  */
 public interface NoteSubscriberDataModifiedResponse extends MobilityMessage {
 
-	MAPExtensionContainerImpl getExtensionContainer();
+	MAPExtensionContainer getExtensionContainer();
 
 }

@@ -32,19 +32,16 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.primitives.USSDStringImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientExternalIDImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientIDImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientInternalID;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientNameImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientName;
 import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientType;
-import org.restcomm.protocols.ss7.map.api.service.lsm.LCSRequestorIDImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNImpl;
+import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
+import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -117,10 +114,10 @@ public class LCSClientIDTest {
         assertNull(lcsClientID.getLCSAPN());
         assertNull(lcsClientID.getLCSRequestorID());
 
-        LCSClientNameImpl lcsClientName = lcsClientID.getLCSClientName();
+        LCSClientName lcsClientName = lcsClientID.getLCSClientName();
         assertNotNull(lcsClientName);
         assertEquals(lcsClientName.getDataCodingScheme().getCode(), 0x0f);
-        USSDStringImpl nameString = lcsClientName.getNameString();
+        USSDString nameString = lcsClientName.getNameString();
         assertTrue(nameString.getString(null).equals("ndmgapp2ndmgapp2"));
 
         data = getDataFull();
@@ -155,7 +152,7 @@ public class LCSClientIDTest {
     	
         byte[] data = getData();
 
-        USSDStringImpl nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
+        USSDString nameString = MAPParameterFactory.createUSSDString("ndmgapp2ndmgapp2");
         LCSClientNameImpl lcsClientName = new LCSClientNameImpl(new CBSDataCodingSchemeImpl(0x0f), nameString, null);
         LCSClientIDImpl lcsClientID = new LCSClientIDImpl(LCSClientType.plmnOperatorServices, null,LCSClientInternalID.broadcastService, lcsClientName, null, null, null);
         ByteBuf buffer=parser.encode(lcsClientID);

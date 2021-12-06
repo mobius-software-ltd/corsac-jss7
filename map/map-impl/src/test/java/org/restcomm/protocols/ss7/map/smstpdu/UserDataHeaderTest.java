@@ -30,11 +30,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.restcomm.protocols.ss7.map.api.datacoding.NationalLanguageIdentifier;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ConcatenatedShortMessagesIdentifierImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageLockingShiftIdentifierImpl;
-import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageSingleShiftIdentifierImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderElement;
-import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderImpl;
 import org.testng.annotations.Test;
 
 import io.netty.buffer.ByteBuf;

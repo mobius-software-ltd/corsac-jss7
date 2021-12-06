@@ -28,11 +28,10 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.imei.CheckImeiRequest;
-import org.restcomm.protocols.ss7.map.api.service.mobility.imei.RequestedEquipmentInfoImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -61,7 +60,9 @@ public class CheckImeiRequestTest {
 
     private byte[] getEncodedDataV3Full() {
         // TODO this is self generated trace. We need trace from operator
-        return new byte[] { 48, 61, 4, 8, 83, 8, 25, 16, -122, 53, 85, -16, 3, 2, 7, -128, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33 };
+        return new byte[] { 48, 55, 4, 8, 83, 8, 25, 16, -122, 53, 85, -16, 3, 2, 7, -128, 48, 39, -96, 32, 48, 10, 6, 3, 42,
+                3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31,
+                32, 33 };
     }
 
     // Huawei trace with IMSI
@@ -156,7 +157,7 @@ public class CheckImeiRequestTest {
         // Testing version 3 Full
         imei = new IMEIImpl("358091016853550");
         requestedEquipmentInfo = new RequestedEquipmentInfoImpl(true, false);
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         checkImei = new CheckImeiRequestImplV3(3, imei, requestedEquipmentInfo, extensionContainer);
         data=getEncodedDataV3Full();

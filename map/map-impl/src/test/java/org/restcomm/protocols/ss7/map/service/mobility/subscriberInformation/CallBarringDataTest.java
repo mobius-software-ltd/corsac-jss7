@@ -9,14 +9,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallBarringDataImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtCallBarringFeatureImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatusImpl;
-import org.restcomm.protocols.ss7.map.api.service.supplementary.PasswordImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtCallBarringFeature;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
+import org.restcomm.protocols.ss7.map.api.service.supplementary.Password;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtCallBarringFeatureImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtSSStatusImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.PasswordImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -31,7 +34,9 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class CallBarringDataTest {
-    private byte[] data = {48, 68, 48, 8, 48, 6, -126, 1, 0, -124, 1, 8, 18, 4, 48, 48, 48, 48, 2, 1, 3, 5, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33};
+    private byte[] data = {48, 62, 48, 8, 48, 6, -126, 1, 0, -124, 1, 8, 18, 4, 48, 48, 48, 48, 2, 1, 3, 5, 0, 48, 39,
+            -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22,
+            23, 24, 25, 26, -95, 3, 31, 32, 33};
 
     @Test(groups = {"functional.decode", "subscriberInformation"})
     public void testDecode() throws Exception {
@@ -47,20 +52,20 @@ public class CallBarringDataTest {
         assertTrue(callBarringData.getNotificationToCSE());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(callBarringData.getExtensionContainer()));
 
-        List<ExtCallBarringFeatureImpl> extCallBarringFeatures = callBarringData.getCallBarringFeatureList();
+        List<ExtCallBarringFeature> extCallBarringFeatures = callBarringData.getCallBarringFeatureList();
         assertNotNull(extCallBarringFeatures);
         assertEquals(extCallBarringFeatures.size(), 1);
 
-        ExtCallBarringFeatureImpl extCallBarringFeature = extCallBarringFeatures.get(0);
-        ExtBasicServiceCodeImpl extBasicServiceCode = extCallBarringFeature.getBasicService();
-        ExtSSStatusImpl extSSStatus = extCallBarringFeature.getSsStatus();
+        ExtCallBarringFeature extCallBarringFeature = extCallBarringFeatures.get(0);
+        ExtBasicServiceCode extBasicServiceCode = extCallBarringFeature.getBasicService();
+        ExtSSStatus extSSStatus = extCallBarringFeature.getSsStatus();
         assertEquals(extBasicServiceCode.getExtBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.allBearerServices);
         assertTrue(extSSStatus.getBitQ());
         assertFalse(extSSStatus.getBitP());
         assertFalse(extSSStatus.getBitR());
         assertFalse(extSSStatus.getBitA());
 
-        PasswordImpl password = callBarringData.getPassword();
+        Password password = callBarringData.getPassword();
         assertNotNull(password);
         assertEquals(password.getData(), "0000");
     }
@@ -74,7 +79,7 @@ public class CallBarringDataTest {
         final ExtCallBarringFeatureImpl extCallBarringFeature = new ExtCallBarringFeatureImpl(extBasicServiceCode,
                 new ExtSSStatusImpl(true, false, false, false), null);
         
-        ArrayList<ExtCallBarringFeatureImpl> extCallBarringFeatureList=new ArrayList<ExtCallBarringFeatureImpl>();
+        List<ExtCallBarringFeature> extCallBarringFeatureList=new ArrayList<ExtCallBarringFeature>();
         extCallBarringFeatureList.add(extCallBarringFeature);
         CallBarringDataImpl callBarringData = new CallBarringDataImpl(extCallBarringFeatureList,
                 new PasswordImpl("0000"), 3, true, MAPExtensionContainerTest.GetTestExtensionContainer());

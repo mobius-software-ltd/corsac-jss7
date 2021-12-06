@@ -33,10 +33,8 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinitionImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfoImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentificationImpl;
-import org.restcomm.protocols.ss7.map.api.service.lsm.AreaImpl;
+import org.restcomm.protocols.ss7.map.api.service.lsm.Area;
+import org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinition;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
 import org.restcomm.protocols.ss7.map.api.service.lsm.OccurrenceInfo;
 import org.testng.annotations.AfterClass;
@@ -92,10 +90,10 @@ public class AreaEventInfoTest {
         assertTrue(result.getResult() instanceof AreaEventInfoImpl);
         AreaEventInfoImpl areaEvtInf = (AreaEventInfoImpl)result.getResult();
 
-        AreaDefinitionImpl areaDef = areaEvtInf.getAreaDefinition();
+        AreaDefinition areaDef = areaEvtInf.getAreaDefinition();
         assertNotNull(areaDef);
 
-        List<AreaImpl> areaList = areaDef.getAreaList();
+        List<Area> areaList = areaDef.getAreaList();
 
         assertNotNull(areaList);
         assertEquals(areaList.size(), 1);
@@ -125,7 +123,7 @@ public class AreaEventInfoTest {
         AreaIdentificationImpl ai1 = new AreaIdentificationImpl(AreaType.routingAreaId, 210, 177, 1000, 100);
         AreaImpl area1 = new AreaImpl(AreaType.routingAreaId, ai1);
 
-        ArrayList<AreaImpl> areaList = new ArrayList<AreaImpl>();
+        List<Area> areaList = new ArrayList<Area>();
         areaList.add(area1);
         AreaDefinitionImpl areaDef = new AreaDefinitionImpl(areaList);
 

@@ -22,13 +22,14 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
-import org.restcomm.protocols.ss7.map.api.errors.ASNCUGRejectCauseImpl;
 import org.restcomm.protocols.ss7.map.api.errors.CUGRejectCause;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageCUGReject;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -39,9 +40,11 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageCUGRejectImpl extends MAPErrorMessageImpl implements MAPErrorMessageCUGReject {
 	private ASNCUGRejectCauseImpl cugRejectCause;
-    private MAPExtensionContainerImpl extensionContainer;
+    
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
 
-    public MAPErrorMessageCUGRejectImpl(CUGRejectCause cugRejectCause, MAPExtensionContainerImpl extensionContainer) {
+    public MAPErrorMessageCUGRejectImpl(CUGRejectCause cugRejectCause, MAPExtensionContainer extensionContainer) {
         super((long) MAPErrorCode.cugReject);
 
         if(cugRejectCause!=null){
@@ -73,7 +76,7 @@ public class MAPErrorMessageCUGRejectImpl extends MAPErrorMessageImpl implements
     }
 
     @Override
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return extensionContainer;
     }
 
@@ -88,7 +91,7 @@ public class MAPErrorMessageCUGRejectImpl extends MAPErrorMessageImpl implements
     }
 
     @Override
-    public void setExtensionContainer(MAPExtensionContainerImpl val) {
+    public void setExtensionContainer(MAPExtensionContainer val) {
         extensionContainer = val;
     }
 

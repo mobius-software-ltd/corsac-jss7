@@ -32,12 +32,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DCSIImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DPAnalysedInfoCriteriumImpl;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DCSI;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DPAnalysedInfoCriterium;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultCallHandling;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.testng.annotations.Test;
 
@@ -54,12 +55,19 @@ import io.netty.buffer.Unpooled;
  */
 public class DCSITest {
 
-    public byte[] getData() {
-        return new byte[] { 48, 123, -96, 67, 48, 65, 4, 4, -111, 34, 50, -12, 2, 1, 7, 4, 4, -111, 34, 50, -11, 2, 1, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 2, -94, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -125, 0, -124, 0 };
+	public byte[] getData() {
+        return new byte[] { 48, 111, -96, 61, 48, 59, 4, 4, -111, 34, 50, -12, 2, 1, 7, 4, 4, -111, 34, 50, -11, 2, 1, 0, 48,
+                39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22,
+                23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 2, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
+                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -125, 0, -124, 0 };
     };
 
     public byte[] getData2() {
-        return new byte[] { 48, -127, -116, -96, -127, -122, 48, 65, 4, 4, -111, 34, 50, -12, 2, 1, 7, 4, 4, -111, 34, 50, -11, 2, 1, 0, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, 48, 65, 4, 4, -111, 34, 50, -12, 2, 1, 8, 4, 4, -111, 34, 50, -11, 2, 1, 1, 48, 45, -96, 36, 48, 12, 6, 3, 42, 3, 4, 4, 5, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 13, 6, 3, 42, 3, 5, 4, 6, 21, 22, 23, 24, 25, 26, -95, 5, 4, 3, 31, 32, 33, -127, 1, 2 };
+        return new byte[] { 48, 127, -96, 122, 48, 59, 4, 4, -111, 34, 50, -12, 2, 1, 7, 4, 4, -111, 34, 50, -11, 2, 1, 0, 48,
+                39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22,
+                23, 24, 25, 26, -95, 3, 31, 32, 33, 48, 59, 4, 4, -111, 34, 50, -12, 2, 1, 8, 4, 4, -111, 34, 50, -11, 2, 1, 1,
+                48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21,
+                22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 1, 2 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -73,18 +81,18 @@ public class DCSITest {
         assertTrue(result.getResult() instanceof DCSIImpl);
         DCSIImpl prim = (DCSIImpl)result.getResult(); 
         
-    	MAPExtensionContainerImpl extensionContainer = prim.getExtensionContainer();
-    	List<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriaList = prim.getDPAnalysedInfoCriteriaList();
+    	MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
+    	List<DPAnalysedInfoCriterium> dpAnalysedInfoCriteriaList = prim.getDPAnalysedInfoCriteriaList();
     	assertNotNull(dpAnalysedInfoCriteriaList);
     	assertEquals(dpAnalysedInfoCriteriaList.size(), 1);
-    	DPAnalysedInfoCriteriumImpl dpAnalysedInfoCriterium = dpAnalysedInfoCriteriaList.get(0);
+    	DPAnalysedInfoCriterium dpAnalysedInfoCriterium = dpAnalysedInfoCriteriaList.get(0);
     	assertNotNull(dpAnalysedInfoCriterium);
-    	ISDNAddressStringImpl dialledNumber = dpAnalysedInfoCriterium.getDialledNumber();
+    	ISDNAddressString dialledNumber = dpAnalysedInfoCriterium.getDialledNumber();
     	assertTrue(dialledNumber.getAddress().equals("22234"));
     	assertEquals(dialledNumber.getAddressNature(), AddressNature.international_number);
     	assertEquals(dialledNumber.getNumberingPlan(), NumberingPlan.ISDN);
     	assertEquals(dpAnalysedInfoCriterium.getServiceKey(), 7);
-    	ISDNAddressStringImpl gsmSCFAddress = dpAnalysedInfoCriterium.getGsmSCFAddress();
+    	ISDNAddressString gsmSCFAddress = dpAnalysedInfoCriterium.getGsmSCFAddress();
     	assertTrue(gsmSCFAddress.getAddress().equals("22235"));
     	assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
     	assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
@@ -127,7 +135,7 @@ public class DCSITest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(DCSIImpl.class);
     	                
-        MAPExtensionContainerImpl extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
+        MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
         ISDNAddressStringImpl dialledNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22234");
@@ -137,10 +145,10 @@ public class DCSITest {
         DPAnalysedInfoCriteriumImpl dpAnalysedInfoCriterium = new DPAnalysedInfoCriteriumImpl(dialledNumber, 7, gsmSCFAddress,
                 DefaultCallHandling.continueCall, extensionContainer);
 
-        ArrayList<DPAnalysedInfoCriteriumImpl> dpAnalysedInfoCriteriaList = new ArrayList<DPAnalysedInfoCriteriumImpl>();
+        List<DPAnalysedInfoCriterium> dpAnalysedInfoCriteriaList = new ArrayList<DPAnalysedInfoCriterium>();
         dpAnalysedInfoCriteriaList.add(dpAnalysedInfoCriterium);
 
-        DCSIImpl prim = new DCSIImpl(dpAnalysedInfoCriteriaList, 2, extensionContainer, true, true);
+        DCSI prim = new DCSIImpl(dpAnalysedInfoCriteriaList, 2, extensionContainer, true, true);
 
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];

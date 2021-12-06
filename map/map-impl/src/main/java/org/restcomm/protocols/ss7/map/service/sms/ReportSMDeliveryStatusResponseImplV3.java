@@ -24,11 +24,14 @@ package org.restcomm.protocols.ss7.map.service.sms;
 
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.sms.ReportSMDeliveryStatusResponse;
+import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -40,8 +43,11 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ReportSMDeliveryStatusResponseImplV3 extends SmsMessageImpl implements ReportSMDeliveryStatusResponse {
 	private static final long serialVersionUID = 1L;
 
-	private ISDNAddressStringImpl storedMSISDN;
-    private MAPExtensionContainerImpl extensionContainer;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = ISDNAddressStringImpl.class)
+	private ISDNAddressString storedMSISDN;
+    
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
+	private MAPExtensionContainer extensionContainer;
 
     private long mapProtocolVersion;
 
@@ -53,8 +59,8 @@ public class ReportSMDeliveryStatusResponseImplV3 extends SmsMessageImpl impleme
         this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public ReportSMDeliveryStatusResponseImplV3(long mapProtocolVersion, ISDNAddressStringImpl storedMSISDN,
-            MAPExtensionContainerImpl extensionContainer) {
+    public ReportSMDeliveryStatusResponseImplV3(long mapProtocolVersion, ISDNAddressString storedMSISDN,
+            MAPExtensionContainer extensionContainer) {
         this.mapProtocolVersion = mapProtocolVersion;
         this.storedMSISDN = storedMSISDN;
         this.extensionContainer = extensionContainer;
@@ -68,11 +74,11 @@ public class ReportSMDeliveryStatusResponseImplV3 extends SmsMessageImpl impleme
         return MAPOperationCode.reportSM_DeliveryStatus;
     }
 
-    public ISDNAddressStringImpl getStoredMSISDN() {
+    public ISDNAddressString getStoredMSISDN() {
         return this.storedMSISDN;
     }
 
-    public MAPExtensionContainerImpl getExtensionContainer() {
+    public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
 

@@ -22,6 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation;
 
+import java.util.List;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+
 /**
 <code>
 PS-SubscriberState ::= CHOICE {
@@ -33,13 +38,21 @@ PS-SubscriberState ::= CHOICE {
   ps-PDP-ActiveReachableForPaging     [5] PDP-ContextInfoList,
   netDetNotReachable                  NotReachableReason
 }
-<code>
+PDP-ContextInfoList ::= SEQUENCE SIZE (1..50) OF PDP-ContextInfo
+</code>
  *
  *
+ * @author amit bhayani
  * @author sergey vetyutnev
  *
  */
-public enum PSSubscriberState {
-    notProvidedFromSGSNorMME, psDetached, psAttachedNotReachableForPaging, psAttachedReachableForPaging, psPDPActiveNotReachableForPaging, psPDPActiveReachableForPaging, netDetNotReachable;
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
+public interface PSSubscriberState {
+
+    PSSubscriberStateChoise getChoice();
+
+    List<PDPContextInfo> getPDPContextInfoList();
+
+    NotReachableReason getNetDetNotReachable();
 
 }
