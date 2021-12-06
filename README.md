@@ -10,5 +10,5 @@ As result this version of stack is much more effecient for High load system and/
 
 ## Current Status
 
-The work is still in progress. As for 12th of March the work is done on Map And Cap Protocols
-Please do not use this code for now since the structure would be changed slightly to bring back the API interfaces for parameters encoding.
+The initial rework has been completed and code is ready to use. The main differences between this repo and restcomm repository (in terms of operation) is in bitstring encoding (this release is using shortest possible bitstring representation while restcomm is not) and errors handling on TCAP+ layers ( due to different parsing of ASN )
+The work on those 2 items and several other improvements is planned to be completed shorly ( till the end of Jan 2022 ), after which additional rework of higher layer protocols logic would be done to completely separate TCAP from upper layer protocols , errors handling of higher layers protocols changed and common module would be introduced for cap/inap/map to minimize development effort
