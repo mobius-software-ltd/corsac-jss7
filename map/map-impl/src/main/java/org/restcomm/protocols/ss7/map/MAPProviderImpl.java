@@ -2239,7 +2239,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
     protected void fireTCEnd(Dialog tcapDialog, Boolean sendMapCloseInfo, boolean prearrangedEnd, ApplicationContextName acn,
             MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError) throws MAPException {
 
-        TCEndRequest endRequest = encodeTCEnd(tcapDialog, sendMapCloseInfo, prearrangedEnd, acn, mapExtensionContainer);
+    	TCEndRequest endRequest = encodeTCEnd(tcapDialog, sendMapCloseInfo, prearrangedEnd, acn, mapExtensionContainer);
         if (returnMessageOnError)
             endRequest.setReturnMessageOnError(true);
 

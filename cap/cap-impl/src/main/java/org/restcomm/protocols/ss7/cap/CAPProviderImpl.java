@@ -1379,7 +1379,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
     protected void fireTCEnd(Dialog tcapDialog, boolean prearrangedEnd, ApplicationContextName acn,
             CAPGprsReferenceNumber gprsReferenceNumber, boolean returnMessageOnError) throws CAPException {
 
-        TCEndRequest endRequest = encodeTCEnd(tcapDialog, prearrangedEnd, acn, gprsReferenceNumber);
+    	TCEndRequest endRequest = encodeTCEnd(tcapDialog, prearrangedEnd, acn, gprsReferenceNumber);
         if (returnMessageOnError)
             endRequest.setReturnMessageOnError(true);
 
