@@ -28,6 +28,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.commonapp.isup.GenericNumberIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.testng.annotations.Test;
@@ -56,15 +57,15 @@ public class GenericNumberCapTest {
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(GenericNumberCapImpl.class);
+    	parser.replaceClass(GenericNumberIsupImpl.class);
     	
     	byte[] rawData = this.getData();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof GenericNumberCapImpl);
+        assertTrue(result.getResult() instanceof GenericNumberIsupImpl);
         
-        GenericNumberCapImpl elem = (GenericNumberCapImpl)result.getResult();        
+        GenericNumberIsupImpl elem = (GenericNumberIsupImpl)result.getResult();        
         GenericNumber gn = elem.getGenericNumber();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         assertEquals(gn.getNatureOfAddressIndicator(), 3);
@@ -78,9 +79,9 @@ public class GenericNumberCapTest {
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(GenericNumberCapImpl.class);
+    	parser.replaceClass(GenericNumberIsupImpl.class);
     	
-        GenericNumberCapImpl elem = new GenericNumberCapImpl(this.getIntData());
+        GenericNumberIsupImpl elem = new GenericNumberIsupImpl(this.getIntData());
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -88,7 +89,7 @@ public class GenericNumberCapTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         GenericNumber rn = new GenericNumberImpl(3, "7010900", 1, 1, 1, false, 0);
-        elem = new GenericNumberCapImpl(rn);
+        elem = new GenericNumberIsupImpl(rn);
         rawData = this.getData();
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];

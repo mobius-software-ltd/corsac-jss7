@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.commonapp.api.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 
 /**
  *
@@ -66,13 +66,13 @@ public interface InitiateCallAttemptRequest extends CircuitSwitchedCallMessage {
 
     DestinationRoutingAddress getDestinationRoutingAddress();
 
-    CAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
     LegID getLegToBeCreated();
 
     Integer getNewCallSegment();
 
-    CallingPartyNumberCap getCallingPartyNumber();
+    CallingPartyNumberIsup getCallingPartyNumber();
 
     CallReferenceNumber getCallReferenceNumber();
 

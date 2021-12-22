@@ -22,6 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.errors.AbsentSubscriberDiagnosticSM;
 import org.restcomm.protocols.ss7.map.api.errors.AbsentSubscriberReason;
 import org.restcomm.protocols.ss7.map.api.errors.AdditionalNetworkResource;
@@ -55,7 +56,6 @@ import org.restcomm.protocols.ss7.map.api.errors.RoamingNotAllowedCause;
 import org.restcomm.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
 import org.restcomm.protocols.ss7.map.api.errors.UnauthorizedLCSClientDiagnostic;
 import org.restcomm.protocols.ss7.map.api.errors.UnknownSubscriberDiagnostic;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;

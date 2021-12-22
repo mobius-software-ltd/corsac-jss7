@@ -24,13 +24,13 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ConnectToResourceRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ResourceAddressImpl;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ServiceInteractionIndicatorsTwo;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -50,8 +50,8 @@ public class ConnectToResourceRequestImpl extends CircuitSwitchedCallMessageImpl
 	@ASNChoise
     private ResourceAddressImpl resourceAddress;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
-    private CAPExtensions extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1,defaultImplementation = CAPINAPExtensionsImpl.class)
+    private CAPINAPExtensions extensions;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = true,index = -1,defaultImplementation = ServiceInteractionIndicatorsTwoImpl.class)
     private ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo;
@@ -62,8 +62,8 @@ public class ConnectToResourceRequestImpl extends CircuitSwitchedCallMessageImpl
     public ConnectToResourceRequestImpl() {
     }
 
-    public ConnectToResourceRequestImpl(CalledPartyNumberCap resourceAddress_IPRoutingAddress, boolean resourceAddress_Null,
-            CAPExtensions extensions, ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Integer callSegmentID) {
+    public ConnectToResourceRequestImpl(CalledPartyNumberIsup resourceAddress_IPRoutingAddress, boolean resourceAddress_Null,
+            CAPINAPExtensions extensions, ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Integer callSegmentID) {
     	
     	if(resourceAddress_IPRoutingAddress!=null) {
     		this.resourceAddress = new ResourceAddressImpl(resourceAddress_IPRoutingAddress);	
@@ -91,7 +91,7 @@ public class ConnectToResourceRequestImpl extends CircuitSwitchedCallMessageImpl
     }
 
     @Override
-    public CalledPartyNumberCap getResourceAddress_IPRoutingAddress() {
+    public CalledPartyNumberIsup getResourceAddress_IPRoutingAddress() {
     	if(resourceAddress==null)
     		return null;
     	
@@ -107,7 +107,7 @@ public class ConnectToResourceRequestImpl extends CircuitSwitchedCallMessageImpl
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPINAPExtensions getExtensions() {
         return extensions;
     }
 

@@ -24,19 +24,19 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.InitiateCallAttemptRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
-import org.restcomm.protocols.ss7.cap.isup.CallingPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
-import org.restcomm.protocols.ss7.inap.primitives.LegIDWrapperImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.commonapp.api.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
+import org.restcomm.protocols.ss7.commonapp.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CallingPartyNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.LegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -57,8 +57,8 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1, defaultImplementation = DestinationRoutingAddressImpl.class)
     private DestinationRoutingAddress destinationRoutingAddress;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
-    private CAPExtensions extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1,defaultImplementation = CAPINAPExtensionsImpl.class)
+    private CAPINAPExtensions extensions;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = true,index = -1)
     private LegIDWrapperImpl legToBeCreated;
@@ -66,8 +66,8 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = false,index = -1)
     private ASNInteger newCallSegment;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 30,constructed = false,index = -1, defaultImplementation = CallingPartyNumberCapImpl.class)
-    private CallingPartyNumberCap callingPartyNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 30,constructed = false,index = -1, defaultImplementation = CallingPartyNumberIsupImpl.class)
+    private CallingPartyNumberIsup callingPartyNumber;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 51,constructed = false,index = -1, defaultImplementation = CallReferenceNumberImpl.class)
     private CallReferenceNumber callReferenceNumber;
@@ -82,8 +82,8 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
     }
 
     public InitiateCallAttemptRequestImpl(DestinationRoutingAddress destinationRoutingAddress,
-            CAPExtensions extensions, LegID legToBeCreated, Integer newCallSegment,
-            CallingPartyNumberCap callingPartyNumber, CallReferenceNumber callReferenceNumber,
+            CAPINAPExtensions extensions, LegID legToBeCreated, Integer newCallSegment,
+            CallingPartyNumberIsup callingPartyNumber, CallReferenceNumber callReferenceNumber,
             ISDNAddressString gsmSCFAddress, boolean suppressTCsi) {
         this.destinationRoutingAddress = destinationRoutingAddress;
         this.extensions = extensions;
@@ -162,7 +162,7 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPINAPExtensions getExtensions() {
         return extensions;
     }
 
@@ -183,7 +183,7 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
     }
 
     @Override
-    public CallingPartyNumberCap getCallingPartyNumber() {
+    public CallingPartyNumberIsup getCallingPartyNumber() {
         return callingPartyNumber;
     }
 

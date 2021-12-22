@@ -23,15 +23,15 @@ package org.restcomm.protocols.ss7.cap.service.sms;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.sms.EventReportSMSRequest;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.service.sms.primitive.ASNEventTypeSMSImpl;
 import org.restcomm.protocols.ss7.cap.service.sms.primitive.EventSpecificInformationSMSWrapperImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
-import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.MiscCallInfoImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -55,11 +55,11 @@ public class EventReportSMSRequestImpl extends SmsMessageImpl implements EventRe
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1, defaultImplementation = MiscCallInfoImpl.class)
     private MiscCallInfo miscCallInfo;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
-    private CAPExtensions extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1, defaultImplementation = CAPINAPExtensionsImpl.class)
+    private CAPINAPExtensions extensions;
 
     public EventReportSMSRequestImpl(EventTypeSMS eventTypeSMS,
-            EventSpecificInformationSMS eventSpecificInformationSMS, MiscCallInfo miscCallInfo, CAPExtensions extensions) {
+            EventSpecificInformationSMS eventSpecificInformationSMS, MiscCallInfo miscCallInfo, CAPINAPExtensions extensions) {
         super();
         
         if(eventTypeSMS!=null) {
@@ -96,7 +96,7 @@ public class EventReportSMSRequestImpl extends SmsMessageImpl implements EventRe
         return this.miscCallInfo;
     }
 
-    public CAPExtensions getExtensions() {
+    public CAPINAPExtensions getExtensions() {
         return this.extensions;
     }
 

@@ -25,18 +25,18 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 
+import org.restcomm.protocols.ss7.commonapp.api.datacoding.NationalLanguageIdentifier;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharset;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecoder;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecodingData;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetEncoder;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetEncodingData;
+import org.restcomm.protocols.ss7.commonapp.datacoding.Gsm7EncodingStyle;
 import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.datacoding.NationalLanguageIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingScheme;
 import org.restcomm.protocols.ss7.map.api.smstpdu.Gsm7NationalLanguageIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeader;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharset;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharsetDecoder;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharsetDecodingData;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharsetEncoder;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharsetEncodingData;
-import org.restcomm.protocols.ss7.map.datacoding.Gsm7EncodingStyle;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

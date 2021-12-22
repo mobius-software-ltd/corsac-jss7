@@ -31,14 +31,14 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.cap.EsiSms.OSmsFailureSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsFailureSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.MOSMSCause;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.cap.service.sms.primitive.EventSpecificInformationSMSImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfoMessageType;
-import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoMessageType;
+import org.restcomm.protocols.ss7.commonapp.primitives.MiscCallInfoImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -99,7 +99,7 @@ public class EventReportSMSRequestTest {
                 oSmsFailureSpecificInfo);
         MiscCallInfoImpl miscCallInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.notification, null);
 
-        CAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
+        CAPINAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
 
         EventReportSMSRequestImpl prim = new EventReportSMSRequestImpl(eventTypeSMS, eventSpecificInformationSMS,
                 miscCallInfo, extensions);

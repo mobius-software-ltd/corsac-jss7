@@ -30,46 +30,46 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CGEncountered;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.HoldTreatmentIndicator;
-import org.restcomm.protocols.ss7.cap.isup.BearerCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.CallingPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.isup.LocationNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.OriginalCalledNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.RedirectingPartyIDCapImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.primitives.CalledPartyBCDNumberImpl;
-import org.restcomm.protocols.ss7.cap.primitives.TimeAndTimezoneImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.BearerCapabilityImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
-import org.restcomm.protocols.ss7.inap.isup.CallingPartysCategoryInapImpl;
-import org.restcomm.protocols.ss7.inap.isup.HighLayerCompatibilityInapImpl;
-import org.restcomm.protocols.ss7.inap.isup.RedirectionInformationInapImpl;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountered;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.HoldTreatmentIndicator;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.SubscriberStateChoice;
+import org.restcomm.protocols.ss7.commonapp.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.BearerCapabilityImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CalledPartyBCDNumberImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CarrierImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.IPSSPCapabilitiesImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.BearerIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CallingPartyNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CallingPartysCategoryIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.HighLayerCompatibilityIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.LocationNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.OriginalCalledNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.RedirectingPartyIDIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.RedirectionInformationIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.TimeAndTimezoneImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.SubscriberStateImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.CUGIndexImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.CUGInterlockImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtTeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectionInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateChoice;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.CallReferenceNumberImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.SubscriberStateImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGIndexImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGInterlockImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -193,7 +193,7 @@ public class InitialDPRequestTest {
         assertTrue(Arrays.equals(elem.getRedirectingPartyID().getData(), getRedirectingPartyID()));
         
         ByteBuf value=Unpooled.buffer();
-        ((RedirectionInformationInapImpl)elem.getRedirectionInformation()).encode(parser,value);
+        ((RedirectionInformationIsupImpl)elem.getRedirectionInformation()).encode(parser,value);
         assertNotNull(value);
         byte[] data = new byte[value.readableBytes()];
         value.readBytes(data);
@@ -241,7 +241,7 @@ public class InitialDPRequestTest {
         assertTrue(Arrays.equals(elem.getRedirectingPartyID().getData(), getRedirectingPartyID()));
         
         value=Unpooled.buffer();
-        ((RedirectionInformationInapImpl)elem.getRedirectionInformation()).encode(parser,value);
+        ((RedirectionInformationIsupImpl)elem.getRedirectionInformation()).encode(parser,value);
         data = new byte[value.readableBytes()];
         value.readBytes(data);
         assertTrue(Arrays.equals(data, getRedirectionInformation()));
@@ -273,7 +273,7 @@ public class InitialDPRequestTest {
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
         
         value=Unpooled.buffer();
-        ((HighLayerCompatibilityInapImpl)elem.getHighLayerCompatibility()).encode(parser,value);
+        ((HighLayerCompatibilityIsupImpl)elem.getHighLayerCompatibility()).encode(parser,value);
         assertNotNull(value);
         data = new byte[value.readableBytes()];
         value.readBytes(data);
@@ -351,14 +351,14 @@ public class InitialDPRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(InitialDPRequestImpl.class);
 
-        CalledPartyNumberCapImpl calledPartyNumber = new CalledPartyNumberCapImpl(getDataCalledPartyNumber());
-        CallingPartyNumberCapImpl callingPartyNumber = new CallingPartyNumberCapImpl(getCallingPartyNumber());
-        CallingPartysCategoryInapImpl callingPartysCategory = new CallingPartysCategoryInapImpl(new CallingPartyCategoryImpl(getCallingPartysCategory()[0]));
-        OriginalCalledNumberCapImpl originalCalledPartyID = new OriginalCalledNumberCapImpl(getOriginalCalledPartyID());
-        BearerCapImpl bearerCap = new BearerCapImpl(getBearerCapability());
+        CalledPartyNumberIsupImpl calledPartyNumber = new CalledPartyNumberIsupImpl(getDataCalledPartyNumber());
+        CallingPartyNumberIsupImpl callingPartyNumber = new CallingPartyNumberIsupImpl(getCallingPartyNumber());
+        CallingPartysCategoryIsupImpl callingPartysCategory = new CallingPartysCategoryIsupImpl(new CallingPartyCategoryImpl(getCallingPartysCategory()[0]));
+        OriginalCalledNumberIsupImpl originalCalledPartyID = new OriginalCalledNumberIsupImpl(getOriginalCalledPartyID());
+        BearerIsupImpl bearerCap = new BearerIsupImpl(getBearerCapability());
         BearerCapabilityImpl bearerCapability = new BearerCapabilityImpl(bearerCap);
-        RedirectingPartyIDCapImpl redirectingPartyID = new RedirectingPartyIDCapImpl(getRedirectingPartyID());
-        RedirectionInformationInapImpl redirectionInformation = new RedirectionInformationInapImpl(new RedirectionInformationImpl(Unpooled.wrappedBuffer(getRedirectionInformation())));
+        RedirectingPartyIDIsupImpl redirectingPartyID = new RedirectingPartyIDIsupImpl(getRedirectingPartyID());
+        RedirectionInformationIsupImpl redirectionInformation = new RedirectionInformationIsupImpl(new RedirectionInformationImpl(Unpooled.wrappedBuffer(getRedirectionInformation())));
         IMSIImpl imsi = new IMSIImpl("607029900140199");
         ExtTeleserviceCodeImpl extTeleservice = new ExtTeleserviceCodeImpl(getExtBasicServiceCode());
         ExtBasicServiceCodeImpl extBasicServiceCode = new ExtBasicServiceCodeImpl(extTeleservice);
@@ -381,10 +381,10 @@ public class InitialDPRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         IPSSPCapabilitiesImpl IPSSPCapabilities = new IPSSPCapabilitiesImpl(true, true, false, false, true, null);
-        LocationNumberCapImpl locationNumber = new LocationNumberCapImpl(getLocationNumber());
-        HighLayerCompatibilityInapImpl highLayerCompatibility = new HighLayerCompatibilityInapImpl();
+        LocationNumberIsupImpl locationNumber = new LocationNumberIsupImpl(getLocationNumber());
+        HighLayerCompatibilityIsupImpl highLayerCompatibility = new HighLayerCompatibilityIsupImpl();
         highLayerCompatibility.decode(parser,null,Unpooled.wrappedBuffer(getHighLayerCompatibility()),false);
-        DigitsImpl additionalCallingPartyNumber = new DigitsImpl(getAdditionalCallingPartyNumberCap());
+        DigitsIsupImpl additionalCallingPartyNumber = new DigitsIsupImpl(getAdditionalCallingPartyNumberCap());
         SubscriberStateImpl subscriberState = new SubscriberStateImpl(SubscriberStateChoice.notProvidedFromVLR, null);
         LocationInformationImpl locationInformation = new LocationInformationImpl(111, null, null, null, null, null, null,
                 null, null, false, false, null, null);
@@ -396,7 +396,7 @@ public class InitialDPRequestTest {
                 highLayerCompatibility, additionalCallingPartyNumber, bearerCapability, EventTypeBCSM.collectedInfo,
                 redirectingPartyID, redirectionInformation, null, null, null, null, null, false, imsi, subscriberState,
                 locationInformation, extBasicServiceCode, callReferenceNumber, mscAddress, calledPartyBCDNumber,
-                timeAndTimezone, true, initialDPArgExtension);
+                timeAndTimezone, true,initialDPArgExtension);
         rawData = this.getData2();
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];
@@ -408,13 +408,13 @@ public class InitialDPRequestTest {
         calledPartyNumber2.setInternalNetworkNumberIndicator(0);
         calledPartyNumber2.setNatureOfAddresIndicator(CalledPartyNumber._NAI_INTERNATIONAL_NUMBER);
         calledPartyNumber2.setNumberingPlanIndicator(CalledPartyNumber._NPI_ISDN);
-        CalledPartyNumberCapImpl calledPartyNumberCap2 = new CalledPartyNumberCapImpl(calledPartyNumber2);
+        CalledPartyNumberIsupImpl calledPartyNumberCap2 = new CalledPartyNumberIsupImpl(calledPartyNumber2);
         CauseIndicators causeIndicators = new CauseIndicatorsImpl();
         causeIndicators.setCauseValue(CauseIndicators._CV_BEARER_CAPABILITY_NOT_AVAILABLE);
         causeIndicators.setCodingStandard(CauseIndicators._CODING_STANDARD_NATIONAL);
         causeIndicators.setLocation(CauseIndicators._LOCATION_PUBLIC_NSRU);
         causeIndicators.setRecommendation(0);
-        CauseCapImpl cause = new CauseCapImpl(causeIndicators);
+        CauseIsupImpl cause = new CauseIsupImpl(causeIndicators);
         ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo = new ServiceInteractionIndicatorsTwoImpl(null, null, null, null, false,
                 HoldTreatmentIndicator.rejectHoldRequest, null, null);
         CarrierImpl carrier = new CarrierImpl(getCarrier());

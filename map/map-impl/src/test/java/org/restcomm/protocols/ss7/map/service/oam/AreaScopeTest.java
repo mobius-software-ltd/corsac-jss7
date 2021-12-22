@@ -31,18 +31,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LAIFixedLength;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.EUtranCgi;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.RAIdentity;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.TAId;
+import org.restcomm.protocols.ss7.commonapp.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.EUtranCgiImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.RAIdentityImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.TAIdImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EUtranCgi;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentity;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TAId;
 import org.restcomm.protocols.ss7.map.api.service.oam.AreaScope;
 import org.restcomm.protocols.ss7.map.primitives.GlobalCellIdImpl;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.EUtranCgiImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RAIdentityImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.TAIdImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

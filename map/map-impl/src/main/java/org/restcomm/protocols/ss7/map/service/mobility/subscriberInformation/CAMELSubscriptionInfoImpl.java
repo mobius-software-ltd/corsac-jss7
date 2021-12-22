@@ -21,7 +21,8 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CAMELSubscriptionInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DCSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCSI;
@@ -35,7 +36,6 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SpecificCSIWithdraw;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTdpCriteria;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TCSI;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.DCSIImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.GPRSCSIImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.MCSIImpl;

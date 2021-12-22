@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSend;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.InformationToSend;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 
 /**
  *
@@ -71,7 +71,7 @@ public interface PlayAnnouncementRequest extends CircuitSwitchedCallMessage {
 
     Boolean getRequestAnnouncementCompleteNotification();
 
-    CAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
     Integer getCallSegmentID();
 

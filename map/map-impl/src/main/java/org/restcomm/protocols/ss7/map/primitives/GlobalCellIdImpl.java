@@ -22,10 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.primitives;
 
+import org.restcomm.protocols.ss7.commonapp.api.APPException;
+import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
+import org.restcomm.protocols.ss7.commonapp.primitives.TbcdStringImpl;
 import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
 import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
-import org.restcomm.protocols.ss7.map.api.primitives.TbcdString;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
@@ -76,9 +77,13 @@ public class GlobalCellIdImpl extends ASNOctetString implements GlobalCellId {
         }
 
         ByteBuf result=Unpooled.buffer(7);
-        TbcdString.encodeString(result, sb.toString());
-        
-        TbcdString.encodeString(result, sb2.toString());
+        try {
+        	TbcdStringImpl.encodeString(result, sb.toString());
+        	TbcdStringImpl.encodeString(result, sb2.toString());
+        }
+        catch(APPException ex) {
+        	throw new MAPException(ex.getMessage(), ex.getCause());
+        }
         
         result.writeByte((byte) (lac / 256));
         result.writeByte((byte) (lac % 256));
@@ -104,8 +109,8 @@ public class GlobalCellIdImpl extends ASNOctetString implements GlobalCellId {
 
         String res = null;
         try {
-            res = TbcdString.decodeString(Unpooled.wrappedBuffer(data, 0, 3));
-        }catch (MAPParsingComponentException e) {
+            res = TbcdStringImpl.decodeString(Unpooled.wrappedBuffer(data, 0, 3));
+        }catch (APPParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding GlobalCellId: " + e.getMessage(), e);
         }
 
@@ -126,8 +131,8 @@ public class GlobalCellIdImpl extends ASNOctetString implements GlobalCellId {
 
         String res = null;
         try {
-            res = TbcdString.decodeString(Unpooled.wrappedBuffer(data, 0, 3));
-        } catch (MAPParsingComponentException e) {
+            res = TbcdStringImpl.decodeString(Unpooled.wrappedBuffer(data, 0, 3));
+        } catch (APPParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding GlobalCellId: " + e.getMessage(), e);
         }
 

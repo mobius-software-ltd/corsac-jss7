@@ -30,16 +30,16 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.isup.CallingPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.isup.LocationNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.OriginalCalledNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.primitives.ScfIDImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.BothwayThroughConnectionInd;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.BothwayThroughConnectionInd;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CarrierImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.NAOliInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CallingPartyNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.LocationNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.OriginalCalledNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ScfIDImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
@@ -195,10 +195,10 @@ public class EstablishTemporaryConnectionTest {
         // int natureOfAddresIndicator, String address, int numberQualifierIndicator, int numberingPlanIndicator, int
         // addressRepresentationREstrictedIndicator,
         // boolean numberIncomplete, int screeningIndicator
-        DigitsImpl assistingSSPIPRoutingAddress = new DigitsImpl(genericNumber);
+        DigitsIsupImpl assistingSSPIPRoutingAddress = new DigitsIsupImpl(genericNumber);
         GenericDigitsImpl genericDigits = new GenericDigitsImpl(2, 0, Unpooled.wrappedBuffer(getCorrelationIDDigits()));
         // int encodingScheme, int typeOfDigits, int[] digits
-        DigitsImpl correlationID = new DigitsImpl(genericDigits);
+        DigitsIsupImpl correlationID = new DigitsIsupImpl(genericDigits);
         ScfIDImpl scfID = new ScfIDImpl(getScfIDData());
         ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo = new ServiceInteractionIndicatorsTwoImpl(null,
                 null, BothwayThroughConnectionInd.bothwayPathNotRequired, null, false, null, null, null);
@@ -238,13 +238,13 @@ public class EstablishTemporaryConnectionTest {
         LocationNumber locationNumber = new LocationNumberImpl();
         locationNumber.setNatureOfAddresIndicator(LocationNumber._NAI_INTERNATIONAL_NUMBER);
         locationNumber.setAddress("0000077777");
-        LocationNumberCapImpl chargeNumber = new LocationNumberCapImpl(locationNumber);
+        LocationNumberIsupImpl chargeNumber = new LocationNumberIsupImpl(locationNumber);
         OriginalCalledNumber originalCalledNumber = new OriginalCalledNumberImpl(LocationNumber._NAI_INTERNATIONAL_NUMBER, "1111188888", 0, 0);
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator,
         // int addressRepresentationRestrictedIndicator
-        OriginalCalledNumberCapImpl originalCalledPartyID = new OriginalCalledNumberCapImpl(originalCalledNumber);
+        OriginalCalledNumberIsupImpl originalCalledPartyID = new OriginalCalledNumberIsupImpl(originalCalledNumber);
         CallingPartyNumber callingPartyNumber0 = new CallingPartyNumberImpl(LocationNumber._NAI_INTERNATIONAL_NUMBER, "2222288888", 0, 0, 0, 0);
-        CallingPartyNumberCapImpl callingPartyNumber = new CallingPartyNumberCapImpl(callingPartyNumber0);
+        CallingPartyNumberIsupImpl callingPartyNumber = new CallingPartyNumberIsupImpl(callingPartyNumber0);
         elem = new EstablishTemporaryConnectionRequestImpl(assistingSSPIPRoutingAddress, null, null, null, carrier, null, null, null, chargeNumber,
                 originalCalledPartyID, callingPartyNumber);
         rawData = this.getData3();

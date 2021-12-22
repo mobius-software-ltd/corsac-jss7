@@ -21,8 +21,8 @@
  */
 package org.restcomm.protocols.ss7.cap.service.gprs.primitive;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -39,8 +39,8 @@ public class ResourceAddressImpl {
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
     private ASNNull isNull;
     
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1,defaultImplementation = CalledPartyNumberCapImpl.class)
-    private CalledPartyNumberCap ipRoutingAddress;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1,defaultImplementation = CalledPartyNumberIsupImpl.class)
+    private CalledPartyNumberIsup ipRoutingAddress;
     
     public ResourceAddressImpl() {
 
@@ -51,11 +51,11 @@ public class ResourceAddressImpl {
     		this.isNull = new ASNNull();
     }
 
-    public ResourceAddressImpl(CalledPartyNumberCap ipRoutingAddress) {
+    public ResourceAddressImpl(CalledPartyNumberIsup ipRoutingAddress) {
     	this.ipRoutingAddress = ipRoutingAddress;
     }
 
-    public CalledPartyNumberCap getIPRoutingAddress() {
+    public CalledPartyNumberIsup getIPRoutingAddress() {
         return ipRoutingAddress;
     }
 

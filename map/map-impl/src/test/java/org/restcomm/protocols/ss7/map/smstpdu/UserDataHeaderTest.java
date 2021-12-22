@@ -29,7 +29,7 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.restcomm.protocols.ss7.map.api.datacoding.NationalLanguageIdentifier;
+import org.restcomm.protocols.ss7.commonapp.api.datacoding.NationalLanguageIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderElement;
 import org.testng.annotations.Test;
 

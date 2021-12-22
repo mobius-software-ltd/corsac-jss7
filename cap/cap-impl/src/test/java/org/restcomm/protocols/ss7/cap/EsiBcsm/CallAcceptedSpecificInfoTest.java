@@ -28,7 +28,8 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.CallAcceptedSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInformationImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

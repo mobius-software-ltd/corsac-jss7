@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.inap.api.EsiBcsm;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.inap.api.isup.CalledPartyNumberInap;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 
 /**
 *
@@ -40,6 +40,6 @@ import org.restcomm.protocols.ss7.inap.api.isup.CalledPartyNumberInap;
 */
 public interface AnalysedInfoSpecificInfo extends Serializable {
 
-    CalledPartyNumberInap getCalledPartyNumber();
+    CalledPartyNumberIsup getCalledPartyNumber();
 
 }

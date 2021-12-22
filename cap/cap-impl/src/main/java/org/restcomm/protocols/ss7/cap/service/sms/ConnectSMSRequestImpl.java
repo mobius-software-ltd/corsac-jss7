@@ -23,15 +23,15 @@ package org.restcomm.protocols.ss7.cap.service.sms;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
 import org.restcomm.protocols.ss7.cap.api.service.sms.ConnectSMSRequest;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CalledPartyBCDNumberImpl;
 import org.restcomm.protocols.ss7.cap.service.sms.primitive.SMSAddressStringImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CalledPartyBCDNumber;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CalledPartyBCDNumberImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -55,15 +55,15 @@ public class ConnectSMSRequestImpl extends SmsMessageImpl implements ConnectSMSR
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1, defaultImplementation = ISDNAddressStringImpl.class)
     private ISDNAddressString smscAddress;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
-    private CAPExtensions extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1, defaultImplementation = CAPINAPExtensionsImpl.class)
+    private CAPINAPExtensions extensions;
 
     public ConnectSMSRequestImpl() {
         super();
     }
 
     public ConnectSMSRequestImpl(SMSAddressString callingPartysNumber,
-            CalledPartyBCDNumber destinationSubscriberNumber, ISDNAddressString smscAddress, CAPExtensions extensions) {
+            CalledPartyBCDNumber destinationSubscriberNumber, ISDNAddressString smscAddress, CAPINAPExtensions extensions) {
         super();
         this.callingPartysNumber = callingPartysNumber;
         this.destinationSubscriberNumber = destinationSubscriberNumber;
@@ -87,7 +87,7 @@ public class ConnectSMSRequestImpl extends SmsMessageImpl implements ConnectSMSR
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPINAPExtensions getExtensions() {
         return this.extensions;
     }
 

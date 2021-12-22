@@ -24,13 +24,13 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.AssistRequestInstructionsRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilities;
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.IPSSPCapabilities;
+import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.IPSSPCapabilitiesImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -46,20 +46,20 @@ public class AssistRequestInstructionsRequestImpl extends CircuitSwitchedCallMes
         AssistRequestInstructionsRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1,defaultImplementation = DigitsImpl.class)
-	private Digits correlationID;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1,defaultImplementation = DigitsIsupImpl.class)
+	private DigitsIsup correlationID;
 	
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1,defaultImplementation = IPSSPCapabilitiesImpl.class)
 	private IPSSPCapabilities iPSSPCapabilities;
     
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
-	private CAPExtensions extensions;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1,defaultImplementation = CAPINAPExtensionsImpl.class)
+	private CAPINAPExtensions extensions;
 
     public AssistRequestInstructionsRequestImpl() {
     }
 
-    public AssistRequestInstructionsRequestImpl(Digits correlationID, IPSSPCapabilities ipSSPCapabilities,
-            CAPExtensions extensions) {
+    public AssistRequestInstructionsRequestImpl(DigitsIsup correlationID, IPSSPCapabilities ipSSPCapabilities,
+            CAPINAPExtensions extensions) {
         this.correlationID = correlationID;
         this.iPSSPCapabilities = ipSSPCapabilities;
         this.extensions = extensions;
@@ -76,7 +76,7 @@ public class AssistRequestInstructionsRequestImpl extends CircuitSwitchedCallMes
     }
 
     @Override
-    public Digits getCorrelationID() {
+    public DigitsIsup getCorrelationID() {
     	if(correlationID!=null)
     		correlationID.setIsGenericNumber();
     	
@@ -89,7 +89,7 @@ public class AssistRequestInstructionsRequestImpl extends CircuitSwitchedCallMes
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPINAPExtensions getExtensions() {
         return extensions;
     }
 

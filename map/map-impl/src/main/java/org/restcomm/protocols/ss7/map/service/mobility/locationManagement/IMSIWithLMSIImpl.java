@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.IMSIWithLMSI;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;

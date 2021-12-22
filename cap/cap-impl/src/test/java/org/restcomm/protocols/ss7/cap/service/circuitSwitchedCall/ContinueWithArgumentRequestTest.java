@@ -31,24 +31,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCap;
-import org.restcomm.protocols.ss7.cap.isup.GenericNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.LocationNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ContinueWithArgumentArgExtensionImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.BothwayThroughConnectionInd;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
-import org.restcomm.protocols.ss7.inap.isup.CallingPartysCategoryInapImpl;
+import org.restcomm.protocols.ss7.commonapp.api.isup.GenericNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingLevel;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.BothwayThroughConnectionInd;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.AlertingPatternWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CarrierImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ContinueWithArgumentArgExtensionImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.NAOliInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CallingPartysCategoryIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.GenericNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.LocationNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.CUGInterlockImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingLevel;
-import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGInterlockImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -101,7 +101,7 @@ public class ContinueWithArgumentRequestTest {
         assertEquals(elem.getServiceInteractionIndicatorsTwo().getBothwayThroughConnectionInd(), BothwayThroughConnectionInd.bothwayPathNotRequired);
         assertEquals(elem.getCallingPartysCategory().getCallingPartyCategory().getCallingPartyCategory(), CallingPartyCategory._CATEGORY_OL_RUSSIAN);
         assertEquals(elem.getGenericNumbers().size(), 1);
-        GenericNumberCap gn = elem.getGenericNumbers().get(0);
+        GenericNumberIsup gn = elem.getGenericNumbers().get(0);
         assertEquals(gn.getGenericNumber().getAddress(), "111222");
         assertEquals(elem.getCugInterlock().getData(), getCUGInterlock());
         assertFalse(elem.getCugOutgoingAccess());
@@ -146,15 +146,15 @@ public class ContinueWithArgumentRequestTest {
     	
         CallingPartyCategoryImpl callingPartyCategory = new CallingPartyCategoryImpl();
         callingPartyCategory.setCallingPartyCategory(CallingPartyCategory._CATEGORY_OL_RUSSIAN);
-        CallingPartysCategoryInapImpl callingPartysCategory = new CallingPartysCategoryInapImpl(callingPartyCategory);
+        CallingPartysCategoryIsupImpl callingPartysCategory = new CallingPartysCategoryIsupImpl(callingPartyCategory);
         ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo = new ServiceInteractionIndicatorsTwoImpl(null, null,
                 BothwayThroughConnectionInd.bothwayPathNotRequired, null, false, null, null, null);
         AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingLevel.Level2);
-        AlertingPatternCapImpl alertingPatternCap = new AlertingPatternCapImpl(alertingPattern);
-        List<GenericNumberCap> genericNumbers = new ArrayList<GenericNumberCap>();
+        AlertingPatternWrapperImpl alertingPatternCap = new AlertingPatternWrapperImpl(alertingPattern);
+        List<GenericNumberIsup> genericNumbers = new ArrayList<GenericNumberIsup>();
         GenericNumberImpl genericNumber = new GenericNumberImpl();
         genericNumber.setAddress("111222");
-        GenericNumberCapImpl gn = new GenericNumberCapImpl(genericNumber);
+        GenericNumberIsupImpl gn = new GenericNumberIsupImpl(genericNumber);
         genericNumbers.add(gn);
         CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getCUGInterlock());
 
@@ -180,7 +180,7 @@ public class ContinueWithArgumentRequestTest {
 
         LocationNumberImpl locationNumber = new LocationNumberImpl();
         locationNumber.setAddress("222333");
-        LocationNumberCapImpl chargeNumber = new LocationNumberCapImpl(locationNumber);
+        LocationNumberIsupImpl chargeNumber = new LocationNumberIsupImpl(locationNumber);
         CarrierImpl carrier = new CarrierImpl(getCarrier());
         NAOliInfoImpl naOliInfo = new NAOliInfoImpl(11);
         ContinueWithArgumentArgExtensionImpl continueWithArgumentArgExtension = new ContinueWithArgumentArgExtensionImpl(true, false, false, null);

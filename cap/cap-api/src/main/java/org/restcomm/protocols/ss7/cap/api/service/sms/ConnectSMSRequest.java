@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.sms;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CalledPartyBCDNumber;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 
 /**
  *
@@ -60,5 +60,5 @@ public interface ConnectSMSRequest extends SmsMessage {
 
     ISDNAddressString getSMSCAddress();
 
-    CAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 }

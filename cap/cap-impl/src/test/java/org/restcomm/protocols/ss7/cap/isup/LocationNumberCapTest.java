@@ -28,6 +28,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.commonapp.isup.LocationNumberIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 import org.testng.annotations.Test;
@@ -56,15 +57,15 @@ public class LocationNumberCapTest {
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(LocationNumberCapImpl.class);
+    	parser.replaceClass(LocationNumberIsupImpl.class);
     	
     	byte[] rawData = this.getData();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof LocationNumberCapImpl);
+        assertTrue(result.getResult() instanceof LocationNumberIsupImpl);
         
-        LocationNumberCapImpl elem = (LocationNumberCapImpl)result.getResult();         
+        LocationNumberIsupImpl elem = (LocationNumberIsupImpl)result.getResult();         
         LocationNumber ln = elem.getLocationNumber();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         assertEquals(ln.getNatureOfAddressIndicator(), 4);
@@ -78,9 +79,9 @@ public class LocationNumberCapTest {
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(LocationNumberCapImpl.class);
+    	parser.replaceClass(LocationNumberIsupImpl.class);
     	
-        LocationNumberCapImpl elem = new LocationNumberCapImpl(this.getIntData());
+        LocationNumberIsupImpl elem = new LocationNumberIsupImpl(this.getIntData());
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -88,7 +89,7 @@ public class LocationNumberCapTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         LocationNumber cpn = new LocationNumberImpl(4, "80207910020", 1, 1, 1, 3);
-        elem = new LocationNumberCapImpl(cpn);
+        elem = new LocationNumberIsupImpl(cpn);
         rawData = this.getData();
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];

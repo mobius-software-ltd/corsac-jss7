@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 

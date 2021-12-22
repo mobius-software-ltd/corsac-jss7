@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 

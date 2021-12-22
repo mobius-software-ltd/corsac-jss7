@@ -11,17 +11,11 @@ import org.restcomm.protocols.ss7.cap.api.CAPDialogListener;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPMessage;
 import org.restcomm.protocols.ss7.cap.api.CAPProvider;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ODisconnectSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGeneralAbortReason;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGprsReferenceNumber;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPNoticeProblemDiagnostic;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPUserAbortReason;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessage;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ActivityTestRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ActivityTestResponse;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ApplyChargingReportRequest;
@@ -59,10 +53,16 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SendChargi
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SpecializedResourceReportRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegResponse;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OAnswerSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.ODisconnectSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.EventSpecificInformationBCSM;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformation;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
@@ -102,7 +102,7 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
     }
 
     public void sendInitialDP(SccpAddress origAddress, SccpAddress remoteAddress, int serviceKey,
-            CalledPartyNumberCap calledPartyNumber, CallingPartyNumberCap callingPartyNumber, LocationNumberCap locationNumber,
+            CalledPartyNumberIsup calledPartyNumber, CallingPartyNumberIsup callingPartyNumber, LocationNumberIsup locationNumber,
             EventTypeBCSM eventTypeBCSM, LocationInformation locationInformation) throws CAPException {
         // First create Dialog
         CAPApplicationContext acn = CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF;

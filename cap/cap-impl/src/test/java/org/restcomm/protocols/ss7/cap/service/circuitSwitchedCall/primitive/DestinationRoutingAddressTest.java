@@ -31,8 +31,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -78,8 +79,8 @@ public class DestinationRoutingAddressTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(DestinationRoutingAddressImpl.class);
     	
-    	List<CalledPartyNumberCap> cpnl = new ArrayList<CalledPartyNumberCap>();
-        CalledPartyNumberCapImpl cpn = new CalledPartyNumberCapImpl(getIntData1());
+    	List<CalledPartyNumberIsup> cpnl = new ArrayList<CalledPartyNumberIsup>();
+        CalledPartyNumberIsupImpl cpn = new CalledPartyNumberIsupImpl(getIntData1());
         cpnl.add(cpn);
         DestinationRoutingAddressImpl elem = new DestinationRoutingAddressImpl(cpnl);
         byte[] rawData = this.getData1();

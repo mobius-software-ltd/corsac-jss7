@@ -21,8 +21,10 @@
  */
 package org.restcomm.protocols.ss7.map.primitives;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEACIC;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NAEACIC;
+import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.NAEACICImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCI;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;

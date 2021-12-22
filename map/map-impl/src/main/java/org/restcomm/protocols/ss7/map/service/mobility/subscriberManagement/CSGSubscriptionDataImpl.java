@@ -23,12 +23,13 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CSGId;
+import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.CSGIdImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.Time;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APN;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGId;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CSGSubscriptionData;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.primitives.TimeImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;

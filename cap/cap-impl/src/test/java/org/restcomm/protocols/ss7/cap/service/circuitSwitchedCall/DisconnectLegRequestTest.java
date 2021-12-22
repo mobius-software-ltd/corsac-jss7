@@ -28,10 +28,10 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.testng.annotations.Test;
@@ -80,7 +80,7 @@ public class DisconnectLegRequestTest {
     	
         LegIDImpl legToBeReleased = new LegIDImpl(LegType.leg6,null);
         CauseIndicatorsImpl causeIndicators = new CauseIndicatorsImpl(0, 0, 0, 6, null);
-        CauseCapImpl releaseCause = new CauseCapImpl(causeIndicators);
+        CauseIsupImpl releaseCause = new CauseIsupImpl(causeIndicators);
         DisconnectLegRequestImpl elem = new DisconnectLegRequestImpl(legToBeReleased, releaseCause, CAPExtensionsTest.createTestCAPExtensions());
 
         byte[] rawData = this.getData1();

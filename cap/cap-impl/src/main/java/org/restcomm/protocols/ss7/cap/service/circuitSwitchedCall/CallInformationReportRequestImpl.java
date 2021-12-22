@@ -26,14 +26,14 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CallInformationReportRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.RequestedInformationWrapperImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.primitives.ReceivingLegIDImpl;
-import org.restcomm.protocols.ss7.inap.primitives.ReceivingLegIDWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformation;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ReceivingLegIDImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ReceivingLegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -51,8 +51,8 @@ public class CallInformationReportRequestImpl extends CircuitSwitchedCallMessage
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
     private RequestedInformationWrapperImpl requestedInformationList;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
-    private CAPExtensions extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1,defaultImplementation = CAPINAPExtensionsImpl.class)
+    private CAPINAPExtensions extensions;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
     private ReceivingLegIDWrapperImpl legID;
@@ -60,7 +60,7 @@ public class CallInformationReportRequestImpl extends CircuitSwitchedCallMessage
     public CallInformationReportRequestImpl() {
     }
 
-    public CallInformationReportRequestImpl(List<RequestedInformation> requestedInformationList, CAPExtensions extensions,
+    public CallInformationReportRequestImpl(List<RequestedInformation> requestedInformationList, CAPINAPExtensions extensions,
             LegType legID) {
     	
     	if(requestedInformationList!=null)
@@ -91,7 +91,7 @@ public class CallInformationReportRequestImpl extends CircuitSwitchedCallMessage
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPINAPExtensions getExtensions() {
         return extensions;
     }
 

@@ -22,13 +22,13 @@
 
 package org.restcomm.protocols.ss7.cap.api.EsiGprs;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointName;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.EndUserAddress;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfService;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingID;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.TimeAndTimezone;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSChargingID;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformationGPRS;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;

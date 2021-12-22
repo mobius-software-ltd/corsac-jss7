@@ -24,7 +24,8 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformation;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.RequestedInformationImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

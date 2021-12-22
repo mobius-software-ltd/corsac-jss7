@@ -22,18 +22,24 @@
 
 package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.CollectedInfoSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.DpSpecificInfoAltImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.OServiceChangeSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TServiceChangeSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.TeleserviceCodeValue;
+import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtBearerServiceCodeImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtTeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -83,7 +89,7 @@ public class DpSpecificInfoAltTest {
         OServiceChangeSpecificInfoImpl oServiceChangeSpecificInfo = new OServiceChangeSpecificInfoImpl(extBasicServiceCode);
         CalledPartyNumber calledPartyNumber = new CalledPartyNumberImpl();
         calledPartyNumber.setAddress("3333311111");
-        CalledPartyNumberCapImpl calledPartyNumberCap = new CalledPartyNumberCapImpl(calledPartyNumber);
+        CalledPartyNumberIsupImpl calledPartyNumberCap = new CalledPartyNumberIsupImpl(calledPartyNumber);
         CollectedInfoSpecificInfoImpl collectedInfoSpecificInfo = new CollectedInfoSpecificInfoImpl(calledPartyNumberCap);
         ExtTeleserviceCodeImpl extTeleservice = new ExtTeleserviceCodeImpl(TeleserviceCodeValue.automaticFacsimileGroup3);
         ExtBasicServiceCodeImpl extBasicServiceCode2 = new ExtBasicServiceCodeImpl(extTeleservice);

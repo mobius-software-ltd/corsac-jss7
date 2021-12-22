@@ -4,7 +4,7 @@ import static org.testng.Assert.assertEquals;
 
 import java.util.EnumSet;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
 import org.testng.annotations.Test;
 
 public class FirstTest {

@@ -28,9 +28,9 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.IPSSPCapabilitiesImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.IPSSPCapabilitiesImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.testng.annotations.Test;
 
@@ -87,7 +87,7 @@ public class AssistRequestInstructionsRequestTest {
         // int natureOfAddresIndicator, String address, int numberQualifierIndicator, int numberingPlanIndicator, int
         // addressRepresentationREstrictedIndicator,
         // boolean numberIncomplete, int screeningIndicator
-        DigitsImpl correlationID = new DigitsImpl(genericNumber);
+        DigitsIsupImpl correlationID = new DigitsIsupImpl(genericNumber);
         IPSSPCapabilitiesImpl ipSSPCapabilities = new IPSSPCapabilitiesImpl(getIPSSPCapabilitiesInt());
 
         AssistRequestInstructionsRequestImpl elem = new AssistRequestInstructionsRequestImpl(correlationID, ipSSPCapabilities,

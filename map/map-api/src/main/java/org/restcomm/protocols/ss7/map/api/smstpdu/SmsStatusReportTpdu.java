@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.smstpdu;
 
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.AbsoluteTimeStamp;
+
 /**
  * Short message transfer protocol data unit informing the receiving MS of the status of a mobile originated short message
  * previously submitted by the MS, i.e. whether the SC was able to forward the message or not, or whether the message was stored

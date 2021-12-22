@@ -30,38 +30,40 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.EsiBcsm.CallAcceptedSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.DpSpecificInfoAltImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.MidCallEventsImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OAbandonSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OAnswerSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OCalledPartyBusySpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OChangeOfPositionSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.ODisconnectSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OMidCallSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.ONoAnswerSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OServiceChangeSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.OTermSeizedSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.RouteSelectFailureSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.TAnswerSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.TBusySpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.TChangeOfPositionSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.TDisconnectSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.TMidCallSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.EsiBcsm.TNoAnswerSpecificInfoImpl;
-import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.CallAcceptedSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.DpSpecificInfoAltImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.MidCallEventsImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.OAbandonSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.OAnswerSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.OCalledPartyBusySpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.OChangeOfPositionSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.ODisconnectSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.OMidCallSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.ONoAnswerSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.OServiceChangeSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.OTermSeizedSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.RouteSelectFailureSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TAnswerSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TBusySpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TChangeOfPositionSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TDisconnectSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TMidCallSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TNoAnswerSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.EventSpecificInformationBCSMImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.EventSpecificInformationBCSMWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtBearerServiceCodeImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BearerServiceCodeValue;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -347,7 +349,7 @@ public class EventSpecificInformationBCSMTest {
     	parser.replaceClass(EventSpecificInformationBCSMWrapperImpl.class);
     	
         CauseIndicators causeIndicators = new CauseIndicatorsImpl(0, 4, 0, 16, null);
-        CauseCapImpl failureCause = new CauseCapImpl(causeIndicators);
+        CauseIsupImpl failureCause = new CauseIsupImpl(causeIndicators);
         RouteSelectFailureSpecificInfoImpl routeSelectFailureSpecificInfo = new RouteSelectFailureSpecificInfoImpl(failureCause);
         EventSpecificInformationBCSMImpl elem = new EventSpecificInformationBCSMImpl(routeSelectFailureSpecificInfo);
         EventSpecificInformationBCSMWrapperImpl wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
@@ -358,7 +360,7 @@ public class EventSpecificInformationBCSMTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         causeIndicators = new CauseIndicatorsImpl(0, 4, 0, 16, null);
-        CauseCapImpl busyCause = new CauseCapImpl(causeIndicators);
+        CauseIsupImpl busyCause = new CauseIsupImpl(causeIndicators);
         OCalledPartyBusySpecificInfoImpl oCalledPartyBusySpecificInfoImpl = new OCalledPartyBusySpecificInfoImpl(busyCause);
         elem = new EventSpecificInformationBCSMImpl(oCalledPartyBusySpecificInfoImpl);
         wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
@@ -387,7 +389,7 @@ public class EventSpecificInformationBCSMTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         causeIndicators = new CauseIndicatorsImpl(0, 4, 0, 16, null);
-        CauseCapImpl releaseCause = new CauseCapImpl(causeIndicators);
+        CauseIsupImpl releaseCause = new CauseIsupImpl(causeIndicators);
         ODisconnectSpecificInfoImpl oDisconnectSpecificInfo = new ODisconnectSpecificInfoImpl(releaseCause);
         elem = new EventSpecificInformationBCSMImpl(oDisconnectSpecificInfo);
         wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
@@ -398,7 +400,7 @@ public class EventSpecificInformationBCSMTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         causeIndicators = new CauseIndicatorsImpl(0, 4, 0, 16, null);
-        busyCause = new CauseCapImpl(causeIndicators);
+        busyCause = new CauseIsupImpl(causeIndicators);
         TBusySpecificInfoImpl tBusySpecificInfo = new TBusySpecificInfoImpl(busyCause, false, false, null);
         elem = new EventSpecificInformationBCSMImpl(tBusySpecificInfo);
         wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
@@ -411,7 +413,7 @@ public class EventSpecificInformationBCSMTest {
         CalledPartyNumber cpn = new CalledPartyNumberImpl(3, "1227010900", 1, 1);
         // int natureOfAddresIndicator, String address, int
         // numberingPlanIndicator, int internalNetworkNumberIndicator
-        CalledPartyNumberCapImpl cpnc = new CalledPartyNumberCapImpl(cpn);
+        CalledPartyNumberIsupImpl cpnc = new CalledPartyNumberIsupImpl(cpn);
         TNoAnswerSpecificInfoImpl tNoAnswerSpecificInfo = new TNoAnswerSpecificInfoImpl(true, cpnc);
         elem = new EventSpecificInformationBCSMImpl(tNoAnswerSpecificInfo);
         wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
@@ -431,7 +433,7 @@ public class EventSpecificInformationBCSMTest {
         assertTrue(Arrays.equals(rawData, encodedData));
         
         causeIndicators = new CauseIndicatorsImpl(0, 4, 0, 16, null);
-        releaseCause = new CauseCapImpl(causeIndicators);
+        releaseCause = new CauseIsupImpl(causeIndicators);
         TDisconnectSpecificInfoImpl tDisconnectSpecificInfo = new TDisconnectSpecificInfoImpl(releaseCause);
         elem = new EventSpecificInformationBCSMImpl(tDisconnectSpecificInfo);
         wrapper = new EventSpecificInformationBCSMWrapperImpl(elem);
@@ -451,7 +453,7 @@ public class EventSpecificInformationBCSMTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         GenericDigitsImpl genericDigits = new GenericDigitsImpl(GenericDigits._ENCODING_SCHEME_BINARY, GenericDigits._TOD_BGCI, Unpooled.wrappedBuffer(getDigitsData()));
-        DigitsImpl dtmfDigits = new DigitsImpl(genericDigits);
+        DigitsIsupImpl dtmfDigits = new DigitsIsupImpl(genericDigits);
         MidCallEventsImpl midCallEvents = new MidCallEventsImpl(dtmfDigits, true);
         OMidCallSpecificInfoImpl oMidCallSpecificInfo = new OMidCallSpecificInfoImpl(midCallEvents);
         elem = new EventSpecificInformationBCSMImpl(oMidCallSpecificInfo);

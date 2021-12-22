@@ -24,20 +24,20 @@ package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCap;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
-import org.restcomm.protocols.ss7.inap.api.isup.RedirectionInformationInap;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Carrier;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.NAOliInfo;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ServiceInteractionIndicatorsTwo;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.GenericNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectingPartyIDIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CUGInterlock;
 
 /**
  *
@@ -92,25 +92,25 @@ public interface ConnectRequest extends CircuitSwitchedCallMessage {
 
     DestinationRoutingAddress getDestinationRoutingAddress();
 
-    AlertingPatternCap getAlertingPattern();
+    AlertingPatternWrapper getAlertingPattern();
 
-    OriginalCalledNumberCap getOriginalCalledPartyID();
+    OriginalCalledNumberIsup getOriginalCalledPartyID();
 
-    CAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
     Carrier getCarrier();
 
-    CallingPartysCategoryInap getCallingPartysCategory();
+    CallingPartysCategoryIsup getCallingPartysCategory();
 
-    RedirectingPartyIDCap getRedirectingPartyID();
+    RedirectingPartyIDIsup getRedirectingPartyID();
 
-    RedirectionInformationInap getRedirectionInformation();
+    RedirectionInformationIsup getRedirectionInformation();
 
-    List<GenericNumberCap> getGenericNumbers();
+    List<GenericNumberIsup> getGenericNumbers();
 
     ServiceInteractionIndicatorsTwo getServiceInteractionIndicatorsTwo();
 
-    LocationNumberCap getChargeNumber();
+    LocationNumberIsup getChargeNumber();
 
     LegID getLegToBeConnected();
 

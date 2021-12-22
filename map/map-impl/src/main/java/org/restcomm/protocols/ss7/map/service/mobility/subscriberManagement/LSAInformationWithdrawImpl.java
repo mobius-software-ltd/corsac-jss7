@@ -24,7 +24,8 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentity;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.LSAIdentity;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.LSAIdentityListWrapperImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAInformationWithdraw;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;

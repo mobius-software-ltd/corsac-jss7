@@ -21,11 +21,11 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.CallBarringData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtCallBarringFeature;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.Password;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtCallBarringFeatureListWrapperImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.PasswordImpl;
 

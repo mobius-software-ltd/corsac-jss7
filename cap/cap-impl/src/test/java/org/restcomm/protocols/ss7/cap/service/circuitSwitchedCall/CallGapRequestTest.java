@@ -31,23 +31,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.CriticalityType;
-import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionField;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ControlType;
-import org.restcomm.protocols.ss7.cap.gap.BasicGapCriteriaImpl;
-import org.restcomm.protocols.ss7.cap.gap.CalledAddressAndServiceImpl;
-import org.restcomm.protocols.ss7.cap.gap.CompoundCriteriaImpl;
-import org.restcomm.protocols.ss7.cap.gap.GapCriteriaImpl;
-import org.restcomm.protocols.ss7.cap.gap.GapIndicatorsImpl;
-import org.restcomm.protocols.ss7.cap.gap.GapTreatmentImpl;
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.primitives.ExtensionFieldImpl;
-import org.restcomm.protocols.ss7.cap.primitives.ScfIDImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InbandInfoImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InformationToSendImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.MessageIDImpl;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ControlType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CriticalityType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ExtensionField;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.InbandInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.InformationToSendImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.MessageIDImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.BasicGapCriteriaImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.CalledAddressAndServiceImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.CompoundCriteriaImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.GapCriteriaImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.GapIndicatorsImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.GapTreatmentImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ExtensionFieldImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ScfIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -154,7 +154,7 @@ public class CallGapRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CallGapRequestImpl.class);
     	
-        DigitsImpl digits = new DigitsImpl(getDigitsData());
+        DigitsIsupImpl digits = new DigitsIsupImpl(getDigitsData());
         CalledAddressAndServiceImpl calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
         BasicGapCriteriaImpl basicGapCriteria = new BasicGapCriteriaImpl(calledAddressAndService);
         ScfIDImpl scfId = new ScfIDImpl(getDigitsData1());
@@ -171,7 +171,7 @@ public class CallGapRequestTest {
         List<ExtensionField> fieldsList = new ArrayList<>();
         ExtensionFieldImpl extensionField = new ExtensionFieldImpl(Integer.MIN_VALUE, CriticalityType.typeIgnore, getDigitsData2());
         fieldsList.add(extensionField);
-        CAPExtensions cAPExtensions = new CAPExtensionsImpl(fieldsList);
+        CAPINAPExtensions cAPExtensions = new CAPINAPExtensionsImpl(fieldsList);
 
         CallGapRequestImpl elem = new CallGapRequestImpl(gapCriteria, gapIndicators, ControlType.sCPOverloaded, gapTreatment, cAPExtensions);
         byte[] rawData = this.getData();

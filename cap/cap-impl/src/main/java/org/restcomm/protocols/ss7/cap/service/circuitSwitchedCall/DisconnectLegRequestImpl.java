@@ -24,13 +24,13 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.DisconnectLegRequest;
-import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
-import org.restcomm.protocols.ss7.inap.primitives.LegIDWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
+import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.LegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -48,16 +48,16 @@ public class DisconnectLegRequestImpl extends CircuitSwitchedCallMessageImpl imp
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
     private LegIDWrapperImpl legToBeReleased;
 
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1, defaultImplementation = CauseCapImpl.class)
-    private CauseCap releaseCause;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1, defaultImplementation = CauseIsupImpl.class)
+    private CauseIsup releaseCause;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
-    private CAPExtensions extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1, defaultImplementation = CAPINAPExtensionsImpl.class)
+    private CAPINAPExtensions extensions;
 
     public DisconnectLegRequestImpl() {
     }
 
-    public DisconnectLegRequestImpl(LegID legToBeReleased, CauseCap releaseCause, CAPExtensions extensions) {
+    public DisconnectLegRequestImpl(LegID legToBeReleased, CauseIsup releaseCause, CAPINAPExtensions extensions) {
     	
     	if(legToBeReleased!=null)
     		this.legToBeReleased = new LegIDWrapperImpl(legToBeReleased);
@@ -74,7 +74,7 @@ public class DisconnectLegRequestImpl extends CircuitSwitchedCallMessageImpl imp
         return CAPOperationCode.disconnectLeg;
     }
 
-    public CAPExtensions getExtensions() {
+    public CAPINAPExtensions getExtensions() {
         return extensions;
     }
 
@@ -85,7 +85,7 @@ public class DisconnectLegRequestImpl extends CircuitSwitchedCallMessageImpl imp
         return legToBeReleased.getLegID();
     }
 
-    public CauseCap getReleaseCause() {
+    public CauseIsup getReleaseCause() {
         return releaseCause;
     }
 

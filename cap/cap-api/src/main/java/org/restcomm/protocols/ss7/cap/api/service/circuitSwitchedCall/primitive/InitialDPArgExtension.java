@@ -22,16 +22,18 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive;
 
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.UUData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4Functionalities;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
+import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
+import org.restcomm.protocols.ss7.commonapp.api.callhandling.UUData;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.LowLayerCompatibility;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.HighLayerCompatibilityIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.MSClassmark2;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.OfferedCamel4Functionalities;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.SupportedCamelPhases;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -80,7 +82,7 @@ public interface InitialDPArgExtension {
 
     ISDNAddressString getGmscAddress();
 
-    CalledPartyNumberCap getForwardingDestinationNumber();
+    CalledPartyNumberIsup getForwardingDestinationNumber();
 
     MSClassmark2 getMSClassmark2();
 
@@ -94,7 +96,7 @@ public interface InitialDPArgExtension {
 
     ExtBasicServiceCode getExtBasicServiceCode2();
 
-    HighLayerCompatibilityInap getHighLayerCompatibility2();
+    HighLayerCompatibilityIsup getHighLayerCompatibility2();
 
     LowLayerCompatibility getLowLayerCompatibility();
 
@@ -108,6 +110,6 @@ public interface InitialDPArgExtension {
 
     boolean getReleaseCallArgExtensionAllowed();
     
-    void patchVersion(int version) throws CAPParsingComponentException;
+    void patchVersion(int version) throws APPParsingComponentException;
 
 }

@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.map.smstpdu;
 
-import org.restcomm.protocols.ss7.map.api.datacoding.NationalLanguageIdentifier;
+import org.restcomm.protocols.ss7.commonapp.api.datacoding.NationalLanguageIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageSingleShiftIdentifier;
 
 /**

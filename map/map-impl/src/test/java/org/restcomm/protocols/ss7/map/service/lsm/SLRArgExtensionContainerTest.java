@@ -30,10 +30,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPPrivateExtension;
+import org.restcomm.protocols.ss7.commonapp.primitives.MAPPrivateExtensionImpl;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtension;
-import org.restcomm.protocols.ss7.map.primitives.MAPPrivateExtensionImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;

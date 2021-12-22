@@ -30,7 +30,12 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.VariablePartDateImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.VariablePartImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.VariablePartPriceImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.VariablePartTimeImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.VariablePartWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.testng.annotations.Test;
 
@@ -177,7 +182,7 @@ public class VariablePartTest {
 
         GenericDigitsImpl genericDigits = new GenericDigitsImpl(3, 0, Unpooled.wrappedBuffer(getGenericDigitsData()));
         // int encodingScheme, int typeOfDigits, int[] digits
-        DigitsImpl digits = new DigitsImpl(genericDigits);
+        DigitsIsupImpl digits = new DigitsIsupImpl(genericDigits);
         elem = new VariablePartImpl(digits);
         wrapper = new VariablePartWrapperImpl(Arrays.asList(new VariablePartImpl[] { elem }));
         rawData = this.getData2();

@@ -28,9 +28,10 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationType;
-import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
-import org.restcomm.protocols.ss7.cap.primitives.DateAndTimeImpl;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformationType;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.RequestedInformationImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.DateAndTimeImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.testng.annotations.Test;
@@ -140,7 +141,7 @@ public class RequestedInformationTest {
 
         CauseIndicatorsImpl ci = new CauseIndicatorsImpl(0, 2, 0, 17, null);
         // int codingStandard, int location, int recommendation, int causeValue, byte[] diagnostics
-        CauseCapImpl cc = new CauseCapImpl(ci);
+        CauseIsupImpl cc = new CauseIsupImpl(ci);
         elem = new RequestedInformationImpl(cc);
         rawData = this.getData3();
         buffer=parser.encode(elem);

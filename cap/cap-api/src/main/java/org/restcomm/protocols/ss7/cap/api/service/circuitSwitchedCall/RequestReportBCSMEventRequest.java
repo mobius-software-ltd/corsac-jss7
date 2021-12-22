@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEvent;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.BCSMEvent;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 
 /**
  *
@@ -64,6 +64,6 @@ public interface RequestReportBCSMEventRequest extends CircuitSwitchedCallMessag
 
     List<BCSMEvent> getBCSMEventList();
 
-    CAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
 }

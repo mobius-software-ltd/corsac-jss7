@@ -24,9 +24,9 @@ package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformationType;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformationType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 
 /**
  *
@@ -48,7 +48,7 @@ public interface CallInformationRequestRequest extends CircuitSwitchedCallMessag
 
     List<RequestedInformationType> getRequestedInformationTypeList();
 
-    CAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
     LegType getLegID();
 

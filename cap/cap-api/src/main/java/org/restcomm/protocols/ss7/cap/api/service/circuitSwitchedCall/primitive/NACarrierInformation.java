@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive;
 
-import org.restcomm.protocols.ss7.map.api.primitives.NAEACIC;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NAEACIC;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -37,7 +37,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public interface NACarrierInformation {
-
+	
 	NAEACIC getNAEACIC();
 
 	NACarrierSelectionInfo getNACarrierSelectionInfo();

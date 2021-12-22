@@ -23,8 +23,6 @@ package org.restcomm.protocols.ss7.cap.service.gprs;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.InitialDpGprsRequest;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointName;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.EndUserAddress;
@@ -32,30 +30,32 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPInitiationType;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfService;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.SGSNCapabilities;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.primitives.TimeAndTimezoneImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ASNGPRSEventTypeImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ASNPDPInitiationTypeImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.AccessPointNameImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.EndUserAddressImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.QualityOfServiceImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.SGSNCapabilitiesImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingID;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClass;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentity;
-import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSChargingIDImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSMSClassImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RAIdentityImpl;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.TimeAndTimezone;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSChargingID;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSMSClass;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformationGPRS;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.RAIdentity;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.TimeAndTimezoneImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.GPRSChargingIDImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.GPRSMSClassImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.RAIdentityImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -114,8 +114,8 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 13,constructed = false,index = -1)
     private ASNPDPInitiationTypeImpl pdpInitiationType;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 14,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
-    private CAPExtensions extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 14,constructed = true,index = -1, defaultImplementation = CAPINAPExtensionsImpl.class)
+    private CAPINAPExtensions extensions;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 15,constructed = false,index = -1, defaultImplementation = GSNAddressImpl.class)
     private GSNAddress gsnAddress;
@@ -134,7 +134,7 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
             TimeAndTimezone timeAndTimezone, GPRSMSClass gprsMSClass, EndUserAddress endUserAddress,
             QualityOfService qualityOfService, AccessPointName accessPointName, RAIdentity routeingAreaIdentity,
             GPRSChargingID chargingID, SGSNCapabilities sgsnCapabilities, LocationInformationGPRS locationInformationGPRS,
-            PDPInitiationType pdpInitiationType, CAPExtensions extensions, GSNAddress gsnAddress, boolean secondaryPDPContext,
+            PDPInitiationType pdpInitiationType, CAPINAPExtensions extensions, GSNAddress gsnAddress, boolean secondaryPDPContext,
             IMEI imei) {
         super();
         this.serviceKey = new ASNInteger();
@@ -251,7 +251,7 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPINAPExtensions getExtensions() {
         return this.extensions;
     }
 

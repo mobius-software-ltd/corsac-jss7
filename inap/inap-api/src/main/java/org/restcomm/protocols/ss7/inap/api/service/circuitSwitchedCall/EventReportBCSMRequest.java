@@ -22,48 +22,36 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.inap.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.inap.api.primitives.INAPExtensions;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.EventSpecificInformationBCSM;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
 
 /**
-*
 <code>
-*** CS1: ***
 EventReportBCSM ::= OPERATION
-ARGUMENT EventReportBCSMArg
+ARGUMENT
+EventReportBCSMArg
 -- Direction: SSF -> SCF, Timer: Terb
 -- This operation is used to notify the SCF of a call-related event (e.g., BCSM events such as
 -- busy or no answer) previously requested by the SCF in a RequestReportBCSMEvent operation.
 
-*** CS2: ***
-eventReportBCSM {PARAMETERS-BOUND : bound} OPERATION ::= {
-  ARGUMENT EventReportBCSMArg {bound}
-  RETURN RESULT FALSE
-  ALWAYS RESPONDS FALSE
-  CODE opcode-eventReportBCSM
-}
--- Direction: SSF -> SCF, Timer: Terb
--- This operation is used to notify the SCF of a call-related event (e.g. BCSM events such as busy
--- or no answer) previously requested by the SCF in a RequestReportBCSMEvent operation.
-
-EventReportBCSMArg {PARAMETERS-BOUND : bound} ::= SEQUENCE {
-  eventTypeBCSM                [0] EventTypeBCSM,
-  eventSpecificInformationBCSM [2] EventSpecificInformationBCSM {bound} OPTIONAL,
-  legID                        [3] LegID OPTIONAL,
-  miscCallInfo                 [4] MiscCallInfo DEFAULT {messageType request},
-  extensions                   [5] SEQUENCE SIZE(1..bound.&numOfExtensions) OF ExtensionField {bound} OPTIONAL,
-  ...
+EventReportBCSMArg ::= SEQUENCE {
+	eventTypeBCSM [0] EventTypeBCSM,
+	eventSpecificInformationBCSM [2] EventSpecificInformationBCSM OPTIONAL,
+	legID [3] LegID OPTIONAL,
+	miscCallInfo [4] MiscCallInfo DEFAULT {messageType request},
+	extensions [5] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField
+OPTIONAL
+-- ...
 }
 </code>
-*
-*
-* @author sergey vetyutnev
-*
-*/
-public interface EventReportBCSMRequest {
+ * 
+ * @author yulian.oifa
+ *
+ */
+public interface EventReportBCSMRequest extends CircuitSwitchedCallMessage {
 
     EventTypeBCSM getEventTypeBCSM();
 
@@ -73,6 +61,5 @@ public interface EventReportBCSMRequest {
 
     MiscCallInfo getMiscCallInfo();
 
-    INAPExtensions getExtensions();
-
+    CAPINAPExtensions getExtensions();
 }

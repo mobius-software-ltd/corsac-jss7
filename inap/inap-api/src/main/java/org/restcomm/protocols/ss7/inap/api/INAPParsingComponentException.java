@@ -33,7 +33,6 @@ public class INAPParsingComponentException extends Exception {
 	private INAPParsingComponentExceptionReason reason;
 
     public INAPParsingComponentException() {
-        // TODO Auto-generated constructor stub
     }
 
     public INAPParsingComponentException(String message, INAPParsingComponentExceptionReason reason) {

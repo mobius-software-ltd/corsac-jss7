@@ -24,16 +24,16 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddress;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ApplyChargingRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristics;
-import org.restcomm.protocols.ss7.cap.primitives.AChChargingAddressWrapperImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.primitives.SendingLegIDImpl;
-import org.restcomm.protocols.ss7.inap.primitives.SendingLegIDWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELAChBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AChChargingAddress;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CAMELAChBillingChargingCharacteristicsImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.AChChargingAddressWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.SendingLegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -55,8 +55,8 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
     private SendingLegIDWrapperImpl partyToCharge;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
-    private CAPExtensions extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1,defaultImplementation = CAPINAPExtensionsImpl.class)
+    private CAPINAPExtensions extensions;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 50,constructed = true,index = -1)
     private AChChargingAddressWrapperImpl aChChargingAddress;
@@ -65,7 +65,7 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
     }
 
     public ApplyChargingRequestImpl(CAMELAChBillingChargingCharacteristics aChBillingChargingCharacteristics,
-    		LegType partyToCharge, CAPExtensions extensions, AChChargingAddress aChChargingAddress) {
+    		LegType partyToCharge, CAPINAPExtensions extensions, AChChargingAddress aChChargingAddress) {
         this.aChBillingChargingCharacteristics = aChBillingChargingCharacteristics;
         
         if(partyToCharge!=null)
@@ -101,7 +101,7 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPINAPExtensions getExtensions() {
         return extensions;
     }
 

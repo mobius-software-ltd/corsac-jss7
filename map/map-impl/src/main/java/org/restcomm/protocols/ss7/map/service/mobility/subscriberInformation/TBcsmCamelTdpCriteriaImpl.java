@@ -23,13 +23,13 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import java.util.List;
 
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtBasicServiceCodeListWrapperImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CauseValue;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmCamelTdpCriteria;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmTriggerDetectionPoint;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ASNTBcsmTriggerDetectionPoint;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CauseValueWrapperImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeListWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

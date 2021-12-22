@@ -30,8 +30,8 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ASNGPRSEventTypeImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventSpecificInformationWrapperImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
-import org.restcomm.protocols.ss7.inap.primitives.MiscCallInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.commonapp.primitives.MiscCallInfoImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

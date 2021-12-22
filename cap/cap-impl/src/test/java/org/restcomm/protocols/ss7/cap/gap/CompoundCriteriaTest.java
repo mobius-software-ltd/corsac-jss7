@@ -28,8 +28,11 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
-import org.restcomm.protocols.ss7.cap.primitives.ScfIDImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.BasicGapCriteriaImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.CalledAddressAndServiceImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.CompoundCriteriaImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ScfIDImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -81,7 +84,7 @@ public class CompoundCriteriaTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CompoundCriteriaImpl.class);
     	
-    	DigitsImpl digits = new DigitsImpl(getDigitsData());
+    	DigitsIsupImpl digits = new DigitsIsupImpl(getDigitsData());
         CalledAddressAndServiceImpl calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
         BasicGapCriteriaImpl basicGapCriteria = new BasicGapCriteriaImpl(calledAddressAndService);
 

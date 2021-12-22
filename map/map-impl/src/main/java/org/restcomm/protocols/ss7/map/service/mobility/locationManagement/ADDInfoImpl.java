@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.commonapp.primitives.IMEIImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ADDInfo;
-import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

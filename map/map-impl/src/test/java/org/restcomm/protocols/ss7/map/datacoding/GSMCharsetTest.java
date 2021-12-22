@@ -28,11 +28,17 @@ import static org.testng.Assert.assertTrue;
 
 import java.nio.charset.Charset;
 
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharset;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecoder;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecodingData;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetEncoder;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetEncodingData;
+import org.restcomm.protocols.ss7.commonapp.datacoding.Gsm7EncodingStyle;
+import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderElement;
 import org.restcomm.protocols.ss7.map.service.sms.SmsSignalInfoImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.AbsoluteTimeStampImpl;
 import org.restcomm.protocols.ss7.map.smstpdu.AddressFieldImpl;
 import org.restcomm.protocols.ss7.map.smstpdu.ConcatenatedShortMessagesIdentifierImpl;
 import org.restcomm.protocols.ss7.map.smstpdu.DataCodingSchemeImpl;

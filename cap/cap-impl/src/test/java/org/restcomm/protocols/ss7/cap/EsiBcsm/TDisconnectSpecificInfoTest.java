@@ -27,7 +27,8 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TDisconnectSpecificInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -71,7 +72,7 @@ public class TDisconnectSpecificInfoTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(TDisconnectSpecificInfoImpl.class);
     	
-    	CauseCapImpl cause = new CauseCapImpl(this.getIntData());
+    	CauseIsupImpl cause = new CauseIsupImpl(this.getIntData());
         TDisconnectSpecificInfoImpl elem = new TDisconnectSpecificInfoImpl(cause);
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);

@@ -25,11 +25,11 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.sms.RequestReportSMSEventRequest;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSEvent;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
 import org.restcomm.protocols.ss7.cap.service.sms.primitive.SMSEventWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -47,10 +47,10 @@ public class RequestReportSMSEventRequestImpl extends SmsMessageImpl implements 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
     private SMSEventWrapperImpl smsEvents;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
-    private CAPExtensions extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = true,index = -1, defaultImplementation = CAPINAPExtensionsImpl.class)
+    private CAPINAPExtensions extensions;
 
-    public RequestReportSMSEventRequestImpl(List<SMSEvent> smsEvents, CAPExtensions extensions) {
+    public RequestReportSMSEventRequestImpl(List<SMSEvent> smsEvents, CAPINAPExtensions extensions) {
         super();
         
         if(smsEvents!=null)
@@ -72,7 +72,7 @@ public class RequestReportSMSEventRequestImpl extends SmsMessageImpl implements 
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPINAPExtensions getExtensions() {
         return this.extensions;
     }
 

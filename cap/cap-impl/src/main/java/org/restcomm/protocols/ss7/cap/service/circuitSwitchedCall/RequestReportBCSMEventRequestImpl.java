@@ -26,11 +26,11 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEvent;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.RequestReportBCSMEventRequest;
-import org.restcomm.protocols.ss7.cap.primitives.BCSMEventWrapperImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.BCSMEvent;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.primitives.BCSMEventWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -48,13 +48,13 @@ public class RequestReportBCSMEventRequestImpl extends CircuitSwitchedCallMessag
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
     private BCSMEventWrapperImpl bcsmEventList;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
-    private CAPExtensions extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1, defaultImplementation = CAPINAPExtensionsImpl.class)
+    private CAPINAPExtensions extensions;
 
     public RequestReportBCSMEventRequestImpl() {
     }
 
-    public RequestReportBCSMEventRequestImpl(List<BCSMEvent> bcsmEventList, CAPExtensions extensions) {
+    public RequestReportBCSMEventRequestImpl(List<BCSMEvent> bcsmEventList, CAPINAPExtensions extensions) {
     	if(bcsmEventList!=null)
     		this.bcsmEventList = new BCSMEventWrapperImpl(bcsmEventList);
     	
@@ -80,7 +80,7 @@ public class RequestReportBCSMEventRequestImpl extends CircuitSwitchedCallMessag
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPINAPExtensions getExtensions() {
         return extensions;
     }
 

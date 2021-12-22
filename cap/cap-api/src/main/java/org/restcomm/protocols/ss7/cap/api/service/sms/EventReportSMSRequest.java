@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.sms;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
 
 /**
  *
@@ -61,6 +61,6 @@ public interface EventReportSMSRequest extends SmsMessage {
 
     MiscCallInfo getMiscCallInfo();
 
-    CAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
 }

@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.cap.api.errors;
 
 /**
- * Base class of MAP ReturnError messages
+ * Base class of CAP ReturnError messages
  *
  * @author sergey vetyutnev
  *

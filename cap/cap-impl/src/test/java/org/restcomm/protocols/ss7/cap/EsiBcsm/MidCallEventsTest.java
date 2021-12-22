@@ -30,7 +30,9 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.MidCallEventsImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.MidCallEventsWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 import org.testng.annotations.Test;
@@ -104,7 +106,7 @@ public class MidCallEventsTest {
     	
         GenericDigitsImpl genericDigits = new GenericDigitsImpl(GenericDigits._ENCODING_SCHEME_BINARY, GenericDigits._TOD_BGCI, Unpooled.wrappedBuffer(getDigitsData()));
         // int encodingScheme, int typeOfDigits, byte[] digits
-        DigitsImpl dtmfDigits = new DigitsImpl(genericDigits);
+        DigitsIsupImpl dtmfDigits = new DigitsIsupImpl(genericDigits);
         MidCallEventsImpl elem = new MidCallEventsImpl(dtmfDigits, true);
         MidCallEventsWrapperImpl wrapper=new MidCallEventsWrapperImpl(elem);
 //        Digits dtmfDigits, boolean isDtmfDigitsCompleted

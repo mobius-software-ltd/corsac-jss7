@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSend;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedInfo;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.InformationToSend;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 
 /**
  *
@@ -65,7 +65,7 @@ public interface PromptAndCollectUserInformationRequest extends CircuitSwitchedC
 
     InformationToSend getInformationToSend();
 
-    CAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
     Integer getCallSegmentID();
 

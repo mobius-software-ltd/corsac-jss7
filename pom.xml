@@ -34,6 +34,7 @@
 		<module>sccp</module>
 		<module>tcap</module>
 		<module>tcap-ansi</module>
+		<module>commonapp</module>
 		<module>map</module>
 		<module>inap</module>
 		<module>cap</module>
@@ -120,6 +121,25 @@
 				<artifactId>tcap-impl</artifactId>
 				<groupId>com.mobius-software.telco.protocols.ss7.tcap</groupId>
 				<version>${project.version}</version>
+			</dependency>
+
+			<!-- COMMON APP -->
+			<dependency>
+				<artifactId>commonapp-api</artifactId>
+				<groupId>com.mobius-software.telco.protocols.ss7.commonapp</groupId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<artifactId>commonapp-impl</artifactId>
+				<groupId>com.mobius-software.telco.protocols.ss7.commonapp</groupId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mobius-software.telco.protocols.ss7.commonapp</groupId>
+				<artifactId>commonapp-impl</artifactId>
+				<type>test-jar</type>
+				<version>${project.version}</version>
+				<scope>test</scope>
 			</dependency>
 
 			<!-- MAP -->

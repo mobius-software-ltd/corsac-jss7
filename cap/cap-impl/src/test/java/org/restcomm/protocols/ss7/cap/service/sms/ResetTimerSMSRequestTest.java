@@ -27,9 +27,9 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimerID;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.TimerID;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -75,7 +75,7 @@ public class ResetTimerSMSRequestTest {
     	    	
         TimerID timerID = TimerID.tssf;
         int timerValue = 2;
-        CAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
+        CAPINAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
         
         ResetTimerSMSRequestImpl prim = new ResetTimerSMSRequestImpl(timerID, timerValue, extensions);
         byte[] rawData = this.getData();

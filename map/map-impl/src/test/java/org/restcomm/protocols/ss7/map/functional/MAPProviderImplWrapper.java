@@ -22,13 +22,13 @@
 
 package org.restcomm.protocols.ss7.map.functional;
 
+import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
 import org.restcomm.protocols.ss7.map.MAPStackConfigurationManagement;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPServiceBase;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPProviderAbortReason;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.MAPServiceSupplementary;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginIndication;
 

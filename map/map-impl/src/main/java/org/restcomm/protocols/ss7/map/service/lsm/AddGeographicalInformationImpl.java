@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.service.lsm;
 
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.TypeOfShape;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TypeOfShape;
 
 /**
  *

@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.smstpdu;
 
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityPeriod;
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityPeriodFormat;
+
 /**
  * SMS-SUBMIT pdu
  *

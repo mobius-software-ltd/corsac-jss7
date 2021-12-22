@@ -24,9 +24,9 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
 import java.util.List;
 
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.AccessNetworkSignalInfo;
 import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 import org.restcomm.protocols.ss7.map.api.service.oam.TracePropagationList;
 

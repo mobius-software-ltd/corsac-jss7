@@ -22,18 +22,23 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClass;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSMSClass;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformation;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformationGPRS;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.MSClassmark2;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.SubscriberState;
+import org.restcomm.protocols.ss7.commonapp.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.GPRSMSClassImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.MSClassmark2Impl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.SubscriberStateWrapperImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MNPInfoRes;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberState;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberState;
-import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

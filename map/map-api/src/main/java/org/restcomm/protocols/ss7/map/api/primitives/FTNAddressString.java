@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.primitives;
 
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
+
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 

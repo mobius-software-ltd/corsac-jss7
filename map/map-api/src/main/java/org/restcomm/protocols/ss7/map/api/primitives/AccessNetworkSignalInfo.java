@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.primitives;
 
 import java.io.Serializable;
 
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
+
 /**
  *
  AccessNetworkSignalInfo ::= SEQUENCE { accessNetworkProtocolId AccessNetworkProtocolId, signalInfo LongSignalInfo, --

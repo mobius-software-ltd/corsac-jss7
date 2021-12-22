@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.inap.api.EsiBcsm;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.inap.api.isup.CauseInap;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
 
 /**
 *
@@ -40,6 +40,6 @@ import org.restcomm.protocols.ss7.inap.api.isup.CauseInap;
 */
 public interface RouteSelectFailureSpecificInfo extends Serializable {
 
-    CauseInap getFailureCause();
+    CauseIsup getFailureCause();
 
 }

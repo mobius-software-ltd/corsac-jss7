@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement
 
 import java.util.List;
 
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
+
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 

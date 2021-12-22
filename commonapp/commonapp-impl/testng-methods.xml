@@ -1,0 +1,26 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Methods" parallel="methods" thread-count="5"  verbose="1">
+	<test name="simple">
+	
+		<!-- 
+		 <groups>
+		    <run>
+		      <include name=".*code.*"  />
+		      <include name="dialog*.*"  />
+		      
+		    </run>
+	  	</groups>
+	  	<packages>
+      		<package name="org.restcomm.protocols.ss7.commonapp" />
+      		<package name="org.restcomm.protocols.ss7.commonapp.dialog" />
+      		<package name="org.restcomm.protocols.ss7.commonapp.errors" />
+      		<package name="org.restcomm.protocols.ss7.commonapp.primitives" />
+      		<package name="org.restcomm.protocols.ss7.commonapp.service.lsm" />
+      		<package name="org.restcomm.protocols.ss7.commonapp.service.sms" />
+      		<package name="org.restcomm.protocols.ss7.commonapp.service.supplementary" />
+      		<package name="org.restcomm.protocols.ss7.commonapp.functional" />	
+      		<package name="org.restcomm.protocols.ss7.commonapp.smstpdu" />
+  		 </packages>
+	  	 -->
+	</test>
+</suite>

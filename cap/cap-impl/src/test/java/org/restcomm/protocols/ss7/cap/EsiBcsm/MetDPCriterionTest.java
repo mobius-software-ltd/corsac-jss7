@@ -29,8 +29,11 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.MetDPCriterionAltImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.MetDPCriterionImpl;
+import org.restcomm.protocols.ss7.commonapp.EsiBcsm.MetDPCriterionWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.LAIFixedLengthImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

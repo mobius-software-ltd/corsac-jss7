@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.sms;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimerID;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.TimerID;
 
 /**
  *
@@ -58,6 +58,6 @@ public interface ResetTimerSMSRequest extends SmsMessage {
 
     int getTimerValue();
 
-    CAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
 }

@@ -22,18 +22,18 @@
 package org.restcomm.protocols.ss7.cap.EsiGprs;
 
 import org.restcomm.protocols.ss7.cap.api.EsiGprs.PDPContextEstablishmentSpecificInformation;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointName;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.EndUserAddress;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPInitiationType;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.QualityOfService;
-import org.restcomm.protocols.ss7.cap.primitives.TimeAndTimezoneImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ASNPDPInitiationTypeImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.AccessPointNameImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.EndUserAddressImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.QualityOfServiceImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.TimeAndTimezone;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformationGPRS;
+import org.restcomm.protocols.ss7.commonapp.primitives.TimeAndTimezoneImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInformationGPRSImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

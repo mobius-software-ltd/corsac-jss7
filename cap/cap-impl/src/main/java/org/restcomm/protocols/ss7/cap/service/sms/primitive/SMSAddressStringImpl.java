@@ -25,17 +25,17 @@ package org.restcomm.protocols.ss7.cap.service.sms.primitive;
 import java.nio.charset.CharacterCodingException;
 
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
-import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentExceptionReason;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharset;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharsetDecoder;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharsetDecodingData;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharsetEncoder;
-import org.restcomm.protocols.ss7.map.datacoding.Gsm7EncodingStyle;
-import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.commonapp.api.APPException;
+import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
+import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentExceptionReason;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharset;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecoder;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecodingData;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetEncoder;
+import org.restcomm.protocols.ss7.commonapp.datacoding.Gsm7EncodingStyle;
+import org.restcomm.protocols.ss7.commonapp.primitives.AddressStringImpl;
 
 import io.netty.buffer.ByteBuf;
 
@@ -66,7 +66,7 @@ public class SMSAddressStringImpl extends AddressStringImpl implements SMSAddres
 	}
     
     @Override
-	public void decode(ByteBuf buffer) throws MAPParsingComponentException {
+	public void decode(ByteBuf buffer) throws APPParsingComponentException {
         buffer.markReaderIndex();
         int nature = buffer.readByte();        
         AddressNature an = AddressNature.getInstance((nature & NATURE_OF_ADD_IND_MASK) >> 4);
@@ -86,7 +86,7 @@ public class SMSAddressStringImpl extends AddressStringImpl implements SMSAddres
 	            this.address = decoder.decode(buffer);   
             }
             catch(CharacterCodingException ex) {
-            	throw new MAPParsingComponentException(ex,MAPParsingComponentExceptionReason.MistypedParameter);
+            	throw new APPParsingComponentException(ex,APPParsingComponentExceptionReason.MistypedParameter);
             }
         } else {
         	buffer.resetReaderIndex();
@@ -95,7 +95,7 @@ public class SMSAddressStringImpl extends AddressStringImpl implements SMSAddres
     }
 
     @Override
-	public void encode(ByteBuf buffer) throws MAPException {
+	public void encode(ByteBuf buffer) throws APPException {
         if (this.addressNature == AddressNature.reserved) {
             int tpOfAddr = 0x80 + (this.addressNature.getIndicator() << 4) + this.numberingPlan.getIndicator();
             buffer.writeByte(tpOfAddr);
@@ -105,7 +105,7 @@ public class SMSAddressStringImpl extends AddressStringImpl implements SMSAddres
             try {
                 encoder.encode(address,buffer);                
             } catch (CharacterCodingException e) {
-                throw new MAPException(e);
+                throw new APPException(e);
             }
         } else {
             super.encode(buffer);

@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCodeValue;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.TeleserviceCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeature;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingInfo;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;

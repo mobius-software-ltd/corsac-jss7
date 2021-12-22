@@ -30,10 +30,6 @@ import org.restcomm.protocols.ss7.cap.api.CAPApplicationContext;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.CAPServiceBase;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimerID;
 import org.restcomm.protocols.ss7.cap.api.service.sms.CAPDialogSms;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventSpecificInformationSMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
@@ -45,15 +41,19 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPDataCodingSche
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPProtocolIdentifier;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPShortMessageSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriod;
-import org.restcomm.protocols.ss7.inap.api.primitives.MiscCallInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClass;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2;
+import org.restcomm.protocols.ss7.commonapp.api.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CalledPartyBCDNumber;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.TimeAndTimezone;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.TimerID;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSMSClass;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformation;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformationGPRS;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.MSClassmark2;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 
@@ -72,7 +72,7 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
 
     @Override
     public Long addConnectSMSRequest(SMSAddressString callingPartysNumber,
-            CalledPartyBCDNumber destinationSubscriberNumber, ISDNAddressString smscAddress, CAPExtensions extensions)
+            CalledPartyBCDNumber destinationSubscriberNumber, ISDNAddressString smscAddress, CAPINAPExtensions extensions)
             throws CAPException {
         return addConnectSMSRequest(_Timer_Default, callingPartysNumber, destinationSubscriberNumber, smscAddress,
                 extensions);
@@ -81,7 +81,7 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
 
     @Override
     public Long addConnectSMSRequest(int customInvokeTimeout, SMSAddressString callingPartysNumber,
-            CalledPartyBCDNumber destinationSubscriberNumber, ISDNAddressString smscAddress, CAPExtensions extensions)
+            CalledPartyBCDNumber destinationSubscriberNumber, ISDNAddressString smscAddress, CAPINAPExtensions extensions)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_cap3_sms && this.appCntx != CAPApplicationContext.CapV4_cap4_sms)
@@ -101,7 +101,7 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
 
     @Override
     public Long addEventReportSMSRequest(EventTypeSMS eventTypeSMS,
-            EventSpecificInformationSMS eventSpecificInformationSMS, MiscCallInfo miscCallInfo, CAPExtensions extensions)
+            EventSpecificInformationSMS eventSpecificInformationSMS, MiscCallInfo miscCallInfo, CAPINAPExtensions extensions)
             throws CAPException {
         return this.addEventReportSMSRequest(_Timer_Default, eventTypeSMS, eventSpecificInformationSMS, miscCallInfo,
                 extensions);
@@ -109,7 +109,7 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
 
     @Override
     public Long addEventReportSMSRequest(int customInvokeTimeout, EventTypeSMS eventTypeSMS,
-            EventSpecificInformationSMS eventSpecificInformationSMS, MiscCallInfo miscCallInfo, CAPExtensions extensions)
+            EventSpecificInformationSMS eventSpecificInformationSMS, MiscCallInfo miscCallInfo, CAPINAPExtensions extensions)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_cap3_sms && this.appCntx != CAPApplicationContext.CapV4_cap4_sms)
@@ -153,7 +153,7 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
             LocationInformation locationInformationMSC, LocationInformationGPRS locationInformationGPRS,
             ISDNAddressString smscCAddress, TimeAndTimezone timeAndTimezone,
             TPShortMessageSpecificInfo tPShortMessageSpecificInfo, TPProtocolIdentifier tPProtocolIdentifier,
-            TPDataCodingScheme tPDataCodingScheme, TPValidityPeriod tPValidityPeriod, CAPExtensions extensions,
+            TPDataCodingScheme tPDataCodingScheme, TPValidityPeriod tPValidityPeriod, CAPINAPExtensions extensions,
             CallReferenceNumber smsReferenceNumber, ISDNAddressString mscAddress, ISDNAddressString sgsnNumber,
             MSClassmark2 mSClassmark2, GPRSMSClass gprsMSClass, IMEI imei, ISDNAddressString calledPartyNumber)
             throws CAPException {
@@ -170,7 +170,7 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
             LocationInformationGPRS locationInformationGPRS, ISDNAddressString smscCAddress,
             TimeAndTimezone timeAndTimezone, TPShortMessageSpecificInfo tPShortMessageSpecificInfo,
             TPProtocolIdentifier tPProtocolIdentifier, TPDataCodingScheme tPDataCodingScheme,
-            TPValidityPeriod tPValidityPeriod, CAPExtensions extensions, CallReferenceNumber smsReferenceNumber,
+            TPValidityPeriod tPValidityPeriod, CAPINAPExtensions extensions, CallReferenceNumber smsReferenceNumber,
             ISDNAddressString mscAddress, ISDNAddressString sgsnNumber, MSClassmark2 mSClassmark2,
             GPRSMSClass gprsMSClass, IMEI imei, ISDNAddressString calledPartyNumber) throws CAPException {
 
@@ -213,14 +213,14 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
     }
 
     @Override
-    public Long addRequestReportSMSEventRequest(List<SMSEvent> smsEvents, CAPExtensions extensions)
+    public Long addRequestReportSMSEventRequest(List<SMSEvent> smsEvents, CAPINAPExtensions extensions)
             throws CAPException {
         return this.addRequestReportSMSEventRequest(_Timer_Default, smsEvents, extensions);
     }
 
     @Override
     public Long addRequestReportSMSEventRequest(int customInvokeTimeout, List<SMSEvent> smsEvents,
-            CAPExtensions extensions) throws CAPException {
+            CAPINAPExtensions extensions) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_cap3_sms && this.appCntx != CAPApplicationContext.CapV4_cap4_sms)
             throw new CAPException("Bad application context name for ConnectSMSRequest: must be CapV3_cap3_sms or CapV4_cap4_sms");
@@ -236,13 +236,13 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
     }
 
     @Override
-    public Long addResetTimerSMSRequest(TimerID timerID, int timerValue, CAPExtensions extensions) throws CAPException {
+    public Long addResetTimerSMSRequest(TimerID timerID, int timerValue, CAPINAPExtensions extensions) throws CAPException {
         return this.addResetTimerSMSRequest(_Timer_Default, timerID, timerValue, extensions);
     }
 
     @Override
     public Long addResetTimerSMSRequest(int customInvokeTimeout, TimerID timerID, int timerValue,
-            CAPExtensions extensions) throws CAPException {
+            CAPINAPExtensions extensions) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_cap3_sms && this.appCntx != CAPApplicationContext.CapV4_cap4_sms)
             throw new CAPException("Bad application context name for ConnectSMSRequest: must be CapV3_cap3_sms or CapV4_cap4_sms");

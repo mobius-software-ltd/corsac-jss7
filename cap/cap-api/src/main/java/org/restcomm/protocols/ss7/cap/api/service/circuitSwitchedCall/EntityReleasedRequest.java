@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BCSMFailure;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallSegmentFailure;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BCSMFailure;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallSegmentFailure;
 
 /**
  *

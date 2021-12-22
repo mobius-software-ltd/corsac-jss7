@@ -22,9 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.primitives;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.primitives.AddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 
 /**
 *

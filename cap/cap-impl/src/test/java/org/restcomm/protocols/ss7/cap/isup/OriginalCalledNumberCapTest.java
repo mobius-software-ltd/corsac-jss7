@@ -28,6 +28,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.commonapp.isup.OriginalCalledNumberIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.OriginalCalledNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
 import org.testng.annotations.Test;
@@ -60,15 +61,15 @@ public class OriginalCalledNumberCapTest {
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(OriginalCalledNumberCapImpl.class);
+    	parser.replaceClass(OriginalCalledNumberIsupImpl.class);
     	
     	byte[] rawData = this.getData();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof OriginalCalledNumberCapImpl);
+        assertTrue(result.getResult() instanceof OriginalCalledNumberIsupImpl);
         
-        OriginalCalledNumberCapImpl elem = (OriginalCalledNumberCapImpl)result.getResult();        
+        OriginalCalledNumberIsupImpl elem = (OriginalCalledNumberIsupImpl)result.getResult();        
         OriginalCalledNumber ocn = elem.getOriginalCalledNumber();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         assertEquals(ocn.getNatureOfAddressIndicator(), 3);
@@ -80,9 +81,9 @@ public class OriginalCalledNumberCapTest {
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof OriginalCalledNumberCapImpl);
+        assertTrue(result.getResult() instanceof OriginalCalledNumberIsupImpl);
         
-        elem = (OriginalCalledNumberCapImpl)result.getResult();      
+        elem = (OriginalCalledNumberIsupImpl)result.getResult();      
         ocn = elem.getOriginalCalledNumber();
         assertEquals(ocn.getNumberingPlanIndicator(), 1);
         assertEquals(ocn.getAddressRepresentationRestrictedIndicator(), 0);
@@ -93,9 +94,9 @@ public class OriginalCalledNumberCapTest {
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(OriginalCalledNumberCapImpl.class);
+    	parser.replaceClass(OriginalCalledNumberIsupImpl.class);
     	
-        OriginalCalledNumberCapImpl elem = new OriginalCalledNumberCapImpl(this.getIntData());
+        OriginalCalledNumberIsupImpl elem = new OriginalCalledNumberIsupImpl(this.getIntData());
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -103,7 +104,7 @@ public class OriginalCalledNumberCapTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         OriginalCalledNumber cpn = new OriginalCalledNumberImpl(3, "7010900", 1, 1);
-        elem = new OriginalCalledNumberCapImpl(cpn);
+        elem = new OriginalCalledNumberIsupImpl(cpn);
         rawData = this.getData();
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];
@@ -111,7 +112,7 @@ public class OriginalCalledNumberCapTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         cpn = new OriginalCalledNumberImpl(4, "c48980491770922937", 1, 0);
-        elem = new OriginalCalledNumberCapImpl(cpn);
+        elem = new OriginalCalledNumberIsupImpl(cpn);
         rawData = this.getData2();
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];

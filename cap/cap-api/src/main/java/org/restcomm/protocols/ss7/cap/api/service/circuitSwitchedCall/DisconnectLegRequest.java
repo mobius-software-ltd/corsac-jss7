@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 
 /**
  *
@@ -55,8 +55,8 @@ public interface DisconnectLegRequest extends CircuitSwitchedCallMessage {
 
     LegID getLegToBeReleased();
 
-    CauseCap getReleaseCause();
+    CauseIsup getReleaseCause();
 
-    CAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
 }

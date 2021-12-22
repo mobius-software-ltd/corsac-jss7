@@ -27,7 +27,9 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.isup.BearerCapImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.BearerCapabilityImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.BearerCapabilityWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.BearerIsupImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -71,7 +73,7 @@ public class BearerCapabilityTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BearerCapabilityWrapperImpl.class);
     	
-        BearerCapImpl bc = new BearerCapImpl(this.getIntData1());
+        BearerIsupImpl bc = new BearerIsupImpl(this.getIntData1());
         BearerCapabilityImpl elem = new BearerCapabilityImpl(bc);
         BearerCapabilityWrapperImpl wrapper = new BearerCapabilityWrapperImpl(elem);
         byte[] rawData = this.getData1();

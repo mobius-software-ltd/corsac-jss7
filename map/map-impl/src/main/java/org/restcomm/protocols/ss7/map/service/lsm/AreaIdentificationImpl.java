@@ -22,9 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.service.lsm;
 
+import org.restcomm.protocols.ss7.commonapp.api.APPException;
+import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
+import org.restcomm.protocols.ss7.commonapp.primitives.TbcdStringImpl;
 import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.primitives.TbcdString;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentification;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
 
@@ -98,10 +99,15 @@ public class AreaIdentificationImpl extends ASNOctetString implements AreaIdenti
 
         ByteBuf result=Unpooled.wrappedBuffer(data);
         result.resetWriterIndex();
-        TbcdString.encodeString(result, sb.toString());
-        
-        if (type != AreaType.countryCode) {
-        	TbcdString.encodeString(result, sb2.toString());            
+        try {
+	        TbcdStringImpl.encodeString(result, sb.toString());
+	        
+	        if (type != AreaType.countryCode) {
+	        	TbcdStringImpl.encodeString(result, sb2.toString());            
+	        }
+        }
+        catch(APPException ex) {
+        	throw new MAPException(ex.getMessage(), ex.getCause());
         }
 
         if (type == AreaType.locationAreaId || type == AreaType.routingAreaId || type == AreaType.cellGlobalId) {
@@ -147,8 +153,8 @@ public class AreaIdentificationImpl extends ASNOctetString implements AreaIdenti
         
         String res;
         try {
-            res = TbcdString.decodeString(Unpooled.wrappedBuffer(data,0,2));
-        } catch (MAPParsingComponentException e) {
+            res = TbcdStringImpl.decodeString(Unpooled.wrappedBuffer(data,0,2));
+        } catch (APPParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding TbcdString: " + e.getMessage(), e);
         }
 
@@ -169,8 +175,8 @@ public class AreaIdentificationImpl extends ASNOctetString implements AreaIdenti
 
         String res = null;
         try {
-            res = TbcdString.decodeString(Unpooled.wrappedBuffer(data,0,3));
-        } catch (MAPParsingComponentException e) {
+            res = TbcdStringImpl.decodeString(Unpooled.wrappedBuffer(data,0,3));
+        } catch (APPParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding TbcdString: " + e.getMessage(), e);
         }
 

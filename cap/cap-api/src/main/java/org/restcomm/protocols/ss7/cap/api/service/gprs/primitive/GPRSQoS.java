@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.gprs.primitive;
 
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSSubscribed;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;

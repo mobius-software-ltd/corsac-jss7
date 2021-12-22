@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitiv
 import java.io.Serializable;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.inap.api.isup.GenericNumberInap;
+import org.restcomm.protocols.ss7.commonapp.api.isup.GenericNumberIsup;
 
 /**
 *
@@ -39,6 +39,6 @@ GenericNumbers {PARAMETERS-BOUND : bound} ::= SET SIZE(1..bound.&numOfGenericNum
 */
 public interface GenericNumbers extends Serializable {
 
-    List<GenericNumberInap> getGenericNumbers();
+    List<GenericNumberIsup> getGenericNumbers();
 
 }

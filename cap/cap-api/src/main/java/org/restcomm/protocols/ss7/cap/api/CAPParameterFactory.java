@@ -24,31 +24,6 @@ package org.restcomm.protocols.ss7.cap.api;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.CallAcceptedSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ChargeIndicator;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ChargeIndicatorValue;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.CollectedInfoSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.DpSpecificInfoAlt;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterion;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterionAlt;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MidCallEvents;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAbandonSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OCalledPartyBusySpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OChangeOfPositionSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ODisconnectSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OMidCallSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ONoAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OServiceChangeSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.OTermSeizedSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.RouteSelectFailureSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TBusySpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TChangeOfPositionSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TDisconnectSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TMidCallSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TNoAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TServiceChangeSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiGprs.DetachSpecificInformation;
 import org.restcomm.protocols.ss7.cap.api.EsiGprs.DisconnectSpecificInformation;
 import org.restcomm.protocols.ss7.cap.api.EsiGprs.PDPContextEstablishmentAcknowledgementSpecificInformation;
@@ -59,82 +34,8 @@ import org.restcomm.protocols.ss7.cap.api.EsiSms.OSmsSubmissionSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsDeliverySpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsFailureSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGprsReferenceNumber;
-import org.restcomm.protocols.ss7.cap.api.isup.BearerCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
-import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.RedirectingPartyIDCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.AChChargingAddress;
-import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
-import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEvent;
-import org.restcomm.protocols.ss7.cap.api.primitives.Burst;
-import org.restcomm.protocols.ss7.cap.api.primitives.BurstList;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.CalledPartyBCDNumber;
-import org.restcomm.protocols.ss7.cap.api.primitives.CriticalityType;
-import org.restcomm.protocols.ss7.cap.api.primitives.DateAndTime;
-import org.restcomm.protocols.ss7.cap.api.primitives.ErrorTreatment;
-import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionField;
-import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
-import org.restcomm.protocols.ss7.cap.api.primitives.ScfID;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimeAndTimezone;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCBeforeAnswer;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCSubsequent;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCap;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AudibleIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BackwardServiceInteractionInd;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapability;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAI_GSM0224;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristics;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELSCIBillingChargingCharacteristicsAlt;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallCompletionTreatmentIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallDiversionTreatmentIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallSegmentToCancel;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CallingPartyRestrictionIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ChangeOfLocation;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ChangeOfLocationAlt;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedDigits;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CollectedInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ConferenceTreatmentIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ConnectedNumberTreatmentInd;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CwTreatmentIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DestinationRoutingAddress;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DpSpecificCriteria;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.DpSpecificCriteriaAlt;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EctTreatmentIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FCIBCCCAMELSequence1;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ForwardServiceInteractionInd;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.FreeFormatData;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.HoldTreatmentIndicator;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.IPSSPCapabilities;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InbandInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InformationToSend;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtension;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.LegOrCallSegment;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.LowLayerCompatibility;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageID;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MessageIDText;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.MidCallControlInfo;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NACarrierInformation;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristics;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeDurationChargingResult;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeIfTariffSwitch;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.TimeInformation;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.Tone;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariableMessage;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePart;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartDate;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartPrice;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePartTime;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AOCGPRS;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.AccessPointName;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.CAMELFCIGPRSBillingChargingCharacteristics;
@@ -182,12 +83,145 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPDataCodingSche
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPProtocolIdentifier;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPShortMessageSpecificInfo;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriod;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
-import org.restcomm.protocols.ss7.inap.api.primitives.BothwayThroughConnectionInd;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Carrier;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.CallAcceptedSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.ChargeIndicator;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.ChargeIndicatorValue;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.CollectedInfoSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.DpSpecificInfoAlt;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.MetDPCriterion;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.MetDPCriterionAlt;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.MidCallEvents;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OAbandonSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OAnswerSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OCalledPartyBusySpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OChangeOfPositionSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.ODisconnectSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OMidCallSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.ONoAnswerSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OServiceChangeSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OTermSeizedSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.RouteSelectFailureSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TAnswerSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TBusySpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TChangeOfPositionSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TDisconnectSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TMidCallSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TNoAnswerSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TServiceChangeSpecificInfo;
+import org.restcomm.protocols.ss7.commonapp.api.callhandling.UUData;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AOCBeforeAnswer;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AOCSubsequent;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AudibleIndicator;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BackwardServiceInteractionInd;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAI_GSM0224;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELAChBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELSCIBillingChargingCharacteristicsAlt;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallCompletionTreatmentIndicator;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallDiversionTreatmentIndicator;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallSegmentToCancel;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CalledPartyBCDNumber;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallingPartyRestrictionIndicator;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ChangeOfLocation;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ChangeOfLocationAlt;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedDigits;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedInfo;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ConferenceTreatmentIndicator;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ConnectedNumberTreatmentInd;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CwTreatmentIndicator;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DpSpecificCriteria;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DpSpecificCriteriaAlt;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.EctTreatmentIndicator;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.EventSpecificInformationBCSM;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.FCIBCCCAMELSequence1;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ForwardServiceInteractionInd;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.FreeFormatData;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.HoldTreatmentIndicator;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.IPSSPCapabilities;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.InbandInfo;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.InformationToSend;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.LegOrCallSegment;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.LowLayerCompatibility;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.MessageID;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.MessageIDText;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.MidCallControlInfo;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.NAOliInfo;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformation;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.SCIBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ServiceInteractionIndicatorsTwo;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.TimeDurationChargingResult;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.TimeIfTariffSwitch;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.TimeInformation;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Tone;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariableMessage;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePart;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePartDate;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePartPrice;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePartTime;
+import org.restcomm.protocols.ss7.commonapp.api.isup.BearerIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.GenericNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.HighLayerCompatibilityIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectingPartyIDIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AChChargingAddress;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AppendFreeFormatData;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.BCSMEvent;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.BothwayThroughConnectionInd;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.Burst;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.BurstList;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CriticalityType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.DateAndTime;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ErrorTreatment;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ExtensionField;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LAIFixedLength;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoDpAssignment;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoMessageType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.TimeAndTimezone;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSChargingID;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeodeticInformation;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeographicalInformation;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformation;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformationEPS;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformationGPRS;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationNumberMap;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.MSClassmark2;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.UserCSGInformation;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.Ext2QoSSubscribed;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.LSAIdentity;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.OfferedCamel4Functionalities;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
+import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
@@ -195,26 +229,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectingNumber;
+import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
-import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.UUData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingID;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext2QoSSubscribed;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtQoSSubscribed;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4Functionalities;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.QoSSubscribed;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
+import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
 
 /**
  *
@@ -225,9 +242,9 @@ public interface CAPParameterFactory {
 
     CAPGprsReferenceNumber createCAPGprsReferenceNumber(Integer destinationReference, Integer originationReference);
 
-    CauseCap createCauseCap(byte[] data);
+    CauseIsup createCause(byte[] data);
 
-    CauseCap createCauseCap(CauseIndicators causeIndicators) throws CAPException;
+    CauseIsup createCause(CauseIndicators causeIndicators) throws CAPException;
 
     DpSpecificCriteria createDpSpecificCriteria(Integer applicationTimer);
 
@@ -245,86 +262,86 @@ public interface CAPParameterFactory {
 
     ExtensionField createExtensionField(List<Long> globalCode, CriticalityType criticalityType, byte[] data);
 
-    CAPExtensions createCAPExtensions(List<ExtensionField> fieldsList);
+    CAPINAPExtensions createCAPExtensions(List<ExtensionField> fieldsList);
 
-    CAMELAChBillingChargingCharacteristics createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, Boolean tone, CAPExtensions extensions,
+    CAMELAChBillingChargingCharacteristics createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, Boolean tone, CAPINAPExtensions extensions,
             Long tariffSwitchInterval);
 
     CAMELAChBillingChargingCharacteristics createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, Boolean tone, boolean releaseIfdurationExceeded,
-            Long tariffSwitchInterval, CAPExtensions extensions);
+            Long tariffSwitchInterval, CAPINAPExtensions extensions);
 
     CAMELAChBillingChargingCharacteristics createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, boolean releaseIfdurationExceeded,
-            Long tariffSwitchInterval, AudibleIndicator audibleIndicator, CAPExtensions extensions);
+            Long tariffSwitchInterval, AudibleIndicator audibleIndicator, CAPINAPExtensions extensions);
 
     DateAndTime createDateAndTime(int year, int month, int day, int hour, int minute, int second);
 
     TimeAndTimezone createTimeAndTimezone(int year, int month, int day, int hour, int minute, int second, int timeZone);
 
-    BearerCap createBearerCap(byte[] data);
+    BearerIsup createBearer(byte[] data);
 
-    BearerCap createBearerCap(UserServiceInformation userServiceInformation) throws CAPException;
+    BearerIsup createBearer(UserServiceInformation userServiceInformation) throws CAPException;
 
-    BearerCapability createBearerCapability(BearerCap bearerCap);
+    BearerCapability createBearerCapability(BearerIsup bearer);
 
-    Digits createDigits_GenericNumber(byte[] data);
+    DigitsIsup createDigits_GenericNumber(byte[] data);
 
-    Digits createDigits_GenericDigits(byte[] data);
+    DigitsIsup createDigits_GenericDigits(byte[] data);
 
-    Digits createDigits_GenericNumber(GenericNumber genericNumber) throws CAPException;
+    DigitsIsup createDigits_GenericNumber(GenericNumber genericNumber) throws CAPException;
 
-    Digits createDigits_GenericDigits(GenericDigits genericDigits) throws CAPException;
+    DigitsIsup createDigits_GenericDigits(GenericDigits genericDigits) throws CAPException;
 
-    CalledPartyNumberCap createCalledPartyNumberCap(byte[] data);
+    CalledPartyNumberIsup createCalledPartyNumber(byte[] data);
 
-    CalledPartyNumberCap createCalledPartyNumberCap(CalledPartyNumber calledPartyNumber) throws CAPException;
+    CalledPartyNumberIsup createCalledPartyNumber(CalledPartyNumber calledPartyNumber) throws CAPException;
 
-    CallingPartyNumberCap createCallingPartyNumberCap(byte[] data);
+    CallingPartyNumberIsup createCallingPartyNumber(byte[] data);
 
-    CallingPartyNumberCap createCallingPartyNumberCap(CallingPartyNumber callingPartyNumber) throws CAPException;
+    CallingPartyNumberIsup createCallingPartyNumber(CallingPartyNumber callingPartyNumber) throws CAPException;
 
-    GenericNumberCap createGenericNumberCap(byte[] data);
+    GenericNumberIsup createGenericNumber(byte[] data);
 
-    GenericNumberCap createGenericNumberCap(GenericNumber genericNumber) throws CAPException;
+    GenericNumberIsup createGenericNumber(GenericNumber genericNumber) throws CAPException;
 
-    LocationNumberCap createLocationNumberCap(byte[] data);
+    LocationNumberIsup createLocationNumber(byte[] data);
 
-    LocationNumberCap createLocationNumberCap(LocationNumber locationNumber) throws CAPException;
+    LocationNumberIsup createLocationNumber(LocationNumber locationNumber) throws CAPException;
 
-    OriginalCalledNumberCap createOriginalCalledNumberCap(byte[] data);
+    OriginalCalledNumberIsup createOriginalCalledNumber(byte[] data);
 
-    OriginalCalledNumberCap createOriginalCalledNumberCap(OriginalCalledNumber originalCalledNumber) throws CAPException;
+    OriginalCalledNumberIsup createOriginalCalledNumber(OriginalCalledNumber originalCalledNumber) throws CAPException;
 
-    RedirectingPartyIDCap createRedirectingPartyIDCap(byte[] data);
+    RedirectingPartyIDIsup createRedirectingPartyID(byte[] data);
 
-    RedirectingPartyIDCap createRedirectingPartyIDCap(RedirectingNumber redirectingNumber) throws CAPException;
+    RedirectingPartyIDIsup createRedirectingPartyID(RedirectingNumber redirectingNumber) throws CAPException;
 
-    RouteSelectFailureSpecificInfo createRouteSelectFailureSpecificInfo(CauseCap failureCause);
+    RouteSelectFailureSpecificInfo createRouteSelectFailureSpecificInfo(CauseIsup failureCause);
 
-    OCalledPartyBusySpecificInfo createOCalledPartyBusySpecificInfo(CauseCap busyCause);
+    OCalledPartyBusySpecificInfo createOCalledPartyBusySpecificInfo(CauseIsup busyCause);
 
     OAbandonSpecificInfo createOAbandonSpecificInfo(boolean routeNotPermitted);
 
     ONoAnswerSpecificInfo createONoAnswerSpecificInfo();
 
-    OAnswerSpecificInfo createOAnswerSpecificInfo(CalledPartyNumberCap destinationAddress, boolean orCall,
+    OAnswerSpecificInfo createOAnswerSpecificInfo(CalledPartyNumberIsup destinationAddress, boolean orCall,
             boolean forwardedCall, ChargeIndicator chargeIndicator, ExtBasicServiceCode extBasicServiceCode,
             ExtBasicServiceCode extBasicServiceCode2);
 
-    ODisconnectSpecificInfo createODisconnectSpecificInfo(CauseCap releaseCause);
+    ODisconnectSpecificInfo createODisconnectSpecificInfo(CauseIsup releaseCause);
 
-    TBusySpecificInfo createTBusySpecificInfo(CauseCap busyCause, boolean callForwarded, boolean routeNotPermitted,
-            CalledPartyNumberCap forwardingDestinationNumber);
+    TBusySpecificInfo createTBusySpecificInfo(CauseIsup busyCause, boolean callForwarded, boolean routeNotPermitted,
+            CalledPartyNumberIsup forwardingDestinationNumber);
 
     TNoAnswerSpecificInfo createTNoAnswerSpecificInfo(boolean callForwarded,
-            CalledPartyNumberCap forwardingDestinationNumber);
+            CalledPartyNumberIsup forwardingDestinationNumber);
 
-    TAnswerSpecificInfo createTAnswerSpecificInfo(CalledPartyNumberCap destinationAddress, boolean orCall,
+    TAnswerSpecificInfo createTAnswerSpecificInfo(CalledPartyNumberIsup destinationAddress, boolean orCall,
             boolean forwardedCall, ChargeIndicator chargeIndicator, ExtBasicServiceCode extBasicServiceCode,
             ExtBasicServiceCode extBasicServiceCode2);
 
-    TDisconnectSpecificInfo createTDisconnectSpecificInfo(CauseCap releaseCause);
+    TDisconnectSpecificInfo createTDisconnectSpecificInfo(CauseIsup releaseCause);
 
-    DestinationRoutingAddress createDestinationRoutingAddress(List<CalledPartyNumberCap> calledPartyNumber);
+    DestinationRoutingAddress createDestinationRoutingAddress(List<CalledPartyNumberIsup> calledPartyNumber);
 
     EventSpecificInformationBCSM createEventSpecificInformationBCSM(
             RouteSelectFailureSpecificInfo routeSelectFailureSpecificInfo);
@@ -368,10 +385,10 @@ public interface CAPParameterFactory {
 
     RequestedInformation createRequestedInformation_CallStopTime(DateAndTime callStopTimeValue);
 
-    RequestedInformation createRequestedInformation_ReleaseCause(CauseCap releaseCauseValue);
+    RequestedInformation createRequestedInformation_ReleaseCause(CauseIsup releaseCauseValue);
 
     TimeDurationChargingResult createTimeDurationChargingResult(LegType partyToCharge,
-            TimeInformation timeInformation, boolean legActive, boolean callLegReleasedAtTcpExpiry, CAPExtensions extensions,
+            TimeInformation timeInformation, boolean legActive, boolean callLegReleasedAtTcpExpiry, CAPINAPExtensions extensions,
             AChChargingAddress aChChargingAddress);
 
     TimeIfTariffSwitch createTimeIfTariffSwitch(int timeSinceTariffSwitch, Integer tariffSwitchInterval);
@@ -387,16 +404,16 @@ public interface CAPParameterFactory {
     InitialDPArgExtension createInitialDPArgExtension(NACarrierInformation naCarrierInformation, ISDNAddressString gmscAddress);
 
     InitialDPArgExtension createInitialDPArgExtension(ISDNAddressString gmscAddress,
-            CalledPartyNumberCap forwardingDestinationNumber, MSClassmark2 msClassmark2, IMEI imei,
+            CalledPartyNumberIsup forwardingDestinationNumber, MSClassmark2 msClassmark2, IMEI imei,
             SupportedCamelPhases supportedCamelPhases, OfferedCamel4Functionalities offeredCamel4Functionalities,
             BearerCapability bearerCapability2, ExtBasicServiceCode extBasicServiceCode2,
-            HighLayerCompatibilityInap highLayerCompatibility2, LowLayerCompatibility lowLayerCompatibility,
+            HighLayerCompatibilityIsup highLayerCompatibility2, LowLayerCompatibility lowLayerCompatibility,
             LowLayerCompatibility lowLayerCompatibility2, boolean enhancedDialledServicesAllowed, UUData uuData,
             boolean collectInformationAllowed, boolean releaseCallArgExtensionAllowed);
 
-    AlertingPatternCap createAlertingPatternCap(AlertingPattern alertingPattern);
+    AlertingPatternWrapper createAlertingPattern(AlertingPattern alertingPattern);
 
-    AlertingPatternCap createAlertingPatternCap(byte[] data);
+    AlertingPatternWrapper createAlertingPattern(byte[] data);
 
     NAOliInfo createNAOliInfo(int value);
 
@@ -443,7 +460,7 @@ public interface CAPParameterFactory {
 
     VariablePart createVariablePart(Integer integer);
 
-    VariablePart createVariablePart(Digits number);
+    VariablePart createVariablePart(DigitsIsup number);
 
     VariablePart createVariablePart(VariablePartTime time);
 
@@ -658,9 +675,9 @@ public interface CAPParameterFactory {
 
     LowLayerCompatibility createLowLayerCompatibility(byte[] data);
 
-    MidCallEvents createMidCallEvents_Completed(Digits dtmfDigits);
+    MidCallEvents createMidCallEvents_Completed(DigitsIsup dtmfDigits);
 
-    MidCallEvents createMidCallEvents_TimeOut(Digits dtmfDigits);
+    MidCallEvents createMidCallEvents_TimeOut(DigitsIsup dtmfDigits);
 
     OMidCallSpecificInfo createOMidCallSpecificInfo(MidCallEvents midCallEvents);
 
@@ -702,7 +719,7 @@ public interface CAPParameterFactory {
 
     TServiceChangeSpecificInfo createTServiceChangeSpecificInfo(ExtBasicServiceCode extBasicServiceCode);
 
-    CollectedInfoSpecificInfo createCollectedInfoSpecificInfo(CalledPartyNumberCap calledPartyNumber);
+    CollectedInfoSpecificInfo createCollectedInfoSpecificInfo(CalledPartyNumberIsup calledPartyNumber);
 
     DpSpecificInfoAlt createDpSpecificInfoAlt(OServiceChangeSpecificInfo oServiceChangeSpecificInfo, CollectedInfoSpecificInfo collectedInfoSpecificInfo,
             TServiceChangeSpecificInfo tServiceChangeSpecificInfo);
@@ -740,4 +757,35 @@ public interface CAPParameterFactory {
 
     AChChargingAddress createAChChargingAddress(int srfConnection);
 
+    CallingPartysCategoryIsup createCallingPartysCategoryInap(CallingPartyCategory callingPartyCategory)
+            throws CAPException;
+
+    HighLayerCompatibilityIsup createHighLayerCompatibilityInap(UserTeleserviceInformation highLayerCompatibility)
+            throws CAPException;
+
+    RedirectionInformationIsup createRedirectionInformationInap(RedirectionInformation redirectionInformation)
+            throws CAPException;
+
+    LegID createLegID(LegType receivingLeg,LegType sendingLeg);
+    
+    MiscCallInfo createMiscCallInfo(MiscCallInfoMessageType messageType, MiscCallInfoDpAssignment dpAssignment);
+    
+    ISDNAddressString createISDNAddressString(AddressNature addNature, NumberingPlan numPlan, String address);
+    ISDNAddressString createISDNAddressString(boolean extension, AddressNature addNature, NumberingPlan numPlan, String address);
+    SupportedCamelPhases createSupportedCamelPhases(boolean phase1, boolean phase2, boolean phase3, boolean phase4);
+
+    /**
+     * Creates a new instance of {@link IMSI}
+     *
+     * @param data whole data string
+     * @return new instance of {@link IMSI}
+     */
+    IMSI createIMSI(String data);
+    
+    LocationInformation createLocationInformation(Integer ageOfLocationInformation,
+            GeographicalInformation geographicalInformation, ISDNAddressString vlrNumber, LocationNumberMap locationNumber,
+            CellGlobalIdOrServiceAreaIdOrLAI cellGlobalIdOrServiceAreaIdOrLAI, MAPExtensionContainer extensionContainer,
+            LSAIdentity selectedLSAId, ISDNAddressString mscNumber, GeodeticInformation geodeticInformation,
+            boolean currentLocationRetrieved, boolean saiPresent, LocationInformationEPS locationInformationEPS,
+            UserCSGInformation userCSGInformation);    
 }

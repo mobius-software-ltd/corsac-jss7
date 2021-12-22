@@ -30,7 +30,12 @@ import static org.testng.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.VariablePart;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePart;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.MessageIDImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.MessageIDTextImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.MessageIDWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.VariableMessageImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.VariablePartImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

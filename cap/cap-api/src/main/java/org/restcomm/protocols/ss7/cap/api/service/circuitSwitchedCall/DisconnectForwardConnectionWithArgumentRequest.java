@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 
 /**
  *
@@ -50,6 +50,6 @@ public interface DisconnectForwardConnectionWithArgumentRequest extends CircuitS
 
     Integer getCallSegmentID();
 
-    CAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
 }

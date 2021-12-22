@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtTeleserviceCode;
 import org.restcomm.protocols.ss7.map.api.primitives.ASCICallReference;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtTeleserviceCode;
 
 /**
  *

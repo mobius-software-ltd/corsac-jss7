@@ -28,7 +28,8 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.CalledAddressAndServiceImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -75,7 +76,7 @@ public class CalledAddressAndServiceTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CalledAddressAndServiceImpl.class);
     	
-        DigitsImpl calledAddressValue = new DigitsImpl(getDigitsData());
+        DigitsIsupImpl calledAddressValue = new DigitsIsupImpl(getDigitsData());
         CalledAddressAndServiceImpl elem = new CalledAddressAndServiceImpl(calledAddressValue, SERVICE_KEY);
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);

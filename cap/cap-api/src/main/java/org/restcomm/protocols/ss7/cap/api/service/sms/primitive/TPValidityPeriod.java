@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.cap.api.service.sms.primitive;
 
 import org.restcomm.protocols.ss7.cap.api.CAPException;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriod;
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityPeriod;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;

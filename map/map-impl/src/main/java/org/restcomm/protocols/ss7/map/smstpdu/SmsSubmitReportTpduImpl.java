@@ -24,8 +24,10 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 
 import java.nio.charset.Charset;
 
+import org.restcomm.protocols.ss7.commonapp.api.APPException;
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.AbsoluteTimeStamp;
+import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
 import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStamp;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingScheme;
 import org.restcomm.protocols.ss7.map.api.smstpdu.FailureCause;
 import org.restcomm.protocols.ss7.map.api.smstpdu.ParameterIndicator;
@@ -94,8 +96,13 @@ public class SmsSubmitReportTpduImpl extends SmsTpduImpl implements SmsSubmitRep
 
         this.parameterIndicator = new ParameterIndicatorImpl(bt);
 
-        this.serviceCentreTimeStamp = AbsoluteTimeStampImpl.createMessage(stm);
-
+        try {
+        	this.serviceCentreTimeStamp = AbsoluteTimeStampImpl.createMessage(stm);
+        }
+    	catch(APPException ex) {
+    		throw new MAPException(ex.getMessage(),ex.getCause());
+    	}
+        
         if (this.parameterIndicator.getTP_PIDPresence()) {
             bt = stm.readByte() & 0x0FF;
             if (bt == -1)
@@ -180,8 +187,14 @@ public class SmsSubmitReportTpduImpl extends SmsTpduImpl implements SmsSubmitRep
         this.parameterIndicator = new ParameterIndicatorImpl(this.userData != null, this.dataCodingScheme != null,
                 this.protocolIdentifier != null);
         buf.writeByte(this.parameterIndicator.getCode());
-        this.serviceCentreTimeStamp.encodeData(buf);
-
+        
+        try {
+        	this.serviceCentreTimeStamp.encodeData(buf);
+        }
+    	catch(APPException ex) {
+    		throw new MAPException(ex.getMessage(),ex.getCause());
+    	}
+        
         if (this.protocolIdentifier != null) {
         	buf.writeByte(this.protocolIdentifier.getCode());
         }

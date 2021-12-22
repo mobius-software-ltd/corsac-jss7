@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.sms.primitive;
 
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;

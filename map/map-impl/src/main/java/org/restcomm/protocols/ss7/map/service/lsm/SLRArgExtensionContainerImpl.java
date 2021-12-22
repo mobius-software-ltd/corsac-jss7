@@ -24,10 +24,10 @@ package org.restcomm.protocols.ss7.map.service.lsm;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtension;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPPrivateExtension;
+import org.restcomm.protocols.ss7.commonapp.primitives.MAPPrivateExtensionsListWrapperImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgPCSExtensions;
-import org.restcomm.protocols.ss7.map.primitives.MAPPrivateExtensionsListWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

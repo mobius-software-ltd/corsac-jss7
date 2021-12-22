@@ -24,7 +24,10 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBearerServiceCode;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtTeleserviceCode;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeatures;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;

@@ -23,11 +23,11 @@ package org.restcomm.protocols.ss7.cap.service.sms;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.TimerID;
 import org.restcomm.protocols.ss7.cap.api.service.sms.ResetTimerSMSRequest;
-import org.restcomm.protocols.ss7.cap.primitives.ASNTimerIDImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.TimerID;
+import org.restcomm.protocols.ss7.commonapp.primitives.ASNTimerIDImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -49,10 +49,10 @@ public class ResetTimerSMSRequestImpl extends SmsMessageImpl implements ResetTim
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
     private ASNInteger timerValue;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
-    private CAPExtensions extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1, defaultImplementation = CAPINAPExtensionsImpl.class)
+    private CAPINAPExtensions extensions;
 
-    public ResetTimerSMSRequestImpl(TimerID timerID, int timerValue, CAPExtensions extensions) {
+    public ResetTimerSMSRequestImpl(TimerID timerID, int timerValue, CAPINAPExtensions extensions) {
         super();
         
         if(timerID!=null) {
@@ -86,7 +86,7 @@ public class ResetTimerSMSRequestImpl extends SmsMessageImpl implements ResetTim
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPINAPExtensions getExtensions() {
         return this.extensions;
     }
 

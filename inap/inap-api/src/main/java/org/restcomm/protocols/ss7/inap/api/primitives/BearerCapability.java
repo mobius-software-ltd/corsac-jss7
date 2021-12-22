@@ -24,8 +24,9 @@ package org.restcomm.protocols.ss7.inap.api.primitives;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.inap.api.isup.BearerInap;
-import org.restcomm.protocols.ss7.inap.api.isup.TmrInap;
+import org.restcomm.protocols.ss7.commonapp.api.isup.BearerIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.TmrIsup;
+
 
 /**
 *
@@ -61,8 +62,8 @@ ITU-T Recommendation Q.763 [20].
 */
 public interface BearerCapability extends Serializable {
 
-    BearerInap getBearerCap();
+    BearerIsup getBearer();
 
-    TmrInap getTmr();
+    TmrIsup getTmr();
 
 }

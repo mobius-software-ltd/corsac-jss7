@@ -1,0 +1,33 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+
+	<parent>
+		<artifactId>ss7-parent</artifactId>
+		<groupId>com.mobius-software.telco.protocols.ss7</groupId>
+		<version>8.0.0-SNAPSHOT</version>
+	</parent>
+
+
+	<artifactId>commonapp-parent</artifactId>
+	<groupId>com.mobius-software.telco.protocols.ss7.commonapp</groupId>
+
+	<packaging>pom</packaging>
+
+	<name>Corsac jSS7 :: Common APP :: Parent :: ${project.artifactId}</name>
+	<properties />
+
+	<modules>
+		<module>commonapp-api</module>
+		<module>commonapp-impl</module>
+	</modules>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<modules>
+				<module>release</module>
+			</modules>
+		</profile>
+	</profiles>
+</project>

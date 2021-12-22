@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NACarrierInformation;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NACarrierSelectionInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEACIC;
-import org.restcomm.protocols.ss7.map.primitives.NAEACICImpl;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NAEACIC;
+import org.restcomm.protocols.ss7.commonapp.primitives.NAEACICImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

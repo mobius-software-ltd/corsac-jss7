@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
 
 /**
  *
@@ -39,6 +39,6 @@ import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
  */
 public interface ReleaseCallRequest extends CircuitSwitchedCallMessage {
 
-    CauseCap getCause();
+    CauseIsup getCause();
 
 }

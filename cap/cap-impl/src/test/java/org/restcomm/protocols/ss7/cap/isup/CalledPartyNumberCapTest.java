@@ -28,6 +28,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.testng.annotations.Test;
@@ -56,15 +57,15 @@ public class CalledPartyNumberCapTest {
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(CalledPartyNumberCapImpl.class);
+    	parser.replaceClass(CalledPartyNumberIsupImpl.class);
     	
     	byte[] rawData = this.getData();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof CalledPartyNumberCapImpl);
+        assertTrue(result.getResult() instanceof CalledPartyNumberIsupImpl);
         
-        CalledPartyNumberCapImpl elem = (CalledPartyNumberCapImpl)result.getResult();        
+        CalledPartyNumberIsupImpl elem = (CalledPartyNumberIsupImpl)result.getResult();        
         CalledPartyNumber cpn = elem.getCalledPartyNumber();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         assertFalse(cpn.isOddFlag());
@@ -77,9 +78,9 @@ public class CalledPartyNumberCapTest {
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(CalledPartyNumberCapImpl.class);
+    	parser.replaceClass(CalledPartyNumberIsupImpl.class);
     	
-        CalledPartyNumberCapImpl elem = new CalledPartyNumberCapImpl(this.getIntData());
+        CalledPartyNumberIsupImpl elem = new CalledPartyNumberIsupImpl(this.getIntData());
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -87,7 +88,7 @@ public class CalledPartyNumberCapTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         CalledPartyNumber cpn = new CalledPartyNumberImpl(3, "1227010900", 1, 1);
-        elem = new CalledPartyNumberCapImpl(cpn);
+        elem = new CalledPartyNumberIsupImpl(cpn);
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);

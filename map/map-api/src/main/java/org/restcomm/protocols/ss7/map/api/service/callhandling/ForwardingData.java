@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNSubaddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptions;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;

@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.service.oam;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.map.api.service.oam.AreaScope;
 import org.restcomm.protocols.ss7.map.api.service.oam.JobType;
 import org.restcomm.protocols.ss7.map.api.service.oam.ListOfMeasurements;
@@ -32,7 +33,6 @@ import org.restcomm.protocols.ss7.map.api.service.oam.MDTConfiguration;
 import org.restcomm.protocols.ss7.map.api.service.oam.ReportAmount;
 import org.restcomm.protocols.ss7.map.api.service.oam.ReportInterval;
 import org.restcomm.protocols.ss7.map.api.service.oam.ReportingTrigger;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

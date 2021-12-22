@@ -24,7 +24,9 @@ package org.restcomm.protocols.ss7.inap.api.primitives;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.DpSpecificCriteria;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DpSpecificCriteria;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
 
 /**
 *

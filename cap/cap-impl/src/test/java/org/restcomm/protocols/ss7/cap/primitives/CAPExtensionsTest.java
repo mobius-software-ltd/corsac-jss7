@@ -29,9 +29,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.CriticalityType;
-import org.restcomm.protocols.ss7.cap.api.primitives.ExtensionField;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CriticalityType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ExtensionField;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ExtensionFieldImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -54,24 +56,24 @@ public class CAPExtensionsTest {
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(CAPExtensionsImpl.class);
+    	parser.replaceClass(CAPINAPExtensionsImpl.class);
     	
     	byte[] rawData = this.getData1();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof CAPExtensionsImpl);
+        assertTrue(result.getResult() instanceof CAPINAPExtensionsImpl);
         
-        CAPExtensionsImpl elem = (CAPExtensionsImpl)result.getResult();
+        CAPINAPExtensionsImpl elem = (CAPINAPExtensionsImpl)result.getResult();
         assertTrue(checkTestCAPExtensions(elem));
     }
 
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(CAPExtensionsImpl.class);
+    	parser.replaceClass(CAPINAPExtensionsImpl.class);
     	
-    	CAPExtensions elem = createTestCAPExtensions();
+    	CAPINAPExtensions elem = createTestCAPExtensions();
     	byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -79,17 +81,17 @@ public class CAPExtensionsTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    public static CAPExtensions createTestCAPExtensions() {
+    public static CAPINAPExtensions createTestCAPExtensions() {
         ExtensionFieldImpl a1 = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, new byte[] {});
         ExtensionFieldImpl a2 = new ExtensionFieldImpl(3, CriticalityType.typeAbort, new byte[] { -1 });
         List<ExtensionField> flds = new ArrayList<ExtensionField>();
         flds.add(a1);
         flds.add(a2);
-        CAPExtensions elem = new CAPExtensionsImpl(flds);
+        CAPINAPExtensions elem = new CAPINAPExtensionsImpl(flds);
         return elem;
     }
 
-    public static boolean checkTestCAPExtensions(CAPExtensions elem) {
+    public static boolean checkTestCAPExtensions(CAPINAPExtensions elem) {
         if (elem.getExtensionFields() == null || elem.getExtensionFields().size() != 2)
             return false;
 

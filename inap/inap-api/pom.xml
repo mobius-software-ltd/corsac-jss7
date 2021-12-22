@@ -32,8 +32,8 @@
 			<artifactId>isup-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.mobius-software.telco.protocols.ss7.map</groupId>
-			<artifactId>map-api</artifactId>
+			<artifactId>commonapp-api</artifactId>
+			<groupId>com.mobius-software.telco.protocols.ss7.commonapp</groupId>			
 		</dependency>
 	</dependencies>
 

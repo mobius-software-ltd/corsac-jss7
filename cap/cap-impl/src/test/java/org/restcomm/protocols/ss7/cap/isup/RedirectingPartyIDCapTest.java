@@ -28,6 +28,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.commonapp.isup.RedirectingPartyIDIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectingNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectingNumber;
 import org.testng.annotations.Test;
@@ -56,15 +57,15 @@ public class RedirectingPartyIDCapTest {
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(RedirectingPartyIDCapImpl.class);
+    	parser.replaceClass(RedirectingPartyIDIsupImpl.class);
     	
     	byte[] rawData = this.getData();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof RedirectingPartyIDCapImpl);
+        assertTrue(result.getResult() instanceof RedirectingPartyIDIsupImpl);
         
-        RedirectingPartyIDCapImpl elem = (RedirectingPartyIDCapImpl)result.getResult();                
+        RedirectingPartyIDIsupImpl elem = (RedirectingPartyIDIsupImpl)result.getResult();                
         RedirectingNumber rn = elem.getRedirectingNumber();
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         assertEquals(rn.getNatureOfAddressIndicator(), 3);
@@ -76,9 +77,9 @@ public class RedirectingPartyIDCapTest {
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(RedirectingPartyIDCapImpl.class);
+    	parser.replaceClass(RedirectingPartyIDIsupImpl.class);
     	
-        RedirectingPartyIDCapImpl elem = new RedirectingPartyIDCapImpl(this.getIntData());
+        RedirectingPartyIDIsupImpl elem = new RedirectingPartyIDIsupImpl(this.getIntData());
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -86,7 +87,7 @@ public class RedirectingPartyIDCapTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         RedirectingNumber rn = new RedirectingNumberImpl(3, "7010900", 1, 1);
-        elem = new RedirectingPartyIDCapImpl(rn);
+        elem = new RedirectingPartyIDIsupImpl(rn);
         rawData = this.getData();
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];

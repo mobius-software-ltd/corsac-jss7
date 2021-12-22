@@ -1,6 +1,6 @@
 /*
- * TeleStax, Open Source Cloud Communications
- * Copyright 2012, Telestax Inc and individual contributors
+ * TeleStax, Open Source Cloud Communications  Copyright 2012.
+ * and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -24,54 +24,41 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.inap.api.primitives.BCSMEvent;
-import org.restcomm.protocols.ss7.inap.api.primitives.INAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.BCSMEvent;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 
 /**
-*
+ *
 <code>
-*** CS1: ***
 RequestReportBCSMEvent ::= OPERATION
-  ARGUMENT RequestReportBCSMEventArg
-  ERRORS { MissingParameter, SystemFailure, TaskRefused, UnexpectedComponentSequence, UnexpectedDataValue, UnexpectedParameter
+ARGUMENT RequestReportBCSMEventArg
+ERRORS {
+	MissingParameter,
+	SystemFailure,
+	TaskRefused,
+	UnexpectedComponentSequence,
+	UnexpectedDataValue,
+	UnexpectedParameter
 }
 -- Direction: SCF -> SSF, Timer: Trrb
 -- This operation is used to request the SSF to monitor for a call-related event (e.g., BCSM events
 -- such as busy or no answer), then send a notification back to the SCF when the event is
 -- detected.
 
-*** CS2: ***
-requestReportBCSMEvent {PARAMETERS-BOUND : bound} OPERATION ::= {
-  ARGUMENT RequestReportBCSMEventArg {bound}
-  RETURN RESULT FALSE
-  ERRORS {missingParameter | parameterOutOfRange | systemFailure | taskRefused | unexpectedComponentSequence | unexpectedDataValue | unexpectedParameter | unknownLegID}
-  CODE opcode-requestReportBCSMEvent
+RequestReportBCSMEventArg ::= SEQUENCE {
+	bcsmEvents [0] SEQUENCE SIZE (1..numOfBCSMEvents) OF BCSMEvent,
+	extensions [2] SEQUENCE SIZE (1..numOfExtensions) OF ExtensionField OPTIONAL
+-- ...
 }
--- Direction: SCF -> SSF, Timer: Trrb
--- This operation is used to request the SSF to monitor for a call-related event
--- (e.g. BCSM events such as busy or no answer), then send a notification back to the SCF when
--- the event is detected.
--- NOTE:
--- Every EDP must be explicitly armed by the SCF via a RequestReportBCSMEvent operation. No
--- implicit arming of EDPs at the SSF after reception of any operation (different from
--- RequestReportBCSMEvent) from the SCF is allowed.
-
-RequestReportBCSMEventArg {PARAMETERS-BOUND : bound} ::= SEQUENCE {
-  bcsmEvents [0] SEQUENCE SIZE(1..bound.&numOfBCSMEvents) OF BCSMEvent {bound},
-  extensions [2] SEQUENCE SIZE(1..bound.&numOfExtensions) OF ExtensionField {bound} OPTIONAL,
-  ...
-}
--- Indicates the BCSM related events for notification.
 </code>
-*
-*
-* @author sergey vetyutnev
-*
-*/
-public interface RequestReportBCSMEventRequest {
+ *
+ * @author yulian.oifa
+ *
+ */
+public interface RequestReportBCSMEventRequest extends CircuitSwitchedCallMessage {
 
-    List<BCSMEvent> getBCSMEvents();
+    List<BCSMEvent> getBCSMEventList();
 
-    INAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
 }

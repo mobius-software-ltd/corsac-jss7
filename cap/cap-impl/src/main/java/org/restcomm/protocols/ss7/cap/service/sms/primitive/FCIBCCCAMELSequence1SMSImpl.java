@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.cap.service.sms.primitive;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELSequence1SMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMS;
-import org.restcomm.protocols.ss7.cap.primitives.ASNAppendFreeFormatDataImpl;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AppendFreeFormatData;
+import org.restcomm.protocols.ss7.commonapp.primitives.ASNAppendFreeFormatDataImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.inap.api.EsiBcsm;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.inap.api.isup.BackwardGVNSInap;
+import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardGVNSIsup;
 
 /**
 *
@@ -40,6 +40,6 @@ import org.restcomm.protocols.ss7.inap.api.isup.BackwardGVNSInap;
 */
 public interface OAnswerSpecificInfo extends Serializable {
 
-    BackwardGVNSInap getBackwardGVNS();
+    BackwardGVNSIsup getBackwardGVNS();
 
 }

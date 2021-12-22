@@ -30,14 +30,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTriplet;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletList;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSecurityContextData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationResponse;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationTripletImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.CksnImpl;

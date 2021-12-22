@@ -24,9 +24,9 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.isup.CauseCap;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ReleaseCallRequest;
-import org.restcomm.protocols.ss7.cap.isup.CauseCapImpl;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
+import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -41,13 +41,13 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class ReleaseCallRequestImpl extends CircuitSwitchedCallMessageImpl implements ReleaseCallRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = CauseCapImpl.class)
-	private CauseCap cause;
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = CauseIsupImpl.class)
+	private CauseIsup cause;
 
     public ReleaseCallRequestImpl() {
     }
 
-    public ReleaseCallRequestImpl(CauseCap cause) {
+    public ReleaseCallRequestImpl(CauseIsup cause) {
         this.cause = cause;
     }
 
@@ -62,7 +62,7 @@ public class ReleaseCallRequestImpl extends CircuitSwitchedCallMessageImpl imple
     }
 
     @Override
-    public CauseCap getCause() {
+    public CauseIsup getCause() {
         return cause;
     }
 

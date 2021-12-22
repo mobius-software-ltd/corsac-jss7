@@ -22,30 +22,31 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import org.restcomm.protocols.ss7.cap.api.CAPParsingComponentException;
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.BearerCapability;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtension;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.LowLayerCompatibility;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NACarrierInformation;
-import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.HighLayerCompatibilityInap;
-import org.restcomm.protocols.ss7.inap.isup.HighLayerCompatibilityInapImpl;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.UUData;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4Functionalities;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SupportedCamelPhases;
-import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.UUDataImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.MSClassmark2Impl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeWrapperImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4FunctionalitiesImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
+import org.restcomm.protocols.ss7.commonapp.api.callhandling.UUData;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.LowLayerCompatibility;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.HighLayerCompatibilityIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.MSClassmark2;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.OfferedCamel4Functionalities;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.SupportedCamelPhases;
+import org.restcomm.protocols.ss7.commonapp.callhandling.UUDataImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.BearerCapabilityWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.LowLayerCompatibilityImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.HighLayerCompatibilityIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.MSClassmark2Impl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtBasicServiceCodeWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.OfferedCamel4FunctionalitiesImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.SupportedCamelPhasesImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -73,8 +74,8 @@ public class InitialDPArgExtensionImpl implements InitialDPArgExtension {
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1, defaultImplementation = ISDNAddressStringImpl.class)
     private ISDNAddressString gmscAddress2;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1, defaultImplementation = CalledPartyNumberCapImpl.class)
-    private CalledPartyNumberCap forwardingDestinationNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1, defaultImplementation = CalledPartyNumberIsupImpl.class)
+    private CalledPartyNumberIsup forwardingDestinationNumber;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1, defaultImplementation = MSClassmark2Impl.class)
     private MSClassmark2 msClassmark2;
@@ -94,8 +95,8 @@ public class InitialDPArgExtensionImpl implements InitialDPArgExtension {
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = true,index = -1)
     private ExtBasicServiceCodeWrapperImpl extBasicServiceCode2;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false,index = -1, defaultImplementation = HighLayerCompatibilityInapImpl.class)
-    private HighLayerCompatibilityInap highLayerCompatibility2;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false,index = -1, defaultImplementation = HighLayerCompatibilityIsupImpl.class)
+    private HighLayerCompatibilityIsup highLayerCompatibility2;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 9,constructed = false,index = -1, defaultImplementation = LowLayerCompatibilityImpl.class)
     private LowLayerCompatibility lowLayerCompatibility;
@@ -126,10 +127,10 @@ public class InitialDPArgExtensionImpl implements InitialDPArgExtension {
     	this.gmscAddress = gmscAddress;
     }
 
-    public InitialDPArgExtensionImpl(ISDNAddressString gmscAddress, CalledPartyNumberCap forwardingDestinationNumber,
+    public InitialDPArgExtensionImpl(ISDNAddressString gmscAddress, CalledPartyNumberIsup forwardingDestinationNumber,
             MSClassmark2 msClassmark2, IMEI imei, SupportedCamelPhases supportedCamelPhases,
             OfferedCamel4Functionalities offeredCamel4Functionalities, BearerCapability bearerCapability2,
-            ExtBasicServiceCode extBasicServiceCode2, HighLayerCompatibilityInap highLayerCompatibility2,
+            ExtBasicServiceCode extBasicServiceCode2, HighLayerCompatibilityIsup highLayerCompatibility2,
             LowLayerCompatibility lowLayerCompatibility, LowLayerCompatibility lowLayerCompatibility2,
             boolean enhancedDialledServicesAllowed, UUData uuData, boolean collectInformationAllowed,
             boolean releaseCallArgExtensionAllowed) {
@@ -161,19 +162,14 @@ public class InitialDPArgExtensionImpl implements InitialDPArgExtension {
         	this.releaseCallArgExtensionAllowed = new ASNNull();        
     }
 
-    public void patchVersion(int version) throws CAPParsingComponentException {
+    public void patchVersion(int version) throws APPParsingComponentException {
     	if(forwardingDestinationNumber==null)
     		return;
     	    	
     	if(version<3) {
-    		try {
-	    		gmscAddress=new ISDNAddressStringImpl();
-	    		((ISDNAddressStringImpl)gmscAddress).decode(null, this, Unpooled.wrappedBuffer(forwardingDestinationNumber.getData()), null);
-	    		forwardingDestinationNumber = null;
-    		} 
-    		catch(MAPParsingComponentException ex) {
-    			throw new CAPParsingComponentException(ex.getMessage(), null);
-    		}
+    		gmscAddress=new ISDNAddressStringImpl();
+    		((ISDNAddressStringImpl)gmscAddress).decode(null, this, Unpooled.wrappedBuffer(forwardingDestinationNumber.getData()), null);
+    		forwardingDestinationNumber = null;
     	}
     }
     
@@ -188,7 +184,7 @@ public class InitialDPArgExtensionImpl implements InitialDPArgExtension {
     	return naCarrierInformation;
     }
     
-    public CalledPartyNumberCap getForwardingDestinationNumber() {
+    public CalledPartyNumberIsup getForwardingDestinationNumber() {
         return forwardingDestinationNumber;
     }
 
@@ -222,7 +218,7 @@ public class InitialDPArgExtensionImpl implements InitialDPArgExtension {
         return extBasicServiceCode2.getExtBasicServiceCode();
     }
 
-    public HighLayerCompatibilityInap getHighLayerCompatibility2() {
+    public HighLayerCompatibilityIsup getHighLayerCompatibility2() {
         return highLayerCompatibility2;
     }
 

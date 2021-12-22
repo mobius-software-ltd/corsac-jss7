@@ -126,12 +126,8 @@ import org.restcomm.protocols.ss7.cap.service.sms.InitialDPSMSRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.sms.ReleaseSMSRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.sms.RequestReportSMSEventRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.sms.ResetTimerSMSRequestImpl;
-import org.restcomm.protocols.ss7.inap.INAPParameterFactoryImpl;
-import org.restcomm.protocols.ss7.inap.api.INAPParameterFactory;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ISUPParameterFactoryImpl;
-import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
-import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
@@ -197,9 +193,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
     private transient TCAPProvider tcapProvider = null;
 
     private final transient CAPParameterFactory capParameterFactory = new CAPParameterFactoryImpl();
-    private final transient MAPParameterFactory mapParameterFactory = new MAPParameterFactoryImpl();
     private final transient ISUPParameterFactory isupParameterFactory = new ISUPParameterFactoryImpl();
-    private final transient INAPParameterFactory inapParameterFactory = new INAPParameterFactoryImpl();
     private final transient CAPErrorMessageFactory capErrorMessageFactory = new CAPErrorMessageFactoryImpl();
 
     protected transient Set<CAPServiceBase> capServices = new HashSet<CAPServiceBase>();
@@ -530,18 +524,8 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
     }
 
     @Override
-    public MAPParameterFactory getMAPParameterFactory() {
-        return mapParameterFactory;
-    }
-
-    @Override
     public ISUPParameterFactory getISUPParameterFactory() {
         return isupParameterFactory;
-    }
-
-    @Override
-    public INAPParameterFactory getINAPParameterFactory() {
-        return inapParameterFactory;
     }
 
     @Override

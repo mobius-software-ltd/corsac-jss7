@@ -29,6 +29,8 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.commonapp.isup.CallingPartyNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.testng.annotations.Test;
 
@@ -57,15 +59,15 @@ public class CauseCapTest {
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(CauseCapImpl.class);
+    	parser.replaceClass(CauseIsupImpl.class);
     	
         byte[] rawData = this.getData();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof CauseCapImpl);
+        assertTrue(result.getResult() instanceof CauseIsupImpl);
         
-        CauseCapImpl elem = (CauseCapImpl)result.getResult();        
+        CauseIsupImpl elem = (CauseIsupImpl)result.getResult();        
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         CauseIndicators ci = elem.getCauseIndicators();
         assertEquals(ci.getCodingStandard(), 0);
@@ -104,9 +106,9 @@ public class CauseCapTest {
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(CallingPartyNumberCapImpl.class);
+    	parser.replaceClass(CallingPartyNumberIsupImpl.class);
     	
-    	CauseCapImpl elem = new CauseCapImpl(this.getIntData());
+    	CauseIsupImpl elem = new CauseIsupImpl(this.getIntData());
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];

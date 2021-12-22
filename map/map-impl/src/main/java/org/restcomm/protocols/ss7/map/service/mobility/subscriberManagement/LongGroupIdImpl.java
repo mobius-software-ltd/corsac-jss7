@@ -21,7 +21,7 @@
  */
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import org.restcomm.protocols.ss7.map.api.primitives.TbcdStringWithFiller;
+import org.restcomm.protocols.ss7.commonapp.primitives.TbcdStringWithFillerImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LongGroupId;
 
 /**
@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
  * @author Lasith Waruna Perera
  *
  */
-public class LongGroupIdImpl extends TbcdStringWithFiller implements LongGroupId {
+public class LongGroupIdImpl extends TbcdStringWithFillerImpl implements LongGroupId {
 	public LongGroupIdImpl() {
         super(4, 4, "LongGroupId");
     }

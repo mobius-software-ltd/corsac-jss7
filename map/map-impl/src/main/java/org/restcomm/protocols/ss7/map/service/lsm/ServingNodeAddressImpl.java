@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.map.service.lsm;
 
-import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentity;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.DiameterIdentity;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.commonapp.primitives.DiameterIdentityImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddress;
-import org.restcomm.protocols.ss7.map.primitives.DiameterIdentityImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

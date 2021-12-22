@@ -24,12 +24,12 @@ package org.restcomm.protocols.ss7.map.api.service.oam;
 
 import java.util.List;
 
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LAIFixedLength;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.EUtranCgi;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.RAIdentity;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.TAId;
 import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EUtranCgi;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentity;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TAId;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;

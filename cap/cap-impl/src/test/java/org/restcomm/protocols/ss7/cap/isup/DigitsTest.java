@@ -28,6 +28,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
@@ -62,15 +63,15 @@ public class DigitsTest {
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(DigitsImpl.class);
+    	parser.replaceClass(DigitsIsupImpl.class);
     	
     	byte[] rawData = this.getData1();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof DigitsImpl);
+        assertTrue(result.getResult() instanceof DigitsIsupImpl);
         
-        DigitsImpl elem = (DigitsImpl)result.getResult();                
+        DigitsIsupImpl elem = (DigitsIsupImpl)result.getResult();                
         elem.setIsGenericDigits();
         GenericDigits gd = elem.getGenericDigits();
         assertEquals(gd.getEncodingScheme(), 2);
@@ -85,9 +86,9 @@ public class DigitsTest {
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof DigitsImpl);
+        assertTrue(result.getResult() instanceof DigitsIsupImpl);
         
-        elem = (DigitsImpl)result.getResult();                
+        elem = (DigitsIsupImpl)result.getResult();                
         elem.setIsGenericNumber();
         GenericNumber gn = elem.getGenericNumber();
         assertEquals(gn.getNatureOfAddressIndicator(), 4);
@@ -101,10 +102,10 @@ public class DigitsTest {
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(DigitsImpl.class);
+    	parser.replaceClass(DigitsIsupImpl.class);
     	
         GenericDigitsImpl genericDigits = new GenericDigitsImpl(2, 1, Unpooled.wrappedBuffer(getGenericDigitsInt()));
-        DigitsImpl elem = new DigitsImpl(genericDigits);
+        DigitsIsupImpl elem = new DigitsIsupImpl(genericDigits);
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -113,7 +114,7 @@ public class DigitsTest {
         // int encodingScheme, int typeOfDigits, int[] digits
 
         GenericNumber rn = new GenericNumberImpl(4, "7010900", 3, 2, 0, false, 1);
-        elem = new DigitsImpl(rn);
+        elem = new DigitsIsupImpl(rn);
         rawData = this.getData2();
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];

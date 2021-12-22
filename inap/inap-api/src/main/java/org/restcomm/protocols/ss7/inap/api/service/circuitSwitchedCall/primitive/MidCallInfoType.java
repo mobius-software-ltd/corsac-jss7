@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitiv
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.inap.api.isup.Digits;
+import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
 
 /**
 *
@@ -42,8 +42,8 @@ MidCallInfoType {PARAMETERS-BOUND : bound} ::= SEQUENCE {
 */
 public interface MidCallInfoType extends Serializable {
 
-    Digits getINServiceControlCodeLow();
+    DigitsIsup getINServiceControlCodeLow();
 
-    Digits getINServiceControlCodeHigh();
+    DigitsIsup getINServiceControlCodeHigh();
 
 }

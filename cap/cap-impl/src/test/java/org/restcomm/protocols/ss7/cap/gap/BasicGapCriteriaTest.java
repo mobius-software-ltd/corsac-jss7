@@ -28,7 +28,12 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.BasicGapCriteriaImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.BasicGapCriteriaWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.CalledAddressAndServiceImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.CallingAddressAndServiceImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.GapOnServiceImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.testng.annotations.Test;
@@ -92,7 +97,7 @@ public class BasicGapCriteriaTest {
     	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
     	
         GenericNumber genericNumber = new GenericNumberImpl(1, "2468", 0, 4, 0, false, 0);
-        DigitsImpl digits = new DigitsImpl(genericNumber);
+        DigitsIsupImpl digits = new DigitsIsupImpl(genericNumber);
         BasicGapCriteriaImpl elem = new BasicGapCriteriaImpl(digits);
         BasicGapCriteriaWrapperImpl prim=new BasicGapCriteriaWrapperImpl(elem);
         
@@ -155,7 +160,7 @@ public class BasicGapCriteriaTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
     	
-        DigitsImpl digits = new DigitsImpl(getDigitsData());
+        DigitsIsupImpl digits = new DigitsIsupImpl(getDigitsData());
         CalledAddressAndServiceImpl calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
         BasicGapCriteriaImpl elem = new BasicGapCriteriaImpl(calledAddressAndService);
         BasicGapCriteriaWrapperImpl prim=new BasicGapCriteriaWrapperImpl(elem);
@@ -188,7 +193,7 @@ public class BasicGapCriteriaTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
     	
-        DigitsImpl digits = new DigitsImpl(getDigitsData());
+        DigitsIsupImpl digits = new DigitsIsupImpl(getDigitsData());
         CallingAddressAndServiceImpl callingAddressAndService = new CallingAddressAndServiceImpl(digits, SERVICE_KEY);
         BasicGapCriteriaImpl elem = new BasicGapCriteriaImpl(callingAddressAndService);
         BasicGapCriteriaWrapperImpl prim=new BasicGapCriteriaWrapperImpl(elem);

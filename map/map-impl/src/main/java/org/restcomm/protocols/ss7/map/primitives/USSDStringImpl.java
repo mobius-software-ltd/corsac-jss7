@@ -25,18 +25,18 @@ package org.restcomm.protocols.ss7.map.primitives;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharset;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecoder;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecodingData;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetEncoder;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetEncodingData;
+import org.restcomm.protocols.ss7.commonapp.datacoding.Gsm7EncodingStyle;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingGroup;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSNationalLanguage;
 import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharset;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharsetDecoder;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharsetDecodingData;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharsetEncoder;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharsetEncodingData;
-import org.restcomm.protocols.ss7.map.datacoding.Gsm7EncodingStyle;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 

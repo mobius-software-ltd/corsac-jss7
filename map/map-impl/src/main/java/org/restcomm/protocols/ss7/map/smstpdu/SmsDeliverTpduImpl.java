@@ -24,8 +24,10 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 
 import java.nio.charset.Charset;
 
+import org.restcomm.protocols.ss7.commonapp.api.APPException;
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.AbsoluteTimeStamp;
+import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
 import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStamp;
 import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingScheme;
 import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifier;
@@ -107,8 +109,13 @@ public class SmsDeliverTpduImpl extends SmsTpduImpl implements SmsDeliverTpdu {
                     "Error creating a new SmsDeliverTpduImpl instance: dataCodingScheme field has not been found");
         this.dataCodingScheme = new DataCodingSchemeImpl(bt);
 
-        this.serviceCentreTimeStamp = AbsoluteTimeStampImpl.createMessage(stm);
-
+        try {
+        	this.serviceCentreTimeStamp = AbsoluteTimeStampImpl.createMessage(stm);
+        }
+    	catch(APPException ex) {
+    		throw new MAPException(ex.getMessage(),ex.getCause());
+    	}
+        
         this.userDataLength = stm.readByte() & 0x0FF;
         if (this.userDataLength == -1)
             throw new MAPException("Error creating a new SmsDeliverTpduImpl instance: userDataLength field has not been found");
@@ -185,7 +192,12 @@ public class SmsDeliverTpduImpl extends SmsTpduImpl implements SmsDeliverTpdu {
         this.originatingAddress.encodeData(buf);
         buf.writeByte(this.protocolIdentifier.getCode());
         buf.writeByte(this.dataCodingScheme.getCode());
-        this.serviceCentreTimeStamp.encodeData(buf);
+        try {
+        	this.serviceCentreTimeStamp.encodeData(buf);
+        }
+    	catch(APPException ex) {
+    		throw new MAPException(ex.getMessage(),ex.getCause());
+    	}
         buf.writeByte(this.userDataLength);
         buf.writeBytes(this.userData.getEncodedData());
     }

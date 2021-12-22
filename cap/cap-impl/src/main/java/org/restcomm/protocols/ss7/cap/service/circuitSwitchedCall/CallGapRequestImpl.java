@@ -23,17 +23,17 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.gap.GapCriteria;
-import org.restcomm.protocols.ss7.cap.api.gap.GapIndicators;
-import org.restcomm.protocols.ss7.cap.api.gap.GapTreatment;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CallGapRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ControlType;
-import org.restcomm.protocols.ss7.cap.gap.GapCriteriaWrapperImpl;
-import org.restcomm.protocols.ss7.cap.gap.GapIndicatorsImpl;
-import org.restcomm.protocols.ss7.cap.gap.GapTreatmentWrapperImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ASNControlTypeImpl;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ControlType;
+import org.restcomm.protocols.ss7.commonapp.api.gap.GapCriteria;
+import org.restcomm.protocols.ss7.commonapp.api.gap.GapIndicators;
+import org.restcomm.protocols.ss7.commonapp.api.gap.GapTreatment;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ASNControlTypeImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.GapCriteriaWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.GapIndicatorsImpl;
+import org.restcomm.protocols.ss7.commonapp.gap.GapTreatmentWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -59,14 +59,14 @@ public class CallGapRequestImpl extends CircuitSwitchedCallMessageImpl implement
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
     private GapTreatmentWrapperImpl gapTreatment;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1,defaultImplementation = CAPExtensionsImpl.class)
-    private CAPExtensions capExtensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1,defaultImplementation = CAPINAPExtensionsImpl.class)
+    private CAPINAPExtensions capExtensions;
 
     public CallGapRequestImpl() {
     }
 
     public CallGapRequestImpl(GapCriteria gapCriteria, GapIndicators gapIndicators, ControlType controlType, GapTreatment gapTreatment,
-            CAPExtensions capExtension) {
+            CAPINAPExtensions capExtension) {
     	
     	if(gapCriteria!=null)
     		this.gapCriteria = new GapCriteriaWrapperImpl(gapCriteria);
@@ -119,7 +119,7 @@ public class CallGapRequestImpl extends CircuitSwitchedCallMessageImpl implement
         return gapTreatment.getGapTreatment();
     }
 
-    public CAPExtensions getExtensions() {
+    public CAPINAPExtensions getExtensions() {
         return capExtensions;
     }
 

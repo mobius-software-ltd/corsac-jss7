@@ -24,16 +24,16 @@ package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCap;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ContinueWithArgumentArgExtension;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Carrier;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ContinueWithArgumentArgExtension;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.NAOliInfo;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ServiceInteractionIndicatorsTwo;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.GenericNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CUGInterlock;
 
 /**
  *
@@ -76,21 +76,21 @@ SuppressionOfAnnouncement ::= NULL
  */
 public interface ContinueWithArgumentRequest extends CircuitSwitchedCallMessage {
 
-    AlertingPatternCap getAlertingPattern();
+    AlertingPatternWrapper getAlertingPattern();
 
-    CAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
     ServiceInteractionIndicatorsTwo getServiceInteractionIndicatorsTwo();
 
-    CallingPartysCategoryInap getCallingPartysCategory();
+    CallingPartysCategoryIsup getCallingPartysCategory();
 
-    List<GenericNumberCap> getGenericNumbers();
+    List<GenericNumberIsup> getGenericNumbers();
 
     CUGInterlock getCugInterlock();
 
     boolean getCugOutgoingAccess();
 
-    LocationNumberCap getChargeNumber();
+    LocationNumberIsup getChargeNumber();
 
     Carrier getCarrier();
 

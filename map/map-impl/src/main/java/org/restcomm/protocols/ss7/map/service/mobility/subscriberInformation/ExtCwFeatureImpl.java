@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtBasicServiceCodeWrapperImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ExtCwFeature;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeWrapperImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtSSStatusImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;

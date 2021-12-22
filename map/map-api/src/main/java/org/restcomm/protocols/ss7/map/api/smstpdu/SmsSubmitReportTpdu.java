@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.smstpdu;
 
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.AbsoluteTimeStamp;
+
 /**
  * SMS-SUBMIT-REPORT pdu
  *

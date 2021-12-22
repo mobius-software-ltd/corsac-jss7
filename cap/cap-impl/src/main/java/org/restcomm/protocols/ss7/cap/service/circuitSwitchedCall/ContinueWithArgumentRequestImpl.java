@@ -26,27 +26,27 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
-import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.ContinueWithArgumentRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AlertingPatternCap;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ContinueWithArgumentArgExtension;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
-import org.restcomm.protocols.ss7.cap.isup.GenericNumberCapWrapperImpl;
-import org.restcomm.protocols.ss7.cap.isup.LocationNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ContinueWithArgumentArgExtensionImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
-import org.restcomm.protocols.ss7.inap.api.isup.CallingPartysCategoryInap;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Carrier;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
-import org.restcomm.protocols.ss7.inap.isup.CallingPartysCategoryInapImpl;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CUGInterlock;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGInterlockImpl;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ContinueWithArgumentArgExtension;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.NAOliInfo;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ServiceInteractionIndicatorsTwo;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.GenericNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CUGInterlock;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.AlertingPatternWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CarrierImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ContinueWithArgumentArgExtensionImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.NAOliInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CallingPartysCategoryIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.GenericNumberIsupWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.LocationNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.CUGInterlockImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -63,20 +63,20 @@ public class ContinueWithArgumentRequestImpl extends CircuitSwitchedCallMessageI
         ContinueWithArgumentRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1, defaultImplementation = AlertingPatternCapImpl.class)
-    private AlertingPatternCap alertingPattern;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1, defaultImplementation = AlertingPatternWrapperImpl.class)
+    private AlertingPatternWrapper alertingPattern;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = true,index = -1, defaultImplementation = CAPExtensionsImpl.class)
-    private CAPExtensions extensions;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = true,index = -1, defaultImplementation = CAPINAPExtensionsImpl.class)
+    private CAPINAPExtensions extensions;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = true,index = -1, defaultImplementation = ServiceInteractionIndicatorsTwoImpl.class)
     private ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 12,constructed = false,index = -1,defaultImplementation = CallingPartysCategoryInapImpl.class)
-    private CallingPartysCategoryInap callingPartysCategory;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 12,constructed = false,index = -1,defaultImplementation = CallingPartysCategoryIsupImpl.class)
+    private CallingPartysCategoryIsup callingPartysCategory;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 16,constructed = true,index = -1)
-    private GenericNumberCapWrapperImpl genericNumbers;
+    private GenericNumberIsupWrapperImpl genericNumbers;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 17,constructed = false,index = -1,defaultImplementation = CUGInterlockImpl.class)
     private CUGInterlock cugInterlock;
@@ -84,8 +84,8 @@ public class ContinueWithArgumentRequestImpl extends CircuitSwitchedCallMessageI
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 18,constructed = false,index = -1)
     private ASNNull cugOutgoingAccess;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 50,constructed = false,index = -1,defaultImplementation = LocationNumberCapImpl.class)
-    private LocationNumberCap chargeNumber;
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 50,constructed = false,index = -1,defaultImplementation = LocationNumberIsupImpl.class)
+    private LocationNumberIsup chargeNumber;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 52,constructed = false,index = -1, defaultImplementation = CarrierImpl.class)
     private Carrier carrier;
@@ -108,10 +108,10 @@ public class ContinueWithArgumentRequestImpl extends CircuitSwitchedCallMessageI
     public ContinueWithArgumentRequestImpl() {
     }
 
-    public ContinueWithArgumentRequestImpl(AlertingPatternCap alertingPattern, CAPExtensions extensions,
+    public ContinueWithArgumentRequestImpl(AlertingPatternWrapper alertingPattern, CAPINAPExtensions extensions,
             ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo,
-            CallingPartysCategoryInap callingPartysCategory, List<GenericNumberCap> genericNumbers,
-            CUGInterlock cugInterlock, boolean cugOutgoingAccess, LocationNumberCap chargeNumber, Carrier carrier,
+            CallingPartysCategoryIsup callingPartysCategory, List<GenericNumberIsup> genericNumbers,
+            CUGInterlock cugInterlock, boolean cugOutgoingAccess, LocationNumberIsup chargeNumber, Carrier carrier,
             boolean suppressionOfAnnouncement, NAOliInfo naOliInfo, boolean borInterrogationRequested,
             boolean suppressOCsi, ContinueWithArgumentArgExtension continueWithArgumentArgExtension) {
         super();
@@ -121,7 +121,7 @@ public class ContinueWithArgumentRequestImpl extends CircuitSwitchedCallMessageI
         this.callingPartysCategory = callingPartysCategory;
         
         if(genericNumbers!=null)
-        	this.genericNumbers = new GenericNumberCapWrapperImpl(genericNumbers);
+        	this.genericNumbers = new GenericNumberIsupWrapperImpl(genericNumbers);
         this.cugInterlock = cugInterlock;
         
         if(cugOutgoingAccess)
@@ -176,7 +176,7 @@ public class ContinueWithArgumentRequestImpl extends CircuitSwitchedCallMessageI
         if (genericNumbers != null && genericNumbers.getGenericNumberCap()!=null) {
             sb.append(", genericNumbers=[");
             boolean isFirst = true;
-            for (GenericNumberCap gnc : this.genericNumbers.getGenericNumberCap()) {
+            for (GenericNumberIsup gnc : this.genericNumbers.getGenericNumberCap()) {
                 if (isFirst)
                     isFirst = false;
                 else
@@ -228,12 +228,12 @@ public class ContinueWithArgumentRequestImpl extends CircuitSwitchedCallMessageI
     }
 
     @Override
-    public AlertingPatternCap getAlertingPattern() {
+    public AlertingPatternWrapper getAlertingPattern() {
         return this.alertingPattern;
     }
 
     @Override
-    public CAPExtensions getExtensions() {
+    public CAPINAPExtensions getExtensions() {
         return this.extensions;
     }
 
@@ -243,12 +243,12 @@ public class ContinueWithArgumentRequestImpl extends CircuitSwitchedCallMessageI
     }
 
     @Override
-    public CallingPartysCategoryInap getCallingPartysCategory() {
+    public CallingPartysCategoryIsup getCallingPartysCategory() {
         return this.callingPartysCategory;
     }
 
     @Override
-    public List<GenericNumberCap> getGenericNumbers() {
+    public List<GenericNumberIsup> getGenericNumbers() {
     	if(this.genericNumbers==null)
     		return null;
     	
@@ -266,7 +266,7 @@ public class ContinueWithArgumentRequestImpl extends CircuitSwitchedCallMessageI
     }
 
     @Override
-    public LocationNumberCap getChargeNumber() {
+    public LocationNumberIsup getChargeNumber() {
         return this.chargeNumber;
     }
 

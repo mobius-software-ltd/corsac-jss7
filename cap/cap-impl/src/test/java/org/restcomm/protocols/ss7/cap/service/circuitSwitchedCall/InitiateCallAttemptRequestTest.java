@@ -31,19 +31,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.CallingPartyNumberCapImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CallingPartyNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyNumberImpl;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.CallReferenceNumberImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -86,7 +86,7 @@ public class InitiateCallAttemptRequestTest {
         
         InitiateCallAttemptRequestImpl elem = (InitiateCallAttemptRequestImpl)result.getResult();        
         assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().size(), 1);
-        CalledPartyNumberCap cpn = elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0);
+        CalledPartyNumberIsup cpn = elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0);
         assertEquals(cpn.getCalledPartyNumber().getAddress(), "2224444");
         assertEquals(cpn.getCalledPartyNumber().getNatureOfAddressIndicator(), 1);
         assertNull(elem.getExtensions());
@@ -126,8 +126,8 @@ public class InitiateCallAttemptRequestTest {
         CalledPartyNumberImpl calledPartyNumber = new CalledPartyNumberImpl(1, "2224444", 0, 0);
 //        int natureOfAddresIndicator, String address, int numberingPlanIndicator,
 //        int internalNetworkNumberIndicator
-        CalledPartyNumberCapImpl cpn = new CalledPartyNumberCapImpl(calledPartyNumber);
-        List<CalledPartyNumberCap> calledPartyNumberArr = new ArrayList<CalledPartyNumberCap>();
+        CalledPartyNumberIsupImpl cpn = new CalledPartyNumberIsupImpl(calledPartyNumber);
+        List<CalledPartyNumberIsup> calledPartyNumberArr = new ArrayList<CalledPartyNumberIsup>();
         calledPartyNumberArr.add(cpn);
         DestinationRoutingAddressImpl destinationRoutingAddress = new DestinationRoutingAddressImpl(calledPartyNumberArr);
         InitiateCallAttemptRequestImpl elem = new InitiateCallAttemptRequestImpl(destinationRoutingAddress, null, null, null, null, null, null, false);
@@ -146,7 +146,7 @@ public class InitiateCallAttemptRequestTest {
         CallingPartyNumberImpl cpn2 = new CallingPartyNumberImpl(2, "01267", 0, 0, 0, 1);
 //        int natureOfAddresIndicator, String address, int numberingPlanIndicator,
 //        int numberIncompleteIndicator, int addressRepresentationREstrictedIndicator, int screeningIndicator
-        CallingPartyNumberCapImpl callingPartyNumber = new CallingPartyNumberCapImpl(cpn2);
+        CallingPartyNumberIsupImpl callingPartyNumber = new CallingPartyNumberIsupImpl(cpn2);
         CallReferenceNumberImpl callReferenceNumber = new CallReferenceNumberImpl(getDataCallReferenceNumber());
         ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "88448");
         elem = new InitiateCallAttemptRequestImpl(destinationRoutingAddress, CAPExtensionsTest.createTestCAPExtensions(), legToBeCreated, 15,

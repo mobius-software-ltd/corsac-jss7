@@ -30,9 +30,12 @@ import static org.testng.Assert.assertTrue;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityPeriodFormat;
+import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
+import org.restcomm.protocols.ss7.commonapp.smstpu.ValidityEnhancedFormatDataImpl;
+import org.restcomm.protocols.ss7.commonapp.smstpu.ValidityPeriodImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriodFormat;
 import org.testng.annotations.Test;
 
 import io.netty.buffer.ByteBuf;

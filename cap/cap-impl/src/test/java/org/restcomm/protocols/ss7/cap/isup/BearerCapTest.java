@@ -27,6 +27,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.commonapp.isup.BearerIsupImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -53,15 +54,15 @@ public class BearerCapTest {
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(BearerCapImpl.class);
+    	parser.replaceClass(BearerIsupImpl.class);
     	
     	byte[] rawData = this.getData();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof BearerCapImpl);
+        assertTrue(result.getResult() instanceof BearerIsupImpl);
         
-        BearerCapImpl elem = (BearerCapImpl)result.getResult();        
+        BearerIsupImpl elem = (BearerIsupImpl)result.getResult();        
         assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         //UserServiceInformation usi = elem.getUserServiceInformation();
         
@@ -73,9 +74,9 @@ public class BearerCapTest {
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(BearerCapImpl.class);
+    	parser.replaceClass(BearerIsupImpl.class);
     	
-        BearerCapImpl elem = new BearerCapImpl(this.getIntData());
+        BearerIsupImpl elem = new BearerIsupImpl(this.getIntData());
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];

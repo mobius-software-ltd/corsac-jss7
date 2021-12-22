@@ -25,50 +25,142 @@ package org.restcomm.protocols.ss7.map;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import org.restcomm.protocols.ss7.commonapp.api.APPException;
+import org.restcomm.protocols.ss7.commonapp.api.callhandling.CallReferenceNumber;
+import org.restcomm.protocols.ss7.commonapp.api.callhandling.UUData;
+import org.restcomm.protocols.ss7.commonapp.api.callhandling.UUI;
+import org.restcomm.protocols.ss7.commonapp.api.callhandling.UUIndicator;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.DiameterIdentity;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddress;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.IMEI;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LAIFixedLength;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPPrivateExtension;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NAEACIC;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationPlanValue;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationTypeValue;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.EUtranCgi;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSChargingID;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSMSClass;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeodeticInformation;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeographicalInformation;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformation;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformationEPS;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformationGPRS;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationNumberMap;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.MSClassmark2;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.MSNetworkCapability;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.MSRadioAccessCapability;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.NotReachableReason;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.RAIdentity;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.SubscriberState;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.SubscriberStateChoice;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.TAId;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.TypeOfShape;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.UserCSGInformation;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CSGId;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CUGInterlock;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.Ext2QoSSubscribed;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.Ext2QoSSubscribed_SourceStatisticsDescriptor;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBearerServiceCode;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_BitRate;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_BitRateExtended;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_DeliveryOfErroneousSdus;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_DeliveryOrder;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_MaximumSduSize;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_ResidualBER;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_SduErrorRatio;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_TrafficClass;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_TrafficHandlingPriority;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_TransferDelay;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtTeleserviceCode;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.LSAIdentity;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.OfferedCamel4Functionalities;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_DelayClass;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_MeanThroughput;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_PeakThroughput;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_PrecedenceClass;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_ReliabilityClass;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.SupportedCamelPhases;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.TeleserviceCodeValue;
+import org.restcomm.protocols.ss7.commonapp.callhandling.CallReferenceNumberImpl;
+import org.restcomm.protocols.ss7.commonapp.callhandling.UUDataImpl;
+import org.restcomm.protocols.ss7.commonapp.callhandling.UUIImpl;
+import org.restcomm.protocols.ss7.commonapp.callhandling.UUIndicatorImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.AddressStringImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.DiameterIdentityImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.GSNAddressImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.IMEIImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.LAIFixedLengthImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.MAPPrivateExtensionImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.NAEACICImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.EUtranCgiImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.GPRSChargingIDImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.GPRSMSClassImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.GeodeticInformationImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.GeographicalInformationImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInformationEPSImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInformationImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationNumberMapImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.MSClassmark2Impl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.MSNetworkCapabilityImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.MSRadioAccessCapabilityImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.RAIdentityImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.SubscriberStateImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.TAIdImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberInformation.UserCSGInformationImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.CUGIndexImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.CUGInterlockImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.Ext2QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtBasicServiceCodeImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtBearerServiceCodeImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtQoSSubscribedImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtTeleserviceCodeImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.LSAIdentityImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.OfferedCamel4FunctionalitiesImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.QoSSubscribedImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.SupportedCamelPhasesImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressNature;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingPattern;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
-import org.restcomm.protocols.ss7.map.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
-import org.restcomm.protocols.ss7.map.api.primitives.DiameterIdentity;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
 import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddress;
-import org.restcomm.protocols.ss7.map.api.primitives.GSNAddressAddressType;
 import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
-import org.restcomm.protocols.ss7.map.api.primitives.IMEI;
-import org.restcomm.protocols.ss7.map.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNSubaddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.LAIFixedLength;
 import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer;
-import org.restcomm.protocols.ss7.map.api.primitives.MAPPrivateExtension;
-import org.restcomm.protocols.ss7.map.api.primitives.NAEACIC;
 import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCI;
-import org.restcomm.protocols.ss7.map.api.primitives.NetworkIdentificationPlanValue;
-import org.restcomm.protocols.ss7.map.api.primitives.NetworkIdentificationTypeValue;
-import org.restcomm.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.map.api.primitives.PlmnId;
 import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
 import org.restcomm.protocols.ss7.map.api.primitives.TMSI;
 import org.restcomm.protocols.ss7.map.api.primitives.Time;
 import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfo;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.CallReferenceNumber;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CamelInfo;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CamelRoutingInfo;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ExtendedRoutingInfo;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.ForwardingData;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.GmscCamelSubscriptionInfo;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfo;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.UUData;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.UUI;
-import org.restcomm.protocols.ss7.map.api.service.callhandling.UUIndicator;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AddGeographicalInformation;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumber;
 import org.restcomm.protocols.ss7.map.api.service.lsm.Area;
@@ -153,44 +245,25 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClipData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ClirData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.DomainType;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EUtranCgi;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.EctData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ExtCwFeature;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSChargingID;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GPRSMSClass;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeodeticInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.GeographicalInformation;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LIPAPermission;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformation;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationEPS;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationInformationGPRS;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LocationNumberMap;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MNPInfoRes;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSClassmark2;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSISDNBS;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSNetworkCapability;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.MSRadioAccessCapability;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.NotReachableReason;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.NumberPortabilityStatus;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.ODBInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContext;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PDPContextInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberState;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberStateChoise;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RAIdentity;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedCAMELSubscriptionInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedSubscriptionInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RouteingNumber;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SIPTOPermission;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberState;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberStateChoice;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TAId;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TEID;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TransactionId;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TypeOfShape;
-import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.UserCSGInformation;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.*;
 import org.restcomm.protocols.ss7.map.api.service.oam.AreaScope;
 import org.restcomm.protocols.ss7.map.api.service.oam.BMSCEventList;
@@ -257,22 +330,10 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSRe
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSResponse;
 import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpdu;
-import org.restcomm.protocols.ss7.map.primitives.AddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
-import org.restcomm.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
-import org.restcomm.protocols.ss7.map.primitives.DiameterIdentityImpl;
 import org.restcomm.protocols.ss7.map.primitives.FTNAddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.GSNAddressImpl;
 import org.restcomm.protocols.ss7.map.primitives.GlobalCellIdImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMEIImpl;
-import org.restcomm.protocols.ss7.map.primitives.IMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.primitives.ISDNSubaddressStringImpl;
-import org.restcomm.protocols.ss7.map.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
-import org.restcomm.protocols.ss7.map.primitives.MAPPrivateExtensionImpl;
-import org.restcomm.protocols.ss7.map.primitives.NAEACICImpl;
 import org.restcomm.protocols.ss7.map.primitives.NAEAPreferredCIImpl;
 import org.restcomm.protocols.ss7.map.primitives.PlmnIdImpl;
 import org.restcomm.protocols.ss7.map.primitives.SubscriberIdentityImpl;
@@ -280,15 +341,11 @@ import org.restcomm.protocols.ss7.map.primitives.TMSIImpl;
 import org.restcomm.protocols.ss7.map.primitives.TimeImpl;
 import org.restcomm.protocols.ss7.map.primitives.USSDStringImpl;
 import org.restcomm.protocols.ss7.map.service.callhandling.CUGCheckInfoImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.CallReferenceNumberImpl;
 import org.restcomm.protocols.ss7.map.service.callhandling.CamelInfoImpl;
 import org.restcomm.protocols.ss7.map.service.callhandling.CamelRoutingInfoImpl;
 import org.restcomm.protocols.ss7.map.service.callhandling.ExtendedRoutingInfoImpl;
 import org.restcomm.protocols.ss7.map.service.callhandling.GmscCamelSubscriptionInfoImpl;
 import org.restcomm.protocols.ss7.map.service.callhandling.RoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.UUDataImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.UUIImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.UUIndicatorImpl;
 import org.restcomm.protocols.ss7.map.service.lsm.AddGeographicalInformationImpl;
 import org.restcomm.protocols.ss7.map.service.lsm.AdditionalNumberImpl;
 import org.restcomm.protocols.ss7.map.service.lsm.AreaDefinitionImpl;
@@ -362,37 +419,21 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.Cal
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.CallWaitingDataImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.ClipDataImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.ClirDataImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.EUtranCgiImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.EctDataImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.ExtCwFeatureImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSChargingIDImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GPRSMSClassImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeodeticInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.GeographicalInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationEPSImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationNumberMapImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.MNPInfoResImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.MSClassmark2Impl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.MSISDNBSImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.MSNetworkCapabilityImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.MSRadioAccessCapabilityImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.ODBInfoImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.PDPContextImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.PDPContextInfoImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.PSSubscriberStateImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RAIdentityImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RequestedInfoImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RequestedSubscriptionInfoImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.RouteingNumberImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.SubscriberInfoImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.SubscriberStateImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.TAIdImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.TBcsmCamelTdpCriteriaImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.TEIDImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.TransactionIdImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.UserCSGInformationImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.AMBRImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNConfigurationImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNConfigurationProfileImpl;
@@ -405,9 +446,7 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Bear
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CSAllocationRetentionPriorityImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CSGSubscriptionDataImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGFeatureImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGIndexImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGInfoImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGInterlockImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGSubscriptionImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CategoryImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CauseValueImpl;
@@ -419,22 +458,17 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.EMLP
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.EPSQoSSubscribedImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.EPSSubscriptionDataImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.EPSSubscriptionDataWithdrawImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext2QoSSubscribedImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext3QoSSubscribedImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext4QoSSubscribedImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBasicServiceCodeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtBearerServiceCodeImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtCallBarInfoImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtCallBarringFeatureImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtForwFeatureImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtForwInfoImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtForwOptionsImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtPDPTypeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtQoSSubscribedImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtSSDataImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtSSInfoImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtSSStatusImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtTeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExternalClientImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.FQDNImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.GPRSCSIImpl;
@@ -447,7 +481,6 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LCSI
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LCSPrivacyClassImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LSAAttributesImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LSADataImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LSAIdentityImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LSAInformationImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LSAInformationWithdrawImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.LongGroupIdImpl;
@@ -464,12 +497,10 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ODBD
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ODBGeneralDataImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ODBHPLMNDataImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4FunctionalitiesImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.PDNGWIdentityImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.PDNTypeImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.PDPAddressImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.PDPTypeImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.QoSSubscribedImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SGSNCAMELSubscriptionInfoImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SMSCAMELTDPDataImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SMSCSIImpl;
@@ -478,7 +509,6 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SSCa
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ServiceTypeImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SpecificAPNInfoImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SpecificCSIWithdrawImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TBcsmCamelTDPDataImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TCSIImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TeleserviceCodeImpl;
@@ -765,7 +795,12 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
 
     public CellGlobalIdOrServiceAreaIdFixedLength createCellGlobalIdOrServiceAreaIdFixedLength(int mcc, int mnc, int lac,
             int cellIdOrServiceAreaCode) throws MAPException {
-        return new CellGlobalIdOrServiceAreaIdFixedLengthImpl(mcc, mnc, lac, cellIdOrServiceAreaCode);
+    	try {
+    		return new CellGlobalIdOrServiceAreaIdFixedLengthImpl(mcc, mnc, lac, cellIdOrServiceAreaCode);
+    	}
+    	catch(APPException ex) {
+    		throw new MAPException(ex.getMessage(), ex.getCause());
+    	}
     }
 
     public LAIFixedLength createLAIFixedLength(byte[] data) {
@@ -773,7 +808,12 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     public LAIFixedLength createLAIFixedLength(int mcc, int mnc, int lac) throws MAPException {
-        return new LAIFixedLengthImpl(mcc, mnc, lac);
+    	try {
+    		return new LAIFixedLengthImpl(mcc, mnc, lac);
+    	}
+    	catch(APPException ex) {
+    		throw new MAPException(ex.getMessage(), ex.getCause());
+    	}
     }
 
     public CallReferenceNumber createCallReferenceNumber(byte[] data) {
@@ -796,7 +836,12 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     public LocationNumberMap createLocationNumberMap(LocationNumber locationNumber) throws MAPException {
-        return new LocationNumberMapImpl(locationNumber);
+    	try {
+    		return new LocationNumberMapImpl(locationNumber);
+    	}
+    	catch(APPException ex) {
+    		throw new MAPException(ex.getMessage(),ex.getCause());
+    	}
     }
 
     public SubscriberState createSubscriberState(SubscriberStateChoice subscriberStateChoice,
@@ -881,7 +926,12 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     public GSNAddress createGSNAddress(GSNAddressAddressType addressType, byte[] addressData) throws MAPException {
-        return new GSNAddressImpl(addressType, addressData);
+        try {
+        	return new GSNAddressImpl(addressType, addressData);
+        }
+    	catch(APPException ex) {
+    		throw new MAPException(ex.getMessage(),ex.getCause());
+    	}
     }
 
     public ReSynchronisationInfo createReSynchronisationInfo(byte[] rand, byte[] auts) {
@@ -1467,15 +1517,25 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     @Override
     public GeographicalInformation createGeographicalInformation(double latitude, double longitude, double uncertainty)
             throws MAPException {
-        return new GeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle, latitude, longitude,
+    	try  {
+    		return new GeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle, latitude, longitude,
                 uncertainty);
+    	}
+    	catch(APPException ex) {
+    		throw new MAPException(ex.getMessage(),ex.getCause());
+    	}
     }
 
     @Override
     public GeodeticInformation createGeodeticInformation(int screeningAndPresentationIndicators, double latitude,
             double longitude, double uncertainty, int confidence) throws MAPException {
-        return new GeodeticInformationImpl(screeningAndPresentationIndicators, TypeOfShape.EllipsoidPointWithUncertaintyCircle,
+        try {
+        	return new GeodeticInformationImpl(screeningAndPresentationIndicators, TypeOfShape.EllipsoidPointWithUncertaintyCircle,
                 latitude, longitude, uncertainty, confidence);
+        }
+    	catch(APPException ex) {
+    		throw new MAPException(ex.getMessage(),ex.getCause());
+    	}
     }
 
     @Override
@@ -2094,7 +2154,12 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     @Override
     public NAEACIC createNAEACIC(String carrierCode, NetworkIdentificationPlanValue networkIdentificationPlanValue,
             NetworkIdentificationTypeValue networkIdentificationTypeValue) throws MAPException {
-        return new NAEACICImpl(carrierCode, networkIdentificationPlanValue, networkIdentificationTypeValue);
+        try {
+        	return new NAEACICImpl(carrierCode, networkIdentificationPlanValue, networkIdentificationTypeValue);
+        }
+    	catch(APPException ex) {
+    		throw new MAPException(ex.getMessage(),ex.getCause());
+    	}
     }
 
     @Override

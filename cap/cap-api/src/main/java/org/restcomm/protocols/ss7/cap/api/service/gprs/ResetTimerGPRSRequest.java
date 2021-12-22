@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.gprs;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.TimerID;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.TimerID;
 
 /**
  *

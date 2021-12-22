@@ -29,7 +29,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.cap.isup.DigitsImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.testng.annotations.Test;
 
@@ -83,7 +83,7 @@ public class PromptAndCollectUserInformationResponseTest {
     	
         GenericDigitsImpl genericDigits = new GenericDigitsImpl(2, 1, Unpooled.wrappedBuffer(getDigits()));
         // int encodingScheme, int typeOfDigits, int[] digits
-        DigitsImpl digitsResponse = new DigitsImpl(genericDigits);
+        DigitsIsupImpl digitsResponse = new DigitsIsupImpl(genericDigits);
 
         PromptAndCollectUserInformationResponseImpl elem = new PromptAndCollectUserInformationResponseImpl(digitsResponse);
         byte[] rawData = this.getData1();

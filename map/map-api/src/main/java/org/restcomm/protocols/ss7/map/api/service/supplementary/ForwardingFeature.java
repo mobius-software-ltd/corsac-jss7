@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.FTNAddressString;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;

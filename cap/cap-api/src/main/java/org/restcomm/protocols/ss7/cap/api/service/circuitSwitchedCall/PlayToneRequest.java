@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.Burst;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.LegOrCallSegment;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.LegOrCallSegment;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.Burst;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 
 /**
  *
@@ -46,6 +46,6 @@ public interface PlayToneRequest extends CircuitSwitchedCallMessage {
 
     Burst getBursts();
 
-    CAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
 }

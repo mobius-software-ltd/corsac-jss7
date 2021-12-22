@@ -32,33 +32,33 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.GenericNumberCap;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ConferenceTreatmentIndicator;
-import org.restcomm.protocols.ss7.cap.isup.CalledPartyNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.GenericNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.LocationNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.OriginalCalledNumberCapImpl;
-import org.restcomm.protocols.ss7.cap.isup.RedirectingPartyIDCapImpl;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.AlertingPatternCapImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.DestinationRoutingAddressImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ForwardServiceInteractionIndImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.NAOliInfoImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwoImpl;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CarrierImpl;
-import org.restcomm.protocols.ss7.inap.isup.CallingPartysCategoryInapImpl;
-import org.restcomm.protocols.ss7.inap.isup.RedirectionInformationInapImpl;
-import org.restcomm.protocols.ss7.inap.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ConferenceTreatmentIndicator;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.GenericNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingCategory;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.AlertingPatternWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CarrierImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.DestinationRoutingAddressImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ForwardServiceInteractionIndImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.NAOliInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ServiceInteractionIndicatorsTwoImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.CallingPartysCategoryIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.GenericNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.LocationNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.OriginalCalledNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.RedirectingPartyIDIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.RedirectionInformationIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.AlertingPatternImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.LegIDImpl;
+import org.restcomm.protocols.ss7.commonapp.subscriberManagement.CUGInterlockImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectionInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
-import org.restcomm.protocols.ss7.map.api.primitives.AlertingCategory;
-import org.restcomm.protocols.ss7.map.primitives.AlertingPatternImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.CUGInterlockImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -206,7 +206,7 @@ public class ConnectRequestTest {
         assertTrue(Arrays.equals(elem.getRedirectingPartyID().getData(), getRedirectingPartyID()));
         
         ByteBuf buffer=Unpooled.buffer();
-        ((RedirectionInformationInapImpl)elem.getRedirectionInformation()).encode(parser,buffer);
+        ((RedirectionInformationIsupImpl)elem.getRedirectionInformation()).encode(parser,buffer);
         assertNotNull(buffer);
         byte[] data = new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -266,9 +266,9 @@ public class ConnectRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ConnectRequestImpl.class);
     	
-        List<CalledPartyNumberCap> calledPartyNumbers = new ArrayList<CalledPartyNumberCap>();
+        List<CalledPartyNumberIsup> calledPartyNumbers = new ArrayList<CalledPartyNumberIsup>();
         CalledPartyNumberImpl cpn = new CalledPartyNumberImpl(2, "972201", 1, 2);
-        CalledPartyNumberCapImpl calledPartyNumber = new CalledPartyNumberCapImpl(cpn);
+        CalledPartyNumberIsupImpl calledPartyNumber = new CalledPartyNumberIsupImpl(cpn);
         calledPartyNumbers.add(calledPartyNumber);
         DestinationRoutingAddressImpl destinationRoutingAddress = new DestinationRoutingAddressImpl(calledPartyNumbers);
 
@@ -280,8 +280,8 @@ public class ConnectRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        List<GenericNumberCap> genericNumbers = new ArrayList<GenericNumberCap>();
-        GenericNumberCapImpl genericNumberCap = new GenericNumberCapImpl(getDataGenericNumber());
+        List<GenericNumberIsup> genericNumbers = new ArrayList<GenericNumberIsup>();
+        GenericNumberIsupImpl genericNumberCap = new GenericNumberIsupImpl(getDataGenericNumber());
         genericNumbers.add(genericNumberCap);
         elem = new ConnectRequestImpl(destinationRoutingAddress, null, null, null, null, null, null, null, genericNumbers,
                 null, null, null, null, false, false, false, null, false, false);
@@ -292,11 +292,11 @@ public class ConnectRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingCategory.Category5);
-        AlertingPatternCapImpl alertingPatternCap = new AlertingPatternCapImpl(alertingPattern);
-        OriginalCalledNumberCapImpl originalCalledPartyID = new OriginalCalledNumberCapImpl(getOriginalCalledPartyID());
-        CallingPartysCategoryInapImpl callingPartysCategory = new CallingPartysCategoryInapImpl(new CallingPartyCategoryImpl(getCallingPartysCategory()[0]));
-        RedirectingPartyIDCapImpl redirectingPartyID = new RedirectingPartyIDCapImpl(getRedirectingPartyID());
-        RedirectionInformationInapImpl redirectionInformation = new RedirectionInformationInapImpl(new RedirectionInformationImpl(Unpooled.wrappedBuffer(getRedirectionInformation())));
+        AlertingPatternWrapperImpl alertingPatternCap = new AlertingPatternWrapperImpl(alertingPattern);
+        OriginalCalledNumberIsupImpl originalCalledPartyID = new OriginalCalledNumberIsupImpl(getOriginalCalledPartyID());
+        CallingPartysCategoryIsupImpl callingPartysCategory = new CallingPartysCategoryIsupImpl(new CallingPartyCategoryImpl(getCallingPartysCategory()[0]));
+        RedirectingPartyIDIsupImpl redirectingPartyID = new RedirectingPartyIDIsupImpl(getRedirectingPartyID());
+        RedirectionInformationIsupImpl redirectionInformation = new RedirectionInformationIsupImpl(new RedirectionInformationImpl(Unpooled.wrappedBuffer(getRedirectionInformation())));
         NAOliInfoImpl naoliInfo = new NAOliInfoImpl(40);
 
 
@@ -316,7 +316,7 @@ public class ConnectRequestTest {
         LocationNumber locationNumber = new LocationNumberImpl();
         locationNumber.setNatureOfAddresIndicator(LocationNumber._NAI_INTERNATIONAL_NUMBER);
         locationNumber.setAddress("0000077777");
-        LocationNumberCapImpl chargeNumber = new LocationNumberCapImpl(locationNumber);
+        LocationNumberIsupImpl chargeNumber = new LocationNumberIsupImpl(locationNumber);
         LegIDImpl legToBeConnected = new LegIDImpl(null,LegType.leg5);
         CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getCUGInterlockData());
         elem = new ConnectRequestImpl(destinationRoutingAddress, null, null, null, carrier, null, null, null, null, serviceInteractionIndicatorsTwo,

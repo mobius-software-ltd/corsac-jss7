@@ -22,15 +22,15 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CallingPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.Digits;
-import org.restcomm.protocols.ss7.cap.api.isup.LocationNumberCap;
-import org.restcomm.protocols.ss7.cap.api.isup.OriginalCalledNumberCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.primitives.ScfID;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NAOliInfo;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Carrier;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.NAOliInfo;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ServiceInteractionIndicatorsTwo;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
 
 /**
  *
@@ -76,18 +76,18 @@ public interface EstablishTemporaryConnectionRequest extends CircuitSwitchedCall
      *
      * @return
      */
-    Digits getAssistingSSPIPRoutingAddress();
+    DigitsIsup getAssistingSSPIPRoutingAddress();
 
     /**
      * Use Digits.getGenericDigits() for CorrelationID
      *
      * @return
      */
-    Digits getCorrelationID();
+    DigitsIsup getCorrelationID();
 
     ScfID getScfID();
 
-    CAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
     Carrier getCarrier();
 
@@ -97,10 +97,10 @@ public interface EstablishTemporaryConnectionRequest extends CircuitSwitchedCall
 
     NAOliInfo getNAOliInfo();
 
-    LocationNumberCap getChargeNumber();
+    LocationNumberIsup getChargeNumber();
 
-    OriginalCalledNumberCap getOriginalCalledPartyID();
+    OriginalCalledNumberIsup getOriginalCalledPartyID();
 
-    CallingPartyNumberCap getCallingPartyNumber();
+    CallingPartyNumberIsup getCallingPartyNumber();
 
 }

@@ -24,8 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.supplementary;
 
 import java.io.Serializable;
 
+import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.map.api.primitives.ExternalSignalInfo;
-import org.restcomm.protocols.ss7.map.api.primitives.ISDNAddressString;
 
 /**
  *

@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.MAPServiceBase;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 /*

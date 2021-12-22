@@ -24,17 +24,18 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 
 import java.io.IOException;
 
+import org.restcomm.protocols.ss7.commonapp.api.APPException;
+import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharset;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecoder;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecodingData;
+import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetEncoder;
+import org.restcomm.protocols.ss7.commonapp.datacoding.Gsm7EncodingStyle;
+import org.restcomm.protocols.ss7.commonapp.primitives.TbcdStringImpl;
 import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.MAPParsingComponentException;
-import org.restcomm.protocols.ss7.map.api.primitives.TbcdString;
 import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharset;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharsetDecoder;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharsetDecodingData;
-import org.restcomm.protocols.ss7.map.datacoding.GSMCharsetEncoder;
-import org.restcomm.protocols.ss7.map.datacoding.Gsm7EncodingStyle;
 
 import io.netty.buffer.ByteBuf;
 
@@ -99,13 +100,13 @@ public class AddressFieldImpl implements AddressField {
                 }
             } else {
                 // Address-Value            	
-                res.addressValue = TbcdString.decodeString(buf.slice(buf.readerIndex(), addressArrayLength));
+                res.addressValue = TbcdStringImpl.decodeString(buf.slice(buf.readerIndex(), addressArrayLength));
                 buf.skipBytes(addressArrayLength);
             }
 
         } catch (IOException e) {
             throw new MAPException("IOException when creating AddressField: " + e.getMessage(), e);
-        } catch (MAPParsingComponentException e) {
+        } catch (APPParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when creating AddressField: " + e.getMessage(), e);
         }
 
@@ -159,7 +160,12 @@ public class AddressFieldImpl implements AddressField {
             } else {
                 buf.writeByte(addrLen);
                 buf.writeByte(tpOfAddr);
-                TbcdString.encodeString(buf, addressValue);
+                try {
+                	TbcdStringImpl.encodeString(buf, addressValue);
+                }
+                catch(APPException ex) {
+                	throw new MAPException(ex.getMessage(), ex.getCause());
+                }
             }
         } catch (IOException e) {
             // This can not occur

@@ -24,9 +24,14 @@ package org.restcomm.protocols.ss7.map;
 
 import java.nio.charset.Charset;
 
+import org.restcomm.protocols.ss7.commonapp.api.datacoding.NationalLanguageIdentifier;
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.AbsoluteTimeStamp;
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityEnhancedFormatData;
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityPeriod;
+import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
+import org.restcomm.protocols.ss7.commonapp.smstpu.ValidityEnhancedFormatDataImpl;
+import org.restcomm.protocols.ss7.commonapp.smstpu.ValidityPeriodImpl;
 import org.restcomm.protocols.ss7.map.api.MAPSmsTpduParameterFactory;
-import org.restcomm.protocols.ss7.map.api.datacoding.NationalLanguageIdentifier;
-import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStamp;
 import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
 import org.restcomm.protocols.ss7.map.api.smstpdu.CharacterSet;
 import org.restcomm.protocols.ss7.map.api.smstpdu.CommandData;
@@ -54,9 +59,6 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.StatusReportQualifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeader;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityEnhancedFormatData;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriod;
-import org.restcomm.protocols.ss7.map.smstpdu.AbsoluteTimeStampImpl;
 import org.restcomm.protocols.ss7.map.smstpdu.AddressFieldImpl;
 import org.restcomm.protocols.ss7.map.smstpdu.CommandDataImpl;
 import org.restcomm.protocols.ss7.map.smstpdu.CommandTypeImpl;
@@ -76,8 +78,6 @@ import org.restcomm.protocols.ss7.map.smstpdu.SmsSubmitTpduImpl;
 import org.restcomm.protocols.ss7.map.smstpdu.StatusImpl;
 import org.restcomm.protocols.ss7.map.smstpdu.UserDataHeaderImpl;
 import org.restcomm.protocols.ss7.map.smstpdu.UserDataImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.ValidityEnhancedFormatDataImpl;
-import org.restcomm.protocols.ss7.map.smstpdu.ValidityPeriodImpl;
 
 /**
  *

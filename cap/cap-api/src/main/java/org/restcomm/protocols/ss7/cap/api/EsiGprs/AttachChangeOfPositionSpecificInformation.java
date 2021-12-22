@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.EsiGprs;
 
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.LocationInformationGPRSImpl;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformationGPRS;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -38,6 +38,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public interface AttachChangeOfPositionSpecificInformation {
 
-    LocationInformationGPRSImpl getLocationInformationGPRS();
+    LocationInformationGPRS getLocationInformationGPRS();
 
 }

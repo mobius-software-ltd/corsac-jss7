@@ -24,8 +24,10 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 
 import java.nio.charset.Charset;
 
+import org.restcomm.protocols.ss7.commonapp.api.APPException;
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.AbsoluteTimeStamp;
+import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
 import org.restcomm.protocols.ss7.map.api.MAPException;
-import org.restcomm.protocols.ss7.map.api.smstpdu.AbsoluteTimeStamp;
 import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingScheme;
 import org.restcomm.protocols.ss7.map.api.smstpdu.ParameterIndicator;
@@ -105,8 +107,13 @@ public class SmsStatusReportTpduImpl extends SmsTpduImpl implements SmsStatusRep
             throw new MAPException("Error creating a new SmsStatusReport instance: messageReference field has not been found");
 
         this.recipientAddress = AddressFieldImpl.createMessage(stm);
-        this.serviceCentreTimeStamp = AbsoluteTimeStampImpl.createMessage(stm);
-        this.dischargeTime = AbsoluteTimeStampImpl.createMessage(stm);
+        try {
+        	this.serviceCentreTimeStamp = AbsoluteTimeStampImpl.createMessage(stm);
+        	this.dischargeTime = AbsoluteTimeStampImpl.createMessage(stm);
+        }
+    	catch(APPException ex) {
+    		throw new MAPException(ex.getMessage(),ex.getCause());
+    	}
 
         bt = stm.readByte() & 0x0FF;
         if (bt == -1)
@@ -228,8 +235,15 @@ public class SmsStatusReportTpduImpl extends SmsTpduImpl implements SmsStatusRep
 
         buf.writeByte(this.messageReference);
         this.recipientAddress.encodeData(buf);
-        this.serviceCentreTimeStamp.encodeData(buf);
-        this.dischargeTime.encodeData(buf);
+        
+        try {
+        	this.serviceCentreTimeStamp.encodeData(buf);
+        	this.dischargeTime.encodeData(buf);
+        }
+    	catch(APPException ex) {
+    		throw new MAPException(ex.getMessage(),ex.getCause());
+    	}
+        
         buf.writeByte(this.status.getCode());
 
         this.parameterIndicator = new ParameterIndicatorImpl(this.userData != null, this.dataCodingScheme != null,

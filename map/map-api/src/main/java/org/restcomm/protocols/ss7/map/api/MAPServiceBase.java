@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api;
 
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckData;
-import org.restcomm.protocols.ss7.map.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 /**

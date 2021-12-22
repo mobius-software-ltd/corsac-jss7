@@ -24,6 +24,12 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 
 import java.nio.charset.Charset;
 
+import org.restcomm.protocols.ss7.commonapp.api.APPException;
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityPeriod;
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityPeriodFormat;
+import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
+import org.restcomm.protocols.ss7.commonapp.smstpu.ValidityEnhancedFormatDataImpl;
+import org.restcomm.protocols.ss7.commonapp.smstpu.ValidityPeriodImpl;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingScheme;
@@ -31,8 +37,6 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsSubmitTpdu;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpduType;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriod;
-import org.restcomm.protocols.ss7.map.api.smstpdu.ValidityPeriodFormat;
 
 import io.netty.buffer.ByteBuf;
 
@@ -120,8 +124,13 @@ public class SmsSubmitTpduImpl extends SmsTpduImpl implements SmsSubmitTpdu {
                 this.validityPeriod = new ValidityPeriodImpl(bt);
                 break;
             case fieldPresentAbsoluteFormat:
-                AbsoluteTimeStampImpl ats = AbsoluteTimeStampImpl.createMessage(stm);
-                this.validityPeriod = new ValidityPeriodImpl(ats);
+            	try {
+            		AbsoluteTimeStampImpl ats = AbsoluteTimeStampImpl.createMessage(stm);
+            		this.validityPeriod = new ValidityPeriodImpl(ats);                    
+            	}
+            	catch(APPException ex) {
+            		throw new MAPException(ex.getMessage(),ex.getCause());
+            	}
                 break;
             case fieldPresentEnhancedFormat:
                 byte[] buf = new byte[7];
@@ -231,7 +240,12 @@ public class SmsSubmitTpduImpl extends SmsTpduImpl implements SmsSubmitTpdu {
             	buf.writeByte(this.validityPeriod.getRelativeFormatValue());
                 break;
             case fieldPresentAbsoluteFormat:
-                this.validityPeriod.getAbsoluteFormatValue().encodeData(buf);
+            	try {
+            		this.validityPeriod.getAbsoluteFormatValue().encodeData(buf);
+            	}
+            	catch(APPException ex) {
+            		throw new MAPException(ex.getMessage(),ex.getCause());
+            	}
                 break;
             case fieldPresentEnhancedFormat:
             	buf.writeBytes(this.validityPeriod.getEnhancedFormatValue().getData());

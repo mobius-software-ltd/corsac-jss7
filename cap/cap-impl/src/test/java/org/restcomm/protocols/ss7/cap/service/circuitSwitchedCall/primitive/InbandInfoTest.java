@@ -29,6 +29,9 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.InbandInfoImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.MessageIDImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.MessageIDTextImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

@@ -32,20 +32,12 @@
 			<artifactId>sccp-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.mobius-software.telco.protocols.ss7.map</groupId>
-			<artifactId>map-api</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.mobius-software.telco.protocols.ss7.isup</groupId>
 			<artifactId>isup-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.mobius-software.telco.protocols.ss7.inap</groupId>
-			<artifactId>inap-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.mobius-software.telco.protocols.ss7.inap</groupId>
-			<artifactId>inap-impl</artifactId>
+			<groupId>com.mobius-software.telco.protocols.ss7.commonapp</groupId>
+			<artifactId>commonapp-api</artifactId>
 		</dependency>
 	</dependencies>
 

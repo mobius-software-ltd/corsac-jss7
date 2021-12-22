@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.cap.service.gprs.primitive;
 
-import org.restcomm.protocols.ss7.cap.api.primitives.AppendFreeFormatData;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FCIBCCCAMELSequence1Gprs;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FreeFormatDataGprs;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
-import org.restcomm.protocols.ss7.cap.primitives.ASNAppendFreeFormatDataImpl;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AppendFreeFormatData;
+import org.restcomm.protocols.ss7.commonapp.primitives.ASNAppendFreeFormatDataImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

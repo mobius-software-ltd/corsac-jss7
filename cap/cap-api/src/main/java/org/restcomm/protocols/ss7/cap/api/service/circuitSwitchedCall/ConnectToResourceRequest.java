@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.cap.api.isup.CalledPartyNumberCap;
-import org.restcomm.protocols.ss7.cap.api.primitives.CAPExtensions;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicatorsTwo;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ServiceInteractionIndicatorsTwo;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 
 /**
  *
@@ -63,11 +63,11 @@ numOfCSs ::= 127
  */
 public interface ConnectToResourceRequest extends CircuitSwitchedCallMessage {
 
-    CalledPartyNumberCap getResourceAddress_IPRoutingAddress();
+    CalledPartyNumberIsup getResourceAddress_IPRoutingAddress();
 
     boolean getResourceAddress_Null();
 
-    CAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
     ServiceInteractionIndicatorsTwo getServiceInteractionIndicatorsTwo();
 

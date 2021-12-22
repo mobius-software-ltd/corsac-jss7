@@ -34,9 +34,6 @@ import org.restcomm.protocols.ss7.cap.api.CAPProvider;
 import org.restcomm.protocols.ss7.cap.api.CAPStack;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGprsReferenceNumber;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessageFactory;
-import org.restcomm.protocols.ss7.cap.api.primitives.BCSMEvent;
-import org.restcomm.protocols.ss7.cap.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.cap.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.RequestReportBCSMEventRequest;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.RequestReportGPRSEventRequest;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEvent;
@@ -45,11 +42,12 @@ import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.RequestReportB
 import org.restcomm.protocols.ss7.cap.service.gprs.RequestReportGPRSEventRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.inap.api.INAPParameterFactory;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegID;
-import org.restcomm.protocols.ss7.inap.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.BCSMEvent;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
-import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 /**
@@ -66,8 +64,6 @@ public class Server extends EventTestHarness {
 
     protected CAPParameterFactory capParameterFactory;
     protected CAPErrorMessageFactory capErrorMessageFactory;
-    protected MAPParameterFactory mapParameterFactory;
-    protected INAPParameterFactory inapParameterFactory;
     protected ISUPParameterFactory isupParameterFactory;
 
     protected CAPDialog serverCscDialog;
@@ -88,8 +84,6 @@ public class Server extends EventTestHarness {
 
         this.capParameterFactory = this.capProvider.getCAPParameterFactory();
         this.capErrorMessageFactory = this.capProvider.getCAPErrorMessageFactory();
-        this.mapParameterFactory = this.capProvider.getMAPParameterFactory();
-        this.inapParameterFactory = this.capProvider.getINAPParameterFactory();
         this.isupParameterFactory = this.capProvider.getISUPParameterFactory();
 
         this.capProvider.addCAPDialogListener(UUID.randomUUID(),this);
@@ -115,11 +109,11 @@ public class Server extends EventTestHarness {
         bcsmEventList.add(ev);
         ev = this.capParameterFactory.createBCSMEvent(EventTypeBCSM.oAnswer, MonitorMode.notifyAndContinue, null, null, false);
         bcsmEventList.add(ev);
-        LegID legId = this.inapParameterFactory.createLegID(null,LegType.leg1);
+        LegID legId = this.capParameterFactory.createLegID(null,LegType.leg1);
         ev = this.capParameterFactory.createBCSMEvent(EventTypeBCSM.oDisconnect, MonitorMode.notifyAndContinue, legId, null,
                 false);
         bcsmEventList.add(ev);
-        legId = this.inapParameterFactory.createLegID(null, LegType.leg2);
+        legId = this.capParameterFactory.createLegID(null, LegType.leg2);
         ev = this.capParameterFactory.createBCSMEvent(EventTypeBCSM.oDisconnect, MonitorMode.interrupted, legId, null, false);
         bcsmEventList.add(ev);
         ev = this.capParameterFactory.createBCSMEvent(EventTypeBCSM.oAbandon, MonitorMode.notifyAndContinue, null, null, false);
