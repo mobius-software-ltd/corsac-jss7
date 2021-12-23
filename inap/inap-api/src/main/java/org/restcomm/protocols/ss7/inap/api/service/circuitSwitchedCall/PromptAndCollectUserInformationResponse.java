@@ -46,6 +46,12 @@ ERRORS {
 ReceivedInformationArg ::= CHOICE {
 	digitsResponse [0] Digits
 }
+
+--- From Q.1218 CS1
+ReceivedInformationArg ::= CHOICE {
+	digitsResponse [0] Digits,
+	iA5Response [1] IA5String
+}
 </code>
  *
  * @author yulian.oifa
@@ -54,4 +60,6 @@ ReceivedInformationArg ::= CHOICE {
 public interface PromptAndCollectUserInformationResponse extends CircuitSwitchedCallMessage {
 
     DigitsIsup getDigitsResponse();
+    
+    String getIA5Response();
 }

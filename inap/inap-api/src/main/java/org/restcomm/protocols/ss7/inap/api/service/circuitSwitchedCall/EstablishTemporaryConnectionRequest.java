@@ -22,8 +22,10 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
 
@@ -53,6 +55,18 @@ EstablishTemporaryConnectionArg ::= SEQUENCE {
 	serviceInteractionIndicators [30] ServiceInteractionIndicators OPTIONAL
 -- ...
 }
+
+--- From Q.1218 CS1
+EstablishTemporaryConnectionArg ::= SEQUENCE {
+	assistingSSPIPRoutingAddress [0] AssistingSSPIPRoutingAddress,
+	correlationID [1] CorrelationID OPTIONAL,
+	legID [2] LegID OPTIONAL,
+	scfID [3] ScfID OPTIONAL,
+	extensions [4] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL,
+	carrier [5] Carrier OPTIONAL,
+	serviceInteractionIndicators [30] ServiceInteractionIndicators OPTIONAL
+-- ...
+}
 </code>
  *
  * @author yulian.oifa
@@ -74,9 +88,13 @@ public interface EstablishTemporaryConnectionRequest extends CircuitSwitchedCall
      */
     DigitsIsup getCorrelationID();
 
+    LegID getLegID();
+    
     ScfID getScfID();
 
     CAPINAPExtensions getExtensions();
 
+    Carrier getCarrier();
+    
     ServiceInteractionIndicators getServiceInteractionIndicators();
 }

@@ -64,4 +64,8 @@ public interface INAPErrorCode {
    int unexpectedParameter = 16;
    // -- Leg not known to the gsmSSF.
    int unknownLegID = 17;
+   
+   //from Q.1218 CS1
+   //-- Resource whose status is being requested is not known to the serving entity.
+   int unknownResource = 18;
 }

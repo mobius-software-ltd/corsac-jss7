@@ -30,6 +30,40 @@ public interface INAPOperationCode {
 	//initialDP InitialDP ::= localValue 0
 	int initialDP = 0;
 	
+	//-- Basic BCP DP ASE - from Q.1218 CS1
+	//originationAttemptAuthorized OriginationAttemptAuthorized ::= localValue 1
+	int originationAttemptAuthorized = 1;
+	//collectedInformation CollectedInformation ::= localValue 2
+	int collectedInformation = 2;
+	//analysedInformation AnalysedInformation ::= localValue 3
+	int analysedInformation = 3;
+	//routeSelectFailure RouteSelectFailure ::= localValue 4
+	int routeSelectFailure = 4;
+	//oCalledPartyBusy OCalledPartyBusy ::= localValue 5
+	int oCalledPartyBusy = 5;
+	//oNoAnswer ONoAnswer ::= localValue 6
+	int oNoAnswer = 6;
+	//oAnswer OAnswer ::= localValue 7
+	int oAnswer = 7;
+	//oDisconnect ODisconnect ::= localValue 8
+	int oDisconnect = 8;
+	//termAttemptAuthorized TermAttemptAuthorized ::= localValue 9
+	int termAttemptAuthorized = 9;
+	//tBusy TBusy ::= localValue 10
+	int tBusy = 10;
+	//tNoAnswer TNoAnswer ::= localValue 11
+	int tNoAnswer = 11;
+	//tAnswer TAnswer ::= localValue 12
+	int tAnswer = 12;
+	//tDisconnect TDisconnect ::= localValue 13
+	int tDisconnect = 13;
+
+	//-- Advanced BCP DP ASE - from Q.1218 CS1
+	//oMidCall OMidCall ::= localValue 14
+	int oMidCall = 14;
+	//tMidCall TMidCall ::= localValue 15
+	int tMidCall = 15;
+	
 	//-- SCF/SRF activation of assist ASE
 	//assistRequestInstructions AssistRequestInstructions ::= localValue 16
 	int assistRequestInstructions = 16;
@@ -51,6 +85,8 @@ public interface INAPOperationCode {
 	int connect = 20;
 	   
 	//-- Call handling ASE (elementary SSF function)
+	//holdCallInNetwork HoldCallInNetwork ::= localValue 21 - from Q.1218 CS1
+	int holdCallInNetwork = 21;
 	//releaseCall ReleaseCall ::= localValue 22
 	int releaseCall = 22;
 	   
@@ -70,7 +106,12 @@ public interface INAPOperationCode {
 	//-- SSF call processing ASE
 	//collectInformation CollectInformation ::= localValue 27
 	int collectInformation = 27;
-	   
+	//analyseInformation AnalyseInformation ::= localValue 28 - from Q.1218 CS1
+	int analyseInformation = 28;
+	//selectRoute SelectRoute ::= localValue 29 - from Q.1218 CS1
+	int selectRoute = 29;
+	//selectFacility SelectFacility ::= localValue 30 - from Q.1218 CS1
+	int selectFacility = 30;
 	//continue Continue ::= localValue 31
 	int continueCode = 31;
 	   
@@ -92,15 +133,25 @@ public interface INAPOperationCode {
 	//applyChargingReport ApplyChargingReport ::= localValue 36
 	int applyChargingReport = 36;
 	   
+	//-- Status reporting ASE - from Q.1218 CS1
+	//requestCurrentStatusReport RequestCurrentStatusReport ::= localValue 37
+	int requestCurrentStatusReport=37;
+	//requestEveryStatusChangeReport RequestEveryStatusChangeReport ::= localValue 38
+	int requestEveryStatusChangeReport=38;
+	//requestFirstStatusMatchReport RequestFirstStatusMatchReport ::= localValue 39
+	int requestFirstStatusMatchReport=39;
+	//statusReport StatusReport ::= localValue 40
+	int statusReport=40;
+	
 	//-- Traffic management ASE
 	//callGap CallGap ::= localValue 41
 	int callGap = 41;
 	   
 	//-- Service management ASE
 	//activateServiceFiltering ActivateServiceFiltering ::= localValue 42
-	int activateServiceFiltering = 44;
+	int activateServiceFiltering = 42;
 	//serviceFilteringResponse ServiceFilteringResponse ::= localValue 43
-	int serviceFilteringResponse = 45;
+	int serviceFilteringResponse = 43;
 	   
 	//-- Call report ASE
 	//callInformationReport CallInformationReport ::= localValue 44
@@ -122,6 +173,9 @@ public interface INAPOperationCode {
 	//-- Cancel ASE
 	//cancel Cancel ::= localValue 53
 	int cancelCode = 53;
+	//cancelStatusReportRequest CancelStatusReportRequest ::= localValue 54 - from ITU Q.1218 CS1
+	int cancelStatusReportRequest = 54;
+	
 	//-- Activity Test ASE
 	//activityTest ActivityTest ::= localValue 55
 	int activityTest = 55;	

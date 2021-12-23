@@ -336,14 +336,6 @@ public interface INAPParameterFactory {
             boolean VoiceInformationSupportedViaSpeechRecognition, boolean VoiceInformationSupportedViaVoiceRecognition,
             boolean GenerationOfVoiceAnnouncementsFromTextSupported, byte[] extraData);
 
-    InitialDPArgExtension createInitialDPArgExtension(ISDNAddressString gmscAddress,
-            CalledPartyNumberIsup forwardingDestinationNumber, MSClassmark2 msClassmark2, IMEI imei,
-            SupportedCamelPhases supportedCamelPhases, OfferedCamel4Functionalities offeredCamel4Functionalities,
-            BearerCapability bearerCapability2, ExtBasicServiceCode extBasicServiceCode2,
-            HighLayerCompatibilityIsup highLayerCompatibility2, LowLayerCompatibility lowLayerCompatibility,
-            LowLayerCompatibility lowLayerCompatibility2, boolean enhancedDialledServicesAllowed, UUData uuData,
-            boolean collectInformationAllowed, boolean releaseCallArgExtensionAllowed);
-
     AlertingPatternWrapper createAlertingPattern(AlertingPattern alertingPattern);
 
     AlertingPatternWrapper createAlertingPattern(byte[] data);

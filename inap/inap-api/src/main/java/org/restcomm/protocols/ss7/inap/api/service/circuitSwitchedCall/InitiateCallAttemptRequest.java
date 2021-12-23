@@ -25,7 +25,9 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
 
 /**
@@ -53,6 +55,18 @@ InitiateCallAttemptArg ::= SEQUENCE {
 	callingPartyNumber [30] CallingPartyNumber OPTIONAL
 -- ...
 }
+
+--- From Q.1218 CS1
+InitiateCallAttemptArg ::= SEQUENCE {
+	destinationRoutingAddress [0] DestinationRoutingAddress,
+	alertingPattern [1] AlertingPattern OPTIONAL,
+	iSDNAccessRelatedInformation [2] ISDNAccessRelatedInformation OPTIONAL,
+	travellingClassMark [3] TravellingClassMark OPTIONAL,
+	extensions [4] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL
+	serviceInteractionIndicators [29] ServiceInteractionIndicators OPTIONAL,
+	callingPartyNumber [30] CallingPartyNumber OPTIONAL
+-- ...
+}
 </code>
  *
  * @author yulian.oifa
@@ -63,6 +77,10 @@ public interface InitiateCallAttemptRequest extends CircuitSwitchedCallMessage {
     DestinationRoutingAddress getDestinationRoutingAddress();
 
     AlertingPatternWrapper getAlertingPattern();
+    
+    ISDNAccessRelatedInformation getISDNAccessRelatedInformation();
+    
+    LocationNumberIsup getTravellingClassMark();
     
     CAPINAPExtensions getExtensions();
 

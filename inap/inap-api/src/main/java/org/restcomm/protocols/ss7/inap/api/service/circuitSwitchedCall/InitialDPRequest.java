@@ -22,17 +22,12 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.commonapp.api.callhandling.CallReferenceNumber;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountered;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CalledPartyBCDNumber;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.IPSSPCapabilities;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ServiceInteractionIndicatorsTwo;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
-import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.HighLayerCompatibilityIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
@@ -41,20 +36,14 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectingPartyIDIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.TimeAndTimezone;
-import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformation;
-import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.SubscriberState;
-import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CUGIndex;
-import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CUGInterlock;
-import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.inap.api.primitives.TerminalType;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CallingPartyBusinessGroupID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CallingPartySubaddress;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.IPAvailable;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtension;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceProfileIdentifier;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.TriggerType;
 import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
 
 /**
@@ -108,6 +97,42 @@ InitialDPArg ::= SEQUENCE {
 -- These parameters shall be ignored by the SCF and not lead to any error procedures.
 -- These parameters shall not be sent by a SSF following this ETS.
 -- For details on the coding of these parameters refer to ITU-T Recommendation Q.1218 [12].
+
+--- From Q.1218 CS1
+InitialDPArg ::= SEQUENCE {
+	serviceKey [0] ServiceKey OPTIONAL,
+	dialledDigits [1] CalledPartyNumber OPTIONAL,
+	calledPartyNumber [2] CalledPartyNumber OPTIONAL,
+	callingPartyNumber [3] CallingPartyNumber OPTIONAL,
+	callingPartyBusinessGroupID [4] CallingPartyBusinessGroupID OPTIONAL,
+	callingPartysCategory [5] CallingPartysCategory OPTIONAL,
+	callingPartySubaddress [6] CallingPartySubaddress OPTIONAL,
+	cGEncountered [7] CGEncountered OPTIONAL,
+	iPSSPCapabilities [8] IPSSPCapabilities OPTIONAL,
+	iPAvailable [9] IPAvailable OPTIONAL,
+	locationNumber [10] LocationNumber OPTIONAL,
+	miscCallInfo [11] MiscCallInfo OPTIONAL,
+	originalCalledPartyID [12] OriginalCalledPartyID OPTIONAL,
+	serviceProfileIdentifier [13] ServiceProfileIdentifier OPTIONAL,
+	terminalType [14] TerminalType OPTIONAL,
+	extensions [15] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL,
+	triggerType [16] TriggerType OPTIONAL,
+	highLayerCompatibility [23] HighLayerCompatibility OPTIONAL,
+	serviceInteractionIndicators [24] ServiceInteractionIndicators OPTIONAL,
+	additionalCallingPartyNumber [25] AdditionalCallingPartyNumber OPTIONAL,
+	forwardCallIndicators [26] ForwardCallIndicators OPTIONAL,
+	bearerCapability [27] BearerCapability OPTIONAL,
+	eventTypeBCSM [28] EventTypeBCSM OPTIONAL,
+	redirectingPartyID [29] RedirectingPartyID OPTIONAL,
+	redirectionInformation [30] RedirectionInformation OPTIONAL
+-- ...
+}
+-- OPTIONAL for iPSSPCapabilities, iPAvailable, cGEncountered, and miscCallInfo denotes network
+-- operator specific use.
+-- OPTIONAL for dialledDigits, callingPartyNumber, and callingPartysCategory refer to clause 3 for the
+-- trigger detection point processing rules to specify when these parameters are included in the message.
+-- OPTIONAL for terminalType indicates that this parameter applies only at originating or terminating
+-- local exchanges if the SSF has this information.
 </code>
  *
  * @author yulian.oifa
@@ -116,7 +141,7 @@ InitialDPArg ::= SEQUENCE {
 public interface InitialDPRequest extends CircuitSwitchedCallMessage {
 
     int getServiceKey();
-
+    
     CallingPartyNumberIsup getDialledDigits();
     
     CalledPartyNumberIsup getCalledPartyNumber();
@@ -127,7 +152,7 @@ public interface InitialDPRequest extends CircuitSwitchedCallMessage {
     
     CallingPartysCategoryIsup getCallingPartysCategory();
 
-    byte[] getCallingPartySubaddress();
+    CallingPartySubaddress getCallingPartySubaddress();
     
     CGEncountered getCGEncountered();
 
@@ -141,11 +166,13 @@ public interface InitialDPRequest extends CircuitSwitchedCallMessage {
     
     OriginalCalledNumberIsup getOriginalCalledPartyID();
 
-    byte[] getServiceProfileIdentifier();
+    ServiceProfileIdentifier getServiceProfileIdentifier();
     
     TerminalType getTerminalType();
     
     CAPINAPExtensions getExtensions();
+    
+    TriggerType getTriggerType();
 
     HighLayerCompatibilityIsup getHighLayerCompatibility();
 
@@ -166,36 +193,4 @@ public interface InitialDPRequest extends CircuitSwitchedCallMessage {
     RedirectingPartyIDIsup getRedirectingPartyID();
 
     RedirectionInformationIsup getRedirectionInformation();
-
-    CauseIsup getCause();
-
-    ServiceInteractionIndicatorsTwo getServiceInteractionIndicatorsTwo();
-
-    Carrier getCarrier();
-
-    CUGIndex getCugIndex();
-
-    CUGInterlock getCugInterlock();
-
-    boolean getCugOutgoingAccess();
-
-    IMSI getIMSI();
-
-    SubscriberState getSubscriberState();
-
-    LocationInformation getLocationInformation();
-
-    ExtBasicServiceCode getExtBasicServiceCode();
-
-    CallReferenceNumber getCallReferenceNumber();
-
-    ISDNAddressString getMscAddress();
-
-    CalledPartyBCDNumber getCalledPartyBCDNumber();
-
-    TimeAndTimezone getTimeAndTimezone();
-
-    boolean getCallForwardingSSPending();
-
-    InitialDPArgExtension getInitialDPArgExtension();
 }

@@ -25,6 +25,7 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformation;
+import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 
 /**
@@ -39,6 +40,15 @@ CallInformationReportArg ::= SEQUENCE {
 	extensions [2] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL
 -- ...
 }
+
+--- From Q.1218 CS1
+CallInformationReportArg ::= SEQUENCE {
+	requestedInformationList [0] RequestedInformationList,
+	correlationID [1] CorrelationID OPTIONAL,
+	extensions [2] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL
+-- ...
+}
+-- OPTIONAL denotes network operator optional.
  *
  * @author yulian.oifa
  *
@@ -47,5 +57,7 @@ public interface CallInformationReportRequest extends CircuitSwitchedCallMessage
 
     List<RequestedInformation> getRequestedInformationList();
 
+    DigitsIsup getCorrelationID();
+    
     CAPINAPExtensions getExtensions();
 }

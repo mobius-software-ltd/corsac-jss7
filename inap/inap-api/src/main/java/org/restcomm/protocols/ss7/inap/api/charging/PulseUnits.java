@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.inap.api.charging;
 
-import java.io.Serializable;
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
 *
@@ -34,7 +35,8 @@ PulseUnits ::= OCTET STRING (SIZE(1))
 * @author sergey vetyutnev
 *
 */
-public interface PulseUnits extends Serializable {
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 4,constructed = false,lengthIndefinite = false)
+public interface PulseUnits {
 
     int getData();
 

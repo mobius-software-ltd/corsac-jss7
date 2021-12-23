@@ -22,9 +22,10 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive;
 
-import java.io.Serializable;
-
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
 *
@@ -40,7 +41,8 @@ MidCallInfoType {PARAMETERS-BOUND : bound} ::= SEQUENCE {
 * @author sergey vetyutnev
 *
 */
-public interface MidCallInfoType extends Serializable {
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
+public interface MidCallInfoType {
 
     DigitsIsup getINServiceControlCodeLow();
 

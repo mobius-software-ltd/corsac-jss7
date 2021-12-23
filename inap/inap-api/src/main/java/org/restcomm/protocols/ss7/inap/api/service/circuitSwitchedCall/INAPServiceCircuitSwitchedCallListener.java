@@ -55,7 +55,7 @@ public interface INAPServiceCircuitSwitchedCallListener extends INAPServiceListe
 
     void onConnectRequest(ConnectRequest ind);
 
-    void onCallInformationRequestRequest(CallInformationRequestRequest ind);
+    void onCallInformationRequestRequest(CallInformationRequest ind);
 
     void onCallInformationReportRequest(CallInformationReportRequest ind);
 
@@ -92,4 +92,54 @@ public interface INAPServiceCircuitSwitchedCallListener extends INAPServiceListe
     void onCollectInformationRequest(CollectInformationRequest ind);
 
     void onCallGapRequest(CallGapRequest ind);
+    
+    void onAnalysedInformationRequest(AnalysedInformationRequest ind);
+
+    void onAnalyseInformationRequest(AnalyseInformationRequest ind);
+
+    void onCancelStatusReportRequest(CancelStatusReportRequest ind);
+    
+    void onCollectedInformationRequest(CollectedInformationRequest ind);
+    
+    void onHoldCallInNetworkRequest(HoldCallInNetworkRequest ind);
+    
+    void onOMidCallRequest(OMidCallRequest ind);
+    
+    void onTMidCallRequest(TMidCallRequest ind);
+    
+    void onOAnswerRequest(OAnswerRequest ind);
+    
+    void onOriginationAttemptAuthorizedRequest(OriginationAttemptAuthorizedRequest ind);
+    
+    void onRouteSelectFailureRequest(RouteSelectFailureRequest ind);
+    
+    void onOCalledPartyBusyRequest(OCalledPartyBusyRequest ind);
+    
+    void onONoAnswerRequest(ONoAnswerRequest ind);
+    
+    void onODisconnectRequest(ODisconnectRequest ind);
+    
+    void onTermAttemptAuthorizedRequest(TermAttemptAuthorizedRequest ind);
+    
+    void onTBusyRequest(TBusyRequest ind);
+    
+    void onTNoAnswerRequest(TNoAnswerRequest ind);
+    
+    void onTAnswerRequest(TNoAnswerRequest ind);
+    
+    void onTDisconnectRequest(TDisconnectRequest ind);
+    
+    void onSelectRouteRequest(SelectRouteRequest ind);
+    
+    void onSelectFacilityRequest(SelectFacilityRequest ind);
+    
+    void onRequestCurrentStatusReportRequest(RequestCurrentStatusReportRequest ind);
+    
+    void onRequestCurrentStatusReportResponse(RequestCurrentStatusReportResponse ind);
+    
+    void onRequestEveryStatusChangeReportRequest(RequestEveryStatusChangeReportRequest ind);
+    
+    void onRequestFirstStatusMatchReportRequest(RequestFirstStatusMatchReportRequest ind);
+    
+    void onStatusReportRequest(StatusReportRequest ind);
 }

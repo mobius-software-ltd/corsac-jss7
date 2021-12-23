@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.inap.api.charging;
 
-import java.io.Serializable;
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
 *
@@ -44,7 +45,8 @@ TariffDuration ::= INTEGER (0..36000)
 * @author sergey vetyutnev
 *
 */
-public interface TariffDuration extends Serializable {
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 2,constructed = false,lengthIndefinite = false)
+public interface TariffDuration {
 
     int getData();
 

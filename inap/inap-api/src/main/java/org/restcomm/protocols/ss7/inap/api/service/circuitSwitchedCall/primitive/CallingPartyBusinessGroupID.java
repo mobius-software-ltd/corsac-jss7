@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive;
 
-import java.io.Serializable;
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
 *
@@ -39,7 +40,8 @@ maxCallingPartyBusinessGroupIDLength=5
 * @author sergey vetyutnev
 *
 */
-public interface CallingPartyBusinessGroupID extends Serializable {
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 4, constructed = false,lengthIndefinite = false)
+public interface CallingPartyBusinessGroupID {
 
     byte[] getData();
 

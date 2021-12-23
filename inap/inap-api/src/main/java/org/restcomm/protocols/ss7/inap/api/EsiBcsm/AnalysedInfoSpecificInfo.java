@@ -22,9 +22,10 @@
 
 package org.restcomm.protocols.ss7.inap.api.EsiBcsm;
 
-import java.io.Serializable;
-
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
 *
@@ -38,7 +39,8 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 * @author sergey vetyutnev
 *
 */
-public interface AnalysedInfoSpecificInfo extends Serializable {
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
+public interface AnalysedInfoSpecificInfo {
 
     CalledPartyNumberIsup getCalledPartyNumber();
 

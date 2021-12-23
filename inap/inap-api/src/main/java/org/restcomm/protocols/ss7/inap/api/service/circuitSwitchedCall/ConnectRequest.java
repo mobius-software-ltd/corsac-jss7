@@ -27,16 +27,19 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectingPartyIDIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ForwardingCondition;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RouteList;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
 
 /**
- *
 <code>
 Connect ::= OPERATION
 ARGUMENT ConnectArg
@@ -74,6 +77,30 @@ ConnectArg ::= SEQUENCE {
 -- terminating local exchange for the subscriber.
 
 CutAndPaste ::= INTEGER (0..22)
+
+--- From Q.1218 CS1
+ConnectArg ::= SEQUENCE {
+	destinationRoutingAddress [0] DestinationRoutingAddress,
+	alertingPattern [1] AlertingPattern OPTIONAL,
+	correlationID [2] CorrelationID OPTIONAL,
+	cutAndPaste [3] CutAndPaste OPTIONAL,
+	forwardingCondition [4] ForwardingCondition OPTIONAL,
+	iSDNAccessRelatedInformation [5] ISDNAccessRelatedInformation OPTIONAL,
+	originalCalledPartyID [6] OriginalCalledPartyID OPTIONAL,
+	routeList [7] RouteList OPTIONAL,
+	scfID [8] ScfID OPTIONAL,
+	travellingClassMark [9] TravellingClassMark OPTIONAL,
+	extensions [10] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL,
+	carrier [11] Carrier OPTIONAL,
+	serviceInteractionIndicators [26] ServiceInteractionIndicators OPTIONAL,
+	callingPartyNumber [27] CallingPartyNumber OPTIONAL,
+	callingPartysCategory [28] CallingPartysCategory OPTIONAL,
+	redirectingPartyID [29] RedirectingPartyID OPTIONAL,
+	redirectionInformation [30] RedirectionInformation OPTIONAL
+-- ...
+}
+-- For alerting pattern, OPTIONAL denotes that this parameter only applies if SSF is the terminating
+-- local exchange for the subscriber.
 </code>
 *
  * @author yulian.oifa
@@ -85,7 +112,13 @@ public interface ConnectRequest extends CircuitSwitchedCallMessage {
 
     AlertingPatternWrapper getAlertingPattern();
 
+    DigitsIsup getCorrelationID();
+    
     Integer getCutAndPaste();
+    
+    ForwardingCondition getForwardingCondition();
+    
+    ISDNAccessRelatedInformation getISDNAccessRelatedInformation();
     
     OriginalCalledNumberIsup getOriginalCalledPartyID();
 
@@ -93,12 +126,14 @@ public interface ConnectRequest extends CircuitSwitchedCallMessage {
     
     ScfID getScfID();
     
-    CAPINAPExtensions getExtensions();
+    LocationNumberIsup getTravellingClassMark();
+    
+	CAPINAPExtensions getExtensions();
+
+    Carrier getCarrier();
 
     ServiceInteractionIndicators getServiceInteractionIndicators();
     
-    Carrier getCarrier();
-
     CallingPartyNumberIsup getCallingPartyNumber();
     
     CallingPartysCategoryIsup getCallingPartysCategory();
@@ -106,5 +141,4 @@ public interface ConnectRequest extends CircuitSwitchedCallMessage {
     RedirectingPartyIDIsup getRedirectingPartyID();
 
     RedirectionInformationIsup getRedirectionInformation();
-
 }

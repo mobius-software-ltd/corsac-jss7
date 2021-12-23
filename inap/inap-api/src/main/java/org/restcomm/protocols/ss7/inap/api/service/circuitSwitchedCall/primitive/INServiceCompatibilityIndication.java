@@ -22,8 +22,10 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive;
 
-import java.io.Serializable;
 import java.util.List;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
 *
@@ -36,8 +38,8 @@ INServiceCompatibilityIndication {PARAMETERS-BOUND : bound} ::= SEQUENCE SIZE
 * @author sergey vetyutnev
 *
 */
-public interface INServiceCompatibilityIndication extends Serializable {
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
+public interface INServiceCompatibilityIndication {
 
     List<Entry> getEntries();
-
 }

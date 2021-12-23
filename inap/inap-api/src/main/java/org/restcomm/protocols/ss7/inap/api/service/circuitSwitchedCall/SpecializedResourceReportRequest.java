@@ -26,8 +26,7 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
  *
 <code>
 SpecializedResourceReport ::= OPERATION
-ARGUMENT
- pecializedResourceReportArg
+ARGUMENT SpecializedResourceReportArg
 -- Direction: SRF -> SCF, Timer: Tsrr -- This operation is used as the response to a PlayAnnouncement operation when the announcement completed
 -- report indication is set.
 

@@ -27,6 +27,7 @@ import java.util.List;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CounterAndValue;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringCriteria;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResponseCondition;
 
 /**
  *
@@ -44,6 +45,15 @@ ServiceFilteringResponseArg ::= SEQUENCE {
 	extensions [2] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL
 -- ...
 }
+
+--- From Q.1218 CS1
+ServiceFilteringResponseArg ::= SEQUENCE {
+	countersValue [0] CountersValue,
+	filteringCriteria [1] FilteringCriteria,
+	extensions [2] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL,
+	responseCondition [3] ResponseCondition OPTIONAL
+-- ...
+}
 </code>
  *
  * @author yulian.oifa
@@ -56,4 +66,6 @@ public interface ServiceFilteringResponse extends CircuitSwitchedCallMessage {
 	FilteringCriteria getFilteringCriteria();
 	
 	CAPINAPExtensions getExtensions();
+	
+	ResponseCondition getResponseCondition();
 }

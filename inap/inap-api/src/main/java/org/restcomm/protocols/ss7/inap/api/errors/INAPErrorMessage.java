@@ -21,15 +21,13 @@
  */
 package org.restcomm.protocols.ss7.inap.api.errors;
 
-import java.io.Serializable;
-
 /**
  * Base class of INAP ReturnError messages
  *
  * @author yulian.oifa
  *
  */
-public interface INAPErrorMessage extends Serializable {
+public interface INAPErrorMessage {
    Long getErrorCode();
 
    boolean isEmParameterless();

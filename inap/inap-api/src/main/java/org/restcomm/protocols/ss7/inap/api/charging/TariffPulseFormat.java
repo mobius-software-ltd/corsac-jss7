@@ -22,8 +22,10 @@
 
 package org.restcomm.protocols.ss7.inap.api.charging;
 
-import java.io.Serializable;
 import java.util.List;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
 *
@@ -43,7 +45,8 @@ TariffPulseFormat ::= SEQUENCE {
 * @author sergey vetyutnev
 *
 */
-public interface TariffPulseFormat extends Serializable {
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
+public interface TariffPulseFormat {
 
     List<CommunicationChargePulse> getCommunicationChargeSequencePulse();
 

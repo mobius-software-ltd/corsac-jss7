@@ -716,20 +716,6 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
     }
 
     @Override
-    public InitialDPArgExtension createInitialDPArgExtension(ISDNAddressString gmscAddress,
-            CalledPartyNumberIsup forwardingDestinationNumber, MSClassmark2 msClassmark2, IMEI imei,
-            SupportedCamelPhases supportedCamelPhases, OfferedCamel4Functionalities offeredCamel4Functionalities,
-            BearerCapability bearerCapability2, ExtBasicServiceCode extBasicServiceCode2,
-            HighLayerCompatibilityIsup highLayerCompatibility2, LowLayerCompatibility lowLayerCompatibility,
-            LowLayerCompatibility lowLayerCompatibility2, boolean enhancedDialledServicesAllowed, UUData uuData,
-            boolean collectInformationAllowed, boolean releaseCallArgExtensionAllowed) {
-        return new InitialDPArgExtensionImpl(gmscAddress, forwardingDestinationNumber, msClassmark2, imei,
-                supportedCamelPhases, offeredCamel4Functionalities, bearerCapability2, extBasicServiceCode2,
-                highLayerCompatibility2, lowLayerCompatibility, lowLayerCompatibility2, enhancedDialledServicesAllowed, uuData,
-                collectInformationAllowed, releaseCallArgExtensionAllowed);
-    }
-
-    @Override
     public AlertingPatternWrapper createAlertingPattern(AlertingPattern alertingPattern) {
         return new AlertingPatternWrapperImpl(alertingPattern);
     }

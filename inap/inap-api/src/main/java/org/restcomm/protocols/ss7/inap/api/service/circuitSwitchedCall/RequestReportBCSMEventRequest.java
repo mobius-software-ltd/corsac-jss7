@@ -24,6 +24,7 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
 import java.util.List;
 
+import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.BCSMEvent;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 
@@ -50,6 +51,16 @@ RequestReportBCSMEventArg ::= SEQUENCE {
 	extensions [2] SEQUENCE SIZE (1..numOfExtensions) OF ExtensionField OPTIONAL
 -- ...
 }
+
+--- From Q.1218 CS1
+RequestReportBCSMEventArg ::= SEQUENCE {
+	bcsmEvents [0] SEQUENCE SIZE(1..numOfBCSMEvents) OF BCSMEvent,
+	bcsmEventCorrelationID [1] CorrelationID OPTIONAL,
+	extensions [2] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL
+-- ...
+}
+-- Indicates the BCSM related events for notification.
+-- For correlationID OPTIONAL denotes network operator optional
 </code>
  *
  * @author yulian.oifa
@@ -59,6 +70,8 @@ public interface RequestReportBCSMEventRequest extends CircuitSwitchedCallMessag
 
     List<BCSMEvent> getBCSMEventList();
 
+    DigitsIsup getBCSMEventCorrelationID();
+    	
     CAPINAPExtensions getExtensions();
 
 }

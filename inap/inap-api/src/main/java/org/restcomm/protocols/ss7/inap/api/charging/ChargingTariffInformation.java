@@ -22,9 +22,10 @@
 
 package org.restcomm.protocols.ss7.inap.api.charging;
 
-import java.io.Serializable;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 
-import org.restcomm.protocols.ss7.inap.api.primitives.INAPExtensions;
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
 *
@@ -50,13 +51,14 @@ ChargingTariffInformation ::= SEQUENCE {
 * @author sergey vetyutnev
 *
 */
-public interface ChargingTariffInformation extends Serializable {
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
+public interface ChargingTariffInformation {
 
     ChargingControlIndicators getChargingControlIndicators();
 
     ChargingTariff getChargingTariff();
 
-    INAPExtensions getExtensions();
+    CAPINAPExtensions getExtensions();
 
     ChargingReferenceIdentification getOriginationIdentification();
 

@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceAddress;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
 
 /**
@@ -51,6 +51,22 @@ ConnectToResourceArg ::= SEQUENCE {
 	serviceInteractionIndicators [30] ServiceInteractionIndicators OPTIONAL
 -- ...
 }
+
+--- From Q.1218 CS1
+ConnectToResourceArg ::= SEQUENCE {
+	resourceAddress CHOICE {
+		ipRoutingAddress [0] IPRoutingAddress,
+		legID [1] LegID,
+		both [2] SEQUENCE {
+			ipRoutingAddress [0] IPRoutingAddress,
+ 			legID [1] LegID
+ 		},
+		none [3] NULL
+	},
+	extensions [4] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL,
+	serviceInteractionIndicators [30] ServiceInteractionIndicators OPTIONAL
+-- ...
+}
 </code>
 *
  * @author yulian.oifa
@@ -58,9 +74,9 @@ ConnectToResourceArg ::= SEQUENCE {
  */
 public interface ConnectToResourceRequest extends CircuitSwitchedCallMessage {
 
-    CalledPartyNumberIsup getResourceAddress_IPRoutingAddress();
+	ResourceAddress getResourceAddress();
 
-    boolean getResourceAddress_Null();
+    boolean getResourceAddressNull();
 
     CAPINAPExtensions getExtensions();
 

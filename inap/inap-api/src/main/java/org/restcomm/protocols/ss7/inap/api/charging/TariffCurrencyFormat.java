@@ -22,8 +22,10 @@
 
 package org.restcomm.protocols.ss7.inap.api.charging;
 
-import java.io.Serializable;
 import java.util.List;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
 *
@@ -56,7 +58,8 @@ maxCommunicationTariffNum INTEGER ::= 4
 * @author sergey vetyutnev
 *
 */
-public interface TariffCurrencyFormat extends Serializable {
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
+public interface TariffCurrencyFormat {
 
     List<CommunicationChargeCurrency> getCommunicationChargeSequenceCurrency();
 

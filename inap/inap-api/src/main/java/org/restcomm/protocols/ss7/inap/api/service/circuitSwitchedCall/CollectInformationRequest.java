@@ -22,7 +22,13 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
+import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledPartyIDIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
 
 /**
  *
@@ -46,11 +52,35 @@ CollectInformationArg ::= SEQUENCE {
 	extensions [4] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL
 -- ...
 }
+
+--- From Q.1218 CS1
+CollectInformationArg ::= SEQUENCE {
+	alertingPattern [0] AlertingPattern OPTIONAL,
+	numberingPlan [1] NumberingPlan OPTIONAL,
+	originalCalledPartyID [2] OriginalCalledPartyID OPTIONAL,
+	travellingClassMark [3] TravellingClassMark OPTIONAL,
+	extensions [4] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL,
+	callingPartyNumber [5] CallingPartyNumber OPTIONAL,
+	dialledDigits [6] CalledPartyNumber OPTIONAL
+-- ...
+}
 </code>
  *
  * @author yulian.oifa
  *
  */
 public interface CollectInformationRequest extends CircuitSwitchedCallMessage {
+	AlertingPattern getAlertingPattern();
+	
+	NumberingPlan getNumberingPlan();
+	
+	OriginalCalledPartyIDIsup getOriginalCalledPartyID();
+	
+	LocationNumberIsup getTravellingClassMark();
+    
 	CAPINAPExtensions getExtensions();
+	
+	CallingPartyNumberIsup getCallingPartyNumber();
+	
+	CalledPartyNumberIsup getDialledDigits();
 }

@@ -23,6 +23,7 @@
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.EventSpecificInformationBCSM;
+import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
@@ -42,8 +43,19 @@ EventReportBCSMArg ::= SEQUENCE {
 	eventSpecificInformationBCSM [2] EventSpecificInformationBCSM OPTIONAL,
 	legID [3] LegID OPTIONAL,
 	miscCallInfo [4] MiscCallInfo DEFAULT {messageType request},
-	extensions [5] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField
-OPTIONAL
+	extensions [5] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL
+-- ...
+}
+
+--- From Q.1218 CS1
+EventReportBCSMArg ::= SEQUENCE {
+	eventTypeBCSM [0] EventTypeBCSM,
+	bcsmEventCorrelationID [1] CorrelationID OPTIONAL,
+	eventSpecificInformationBCSM [2] EventSpecificInformationBCSM OPTIONAL,
+	legID [3] LegID OPTIONAL,
+	miscCallInfo [4] MiscCallInfo DEFAULT
+	{messageType request},
+	extensions [5] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL
 -- ...
 }
 </code>
@@ -55,6 +67,8 @@ public interface EventReportBCSMRequest extends CircuitSwitchedCallMessage {
 
     EventTypeBCSM getEventTypeBCSM();
 
+    DigitsIsup getBCSMEventCorrelationID();
+    
     EventSpecificInformationBCSM getEventSpecificInformationBCSM();
 
     LegType getLegID();

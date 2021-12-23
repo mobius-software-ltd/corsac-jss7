@@ -22,8 +22,10 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive;
 
-import java.io.Serializable;
 import java.util.List;
+
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
 *
@@ -39,7 +41,8 @@ MidCallControlInfo {PARAMETERS-BOUND : bound} ::= SEQUENCE SIZE (bound.&minMidCa
 * @author sergey vetyutnev
 *
 */
-public interface MidCallControlInfo extends Serializable {
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
+public interface MidCallControlInfo {
 
     List<MidCallControlInfoItem> getMidCallControlInfoItems();
 
