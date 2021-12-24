@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.inap.api.charging;
 
+import java.util.List;
+
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
@@ -45,8 +47,8 @@ ReferenceID ::= INTEGER (0..4294967295)
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public interface ChargingReferenceIdentification {
 
-    long[] getNetworkIdentification();
+    List<Long> getNetworkIdentification();
 
-    long getReferenceID();
+    Long getReferenceID();
 
 }

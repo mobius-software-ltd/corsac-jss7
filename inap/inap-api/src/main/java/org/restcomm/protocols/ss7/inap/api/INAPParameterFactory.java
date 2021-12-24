@@ -58,6 +58,7 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapabi
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAI_GSM0224;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELAChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELSCIBillingChargingCharacteristicsAlt;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountered;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallCompletionTreatmentIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallDiversionTreatmentIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallSegmentToCancel;
@@ -151,6 +152,95 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.UserCSGInf
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.LSAIdentity;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.SupportedCamelPhases;
+import org.restcomm.protocols.ss7.inap.api.charging.AddOnCharge;
+import org.restcomm.protocols.ss7.inap.api.charging.AddOnChargingInformation;
+import org.restcomm.protocols.ss7.inap.api.charging.ChargeUnitTimeInterval;
+import org.restcomm.protocols.ss7.inap.api.charging.ChargingControlIndicators;
+import org.restcomm.protocols.ss7.inap.api.charging.ChargingReferenceIdentification;
+import org.restcomm.protocols.ss7.inap.api.charging.ChargingTariff;
+import org.restcomm.protocols.ss7.inap.api.charging.ChargingTariffInformation;
+import org.restcomm.protocols.ss7.inap.api.charging.CommunicationChargeCurrency;
+import org.restcomm.protocols.ss7.inap.api.charging.CommunicationChargePulse;
+import org.restcomm.protocols.ss7.inap.api.charging.Currency;
+import org.restcomm.protocols.ss7.inap.api.charging.CurrencyFactorScale;
+import org.restcomm.protocols.ss7.inap.api.charging.PulseUnits;
+import org.restcomm.protocols.ss7.inap.api.charging.SubTariffControl;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffControlIndicators;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffCurrency;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffCurrencyFormat;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffDuration;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffPulse;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffPulseFormat;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffSwitchCurrency;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffSwitchPulse;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffSwitchoverTime;
+import org.restcomm.protocols.ss7.inap.api.primitives.TerminalType;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ApplicationID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNS;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNSIndicator;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardSuppression;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardSuppressionIndicators;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCall;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCallIndicator;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGInterLockCode;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.DataItemID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.DataItemInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.DialogueUserInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ExistingLegs;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ForwardSuppression;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ForwardSuppressionIndicators;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericDigitsSet;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericName;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericNumbersSet;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GlobalTitle;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GlobalTitleAndSSN;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.HandOverInfo;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.InstructionIndicator;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.LegIDs;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.LimitIndicators;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.PointCodeAndSSN;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.PointCodeAndSSNANSI;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ProtocolIdentifier;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ProtocolIndicator;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ReceivingFunctionsRequested;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.RouteOrigin;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SCPAddress;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SCPDialogueInfo;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SendingFunctionsActive;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.TCAPDialogueLevel;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.AddressAndService;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CalledPartyBusinessGroupID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CalledPartySubaddress;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CallingPartyBusinessGroupID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CallingPartySubaddress;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ChargingEvent;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CounterAndValue;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.DisplayInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.DpSpecificCommonParameters;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Entry;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FacilityGroup;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteredCallTreatment;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringCharacteristics;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringCriteria;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringTimeOut;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.GenericNumbers;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.HoldCause;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.INServiceCompatibilityIndication;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.IPAvailable;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallControlInfoItem;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallInfoType;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallReportType;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceAddress;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RouteList;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceAddressInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceProfileIdentifier;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Tariff;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.TriggerType;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.USIInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.USIServiceIndicator;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
@@ -163,6 +253,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectingNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
+import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle0100;
 
 /**
  *
@@ -549,4 +640,225 @@ public interface INAPParameterFactory {
             LSAIdentity selectedLSAId, ISDNAddressString mscNumber, GeodeticInformation geodeticInformation,
             boolean currentLocationRetrieved, boolean saiPresent, LocationInformationEPS locationInformationEPS,
             UserCSGInformation userCSGInformation);    
+    
+    //billing
+    AddOnCharge createAddOnCharge(CurrencyFactorScale currencyFactorScale);
+    
+    AddOnCharge createAddOnCharge(PulseUnits currencyFactorScale);
+    
+    AddOnChargingInformation createAddOnChargingInformation(ChargingControlIndicators getChargingControlIndicators,
+    		AddOnCharge addOncharge,CAPINAPExtensions extensions,ChargingReferenceIdentification originationIdentification,
+    		ChargingReferenceIdentification destinationIdentification,Currency currency);
+    
+    ChargeUnitTimeInterval getChargeUnitTimeInterval(byte[] data);
+    
+    ChargingControlIndicators getChargingControlIndicators(boolean getSubscriberCharge,boolean getImmediateChangeOfActuallyAppliedTariff,boolean getDelayUntilStart);
+    
+    ChargingReferenceIdentification getChargingReferenceIdentification(List<Long> networkIdentification,Long referenceID);
+    
+    ChargingTariff getChargingTariff(TariffCurrency tariffCurrency);
+    
+    ChargingTariff getChargingTariff(TariffPulse tariffPulse);
+    
+    ChargingTariffInformation getChargingTariffInformation(ChargingControlIndicators chargingControlIndicators,
+    		ChargingTariff chargingTariff,CAPINAPExtensions extensions,ChargingReferenceIdentification originationIdentification,
+    		ChargingReferenceIdentification destinationIdentification,Currency currency);
+    
+    CommunicationChargeCurrency getCommunicationChargeCurrency(CurrencyFactorScale currencyFactorScale,
+    		int tariffDuration,SubTariffControl subTariffControl);
+    
+    CommunicationChargePulse getCommunicationChargePulse(PulseUnits pulseUnits,
+    		ChargeUnitTimeInterval chargeUnitTimeInterval,TariffDuration tariffDuration);
+    
+    CurrencyFactorScale getCurrencyFactorScale(Integer currencyFactor,Integer currencyScale);
+    
+    PulseUnits getPulseUnits(int data);
+    
+    SubTariffControl getSubTariffControl(boolean oneTimeCharge);
+    
+    TariffControlIndicators getTariffControlIndicators(boolean nonCyclicTariff);
+    
+    TariffCurrency getTariffCurrency(TariffCurrencyFormat tariffCurrencyFormat,TariffSwitchCurrency getTariffSwitchCurrency);
+    
+    TariffCurrencyFormat getTariffCurrencyFormat(List<CommunicationChargeCurrency> communicationChargeSequenceCurrency, 
+    		TariffControlIndicators tariffControlIndicators,CurrencyFactorScale callAttemptChargeCurrency,
+    		CurrencyFactorScale callSetupChargeCurrency);
+    
+    TariffDuration getTariffDuration(int data);
+    
+    TariffPulse getTariffPulse(TariffPulseFormat currentTariffPulse,TariffSwitchPulse tariffSwitchPulse);
+    
+    TariffPulseFormat getTariffPulseFormat(List<CommunicationChargePulse> communicationChargeSequencePulse,
+    		TariffControlIndicators tariffControlIndicators,PulseUnits callAttemptChargePulse,
+    		PulseUnits callSetupChargePulse);
+    
+    TariffSwitchCurrency getTariffSwitchCurrency(TariffCurrencyFormat nextTariffCurrency,TariffSwitchoverTime tariffSwitchoverTime);
+    
+    TariffSwitchoverTime getTariffSwitchoverTime(int data);
+    
+    TariffSwitchPulse getTariffSwitchPulse(TariffPulseFormat nextTariffPulse,TariffSwitchoverTime tariffSwitchoverTime);
+    
+    //cs1 plus
+    ApplicationID getApplicationID(byte data[]);
+    
+    BackwardGVNSIndicator getBackwardGVNSIndicator(BackwardGVNS backwardGVNS);
+    
+    BackwardSuppressionIndicators getBackwardSuppressionIndicators(BackwardSuppression backwardSuppression,
+    	InstructionIndicator instructionIndicator);
+    
+    CUGCallIndicator getCUGCallIndicator(CUGCall cugCall);
+    
+    CUGInterLockCode getCUGInterLockCode(byte data[]);
+    
+    DataItemID getDataItemID(byte[] attribute0,	byte[] attribute1, byte[] attribute2,    
+    	byte[] attribute3,byte[] attribute4, byte[] attribute5, byte[] attribute6,    
+    	byte[] attribute7, byte[] attribute8, byte[] attribute9, byte[] attribute10,    
+    	byte[] attribute11, byte[] attribute12, byte[] attribute13, byte[] attribute14,    
+    	byte[] attribute15, byte[] attribute16, byte[] attribute17, byte[] attribute18,
+    	byte[] attribute19, byte[] attribute20, byte[] attribute21, byte[] attribute22,
+    	byte[] attribute23, byte[] attribute24, byte[] attribute25, byte[] attribute26,
+    	byte[] attribute27, byte[] attribute28, byte[] attribute29, byte[] attribute30);
+    
+    DataItemInformation getDataItemInformation(byte[] attribute0,	byte[] attribute1, byte[] attribute2,    
+        	byte[] attribute3,byte[] attribute4, byte[] attribute5, byte[] attribute6,    
+        	byte[] attribute7, byte[] attribute8, byte[] attribute9, byte[] attribute10,    
+        	byte[] attribute11, byte[] attribute12, byte[] attribute13, byte[] attribute14,    
+        	byte[] attribute15, byte[] attribute16, byte[] attribute17, byte[] attribute18,
+        	byte[] attribute19, byte[] attribute20, byte[] attribute21, byte[] attribute22,
+        	byte[] attribute23, byte[] attribute24, byte[] attribute25, byte[] attribute26,
+        	byte[] attribute27, byte[] attribute28, byte[] attribute29, byte[] attribute30);
+    
+    DialogueUserInformation getDialogueUserInformation(SendingFunctionsActive sendingFunctionsActive,
+    		ReceivingFunctionsRequested receivingFunctionsRequested,Integer trafficSimulationSessionID);
+    
+    ExistingLegs getExistingLegs(LegType legID,boolean linkInd);
+    
+    ForwardSuppressionIndicators getForwardSuppressionIndicators(ForwardSuppression forwardSuppression,
+    		InstructionIndicator instructionIndicator);
+    
+    GenericDigitsSet getGenericDigitsSet(List<DigitsIsup> genericDigits);
+    
+    GenericName getGenericName(byte[] data);
+    
+    GenericNumbersSet getGenericNumbersSet(List<DigitsIsup> geneicNumbers);
+    
+    GlobalTitle getGlobalTitle(GlobalTitle0100 title);
+    
+    GlobalTitleAndSSN getGlobalTitle(GlobalTitle0100 title, Integer ssn);
+    
+    HandOverInfo getHandOverInfo(Integer getHandoverCounter, SCPAddress getSendingSCPAddress,
+    		SCPDialogueInfo getSendingSCPDialogueInfo, byte[] getSendingSCPCorrelationInfo,
+    		SCPAddress getReceivingSCPAddress, SCPDialogueInfo getReceivingSCPDialogueInfo,
+    		byte[] getReceivingSCPCorrelationInfo, CalledPartyNumberIsup getHandoverNumber,Integer getHandoverData);
+    
+    LegIDs getLegIDs(ExistingLegs existingLegs);
+    
+    LimitIndicators getLimitIndicators(Integer duration);
+    
+    PointCodeAndSSN getPointCodeAndSSN(Integer spc,Integer ssn);
+    
+    PointCodeAndSSNANSI getPointCodeAndSSNANSI(Integer network,Integer cluster,Integer member,Integer ssn);
+    
+    ProtocolIndicator getProtocolIndicator(ProtocolIdentifier protocolIdentifier,TCAPDialogueLevel tcapDialogueLevel);
+    
+    RouteOrigin getRouteOrigin(byte[] data);
+    
+    SCPAddress getSCPAddress(boolean colocated);
+    
+    SCPAddress getSCPAddress(GlobalTitle globalTitle);
+    
+    SCPAddress getSCPAddress(GlobalTitleAndSSN globalTitleAndSSN);
+    
+    SCPAddress getSCPAddress(PointCodeAndSSNANSI pointCodeAndSubSystemNumberANSI);
+    
+    SCPDialogueInfo getSCPDialogueInfo(ProtocolIndicator protocolIndicator,DialogueUserInformation dialogueUserInformation);
+    
+    //cicruit switched call - inap
+    AddressAndService getAddressAndService(DigitsIsup calledAddressValue,int serviceKey,
+    		DigitsIsup callingAddressValue,LocationNumberIsup locationNumber);
+    
+    CalledPartyBusinessGroupID getCalledPartyBusinessGroupID(byte[] data);
+    
+    CalledPartySubaddress getCalledPartySubaddress(byte[] data);
+    
+    CallingPartyBusinessGroupID getCallingPartyBusinessGroupID(byte[] data);
+    
+    CallingPartySubaddress getCallingPartySubaddress(byte[] data);
+    
+    ChargingEvent getChargingEvent(byte[] eventTypeCharging,MonitorMode monitorMode,LegID legID);
+    
+    CounterAndValue getCounterAndValue(Integer counterID,Integer counterValue);
+    
+    DisplayInformation getDisplayInformation(String value);
+    
+    DpSpecificCommonParameters getDpSpecificCommonParameters(ServiceAddressInformation getServiceAddressInformation,
+    		BearerCapability bearerCapability,CalledPartyNumberIsup calledPartyNumber,CallingPartyNumberIsup callingPartyNumber,
+    		CallingPartysCategoryIsup callingPartysCategory,IPSSPCapabilities ipsspCapabilities,
+    		IPAvailable ipAvailable,ISDNAccessRelatedInformation isdnAccessRelatedInformation,
+    		CGEncountered cgEncountered,LocationNumberIsup locationNumber,ServiceProfileIdentifier serviceProfileIdentifier,
+    		TerminalType terminalType,CAPINAPExtensions extensions,LocationNumberIsup chargeNumber,
+    		LocationNumberIsup servingAreaID);
+    
+    Entry getEntry(List<Long> agreements,Integer networkSpecific);
+    
+    FacilityGroup getFacilityGroup(Integer value,boolean isTrunkGroup);
+    
+    FacilityGroup getFacilityGroup(byte[] value,boolean isHuntGroup);
+    
+    FilteredCallTreatment getFilteredCallTreatment(byte[] sfBillingChargingCharacteristics,
+    		InformationToSend informationToSend,Integer maximumNumberOfCounters,CauseIsup cause);
+    
+    FilteringCharacteristics getFilteringCharacteristics(Integer interval,Integer numberOfCalls);
+    
+    FilteringCriteria getFilteringCriteria(Integer serviceKey);
+    
+    FilteringCriteria getFilteringCriteria(AddressAndService getAddressAndService);
+    
+    FilteringTimeOut getFilteringTimeOut(Integer duration);
+    
+    FilteringTimeOut getFilteringTimeOut(DateAndTime stopTime);
+    
+    GenericNumbers getGenericNumbers(List<GenericNumberIsup> genericNumbers);
+    
+    HoldCause getHoldCause(byte[] data);
+    
+    INServiceCompatibilityIndication getINServiceCompatibilityIndication(List<Entry> entries);
+    
+    IPAvailable getIPAvailable(byte[] data);
+    
+    ISDNAccessRelatedInformation getISDNAccessRelatedInformation(byte[] data);
+    
+    MidCallControlInfo getMidCallControlInfo(List<MidCallControlInfoItem> midCallControlInfoItems);
+    
+    MidCallControlInfoItem getMidCallControlInfoItem(MidCallInfoType midCallInfoType, MidCallReportType midCallReportType);
+    
+    MidCallInfoType getMidCallInfoType(DigitsIsup inServiceControlCodeLow,DigitsIsup inServiceControlCodeHigh);
+    
+    ResourceAddress getResourceAddress(CalledPartyNumberIsup ipRoutingAddress);
+    
+    ResourceAddress getResourceAddress(LegID legID);
+    
+    ResourceAddress getResourceAddress(boolean none);
+    
+    ResourceID getResourceID(DigitsIsup lineID);
+    
+    ResourceID getResourceID(FacilityGroup facilityGroup);
+    
+    ResourceID getResourceID(Integer value,boolean isTrunkGroupID);
+    
+    RouteList getRouteList(List<byte[]> data);
+    
+    ServiceAddressInformation getServiceAddressInformation(int serviceKey,MiscCallInfo miscCallInfo,TriggerType triggerType);
+    
+    ServiceInteractionIndicators getServiceInteractionIndicators(byte[] data);
+    
+    ServiceProfileIdentifier getServiceProfileIdentifier(byte[] data);
+    
+    Tariff getTariff(ChargingTariffInformation chargingTariffInformation);
+    
+    Tariff getTariff(AddOnChargingInformation addOnChargingInformation);
+    
+    USIInformation getUSIInformation(byte[] data);
+    
+    USIServiceIndicator getUSIServiceIndicator(List<Long> global,byte[] local);
 }

@@ -46,11 +46,11 @@ FacilityGroup ::= CHOICE {
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public interface FacilityGroup {
 
-	DigitsIsup getCalledAddressValue();
+	Integer getTrunkGroupID();
 
-    int getServiceKey();
+    Integer getPrivateFacilityID();
 
-    DigitsIsup getCallingAddressValue();
+    byte[] getHuntGroup();
 
-    LocationNumberIsup getLocationNumber();    
+    byte[] getRouteIndex();    
 }

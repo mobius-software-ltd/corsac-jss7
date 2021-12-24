@@ -50,5 +50,7 @@ public interface SCPAddress {
 
     GlobalTitle getGlobalTitle();
 
-    GlobalTitleAndSSN getGlobalTitleAndSSN();     
+    GlobalTitleAndSSN getGlobalTitleAndSSN();  
+    
+    PointCodeAndSSNANSI getPointCodeAndSubSystemNumberANSI();
 }

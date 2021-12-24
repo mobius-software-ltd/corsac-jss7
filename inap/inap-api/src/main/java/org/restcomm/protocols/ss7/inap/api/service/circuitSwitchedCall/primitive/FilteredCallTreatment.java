@@ -32,10 +32,10 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
 <code>
 FilteredCallTreatment ::= SEQUENCE {
-sFBillingChargingCharacteristics [0] SFBillingChargingCharacteristics,
-informationToSend [1] InformationToSend OPTIONAL,
-maximumNumberOfCounters [2] MaximumNumberOfCounters OPTIONAL,
-releaseCause [3] Cause OPTIONAL
+	sFBillingChargingCharacteristics [0] SFBillingChargingCharacteristics,
+	informationToSend [1] InformationToSend OPTIONAL,
+	maximumNumberOfCounters [2] MaximumNumberOfCounters OPTIONAL,
+	releaseCause [3] Cause OPTIONAL
 }
 </code>
  *

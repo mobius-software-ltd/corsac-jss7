@@ -1,6 +1,6 @@
 /*
- * TeleStax, Open Source Cloud Communications
- * Copyright 2012, Telestax Inc and individual contributors
+ * TeleStax, Open Source Cloud Communications  Copyright 2012.
+ * and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -20,9 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.inap.api.EsiBcsm;
-
-import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
+package org.restcomm.protocols.ss7.inap.api.charging;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -30,9 +28,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 /**
 *
 <code>
-  tAbandon [22] SEQUENCE {
-    abandonCause [0] Cause {bound} OPTIONAL,
-    ...
+  addOncharge [01] CHOICE {
+    addOnChargeCurrency [00] CurrencyFactorScale ,
+    addOnChargePulse    [01] PulseUnits
   },
 </code>
 *
@@ -40,8 +38,10 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 *
 */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public interface TAbandon {
+public interface AddOnCharge {
 
-    CauseIsup getAbandonCause();
+    CurrencyFactorScale getAddOnChargeCurrency();
+
+    PulseUnits getAddOnChargePulse();
 
 }

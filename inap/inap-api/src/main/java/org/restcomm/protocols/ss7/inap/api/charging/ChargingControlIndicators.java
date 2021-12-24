@@ -57,8 +57,8 @@ public interface ChargingControlIndicators {
 
     boolean getSubscriberCharge();
 
-    Boolean getImmediateChangeOfActuallyAppliedTariff();
+    boolean getImmediateChangeOfActuallyAppliedTariff();
 
-    Boolean getDelayUntilStart();
+    boolean getDelayUntilStart();
 
 }
