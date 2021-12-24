@@ -23,17 +23,24 @@
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardCallIndicatorsIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardGVNSIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.HighLayerCompatibilityIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectingPartyIDIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCallIndicator;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGInterLockCode;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ForwardingCondition;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RouteList;
@@ -101,13 +108,58 @@ ConnectArg ::= SEQUENCE {
 }
 -- For alerting pattern, OPTIONAL denotes that this parameter only applies if SSF is the terminating
 -- local exchange for the subscriber.
+
+--- From CS1+ Spec
+ConnectArg ::= SEQUENCE {
+	legToBeCreated [PRIVATE 01] SendingSideID DEFAULT sendingSideID 2,
+	‐‐ the valid values for SendingSideID are (2..30)
+	bearerCapabilities [PRIVATE 02] BearerCapability OPTIONAL,
+	cUGCallIndicator [PRIVATE 03] CUGCallIndicator OPTIONAL,
+	cUGInterLockCode [PRIVATE 04] CUGInterLockCode OPTIONAL,
+	forwardCallIndicators [PRIVATE 05] ForwardCallIndicators OPTIONAL,
+	genericDigitsSet [PRIVATE 06] GenericDigitsSet OPTIONAL,
+	genericNumberSet [PRIVATE 07] GenericNumberSet OPTIONAL,
+	highLayerCompatibility [PRIVATE 08] HighLayerCompatibility OPTIONAL,
+	forwardGVNSIndicator [PRIVATE 09] ForwardGVNSIndicator OPTIONAL,
+	destinationRoutingAddress [00] DestinationRoutingAddress OPTIONAL,
+	alertingPattern [01] AlertingPattern OPTIONAL,
+	correlationID [02] GenericDigits OPTIONAL,
+	cutAndPaste [03] CutAndPaste OPTIONAL,
+	originalCalledPartyID [06] Number OPTIONAL,
+	routeList [07] RouteList OPTIONAL,
+	sCFID [08] GenericNumber OPTIONAL,
+	extensions [10] SEQUENCE SIZE (1..7) OF ExtensionField2 OPTIONAL,
+	serviceInteractionIndicators [26] CONServiceInteractionIndicators OPTIONAL,
+	callingPartyNumber [27] Number OPTIONAL,
+	callingPartysCategory [28] CallingPartysCategory OPTIONAL,
+	redirectingPartyID [29] Number OPTIONAL,
+	redirectionInformation [30] RedirectionInformation OPTIONAL
+‐‐ ...
+}
 </code>
 *
  * @author yulian.oifa
  *
  */
 public interface ConnectRequest extends CircuitSwitchedCallMessage {
-
+	LegType getLegToBeCreated();
+    
+    BearerCapability getBearerCapabilities();
+    
+    CUGCallIndicator getCUGCallIndicator();
+    
+    CUGInterLockCode getCUGInterLockCode();
+    
+    ForwardCallIndicatorsIsup getForwardCallIndicators();
+    
+    DigitsIsup getGenericDigitsSet();
+    
+    DigitsIsup getGenericNumberSet();
+    
+    HighLayerCompatibilityIsup getHighLayerCompatibility();
+    
+    ForwardGVNSIsup getForwardGVNSIndicator();
+    
     DestinationRoutingAddress getDestinationRoutingAddress();
 
     AlertingPatternWrapper getAlertingPattern();
@@ -140,5 +192,5 @@ public interface ConnectRequest extends CircuitSwitchedCallMessage {
 
     RedirectingPartyIDIsup getRedirectingPartyID();
 
-    RedirectionInformationIsup getRedirectionInformation();
+    RedirectionInformationIsup getRedirectionInformation();        
 }

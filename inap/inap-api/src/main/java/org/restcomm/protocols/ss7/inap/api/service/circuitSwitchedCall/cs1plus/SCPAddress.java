@@ -1,6 +1,6 @@
 /*
- * TeleStax, Open Source Cloud Communications
- * Copyright 2012, Telestax Inc and individual contributors
+ * TeleStax, Open Source Cloud Communications  Copyright 2012.
+ * and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -20,10 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive;
-
-import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
+package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -31,29 +28,27 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 /**
  *
 <code>
-both [2] SEQUENCE {
-	ipRoutingAddress [0] IPRoutingAddress,
- 	legID [1] LegID
- },
- 
- resourceAddress CHOICE {
-	iPRoutingAddress [00] IPRoutingAddress, ‐‐ implies CP
-	legID [01] ReceivingSideID,
-	‐‐ See ITU‐T Rec. Q.1218 Revised.
-	none [03] NULL ‐‐ implies CP
-},
+SCPAddress [01] CHOICE {
+	co‐located [00] NULL,
+	pointCodeAndSubSystemNumber [01] OCTET STRING (SIZE (3)),
+	globalTitle [02] OCTET STRING (SIZE(4..12)),
+	globalTitleAndSubSystemNumber [03] OCTET STRING (SIZE(5..13)),
+	pointCodeAndSubSystemNumberANSI [04] OCTET STRING (SIZE (4))
+}	
 </code>
  *
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public interface ResourceAddress {
+public interface SCPAddress {
 
-	CalledPartyNumberIsup getIPRoutingAddress();
+	boolean getIsColocated();
 
-	LegID getLegID();
-	
-	boolean isNone();
+    PointCodeAndSSN getPCAndSSN();
+
+    GlobalTitle getGlobalTitle();
+
+    GlobalTitleAndSSN getGlobalTitleAndSSN();     
 }

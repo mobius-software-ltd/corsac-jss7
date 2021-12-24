@@ -40,6 +40,8 @@ public interface INAPErrorMessage {
 
    boolean isEmTaskRefused();
 
+   boolean isEmOctetString();
+
    INAPErrorMessageParameterless getEmParameterless();
 
    INAPErrorMessageCancelFailed getEmCancelFailed();
@@ -49,4 +51,6 @@ public interface INAPErrorMessage {
    INAPErrorMessageSystemFailure getEmSystemFailure();
 
    INAPErrorMessageTaskRefused getEmTaskRefused();
+
+   INAPErrorMessageOctetString getEmOctetString();
 }

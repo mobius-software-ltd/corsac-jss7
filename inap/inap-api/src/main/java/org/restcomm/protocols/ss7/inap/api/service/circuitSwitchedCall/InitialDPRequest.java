@@ -25,10 +25,13 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountered;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.IPSSPCapabilities;
+import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardGVNSIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardGVNSIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.HighLayerCompatibilityIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
@@ -38,6 +41,13 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.inap.api.primitives.TerminalType;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCallIndicator;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGInterLockCode;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericDigitsSet;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericNumbersSet;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.HandOverInfo;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.LegIDs;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.RouteOrigin;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CallingPartyBusinessGroupID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CallingPartySubaddress;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.IPAvailable;
@@ -133,6 +143,42 @@ InitialDPArg ::= SEQUENCE {
 -- trigger detection point processing rules to specify when these parameters are included in the message.
 -- OPTIONAL for terminalType indicates that this parameter applies only at originating or terminating
 -- local exchanges if the SSF has this information.
+
+--- from CS1+ Spec
+InitialDPArg ::= SEQUENCE {
+	serviceKey [00] ServiceKey,
+	calledPartyNumber [02] Number OPTIONAL,
+	callingPartyNumber [03] Number OPTIONAL,
+	callingPartysCategory [05] CallingPartysCategory OPTIONAL,
+	cGEncountered [07] CGEncountered OPTIONAL,
+	iPSSPCapabilities [08] IPSSPCapabilities OPTIONAL,
+	locationNumber [10] Number OPTIONAL,
+	originalCalledPartyID [12] Number OPTIONAL,
+	extensions [15] SEQUENCE SIZE (1..16) OF ExtensionField1 OPTIONAL,
+	highLayerCompatibility [23] HighLayerCompatibility OPTIONAL,
+	serviceInteractionIndicators [24] IDPServiceInteractionIndicators
+	OPTIONAL,
+	additionalCallingPartyNumber [25] GenericNumber OPTIONAL,
+	forwardCallIndicators [26] ForwardCallIndicators OPTIONAL,
+	bearerCapability [27] BearerCapability OPTIONAL,
+	eventTypeBCSM [28] EventTypeBCSM OPTIONAL,
+	redirectingPartyID [29] Number OPTIONAL,
+	redirectionInformation [30] RedirectionInformation OPTIONAL,
+	‐‐ ...
+	triggerType [16] TriggerType OPTIONAL,
+	‐‐ See ITU‐T Rec. Q.1218 Revised.
+	legIDs [PRIVATE 01] LegIDs OPTIONAL,
+	routeOrigin [PRIVATE 02] RouteOrigin OPTIONAL,
+	testIndication [PRIVATE 03] NULL OPTIONAL,
+	cUGCallIndicator [PRIVATE 04] CUGCallIndicator OPTIONAL,
+	cUGInterLockCode [PRIVATE 05] CUGInterLockCode OPTIONAL,
+	genericDigitsSet [PRIVATE 06] GenericDigitsSet OPTIONAL,
+	genericNumberSet [PRIVATE 07] GenericNumberSet OPTIONAL,
+	cause [PRIVATE 08] Cause OPTIONAL,
+	handOverInfo [PRIVATE 09] HandOverInfo OPTIONAL,
+	forwardGVNSIndicator [PRIVATE 10] ForwardGVNSIndicator OPTIONAL,
+	backwardGVNSIndicator [PRIVATE 11] BackwardGVNSIndicator OPTIONAL
+}
 </code>
  *
  * @author yulian.oifa
@@ -193,4 +239,26 @@ public interface InitialDPRequest extends CircuitSwitchedCallMessage {
     RedirectingPartyIDIsup getRedirectingPartyID();
 
     RedirectionInformationIsup getRedirectionInformation();
+    
+    LegIDs getLegIDs();
+    
+    RouteOrigin getRouteOrigin();
+    
+    boolean getTestIndication();
+    
+    CUGCallIndicator getCUGCallIndicator();
+    
+    CUGInterLockCode getCUGInterLockCode();
+    
+    GenericDigitsSet getGenericDigitsSet();
+    
+    GenericNumbersSet getGenericNumberSet();
+    
+    CauseIsup getCause();
+    
+    HandOverInfo getHandOverInfo();
+    
+    ForwardGVNSIsup getForwardGVNSIndicator();        	
+    
+    BackwardGVNSIsup getBackwardGVNSIsup();
 }

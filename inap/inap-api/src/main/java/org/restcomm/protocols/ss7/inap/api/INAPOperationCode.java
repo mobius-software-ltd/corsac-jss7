@@ -179,4 +179,26 @@ public interface INAPOperationCode {
 	//-- Activity Test ASE
 	//activityTest ActivityTest ::= localValue 55
 	int activityTest = 55;	
+	
+	//CS1+ Operations
+	//callLimit CallLimit ::= localValue ‐1
+	int callLimit = -1;
+	//continueWithArgument ContinueWithArgument ::= localValue 88
+	int continueWithArgument = 88;
+	//dialogueUserInformation DialogueUserInformation ::= localValue ‐2
+	int dialogueUserInformation = -2;
+	//handOver HandOver ::= localValue ‐3
+	int handOver = -3;
+	//holdCallPartyConnection HoldCallPartyConnection ::= localValue ‐4
+	int holdCallPartyConnection = -4;
+	//reconnect Reconnect ::= localValue ‐5
+	int reconnect = -5;
+	//releaseCallPartyConnection ReleaseCallPartyConnection ::= localValue ‐6
+	int releaseCallPartyConnection = -6;
+	//signallingInformation SignallingInformation ::= localValue ‐8
+	int signallingInformation = -8;
+	//retrieve Retrieve ::= localValue 16
+	int retrieve = 16;	
+	//update Update ::= localValue 21
+	int update = 21;		
 }

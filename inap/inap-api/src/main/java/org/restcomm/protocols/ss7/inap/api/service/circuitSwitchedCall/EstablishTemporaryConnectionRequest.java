@@ -26,7 +26,9 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RouteList;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
 
 /**
@@ -67,6 +69,19 @@ EstablishTemporaryConnectionArg ::= SEQUENCE {
 	serviceInteractionIndicators [30] ServiceInteractionIndicators OPTIONAL
 -- ...
 }
+
+--- From CS1+ Spec
+EstablishTemporaryConnectionArg ::= SEQUENCE {
+	legID [PRIVATE 01] SendingSideID OPTIONAL,
+	‐‐ legID absent indicates CP
+	assistingSSPIPRoutingAddress [00] GenericNumber,
+	correlationID [01] GenericDigits OPTIONAL,
+	sCFID [03] GenericNumber OPTIONAL,
+	extensions [04] SEQUENCE SIZE (1..7) OF ExtensionField1 OPTIONAL,
+	serviceInteractionIndicators [30] ETCServiceInteractionIndicators OPTIONAL,
+‐‐ ...
+	routeList [PRIVATE 02] RouteList OPTIONAL
+}
 </code>
  *
  * @author yulian.oifa
@@ -74,6 +89,7 @@ EstablishTemporaryConnectionArg ::= SEQUENCE {
  */
 public interface EstablishTemporaryConnectionRequest extends CircuitSwitchedCallMessage {
 
+	LegType getlegID();
     /**
      * Use Digits.getGenericNumber() for AssistingSSPIPRoutingAddress
      *
@@ -97,4 +113,6 @@ public interface EstablishTemporaryConnectionRequest extends CircuitSwitchedCall
     Carrier getCarrier();
     
     ServiceInteractionIndicators getServiceInteractionIndicators();
+    
+    RouteList getRouteList();
 }

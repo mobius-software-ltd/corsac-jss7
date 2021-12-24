@@ -25,6 +25,7 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedInfo;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.InformationToSend;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 
 /**
  *
@@ -52,6 +53,19 @@ PromptAndCollectUserInformationArg ::= SEQUENCE {
 	extensions [3] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL
 -- ...
 }
+
+--- from CS1+ Spec
+PromptAndCollectUserInformationArg ::= SEQUENCE {
+	legID [PRIVATE 01] SendingSideID OPTIONAL,
+	‐‐ legID absent indicates CP
+	requestAnnouncementStarted [PRIVATE 02] BOOLEAN DEFAULT FALSE,
+	requestAnnouncementComplete [PRIVATE 03] BOOLEAN DEFAULT FALSE,
+	collectedInfo [00] CollectedInfo,
+	disconnectFromIPForbidden [01] BOOLEAN DEFAULT TRUE,
+	informationToSend [02] InformationToSend OPTIONAL,
+	extensions [03] SEQUENCE SIZE (1..16) OF ExtensionField1 OPTIONAL
+‐‐ ...
+}
 </code>
  *
  * @author yulian.oifa
@@ -59,6 +73,12 @@ PromptAndCollectUserInformationArg ::= SEQUENCE {
  */
 public interface PromptAndCollectUserInformationRequest extends CircuitSwitchedCallMessage {
 
+	LegType getLegID();
+	
+	Boolean getRequestAnnouncementStarted();
+	
+	Boolean getRequestAnnouncementComplete();
+	
     CollectedInfo getCollectedInfo();
 
     Boolean getDisconnectFromIPForbidden();

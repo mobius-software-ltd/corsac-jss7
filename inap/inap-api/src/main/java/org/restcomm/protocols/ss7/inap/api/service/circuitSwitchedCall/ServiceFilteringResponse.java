@@ -54,6 +54,16 @@ ServiceFilteringResponseArg ::= SEQUENCE {
 	responseCondition [3] ResponseCondition OPTIONAL
 -- ...
 }
+
+--- from CS1+ Spec
+ServiceFilteringResponseArg ::= SEQUENCE {
+	countersValue [00] CountersValue,
+	filteringCriteria [01] FilteringCriteria,
+	‐‐ ...
+	responseCondition [03] ResponseCondition DEFAULT intermediateResponse,
+	‐‐ See ITU‐T Rec. Q.1218 Revised.
+	sCFCorrelationInfo [PRIVATE 01] OCTET STRING (SIZE(16)) OPTIONAL
+}
 </code>
  *
  * @author yulian.oifa
@@ -68,4 +78,6 @@ public interface ServiceFilteringResponse extends CircuitSwitchedCallMessage {
 	CAPINAPExtensions getExtensions();
 	
 	ResponseCondition getResponseCondition();
+	
+	byte[] getSCFCorrelationInfo();
 }

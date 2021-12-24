@@ -142,4 +142,28 @@ public interface INAPServiceCircuitSwitchedCallListener extends INAPServiceListe
     void onRequestFirstStatusMatchReportRequest(RequestFirstStatusMatchReportRequest ind);
     
     void onStatusReportRequest(StatusReportRequest ind);
+    
+    void onUpdateRequest(UpdateRequest ind);
+    
+    void onUpdateResponse(UpdateResponse ind);
+    
+    void onRetrieveRequest(RetrieveRequest ind);
+    
+    void onRetrieveResponse(RetrieveResponse ind);
+    
+    void onSignalingInformationRequest(SignallingInformationRequest ind);
+    
+    void onReleaseCallPartyConnectionRequest(ReleaseCallPartyConnectionRequest ind);
+    
+    void onReconnectRequest(ReconnectRequest ind);
+    
+    void onHoldCallPartyConnectionRequest(HoldCallPartyConnectionRequest ind);  
+        
+    void onHandOverRequest(HandOverRequest ind);  
+    
+    void onDialogueUserInformationRequest(DialogueUserInformationRequest ind);   
+    
+    void onCallLimitRequest(CallLimitRequest ind);
+    
+    void onContinueWithArgumentRequest(ContinueWithArgumentRequest ind);             
 }

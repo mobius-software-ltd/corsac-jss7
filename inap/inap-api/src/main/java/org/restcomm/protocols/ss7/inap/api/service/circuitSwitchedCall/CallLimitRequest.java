@@ -22,57 +22,38 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ControlType;
 import org.restcomm.protocols.ss7.commonapp.api.gap.GapCriteria;
-import org.restcomm.protocols.ss7.commonapp.api.gap.GapIndicators;
 import org.restcomm.protocols.ss7.commonapp.api.gap.GapTreatment;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.DateAndTime;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.LimitIndicators;
 
 /**
- *
 <code>
-CallGap ::= OPERATION
-ARGUMENT CallGapArg
--- Direction: SCF -> SSF, Timer: Tcg -- This operation is used to request the SSF to reduce the rate at which specific service requests
--- are sent to the SCF.
+CallLimit ::= OPERATION
+ARGUMENT CallLimitArg
+‐‐ Direction SCF ‐> SSF, Timer: Tcl
+‐‐ Activates the 'window' traffic management
+‐‐ mechanism in SSF
 
-CallGapArg ::= SEQUENCE {
-	gapCriteria [0] GapCriteria,
-	gapIndicators [1] GapIndicators,
-	controlType [2] ControlType OPTIONAL,
-	gapTreatment [3] GapTreatment OPTIONAL,
-	extensions [4] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL
--- ...
-}
-
--- From CS1+ Spec
-CallGapArg ::= SEQUENCE {
-	startTime [PRIVATE 01] DateAndTime OPTIONAL,
-	gapCriteria [00] GapCriteria,
-	gapIndicators [01] GapIndicators,
-	controlType [02] ControlType OPTIONAL,
-	gapTreatment [03] GapTreatment OPTIONAL,
-	extensions [04] SEQUENCE SIZE (1..7) OF ExtensionField1 OPTIONAL
+CallLimitArg ::= SEQUENCE {
+	startTime [00] DateAndTime OPTIONAL,
+	limitCriteria [01] LimitCriteria,
+	limitIndicators [02] LimitIndicators,
+	limitTreatment [03] LimitTreatment OPTIONAL
 ‐‐ ...
 }
 </code>
- *
+*
  * @author yulian.oifa
  *
  */
-public interface CallGapRequest extends CircuitSwitchedCallMessage {
+public interface CallLimitRequest extends CircuitSwitchedCallMessage {
 
 	DateAndTime getStartTime();
-	
-    GapCriteria getGapCriteria();
 
-    GapIndicators getGapIndicators();
+	GapCriteria getLimitCriteria();
 
-    ControlType getControlType();
-
-    GapTreatment getGapTreatment();
-
-    CAPINAPExtensions getExtensions();
-
+	LimitIndicators getLimitIndicators();
+    
+	GapTreatment getLimitTreatment();
 }

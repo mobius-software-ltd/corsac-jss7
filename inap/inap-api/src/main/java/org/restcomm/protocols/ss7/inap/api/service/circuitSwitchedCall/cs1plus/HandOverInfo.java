@@ -1,6 +1,6 @@
 /*
- * TeleStax, Open Source Cloud Communications
- * Copyright 2012, Telestax Inc and individual contributors
+ * TeleStax, Open Source Cloud Communications  Copyright 2012.
+ * and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -20,10 +20,9 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive;
+package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus;
 
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -31,29 +30,44 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 /**
  *
 <code>
-both [2] SEQUENCE {
-	ipRoutingAddress [0] IPRoutingAddress,
- 	legID [1] LegID
- },
- 
- resourceAddress CHOICE {
-	iPRoutingAddress [00] IPRoutingAddress, ‐‐ implies CP
-	legID [01] ReceivingSideID,
-	‐‐ See ITU‐T Rec. Q.1218 Revised.
-	none [03] NULL ‐‐ implies CP
-},
+HandOverInfo ::= SEQUENCE {
+	handOverCounter [00] INTEGER (1..127),
+	sendingSCPAddress [01] CHOICE,
+	sendingSCPDialogueInfo [02] SEQUENCE,
+	sendingSCPCorrelationInfo [03] OCTET STRING (SIZE (16)) OPTIONAL,
+	‐‐ coding is implementation dependant
+	receivingSCPAddress [04] CHOICE,
+	receivingSCPDialogueInfo [05] SEQUENCE,
+	receivingSCPCorrelationInfo [06] OCTET STRING (SIZE (16)) OPTIONAL,
+	‐‐ coding is implementation dependant
+	handOverNumber [07] Number OPTIONAL,
+	handOverData [08] INTEGER (0..65535) OPTIONAL
+‐‐ ...
+}	
 </code>
  *
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public interface ResourceAddress {
+public interface HandOverInfo {
 
-	CalledPartyNumberIsup getIPRoutingAddress();
+	Integer getHandoverCounter();
 
-	LegID getLegID();
-	
-	boolean isNone();
+    SCPAddress getSendingSCPAddress();
+
+    SCPDialogueInfo getSendingSCPDialogueInfo();
+
+    byte[] getSendingSCPCorrelationInfo(); 
+    
+    SCPAddress getReceivingSCPAddress();
+
+    SCPDialogueInfo getReceivingSCPDialogueInfo();
+
+    byte[] getReceivingSCPCorrelationInfo(); 
+    
+    CalledPartyNumberIsup getHandoverNumber();
+    
+    Integer getHandoverData();    
 }

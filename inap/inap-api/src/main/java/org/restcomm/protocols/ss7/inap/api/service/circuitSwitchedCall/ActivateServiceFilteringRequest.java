@@ -59,6 +59,19 @@ ActivateServiceFilteringArg ::= SEQUENCE {
 	extensions [5] SEQUENCE SIZE(1..numOfExtensions) OF ExtensionField OPTIONAL
 -- ...
 }
+
+--- from CS1+ Spec
+ActivateServiceFilteringArg ::= SEQUENCE {
+	filteredCallTreatment [00] FilteredCallTreatment,
+	filteringCharacteristics [01] FilteringCharacteristics,
+	filteringTimeOut [02] FilteringTimeOut,
+	filteringCriteria [03] FilteringCriteria,
+	startTime [04] DateAndTime OPTIONAL,
+	extensions [05] SEQUENCE SIZE (1..7) OF
+	ExtensionField1 OPTIONAL,
+	‐‐ ...
+	sCFCorrelationInfo [PRIVATE 01] OCTET STRING (SIZE(16)) OPTIONAL
+}
 </code>
  *
  * @author yulian.oifa
@@ -76,4 +89,6 @@ public interface ActivateServiceFilteringRequest extends CircuitSwitchedCallMess
 	DateAndTime getStartTime();
 
     CAPINAPExtensions getExtensions();
+    
+    byte[] getSCFCorrelationInfo();
 }

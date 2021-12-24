@@ -24,6 +24,7 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.InformationToSend;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 
 /**
  *
@@ -58,6 +59,18 @@ PlayAnnouncementArg ::= SEQUENCE {
 OPTIONAL
 -- ...
 }
+
+--- from CS1+ Spec
+PlayAnnouncementArg ::= SEQUENCE {
+	legID [PRIVATE 01] SendingSideID OPTIONAL,
+	‐‐ legID absent indicates CP
+	requestAnnouncementStarted [PRIVATE 02] BOOLEAN DEFAULT FALSE,
+	informationToSend [00] InformationToSend,
+	disconnectFromIPForbidden [01] BOOLEAN DEFAULT TRUE,
+	requestAnnouncementComplete [02] BOOLEAN DEFAULT TRUE,
+	extensions [03] SEQUENCE SIZE (1..16) OF ExtensionField1 OPTIONAL
+‐‐ ...
+}
 </code>
  *
  * @author yulian.oifa
@@ -65,6 +78,10 @@ OPTIONAL
  */
 public interface PlayAnnouncementRequest extends CircuitSwitchedCallMessage {
 
+	LegType getLegID();
+	
+	Boolean getRequestAnnouncementStarted();
+	
     InformationToSend getInformationToSend();
 
     Boolean getDisconnectFromIPForbidden();

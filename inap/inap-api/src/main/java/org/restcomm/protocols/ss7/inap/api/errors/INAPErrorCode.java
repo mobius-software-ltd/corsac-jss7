@@ -29,7 +29,7 @@ package org.restcomm.protocols.ss7.inap.api.errors;
  */
 public interface INAPErrorCode {
    int minimalCodeValue = 0;
-   int maximumCodeValue = 51;
+   int maximumCodeValue = 100;
    
 // -- The operation has been canceled.
    int canceled = 0;
@@ -68,4 +68,24 @@ public interface INAPErrorCode {
    //from Q.1218 CS1
    //-- Resource whose status is being requested is not known to the serving entity.
    int unknownResource = 18;
+   
+   //Ericsson CS1+
+   //congestion Congestion ::= localValue 2
+   int congestion=2;
+   //errorInParameterValue ErrorInParameterValue ::= localValue 3
+   int errorInParameterValue=3;
+   //executionError ExecutionError ::= localValue 4
+   int executionError=4;
+   //illegalCombinationOfParameters IllegalCombinationOfParameters ::= localValue 7
+   int illegalCombinationOfParameters=7; 
+   //infoNotAvailable InfoNotAvailable ::= localValue 8
+   int infoNotAvailable=8;
+   //invalidDataItemID InvalidDataItemID ::= localValue 10
+   int invalidDataItemID=10;
+   //notAuthorized NotAuthorized ::= localValue 12
+   int notAuthorized=12;
+   //parameterMissing ParameterMissing ::= localValue 13
+	int parameterMissing=13;
+   //otherError OtherError ::= localValue 100
+   int otherError=100;      
 }
