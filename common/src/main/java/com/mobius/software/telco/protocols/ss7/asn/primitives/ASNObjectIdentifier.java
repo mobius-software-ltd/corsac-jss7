@@ -167,4 +167,14 @@ public class ASNObjectIdentifier {
 		
 		return true;
 	}
+
+    public static String printDataArrLong(List<Long> arr) {
+        StringBuilder sb = new StringBuilder();
+        for (Long b : arr) {
+            sb.append(b);
+            sb.append(", ");
+        }
+
+        return sb.toString();
+    }
 }

@@ -228,6 +228,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.INServiceCompatibilityIndication;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.IPAvailable;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallControlInfoINAP;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallControlInfoItem;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallInfoType;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallReportType;
@@ -644,13 +645,13 @@ public interface INAPParameterFactory {
     //billing
     AddOnCharge createAddOnCharge(CurrencyFactorScale currencyFactorScale);
     
-    AddOnCharge createAddOnCharge(PulseUnits currencyFactorScale);
+    AddOnCharge createAddOnCharge(PulseUnits pulseUnits);
     
     AddOnChargingInformation createAddOnChargingInformation(ChargingControlIndicators getChargingControlIndicators,
     		AddOnCharge addOncharge,CAPINAPExtensions extensions,ChargingReferenceIdentification originationIdentification,
     		ChargingReferenceIdentification destinationIdentification,Currency currency);
     
-    ChargeUnitTimeInterval getChargeUnitTimeInterval(byte[] data);
+    ChargeUnitTimeInterval getChargeUnitTimeInterval(Integer data);
     
     ChargingControlIndicators getChargingControlIndicators(boolean getSubscriberCharge,boolean getImmediateChangeOfActuallyAppliedTariff,boolean getDelayUntilStart);
     
@@ -665,14 +666,14 @@ public interface INAPParameterFactory {
     		ChargingReferenceIdentification destinationIdentification,Currency currency);
     
     CommunicationChargeCurrency getCommunicationChargeCurrency(CurrencyFactorScale currencyFactorScale,
-    		int tariffDuration,SubTariffControl subTariffControl);
+    		Integer tariffDuration,SubTariffControl subTariffControl);
     
     CommunicationChargePulse getCommunicationChargePulse(PulseUnits pulseUnits,
-    		ChargeUnitTimeInterval chargeUnitTimeInterval,TariffDuration tariffDuration);
+    		Integer chargeUnitTimeInterval,Integer tariffDuration);
     
     CurrencyFactorScale getCurrencyFactorScale(Integer currencyFactor,Integer currencyScale);
     
-    PulseUnits getPulseUnits(int data);
+    PulseUnits getPulseUnits(Integer data);
     
     SubTariffControl getSubTariffControl(boolean oneTimeCharge);
     
@@ -684,7 +685,7 @@ public interface INAPParameterFactory {
     		TariffControlIndicators tariffControlIndicators,CurrencyFactorScale callAttemptChargeCurrency,
     		CurrencyFactorScale callSetupChargeCurrency);
     
-    TariffDuration getTariffDuration(int data);
+    TariffDuration getTariffDuration(Integer data);
     
     TariffPulse getTariffPulse(TariffPulseFormat currentTariffPulse,TariffSwitchPulse tariffSwitchPulse);
     
@@ -694,12 +695,12 @@ public interface INAPParameterFactory {
     
     TariffSwitchCurrency getTariffSwitchCurrency(TariffCurrencyFormat nextTariffCurrency,TariffSwitchoverTime tariffSwitchoverTime);
     
-    TariffSwitchoverTime getTariffSwitchoverTime(int data);
+    TariffSwitchoverTime getTariffSwitchoverTime(Integer data);
     
     TariffSwitchPulse getTariffSwitchPulse(TariffPulseFormat nextTariffPulse,TariffSwitchoverTime tariffSwitchoverTime);
     
     //cs1 plus
-    ApplicationID getApplicationID(byte data[]);
+    ApplicationID getApplicationID(Integer data);
     
     BackwardGVNSIndicator getBackwardGVNSIndicator(BackwardGVNS backwardGVNS);
     
@@ -742,16 +743,16 @@ public interface INAPParameterFactory {
     
     GenericNumbersSet getGenericNumbersSet(List<DigitsIsup> geneicNumbers);
     
-    GlobalTitle getGlobalTitle(GlobalTitle0100 title);
+    GlobalTitle getGlobalTitle(GlobalTitle0100 title) throws INAPException;
     
-    GlobalTitleAndSSN getGlobalTitle(GlobalTitle0100 title, Integer ssn);
+    GlobalTitleAndSSN getGlobalTitleAndSSN(GlobalTitle0100 title, Integer ssn) throws INAPException;
     
-    HandOverInfo getHandOverInfo(Integer getHandoverCounter, SCPAddress getSendingSCPAddress,
-    		SCPDialogueInfo getSendingSCPDialogueInfo, byte[] getSendingSCPCorrelationInfo,
-    		SCPAddress getReceivingSCPAddress, SCPDialogueInfo getReceivingSCPDialogueInfo,
-    		byte[] getReceivingSCPCorrelationInfo, CalledPartyNumberIsup getHandoverNumber,Integer getHandoverData);
+    HandOverInfo getHandOverInfo(Integer handoverCounter, SCPAddress sendingSCPAddress,
+    		SCPDialogueInfo sendingSCPDialogueInfo, byte[] sendingSCPCorrelationInfo,
+    		SCPAddress receivingSCPAddress, SCPDialogueInfo receivingSCPDialogueInfo,
+    		byte[] receivingSCPCorrelationInfo, CalledPartyNumberIsup handoverNumber,Integer handoverData);
     
-    LegIDs getLegIDs(ExistingLegs existingLegs);
+    LegIDs getLegIDs(List<ExistingLegs> existingLegs);
     
     LimitIndicators getLimitIndicators(Integer duration);
     
@@ -765,6 +766,8 @@ public interface INAPParameterFactory {
     
     SCPAddress getSCPAddress(boolean colocated);
     
+    SCPAddress getSCPAddress(PointCodeAndSSN pointCodeAndSSN);
+    
     SCPAddress getSCPAddress(GlobalTitle globalTitle);
     
     SCPAddress getSCPAddress(GlobalTitleAndSSN globalTitleAndSSN);
@@ -774,7 +777,7 @@ public interface INAPParameterFactory {
     SCPDialogueInfo getSCPDialogueInfo(ProtocolIndicator protocolIndicator,DialogueUserInformation dialogueUserInformation);
     
     //cicruit switched call - inap
-    AddressAndService getAddressAndService(DigitsIsup calledAddressValue,int serviceKey,
+    AddressAndService getAddressAndService(DigitsIsup calledAddressValue,Integer serviceKey,
     		DigitsIsup callingAddressValue,LocationNumberIsup locationNumber);
     
     CalledPartyBusinessGroupID getCalledPartyBusinessGroupID(byte[] data);
@@ -791,7 +794,7 @@ public interface INAPParameterFactory {
     
     DisplayInformation getDisplayInformation(String value);
     
-    DpSpecificCommonParameters getDpSpecificCommonParameters(ServiceAddressInformation getServiceAddressInformation,
+    DpSpecificCommonParameters getDpSpecificCommonParameters(ServiceAddressInformation serviceAddressInformation,
     		BearerCapability bearerCapability,CalledPartyNumberIsup calledPartyNumber,CallingPartyNumberIsup callingPartyNumber,
     		CallingPartysCategoryIsup callingPartysCategory,IPSSPCapabilities ipsspCapabilities,
     		IPAvailable ipAvailable,ISDNAccessRelatedInformation isdnAccessRelatedInformation,
@@ -799,7 +802,9 @@ public interface INAPParameterFactory {
     		TerminalType terminalType,CAPINAPExtensions extensions,LocationNumberIsup chargeNumber,
     		LocationNumberIsup servingAreaID);
     
-    Entry getEntry(List<Long> agreements,Integer networkSpecific);
+    Entry getEntry(List<Long> agreements);
+    
+    Entry getEntry(Integer networkSpecific);
     
     FacilityGroup getFacilityGroup(Integer value,boolean isTrunkGroup);
     
@@ -808,11 +813,11 @@ public interface INAPParameterFactory {
     FilteredCallTreatment getFilteredCallTreatment(byte[] sfBillingChargingCharacteristics,
     		InformationToSend informationToSend,Integer maximumNumberOfCounters,CauseIsup cause);
     
-    FilteringCharacteristics getFilteringCharacteristics(Integer interval,Integer numberOfCalls);
+    FilteringCharacteristics getFilteringCharacteristics(Integer value,Boolean isInterval);
     
     FilteringCriteria getFilteringCriteria(Integer serviceKey);
     
-    FilteringCriteria getFilteringCriteria(AddressAndService getAddressAndService);
+    FilteringCriteria getFilteringCriteria(AddressAndService addressAndService);
     
     FilteringTimeOut getFilteringTimeOut(Integer duration);
     
@@ -828,7 +833,7 @@ public interface INAPParameterFactory {
     
     ISDNAccessRelatedInformation getISDNAccessRelatedInformation(byte[] data);
     
-    MidCallControlInfo getMidCallControlInfo(List<MidCallControlInfoItem> midCallControlInfoItems);
+    MidCallControlInfoINAP getMidCallControlInfo(List<MidCallControlInfoItem> midCallControlInfoItems);
     
     MidCallControlInfoItem getMidCallControlInfoItem(MidCallInfoType midCallInfoType, MidCallReportType midCallReportType);
     
@@ -836,7 +841,7 @@ public interface INAPParameterFactory {
     
     ResourceAddress getResourceAddress(CalledPartyNumberIsup ipRoutingAddress);
     
-    ResourceAddress getResourceAddress(LegID legID);
+    ResourceAddress getResourceAddress(LegType legID);
     
     ResourceAddress getResourceAddress(boolean none);
     
@@ -848,7 +853,7 @@ public interface INAPParameterFactory {
     
     RouteList getRouteList(List<byte[]> data);
     
-    ServiceAddressInformation getServiceAddressInformation(int serviceKey,MiscCallInfo miscCallInfo,TriggerType triggerType);
+    ServiceAddressInformation getServiceAddressInformation(Integer serviceKey,MiscCallInfo miscCallInfo,TriggerType triggerType);
     
     ServiceInteractionIndicators getServiceInteractionIndicators(byte[] data);
     
@@ -860,5 +865,7 @@ public interface INAPParameterFactory {
     
     USIInformation getUSIInformation(byte[] data);
     
-    USIServiceIndicator getUSIServiceIndicator(List<Long> global,byte[] local);
+    USIServiceIndicator getUSIServiceIndicator(List<Long> global);
+    
+    USIServiceIndicator getUSIServiceIndicator(byte[] local);
 }

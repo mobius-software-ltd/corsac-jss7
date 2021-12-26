@@ -48,6 +48,6 @@ ChargeUnitTimeInterval ::= OCTET STRING (SIZE(2))
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 4,constructed = false,lengthIndefinite = false)
 public interface ChargeUnitTimeInterval {
 
-    int getData();
+    Integer getData();
 
 }

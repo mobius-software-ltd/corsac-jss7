@@ -83,6 +83,7 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapabi
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAI_GSM0224;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELAChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELSCIBillingChargingCharacteristicsAlt;
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountered;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallCompletionTreatmentIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallDiversionTreatmentIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallSegmentToCancel;
@@ -250,6 +251,173 @@ import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInform
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.SupportedCamelPhasesImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPException;
 import org.restcomm.protocols.ss7.inap.api.INAPParameterFactory;
+import org.restcomm.protocols.ss7.inap.api.charging.AddOnCharge;
+import org.restcomm.protocols.ss7.inap.api.charging.AddOnChargingInformation;
+import org.restcomm.protocols.ss7.inap.api.charging.ChargeUnitTimeInterval;
+import org.restcomm.protocols.ss7.inap.api.charging.ChargingControlIndicators;
+import org.restcomm.protocols.ss7.inap.api.charging.ChargingReferenceIdentification;
+import org.restcomm.protocols.ss7.inap.api.charging.ChargingTariff;
+import org.restcomm.protocols.ss7.inap.api.charging.ChargingTariffInformation;
+import org.restcomm.protocols.ss7.inap.api.charging.CommunicationChargeCurrency;
+import org.restcomm.protocols.ss7.inap.api.charging.CommunicationChargePulse;
+import org.restcomm.protocols.ss7.inap.api.charging.Currency;
+import org.restcomm.protocols.ss7.inap.api.charging.CurrencyFactorScale;
+import org.restcomm.protocols.ss7.inap.api.charging.PulseUnits;
+import org.restcomm.protocols.ss7.inap.api.charging.SubTariffControl;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffControlIndicators;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffCurrency;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffCurrencyFormat;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffDuration;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffPulse;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffPulseFormat;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffSwitchCurrency;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffSwitchPulse;
+import org.restcomm.protocols.ss7.inap.api.charging.TariffSwitchoverTime;
+import org.restcomm.protocols.ss7.inap.api.primitives.TerminalType;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ApplicationID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNS;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNSIndicator;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardSuppression;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardSuppressionIndicators;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCall;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCallIndicator;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGInterLockCode;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.DataItemID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.DataItemInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.DialogueUserInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ExistingLegs;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ForwardSuppression;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ForwardSuppressionIndicators;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericDigitsSet;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericName;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericNumbersSet;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GlobalTitle;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GlobalTitleAndSSN;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.HandOverInfo;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.InstructionIndicator;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.LegIDs;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.LimitIndicators;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.PointCodeAndSSN;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.PointCodeAndSSNANSI;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ProtocolIdentifier;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ProtocolIndicator;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ReceivingFunctionsRequested;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.RouteOrigin;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SCPAddress;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SCPDialogueInfo;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SendingFunctionsActive;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.TCAPDialogueLevel;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.AddressAndService;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CalledPartyBusinessGroupID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CalledPartySubaddress;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CallingPartyBusinessGroupID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CallingPartySubaddress;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ChargingEvent;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CounterAndValue;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.DisplayInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.DpSpecificCommonParameters;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Entry;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FacilityGroup;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteredCallTreatment;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringCharacteristics;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringCriteria;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringTimeOut;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.GenericNumbers;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.HoldCause;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.INServiceCompatibilityIndication;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.IPAvailable;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallControlInfoINAP;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallControlInfoItem;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallInfoType;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallReportType;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceAddress;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RouteList;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceAddressInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceProfileIdentifier;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Tariff;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.TriggerType;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.USIInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.USIServiceIndicator;
+import org.restcomm.protocols.ss7.inap.charging.AddOnChargeImpl;
+import org.restcomm.protocols.ss7.inap.charging.AddOnChargingInformationImpl;
+import org.restcomm.protocols.ss7.inap.charging.ChargeUnitTimeIntervalImpl;
+import org.restcomm.protocols.ss7.inap.charging.ChargingControlIndicatorsImpl;
+import org.restcomm.protocols.ss7.inap.charging.ChargingReferenceIdentificationImpl;
+import org.restcomm.protocols.ss7.inap.charging.ChargingTariffImpl;
+import org.restcomm.protocols.ss7.inap.charging.ChargingTariffInformationImpl;
+import org.restcomm.protocols.ss7.inap.charging.CommunicationChargeCurrencyImpl;
+import org.restcomm.protocols.ss7.inap.charging.CommunicationChargePulseImpl;
+import org.restcomm.protocols.ss7.inap.charging.CurrencyFactorScaleImpl;
+import org.restcomm.protocols.ss7.inap.charging.PulseUnitsImpl;
+import org.restcomm.protocols.ss7.inap.charging.SubTariffControlIndicatorsImpl;
+import org.restcomm.protocols.ss7.inap.charging.TariffControlIndicatorsImpl;
+import org.restcomm.protocols.ss7.inap.charging.TariffCurrencyFormatImpl;
+import org.restcomm.protocols.ss7.inap.charging.TariffCurrencyImpl;
+import org.restcomm.protocols.ss7.inap.charging.TariffDurationImpl;
+import org.restcomm.protocols.ss7.inap.charging.TariffPulseFormatImpl;
+import org.restcomm.protocols.ss7.inap.charging.TariffPulseImpl;
+import org.restcomm.protocols.ss7.inap.charging.TariffSwitchCurrencyImpl;
+import org.restcomm.protocols.ss7.inap.charging.TariffSwitchPulseImpl;
+import org.restcomm.protocols.ss7.inap.charging.TariffSwitchoverTimeImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.ApplicationIDImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.BackwardGVNSIndicatorImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.BackwardSuppressionIndicatorsmpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.CUGCallIndicatorImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.CUGInterLockCodeImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.DataItemIDImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.DataItemInformationImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.DialogueUserInformationImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.ExistingLegsImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.ForwardSuppressionIndicatorsmpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.GenericDigitsSetImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.GenericNameImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.GenericNumbersSetImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.GlobalTitleAndSSNImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.GlobalTitleImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.HandOverInfoImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.LegIDsImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.LimitIndicatorsImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.PointCodeAndSSNANSIImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.PointCodeAndSSNImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.ProtocolIndicatorImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.RouteOriginImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.SCPAddressImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.SCPDialogueInfoImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.AddressAndServiceImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.CalledPartyBusinessGroupIDImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.CalledPartySubaddressImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.CallingPartyBusinessGroupIDImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.CallingPartySubaddressImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ChargingEventImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.CounterAndValueImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.DisplayInformationImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.DpSpecificCommonParametersImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.EntryImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.FacilityGroupImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.FilteredCallTreatmentImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.FilteringCharacteristicsImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.FilteringCriteriaImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.FilteringTimeOutImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.GenericNumbersImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.HoldCauseImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.INServiceCompatibilityIndicationImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.IPAvailableImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ISDNAccessRelatedInformationImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.MidCallControlInfoINAPImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.MidCallControlInfoItemImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.MidCallInfoTypeImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ResourceAddressImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ResourceIDImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.RouteListImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ServiceAddressInformationImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ServiceInteractionIndicatorsImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ServiceProfileIdentifierImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.TariffImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.USIInformationImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.USIServiceIndicatorImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
@@ -262,6 +430,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectingNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
+import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle0100;
 
 /**
  *
@@ -1235,5 +1404,529 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
     @Override
     public FreeFormatData createFreeFormatData(byte[] data) {
         return new FreeFormatDataImpl(data);
+    }
+    
+    //billing
+    @Override
+    public AddOnCharge createAddOnCharge(CurrencyFactorScale currencyFactorScale) {
+    	return new AddOnChargeImpl(currencyFactorScale);
+    }
+    
+    @Override
+    public AddOnCharge createAddOnCharge(PulseUnits pulseUnits) {
+    	return new AddOnChargeImpl(pulseUnits);
+    }
+    
+    @Override
+    public AddOnChargingInformation createAddOnChargingInformation(ChargingControlIndicators getChargingControlIndicators,
+    		AddOnCharge addOncharge,CAPINAPExtensions extensions,ChargingReferenceIdentification originationIdentification,
+    		ChargingReferenceIdentification destinationIdentification,Currency currency) {
+    	return new AddOnChargingInformationImpl(getChargingControlIndicators, addOncharge, extensions, originationIdentification, 
+    			destinationIdentification, currency);
+    }
+    
+    @Override
+    public ChargeUnitTimeInterval getChargeUnitTimeInterval(Integer data) {
+    	return new ChargeUnitTimeIntervalImpl(data);
+    }
+    
+    @Override
+    public ChargingControlIndicators getChargingControlIndicators(boolean getSubscriberCharge,boolean getImmediateChangeOfActuallyAppliedTariff,boolean getDelayUntilStart) {
+    	return new ChargingControlIndicatorsImpl(getSubscriberCharge, getImmediateChangeOfActuallyAppliedTariff, getDelayUntilStart);
+    }
+    
+    @Override
+    public ChargingReferenceIdentification getChargingReferenceIdentification(List<Long> networkIdentification,Long referenceID) {
+    	return new ChargingReferenceIdentificationImpl(networkIdentification, referenceID);
+    }
+    
+    @Override
+    public ChargingTariff getChargingTariff(TariffCurrency tariffCurrency) {
+    	return new ChargingTariffImpl(tariffCurrency);
+    }
+    
+    @Override
+    public ChargingTariff getChargingTariff(TariffPulse tariffPulse) {
+    	return new ChargingTariffImpl(tariffPulse);
+    }
+    
+    @Override
+    public ChargingTariffInformation getChargingTariffInformation(ChargingControlIndicators chargingControlIndicators,
+    		ChargingTariff chargingTariff,CAPINAPExtensions extensions,ChargingReferenceIdentification originationIdentification,
+    		ChargingReferenceIdentification destinationIdentification,Currency currency) {
+    	return new ChargingTariffInformationImpl(chargingControlIndicators, chargingTariff, extensions, 
+    			originationIdentification, destinationIdentification, currency);
+    }
+    
+    @Override
+    public CommunicationChargeCurrency getCommunicationChargeCurrency(CurrencyFactorScale currencyFactorScale,
+    		Integer tariffDuration,SubTariffControl subTariffControl) {
+    	return new CommunicationChargeCurrencyImpl(currencyFactorScale, tariffDuration, subTariffControl);
+    }
+    
+    @Override
+    public CommunicationChargePulse getCommunicationChargePulse(PulseUnits pulseUnits,
+    		Integer chargeUnitTimeInterval,Integer tariffDuration) {
+    	return new CommunicationChargePulseImpl(pulseUnits, chargeUnitTimeInterval, tariffDuration);
+    }
+    
+    @Override
+    public CurrencyFactorScale getCurrencyFactorScale(Integer currencyFactor,Integer currencyScale) {
+    	return new CurrencyFactorScaleImpl(currencyFactor, currencyScale);
+    }
+    
+    @Override
+    public PulseUnits getPulseUnits(Integer data) {
+    	return new PulseUnitsImpl(data);
+    }
+    
+    @Override
+    public SubTariffControl getSubTariffControl(boolean oneTimeCharge) {
+    	return new SubTariffControlIndicatorsImpl(oneTimeCharge);
+    }
+    
+    @Override
+    public TariffControlIndicators getTariffControlIndicators(boolean nonCyclicTariff) {
+    	return new TariffControlIndicatorsImpl(nonCyclicTariff);
+    }
+    
+    @Override
+    public TariffCurrency getTariffCurrency(TariffCurrencyFormat tariffCurrencyFormat,TariffSwitchCurrency getTariffSwitchCurrency) {
+    	return new TariffCurrencyImpl(tariffCurrencyFormat, getTariffSwitchCurrency);
+    }
+    
+    @Override
+    public TariffCurrencyFormat getTariffCurrencyFormat(List<CommunicationChargeCurrency> communicationChargeSequenceCurrency, 
+    		TariffControlIndicators tariffControlIndicators,CurrencyFactorScale callAttemptChargeCurrency,
+    		CurrencyFactorScale callSetupChargeCurrency) {
+    	return new TariffCurrencyFormatImpl(communicationChargeSequenceCurrency, tariffControlIndicators, callAttemptChargeCurrency, callSetupChargeCurrency);
+    }
+    
+    @Override
+    public TariffDuration getTariffDuration(Integer data) {
+    	return new TariffDurationImpl(data);
+    }
+    
+    @Override
+    public TariffPulse getTariffPulse(TariffPulseFormat currentTariffPulse,TariffSwitchPulse tariffSwitchPulse) {
+    	return new TariffPulseImpl(currentTariffPulse, tariffSwitchPulse);
+    }
+    
+    @Override
+    public TariffPulseFormat getTariffPulseFormat(List<CommunicationChargePulse> communicationChargeSequencePulse,
+    		TariffControlIndicators tariffControlIndicators,PulseUnits callAttemptChargePulse,
+    		PulseUnits callSetupChargePulse) {
+    	return new TariffPulseFormatImpl(communicationChargeSequencePulse, tariffControlIndicators, callAttemptChargePulse, callSetupChargePulse);
+    }
+    
+    @Override
+    public TariffSwitchCurrency getTariffSwitchCurrency(TariffCurrencyFormat nextTariffCurrency,TariffSwitchoverTime tariffSwitchoverTime) {
+    	return new TariffSwitchCurrencyImpl(nextTariffCurrency, tariffSwitchoverTime);
+    }
+    
+    @Override
+    public TariffSwitchoverTime getTariffSwitchoverTime(Integer data) {
+    	return new TariffSwitchoverTimeImpl(data);
+    }
+    
+    @Override
+    public TariffSwitchPulse getTariffSwitchPulse(TariffPulseFormat nextTariffPulse,TariffSwitchoverTime tariffSwitchoverTime) {
+    	return new TariffSwitchPulseImpl(nextTariffPulse, tariffSwitchoverTime);
+    }
+    
+    //cs1 plus
+    @Override
+    public ApplicationID getApplicationID(Integer data) {
+    	return new ApplicationIDImpl(data);
+    }
+    
+    @Override
+    public BackwardGVNSIndicator getBackwardGVNSIndicator(BackwardGVNS backwardGVNS) {
+    	BackwardGVNSIndicatorImpl result = new BackwardGVNSIndicatorImpl();
+    	result.setType(backwardGVNS);
+    	return result;
+    }
+    
+    @Override
+    public BackwardSuppressionIndicators getBackwardSuppressionIndicators(BackwardSuppression backwardSuppression,
+    	InstructionIndicator instructionIndicator) {
+    	return new BackwardSuppressionIndicatorsmpl(backwardSuppression, instructionIndicator);
+    }
+    
+    @Override
+    public CUGCallIndicator getCUGCallIndicator(CUGCall cugCall) {
+    	CUGCallIndicatorImpl result=new CUGCallIndicatorImpl();
+    	result.setType(cugCall);
+    	return result;
+    }
+    
+    @Override
+    public CUGInterLockCode getCUGInterLockCode(byte data[]) {
+    	return new CUGInterLockCodeImpl(data);
+    }
+    
+    @Override
+    public DataItemID getDataItemID(byte[] attribute0,	byte[] attribute1, byte[] attribute2,    
+    	byte[] attribute3,byte[] attribute4, byte[] attribute5, byte[] attribute6,    
+    	byte[] attribute7, byte[] attribute8, byte[] attribute9, byte[] attribute10,    
+    	byte[] attribute11, byte[] attribute12, byte[] attribute13, byte[] attribute14,    
+    	byte[] attribute15, byte[] attribute16, byte[] attribute17, byte[] attribute18,
+    	byte[] attribute19, byte[] attribute20, byte[] attribute21, byte[] attribute22,
+    	byte[] attribute23, byte[] attribute24, byte[] attribute25, byte[] attribute26,
+    	byte[] attribute27, byte[] attribute28, byte[] attribute29, byte[] attribute30) {
+    	return new DataItemIDImpl(attribute0, attribute1, attribute2, attribute3, attribute4, attribute5, 
+    			attribute6, attribute7, attribute8, attribute9, attribute10, attribute11, attribute12, attribute13, 
+    			attribute14, attribute15, attribute16, attribute17, attribute18, attribute19, attribute20, 
+    			attribute21, attribute22, attribute23, attribute24, attribute25, attribute26, attribute27, 
+    			attribute28, attribute29, attribute30);
+    }
+    
+    @Override
+    public DataItemInformation getDataItemInformation(byte[] attribute0,	byte[] attribute1, byte[] attribute2,    
+        	byte[] attribute3,byte[] attribute4, byte[] attribute5, byte[] attribute6,    
+        	byte[] attribute7, byte[] attribute8, byte[] attribute9, byte[] attribute10,    
+        	byte[] attribute11, byte[] attribute12, byte[] attribute13, byte[] attribute14,    
+        	byte[] attribute15, byte[] attribute16, byte[] attribute17, byte[] attribute18,
+        	byte[] attribute19, byte[] attribute20, byte[] attribute21, byte[] attribute22,
+        	byte[] attribute23, byte[] attribute24, byte[] attribute25, byte[] attribute26,
+        	byte[] attribute27, byte[] attribute28, byte[] attribute29, byte[] attribute30) {
+    	return new DataItemInformationImpl(attribute0, attribute1, attribute2, attribute3, attribute4, attribute5, 
+    			attribute6, attribute7, attribute8, attribute9, attribute10, attribute11, attribute12, attribute13, 
+    			attribute14, attribute15, attribute16, attribute17, attribute18, attribute19, attribute20, attribute21, 
+    			attribute22, attribute23, attribute24, attribute25, attribute26, attribute27, attribute28, attribute29, 
+    			attribute30);
+    }
+    
+    @Override
+    public DialogueUserInformation getDialogueUserInformation(SendingFunctionsActive sendingFunctionsActive,
+    		ReceivingFunctionsRequested receivingFunctionsRequested,Integer trafficSimulationSessionID) {
+    	return new DialogueUserInformationImpl(sendingFunctionsActive, receivingFunctionsRequested, trafficSimulationSessionID);
+    }
+    
+    @Override
+    public ExistingLegs getExistingLegs(LegType legID,boolean linkInd) {
+    	return new ExistingLegsImpl(legID, linkInd);
+    }
+    
+    @Override
+    public ForwardSuppressionIndicators getForwardSuppressionIndicators(ForwardSuppression forwardSuppression,
+    		InstructionIndicator instructionIndicator) {
+    	return new ForwardSuppressionIndicatorsmpl(forwardSuppression, instructionIndicator);
+    }
+    
+    @Override
+    public GenericDigitsSet getGenericDigitsSet(List<DigitsIsup> genericDigits) {
+    	return new GenericDigitsSetImpl(genericDigits);
+    }
+    
+    @Override
+    public GenericName getGenericName(byte[] data) {
+    	return new GenericNameImpl(data);
+    }
+    
+    @Override
+    public GenericNumbersSet getGenericNumbersSet(List<DigitsIsup> geneicNumbers) {
+    	return new GenericNumbersSetImpl(geneicNumbers);
+    }
+    
+    @Override
+    public GlobalTitle getGlobalTitle(GlobalTitle0100 title) throws INAPException {
+    	return new GlobalTitleImpl(title);
+    }
+    
+    @Override
+    public GlobalTitleAndSSN getGlobalTitleAndSSN(GlobalTitle0100 title, Integer ssn) throws INAPException {
+    	return new GlobalTitleAndSSNImpl(title, ssn);
+    }
+    
+    @Override
+    public HandOverInfo getHandOverInfo(Integer handoverCounter, SCPAddress sendingSCPAddress,
+    		SCPDialogueInfo sendingSCPDialogueInfo, byte[] sendingSCPCorrelationInfo,
+    		SCPAddress receivingSCPAddress, SCPDialogueInfo receivingSCPDialogueInfo,
+    		byte[] receivingSCPCorrelationInfo, CalledPartyNumberIsup handoverNumber,Integer handoverData) {
+    	return new HandOverInfoImpl(handoverCounter, sendingSCPAddress, sendingSCPDialogueInfo, sendingSCPCorrelationInfo, 
+    			receivingSCPAddress, receivingSCPDialogueInfo, receivingSCPCorrelationInfo, handoverNumber, handoverData);
+    }
+    
+    @Override
+    public LegIDs getLegIDs(List<ExistingLegs> existingLegs) {
+    	return new LegIDsImpl(existingLegs);
+    }
+    
+    @Override
+    public LimitIndicators getLimitIndicators(Integer duration) {
+    	return new LimitIndicatorsImpl(duration);
+    }
+    
+    @Override
+    public PointCodeAndSSN getPointCodeAndSSN(Integer spc,Integer ssn) {
+    	return new PointCodeAndSSNImpl(spc, ssn);
+    }
+    
+    @Override
+    public PointCodeAndSSNANSI getPointCodeAndSSNANSI(Integer network,Integer cluster,Integer member,Integer ssn) {
+    	return new PointCodeAndSSNANSIImpl(network, cluster, member, ssn);
+    }
+    
+    @Override
+    public ProtocolIndicator getProtocolIndicator(ProtocolIdentifier protocolIdentifier,TCAPDialogueLevel tcapDialogueLevel) {
+    	return new ProtocolIndicatorImpl(protocolIdentifier, tcapDialogueLevel);
+    }
+    
+    @Override
+    public RouteOrigin getRouteOrigin(byte[] data) {
+    	return new RouteOriginImpl(data);
+    }
+    
+    @Override
+    public SCPAddress getSCPAddress(boolean colocated) {
+    	return new SCPAddressImpl(colocated);
+    }
+    
+    @Override
+    public SCPAddress getSCPAddress(PointCodeAndSSN pointCodeAndSSN) {
+    	return new SCPAddressImpl(pointCodeAndSSN);
+    }
+    
+    @Override
+    public SCPAddress getSCPAddress(GlobalTitle globalTitle) {
+    	return new SCPAddressImpl(globalTitle);
+    }
+    
+    @Override
+    public SCPAddress getSCPAddress(GlobalTitleAndSSN globalTitleAndSSN) {
+    	return new SCPAddressImpl(globalTitleAndSSN);
+    }
+    
+    @Override
+    public SCPAddress getSCPAddress(PointCodeAndSSNANSI pointCodeAndSubSystemNumberANSI) {
+    	return new SCPAddressImpl(pointCodeAndSubSystemNumberANSI);
+    }
+    
+    @Override
+    public SCPDialogueInfo getSCPDialogueInfo(ProtocolIndicator protocolIndicator,DialogueUserInformation dialogueUserInformation) {
+    	return new SCPDialogueInfoImpl(protocolIndicator, dialogueUserInformation);
+    }
+    
+    //cicruit switched call - inap
+    @Override
+    public AddressAndService getAddressAndService(DigitsIsup calledAddressValue,Integer serviceKey,
+    		DigitsIsup callingAddressValue,LocationNumberIsup locationNumber) {
+    	return new AddressAndServiceImpl(calledAddressValue, serviceKey, callingAddressValue, locationNumber);
+    }
+    
+    @Override
+    public CalledPartyBusinessGroupID getCalledPartyBusinessGroupID(byte[] data) {
+    	return new CalledPartyBusinessGroupIDImpl(data);
+    }
+    
+    @Override
+    public CalledPartySubaddress getCalledPartySubaddress(byte[] data) {
+    	return new CalledPartySubaddressImpl(data);
+    }
+    
+    @Override
+    public CallingPartyBusinessGroupID getCallingPartyBusinessGroupID(byte[] data) {
+    	return new CallingPartyBusinessGroupIDImpl(data);
+    }
+    
+    @Override
+    public CallingPartySubaddress getCallingPartySubaddress(byte[] data) {
+    	return new CallingPartySubaddressImpl(data);
+    }
+    
+    @Override
+    public ChargingEvent getChargingEvent(byte[] eventTypeCharging,MonitorMode monitorMode,LegID legID) {
+    	return new ChargingEventImpl(eventTypeCharging, monitorMode, legID);
+    }
+    
+    @Override
+    public CounterAndValue getCounterAndValue(Integer counterID,Integer counterValue) {
+    	return new CounterAndValueImpl(counterID, counterValue);
+    }
+    
+    @Override
+    public DisplayInformation getDisplayInformation(String value) {
+    	return new DisplayInformationImpl(value);
+    }
+    
+    @Override
+    public DpSpecificCommonParameters getDpSpecificCommonParameters(ServiceAddressInformation serviceAddressInformation,
+    		BearerCapability bearerCapability,CalledPartyNumberIsup calledPartyNumber,CallingPartyNumberIsup callingPartyNumber,
+    		CallingPartysCategoryIsup callingPartysCategory,IPSSPCapabilities ipsspCapabilities,
+    		IPAvailable ipAvailable,ISDNAccessRelatedInformation isdnAccessRelatedInformation,
+    		CGEncountered cgEncountered,LocationNumberIsup locationNumber,ServiceProfileIdentifier serviceProfileIdentifier,
+    		TerminalType terminalType,CAPINAPExtensions extensions,LocationNumberIsup chargeNumber,
+    		LocationNumberIsup servingAreaID) {
+    	return new DpSpecificCommonParametersImpl(serviceAddressInformation, bearerCapability, calledPartyNumber, callingPartyNumber, 
+    			callingPartysCategory, ipsspCapabilities, ipAvailable, null, cgEncountered, locationNumber, serviceProfileIdentifier, 
+    			terminalType, extensions, chargeNumber, servingAreaID);
+    			
+    }
+    
+    @Override
+    public Entry getEntry(List<Long> agreements) {
+    	return new EntryImpl(agreements);
+    }
+    
+    @Override
+    public Entry getEntry(Integer networkSpecific) {
+    	return new EntryImpl(networkSpecific);
+    }
+    
+    @Override
+    public FacilityGroup getFacilityGroup(Integer value,boolean isTrunkGroup) {
+    	return new FacilityGroupImpl(value, isTrunkGroup);
+    }
+    
+    @Override
+    public FacilityGroup getFacilityGroup(byte[] value,boolean isHuntGroup) {
+    	return new FacilityGroupImpl(value, isHuntGroup);
+    }
+    
+    @Override
+    public FilteredCallTreatment getFilteredCallTreatment(byte[] sfBillingChargingCharacteristics,
+    		InformationToSend informationToSend,Integer maximumNumberOfCounters,CauseIsup cause) {
+    	return new FilteredCallTreatmentImpl(sfBillingChargingCharacteristics, informationToSend, maximumNumberOfCounters, cause);
+    }
+    
+    @Override
+    public FilteringCharacteristics getFilteringCharacteristics(Integer value,Boolean isInterval) {
+    	return new FilteringCharacteristicsImpl(value, isInterval);
+    }
+    
+    @Override
+    public FilteringCriteria getFilteringCriteria(Integer serviceKey) {
+    	return new FilteringCriteriaImpl(serviceKey);
+    }
+    
+    @Override
+    public FilteringCriteria getFilteringCriteria(AddressAndService addressAndService) {
+    	return new FilteringCriteriaImpl(addressAndService);
+    }
+    
+    @Override
+    public FilteringTimeOut getFilteringTimeOut(Integer duration) {
+    	return new FilteringTimeOutImpl(duration);
+    }
+    
+    @Override
+    public FilteringTimeOut getFilteringTimeOut(DateAndTime stopTime) {
+    	return new FilteringTimeOutImpl(stopTime);
+    }
+    
+    @Override
+    public GenericNumbers getGenericNumbers(List<GenericNumberIsup> genericNumbers) {
+    	return new GenericNumbersImpl(genericNumbers);
+    }
+    
+    @Override
+    public HoldCause getHoldCause(byte[] data) {
+    	return new HoldCauseImpl(data);
+    }
+    
+    @Override
+    public INServiceCompatibilityIndication getINServiceCompatibilityIndication(List<Entry> entries) {
+    	return new INServiceCompatibilityIndicationImpl(entries);
+    }
+    
+    @Override
+    public IPAvailable getIPAvailable(byte[] data) {
+    	return new IPAvailableImpl(data);
+    }
+    
+    @Override
+    public ISDNAccessRelatedInformation getISDNAccessRelatedInformation(byte[] data) {
+    	return new ISDNAccessRelatedInformationImpl(data);
+    }
+    
+    @Override
+    public MidCallControlInfoINAP getMidCallControlInfo(List<MidCallControlInfoItem> midCallControlInfoItems) {
+    	return new MidCallControlInfoINAPImpl(midCallControlInfoItems);
+    }
+    
+    @Override
+    public MidCallControlInfoItem getMidCallControlInfoItem(MidCallInfoType midCallInfoType, MidCallReportType midCallReportType) {
+    	return new MidCallControlInfoItemImpl(midCallInfoType, midCallReportType);
+    }
+    
+    @Override
+    public MidCallInfoType getMidCallInfoType(DigitsIsup inServiceControlCodeLow,DigitsIsup inServiceControlCodeHigh) {
+    	return new MidCallInfoTypeImpl(inServiceControlCodeLow, inServiceControlCodeHigh);
+    }
+    
+    @Override
+    public ResourceAddress getResourceAddress(CalledPartyNumberIsup ipRoutingAddress) {
+    	return new ResourceAddressImpl(ipRoutingAddress);
+    }
+    
+    @Override
+    public ResourceAddress getResourceAddress(LegType legID) {
+    	return new ResourceAddressImpl(legID);
+    }
+    
+    @Override
+    public ResourceAddress getResourceAddress(boolean none) {
+    	return new ResourceAddressImpl(none);
+    }
+    
+    @Override
+    public ResourceID getResourceID(DigitsIsup lineID) {
+    	return new ResourceIDImpl(lineID);
+    }
+    
+    @Override
+    public ResourceID getResourceID(FacilityGroup facilityGroup) {
+    	return new ResourceIDImpl(facilityGroup);
+    }
+    
+    @Override
+    public ResourceID getResourceID(Integer value,boolean isTrunkGroupID) {
+    	return new ResourceIDImpl(value, isTrunkGroupID);
+    }
+    
+    @Override
+    public RouteList getRouteList(List<byte[]> data) {
+    	return new RouteListImpl(data);
+    }
+    
+    @Override
+    public ServiceAddressInformation getServiceAddressInformation(Integer serviceKey,MiscCallInfo miscCallInfo,TriggerType triggerType) {
+    	return new ServiceAddressInformationImpl(serviceKey, miscCallInfo, triggerType);
+    }
+    
+    @Override
+    public ServiceInteractionIndicators getServiceInteractionIndicators(byte[] data) {
+    	return new ServiceInteractionIndicatorsImpl(data);
+    }
+    
+    @Override
+    public ServiceProfileIdentifier getServiceProfileIdentifier(byte[] data) {
+    	return new ServiceProfileIdentifierImpl(data);
+    }
+    
+    @Override
+    public Tariff getTariff(ChargingTariffInformation chargingTariffInformation) {
+    	return new TariffImpl(chargingTariffInformation);
+    }
+    
+    @Override
+    public Tariff getTariff(AddOnChargingInformation addOnChargingInformation) {
+    	return new TariffImpl(addOnChargingInformation);
+    }
+    
+    @Override
+    public USIInformation getUSIInformation(byte[] data) {
+    	return new USIInformationImpl(data);
+    }
+    
+    @Override
+    public USIServiceIndicator getUSIServiceIndicator(List<Long> global) {
+    	return new USIServiceIndicatorImpl(global);
+    }
+    
+    @Override
+    public USIServiceIndicator getUSIServiceIndicator(byte[] local) {
+    	return new USIServiceIndicatorImpl(local);
     }
 }

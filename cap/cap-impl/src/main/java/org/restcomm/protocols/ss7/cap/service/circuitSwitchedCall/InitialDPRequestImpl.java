@@ -55,7 +55,7 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CUGIndex;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CUGInterlock;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.commonapp.callhandling.CallReferenceNumberImpl;
-import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ASNCGEncounteredImpl;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ASNCGEncountered;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.BearerCapabilityWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CalledPartyBCDNumberImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CarrierImpl;
@@ -110,7 +110,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     private CallingPartysCategoryIsup callingPartysCategory;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = false,index = -1)
-    private ASNCGEncounteredImpl cgEncountered;
+    private ASNCGEncountered cgEncountered;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false,index = -1, defaultImplementation = IPSSPCapabilitiesImpl.class)
     private IPSSPCapabilities IPSSPCapabilities;
@@ -217,7 +217,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
         this.callingPartysCategory = callingPartysCategory;
         
         if(cgEncountered!=null) {
-        	this.cgEncountered = new ASNCGEncounteredImpl();
+        	this.cgEncountered = new ASNCGEncountered();
         	this.cgEncountered.setType(cgEncountered);
         }
         

@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.isup;
 
-import java.io.Serializable;
-
 import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessTransport;
 
@@ -42,7 +40,7 @@ bound.&maxISDNAccessRelatedInformationLength))
 * @author sergey vetyutnev
 *
 */
-public interface ISDNAccessRelatedInformationIsup extends Serializable {
+public interface ISDNAccessRelatedInformationIsup {
 
     byte[] getData();
 

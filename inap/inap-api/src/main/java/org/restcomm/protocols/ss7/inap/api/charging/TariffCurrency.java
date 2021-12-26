@@ -35,7 +35,7 @@ TariffCurrency ::= SEQUENCE {
 </code>
 *
 * @author sergey vetyutnev
-*
+*tariffSwitchoverTime
 */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public interface TariffCurrency {

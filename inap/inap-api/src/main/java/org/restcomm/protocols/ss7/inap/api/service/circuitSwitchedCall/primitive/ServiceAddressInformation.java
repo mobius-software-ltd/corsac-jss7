@@ -46,7 +46,7 @@ ServiceAddressInformation ::= SEQUENCE {
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public interface ServiceAddressInformation {
 
-	int getServiceKey();
+	Integer getServiceKey();
 
 	MiscCallInfo getMiscCallInfo();
 

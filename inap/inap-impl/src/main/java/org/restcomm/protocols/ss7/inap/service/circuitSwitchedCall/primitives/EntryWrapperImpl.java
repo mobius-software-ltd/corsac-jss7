@@ -1,6 +1,6 @@
 /*
- * TeleStax, Open Source Cloud Communications
- * Copyright 2012, Telestax Inc and individual contributors
+ * TeleStax, Open Source Cloud Communications  Copyright 2012.
+ * and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -20,30 +20,40 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive;
+package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives;
 
-import java.util.List;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Entry;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
-*
-<code>
-MidCallControlInfo {PARAMETERS-BOUND : bound} ::= SEQUENCE SIZE (bound.&minMidCallControlInfoNum .. bound.&maxMidCallControlInfoNum) OF SEQUENCE {
-  midCallInfoType   [0] MidCallInfoType {bound},
-  midCallReportType [1] ENUMERATED { inMonitoringState (0), inAnyState (1) } DEFAULT inMonitoringState,
-  ...
-}
-</code>
-*
-*
-* @author sergey vetyutnev
-*
-*/
-@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public interface MidCallControlInfo {
+ *
+ * @author yulian.oifa
+ *
+ */
+@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
+public class EntryWrapperImpl {
+	
+	@ASNChoise
+    private EntryImpl entry;
 
-    List<MidCallControlInfoItem> getMidCallControlInfoItems();
+    public EntryWrapperImpl() {
+    }
 
+    public EntryWrapperImpl(Entry entry) {
+    	if(entry instanceof EntryImpl)
+    		this.entry=(EntryImpl)entry;
+    	else if(entry!=null) {
+    		if(entry.getAgreements()!=null)
+    			this.entry = new EntryImpl(entry.getAgreements());
+    		else
+    			this.entry = new EntryImpl(entry.getNetworkSpecific());
+    	}
+    }
+
+    public Entry getEntry() {
+    	return entry;
+    }
 }

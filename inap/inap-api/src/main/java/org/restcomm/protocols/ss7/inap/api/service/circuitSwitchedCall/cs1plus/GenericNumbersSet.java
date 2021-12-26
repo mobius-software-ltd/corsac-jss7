@@ -41,5 +41,5 @@ GenericNumberSet ::= SET SIZE (1..20) OF GenericNumber
 */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public interface GenericNumbersSet {
-    List<DigitsIsup> getGeneicNumbers();
+    List<DigitsIsup> getGenericNumbers();
 }

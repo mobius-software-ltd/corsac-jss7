@@ -22,6 +22,7 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus;
 
+import org.restcomm.protocols.ss7.inap.api.INAPParsingComponentException;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle0100;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -61,5 +62,5 @@ globalTitle [02] OCTET STRING (SIZE(4..12)),
 */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 4,constructed = false,lengthIndefinite = false)
 public interface GlobalTitle {
-	GlobalTitle0100 getTitle();       
+	GlobalTitle0100 getTitle() throws INAPParsingComponentException;       
 }

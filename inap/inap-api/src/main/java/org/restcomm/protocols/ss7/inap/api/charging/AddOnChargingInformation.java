@@ -56,7 +56,7 @@ public interface AddOnChargingInformation {
 
     ChargingControlIndicators getChargingControlIndicators();
 
-    AddOnCharge getAddOncharge();
+    AddOnCharge getAddOnCharge();
 
     CAPINAPExtensions getExtensions();
 

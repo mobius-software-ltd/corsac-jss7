@@ -28,6 +28,7 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.IPSSPCapabil
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.ISDNAccessRelatedInformationIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.inap.api.primitives.TerminalType;
@@ -86,7 +87,7 @@ public interface DpSpecificCommonParameters {
 	
 	IPAvailable getIPAvailable();
 	
-	ISDNAccessRelatedInformation getISDNAccessRelatedInformation();
+	ISDNAccessRelatedInformationIsup getISDNAccessRelatedInformation();
 	
 	CGEncountered getCGEncountered();
 	

@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive;
 
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -53,7 +53,7 @@ public interface ResourceAddress {
 
 	CalledPartyNumberIsup getIPRoutingAddress();
 
-	LegID getLegID();
+	LegType getLegID();
 	
-	boolean isNone();
+	boolean getNone();
 }

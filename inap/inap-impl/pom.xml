@@ -39,7 +39,6 @@
 		<dependency>
 			<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
 			<artifactId>sccp-impl</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>

@@ -49,7 +49,7 @@ public interface AddressAndService {
 
 	DigitsIsup getCalledAddressValue();
 
-    int getServiceKey();
+    Integer getServiceKey();
 
     DigitsIsup getCallingAddressValue();
 

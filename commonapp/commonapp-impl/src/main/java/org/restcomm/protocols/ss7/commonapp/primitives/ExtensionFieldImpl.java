@@ -135,7 +135,7 @@ public class ExtensionFieldImpl implements ExtensionField {
         }
         if (this.globalCode != null && this.globalCode.getValue()!=null) {
             sb.append("globalCode=[");
-            sb.append(printDataArrLong(this.globalCode.getValue()));
+            sb.append(ASNObjectIdentifier.printDataArrLong(this.globalCode.getValue()));
             sb.append("]");
         }
         if (this.criticalityType != null) {
@@ -148,16 +148,6 @@ public class ExtensionFieldImpl implements ExtensionField {
             sb.append("]");
         }
         sb.append("]");
-
-        return sb.toString();
-    }
-
-    private String printDataArrLong(List<Long> arr) {
-        StringBuilder sb = new StringBuilder();
-        for (Long b : arr) {
-            sb.append(b);
-            sb.append(", ");
-        }
 
         return sb.toString();
     }

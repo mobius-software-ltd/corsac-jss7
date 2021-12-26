@@ -38,6 +38,6 @@ PulseUnits ::= OCTET STRING (SIZE(1))
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 4,constructed = false,lengthIndefinite = false)
 public interface PulseUnits {
 
-    int getData();
+    Integer getData();
 
 }

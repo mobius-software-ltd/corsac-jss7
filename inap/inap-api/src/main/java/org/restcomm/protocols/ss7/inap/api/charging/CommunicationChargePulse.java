@@ -43,8 +43,7 @@ public interface CommunicationChargePulse {
 
     PulseUnits getPulseUnits();
 
-    ChargeUnitTimeInterval getChargeUnitTimeInterval();
+    Integer getChargeUnitTimeInterval();
 
-    TariffDuration getTariffDuration();
-
+    Integer getTariffDuration();
 }

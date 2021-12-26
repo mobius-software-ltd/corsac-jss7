@@ -48,6 +48,5 @@ TariffDuration ::= INTEGER (0..36000)
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 2,constructed = false,lengthIndefinite = false)
 public interface TariffDuration {
 
-    int getData();
-
+    Integer getData();
 }

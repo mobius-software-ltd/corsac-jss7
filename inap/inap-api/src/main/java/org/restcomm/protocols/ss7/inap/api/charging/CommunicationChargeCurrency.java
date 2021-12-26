@@ -56,7 +56,7 @@ public interface CommunicationChargeCurrency {
 
     CurrencyFactorScale getCurrencyFactorScale();
 
-    int getTariffDuration();
+    Integer getTariffDuration();
 
     SubTariffControl getSubTariffControl();
 

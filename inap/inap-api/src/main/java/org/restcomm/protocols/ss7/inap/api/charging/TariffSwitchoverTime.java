@@ -47,6 +47,6 @@ TariffSwitchoverTime ::= OCTET STRING (SIZE(1))
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 4,constructed = false,lengthIndefinite = false)
 public interface TariffSwitchoverTime {
 
-    int getData();
+    Integer getData();
 
 }

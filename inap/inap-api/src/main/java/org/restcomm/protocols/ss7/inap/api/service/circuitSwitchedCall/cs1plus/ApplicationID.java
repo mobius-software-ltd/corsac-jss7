@@ -28,7 +28,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 /**
 *
 <code>
-ApplicationID ::= OCTET STRING (SIZE(1))Attribute ::= OCTET STRING
+ApplicationID ::= OCTET STRING (SIZE(1))
 </code>
 
 *
@@ -37,5 +37,5 @@ ApplicationID ::= OCTET STRING (SIZE(1))Attribute ::= OCTET STRING
 */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 4,constructed = false,lengthIndefinite = false)
 public interface ApplicationID {
-    byte[] getData();
+    Integer getData();
 }
