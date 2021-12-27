@@ -54,4 +54,21 @@ public class CallReferenceNumberImpl extends ASNOctetString implements CallRefer
     	
     	return null;
     }
+
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("CallReferenceNumber [");
+
+        byte[] data=getData();
+        if (data != null) {
+            sb.append("data=");
+            sb.append(ASNOctetString.printDataArr(data));
+            sb.append(", ");
+        }
+
+        sb.append("]");
+
+        return sb.toString();
+    }
 }
