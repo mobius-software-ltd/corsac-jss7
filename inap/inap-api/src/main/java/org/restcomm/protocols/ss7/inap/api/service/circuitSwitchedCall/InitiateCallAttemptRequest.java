@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
@@ -33,6 +32,7 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectingPartyIDIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCallIndicator;
@@ -140,7 +140,7 @@ public interface InitiateCallAttemptRequest extends CircuitSwitchedCallMessage {
     
     DestinationRoutingAddress getDestinationRoutingAddress();
 
-    AlertingPatternWrapper getAlertingPattern();
+    AlertingPattern getAlertingPattern();
     
     ISDNAccessRelatedInformation getISDNAccessRelatedInformation();
     

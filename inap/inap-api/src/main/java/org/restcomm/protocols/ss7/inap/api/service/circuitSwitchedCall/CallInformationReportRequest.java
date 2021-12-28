@@ -50,14 +50,14 @@ CallInformationReportArg ::= SEQUENCE {
 -- ...
 }
 -- OPTIONAL denotes network operator optional.
+
+--- From CS1+ Spec
 CallInformationReportArg ::= SEQUENCE {
 	legID [PRIVATE 01] ReceivingSideID OPTIONAL,
 	requestedInformationList [00] RequestedInformationList,
 	extensions [02] SEQUENCE SIZE (1..7) OF ExtensionField1 OPTIONAL
 ‐‐ ...
 }
---- From CS1+ Spec
-
  *
  * @author yulian.oifa
  *

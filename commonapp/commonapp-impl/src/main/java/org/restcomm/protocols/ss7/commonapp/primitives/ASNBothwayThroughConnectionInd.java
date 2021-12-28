@@ -32,7 +32,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 *
 */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,lengthIndefinite=false)
-public class ASNBothwayThroughConnectionIndImpl extends ASNInteger {
+public class ASNBothwayThroughConnectionInd extends ASNInteger {
 	public void setType(BothwayThroughConnectionInd t) {
 		if(t!=null)
 			setValue((long)t.getCode());

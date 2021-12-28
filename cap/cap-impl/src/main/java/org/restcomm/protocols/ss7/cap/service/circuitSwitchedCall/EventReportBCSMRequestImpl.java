@@ -31,7 +31,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.EventSpecificInformationBCSMWrapperImpl;
-import org.restcomm.protocols.ss7.commonapp.primitives.ASNEventTypeBCSMImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ASNEventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MiscCallInfoImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ReceivingLegIDImpl;
@@ -52,7 +52,7 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-    private ASNEventTypeBCSMImpl eventTypeBCSM;
+    private ASNEventTypeBCSM eventTypeBCSM;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
     private EventSpecificInformationBCSMWrapperImpl eventSpecificInformationBCSM;
@@ -73,7 +73,7 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
             LegType legID, MiscCallInfo miscCallInfo, CAPINAPExtensions extensions) {
     	
     	if(eventTypeBCSM!=null) {
-    		this.eventTypeBCSM = new ASNEventTypeBCSMImpl();
+    		this.eventTypeBCSM = new ASNEventTypeBCSM();
     		this.eventTypeBCSM.setType(eventTypeBCSM);
     	}
     	

@@ -108,10 +108,14 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardCallIndicatorsIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardGVNSIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.GenericNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.HighLayerCompatibilityIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.ISDNAccessRelatedInformationIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledPartyIDIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectingPartyIDIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AChChargingAddress;
@@ -246,6 +250,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
+import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
+import org.restcomm.protocols.ss7.isup.message.parameter.ForwardGVNS;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
@@ -268,6 +274,22 @@ public interface INAPParameterFactory {
 
     CauseIsup createCause(CauseIndicators causeIndicators) throws INAPException;
 
+    ForwardCallIndicatorsIsup createForwardCallIndicatorsIsup(byte[] data);
+
+    ForwardCallIndicatorsIsup createForwardCallIndicatorsIsup(ForwardCallIndicators forwardCallIndicators) throws INAPException;
+    
+    ForwardGVNSIsup createForwardGVNS(byte[] data);
+
+    ForwardGVNSIsup createForwardGVNS(ForwardGVNS forwardGVNS) throws INAPException;
+        
+    ISDNAccessRelatedInformationIsup createISDNAccessRelatedInformationIsup(byte[] data);
+
+    ISDNAccessRelatedInformationIsup createISDNAccessRelatedInformationIsup(LocationNumber locationNumber) throws INAPException;
+    
+    OriginalCalledPartyIDIsup createOriginalCalledPartyIDIsup(byte[] data);
+
+    OriginalCalledPartyIDIsup createOriginalCalledPartyIDIsup(OriginalCalledNumber originalCalledNumber) throws INAPException;
+    
     DpSpecificCriteria createDpSpecificCriteria(Integer applicationTimer);
 
     DpSpecificCriteria createDpSpecificCriteria(MidCallControlInfo midCallControlInfo);

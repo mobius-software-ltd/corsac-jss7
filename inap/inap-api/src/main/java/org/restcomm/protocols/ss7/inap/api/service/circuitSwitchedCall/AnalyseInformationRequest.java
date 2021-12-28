@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
@@ -30,6 +29,7 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
 
@@ -79,7 +79,7 @@ AnalyseInformationArg ::= SEQUENCE {
 public interface AnalyseInformationRequest extends CircuitSwitchedCallMessage {
 	DestinationRoutingAddress getDestinationRoutingAddress();
 	
-	AlertingPatternWrapper getAlertingPattern();
+	AlertingPattern getAlertingPattern();
 	
 	ISDNAccessRelatedInformation getISDNAccessRelatedInformation();
 	

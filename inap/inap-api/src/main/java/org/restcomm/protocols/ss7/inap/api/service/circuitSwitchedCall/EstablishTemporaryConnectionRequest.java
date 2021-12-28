@@ -89,7 +89,7 @@ EstablishTemporaryConnectionArg ::= SEQUENCE {
  */
 public interface EstablishTemporaryConnectionRequest extends CircuitSwitchedCallMessage {
 
-	LegType getlegID();
+	LegType getPrivateLegID();
     /**
      * Use Digits.getGenericNumber() for AssistingSSPIPRoutingAddress
      *

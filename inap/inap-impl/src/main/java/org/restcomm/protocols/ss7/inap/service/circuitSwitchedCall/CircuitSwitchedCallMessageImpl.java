@@ -20,28 +20,21 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.commonapp.api.isup;
+package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall;
 
-import java.io.Serializable;
-
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
-import org.restcomm.protocols.ss7.isup.message.parameter.TransmissionMediumRequirement;
+import org.restcomm.protocols.ss7.inap.MessageImpl;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.INAPDialogCircuitSwitchedCall;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.CircuitSwitchedCallMessage;
 
 /**
-*
-<code>
-- tmr:
-The tmr is encoded as the Transmission Medium Requirement parameter of the ISUP according to
-ITU-T Recommendation Q.763 [20].
-</code>
-*
-* @author sergey vetyutnev
-*
-*/
-public interface TmrIsup extends Serializable {
+ *
+ * @author yulian.oifa
+ *
+ */
+public abstract class CircuitSwitchedCallMessageImpl extends MessageImpl implements CircuitSwitchedCallMessage {
+	private static final long serialVersionUID = 1L;
 
-    byte[] getData();
-
-    TransmissionMediumRequirement getTransmissionMediumRequirement() throws APPException;
-
+	public INAPDialogCircuitSwitchedCall getINAPDialog() {
+        return (INAPDialogCircuitSwitchedCall) super.getINAPDialog();
+    }
 }

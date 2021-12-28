@@ -71,6 +71,9 @@ public class AddressAndServiceImpl implements AddressAndService {
     }
 
     public DigitsIsup getCalledAddressValue() {
+    	if(calledAddressValue!=null)
+    		calledAddressValue.setIsGenericDigits();
+    	
     	return calledAddressValue;
     }
 
@@ -82,6 +85,9 @@ public class AddressAndServiceImpl implements AddressAndService {
     }
 
     public DigitsIsup getCallingAddressValue() {
+    	if(callingAddressValue!=null)
+    		callingAddressValue.setIsGenericDigits();
+    	
     	return callingAddressValue;
     }
 

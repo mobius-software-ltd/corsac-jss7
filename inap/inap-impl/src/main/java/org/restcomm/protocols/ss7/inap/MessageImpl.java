@@ -20,31 +20,41 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.commonapp.api.isup;
+package org.restcomm.protocols.ss7.inap;
 
-import java.io.Serializable;
-
-import org.restcomm.protocols.ss7.isup.message.parameter.BackwardGVNS;
+import org.restcomm.protocols.ss7.inap.api.INAPDialog;
+import org.restcomm.protocols.ss7.inap.api.INAPMessage;
 
 /**
-*
+ *
+ * @author amit bhayani
+ * @author sergey vetyutnev
+ *
+ */
+public abstract class MessageImpl implements INAPMessage {
+	private static final long serialVersionUID = 1L;
 
-<code>
-BackwardGVNS {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE(
-bound.&minBackwardGVNSLength..bound.&maxBackwardGVNSLength))
--- Indicats the GVNS Backward information. Refer to Q.735, 6 for encoding.
-</code>
+	private long invokeId;
+    private INAPDialog inapDialog;
 
-*
-* @author sergey vetyutnev
-*
-*/
-public interface BackwardGVNSIsup extends Serializable {
+    public long getInvokeId() {
+        return this.invokeId;
+    }
 
-    byte[] getData();
+    public INAPDialog getINAPDialog() {
+        return this.inapDialog;
+    }
 
-    BackwardGVNS getBackwardGVNS();
+    public void setInvokeId(long invokeId) {
+        this.invokeId = invokeId;
+    }
 
-    // TODO: Spec refers to "Q.735, 6", we refer to ISUP, what is correct ?
+    public void setINAPDialog(INAPDialog inapDialog) {
+        this.inapDialog = inapDialog;
+    }
 
+    protected void addInvokeIdInfo(StringBuilder sb) {
+        sb.append("InvokeId=");
+        sb.append(this.invokeId);
+    }
 }

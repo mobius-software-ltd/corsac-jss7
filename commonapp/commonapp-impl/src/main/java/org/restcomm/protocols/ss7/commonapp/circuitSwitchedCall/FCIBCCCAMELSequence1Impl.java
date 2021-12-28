@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.FCIBCCCAMELS
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.FreeFormatData;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AppendFreeFormatData;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
-import org.restcomm.protocols.ss7.commonapp.primitives.ASNAppendFreeFormatDataImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ASNAppendFreeFormatData;
 import org.restcomm.protocols.ss7.commonapp.primitives.SendingLegIDImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.SendingLegIDWrapperImpl;
 
@@ -48,7 +48,7 @@ public class FCIBCCCAMELSequence1Impl implements FCIBCCCAMELSequence1 {
     private SendingLegIDWrapperImpl partyToCharge;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
-    private ASNAppendFreeFormatDataImpl appendFreeFormatData;
+    private ASNAppendFreeFormatData appendFreeFormatData;
 
     public FCIBCCCAMELSequence1Impl() {
     }
@@ -60,7 +60,7 @@ public class FCIBCCCAMELSequence1Impl implements FCIBCCCAMELSequence1 {
         	this.partyToCharge = new SendingLegIDWrapperImpl(new SendingLegIDImpl(partyToCharge));
         
         if(appendFreeFormatData!=null) {
-        	this.appendFreeFormatData = new ASNAppendFreeFormatDataImpl();
+        	this.appendFreeFormatData = new ASNAppendFreeFormatData();
         	this.appendFreeFormatData.setType(appendFreeFormatData);
         }
     }

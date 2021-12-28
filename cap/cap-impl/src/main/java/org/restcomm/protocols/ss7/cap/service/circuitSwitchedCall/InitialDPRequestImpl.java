@@ -71,7 +71,7 @@ import org.restcomm.protocols.ss7.commonapp.isup.LocationNumberIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.OriginalCalledNumberIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.RedirectingPartyIDIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.RedirectionInformationIsupImpl;
-import org.restcomm.protocols.ss7.commonapp.primitives.ASNEventTypeBCSMImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ASNEventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
@@ -134,7 +134,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     private BearerCapabilityWrapperImpl bearerCapability;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 28,constructed = false,index = -1)
-    private ASNEventTypeBCSMImpl eventTypeBCSM;
+    private ASNEventTypeBCSM eventTypeBCSM;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 29,constructed = false,index = -1,defaultImplementation = RedirectingPartyIDIsupImpl.class)
     private RedirectingPartyIDIsup redirectingPartyID;
@@ -232,7 +232,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
         	this.bearerCapability = new BearerCapabilityWrapperImpl(bearerCapability);
         
         if(eventTypeBCSM!=null) {
-        	this.eventTypeBCSM = new ASNEventTypeBCSMImpl();
+        	this.eventTypeBCSM = new ASNEventTypeBCSM();
         	this.eventTypeBCSM.setType(eventTypeBCSM);
         }
         

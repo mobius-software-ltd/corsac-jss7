@@ -38,6 +38,7 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectingPartyIDIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CUGInterlock;
@@ -130,7 +131,7 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
     public ConnectRequestImpl() {
     }
 
-    public ConnectRequestImpl(DestinationRoutingAddress destinationRoutingAddress, AlertingPatternWrapper alertingPattern,
+    public ConnectRequestImpl(DestinationRoutingAddress destinationRoutingAddress, AlertingPattern alertingPattern,
             OriginalCalledNumberIsup originalCalledPartyID, CAPINAPExtensions extensions, Carrier carrier,
             CallingPartysCategoryIsup callingPartysCategory, RedirectingPartyIDIsup redirectingPartyID,
             RedirectionInformationIsup redirectionInformation, List<GenericNumberIsup> genericNumbers,
@@ -138,7 +139,10 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
             LegID legToBeConnected, CUGInterlock cugInterlock, boolean cugOutgoingAccess, boolean suppressionOfAnnouncement,
             boolean ocsIApplicable, NAOliInfo naoliInfo, boolean borInterrogationRequested, boolean suppressNCSI) {
         this.destinationRoutingAddress = destinationRoutingAddress;
-        this.alertingPattern = alertingPattern;
+        
+        if(alertingPattern!=null)
+        	this.alertingPattern = new AlertingPatternWrapperImpl(alertingPattern);
+        
         this.originalCalledPartyID = originalCalledPartyID;
         this.extensions = extensions;
         this.carrier = carrier;
@@ -191,8 +195,11 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
     }
 
     @Override
-    public AlertingPatternWrapper getAlertingPattern() {
-        return alertingPattern;
+    public AlertingPattern getAlertingPattern() {
+    	if(alertingPattern==null)
+    		return null;
+    	
+        return alertingPattern.getAlertingPattern();
     }
 
     @Override
@@ -297,9 +304,9 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
             sb.append(", destinationRoutingAddress=");
             sb.append(destinationRoutingAddress.toString());
         }
-        if (this.alertingPattern != null) {
+        if (this.alertingPattern != null && this.alertingPattern.getAlertingPattern()!=null) {
             sb.append(", alertingPattern=");
-            sb.append(alertingPattern.toString());
+            sb.append(alertingPattern.getAlertingPattern());
         }
         if (this.originalCalledPartyID != null) {
             sb.append(", originalCalledPartyID=");

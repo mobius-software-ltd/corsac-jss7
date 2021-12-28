@@ -22,8 +22,7 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.isup;
 
-import java.io.Serializable;
-
+import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.isup.message.parameter.ForwardGVNS;
 
 /**
@@ -38,11 +37,11 @@ bound.&minForwardGVNSLength..bound.&maxForwardGVNSLength))
 * @author sergey vetyutnev
 *
 */
-public interface ForwardGVNSIsup extends Serializable {
+public interface ForwardGVNSIsup {
 
     byte[] getData();
 
-    ForwardGVNS getForwardGVNS();
+    ForwardGVNS getForwardGVNS() throws APPException;
 
     // TODO: Spec refers to "Q.735, 6", we refer to ISUP, what is correct ?
 }

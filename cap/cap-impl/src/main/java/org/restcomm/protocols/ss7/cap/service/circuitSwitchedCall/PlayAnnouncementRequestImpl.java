@@ -163,13 +163,13 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
             sb.append(", informationToSend=");
             sb.append(informationToSend.toString());
         }
-        if (this.disconnectFromIPForbidden != null) {
+        if (this.disconnectFromIPForbidden != null && this.disconnectFromIPForbidden.getValue()!=null) {
             sb.append(", disconnectFromIPForbidden=");
-            sb.append(disconnectFromIPForbidden);
+            sb.append(disconnectFromIPForbidden.getValue());
         }
-        if (this.requestAnnouncementCompleteNotification != null) {
+        if (this.requestAnnouncementCompleteNotification != null && this.requestAnnouncementCompleteNotification.getValue()!=null) {
             sb.append(", requestAnnouncementCompleteNotification=");
-            sb.append(requestAnnouncementCompleteNotification);
+            sb.append(requestAnnouncementCompleteNotification.getValue());
         }
         if (this.extensions != null) {
             sb.append(", extensions=");
@@ -179,9 +179,9 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
             sb.append(", callSegmentID=");
             sb.append(callSegmentID);
         }
-        if (this.requestAnnouncementStartedNotification != null) {
+        if (this.requestAnnouncementStartedNotification != null && this.requestAnnouncementStartedNotification.getValue()!=null) {
             sb.append(", requestAnnouncementStartedNotification=");
-            sb.append(requestAnnouncementStartedNotification);
+            sb.append(requestAnnouncementStartedNotification.getValue());
         }
 
         sb.append("]");

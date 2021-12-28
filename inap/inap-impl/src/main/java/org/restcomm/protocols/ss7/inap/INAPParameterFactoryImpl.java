@@ -134,10 +134,14 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardCallIndicatorsIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardGVNSIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.GenericNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.HighLayerCompatibilityIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.ISDNAccessRelatedInformationIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledPartyIDIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectingPartyIDIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AChChargingAddress;
@@ -228,10 +232,14 @@ import org.restcomm.protocols.ss7.commonapp.isup.CallingPartyNumberIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CallingPartysCategoryIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.ForwardCallIndicatorsIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.ForwardGVNSIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.GenericNumberIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.HighLayerCompatibilityIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.ISDNAccessRelatedInformationIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.LocationNumberIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.OriginalCalledNumberIsupImpl;
+import org.restcomm.protocols.ss7.commonapp.isup.OriginalCalledPartyIDIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.RedirectingPartyIDIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.RedirectionInformationIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.AChChargingAddressImpl;
@@ -422,6 +430,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
+import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
+import org.restcomm.protocols.ss7.isup.message.parameter.ForwardGVNS;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
@@ -458,6 +468,66 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
     	}
     }
 
+    @Override
+    public ForwardCallIndicatorsIsup createForwardCallIndicatorsIsup(byte[] data) {
+        return new ForwardCallIndicatorsIsupImpl(data);
+    }
+    
+    @Override
+    public ForwardCallIndicatorsIsup createForwardCallIndicatorsIsup(ForwardCallIndicators forwardCallIndicators) throws INAPException {
+    	try {
+    		return new ForwardCallIndicatorsIsupImpl(forwardCallIndicators);
+    	}
+    	catch(APPException ex) {
+    		throw new INAPException(ex.getMessage(), ex.getCause());
+    	}
+    }
+    
+    @Override
+    public ForwardGVNSIsup createForwardGVNS(byte[] data) {
+        return new ForwardGVNSIsupImpl(data);
+    }
+
+    @Override
+    public ForwardGVNSIsup createForwardGVNS(ForwardGVNS forwardGVNS) throws INAPException {
+    	try {
+    		return new ForwardGVNSIsupImpl(forwardGVNS);
+    	}
+    	catch(APPException ex) {
+    		throw new INAPException(ex.getMessage(), ex.getCause());
+    	}
+    }
+        
+    @Override
+    public ISDNAccessRelatedInformationIsup createISDNAccessRelatedInformationIsup(byte[] data) {
+        return new ISDNAccessRelatedInformationIsupImpl(data);
+    }
+
+    @Override
+    public ISDNAccessRelatedInformationIsup createISDNAccessRelatedInformationIsup(LocationNumber locationNumber) throws INAPException {
+    	try {
+    		return new ISDNAccessRelatedInformationIsupImpl(locationNumber);
+    	}
+    	catch(APPException ex) {
+    		throw new INAPException(ex.getMessage(), ex.getCause());
+    	}
+    }
+    
+    @Override
+    public OriginalCalledPartyIDIsup createOriginalCalledPartyIDIsup(byte[] data) {
+        return new OriginalCalledPartyIDIsupImpl(data);
+    }
+
+    @Override
+    public OriginalCalledPartyIDIsup createOriginalCalledPartyIDIsup(OriginalCalledNumber originalCalledNumber) throws INAPException {
+    	try {
+    		return new OriginalCalledPartyIDIsupImpl(originalCalledNumber);
+    	}
+    	catch(APPException ex) {
+    		throw new INAPException(ex.getMessage(), ex.getCause());
+    	}
+    }
+    
     @Override
     public DpSpecificCriteria createDpSpecificCriteria(Integer applicationTimer) {
         return new DpSpecificCriteriaImpl(applicationTimer);

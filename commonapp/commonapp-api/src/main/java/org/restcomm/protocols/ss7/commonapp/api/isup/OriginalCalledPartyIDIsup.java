@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.isup;
 
-import java.io.Serializable;
-
 import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
 
@@ -42,7 +40,7 @@ maxOriginalCalledPartyIDLength=5
 * @author sergey vetyutnev
 *
 */
-public interface OriginalCalledPartyIDIsup extends Serializable {
+public interface OriginalCalledPartyIDIsup {
 
     byte[] getData();
 

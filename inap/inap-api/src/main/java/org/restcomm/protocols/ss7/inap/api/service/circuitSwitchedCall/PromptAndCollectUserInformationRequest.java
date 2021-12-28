@@ -75,9 +75,9 @@ public interface PromptAndCollectUserInformationRequest extends CircuitSwitchedC
 
 	LegType getLegID();
 	
-	Boolean getRequestAnnouncementStarted();
+	Boolean getRequestAnnouncementStartedNotification();
 	
-	Boolean getRequestAnnouncementComplete();
+	Boolean getRequestAnnouncementCompleteNotification();
 	
     CollectedInfo getCollectedInfo();
 

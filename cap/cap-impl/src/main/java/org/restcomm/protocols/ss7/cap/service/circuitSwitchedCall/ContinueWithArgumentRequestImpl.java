@@ -35,6 +35,7 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ServiceInter
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.GenericNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CUGInterlock;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.AlertingPatternWrapperImpl;
@@ -108,14 +109,17 @@ public class ContinueWithArgumentRequestImpl extends CircuitSwitchedCallMessageI
     public ContinueWithArgumentRequestImpl() {
     }
 
-    public ContinueWithArgumentRequestImpl(AlertingPatternWrapper alertingPattern, CAPINAPExtensions extensions,
+    public ContinueWithArgumentRequestImpl(AlertingPattern alertingPattern, CAPINAPExtensions extensions,
             ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo,
             CallingPartysCategoryIsup callingPartysCategory, List<GenericNumberIsup> genericNumbers,
             CUGInterlock cugInterlock, boolean cugOutgoingAccess, LocationNumberIsup chargeNumber, Carrier carrier,
             boolean suppressionOfAnnouncement, NAOliInfo naOliInfo, boolean borInterrogationRequested,
             boolean suppressOCsi, ContinueWithArgumentArgExtension continueWithArgumentArgExtension) {
         super();
-        this.alertingPattern = alertingPattern;
+        
+        if(alertingPattern!=null)
+        	this.alertingPattern = new AlertingPatternWrapperImpl(alertingPattern);
+        
         this.extensions = extensions;
         this.serviceInteractionIndicatorsTwo = serviceInteractionIndicatorsTwo;
         this.callingPartysCategory = callingPartysCategory;
@@ -157,9 +161,9 @@ public class ContinueWithArgumentRequestImpl extends CircuitSwitchedCallMessageI
         sb.append("ContinueWithArgumentRequestIndication [");
         this.addInvokeIdInfo(sb);
 
-        if (alertingPattern != null) {
+        if (alertingPattern != null && alertingPattern.getAlertingPattern()!=null) {
             sb.append(", alertingPattern=");
-            sb.append(alertingPattern);
+            sb.append(alertingPattern.getAlertingPattern());
         }
         if (extensions != null) {
             sb.append(", extensions=");
@@ -228,8 +232,11 @@ public class ContinueWithArgumentRequestImpl extends CircuitSwitchedCallMessageI
     }
 
     @Override
-    public AlertingPatternWrapper getAlertingPattern() {
-        return this.alertingPattern;
+    public AlertingPattern getAlertingPattern() {
+    	if(alertingPattern==null)
+    		return null;
+    				
+        return this.alertingPattern.getAlertingPattern();
     }
 
     @Override

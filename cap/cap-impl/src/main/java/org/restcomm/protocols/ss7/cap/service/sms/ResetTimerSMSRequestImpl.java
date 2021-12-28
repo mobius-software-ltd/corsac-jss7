@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.sms.ResetTimerSMSRequest;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.TimerID;
-import org.restcomm.protocols.ss7.commonapp.primitives.ASNTimerIDImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ASNTimerID;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -44,7 +44,7 @@ public class ResetTimerSMSRequestImpl extends SmsMessageImpl implements ResetTim
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-    private ASNTimerIDImpl timerID;
+    private ASNTimerID timerID;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
     private ASNInteger timerValue;
@@ -56,7 +56,7 @@ public class ResetTimerSMSRequestImpl extends SmsMessageImpl implements ResetTim
         super();
         
         if(timerID!=null) {
-        	this.timerID = new ASNTimerIDImpl();
+        	this.timerID = new ASNTimerID();
         	this.timerID.setType(timerID);
         }
         

@@ -35,7 +35,6 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CancelRequ
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SpecializedResourceReportRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtension;
 import org.restcomm.protocols.ss7.commonapp.api.callhandling.CallReferenceNumber;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELAChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountered;
@@ -71,6 +70,7 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectingPartyIDIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AChChargingAddress;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.BCSMEvent;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
@@ -284,7 +284,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addConnectRequest(DestinationRoutingAddress   destinationRoutingAddress, AlertingPatternWrapper alertingPattern,
+    public Long addConnectRequest(DestinationRoutingAddress   destinationRoutingAddress, AlertingPattern alertingPattern,
             OriginalCalledNumberIsup  originalCalledPartyID, CAPINAPExtensions extensions, Carrier carrier,
             CallingPartysCategoryIsup callingPartysCategory, RedirectingPartyIDIsup redirectingPartyID,
             RedirectionInformationIsup redirectionInformation, List<GenericNumberIsup> genericNumbers,
@@ -300,7 +300,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
 
     @Override
     public Long addConnectRequest(int customInvokeTimeout, DestinationRoutingAddress   destinationRoutingAddress,
-            AlertingPatternWrapper alertingPattern, OriginalCalledNumberIsup  originalCalledPartyID, CAPINAPExtensions extensions,
+    		AlertingPattern alertingPattern, OriginalCalledNumberIsup  originalCalledPartyID, CAPINAPExtensions extensions,
             Carrier carrier, CallingPartysCategoryIsup callingPartysCategory, RedirectingPartyIDIsup redirectingPartyID,
             RedirectionInformationIsup redirectionInformation, List<GenericNumberIsup> genericNumbers,
             ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, LocationNumberIsup chargeNumber,
@@ -355,7 +355,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addContinueWithArgumentRequest(AlertingPatternWrapper alertingPattern, CAPINAPExtensions extensions,
+    public Long addContinueWithArgumentRequest(AlertingPattern alertingPattern, CAPINAPExtensions extensions,
             ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo,
             CallingPartysCategoryIsup callingPartysCategory, List<GenericNumberIsup> genericNumbers,
             CUGInterlock cugInterlock, boolean cugOutgoingAccess, LocationNumberIsup chargeNumber, Carrier carrier,
@@ -370,7 +370,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addContinueWithArgumentRequest(int customInvokeTimeout, AlertingPatternWrapper alertingPattern,
+    public Long addContinueWithArgumentRequest(int customInvokeTimeout, AlertingPattern alertingPattern,
             CAPINAPExtensions extensions, ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo,
             CallingPartysCategoryIsup callingPartysCategory, List<GenericNumberIsup> genericNumbers,
             CUGInterlock cugInterlock, boolean cugOutgoingAccess, LocationNumberIsup chargeNumber, Carrier carrier,

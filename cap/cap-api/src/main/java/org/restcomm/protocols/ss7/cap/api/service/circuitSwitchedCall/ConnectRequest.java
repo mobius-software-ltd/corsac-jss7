@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.NAOliInfo;
@@ -35,6 +34,7 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectingPartyIDIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CUGInterlock;
@@ -92,7 +92,7 @@ public interface ConnectRequest extends CircuitSwitchedCallMessage {
 
     DestinationRoutingAddress getDestinationRoutingAddress();
 
-    AlertingPatternWrapper getAlertingPattern();
+    AlertingPattern getAlertingPattern();
 
     OriginalCalledNumberIsup getOriginalCalledPartyID();
 

@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ForwardServi
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.HoldTreatmentIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ServiceInteractionIndicatorsTwo;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.BothwayThroughConnectionInd;
-import org.restcomm.protocols.ss7.commonapp.primitives.ASNBothwayThroughConnectionIndImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ASNBothwayThroughConnectionInd;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -51,7 +51,7 @@ public class ServiceInteractionIndicatorsTwoImpl implements ServiceInteractionIn
     private BackwardServiceInteractionInd backwardServiceInteractionInd;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
-    private ASNBothwayThroughConnectionIndImpl bothwayThroughConnectionInd;
+    private ASNBothwayThroughConnectionInd bothwayThroughConnectionInd;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = false,index = -1)
     private ASNConnectedNumberTreatmentIndicatorImpl connectedNumberTreatmentInd;
@@ -81,7 +81,7 @@ public class ServiceInteractionIndicatorsTwoImpl implements ServiceInteractionIn
         this.backwardServiceInteractionInd = backwardServiceInteractionInd;
         
         if(bothwayThroughConnectionInd!=null) {
-        	this.bothwayThroughConnectionInd = new ASNBothwayThroughConnectionIndImpl();
+        	this.bothwayThroughConnectionInd = new ASNBothwayThroughConnectionInd();
         	this.bothwayThroughConnectionInd.setType(bothwayThroughConnectionInd);
         }
         

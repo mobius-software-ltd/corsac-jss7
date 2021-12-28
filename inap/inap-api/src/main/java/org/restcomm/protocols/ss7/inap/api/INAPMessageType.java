@@ -62,5 +62,10 @@ public enum INAPMessageType {
    playTone_Request,
    initiateCallAttempt_Request,
    initiateCallAttempt_Response,
-   collectInformationRequest_Request;
+   collectInformationRequest_Request,
+   cancelStatusReport_Request,
+   callLimit_Request,
+   analyzeInformation_Request,
+   analyzedInformation_Request,
+   activateServiceFiltering_Request;
 }

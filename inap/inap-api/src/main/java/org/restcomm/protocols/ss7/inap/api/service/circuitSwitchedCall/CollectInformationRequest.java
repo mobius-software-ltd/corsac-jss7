@@ -82,5 +82,5 @@ public interface CollectInformationRequest extends CircuitSwitchedCallMessage {
 	
 	CallingPartyNumberIsup getCallingPartyNumber();
 	
-	CalledPartyNumberIsup getDialledDigits();
+	CalledPartyNumberIsup getDialedDigits();
 }

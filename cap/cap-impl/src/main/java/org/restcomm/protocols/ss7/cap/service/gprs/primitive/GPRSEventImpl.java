@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.cap.service.gprs.primitive;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEvent;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
-import org.restcomm.protocols.ss7.commonapp.primitives.ASNMonitorModeImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ASNMonitorMode;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -41,7 +41,7 @@ public class GPRSEventImpl implements GPRSEvent {
     private ASNGPRSEventTypeImpl gprsEventType;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private ASNMonitorModeImpl monitorMode;
+    private ASNMonitorMode monitorMode;
 
     public GPRSEventImpl() {
     }
@@ -53,7 +53,7 @@ public class GPRSEventImpl implements GPRSEvent {
         }
         
         if(monitorMode!=null) {
-        	this.monitorMode = new ASNMonitorModeImpl();
+        	this.monitorMode = new ASNMonitorMode();
         	this.monitorMode.setType(monitorMode);
         }
     }

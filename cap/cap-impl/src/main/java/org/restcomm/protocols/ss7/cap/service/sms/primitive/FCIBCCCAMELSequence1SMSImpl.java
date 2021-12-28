@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.cap.service.sms.primitive;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELSequence1SMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMS;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AppendFreeFormatData;
-import org.restcomm.protocols.ss7.commonapp.primitives.ASNAppendFreeFormatDataImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ASNAppendFreeFormatData;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -43,7 +43,7 @@ public class FCIBCCCAMELSequence1SMSImpl implements FCIBCCCAMELSequence1SMS {
     private FreeFormatDataSMS freeFormatData;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private ASNAppendFreeFormatDataImpl appendFreeFormatData;
+    private ASNAppendFreeFormatData appendFreeFormatData;
 
     public FCIBCCCAMELSequence1SMSImpl() {
     }
@@ -52,7 +52,7 @@ public class FCIBCCCAMELSequence1SMSImpl implements FCIBCCCAMELSequence1SMS {
         this.freeFormatData = freeFormatData;
         
         if(appendFreeFormatData!=null) {
-        	this.appendFreeFormatData = new ASNAppendFreeFormatDataImpl();
+        	this.appendFreeFormatData = new ASNAppendFreeFormatData();
         	this.appendFreeFormatData.setType(appendFreeFormatData);
         }
     }

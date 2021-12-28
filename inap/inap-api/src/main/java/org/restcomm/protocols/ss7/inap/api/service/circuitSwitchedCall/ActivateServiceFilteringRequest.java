@@ -67,8 +67,7 @@ ActivateServiceFilteringArg ::= SEQUENCE {
 	filteringTimeOut [02] FilteringTimeOut,
 	filteringCriteria [03] FilteringCriteria,
 	startTime [04] DateAndTime OPTIONAL,
-	extensions [05] SEQUENCE SIZE (1..7) OF
-	ExtensionField1 OPTIONAL,
+	extensions [05] SEQUENCE SIZE (1..7) OF ExtensionField OPTIONAL,
 	‐‐ ...
 	sCFCorrelationInfo [PRIVATE 01] OCTET STRING (SIZE(16)) OPTIONAL
 }

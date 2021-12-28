@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ContinueWithArgumentArgExtension;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.NAOliInfo;
@@ -32,6 +31,7 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ServiceInter
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.GenericNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CUGInterlock;
 
@@ -76,7 +76,7 @@ SuppressionOfAnnouncement ::= NULL
  */
 public interface ContinueWithArgumentRequest extends CircuitSwitchedCallMessage {
 
-    AlertingPatternWrapper getAlertingPattern();
+    AlertingPattern getAlertingPattern();
 
     CAPINAPExtensions getExtensions();
 

@@ -4,7 +4,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.AppendFreeFormatData;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
-public class ASNAppendFreeFormatDataImpl extends ASNEnumerated {
+public class ASNAppendFreeFormatData extends ASNEnumerated {
 	public void setType(AppendFreeFormatData t) {
 		super.setValue(Long.valueOf(t.getCode()));
 	}

@@ -22,7 +22,10 @@
 
 package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformationType;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -39,11 +42,24 @@ public class RequestedInformationTypeWrapperImpl {
     public RequestedInformationTypeWrapperImpl() {
     }
 
-    public RequestedInformationTypeWrapperImpl(List<ASNRequestedInformationTypeImpl> requestedInformationTypes) {
-        this.requestedInformationTypes = requestedInformationTypes;
+    public RequestedInformationTypeWrapperImpl(List<RequestedInformationType> requestedInformationTypes) {
+    	if(requestedInformationTypes!=null) {
+    		this.requestedInformationTypes=new ArrayList<ASNRequestedInformationTypeImpl>();
+    		for(RequestedInformationType currType:requestedInformationTypes) {
+    			ASNRequestedInformationTypeImpl currValue=new ASNRequestedInformationTypeImpl();
+    			currValue.setType(currType);
+    			this.requestedInformationTypes.add(currValue);
+    		}
+    	}    	
     }
 
-    public List<ASNRequestedInformationTypeImpl> getRequestedInformationTypes() {
-    	return requestedInformationTypes;
+    public List<RequestedInformationType> getRequestedInformationTypes() {
+    	List<RequestedInformationType> result=new ArrayList<RequestedInformationType>();
+    	if(requestedInformationTypes!=null) {
+    		for(ASNRequestedInformationTypeImpl curr:requestedInformationTypes)
+    			result.add(curr.getType());
+    	}
+    	
+        return result;
     }
 }

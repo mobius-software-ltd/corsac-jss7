@@ -31,6 +31,6 @@ import org.restcomm.protocols.ss7.inap.api.INAPMessage;
  */
 public interface CircuitSwitchedCallMessage extends INAPMessage {
 
-    INAPDialogCircuitSwitchedCall getCAPDialog();
+    INAPDialogCircuitSwitchedCall getINAPDialog();
 
 }

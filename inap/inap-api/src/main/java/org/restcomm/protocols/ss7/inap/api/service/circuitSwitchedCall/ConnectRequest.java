@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
@@ -36,11 +35,14 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectingPartyIDIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCallIndicator;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGInterLockCode;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericDigitsSet;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericNumbersSet;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ForwardingCondition;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RouteList;
@@ -152,9 +154,9 @@ public interface ConnectRequest extends CircuitSwitchedCallMessage {
     
     ForwardCallIndicatorsIsup getForwardCallIndicators();
     
-    DigitsIsup getGenericDigitsSet();
+    GenericDigitsSet getGenericDigitsSet();
     
-    DigitsIsup getGenericNumberSet();
+    GenericNumbersSet getGenericNumberSet();
     
     HighLayerCompatibilityIsup getHighLayerCompatibility();
     
@@ -162,7 +164,7 @@ public interface ConnectRequest extends CircuitSwitchedCallMessage {
     
     DestinationRoutingAddress getDestinationRoutingAddress();
 
-    AlertingPatternWrapper getAlertingPattern();
+    AlertingPattern getAlertingPattern();
 
     DigitsIsup getCorrelationID();
     

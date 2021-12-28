@@ -48,7 +48,7 @@ public class ResourceAddressImpl implements ResourceAddress {
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false, index=-1)
     private ReceivingLegIDWrapperImpl legID;
 
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false, index=-1)
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false, index=-1)
     private ASNNull none;
 
     public ResourceAddressImpl() {

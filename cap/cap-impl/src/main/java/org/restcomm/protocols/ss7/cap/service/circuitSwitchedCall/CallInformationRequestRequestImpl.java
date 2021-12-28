@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
@@ -31,7 +30,6 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CallInform
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformationType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
-import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ASNRequestedInformationTypeImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.RequestedInformationTypeWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.SendingLegIDImpl;
@@ -67,15 +65,8 @@ public class CallInformationRequestRequestImpl extends CircuitSwitchedCallMessag
     public CallInformationRequestRequestImpl(List<RequestedInformationType> requestedInformationTypeList,
             CAPINAPExtensions extensions, LegType legID) {
     	
-    	if(requestedInformationTypeList!=null) {
-    		List<ASNRequestedInformationTypeImpl> typesList=new ArrayList<ASNRequestedInformationTypeImpl>();
-    		for(RequestedInformationType currType:requestedInformationTypeList) {
-    			ASNRequestedInformationTypeImpl currValue=new ASNRequestedInformationTypeImpl();
-    			currValue.setType(currType);
-    			typesList.add(currValue);
-    		}    		
-    		this.requestedInformationTypeList = new RequestedInformationTypeWrapperImpl(typesList);
-    	}
+    	if(requestedInformationTypeList!=null)
+    		this.requestedInformationTypeList = new RequestedInformationTypeWrapperImpl(requestedInformationTypeList);
     	
         this.extensions = extensions;
         
@@ -98,11 +89,7 @@ public class CallInformationRequestRequestImpl extends CircuitSwitchedCallMessag
     	if(requestedInformationTypeList==null || requestedInformationTypeList.getRequestedInformationTypes()==null)
     		return null;
     	
-    	List<RequestedInformationType> result=new ArrayList<RequestedInformationType>();
-    	for(ASNRequestedInformationTypeImpl curr:requestedInformationTypeList.getRequestedInformationTypes())
-    		result.add(curr.getType());
-    	
-        return result;
+    	return requestedInformationTypeList.getRequestedInformationTypes();
     }
 
     @Override
@@ -128,7 +115,7 @@ public class CallInformationRequestRequestImpl extends CircuitSwitchedCallMessag
         if (this.requestedInformationTypeList != null && this.requestedInformationTypeList.getRequestedInformationTypes()!=null) {
             sb.append(", requestedInformationTypeList=[");
             boolean firstItem = true;
-            for (ASNRequestedInformationTypeImpl ri : this.requestedInformationTypeList.getRequestedInformationTypes()) {
+            for (RequestedInformationType ri : this.requestedInformationTypeList.getRequestedInformationTypes()) {
                 if (firstItem)
                     firstItem = false;
                 else

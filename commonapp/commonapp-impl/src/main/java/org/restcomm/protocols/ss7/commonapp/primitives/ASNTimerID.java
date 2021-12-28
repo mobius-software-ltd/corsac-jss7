@@ -1,19 +1,19 @@
 package org.restcomm.protocols.ss7.commonapp.primitives;
 
-import org.restcomm.protocols.ss7.commonapp.api.primitives.ErrorTreatment;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.TimerID;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
-public class ASNErrorTreatmentImpl extends ASNEnumerated {
-	public void setType(ErrorTreatment t) {
+public class ASNTimerID extends ASNEnumerated {
+	public void setType(TimerID t) {
 		super.setValue(Long.valueOf(t.getCode()));
 	}
 	
-	public ErrorTreatment getType() {
+	public TimerID getType() {
 		Long realValue=super.getValue();
 		if(realValue==null)
 			return null;
 		
-		return ErrorTreatment.getInstance(getValue().intValue());
+		return TimerID.getInstance(getValue().intValue());
 	}
 }

@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
@@ -79,7 +79,7 @@ SelectRouteArg ::= SEQUENCE {
 public interface SelectRouteRequest extends CircuitSwitchedCallMessage {
 	CalledPartyNumberIsup getDestinationNumberRoutingAddress();
 	
-	AlertingPatternWrapper getAlertingPattern();
+	AlertingPattern getAlertingPattern();
 	
 	DigitsIsup getCorrelationID();
 	

@@ -28,7 +28,6 @@ import org.restcomm.protocols.ss7.cap.api.CAPDialog;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtension;
 import org.restcomm.protocols.ss7.commonapp.api.callhandling.CallReferenceNumber;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELAChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountered;
@@ -64,6 +63,7 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectingPartyIDIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AChChargingAddress;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.BCSMEvent;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
@@ -145,7 +145,7 @@ public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
             List<RequestedInformationType> requestedInformationTypeList, CAPINAPExtensions extensions, LegType legID)
             throws CAPException;
 
-    Long addConnectRequest(DestinationRoutingAddress destinationRoutingAddress, AlertingPatternWrapper alertingPattern,
+    Long addConnectRequest(DestinationRoutingAddress destinationRoutingAddress, AlertingPattern alertingPattern,
             OriginalCalledNumberIsup originalCalledPartyID, CAPINAPExtensions extensions, Carrier carrier,
             CallingPartysCategoryIsup callingPartysCategory, RedirectingPartyIDIsup redirectingPartyID,
             RedirectionInformationIsup redirectionInformation, List<GenericNumberIsup> genericNumbers,
@@ -154,7 +154,7 @@ public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
             boolean ocsIApplicable, NAOliInfo naoliInfo, boolean borInterrogationRequested, boolean suppressNCSI) throws CAPException;
 
     Long addConnectRequest(int customInvokeTimeout, DestinationRoutingAddress destinationRoutingAddress,
-            AlertingPatternWrapper alertingPattern, OriginalCalledNumberIsup originalCalledPartyID, CAPINAPExtensions extensions,
+            AlertingPattern alertingPattern, OriginalCalledNumberIsup originalCalledPartyID, CAPINAPExtensions extensions,
             Carrier carrier, CallingPartysCategoryIsup callingPartysCategory, RedirectingPartyIDIsup redirectingPartyID,
             RedirectionInformationIsup redirectionInformation, List<GenericNumberIsup> genericNumbers,
             ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, LocationNumberIsup chargeNumber,
@@ -328,7 +328,7 @@ public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
             CAPINAPExtensions extensions, boolean releaseCallArgExtensionAllowed)
             throws CAPException;
 
-    Long addContinueWithArgumentRequest(AlertingPatternWrapper alertingPattern,
+    Long addContinueWithArgumentRequest(AlertingPattern alertingPattern,
             CAPINAPExtensions extensions,
             ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo,
             CallingPartysCategoryIsup callingPartysCategory,
@@ -341,7 +341,7 @@ public interface CAPDialogCircuitSwitchedCall extends CAPDialog {
             throws CAPException;
 
     Long addContinueWithArgumentRequest(int customInvokeTimeout,
-            AlertingPatternWrapper alertingPattern, CAPINAPExtensions extensions,
+            AlertingPattern alertingPattern, CAPINAPExtensions extensions,
             ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo,
             CallingPartysCategoryIsup callingPartysCategory,
             List<GenericNumberIsup> genericNumbers,

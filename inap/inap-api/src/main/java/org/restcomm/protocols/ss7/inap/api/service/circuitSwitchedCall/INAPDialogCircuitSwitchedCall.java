@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELAChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountered;
@@ -42,7 +41,6 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.SCIBillingCh
 import org.restcomm.protocols.ss7.commonapp.api.gap.GapCriteria;
 import org.restcomm.protocols.ss7.commonapp.api.gap.GapIndicators;
 import org.restcomm.protocols.ss7.commonapp.api.gap.GapTreatment;
-import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardGVNSIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
@@ -72,6 +70,7 @@ import org.restcomm.protocols.ss7.inap.api.INAPDialog;
 import org.restcomm.protocols.ss7.inap.api.INAPException;
 import org.restcomm.protocols.ss7.inap.api.primitives.TerminalType;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ApplicationID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNS;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNSIndicator;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardSuppressionIndicators;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCallIndicator;
@@ -161,7 +160,7 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
             RedirectingPartyIDIsup redirectingPartyID, RedirectionInformationIsup redirectionInformation,LegIDs legIDs,
             RouteOrigin routeOrigin,boolean testIndication,CUGCallIndicator cugCallIndicator,CUGInterLockCode cugInterLockCode,
             GenericDigitsSet genericDigitsSet,GenericNumbersSet genericNumberSet,CauseIsup cause,HandOverInfo handOverInfo,
-            ForwardGVNSIsup forwardGVNSIndicator,BackwardGVNSIsup backwardGVNSIsup) throws INAPException;
+            ForwardGVNSIsup forwardGVNSIndicator,BackwardGVNS backwardGVNSIsup) throws INAPException;
 
     Long addInitialDPRequest(int customInvokeTimeout, int serviceKey, CallingPartyNumberIsup dialledDigits, 
     		CalledPartyNumberIsup calledPartyNumber, CallingPartyNumberIsup callingPartyNumber, 
@@ -176,7 +175,7 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
     		RedirectionInformationIsup redirectionInformation,LegIDs legIDs,
             RouteOrigin routeOrigin,boolean testIndication,CUGCallIndicator cugCallIndicator,CUGInterLockCode cugInterLockCode,
             GenericDigitsSet genericDigitsSet,GenericNumbersSet genericNumberSet,CauseIsup cause,HandOverInfo handOverInfo,
-            ForwardGVNSIsup forwardGVNSIndicator,BackwardGVNSIsup backwardGVNSIsup) throws INAPException;
+            ForwardGVNSIsup forwardGVNSIndicator,BackwardGVNS backwardGVNSIsup) throws INAPException;
 
     Long addApplyChargingReportRequest(byte[] callResult) throws INAPException;
 
@@ -219,7 +218,7 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
             throws INAPException;
 
     //CS1 Flavour
-    Long addConnectRequest(DestinationRoutingAddress destinationRoutingAddress, AlertingPatternWrapper alertingPattern,
+    Long addConnectRequest(DestinationRoutingAddress destinationRoutingAddress, AlertingPattern alertingPattern,
     		DigitsIsup correlationID, Integer cutAndPaste, ForwardingCondition forwardingCondition, 
     		ISDNAccessRelatedInformation isdnAccessRelatedInformation, OriginalCalledNumberIsup originalCalledPartyID, 
     		RouteList routeList, ScfID scfID, LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions, 
@@ -228,7 +227,7 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
     		RedirectionInformationIsup redirectionInformation) throws INAPException;
 
     Long addConnectRequest(int customInvokeTimeout, DestinationRoutingAddress destinationRoutingAddress, 
-    		AlertingPatternWrapper alertingPattern, DigitsIsup correlationID, Integer cutAndPaste, 
+    		AlertingPattern alertingPattern, DigitsIsup correlationID, Integer cutAndPaste, 
     		ForwardingCondition forwardingCondition, ISDNAccessRelatedInformation isdnAccessRelatedInformation, 
     		OriginalCalledNumberIsup originalCalledPartyID, RouteList routeList, ScfID scfID, 
     		LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions, Carrier carrier, 
@@ -238,9 +237,9 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
 
     //CS1+ Flavour
     Long addConnectRequest(LegType legToBeCreated,BearerCapability bearerCapabilities,CUGCallIndicator cugCallIndicator,
-    		CUGInterLockCode cugInterLockCode,ForwardCallIndicatorsIsup forwardCallIndicators,DigitsIsup genericDigitsSet,
-    		DigitsIsup genericNumberSet,HighLayerCompatibilityIsup highLayerCompatibility,ForwardGVNSIsup forwardGVNSIndicator,
-    		DestinationRoutingAddress destinationRoutingAddress, AlertingPatternWrapper alertingPattern,
+    		CUGInterLockCode cugInterLockCode,ForwardCallIndicatorsIsup forwardCallIndicators,GenericDigitsSet genericDigitsSet,
+    		GenericNumbersSet genericNumberSet,HighLayerCompatibilityIsup highLayerCompatibility,ForwardGVNSIsup forwardGVNSIndicator,
+    		DestinationRoutingAddress destinationRoutingAddress, AlertingPattern alertingPattern,
     		DigitsIsup correlationID, Integer cutAndPaste, ForwardingCondition forwardingCondition, 
     		ISDNAccessRelatedInformation isdnAccessRelatedInformation, OriginalCalledNumberIsup originalCalledPartyID, 
     		RouteList routeList, ScfID scfID, LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions, 
@@ -250,8 +249,9 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
 
     Long addConnectRequest(int customInvokeTimeout, LegType legToBeCreated,BearerCapability bearerCapabilities,
     		CUGCallIndicator cugCallIndicator,CUGInterLockCode cugInterLockCode,
-    		ForwardCallIndicatorsIsup forwardCallIndicators,DigitsIsup genericDigitsSet,
-    		DestinationRoutingAddress destinationRoutingAddress, AlertingPatternWrapper alertingPattern, 
+    		ForwardCallIndicatorsIsup forwardCallIndicators,GenericDigitsSet genericDigitsSet,
+    		GenericNumbersSet genericNumberSet,HighLayerCompatibilityIsup highLayerCompatibility,ForwardGVNSIsup forwardGVNSIndicator,
+    		DestinationRoutingAddress destinationRoutingAddress, AlertingPattern alertingPattern, 
     		DigitsIsup correlationID, Integer cutAndPaste, ForwardingCondition forwardingCondition, 
     		ISDNAccessRelatedInformation isdnAccessRelatedInformation, OriginalCalledNumberIsup originalCalledPartyID, 
     		RouteList routeList, ScfID scfID, LocationNumberIsup travellingClassMark, 
@@ -338,6 +338,9 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
     Long addConnectToResourceRequest(ResourceAddress resourceAddress, CAPINAPExtensions extensions, 
     		ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException;
 
+    Long addConnectToResourceRequest(boolean none, CAPINAPExtensions extensions, 
+    		ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException;
+
     Long addConnectToResourceRequest(CAPINAPExtensions extensions, ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException;
 
     Long addConnectToResourceRequest(int customInvokeTimeout, CalledPartyNumberIsup ipRoutingAddress, 
@@ -347,6 +350,9 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
     		ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException;
 
     Long addConnectToResourceRequest(int customInvokeTimeout, ResourceAddress resourceAddress, 
+    		CAPINAPExtensions extensions, ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException;
+
+    Long addConnectToResourceRequest(int customInvokeTimeout, boolean none, 
     		CAPINAPExtensions extensions, ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException;
 
     Long addConnectToResourceRequest(int customInvokeTimeout, CAPINAPExtensions extensions, ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException;
@@ -418,13 +424,13 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
 
     //cs1 flavour
     Long addInitiateCallAttemptRequest(DestinationRoutingAddress destinationRoutingAddress,
-    		AlertingPatternWrapper alertingPattern,ISDNAccessRelatedInformation isdnAccessRelatedInformation,
+    		AlertingPattern alertingPattern,ISDNAccessRelatedInformation isdnAccessRelatedInformation,
     		LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions, 
     		ServiceInteractionIndicators serviceInteractionIndicators, CallingPartyNumberIsup callingPartyNumber)
             throws INAPException;
 
     Long addInitiateCallAttemptRequest(int customInvokeTimeout,DestinationRoutingAddress destinationRoutingAddress,
-    		AlertingPatternWrapper alertingPattern,ISDNAccessRelatedInformation isdnAccessRelatedInformation,
+    		AlertingPattern alertingPattern,ISDNAccessRelatedInformation isdnAccessRelatedInformation,
     		LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions, 
     		ServiceInteractionIndicators serviceInteractionIndicators, CallingPartyNumberIsup callingPartyNumber)
             throws INAPException;
@@ -436,7 +442,7 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
     		CUGCallIndicator cugCallIndicator,CUGInterLockCode cugInterLockCode,ForwardCallIndicators forwardCallIndicators,
     		GenericDigitsSet genericDigitsSet,GenericNumbersSet genericNumberSet,HighLayerCompatibilityIsup highLayerCompatibility,
     		ForwardGVNSIsup forwardGVNSIndicator,DestinationRoutingAddress destinationRoutingAddress,
-    		AlertingPatternWrapper alertingPattern,CAPINAPExtensions extensions, 
+    		AlertingPattern alertingPattern,CAPINAPExtensions extensions, 
     		ServiceInteractionIndicators serviceInteractionIndicators, CallingPartyNumberIsup callingPartyNumber,
     		RouteList routeList) throws INAPException;
 
@@ -447,7 +453,7 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
     		ForwardCallIndicators forwardCallIndicators,GenericDigitsSet genericDigitsSet,
     		GenericNumbersSet genericNumberSet,HighLayerCompatibilityIsup highLayerCompatibility,
     		ForwardGVNSIsup forwardGVNSIndicator,DestinationRoutingAddress destinationRoutingAddress,
-    		AlertingPatternWrapper alertingPattern, CAPINAPExtensions extensions, 
+    		AlertingPattern alertingPattern, CAPINAPExtensions extensions, 
     		ServiceInteractionIndicators serviceInteractionIndicators, CallingPartyNumberIsup callingPartyNumber,
     		RouteList routeList) throws INAPException;
 
@@ -527,14 +533,14 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
 			RouteList routeList, LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions,
 			LocationNumberIsup featureCode,LocationNumberIsup accessCode,Carrier carrier) throws INAPException;
     
-    Long addAnalyseInformationRequest(DestinationRoutingAddress destinationRoutingAddress,AlertingPatternWrapper alertingPattern,
+    Long addAnalyseInformationRequest(DestinationRoutingAddress destinationRoutingAddress,AlertingPattern alertingPattern,
     		ISDNAccessRelatedInformation isdnAccessRelatedInformation,OriginalCalledNumberIsup originalCalledPartyID,
     		CAPINAPExtensions extensions,CallingPartyNumberIsup callingPartyNumber,CallingPartysCategoryIsup callingPartysCategory,
     		CalledPartyNumberIsup calledPartyNumber, LocationNumberIsup chargeNumber, LocationNumberIsup travellingClassMark,
     		Carrier carrier) throws INAPException;
 
     Long addAnalyseInformationRequest(int customInvokeTimeout,DestinationRoutingAddress destinationRoutingAddress,
-    		AlertingPatternWrapper alertingPattern,ISDNAccessRelatedInformation isdnAccessRelatedInformation,
+    		AlertingPattern alertingPattern,ISDNAccessRelatedInformation isdnAccessRelatedInformation,
     		OriginalCalledNumberIsup originalCalledPartyID,CAPINAPExtensions extensions,
     		CallingPartyNumberIsup callingPartyNumber,CallingPartysCategoryIsup callingPartysCategory,
     		CalledPartyNumberIsup calledPartyNumber, LocationNumberIsup chargeNumber, 
@@ -701,22 +707,22 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
     		FacilityGroup calledFacilityGroup,Integer calledFacilityGroupMember,CauseIsup releaseCause,
     		CAPINAPExtensions extensions,Integer connectTime) throws INAPException;
     
-    Long addSelectRouteRequest(CalledPartyNumberIsup destinationNumberRoutingAddress,AlertingPatternWrapper alertingPattern,
+    Long addSelectRouteRequest(CalledPartyNumberIsup destinationNumberRoutingAddress,AlertingPattern alertingPattern,
     		DigitsIsup correlationID,ISDNAccessRelatedInformation isdnAccessRelatedInformation,OriginalCalledNumberIsup originalCalledPartyID,
     		RouteList routeList,ScfID scfID,LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions,Carrier carrier) throws INAPException;
 
     Long addSelectRouteRequest(int customInvokeTimeout,CalledPartyNumberIsup destinationNumberRoutingAddress,
-    		AlertingPatternWrapper alertingPattern,DigitsIsup correlationID,ISDNAccessRelatedInformation isdnAccessRelatedInformation,
+    		AlertingPattern alertingPattern,DigitsIsup correlationID,ISDNAccessRelatedInformation isdnAccessRelatedInformation,
     		OriginalCalledNumberIsup originalCalledPartyID,RouteList routeList,ScfID scfID,
     		LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions,Carrier carrier) throws INAPException;       
     
-    Long addSelectFacilityRequest(CalledPartyNumberIsup destinationNumberRoutingAddress,AlertingPatternWrapper alertingPattern,
+    Long addSelectFacilityRequest(CalledPartyNumberIsup destinationNumberRoutingAddress,AlertingPattern alertingPattern,
     		ISDNAccessRelatedInformation isdnAccessRelatedInformation,FacilityGroup calledFacilityGroup,
     		Integer calledFacilityGroupMember,OriginalCalledNumberIsup originalCalledPartyID, 
     		CAPINAPExtensions extensions,Carrier carrier) throws INAPException;
 
     Long addSelectFacilityRequest(int customInvokeTimeout,CalledPartyNumberIsup destinationNumberRoutingAddress,
-    		AlertingPatternWrapper alertingPattern,ISDNAccessRelatedInformation isdnAccessRelatedInformation,
+    		AlertingPattern alertingPattern,ISDNAccessRelatedInformation isdnAccessRelatedInformation,
     		FacilityGroup calledFacilityGroup,Integer calledFacilityGroupMember,OriginalCalledNumberIsup originalCalledPartyID,
     		CAPINAPExtensions extensions) throws INAPException;
     
@@ -795,7 +801,7 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
             RedirectingPartyIDIsup redirectingPartyID, RedirectionInformationIsup redirectionInformation,LegIDs legIDs,
             RouteOrigin routeOrigin,boolean testIndication,CUGCallIndicator cugCallIndicator,CUGInterLockCode cugInterLockCode,
             GenericDigitsSet genericDigitsSet,GenericNumbersSet genericNumberSet,CauseIsup cause,HandOverInfo handOverInfo,
-            ForwardGVNSIsup forwardGVNSIndicator,BackwardGVNSIsup backwardGVNSIsup) throws INAPException;
+            ForwardGVNSIsup forwardGVNSIndicator,BackwardGVNS backwardGVNSIsup) throws INAPException;
 
     Long addHandoverRequest(int customInvokeTimeout, int serviceKey, CallingPartyNumberIsup dialledDigits, 
     		CalledPartyNumberIsup calledPartyNumber, CallingPartyNumberIsup callingPartyNumber, 
@@ -810,7 +816,7 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
     		RedirectionInformationIsup redirectionInformation,LegIDs legIDs,
             RouteOrigin routeOrigin,boolean testIndication,CUGCallIndicator cugCallIndicator,CUGInterLockCode cugInterLockCode,
             GenericDigitsSet genericDigitsSet,GenericNumbersSet genericNumberSet,CauseIsup cause,HandOverInfo handOverInfo,
-            ForwardGVNSIsup forwardGVNSIndicator,BackwardGVNSIsup backwardGVNSIsup) throws INAPException;
+            ForwardGVNSIsup forwardGVNSIndicator,BackwardGVNS backwardGVNSIsup) throws INAPException;
 
     Long addDialogueUserInformationRequest(SendingFunctionsActive sendingFunctionsActive,
     		ReceivingFunctionsRequested receivingFunctionsRequested,Integer trafficSimulationSessionID) throws INAPException;

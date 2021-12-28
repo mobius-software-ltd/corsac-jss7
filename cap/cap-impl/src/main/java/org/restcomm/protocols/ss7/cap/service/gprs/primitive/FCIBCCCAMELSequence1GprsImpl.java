@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FCIBCCCAMELSequ
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FreeFormatDataGprs;
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AppendFreeFormatData;
-import org.restcomm.protocols.ss7.commonapp.primitives.ASNAppendFreeFormatDataImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ASNAppendFreeFormatData;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -46,7 +46,7 @@ public class FCIBCCCAMELSequence1GprsImpl implements FCIBCCCAMELSequence1Gprs {
     private PDPID pdpID;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
-    private ASNAppendFreeFormatDataImpl appendFreeFormatData;
+    private ASNAppendFreeFormatData appendFreeFormatData;
 
     public FCIBCCCAMELSequence1GprsImpl() {        
     }
@@ -56,7 +56,7 @@ public class FCIBCCCAMELSequence1GprsImpl implements FCIBCCCAMELSequence1Gprs {
         this.pdpID = pdpID;
         
         if(appendFreeFormatData!=null) {
-        	this.appendFreeFormatData = new ASNAppendFreeFormatDataImpl();
+        	this.appendFreeFormatData = new ASNAppendFreeFormatData();
         	this.appendFreeFormatData.setType(appendFreeFormatData);
         }
     }

@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedDigits;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ErrorTreatment;
-import org.restcomm.protocols.ss7.commonapp.primitives.ASNErrorTreatmentImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.ASNErrorTreatment;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -65,7 +65,7 @@ public class CollectedDigitsImpl implements CollectedDigits {
     private ASNInteger interDigitTimeOut;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = false,index = -1)
-    private ASNErrorTreatmentImpl errorTreatment;
+    private ASNErrorTreatment errorTreatment;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false,index = -1)
     private ASNBoolean interruptableAnnInd;
@@ -116,7 +116,7 @@ public class CollectedDigitsImpl implements CollectedDigits {
         }
         
         if(errorTreatment!=null) {
-        	this.errorTreatment = new ASNErrorTreatmentImpl();
+        	this.errorTreatment = new ASNErrorTreatment();
         	this.errorTreatment.setType(errorTreatment);
         }
         

@@ -43,10 +43,10 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class BCSMEventImpl implements BCSMEvent {
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false, index=-1)
-    private ASNEventTypeBCSMImpl eventTypeBCSM;
+    private ASNEventTypeBCSM eventTypeBCSM;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false, index=-1)
-    private ASNMonitorModeImpl monitorMode;
+    private ASNMonitorMode monitorMode;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true, index=-1)
     private LegIDWrapperImpl legID;
@@ -63,12 +63,12 @@ public class BCSMEventImpl implements BCSMEvent {
     public BCSMEventImpl(EventTypeBCSM eventTypeBCSM, MonitorMode monitorMode, LegID legID,
             DpSpecificCriteria dpSpecificCriteria, boolean automaticRearm) {
     	if(eventTypeBCSM!=null) {
-    		this.eventTypeBCSM = new ASNEventTypeBCSMImpl();
+    		this.eventTypeBCSM = new ASNEventTypeBCSM();
     		this.eventTypeBCSM.setType(eventTypeBCSM);    	
     	}
     	
     	if(monitorMode!=null) {
-    		this.monitorMode = new ASNMonitorModeImpl();
+    		this.monitorMode = new ASNMonitorMode();
     		this.monitorMode.setType(monitorMode);
     	}
     	

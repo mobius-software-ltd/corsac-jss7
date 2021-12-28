@@ -53,10 +53,16 @@ public class MidCallInfoTypeImpl implements MidCallInfoType {
     }
 
     public DigitsIsup getINServiceControlCodeLow() {
+    	if(inServiceControlCodeLow!=null)
+    		inServiceControlCodeLow.setIsGenericDigits();
+    	
     	return inServiceControlCodeLow;
     }
 
     public DigitsIsup getINServiceControlCodeHigh() {
+    	if(inServiceControlCodeLow!=null)
+    		inServiceControlCodeLow.setIsGenericDigits();
+    	
     	return inServiceControlCodeHigh;
     }
 

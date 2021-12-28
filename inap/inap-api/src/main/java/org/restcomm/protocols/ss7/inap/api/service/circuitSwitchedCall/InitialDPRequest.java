@@ -25,7 +25,6 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountered;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.IPSSPCapabilities;
-import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardGVNSIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
@@ -41,6 +40,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.inap.api.primitives.TerminalType;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNS;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCallIndicator;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGInterLockCode;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericDigitsSet;
@@ -188,7 +188,7 @@ public interface InitialDPRequest extends CircuitSwitchedCallMessage {
 
     int getServiceKey();
     
-    CallingPartyNumberIsup getDialledDigits();
+    CallingPartyNumberIsup getDialedDigits();
     
     CalledPartyNumberIsup getCalledPartyNumber();
 
@@ -260,5 +260,5 @@ public interface InitialDPRequest extends CircuitSwitchedCallMessage {
     
     ForwardGVNSIsup getForwardGVNSIndicator();        	
     
-    BackwardGVNSIsup getBackwardGVNSIsup();
+    BackwardGVNS getBackwardGVNSIndicator();
 }

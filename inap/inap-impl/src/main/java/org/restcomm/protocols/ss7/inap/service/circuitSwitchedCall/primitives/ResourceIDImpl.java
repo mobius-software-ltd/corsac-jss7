@@ -79,6 +79,9 @@ public class ResourceIDImpl implements ResourceID {
     }
 
     public DigitsIsup getLineID() {
+    	if(lineID!=null)
+    		lineID.setIsGenericDigits();
+    	
     	return lineID;
     }
 

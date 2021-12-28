@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FacilityGroup;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
@@ -67,7 +67,7 @@ SelectFacilityArg ::= SEQUENCE {
  *
  */
 public interface SelectFacilityRequest extends CircuitSwitchedCallMessage {
-	AlertingPatternWrapper getAlertingPattern();
+	AlertingPattern getAlertingPattern();
 	
 	CalledPartyNumberIsup getDestinationNumberRoutingAddress();
 	

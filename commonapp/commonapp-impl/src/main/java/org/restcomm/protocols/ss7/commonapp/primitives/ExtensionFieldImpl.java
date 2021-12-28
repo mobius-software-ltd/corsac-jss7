@@ -51,7 +51,7 @@ public class ExtensionFieldImpl implements ExtensionField {
 	@ASNProperty(asnClass = ASNClass.UNIVERSAL,tag = 6,constructed = false,index = 0)
 	private ASNObjectIdentifier globalCode;
     
-	private ASNCriticalityTypeImpl criticalityType;
+	private ASNCriticalityType criticalityType;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
     public ASNOctetString data;
@@ -66,7 +66,7 @@ public class ExtensionFieldImpl implements ExtensionField {
     	}
     	
         if(criticalityType!=null && criticalityType!=CriticalityType.typeIgnore) {
-        	this.criticalityType = new ASNCriticalityTypeImpl();
+        	this.criticalityType = new ASNCriticalityType();
         	this.criticalityType.setType(criticalityType);
         }
         
@@ -83,7 +83,7 @@ public class ExtensionFieldImpl implements ExtensionField {
     	}
     	
         if(criticalityType!=null) {
-        	this.criticalityType = new ASNCriticalityTypeImpl();
+        	this.criticalityType = new ASNCriticalityType();
         	this.criticalityType.setType(criticalityType);
         }
         
