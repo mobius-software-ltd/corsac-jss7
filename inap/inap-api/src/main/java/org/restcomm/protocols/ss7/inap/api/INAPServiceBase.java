@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 *
 */
 public interface INAPServiceBase {
-	INAPProvider getCAPProvider();
+	INAPProvider getINAPProvider();
 
     /**
      * Creates a new Dialog.

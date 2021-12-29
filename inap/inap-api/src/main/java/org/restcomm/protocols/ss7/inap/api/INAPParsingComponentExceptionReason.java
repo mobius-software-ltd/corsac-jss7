@@ -28,6 +28,6 @@ package org.restcomm.protocols.ss7.inap.api;
  *
  */
 public enum INAPParsingComponentExceptionReason {
-    UnrecognizedOperation, MistypedParameter, LinkedResponseUnexpected, UnexpectedLinkedOperation;
+    UnrecognizedOperation, MistypedParameter;
 
 }
