@@ -82,7 +82,7 @@ CollectedInformationArg ::= SEQUENCE {
  *
  */
 public interface CollectedInformationRequest extends CircuitSwitchedCallMessage {
-DpSpecificCommonParameters getDpSpecificCommonParameters();
+	DpSpecificCommonParameters getDpSpecificCommonParameters();
 	
 	CalledPartyNumberIsup getDialedDigits();
 	

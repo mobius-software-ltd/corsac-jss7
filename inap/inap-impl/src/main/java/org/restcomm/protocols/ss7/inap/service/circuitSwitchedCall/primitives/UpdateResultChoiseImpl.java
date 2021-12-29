@@ -25,8 +25,10 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -34,51 +36,38 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
  *
  */
 @ASNTag(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,lengthIndefinite = false)
-public class CancelRequestChoisempl {
+public class UpdateResultChoiseImpl {
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-	private ASNInteger invokeID;
+	private ASNOctetString operationReturnID;
     
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-	private ASNNull allRequests;
-    
-    public CancelRequestChoisempl() {
+    public UpdateResultChoiseImpl() {
     }
 
-    public CancelRequestChoisempl(Integer invokeID) {
-    	if(invokeID!=null) {
-    		this.invokeID = new ASNInteger();
-    		this.invokeID.setValue(invokeID.longValue());
+    public UpdateResultChoiseImpl(byte[] operationReturnID) {
+    	if(operationReturnID!=null) {
+    		this.operationReturnID=new ASNOctetString();
+    		this.operationReturnID.setValue(Unpooled.wrappedBuffer(operationReturnID));
     	}
     }
 
-    public CancelRequestChoisempl(boolean allRequests) {
-    	if(allRequests)
-    		this.allRequests = new ASNNull();     	
-    }
-
-    public Integer getInvokeID() {
-    	if(invokeID==null || invokeID.getValue()==null)
+    public byte[] getOperationReturnID() {
+    	if(operationReturnID==null || operationReturnID.getValue()==null)
     		return null;
     	
-        return invokeID.getValue().intValue();
-    }
-
-    public boolean getAllRequests() {
-    	return allRequests!=null;
+    	ByteBuf value=operationReturnID.getValue();
+    	byte[] data=new byte[value.readableBytes()];
+    	value.readBytes(data);
+    	return data;
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("CancelRequest [");
-        if (this.invokeID != null && this.invokeID.getValue()!=null) {
-            sb.append("invokeID=");
-            sb.append(invokeID.getValue());
-        }
-        
-        if (this.allRequests!=null) {
-            sb.append(", allRequests");            
+        sb.append("UpdateResultRequest [");
+        if (this.operationReturnID != null && this.operationReturnID.getValue()!=null) {
+            sb.append("operationReturnID=");
+            sb.append(ASNOctetString.printDataArr(getOperationReturnID()));
         }
         
         sb.append("]");

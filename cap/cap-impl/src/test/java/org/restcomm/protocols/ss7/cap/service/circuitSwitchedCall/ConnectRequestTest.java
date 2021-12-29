@@ -38,7 +38,6 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.GenericNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingCategory;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
-import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.AlertingPatternWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CarrierImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.DestinationRoutingAddressImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ForwardServiceInteractionIndImpl;
@@ -198,7 +197,7 @@ public class ConnectRequestTest {
                 .equals("972201"));
         assertEquals(elem.getGenericNumbers().size(), 1);
         assertTrue(Arrays.equals(elem.getGenericNumbers().get(0).getData(), getDataGenericNumber()));
-        assertEquals(elem.getAlertingPattern().getAlertingPattern().getAlertingCategory(), AlertingCategory.Category5);
+        assertEquals(elem.getAlertingPattern().getAlertingCategory(), AlertingCategory.Category5);
         assertTrue(Arrays.equals(elem.getOriginalCalledPartyID().getData(), getOriginalCalledPartyID()));
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
         
@@ -292,7 +291,6 @@ public class ConnectRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingCategory.Category5);
-        AlertingPatternWrapperImpl alertingPatternCap = new AlertingPatternWrapperImpl(alertingPattern);
         OriginalCalledNumberIsupImpl originalCalledPartyID = new OriginalCalledNumberIsupImpl(getOriginalCalledPartyID());
         CallingPartysCategoryIsupImpl callingPartysCategory = new CallingPartysCategoryIsupImpl(new CallingPartyCategoryImpl(getCallingPartysCategory()[0]));
         RedirectingPartyIDIsupImpl redirectingPartyID = new RedirectingPartyIDIsupImpl(getRedirectingPartyID());
@@ -300,7 +298,7 @@ public class ConnectRequestTest {
         NAOliInfoImpl naoliInfo = new NAOliInfoImpl(40);
 
 
-        elem = new ConnectRequestImpl(destinationRoutingAddress, alertingPatternCap, originalCalledPartyID,
+        elem = new ConnectRequestImpl(destinationRoutingAddress, alertingPattern, originalCalledPartyID,
                 CAPExtensionsTest.createTestCAPExtensions(), null, callingPartysCategory, redirectingPartyID,
                 redirectionInformation, genericNumbers, null, null, null, null, false, true, true, naoliInfo, false, false);
         rawData = this.getData3();

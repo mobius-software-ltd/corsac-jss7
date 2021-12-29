@@ -372,7 +372,7 @@ import org.restcomm.protocols.ss7.inap.charging.TariffSwitchPulseImpl;
 import org.restcomm.protocols.ss7.inap.charging.TariffSwitchoverTimeImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.ApplicationIDImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.BackwardGVNSIndicatorImpl;
-import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.BackwardSuppressionIndicatorsmpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.BackwardSuppressionIndicatorsImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.CUGCallIndicatorImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.CUGInterLockCodeImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.DataItemIDImpl;
@@ -444,7 +444,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle0100;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 public class INAPParameterFactoryImpl implements INAPParameterFactory {
@@ -1620,7 +1620,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
     @Override
     public BackwardSuppressionIndicators getBackwardSuppressionIndicators(BackwardSuppression backwardSuppression,
     	InstructionIndicator instructionIndicator) {
-    	return new BackwardSuppressionIndicatorsmpl(backwardSuppression, instructionIndicator);
+    	return new BackwardSuppressionIndicatorsImpl(backwardSuppression, instructionIndicator);
     }
     
     @Override

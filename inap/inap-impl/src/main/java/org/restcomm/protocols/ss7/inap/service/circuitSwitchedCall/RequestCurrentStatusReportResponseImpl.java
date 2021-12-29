@@ -1,6 +1,6 @@
 /*
- * JBoss, Home of Professional Open Source
- * Copyright 2011, Red Hat, Inc. and individual contributors
+ * TeleStax, Open Source Cloud Communications  Copyright 2012.
+ * and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -26,8 +26,10 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.CancelStatusReportRequest;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.RequestCurrentStatusReportResponse;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceStatus;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ASNResourceStatus;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ResourceIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -40,62 +42,81 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public class CancelStatusReportRequestImpl extends CircuitSwitchedCallMessageImpl implements CancelStatusReportRequest {
+public class RequestCurrentStatusReportResponseImpl extends CircuitSwitchedCallMessageImpl implements RequestCurrentStatusReportResponse {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
+    private ASNResourceStatus resourceStatus;
+    
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1)
     private ResourceIDWrapperImpl resourceID;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1,defaultImplementation = CAPINAPExtensionsImpl.class)
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1,defaultImplementation = CAPINAPExtensionsImpl.class)
     private CAPINAPExtensions extensions;
-    
-    public CancelStatusReportRequestImpl() {
+
+    public RequestCurrentStatusReportResponseImpl() {
     }
 
-    public CancelStatusReportRequestImpl(ResourceID resourceID, CAPINAPExtensions extensions) {   
-    	if(resourceID!=null)
-    		this.resourceID=new ResourceIDWrapperImpl(resourceID);                
+    public RequestCurrentStatusReportResponseImpl(ResourceStatus resourceStatus, ResourceID resourceID, CAPINAPExtensions extensions) {
+        if(resourceStatus!=null) {
+        	this.resourceStatus=new ASNResourceStatus();
+        	this.resourceStatus.setType(resourceStatus);
+        }
+        
+        if(resourceID!=null)
+        	this.resourceID=new ResourceIDWrapperImpl(resourceID);
+        
+        this.extensions=extensions;
     }
 
-    @Override
     public INAPMessageType getMessageType() {
-        return INAPMessageType.cancelStatusReport_Request;
+        return INAPMessageType.requestCurrentStatusReport_Response;
     }
 
-    @Override
     public int getOperationCode() {
-        return INAPOperationCode.cancelStatusReportRequest;
+        return INAPOperationCode.requestCurrentStatusReport;
     }
+    
+    @Override
+    public ResourceStatus getResourceStatus() {
+    	if(resourceStatus==null)
+    		return null;
+    	
+		return resourceStatus.getType();
+	}
 
     @Override
     public ResourceID getResourceID() {
     	if(resourceID==null)
     		return null;
     	
-        return resourceID.getResourceID();
-    }
+		return resourceID.getResourceID();
+	}
 
     @Override
     public CAPINAPExtensions getExtensions() {
-        return extensions;
-    }
+		return extensions;
+	}
 
-    @Override
-    public String toString() {
+	public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("CancelStatusReportRequestIndication [");
+        sb.append("RequestCurrentStatusReportResponseIndication [");
         this.addInvokeIdInfo(sb);
 
-        if (this.resourceID != null && this.resourceID.getResourceID()!=null) {
+        if(resourceStatus != null && resourceStatus.getType()!=null) {
+            sb.append(", resourceStatus=");
+            sb.append(resourceStatus.getType());
+        }
+        if (resourceID != null) {
             sb.append(", resourceID=");
-            sb.append(resourceID.getResourceID());
+            sb.append(resourceID);
         }
-        if (this.extensions != null) {
+        if (extensions != null) {
             sb.append(", extensions=");
-            sb.append(extensions.toString());
+            sb.append(extensions);
         }
-        
+
         sb.append("]");
 
         return sb.toString();

@@ -22,10 +22,11 @@
 
 package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives;
 
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.HoldCause;
+
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -34,51 +35,45 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
  *
  */
 @ASNTag(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,lengthIndefinite = false)
-public class CancelRequestChoisempl {
+public class HoldCallInNetworkRequestChoisempl {
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-	private ASNInteger invokeID;
+	private HoldCause holdCause;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-	private ASNNull allRequests;
+	private ASNNull empty;
     
-    public CancelRequestChoisempl() {
+    public HoldCallInNetworkRequestChoisempl() {
     }
 
-    public CancelRequestChoisempl(Integer invokeID) {
-    	if(invokeID!=null) {
-    		this.invokeID = new ASNInteger();
-    		this.invokeID.setValue(invokeID.longValue());
-    	}
+    public HoldCallInNetworkRequestChoisempl(HoldCause holdCause) {
+    	this.holdCause=holdCause;
     }
 
-    public CancelRequestChoisempl(boolean allRequests) {
-    	if(allRequests)
-    		this.allRequests = new ASNNull();     	
+    public HoldCallInNetworkRequestChoisempl(boolean empty) {
+    	if(empty)
+    		this.empty = new ASNNull();     	
     }
 
-    public Integer getInvokeID() {
-    	if(invokeID==null || invokeID.getValue()==null)
-    		return null;
-    	
-        return invokeID.getValue().intValue();
+    public HoldCause getHoldCause() {
+    	return holdCause;
     }
 
-    public boolean getAllRequests() {
-    	return allRequests!=null;
+    public boolean getEmpty() {
+    	return empty!=null;
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("CancelRequest [");
-        if (this.invokeID != null && this.invokeID.getValue()!=null) {
-            sb.append("invokeID=");
-            sb.append(invokeID.getValue());
+        sb.append("HoldCallInNetworkRequest [");
+        if (this.holdCause != null) {
+            sb.append("holdCause=");
+            sb.append(holdCause);
         }
         
-        if (this.allRequests!=null) {
-            sb.append(", allRequests");            
+        if (this.empty!=null) {
+            sb.append(", empty");            
         }
         
         sb.append("]");

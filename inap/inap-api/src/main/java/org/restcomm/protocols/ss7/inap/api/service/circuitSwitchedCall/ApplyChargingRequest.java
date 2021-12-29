@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELAChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 
 /**
  * <p>
@@ -67,7 +67,7 @@ public interface ApplyChargingRequest extends CircuitSwitchedCallMessage {
 
     Boolean getSendCalculationToSCPIndication();
     
-    LegType getPartyToCharge();
+    LegID getPartyToCharge();
 
     CAPINAPExtensions getExtensions();    
 }

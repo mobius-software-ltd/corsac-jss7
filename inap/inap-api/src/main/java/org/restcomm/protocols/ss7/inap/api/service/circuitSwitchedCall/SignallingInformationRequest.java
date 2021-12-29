@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNSIndicator;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNS;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardSuppressionIndicators;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ForwardSuppressionIndicators;
 
@@ -63,7 +63,7 @@ public interface SignallingInformationRequest extends CircuitSwitchedCallMessage
 
     ForwardSuppressionIndicators getForwardSuppressionIndicators();
     
-    BackwardGVNSIndicator getBackwardGVNSIndicator();
+    BackwardGVNS getBackwardGVNSIndicator();
     
     CAPINAPExtensions getExtensions();
 }

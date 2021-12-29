@@ -25,7 +25,6 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -34,51 +33,43 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
  *
  */
 @ASNTag(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,lengthIndefinite = false)
-public class CancelRequestChoisempl {
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-	private ASNInteger invokeID;
+public class SpecializedResourceReportChoisempl {
+	private ASNNull announcementCompleted;
     
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-	private ASNNull allRequests;
+    @ASNProperty(asnClass = ASNClass.PRIVATE,tag = 1,constructed = false,index = -1)
+	private ASNNull announcementStarted;
     
-    public CancelRequestChoisempl() {
+    public SpecializedResourceReportChoisempl() {
     }
 
-    public CancelRequestChoisempl(Integer invokeID) {
-    	if(invokeID!=null) {
-    		this.invokeID = new ASNInteger();
-    		this.invokeID.setValue(invokeID.longValue());
+    public SpecializedResourceReportChoisempl(boolean value,boolean isStarted) {
+    	if(value) {
+    		if(isStarted)
+    			this.announcementStarted = new ASNNull();
+    		else
+    			this.announcementCompleted = new ASNNull();
     	}
     }
 
-    public CancelRequestChoisempl(boolean allRequests) {
-    	if(allRequests)
-    		this.allRequests = new ASNNull();     	
+    public boolean getAnnouncementStarted() {
+    	return announcementStarted!=null;
     }
 
-    public Integer getInvokeID() {
-    	if(invokeID==null || invokeID.getValue()==null)
-    		return null;
-    	
-        return invokeID.getValue().intValue();
-    }
-
-    public boolean getAllRequests() {
-    	return allRequests!=null;
+    public boolean getAnnouncementCompleted() {
+    	return announcementCompleted!=null;
     }
 
     @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("CancelRequest [");
-        if (this.invokeID != null && this.invokeID.getValue()!=null) {
-            sb.append("invokeID=");
-            sb.append(invokeID.getValue());
+        sb.append("SpecializedResourceReportRequest [");
+        if (this.announcementCompleted!=null) {
+            sb.append(", announcementCompleted");            
         }
         
-        if (this.allRequests!=null) {
-            sb.append(", allRequests");            
+        if (this.announcementStarted!=null) {
+            sb.append(", announcementStarted");            
         }
         
         sb.append("]");

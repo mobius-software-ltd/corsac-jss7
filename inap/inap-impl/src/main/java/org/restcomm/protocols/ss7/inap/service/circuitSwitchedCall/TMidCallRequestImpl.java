@@ -20,28 +20,42 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
+package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall;
+
+import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
+import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.TMidCallRequest;
 
 /**
- *
-<code>
-SpecializedResourceReport ::= OPERATION
-ARGUMENT SpecializedResourceReportArg
--- Direction: SRF -> SCF, Timer: Tsrr -- This operation is used as the response to a PlayAnnouncement operation when the announcement completed
--- report indication is set.
-
-
-SpecializedResourceReportArg ::= CHOICE {
-	announcementCompleted NULL,
-	announcementStarted [PRIVATE 01] NULL
-}
-</code>
  *
  * @author yulian.oifa
  *
  */
-public interface SpecializedResourceReportCS1PlusRequest extends CircuitSwitchedCallMessage {
-	boolean getAnnouncementStarted();
-	
-	boolean getAnnouncementCompleted();
+public class TMidCallRequestImpl extends MidCallRequestImpl implements
+        TMidCallRequest {
+	private static final long serialVersionUID = 1L;
+
+	@Override
+    public INAPMessageType getMessageType() {
+        return INAPMessageType.tMidCall_Request;
+    }
+
+    @Override
+    public int getOperationCode() {
+        return INAPOperationCode.tMidCall;
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("TMidCallRequestIndication [");
+        this.addInvokeIdInfo(sb);
+
+        toStringInternal(sb);
+        
+        sb.append("]");
+
+        return sb.toString();
+    }
 }

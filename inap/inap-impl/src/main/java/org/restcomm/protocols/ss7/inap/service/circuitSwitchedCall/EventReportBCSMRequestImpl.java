@@ -26,15 +26,14 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.EventSpecifi
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.EventSpecificInformationBCSMWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ASNEventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.LegIDWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MiscCallInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.primitives.ReceivingLegIDImpl;
-import org.restcomm.protocols.ss7.commonapp.primitives.ReceivingLegIDWrapperImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.EventReportBCSMRequest;
@@ -62,7 +61,7 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
     private EventSpecificInformationBCSMWrapperImpl eventSpecificInformationBCSM;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1)
-    private ReceivingLegIDWrapperImpl legID;
+    private LegIDWrapperImpl legID;
 
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1, defaultImplementation = MiscCallInfoImpl.class)
     private MiscCallInfo miscCallInfo;
@@ -74,7 +73,7 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
     }
 
     public EventReportBCSMRequestImpl(EventTypeBCSM eventTypeBCSM, DigitsIsup bcsmEventCorrelationID, EventSpecificInformationBCSM eventSpecificInformationBCSM,
-            LegType legID, MiscCallInfo miscCallInfo, CAPINAPExtensions extensions) {
+            LegID legID, MiscCallInfo miscCallInfo, CAPINAPExtensions extensions) {
     	    	
     	if(eventTypeBCSM!=null) {
     		this.eventTypeBCSM = new ASNEventTypeBCSM();
@@ -86,7 +85,7 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
         	this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMWrapperImpl(eventSpecificInformationBCSM);
         
         if(legID!=null)
-        	this.legID = new ReceivingLegIDWrapperImpl(new ReceivingLegIDImpl(legID));
+        	this.legID = new LegIDWrapperImpl(legID);
         
         this.miscCallInfo = miscCallInfo;
         this.extensions = extensions;
@@ -127,11 +126,11 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
 	}
 
 	@Override
-    public LegType getLegID() {
-    	if(legID==null || legID.getReceivingLegID()==null)
+    public LegID getLegID() {
+    	if(legID==null || legID.getLegID()==null)
     		return null;
     	
-        return legID.getReceivingLegID().getReceivingSideID();
+        return legID.getLegID();
     }
 
     @Override
@@ -163,9 +162,9 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
             sb.append(", eventSpecificInformationBCSM=");
             sb.append(eventSpecificInformationBCSM.getEventSpecificInformationBCSM());
         }
-        if (this.legID != null && this.legID.getReceivingLegID()!=null) {
+        if (this.legID != null && this.legID.getLegID()!=null) {
             sb.append(", legID=");
-            sb.append(legID.getReceivingLegID());
+            sb.append(legID.getLegID());
         }
         if (this.miscCallInfo != null) {
             sb.append(", miscCallInfo=");

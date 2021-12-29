@@ -35,7 +35,6 @@ import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.commonapp.api.isup.GenericNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingLevel;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.BothwayThroughConnectionInd;
-import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.AlertingPatternWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CarrierImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ContinueWithArgumentArgExtensionImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.NAOliInfoImpl;
@@ -96,7 +95,7 @@ public class ContinueWithArgumentRequestTest {
         assertTrue(result.getResult() instanceof ContinueWithArgumentRequestImpl);
         
         ContinueWithArgumentRequestImpl elem = (ContinueWithArgumentRequestImpl)result.getResult();        
-        assertEquals(elem.getAlertingPattern().getAlertingPattern().getAlertingLevel(), AlertingLevel.Level2);
+        assertEquals(elem.getAlertingPattern().getAlertingLevel(), AlertingLevel.Level2);
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
         assertEquals(elem.getServiceInteractionIndicatorsTwo().getBothwayThroughConnectionInd(), BothwayThroughConnectionInd.bothwayPathNotRequired);
         assertEquals(elem.getCallingPartysCategory().getCallingPartyCategory().getCallingPartyCategory(), CallingPartyCategory._CATEGORY_OL_RUSSIAN);
@@ -120,7 +119,7 @@ public class ContinueWithArgumentRequestTest {
         assertTrue(result.getResult() instanceof ContinueWithArgumentRequestImpl);
         
         elem = (ContinueWithArgumentRequestImpl)result.getResult();  
-        assertEquals(elem.getAlertingPattern().getAlertingPattern().getAlertingLevel(), AlertingLevel.Level2);
+        assertEquals(elem.getAlertingPattern().getAlertingLevel(), AlertingLevel.Level2);
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
         assertEquals(elem.getServiceInteractionIndicatorsTwo().getBothwayThroughConnectionInd(), BothwayThroughConnectionInd.bothwayPathNotRequired);
         assertEquals(elem.getCallingPartysCategory().getCallingPartyCategory().getCallingPartyCategory(), CallingPartyCategory._CATEGORY_OL_RUSSIAN);
@@ -150,7 +149,6 @@ public class ContinueWithArgumentRequestTest {
         ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo = new ServiceInteractionIndicatorsTwoImpl(null, null,
                 BothwayThroughConnectionInd.bothwayPathNotRequired, null, false, null, null, null);
         AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingLevel.Level2);
-        AlertingPatternWrapperImpl alertingPatternCap = new AlertingPatternWrapperImpl(alertingPattern);
         List<GenericNumberIsup> genericNumbers = new ArrayList<GenericNumberIsup>();
         GenericNumberImpl genericNumber = new GenericNumberImpl();
         genericNumber.setAddress("111222");
@@ -158,7 +156,7 @@ public class ContinueWithArgumentRequestTest {
         genericNumbers.add(gn);
         CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getCUGInterlock());
 
-        ContinueWithArgumentRequestImpl elem = new ContinueWithArgumentRequestImpl(alertingPatternCap, CAPExtensionsTest.createTestCAPExtensions(),
+        ContinueWithArgumentRequestImpl elem = new ContinueWithArgumentRequestImpl(alertingPattern, CAPExtensionsTest.createTestCAPExtensions(),
                 serviceInteractionIndicatorsTwo, callingPartysCategory, genericNumbers, cugInterlock, false, null, null, false, null, false, false, null);
 
         // AlertingPatternCap alertingPattern, CAPExtensions extensions,
@@ -184,7 +182,7 @@ public class ContinueWithArgumentRequestTest {
         CarrierImpl carrier = new CarrierImpl(getCarrier());
         NAOliInfoImpl naOliInfo = new NAOliInfoImpl(11);
         ContinueWithArgumentArgExtensionImpl continueWithArgumentArgExtension = new ContinueWithArgumentArgExtensionImpl(true, false, false, null);
-        elem = new ContinueWithArgumentRequestImpl(alertingPatternCap, CAPExtensionsTest.createTestCAPExtensions(), serviceInteractionIndicatorsTwo,
+        elem = new ContinueWithArgumentRequestImpl(alertingPattern, CAPExtensionsTest.createTestCAPExtensions(), serviceInteractionIndicatorsTwo,
                 callingPartysCategory, genericNumbers, cugInterlock, true, chargeNumber, carrier, true, naOliInfo, true, true, continueWithArgumentArgExtension);
 
         rawData = this.getData2();

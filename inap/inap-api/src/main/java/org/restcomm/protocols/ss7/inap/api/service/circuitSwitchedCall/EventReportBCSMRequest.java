@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.EventSpecifi
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
 
 /**
@@ -71,7 +71,7 @@ public interface EventReportBCSMRequest extends CircuitSwitchedCallMessage {
     
     EventSpecificInformationBCSM getEventSpecificInformationBCSM();
 
-    LegType getLegID();
+    LegID getLegID();
 
     MiscCallInfo getMiscCallInfo();
 

@@ -22,13 +22,12 @@
 
 package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
-import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.primitives.SendingLegIDImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.SendingLegIDWrapperImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.CancelStatusReportRequest;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceID;
-import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ResourceIDWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.HoldCallPartyConnectionRequest;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -40,62 +39,50 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public class CancelStatusReportRequestImpl extends CircuitSwitchedCallMessageImpl implements CancelStatusReportRequest {
+public class HoldCallPartyConnectionRequestImpl extends CircuitSwitchedCallMessageImpl implements HoldCallPartyConnectionRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-    private ResourceIDWrapperImpl resourceID;
-    
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1,defaultImplementation = CAPINAPExtensionsImpl.class)
-    private CAPINAPExtensions extensions;
-    
-    public CancelStatusReportRequestImpl() {
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
+	private SendingLegIDWrapperImpl legID;
+	
+	public HoldCallPartyConnectionRequestImpl() {
     }
 
-    public CancelStatusReportRequestImpl(ResourceID resourceID, CAPINAPExtensions extensions) {   
-    	if(resourceID!=null)
-    		this.resourceID=new ResourceIDWrapperImpl(resourceID);                
+    public HoldCallPartyConnectionRequestImpl(LegType legID) {
+        if(legID!=null)
+        	this.legID=new SendingLegIDWrapperImpl(new SendingLegIDImpl(legID));
     }
 
     @Override
     public INAPMessageType getMessageType() {
-        return INAPMessageType.cancelStatusReport_Request;
+        return INAPMessageType.holdCallPartyConnection_Request;
     }
 
     @Override
     public int getOperationCode() {
-        return INAPOperationCode.cancelStatusReportRequest;
+        return INAPOperationCode.holdCallPartyConnection;
     }
 
     @Override
-    public ResourceID getResourceID() {
-    	if(resourceID==null)
-    		return null;
-    	
-        return resourceID.getResourceID();
-    }
+    public LegType getLegID() {
+		if(legID==null || legID.getSendingLegID()==null)
+			return null;
+		
+		return legID.getSendingLegID().getSendingSideID();			
+	}
 
-    @Override
-    public CAPINAPExtensions getExtensions() {
-        return extensions;
-    }
-
-    @Override
+	@Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("CancelStatusReportRequestIndication [");
+        sb.append("HoldCallPartyConnectionRequestIndication [");
         this.addInvokeIdInfo(sb);
 
-        if (this.resourceID != null && this.resourceID.getResourceID()!=null) {
-            sb.append(", resourceID=");
-            sb.append(resourceID.getResourceID());
+        if (this.legID != null && this.legID.getSendingLegID()!=null && this.legID.getSendingLegID().getSendingSideID()!=null) {
+            sb.append(", legID=");
+            sb.append(this.legID.getSendingLegID().getSendingSideID());
         }
-        if (this.extensions != null) {
-            sb.append(", extensions=");
-            sb.append(extensions.toString());
-        }
-        
+
         sb.append("]");
 
         return sb.toString();

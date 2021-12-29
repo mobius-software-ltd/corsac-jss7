@@ -24,11 +24,10 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELAChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CAMELAChBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
-import org.restcomm.protocols.ss7.commonapp.primitives.SendingLegIDImpl;
-import org.restcomm.protocols.ss7.commonapp.primitives.SendingLegIDWrapperImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.LegIDWrapperImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ApplyChargingRequest;
@@ -54,7 +53,7 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
     private ASNBoolean sendCalculationToSCPIndication;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
-    private SendingLegIDWrapperImpl partyToCharge;
+    private LegIDWrapperImpl partyToCharge;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = true,index = -1,defaultImplementation = CAPINAPExtensionsImpl.class)
     private CAPINAPExtensions extensions;
@@ -63,7 +62,7 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
     }
 
     public ApplyChargingRequestImpl(CAMELAChBillingChargingCharacteristics aChBillingChargingCharacteristics,
-    		Boolean sendCalculationToSCPIndication, LegType partyToCharge, CAPINAPExtensions extensions) {
+    		Boolean sendCalculationToSCPIndication, LegID partyToCharge, CAPINAPExtensions extensions) {
         this.aChBillingChargingCharacteristics = aChBillingChargingCharacteristics;
         
         if(sendCalculationToSCPIndication!=null) {
@@ -72,7 +71,7 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
         }
         
         if(partyToCharge!=null)
-        	this.partyToCharge = new SendingLegIDWrapperImpl(new SendingLegIDImpl(partyToCharge));
+        	this.partyToCharge = new LegIDWrapperImpl(partyToCharge);
         
         this.extensions = extensions;
     }
@@ -101,11 +100,11 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
     }
 
     @Override
-    public LegType getPartyToCharge() {
-    	if(partyToCharge==null || partyToCharge.getSendingLegID()==null)
+    public LegID getPartyToCharge() {
+    	if(partyToCharge==null || partyToCharge.getLegID()==null)
     		return null;
     	
-        return partyToCharge.getSendingLegID().getSendingSideID();
+        return partyToCharge.getLegID();
     }
 
     @Override
@@ -130,9 +129,9 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
             sb.append(sendCalculationToSCPIndication.getValue());
         }
         
-        if (this.partyToCharge != null && this.partyToCharge.getSendingLegID()!=null) {
+        if (this.partyToCharge != null && this.partyToCharge.getLegID()!=null) {
             sb.append(", partyToCharge=");
-            sb.append(partyToCharge.getSendingLegID());
+            sb.append(partyToCharge.getLegID());
         }
         if (this.extensions != null) {
             sb.append(", extensions=");

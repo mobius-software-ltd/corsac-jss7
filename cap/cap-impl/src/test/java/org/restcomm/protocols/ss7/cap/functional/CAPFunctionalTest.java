@@ -131,7 +131,6 @@ import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OAnswerSpecificInfo;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AOCBeforeAnswer;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAI_GSM0224;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELAChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CalledPartyBCDNumber;
@@ -5002,7 +5001,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             public void onContinueWithArgumentRequest(ContinueWithArgumentRequest ind) {
                 super.onContinueWithArgumentRequest(ind);
 
-                assertEquals(ind.getAlertingPattern().getAlertingPattern().getAlertingLevel(), AlertingLevel.Level1);
+                assertEquals(ind.getAlertingPattern().getAlertingLevel(), AlertingLevel.Level1);
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
 
                 dialogStep = 1;
@@ -5051,8 +5050,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     switch (dialogStep) {
                     case 1: // after InitialDp
                         AlertingPatternImpl ap = new AlertingPatternImpl(AlertingLevel.Level1);
-                        AlertingPatternWrapper alertingPattern = this.capParameterFactory.createAlertingPattern(ap);
-                        dlg.addContinueWithArgumentRequest(alertingPattern, null, null, null, null, null, false, null, null, false, null, false, false, null);
+                        dlg.addContinueWithArgumentRequest(ap, null, null, null, null, null, false, null, null, false, null, false, false, null);
                         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ContinueWithArgumentRequest, null, sequence++));
                         dlg.send();
 

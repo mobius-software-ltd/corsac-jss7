@@ -84,7 +84,7 @@ public interface ODisconnectRequest extends CircuitSwitchedCallMessage {
 	
 	Integer getCallingFacilityGroupMember();
 	
-	CauseIsup getReleaseCAuse();
+	CauseIsup getReleaseCause();
 	
 	RouteList getRouteList();
     

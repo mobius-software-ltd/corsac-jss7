@@ -524,11 +524,18 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
 
 	@Override
     public String toString() {
-
-        StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
         sb.append("InitialDPRequestIndication [");
         this.addInvokeIdInfo(sb);
 
+        toStringInternal(sb);
+
+        sb.append("]");
+
+        return sb.toString();
+	}
+	
+	public void toStringInternal(StringBuilder sb) {
         sb.append(", serviceKey=");
         sb.append(serviceKey);
         if (this.dialedDigits != null) {
@@ -670,9 +677,5 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
             sb.append(", backwardGVNSIndicator=");
             sb.append(backwardGVNSIndicator.toString());
         }
-
-        sb.append("]");
-
-        return sb.toString();
     }
 }

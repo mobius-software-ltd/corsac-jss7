@@ -37,11 +37,11 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class BackwardSuppressionIndicatorsmpl extends ASNOctetString implements BackwardSuppressionIndicators {
-	public BackwardSuppressionIndicatorsmpl() {
+public class BackwardSuppressionIndicatorsImpl extends ASNOctetString implements BackwardSuppressionIndicators {
+	public BackwardSuppressionIndicatorsImpl() {
     }
 
-    public BackwardSuppressionIndicatorsmpl(BackwardSuppression backwardSuppression,InstructionIndicator instructionIndicator) {
+    public BackwardSuppressionIndicatorsImpl(BackwardSuppression backwardSuppression,InstructionIndicator instructionIndicator) {
     	if(backwardSuppression!=null || instructionIndicator!=null) {
     		byte[] value=new byte[2];
     		if(backwardSuppression!=null)

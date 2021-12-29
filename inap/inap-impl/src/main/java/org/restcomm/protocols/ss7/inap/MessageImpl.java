@@ -27,8 +27,7 @@ import org.restcomm.protocols.ss7.inap.api.INAPMessage;
 
 /**
  *
- * @author amit bhayani
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 public abstract class MessageImpl implements INAPMessage {

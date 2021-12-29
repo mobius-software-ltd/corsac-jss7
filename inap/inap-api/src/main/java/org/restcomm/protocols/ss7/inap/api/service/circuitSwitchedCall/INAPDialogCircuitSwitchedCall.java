@@ -373,7 +373,7 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
     Long addSpecializedResourceReportRequest(Long linkedId) throws INAPException;
 
     //cs1+ flavour
-    Long addSpecializedResourceReportRequest(Long linkedId,boolean announcementStarted) throws INAPException;
+    Long addSpecializedResourceReportRequest(Long linkedId,boolean value,boolean isStarted) throws INAPException;
 
     //cs1 flavour
     Long addPlayAnnouncementRequest(InformationToSend informationToSend, Boolean disconnectFromIPForbidden,
