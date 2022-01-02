@@ -26,14 +26,11 @@ import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.SpecializedResourceReportRequest;
 
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
-
 /**
  *
  * @author yulian.oifa
  *
  */
-@ASNWrappedTag
 public class SpecializedResourceReportRequestImpl extends CircuitSwitchedCallMessageImpl implements
         SpecializedResourceReportRequest {
 	private static final long serialVersionUID = 1L;

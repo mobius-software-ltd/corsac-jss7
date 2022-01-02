@@ -27,9 +27,13 @@ package org.restcomm.protocols.ss7.tcap.asn.comp;
 
 import java.util.List;
 
+import org.restcomm.protocols.ss7.tcap.api.OperationCodeWithACN;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNExclude;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNGenericMapping;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPreprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -46,6 +50,9 @@ public class ReturnResultInnerImpl {
 	@ASNWildcard
 	private ASNReturnResultParameterImpl parameter;	
 
+	@ASNExclude
+	ApplicationContextName acn;
+	
 	/*
      * (non-Javadoc)
      *
@@ -109,6 +116,16 @@ public class ReturnResultInnerImpl {
     public Class<?> getMapping(ASNParser parser) {
     	if(operationCode!=null)
     	{
+    		if(acn!=null) {
+    			OperationCodeWithACN operationWithACN=new OperationCodeWithACN(operationCode, acn.getOid());
+    			Class<?> result=parser.getLocalMapping(this.getClass(), operationWithACN);
+        		if(result==null)
+        			result=parser.getDefaultLocalMapping(this.getClass());
+        		
+        		if(result!=null)
+        			return result;
+    		}
+    		
     		Class<?> result=parser.getLocalMapping(this.getClass(), operationCode);
     		if(result==null)
     			result=parser.getDefaultLocalMapping(this.getClass());
@@ -117,6 +134,11 @@ public class ReturnResultInnerImpl {
     	}
     	
     	return null;
+    }
+    
+    public void setACN(ApplicationContextName acn) {
+    	System.out.println("ACN SET FOR RETURN RESULT!!!!");
+    	this.acn=acn;
     }
     
     public ComponentType getType() {

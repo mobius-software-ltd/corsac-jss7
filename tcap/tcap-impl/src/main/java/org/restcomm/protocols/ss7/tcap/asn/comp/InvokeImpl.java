@@ -26,11 +26,13 @@ import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.restcomm.protocols.ss7.tcap.api.OperationCodeWithACN;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.OperationState;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -80,6 +82,9 @@ public class InvokeImpl implements Invoke {
     private TCAPProvider provider;
     private Dialog dialog;
 
+    @ASNExclude
+    private ApplicationContextName acn;
+    
     public InvokeImpl() {
         // Set Default Class
         this.invokeClass = InvokeClass.Class1;
@@ -97,6 +102,16 @@ public class InvokeImpl implements Invoke {
     public Class<?> getMapping(ASNParser parser) {
     	if(operationCode!=null)
     	{
+    		if(acn!=null) {
+    			OperationCodeWithACN operationWithACN=new OperationCodeWithACN(operationCode, acn.getOid());
+    			Class<?> result=parser.getLocalMapping(this.getClass(), operationWithACN);
+        		if(result==null)
+        			result=parser.getDefaultLocalMapping(this.getClass());
+        		
+        		if(result!=null)
+        			return result;
+    		}
+    		
     		Class<?> result=parser.getLocalMapping(this.getClass(), operationCode);
     		if(result==null)
     			result=parser.getDefaultLocalMapping(this.getClass());
@@ -424,4 +439,8 @@ public class InvokeImpl implements Invoke {
 
     }
 
+    public void setACN(ApplicationContextName acn) {
+    	System.out.println("ACN SET FOR INVOKE!!!!");
+    	this.acn=acn;
+    }
 }

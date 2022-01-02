@@ -112,6 +112,7 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.RequestFirstS
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.RequestNotificationChargingEventRequestImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.RequestReportBCSMEventRequestImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ResetTimerRequestImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.RetrieveRequestImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.RetrieveResponseImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.RouteSelectFailureRequestImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.SelectFacilityRequestImpl;
@@ -133,6 +134,7 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.UpdateRespons
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ISUPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
+import org.restcomm.protocols.ss7.tcap.api.OperationCodeWithACN;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.TCListener;
@@ -445,7 +447,12 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)INAPOperationCode.signallingInformation);
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SignallingInformationRequestImpl.class);
-        	
+
+        	opCode=new OperationCodeImpl();
+        	opCode.setLocalOperationCode((long)INAPOperationCode.retrieve);
+        	OperationCodeWithACN operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_data_management_AC.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, RetrieveRequestImpl.class);
+
         	//registering request options
         	tcapProvider.getParser().registerAlternativeClassMapping(InitialDPRequestImpl.class, InitialDPRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(OriginationAttemptAuthorizedRequestImpl.class, OriginationAttemptAuthorizedRequestImpl.class);
@@ -464,9 +471,9 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         	tcapProvider.getParser().registerAlternativeClassMapping(OMidCallRequestImpl.class, OMidCallRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(TMidCallRequestImpl.class, TMidCallRequestImpl.class);
         	
-        	//both are having same id, can not add both for now
         	tcapProvider.getParser().registerAlternativeClassMapping(AssistRequestInstructionsRequestImpl.class, AssistRequestInstructionsRequestImpl.class);
-        	//tcapProvider.getParser().registerAlternativeClassMapping(AssistRequestInstructionsRequestImpl.class, RetrieveRequestImpl.class);
+        	
+        	tcapProvider.getParser().registerAlternativeClassMapping(RetrieveRequestImpl.class, RetrieveRequestImpl.class);
         	
         	tcapProvider.getParser().registerAlternativeClassMapping(EstablishTemporaryConnectionRequestImpl.class, EstablishTemporaryConnectionRequestImpl.class);
         	

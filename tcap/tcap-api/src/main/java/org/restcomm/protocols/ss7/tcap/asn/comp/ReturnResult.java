@@ -26,6 +26,7 @@
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPostprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -36,5 +37,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,lengthIndefinite=false)
+@ASNPostprocess
 public interface ReturnResult extends Return {
 }
