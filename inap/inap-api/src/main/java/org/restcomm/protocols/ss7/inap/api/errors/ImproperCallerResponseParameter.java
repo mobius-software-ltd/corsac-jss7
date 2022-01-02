@@ -22,39 +22,36 @@
 package org.restcomm.protocols.ss7.inap.api.errors;
 
 /**
- * Base class of INAP ReturnError messages
+ *
+ * defined for CS1+ only
+ PARAMETER ENUMERATED { noInformationReceived(0), notEnoughInformationReceived (1)
+}
  *
  * @author yulian.oifa
  *
  */
-public interface INAPErrorMessage {
-   Long getErrorCode();
+public enum ImproperCallerResponseParameter {
+	noInformationReceived(1),
+	notEnoughInformationReceived(2);
 
-   boolean isEmParameterless();
+   private int code;
 
-   boolean isEmCancelFailed();
+   private ImproperCallerResponseParameter(int code) {
+      this.code = code;
+   }
 
-   boolean isEmRequestedInfoError();
+   public int getCode() {
+      return this.code;
+   }
 
-   boolean isEmSystemFailure();
-
-   boolean isEmTaskRefused();
-
-   boolean isImproperCallerResponseCs1Plus();
-
-   boolean isEmOctetString();
-
-   INAPErrorMessageParameterless getEmParameterless();
-
-   INAPErrorMessageCancelFailed getEmCancelFailed();
-
-   INAPErrorMessageRequestedInfoError getEmRequestedInfoError();
-
-   INAPErrorMessageSystemFailure getEmSystemFailure();
-
-   INAPErrorMessageTaskRefused getEmTaskRefused();
-
-   INAPErrorMessageImproperCallerResponseCS1Plus getImproperCallerResponseCS1Plus();
-
-   INAPErrorMessageOctetString getEmOctetString();
+   public static ImproperCallerResponseParameter getInstance(int code) {
+      switch(code) {
+      case 1:
+         return noInformationReceived;
+      case 2:
+         return notEnoughInformationReceived;
+      default:
+         return null;
+      }
+   }
 }

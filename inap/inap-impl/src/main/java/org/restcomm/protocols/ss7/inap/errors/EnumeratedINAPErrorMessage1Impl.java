@@ -20,31 +20,45 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
+package org.restcomm.protocols.ss7.inap.errors;
 
-import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 /**
-*
-DisconnectForwardConnection ::= OPERATION
-ERRORS {
-	SystemFailure,
-	TaskRefused,
-	UnexpectedComponentSequence
-}
--- Direction: SCF -> SSF, Timer: Tdfc
--- This operation is used to disconnect a forward temporary connection or a connection to a resource.
+ * Base class of INAP ReturnError messages
+ *
+ * @author yulian.oifa
+ *
+ */
+@ASNWrappedTag
+public abstract class EnumeratedINAPErrorMessage1Impl extends INAPErrorMessageImpl {
+	protected Long errorCode;
 
-DisconnectForwardConnectionArg ::= [PRIVATE 01] SEQUENCE {
-	legID [00] SendingSideID
-‐‐ ...
-}
-‐‐ Argument is optional.
-‐‐ No argument indicates CP.
-*
-* @author yulian.oifa
-*
-*/
-public interface DisconnectForwardConnectionCS1PlusRequest extends DisconnectForwardConnectionRequest {
-	LegType getLegID();
+	private ASNEnumerated value;
+	
+    protected EnumeratedINAPErrorMessage1Impl(Long errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public EnumeratedINAPErrorMessage1Impl() {
+    }
+
+    protected Long getValue() {
+    	if(this.value==null)
+    		return null;
+    	
+		return value.getValue();
+	}
+
+    protected void setValue(Long value) {
+    	if(this.value==null)
+    		this.value=new ASNEnumerated();
+    	
+		this.value.setValue(value);
+	}
+	
+    public Long getErrorCode() {
+        return errorCode;
+    }
 }

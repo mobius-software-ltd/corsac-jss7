@@ -40,7 +40,7 @@ SpecializedResourceReportArg ::= CHOICE {
  * @author yulian.oifa
  *
  */
-public interface SpecializedResourceReportCS1PlusRequest extends CircuitSwitchedCallMessage {
+public interface SpecializedResourceReportCS1PlusRequest extends SpecializedResourceReportRequest {
 	boolean getAnnouncementStarted();
 	
 	boolean getAnnouncementCompleted();

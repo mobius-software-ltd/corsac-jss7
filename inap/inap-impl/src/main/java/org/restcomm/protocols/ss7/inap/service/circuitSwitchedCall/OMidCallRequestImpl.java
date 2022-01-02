@@ -22,9 +22,17 @@
 
 package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall;
 
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.OMidCallRequest;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CalledPartyBusinessGroupID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CalledPartySubaddress;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CallingPartyBusinessGroupID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CallingPartySubaddress;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.DpSpecificCommonParameters;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FeatureRequestIndicator;
 
 /**
  *
@@ -45,6 +53,18 @@ public class OMidCallRequestImpl extends MidCallRequestImpl implements
         return INAPOperationCode.oMidCall;
     }
 
+    public OMidCallRequestImpl() {
+    	
+    }
+    
+    public OMidCallRequestImpl(DpSpecificCommonParameters dpSpecificCommonParameters,CalledPartyBusinessGroupID calledPartyBusinessGroupID,
+    		CalledPartySubaddress calledPartySubaddress,CallingPartyBusinessGroupID callingPartyBusinessGroupID,
+    		CallingPartySubaddress callingPartySubaddress,FeatureRequestIndicator featureRequestIndicator,
+    		CAPINAPExtensions extensions,Carrier carrier) {
+    	super(dpSpecificCommonParameters,calledPartyBusinessGroupID,calledPartySubaddress,callingPartyBusinessGroupID,
+    		callingPartySubaddress,featureRequestIndicator,extensions,carrier);
+    }
+    
     @Override
     public String toString() {
 

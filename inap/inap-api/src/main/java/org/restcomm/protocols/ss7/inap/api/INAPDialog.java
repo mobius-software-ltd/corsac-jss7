@@ -37,11 +37,12 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
  *
  */
 public interface INAPDialog extends Serializable {
+   int _Timer_Default = -1;
+
    // Invoke timers
    int getTimerCircuitSwitchedCallControlShort();
    int getTimerCircuitSwitchedCallControlMedium();
    int getTimerCircuitSwitchedCallControlLong();
-   int getTimerDefault();
    
    /*
    * Setting this property to true lead that all sent to TCAP messages of this Dialog will be marked as "ReturnMessageOnError"

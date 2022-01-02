@@ -37,7 +37,7 @@ public interface INAPServiceCircuitSwitchedCallListener extends INAPServiceListe
 
 	void onRequestNotificationChargingEventRequest(RequestNotificationChargingEventRequest ind);
 
-	void onServiceFilteringResponse(ServiceFilteringResponse ind);
+	void onServiceFilteringResponseRequest(ServiceFilteringResponseRequest ind);
 
     void onInitialDPRequest(InitialDPRequest ind);
 
@@ -55,7 +55,7 @@ public interface INAPServiceCircuitSwitchedCallListener extends INAPServiceListe
 
     void onConnectRequest(ConnectRequest ind);
 
-    void onCallInformationRequestRequest(CallInformationRequest ind);
+    void onCallInformationRequest(CallInformationRequest ind);
 
     void onCallInformationReportRequest(CallInformationReportRequest ind);
 
@@ -125,7 +125,7 @@ public interface INAPServiceCircuitSwitchedCallListener extends INAPServiceListe
     
     void onTNoAnswerRequest(TNoAnswerRequest ind);
     
-    void onTAnswerRequest(TNoAnswerRequest ind);
+    void onTAnswerRequest(TAnswerRequest ind);
     
     void onTDisconnectRequest(TDisconnectRequest ind);
     
@@ -151,7 +151,7 @@ public interface INAPServiceCircuitSwitchedCallListener extends INAPServiceListe
     
     void onRetrieveResponse(RetrieveResponse ind);
     
-    void onSignalingInformationRequest(SignallingInformationRequest ind);
+    void onSignallingInformationRequest(SignallingInformationRequest ind);
     
     void onReleaseCallPartyConnectionRequest(ReleaseCallPartyConnectionRequest ind);
     

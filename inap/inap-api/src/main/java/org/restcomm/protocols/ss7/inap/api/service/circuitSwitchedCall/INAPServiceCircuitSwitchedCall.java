@@ -40,8 +40,8 @@ public interface INAPServiceCircuitSwitchedCall extends INAPServiceBase {
     INAPDialogCircuitSwitchedCall createNewDialog(INAPApplicationContext appCntx, SccpAddress origAddress,
             SccpAddress destAddress) throws INAPException;
 
-    void addCAPServiceListener(INAPServiceCircuitSwitchedCallListener capServiceListener);
+    void addINAPServiceListener(INAPServiceCircuitSwitchedCallListener inapServiceListener);
 
-    void removeCAPServiceListener(INAPServiceCircuitSwitchedCallListener capServiceListener);
+    void removeINAPServiceListener(INAPServiceCircuitSwitchedCallListener inapServiceListener);
 
 }

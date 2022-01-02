@@ -23,15 +23,13 @@
 package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
-import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.PromptAndCollectUserInformationResponse;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.PromptAndCollectUserInformationResponeChoiseImpl;
 
-import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNIA5String;
 
 /**
  *
@@ -43,23 +41,21 @@ public class PromptAndCollectUserInformationResponseImpl extends CircuitSwitched
         PromptAndCollectUserInformationResponse {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 0,constructed = false,index = -1,defaultImplementation = DigitsIsupImpl.class)
-    public DigitsIsup digitsResponse;
+	@ASNChoise
+    private PromptAndCollectUserInformationResponeChoiseImpl promptAndCollectUserInformationResponeChoiseImpl;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC, tag = 1,constructed = false,index = -1)
-    public ASNIA5String ia5Response;
 
     public PromptAndCollectUserInformationResponseImpl() {
     }
 
     public PromptAndCollectUserInformationResponseImpl(DigitsIsup digitsResponse) {
-        this.digitsResponse = digitsResponse;
+    	if(digitsResponse!=null)
+        this.promptAndCollectUserInformationResponeChoiseImpl = new PromptAndCollectUserInformationResponeChoiseImpl(digitsResponse);
     }
 
     public PromptAndCollectUserInformationResponseImpl(String ia5Response) {
     	if(ia5Response!=null) {
-    		this.ia5Response = new ASNIA5String();
-    		this.ia5Response.setValue(ia5Response);
+    		this.promptAndCollectUserInformationResponeChoiseImpl=new PromptAndCollectUserInformationResponeChoiseImpl(ia5Response);
     	}
     }
 
@@ -75,39 +71,27 @@ public class PromptAndCollectUserInformationResponseImpl extends CircuitSwitched
 
     @Override
     public DigitsIsup getDigitsResponse() {
-    	if(digitsResponse!=null)
-    		digitsResponse.setIsGenericDigits();
+    	if(promptAndCollectUserInformationResponeChoiseImpl==null)
+    		return null;
     	
-        return digitsResponse;
+    	return promptAndCollectUserInformationResponeChoiseImpl.getDigitsResponse();
     }
 
     @Override
     public String getIA5Response() {
-    	if(ia5Response==null)
+    	if(promptAndCollectUserInformationResponeChoiseImpl==null)
     		return null;
     	
-    	return ia5Response.getValue();
+    	return promptAndCollectUserInformationResponeChoiseImpl.getIA5Response();
     }
     
     @Override
     public String toString() {
-
         StringBuilder sb = new StringBuilder();
-        sb.append("PromptAndCollectUserInformationResponseIndication [");
-        this.addInvokeIdInfo(sb);
-
-        if (this.digitsResponse != null) {
-            sb.append(", digitsResponse=");
-            sb.append(digitsResponse.toString());
-        }
-
-        if (this.ia5Response != null) {
-            sb.append(", ia5Response=");
-            sb.append(ia5Response.toString());
-        }
-
-        sb.append("]");
-
+        if (this.promptAndCollectUserInformationResponeChoiseImpl != null)
+        	sb.append(this.promptAndCollectUserInformationResponeChoiseImpl.toString());
+        
+        this.addInvokeIdInfo(sb);        
         return sb.toString();
     }
 }

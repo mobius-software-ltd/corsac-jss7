@@ -1,6 +1,6 @@
 /*
- * JBoss, Home of Professional Open Source
- * Copyright 2011, Red Hat, Inc. and individual contributors
+ * TeleStax, Open Source Cloud Communications  Copyright 2012.
+ * and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -22,39 +22,14 @@
 package org.restcomm.protocols.ss7.inap.api.errors;
 
 /**
- * Base class of INAP ReturnError messages
+ *
+ * Available only for CS1+
+ImproperCallerResponse ::= ERROR PARAMETER ENUMERATED { noInformationReceived(0), notEnoughInformationReceived (1) }
+ *
  *
  * @author yulian.oifa
  *
  */
-public interface INAPErrorMessage {
-   Long getErrorCode();
-
-   boolean isEmParameterless();
-
-   boolean isEmCancelFailed();
-
-   boolean isEmRequestedInfoError();
-
-   boolean isEmSystemFailure();
-
-   boolean isEmTaskRefused();
-
-   boolean isImproperCallerResponseCs1Plus();
-
-   boolean isEmOctetString();
-
-   INAPErrorMessageParameterless getEmParameterless();
-
-   INAPErrorMessageCancelFailed getEmCancelFailed();
-
-   INAPErrorMessageRequestedInfoError getEmRequestedInfoError();
-
-   INAPErrorMessageSystemFailure getEmSystemFailure();
-
-   INAPErrorMessageTaskRefused getEmTaskRefused();
-
-   INAPErrorMessageImproperCallerResponseCS1Plus getImproperCallerResponseCS1Plus();
-
-   INAPErrorMessageOctetString getEmOctetString();
+public interface INAPErrorMessageImproperCallerResponseCS1Plus extends INAPErrorMessage {
+	ImproperCallerResponseParameter getImproperCallerResponse();
 }

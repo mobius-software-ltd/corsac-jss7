@@ -78,9 +78,11 @@ public class SpecializedResourceReportCS1PlusRequestImpl extends CircuitSwitched
 
     @Override
     public String toString() {
-        if (this.specializedResourceReportChoisempl != null)
-            return this.specializedResourceReportChoisempl.toString();
-        
-        return "";
+    	 StringBuilder sb = new StringBuilder();
+         if (this.specializedResourceReportChoisempl != null)
+         	sb.append(this.specializedResourceReportChoisempl.toString());
+         
+         this.addInvokeIdInfo(sb);        
+         return sb.toString();        
     }
 }

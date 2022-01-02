@@ -42,12 +42,14 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.CollectIn
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
 *
  * @author yulian.oifa
 *
 */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class CollectInformationRequestImpl extends CircuitSwitchedCallMessageImpl implements CollectInformationRequest {
 	private static final long serialVersionUID = 1L;
 	

@@ -69,7 +69,7 @@ ServiceFilteringResponseArg ::= SEQUENCE {
  * @author yulian.oifa
  *
  */
-public interface ServiceFilteringResponse extends CircuitSwitchedCallMessage {
+public interface ServiceFilteringResponseRequest extends CircuitSwitchedCallMessage {
 	
 	List<CounterAndValue> getCounterAndValue();
 	

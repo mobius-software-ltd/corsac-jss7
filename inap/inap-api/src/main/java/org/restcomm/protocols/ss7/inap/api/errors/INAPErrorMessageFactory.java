@@ -30,11 +30,13 @@ package org.restcomm.protocols.ss7.inap.api.errors;
 public interface INAPErrorMessageFactory {
 	/**
      * Generate the empty message depends of the error code (for incoming messages)
-     *
+     * For improperCallerResponseParameter CS1+ flavour please use createINAPErrorMessageImproperCallerResponseCS1Plus
+     * Since its impossible to differentiate between ImproperCallerResponse and executionError only by errorCode
+     * For standard errors please use this method with isCS1Plus=false , even if you create the error for CS1+
      * @param errorCode
      * @return
      */
-    INAPErrorMessage createMessageFromErrorCode(Long errorCode);
+    INAPErrorMessage createMessageFromErrorCode(Long errorCode,Boolean isCS1Plus);
 
     INAPErrorMessageParameterless createINAPErrorMessageParameterless(Long errorCode);
 
@@ -46,4 +48,8 @@ public interface INAPErrorMessageFactory {
     INAPErrorMessageSystemFailure createINAPErrorMessageSystemFailure(UnavailableNetworkResource unavailableNetworkResource);
 
     INAPErrorMessageTaskRefused createINAPErrorMessageTaskRefused(TaskRefusedParameter taskRefusedParameter);
+    
+    INAPErrorMessageImproperCallerResponseCS1Plus createINAPErrorMessageImproperCallerResponseCS1Plus(ImproperCallerResponseParameter improperCallerResponseParameter);
+    
+    INAPErrorMessageOctetString createINAPErrorMessageOctetString(Long errorCode,byte[] parameter);
 }

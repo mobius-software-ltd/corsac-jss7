@@ -43,6 +43,6 @@ ContinueArg ::= [PRIVATE 01] SEQUENCE {
  * @author yulian.oifa
  *
  */
-public interface ContinueCS1PlusRequest extends CircuitSwitchedCallMessage {
+public interface ContinueCS1PlusRequest extends ContinueRequest {
 	LegType getLegID();
 }

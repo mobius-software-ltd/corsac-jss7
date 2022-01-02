@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.inap.api;
  *
  */
 public enum INAPApplicationContextVersion {
-   cs1(1);
+   cs1(1),q1218(100),cs1plus(200);
 
    private int version;
 

@@ -56,7 +56,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  * @author yulian.oifa
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public class AnalyzeInformationRequestImpl extends CircuitSwitchedCallMessageImpl implements AnalyseInformationRequest {
+public class AnalyseInformationRequestImpl extends CircuitSwitchedCallMessageImpl implements AnalyseInformationRequest {
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1, defaultImplementation = DestinationRoutingAddressImpl.class)
@@ -92,10 +92,10 @@ public class AnalyzeInformationRequestImpl extends CircuitSwitchedCallMessageImp
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = false,index = -1,defaultImplementation = CarrierImpl.class)
     private Carrier carrier;
     
-    public AnalyzeInformationRequestImpl() {
+    public AnalyseInformationRequestImpl() {
     }
     
-    public AnalyzeInformationRequestImpl(DestinationRoutingAddress destinationRoutingAddress, AlertingPattern alertingPattern,
+    public AnalyseInformationRequestImpl(DestinationRoutingAddress destinationRoutingAddress, AlertingPattern alertingPattern,
     		ISDNAccessRelatedInformation isdnAccessRelatedInformation,OriginalCalledNumberIsup originalCalledPartyID,
     		CAPINAPExtensions extensions,CallingPartyNumberIsup callingPartyNumber,CallingPartysCategoryIsup callingPartysCategory,
     		CalledPartyNumberIsup calledPartyNumber,LocationNumberIsup chargeNumber,LocationNumberIsup travellingClassMark,Carrier carrier) {

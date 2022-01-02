@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ServiceFilteringResponse;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ServiceFilteringResponseRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CounterAndValue;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringCriteria;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResponseCondition;
@@ -50,7 +50,7 @@ import io.netty.buffer.Unpooled;
  *
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public class ServiceFilteringResponseImpl extends CircuitSwitchedCallMessageImpl implements ServiceFilteringResponse {
+public class ServiceFilteringResponseRequestImpl extends CircuitSwitchedCallMessageImpl implements ServiceFilteringResponseRequest {
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
@@ -68,11 +68,22 @@ public class ServiceFilteringResponseImpl extends CircuitSwitchedCallMessageImpl
 	@ASNProperty(asnClass = ASNClass.PRIVATE,tag = 1,constructed = false,index = -1)
 	private ASNOctetString scfCorrelationInfo;
     
-    public ServiceFilteringResponseImpl() {
+    public ServiceFilteringResponseRequestImpl() {
     }
 
-    public ServiceFilteringResponseImpl(List<CounterAndValue> counterAndValue,FilteringCriteria filteringCriteria,
-    		CAPINAPExtensions extensions,ResponseCondition responseCondition,byte[] scfCorrelationInfo) {
+    public ServiceFilteringResponseRequestImpl(List<CounterAndValue> counterAndValue,FilteringCriteria filteringCriteria,
+    		ResponseCondition responseCondition,byte[] scfCorrelationInfo) {
+
+    	this(counterAndValue,filteringCriteria, null, responseCondition);
+    	
+    	if(scfCorrelationInfo!=null) {
+    		this.scfCorrelationInfo=new ASNOctetString();
+    		this.scfCorrelationInfo.setValue(Unpooled.wrappedBuffer(scfCorrelationInfo));
+    	}
+    }
+    
+    public ServiceFilteringResponseRequestImpl(List<CounterAndValue> counterAndValue,FilteringCriteria filteringCriteria,
+    		CAPINAPExtensions extensions,ResponseCondition responseCondition) {
     	
     	if(counterAndValue!=null)
     		this.counterAndValue = new CounterAndValueListWrapperImpl(counterAndValue);
@@ -85,11 +96,6 @@ public class ServiceFilteringResponseImpl extends CircuitSwitchedCallMessageImpl
     	if(responseCondition!=null) {
     		this.responseCondition = new ASNResponseCondition();
     		this.responseCondition.setType(responseCondition);
-    	}
-    	
-    	if(scfCorrelationInfo!=null) {
-    		this.scfCorrelationInfo=new ASNOctetString();
-    		this.scfCorrelationInfo.setValue(Unpooled.wrappedBuffer(scfCorrelationInfo));
     	}
                 
     }
