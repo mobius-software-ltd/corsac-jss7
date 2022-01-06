@@ -24,7 +24,7 @@ public abstract class SccpConnSegmentableMessageImpl extends SccpConnReferencedM
     }
 
     public void setUserData(ByteBuf userData) {
-        this.userData = userData;
+    	this.userData = userData;
     }
 
     public boolean isFullyRecieved() {

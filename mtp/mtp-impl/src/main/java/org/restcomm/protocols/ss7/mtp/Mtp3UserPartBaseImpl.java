@@ -22,6 +22,7 @@
 
 package org.restcomm.protocols.ss7.mtp;
 
+import io.netty.util.ReferenceCountUtil;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -189,6 +190,8 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
             MsgTransferDeliveryHandler hdl = new MsgTransferDeliveryHandler(msg);
 
             seqControl = seqControl & slsFilter;
+            //ok here we need to retain again
+            ReferenceCountUtil.retain(msg.getData());
             this.msgDeliveryExecutors.execute(hdl);
         } else {
             logger.error(String.format(
@@ -246,18 +249,24 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 
         @Override
         public void run() {
-            if (isStarted) {
-                try {
-                    for (Mtp3UserPartListener lsn : userListeners) {
-                        lsn.onMtp3TransferMessage(this.msg);
-                    }
-                } catch (Throwable e) {
-                    logger.error("Exception while delivering a system messages to the MTP3-user: " + e.getMessage(), e);
-                }
-            } else {
-                logger.error(String.format(
-                        "Received Mtp3TransferPrimitive=%s but Mtp3UserPart is not started. Message will be dropped", msg));
-            }
+        	try {
+	            if (isStarted) {
+	                try {
+	                    for (Mtp3UserPartListener lsn : userListeners) {
+	                        lsn.onMtp3TransferMessage(this.msg);
+	                    }
+	                } catch (Throwable e) {
+	                    logger.error("Exception while delivering a system messages to the MTP3-user: " + e.getMessage(), e);
+	                }
+	            } else {
+	                logger.error(String.format(
+	                        "Received Mtp3TransferPrimitive=%s but Mtp3UserPart is not started. Message will be dropped", msg));
+	            }
+        	}
+        	finally {
+        		 //we have proceed the message should be good time to release the message here
+                ReferenceCountUtil.release(msg.getData());                
+        	}
         }
     }
 

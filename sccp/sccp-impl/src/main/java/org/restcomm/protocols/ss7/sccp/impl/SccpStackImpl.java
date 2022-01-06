@@ -24,6 +24,7 @@ package org.restcomm.protocols.ss7.sccp.impl;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.util.ReferenceCountUtil;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
 import org.apache.log4j.Level;
@@ -1072,15 +1073,17 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
                 SegmentationImpl segm = (SegmentationImpl) sgmMsg.getSegmentation();
                 if (segm != null) {
                     // segmentation info is present - segmentation is possible
-                    if (segm.isFirstSegIndication() && segm.getRemainingSegments() == 0) {
-
+                    if (segm.isFirstSegIndication() && segm.getRemainingSegments() == 0) {                    	
                         // the single segment - no reassembly is needed
+                    	//not need to change the ref count here
                         sgmMsg.setReceivedSingleSegment();
                     } else {
                         
                         // multiple segments - reassembly is needed
                         if (segm.isFirstSegIndication()) {
                             // first segment
+                        	//incrementing the count for current segment
+                        	ReferenceCountUtil.retain(sgmMsg.getData());
                             sgmMsg.setReceivedFirstSegment();
                             MessageReassemblyProcess msp = new MessageReassemblyProcess(segm.getSegmentationLocalRef(),
                                     sgmMsg.getCallingPartyAddress());
@@ -1098,7 +1101,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
                             
                             if (sgmMsgFst == null) {
                                 // previous segments cache is not found -
-                                // discard a segment
+                                // discard a segment                            	
                                 if (logger.isEnabledFor(Level.WARN)) {
                                     logger.warn(String
                                             .format("Reassembly function failure: received a non first segment without the first segement having recieved. SccpMessageSegment=%s",
@@ -1109,6 +1112,8 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
                             if (sgmMsgFst.getRemainingSegments() - 1 != segm.getRemainingSegments()) {
                                 // segments bad order
                             	 this.reassemplyCache.remove(msp);
+                            	 //need to release buffers stored till now
+                            	 sgmMsgFst.releaseBuffers();
                                  MessageReassemblyProcess mspMain = sgmMsgFst.getMessageReassemblyProcess();
                                  if (mspMain != null)
                                      mspMain.stopTimer();
@@ -1122,6 +1127,8 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
                                 return;
                             }
 
+                            //incrementing the count for current segment
+                        	ReferenceCountUtil.retain(sgmMsg.getData());                            
                             if (sgmMsgFst.getRemainingSegments() == 1) {
                                 // last segment
                             	MessageReassemblyProcess mspMain = sgmMsgFst.getMessageReassemblyProcess();
@@ -1134,6 +1141,8 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 
                                 sgmMsgFst.setReceivedNextSegment(sgmMsg);
                                 msg = sgmMsgFst;
+                                //completed the process lest release count for all
+                                ((SccpSegmentableMessageImpl) msg).releaseBuffers();
                             } else {
                                 // not last segment
                                 sgmMsgFst.setReceivedNextSegment(sgmMsg);

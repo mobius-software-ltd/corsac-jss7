@@ -340,9 +340,8 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
             case MessageClass.TRANSFER_MESSAGES:
                 switch (message.getMessageType()) {
                     case MessageType.PAYLOAD:
-
-                        PayloadData payload = (PayloadData) message;
-                        this.transferMessageHandler.handlePayload(payload);
+                    	PayloadData payload = (PayloadData) message;                    	
+                    	this.transferMessageHandler.handlePayload(payload);
                         break;
                     default:
                         logger.error(String.format("Rx : Transfer message with invalid MessageType=%d message=%s",
