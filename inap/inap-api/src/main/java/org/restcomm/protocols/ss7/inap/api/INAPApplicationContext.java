@@ -56,7 +56,17 @@ public enum INAPApplicationContext {
    Ericcson_cs1plus_SCP_to_SSP_service_management_AC(205),
    Ericcson_cs1plus_SSP_to_SCP_service_management_AC(206),
    Ericcson_cs1plus_data_management_AC(207),
-   Ericcson_cs1plus_SCP_to_SSP_traffic_limitation_AC(208);
+   Ericcson_cs1plus_SCP_to_SSP_traffic_limitation_AC(208),
+   //CS1+ REV B
+   Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B(210),
+   Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B(211),
+   Ericcson_cs1plus_IP_to_SCP_AC_REV_B(212),
+   Ericcson_cs1plus_SCP_to_SSP_AC_REV_B(213),
+   Ericcson_cs1plus_SCP_to_SSP_traffic_management_AC_REV_B(214),
+   Ericcson_cs1plus_SCP_to_SSP_service_management_AC_REV_B(215),
+   Ericcson_cs1plus_SSP_to_SCP_service_management_AC_REV_B(216),
+   Ericcson_cs1plus_data_management_AC_REV_B(217),
+   Ericcson_cs1plus_SCP_to_SSP_traffic_limitation_AC_REV_B(218);
 
    private static long[] oidTemplate = new long[]{0L, 4L, 0L, 1L, 1L, 1L, 0L, 0L};
    private static long[] q1218OidTemplate = new long[]{0L, 0L, 17L, 1218L, 1L, 0L, 0L};
@@ -124,25 +134,25 @@ public enum INAPApplicationContext {
 			         
 			         int realValue=100+oid.get(5).intValue();
 			         switch(realValue) {
-			         	case 0:
+			         	case 100:
 			         		return Q1218_generic_SSF_to_SCF_AC;
-			         	case 1:
+			         	case 101:
 			         		return Q1218_DP_specific_SSF_to_SCF_AC;
-			         	case 2:
+			         	case 102:
 			         		return Q1218_assist_handoff_SSF_to_SCF_AC;
-			         	case 3:
+			         	case 103:
 			         		return Q1218_SRF_to_SCF_AC;
-			         	case 4:
+			         	case 104:
 			         		return Q1218_generic_SCF_to_SSF_AC;
-			         	case 5:
+			         	case 105:
 			         		return Q1218_DP_specific_SCF_to_SSF_AC;
-			         	case 6:
+			         	case 106:
 			         		return Q1218_SCF_to_SSF_traffic_management_AC;
-			         	case 7:
+			         	case 107:
 			         		return Q1218_SCF_to_SSF_service_management_AC;
-			         	case 8:
+			         	case 108:
 			         		return Q1218_SSF_to_SCF_service_management_AC;
-			         	case 9:
+			         	case 109:
 			         		return Q1218_SCF_to_SSF_status_reporting_AC;
 			         }      
 			  		 break;	
@@ -154,29 +164,47 @@ public enum INAPApplicationContext {
 			            }
 			         }
 	
-			         if(oid.get(10)!=0L)
+			         if(oid.get(10)!=0L && oid.get(10)!=1L)
 			        	 return null;
 			         
-			         realValue=200+oid.get(9).intValue();
+			         realValue=200+oid.get(9).intValue() + (int)(oid.get(10)*10);
 			         switch(realValue) {
-			         	case 0:
+			         	case 200:
 			         		return Ericcson_cs1plus_SSP_TO_SCP_AC;
-			         	case 1:
+			         	case 201:
 			         		return Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC;
-			         	case 2:
+			         	case 202:
 			         		return Ericcson_cs1plus_IP_to_SCP_AC;
-			         	case 3:
+			         	case 203:
 			         		return Ericcson_cs1plus_SCP_to_SSP_AC;
-			         	case 4:
+			         	case 204:
 			         		return Ericcson_cs1plus_SCP_to_SSP_traffic_management_AC;
-			         	case 5:
+			         	case 205:
 			         		return Ericcson_cs1plus_SCP_to_SSP_service_management_AC;
-			         	case 6:
+			         	case 206:
 			         		return Ericcson_cs1plus_SSP_to_SCP_service_management_AC;
-			         	case 7:
+			         	case 207:
 			         		return Ericcson_cs1plus_data_management_AC;
-			         	case 8:
-			         		return Ericcson_cs1plus_SCP_to_SSP_traffic_limitation_AC;			         	
+			         	case 208:
+			         		return Ericcson_cs1plus_SCP_to_SSP_traffic_limitation_AC;	
+			         	case 210:
+			         		return Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B;
+			         	case 211:
+			         		return Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B;
+			         	case 212:
+			         		return Ericcson_cs1plus_IP_to_SCP_AC_REV_B;
+			         	case 213:
+			         		return Ericcson_cs1plus_SCP_to_SSP_AC_REV_B;
+			         	case 214:
+			         		return Ericcson_cs1plus_SCP_to_SSP_traffic_management_AC_REV_B;
+			         	case 215:
+			         		return Ericcson_cs1plus_SCP_to_SSP_service_management_AC_REV_B;
+			         	case 216:
+			         		return Ericcson_cs1plus_SSP_to_SCP_service_management_AC_REV_B;
+			         	case 217:
+			         		return Ericcson_cs1plus_data_management_AC_REV_B;
+			         	case 218:
+			         		return Ericcson_cs1plus_SCP_to_SSP_traffic_limitation_AC_REV_B;	
 			         }      
 			  		 break;		
 		  }
@@ -257,6 +285,51 @@ public enum INAPApplicationContext {
 			case Ericcson_cs1plus_SCP_to_SSP_traffic_limitation_AC:
 				result = new ArrayList<Long>(ericssonRes);
 				result.set(9, 8L);
+				break;
+			case Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B:
+				result = new ArrayList<Long>(ericssonRes);
+				result.set(9, 0L);
+				result.set(10, 1L);
+				break;
+			case Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B:
+				result = new ArrayList<Long>(ericssonRes);
+				result.set(9, 1L);
+				result.set(10, 1L);
+				break;
+			case Ericcson_cs1plus_IP_to_SCP_AC_REV_B:
+				result = new ArrayList<Long>(ericssonRes);
+				result.set(9, 2L);
+				result.set(10, 1L);
+				break;
+			case Ericcson_cs1plus_SCP_to_SSP_AC_REV_B:
+				result = new ArrayList<Long>(ericssonRes);
+				result.set(9, 3L);
+				result.set(10, 1L);
+				break;
+			case Ericcson_cs1plus_SCP_to_SSP_traffic_management_AC_REV_B:
+				result = new ArrayList<Long>(ericssonRes);
+				result.set(9, 4L);
+				result.set(10, 1L);
+				break;
+			case Ericcson_cs1plus_SCP_to_SSP_service_management_AC_REV_B:
+				result = new ArrayList<Long>(ericssonRes);
+				result.set(9, 5L);
+				result.set(10, 1L);
+				break;
+			case Ericcson_cs1plus_SSP_to_SCP_service_management_AC_REV_B:
+				result = new ArrayList<Long>(ericssonRes);
+				result.set(9, 6L);
+				result.set(10, 1L);
+				break;
+			case Ericcson_cs1plus_data_management_AC_REV_B:
+				result = new ArrayList<Long>(ericssonRes);
+				result.set(9, 7L);
+				result.set(10, 1L);
+				break;
+			case Ericcson_cs1plus_SCP_to_SSP_traffic_limitation_AC_REV_B:
+				result = new ArrayList<Long>(ericssonRes);
+				result.set(9, 8L);
+				result.set(10, 1L);
 				break;
 			case Q1218_generic_SSF_to_SCF_AC:
 				result = new ArrayList<Long>(q1218Res);

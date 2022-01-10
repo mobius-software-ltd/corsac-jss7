@@ -82,8 +82,8 @@ public class CAPExtensionsTest {
     }
 
     public static CAPINAPExtensions createTestCAPExtensions() {
-        ExtensionFieldImpl a1 = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, new byte[] {});
-        ExtensionFieldImpl a2 = new ExtensionFieldImpl(3, CriticalityType.typeAbort, new byte[] { -1 });
+        ExtensionFieldImpl a1 = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, new byte[] {}, false);
+        ExtensionFieldImpl a2 = new ExtensionFieldImpl(3, CriticalityType.typeAbort, new byte[] { -1 }, false);
         List<ExtensionField> flds = new ArrayList<ExtensionField>();
         flds.add(a1);
         flds.add(a2);

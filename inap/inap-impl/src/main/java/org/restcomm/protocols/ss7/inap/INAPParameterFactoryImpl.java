@@ -24,65 +24,12 @@ package org.restcomm.protocols.ss7.inap;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.CallAcceptedSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.ChargeIndicatorImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.CollectedInfoSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.DpSpecificInfoAltImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.MetDPCriterionAltImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.MetDPCriterionImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.MidCallEventsImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.OAbandonSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.OAnswerSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.OCalledPartyBusySpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.OChangeOfPositionSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.ODisconnectSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.OMidCallSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.ONoAnswerSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.OServiceChangeSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.OTermSeizedSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.RouteSelectFailureSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TAnswerSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TBusySpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TChangeOfPositionSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TDisconnectSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TMidCallSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TNoAnswerSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TServiceChangeSpecificInfoImpl;
 import org.restcomm.protocols.ss7.commonapp.api.APPException;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.CallAcceptedSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.ChargeIndicator;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.ChargeIndicatorValue;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.CollectedInfoSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.DpSpecificInfoAlt;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.MetDPCriterion;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.MetDPCriterionAlt;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.MidCallEvents;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OAbandonSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OCalledPartyBusySpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OChangeOfPositionSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.ODisconnectSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OMidCallSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.ONoAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OServiceChangeSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OTermSeizedSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.RouteSelectFailureSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TBusySpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TChangeOfPositionSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TDisconnectSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TMidCallSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TNoAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TServiceChangeSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AOCBeforeAnswer;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AOCSubsequent;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AudibleIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BackwardServiceInteractionInd;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAI_GSM0224;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELAChBillingChargingCharacteristics;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELSCIBillingChargingCharacteristicsAlt;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountered;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallCompletionTreatmentIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallDiversionTreatmentIndicator;
@@ -101,7 +48,6 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationR
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DpSpecificCriteria;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DpSpecificCriteriaAlt;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.EctTreatmentIndicator;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.EventSpecificInformationBCSM;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.FCIBCCCAMELSequence1;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ForwardServiceInteractionInd;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.FreeFormatData;
@@ -117,7 +63,6 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.MidCallContr
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.NAOliInfo;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformation;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformationType;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.SCIBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ServiceInteractionIndicatorsTwo;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.TimeDurationChargingResult;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.TimeIfTariffSwitch;
@@ -128,6 +73,7 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePart
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePartDate;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePartPrice;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePartTime;
+import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardCallIndicatorsIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.BearerIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
@@ -179,18 +125,13 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationIn
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformationEPS;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationNumberMap;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.UserCSGInformation;
-import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.LSAIdentity;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.SupportedCamelPhases;
-import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.AOCBeforeAnswerImpl;
-import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.AOCSubsequentImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.AlertingPatternWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.AudibleIndicatorImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.BackwardServiceInteractionIndImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.BearerCapabilityImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CAI_GSM0224Impl;
-import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CAMELAChBillingChargingCharacteristicsImpl;
-import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CAMELSCIBillingChargingCharacteristicsAltImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CallSegmentToCancelImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CalledPartyBCDNumberImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CarrierImpl;
@@ -201,7 +142,6 @@ import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CollectedInfoImp
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.DestinationRoutingAddressImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.DpSpecificCriteriaAltImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.DpSpecificCriteriaImpl;
-import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.EventSpecificInformationBCSMImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.FCIBCCCAMELSequence1Impl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ForwardServiceInteractionIndImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.FreeFormatDataImpl;
@@ -215,7 +155,6 @@ import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.MessageIDTextImp
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.MidCallControlInfoImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.NAOliInfoImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.RequestedInformationImpl;
-import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.SCIBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ServiceInteractionIndicatorsTwoImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.TimeDurationChargingResultImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.TimeIfTariffSwitchImpl;
@@ -257,8 +196,30 @@ import org.restcomm.protocols.ss7.commonapp.primitives.ScfIDImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.TimeAndTimezoneImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInformationImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.SupportedCamelPhasesImpl;
+import org.restcomm.protocols.ss7.inap.EsiBcsm.AlertingSpecificInfoImpl;
+import org.restcomm.protocols.ss7.inap.EsiBcsm.AnalyzedInfoSpecificInfoImpl;
+import org.restcomm.protocols.ss7.inap.EsiBcsm.AnswerSpecificInfoImpl;
+import org.restcomm.protocols.ss7.inap.EsiBcsm.BusySpecificInfoImpl;
+import org.restcomm.protocols.ss7.inap.EsiBcsm.CollectedInfoSpecificInfoImpl;
+import org.restcomm.protocols.ss7.inap.EsiBcsm.DisconnectSpecificInfoImpl;
+import org.restcomm.protocols.ss7.inap.EsiBcsm.MidCallEventsImpl;
+import org.restcomm.protocols.ss7.inap.EsiBcsm.MidCallSpecificInfoImpl;
+import org.restcomm.protocols.ss7.inap.EsiBcsm.NoAnswerSpecificInfoImpl;
+import org.restcomm.protocols.ss7.inap.EsiBcsm.NotReachableSpecificInfoImpl;
+import org.restcomm.protocols.ss7.inap.EsiBcsm.RouteSelectFailureSpecificInfoImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPException;
 import org.restcomm.protocols.ss7.inap.api.INAPParameterFactory;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.AlertingSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.AnalyzedInfoSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.AnswerSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.BusySpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.CollectedInfoSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.DisconnectSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.MidCallEvents;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.MidCallSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.NoAnswerSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.NotReachableSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.RouteSelectFailureSpecificInfo;
 import org.restcomm.protocols.ss7.inap.api.charging.AddOnCharge;
 import org.restcomm.protocols.ss7.inap.api.charging.AddOnChargingInformation;
 import org.restcomm.protocols.ss7.inap.api.charging.ChargeUnitTimeInterval;
@@ -315,6 +276,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.S
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SCPDialogueInfo;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SendingFunctionsActive;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.TCAPDialogueLevel;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.AChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.AddressAndService;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CalledPartyBusinessGroupID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CalledPartySubaddress;
@@ -325,6 +287,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.DisplayInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.DpSpecificCommonParameters;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Entry;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FacilityGroup;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteredCallTreatment;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringCharacteristics;
@@ -342,6 +305,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceAddress;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RouteList;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceAddressInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceProfileIdentifier;
@@ -394,6 +358,7 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.Proto
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.RouteOriginImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.SCPAddressImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.SCPDialogueInfoImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.AChBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.AddressAndServiceImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.CalledPartyBusinessGroupIDImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.CalledPartySubaddressImpl;
@@ -404,6 +369,7 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.Co
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.DisplayInformationImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.DpSpecificCommonParametersImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.EntryImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.EventSpecificInformationBCSMImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.FacilityGroupImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.FilteredCallTreatmentImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.FilteringCharacteristicsImpl;
@@ -420,6 +386,7 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.Mi
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ResourceAddressImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ResourceIDImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.RouteListImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.SCIBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ServiceAddressInformationImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ServiceInteractionIndicatorsImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ServiceProfileIdentifierImpl;
@@ -561,13 +528,13 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
     }
 
     @Override
-    public ExtensionField createExtensionField(Integer localCode, CriticalityType criticalityType, byte[] data) {
-        return new ExtensionFieldImpl(localCode, criticalityType, data);
+    public ExtensionField createExtensionField(Integer localCode, CriticalityType criticalityType, byte[] data, boolean isConstructed) {
+        return new ExtensionFieldImpl(localCode, criticalityType, data, isConstructed);
     }
 
     @Override
-    public ExtensionField createExtensionField(List<Long> globalCode, CriticalityType criticalityType, byte[] data) {
-        return new ExtensionFieldImpl(globalCode, criticalityType, data);
+    public ExtensionField createExtensionField(List<Long> globalCode, CriticalityType criticalityType, byte[] data, boolean isConstructed) {
+        return new ExtensionFieldImpl(globalCode, criticalityType, data, isConstructed);
     }
 
     @Override
@@ -576,23 +543,8 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
     }
 
     @Override
-    public CAMELAChBillingChargingCharacteristics createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, Boolean tone, CAPINAPExtensions extensions,
-            Long tariffSwitchInterval) {
-        return new CAMELAChBillingChargingCharacteristicsImpl(maxCallPeriodDuration,tone,extensions,tariffSwitchInterval);
-    }
-
-    @Override
-    public CAMELAChBillingChargingCharacteristics createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, Boolean tone, boolean releaseIfdurationExceeded,
-            Long tariffSwitchInterval, CAPINAPExtensions extensions) {
-        return new CAMELAChBillingChargingCharacteristicsImpl(maxCallPeriodDuration,tone,releaseIfdurationExceeded,tariffSwitchInterval,extensions);
-    }
-
-    @Override
-    public CAMELAChBillingChargingCharacteristics createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration,
-            boolean releaseIfdurationExceeded, Long tariffSwitchInterval, AudibleIndicator audibleIndicator,
-            CAPINAPExtensions extensions) {
-        return new CAMELAChBillingChargingCharacteristicsImpl(maxCallPeriodDuration, releaseIfdurationExceeded,
-                tariffSwitchInterval, audibleIndicator, extensions);
+    public AChBillingChargingCharacteristics createAChBillingChargingCharacteristics(byte[] data) {     
+        return new AChBillingChargingCharacteristicsImpl(data);
     }
 
     @Override
@@ -750,56 +702,28 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
     }
 
     @Override
-    public OCalledPartyBusySpecificInfo createOCalledPartyBusySpecificInfo(CauseIsup busyCause) {
-        return new OCalledPartyBusySpecificInfoImpl(busyCause);
+    public BusySpecificInfo createBusySpecificInfo(CauseIsup busyCause) {
+        return new BusySpecificInfoImpl(busyCause);
     }
 
     @Override
-    public OAbandonSpecificInfo createOAbandonSpecificInfo(boolean routeNotPermitted) {
-        return new OAbandonSpecificInfoImpl(routeNotPermitted);
+    public AlertingSpecificInfo createAlertingSpecificInfo(BackwardCallIndicatorsIsup backwardCallIndicators) {
+        return new AlertingSpecificInfoImpl(backwardCallIndicators);
     }
 
     @Override
-    public ONoAnswerSpecificInfo createONoAnswerSpecificInfo() {
-        return new ONoAnswerSpecificInfoImpl();
+    public NoAnswerSpecificInfo createNoAnswerSpecificInfo() {
+        return new NoAnswerSpecificInfoImpl();
     }
 
     @Override
-    public OAnswerSpecificInfo createOAnswerSpecificInfo(CalledPartyNumberIsup destinationAddress, boolean orCall,
-            boolean forwardedCall, ChargeIndicator chargeIndicator, ExtBasicServiceCode extBasicServiceCode,
-            ExtBasicServiceCode extBasicServiceCode2) {
-        return new OAnswerSpecificInfoImpl(destinationAddress, orCall, forwardedCall, chargeIndicator, extBasicServiceCode,
-                extBasicServiceCode2);
+    public AnswerSpecificInfo createAnswerSpecificInfo(Integer timeToAnswer,BackwardCallIndicatorsIsup backwardCallIndicators,BackwardGVNSIndicator backwardGVNSIndicator) {
+        return new AnswerSpecificInfoImpl(timeToAnswer,backwardCallIndicators,backwardGVNSIndicator);
     }
 
     @Override
-    public ODisconnectSpecificInfo createODisconnectSpecificInfo(CauseIsup releaseCause) {
-        return new ODisconnectSpecificInfoImpl(releaseCause);
-    }
-
-    @Override
-    public TBusySpecificInfo createTBusySpecificInfo(CauseIsup busyCause, boolean callForwarded, boolean routeNotPermitted,
-            CalledPartyNumberIsup forwardingDestinationNumber) {
-        return new TBusySpecificInfoImpl(busyCause, callForwarded, routeNotPermitted, forwardingDestinationNumber);
-    }
-
-    @Override
-    public TNoAnswerSpecificInfo createTNoAnswerSpecificInfo(boolean callForwarded,
-            CalledPartyNumberIsup forwardingDestinationNumber) {
-        return new TNoAnswerSpecificInfoImpl(callForwarded, forwardingDestinationNumber);
-    }
-
-    @Override
-    public TAnswerSpecificInfo createTAnswerSpecificInfo(CalledPartyNumberIsup destinationAddress, boolean orCall,
-            boolean forwardedCall, ChargeIndicator chargeIndicator, ExtBasicServiceCode extBasicServiceCode,
-            ExtBasicServiceCode extBasicServiceCode2) {
-        return new TAnswerSpecificInfoImpl(destinationAddress, orCall, forwardedCall, chargeIndicator, extBasicServiceCode,
-                extBasicServiceCode2);
-    }
-
-    @Override
-    public TDisconnectSpecificInfo createTDisconnectSpecificInfo(CauseIsup releaseCause) {
-        return new TDisconnectSpecificInfoImpl(releaseCause);
+    public DisconnectSpecificInfo createDisconnectSpecificInfo(CauseIsup releaseCause,Integer connectTime) {
+        return new DisconnectSpecificInfoImpl(releaseCause,connectTime);
     }
 
     @Override
@@ -808,92 +732,53 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(
-            RouteSelectFailureSpecificInfo routeSelectFailureSpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(routeSelectFailureSpecificInfo);
+    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(CollectedInfoSpecificInfo collectedInfoSpecificInfo) {
+        return new EventSpecificInformationBCSMImpl(collectedInfoSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(
-            OCalledPartyBusySpecificInfo oCalledPartyBusySpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(oCalledPartyBusySpecificInfo);
+    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(AnalyzedInfoSpecificInfo analyzedInfoSpecificInfo) {
+        return new EventSpecificInformationBCSMImpl(analyzedInfoSpecificInfo);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(ONoAnswerSpecificInfo oNoAnswerSpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(oNoAnswerSpecificInfo);
+    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(RouteSelectFailureSpecificInfo routeSelectFailureSpecificInfo, boolean isTermination) {
+        return new EventSpecificInformationBCSMImpl(routeSelectFailureSpecificInfo, isTermination);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(OAnswerSpecificInfo oAnswerSpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(oAnswerSpecificInfo);
+    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(BusySpecificInfo busySpecificInfo, boolean isTermination) {
+        return new EventSpecificInformationBCSMImpl(busySpecificInfo, isTermination);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(OMidCallSpecificInfo oMidCallSpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(oMidCallSpecificInfo);
+    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(NoAnswerSpecificInfo oNoAnswerSpecificInfo, boolean isTermination) {
+        return new EventSpecificInformationBCSMImpl(oNoAnswerSpecificInfo, isTermination);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(ODisconnectSpecificInfo oDisconnectSpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(oDisconnectSpecificInfo);
+    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(AnswerSpecificInfo oAnswerSpecificInfo, boolean isTermination) {
+        return new EventSpecificInformationBCSMImpl(oAnswerSpecificInfo, isTermination);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(TBusySpecificInfo tBusySpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(tBusySpecificInfo);
+    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(MidCallSpecificInfo oMidCallSpecificInfo, boolean isTermination) {
+        return new EventSpecificInformationBCSMImpl(oMidCallSpecificInfo, isTermination);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(TNoAnswerSpecificInfo tNoAnswerSpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(tNoAnswerSpecificInfo);
+    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(DisconnectSpecificInfo oDisconnectSpecificInfo, boolean isTermination) {
+        return new EventSpecificInformationBCSMImpl(oDisconnectSpecificInfo, isTermination);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(TAnswerSpecificInfo tAnswerSpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(tAnswerSpecificInfo);
+    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(NotReachableSpecificInfo notReachableSpecificInfo, boolean isTermination) {
+        return new EventSpecificInformationBCSMImpl(notReachableSpecificInfo, isTermination);
     }
 
     @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(TMidCallSpecificInfo tMidCallSpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(tMidCallSpecificInfo);
-    }
-
-    @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(TDisconnectSpecificInfo tDisconnectSpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(tDisconnectSpecificInfo);
-    }
-
-    @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(OTermSeizedSpecificInfo oTermSeizedSpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(oTermSeizedSpecificInfo);
-    }
-
-    @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(CallAcceptedSpecificInfo callAcceptedSpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(callAcceptedSpecificInfo);
-    }
-
-    @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(OAbandonSpecificInfo oAbandonSpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(oAbandonSpecificInfo);
-    }
-
-    @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(
-            OChangeOfPositionSpecificInfo oChangeOfPositionSpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(oChangeOfPositionSpecificInfo);
-    }
-
-    @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(
-            TChangeOfPositionSpecificInfo tChangeOfPositionSpecificInfo) {
-        return new EventSpecificInformationBCSMImpl(tChangeOfPositionSpecificInfo);
-    }
-
-    @Override
-    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(DpSpecificInfoAlt dpSpecificInfoAlt) {
-        return new EventSpecificInformationBCSMImpl(dpSpecificInfoAlt);
+    public EventSpecificInformationBCSM createEventSpecificInformationBCSM(AlertingSpecificInfo alertingSpecificInfo, boolean isTermination) {
+        return new EventSpecificInformationBCSMImpl(alertingSpecificInfo, isTermination);
     }
 
     @Override
@@ -987,39 +872,13 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
     }
 
     @Override
-    public CAMELSCIBillingChargingCharacteristicsAlt createCAMELSCIBillingChargingCharacteristicsAlt() {
-        return new CAMELSCIBillingChargingCharacteristicsAltImpl();
-    }
-
-    @Override
     public CAI_GSM0224 createCAI_GSM0224(Integer e1, Integer e2, Integer e3, Integer e4, Integer e5, Integer e6, Integer e7) {
         return new CAI_GSM0224Impl(e1, e2, e3, e4, e5, e6, e7);
     }
 
     @Override
-    public AOCSubsequent createAOCSubsequent(CAI_GSM0224 cai_GSM0224, Integer tariffSwitchInterval) {
-        return new AOCSubsequentImpl(cai_GSM0224, tariffSwitchInterval);
-    }
-
-    @Override
-    public AOCBeforeAnswer createAOCBeforeAnswer(CAI_GSM0224 aocInitial, AOCSubsequent aocSubsequent) {
-        return new AOCBeforeAnswerImpl(aocInitial, aocSubsequent);
-    }
-
-    @Override
-    public SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(AOCBeforeAnswer aocBeforeAnswer) {
-        return new SCIBillingChargingCharacteristicsImpl(aocBeforeAnswer);
-    }
-
-    @Override
-    public SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(AOCSubsequent aocSubsequent) {
-        return new SCIBillingChargingCharacteristicsImpl(aocSubsequent);
-    }
-
-    @Override
-    public SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(
-            CAMELSCIBillingChargingCharacteristicsAlt aocExtension) {
-        return new SCIBillingChargingCharacteristicsImpl(aocExtension);
+    public SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(byte[] data) {
+        return new SCIBillingChargingCharacteristicsImpl(data);
     }
 
     @Override
@@ -1161,16 +1020,6 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
     }
 
     @Override
-    public ChargeIndicator createChargeIndicator(int data) {
-        return new ChargeIndicatorImpl(data);
-    }
-
-    @Override
-    public ChargeIndicator createChargeIndicator(ChargeIndicatorValue value) {
-        return new ChargeIndicatorImpl(value);
-    }
-
-    @Override
     public BackwardServiceInteractionInd createBackwardServiceInteractionInd(ConferenceTreatmentIndicator conferenceTreatmentIndicator,
             CallCompletionTreatmentIndicator callCompletionTreatmentIndicator) {
         return new BackwardServiceInteractionIndImpl(conferenceTreatmentIndicator, callCompletionTreatmentIndicator);
@@ -1202,117 +1051,44 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
         return new MidCallEventsImpl(dtmfDigits, false);
     }
 
-    @Override
-    public OMidCallSpecificInfo createOMidCallSpecificInfo(MidCallEvents midCallEvents) {
-        return new OMidCallSpecificInfoImpl(midCallEvents);
-    }
+	@Override
+	public MidCallEvents createMidCallEvents_Flash() {
+		return new MidCallEventsImpl(false, false);
+	}
 
-    @Override
-    public TMidCallSpecificInfo createTMidCallSpecificInfo(MidCallEvents midCallEvents) {
-        return new TMidCallSpecificInfoImpl(midCallEvents);
-    }
+	@Override
+	public MidCallEvents createMidCallEvents_UserCallSuspend() {
+		return new MidCallEventsImpl(true, false);
+	}
 
-    @Override
-    public OTermSeizedSpecificInfo createOTermSeizedSpecificInfo(LocationInformation locationInformation) {
-        return new OTermSeizedSpecificInfoImpl(locationInformation);
-    }
+	@Override
+	public MidCallEvents createMidCallEvents_UserCallResume() {
+		return new MidCallEventsImpl(false, true);
+	}
 
-    @Override
-    public CallAcceptedSpecificInfo createCallAcceptedSpecificInfo(LocationInformation locationInformation) {
-        return new CallAcceptedSpecificInfoImpl(locationInformation);
-    }
+	@Override
+	public NotReachableSpecificInfo createNotReachableSpecificInfo(CauseIsup releaseCause) {
+		return new NotReachableSpecificInfoImpl(releaseCause);
+	}
 
-    @Override
-    public MetDPCriterionAlt createMetDPCriterionAlt() {
-        return new MetDPCriterionAltImpl();
-    }
+	@Override
+	public AnalyzedInfoSpecificInfo createAnalyzedInfoSpecificInfo(CalledPartyNumberIsup calledPartyNumber) {
+		return new AnalyzedInfoSpecificInfoImpl(calledPartyNumber);
+	}
 
-    @Override
-    public MetDPCriterion createMetDPCriterion_enteringCellGlobalId(CellGlobalIdOrServiceAreaIdFixedLength value) {
-        return new MetDPCriterionImpl(value, MetDPCriterion.CellGlobalIdOrServiceAreaIdFixedLength_Option.enteringCellGlobalId);
-    }
+	@Override
+	public MidCallSpecificInfo createMidCallSpecificInfo(MidCallEvents midCallEvents) {
+		return new MidCallSpecificInfoImpl(midCallEvents);
+	}
 
-    @Override
-    public MetDPCriterion createMetDPCriterion_leavingCellGlobalId(CellGlobalIdOrServiceAreaIdFixedLength value) {
-        return new MetDPCriterionImpl(value, MetDPCriterion.CellGlobalIdOrServiceAreaIdFixedLength_Option.leavingCellGlobalId);
-    }
-
-    @Override
-    public MetDPCriterion createMetDPCriterion_enteringServiceAreaId(CellGlobalIdOrServiceAreaIdFixedLength value) {
-        return new MetDPCriterionImpl(value, MetDPCriterion.CellGlobalIdOrServiceAreaIdFixedLength_Option.enteringServiceAreaId);
-    }
-
-    @Override
-    public MetDPCriterion createMetDPCriterion_leavingServiceAreaId(CellGlobalIdOrServiceAreaIdFixedLength value) {
-        return new MetDPCriterionImpl(value, MetDPCriterion.CellGlobalIdOrServiceAreaIdFixedLength_Option.leavingServiceAreaId);
-    }
-
-    @Override
-    public MetDPCriterion createMetDPCriterion_enteringLocationAreaId(LAIFixedLength value) {
-        return new MetDPCriterionImpl(value, MetDPCriterion.LAIFixedLength_Option.enteringLocationAreaId);
-    }
-
-    @Override
-    public MetDPCriterion createMetDPCriterion_leavingLocationAreaId(LAIFixedLength value) {
-        return new MetDPCriterionImpl(value, MetDPCriterion.LAIFixedLength_Option.leavingLocationAreaId);
-    }
-
-    @Override
-    public MetDPCriterion createMetDPCriterion_interSystemHandOverToUMTS() {
-        return new MetDPCriterionImpl(MetDPCriterion.Boolean_Option.interSystemHandOverToUMTS);
-    }
-
-    @Override
-    public MetDPCriterion createMetDPCriterion_interSystemHandOverToGSM() {
-        return new MetDPCriterionImpl(MetDPCriterion.Boolean_Option.interSystemHandOverToGSM);
-    }
-
-    @Override
-    public MetDPCriterion createMetDPCriterion_interPLMNHandOver() {
-        return new MetDPCriterionImpl(MetDPCriterion.Boolean_Option.interPLMNHandOver);
-    }
-
-    @Override
-    public MetDPCriterion createMetDPCriterion_interMSCHandOver() {
-        return new MetDPCriterionImpl(MetDPCriterion.Boolean_Option.interMSCHandOver);
-    }
-
-    @Override
-    public MetDPCriterion createMetDPCriterion(MetDPCriterionAlt metDPCriterionAlt) {
-        return new MetDPCriterionImpl(metDPCriterionAlt);
-    }
-
-    @Override
-    public OChangeOfPositionSpecificInfo createOChangeOfPositionSpecificInfo(LocationInformation locationInformation,
-            List<MetDPCriterion> metDPCriteriaList) {
-        return new OChangeOfPositionSpecificInfoImpl(locationInformation, metDPCriteriaList);
-    }
-
-    @Override
-    public TChangeOfPositionSpecificInfo createTChangeOfPositionSpecificInfo(LocationInformation locationInformation,
-            List<MetDPCriterion> metDPCriteriaList) {
-        return new TChangeOfPositionSpecificInfoImpl(locationInformation, metDPCriteriaList);
-    }
-
-    @Override
-    public OServiceChangeSpecificInfo createOServiceChangeSpecificInfo(ExtBasicServiceCode extBasicServiceCode) {
-        return new OServiceChangeSpecificInfoImpl(extBasicServiceCode);
-    }
-
-    @Override
-    public TServiceChangeSpecificInfo createTServiceChangeSpecificInfo(ExtBasicServiceCode extBasicServiceCode) {
-        return new TServiceChangeSpecificInfoImpl(extBasicServiceCode);
-    }
+	@Override
+	public MidCallSpecificInfo createMidCallSpecificInfo(Integer connectTime) {
+		return new MidCallSpecificInfoImpl(connectTime);
+	}
 
     @Override
     public CollectedInfoSpecificInfo createCollectedInfoSpecificInfo(CalledPartyNumberIsup calledPartyNumber) {
         return new CollectedInfoSpecificInfoImpl(calledPartyNumber);
-    }
-
-    @Override
-    public DpSpecificInfoAlt createDpSpecificInfoAlt(OServiceChangeSpecificInfo oServiceChangeSpecificInfo,
-            CollectedInfoSpecificInfo collectedInfoSpecificInfo, TServiceChangeSpecificInfo tServiceChangeSpecificInfo) {
-        return new DpSpecificInfoAltImpl(oServiceChangeSpecificInfo, collectedInfoSpecificInfo, tServiceChangeSpecificInfo);
     }
 
     @Override

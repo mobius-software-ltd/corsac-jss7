@@ -57,7 +57,7 @@ public class ConnectToResourceRequestImpl extends CircuitSwitchedCallMessageImpl
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true,index = -1,defaultImplementation = CAPINAPExtensionsImpl.class)
     private CAPINAPExtensions extensions;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 30,constructed = false,index = -1,defaultImplementation = ServiceInteractionIndicatorsImpl.class)
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 30,constructed = true,index = -1,defaultImplementation = ServiceInteractionIndicatorsImpl.class)
     private ServiceInteractionIndicators serviceInteractionIndicators;
     
     public ConnectToResourceRequestImpl() {

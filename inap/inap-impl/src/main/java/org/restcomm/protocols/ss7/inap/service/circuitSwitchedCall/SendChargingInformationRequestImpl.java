@@ -22,16 +22,16 @@
 
 package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
-import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.SendChargingInformationRequest;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.SCIBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
-import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.SCIBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.SendingLegIDImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.SendingLegIDWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
+import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.SendChargingInformationRequest;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.SCIBillingChargingCharacteristicsImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -47,7 +47,7 @@ public class SendChargingInformationRequestImpl extends CircuitSwitchedCallMessa
         SendChargingInformationRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1,defaultImplementation = SCIBillingChargingCharacteristicsImpl.class)
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1,defaultImplementation = SCIBillingChargingCharacteristicsImpl.class)
     private SCIBillingChargingCharacteristics sciBillingChargingCharacteristics;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1)

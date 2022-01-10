@@ -106,9 +106,9 @@ public class InbandInfoImpl implements InbandInfo {
         StringBuilder sb = new StringBuilder();
         sb.append("InbandInfo [");
 
-        if (this.messageID != null) {
+        if (this.messageID != null && this.messageID.getMessageID()!=null) {
             sb.append("messageID=");
-            sb.append(messageID.toString());
+            sb.append(messageID.getMessageID().toString());
         }
         if (this.numberOfRepetitions != null) {
             sb.append(", numberOfRepetitions=");

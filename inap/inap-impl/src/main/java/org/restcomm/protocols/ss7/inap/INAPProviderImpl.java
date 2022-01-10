@@ -452,6 +452,8 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         	opCode.setLocalOperationCode((long)INAPOperationCode.retrieve);
         	OperationCodeWithACN operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_data_management_AC.getOID());			
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, RetrieveRequestImpl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_data_management_AC_REV_B.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, RetrieveRequestImpl.class);
 
         	//registering request options
         	tcapProvider.getParser().registerAlternativeClassMapping(InitialDPRequestImpl.class, InitialDPRequestImpl.class);

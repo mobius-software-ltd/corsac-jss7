@@ -31,9 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.MetDPCriterionImpl;
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.TChangeOfPositionSpecificInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.MetDPCriterion;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterion;
 import org.restcomm.protocols.ss7.commonapp.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInformationImpl;
 import org.testng.annotations.Test;

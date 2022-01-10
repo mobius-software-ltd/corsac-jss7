@@ -79,11 +79,11 @@ public class MiscCallInfoImpl implements MiscCallInfo {
         sb.append(" [");
         if (this.messageType != null) {
             sb.append("messageType=");
-            sb.append(messageType);
+            sb.append(messageType.getType());
         }
         if (this.dpAssignment != null) {
             sb.append(", dpAssignment=");
-            sb.append(dpAssignment);
+            sb.append(dpAssignment.getType());
         }
         sb.append("]");
 

@@ -169,7 +169,7 @@ public class CallGapRequestTest {
         GapTreatmentImpl gapTreatment = new GapTreatmentImpl(informationToSend);
 
         List<ExtensionField> fieldsList = new ArrayList<>();
-        ExtensionFieldImpl extensionField = new ExtensionFieldImpl(Integer.MIN_VALUE, CriticalityType.typeIgnore, getDigitsData2());
+        ExtensionFieldImpl extensionField = new ExtensionFieldImpl(Integer.MIN_VALUE, CriticalityType.typeIgnore, getDigitsData2(), false);
         fieldsList.add(extensionField);
         CAPINAPExtensions cAPExtensions = new CAPINAPExtensionsImpl(fieldsList);
 

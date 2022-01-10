@@ -537,7 +537,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
 	
 	public void toStringInternal(StringBuilder sb) {
         sb.append(", serviceKey=");
-        sb.append(serviceKey);
+        sb.append(serviceKey.getValue());
         if (this.dialedDigits != null) {
             sb.append(", dialedDigits=");
             sb.append(dialedDigits.toString());

@@ -28,8 +28,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.ChargeIndicatorImpl;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.ChargeIndicatorValue;
+import org.restcomm.protocols.ss7.cap.api.EsiBcsm.ChargeIndicatorValue;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

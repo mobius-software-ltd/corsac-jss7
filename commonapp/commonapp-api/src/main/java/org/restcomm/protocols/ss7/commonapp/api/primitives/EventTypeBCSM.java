@@ -31,14 +31,25 @@ package org.restcomm.protocols.ss7.commonapp.api.primitives;
  * Values analyzedInformation and termAttemptAuthorized may be used -- for TDPs only. -- Exception handling: reception of an
  * unrecognized value shall be treated -- like reception of no detection point.
  *
+ *
+ *from cs1+
+ *EventTypeBCSM ::= ENUMERATED { origAttemptauthorized(01), ‐‐ TDP only , collectedInfo(02),
+  analyzedInformation(03), routeSelectFailure(04), oCalledPartyBusy (05),
+  oAlerting(‐1), oCalledPartyNotReachable (‐2), oNoAnswer(06), oAnswer(07), oMidCall(08),
+  oSuspended(‐3), oReAnswer(‐4), oDisconnect(09), oAbandon(10), termAttemptauthorized(12), ‐‐ TDP only
+  tRouteSelectFailure(‐5),tCalledPartyBusy(13),tAlerting(‐6),tCalledPartyNotReachable (‐7),
+  tNoAnswer(14),tAnswer(15),
+  
  * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 public enum EventTypeBCSM {
     collectedInfo(2), analyzedInformation(3), routeSelectFailure(4), oCalledPartyBusy(5), oNoAnswer(6), oAnswer(7), oMidCall(8), oDisconnect(
             9), oAbandon(10), termAttemptAuthorized(12), tBusy(13), tNoAnswer(14), tAnswer(15), tMidCall(16), tDisconnect(17), tAbandon(
             18), oTermSeized(19), callAccepted(27), oChangeOfPosition(50), tChangeOfPosition(51), oServiceChange(52), tServiceChange(
-            53);
+            53),origAttemptauthorized(1),oAlerting(-1),oCalledPartyNotReachable(-2),oSuspended(-3),oReAnswer(-4),tRouteSelectFailure(-5),
+    		tAlerting(-6),tCalledPartyNotReachable(-7);
 
     private int code;
 
@@ -92,6 +103,22 @@ public enum EventTypeBCSM {
                 return EventTypeBCSM.oServiceChange;
             case 53:
                 return EventTypeBCSM.tServiceChange;
+            case 1:
+                return EventTypeBCSM.origAttemptauthorized;
+            case -1:
+                return EventTypeBCSM.oAlerting;
+            case -2:
+                return EventTypeBCSM.oCalledPartyNotReachable;
+            case -3:
+                return EventTypeBCSM.oSuspended;
+            case -4:
+                return EventTypeBCSM.oReAnswer;
+            case -5:
+                return EventTypeBCSM.tRouteSelectFailure;
+            case -6:
+                return EventTypeBCSM.tAlerting;
+            case -7:
+                return EventTypeBCSM.tCalledPartyNotReachable;
             default:
                 return null;
         }

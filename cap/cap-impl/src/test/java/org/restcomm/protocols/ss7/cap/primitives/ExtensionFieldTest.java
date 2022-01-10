@@ -109,21 +109,21 @@ public class ExtensionFieldTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ExtensionFieldImpl.class);
     	
-        ExtensionFieldImpl elem = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, new byte[] {});
+        ExtensionFieldImpl elem = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, new byte[] {}, false);
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        elem = new ExtensionFieldImpl(this.getDataOid(), null, new byte[] { -1 });
+        elem = new ExtensionFieldImpl(this.getDataOid(), null, new byte[] { -1 }, false);
         rawData = this.getData2();
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        elem = new ExtensionFieldImpl(2222, CriticalityType.typeAbort, new byte[] { -3, -43 });
+        elem = new ExtensionFieldImpl(2222, CriticalityType.typeAbort, new byte[] { -3, -43 }, false);
         rawData = this.getData3();
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];

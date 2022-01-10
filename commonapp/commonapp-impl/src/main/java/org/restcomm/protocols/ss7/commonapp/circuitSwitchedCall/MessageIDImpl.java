@@ -117,9 +117,9 @@ public class MessageIDImpl implements MessageID {
         StringBuilder sb = new StringBuilder();
         sb.append("MessageID [");
 
-        if (this.elementaryMessageID != null) {
+        if (this.elementaryMessageID != null && this.elementaryMessageID.getValue()!=null) {
             sb.append("elementaryMessageID=");
-            sb.append(elementaryMessageID);
+            sb.append(elementaryMessageID.getValue());
         }
         if (this.text != null) {
             sb.append(" text=");

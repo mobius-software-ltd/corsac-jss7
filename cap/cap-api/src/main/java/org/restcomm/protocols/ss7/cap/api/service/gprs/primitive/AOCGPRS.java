@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.gprs.primitive;
 
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AOCSubsequent;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.AOCSubsequent;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAI_GSM0224;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;

@@ -22,15 +22,15 @@
 
 package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELAChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
-import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CAMELAChBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.LegIDWrapperImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ApplyChargingRequest;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.AChBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.AChBillingChargingCharacteristicsImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -46,8 +46,8 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
 public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl implements ApplyChargingRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1,defaultImplementation = CAMELAChBillingChargingCharacteristicsImpl.class)
-    private CAMELAChBillingChargingCharacteristics aChBillingChargingCharacteristics;
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1,defaultImplementation = AChBillingChargingCharacteristicsImpl.class)
+    private AChBillingChargingCharacteristics aChBillingChargingCharacteristics;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
     private ASNBoolean sendCalculationToSCPIndication;
@@ -61,7 +61,7 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
     public ApplyChargingRequestImpl() {
     }
 
-    public ApplyChargingRequestImpl(CAMELAChBillingChargingCharacteristics aChBillingChargingCharacteristics,
+    public ApplyChargingRequestImpl(AChBillingChargingCharacteristics aChBillingChargingCharacteristics,
     		Boolean sendCalculationToSCPIndication, LegID partyToCharge, CAPINAPExtensions extensions) {
         this.aChBillingChargingCharacteristics = aChBillingChargingCharacteristics;
         
@@ -87,7 +87,7 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
     }
 
     @Override
-    public CAMELAChBillingChargingCharacteristics getAChBillingChargingCharacteristics() {
+    public AChBillingChargingCharacteristics getAChBillingChargingCharacteristics() {
         return aChBillingChargingCharacteristics;
     }
 

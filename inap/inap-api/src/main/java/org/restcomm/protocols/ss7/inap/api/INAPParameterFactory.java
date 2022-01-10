@@ -24,40 +24,11 @@ package org.restcomm.protocols.ss7.inap.api;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.CallAcceptedSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.ChargeIndicator;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.ChargeIndicatorValue;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.CollectedInfoSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.DpSpecificInfoAlt;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.MetDPCriterion;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.MetDPCriterionAlt;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.MidCallEvents;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OAbandonSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OCalledPartyBusySpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OChangeOfPositionSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.ODisconnectSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OMidCallSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.ONoAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OServiceChangeSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.OTermSeizedSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.RouteSelectFailureSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TBusySpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TChangeOfPositionSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TDisconnectSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TMidCallSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TNoAnswerSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.EsiBcsm.TServiceChangeSpecificInfo;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AOCBeforeAnswer;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AOCSubsequent;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AudibleIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BackwardServiceInteractionInd;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAI_GSM0224;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELAChBillingChargingCharacteristics;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELSCIBillingChargingCharacteristicsAlt;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountered;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallCompletionTreatmentIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallDiversionTreatmentIndicator;
@@ -76,7 +47,6 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationR
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DpSpecificCriteria;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DpSpecificCriteriaAlt;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.EctTreatmentIndicator;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.EventSpecificInformationBCSM;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.FCIBCCCAMELSequence1;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ForwardServiceInteractionInd;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.FreeFormatData;
@@ -91,7 +61,6 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.MessageIDTex
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.MidCallControlInfo;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.NAOliInfo;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformation;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.SCIBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ServiceInteractionIndicatorsTwo;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.TimeDurationChargingResult;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.TimeIfTariffSwitch;
@@ -102,6 +71,7 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePart
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePartDate;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePartPrice;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePartTime;
+import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardCallIndicatorsIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.BearerIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
@@ -153,9 +123,19 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationIn
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformationEPS;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationNumberMap;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.UserCSGInformation;
-import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.LSAIdentity;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.SupportedCamelPhases;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.AlertingSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.AnalyzedInfoSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.AnswerSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.BusySpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.CollectedInfoSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.DisconnectSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.MidCallEvents;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.MidCallSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.NoAnswerSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.NotReachableSpecificInfo;
+import org.restcomm.protocols.ss7.inap.api.EsiBcsm.RouteSelectFailureSpecificInfo;
 import org.restcomm.protocols.ss7.inap.api.charging.AddOnCharge;
 import org.restcomm.protocols.ss7.inap.api.charging.AddOnChargingInformation;
 import org.restcomm.protocols.ss7.inap.api.charging.ChargeUnitTimeInterval;
@@ -212,6 +192,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.S
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SCPDialogueInfo;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SendingFunctionsActive;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.TCAPDialogueLevel;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.AChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.AddressAndService;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CalledPartyBusinessGroupID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CalledPartySubaddress;
@@ -222,6 +203,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.DisplayInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.DpSpecificCommonParameters;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.Entry;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FacilityGroup;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteredCallTreatment;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringCharacteristics;
@@ -239,6 +221,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceAddress;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RouteList;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceAddressInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceProfileIdentifier;
@@ -302,20 +285,13 @@ public interface INAPParameterFactory {
     CalledPartyBCDNumber createCalledPartyBCDNumber(AddressNature addressNature, NumberingPlan numberingPlan,
             String address) throws INAPException;
 
-    ExtensionField createExtensionField(Integer localCode, CriticalityType criticalityType, byte[] data);
+    ExtensionField createExtensionField(Integer localCode, CriticalityType criticalityType, byte[] data, boolean isConstructed);
 
-    ExtensionField createExtensionField(List<Long> globalCode, CriticalityType criticalityType, byte[] data);
+    ExtensionField createExtensionField(List<Long> globalCode, CriticalityType criticalityType, byte[] data, boolean isConstructed);
 
     CAPINAPExtensions createINAPExtensions(List<ExtensionField> fieldsList);
 
-    CAMELAChBillingChargingCharacteristics createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, Boolean tone, CAPINAPExtensions extensions,
-            Long tariffSwitchInterval);
-
-    CAMELAChBillingChargingCharacteristics createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, Boolean tone, boolean releaseIfdurationExceeded,
-            Long tariffSwitchInterval, CAPINAPExtensions extensions);
-
-    CAMELAChBillingChargingCharacteristics createCAMELAChBillingChargingCharacteristics(long maxCallPeriodDuration, boolean releaseIfdurationExceeded,
-            Long tariffSwitchInterval, AudibleIndicator audibleIndicator, CAPINAPExtensions extensions);
+    AChBillingChargingCharacteristics createAChBillingChargingCharacteristics(byte[] data);
 
     DateAndTime createDateAndTime(int year, int month, int day, int hour, int minute, int second);
 
@@ -361,67 +337,43 @@ public interface INAPParameterFactory {
 
     RouteSelectFailureSpecificInfo createRouteSelectFailureSpecificInfo(CauseIsup failureCause);
 
-    OCalledPartyBusySpecificInfo createOCalledPartyBusySpecificInfo(CauseIsup busyCause);
+    BusySpecificInfo createBusySpecificInfo(CauseIsup busyCause);
 
-    OAbandonSpecificInfo createOAbandonSpecificInfo(boolean routeNotPermitted);
+    AlertingSpecificInfo createAlertingSpecificInfo(BackwardCallIndicatorsIsup backwardCallIndicators);
 
-    ONoAnswerSpecificInfo createONoAnswerSpecificInfo();
+    NoAnswerSpecificInfo createNoAnswerSpecificInfo();
 
-    OAnswerSpecificInfo createOAnswerSpecificInfo(CalledPartyNumberIsup destinationAddress, boolean orCall,
-            boolean forwardedCall, ChargeIndicator chargeIndicator, ExtBasicServiceCode extBasicServiceCode,
-            ExtBasicServiceCode extBasicServiceCode2);
+    AnswerSpecificInfo createAnswerSpecificInfo(Integer timeToAnswer,BackwardCallIndicatorsIsup backwardCallIndicators,BackwardGVNSIndicator backwardGVNSIndicator);
 
-    ODisconnectSpecificInfo createODisconnectSpecificInfo(CauseIsup releaseCause);
+    DisconnectSpecificInfo createDisconnectSpecificInfo(CauseIsup releaseCause,Integer connectTime);
 
-    TBusySpecificInfo createTBusySpecificInfo(CauseIsup busyCause, boolean callForwarded, boolean routeNotPermitted,
-            CalledPartyNumberIsup forwardingDestinationNumber);
+    NotReachableSpecificInfo createNotReachableSpecificInfo(CauseIsup releaseCause);
+    
+    AnalyzedInfoSpecificInfo createAnalyzedInfoSpecificInfo(CalledPartyNumberIsup calledPartyNumber);
 
-    TNoAnswerSpecificInfo createTNoAnswerSpecificInfo(boolean callForwarded,
-            CalledPartyNumberIsup forwardingDestinationNumber);
-
-    TAnswerSpecificInfo createTAnswerSpecificInfo(CalledPartyNumberIsup destinationAddress, boolean orCall,
-            boolean forwardedCall, ChargeIndicator chargeIndicator, ExtBasicServiceCode extBasicServiceCode,
-            ExtBasicServiceCode extBasicServiceCode2);
-
-    TDisconnectSpecificInfo createTDisconnectSpecificInfo(CauseIsup releaseCause);
+    CollectedInfoSpecificInfo createCollectedInfoSpecificInfo(CalledPartyNumberIsup calledPartyNumber);
 
     DestinationRoutingAddress createDestinationRoutingAddress(List<CalledPartyNumberIsup> calledPartyNumber);
 
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(
-            RouteSelectFailureSpecificInfo routeSelectFailureSpecificInfo);
+    EventSpecificInformationBCSM createEventSpecificInformationBCSM(CollectedInfoSpecificInfo collectedInfoSpecificInfo);
 
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(
-            OCalledPartyBusySpecificInfo oCalledPartyBusySpecificInfo);
+    EventSpecificInformationBCSM createEventSpecificInformationBCSM(AnalyzedInfoSpecificInfo analyzedInfoSpecificInfo);
 
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(ONoAnswerSpecificInfo oNoAnswerSpecificInfo);
+    EventSpecificInformationBCSM createEventSpecificInformationBCSM(RouteSelectFailureSpecificInfo routeSelectFailureSpecificInfo, boolean isTermination);
 
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(OAnswerSpecificInfo oAnswerSpecificInfo);
+    EventSpecificInformationBCSM createEventSpecificInformationBCSM(BusySpecificInfo busySpecificInfo, boolean isTermination);
 
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(OMidCallSpecificInfo oMidCallSpecificInfo);
+    EventSpecificInformationBCSM createEventSpecificInformationBCSM(NoAnswerSpecificInfo oNoAnswerSpecificInfo, boolean isTermination);
 
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(ODisconnectSpecificInfo oDisconnectSpecificInfo);
+    EventSpecificInformationBCSM createEventSpecificInformationBCSM(AnswerSpecificInfo oAnswerSpecificInfo, boolean isTermination);
 
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(TBusySpecificInfo tBusySpecificInfo);
+    EventSpecificInformationBCSM createEventSpecificInformationBCSM(MidCallSpecificInfo oMidCallSpecificInfo, boolean isTermination);
 
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(TNoAnswerSpecificInfo tNoAnswerSpecificInfo);
+    EventSpecificInformationBCSM createEventSpecificInformationBCSM(DisconnectSpecificInfo oDisconnectSpecificInfo, boolean isTermination);
 
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(TAnswerSpecificInfo tAnswerSpecificInfo);
+    EventSpecificInformationBCSM createEventSpecificInformationBCSM(NotReachableSpecificInfo notReachableSpecificInfo, boolean isTermination);
 
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(TMidCallSpecificInfo tMidCallSpecificInfo);
-
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(TDisconnectSpecificInfo tDisconnectSpecificInfo);
-
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(OTermSeizedSpecificInfo oTermSeizedSpecificInfo);
-
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(CallAcceptedSpecificInfo callAcceptedSpecificInfo);
-
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(OAbandonSpecificInfo oAbandonSpecificInfo);
-
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(OChangeOfPositionSpecificInfo oChangeOfPositionSpecificInfo);
-
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(TChangeOfPositionSpecificInfo tChangeOfPositionSpecificInfo);
-
-    EventSpecificInformationBCSM createEventSpecificInformationBCSM(DpSpecificInfoAlt dpSpecificInfoAlt);
+    EventSpecificInformationBCSM createEventSpecificInformationBCSM(AlertingSpecificInfo alertingSpecificInfo, boolean isTermination);
 
     RequestedInformation createRequestedInformation_CallAttemptElapsedTime(int callAttemptElapsedTimeValue);
 
@@ -463,20 +415,9 @@ public interface INAPParameterFactory {
     FCIBCCCAMELSequence1 createFCIBCCCAMELsequence1(FreeFormatData freeFormatData, LegType partyToCharge,
             AppendFreeFormatData appendFreeFormatData);
 
-    CAMELSCIBillingChargingCharacteristicsAlt createCAMELSCIBillingChargingCharacteristicsAlt();
-
     CAI_GSM0224 createCAI_GSM0224(Integer e1, Integer e2, Integer e3, Integer e4, Integer e5, Integer e6, Integer e7);
 
-    AOCSubsequent createAOCSubsequent(CAI_GSM0224 cai_GSM0224, Integer tariffSwitchInterval);
-
-    AOCBeforeAnswer createAOCBeforeAnswer(CAI_GSM0224 aocInitial, AOCSubsequent aocSubsequent);
-
-    SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(AOCBeforeAnswer aocBeforeAnswer);
-
-    SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(AOCSubsequent aocSubsequent);
-
-    SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(
-            CAMELSCIBillingChargingCharacteristicsAlt aocExtension);
+    SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(byte[] data);
 
     VariablePartPrice createVariablePartPrice(byte[] data);
 
@@ -536,10 +477,6 @@ public interface INAPParameterFactory {
 
     LegOrCallSegment createLegOrCallSegment(LegID legID);
 
-    ChargeIndicator createChargeIndicator(int data);
-
-    ChargeIndicator createChargeIndicator(ChargeIndicatorValue value);
-
     BackwardServiceInteractionInd createBackwardServiceInteractionInd(ConferenceTreatmentIndicator conferenceTreatmentIndicator,
             CallCompletionTreatmentIndicator callCompletionTreatmentIndicator);
 
@@ -550,54 +487,19 @@ public interface INAPParameterFactory {
 
     LowLayerCompatibility createLowLayerCompatibility(byte[] data);
 
+    MidCallEvents createMidCallEvents_Flash();
+
+    MidCallEvents createMidCallEvents_UserCallSuspend();
+
+    MidCallEvents createMidCallEvents_UserCallResume();
+
     MidCallEvents createMidCallEvents_Completed(DigitsIsup dtmfDigits);
 
     MidCallEvents createMidCallEvents_TimeOut(DigitsIsup dtmfDigits);
 
-    OMidCallSpecificInfo createOMidCallSpecificInfo(MidCallEvents midCallEvents);
+    MidCallSpecificInfo createMidCallSpecificInfo(MidCallEvents midCallEvents);
 
-    TMidCallSpecificInfo createTMidCallSpecificInfo(MidCallEvents midCallEvents);
-
-    OTermSeizedSpecificInfo createOTermSeizedSpecificInfo(LocationInformation locationInformation);
-
-    CallAcceptedSpecificInfo createCallAcceptedSpecificInfo(LocationInformation locationInformation);
-
-    MetDPCriterionAlt createMetDPCriterionAlt();
-
-    MetDPCriterion createMetDPCriterion_enteringCellGlobalId(CellGlobalIdOrServiceAreaIdFixedLength value);
-
-    MetDPCriterion createMetDPCriterion_leavingCellGlobalId(CellGlobalIdOrServiceAreaIdFixedLength value);
-
-    MetDPCriterion createMetDPCriterion_enteringServiceAreaId(CellGlobalIdOrServiceAreaIdFixedLength value);
-
-    MetDPCriterion createMetDPCriterion_leavingServiceAreaId(CellGlobalIdOrServiceAreaIdFixedLength value);
-
-    MetDPCriterion createMetDPCriterion_enteringLocationAreaId(LAIFixedLength value);
-
-    MetDPCriterion createMetDPCriterion_leavingLocationAreaId(LAIFixedLength value);
-
-    MetDPCriterion createMetDPCriterion_interSystemHandOverToUMTS();
-
-    MetDPCriterion createMetDPCriterion_interSystemHandOverToGSM();
-
-    MetDPCriterion createMetDPCriterion_interPLMNHandOver();
-
-    MetDPCriterion createMetDPCriterion_interMSCHandOver();
-
-    MetDPCriterion createMetDPCriterion(MetDPCriterionAlt metDPCriterionAlt);
-
-    OChangeOfPositionSpecificInfo createOChangeOfPositionSpecificInfo(LocationInformation locationInformation, List<MetDPCriterion> metDPCriteriaList);
-
-    TChangeOfPositionSpecificInfo createTChangeOfPositionSpecificInfo(LocationInformation locationInformation, List<MetDPCriterion> metDPCriteriaList);
-
-    OServiceChangeSpecificInfo createOServiceChangeSpecificInfo(ExtBasicServiceCode extBasicServiceCode);
-
-    TServiceChangeSpecificInfo createTServiceChangeSpecificInfo(ExtBasicServiceCode extBasicServiceCode);
-
-    CollectedInfoSpecificInfo createCollectedInfoSpecificInfo(CalledPartyNumberIsup calledPartyNumber);
-
-    DpSpecificInfoAlt createDpSpecificInfoAlt(OServiceChangeSpecificInfo oServiceChangeSpecificInfo, CollectedInfoSpecificInfo collectedInfoSpecificInfo,
-            TServiceChangeSpecificInfo tServiceChangeSpecificInfo);
+    MidCallSpecificInfo createMidCallSpecificInfo(Integer connectTime);
 
     ChangeOfLocationAlt createChangeOfLocationAlt();
 

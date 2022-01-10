@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAMELAChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.AChBillingChargingCharacteristics;
 
 /**
  * <p>
@@ -63,7 +63,7 @@ ApplyChargingArg ::= SEQUENCE {
  */
 public interface ApplyChargingRequest extends CircuitSwitchedCallMessage {
 
-    CAMELAChBillingChargingCharacteristics getAChBillingChargingCharacteristics();
+    AChBillingChargingCharacteristics getAChBillingChargingCharacteristics();
 
     Boolean getSendCalculationToSCPIndication();
     

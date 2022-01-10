@@ -137,7 +137,6 @@ public class ReturnResultInnerImpl {
     }
     
     public void setACN(ApplicationContextName acn) {
-    	System.out.println("ACN SET FOR RETURN RESULT!!!!");
     	this.acn=acn;
     }
     

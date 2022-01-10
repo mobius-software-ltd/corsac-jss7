@@ -170,9 +170,9 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
             sb.append(", requestAnnouncementStarted=");
             sb.append(requestAnnouncementStarted.getValue());
         }
-        if (this.informationToSend != null) {
+        if (this.informationToSend != null && this.informationToSend.getInformationToSend()!=null) {
             sb.append(", informationToSend=");
-            sb.append(informationToSend.toString());
+            sb.append(informationToSend.getInformationToSend().toString());
         }
         if (this.disconnectFromIPForbidden != null && this.disconnectFromIPForbidden.getValue()!=null) {
             sb.append(", disconnectFromIPForbidden=");

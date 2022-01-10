@@ -27,7 +27,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.commonapp.EsiBcsm.ODisconnectSpecificInfoImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
 import org.testng.annotations.Test;
 

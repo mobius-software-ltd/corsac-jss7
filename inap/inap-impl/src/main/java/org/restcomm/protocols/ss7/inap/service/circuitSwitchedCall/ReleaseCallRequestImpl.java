@@ -70,7 +70,7 @@ public class ReleaseCallRequestImpl extends CircuitSwitchedCallMessageImpl imple
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("ReleaseCalltRequestIndication [");
+        sb.append("ReleaseCallRequestIndication [");
         this.addInvokeIdInfo(sb);
 
         if (this.cause != null) {
