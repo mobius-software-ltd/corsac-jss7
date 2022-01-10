@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
 
 /**
  * Start time:11:36:27 2009-04-27<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  * @author sergey vetyutnev

@@ -22,7 +22,7 @@
 
 /**
  * Start time:17:24:08 2009-04-02<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski
  *         </a>
@@ -45,7 +45,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 /**
  * Start time:17:24:08 2009-04-02<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */

@@ -161,7 +161,7 @@ public class SctpManagementImpl implements Management {
      * (non-Javadoc)
      * 
      * @see org.restcomm.protocols.api.Management#addManagementEventListener(org
-     * .mobicents.protocols.api.ManagementEventListener)
+     * .restcomm.protocols.api.ManagementEventListener)
      */
     @Override
     public void addManagementEventListener(UUID key,ManagementEventListener listener) {

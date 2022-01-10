@@ -145,7 +145,7 @@ public class InvokeImpl implements RemoteOperation {
      * (non-Javadoc)
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(org
-     * .mobicents.protocols.ss7.tcap.asn.comp.OperationCode)
+     * .restcomm.protocols.ss7.tcap.asn.comp.OperationCode)
      */
     public void setOperationCode(OperationCodeImpl i) {
     	this.operationCode=i;

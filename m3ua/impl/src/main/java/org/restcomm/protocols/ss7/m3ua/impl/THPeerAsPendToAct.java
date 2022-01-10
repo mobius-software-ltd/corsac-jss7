@@ -47,7 +47,7 @@ public class THPeerAsPendToAct implements TransitionHandler {
      * (non-Javadoc)
      *
      * @see org.restcomm.protocols.ss7.m3ua.impl.fsm.TransitionHandler#process(org
-     * .mobicents.protocols.ss7.m3ua.impl.fsm.State)
+     * .restcomm.protocols.ss7.m3ua.impl.fsm.State)
      */
     @Override
     public boolean process(FSMState state) {

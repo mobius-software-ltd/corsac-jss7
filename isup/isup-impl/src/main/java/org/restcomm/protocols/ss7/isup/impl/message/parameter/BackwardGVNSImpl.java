@@ -22,7 +22,7 @@
 
 /**
  * Start time:13:15:04 2009-04-04<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski
  *         </a>
@@ -38,7 +38,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.BackwardGVNS;
 
 /**
  * Start time:13:15:04 2009-04-04<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */

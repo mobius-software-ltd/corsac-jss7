@@ -22,7 +22,7 @@
 
 /**
  * Start time:23:59:59 2009-09-06<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
@@ -50,7 +50,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityI
 
 /**
  * Start time:23:59:59 2009-09-06<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */

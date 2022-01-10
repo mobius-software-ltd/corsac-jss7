@@ -141,7 +141,7 @@ public class ReturnErrorImpl implements ReturnError {
      * (non-Javadoc)
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#setParameter(org
-     * .mobicents.protocols.ss7.tcap.asn.comp.Parameter)
+     * .restcomm.protocols.ss7.tcap.asn.comp.Parameter)
      */
     public void setParameter(Object p) {
         this.parameter = new ASNReturnErrorParameterImpl();

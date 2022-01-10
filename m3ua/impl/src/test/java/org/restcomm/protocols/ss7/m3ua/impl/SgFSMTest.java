@@ -1407,7 +1407,7 @@ public class SgFSMTest {
 
     @Test
     public void testAspUpReceivedWhileASPIsAlreadyUp() throws Exception {
-        // Test bug http://code.google.com/p/mobicents/issues/detail?id=2436
+        // Test bug http://code.google.com/p/restcomm/issues/detail?id=2436
 
         TestAssociation testAssociation1 = (TestAssociation) this.transportManagement.addAssociation(null, 0, null, 0,
                 "testAssoc1");

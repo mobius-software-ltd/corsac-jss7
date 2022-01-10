@@ -22,7 +22,7 @@
 
 /**
  * Start time:11:34:01 2009-04-24<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski
  *         </a>
@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
 
 /**
  * Start time:11:34:01 2009-04-24<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */

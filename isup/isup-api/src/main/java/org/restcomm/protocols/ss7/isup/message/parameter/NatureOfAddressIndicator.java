@@ -22,7 +22,7 @@
 
 /**
  * Start time:10:27:43 2009-07-23<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
 
@@ -33,7 +33,7 @@ import java.io.Serializable;
 
 /**
  * Start time:10:27:43 2009-07-23<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */

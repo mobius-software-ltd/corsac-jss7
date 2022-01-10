@@ -50,7 +50,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessT
 
 /**
  * Start time:09:41:44 2009-07-23<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  * <TABLE id="Table3" style="FONT-SIZE: 9pt; WIDTH: 584px; COLOR: black; HEIGHT: 72px; TEXT-ALIGN: center" cellSpacing="1" cellPadding="1" width="584" align="center" border="1">
  * <TR>
  *

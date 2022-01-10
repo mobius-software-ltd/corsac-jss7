@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityI
 
 /**
  * Start time:09:54:07 2009-07-23<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  * <TABLE id="Table30" style="FONT-SIZE: 9pt; WIDTH: 584px; HEIGHT: 72px; TEXT-ALIGN: center" cellSpacing="1" cellPadding="1" width="584" align="center" border="1">
  * <TR>
  * <TD style="FONT-WEIGHT: bold; WIDTH: 328px; COLOR: teal; HEIGHT: 28px; TEXT-ALIGN: center" align="center" colSpan="3">

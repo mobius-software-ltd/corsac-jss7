@@ -76,7 +76,7 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
     public CallSsfExample() throws NamingException {
         InitialContext ctx = new InitialContext();
         try {
-            String providerJndiName = "java:/mobicents/ss7/cap";
+            String providerJndiName = "java:/restcomm/ss7/cap";
             this.capProvider = ((CAPProvider) ctx.lookup(providerJndiName));
         } finally {
             ctx.close();

@@ -34,7 +34,7 @@ import java.nio.charset.Charset;
 
 /**
  * Start time:12:24:47 2009-03-31<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  * @author <a href="mailto:grzegorz.figiel@pro-ids.com"> Grzegorz Figiel </a>

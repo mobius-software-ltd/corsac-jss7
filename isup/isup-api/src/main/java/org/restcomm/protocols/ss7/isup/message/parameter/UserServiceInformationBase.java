@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.isup.message.parameter;
 
 /**
  * Start time:14:20:07 2009-07-23<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski</a>
  * @author <a href="mailto:oifa.yulian@gmail.com">Yulian Oifa</a>

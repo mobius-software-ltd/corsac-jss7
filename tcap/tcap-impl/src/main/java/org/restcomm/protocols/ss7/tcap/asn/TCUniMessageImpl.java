@@ -68,7 +68,7 @@ public class TCUniMessageImpl extends TCUnifiedMessageImpl implements TCUniMessa
      * (non-Javadoc)
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage#setComponent(org
-     * .mobicents.protocols.ss7.tcap.asn.comp.Component[])
+     * .restcomm.protocols.ss7.tcap.asn.comp.Component[])
      */
     public void setComponents(List<BaseComponent> c) {
     	if(c==null)

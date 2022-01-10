@@ -743,7 +743,7 @@ public class DialogImpl implements Dialog {
      * (non-Javadoc)
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#sendComponent(org
-     * .mobicents.protocols.ss7.tcap.api.tc.component.ComponentRequest)
+     * .restcomm.protocols.ss7.tcap.api.tc.component.ComponentRequest)
      */
     public void sendComponent(WrappedComponent componentRequest) throws TCAPSendException {
     	Invoke invoke=componentRequest.getInvokeLast();

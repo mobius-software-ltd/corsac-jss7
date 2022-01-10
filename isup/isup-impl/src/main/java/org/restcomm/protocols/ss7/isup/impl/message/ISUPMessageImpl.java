@@ -41,7 +41,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
 
 /**
  * Start time:14:09:04 2009-04-20<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  * This is super message class for all messages that we have. It defines some methods that need to be implemented
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>

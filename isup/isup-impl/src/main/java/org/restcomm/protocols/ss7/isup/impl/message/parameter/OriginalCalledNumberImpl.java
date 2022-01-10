@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
 
 /**
  * Start time:17:30:47 2009-03-29<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */

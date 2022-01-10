@@ -22,7 +22,7 @@
 
 /**
  * Start time:16:55:01 2009-04-02<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski
  *         </a>
@@ -37,7 +37,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionNumberRestri
 
 /**
  * Start time:16:55:01 2009-04-02<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  *

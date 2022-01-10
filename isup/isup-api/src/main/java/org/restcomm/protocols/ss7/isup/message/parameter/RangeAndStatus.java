@@ -22,7 +22,7 @@
 
 /**
  * Start time:13:52:59 2009-07-23<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>
  */
@@ -30,7 +30,7 @@ package org.restcomm.protocols.ss7.isup.message.parameter;
 
 /**
  * Start time:13:52:59 2009-07-23<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  * This RangeAndStatus indiactes whcih CICs, starting from one present in message are affected. Range indicates how many CICs
  * are potentially affected. Status contains bits indicating CIC affected(1 - affected, 0 - not affected) <br>
  * For content interpretation refer to Q.763 3.43

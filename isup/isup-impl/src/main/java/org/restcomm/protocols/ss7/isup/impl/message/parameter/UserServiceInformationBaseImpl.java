@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformationB
 
 /**
  * Start time:12:36:18 2009-04-04<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski</a>
  * @author <a href="mailto:oifa.yulian@gmail.com"> Yulian Oifa</a>

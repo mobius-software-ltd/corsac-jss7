@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 
 /**
  * Start time:15:59:02 2009-03-29<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  * This represent called party number - Q.763 - 3.9
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>

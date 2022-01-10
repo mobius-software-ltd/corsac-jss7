@@ -22,7 +22,7 @@
 
 /**
  * Start time:12:21:06 2009-04-23<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  *
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski
  *         </a>
@@ -40,7 +40,7 @@ import org.testng.annotations.Test;
 
 /**
  * Start time:12:21:06 2009-04-23<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  * Class to test BCI
  * 
  * @author <a href="mailto:baranowb@gmail.com">Bartosz Baranowski </a>

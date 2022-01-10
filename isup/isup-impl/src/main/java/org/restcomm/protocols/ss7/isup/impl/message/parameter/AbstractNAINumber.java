@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
 
 /**
  * Start time:14:02:37 2009-04-04<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  * This is number representation that has NAI field
  *
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>

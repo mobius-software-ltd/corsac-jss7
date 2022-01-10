@@ -101,7 +101,7 @@ public class ReturnErrorImpl implements RemoteOperation {
      * (non-Javadoc)
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#setErrorCode(org
-     * .mobicents.protocols.ss7.tcap.asn.comp.ErrorCode)
+     * .restcomm.protocols.ss7.tcap.asn.comp.ErrorCode)
      */
     public void setErrorCode(ErrorCodeImpl ec) {
     	this.errorCode=ec;
@@ -122,7 +122,7 @@ public class ReturnErrorImpl implements RemoteOperation {
      * (non-Javadoc)
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#setParameter(org
-     * .mobicents.protocols.ss7.tcap.asn.comp.Parameter)
+     * .restcomm.protocols.ss7.tcap.asn.comp.Parameter)
      */
     public void setParameter(Object p) {
         this.parameter = new ASNReturnErrorParameterImpl();

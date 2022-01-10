@@ -68,7 +68,7 @@ public class UssdClientExample implements MAPDialogListener, MAPServiceSupplemen
     public UssdClientExample() throws NamingException {
         InitialContext ctx = new InitialContext();
         try {
-            String providerJndiName = "java:/mobicents/ss7/map";
+            String providerJndiName = "java:/restcomm/ss7/map";
             this.mapProvider = ((MAPProvider) ctx.lookup(providerJndiName));
         } finally {
             ctx.close();

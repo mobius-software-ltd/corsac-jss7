@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.Number;
 
 /**
  * Start time:18:44:10 2009-03-27<br>
- * Project: mobicents-isup-stack<br>
+ * Project: restcomm-isup-stack<br>
  * This class is super classes for all message parameters with form of:
  *
  * <pre>

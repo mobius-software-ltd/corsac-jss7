@@ -134,7 +134,7 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
      * (non-Javadoc)
      *
      * @see org.restcomm.protocols.ss7.map.api.MAPServiceBase#isServingService(org
-     * .mobicents.protocols.ss7.map.api.MAPApplicationContext)
+     * .restcomm.protocols.ss7.map.api.MAPApplicationContext)
      */
     public ServingCheckData isServingService(MAPApplicationContext dialogApplicationContext) {
 
@@ -164,7 +164,7 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
      * (non-Javadoc)
      *
      * @see org.restcomm.protocols.ss7.map.api.MAPServiceBase#processComponent(org
-     * .mobicents.protocols.ss7.tcap.asn.comp.ComponentType, org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode,
+     * .restcomm.protocols.ss7.tcap.asn.comp.ComponentType, org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode,
      * org.restcomm.protocols.ss7.tcap.asn.comp.Parameter, org.restcomm.protocols.ss7.map.api.MAPDialog, java.lang.Long,
      * java.lang.Long)
      */

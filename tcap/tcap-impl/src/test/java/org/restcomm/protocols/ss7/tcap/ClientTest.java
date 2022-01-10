@@ -45,7 +45,7 @@ public class ClientTest implements TCListener {
 
         InitialContext ctx = new InitialContext();
         try {
-            String providerJndiName = "java:/mobicents/ss7/tcap";
+            String providerJndiName = "java:/restcomm/ss7/tcap";
             this.tcapProvider = ((TCAPProvider) ctx.lookup(providerJndiName));
         } finally {
             ctx.close();
