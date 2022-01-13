@@ -45,6 +45,8 @@ import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * @author baranowb
  * @author amit bhayani
@@ -140,58 +142,58 @@ public class DialogPrimitiveFactoryImpl implements DialogPrimitiveFactory {
         return tcur;
     }
 
-    public TCBeginIndication createBeginIndication(Dialog d) {
+    public TCBeginIndication createBeginIndication(Dialog d,ByteBuf originalBuffer) {
 
         if (d == null) {
             throw new NullPointerException("Dialog is null");
         }
-        TCBeginIndicationImpl tcbi = new TCBeginIndicationImpl();
+        TCBeginIndicationImpl tcbi = new TCBeginIndicationImpl(originalBuffer);
         tcbi.setDialog(d);
         return tcbi;
     }
 
-    public TCContinueIndication createContinueIndication(Dialog d) {
+    public TCContinueIndication createContinueIndication(Dialog d,ByteBuf originalBuffer) {
         if (d == null) {
             throw new NullPointerException("Dialog is null");
         }
-        TCContinueIndicationImpl tcbi = new TCContinueIndicationImpl();
+        TCContinueIndicationImpl tcbi = new TCContinueIndicationImpl(originalBuffer);
         tcbi.setDialog(d);
 
         return tcbi;
     }
 
-    public TCEndIndication createEndIndication(Dialog d) {
+    public TCEndIndication createEndIndication(Dialog d,ByteBuf originalBuffer) {
         if (d == null) {
             throw new NullPointerException("Dialog is null");
         }
-        TCEndIndicationImpl tcbi = new TCEndIndicationImpl();
+        TCEndIndicationImpl tcbi = new TCEndIndicationImpl(originalBuffer);
         tcbi.setDialog(d);
         return tcbi;
     }
 
-    public TCUserAbortIndication createUAbortIndication(Dialog d) {
+    public TCUserAbortIndication createUAbortIndication(Dialog d,ByteBuf originalBuffer) {
         if (d == null) {
             throw new NullPointerException("Dialog is null");
         }
-        TCUserAbortIndicationImpl tcbi = new TCUserAbortIndicationImpl();
+        TCUserAbortIndicationImpl tcbi = new TCUserAbortIndicationImpl(originalBuffer);
         tcbi.setDialog(d);
         return tcbi;
     }
 
-    public TCPAbortIndication createPAbortIndication(Dialog d) {
+    public TCPAbortIndication createPAbortIndication(Dialog d,ByteBuf originalBuffer) {
         if (d == null) {
             throw new NullPointerException("Dialog is null");
         }
-        TCPAbortIndicationImpl tcbi = new TCPAbortIndicationImpl();
+        TCPAbortIndicationImpl tcbi = new TCPAbortIndicationImpl(originalBuffer);
         tcbi.setDialog(d);
         return tcbi;
     }
 
-    public TCUniIndication createUniIndication(Dialog d) {
+    public TCUniIndication createUniIndication(Dialog d,ByteBuf originalBuffer) {
         if (d == null) {
             throw new NullPointerException("Dialog is null");
         }
-        TCUniIndicationImpl tcbi = new TCUniIndicationImpl();
+        TCUniIndicationImpl tcbi = new TCUniIndicationImpl(originalBuffer);
         tcbi.setDialog(d);
         return tcbi;
     }

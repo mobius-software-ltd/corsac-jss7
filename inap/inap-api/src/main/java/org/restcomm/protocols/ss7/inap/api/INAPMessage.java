@@ -22,6 +22,8 @@
 package org.restcomm.protocols.ss7.inap.api;
 
 import java.io.Serializable;
+
+import io.netty.buffer.ByteBuf;
 /**
  * @author yulian.oifa
  *
@@ -38,4 +40,10 @@ public interface INAPMessage extends Serializable {
    INAPMessageType getMessageType();
 
    int getOperationCode();
+   
+   void setOriginalBuffer(ByteBuf buffer);
+   
+   void retain();
+   
+   void release();
 }

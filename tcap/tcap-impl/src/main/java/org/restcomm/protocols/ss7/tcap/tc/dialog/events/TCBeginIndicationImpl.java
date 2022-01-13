@@ -31,6 +31,8 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginIndication;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * @author baranowb
  *
@@ -43,8 +45,8 @@ public class TCBeginIndicationImpl extends DialogIndicationImpl implements TCBeg
     private ApplicationContextName applicationContextName;
     private UserInformation userInformation;
 
-    TCBeginIndicationImpl() {
-        super(EventType.Begin);
+    TCBeginIndicationImpl(ByteBuf originalBuffer) {
+        super(EventType.Begin, originalBuffer);
         // TODO Auto-generated constructor stub
     }
 

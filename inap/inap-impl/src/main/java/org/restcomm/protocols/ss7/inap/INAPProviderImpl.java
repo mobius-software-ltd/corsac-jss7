@@ -178,6 +178,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultInnerImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author yulian.oifa
@@ -719,7 +721,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
         // Now let us decode the Components
         if (comps != null) {
-            processComponents(inapDialogImpl, comps);
+            processComponents(inapDialogImpl, comps, tcBeginIndication.getOriginalBuffer());
         }
 
         this.deliverDialogDelimiter(inapDialogImpl);
@@ -824,7 +826,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         if (inapDialogImpl.getState() == INAPDialogState.Active) {
             List<BaseComponent> comps = tcContinueIndication.getComponents();
             if (comps != null) {
-                processComponents(inapDialogImpl, comps);
+                processComponents(inapDialogImpl, comps, tcContinueIndication.getOriginalBuffer());
             }
         } else {
             // This should never happen
@@ -885,7 +887,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         // Now let us decode the Components
         List<BaseComponent> comps = tcEndIndication.getComponents();
         if (comps != null) {
-            processComponents(inapDialogImpl, comps);
+            processComponents(inapDialogImpl, comps, tcEndIndication.getOriginalBuffer());
         }
 
         // inapDialogImpl.setNormalDialogShutDown();
@@ -1041,16 +1043,16 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         }
     }
 
-    private void processComponents(INAPDialogImpl inapDialogImpl, List<BaseComponent> components) {
+    private void processComponents(INAPDialogImpl inapDialogImpl, List<BaseComponent> components, ByteBuf buffer) {
 
     	// Now let us decode the Components
         for (BaseComponent c : components) {
 
-            doProcessComponent(inapDialogImpl, c);
+            doProcessComponent(inapDialogImpl, c, buffer);
         }
     }
 
-    private void doProcessComponent(INAPDialogImpl inapDialogImpl, BaseComponent c) {
+    private void doProcessComponent(INAPDialogImpl inapDialogImpl, BaseComponent c, ByteBuf buffer) {
 
         // Getting the INAP Service that serves the INAP Dialog
         INAPServiceBaseImpl perfSer = (INAPServiceBaseImpl) inapDialogImpl.getService();
@@ -1188,6 +1190,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
             	
             	INAPMessage realMessage=(INAPMessage)parameter;
             	if(realMessage!=null) {
+            		realMessage.setOriginalBuffer(buffer);
 	            	realMessage.setInvokeId(invokeId);
 	            	realMessage.setINAPDialog(inapDialogImpl);
             	}

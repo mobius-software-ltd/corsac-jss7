@@ -31,6 +31,8 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueIndication
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * @author baranowb
  *
@@ -42,8 +44,8 @@ public class TCContinueIndicationImpl extends DialogIndicationImpl implements TC
     private ApplicationContextName applicationContextName;
     private UserInformation userInformation;
 
-    TCContinueIndicationImpl() {
-        super(EventType.Continue);
+    TCContinueIndicationImpl(ByteBuf originalBuffer) {
+        super(EventType.Continue, originalBuffer);
         // TODO Auto-generated constructor stub
     }
 

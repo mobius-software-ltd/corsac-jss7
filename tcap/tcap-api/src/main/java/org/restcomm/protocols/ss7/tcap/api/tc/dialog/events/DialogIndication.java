@@ -27,6 +27,8 @@ import java.util.List;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.asn.comp.BaseComponent;
 
+import io.netty.buffer.ByteBuf;
+
 public interface DialogIndication {
 
     /**
@@ -48,4 +50,6 @@ public interface DialogIndication {
     EventType getType();
 
     Byte getQos();
+    
+    ByteBuf getOriginalBuffer();
 }

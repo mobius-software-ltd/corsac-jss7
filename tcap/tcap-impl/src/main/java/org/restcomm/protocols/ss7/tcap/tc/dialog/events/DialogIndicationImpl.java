@@ -39,6 +39,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * @author baranowb
  *
@@ -48,8 +50,9 @@ public abstract class DialogIndicationImpl implements DialogIndication {
     private Dialog dialog;
     private Byte qos;
     private EventType type;
-
-    protected DialogIndicationImpl(EventType type) {
+    private ByteBuf originalBuffer;
+    
+    protected DialogIndicationImpl(EventType type,ByteBuf originalBuffer) {
         super();
         this.type = type;
     }
@@ -129,5 +132,8 @@ public abstract class DialogIndicationImpl implements DialogIndication {
     public void setQos(Byte qos) {
         this.qos = qos;
     }
-
+    
+    public ByteBuf getOriginalBuffer() {
+    	return originalBuffer;
+    }
 }

@@ -30,6 +30,8 @@ import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
+import io.netty.buffer.ByteBuf;
+
 public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements TCUserAbortIndication {
 	private UserInformation userInformation;
     private AbortSourceType abortSource;
@@ -40,8 +42,8 @@ public class TCUserAbortIndicationImpl extends DialogIndicationImpl implements T
 
     private SccpAddress originatingAddress;
 
-    TCUserAbortIndicationImpl() {
-        super(EventType.UAbort);
+    TCUserAbortIndicationImpl(ByteBuf originalBuffer) {
+        super(EventType.UAbort, originalBuffer);
         // TODO Auto-generated constructor stub
     }
 

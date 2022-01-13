@@ -242,6 +242,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultInnerImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author amit bhayani
@@ -1252,7 +1254,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
         // Now let us decode the Components
         if (comps != null) {
-            processComponents(mapDialogImpl, comps);
+            processComponents(mapDialogImpl, comps, tcBeginIndication.getOriginalBuffer());
         }
 
         this.deliverDialogDelimiter(mapDialogImpl);
@@ -1406,7 +1408,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
                 || mapDialogImpl.getState() == MAPDialogState.ACTIVE) {
             List<BaseComponent> comps = tcContinueIndication.getComponents();
             if (comps != null) {
-                processComponents(mapDialogImpl, comps);
+                processComponents(mapDialogImpl, comps, tcContinueIndication.getOriginalBuffer());
             }
         } else {
             // This should never happen
@@ -1530,7 +1532,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         // Now let us decode the Components
         List<BaseComponent> comps = tcEndIndication.getComponents();
         if (comps != null) {
-            processComponents(mapDialogImpl, comps);
+            processComponents(mapDialogImpl, comps, tcEndIndication.getOriginalBuffer());
         }
 
         this.deliverDialogClose(mapDialogImpl);
@@ -1845,16 +1847,16 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
     /**
      * private service methods
      */
-    private void processComponents(MAPDialogImpl mapDialogImpl, List<BaseComponent> components) {
+    private void processComponents(MAPDialogImpl mapDialogImpl, List<BaseComponent> components, ByteBuf buffer) {
 
         // Now let us decode the Components
         for (BaseComponent c : components) {
 
-            doProcessComponent(mapDialogImpl, c);
+            doProcessComponent(mapDialogImpl, c, buffer);
         }
     }
 
-    private void doProcessComponent(MAPDialogImpl mapDialogImpl, BaseComponent c) {
+    private void doProcessComponent(MAPDialogImpl mapDialogImpl, BaseComponent c, ByteBuf buffer) {
 
         // Getting the MAP Service that serves the MAP Dialog
         MAPServiceBaseImpl perfSer = (MAPServiceBaseImpl) mapDialogImpl.getService();        
@@ -1992,6 +1994,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
             	
             	MAPMessage realMessage=(MAPMessage)parameter;
             	if(realMessage!=null) {
+            		realMessage.setOriginalBuffer(buffer);
 	            	realMessage.setInvokeId(invokeId);
 	            	realMessage.setMAPDialog(mapDialogImpl);
 	            	realMessage.setReturnResultNotLast(compType == ComponentType.ReturnResult);

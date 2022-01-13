@@ -173,6 +173,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultInnerImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author sergey vetyutnev
@@ -700,7 +702,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
         // Now let us decode the Components
         if (comps != null) {
-            processComponents(capDialogImpl, comps);
+            processComponents(capDialogImpl, comps, tcBeginIndication.getOriginalBuffer());
         }
 
         this.deliverDialogDelimiter(capDialogImpl);
@@ -814,7 +816,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         if (capDialogImpl.getState() == CAPDialogState.Active) {
             List<BaseComponent> comps = tcContinueIndication.getComponents();
             if (comps != null) {
-                processComponents(capDialogImpl, comps);
+                processComponents(capDialogImpl, comps, tcContinueIndication.getOriginalBuffer());
             }
         } else {
             // This should never happen
@@ -884,7 +886,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         // Now let us decode the Components
         List<BaseComponent> comps = tcEndIndication.getComponents();
         if (comps != null) {
-            processComponents(capDialogImpl, comps);
+            processComponents(capDialogImpl, comps, tcEndIndication.getOriginalBuffer());
         }
 
         // capDialogImpl.setNormalDialogShutDown();
@@ -1040,16 +1042,16 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         }
     }
 
-    private void processComponents(CAPDialogImpl capDialogImpl, List<BaseComponent> components) {
+    private void processComponents(CAPDialogImpl capDialogImpl, List<BaseComponent> components, ByteBuf buffer) {
 
     	// Now let us decode the Components
         for (BaseComponent c : components) {
 
-            doProcessComponent(capDialogImpl, c);
+            doProcessComponent(capDialogImpl, c, buffer);
         }
     }
 
-    private void doProcessComponent(CAPDialogImpl capDialogImpl, BaseComponent c) {
+    private void doProcessComponent(CAPDialogImpl capDialogImpl, BaseComponent c, ByteBuf buffer) {
 
         // Getting the CAP Service that serves the CAP Dialog
         CAPServiceBaseImpl perfSer = (CAPServiceBaseImpl) capDialogImpl.getService();
@@ -1187,6 +1189,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
             	
             	CAPMessage realMessage=(CAPMessage)parameter;
             	if(realMessage!=null) {
+            		realMessage.setOriginalBuffer(buffer);
 	            	realMessage.setInvokeId(invokeId);
 	            	realMessage.setCAPDialog(capDialogImpl);
             	}

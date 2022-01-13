@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.cap.api;
 
 import java.io.Serializable;
 
+import io.netty.buffer.ByteBuf;
+
 
 /**
  * This is super interface for all service message in CAP
@@ -45,5 +47,11 @@ public interface CAPMessage extends Serializable {
      CAPMessageType getMessageType();
 
      int getOperationCode();
+     
+     void setOriginalBuffer(ByteBuf buffer);
+     
+     void retain();
+     
+     void release();
 
 }

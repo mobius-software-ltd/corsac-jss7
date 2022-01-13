@@ -31,6 +31,8 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * @author baranowb
  *
@@ -43,8 +45,8 @@ public class TCUniIndicationImpl extends DialogIndicationImpl implements TCUniIn
     private ApplicationContextName applicationContextName;
     private UserInformation userInformation;
 
-    TCUniIndicationImpl() {
-        super(EventType.Uni);
+    TCUniIndicationImpl(ByteBuf originalBuffer) {
+        super(EventType.Uni, originalBuffer);
         // TODO Auto-generated constructor stub
     }
 

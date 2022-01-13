@@ -1205,7 +1205,7 @@ public class DialogImpl implements Dialog {
         this.remoteAddress = remoteAddress;
     }
 
-    void processUni(TCUniMessage msg, SccpAddress localAddress, SccpAddress remoteAddress) {
+    void processUni(TCUniMessage msg, SccpAddress localAddress, SccpAddress remoteAddress, ByteBuf data) {
         try {
             this.setRemoteAddress(remoteAddress);
             this.setLocalAddress(localAddress);
@@ -1213,7 +1213,7 @@ public class DialogImpl implements Dialog {
             // no dialog portion!
             // convert to indications
             TCUniIndication tcUniIndication = ((DialogPrimitiveFactoryImpl) this.provider
-                    .getDialogPrimitiveFactory()).createUniIndication(this);
+                    .getDialogPrimitiveFactory()).createUniIndication(this, data);
 
             tcUniIndication.setDestinationAddress(localAddress);
             tcUniIndication.setOriginatingAddress(remoteAddress);
@@ -1239,7 +1239,7 @@ public class DialogImpl implements Dialog {
         }
     }
 
-    protected void processBegin(TCBeginMessage msg, SccpAddress localAddress, SccpAddress remoteAddress) {
+    protected void processBegin(TCBeginMessage msg, SccpAddress localAddress, SccpAddress remoteAddress, ByteBuf data) {
 
         TCBeginIndication tcBeginIndication = null;
         // this is invoked ONLY for server.
@@ -1259,7 +1259,7 @@ public class DialogImpl implements Dialog {
         this.setRemoteTransactionId(msg.getOriginatingTransactionId());
         // convert to indications
         tcBeginIndication = ((DialogPrimitiveFactoryImpl) this.provider.getDialogPrimitiveFactory())
-                .createBeginIndication(this);
+                .createBeginIndication(this, data);
 
         tcBeginIndication.setDestinationAddress(localAddress);
         tcBeginIndication.setOriginatingAddress(remoteAddress);
@@ -1292,13 +1292,13 @@ public class DialogImpl implements Dialog {
         this.provider.deliver(this, tcBeginIndication);
     }
 
-    protected void processContinue(TCContinueMessage msg, SccpAddress localAddress, SccpAddress remoteAddress) {
+    protected void processContinue(TCContinueMessage msg, SccpAddress localAddress, SccpAddress remoteAddress, ByteBuf data) {
 
         TCContinueIndication tcContinueIndication = null;
         if (state.get() == TRPseudoState.InitialSent) {
             restartIdleTimer();
             tcContinueIndication = ((DialogPrimitiveFactoryImpl) this.provider
-                    .getDialogPrimitiveFactory()).createContinueIndication(this);
+                    .getDialogPrimitiveFactory()).createContinueIndication(this, data);
 
             // in continue remote address MAY change be changed, so lets
             // update!
@@ -1379,7 +1379,7 @@ public class DialogImpl implements Dialog {
             restartIdleTimer();
             // XXX: here NO APDU will be present, hence, no ACN/UI change
             tcContinueIndication = ((DialogPrimitiveFactoryImpl) this.provider
-                    .getDialogPrimitiveFactory()).createContinueIndication(this);
+                    .getDialogPrimitiveFactory()).createContinueIndication(this, data);
 
             tcContinueIndication.setOriginatingAddress(remoteAddress);
 
@@ -1399,12 +1399,12 @@ public class DialogImpl implements Dialog {
         }
     }
 
-    protected void processEnd(TCEndMessage msg, SccpAddress localAddress, SccpAddress remoteAddress) {
+    protected void processEnd(TCEndMessage msg, SccpAddress localAddress, SccpAddress remoteAddress, ByteBuf data) {
         TCEndIndication tcEndIndication = null;
         try {
         	restartIdleTimer();
             tcEndIndication = ((DialogPrimitiveFactoryImpl) this.provider
-                    .getDialogPrimitiveFactory()).createEndIndication(this);
+                    .getDialogPrimitiveFactory()).createEndIndication(this, data);
 
             if (state.get() == TRPseudoState.InitialSent) {
                 // in end remote address MAY change be changed, so lets
@@ -1445,7 +1445,7 @@ public class DialogImpl implements Dialog {
         }
     }
 
-    protected void processAbort(TCAbortMessage msg, SccpAddress localAddress2, SccpAddress remoteAddress2) {
+    protected void processAbort(TCAbortMessage msg, SccpAddress localAddress2, SccpAddress remoteAddress2, ByteBuf data) {
     	try {
             Boolean IsAareApdu = false;
             Boolean IsAbrtApdu = false;
@@ -1513,7 +1513,7 @@ public class DialogImpl implements Dialog {
 
                 // its TC-P-Abort
                 TCPAbortIndication tcAbortIndication = ((DialogPrimitiveFactoryImpl) this.provider
-                        .getDialogPrimitiveFactory()).createPAbortIndication(this);
+                        .getDialogPrimitiveFactory()).createPAbortIndication(this, data);
                 tcAbortIndication.setPAbortCause(type);
 
                 this.provider.deliver(this, tcAbortIndication);
@@ -1521,7 +1521,7 @@ public class DialogImpl implements Dialog {
             } else {
                 // its TC-U-Abort
                 TCUserAbortIndication tcUAbortIndication = ((DialogPrimitiveFactoryImpl) this.provider
-                        .getDialogPrimitiveFactory()).createUAbortIndication(this);
+                        .getDialogPrimitiveFactory()).createUAbortIndication(this, data);
                 if (IsAareApdu)
                     tcUAbortIndication.setAareApdu();
                 if (IsAbrtApdu)
@@ -1578,7 +1578,7 @@ public class DialogImpl implements Dialog {
 
             // sending to the local side
             tcAbortIndication = ((DialogPrimitiveFactoryImpl) this.provider
-                    .getDialogPrimitiveFactory()).createPAbortIndication(this);
+                    .getDialogPrimitiveFactory()).createPAbortIndication(this, null);
             tcAbortIndication.setPAbortCause(PAbortCauseType.AbnormalDialogue);
             // tcAbortIndication.setLocalProviderOriginated(true);
 

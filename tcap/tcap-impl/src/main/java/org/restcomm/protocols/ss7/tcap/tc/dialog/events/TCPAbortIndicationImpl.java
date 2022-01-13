@@ -29,6 +29,8 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.EventType;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCPAbortIndication;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * @author baranowb
  * @author sergey vetyutnev
@@ -40,8 +42,8 @@ public class TCPAbortIndicationImpl extends DialogIndicationImpl implements TCPA
 
     // private boolean localProviderOriginated = false;
 
-    TCPAbortIndicationImpl() {
-        super(EventType.PAbort);
+    TCPAbortIndicationImpl(ByteBuf originalBuffer) {
+        super(EventType.PAbort, originalBuffer);
         // TODO Auto-generated constructor stub
     }
 

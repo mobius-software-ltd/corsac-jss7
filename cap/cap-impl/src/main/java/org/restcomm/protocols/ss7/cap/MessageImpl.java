@@ -25,6 +25,9 @@ package org.restcomm.protocols.ss7.cap;
 import org.restcomm.protocols.ss7.cap.api.CAPDialog;
 import org.restcomm.protocols.ss7.cap.api.CAPMessage;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.util.ReferenceCountUtil;
+
 /**
  *
  * @author amit bhayani
@@ -36,7 +39,8 @@ public abstract class MessageImpl implements CAPMessage {
 
 	private long invokeId;
     private CAPDialog capDialog;
-
+    private ByteBuf originalBuffer;
+    
     public long getInvokeId() {
         return this.invokeId;
     }
@@ -56,5 +60,19 @@ public abstract class MessageImpl implements CAPMessage {
     protected void addInvokeIdInfo(StringBuilder sb) {
         sb.append("InvokeId=");
         sb.append(this.invokeId);
+    }
+
+    public void setOriginalBuffer(ByteBuf buffer) {
+    	this.originalBuffer=buffer;
+    }
+    
+    public void retain() {
+    	if(originalBuffer!=null)
+    		ReferenceCountUtil.retain(originalBuffer);
+    }
+    
+    public void release() {
+    	if(originalBuffer!=null)
+    		ReferenceCountUtil.release(originalBuffer);
     }
 }

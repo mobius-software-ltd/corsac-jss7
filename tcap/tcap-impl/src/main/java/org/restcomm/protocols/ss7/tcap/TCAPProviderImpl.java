@@ -719,7 +719,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	                        this.sendProviderAbort(PAbortCauseType.UnrecognizedTxID, tcm.getOriginatingTransactionId(),
 	                                remoteAddress, localAddress, message.getSls(), message.getNetworkId(), message.getIncomingOpc());
 	                    } else {
-	                        di.processContinue(tcm, localAddress, remoteAddress);
+	                        di.processContinue(tcm, localAddress, remoteAddress, data);
 	                    }
 	            	} else if(realMessage instanceof TCBeginMessage) {
 	            		TCBeginMessage tcb=(TCBeginMessage)realMessage;
@@ -749,7 +749,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	                    }
 	
 	                    di.setNetworkId(message.getNetworkId());
-	                    di.processBegin(tcb, localAddress, remoteAddress);
+	                    di.processBegin(tcb, localAddress, remoteAddress, data);
 	            	}
 	            	else if(realMessage instanceof TCEndMessage) {
 	            		TCEndMessage teb=(TCEndMessage)realMessage;
@@ -758,7 +758,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	                    if (di == null) {
 	                        logger.warn("TC-END: No dialog/transaction for id: " + dialogId);
 	                    } else {
-	                        di.processEnd(teb, localAddress, remoteAddress);
+	                        di.processEnd(teb, localAddress, remoteAddress, data);
 	                    }		
 	            	}
 	            	else if(realMessage instanceof TCAbortMessage) {
@@ -773,7 +773,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	                    if (di == null) {
 	                        logger.warn("TC-ABORT: No dialog/transaction for id: " + dialogId);
 	                    } else {
-	                        di.processAbort(tub, localAddress, remoteAddress);
+	                        di.processAbort(tub, localAddress, remoteAddress, data);
 	                    }			            		
 	            	}
 	            	else if(realMessage instanceof TCUniMessage) {
@@ -782,7 +782,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	                    DialogImpl uniDialog = (DialogImpl) this.getNewUnstructuredDialog(localAddress, remoteAddress);
 	                    uniDialog.setRemotePc(remotePc);
 	                    setSsnToDialog(uniDialog, message.getCalledPartyAddress().getSubsystemNumber());
-	                    uniDialog.processUni(tcuni, localAddress, remoteAddress);	
+	                    uniDialog.processUni(tcuni, localAddress, remoteAddress, data);	
 	            	} else {	
 	            		unrecognizedPackageType(message, realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());                    
 	            	}

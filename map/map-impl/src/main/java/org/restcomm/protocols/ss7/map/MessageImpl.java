@@ -25,6 +25,9 @@ package org.restcomm.protocols.ss7.map;
 import org.restcomm.protocols.ss7.map.api.MAPDialog;
 import org.restcomm.protocols.ss7.map.api.MAPMessage;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.util.ReferenceCountUtil;
+
 /**
  *
  * @author amit bhayani
@@ -37,7 +40,8 @@ public abstract class MessageImpl implements MAPMessage {
     private long invokeId;
     private MAPDialog mapDialog;
     private boolean returnResultNotLast = false;
-
+    private ByteBuf originalBuffer;
+    
     public long getInvokeId() {
         return this.invokeId;
     }
@@ -60,5 +64,19 @@ public abstract class MessageImpl implements MAPMessage {
 
     public void setReturnResultNotLast(boolean returnResultNotLast) {
         this.returnResultNotLast = returnResultNotLast;
+    }
+
+    public void setOriginalBuffer(ByteBuf buffer) {
+    	this.originalBuffer=buffer;
+    }
+    
+    public void retain() {
+    	if(originalBuffer!=null)
+    		ReferenceCountUtil.retain(originalBuffer);
+    }
+    
+    public void release() {
+    	if(originalBuffer!=null)
+    		ReferenceCountUtil.release(originalBuffer);
     }
 }

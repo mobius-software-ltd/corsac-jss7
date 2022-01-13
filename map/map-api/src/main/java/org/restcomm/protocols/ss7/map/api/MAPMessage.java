@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api;
 
 import java.io.Serializable;
 
+import io.netty.buffer.ByteBuf;
+
 
 /**
  * This is super interface for all service message in MAP
@@ -48,4 +50,10 @@ public interface MAPMessage extends Serializable {
     boolean isReturnResultNotLast();
 
     void setReturnResultNotLast(boolean returnResultNotLast);
+    
+    void setOriginalBuffer(ByteBuf buffer);
+    
+    void retain();
+    
+    void release();
 }

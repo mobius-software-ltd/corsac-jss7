@@ -31,6 +31,8 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndIndication;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * @author baranowb
  *
@@ -42,8 +44,8 @@ public class TCEndIndicationImpl extends DialogIndicationImpl implements TCEndIn
     private ApplicationContextName applicationContextName;
     private UserInformation userInformation;
 
-    TCEndIndicationImpl() {
-        super(EventType.End);
+    TCEndIndicationImpl(ByteBuf originalBuffer) {
+        super(EventType.End,originalBuffer);
         // TODO Auto-generated constructor stub
     }
 

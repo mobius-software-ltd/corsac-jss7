@@ -25,6 +25,9 @@ package org.restcomm.protocols.ss7.inap;
 import org.restcomm.protocols.ss7.inap.api.INAPDialog;
 import org.restcomm.protocols.ss7.inap.api.INAPMessage;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.util.ReferenceCountUtil;
+
 /**
  *
  * @author yulian.oifa
@@ -35,6 +38,7 @@ public abstract class MessageImpl implements INAPMessage {
 
 	private long invokeId;
     private INAPDialog inapDialog;
+    private ByteBuf originalBuffer;
 
     public long getInvokeId() {
         return this.invokeId;
@@ -55,5 +59,19 @@ public abstract class MessageImpl implements INAPMessage {
     protected void addInvokeIdInfo(StringBuilder sb) {
         sb.append("InvokeId=");
         sb.append(this.invokeId);
+    }
+
+    public void setOriginalBuffer(ByteBuf buffer) {
+    	this.originalBuffer=buffer;
+    }
+    
+    public void retain() {
+    	if(originalBuffer!=null)
+    		ReferenceCountUtil.retain(originalBuffer);
+    }
+    
+    public void release() {
+    	if(originalBuffer!=null)
+    		ReferenceCountUtil.release(originalBuffer);
     }
 }
