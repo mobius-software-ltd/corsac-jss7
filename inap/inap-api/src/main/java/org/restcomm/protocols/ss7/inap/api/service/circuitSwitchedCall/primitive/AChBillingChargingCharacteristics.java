@@ -28,7 +28,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 /**
 *
 <code>
-SCIBillingChargingCharacteristics ::= OCTET STRING (SIZE (minAChBillingChargingLength..maxAChBillingChargingLength))
+AChBillingChargingCharacteristics ::= OCTET STRING (SIZE (minAChBillingChargingLength..maxAChBillingChargingLength))
 The AChBillingChargingCharacteristics parameter specifies the charging related information
 to be provided by the SSF and the conditions on which this information has to be reported
 back to the SCF with the ApplyChargingReport operation.

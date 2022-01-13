@@ -95,7 +95,6 @@ import org.restcomm.protocols.ss7.tcap.tc.dialog.events.DialogPrimitiveFactoryIm
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  * @author baranowb
@@ -122,8 +121,6 @@ public class DialogImpl implements Dialog {
     private UserInformation lastUI; // optional
 
     private Long localTransactionIdObject;
-    private long localTransactionId;
-    private ByteBuf remoteTransactionId;
     private Long remoteTransactionIdObject;
 
     private SccpAddress localAddress;
@@ -196,10 +193,9 @@ public class DialogImpl implements Dialog {
         super();
         this.localAddress = localAddress;
         this.remoteAddress = remoteAddress;
-        if (origTransactionId != null) {
+        if (origTransactionId != null)
             this.localTransactionIdObject = origTransactionId;
-            this.localTransactionId = origTransactionId;
-        }
+        
         this.executor = executor;
         this.provider = provider;
         this.structured = structured;
@@ -266,10 +262,6 @@ public class DialogImpl implements Dialog {
      *
      */
     public Long getRemoteDialogId() {
-        if (this.remoteTransactionId != null && this.remoteTransactionIdObject == null) {
-            this.remoteTransactionIdObject = Utils.decodeTransactionId(this.remoteTransactionId, isSwapTcapIdBytes);
-        }
-
         return this.remoteTransactionIdObject;
     }
 
@@ -467,7 +459,7 @@ public class DialogImpl implements Dialog {
         }
 
         // now comps
-        tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, isSwapTcapIdBytes));
+        tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionIdObject, isSwapTcapIdBytes));
         if (this.scheduledComponentList.size() > 0) {
         	List<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
         	this.prepareComponents(componentsToSend);
@@ -530,8 +522,8 @@ public class DialogImpl implements Dialog {
 
             }
 
-            tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, isSwapTcapIdBytes));
-            tcbm.setDestinationTransactionId(this.remoteTransactionId);
+            tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionIdObject, isSwapTcapIdBytes));
+            tcbm.setDestinationTransactionId(Utils.encodeTransactionId(this.remoteTransactionIdObject, isSwapTcapIdBytes));
             if (this.scheduledComponentList.size() > 0) {
                 List<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
                 this.prepareComponents(componentsToSend);
@@ -562,8 +554,8 @@ public class DialogImpl implements Dialog {
             // in this we ignore acn and passed args(except qos)
             TCContinueMessage tcbm = TcapFactory.createTCContinueMessage();
 
-            tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, isSwapTcapIdBytes));
-            tcbm.setDestinationTransactionId(this.remoteTransactionId);
+            tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionIdObject, isSwapTcapIdBytes));
+            tcbm.setDestinationTransactionId(Utils.encodeTransactionId(this.remoteTransactionIdObject, isSwapTcapIdBytes));
             if (this.scheduledComponentList.size() > 0) {
                 List<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
                 this.prepareComponents(componentsToSend);
@@ -610,7 +602,7 @@ public class DialogImpl implements Dialog {
                 return;
 
             tcbm = TcapFactory.createTCEndMessage();
-            tcbm.setDestinationTransactionId(this.remoteTransactionId);
+            tcbm.setDestinationTransactionId(Utils.encodeTransactionId(this.remoteTransactionIdObject, isSwapTcapIdBytes));
 
             if (this.scheduledComponentList.size() > 0) {
                 List<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
@@ -659,7 +651,7 @@ public class DialogImpl implements Dialog {
 
             tcbm = TcapFactory.createTCEndMessage();
 
-            tcbm.setDestinationTransactionId(this.remoteTransactionId);
+            tcbm.setDestinationTransactionId(Utils.encodeTransactionId(this.remoteTransactionIdObject, isSwapTcapIdBytes));
             if (this.scheduledComponentList.size() > 0) {
                 List<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
                 this.prepareComponents(componentsToSend);
@@ -812,7 +804,7 @@ public class DialogImpl implements Dialog {
             }
 
             TCAbortMessage msg = TcapFactory.createTCAbortMessage();
-            msg.setDestinationTransactionId(this.remoteTransactionId);
+            msg.setDestinationTransactionId(Utils.encodeTransactionId(this.remoteTransactionIdObject, isSwapTcapIdBytes));
             msg.setDialogPortion(dp);
 
             if (state.get() == TRPseudoState.InitialReceived) {
@@ -862,7 +854,7 @@ public class DialogImpl implements Dialog {
         }
 
         // now comps
-        tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, isSwapTcapIdBytes));
+        tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionIdObject, isSwapTcapIdBytes));
         if (this.scheduledComponentList.size() > 0) {
         	ArrayList<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
         	
@@ -914,8 +906,8 @@ public class DialogImpl implements Dialog {
 
         }
 
-        tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, isSwapTcapIdBytes));
-        tcbm.setDestinationTransactionId(this.remoteTransactionId);
+        tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionIdObject, isSwapTcapIdBytes));
+        tcbm.setDestinationTransactionId(Utils.encodeTransactionId(this.remoteTransactionIdObject, isSwapTcapIdBytes));
         if (this.scheduledComponentList.size() > 0) {
         	ArrayList<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
         	
@@ -943,7 +935,7 @@ public class DialogImpl implements Dialog {
         // TC-END request primitive issued in response to a TC-BEGIN
         // indication primitive
         TCEndMessage tcbm = TcapFactory.createTCEndMessage();
-        tcbm.setDestinationTransactionId(this.remoteTransactionId);
+        tcbm.setDestinationTransactionId(Utils.encodeTransactionId(this.remoteTransactionIdObject, isSwapTcapIdBytes));
 
         if (this.scheduledComponentList.size() > 0) {
         	ArrayList<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
@@ -1187,8 +1179,8 @@ public class DialogImpl implements Dialog {
     /**
      * @param remoteTransactionId the remoteTransactionId to set
      */
-    void setRemoteTransactionId(ByteBuf remoteTransactionId) {
-        this.remoteTransactionId = Unpooled.wrappedBuffer(remoteTransactionId);        
+    void setRemoteTransactionId(Long remoteTransactionId) {
+        this.remoteTransactionIdObject = remoteTransactionId;        
     }
 
     /**
@@ -1256,7 +1248,7 @@ public class DialogImpl implements Dialog {
         // lets setup
         this.setRemoteAddress(remoteAddress);
         this.setLocalAddress(localAddress);
-        this.setRemoteTransactionId(msg.getOriginatingTransactionId());
+        this.setRemoteTransactionId(Utils.decodeTransactionId(msg.getOriginatingTransactionId(), isSwapTcapIdBytes));
         // convert to indications
         tcBeginIndication = ((DialogPrimitiveFactoryImpl) this.provider.getDialogPrimitiveFactory())
                 .createBeginIndication(this, data);
@@ -1303,7 +1295,7 @@ public class DialogImpl implements Dialog {
             // in continue remote address MAY change be changed, so lets
             // update!
             this.setRemoteAddress(remoteAddress);
-            this.setRemoteTransactionId(msg.getOriginatingTransactionId());
+            this.setRemoteTransactionId(Utils.decodeTransactionId(msg.getOriginatingTransactionId(), isSwapTcapIdBytes));
             tcContinueIndication.setOriginatingAddress(remoteAddress);
 
             // here we will receive DialogResponse APDU - if request was
@@ -1548,7 +1540,7 @@ public class DialogImpl implements Dialog {
     protected void sendAbnormalDialog() {
         TCPAbortIndication tcAbortIndication = null;
         try {
-            if (this.remoteTransactionId == null) {
+            if (this.remoteTransactionIdObject == null) {
                 // no remoteTransactionId - we can not send back TC-ABORT
                 return;
             }
@@ -1563,7 +1555,7 @@ public class DialogImpl implements Dialog {
             dp.setDialogAPDU(dapdu);
 
             TCAbortMessage msg = TcapFactory.createTCAbortMessage();
-            msg.setDestinationTransactionId(this.remoteTransactionId);
+            msg.setDestinationTransactionId(Utils.encodeTransactionId(this.remoteTransactionIdObject, isSwapTcapIdBytes));
             msg.setDialogPortion(dp);
 
             try {
@@ -1855,7 +1847,7 @@ public class DialogImpl implements Dialog {
             if (d.idleTimerActionTaken.get()) {
                 startIdleTimer();
             } else {
-                if (remoteTransactionId != null && !getState().equals(TRPseudoState.Expunged))
+                if (remoteTransactionIdObject != null && !getState().equals(TRPseudoState.Expunged))
                     sendAbnormalDialog();
                 else
                     release();

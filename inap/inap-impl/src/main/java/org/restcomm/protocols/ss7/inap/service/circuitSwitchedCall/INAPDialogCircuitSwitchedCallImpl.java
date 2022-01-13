@@ -262,11 +262,18 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SCF_to_SSF_AC
 				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_SSP_to_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_assist_handoff_SSP_to_SCP_AC
-				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC)
+				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B)
 			throw new INAPException(
 					"Bad application context name for addApplyChargingReportRequest: must be Q1218_generic_SSF_to_SCF_AC, Q1218_DP_specific_SSF_to_SCF_AC, "
 							+ "Q1218_assist_handoff_SSF_to_SCF_AC, Q1218_generic_SCF_to_SSF_AC, Q1218_DP_specific_SCF_to_SSF_AC, Core_INAP_CS1_SSP_to_SCP_AC,"
-							+ "Core_INAP_CS1_assist_handoff_SSP_to_SCP_AC or Core_INAP_CS1_SCP_to_SSP_AC");
+							+ "Core_INAP_CS1_assist_handoff_SSP_to_SCP_AC,Core_INAP_CS1_SCP_to_SSP_AC,Ericcson_cs1plus_SSP_TO_SCP_AC,Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B,"
+							+ "Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC,Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B,Ericcson_cs1plus_SCP_to_SSP_AC or Ericcson_cs1plus_SCP_to_SSP_AC_REV_B");
 
 		Integer customTimeout;
 		if (customInvokeTimeout == _Timer_Default)
@@ -291,15 +298,25 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	public Long addApplyChargingRequest(int customInvokeTimeout,
 			AChBillingChargingCharacteristics aChBillingChargingCharacteristics, Boolean sendCalculationToSCPIndication,
 			LegID partyToCharge, CAPINAPExtensions extensions) throws INAPException {
-		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
+		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
+				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
+				&& this.appCntx != INAPApplicationContext.Q1218_assist_handoff_SSF_to_SCF_AC
+				&& this.appCntx != INAPApplicationContext.Q1218_generic_SCF_to_SSF_AC
+				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SCF_to_SSF_AC
+				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_SSP_to_SCP_AC
+				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_assist_handoff_SSP_to_SCP_AC
+				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B)
 			throw new INAPException(
-					"Bad application context name for addApplyChargingRequest: must be Ericcson_cs1plus_SSP_TO_SCP_AC, Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC or "
-							+ "Ericcson_cs1plus_SCP_to_SSP_AC");
+					"Bad application context name for addApplyChargingRequest: must be Q1218_generic_SSF_to_SCF_AC, Q1218_DP_specific_SSF_to_SCF_AC, "
+							+ "Q1218_assist_handoff_SSF_to_SCF_AC, Q1218_generic_SCF_to_SSF_AC, Q1218_DP_specific_SCF_to_SSF_AC, Core_INAP_CS1_SSP_to_SCP_AC,"
+							+ "Core_INAP_CS1_assist_handoff_SSP_to_SCP_AC,Core_INAP_CS1_SCP_to_SSP_AC,Ericcson_cs1plus_SSP_TO_SCP_AC,Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B,"
+							+ "Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC,Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B,Ericcson_cs1plus_SCP_to_SSP_AC or Ericcson_cs1plus_SCP_to_SSP_AC_REV_B");
 
 		Integer customTimeout;
 		if (customInvokeTimeout == _Timer_Default)
