@@ -253,7 +253,7 @@ public class CAPServiceSmsImpl extends CAPServiceBaseImpl implements CAPServiceS
         			if (compType == ComponentType.Invoke && parameter == null) {
         				processed = true;
         				ContinueSMSRequest ind=new ContinueSMSRequestImpl();
-        				
+        				ind.setCAPDialog(capDialog);
         				for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);

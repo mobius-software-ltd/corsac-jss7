@@ -50,7 +50,7 @@ public class PromptAndCollectUserInformationResponseImpl extends CircuitSwitched
 
     public PromptAndCollectUserInformationResponseImpl(DigitsIsup digitsResponse) {
     	if(digitsResponse!=null)
-        this.promptAndCollectUserInformationResponeChoiseImpl = new PromptAndCollectUserInformationResponeChoiseImpl(digitsResponse);
+    		this.promptAndCollectUserInformationResponeChoiseImpl = new PromptAndCollectUserInformationResponeChoiseImpl(digitsResponse);    	
     }
 
     public PromptAndCollectUserInformationResponseImpl(String ia5Response) {

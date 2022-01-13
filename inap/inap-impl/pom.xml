@@ -28,6 +28,22 @@
 			<artifactId>testng</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
+			<artifactId>sccp-impl</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
+			<artifactId>sccp-impl</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
+			<artifactId>mtp-api</artifactId>
+			<scope>test</scope>
+		</dependency> 
+		<dependency>
 			<groupId>concurrent</groupId>
 			<artifactId>concurrent</artifactId>
 			<scope>provided</scope>

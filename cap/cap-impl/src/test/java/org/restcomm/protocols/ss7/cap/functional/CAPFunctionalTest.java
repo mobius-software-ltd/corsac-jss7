@@ -1347,7 +1347,9 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
                 super.onPromptAndCollectUserInformationResponse(ind);
 
                 try {
-                    GenericNumber gn = ind.getDigitsResponse().getGenericNumber();
+                	DigitsIsup digits=ind.getDigitsResponse();
+                	digits.setIsGenericNumber();
+                    GenericNumber gn = digits.getGenericNumber();
                     assertTrue(gn.getAddress().equals("444422220000"));
                     assertEquals(gn.getAddressRepresentationRestrictedIndicator(), GenericNumber._APRI_ALLOWED);
                     assertEquals(gn.getNatureOfAddressIndicator(), NAINumber._NAI_SUBSCRIBER_NUMBER);

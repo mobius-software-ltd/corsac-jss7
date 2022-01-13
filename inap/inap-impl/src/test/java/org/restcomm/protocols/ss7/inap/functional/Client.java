@@ -31,8 +31,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.APPException;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountered;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedDigits;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedInfo;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
@@ -41,18 +39,9 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.InformationT
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformationType;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Tone;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
-import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
-import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
-import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardGVNSIsup;
-import org.restcomm.protocols.ss7.commonapp.api.isup.HighLayerCompatibilityIsup;
-import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
-import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
-import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectingPartyIDIsup;
-import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.BCSMEvent;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
@@ -71,23 +60,12 @@ import org.restcomm.protocols.ss7.inap.api.EsiBcsm.DisconnectSpecificInfo;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.INAPDialogCircuitSwitchedCall;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.InitialDPRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.RequestReportBCSMEventRequest;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNS;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCallIndicator;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGInterLockCode;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericDigitsSet;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericNumbersSet;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.HandOverInfo;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.LegIDs;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.RouteOrigin;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.TriggerType;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.InitialDPRequestImpl;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
-import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
@@ -167,7 +145,7 @@ public class Client extends EventTestHarness {
     public void sendAssistRequestInstructionsRequest() throws INAPException {
 
         clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(
-                INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B, this.thisAddress, this.remoteAddress);
+                INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B, this.thisAddress, this.remoteAddress);
 
         GenericNumber genericNumber = this.isupParameterFactory.createGenericNumber();
         genericNumber.setAddress("333111222");
@@ -188,7 +166,7 @@ public class Client extends EventTestHarness {
     public void sendEstablishTemporaryConnectionRequest_CallInformationRequest() throws INAPException {
 
         clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(
-                INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B, this.thisAddress, this.remoteAddress);
+                INAPApplicationContext.Core_INAP_CS1_SSP_to_SCP_AC, this.thisAddress, this.remoteAddress);
 
         GenericNumber genericNumber = this.isupParameterFactory.createGenericNumber();
         genericNumber.setAddress("333111222");
@@ -278,7 +256,7 @@ public class Client extends EventTestHarness {
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.AssistRequestInstructionsRequest, null, sequence++));
 
         int i1 = clientCscDialog.getMessageUserDataLengthOnSend();
-        assertEquals(i1, 65);
+        assertEquals(i1, 70);
     }
 
     public void releaseDialog() {

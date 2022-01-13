@@ -75,6 +75,9 @@ public class Server extends EventTestHarness {
         this.inapStack = inapStack;
         this.inapProvider = this.inapStack.getINAPProvider();
 
+        this.inapParameterFactory = this.inapProvider.getINAPParameterFactory();
+        this.isupParameterFactory = this.inapProvider.getISUPParameterFactory();
+
         this.inapErrorMessageFactory = this.inapProvider.getINAPErrorMessageFactory();
         
         this.inapProvider.addINAPDialogListener(UUID.randomUUID(),this);

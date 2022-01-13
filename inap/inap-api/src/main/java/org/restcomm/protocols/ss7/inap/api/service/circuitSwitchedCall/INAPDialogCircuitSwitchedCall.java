@@ -61,6 +61,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.TimerID;
 import org.restcomm.protocols.ss7.inap.api.INAPDialog;
 import org.restcomm.protocols.ss7.inap.api.INAPException;
 import org.restcomm.protocols.ss7.inap.api.primitives.TerminalType;
@@ -817,5 +818,10 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
     
     Long addContinueWithArgumentRequest(LegType legID,GenericName genericName) throws INAPException;
 
-    Long addContinueWithArgumentRequest(int customInvokeTimeout,LegType legID,GenericName genericName) throws INAPException;        
+    Long addContinueWithArgumentRequest(int customInvokeTimeout,LegType legID,GenericName genericName) throws INAPException;
+    
+    Long addResetTimerRequest(TimerID timerID, int timerValue, CAPINAPExtensions extensions)
+            throws INAPException;
+
+    Long addResetTimerRequest(int customInvokeTimeout, TimerID timerID, int timerValue, CAPINAPExtensions extensions) throws INAPException;
 }
