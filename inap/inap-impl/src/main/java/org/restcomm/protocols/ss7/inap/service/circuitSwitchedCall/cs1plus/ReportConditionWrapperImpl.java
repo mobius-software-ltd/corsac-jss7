@@ -20,7 +20,9 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
+package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus;
+
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ReportCondition;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -28,22 +30,32 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
-public class RequestedInformationValueWrapperImpl {
+public class ReportConditionWrapperImpl {
+	
 	@ASNChoise
-	private RequestedInformationValueImpl requestedInformationValue;
+    private ReportConditionImpl reportCondition;
 
-    public RequestedInformationValueWrapperImpl() {
+    public ReportConditionWrapperImpl() {
     }
 
-    public RequestedInformationValueWrapperImpl(RequestedInformationValueImpl requestedInformationValue) {
-        this.requestedInformationValue = requestedInformationValue;
+    public ReportConditionWrapperImpl(ReportCondition reportCondition) {
+    	if(reportCondition instanceof ReportConditionImpl)
+    		this.reportCondition=(ReportConditionImpl)reportCondition;
+    	else if(reportCondition!=null) {
+    		if(reportCondition.getReportAtEndOfConnection())
+    			this.reportCondition = new ReportConditionImpl(true,false);
+    		else if(reportCondition.getReportImmediately())
+    			this.reportCondition = new ReportConditionImpl(true,true);
+    		else if(reportCondition.getReportAtChargeLimit()!=null)
+    			this.reportCondition = new ReportConditionImpl(reportCondition.getReportAtChargeLimit());    		
+    	}
     }
 
-    public RequestedInformationValueImpl getRequestedInformationValue() {
-    	return requestedInformationValue;
+    public ReportCondition getReportCondition() {
+    	return reportCondition;
     }
 }

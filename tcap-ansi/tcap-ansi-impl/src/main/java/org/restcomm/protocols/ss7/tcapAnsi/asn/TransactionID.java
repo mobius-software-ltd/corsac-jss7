@@ -29,6 +29,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPostprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -37,6 +38,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=7,constructed=false,lengthIndefinite=false)
+@ASNPostprocess
 public class TransactionID {
     private byte[] firstElem;
     private byte[] secondElem;

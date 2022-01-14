@@ -37,10 +37,9 @@ values, costs, tariff change and time of charge, time stamps, durations, etc.
 </code>
 
 *
-* @author sergey vetyutnev
+* @author yulian.oifa
 *
 */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 4,constructed = false,lengthIndefinite = false)
-public interface AChBillingChargingCharacteristics {
-    byte[] getData();
+public interface AChBillingChargingCharacteristics {    
 }

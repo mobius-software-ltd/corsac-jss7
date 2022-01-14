@@ -20,10 +20,11 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall;
+package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive;
 
+import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformationType;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.DateAndTime;
+import org.restcomm.protocols.ss7.inap.api.primitives.DateAndTime;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;

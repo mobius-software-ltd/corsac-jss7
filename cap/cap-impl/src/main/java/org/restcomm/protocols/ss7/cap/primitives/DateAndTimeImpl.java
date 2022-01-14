@@ -20,9 +20,9 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.commonapp.primitives;
+package org.restcomm.protocols.ss7.cap.primitives;
 
-import org.restcomm.protocols.ss7.commonapp.api.primitives.DateAndTime;
+import org.restcomm.protocols.ss7.cap.api.primitives.DateAndTime;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 

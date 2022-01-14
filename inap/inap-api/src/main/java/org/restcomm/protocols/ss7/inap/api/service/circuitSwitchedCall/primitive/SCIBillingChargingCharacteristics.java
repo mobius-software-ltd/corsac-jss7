@@ -39,5 +39,4 @@ SCIBillingChargingCharacteristics ::= OCTET STRING (SIZE (minSCIBillingChargingL
 */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 4,constructed = false,lengthIndefinite = false)
 public interface SCIBillingChargingCharacteristics {
-    byte[] getData();
 }

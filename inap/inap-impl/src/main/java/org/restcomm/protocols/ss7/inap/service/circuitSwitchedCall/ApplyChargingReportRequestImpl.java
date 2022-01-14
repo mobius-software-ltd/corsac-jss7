@@ -25,6 +25,7 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ApplyChargingReportRequest;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CallResultCS1;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -76,6 +77,11 @@ public class ApplyChargingReportRequestImpl extends CircuitSwitchedCallMessageIm
     	value.readBytes(data);
         return data;
     }
+
+	@Override
+	public CallResultCS1 getCallResultCS1() {
+		return null;
+	}
 
     @Override
     public String toString() {

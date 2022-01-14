@@ -60,7 +60,6 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.MessageID;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.MessageIDText;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.MidCallControlInfo;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.NAOliInfo;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformation;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ServiceInteractionIndicatorsTwo;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.TimeDurationChargingResult;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.TimeIfTariffSwitch;
@@ -100,7 +99,6 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CellGlobalIdOrServiceAreaIdOrLAI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CriticalityType;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ErrorTreatment;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ExtensionField;
@@ -147,6 +145,7 @@ import org.restcomm.protocols.ss7.inap.api.charging.CommunicationChargeCurrency;
 import org.restcomm.protocols.ss7.inap.api.charging.CommunicationChargePulse;
 import org.restcomm.protocols.ss7.inap.api.charging.Currency;
 import org.restcomm.protocols.ss7.inap.api.charging.CurrencyFactorScale;
+import org.restcomm.protocols.ss7.inap.api.charging.EventTypeCharging;
 import org.restcomm.protocols.ss7.inap.api.charging.PulseUnits;
 import org.restcomm.protocols.ss7.inap.api.charging.SubTariffControl;
 import org.restcomm.protocols.ss7.inap.api.charging.TariffControlIndicators;
@@ -158,7 +157,9 @@ import org.restcomm.protocols.ss7.inap.api.charging.TariffPulseFormat;
 import org.restcomm.protocols.ss7.inap.api.charging.TariffSwitchCurrency;
 import org.restcomm.protocols.ss7.inap.api.charging.TariffSwitchPulse;
 import org.restcomm.protocols.ss7.inap.api.charging.TariffSwitchoverTime;
+import org.restcomm.protocols.ss7.inap.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.inap.api.primitives.TerminalType;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.AchBillingChargingCharacteristicsCS1;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ApplicationID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNS;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNSIndicator;
@@ -167,9 +168,14 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.B
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCall;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCallIndicator;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGInterLockCode;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ChargeMessage;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ChargeNoChargeIndication;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ChargingAnalysisInputData;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ChargingInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.DataItemID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.DataItemInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.DialogueUserInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.EventSpecificInfoCharging;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ExistingLegs;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ForwardSuppression;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ForwardSuppressionIndicators;
@@ -180,6 +186,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.G
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GlobalTitleAndSSN;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.HandOverInfo;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.InstructionIndicator;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.IntervalAccuracy;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.LegIDs;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.LimitIndicators;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.PointCodeAndSSN;
@@ -187,11 +194,15 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.P
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ProtocolIdentifier;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ProtocolIndicator;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ReceivingFunctionsRequested;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ReportCondition;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.RequestedReportInfo;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.RouteOrigin;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SCIBillingChargingCharacteristicsCS1;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SCPAddress;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SCPDialogueInfo;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SendingFunctionsActive;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.TCAPDialogueLevel;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.TariffInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.AChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.AddressAndService;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CalledPartyBusinessGroupID;
@@ -218,6 +229,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallControlInfoItem;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallInfoType;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallReportType;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceAddress;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RouteList;
@@ -712,7 +724,7 @@ public interface INAPParameterFactory {
     
     CallingPartySubaddress getCallingPartySubaddress(byte[] data);
     
-    ChargingEvent getChargingEvent(byte[] eventTypeCharging,MonitorMode monitorMode,LegID legID);
+    ChargingEvent getChargingEvent(EventTypeCharging eventTypeCharging,MonitorMode monitorMode,LegID legID);
     
     CounterAndValue getCounterAndValue(Integer counterID,Integer counterValue);
     
@@ -792,4 +804,32 @@ public interface INAPParameterFactory {
     USIServiceIndicator getUSIServiceIndicator(List<Long> global);
     
     USIServiceIndicator getUSIServiceIndicator(byte[] local);
+    
+    TariffInformation getTariffInformation(Integer numberOfStartPulses,Integer startInterval,IntervalAccuracy startIntervalAccuracy,
+    		Integer numberOfPeriodicPulses,Integer periodicInterval,IntervalAccuracy periodicIntervalAccuracy,DateAndTime activationTime);
+    
+    EventSpecificInfoCharging getEventSpecificInfoCharging(TariffInformation tariffInformation);
+    
+    EventSpecificInfoCharging getEventSpecificInfoCharging(byte[] tariffIndicator);
+    
+    EventSpecificInfoCharging getEventSpecificInfoCharging(ChargeNoChargeIndication chargeNoChargeIndication);
+    
+    ChargeMessage getChargeMessage(EventTypeCharging eventTypeCharging,EventSpecificInfoCharging eventSpecificInfoCharging);
+    
+    ChargingInformation getChargingInformation(boolean orderStartOfCharging,ChargeMessage chargeMessage,
+    		Integer pulseBurst,boolean createDefaultBillingRecord);
+    
+    ChargingAnalysisInputData getChargingAnalysisInputData(byte[] chargingOrigin, byte[] tariffActivityCode, Integer chargingCode);
+    
+    SCIBillingChargingCharacteristicsCS1 getSCIBillingChargingCharacteristicsCS1(ChargingInformation chargingInformation);
+    
+    SCIBillingChargingCharacteristicsCS1 getSCIBillingChargingCharacteristicsCS1(ChargingAnalysisInputData chargingAnalysisInputData);
+    
+    ReportCondition getReportCondition(boolean value,boolean immediately);
+    
+    ReportCondition getReportCondition(Integer reportAtChargeLimit); 
+    
+    RequestedReportInfo getRequestedReportInfo(boolean accumulatedCharge,boolean actualTariff,boolean chargeableDuration,boolean timeOfAnswer);
+    
+    AchBillingChargingCharacteristicsCS1 getAchBillingChargingCharacteristicsCS1(ReportCondition reportCondition,RequestedReportInfo requestedReportInfo);    
 }

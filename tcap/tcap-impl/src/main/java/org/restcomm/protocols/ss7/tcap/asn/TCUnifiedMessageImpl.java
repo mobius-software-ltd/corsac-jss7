@@ -22,11 +22,12 @@
 
 package org.restcomm.protocols.ss7.tcap.asn;
 
+import org.restcomm.protocols.ss7.tcap.asn.comp.DestinationTransactionID;
+import org.restcomm.protocols.ss7.tcap.asn.comp.OriginatingTransactionID;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUnifiedMessage;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -37,10 +38,10 @@ import io.netty.buffer.ByteBuf;
 public class TCUnifiedMessageImpl implements TCUnifiedMessage {
 	// mandatory
     @ASNProperty(asnClass=ASNClass.APPLICATION,tag=0x08,constructed=false,index=-1)
-    private ASNOctetString originatingTransactionId;
+    private OriginatingTransactionID originatingTransactionId;
     
     @ASNProperty(asnClass=ASNClass.APPLICATION,tag=0x09,constructed=false,index=-1)
-    private ASNOctetString destinationTransactionId;
+    private DestinationTransactionID destinationTransactionId;
 
     @ASNProperty(asnClass=ASNClass.APPLICATION,tag=0x0B,constructed=true,index=-1,defaultImplementation = DialogPortionImpl.class)
     private DialogPortion dialogPortion;
@@ -69,8 +70,13 @@ public class TCUnifiedMessageImpl implements TCUnifiedMessage {
 		if(t==null)
 			return;
 		
-		this.originatingTransactionId=new ASNOctetString();
-		this.originatingTransactionId.setValue(t);
+		if(this.originatingTransactionId==null && t!=null)
+			this.originatingTransactionId=new OriginatingTransactionID();
+		
+		if(t!=null)
+			this.originatingTransactionId.setValue(t);
+		else
+			this.originatingTransactionId=null;
 	}
 
 	@Override
@@ -78,8 +84,13 @@ public class TCUnifiedMessageImpl implements TCUnifiedMessage {
 		if(t==null)
 			return;
 		
-		this.destinationTransactionId=new ASNOctetString();
-		this.destinationTransactionId.setValue(t);
+		if(this.destinationTransactionId==null && t!=null)
+			this.destinationTransactionId=new DestinationTransactionID();
+		
+		if(t!=null)
+			this.destinationTransactionId.setValue(t);
+		else
+			this.destinationTransactionId=null;
 	}
 
 	@Override

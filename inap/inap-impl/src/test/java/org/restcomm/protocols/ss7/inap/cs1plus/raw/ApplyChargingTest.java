@@ -5,7 +5,7 @@ import static org.testng.Assert.assertTrue;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ApplyChargingRequestImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ApplyChargingRequestCS1Impl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -39,42 +39,42 @@ public class ApplyChargingTest
 	@Test(groups = { "functional.decode", "circuitSwitchedCall" })
 	public void testDecode() throws Exception {
 		ASNParser parser=new ASNParser(false);
-		parser.replaceClass(ApplyChargingRequestImpl.class);
+		parser.replaceClass(ApplyChargingRequestCS1Impl.class);
 	    	
 		byte[] rawData = this.message1;
 		ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
 		assertFalse(result.getHadErrors());
-		assertTrue(result.getResult() instanceof ApplyChargingRequestImpl);
+		assertTrue(result.getResult() instanceof ApplyChargingRequestCS1Impl);
 	        
-		ApplyChargingRequestImpl elem = (ApplyChargingRequestImpl)result.getResult();
+		ApplyChargingRequestCS1Impl elem = (ApplyChargingRequestCS1Impl)result.getResult();
 		logger.info(elem);	
 		
 		rawData = this.message2;
 		result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
 		assertFalse(result.getHadErrors());
-		assertTrue(result.getResult() instanceof ApplyChargingRequestImpl);
+		assertTrue(result.getResult() instanceof ApplyChargingRequestCS1Impl);
 	        
-		elem = (ApplyChargingRequestImpl)result.getResult();
+		elem = (ApplyChargingRequestCS1Impl)result.getResult();
 		logger.info(elem);	
 		
 		rawData = this.message3;
 		result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
 		assertFalse(result.getHadErrors());
-		assertTrue(result.getResult() instanceof ApplyChargingRequestImpl);
+		assertTrue(result.getResult() instanceof ApplyChargingRequestCS1Impl);
 	        
-		elem = (ApplyChargingRequestImpl)result.getResult();
+		elem = (ApplyChargingRequestCS1Impl)result.getResult();
 		logger.info(elem);	
 		
 		rawData = this.message4;
 		result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
 		assertFalse(result.getHadErrors());
-		assertTrue(result.getResult() instanceof ApplyChargingRequestImpl);
+		assertTrue(result.getResult() instanceof ApplyChargingRequestCS1Impl);
 	        
-		elem = (ApplyChargingRequestImpl)result.getResult();
+		elem = (ApplyChargingRequestCS1Impl)result.getResult();
 		logger.info(elem);	
 	}
 }

@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.DateAndTime;
+import org.restcomm.protocols.ss7.inap.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteredCallTreatment;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringCharacteristics;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringCriteria;

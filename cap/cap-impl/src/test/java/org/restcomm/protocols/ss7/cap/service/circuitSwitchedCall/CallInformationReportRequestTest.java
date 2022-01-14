@@ -31,13 +31,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformation;
+import org.restcomm.protocols.ss7.cap.primitives.DateAndTimeImpl;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformationType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
-import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.RequestedInformationImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
-import org.restcomm.protocols.ss7.commonapp.primitives.DateAndTimeImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;

@@ -1106,8 +1106,21 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					|| acn == INAPApplicationContext.Q1218_DP_specific_SCF_to_SSF_AC
 					|| acn == INAPApplicationContext.Core_INAP_CS1_SSP_to_SCP_AC
 					|| acn == INAPApplicationContext.Core_INAP_CS1_assist_handoff_SSP_to_SCP_AC
-					|| acn == INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC
-					|| acn == INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
+					|| acn == INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC) {
+				if (parameter instanceof ApplyChargingRequest) {
+					processed = true;
+					ApplyChargingRequest ind = (ApplyChargingRequest) parameter;
+					for (INAPServiceListener serLis : this.serviceListeners) {
+						try {
+							serLis.onINAPMessage(ind);
+							((INAPServiceCircuitSwitchedCallListener) serLis).onApplyChargingRequest(ind);
+						} catch (Exception e) {
+							loger.error("Error processing applyChargingRequest: " + e.getMessage(), e);
+						}
+					}
+				}
+			}
+			else if (acn == INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
@@ -1135,8 +1148,21 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					|| acn == INAPApplicationContext.Q1218_DP_specific_SCF_to_SSF_AC
 					|| acn == INAPApplicationContext.Core_INAP_CS1_SSP_to_SCP_AC
 					|| acn == INAPApplicationContext.Core_INAP_CS1_assist_handoff_SSP_to_SCP_AC
-					|| acn == INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC
-					|| acn == INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
+					|| acn == INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC) {
+				if (parameter instanceof ApplyChargingReportRequest) {
+					processed = true;
+					ApplyChargingReportRequest ind = (ApplyChargingReportRequest) parameter;
+					for (INAPServiceListener serLis : this.serviceListeners) {
+						try {
+							serLis.onINAPMessage(ind);
+							((INAPServiceCircuitSwitchedCallListener) serLis).onApplyChargingReportRequest(ind);
+						} catch (Exception e) {
+							loger.error("Error processing applyChargingReportRequest: " + e.getMessage(), e);
+						}
+					}
+				}
+			}
+			else if (acn == INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
@@ -1392,14 +1418,27 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					|| acn == INAPApplicationContext.Q1218_generic_SCF_to_SSF_AC
 					|| acn == INAPApplicationContext.Q1218_DP_specific_SCF_to_SSF_AC
 					|| acn == INAPApplicationContext.Core_INAP_CS1_SSP_to_SCP_AC
-					|| acn == INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC
-					|| acn == INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
+					|| acn == INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC) {
+				if (parameter instanceof SendChargingInformationRequest) {
+					processed = true;
+					SendChargingInformationRequest ind = (SendChargingInformationRequest) parameter;
+					for (INAPServiceListener serLis : this.serviceListeners) {
+						try {
+							serLis.onINAPMessage(ind);
+							((INAPServiceCircuitSwitchedCallListener) serLis).onSendChargingInformationRequest(ind);
+						} catch (Exception e) {
+							loger.error("Error processing sendChargingInformationRequest: " + e.getMessage(), e);
+						}
+					}
+				}
+			}
+			else if (acn == INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B) {
-				if (parameter instanceof SendChargingInformationRequest) {
+				if (parameter instanceof SendChargingInformationCS1RequestImpl) {
 					processed = true;
 					SendChargingInformationRequest ind = (SendChargingInformationRequest) parameter;
 					for (INAPServiceListener serLis : this.serviceListeners) {

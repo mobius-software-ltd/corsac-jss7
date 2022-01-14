@@ -24,6 +24,7 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitiv
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
+import org.restcomm.protocols.ss7.inap.api.charging.EventTypeCharging;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
@@ -44,7 +45,7 @@ ChargingEvent ::= SEQUENCE {
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16, constructed = true,lengthIndefinite = false)
 public interface ChargingEvent {
 
-    byte[] getEventTypeCharging();
+	EventTypeCharging getEventTypeCharging();
 
     MonitorMode getMonitorMode();
     

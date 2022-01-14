@@ -23,16 +23,16 @@
 package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
-import org.restcomm.protocols.ss7.commonapp.primitives.DateAndTimeImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
+import org.restcomm.protocols.ss7.inap.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ActivateServiceFilteringRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteredCallTreatment;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringCharacteristics;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringCriteria;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringTimeOut;
+import org.restcomm.protocols.ss7.inap.primitives.DateAndTimeImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.FilteredCallTreatmentImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.FilteringCharacteristicsWrapperImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.FilteringCriteriaWrapperImpl;

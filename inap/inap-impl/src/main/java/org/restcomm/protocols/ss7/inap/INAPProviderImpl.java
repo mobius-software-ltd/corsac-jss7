@@ -64,7 +64,9 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ActivityTestR
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ActivityTestResponseImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.AnalyseInformationRequestImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.AnalysedInformationRequestImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ApplyChargingReportRequestCS1Impl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ApplyChargingReportRequestImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ApplyChargingRequestCS1Impl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ApplyChargingRequestImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.AssistRequestInstructionsRequestImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.CallGapRequestImpl;
@@ -117,6 +119,7 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.RetrieveRespo
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.RouteSelectFailureRequestImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.SelectFacilityRequestImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.SelectRouteRequestImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.SendChargingInformationCS1RequestImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.SendChargingInformationRequestImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ServiceFilteringResponseRequestImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.SignallingInformationRequestImpl;
@@ -371,12 +374,42 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)INAPOperationCode.furnishChargingInformation);
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, FurnishChargingInformationRequestImpl.class);
+        	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)INAPOperationCode.applyCharging);
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ApplyChargingRequestImpl.class);
+        	
+        	OperationCodeWithACN operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingRequestCS1Impl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingRequestCS1Impl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingRequestCS1Impl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingRequestCS1Impl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingRequestCS1Impl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingRequestCS1Impl.class);
+
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)INAPOperationCode.applyChargingReport);
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ApplyChargingReportRequestImpl.class);
+        	
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingReportRequestCS1Impl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingReportRequestCS1Impl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingReportRequestCS1Impl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingReportRequestCS1Impl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingReportRequestCS1Impl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingReportRequestCS1Impl.class);
+
+        	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)INAPOperationCode.requestCurrentStatusReport);
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RequestCurrentStatusReportRequestImpl.class);
@@ -404,9 +437,24 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)INAPOperationCode.callInformationRequest);
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CallInformationRequestImpl.class);
+        	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)INAPOperationCode.sendChargingInformation);
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendChargingInformationRequestImpl.class);
+        	
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendChargingInformationCS1RequestImpl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendChargingInformationCS1RequestImpl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendChargingInformationCS1RequestImpl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendChargingInformationCS1RequestImpl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendChargingInformationCS1RequestImpl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendChargingInformationCS1RequestImpl.class);
+
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)INAPOperationCode.playAnnouncement);
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, PlayAnnouncementRequestImpl.class);
@@ -452,7 +500,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)INAPOperationCode.retrieve);
-        	OperationCodeWithACN operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_data_management_AC.getOID());			
+        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_data_management_AC.getOID());			
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, RetrieveRequestImpl.class);
         	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_data_management_AC_REV_B.getOID());			
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, RetrieveRequestImpl.class);
@@ -511,8 +559,13 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         	tcapProvider.getParser().registerAlternativeClassMapping(InitiateCallAttemptRequestImpl.class, InitiateCallAttemptRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(ResetTimerRequestImpl.class, ResetTimerRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(FurnishChargingInformationRequestImpl.class, FurnishChargingInformationRequestImpl.class);
+        	
         	tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingRequestImpl.class, ApplyChargingRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingRequestCS1Impl.class, ApplyChargingRequestCS1Impl.class);
+        	
         	tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingReportRequestImpl.class, ApplyChargingReportRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingReportRequestCS1Impl.class, ApplyChargingReportRequestCS1Impl.class);
+        	
         	tcapProvider.getParser().registerAlternativeClassMapping(RequestCurrentStatusReportRequestImpl.class, RequestCurrentStatusReportRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(RequestEveryStatusChangeReportRequestImpl.class, RequestEveryStatusChangeReportRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(RequestFirstStatusMatchReportRequestImpl.class, RequestFirstStatusMatchReportRequestImpl.class);
@@ -522,7 +575,8 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         	tcapProvider.getParser().registerAlternativeClassMapping(ActivateServiceFilteringRequestImpl.class, ActivateServiceFilteringRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(ServiceFilteringResponseRequestImpl.class, ServiceFilteringResponseRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(CallInformationReportRequestImpl.class, CallInformationReportRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(CallInformationRequestImpl.class, CallInformationRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(CallInformationRequestImpl.class, CallInformationRequestImpl.class);        	
+        	tcapProvider.getParser().registerAlternativeClassMapping(SendChargingInformationCS1RequestImpl.class, SendChargingInformationCS1RequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(SendChargingInformationRequestImpl.class, SendChargingInformationRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(PlayAnnouncementRequestImpl.class, PlayAnnouncementRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(PromptAndCollectUserInformationRequestImpl.class, PromptAndCollectUserInformationRequestImpl.class);

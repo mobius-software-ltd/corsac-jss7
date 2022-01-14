@@ -24,14 +24,14 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.gap.GapCriteria;
 import org.restcomm.protocols.ss7.commonapp.api.gap.GapTreatment;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.commonapp.gap.GapCriteriaImpl;
 import org.restcomm.protocols.ss7.commonapp.gap.GapTreatmentImpl;
-import org.restcomm.protocols.ss7.commonapp.primitives.DateAndTimeImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
+import org.restcomm.protocols.ss7.inap.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.CallLimitRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.LimitIndicators;
+import org.restcomm.protocols.ss7.inap.primitives.DateAndTimeImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.LimitIndicatorsImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;

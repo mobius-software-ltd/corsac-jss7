@@ -20,14 +20,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
-
-import java.util.List;
-
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformation;
+package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -36,19 +32,18 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
-public class RequestedInformationWrapperImpl {
-	
-	@ASNProperty(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,index = -1,defaultImplementation = RequestedInformationImpl.class)
-	private List<RequestedInformation> requestedInformation;
+public class RequestedInformationValueWrapperImpl {
+	@ASNChoise
+	private RequestedInformationValueImpl requestedInformationValue;
 
-    public RequestedInformationWrapperImpl() {
+    public RequestedInformationValueWrapperImpl() {
     }
 
-    public RequestedInformationWrapperImpl(List<RequestedInformation> requestedInformation) {
-        this.requestedInformation = requestedInformation;
+    public RequestedInformationValueWrapperImpl(RequestedInformationValueImpl requestedInformationValue) {
+        this.requestedInformationValue = requestedInformationValue;
     }
 
-    public List<RequestedInformation> getRequestedInformation() {
-    	return requestedInformation;
+    public RequestedInformationValueImpl getRequestedInformationValue() {
+    	return requestedInformationValue;
     }
 }

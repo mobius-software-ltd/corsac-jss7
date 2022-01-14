@@ -26,16 +26,16 @@ import org.restcomm.protocols.ss7.commonapp.api.gap.GapCriteria;
 import org.restcomm.protocols.ss7.commonapp.api.gap.GapIndicators;
 import org.restcomm.protocols.ss7.commonapp.api.gap.GapTreatment;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ASNControlTypeImpl;
 import org.restcomm.protocols.ss7.commonapp.gap.GapCriteriaWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.gap.GapIndicatorsImpl;
 import org.restcomm.protocols.ss7.commonapp.gap.GapTreatmentWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
-import org.restcomm.protocols.ss7.commonapp.primitives.DateAndTimeImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
+import org.restcomm.protocols.ss7.inap.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.CallGapRequest;
+import org.restcomm.protocols.ss7.inap.primitives.DateAndTimeImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

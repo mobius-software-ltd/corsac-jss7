@@ -89,13 +89,12 @@ import org.restcomm.protocols.ss7.tcap.asn.TCNoticeIndicationImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TCUniMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.Utils;
-import org.restcomm.protocols.ss7.tcap.asn.comp.BaseComponent;
+import org.restcomm.protocols.ss7.tcap.asn.comp.DestinationTransactionID;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
+import org.restcomm.protocols.ss7.tcap.asn.comp.Return;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultInnerImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCAbortMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
@@ -124,8 +123,7 @@ import io.netty.buffer.Unpooled;
 public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHandler {
 	private static final long serialVersionUID = 1L;
 
-	public static final int TCAP_DIALOG = 1;
-	public static final int TCAP_OPERATION_CODE = 2;
+	public static final int TCAP_ACN = 1;
 	
 	private static final Logger logger = Logger.getLogger(TCAPProviderImpl.class); // listenres
 
@@ -605,87 +603,48 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         }
     }
     
-    public void postProcessElement(Object element,ConcurrentHashMap<Integer,Object> data) {
-    	ApplicationContextName acn=null;
-		if(element instanceof TCContinueMessage) {
-    		TCContinueMessage tcm=(TCContinueMessage)element;
-    		long dialogId = Utils.decodeTransactionId(tcm.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
+    public void postProcessElement(Object parent,Object element,ConcurrentHashMap<Integer,Object> data) {
+    	if(element instanceof DestinationTransactionID) {
+    		long dialogId = Utils.decodeTransactionId(((DestinationTransactionID)element).getValue(), this.stack.getSwapTcapIdBytes());
    			DialogImpl di = this.dialogs.get(dialogId);
    			if(di!=null) {
-   				data.put(TCAP_DIALOG, di);
-   				acn=di.getApplicationContextName();
+   				ApplicationContextName acn=di.getApplicationContextName();
+   				if(acn!=null)
+   					data.put(TCAP_ACN, acn);   					
    			}
-		}    		
-		else if(element instanceof TCEndMessage) {
-			TCEndMessage teb=(TCEndMessage)element;	                    
-   			long dialogId = Utils.decodeTransactionId(teb.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
-   			DialogImpl di = this.dialogs.get(dialogId);
-   			if(di!=null) {
-   				data.put(TCAP_DIALOG, di);
-   				acn=di.getApplicationContextName();
-   			}
-		}
-    	
-    	if(element instanceof TCUnifiedMessage) {
-			TCUnifiedMessage uni=(TCUnifiedMessage)element;
-			if(uni.getDialogPortion()!=null && uni.getDialogPortion().getDialogAPDU()!=null) {
-    			DialogAPDU dialogAPDU=uni.getDialogPortion().getDialogAPDU();
-    			if(dialogAPDU.getType()==DialogAPDUType.Request)
-    				acn=((DialogRequestAPDU)dialogAPDU).getApplicationContextName();
-    			else if(dialogAPDU.getType()==DialogAPDUType.Response)
-    				acn=((DialogResponseAPDU)dialogAPDU).getApplicationContextName();
-    		}
-    			
-			if(acn!=null) {
-				List<BaseComponent> baseComponents=null;
-    				
-    			if(element instanceof TCBeginMessage) {
-    				baseComponents=((TCBeginMessage) element).getComponents();
-    			}
-    			else if(element instanceof TCContinueMessage) {
-    				baseComponents=((TCContinueMessage) element).getComponents();
-    			}
-    			else if(element instanceof TCEndMessage) {
-    				baseComponents=((TCEndMessage) element).getComponents();
-    			}
-    				
-    			if(baseComponents!=null) {
-    				for(BaseComponent curr:baseComponents) {
-    					if(curr instanceof InvokeImpl)
-    						((InvokeImpl)curr).setACN(acn);
-    					else if(curr instanceof ReturnImpl)
-    						((ReturnImpl)curr).setACN(acn);
-    				}
-    			}
-    		}    		
-		}	
-		
-    	
-		else if(element instanceof ReturnResult) {
-			ReturnResult rri=(ReturnResult)element;
-			if(data.containsKey(TCAP_DIALOG)) {
-				DialogImpl di = (DialogImpl)data.remove(TCAP_DIALOG);
-				if(rri.getInvokeId()!=null) {
-					OperationCode oc=di.getOperationCodeFromInvoke(rri.getInvokeId());
-					if(oc!=null)
-						data.put(TCAP_OPERATION_CODE, oc);
-    			}
-			}
-		}
+    	}
+    	else if(element instanceof DialogAPDU) {
+    		DialogAPDU dialogAPDU = (DialogAPDU)element;
+    		ApplicationContextName acn=null;
+			if(dialogAPDU.getType()==DialogAPDUType.Request)
+				acn=((DialogRequestAPDU)dialogAPDU).getApplicationContextName();
+			else if(dialogAPDU.getType()==DialogAPDUType.Response)
+				acn=((DialogResponseAPDU)dialogAPDU).getApplicationContextName();
+			
+			if(acn!=null)
+				data.put(TCAP_ACN, acn);				
+    	}
     }
     
-    public void preProcessElement(Object element,ConcurrentHashMap<Integer,Object> data) {
-    	if(element instanceof ReturnResultInnerImpl) {
-    		if(data.containsKey(TCAP_OPERATION_CODE)) {
-    			OperationCode oc = (OperationCode) data.remove(TCAP_OPERATION_CODE);
-    			if(oc!=null) {
-    				ReturnResultInnerImpl rri=(ReturnResultInnerImpl)element;
-    				if(oc!=null && oc.getLocalOperationCode()!=null)
-    					rri.setOperationCode(oc.getLocalOperationCode());
-    				else if(oc!=null && oc.getGlobalOperationCode()!=null)
-    					rri.setOperationCode(oc.getGlobalOperationCode());
-    			}
-    		}
+    public void preProcessElement(Object parent,Object element,ConcurrentHashMap<Integer,Object> data) {
+    	if(element instanceof ReturnResultInnerImpl && parent instanceof Return) {
+    		OperationCode oc = ((Return)parent).getOperationCode();
+    		if(oc!=null) {
+				ReturnResultInnerImpl rri=(ReturnResultInnerImpl)element;
+				if(oc!=null && oc.getLocalOperationCode()!=null)
+					rri.setOperationCode(oc.getLocalOperationCode());
+				else if(oc!=null && oc.getGlobalOperationCode()!=null)
+					rri.setOperationCode(oc.getGlobalOperationCode());
+			}
+    		
+    		ApplicationContextName acn=(ApplicationContextName)data.remove(TCAP_ACN);
+    		if(acn!=null)
+    			((ReturnResultInnerImpl)element).setACN(acn);
+    	}
+    	if(element instanceof InvokeImpl) {
+    		ApplicationContextName acn=(ApplicationContextName)data.remove(TCAP_ACN);
+    		if(acn!=null)
+    			((InvokeImpl)element).setACN(acn);
     	}
     }
     

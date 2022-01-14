@@ -334,7 +334,7 @@ public class ASNParser
 		if(handler!=null) {
 			ASNPreprocess preprocessAnnotation=effectiveClass.getAnnotation(ASNPreprocess.class);
 			if(preprocessAnnotation!=null) {
-				handler.preProcessElement(currObject, mappedData);
+				handler.preProcessElement(parent, currObject, mappedData);
 			}
 		}
 		
@@ -416,7 +416,7 @@ public class ASNParser
 		if(handler!=null) {
 			ASNPostprocess postprocessAnnotation=effectiveClass.getAnnotation(ASNPostprocess.class);
 			if(postprocessAnnotation!=null) {
-				handler.postProcessElement(currObject, mappedData);
+				handler.postProcessElement(parent, currObject, mappedData);
 			}			
 		}
 		

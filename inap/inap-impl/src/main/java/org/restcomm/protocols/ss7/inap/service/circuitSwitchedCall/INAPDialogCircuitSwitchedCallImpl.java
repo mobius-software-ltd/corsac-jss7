@@ -32,7 +32,6 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ControlType;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.IPSSPCapabilities;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.InformationToSend;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformation;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformationType;
 import org.restcomm.protocols.ss7.commonapp.api.gap.GapCriteria;
 import org.restcomm.protocols.ss7.commonapp.api.gap.GapIndicators;
@@ -53,7 +52,6 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.BCSMEvent;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
@@ -68,13 +66,16 @@ import org.restcomm.protocols.ss7.inap.api.INAPApplicationContext;
 import org.restcomm.protocols.ss7.inap.api.INAPException;
 import org.restcomm.protocols.ss7.inap.api.INAPOperationCode;
 import org.restcomm.protocols.ss7.inap.api.INAPServiceBase;
+import org.restcomm.protocols.ss7.inap.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.inap.api.primitives.TerminalType;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.INAPDialogCircuitSwitchedCall;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.AchBillingChargingCharacteristicsCS1;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ApplicationID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNS;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardSuppressionIndicators;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCallIndicator;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGInterLockCode;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CallResultCS1;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.DataItemID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.DataItemInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ForwardSuppressionIndicators;
@@ -86,6 +87,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.L
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.LimitIndicators;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ReceivingFunctionsRequested;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.RouteOrigin;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SCIBillingChargingCharacteristicsCS1;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SendingFunctionsActive;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.AChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CalledPartyBusinessGroupID;
@@ -107,6 +109,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.IPAvailable;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ReportCondition;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceAddress;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceStatus;
@@ -262,18 +265,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SCF_to_SSF_AC
 				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_SSP_to_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_assist_handoff_SSP_to_SCP_AC
-				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B)
+				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC)
 			throw new INAPException(
 					"Bad application context name for addApplyChargingReportRequest: must be Q1218_generic_SSF_to_SCF_AC, Q1218_DP_specific_SSF_to_SCF_AC, "
 							+ "Q1218_assist_handoff_SSF_to_SCF_AC, Q1218_generic_SCF_to_SSF_AC, Q1218_DP_specific_SCF_to_SSF_AC, Core_INAP_CS1_SSP_to_SCP_AC,"
-							+ "Core_INAP_CS1_assist_handoff_SSP_to_SCP_AC,Core_INAP_CS1_SCP_to_SSP_AC,Ericcson_cs1plus_SSP_TO_SCP_AC,Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B,"
-							+ "Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC,Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B,Ericcson_cs1plus_SCP_to_SSP_AC or Ericcson_cs1plus_SCP_to_SSP_AC_REV_B");
+							+ "Core_INAP_CS1_assist_handoff_SSP_to_SCP_AC or Core_INAP_CS1_SCP_to_SSP_AC");
 
 		Integer customTimeout;
 		if (customInvokeTimeout == _Timer_Default)
@@ -286,6 +282,34 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				(long) INAPOperationCode.applyChargingReport, req, true, false);
 	}
 
+	@Override
+	public Long addApplyChargingReportRequest(CallResultCS1 callResult) throws INAPException {
+		return addApplyChargingReportRequest(_Timer_Default, callResult);
+	}
+
+	@Override
+	public Long addApplyChargingReportRequest(int customInvokeTimeout, CallResultCS1 callResult) throws INAPException {
+		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B)
+			throw new INAPException(
+					"Bad application context name for addApplyChargingReportRequest: must be Ericcson_cs1plus_SSP_TO_SCP_AC,Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B,"
+							+ "Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC,Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B,Ericcson_cs1plus_SCP_to_SSP_AC or Ericcson_cs1plus_SCP_to_SSP_AC_REV_B");
+
+		Integer customTimeout;
+		if (customInvokeTimeout == _Timer_Default)
+			customTimeout = getTimerCircuitSwitchedCallControlShort();
+		else
+			customTimeout = customInvokeTimeout;
+
+		ApplyChargingReportRequestCS1Impl req = new ApplyChargingReportRequestCS1Impl(callResult);
+		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
+				(long) INAPOperationCode.applyChargingReport, req, true, false);
+	}
+	
 	@Override
 	public Long addApplyChargingRequest(AChBillingChargingCharacteristics aChBillingChargingCharacteristics,
 			Boolean sendCalculationToSCPIndication, LegID partyToCharge, CAPINAPExtensions extensions)
@@ -305,18 +329,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SCF_to_SSF_AC
 				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_SSP_to_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_assist_handoff_SSP_to_SCP_AC
-				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B)
+				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC)
 			throw new INAPException(
 					"Bad application context name for addApplyChargingRequest: must be Q1218_generic_SSF_to_SCF_AC, Q1218_DP_specific_SSF_to_SCF_AC, "
 							+ "Q1218_assist_handoff_SSF_to_SCF_AC, Q1218_generic_SCF_to_SSF_AC, Q1218_DP_specific_SCF_to_SSF_AC, Core_INAP_CS1_SSP_to_SCP_AC,"
-							+ "Core_INAP_CS1_assist_handoff_SSP_to_SCP_AC,Core_INAP_CS1_SCP_to_SSP_AC,Ericcson_cs1plus_SSP_TO_SCP_AC,Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B,"
-							+ "Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC,Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B,Ericcson_cs1plus_SCP_to_SSP_AC or Ericcson_cs1plus_SCP_to_SSP_AC_REV_B");
+							+ "Core_INAP_CS1_assist_handoff_SSP_to_SCP_AC or Core_INAP_CS1_SCP_to_SSP_AC");
 
 		Integer customTimeout;
 		if (customInvokeTimeout == _Timer_Default)
@@ -325,6 +342,40 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 			customTimeout = customInvokeTimeout;
 
 		ApplyChargingRequestImpl req = new ApplyChargingRequestImpl(aChBillingChargingCharacteristics,
+				sendCalculationToSCPIndication, partyToCharge, extensions);
+		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
+				(long) INAPOperationCode.applyCharging, req, true, false);
+	}
+
+	@Override
+	public Long addApplyChargingRequest(AchBillingChargingCharacteristicsCS1 aChBillingChargingCharacteristics,
+			Boolean sendCalculationToSCPIndication, LegID partyToCharge, CAPINAPExtensions extensions)
+			throws INAPException {
+		return addApplyChargingRequest(_Timer_Default, aChBillingChargingCharacteristics,
+				sendCalculationToSCPIndication, partyToCharge, extensions);
+	}
+
+	@Override
+	public Long addApplyChargingRequest(int customInvokeTimeout,
+			AchBillingChargingCharacteristicsCS1 aChBillingChargingCharacteristics, Boolean sendCalculationToSCPIndication,
+			LegID partyToCharge, CAPINAPExtensions extensions) throws INAPException {
+		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B)
+			throw new INAPException(
+					"Bad application context name for addApplyChargingRequest: must be Ericcson_cs1plus_SSP_TO_SCP_AC,Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B,"
+							+ "Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC,Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B,Ericcson_cs1plus_SCP_to_SSP_AC or Ericcson_cs1plus_SCP_to_SSP_AC_REV_B");
+
+		Integer customTimeout;
+		if (customInvokeTimeout == _Timer_Default)
+			customTimeout = getTimerCircuitSwitchedCallControlShort();
+		else
+			customTimeout = customInvokeTimeout;
+
+		ApplyChargingRequestCS1Impl req = new ApplyChargingRequestCS1Impl(aChBillingChargingCharacteristics,
 				sendCalculationToSCPIndication, partyToCharge, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
 				(long) INAPOperationCode.applyCharging, req, true, false);
@@ -1157,6 +1208,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				(long) INAPOperationCode.furnishChargingInformation, req, true, false);
 	}
 
+	//cs1 flavour
 	@Override
 	public Long addSendChargingInformationRequest(SCIBillingChargingCharacteristics sciBillingChargingCharacteristics,
 			LegType partyToCharge, CAPINAPExtensions extensions) throws INAPException {
@@ -1173,17 +1225,10 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				&& this.appCntx != INAPApplicationContext.Q1218_generic_SCF_to_SSF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SCF_to_SSF_AC
 				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_SSP_to_SCP_AC
-				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
-				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B)
+				&& this.appCntx != INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC)
 			throw new INAPException(
 					"Bad application context name for addSendChargingInformationRequest: must be Q1218_generic_SSF_to_SCF_AC, Q1218_DP_specific_SSF_to_SCF_AC, "
-							+ "Q1218_generic_SCF_to_SSF_AC, Q1218_DP_specific_SCF_to_SSF_AC, Core_INAP_CS1_SSP_to_SCP_AC, Core_INAP_CS1_SCP_to_SSP_AC, "
-							+ "Ericcson_cs1plus_SSP_TO_SCP_AC, Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC or Ericcson_cs1plus_SCP_to_SSP_AC");
+							+ "Q1218_generic_SCF_to_SSF_AC, Q1218_DP_specific_SCF_to_SSF_AC, Core_INAP_CS1_SSP_to_SCP_AC or Core_INAP_CS1_SCP_to_SSP_AC");
 
 		Integer customTimeout;
 		if (customInvokeTimeout == _Timer_Default)
@@ -1196,7 +1241,41 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
 				(long) INAPOperationCode.sendChargingInformation, req, true, false);
 	}
+	
+	//cs1+ flavour
+	@Override
+	public Long addSendChargingInformationRequest(SCIBillingChargingCharacteristicsCS1 sciBillingChargingCharacteristics,
+			LegType partyToCharge, CAPINAPExtensions extensions) throws INAPException {
+		return addSendChargingInformationRequest(_Timer_Default, sciBillingChargingCharacteristics, partyToCharge,
+				extensions);
+	}
 
+	@Override
+	public Long addSendChargingInformationRequest(int customInvokeTimeout,
+			SCIBillingChargingCharacteristicsCS1 sciBillingChargingCharacteristics, LegType partyToCharge,
+			CAPINAPExtensions extensions) throws INAPException {
+		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B)
+			throw new INAPException(
+					"Bad application context name for addSendChargingInformationRequest: must be Ericcson_cs1plus_SSP_TO_SCP_AC, Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B, "
+							+ "Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC, Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B, Ericcson_cs1plus_SCP_to_SSP_AC or Ericcson_cs1plus_SCP_to_SSP_AC_REV_B");
+
+		Integer customTimeout;
+		if (customInvokeTimeout == _Timer_Default)
+			customTimeout = getTimerCircuitSwitchedCallControlShort();
+		else
+			customTimeout = customInvokeTimeout;
+
+		SendChargingInformationCS1RequestImpl req = new SendChargingInformationCS1RequestImpl(
+				sciBillingChargingCharacteristics, partyToCharge, extensions);
+		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
+				(long) INAPOperationCode.sendChargingInformation, req, true, false);
+	}
+	
 	@Override
 	public Long addSpecializedResourceReportRequest(Long linkedId) throws INAPException {
 		return addSpecializedResourceReportRequest(_Timer_Default, linkedId);

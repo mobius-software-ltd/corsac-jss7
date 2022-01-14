@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives;
 
-import org.restcomm.protocols.ss7.commonapp.api.primitives.DateAndTime;
-import org.restcomm.protocols.ss7.commonapp.primitives.DateAndTimeImpl;
+import org.restcomm.protocols.ss7.inap.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringTimeOut;
+import org.restcomm.protocols.ss7.inap.primitives.DateAndTimeImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

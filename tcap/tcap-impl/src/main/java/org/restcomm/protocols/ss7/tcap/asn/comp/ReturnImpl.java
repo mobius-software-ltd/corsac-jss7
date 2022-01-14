@@ -24,8 +24,6 @@ package org.restcomm.protocols.ss7.tcap.asn.comp;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
-
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
@@ -142,10 +140,5 @@ public class ReturnImpl implements Return {
     		invokeIdValue=this.invokeId.getValue();
     	
     	return "ReturnResult[invokeId=" + invokeIdValue + ", inner=" + inner + " ]";
-    }
-    
-    public void setACN(ApplicationContextName acn) {
-    	if(inner!=null)
-    		inner.setACN(acn);
     }
 }

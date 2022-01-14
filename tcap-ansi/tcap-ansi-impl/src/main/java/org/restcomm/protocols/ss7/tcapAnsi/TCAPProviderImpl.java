@@ -90,6 +90,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.TCQueryMessageImplWithPerm;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TCResponseMessageImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TCUniMessageImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.TransactionID;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.Utils;
 import org.restcomm.protocols.ss7.tcapAnsi.tc.component.ComponentPrimitiveFactoryImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.DialogPrimitiveFactoryImpl;
@@ -586,23 +587,24 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         }
     }
 
-    public void postProcessElement(Object element,ConcurrentHashMap<Integer,Object> data) {
-    	if(element instanceof TCConversationMessage) {
-    		TCConversationMessage tcm=(TCConversationMessage)element;
-    		long dialogId = Utils.decodeTransactionId(tcm.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
-   			DialogImpl di = this.dialogs.get(dialogId);
-   			if(di!=null)
-   				data.put(TCAP_DIALOG, di);
-		} else if(element instanceof TCResponseMessage) {
-			TCResponseMessage tcm=(TCResponseMessage)element;
-    		long dialogId = Utils.decodeTransactionId(tcm.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
-   			DialogImpl di = this.dialogs.get(dialogId);
-   			if(di!=null)
-   				data.put(TCAP_DIALOG, di);
-		}
+    public void postProcessElement(Object parent,Object element,ConcurrentHashMap<Integer,Object> data) {
+    	if(element instanceof TransactionID) {
+    		byte[] txID = null;
+    		if(parent instanceof TCResponseMessage)
+    			txID =((TransactionID)element).getFirstElem();
+    		else if(parent instanceof TCConversationMessage)
+    			txID =((TransactionID)element).getSecondElem();
+    		
+    		if(txID!=null) {
+    			long dialogId = Utils.decodeTransactionId(txID, this.stack.getSwapTcapIdBytes());
+       			DialogImpl di = this.dialogs.get(dialogId);
+       			if(di!=null)
+       				data.put(TCAP_DIALOG, di);
+    		}
+    	}
     }
     
-    public void preProcessElement(Object element,ConcurrentHashMap<Integer,Object> data) {
+    public void preProcessElement(Object parent,Object element,ConcurrentHashMap<Integer,Object> data) {
     	if(element instanceof Return) {
     		if(data.containsKey(TCAP_DIALOG)) {
     			Return ri=(Return)element;

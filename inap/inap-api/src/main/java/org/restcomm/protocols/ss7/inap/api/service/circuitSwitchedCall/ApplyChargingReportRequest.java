@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CallResultCS1;
+
 /**
 ApplyChargingReport ::= OPERATION
 	ARGUMENT ApplyChargingReportArg
@@ -48,5 +50,7 @@ CallResult ::= OCTET STRING (SIZE (minCallResultLength ..maxCallResultLength))
 public interface ApplyChargingReportRequest extends CircuitSwitchedCallMessage {
 
     byte[] getCallResult();
+    
+    CallResultCS1 getCallResultCS1();
 
 }

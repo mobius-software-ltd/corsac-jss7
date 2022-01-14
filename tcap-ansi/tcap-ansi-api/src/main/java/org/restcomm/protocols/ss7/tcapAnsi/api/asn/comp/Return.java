@@ -29,7 +29,6 @@ package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPreprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -40,7 +39,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=10,constructed=true,lengthIndefinite=false)
-@ASNPreprocess
 public interface Return extends Component {
 
     void setSetParameter(Object p);

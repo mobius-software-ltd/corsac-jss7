@@ -32,7 +32,6 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ControlType;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.IPSSPCapabilities;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.InformationToSend;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformation;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformationType;
 import org.restcomm.protocols.ss7.commonapp.api.gap.GapCriteria;
 import org.restcomm.protocols.ss7.commonapp.api.gap.GapIndicators;
@@ -53,7 +52,6 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingPattern;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.BCSMEvent;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
@@ -64,12 +62,15 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.TimerID;
 import org.restcomm.protocols.ss7.inap.api.INAPDialog;
 import org.restcomm.protocols.ss7.inap.api.INAPException;
+import org.restcomm.protocols.ss7.inap.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.inap.api.primitives.TerminalType;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.AchBillingChargingCharacteristicsCS1;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ApplicationID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardGVNS;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.BackwardSuppressionIndicators;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGCallIndicator;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGInterLockCode;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CallResultCS1;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.DataItemID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.DataItemInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ForwardSuppressionIndicators;
@@ -81,6 +82,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.L
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.LimitIndicators;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ReceivingFunctionsRequested;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.RouteOrigin;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SCIBillingChargingCharacteristicsCS1;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SendingFunctionsActive;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.AChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.CalledPartyBusinessGroupID;
@@ -102,6 +104,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.IPAvailable;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ReportCondition;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceAddress;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceStatus;
@@ -168,15 +171,30 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
             CUGInterLockCode cugInterLockCode,GenericDigitsSet genericDigitsSet,GenericNumbersSet genericNumberSet,
             CauseIsup cause,HandOverInfo handOverInfo,ForwardGVNSIsup forwardGVNSIndicator,BackwardGVNS backwardGVNSIndicator) throws INAPException;
 
+    //CS1 Flavour
     Long addApplyChargingReportRequest(byte[] callResult) throws INAPException;
 
     Long addApplyChargingReportRequest(int customInvokeTimeout, byte[] callResult) throws INAPException;
 
+    //CS1+ Flavour
+    Long addApplyChargingReportRequest(CallResultCS1 callResult) throws INAPException;
+
+    Long addApplyChargingReportRequest(int customInvokeTimeout, CallResultCS1 callResult) throws INAPException;
+
+    //CS1 Flavour
     Long addApplyChargingRequest(AChBillingChargingCharacteristics aChBillingChargingCharacteristics,
     		Boolean sendCalculationToSCPIndication, LegID partyToCharge, CAPINAPExtensions extensions) throws INAPException;
 
     Long addApplyChargingRequest(int customInvokeTimeout,
     		AChBillingChargingCharacteristics aChBillingChargingCharacteristics,
+    		Boolean sendCalculationToSCPIndication, LegID partyToCharge, CAPINAPExtensions extensions) throws INAPException;
+
+    //cs1+ flavour
+    Long addApplyChargingRequest(AchBillingChargingCharacteristicsCS1 aChBillingChargingCharacteristics,
+    		Boolean sendCalculationToSCPIndication, LegID partyToCharge, CAPINAPExtensions extensions) throws INAPException;
+
+    Long addApplyChargingRequest(int customInvokeTimeout,
+    		AchBillingChargingCharacteristicsCS1 aChBillingChargingCharacteristics,
     		Boolean sendCalculationToSCPIndication, LegID partyToCharge, CAPINAPExtensions extensions) throws INAPException;
 
     //CS1 Flavour
@@ -345,11 +363,20 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
     Long addFurnishChargingInformationRequest(int customInvokeTimeout, byte[] FCIBCCCAMELsequence1)
             throws INAPException;
 
+    //cs1 flavour
     Long addSendChargingInformationRequest(SCIBillingChargingCharacteristics sciBillingChargingCharacteristics,
     		LegType partyToCharge, CAPINAPExtensions extensions) throws INAPException;
 
     Long addSendChargingInformationRequest(int customInvokeTimeout,
             SCIBillingChargingCharacteristics sciBillingChargingCharacteristics, LegType partyToCharge,
+            CAPINAPExtensions extensions) throws INAPException;
+
+    //cs1+ flavour
+    Long addSendChargingInformationRequest(SCIBillingChargingCharacteristicsCS1 sciBillingChargingCharacteristics,
+    		LegType partyToCharge, CAPINAPExtensions extensions) throws INAPException;
+
+    Long addSendChargingInformationRequest(int customInvokeTimeout,
+    		SCIBillingChargingCharacteristicsCS1 sciBillingChargingCharacteristics, LegType partyToCharge,
             CAPINAPExtensions extensions) throws INAPException;
 
     //cs1 flavour

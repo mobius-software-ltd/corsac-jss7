@@ -39,13 +39,11 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedInf
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.IPSSPCapabilities;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.InformationToSend;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformation;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformationType;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Tone;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
@@ -68,6 +66,7 @@ import org.restcomm.protocols.ss7.inap.api.dialog.INAPUserAbortReason;
 import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessage;
 import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessageSystemFailure;
 import org.restcomm.protocols.ss7.inap.api.errors.UnavailableNetworkResource;
+import org.restcomm.protocols.ss7.inap.api.primitives.DateAndTime;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ActivityTestRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ApplyChargingReportRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ApplyChargingRequest;
@@ -95,10 +94,12 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.RequestRe
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ResetTimerRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.SendChargingInformationRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.SpecializedResourceReportRequest;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.AChBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.AchBillingChargingCharacteristicsCS1;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SCIBillingChargingCharacteristicsCS1;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
-import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristics;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.INAPDialogCircuitSwitchedCallImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.ChargingInformationImpl;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
@@ -390,6 +391,11 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                 super.onSendChargingInformationRequest(ind);
 
                 assertNotNull(ind.getSCIBillingChargingCharacteristics());
+                assertNotNull(((SCIBillingChargingCharacteristicsCS1)ind.getSCIBillingChargingCharacteristics()).getChargingInformation());
+                assertTrue(((SCIBillingChargingCharacteristicsCS1)ind.getSCIBillingChargingCharacteristics()).getChargingInformation().getOrderStartOfCharging());
+                assertFalse(((SCIBillingChargingCharacteristicsCS1)ind.getSCIBillingChargingCharacteristics()).getChargingInformation().getCreateDefaultBillingRecord());
+                assertNull(((SCIBillingChargingCharacteristicsCS1)ind.getSCIBillingChargingCharacteristics()).getChargingInformation().getChargeMessage());
+                assertEquals(((SCIBillingChargingCharacteristicsCS1)ind.getSCIBillingChargingCharacteristics()).getChargingInformation().getPulseBurst(), new Integer(1));
                 assertEquals(ind.getPartyToCharge(), LegType.leg2);
                 assertNull(ind.getExtensions());
 
@@ -540,8 +546,8 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                             }
 
                             //Boolean tone, CAPExtensionsImpl extensions, Long tariffSwitchInterval
-                            AChBillingChargingCharacteristics aChBillingChargingCharacteristics = this.inapParameterFactory
-                                    .createAChBillingChargingCharacteristics(null);
+                            AchBillingChargingCharacteristicsCS1 aChBillingChargingCharacteristics = this.inapParameterFactory
+                                    .getAchBillingChargingCharacteristicsCS1(null,null);
                             dlg.addApplyChargingRequest(aChBillingChargingCharacteristics, false, new LegIDImpl(LegType.leg1, null), null);
                             this.observerdEvents.add(TestEvent
                                     .createSentEvent(EventType.ApplyChargingRequest, null, sequence++));
@@ -578,8 +584,8 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                             	
                             }
 
-                            SCIBillingChargingCharacteristics sciBillingChargingCharacteristics = this.inapParameterFactory
-                                    .createSCIBillingChargingCharacteristics(null);
+                            SCIBillingChargingCharacteristicsCS1 sciBillingChargingCharacteristics = this.inapParameterFactory
+                                    .getSCIBillingChargingCharacteristicsCS1(new ChargingInformationImpl(true, null, 1, false));
                             dlg.addSendChargingInformationRequest(sciBillingChargingCharacteristics, LegType.leg2, null);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendChargingInformationRequest, null,
                                     sequence++));
@@ -1408,7 +1414,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 List<RequestedInformation> al = ind.getRequestedInformationList();
                 assertEquals(al.size(), 1);
                 DateAndTime dt = al.get(0).getCallStopTimeValue();
-                assertEquals(dt.getYear(), 2012);
+                assertEquals(dt.getYear(), 12);
                 assertEquals(dt.getMonth(), 11);
                 assertEquals(dt.getDay(), 30);
                 assertEquals(dt.getHour(), 23);
@@ -3303,3 +3309,4 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
     }
 
 }
+

@@ -39,6 +39,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNExclude;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNGenericMapping;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPreprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWildcard;
@@ -51,6 +52,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
  *
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,lengthIndefinite=false)
+@ASNPreprocess
 public class InvokeImpl implements Invoke {
 	// mandatory
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=0x02,constructed=false,index=0)

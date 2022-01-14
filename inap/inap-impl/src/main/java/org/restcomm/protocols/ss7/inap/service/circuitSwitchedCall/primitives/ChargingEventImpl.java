@@ -26,15 +26,13 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.commonapp.primitives.ASNMonitorMode;
 import org.restcomm.protocols.ss7.commonapp.primitives.LegIDWrapperImpl;
+import org.restcomm.protocols.ss7.inap.api.charging.EventTypeCharging;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ChargingEvent;
+import org.restcomm.protocols.ss7.inap.charging.ASNEventTypeCharging;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -45,7 +43,7 @@ import io.netty.buffer.Unpooled;
 public class ChargingEventImpl implements ChargingEvent {
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false, index=-1)
-    private ASNOctetString eventTypeCharging;
+    private ASNEventTypeCharging eventTypeCharging;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false, index=-1)
     private ASNMonitorMode monitorMode;
@@ -56,10 +54,10 @@ public class ChargingEventImpl implements ChargingEvent {
     public ChargingEventImpl() {
     }
 
-    public ChargingEventImpl(byte[] eventTypeCharging,MonitorMode monitorMode,LegID legID) {
+    public ChargingEventImpl(EventTypeCharging eventTypeCharging,MonitorMode monitorMode,LegID legID) {
     	if(eventTypeCharging!=null) {
-    		this.eventTypeCharging=new ASNOctetString();
-    		this.eventTypeCharging.setValue(Unpooled.wrappedBuffer(eventTypeCharging));
+    		this.eventTypeCharging=new ASNEventTypeCharging();
+    		this.eventTypeCharging.setType(eventTypeCharging);
     	}
     	
     	if(monitorMode!=null) {
@@ -71,14 +69,11 @@ public class ChargingEventImpl implements ChargingEvent {
     		this.legID=new LegIDWrapperImpl(legID);    	
     }
 
-    public byte[] getEventTypeCharging() {
-    	if(eventTypeCharging==null || eventTypeCharging.getValue()==null)
+    public EventTypeCharging getEventTypeCharging() {
+    	if(eventTypeCharging==null || eventTypeCharging.getType()==null)
     		return null;
     	
-    	ByteBuf value=eventTypeCharging.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-    	return data;
+    	return eventTypeCharging.getType();
     }
 
     public MonitorMode getMonitorMode() {
@@ -101,9 +96,9 @@ public class ChargingEventImpl implements ChargingEvent {
         StringBuilder sb = new StringBuilder();
         sb.append("ChargingEvent [");
 
-        if (this.eventTypeCharging != null && this.eventTypeCharging.getValue()!=null) {
+        if (this.eventTypeCharging != null && this.eventTypeCharging.getType()!=null) {
             sb.append(", eventTypeCharging=");
-            sb.append(ASNOctetString.printDataArr(getEventTypeCharging()));
+            sb.append(eventTypeCharging.getType());
         }
 
         if (this.monitorMode != null || this.monitorMode.getType()!=null) {

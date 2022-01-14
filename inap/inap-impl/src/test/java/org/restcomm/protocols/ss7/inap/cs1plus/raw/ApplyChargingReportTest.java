@@ -5,7 +5,7 @@ import static org.testng.Assert.assertTrue;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ApplyChargingReportRequestImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ApplyChargingReportRequestCS1Impl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -31,15 +31,15 @@ public class ApplyChargingReportTest
 	@Test(groups = { "functional.decode", "circuitSwitchedCall" })
 	public void testDecode() throws Exception {
 		ASNParser parser=new ASNParser(false);
-		parser.replaceClass(ApplyChargingReportRequestImpl.class);
+		parser.replaceClass(ApplyChargingReportRequestCS1Impl.class);
 	    	
 		byte[] rawData = this.message1;
 		ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
 		assertFalse(result.getHadErrors());
-		assertTrue(result.getResult() instanceof ApplyChargingReportRequestImpl);
+		assertTrue(result.getResult() instanceof ApplyChargingReportRequestCS1Impl);
 	        
-		ApplyChargingReportRequestImpl elem = (ApplyChargingReportRequestImpl)result.getResult();
+		ApplyChargingReportRequestCS1Impl elem = (ApplyChargingReportRequestCS1Impl)result.getResult();
 		logger.info(elem);			
 	}
 }
