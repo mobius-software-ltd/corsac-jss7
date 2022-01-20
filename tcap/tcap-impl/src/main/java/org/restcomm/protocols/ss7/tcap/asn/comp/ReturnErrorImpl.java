@@ -44,8 +44,8 @@ public class ReturnErrorImpl implements ReturnError {
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=0x02,constructed=false,index=0)
 	private ASNInteger invokeId;
 
-	@ASNChoise
-	private ErrorCodeImpl errorCode;
+	@ASNChoise(defaultImplementation = ErrorCodeImpl.class)
+	private ErrorCode errorCode;
 		    
 	// optional
 	@ASNWildcard

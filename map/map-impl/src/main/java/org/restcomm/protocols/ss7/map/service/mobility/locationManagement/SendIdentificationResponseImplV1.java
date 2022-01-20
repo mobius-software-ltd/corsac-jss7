@@ -50,8 +50,8 @@ public class SendIdentificationResponseImplV1 extends MobilityMessageImpl implem
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index = -1, defaultImplementation = IMSIImpl.class)
 	private IMSI imsi;
     
-    @ASNChoise
-    private AuthenticationSetListImpl authenticationSetList;
+    @ASNChoise(defaultImplementation = AuthenticationSetListImpl.class)
+    private AuthenticationSetList authenticationSetList;
     
     private long mapProtocolVersion;
 
@@ -67,16 +67,7 @@ public class SendIdentificationResponseImplV1 extends MobilityMessageImpl implem
     public SendIdentificationResponseImplV1(IMSI imsi, AuthenticationSetList authenticationSetList, long mapProtocolVersion) {
         super();
         this.imsi = imsi;
-
-        if(authenticationSetList instanceof AuthenticationSetListImpl)
-        	this.authenticationSetList=(AuthenticationSetListImpl)authenticationSetList;
-        if(authenticationSetList!=null) {
-        	if(authenticationSetList.getQuintupletList()!=null)
-        		this.authenticationSetList = new AuthenticationSetListImpl(authenticationSetList.getQuintupletList());
-        	else if(authenticationSetList.getTripletList()!=null)
-        		this.authenticationSetList = new AuthenticationSetListImpl(authenticationSetList.getTripletList(), mapProtocolVersion);
-        }
-        
+        this.authenticationSetList=authenticationSetList;
         this.mapProtocolVersion = mapProtocolVersion;
     }
 

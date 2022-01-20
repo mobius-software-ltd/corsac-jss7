@@ -30,26 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ChargingCharacteristicsWrapperImpl {
-	@ASNChoise
-	private ChargingCharacteristicsImpl chargingCharacteristics;
+	@ASNChoise(defaultImplementation = ChargingCharacteristicsImpl.class)
+	private ChargingCharacteristics chargingCharacteristics;
 
     public ChargingCharacteristicsWrapperImpl() {
     }
 
     public ChargingCharacteristicsWrapperImpl(ChargingCharacteristics chargingCharacteristics) {
-    	if(chargingCharacteristics!=null) {
-    		if(chargingCharacteristics instanceof ChargingCharacteristicsImpl)
-    			this.chargingCharacteristics = (ChargingCharacteristicsImpl)chargingCharacteristics;
-    		else if(chargingCharacteristics.getMaxElapsedTime()!=-1)
-    			this.chargingCharacteristics=new ChargingCharacteristicsImpl(chargingCharacteristics.getMaxElapsedTime());
-    		else if(chargingCharacteristics.getMaxTransferredVolume()!=-1)
-    			this.chargingCharacteristics=new ChargingCharacteristicsImpl(chargingCharacteristics.getMaxTransferredVolume());
-    	}
+    	this.chargingCharacteristics = chargingCharacteristics;    		
     }
 
     public ChargingCharacteristics getChargingCharacteristics() {

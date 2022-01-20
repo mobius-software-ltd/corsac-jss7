@@ -53,8 +53,8 @@ public class ExtSSDataImpl implements ExtSSData {
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=1,defaultImplementation = ExtSSStatusImpl.class)
     private ExtSSStatus ssStatus = null;
     
-    @ASNChoise
-    private SSSubscriptionOptionImpl ssSubscriptionOption = null;
+    @ASNChoise(defaultImplementation = SSSubscriptionOptionImpl.class)
+    private SSSubscriptionOption ssSubscriptionOption = null;
     
     private ExtBasicServiceCodeListWrapperImpl basicServiceGroupList = null;
     
@@ -70,16 +70,8 @@ public class ExtSSDataImpl implements ExtSSData {
     public ExtSSDataImpl(SSCode ssCode, ExtSSStatus ssStatus, SSSubscriptionOption ssSubscriptionOption,
             List<ExtBasicServiceCode> basicServiceGroupList, MAPExtensionContainer extensionContainer) {
         this.ssCode = ssCode;
-        this.ssStatus = ssStatus;
-        
-        if(ssSubscriptionOption!=null) {
-        	if(ssSubscriptionOption instanceof SSSubscriptionOptionImpl)
-        		this.ssSubscriptionOption = (SSSubscriptionOptionImpl)ssSubscriptionOption;
-        	else if(ssSubscriptionOption.getCliRestrictionOption()!=null)
-        		this.ssSubscriptionOption = new SSSubscriptionOptionImpl(ssSubscriptionOption.getCliRestrictionOption());
-        	else if(ssSubscriptionOption.getOverrideCategory()!=null)
-        		this.ssSubscriptionOption = new SSSubscriptionOptionImpl(ssSubscriptionOption.getOverrideCategory());
-        }
+        this.ssStatus = ssStatus;        
+        this.ssSubscriptionOption = ssSubscriptionOption;
         
         if(basicServiceGroupList!=null)
         	this.basicServiceGroupList = new ExtBasicServiceCodeListWrapperImpl(basicServiceGroupList);

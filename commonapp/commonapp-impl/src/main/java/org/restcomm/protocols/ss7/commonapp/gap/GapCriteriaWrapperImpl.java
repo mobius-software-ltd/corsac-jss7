@@ -30,26 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class GapCriteriaWrapperImpl {
-	@ASNChoise
-	private GapCriteriaImpl gapCriteria;
+	@ASNChoise(defaultImplementation = GapCriteriaImpl.class)
+	private GapCriteria gapCriteria;
 
     public GapCriteriaWrapperImpl() {
     }
 
     public GapCriteriaWrapperImpl(GapCriteria gapCriteria) {
-    	if(gapCriteria!=null) {
-    		if(gapCriteria instanceof GapCriteriaImpl)
-    			this.gapCriteria = (GapCriteriaImpl)gapCriteria;
-    		else if(gapCriteria.getBasicGapCriteria()!=null)
-    			this.gapCriteria = new GapCriteriaImpl(gapCriteria.getBasicGapCriteria());
-    		else if(gapCriteria.getCompoundGapCriteria()!=null)
-    			this.gapCriteria = new GapCriteriaImpl(gapCriteria.getCompoundGapCriteria());    		
-    	}
+    	this.gapCriteria = gapCriteria;    		
     }
 
     public GapCriteria getGapCriteria() {

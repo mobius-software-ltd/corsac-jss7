@@ -30,23 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class AdditionalNumberWrapperImpl {
-	@ASNChoise
-	private AdditionalNumberImpl additionalNumber;
+	@ASNChoise(defaultImplementation = AdditionalNumberImpl.class)
+	private AdditionalNumber additionalNumber;
 
     public AdditionalNumberWrapperImpl() {
     }
 
     public AdditionalNumberWrapperImpl(AdditionalNumber additionalNumber) {
-    	if(additionalNumber instanceof AdditionalNumberImpl)
-    		this.additionalNumber=(AdditionalNumberImpl)additionalNumber;
-    	else if(additionalNumber!=null) {
-    		this.additionalNumber = new AdditionalNumberImpl(additionalNumber.getMSCNumber(), additionalNumber.getSGSNNumber());
-    	}    		        
+    	this.additionalNumber=additionalNumber;    	    		       
     }
 
     public AdditionalNumber getAdditionalNumber() {

@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.dialog;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+
 /**
  * MAP-UserAbortChoice ::= CHOICE { userSpecificReason [0] NULL, userResourceLimitation [1] NULL, resourceUnavailable [2]
  * ResourceUnavailableReason, applicationProcedureCancellation [3] ProcedureCancellationReason}
@@ -29,6 +32,7 @@ package org.restcomm.protocols.ss7.map.api.dialog;
  * @author amit bhayani
  *
  */
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x04,constructed=true,lengthIndefinite=false)
 public interface MAPUserAbortChoice {
 
     void setUserSpecificReason();

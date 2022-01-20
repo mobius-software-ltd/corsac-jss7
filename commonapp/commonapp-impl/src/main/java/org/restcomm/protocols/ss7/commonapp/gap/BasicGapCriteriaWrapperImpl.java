@@ -30,30 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class BasicGapCriteriaWrapperImpl {
-	@ASNChoise
-	private BasicGapCriteriaImpl basicGapCriteria;
+	@ASNChoise(defaultImplementation = BasicGapCriteriaImpl.class)
+	private BasicGapCriteria basicGapCriteria;
 
     public BasicGapCriteriaWrapperImpl() {
     }
 
     public BasicGapCriteriaWrapperImpl(BasicGapCriteria basicGapCriteria) {
-    	if(basicGapCriteria!=null) {
-    		if(basicGapCriteria instanceof BasicGapCriteriaImpl)
-    			this.basicGapCriteria = (BasicGapCriteriaImpl)basicGapCriteria;
-    		else if(basicGapCriteria.getCalledAddressAndService()!=null)
-    			this.basicGapCriteria = new BasicGapCriteriaImpl(basicGapCriteria.getCalledAddressAndService());
-    		else if(basicGapCriteria.getCalledAddressValue()!=null)
-    			this.basicGapCriteria = new BasicGapCriteriaImpl(basicGapCriteria.getCalledAddressValue());
-    		else if(basicGapCriteria.getCallingAddressAndService()!=null)
-    			this.basicGapCriteria = new BasicGapCriteriaImpl(basicGapCriteria.getCallingAddressAndService());
-    		else if(basicGapCriteria.getGapOnService()!=null)
-    			this.basicGapCriteria = new BasicGapCriteriaImpl(basicGapCriteria.getGapOnService());
-    	}
+    	this.basicGapCriteria = basicGapCriteria;    		
     }
 
     public BasicGapCriteria getBasicGapCriteria() {

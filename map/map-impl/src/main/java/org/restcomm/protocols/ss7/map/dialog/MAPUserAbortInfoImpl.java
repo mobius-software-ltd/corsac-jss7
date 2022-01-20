@@ -46,8 +46,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x04,constructed=true,lengthIndefinite=false)
 public class MAPUserAbortInfoImpl implements MAPUserAbortChoice {
-	@ASNChoise
-	private MAPUserAbortChoiseImpl userAbortChoise;
+	@ASNChoise(defaultImplementation = MAPUserAbortChoiseImpl.class)
+	private MAPUserAbortChoice userAbortChoise;
 	
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
 	private MAPExtensionContainer extensionContainer;
@@ -65,21 +65,7 @@ public class MAPUserAbortInfoImpl implements MAPUserAbortChoice {
     }
 
     public void setUserAbortChoise(MAPUserAbortChoice userAbortChoise) {
-    	if(userAbortChoise instanceof MAPUserAbortChoiseImpl)
-    		this.userAbortChoise = (MAPUserAbortChoiseImpl)userAbortChoise;
-    	else {
-    		if(this.userAbortChoise==null)
-    			this.userAbortChoise=new MAPUserAbortChoiseImpl();
-    		
-    		if(userAbortChoise.isUserResourceLimitation())
-    			this.userAbortChoise.setUserResourceLimitation();
-    		else if(userAbortChoise.isProcedureCancellationReason())
-    			this.userAbortChoise.setProcedureCancellationReason(userAbortChoise.getProcedureCancellationReason());
-    		else if(userAbortChoise.isResourceUnavailableReason())
-    			this.userAbortChoise.setResourceUnavailableReason(userAbortChoise.getResourceUnavailableReason());
-    		else if(userAbortChoise.isUserSpecificReason())
-    			this.userAbortChoise.setUserSpecificReason();    			
-    	}
+    	this.userAbortChoise = userAbortChoise;    	
     }
 
 	@Override

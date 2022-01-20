@@ -30,26 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ElapsedTimeWrapperImpl {
-	@ASNChoise
-	private ElapsedTimeImpl elapsedTime;
+	@ASNChoise(defaultImplementation = ElapsedTimeImpl.class)
+	private ElapsedTime elapsedTime;
 
     public ElapsedTimeWrapperImpl() {
     }
 
     public ElapsedTimeWrapperImpl(ElapsedTime elapsedTime) {
-    	if(elapsedTime!=null) {
-    		if(elapsedTime instanceof ElapsedTimeImpl)
-    			this.elapsedTime = (ElapsedTimeImpl)elapsedTime;
-    		else if(elapsedTime.getTimeGPRSIfNoTariffSwitch()!=null)
-    			this.elapsedTime = new ElapsedTimeImpl(elapsedTime.getTimeGPRSIfNoTariffSwitch());
-    		else if(elapsedTime.getTimeGPRSIfTariffSwitch()!=null)
-    			this.elapsedTime = new ElapsedTimeImpl(elapsedTime.getTimeGPRSIfTariffSwitch());
-    	}
+    	this.elapsedTime = elapsedTime;    		
     }
 
     public ElapsedTime getElapsedTime() {

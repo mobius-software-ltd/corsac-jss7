@@ -30,26 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class GPRSQoSWrapperImpl {
-	@ASNChoise
-	private GPRSQoSImpl gprsQoS;
+	@ASNChoise(defaultImplementation = GPRSQoSImpl.class)
+	private GPRSQoS gprsQoS;
 
     public GPRSQoSWrapperImpl() {
     }
 
     public GPRSQoSWrapperImpl(GPRSQoS gprsQoS) {
-    	if(gprsQoS!=null) {
-    		if(gprsQoS instanceof GPRSQoSImpl)
-    			this.gprsQoS = (GPRSQoSImpl)gprsQoS;
-    		else if(gprsQoS.getLongQoSFormat()!=null)
-    			this.gprsQoS=new GPRSQoSImpl(gprsQoS.getLongQoSFormat());
-    		else if(gprsQoS.getShortQoSFormat()!=null)
-    			this.gprsQoS=new GPRSQoSImpl(gprsQoS.getShortQoSFormat());
-    	}
+    	this.gprsQoS = gprsQoS;    		
     }
 
     public GPRSQoS getGPRSQoS() {

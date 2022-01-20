@@ -47,14 +47,14 @@ public class DialogPortionImpl implements DialogPortion {
 	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=26,constructed=false,index=-1,defaultImplementation = ProtocolVersionImpl.class)
 	private ProtocolVersion protocolVersion;
 	
-	@ASNChoise
-    private ApplicationContextImpl applicationContext;
+	@ASNChoise(defaultImplementation = ApplicationContextImpl.class)
+    private ApplicationContext applicationContext;
     
 	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=0x1D,constructed=true,index=-1,defaultImplementation = UserInformationImpl.class)
 	private UserInformation userInformation;
     
-    @ASNChoise
-    private SecurityContextImpl securityContext;
+    @ASNChoise(defaultImplementation = SecurityContextImpl.class)
+    private SecurityContext securityContext;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index = -1,defaultImplementation = ConfidentialityImpl.class)
     private Confidentiality confidentiality;
@@ -76,23 +76,7 @@ public class DialogPortionImpl implements DialogPortion {
     }
 
     public void setApplicationContext(ApplicationContext val) {
-    	if(val==null)
-    		this.applicationContext=null;
-    	else if(val instanceof ApplicationContextImpl)
-    		this.applicationContext=(ApplicationContextImpl)val;
-    	else {
-    		switch (val.getType()) {
-				case Integer:
-					this.applicationContext=(ApplicationContextImpl)TcapFactory.createApplicationContext(val.getInt());
-					break;
-				case ObjectId:
-					this.applicationContext=(ApplicationContextImpl)TcapFactory.createApplicationContext(val.getObj());
-					break;
-				default:
-					this.applicationContext=null;
-					break;			
-			}
-    	}
+    	this.applicationContext=val;    	
     }
 
     public UserInformation getUserInformation() {
@@ -108,23 +92,7 @@ public class DialogPortionImpl implements DialogPortion {
     }
 
     public void setSecurityContext(SecurityContext val) {
-    	if(val==null)
-    		this.securityContext=null;
-    	else if(val instanceof ApplicationContextImpl)
-    		this.securityContext=(SecurityContextImpl)val;
-    	else {
-    		switch (val.getType()) {
-				case Integer:
-					this.securityContext=(SecurityContextImpl)TcapFactory.createSecurityContext(val.getInt());
-					break;
-				case ObjectId:
-					this.securityContext=(SecurityContextImpl)TcapFactory.createSecurityContext(val.getObj());
-					break;
-				default:
-					this.securityContext=null;
-					break;			
-			}
-    	}
+    	this.securityContext=val;    	
     }
 
     public Confidentiality getConfidentiality() {

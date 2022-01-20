@@ -36,18 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class SubscriberStateWrapperImpl {
 	
-	@ASNChoise
-    private SubscriberStateImpl subscriberState;
+	@ASNChoise(defaultImplementation = SubscriberStateImpl.class)
+    private SubscriberState subscriberState;
 
     public SubscriberStateWrapperImpl() {
     }
 
     public SubscriberStateWrapperImpl(SubscriberState subscriberState) {
-    	if(subscriberState instanceof SubscriberStateImpl)
-    		this.subscriberState=(SubscriberStateImpl)subscriberState;
-    	else if(subscriberState!=null) {
-    		this.subscriberState = new SubscriberStateImpl(subscriberState.getSubscriberStateChoice(),subscriberState.getNotReachableReason());
-    	}
+    	this.subscriberState=subscriberState;    	
     }
 
     public SubscriberState getSubscriberState() {

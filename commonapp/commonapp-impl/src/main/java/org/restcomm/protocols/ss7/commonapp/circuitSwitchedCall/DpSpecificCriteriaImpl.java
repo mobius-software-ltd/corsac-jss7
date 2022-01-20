@@ -34,7 +34,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 /**
  *
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)

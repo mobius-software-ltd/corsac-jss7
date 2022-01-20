@@ -30,26 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class AChChargingAddressWrapperImpl {
-	@ASNChoise
-	private AChChargingAddressImpl aChChargingAddress;
+	@ASNChoise(defaultImplementation = AChChargingAddressImpl.class)
+	private AChChargingAddress aChChargingAddress;
 
     public AChChargingAddressWrapperImpl() {
     }
 
     public AChChargingAddressWrapperImpl(AChChargingAddress aChChargingAddress) {
-    	if(aChChargingAddress!=null) {
-    		if(aChChargingAddress instanceof AChChargingAddressImpl)
-    			this.aChChargingAddress = (AChChargingAddressImpl)aChChargingAddress;
-    		else if(aChChargingAddress.getLegID()!=null)
-    			this.aChChargingAddress = new AChChargingAddressImpl(aChChargingAddress.getLegID());
-    		else if(aChChargingAddress.getSrfConnection()!=0)
-    			this.aChChargingAddress = new AChChargingAddressImpl(aChChargingAddress.getSrfConnection());
-    	}
+    	this.aChChargingAddress = aChChargingAddress;    		
     }
 
     public AChChargingAddress getAChChargingAddress() {

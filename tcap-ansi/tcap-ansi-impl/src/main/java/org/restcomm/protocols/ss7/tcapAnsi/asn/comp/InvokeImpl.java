@@ -67,8 +67,8 @@ public abstract class InvokeImpl implements Invoke {
     private ASNInvokeSetParameterImpl setParameter=new ASNInvokeSetParameterImpl();
     private ASNInvokeParameterImpl seqParameter=null;
     
-    @ASNChoise
-    private OperationCodeImpl operationCode;
+    @ASNChoise(defaultImplementation = OperationCodeImpl.class)
+    private OperationCode operationCode;
     
     public InvokeImpl() {
         // Set Default Class

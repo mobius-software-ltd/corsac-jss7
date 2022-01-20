@@ -30,28 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ServingNodeAddressWrapperImpl {
-	@ASNChoise
-	private ServingNodeAddressImpl servingNodeAddress;
+	@ASNChoise(defaultImplementation = ServingNodeAddressImpl.class)
+	private ServingNodeAddress servingNodeAddress;
 
     public ServingNodeAddressWrapperImpl() {
     }
 
     public ServingNodeAddressWrapperImpl(ServingNodeAddress servingNodeAddress) {
-    	if(servingNodeAddress instanceof ServingNodeAddressImpl)
-    		this.servingNodeAddress=(ServingNodeAddressImpl)servingNodeAddress;
-    	else if(servingNodeAddress!=null) {
-    		if(servingNodeAddress.getMmeNumber()!=null)
-    			this.servingNodeAddress=new ServingNodeAddressImpl(servingNodeAddress.getMmeNumber());
-    		else if(servingNodeAddress.getMscNumber()!=null)
-    			this.servingNodeAddress=new ServingNodeAddressImpl(servingNodeAddress.getMscNumber(), true);
-    		else
-    			this.servingNodeAddress=new ServingNodeAddressImpl(servingNodeAddress.getSgsnNumber(), false);
-    	}
+    	this.servingNodeAddress=servingNodeAddress;    	
     }
 
     public ServingNodeAddress getServingNodeAddress() {

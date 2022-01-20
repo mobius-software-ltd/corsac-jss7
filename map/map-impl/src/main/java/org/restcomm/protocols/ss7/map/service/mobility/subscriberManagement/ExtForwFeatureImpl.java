@@ -49,8 +49,8 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ExtForwFeatureImpl implements ExtForwFeature {
-	@ASNChoise
-    private ExtBasicServiceCodeImpl basicService = null;
+	@ASNChoise(defaultImplementation = ExtBasicServiceCodeImpl.class)
+    private ExtBasicServiceCode basicService = null;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1,defaultImplementation = ExtSSStatusImpl.class)
     private ExtSSStatus ssStatus = null;
@@ -83,16 +83,8 @@ public class ExtForwFeatureImpl implements ExtForwFeature {
     		ISDNSubaddressString forwardedToSubaddress, ExtForwOptions forwardingOptions, Integer noReplyConditionTime,
             MAPExtensionContainer extensionContainer, FTNAddressString longForwardedToNumber) {
         
-    	if(basicService!=null) {
-    		if(basicService instanceof ExtBasicServiceCodeImpl)
-    			this.basicService = (ExtBasicServiceCodeImpl)basicService;
-    		else if(basicService.getExtBearerService()!=null)
-    			this.basicService=new ExtBasicServiceCodeImpl(basicService.getExtBearerService());
-    		else if(basicService.getExtTeleservice()!=null)
-    			this.basicService=new ExtBasicServiceCodeImpl(basicService.getExtTeleservice());
-    	}
-    	
-        this.ssStatus = ssStatus;
+    	this.basicService = basicService;
+    	this.ssStatus = ssStatus;
         this.forwardedToNumber = forwardedToNumber;
         this.forwardedToSubaddress = forwardedToSubaddress;
         this.forwardingOptions = forwardingOptions;
@@ -106,7 +98,7 @@ public class ExtForwFeatureImpl implements ExtForwFeature {
         this.longForwardedToNumber = longForwardedToNumber;
     }
 
-    public ExtBasicServiceCodeImpl getBasicService() {
+    public ExtBasicServiceCode getBasicService() {
         return this.basicService;
     }
 

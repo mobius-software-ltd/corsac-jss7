@@ -30,34 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class GPRSEventSpecificInformationWrapperImpl {
-	@ASNChoise
-	private GPRSEventSpecificInformationImpl gprsEventSpecificInformation;
+	@ASNChoise(defaultImplementation = GPRSEventSpecificInformationImpl.class)
+	private GPRSEventSpecificInformation gprsEventSpecificInformation;
 
     public GPRSEventSpecificInformationWrapperImpl() {
     }
 
     public GPRSEventSpecificInformationWrapperImpl(GPRSEventSpecificInformation gprsEventSpecificInformation) {
-    	if(gprsEventSpecificInformation!=null) {
-    		if(gprsEventSpecificInformation instanceof GPRSEventSpecificInformationImpl)
-    			this.gprsEventSpecificInformation = (GPRSEventSpecificInformationImpl)gprsEventSpecificInformation;
-    		else if(gprsEventSpecificInformation.getDetachSpecificInformation()!=null)
-    			this.gprsEventSpecificInformation=new GPRSEventSpecificInformationImpl(gprsEventSpecificInformation.getDetachSpecificInformation());
-    		else if(gprsEventSpecificInformation.getDisconnectSpecificInformation()!=null)
-    			this.gprsEventSpecificInformation=new GPRSEventSpecificInformationImpl(gprsEventSpecificInformation.getDisconnectSpecificInformation());
-    		else if(gprsEventSpecificInformation.getLocationInformationGPRS()!=null)
-    			this.gprsEventSpecificInformation=new GPRSEventSpecificInformationImpl(gprsEventSpecificInformation.getLocationInformationGPRS());
-    		else if(gprsEventSpecificInformation.getPdpContextChangeOfPositionSpecificInformation()!=null)
-    			this.gprsEventSpecificInformation=new GPRSEventSpecificInformationImpl(gprsEventSpecificInformation.getPdpContextChangeOfPositionSpecificInformation());
-    		else if(gprsEventSpecificInformation.getPDPContextEstablishmentAcknowledgementSpecificInformation()!=null)
-    			this.gprsEventSpecificInformation=new GPRSEventSpecificInformationImpl(gprsEventSpecificInformation.getPDPContextEstablishmentAcknowledgementSpecificInformation());
-    		else if(gprsEventSpecificInformation.getPDPContextEstablishmentSpecificInformation()!=null)
-    			this.gprsEventSpecificInformation=new GPRSEventSpecificInformationImpl(gprsEventSpecificInformation.getPDPContextEstablishmentSpecificInformation());    		
-    	}
+    	this.gprsEventSpecificInformation = gprsEventSpecificInformation;    		
     }
 
     public GPRSEventSpecificInformation getGPRSEventSpecificInformation() {

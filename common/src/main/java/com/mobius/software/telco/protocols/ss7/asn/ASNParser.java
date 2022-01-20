@@ -311,11 +311,11 @@ public class ASNParser
 				header.setLength(header.getLength() + buffer.readerIndex()-oldIndex);
 				buffer.resetReaderIndex();	
 				
-				if(fieldData.getField().getType().isAssignableFrom(List.class) && !fieldData.getField().getType().equals(Object.class)) {
-					Type[] innerTypes = ((ParameterizedType) fieldData.getField().getGenericType()).getActualTypeArguments();
-					effectiveClass=(Class<?>)innerTypes[0];					
-				}
-				else
+				//if(fieldData.getField().getType().isAssignableFrom(List.class) && !fieldData.getField().getType().equals(Object.class)) {
+				//	Type[] innerTypes = ((ParameterizedType) fieldData.getField().getGenericType()).getActualTypeArguments();
+				//	effectiveClass=(Class<?>)innerTypes[0];					
+				//}
+				//else
 					effectiveClass=fieldData.getDefaultClass();
 			}
 		}
@@ -925,7 +925,10 @@ public class ASNParser
 						if(wildcardTag!=null) {
 							annotatedFields.add(new FieldData(FieldType.WILDCARD, fields[i], fields[i].getType()));
 						} else if(choiseTag!=null) {
-							annotatedFields.add(new FieldData(FieldType.CHOISE, fields[i], fields[i].getType()));
+							if(!choiseTag.defaultImplementation().getCanonicalName().equals(Void.class.getCanonicalName()))
+								annotatedFields.add(new FieldData(FieldType.CHOISE, fields[i], choiseTag.defaultImplementation()));
+							else
+								annotatedFields.add(new FieldData(FieldType.CHOISE, fields[i], fields[i].getType()));
 						}
 						else {
 							ASNTag innerTag = null;
@@ -980,8 +983,11 @@ public class ASNParser
 					if(wildcardTag!=null) {
 						annotatedFields.add(new FieldData(FieldType.WILDCARD, fields[i], fields[i].getType()));
 					} else if(choiseTag!=null) {
-						annotatedFields.add(new FieldData(FieldType.CHOISE, fields[i], fields[i].getType()));
-					} 
+						if(!choiseTag.defaultImplementation().getCanonicalName().equals(Void.class.getCanonicalName()))
+							annotatedFields.add(new FieldData(FieldType.CHOISE, fields[i], choiseTag.defaultImplementation()));
+						else
+							annotatedFields.add(new FieldData(FieldType.CHOISE, fields[i], fields[i].getType()));						
+					}
 					else {
 						ASNTag innerTag = null;
 						Class<?> realType=fields[i].getType();
@@ -1055,19 +1061,25 @@ public class ASNParser
 						cachedData.addFieldsMapElement(asnHeader, new FieldData(FieldType.STANDARD,fields.get(i).getField(), defaultClass));
 					} else {
 						cachedData.addInnerMapElement(asnHeader, parentType);
-						cachedData.addFieldsMapElement(asnHeader, new FieldData(FieldType.CHOISE,parentField, parentField.getType()));						
+						cachedData.addFieldsMapElement(asnHeader, new FieldData(FieldType.CHOISE, parentField, parentType));						
 					}
 					break;
 				case CHOISE:
 					realType=fields.get(i).getField().getType();
-					if(fields.get(i).getField().getType().isAssignableFrom(List.class) && !fields.get(i).getField().getType().equals(Object.class)) {
-						Type[] innerTypes = ((ParameterizedType) fields.get(i).getField().getGenericType()).getActualTypeArguments();
-						if(innerTypes.length==1)
-							realType=((Class<?>)innerTypes[0]);							
+					Class<?> choiceDefaultClass=fields.get(i).getDefaultClass();
+					if(!choiceDefaultClass.getCanonicalName().equals(realType.getCanonicalName()))
+						realType=choiceDefaultClass;
+					else {
+						if(fields.get(i).getField().getType().isAssignableFrom(List.class) && !fields.get(i).getField().getType().equals(Object.class)) {
+							Type[] innerTypes = ((ParameterizedType) fields.get(i).getField().getGenericType()).getActualTypeArguments();
+							if(innerTypes.length==1)
+								realType=((Class<?>)innerTypes[0]);							
+						}
+						else if(fields.get(i).getField().getType().isAssignableFrom(ASNGeneric.class) && !fields.get(i).getField().getType().equals(Object.class)) {
+							realType=((Class<?>)((ParameterizedType)effectiveClass.getGenericSuperclass()).getActualTypeArguments()[0]);
+						}
 					}
-					else if(fields.get(i).getField().getType().isAssignableFrom(ASNGeneric.class) && !fields.get(i).getField().getType().equals(Object.class)) {
-						realType=((Class<?>)((ParameterizedType)effectiveClass.getGenericSuperclass()).getActualTypeArguments()[0]);
-					}	
+					
 					if(parentField!=null && parentType!=null)
 						processChoiseField(realType, cachedData, parentField, parentType);
 					else

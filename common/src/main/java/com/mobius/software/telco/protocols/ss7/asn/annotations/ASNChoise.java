@@ -36,4 +36,5 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface ASNChoise 
 {
+	public Class<?> defaultImplementation() default Void.class;
 }

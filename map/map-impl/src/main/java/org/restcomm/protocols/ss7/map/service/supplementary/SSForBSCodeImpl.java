@@ -43,8 +43,8 @@ public class SSForBSCodeImpl implements SSForBSCode {
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = SSCodeImpl.class)
 	private SSCode ssCode;
     
-    @ASNChoise
-    private BasicServiceCodeImpl basicServiceCode;
+    @ASNChoise(defaultImplementation = BasicServiceCodeImpl.class)
+    private BasicServiceCode basicServiceCode;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1)
     private ASNNull longFtnSupported;
@@ -54,16 +54,8 @@ public class SSForBSCodeImpl implements SSForBSCode {
 
     public SSForBSCodeImpl(SSCode ssCode, BasicServiceCode basicServiceCode, boolean longFtnSupported) {
         this.ssCode = ssCode;
-        
-        if(basicServiceCode instanceof BasicServiceCodeImpl)
-    		this.basicServiceCode=(BasicServiceCodeImpl)basicServiceCode;
-    	else if(basicServiceCode!=null) {
-    		if(basicServiceCode.getBearerService()!=null)
-    			this.basicServiceCode = new BasicServiceCodeImpl(basicServiceCode.getBearerService());
-    		else 
-    			this.basicServiceCode = new BasicServiceCodeImpl(basicServiceCode.getTeleservice());
-    	}
-        
+        this.basicServiceCode=basicServiceCode;
+    	
         if(longFtnSupported)
         	this.longFtnSupported = new ASNNull();
     }

@@ -30,26 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class InformationToSendWrapperImpl {
-	@ASNChoise
-	private InformationToSendImpl informationToSend;
+	@ASNChoise(defaultImplementation = InformationToSendImpl.class)
+	private InformationToSend informationToSend;
 
     public InformationToSendWrapperImpl() {
     }
 
     public InformationToSendWrapperImpl(InformationToSend informationToSend) {
-    	if(informationToSend!=null) {
-    		if(informationToSend instanceof InformationToSendImpl)
-    			this.informationToSend = (InformationToSendImpl)informationToSend;
-    		else if(informationToSend.getInbandInfo()!=null)
-    			this.informationToSend = new InformationToSendImpl(informationToSend.getInbandInfo());
-    		else if(informationToSend.getTone()!=null)
-    			this.informationToSend = new InformationToSendImpl(informationToSend.getTone());
-    	}
+    	this.informationToSend = informationToSend;    	
     }
 
     public InformationToSend getInformationToSend() {

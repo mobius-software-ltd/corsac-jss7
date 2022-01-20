@@ -36,25 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class FacilityGroupWrapperImpl {
 	
-	@ASNChoise
-    private FacilityGroupImpl facilityGroup;
+	@ASNChoise(defaultImplementation = FacilityGroupImpl.class)
+    private FacilityGroup facilityGroup;
 
     public FacilityGroupWrapperImpl() {
     }
 
     public FacilityGroupWrapperImpl(FacilityGroup facilityGroup) {
-    	if(facilityGroup instanceof FacilityGroupImpl)
-    		this.facilityGroup=(FacilityGroupImpl)facilityGroup;
-    	else if(facilityGroup!=null) {
-    		if(facilityGroup.getHuntGroup()!=null)
-    			this.facilityGroup = new FacilityGroupImpl(facilityGroup.getHuntGroup(),true);
-    		else if(facilityGroup.getRouteIndex()!=null)
-    			this.facilityGroup = new FacilityGroupImpl(facilityGroup.getRouteIndex(),false);
-    		else if(facilityGroup.getTrunkGroupID()!=null)
-    			this.facilityGroup = new FacilityGroupImpl(facilityGroup.getTrunkGroupID(),true);
-    		else if(facilityGroup.getPrivateFacilityID()!=null)
-    			this.facilityGroup = new FacilityGroupImpl(facilityGroup.getPrivateFacilityID(),false);
-    	}
+    	this.facilityGroup=facilityGroup;    	
     }
 
     public FacilityGroup getFacilityGroup() {

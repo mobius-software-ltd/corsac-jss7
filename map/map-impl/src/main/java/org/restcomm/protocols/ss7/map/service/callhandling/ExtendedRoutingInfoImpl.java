@@ -39,8 +39,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ExtendedRoutingInfoImpl implements ExtendedRoutingInfo {
-	@ASNChoise
-    private RoutingInfoImpl routingInfo = null;
+	@ASNChoise(defaultImplementation = RoutingInfoImpl.class)
+    private RoutingInfo routingInfo = null;
     
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=true,index=-1, defaultImplementation = CamelRoutingInfoImpl.class)
 	private CamelRoutingInfo camelRoutingInfo = null;
@@ -49,14 +49,7 @@ public class ExtendedRoutingInfoImpl implements ExtendedRoutingInfo {
     }
 
     public ExtendedRoutingInfoImpl(RoutingInfo routingInfo) {
-    	if(routingInfo instanceof RoutingInfoImpl)
-    		this.routingInfo=(RoutingInfoImpl)routingInfo;
-    	else if(routingInfo!=null) {
-    		if(routingInfo.getForwardingData()!=null)
-    			this.routingInfo = new RoutingInfoImpl(routingInfo.getForwardingData());
-    		else
-    			this.routingInfo = new RoutingInfoImpl(routingInfo.getRoamingNumber());
-    	}
+    	this.routingInfo=routingInfo;    	
     }
 
     public ExtendedRoutingInfoImpl(CamelRoutingInfo camelRoutingInfo) {

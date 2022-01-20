@@ -23,7 +23,6 @@
 package org.restcomm.protocols.ss7.m3ua.impl;
 
 import static org.testng.Assert.assertEquals;
-import io.netty.buffer.Unpooled;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -52,6 +51,8 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 import com.sun.nio.sctp.SctpChannel;
+
+import io.netty.buffer.Unpooled;
 
 /**
  *

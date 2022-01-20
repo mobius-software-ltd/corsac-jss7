@@ -30,26 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class TimeInformationWrapperImpl {
-	@ASNChoise
-	private TimeInformationImpl timeInformation;
+	@ASNChoise(defaultImplementation = TimeInformationImpl.class)
+	private TimeInformation timeInformation;
 
     public TimeInformationWrapperImpl() {
     }
 
     public TimeInformationWrapperImpl(TimeInformation timeInformation) {
-    	if(timeInformation!=null) {
-    		if(timeInformation instanceof TimeInformationImpl)
-    			this.timeInformation = (TimeInformationImpl)timeInformation;
-    		else if(timeInformation.getTimeIfNoTariffSwitch()!=null)
-    			this.timeInformation=new TimeInformationImpl(timeInformation.getTimeIfNoTariffSwitch());
-    		else if(timeInformation.getTimeIfTariffSwitch()!=null)
-    			this.timeInformation=new TimeInformationImpl(timeInformation.getTimeIfTariffSwitch());
-    	}
+    	this.timeInformation = timeInformation;    	
     }
 
     public TimeInformation getTimeInformation() {

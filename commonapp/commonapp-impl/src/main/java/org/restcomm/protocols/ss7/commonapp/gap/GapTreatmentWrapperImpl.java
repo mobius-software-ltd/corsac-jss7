@@ -30,26 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class GapTreatmentWrapperImpl {
-	@ASNChoise
-	private GapTreatmentImpl gapTreatment;
+	@ASNChoise(defaultImplementation = GapTreatmentImpl.class)
+	private GapTreatment gapTreatment;
 
     public GapTreatmentWrapperImpl() {
     }
 
     public GapTreatmentWrapperImpl(GapTreatment gapTreatment) {
-    	if(gapTreatment!=null) {
-    		if(gapTreatment instanceof GapTreatmentImpl)
-    			this.gapTreatment = (GapTreatmentImpl)gapTreatment;
-    		else if(gapTreatment.getCause()!=null)
-    			this.gapTreatment=new GapTreatmentImpl(gapTreatment.getCause());
-    		else if(gapTreatment.getInformationToSend()!=null)
-    			this.gapTreatment=new GapTreatmentImpl(gapTreatment.getInformationToSend());
-    	}
+    	this.gapTreatment = gapTreatment;    		
     }
 
     public GapTreatment getGapTreatment() {

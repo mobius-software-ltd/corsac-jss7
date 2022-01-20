@@ -43,8 +43,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWildcard;
 @ASNPreprocess
 public class ReturnResultInnerImpl {
 	// mandatory
-	@ASNChoise
-	private OperationCodeImpl operationCode;
+	@ASNChoise(defaultImplementation = OperationCodeImpl.class)
+	private OperationCode operationCode;
 	    
 	// optional
 	@ASNWildcard

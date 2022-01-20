@@ -36,21 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ExtBasicServiceCodeWrapperImpl {
 	
-	@ASNChoise
-    private ExtBasicServiceCodeImpl extBasicServiceCode;
+	@ASNChoise(defaultImplementation = ExtBasicServiceCodeImpl.class)
+    private ExtBasicServiceCode extBasicServiceCode;
 
     public ExtBasicServiceCodeWrapperImpl() {
     }
 
     public ExtBasicServiceCodeWrapperImpl(ExtBasicServiceCode extBasicServiceCode) {
-    	if(extBasicServiceCode instanceof ExtBasicServiceCodeImpl)
-    		this.extBasicServiceCode=(ExtBasicServiceCodeImpl)extBasicServiceCode;
-    	else if(extBasicServiceCode!=null) {
-    		if(extBasicServiceCode.getExtBearerService()!=null)
-    			this.extBasicServiceCode = new ExtBasicServiceCodeImpl(extBasicServiceCode.getExtBearerService());
-    		else if(extBasicServiceCode.getExtTeleservice()!=null)
-    			this.extBasicServiceCode = new ExtBasicServiceCodeImpl(extBasicServiceCode.getExtTeleservice());
-    	}
+    	this.extBasicServiceCode=extBasicServiceCode;    	
     }
 
     public ExtBasicServiceCode getExtBasicServiceCode() {

@@ -35,27 +35,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MidCallEventsWrapperImpl {
-	@ASNChoise
-	private MidCallEventsImpl midCallEvents;
+	@ASNChoise(defaultImplementation = MidCallEventsImpl.class)
+	private MidCallEvents midCallEvents;
 
     public MidCallEventsWrapperImpl() {
     }
 
     public MidCallEventsWrapperImpl(MidCallEvents midCallEvents) {
-    	if(midCallEvents!=null) {
-    		if(midCallEvents instanceof MidCallEventsImpl)
-    			this.midCallEvents = (MidCallEventsImpl)midCallEvents;
-    		else if(midCallEvents.getDTMFDigitsCompleted()!=null)
-    			this.midCallEvents=new MidCallEventsImpl(midCallEvents.getDTMFDigitsCompleted(), true);
-    		else if(midCallEvents.getDTMFDigitsTimeOut()!=null)
-    			this.midCallEvents=new MidCallEventsImpl(midCallEvents.getDTMFDigitsTimeOut(), false);
-    		else if(midCallEvents.getUserCallResume())
-    			this.midCallEvents=new MidCallEventsImpl(false,true);
-    		else if(midCallEvents.getUserCallSuspend())
-    			this.midCallEvents=new MidCallEventsImpl(true,false);
-    		else if(midCallEvents.getFlash())
-    			this.midCallEvents=new MidCallEventsImpl(false,false);
-    	}
+    	this.midCallEvents = midCallEvents;    		
     }
 
     public MidCallEvents getMidCallEventsWrapper() {

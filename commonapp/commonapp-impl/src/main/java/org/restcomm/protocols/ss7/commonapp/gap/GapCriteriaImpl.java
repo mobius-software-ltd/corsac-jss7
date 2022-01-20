@@ -36,8 +36,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class GapCriteriaImpl implements GapCriteria {
-	@ASNChoise
-	private BasicGapCriteriaImpl basicGapCriteria;
+	@ASNChoise(defaultImplementation = BasicGapCriteriaImpl.class)
+	private BasicGapCriteria basicGapCriteria;
     
 	@ASNProperty(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,index = -1,defaultImplementation = CompoundCriteriaImpl.class)
 	private CompoundCriteria compoundCriteria;
@@ -46,18 +46,7 @@ public class GapCriteriaImpl implements GapCriteria {
     }
 
     public GapCriteriaImpl(BasicGapCriteria basicGapCriteria) {
-    	if(basicGapCriteria!=null) {
-    		if(basicGapCriteria instanceof BasicGapCriteriaImpl)
-    			this.basicGapCriteria = (BasicGapCriteriaImpl)basicGapCriteria;
-    		else if(basicGapCriteria.getCalledAddressAndService()!=null)
-    			this.basicGapCriteria = new BasicGapCriteriaImpl(basicGapCriteria.getCalledAddressAndService());
-    		else if(basicGapCriteria.getCalledAddressValue()!=null)
-    			this.basicGapCriteria = new BasicGapCriteriaImpl(basicGapCriteria.getCalledAddressValue());
-    		else if(basicGapCriteria.getCallingAddressAndService()!=null)
-    			this.basicGapCriteria = new BasicGapCriteriaImpl(basicGapCriteria.getCallingAddressAndService());
-    		else if(basicGapCriteria.getGapOnService()!=null)
-    			this.basicGapCriteria = new BasicGapCriteriaImpl(basicGapCriteria.getGapOnService());
-    	}
+    	this.basicGapCriteria = basicGapCriteria;    		
     }
 
     public GapCriteriaImpl(CompoundCriteria compoundCriteria) {

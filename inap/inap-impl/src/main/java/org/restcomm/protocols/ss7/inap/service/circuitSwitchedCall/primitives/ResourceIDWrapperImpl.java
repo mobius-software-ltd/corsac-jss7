@@ -36,25 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ResourceIDWrapperImpl {
 	
-	@ASNChoise
-    private ResourceIDImpl resourceID;
+	@ASNChoise(defaultImplementation = ResourceIDImpl.class)
+    private ResourceID resourceID;
 
     public ResourceIDWrapperImpl() {
     }
 
     public ResourceIDWrapperImpl(ResourceID resourceID) {
-    	if(resourceID instanceof ResourceIDImpl)
-    		this.resourceID=(ResourceIDImpl)resourceID;
-    	else if(resourceID!=null) {
-    		if(resourceID.getFacilityGroup()!=null)
-    			this.resourceID = new ResourceIDImpl(resourceID.getFacilityGroup());
-    		else if(resourceID.getLineID()!=null)
-    			this.resourceID = new ResourceIDImpl(resourceID.getLineID());
-    		else if(resourceID.getTrunkGroupID()!=null)
-    			this.resourceID = new ResourceIDImpl(resourceID.getTrunkGroupID(),true);
-    		else if(resourceID.getFacilityGroupMemberID()!=null)
-    			this.resourceID = new ResourceIDImpl(resourceID.getFacilityGroupMemberID(),false);
-    	}
+    	this.resourceID=resourceID;    	
     }
 
     public ResourceID getResourceID() {

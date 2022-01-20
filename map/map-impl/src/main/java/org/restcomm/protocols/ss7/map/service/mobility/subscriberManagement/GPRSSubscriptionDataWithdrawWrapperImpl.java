@@ -30,27 +30,20 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class GPRSSubscriptionDataWithdrawWrapperImpl {
 	
-	@ASNChoise
-	private GPRSSubscriptionDataWithdrawImpl gprsSubscriptionDataWithdraw;
+	@ASNChoise(defaultImplementation = GPRSSubscriptionDataWithdrawImpl.class)
+	private GPRSSubscriptionDataWithdraw gprsSubscriptionDataWithdraw;
 
     public GPRSSubscriptionDataWithdrawWrapperImpl() {
     }
 
     public GPRSSubscriptionDataWithdrawWrapperImpl(GPRSSubscriptionDataWithdraw gprsSubscriptionDataWithdraw) {
-    	if(gprsSubscriptionDataWithdraw!=null) {
-    		if(gprsSubscriptionDataWithdraw instanceof GPRSSubscriptionDataWithdrawImpl)
-    			this.gprsSubscriptionDataWithdraw = (GPRSSubscriptionDataWithdrawImpl)gprsSubscriptionDataWithdraw;
-    		else if(gprsSubscriptionDataWithdraw.getContextIdList()!=null)
-    			this.gprsSubscriptionDataWithdraw=new GPRSSubscriptionDataWithdrawImpl(gprsSubscriptionDataWithdraw.getContextIdList());
-    		else
-    			this.gprsSubscriptionDataWithdraw=new GPRSSubscriptionDataWithdrawImpl(gprsSubscriptionDataWithdraw.getAllGPRSData());
-    	}    	        
+    	this.gprsSubscriptionDataWithdraw = gprsSubscriptionDataWithdraw;
     }
 
     public GPRSSubscriptionDataWithdraw getGPRSSubscriptionDataWithdraw() {

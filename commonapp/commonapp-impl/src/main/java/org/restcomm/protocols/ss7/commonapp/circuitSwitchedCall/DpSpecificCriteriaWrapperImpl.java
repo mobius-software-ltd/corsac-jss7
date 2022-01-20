@@ -30,29 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class DpSpecificCriteriaWrapperImpl {
-	@ASNChoise
-	private DpSpecificCriteriaImpl dpSpecificCriteria;
-
+	@ASNChoise(defaultImplementation = DpSpecificCriteriaImpl.class)
+	private DpSpecificCriteria dpSpecificCriteria;
+	
     public DpSpecificCriteriaWrapperImpl() {
     }
 
     public DpSpecificCriteriaWrapperImpl(DpSpecificCriteria dpSpecificCriteria) {
-    	if(dpSpecificCriteria!=null) {
-    		if(dpSpecificCriteria instanceof DpSpecificCriteriaImpl)
-    			this.dpSpecificCriteria = (DpSpecificCriteriaImpl)dpSpecificCriteria;
-    		else if(dpSpecificCriteria.getApplicationTimer()!=null)
-    			this.dpSpecificCriteria=new DpSpecificCriteriaImpl(dpSpecificCriteria.getApplicationTimer());
-    		else if(dpSpecificCriteria.getMidCallControlInfo()!=null)
-    			this.dpSpecificCriteria=new DpSpecificCriteriaImpl(dpSpecificCriteria.getMidCallControlInfo());
-    		else if(dpSpecificCriteria.getDpSpecificCriteriaAlt()!=null)
-    			this.dpSpecificCriteria=new DpSpecificCriteriaImpl(dpSpecificCriteria.getDpSpecificCriteriaAlt());
-    		
-    	}
+    	this.dpSpecificCriteria = dpSpecificCriteria;    	
     }
 
     public DpSpecificCriteria getDpSpecificCriteria() {

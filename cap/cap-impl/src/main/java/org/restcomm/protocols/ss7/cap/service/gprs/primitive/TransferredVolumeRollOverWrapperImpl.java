@@ -30,26 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class TransferredVolumeRollOverWrapperImpl {
-	@ASNChoise
-	private TransferredVolumeRollOverImpl transferredVolumeRollOver;
+	@ASNChoise(defaultImplementation = TransferredVolumeRollOverImpl.class)
+	private TransferredVolumeRollOver transferredVolumeRollOver;
 
     public TransferredVolumeRollOverWrapperImpl() {
     }
 
     public TransferredVolumeRollOverWrapperImpl(TransferredVolumeRollOver transferredVolumeRollOver) {
-    	if(transferredVolumeRollOver!=null) {
-    		if(transferredVolumeRollOver instanceof TransferredVolumeRollOverImpl)
-    			this.transferredVolumeRollOver = (TransferredVolumeRollOverImpl)transferredVolumeRollOver;
-    		else if(transferredVolumeRollOver.getROVolumeIfNoTariffSwitch()!=null)
-    			transferredVolumeRollOver = new TransferredVolumeRollOverImpl(transferredVolumeRollOver.getROVolumeIfNoTariffSwitch());
-    		else if(transferredVolumeRollOver.getROVolumeIfTariffSwitch()!=null)
-    			transferredVolumeRollOver = new TransferredVolumeRollOverImpl(transferredVolumeRollOver.getROVolumeIfTariffSwitch());
-    	}
+    	this.transferredVolumeRollOver = transferredVolumeRollOver;    		
     }
 
     public TransferredVolumeRollOver getTransferredVolumeRollOver() {

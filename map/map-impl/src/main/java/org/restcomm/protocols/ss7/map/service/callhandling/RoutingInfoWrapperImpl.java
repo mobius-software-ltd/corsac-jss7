@@ -36,21 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class RoutingInfoWrapperImpl {
 	
-	@ASNChoise
-    private RoutingInfoImpl routingInfo;
+	@ASNChoise(defaultImplementation = RoutingInfoImpl.class)
+    private RoutingInfo routingInfo;
 
     public RoutingInfoWrapperImpl() {
     }
 
     public RoutingInfoWrapperImpl(RoutingInfo routingInfo) {
-    	if(routingInfo instanceof RoutingInfoImpl)
-    		this.routingInfo=(RoutingInfoImpl)routingInfo;
-    	else if(routingInfo!=null) {
-    		if(routingInfo.getForwardingData()!=null)
-    			this.routingInfo = new RoutingInfoImpl(routingInfo.getForwardingData());
-    		else
-    			this.routingInfo = new RoutingInfoImpl(routingInfo.getRoamingNumber());
-    	}
+    	this.routingInfo=routingInfo;    	
     }
 
     public RoutingInfo getRoutingInfo() {

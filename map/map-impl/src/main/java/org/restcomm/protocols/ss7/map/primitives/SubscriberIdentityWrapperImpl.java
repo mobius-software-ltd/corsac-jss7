@@ -30,27 +30,20 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class SubscriberIdentityWrapperImpl {
 	
-	@ASNChoise
-    private SubscriberIdentityImpl subscriberIdentity;
+	@ASNChoise(defaultImplementation = SubscriberIdentityImpl.class)
+    private SubscriberIdentity subscriberIdentity;
 
     public SubscriberIdentityWrapperImpl() {
     }
 
     public SubscriberIdentityWrapperImpl(SubscriberIdentity subscriberIdentity) {
-    	if(subscriberIdentity instanceof SubscriberIdentityImpl)
-    		this.subscriberIdentity = (SubscriberIdentityImpl)subscriberIdentity;
-    	else if(subscriberIdentity==null)
-    		this.subscriberIdentity = null;
-    	else if(subscriberIdentity.getIMSI()!=null)
-    		this.subscriberIdentity=new SubscriberIdentityImpl(subscriberIdentity.getIMSI());
-    	else
-    		this.subscriberIdentity=new SubscriberIdentityImpl(subscriberIdentity.getMSISDN());
+    	this.subscriberIdentity = subscriberIdentity;    	
     }
 
     public SubscriberIdentity getSubscriberIdentity() {

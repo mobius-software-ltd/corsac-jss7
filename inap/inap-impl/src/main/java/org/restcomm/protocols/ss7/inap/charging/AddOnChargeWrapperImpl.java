@@ -36,21 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class AddOnChargeWrapperImpl {
 	
-	@ASNChoise
-    private AddOnChargeImpl addOnCharge;
+	@ASNChoise(defaultImplementation = AddOnChargeImpl.class)
+    private AddOnCharge addOnCharge;
 
     public AddOnChargeWrapperImpl() {
     }
 
     public AddOnChargeWrapperImpl(AddOnCharge addOnCharge) {
-    	if(addOnCharge instanceof AddOnChargeImpl)
-    		this.addOnCharge=(AddOnChargeImpl)addOnCharge;
-    	else if(addOnCharge!=null) {
-    		if(addOnCharge.getAddOnChargeCurrency()!=null)
-    			this.addOnCharge = new AddOnChargeImpl(addOnCharge.getAddOnChargeCurrency());
-    		else
-    			this.addOnCharge = new AddOnChargeImpl(addOnCharge.getAddOnChargePulse());
-    	}
+    	this.addOnCharge=addOnCharge;    	
     }
 
     public AddOnCharge getAddOnCharge() {

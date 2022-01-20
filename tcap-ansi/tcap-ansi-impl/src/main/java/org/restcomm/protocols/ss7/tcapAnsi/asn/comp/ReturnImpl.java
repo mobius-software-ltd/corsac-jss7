@@ -44,8 +44,8 @@ public abstract class ReturnImpl implements Return {
 	
 	private Dialog dialog;
 	
-	@ASNChoise
-    private OperationCodeImpl operationCode;
+	@ASNChoise(defaultImplementation = OperationCodeImpl.class)
+    private OperationCode operationCode;
     
     private ASNReturnSetParameterImpl setParameter=new ASNReturnSetParameterImpl();
     private ASNReturnParameterImpl seqParameter=null;
@@ -56,7 +56,7 @@ public abstract class ReturnImpl implements Return {
     
     @ASNGenericMapping
     public Class<?> getMapping(ASNParser parser) {
-    	OperationCodeImpl oc=operationCode;
+    	OperationCode oc=operationCode;
     	if(oc==null && correlationId!=null && dialog!=null) {
     		Invoke invoke=dialog.getInvoke(getCorrelationId());
     		if(invoke!=null) {
@@ -88,7 +88,7 @@ public abstract class ReturnImpl implements Return {
     	return null;
     }
     
-    public OperationCodeImpl getOperationCode() {
+    public OperationCode getOperationCode() {
     	return operationCode;
     }
 

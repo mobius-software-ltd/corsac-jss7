@@ -30,27 +30,22 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class LegIDWrapperImpl {
-	@ASNChoise
-	private LegIDImpl legID;
+	@ASNChoise(defaultImplementation = LegIDImpl.class)
+	private LegID legID;
 
     public LegIDWrapperImpl() {
     }
 
     public LegIDWrapperImpl(LegID legID) {
-    	if(legID==null)
-    		this.legID=null;
-    	else if(legID instanceof LegIDImpl)
-    		this.legID=(LegIDImpl)legID;
-    	else
-    		this.legID = new LegIDImpl(legID.getReceivingSideID(), legID.getSendingSideID());    	
+    	this.legID=legID;    	  
     }
 
-    public LegIDImpl getLegID() {
+    public LegID getLegID() {
     	return legID;
     }
 }

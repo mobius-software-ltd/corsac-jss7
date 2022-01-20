@@ -36,21 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class SCIBillingChargingCharacteristicsCS1WrapperImpl {
 	
-	@ASNChoise
-    private SCIBillingChargingCharacteristicsCS1Impl sciBillingChargingCharacteristics;
+	@ASNChoise(defaultImplementation = SCIBillingChargingCharacteristicsCS1Impl.class)
+    private SCIBillingChargingCharacteristicsCS1 sciBillingChargingCharacteristics;
 
     public SCIBillingChargingCharacteristicsCS1WrapperImpl() {
     }
 
     public SCIBillingChargingCharacteristicsCS1WrapperImpl(SCIBillingChargingCharacteristicsCS1 sciBillingChargingCharacteristics) {
-    	if(sciBillingChargingCharacteristics instanceof SCIBillingChargingCharacteristicsCS1Impl)
-    		this.sciBillingChargingCharacteristics=(SCIBillingChargingCharacteristicsCS1Impl)sciBillingChargingCharacteristics;
-    	else if(sciBillingChargingCharacteristics!=null) {
-    		if(sciBillingChargingCharacteristics.getChargingInformation()!=null)
-    			this.sciBillingChargingCharacteristics = new SCIBillingChargingCharacteristicsCS1Impl(sciBillingChargingCharacteristics.getChargingInformation());
-    		else if(sciBillingChargingCharacteristics.getChargingAnalysisInputData()!=null)
-    			this.sciBillingChargingCharacteristics = new SCIBillingChargingCharacteristicsCS1Impl(sciBillingChargingCharacteristics.getChargingAnalysisInputData());
-    	}
+    	this.sciBillingChargingCharacteristics=sciBillingChargingCharacteristics;    	
     }
 
     public SCIBillingChargingCharacteristicsCS1 getSCIBillingChargingCharacteristics() {

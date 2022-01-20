@@ -30,27 +30,20 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class EPSInfoWrapperImpl {
 	
-	@ASNChoise
-    private EPSInfoImpl epsInfo;
+	@ASNChoise(defaultImplementation = EPSInfoImpl.class)
+    private EPSInfo epsInfo;
 
     public EPSInfoWrapperImpl() {
     }
 
     public EPSInfoWrapperImpl(EPSInfo epsInfo) {
-    	if(epsInfo instanceof EPSInfoImpl)
-    		this.epsInfo=(EPSInfoImpl)epsInfo;
-    	else if(epsInfo!=null) {
-    		if(epsInfo.getPndGwUpdate()!=null)
-    			this.epsInfo = new EPSInfoImpl(epsInfo.getPndGwUpdate());
-    		else
-    			this.epsInfo = new EPSInfoImpl(epsInfo.getIsrInformation());
-    	}
+    	this.epsInfo=epsInfo;    	
     }
 
     public EPSInfo getEPSInfo() {

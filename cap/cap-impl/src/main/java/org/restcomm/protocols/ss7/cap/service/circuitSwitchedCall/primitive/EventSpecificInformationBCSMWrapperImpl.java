@@ -35,51 +35,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class EventSpecificInformationBCSMWrapperImpl {
-	@ASNChoise
-	private EventSpecificInformationBCSMImpl eventSpecificInformationBCSM;
+	@ASNChoise(defaultImplementation = EventSpecificInformationBCSMImpl.class)
+	private EventSpecificInformationBCSM eventSpecificInformationBCSM;
 
     public EventSpecificInformationBCSMWrapperImpl() {
     }
 
     public EventSpecificInformationBCSMWrapperImpl(EventSpecificInformationBCSM eventSpecificInformationBCSM) {
-    	if(eventSpecificInformationBCSM!=null) {
-    		if(eventSpecificInformationBCSM instanceof EventSpecificInformationBCSMImpl)
-    			this.eventSpecificInformationBCSM = (EventSpecificInformationBCSMImpl)eventSpecificInformationBCSM;
-    		else if(eventSpecificInformationBCSM.getCallAcceptedSpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getCallAcceptedSpecificInfo());
-    		else if(eventSpecificInformationBCSM.getDpSpecificInfoAlt()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getDpSpecificInfoAlt());
-    		else if(eventSpecificInformationBCSM.getOAbandonSpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getOAbandonSpecificInfo());
-    		else if(eventSpecificInformationBCSM.getOAnswerSpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getOAnswerSpecificInfo());
-    		else if(eventSpecificInformationBCSM.getOCalledPartyBusySpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getOCalledPartyBusySpecificInfo());
-    		else if(eventSpecificInformationBCSM.getOChangeOfPositionSpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getOChangeOfPositionSpecificInfo());
-    		else if(eventSpecificInformationBCSM.getODisconnectSpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getODisconnectSpecificInfo());
-    		else if(eventSpecificInformationBCSM.getOMidCallSpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getOMidCallSpecificInfo());
-    		else if(eventSpecificInformationBCSM.getONoAnswerSpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getONoAnswerSpecificInfo());
-    		else if(eventSpecificInformationBCSM.getOTermSeizedSpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getOTermSeizedSpecificInfo());
-    		else if(eventSpecificInformationBCSM.getRouteSelectFailureSpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getRouteSelectFailureSpecificInfo());
-    		else if(eventSpecificInformationBCSM.getTAnswerSpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getTAnswerSpecificInfo());
-    		else if(eventSpecificInformationBCSM.getTBusySpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getTBusySpecificInfo());
-    		else if(eventSpecificInformationBCSM.getTChangeOfPositionSpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getTChangeOfPositionSpecificInfo());
-    		else if(eventSpecificInformationBCSM.getTDisconnectSpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getTDisconnectSpecificInfo());
-    		else if(eventSpecificInformationBCSM.getTMidCallSpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getTMidCallSpecificInfo());
-    		else if(eventSpecificInformationBCSM.getTNoAnswerSpecificInfo()!=null)
-    			this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(eventSpecificInformationBCSM.getTNoAnswerSpecificInfo());
-    	}
+    	this.eventSpecificInformationBCSM = eventSpecificInformationBCSM;    	
     }
 
     public EventSpecificInformationBCSM getEventSpecificInformationBCSM() {

@@ -49,11 +49,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 public class MoForwardShortMessageRequestImpl extends SmsMessageImpl implements ForwardShortMessageRequest,MoForwardShortMessageRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNChoise
-    private SM_RP_DAImpl sM_RP_DA;
+	@ASNChoise(defaultImplementation = SM_RP_DAImpl.class)
+    private SM_RP_DA sM_RP_DA;
 	
-	@ASNChoise
-    private SM_RP_OAImpl sM_RP_OA;
+	@ASNChoise(defaultImplementation = SM_RP_OAImpl.class)
+    private SM_RP_OA sM_RP_OA;
 	
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=2, defaultImplementation = SmsSignalInfoImpl.class)
 	private SmsSignalInfo sm_RP_UI;
@@ -71,27 +71,8 @@ public class MoForwardShortMessageRequestImpl extends SmsMessageImpl implements 
 
     public MoForwardShortMessageRequestImpl(SM_RP_DA sM_RP_DA, SM_RP_OA sM_RP_OA, SmsSignalInfo sm_RP_UI,
             MAPExtensionContainer extensionContainer, IMSI imsi) {
-    	if(sM_RP_DA instanceof SM_RP_DAImpl)
-        	this.sM_RP_DA=(SM_RP_DAImpl)sM_RP_DA;
-        else if(sM_RP_DA!=null) {
-        	if(sM_RP_DA.getIMSI()!=null)
-            	this.sM_RP_DA = new SM_RP_DAImpl(sM_RP_DA.getIMSI());
-            else if(sM_RP_DA.getLMSI()!=null)
-            	this.sM_RP_DA = new SM_RP_DAImpl(sM_RP_DA.getLMSI());
-            else if(sM_RP_DA.getServiceCentreAddressDA()!=null)
-            	this.sM_RP_DA = new SM_RP_DAImpl(sM_RP_DA.getServiceCentreAddressDA());
-        }
-        
-        if(sM_RP_OA instanceof SM_RP_OAImpl)
-        	this.sM_RP_OA=(SM_RP_OAImpl)sM_RP_OA;
-        else if(sM_RP_OA!=null) {
-        	this.sM_RP_OA = new SM_RP_OAImpl();
-            if(sM_RP_OA.getMsisdn()!=null)
-            	this.sM_RP_OA.setMsisdn(sM_RP_OA.getMsisdn());
-            else if(sM_RP_OA.getServiceCentreAddressOA()!=null)
-            	this.sM_RP_OA.setServiceCentreAddressOA(sM_RP_OA.getServiceCentreAddressOA());
-        }
-        
+    	this.sM_RP_DA=sM_RP_DA;
+        this.sM_RP_OA=sM_RP_OA;
         this.sm_RP_UI = (SmsSignalInfoImpl) sm_RP_UI;
         this.extensionContainer = extensionContainer;
         this.imsi = imsi;
@@ -99,27 +80,8 @@ public class MoForwardShortMessageRequestImpl extends SmsMessageImpl implements 
     
     public MoForwardShortMessageRequestImpl(SM_RP_DA sM_RP_DA, SM_RP_OA sM_RP_OA, SmsSignalInfo sM_RP_UI,
             boolean moreMessagesToSend) {
-    	if(sM_RP_DA instanceof SM_RP_DAImpl)
-        	this.sM_RP_DA=(SM_RP_DAImpl)sM_RP_DA;
-        else if(sM_RP_DA!=null) {
-        	if(sM_RP_DA.getIMSI()!=null)
-            	this.sM_RP_DA = new SM_RP_DAImpl(sM_RP_DA.getIMSI());
-            else if(sM_RP_DA.getLMSI()!=null)
-            	this.sM_RP_DA = new SM_RP_DAImpl(sM_RP_DA.getLMSI());
-            else if(sM_RP_DA.getServiceCentreAddressDA()!=null)
-            	this.sM_RP_DA = new SM_RP_DAImpl(sM_RP_DA.getServiceCentreAddressDA());
-        }
-        
-        if(sM_RP_OA instanceof SM_RP_OAImpl)
-        	this.sM_RP_OA=(SM_RP_OAImpl)sM_RP_OA;
-        else if(sM_RP_OA!=null) {
-        	this.sM_RP_OA = new SM_RP_OAImpl();
-            if(sM_RP_OA.getMsisdn()!=null)
-            	this.sM_RP_OA.setMsisdn(sM_RP_OA.getMsisdn());
-            else if(sM_RP_OA.getServiceCentreAddressOA()!=null)
-            	this.sM_RP_OA.setServiceCentreAddressOA(sM_RP_OA.getServiceCentreAddressOA());
-        }
-        
+    	this.sM_RP_DA=sM_RP_DA;
+        this.sM_RP_OA=sM_RP_OA;
         this.sm_RP_UI = (SmsSignalInfoImpl) sM_RP_UI;
         
         if(moreMessagesToSend)

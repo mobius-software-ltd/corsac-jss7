@@ -30,26 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ChargingRollOverWrapperImpl {
-	@ASNChoise
-	private ChargingRollOverImpl chargingRollOver;
+	@ASNChoise(defaultImplementation = ChargingRollOverImpl.class)
+	private ChargingRollOver chargingRollOver;
 
     public ChargingRollOverWrapperImpl() {
     }
 
     public ChargingRollOverWrapperImpl(ChargingRollOver chargingRollOver) {
-    	if(chargingRollOver!=null) {
-    		if(chargingRollOver instanceof ChargingRollOverImpl)
-    			this.chargingRollOver = (ChargingRollOverImpl)chargingRollOver;
-    		else if(chargingRollOver.getElapsedTimeRollOver()!=null)
-    			this.chargingRollOver=new ChargingRollOverImpl(chargingRollOver.getElapsedTimeRollOver());
-    		else if(chargingRollOver.getTransferredVolumeRollOver()!=null)
-    			this.chargingRollOver=new ChargingRollOverImpl(chargingRollOver.getTransferredVolumeRollOver());
-    	}
+    	this.chargingRollOver = chargingRollOver;    		
     }
 
     public ChargingRollOver getChargingRollOver() {

@@ -36,27 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class SCPAddressWrapperImpl {
 	
-	@ASNChoise
-    private SCPAddressImpl scpAddress;
+	@ASNChoise(defaultImplementation = SCPAddressImpl.class)
+    private SCPAddress scpAddress;
 
     public SCPAddressWrapperImpl() {
     }
 
     public SCPAddressWrapperImpl(org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.SCPAddress scpAddress) {
-    	if(scpAddress instanceof SCPAddressImpl)
-    		this.scpAddress=(SCPAddressImpl)scpAddress;
-    	else if(scpAddress!=null) {
-    		if(scpAddress.getIsColocated())
-    			this.scpAddress = new SCPAddressImpl(true);
-    		else if(scpAddress.getGlobalTitle()!=null)
-    			this.scpAddress = new SCPAddressImpl(scpAddress.getGlobalTitle());
-    		else if(scpAddress.getGlobalTitleAndSSN()!=null)
-    			this.scpAddress = new SCPAddressImpl(scpAddress.getGlobalTitleAndSSN());
-    		else if(scpAddress.getPCAndSSN()!=null)
-    			this.scpAddress = new SCPAddressImpl(scpAddress.getPCAndSSN());
-    		else if(scpAddress.getPointCodeAndSubSystemNumberANSI()!=null)
-    			this.scpAddress = new SCPAddressImpl(scpAddress.getPointCodeAndSubSystemNumberANSI());
-    	}
+    	this.scpAddress=scpAddress;    	
     }
 
     public SCPAddress getSCPAddress() {

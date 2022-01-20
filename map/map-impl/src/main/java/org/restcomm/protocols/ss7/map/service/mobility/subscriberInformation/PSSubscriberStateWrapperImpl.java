@@ -30,23 +30,20 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class PSSubscriberStateWrapperImpl {
 	
-	@ASNChoise
-    private PSSubscriberStateImpl psSubscriberState;
+	@ASNChoise(defaultImplementation = PSSubscriberStateImpl.class)
+    private PSSubscriberState psSubscriberState;
 
     public PSSubscriberStateWrapperImpl() {
     }
 
     public PSSubscriberStateWrapperImpl(PSSubscriberState psSubscriberState) {
-    	if(psSubscriberState instanceof PSSubscriberStateImpl)
-    		this.psSubscriberState=(PSSubscriberStateImpl)psSubscriberState;
-    	else
-    		this.psSubscriberState = new PSSubscriberStateImpl(psSubscriberState.getChoice(), psSubscriberState.getNetDetNotReachable(), psSubscriberState.getPDPContextInfoList());
+    	this.psSubscriberState=psSubscriberState;    	
     }
 
     public PSSubscriberState getPSSubscriberState() {

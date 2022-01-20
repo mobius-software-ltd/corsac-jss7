@@ -36,21 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class FilteringTimeOutWrapperImpl {
 	
-	@ASNChoise
-    private FilteringTimeOutImpl filteringTimeOut;
+	@ASNChoise(defaultImplementation = FilteringTimeOutImpl.class)
+    private FilteringTimeOut filteringTimeOut;
 
     public FilteringTimeOutWrapperImpl() {
     }
 
     public FilteringTimeOutWrapperImpl(FilteringTimeOut filteringTimeOut) {
-    	if(filteringTimeOut instanceof FilteringTimeOutImpl)
-    		this.filteringTimeOut=(FilteringTimeOutImpl)filteringTimeOut;
-    	else if(filteringTimeOut!=null) {
-    		if(filteringTimeOut.getDuration()!=null)
-    			this.filteringTimeOut = new FilteringTimeOutImpl(filteringTimeOut.getDuration());
-    		else
-    			this.filteringTimeOut = new FilteringTimeOutImpl(filteringTimeOut.getStopTime());
-    	}
+    	this.filteringTimeOut=filteringTimeOut;    	
     }
 
     public FilteringTimeOut getFilteringTimeOut() {

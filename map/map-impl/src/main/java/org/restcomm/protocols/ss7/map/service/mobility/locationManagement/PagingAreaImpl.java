@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LocationArea;
@@ -39,35 +38,18 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class PagingAreaImpl implements PagingArea {
-	@ASNChoise
-    private List<LocationAreaImpl> locationAreas;
+	@ASNChoise(defaultImplementation = LocationAreaImpl.class)
+    private List<LocationArea> locationAreas;
 
     public PagingAreaImpl() {
     }
 
     public PagingAreaImpl(List<LocationArea> locationAreas) {
-    	if(locationAreas!=null) {
-    		this.locationAreas = new ArrayList<LocationAreaImpl>();
-    		for(LocationArea curr:locationAreas) {
-    			if(curr instanceof LocationAreaImpl)
-    				this.locationAreas.add((LocationAreaImpl)curr);
-    			else if(curr.getLAC()!=null)
-    				this.locationAreas.add(new LocationAreaImpl(curr.getLAC()));
-    			else if(curr.getLAIFixedLength()!=null)
-    				this.locationAreas.add(new LocationAreaImpl(curr.getLAIFixedLength()));    				
-    		}
-    	}
+    	this.locationAreas = locationAreas;    	
     }
 
     public List<LocationArea> getLocationAreas() {
-    	if(locationAreas==null)
-    		return null;
-    	
-    	List<LocationArea> output=new ArrayList<LocationArea>();
-    	for(LocationArea curr:locationAreas)
-    		output.add(curr);
-    	
-        return output;
+    	return locationAreas;
     }
 
     @Override

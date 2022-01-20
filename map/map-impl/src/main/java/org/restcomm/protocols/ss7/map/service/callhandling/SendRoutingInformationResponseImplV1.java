@@ -66,8 +66,8 @@ public class SendRoutingInformationResponseImplV1 extends CallHandlingMessageImp
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=2, defaultImplementation = CUGCheckInfoImpl.class)
 	private CUGCheckInfo cugCheckInfo;
     
-    @ASNChoise
-    private RoutingInfoImpl routingInfo;
+    @ASNChoise(defaultImplementation = RoutingInfoImpl.class)
+    private RoutingInfo routingInfo;
     
 	private long mapProtocolVersion;
 
@@ -86,16 +86,7 @@ public class SendRoutingInformationResponseImplV1 extends CallHandlingMessageImp
     public SendRoutingInformationResponseImplV1(long mapProtocolVersion, IMSI imsi, RoutingInfo routingInfo,
     		CUGCheckInfo cugCheckInfo) {
         this.imsi = imsi;        
-
-        if(routingInfo instanceof RoutingInfoImpl)
-    		this.routingInfo=(RoutingInfoImpl)routingInfo;
-    	else if(routingInfo!=null) {
-    		if(routingInfo.getForwardingData()!=null)
-    			this.routingInfo = new RoutingInfoImpl(routingInfo.getForwardingData());
-    		else
-    			this.routingInfo = new RoutingInfoImpl(routingInfo.getRoamingNumber());
-    	}
-        
+        this.routingInfo=routingInfo;
         this.cugCheckInfo = cugCheckInfo;
         this.mapProtocolVersion = mapProtocolVersion;
     }

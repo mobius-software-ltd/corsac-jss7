@@ -36,21 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class TariffWrapperImpl {
 	
-	@ASNChoise
-    private TariffImpl tariff;
+	@ASNChoise(defaultImplementation = TariffImpl.class)
+    private Tariff tariff;
 
     public TariffWrapperImpl() {
     }
 
     public TariffWrapperImpl(Tariff tariff) {
-    	if(tariff instanceof TariffImpl)
-    		this.tariff=(TariffImpl)tariff;
-    	else if(tariff!=null) {
-    		if(tariff.getAddOnChargingInformation()!=null)
-    			this.tariff = new TariffImpl(tariff.getAddOnChargingInformation());
-    		else
-    			this.tariff = new TariffImpl(tariff.getChargingTariffInformation());
-    	}
+    	this.tariff=tariff;    	
     }
 
     public Tariff getTariff() {

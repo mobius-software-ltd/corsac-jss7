@@ -30,27 +30,20 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class EPSSubscriptionDataWithdrawWrapperImpl {
 	
-	@ASNChoise
-	private EPSSubscriptionDataWithdrawImpl epsSubscriptionDataWithdraw;
+	@ASNChoise(defaultImplementation = EPSSubscriptionDataWithdrawImpl.class)
+	private EPSSubscriptionDataWithdraw epsSubscriptionDataWithdraw;
 
     public EPSSubscriptionDataWithdrawWrapperImpl() {
     }
 
     public EPSSubscriptionDataWithdrawWrapperImpl(EPSSubscriptionDataWithdraw epsSubscriptionDataWithdraw) {
-    	if(epsSubscriptionDataWithdraw==null)
-    		this.epsSubscriptionDataWithdraw=null;
-    	else if(epsSubscriptionDataWithdraw instanceof EPSSubscriptionDataWithdrawImpl)
-    		this.epsSubscriptionDataWithdraw = (EPSSubscriptionDataWithdrawImpl)epsSubscriptionDataWithdraw;
-    	else if(epsSubscriptionDataWithdraw.getContextIdList()!=null)
-    		this.epsSubscriptionDataWithdraw = new EPSSubscriptionDataWithdrawImpl(epsSubscriptionDataWithdraw.getContextIdList());
-    	else
-    		this.epsSubscriptionDataWithdraw = new EPSSubscriptionDataWithdrawImpl(epsSubscriptionDataWithdraw.getAllEpsData());
+    	this.epsSubscriptionDataWithdraw=epsSubscriptionDataWithdraw;    	
     }
 
     public EPSSubscriptionDataWithdraw getEPSSubscriptionDataWithdraw() {

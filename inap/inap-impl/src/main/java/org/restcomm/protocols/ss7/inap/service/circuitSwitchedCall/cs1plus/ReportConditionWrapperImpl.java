@@ -36,23 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ReportConditionWrapperImpl {
 	
-	@ASNChoise
-    private ReportConditionImpl reportCondition;
+	@ASNChoise(defaultImplementation = ReportConditionImpl.class)
+    private ReportCondition reportCondition;
 
     public ReportConditionWrapperImpl() {
     }
 
     public ReportConditionWrapperImpl(ReportCondition reportCondition) {
-    	if(reportCondition instanceof ReportConditionImpl)
-    		this.reportCondition=(ReportConditionImpl)reportCondition;
-    	else if(reportCondition!=null) {
-    		if(reportCondition.getReportAtEndOfConnection())
-    			this.reportCondition = new ReportConditionImpl(true,false);
-    		else if(reportCondition.getReportImmediately())
-    			this.reportCondition = new ReportConditionImpl(true,true);
-    		else if(reportCondition.getReportAtChargeLimit()!=null)
-    			this.reportCondition = new ReportConditionImpl(reportCondition.getReportAtChargeLimit());    		
-    	}
+    	this.reportCondition=reportCondition;    	
     }
 
     public ReportCondition getReportCondition() {

@@ -30,26 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class LegOrCallSegmentWrapperImpl {
-	@ASNChoise
-	private LegOrCallSegmentImpl legOrCallSegment;
+	@ASNChoise(defaultImplementation = LegOrCallSegmentImpl.class)
+	private LegOrCallSegment legOrCallSegment;
 
     public LegOrCallSegmentWrapperImpl() {
     }
 
     public LegOrCallSegmentWrapperImpl(LegOrCallSegment legOrCallSegment) {
-    	if(legOrCallSegment!=null) {
-    		if(legOrCallSegment instanceof LegOrCallSegmentImpl)
-    			this.legOrCallSegment = (LegOrCallSegmentImpl)legOrCallSegment;
-    		else if(legOrCallSegment.getCallSegmentID()!=null)
-    			this.legOrCallSegment = new LegOrCallSegmentImpl(legOrCallSegment.getCallSegmentID());
-    		else if(legOrCallSegment.getLegID()!=null)
-    			this.legOrCallSegment = new LegOrCallSegmentImpl(legOrCallSegment.getLegID());
-    	}
+    	this.legOrCallSegment = legOrCallSegment;    	
     }
 
     public LegOrCallSegment getLegOrCallSegment() {

@@ -30,24 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class CollectedInfoWrapperImpl {
-	@ASNChoise
-	private CollectedInfoImpl collectedInfo;
+	@ASNChoise(defaultImplementation = CollectedInfoImpl.class)
+	private CollectedInfo collectedInfo;
 
     public CollectedInfoWrapperImpl() {
     }
 
     public CollectedInfoWrapperImpl(CollectedInfo collectedInfo) {
-    	if(collectedInfo!=null) {
-    		if(collectedInfo instanceof CollectedInfoImpl)
-    			this.collectedInfo = (CollectedInfoImpl)collectedInfo;    		
-    		else if(collectedInfo.getCollectedDigits()!=null)
-    			this.collectedInfo = new CollectedInfoImpl(collectedInfo.getCollectedDigits());
-    	}
+    	this.collectedInfo = collectedInfo;    	
     }
 
     public CollectedInfo getCollectedInfo() {

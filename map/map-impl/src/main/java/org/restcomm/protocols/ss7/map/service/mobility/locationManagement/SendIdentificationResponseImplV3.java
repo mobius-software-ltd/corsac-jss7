@@ -52,8 +52,8 @@ public class SendIdentificationResponseImplV3 extends MobilityMessageImpl implem
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = IMSIImpl.class)
 	private IMSI imsi;
     
-    @ASNChoise
-    private AuthenticationSetListImpl authenticationSetList;
+    @ASNChoise(defaultImplementation = AuthenticationSetListImpl.class)
+    private AuthenticationSetList authenticationSetList;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1)
     private CurrentSecurityContextWrapperImpl currentSecurityContext;
@@ -76,15 +76,7 @@ public class SendIdentificationResponseImplV3 extends MobilityMessageImpl implem
             CurrentSecurityContext currentSecurityContext, MAPExtensionContainer extensionContainer, long mapProtocolVersion) {
         super();
         this.imsi = imsi;
-
-        if(authenticationSetList instanceof AuthenticationSetListImpl)
-        	this.authenticationSetList=(AuthenticationSetListImpl)authenticationSetList;
-        if(authenticationSetList!=null) {
-        	if(authenticationSetList.getQuintupletList()!=null)
-        		this.authenticationSetList = new AuthenticationSetListImpl(authenticationSetList.getQuintupletList());
-        	else if(authenticationSetList.getTripletList()!=null)
-        		this.authenticationSetList = new AuthenticationSetListImpl(authenticationSetList.getTripletList(), mapProtocolVersion);
-        }
+        this.authenticationSetList=authenticationSetList;
         
         if(currentSecurityContext!=null)
         	this.currentSecurityContext = new CurrentSecurityContextWrapperImpl(currentSecurityContext);

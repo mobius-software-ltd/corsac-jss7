@@ -204,5 +204,70 @@ public class ASNChoiseTest
 			ex.printStackTrace();
 			assertEquals(1, 2);
 		}
-	}	
+	}		
+	
+	@Test
+	public void testChoiseWithInterface() {		
+		parser.loadClass(ASNCompoundWithChoise4.class);
+		
+		String testString="ASN String";
+		
+		byte[] rootString=new byte[] { -81, 13, -33, 102, 10, 65, 83, 78, 32, 83, 116, 114, 105, 110, 103};
+		
+		ASNCompundPrimitiveInterface primitive=new ASNCompundPrimitive5(testString,null);
+		ASNCompoundWithChoise4 rootPrimitive=new ASNCompoundWithChoise4(primitive, null);
+		
+		try
+		{
+			ByteBuf encoded=parser.encode(rootPrimitive);
+			byte[] encodedRealData=new byte[encoded.readableBytes()];
+			encoded.readBytes(encodedRealData);
+			assertTrue(Arrays.equals(rootString, encodedRealData));
+			
+			ByteBuf bufferToDecode=Unpooled.wrappedBuffer(rootString);
+			Object decodedValue=parser.decode(bufferToDecode).getResult();
+			assertTrue(decodedValue instanceof ASNCompoundWithChoise4);
+			assertEquals(((ASNCompoundWithChoise4)decodedValue).getField1().getField1(),testString);
+			assertNull(((ASNCompoundWithChoise4)decodedValue).getField1().getField2());
+			assertNull(((ASNCompoundWithChoise4)decodedValue).getField2());
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			assertEquals(1, 2);
+		}
+	}		
+	
+	@Test
+	public void testChoiseListWithInterface() {		
+		parser.loadClass(ASNCompoundWithChoise5.class);
+		
+		String testString="ASN String";
+		
+		byte[] rootString=new byte[] { -81, 13, -33, 102, 10, 65, 83, 78, 32, 83, 116, 114, 105, 110, 103};
+		
+		ASNCompundPrimitiveInterface primitive=new ASNCompundPrimitive5(testString,null);
+		ASNCompoundWithChoise5 rootPrimitive=new ASNCompoundWithChoise5(Arrays.asList(new ASNCompundPrimitiveInterface[] {primitive}), null);
+		
+		try
+		{
+			ByteBuf encoded=parser.encode(rootPrimitive);
+			byte[] encodedRealData=new byte[encoded.readableBytes()];
+			encoded.readBytes(encodedRealData);
+			assertTrue(Arrays.equals(rootString, encodedRealData));
+			
+			ByteBuf bufferToDecode=Unpooled.wrappedBuffer(rootString);
+			Object decodedValue=parser.decode(bufferToDecode).getResult();
+			assertTrue(decodedValue instanceof ASNCompoundWithChoise5);
+			assertEquals(((ASNCompoundWithChoise5)decodedValue).getField1().size(),1);
+			assertEquals(((ASNCompoundWithChoise5)decodedValue).getField1().get(0).getField1(),testString);
+			assertNull(((ASNCompoundWithChoise5)decodedValue).getField1().get(0).getField2());
+			assertNull(((ASNCompoundWithChoise5)decodedValue).getField2());
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			assertEquals(1, 2);
+		}
+	}
 }

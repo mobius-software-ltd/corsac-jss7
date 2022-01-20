@@ -30,26 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class AudibleIndicatorWrapperImpl {
-	@ASNChoise
-	private AudibleIndicatorImpl audibleIndicator;
+	@ASNChoise(defaultImplementation = AudibleIndicatorImpl.class)
+	private AudibleIndicator audibleIndicator;
 
     public AudibleIndicatorWrapperImpl() {
     }
 
     public AudibleIndicatorWrapperImpl(AudibleIndicator audibleIndicator) {
-    	if(audibleIndicator!=null) {
-    		if(audibleIndicator instanceof AudibleIndicatorImpl)
-    			this.audibleIndicator = (AudibleIndicatorImpl)audibleIndicator;
-    		else if(audibleIndicator.getTone()!=null)
-    			this.audibleIndicator = new AudibleIndicatorImpl(audibleIndicator.getTone());
-    		else if(audibleIndicator.getBurstList()!=null)
-    			this.audibleIndicator = new AudibleIndicatorImpl(audibleIndicator.getBurstList());
-    	}
+    	this.audibleIndicator = audibleIndicator;    	
     }
 
     public AudibleIndicator getAudibleIndicator() {

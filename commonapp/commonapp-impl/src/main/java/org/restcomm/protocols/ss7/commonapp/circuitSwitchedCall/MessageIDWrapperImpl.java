@@ -30,30 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MessageIDWrapperImpl {
-	@ASNChoise
-	private MessageIDImpl messageID;
+	@ASNChoise(defaultImplementation = MessageIDImpl.class)
+	private MessageID messageID;
 
     public MessageIDWrapperImpl() {
     }
 
     public MessageIDWrapperImpl(MessageID messageID) {
-        if(messageID!=null) {
-        	if(messageID instanceof MessageIDImpl)
-        		this.messageID = (MessageIDImpl)messageID;
-        	else if(messageID.getElementaryMessageID()!=null)
-        		this.messageID=new MessageIDImpl(messageID.getElementaryMessageID());
-        	else if(messageID.getElementaryMessageIDs()!=null)
-        		this.messageID=new MessageIDImpl(messageID.getElementaryMessageIDs());
-        	else if(messageID.getText()!=null)
-        		this.messageID=new MessageIDImpl(messageID.getText());
-        	else if(messageID.getVariableMessage()!=null)
-        		this.messageID=new MessageIDImpl(messageID.getVariableMessage());
-        }
+       this.messageID = messageID;        	
     }
 
     public MessageID getMessageID() {

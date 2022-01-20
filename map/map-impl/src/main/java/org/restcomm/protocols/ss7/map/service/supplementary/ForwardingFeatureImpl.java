@@ -45,8 +45,8 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ForwardingFeatureImpl implements ForwardingFeature {
-	@ASNChoise
-    private BasicServiceCodeImpl basicServiceCode;
+	@ASNChoise(defaultImplementation = BasicServiceCodeImpl.class)
+    private BasicServiceCode basicServiceCode;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1, defaultImplementation = SSStatusImpl.class)
     private SSStatus ssStatus;
@@ -71,15 +71,7 @@ public class ForwardingFeatureImpl implements ForwardingFeature {
 
     public ForwardingFeatureImpl(BasicServiceCode basicServiceCode, SSStatus ssStatus, ISDNAddressString torwardedToNumber,
             ISDNAddressString forwardedToSubaddress, ForwardingOptions forwardingOptions, Integer noReplyConditionTime, FTNAddressString longForwardedToNumber) {
-    	if(basicServiceCode instanceof BasicServiceCodeImpl)
-    		this.basicServiceCode=(BasicServiceCodeImpl)basicServiceCode;
-    	else if(basicServiceCode!=null) {
-    		if(basicServiceCode.getBearerService()!=null)
-    			this.basicServiceCode = new BasicServiceCodeImpl(basicServiceCode.getBearerService());
-    		else 
-    			this.basicServiceCode = new BasicServiceCodeImpl(basicServiceCode.getTeleservice());
-    	}
-    	
+    	this.basicServiceCode=basicServiceCode;    	
         this.ssStatus = ssStatus;
         this.torwardedToNumber = torwardedToNumber;
         this.forwardedToSubaddress = forwardedToSubaddress;

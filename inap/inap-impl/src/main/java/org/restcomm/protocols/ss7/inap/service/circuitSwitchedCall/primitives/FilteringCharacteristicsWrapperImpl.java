@@ -36,21 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class FilteringCharacteristicsWrapperImpl {
 	
-	@ASNChoise
-    private FilteringCharacteristicsImpl filteringCharacteristics;
+	@ASNChoise(defaultImplementation = FilteringCharacteristicsImpl.class)
+    private FilteringCharacteristics filteringCharacteristics;
 
     public FilteringCharacteristicsWrapperImpl() {
     }
 
     public FilteringCharacteristicsWrapperImpl(FilteringCharacteristics filteringCharacteristics) {
-    	if(filteringCharacteristics instanceof FilteringCharacteristicsImpl)
-    		this.filteringCharacteristics=(FilteringCharacteristicsImpl)filteringCharacteristics;
-    	else if(filteringCharacteristics!=null) {
-    		if(filteringCharacteristics.getInterval()!=null)
-    			this.filteringCharacteristics = new FilteringCharacteristicsImpl(filteringCharacteristics.getInterval(),true);
-    		else
-    			this.filteringCharacteristics = new FilteringCharacteristicsImpl(filteringCharacteristics.getNumberOfCalls(),false);
-    	}
+    	this.filteringCharacteristics=filteringCharacteristics;    	
     }
 
     public FilteringCharacteristics getFilteringCharacteristics() {

@@ -45,8 +45,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class SendAuthenticationInfoResponseImplV3 extends MobilityMessageImpl implements SendAuthenticationInfoResponse {
 	private static final long serialVersionUID = 1L;
 
-	@ASNChoise
-    private AuthenticationSetListImpl authenticationSetList;
+	@ASNChoise(defaultImplementation = AuthenticationSetListImpl.class)
+    private AuthenticationSetList authenticationSetList;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
 	private MAPExtensionContainer extensionContainer;
@@ -68,15 +68,7 @@ public class SendAuthenticationInfoResponseImplV3 extends MobilityMessageImpl im
     		MAPExtensionContainer extensionContainer, EpsAuthenticationSetList epsAuthenticationSetList) {
         this.mapProtocolVersion = mapProtocolVersion;
 
-        if(authenticationSetList instanceof AuthenticationSetListImpl)
-        	this.authenticationSetList=(AuthenticationSetListImpl)authenticationSetList;
-        if(authenticationSetList!=null) {
-        	if(authenticationSetList.getQuintupletList()!=null)
-        		this.authenticationSetList = new AuthenticationSetListImpl(authenticationSetList.getQuintupletList());
-        	else if(authenticationSetList.getTripletList()!=null)
-        		this.authenticationSetList = new AuthenticationSetListImpl(authenticationSetList.getTripletList(), mapProtocolVersion);
-        }
-        
+        this.authenticationSetList=authenticationSetList;
         this.extensionContainer = extensionContainer;
         this.epsAuthenticationSetList = epsAuthenticationSetList;
     }

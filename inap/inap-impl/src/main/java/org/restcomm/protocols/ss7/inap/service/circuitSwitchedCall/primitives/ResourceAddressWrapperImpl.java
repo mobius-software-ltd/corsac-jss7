@@ -36,23 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ResourceAddressWrapperImpl {
 	
-	@ASNChoise
-    private ResourceAddressImpl resourceAddress;
+	@ASNChoise(defaultImplementation = ResourceAddressImpl.class)
+    private ResourceAddress resourceAddress;
 
     public ResourceAddressWrapperImpl() {
     }
 
     public ResourceAddressWrapperImpl(ResourceAddress resourceAddress) {
-    	if(resourceAddress instanceof ResourceAddressImpl)
-    		this.resourceAddress=(ResourceAddressImpl)resourceAddress;
-    	else if(resourceAddress!=null) {
-    		if(resourceAddress.getIPRoutingAddress()!=null)
-    			this.resourceAddress = new ResourceAddressImpl(resourceAddress.getIPRoutingAddress());
-    		else if(resourceAddress.getLegID()!=null)
-    			this.resourceAddress = new ResourceAddressImpl(resourceAddress.getLegID());
-    		else
-    			this.resourceAddress = new ResourceAddressImpl(resourceAddress.getNone());
-    	}
+    	this.resourceAddress=resourceAddress;    	
     }
 
     public ResourceAddress getResourceAddress() {

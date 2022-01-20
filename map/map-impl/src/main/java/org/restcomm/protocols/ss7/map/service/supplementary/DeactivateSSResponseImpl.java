@@ -39,23 +39,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class DeactivateSSResponseImpl extends SupplementaryMessageImpl implements DeactivateSSResponse {
 	private static final long serialVersionUID = 1L;
 
-	@ASNChoise
-    private SSInfoImpl ssInfo;
+	@ASNChoise(defaultImplementation = SSInfoImpl.class)
+    private SSInfo ssInfo;
 
     public DeactivateSSResponseImpl() {
     }
 
     public DeactivateSSResponseImpl(SSInfo ssInfo) {
-    	if(ssInfo instanceof SSInfoImpl)
-    		this.ssInfo=(SSInfoImpl)ssInfo;
-    	else if(ssInfo!=null) {
-    		if(ssInfo.getCallBarringInfo()!=null)
-    			this.ssInfo=new SSInfoImpl(ssInfo.getCallBarringInfo());
-    		else if(ssInfo.getForwardingInfo()!=null)
-    			this.ssInfo=new SSInfoImpl(ssInfo.getForwardingInfo());
-    		else
-    			this.ssInfo=new SSInfoImpl(ssInfo.getSsData());
-    	}
+    	this.ssInfo=ssInfo;    	
     }
 
     @Override

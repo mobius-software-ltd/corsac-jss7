@@ -46,8 +46,8 @@ public class MAPErrorMessageSsIncompatibilityImpl extends MAPErrorMessageImpl im
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1, defaultImplementation = SSCodeImpl.class)
     private SSCode ssCode;
     
-	@ASNChoise
-	private BasicServiceCodeImpl basicService;
+	@ASNChoise(defaultImplementation = BasicServiceCodeImpl.class)
+	private BasicServiceCode basicService;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1, defaultImplementation = SSStatusImpl.class)
     private SSStatus ssStatus;
@@ -58,16 +58,7 @@ public class MAPErrorMessageSsIncompatibilityImpl extends MAPErrorMessageImpl im
         super((long) MAPErrorCode.ssIncompatibility);
 
         this.ssCode = ssCode;
-
-        if(basicService instanceof BasicServiceCodeImpl)
-    		this.basicService=(BasicServiceCodeImpl)basicService;
-    	else if(basicService!=null) {
-    		if(basicService.getBearerService()!=null)
-    			this.basicService = new BasicServiceCodeImpl(basicService.getBearerService());
-    		else 
-    			this.basicService = new BasicServiceCodeImpl(basicService.getTeleservice());
-    	}
-        
+        this.basicService=basicService;
         this.ssStatus = ssStatus;
     }
 

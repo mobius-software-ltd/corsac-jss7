@@ -30,24 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class BearerCapabilityWrapperImpl {
-	@ASNChoise
-	private BearerCapabilityImpl bearerCapability;
+	@ASNChoise(defaultImplementation = BearerCapabilityImpl.class)
+	private BearerCapability bearerCapability;
 
     public BearerCapabilityWrapperImpl() {
     }
 
     public BearerCapabilityWrapperImpl(BearerCapability bearerCapability) {
-    	if(bearerCapability!=null) {
-    		if(bearerCapability instanceof BearerCapabilityImpl)
-    			this.bearerCapability = (BearerCapabilityImpl)bearerCapability;
-    		else if(bearerCapability.getBearerCap()!=null)
-    			this.bearerCapability = new BearerCapabilityImpl(bearerCapability.getBearerCap());
-    	}
+    	this.bearerCapability = bearerCapability;    	
     }
 
     public BearerCapability getBearerCapability() {

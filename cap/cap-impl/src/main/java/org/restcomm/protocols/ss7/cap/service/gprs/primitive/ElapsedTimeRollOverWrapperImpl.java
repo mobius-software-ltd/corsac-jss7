@@ -30,26 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ElapsedTimeRollOverWrapperImpl {
-	@ASNChoise
-	private ElapsedTimeRollOverImpl elapsedTimeRollOver;
+	@ASNChoise(defaultImplementation = ElapsedTimeRollOverImpl.class)
+	private ElapsedTimeRollOver elapsedTimeRollOver;
 
     public ElapsedTimeRollOverWrapperImpl() {
     }
 
     public ElapsedTimeRollOverWrapperImpl(ElapsedTimeRollOver elapsedTimeRollOver) {
-    	if(elapsedTimeRollOver!=null) {
-    		if(elapsedTimeRollOver instanceof ElapsedTimeRollOverImpl)
-    			this.elapsedTimeRollOver = (ElapsedTimeRollOverImpl)elapsedTimeRollOver;
-    		else if(elapsedTimeRollOver.getROTimeGPRSIfNoTariffSwitch()!=null)
-    			this.elapsedTimeRollOver = new ElapsedTimeRollOverImpl(elapsedTimeRollOver.getROTimeGPRSIfNoTariffSwitch());
-    		else if(elapsedTimeRollOver.getROTimeGPRSIfTariffSwitch()!=null)
-    			this.elapsedTimeRollOver = new ElapsedTimeRollOverImpl(elapsedTimeRollOver.getROTimeGPRSIfTariffSwitch());    		
-    	}
+    	this.elapsedTimeRollOver = elapsedTimeRollOver;    		
     }
 
     public ElapsedTimeRollOver getElapsedTimeRollOver() {

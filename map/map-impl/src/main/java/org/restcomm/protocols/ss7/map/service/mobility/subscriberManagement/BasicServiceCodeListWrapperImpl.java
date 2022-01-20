@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
@@ -33,37 +32,22 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class BasicServiceCodeListWrapperImpl {
-	@ASNChoise
-	private List<BasicServiceCodeImpl> basicServiceCodes;
+	@ASNChoise(defaultImplementation = BasicServiceCodeImpl.class)
+	private List<BasicServiceCode> basicServiceCodes;
 
     public BasicServiceCodeListWrapperImpl() {
     }
 
     public BasicServiceCodeListWrapperImpl(List<BasicServiceCode> basicServiceCodes) {
-    	if(basicServiceCodes!=null) {
-    		this.basicServiceCodes=new ArrayList<BasicServiceCodeImpl>();
-    		for(BasicServiceCode curr:basicServiceCodes) {
-    			if(curr.getBearerService()!=null)
-        			this.basicServiceCodes.add(new BasicServiceCodeImpl(curr.getBearerService()));
-        		else 
-        			this.basicServiceCodes.add(new BasicServiceCodeImpl(curr.getTeleservice()));
-    		}
-    	}
+    	this.basicServiceCodes=basicServiceCodes;
     }
 
     public List<BasicServiceCode> getBasicServiceCodes() {
-    	if(this.basicServiceCodes==null)
-    		return null;
-    	
-    	List<BasicServiceCode> output=new ArrayList<BasicServiceCode>();
-    	for(BasicServiceCodeImpl curr:basicServiceCodes)
-    		output.add(curr);
-    	
-    	return output;
+    	return basicServiceCodes;
     }
 }

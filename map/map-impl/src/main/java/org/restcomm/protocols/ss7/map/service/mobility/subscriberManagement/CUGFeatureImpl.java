@@ -42,8 +42,8 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class CUGFeatureImpl implements CUGFeature {
-	@ASNChoise
-    private ExtBasicServiceCodeImpl basicService = null;
+	@ASNChoise(defaultImplementation = ExtBasicServiceCodeImpl.class)
+    private ExtBasicServiceCode basicService = null;
     
 	private ASNInteger preferentialCugIndicator = null;
     
@@ -62,15 +62,8 @@ public class CUGFeatureImpl implements CUGFeature {
     public CUGFeatureImpl(ExtBasicServiceCode basicService, Integer preferentialCugIndicator,
             InterCUGRestrictions interCugRestrictions, MAPExtensionContainer extensionContainer) {
         
-    	if(basicService!=null) {
-    		if(basicService instanceof ExtBasicServiceCodeImpl)
-    			this.basicService = (ExtBasicServiceCodeImpl)basicService;
-    		else if(basicService.getExtBearerService()!=null)
-    			this.basicService=new ExtBasicServiceCodeImpl(basicService.getExtBearerService());
-    		else if(basicService.getExtTeleservice()!=null)
-    			this.basicService=new ExtBasicServiceCodeImpl(basicService.getExtTeleservice());
-    	}
-    	
+    	this.basicService = basicService;
+    		
         if(preferentialCugIndicator!=null) {
         	this.preferentialCugIndicator = new ASNInteger();
         	this.preferentialCugIndicator.setValue(preferentialCugIndicator.longValue());

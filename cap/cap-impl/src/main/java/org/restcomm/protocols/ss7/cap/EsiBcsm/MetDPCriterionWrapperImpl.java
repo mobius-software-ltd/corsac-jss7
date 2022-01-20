@@ -22,13 +22,9 @@
 
 package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterion;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterion.Boolean_Option;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterion.CellGlobalIdOrServiceAreaIdFixedLength_Option;
-import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterion.LAIFixedLength_Option;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -36,57 +32,22 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MetDPCriterionWrapperImpl {
-	@ASNChoise
-	private List<MetDPCriterionImpl> metDPCriterionImp;
+	@ASNChoise(defaultImplementation = MetDPCriterionImpl.class)
+	private List<MetDPCriterion> metDPCriterion;
 
     public MetDPCriterionWrapperImpl() {
     }
 
-    public MetDPCriterionWrapperImpl(List<MetDPCriterion> metDPCriterionImp) {
-    	if(metDPCriterionImp!=null) {
-    		this.metDPCriterionImp = new ArrayList<MetDPCriterionImpl>();
-    		for(MetDPCriterion curr:metDPCriterionImp) {
-    			if(curr instanceof MetDPCriterionImpl)
-    				this.metDPCriterionImp.add((MetDPCriterionImpl)curr);
-    			else if(curr.getEnteringCellGlobalId()!=null)
-    				this.metDPCriterionImp.add(new MetDPCriterionImpl(curr.getEnteringCellGlobalId(), CellGlobalIdOrServiceAreaIdFixedLength_Option.enteringCellGlobalId));
-    			else if(curr.getEnteringServiceAreaId()!=null)
-    				this.metDPCriterionImp.add(new MetDPCriterionImpl(curr.getEnteringServiceAreaId(), CellGlobalIdOrServiceAreaIdFixedLength_Option.enteringServiceAreaId));
-    			else if(curr.getLeavingCellGlobalId()!=null)
-    				this.metDPCriterionImp.add(new MetDPCriterionImpl(curr.getLeavingCellGlobalId(), CellGlobalIdOrServiceAreaIdFixedLength_Option.leavingCellGlobalId));
-    			else if(curr.getLeavingServiceAreaId()!=null)
-    				this.metDPCriterionImp.add(new MetDPCriterionImpl(curr.getLeavingServiceAreaId(), CellGlobalIdOrServiceAreaIdFixedLength_Option.leavingServiceAreaId));
-    			else if(curr.getEnteringLocationAreaId()!=null)
-    				this.metDPCriterionImp.add(new MetDPCriterionImpl(curr.getEnteringLocationAreaId(), LAIFixedLength_Option.enteringLocationAreaId));
-    			else if(curr.getLeavingLocationAreaId()!=null)
-    				this.metDPCriterionImp.add(new MetDPCriterionImpl(curr.getLeavingLocationAreaId(), LAIFixedLength_Option.leavingLocationAreaId));
-    			else if(curr.getMetDPCriterionAlt()!=null)
-    				this.metDPCriterionImp.add(new MetDPCriterionImpl(curr.getMetDPCriterionAlt()));
-    			else if(curr.getInterMSCHandOver())
-    				this.metDPCriterionImp.add(new MetDPCriterionImpl(Boolean_Option.interMSCHandOver));
-    			else if(curr.getInterPLMNHandOver())
-    				this.metDPCriterionImp.add(new MetDPCriterionImpl(Boolean_Option.interPLMNHandOver));
-    			else if(curr.getInterSystemHandOverToGSM())
-    				this.metDPCriterionImp.add(new MetDPCriterionImpl(Boolean_Option.interSystemHandOverToGSM));
-    			else if(curr.getInterSystemHandOverToUMTS())
-    				this.metDPCriterionImp.add(new MetDPCriterionImpl(Boolean_Option.interSystemHandOverToUMTS));
-    		}
-    	}
+    public MetDPCriterionWrapperImpl(List<MetDPCriterion> metDPCriterion) {
+    	this.metDPCriterion = metDPCriterion;
     }
 
     public List<MetDPCriterion> getMetDPCriterion() {
-    	if(metDPCriterionImp==null)
-    		return null;
-    	
-    	List<MetDPCriterion> result=new ArrayList<MetDPCriterion>();
-    	for(MetDPCriterionImpl curr:metDPCriterionImp)
-    		result.add(curr);
-    	
-    	return result;
+    	return metDPCriterion;
     }
 }

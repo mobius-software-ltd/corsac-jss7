@@ -30,26 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class TransferredVolumeWrapperImpl {
-	@ASNChoise
-	private TransferredVolumeImpl transferredVolume;
+	@ASNChoise(defaultImplementation = TransferredVolumeImpl.class)
+	private TransferredVolume transferredVolume;
 
     public TransferredVolumeWrapperImpl() {
     }
 
     public TransferredVolumeWrapperImpl(TransferredVolume transferredVolume) {
-    	if(transferredVolume!=null) {
-    		if(transferredVolume instanceof TransferredVolumeImpl)
-    			this.transferredVolume = (TransferredVolumeImpl)transferredVolume;
-    		else if(transferredVolume.getVolumeIfNoTariffSwitch()!=null)
-    			this.transferredVolume=new TransferredVolumeImpl(transferredVolume.getVolumeIfNoTariffSwitch());
-    		else if(transferredVolume.getVolumeIfTariffSwitch()!=null)
-    			this.transferredVolume=new TransferredVolumeImpl(transferredVolume.getVolumeIfTariffSwitch());
-    	}
+    	this.transferredVolume = transferredVolume;    		
     }
 
     public TransferredVolume getTransferredVolume() {

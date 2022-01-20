@@ -36,21 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class EntryWrapperImpl {
 	
-	@ASNChoise
-    private EntryImpl entry;
+	@ASNChoise(defaultImplementation = EntryImpl.class)
+    private Entry entry;
 
     public EntryWrapperImpl() {
     }
 
     public EntryWrapperImpl(Entry entry) {
-    	if(entry instanceof EntryImpl)
-    		this.entry=(EntryImpl)entry;
-    	else if(entry!=null) {
-    		if(entry.getAgreements()!=null)
-    			this.entry = new EntryImpl(entry.getAgreements());
-    		else
-    			this.entry = new EntryImpl(entry.getNetworkSpecific());
-    	}
+    	this.entry=entry;    	
     }
 
     public Entry getEntry() {

@@ -36,21 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class USIServiceIndicatorWrapperImpl {
 	
-	@ASNChoise
-    private USIServiceIndicatorImpl usiServiceIndicator;
+	@ASNChoise(defaultImplementation = USIServiceIndicatorImpl.class)
+    private USIServiceIndicator usiServiceIndicator;
 
     public USIServiceIndicatorWrapperImpl() {
     }
 
     public USIServiceIndicatorWrapperImpl(USIServiceIndicator usiServiceIndicator) {
-    	if(usiServiceIndicator instanceof USIServiceIndicatorImpl)
-    		this.usiServiceIndicator=(USIServiceIndicatorImpl)usiServiceIndicator;
-    	else if(usiServiceIndicator!=null) {
-    		if(usiServiceIndicator.getGlobal()!=null)
-    			this.usiServiceIndicator = new USIServiceIndicatorImpl(usiServiceIndicator.getGlobal());
-    		else
-    			this.usiServiceIndicator = new USIServiceIndicatorImpl(usiServiceIndicator.getLocal());
-    	}
+    	this.usiServiceIndicator=usiServiceIndicator;    	
     }
 
     public USIServiceIndicator getUSIServiceIndicator() {

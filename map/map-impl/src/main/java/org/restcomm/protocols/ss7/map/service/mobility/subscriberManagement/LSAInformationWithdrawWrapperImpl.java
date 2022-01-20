@@ -30,27 +30,20 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class LSAInformationWithdrawWrapperImpl {
 	
-	@ASNChoise
-	private LSAInformationWithdrawImpl lsaInformationWithdraw;
+	@ASNChoise(defaultImplementation = LSAInformationWithdrawImpl.class)
+	private LSAInformationWithdraw lsaInformationWithdraw;
 
     public LSAInformationWithdrawWrapperImpl() {
     }
 
     public LSAInformationWithdrawWrapperImpl(LSAInformationWithdraw lsaInformationWithdraw) {
-    	if(lsaInformationWithdraw!=null) {
-    		if(lsaInformationWithdraw instanceof LSAInformationWithdrawImpl)
-    			this.lsaInformationWithdraw = (LSAInformationWithdrawImpl)lsaInformationWithdraw;
-    		else if(lsaInformationWithdraw.getLSAIdentityList()!=null)
-    			this.lsaInformationWithdraw=new LSAInformationWithdrawImpl(lsaInformationWithdraw.getLSAIdentityList());
-    		else
-    			this.lsaInformationWithdraw=new LSAInformationWithdrawImpl(lsaInformationWithdraw.getAllLSAData());
-    	}
+    	this.lsaInformationWithdraw = lsaInformationWithdraw;
     }
 
     public LSAInformationWithdraw getLSAInformationWithdraw() {

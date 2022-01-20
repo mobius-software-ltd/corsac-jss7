@@ -30,27 +30,20 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class SuperChargerInfoWrapperImpl {
 	
-	@ASNChoise
-    private SuperChargerInfoImpl superChargerInfo;
+	@ASNChoise(defaultImplementation = SuperChargerInfoImpl.class)
+    private SuperChargerInfo superChargerInfo;
 
     public SuperChargerInfoWrapperImpl() {
     }
 
     public SuperChargerInfoWrapperImpl(SuperChargerInfo superChargerInfo) {
-    	if(superChargerInfo instanceof SuperChargerInfoImpl)
-    		this.superChargerInfo=(SuperChargerInfoImpl)superChargerInfo;
-    	else if(superChargerInfo!=null) {
-    		if(superChargerInfo.getSendSubscriberData()!=null)
-    			this.superChargerInfo = new SuperChargerInfoImpl(superChargerInfo.getSendSubscriberData());
-    		else
-    			this.superChargerInfo = new SuperChargerInfoImpl(superChargerInfo.getSubscriberDataStored());
-    	}
+    	this.superChargerInfo=superChargerInfo;    	
     }
 
     public SuperChargerInfo getSuperChargerInfo() {

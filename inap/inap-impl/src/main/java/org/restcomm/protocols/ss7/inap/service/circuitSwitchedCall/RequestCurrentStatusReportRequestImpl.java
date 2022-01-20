@@ -40,25 +40,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class RequestCurrentStatusReportRequestImpl extends CircuitSwitchedCallMessageImpl implements RequestCurrentStatusReportRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNChoise
-	private ResourceIDImpl resourceID;
+	@ASNChoise(defaultImplementation = ResourceIDImpl.class)
+	private ResourceID resourceID;
     
     public RequestCurrentStatusReportRequestImpl() {
     }
 
     public RequestCurrentStatusReportRequestImpl(ResourceID resourceID) {
-    	if(resourceID instanceof ResourceIDImpl)
-    		this.resourceID=(ResourceIDImpl)resourceID;
-    	else if(resourceID!=null) {
-    		if(resourceID.getFacilityGroup()!=null)
-    			this.resourceID = new ResourceIDImpl(resourceID.getFacilityGroup());
-    		else if(resourceID.getLineID()!=null)
-    			this.resourceID = new ResourceIDImpl(resourceID.getLineID());
-    		else if(resourceID.getTrunkGroupID()!=null)
-    			this.resourceID = new ResourceIDImpl(resourceID.getTrunkGroupID(),true);
-    		else if(resourceID.getFacilityGroupMemberID()!=null)
-    			this.resourceID = new ResourceIDImpl(resourceID.getFacilityGroupMemberID(),false);
-    	}
+    	this.resourceID=resourceID;    	
     }
 
     @Override

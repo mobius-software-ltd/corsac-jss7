@@ -66,8 +66,8 @@ public class InvokeImpl implements Invoke {
     private Invoke linkedInvoke;
 
     // mandatory
-	@ASNChoise
-    private OperationCodeImpl operationCode;
+	@ASNChoise(defaultImplementation = OperationCodeImpl.class)
+    private OperationCode operationCode;
     
     // optional
     @ASNWildcard

@@ -30,27 +30,20 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl {
 	
-	@ASNChoise
-    private CellGlobalIdOrServiceAreaIdOrLAIImpl cellGlobalIdOrServiceAreaIdOrLAI;
+	@ASNChoise(defaultImplementation = CellGlobalIdOrServiceAreaIdOrLAIImpl.class)
+    private CellGlobalIdOrServiceAreaIdOrLAI cellGlobalIdOrServiceAreaIdOrLAI;
 
     public CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl() {
     }
 
     public CellGlobalIdOrServiceAreaIdOrLAIWrapperImpl(CellGlobalIdOrServiceAreaIdOrLAI cellGlobalIdOrServiceAreaIdOrLAI) {
-    	if(cellGlobalIdOrServiceAreaIdOrLAI instanceof CellGlobalIdOrServiceAreaIdOrLAIImpl)
-    		this.cellGlobalIdOrServiceAreaIdOrLAI=(CellGlobalIdOrServiceAreaIdOrLAIImpl)cellGlobalIdOrServiceAreaIdOrLAI;
-    	else if(cellGlobalIdOrServiceAreaIdOrLAI!=null) {
-    		if(cellGlobalIdOrServiceAreaIdOrLAI.getCellGlobalIdOrServiceAreaIdFixedLength()!=null)
-    			this.cellGlobalIdOrServiceAreaIdOrLAI = new CellGlobalIdOrServiceAreaIdOrLAIImpl(cellGlobalIdOrServiceAreaIdOrLAI.getCellGlobalIdOrServiceAreaIdFixedLength());
-    		else
-    			this.cellGlobalIdOrServiceAreaIdOrLAI = new CellGlobalIdOrServiceAreaIdOrLAIImpl(cellGlobalIdOrServiceAreaIdOrLAI.getLAIFixedLength());
-    	}
+    	this.cellGlobalIdOrServiceAreaIdOrLAI=cellGlobalIdOrServiceAreaIdOrLAI;    	
     }
 
     public CellGlobalIdOrServiceAreaIdOrLAI getCellGlobalIdOrServiceAreaIdOrLAI() {

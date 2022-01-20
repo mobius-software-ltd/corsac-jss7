@@ -36,23 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class EventSpecificInfoChargingWrapperImpl {
 	
-	@ASNChoise
-    private EventSpecificInfoChargingImpl eventSpecificInfoCharging;
+	@ASNChoise(defaultImplementation = EventSpecificInfoChargingImpl.class)
+    private EventSpecificInfoCharging eventSpecificInfoCharging;
 
     public EventSpecificInfoChargingWrapperImpl() {
     }
 
     public EventSpecificInfoChargingWrapperImpl(EventSpecificInfoCharging eventSpecificInfoCharging) {
-    	if(eventSpecificInfoCharging instanceof EventSpecificInfoChargingImpl)
-    		this.eventSpecificInfoCharging=(EventSpecificInfoChargingImpl)eventSpecificInfoCharging;
-    	else if(eventSpecificInfoCharging!=null) {
-    		if(eventSpecificInfoCharging.getTariffInformation()!=null)
-    			this.eventSpecificInfoCharging = new EventSpecificInfoChargingImpl(eventSpecificInfoCharging.getTariffInformation());
-    		else if(eventSpecificInfoCharging.getTariffIndicator()!=null)
-    			this.eventSpecificInfoCharging = new EventSpecificInfoChargingImpl(eventSpecificInfoCharging.getTariffIndicator());
-    		else if(eventSpecificInfoCharging.getChargeNoChargeIndication()!=null)
-    			this.eventSpecificInfoCharging = new EventSpecificInfoChargingImpl(eventSpecificInfoCharging.getChargeNoChargeIndication());    		
-    	}
+    	this.eventSpecificInfoCharging=eventSpecificInfoCharging;    	
     }
 
     public EventSpecificInfoCharging getEventSpecificInfoCharging() {

@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
@@ -30,7 +29,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNExclude;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
@@ -45,50 +43,14 @@ External Identifier = Tag.EXTERNAL
 */
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=0x1D,constructed=true,lengthIndefinite=false)
 public class UserInformationImpl implements UserInformation {
-	@ASNChoise
-	private List<UserInformationElementImpl> ext;
+	@ASNChoise(defaultImplementation = UserInformationElementImpl.class)
+	private List<UserInformationElement> ext;
 
-	@ASNExclude
-	private List<UserInformationElement> realExt;
-	
 	public List<UserInformationElement> getUserInformationElements() {
-		if(realExt==null && ext!=null) {
-			realExt=new ArrayList<UserInformationElement>();
-			for(UserInformationElementImpl curr:ext)
-				realExt.add(curr);
-		}
-		
-		return realExt;				
+		return ext;		
 	}
 
 	public void setUserInformationElements(List<UserInformationElement> ext) {
-		this.realExt=ext;
-		if(ext==null)
-			this.ext=null;
-		else {
-			this.ext=new ArrayList<UserInformationElementImpl>();
-			for(UserInformationElement curr:ext) {
-				if(curr instanceof UserInformationElementImpl)
-					this.ext.add((UserInformationElementImpl)curr);
-				else {
-					UserInformationElementImpl currExt=new UserInformationElementImpl();
-					if(curr.isIDIndirect())
-						currExt.setIdentifier(curr.getIndirectReference());
-					else if(curr.isIDDescriptor())
-						currExt.setIdentifier(curr.getDescriptor());
-					else if(curr.isIDObjectIdentifier()) 
-						currExt.setIdentifier(curr.getObjectIdentifier());
-					
-					if(curr.isValueBitString())
-						currExt.setChild(curr.getBitString());
-					else if(curr.isValueObject())
-						currExt.setChildAsObject(curr.getChild());
-					else if(curr.isValueString())
-						currExt.setChild(curr.getChildString());
-					
-					this.ext.add(currExt);
-				}
-			}
-		}
+		this.ext=ext;		
 	}
 }

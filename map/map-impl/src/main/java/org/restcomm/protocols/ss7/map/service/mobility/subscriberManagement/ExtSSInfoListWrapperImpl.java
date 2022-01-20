@@ -33,46 +33,23 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ExtSSInfoListWrapperImpl {
 	
-	@ASNChoise
-	private List<ExtSSInfoImpl> extSSInfo;
+	@ASNChoise(defaultImplementation = ExtSSInfoImpl.class)
+	private List<ExtSSInfo> extSSInfo;
 
     public ExtSSInfoListWrapperImpl() {
     }
 
     public ExtSSInfoListWrapperImpl(List<ExtSSInfo> extSSInfo) {
-    	if(extSSInfo!=null) {
-    		this.extSSInfo=new ArrayList<ExtSSInfoImpl>();
-    		for(ExtSSInfo curr:extSSInfo) {
-    			if(curr instanceof ExtSSInfoImpl)
-    				this.extSSInfo.add((ExtSSInfoImpl)curr);
-    			else if(curr.getCallBarringInfo()!=null)
-    				this.extSSInfo.add(new ExtSSInfoImpl(curr.getCallBarringInfo()));
-    			else if(curr.getCugInfo()!=null)
-    				this.extSSInfo.add(new ExtSSInfoImpl(curr.getCugInfo()));
-    			else if(curr.getEmlppInfo()!=null)
-    				this.extSSInfo.add(new ExtSSInfoImpl(curr.getEmlppInfo()));
-    			else if(curr.getForwardingInfo()!=null)
-    				this.extSSInfo.add(new ExtSSInfoImpl(curr.getForwardingInfo()));
-    			else if(curr.getSsData()!=null)
-    				this.extSSInfo.add(new ExtSSInfoImpl(curr.getSsData()));
-    		}
-    	}
+    	this.extSSInfo=extSSInfo;
     }
 
     public List<ExtSSInfo> getExtSSInfo() {
-    	if(extSSInfo==null)
-    		return null;
-    	
-    	List<ExtSSInfo> result=new ArrayList<ExtSSInfo>();
-    	for(ExtSSInfoImpl curr:extSSInfo)
-    		result.add(curr);
-    	
-    	return result;
+    	return extSSInfo;
     }
 }

@@ -48,8 +48,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ConnectToResourceRequestImpl extends CircuitSwitchedCallMessageImpl implements ConnectToResourceRequest {
 	private static final long serialVersionUID = 1L;
 
-	@ASNChoise
-    private ResourceAddressImpl resourceAddress;
+	@ASNChoise(defaultImplementation = ResourceAddressImpl.class)
+    private ResourceAddress resourceAddress;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1,defaultImplementation = ResourceAddressImpl.class)
     private ResourceAddress bothAddress;

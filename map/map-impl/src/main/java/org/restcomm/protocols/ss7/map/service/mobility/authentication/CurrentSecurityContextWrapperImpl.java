@@ -36,21 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class CurrentSecurityContextWrapperImpl {
 	
-	@ASNChoise
-    private CurrentSecurityContextImpl currentSecurityContext;
+	@ASNChoise(defaultImplementation = CurrentSecurityContextImpl.class)
+    private CurrentSecurityContext currentSecurityContext;
 
     public CurrentSecurityContextWrapperImpl() {
     }
 
     public CurrentSecurityContextWrapperImpl(CurrentSecurityContext currentSecurityContext) {
-    	if(currentSecurityContext instanceof CurrentSecurityContextImpl)
-    		this.currentSecurityContext=(CurrentSecurityContextImpl)currentSecurityContext;
-    	else if(currentSecurityContext!=null) {
-    		if(currentSecurityContext.getGSMSecurityContextData()!=null)
-    			this.currentSecurityContext = new CurrentSecurityContextImpl(currentSecurityContext.getGSMSecurityContextData());
-    		else if(currentSecurityContext.getUMTSSecurityContextData()!=null)
-    			this.currentSecurityContext = new CurrentSecurityContextImpl(currentSecurityContext.getUMTSSecurityContextData());
-    	}
+    	this.currentSecurityContext=currentSecurityContext;    	
     }
 
     public CurrentSecurityContext getCurrentSecurityContext() {

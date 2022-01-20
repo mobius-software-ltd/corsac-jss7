@@ -1,4 +1,4 @@
-package org.restcomm.protocols.ss7.tcapAnsi.asn.comp;
+package com.mobius.software.telco.protocols.ss7.asn.primitives;
 
 /*
  * Mobius Software LTD
@@ -25,30 +25,42 @@ package org.restcomm.protocols.ss7.tcapAnsi.asn.comp;
 *
 */
 
-import java.util.List;
-
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortion;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
-
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
-@ASNTag(asnClass=ASNClass.PRIVATE,tag=0x08,constructed=true,lengthIndefinite=false)
-public class ComponentPortionImpl implements ComponentPortion {
-
-	@ASNChoise(defaultImplementation = WrappedComponentImpl.class)
-	List<WrappedComponent> components;
-
-	public List<WrappedComponent> getComponents() {
-		return components;	
-	}
-
-	public void setComponents(List<WrappedComponent> components) {
-		this.components=components;		
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=15,constructed=true,lengthIndefinite=false)
+public class ASNCompoundWithChoise4 {
+	
+	@ASNChoise(defaultImplementation = ASNCompundPrimitive5.class)
+	private ASNCompundPrimitiveInterface field1;
+	
+	private ASNNull field2;
+	
+	public ASNCompoundWithChoise4() {
+		
 	}
 	
-	public String toString() {
-		return "ComponentPortion[" + components + "]";
+	public ASNCompoundWithChoise4(ASNCompundPrimitiveInterface field1,Boolean field2Set) {
+		this.field1=field1;
+				
+		if(field2Set!=null && field2Set)
+			this.field2=new ASNNull();		
 	}
+
+	public ASNCompundPrimitiveInterface getField1() {
+		return field1;
+	}
+
+	public void setField1(ASNCompundPrimitiveInterface field1) {
+		this.field1 = field1;
+	}
+
+	public ASNNull getField2() {
+		return field2;
+	}
+
+	public void setField2(ASNNull field2) {
+		this.field2 = field2;
+	}		
 }

@@ -36,21 +36,14 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ChargingTariffWrapperImpl {
 	
-	@ASNChoise
-    private ChargingTariffImpl chargingTariff;
+	@ASNChoise(defaultImplementation = ChargingTariffImpl.class)
+    private ChargingTariff chargingTariff;
 
     public ChargingTariffWrapperImpl() {
     }
 
     public ChargingTariffWrapperImpl(ChargingTariff chargingTariff) {
-    	if(chargingTariff instanceof ChargingTariffImpl)
-    		this.chargingTariff=(ChargingTariffImpl)chargingTariff;
-    	else if(chargingTariff!=null) {
-    		if(chargingTariff.getTariffCurrency()!=null)
-    			this.chargingTariff = new ChargingTariffImpl(chargingTariff.getTariffCurrency());
-    		else
-    			this.chargingTariff = new ChargingTariffImpl(chargingTariff.getTariffPulse());
-    	}
+    	this.chargingTariff=chargingTariff;    	
     }
 
     public ChargingTariff getChargingTariff() {

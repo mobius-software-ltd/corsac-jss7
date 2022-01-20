@@ -75,8 +75,8 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1,defaultImplementation = IMSIImpl.class)
 	private IMSI imsi;
     
-	@ASNChoise
-    private ExtendedRoutingInfoImpl extRoutingInfo;
+	@ASNChoise(defaultImplementation = ExtendedRoutingInfoImpl.class)
+    private ExtendedRoutingInfo extRoutingInfo;
     
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1, defaultImplementation = CUGCheckInfoImpl.class)
 	private CUGCheckInfo cugCheckInfo;
@@ -170,17 +170,8 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
             UnavailabilityCause unavailabilityCause, boolean releaseResourcesSupported, ExternalSignalInfo gsmBearerCapability) {
 
         this.imsi = imsi;
-        
-        if(extRoutingInfo instanceof ExtendedRoutingInfoImpl)
-    		this.extRoutingInfo=(ExtendedRoutingInfoImpl)extRoutingInfo;
-    	else if(extRoutingInfo!=null) {
-    		if(extRoutingInfo.getRoutingInfo()!=null)
-    			this.extRoutingInfo = new ExtendedRoutingInfoImpl(extRoutingInfo.getRoutingInfo());
-    		else
-    			this.extRoutingInfo = new ExtendedRoutingInfoImpl(extRoutingInfo.getCamelRoutingInfo());
-    	}
-        
-        this.cugCheckInfo = cugCheckInfo;
+        this.extRoutingInfo=extRoutingInfo;
+    	this.cugCheckInfo = cugCheckInfo;
         
         if(cugSubscriptionFlag)
         	this.cugSubscriptionFlag = new ASNNull();

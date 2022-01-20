@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePart;
@@ -33,45 +32,22 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class VariablePartWrapperImpl {
-	@ASNChoise
-	private List<VariablePartImpl> variablePart;
+	@ASNChoise(defaultImplementation = VariablePartImpl.class)
+	private List<VariablePart> variablePart;
 
     public VariablePartWrapperImpl() {
     }
 
     public VariablePartWrapperImpl(List<VariablePart> variablePart) {
-    	if(variablePart!=null) {
-    		this.variablePart=new ArrayList<VariablePartImpl>();
-    		for(VariablePart curr:variablePart) {
-    			if(curr instanceof VariablePartImpl)
-    				this.variablePart.add((VariablePartImpl)curr);
-    			else if(curr.getDate()!=null)
-    				this.variablePart.add(new VariablePartImpl(curr.getDate()));
-    			else if(curr.getTime()!=null)
-    				this.variablePart.add(new VariablePartImpl(curr.getTime()));
-    			else if(curr.getPrice()!=null)
-    				this.variablePart.add(new VariablePartImpl(curr.getPrice()));
-    			else if(curr.getInteger()!=null)
-    				this.variablePart.add(new VariablePartImpl(curr.getInteger()));
-    			else if(curr.getNumber()!=null)
-    				this.variablePart.add(new VariablePartImpl(curr.getNumber()));
-    		}
-    	}
+    	this.variablePart=variablePart;    	
     }
 
     public List<VariablePart> getVariablePart() {
-    	if(variablePart==null)
-    		return null;
-    	
-    	List<VariablePart> result=new ArrayList<VariablePart>();
-    	for(VariablePartImpl curr:variablePart)
-    		result.add(curr);
-    	
-    	return result;
+    	return variablePart;
     }
 }

@@ -42,8 +42,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ReturnErrorImpl implements ReturnError {
 	protected ASNCorrelationID correlationId=new ASNCorrelationID();
 	
-	@ASNChoise
-    private ErrorCodeImpl errorCode;
+	@ASNChoise(defaultImplementation = ErrorCodeImpl.class)
+    private ErrorCode errorCode;
     
     private ASNReturnErrorSetParameterImpl setParameter=new ASNReturnErrorSetParameterImpl();    
     private ASNReturnErrorParameterImpl seqParameter=null;

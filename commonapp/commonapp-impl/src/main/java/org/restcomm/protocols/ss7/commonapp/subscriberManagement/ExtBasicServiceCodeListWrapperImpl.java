@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.commonapp.subscriberManagement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
@@ -33,38 +32,23 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ExtBasicServiceCodeListWrapperImpl {
 	
-	@ASNChoise
-    private List<ExtBasicServiceCodeImpl> extBasicServiceCode;
+	@ASNChoise(defaultImplementation = ExtBasicServiceCodeImpl.class)
+    private List<ExtBasicServiceCode> extBasicServiceCode;
 
     public ExtBasicServiceCodeListWrapperImpl() {
     }
 
     public ExtBasicServiceCodeListWrapperImpl(List<ExtBasicServiceCode> extBasicServiceCode) {
-    	if(extBasicServiceCode!=null) {
-    		this.extBasicServiceCode = new ArrayList<ExtBasicServiceCodeImpl>();
-    		for(ExtBasicServiceCode curr:extBasicServiceCode) {
-    			if(curr.getExtBearerService()!=null)
-    				this.extBasicServiceCode.add(new ExtBasicServiceCodeImpl(curr.getExtBearerService()));
-    			else if(curr.getExtTeleservice()!=null)
-    				this.extBasicServiceCode.add(new ExtBasicServiceCodeImpl(curr.getExtTeleservice()));
-    		}
-    	}
+    	this.extBasicServiceCode = extBasicServiceCode;
     }
 
     public List<ExtBasicServiceCode> getExtBasicServiceCode() {
-    	if(this.extBasicServiceCode==null)
-    		return null;
-    	
-    	List<ExtBasicServiceCode> output=new ArrayList<ExtBasicServiceCode>();
-    	for(ExtBasicServiceCode curr:extBasicServiceCode)
-    		output.add(curr);
-    	
-    	return output;
+    	return extBasicServiceCode;
     }
 }

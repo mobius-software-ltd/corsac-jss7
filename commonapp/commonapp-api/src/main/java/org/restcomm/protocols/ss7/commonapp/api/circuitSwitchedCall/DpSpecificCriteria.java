@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall;
 
+import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+
 /**
  *
 <code>
@@ -46,6 +49,7 @@ ApplicationTimer ::=INTEGER (0..2047)
  * @author sergey vetyutnev
  *
  */
+@ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public interface DpSpecificCriteria {
 
     Integer getApplicationTimer();

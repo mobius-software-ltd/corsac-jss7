@@ -30,30 +30,19 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class EventSpecificInformationSMSWrapperImpl {
-	@ASNChoise
-	private EventSpecificInformationSMSImpl eventSpecificInformationSMS;
+	@ASNChoise(defaultImplementation = EventSpecificInformationSMSImpl.class)
+	private EventSpecificInformationSMS eventSpecificInformationSMS;
 
     public EventSpecificInformationSMSWrapperImpl() {
     }
 
     public EventSpecificInformationSMSWrapperImpl(EventSpecificInformationSMS eventSpecificInformationSMS) {
-    	if(eventSpecificInformationSMS!=null) {
-    		if(eventSpecificInformationSMS instanceof EventSpecificInformationSMSImpl)
-    			this.eventSpecificInformationSMS = (EventSpecificInformationSMSImpl)eventSpecificInformationSMS;
-    		else if(eventSpecificInformationSMS.getOSmsFailureSpecificInfo()!=null)
-    			this.eventSpecificInformationSMS = new EventSpecificInformationSMSImpl(eventSpecificInformationSMS.getOSmsFailureSpecificInfo());
-    		else if(eventSpecificInformationSMS.getOSmsSubmissionSpecificInfo()!=null)
-    			this.eventSpecificInformationSMS = new EventSpecificInformationSMSImpl(eventSpecificInformationSMS.getOSmsSubmissionSpecificInfo());
-    		else if(eventSpecificInformationSMS.getTSmsDeliverySpecificInfo()!=null)
-    			this.eventSpecificInformationSMS = new EventSpecificInformationSMSImpl(eventSpecificInformationSMS.getTSmsDeliverySpecificInfo());
-    		else if(eventSpecificInformationSMS.getTSmsFailureSpecificInfo()!=null)
-    			this.eventSpecificInformationSMS = new EventSpecificInformationSMSImpl(eventSpecificInformationSMS.getTSmsFailureSpecificInfo());
-    	}
+    	this.eventSpecificInformationSMS = eventSpecificInformationSMS;    		
     }
 
     public EventSpecificInformationSMS getEventSpecificInformationSMS() {

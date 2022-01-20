@@ -22,12 +22,9 @@
 
 package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ChangeOfLocation;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ChangeOfLocation.Boolean_Option;
-import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ChangeOfLocation.CellGlobalIdOrServiceAreaIdFixedLength_Option;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -35,49 +32,22 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ChangeOfLocationListWrapperImpl {
-	@ASNChoise
-	private List<ChangeOfLocationImpl> changeOfLocationList;
+	@ASNChoise(defaultImplementation = ChangeOfLocationImpl.class)
+	private List<ChangeOfLocation> changeOfLocationList;
 
     public ChangeOfLocationListWrapperImpl() {
     }
 
     public ChangeOfLocationListWrapperImpl(List<ChangeOfLocation> changeOfLocationList) {
-    	if(changeOfLocationList!=null) {
-    		this.changeOfLocationList=new ArrayList<ChangeOfLocationImpl>();
-    		for(ChangeOfLocation curr:changeOfLocationList) {
-    			if(curr instanceof ChangeOfLocationImpl) 
-    				this.changeOfLocationList.add((ChangeOfLocationImpl)curr);
-    			else if(curr.getCellGlobalId()!=null)
-    				this.changeOfLocationList.add(new ChangeOfLocationImpl(curr.getCellGlobalId(), CellGlobalIdOrServiceAreaIdFixedLength_Option.cellGlobalId));
-    			else if(curr.getServiceAreaId()!=null)
-    				this.changeOfLocationList.add(new ChangeOfLocationImpl(curr.getServiceAreaId(), CellGlobalIdOrServiceAreaIdFixedLength_Option.serviceAreaId));
-    			else if(curr.getChangeOfLocationAlt()!=null)
-    				this.changeOfLocationList.add(new ChangeOfLocationImpl(curr.getChangeOfLocationAlt()));
-    			else if(curr.getLocationAreaId()!=null)
-    				this.changeOfLocationList.add(new ChangeOfLocationImpl(curr.getLocationAreaId()));
-    			else if(curr.isInterMSCHandOver())
-    				this.changeOfLocationList.add(new ChangeOfLocationImpl(Boolean_Option.interMSCHandOver));
-    			else if(curr.isInterPLMNHandOver())
-    				this.changeOfLocationList.add(new ChangeOfLocationImpl(Boolean_Option.interPLMNHandOver));
-    			else if(curr.isInterSystemHandOver())
-    				this.changeOfLocationList.add(new ChangeOfLocationImpl(Boolean_Option.interSystemHandOver));
-    		}
-    	}
+    	this.changeOfLocationList=changeOfLocationList;    	
     }
 
     public List<ChangeOfLocation> getChangeOfLocationList() {
-    	if(changeOfLocationList==null)
-    		return null;
-    	
-    	List<ChangeOfLocation> result=new ArrayList<ChangeOfLocation>();
-    	for(ChangeOfLocationImpl curr:changeOfLocationList)
-    		result.add(curr);
-    	
-    	return result;
+    	return changeOfLocationList;
     }
 }
