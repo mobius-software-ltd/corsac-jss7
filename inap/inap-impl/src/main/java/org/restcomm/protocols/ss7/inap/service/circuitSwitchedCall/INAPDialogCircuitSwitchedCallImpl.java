@@ -656,8 +656,13 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		else
 			customTimeout = customInvokeTimeout;
 
-		ContinueCS1PlusRequestImpl req = new ContinueCS1PlusRequestImpl(legID);
-		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
+		ContinueCS1PlusRequestImpl req = null ;
+
+		if(null!=legID){
+	    	    req = new ContinueCS1PlusRequestImpl(legID);
+		}
+
+		return this.sendDataComponent(7L, null, InvokeClass.Class4, customTimeout.longValue(),
 				(long) INAPOperationCode.continueCode, req, true, false);
 	}
 
