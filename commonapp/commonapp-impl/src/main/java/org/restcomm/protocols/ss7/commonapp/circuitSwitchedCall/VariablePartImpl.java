@@ -60,10 +60,8 @@ public class VariablePartImpl implements VariablePart {
     }
 
     public VariablePartImpl(Integer integer) {
-    	if(integer!=null) {
-    		this.integer = new ASNInteger();
-    		this.integer.setValue(integer.longValue());
-    	}
+    	if(integer!=null)
+    		this.integer = new ASNInteger(integer);    		
     }
 
     public VariablePartImpl(DigitsIsup number) {
@@ -83,10 +81,10 @@ public class VariablePartImpl implements VariablePart {
     }
 
     public Integer getInteger() {
-    	if(integer==null || integer.getValue()==null)
+    	if(integer==null)
     		return null;
     	
-        return integer.getValue().intValue();
+        return integer.getIntValue();
     }
 
     public DigitsIsup getNumber() {

@@ -25,6 +25,9 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 import org.restcomm.protocols.ss7.commonapp.api.datacoding.NationalLanguageIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.Gsm7NationalLanguageIdentifier;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  *
  * @author sergey vetyutnev
@@ -39,16 +42,18 @@ public abstract class Gsm7NationalLanguageIdentifierImpl implements Gsm7National
         this.nationalLanguageCode = nationalLanguageCode;
     }
 
-    public Gsm7NationalLanguageIdentifierImpl(byte[] encodedInformationElementData) {
-        if (encodedInformationElementData != null && encodedInformationElementData.length > 0)
-            this.nationalLanguageCode = NationalLanguageIdentifier.getInstance(encodedInformationElementData[0] & 0xFF);
+    public Gsm7NationalLanguageIdentifierImpl(ByteBuf encodedInformationElementData) {
+        if (encodedInformationElementData != null && encodedInformationElementData.readableBytes() > 0)
+            this.nationalLanguageCode = NationalLanguageIdentifier.getInstance(encodedInformationElementData.readByte() & 0xFF);
     }
 
     public NationalLanguageIdentifier getNationalLanguageIdentifier() {
         return nationalLanguageCode;
     }
 
-    public byte[] getEncodedInformationElementData() {
-        return new byte[] { (byte) nationalLanguageCode.getCode() };
+    public ByteBuf getEncodedInformationElementData() {
+    	ByteBuf buf=Unpooled.buffer(1);
+    	buf.writeByte((byte) nationalLanguageCode.getCode());
+        return buf;
     }
 }

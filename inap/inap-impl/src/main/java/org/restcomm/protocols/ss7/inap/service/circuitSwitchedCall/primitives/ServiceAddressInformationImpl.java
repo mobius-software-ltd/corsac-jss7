@@ -53,24 +53,20 @@ public class ServiceAddressInformationImpl implements ServiceAddressInformation 
     }
 
     public ServiceAddressInformationImpl(Integer serviceKey,MiscCallInfo miscCallInfo,TriggerType triggerType) {
-    	if(serviceKey!=null) {
-    		this.serviceKey=new ASNInteger();
-    		this.serviceKey.setValue(serviceKey.longValue());
-    	}
-    	
+    	if(serviceKey!=null)
+    		this.serviceKey=new ASNInteger(serviceKey);
+    		
     	this.miscCallInfo=miscCallInfo;
     	
-    	if(triggerType!=null) {
-    		this.triggerType=new ASNTriggerType();
-    		this.triggerType.setType(triggerType);
-    	}
+    	if(triggerType!=null)
+    		this.triggerType=new ASNTriggerType(triggerType);    		
     }
 
     public Integer getServiceKey() {
-    	if(serviceKey==null || serviceKey.getValue()==null)
+    	if(serviceKey==null)
     		return null;
     	
-    	return serviceKey.getValue().intValue();
+    	return serviceKey.getIntValue();
     }
 
     public MiscCallInfo getMiscCallInfo() {

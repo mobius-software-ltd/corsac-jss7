@@ -28,8 +28,6 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.Map;
 import java.util.Set;
 
@@ -42,6 +40,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CircuitGroupSuperVision
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageName;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
 import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:00:07:25 2009-09-07<br>
@@ -87,7 +87,7 @@ public class CircuitGroupBlockingMessageImpl extends ISUPMessageImpl implements 
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryParameters(byte[], int)
+     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryParameters(ByteBuf, int)
      */
 
     protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
@@ -99,7 +99,7 @@ public class CircuitGroupBlockingMessageImpl extends ISUPMessageImpl implements 
             this.setSupervisionType(cgsvmt);
             b.skipBytes(1);
         } else {
-            throw new IllegalArgumentException("byte[] must have atleast four octets");
+            throw new IllegalArgumentException("buffer must have atleast four readable octets");
         }
     }
 
@@ -128,7 +128,7 @@ public class CircuitGroupBlockingMessageImpl extends ISUPMessageImpl implements 
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(byte[], byte)
+     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(ByteBuf, byte)
      */
 
     protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)

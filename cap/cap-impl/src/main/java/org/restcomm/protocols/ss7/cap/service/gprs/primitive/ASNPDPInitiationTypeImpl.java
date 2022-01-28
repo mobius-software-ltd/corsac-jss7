@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPInitiationTy
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNPDPInitiationTypeImpl extends ASNEnumerated {
-	public void setType(PDPInitiationType t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNPDPInitiationTypeImpl() {
+		
+	}
+	
+	public ASNPDPInitiationTypeImpl(PDPInitiationType t) {
+		super(t.getCode());
 	}
 	
 	public PDPInitiationType getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return PDPInitiationType.getInstance(getValue().intValue());
+		return PDPInitiationType.getInstance(realValue);
 	}
 }

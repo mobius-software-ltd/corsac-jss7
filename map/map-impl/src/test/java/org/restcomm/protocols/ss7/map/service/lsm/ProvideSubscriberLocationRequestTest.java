@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
@@ -72,6 +73,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -115,7 +117,7 @@ public class ProvideSubscriberLocationRequestTest {
                 8, 39, -108, -103, 9, 0, 0, 0, -9, -125, 6, -111, 103, 69, 35, 1, -16, -124, 4, 31, 32, 33, 34, -123, 8, 33,
                 67, 101, -121, 9, 33, 67, 101, -122, 1, 1, -89, 5, -93, 3, 10, 1, 0, -119, 2, 1, -2, -118, 1, 5, -117, 1, 6,
                 -84, 12, -128, 1, 15, -127, 7, 120, 124, 62, -97, -41, -21, 27, -83, 6, -128, 1, 1, -127, 1, 0, -82, 13, -96,
-                11, -96, 9, 48, 7, -128, 1, 0, -127, 2, 82, -16, -113, 5, 41, 42, 43, 44, 45, -112, 0, -79, 7, 2, 2, 0, -56, 2,
+                11, -96, 9, 48, 7, -128, 1, 0, -127, 2, 82, -16, -113, 5, 4, 42, 43, 44, 45, -112, 0, -79, 7, 2, 2, 0, -56, 2,
                 1, 100, -78, 9, -95, 7, 48, 5, -128, 3, 51, 52, 53 };
     }
 
@@ -124,7 +126,7 @@ public class ProvideSubscriberLocationRequestTest {
     }
 
     public byte[] getDataHgmlcAddress() {
-        return new byte[] { 41, 42, 43, 44, 45 };
+        return new byte[] { 42, 43, 44, 45 };
     }
 
     public byte[] getPlmnId() {
@@ -249,7 +251,7 @@ public class ProvideSubscriberLocationRequestTest {
 
         assertTrue(reqInd.getPrivacyOverride());
         assertTrue(reqInd.getMSISDN().getAddress().equals("765432100"));
-        assertTrue(Arrays.equals(reqInd.getLMSI().getData(), getDataLmsi()));
+        assertTrue(ByteBufUtil.equals(reqInd.getLMSI().getValue(), Unpooled.wrappedBuffer(getDataLmsi())));
         assertTrue(reqInd.getIMEI().getIMEI().equals("1234567890123456"));
         assertNull(reqInd.getExtensionContainer());
         assertEquals((int) reqInd.getLCSReferenceNumber(), 5);
@@ -261,11 +263,14 @@ public class ProvideSubscriberLocationRequestTest {
         assertEquals(reqInd.getAreaEventInfo().getAreaDefinition().getAreaList().size(), 1);
         assertEquals(reqInd.getAreaEventInfo().getAreaDefinition().getAreaList().get(0).getAreaIdentification().getMCC(), 250);
 
-        assertTrue(Arrays.equals(reqInd.getHGMLCAddress().getData(), getDataHgmlcAddress()));
+        assertEquals(reqInd.getHGMLCAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
+        assertTrue(ByteBufUtil.equals(reqInd.getHGMLCAddress().getGSNAddressData(),Unpooled.wrappedBuffer(getDataHgmlcAddress())));
+        
         assertTrue(reqInd.getMoLrShortCircuitIndicator());
         assertEquals(reqInd.getPeriodicLDRInfo().getReportingAmount(), 200);
         assertEquals(reqInd.getPeriodicLDRInfo().getReportingInterval(), 100);
-        assertTrue(Arrays.equals(reqInd.getReportingPLMNList().getPlmnList().get(0).getPlmnId().getData(), getPlmnId()));
+        assertEquals(reqInd.getReportingPLMNList().getPlmnList().get(0).getPlmnId().getMcc(), 334);
+        assertEquals(reqInd.getReportingPLMNList().getPlmnList().get(0).getPlmnId().getMnc(), 533);
     }
 
     @Test(groups = { "functional.encode", "service.lsm" })
@@ -301,7 +306,7 @@ public class ProvideSubscriberLocationRequestTest {
 
         ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "765432100");
-        LMSIImpl lmsi = new LMSIImpl(getDataLmsi());
+        LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(getDataLmsi()));
         IMEIImpl imei = new IMEIImpl("1234567890123456");
         USSDString lcsCodewordString = MAPParameterFactory.createUSSDString("xxyyyzz");
         LCSCodewordImpl lcsCodeword = new LCSCodewordImpl(new CBSDataCodingSchemeImpl(0x0f), lcsCodewordString);
@@ -313,10 +318,10 @@ public class ProvideSubscriberLocationRequestTest {
         areaList.add(area);
         AreaDefinition areaDefinition = new AreaDefinitionImpl(areaList);
         AreaEventInfoImpl areaEventInfo = new AreaEventInfoImpl(areaDefinition, null, null);
-        GSNAddressImpl hgmlcAddress = new GSNAddressImpl(getDataHgmlcAddress());
+        GSNAddressImpl hgmlcAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4,Unpooled.wrappedBuffer(getDataHgmlcAddress()));
         PeriodicLDRInfoImpl periodicLDRInfo = new PeriodicLDRInfoImpl(200, 100);
         List<ReportingPLMN> lstRplmn = new ArrayList<ReportingPLMN>();
-        PlmnIdImpl plmnId = new PlmnIdImpl(getPlmnId());
+        PlmnIdImpl plmnId = new PlmnIdImpl(334,533);
         ReportingPLMNImpl rplmn = new ReportingPLMNImpl(plmnId, null, false);
         lstRplmn.add(rplmn);
         ReportingPLMNList reportingPLMNList = new ReportingPLMNListImpl(false, lstRplmn);

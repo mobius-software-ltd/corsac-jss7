@@ -24,10 +24,9 @@ package org.restcomm.protocols.ss7.map.primitives;
 
 import org.restcomm.protocols.ss7.map.api.primitives.SignalInfo;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 
 /**
@@ -35,19 +34,27 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class SignalInfoImpl extends ASNOctetString implements SignalInfo {
+public class SignalInfoImpl extends ASNOctetString2 implements SignalInfo {
 	public SignalInfoImpl() {
     }
 
-    public SignalInfoImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
+    public SignalInfoImpl(ByteBuf value) {
+    	super(value);
     }
 
-    public byte[] getData() {
-    	ByteBuf buf=getValue();
-    	byte[] data=new byte[buf.readableBytes()];
-    	buf.readBytes(data);
-        return data;
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("SignalInfoImpl");
+        sb.append(" [");
+        if (getValue()!=null) {
+            sb.append("data=");
+            sb.append(printDataArr());            
+        }
+        sb.append("]");
+
+        return sb.toString();
     }
 
 }

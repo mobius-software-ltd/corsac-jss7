@@ -96,8 +96,7 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
         this.mapProtocolVersion = mapProtocolVersion;
         this.imsi = imsi;
                 
-        this.numberOfRequestedVectors = new ASNInteger();
-        this.numberOfRequestedVectors.setValue((long)numberOfRequestedVectors & 0x0FFFFFFFFL);
+        this.numberOfRequestedVectors = new ASNInteger(numberOfRequestedVectors);
         
         if(segmentationProhibited)
         	this.segmentationProhibited = new ASNNull();
@@ -108,18 +107,14 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
         this.reSynchronisationInfo = reSynchronisationInfo;
         this.extensionContainer = extensionContainer;
         
-        if(requestingNodeType!=null) {
-        	this.requestingNodeType = new ASNRequestingNodeType();
-        	this.requestingNodeType.setType(requestingNodeType);
-        }
-        
+        if(requestingNodeType!=null)
+        	this.requestingNodeType = new ASNRequestingNodeType(requestingNodeType);
+        	
         this.requestingPlmnId = requestingPlmnId;
         
-        if(numberOfRequestedAdditionalVectors!=null) {
-        	this.numberOfRequestedAdditionalVectors = new ASNInteger();
-        	this.numberOfRequestedAdditionalVectors.setValue(numberOfRequestedAdditionalVectors.longValue());
-        }
-        
+        if(numberOfRequestedAdditionalVectors!=null)
+        	this.numberOfRequestedAdditionalVectors = new ASNInteger(numberOfRequestedAdditionalVectors);
+        	
         if(additionalVectorsAreForEPS)
         	this.additionalVectorsAreForEPS = new ASNNull();
     }
@@ -137,10 +132,10 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
     }
 
     public int getNumberOfRequestedVectors() {
-    	if(numberOfRequestedVectors==null)
+    	if(numberOfRequestedVectors==null || numberOfRequestedVectors.getValue()==null)
     		return 0;
     	
-        return numberOfRequestedVectors.getValue().intValue();
+        return numberOfRequestedVectors.getIntValue();
     }
 
     public boolean getSegmentationProhibited() {
@@ -174,7 +169,7 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
     	if(numberOfRequestedAdditionalVectors==null)
     		return null;
     	
-        return numberOfRequestedAdditionalVectors.getValue().intValue();
+        return numberOfRequestedAdditionalVectors.getIntValue();
     }
 
     public boolean getAdditionalVectorsAreForEPS() {

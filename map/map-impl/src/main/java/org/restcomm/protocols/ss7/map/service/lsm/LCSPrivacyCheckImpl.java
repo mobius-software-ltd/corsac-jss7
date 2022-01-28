@@ -53,15 +53,11 @@ public class LCSPrivacyCheckImpl implements LCSPrivacyCheck {
      * @param callSessionRelated
      */
     public LCSPrivacyCheckImpl(PrivacyCheckRelatedAction callSessionUnrelated, PrivacyCheckRelatedAction callSessionRelated) {
-        if(callSessionUnrelated!=null) {
-        	this.callSessionUnrelated = new ASNPrivacyCheckRelatedAction();
-        	this.callSessionUnrelated.setType(callSessionUnrelated);
-        }
-        
-        if(callSessionRelated!=null) {
-        	this.callSessionRelated = new ASNPrivacyCheckRelatedAction();
-        	this.callSessionRelated.setType(callSessionRelated);
-        }
+        if(callSessionUnrelated!=null)
+        	this.callSessionUnrelated = new ASNPrivacyCheckRelatedAction(callSessionUnrelated);
+        	
+        if(callSessionRelated!=null)
+        	this.callSessionRelated = new ASNPrivacyCheckRelatedAction(callSessionRelated);        	
     }
 
     /*

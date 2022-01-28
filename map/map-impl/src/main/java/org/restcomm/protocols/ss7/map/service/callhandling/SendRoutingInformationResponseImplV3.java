@@ -193,16 +193,12 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
         this.ccbsIndicators = ccbsIndicators;
         this.msisdn = msisdn;
         
-        if(nrPortabilityStatus!=null) {
-        	this.nrPortabilityStatus = new ASNNumberPortabilityStatusImpl();
-        	this.nrPortabilityStatus.setType(nrPortabilityStatus);
-        }
-        
-        if(istAlertTimer!=null) {
-        	this.istAlertTimer = new ASNInteger();
-        	this.istAlertTimer.setValue(istAlertTimer.longValue());
-        }
-        
+        if(nrPortabilityStatus!=null)
+        	this.nrPortabilityStatus = new ASNNumberPortabilityStatusImpl(nrPortabilityStatus);
+        	
+        if(istAlertTimer!=null)
+        	this.istAlertTimer = new ASNInteger(istAlertTimer);
+        	
         this.supportedCamelPhases = supportedCamelPhases;
         this.offeredCamel4CSIs = offeredCamel4CSIs;
         
@@ -217,11 +213,9 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
         
         this.allowedServices = allowedServices;
         
-        if(unavailabilityCause!=null) {
-        	this.unavailabilityCause = new ASNUnavailabilityCauseImpl();
-        	this.unavailabilityCause.setType(unavailabilityCause);
-        }
-        
+        if(unavailabilityCause!=null)
+        	this.unavailabilityCause = new ASNUnavailabilityCauseImpl(unavailabilityCause);
+        	
         if(releaseResourcesSupported)
         	this.releaseResourcesSupported = new ASNNull();
         
@@ -317,7 +311,7 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     	if(this.istAlertTimer==null)
     		return null;
     	
-        return this.istAlertTimer.getValue().intValue();
+        return this.istAlertTimer.getIntValue();
     }
 
     @Override

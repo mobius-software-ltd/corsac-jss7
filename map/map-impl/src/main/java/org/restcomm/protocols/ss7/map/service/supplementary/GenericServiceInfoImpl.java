@@ -74,38 +74,26 @@ public class GenericServiceInfoImpl implements GenericServiceInfo {
             EMLPPPriority defaultPriority, List<CCBSFeature> ccbsFeatureList, Integer nbrSB, Integer nbrUser, Integer nbrSN) {
         this.ssStatus = ssStatus;
         
-        if(cliRestrictionOption!=null) {
-        	this.cliRestrictionOption = new ASNCliRestrictionOptionImpl();
-        	this.cliRestrictionOption.setType(cliRestrictionOption);
-        }
-        
-        if(maximumEntitledPriority!=null) {
-        	this.maximumEntitledPriority = new ASNEMLPPPriorityImpl();
-        	this.maximumEntitledPriority.setType(maximumEntitledPriority);
-        }
-        
-        if(defaultPriority!=null) {
-        	this.defaultPriority = new ASNEMLPPPriorityImpl();
-        	this.defaultPriority.setType(defaultPriority);
-        }
-        
+        if(cliRestrictionOption!=null)
+        	this.cliRestrictionOption = new ASNCliRestrictionOptionImpl(cliRestrictionOption);
+        	
+        if(maximumEntitledPriority!=null)
+        	this.maximumEntitledPriority = new ASNEMLPPPriorityImpl(maximumEntitledPriority);
+        	
+        if(defaultPriority!=null)
+        	this.defaultPriority = new ASNEMLPPPriorityImpl(defaultPriority);
+        	
         if(ccbsFeatureList!=null)
         	this.ccbsFeatureList = new CCBSFeatureListWrapperImpl(ccbsFeatureList);
         
-        if(nbrSB!=null) {
-        	this.nbrSB = new ASNInteger();
-        	this.nbrSB.setValue(nbrSB.longValue());
-        }
-        
-        if(nbrUser!=null) {
-        	this.nbrUser = new ASNInteger();
-        	this.nbrUser.setValue(nbrUser.longValue());
-        }
-        
-        if(nbrSN!=null) {
-        	this.nbrSN = new ASNInteger();
-        	this.nbrSN.setValue(nbrSN.longValue());
-        }
+        if(nbrSB!=null)
+        	this.nbrSB = new ASNInteger(nbrSB);
+        	
+        if(nbrUser!=null)
+        	this.nbrUser = new ASNInteger(nbrUser);
+        	
+        if(nbrSN!=null)
+        	this.nbrSN = new ASNInteger(nbrSN);        	
     }
 
     public SSStatus getSsStatus() {
@@ -144,21 +132,21 @@ public class GenericServiceInfoImpl implements GenericServiceInfo {
     	if(nbrSB==null)
     		return null;
     	
-        return nbrSB.getValue().intValue();
+        return nbrSB.getIntValue();
     }
 
     public Integer getNbrUser() {
     	if(nbrUser==null)
     		return null;
     	
-        return nbrUser.getValue().intValue();
+        return nbrUser.getIntValue();
     }
 
     public Integer getNbrSN() {
     	if(nbrSN==null)
     		return null;
     	
-        return nbrSN.getValue().intValue();
+        return nbrSN.getIntValue();
     }
 
     @Override

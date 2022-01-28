@@ -29,6 +29,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtension;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
@@ -58,6 +59,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -97,16 +99,15 @@ public class InitialDPArgExtensionTest {
     @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(InitialDPArgExtensionImpl.class);
+    	parser.replaceClass(InitialDPArgExtensionV1Impl.class);
     	
     	byte[] rawData = this.getData1();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof InitialDPArgExtensionImpl);
+        assertTrue(result.getResult() instanceof InitialDPArgExtensionV1Impl);
         
-        InitialDPArgExtensionImpl elem = (InitialDPArgExtensionImpl)result.getResult(); 
-        elem.patchVersion(2);
+        InitialDPArgExtension elem = (InitialDPArgExtensionV1Impl)result.getResult(); 
         assertEquals(elem.getGmscAddress().getAddressNature(), AddressNature.international_number);
         assertEquals(elem.getGmscAddress().getNumberingPlan(), NumberingPlan.ISDN);
         assertTrue(elem.getGmscAddress().getAddress().equals("2207750007"));
@@ -124,14 +125,16 @@ public class InitialDPArgExtensionTest {
         assertFalse(elem.getEnhancedDialledServicesAllowed());
         assertNull(elem.getUUData());
 
+        parser=new ASNParser(true);
+    	parser.replaceClass(InitialDPArgExtensionV3Impl.class);
+    	
         rawData = this.getData2();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof InitialDPArgExtensionImpl);
+        assertTrue(result.getResult() instanceof InitialDPArgExtensionV3Impl);
         
-        elem = (InitialDPArgExtensionImpl)result.getResult(); 
-        elem.patchVersion(4);
+        elem = (InitialDPArgExtensionV3Impl)result.getResult(); 
         assertEquals(elem.getGmscAddress().getAddressNature(), AddressNature.international_number);
         assertEquals(elem.getGmscAddress().getNumberingPlan(), NumberingPlan.national);
         assertTrue(elem.getGmscAddress().getAddress().equals("111111"));
@@ -159,13 +162,12 @@ public class InitialDPArgExtensionTest {
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof InitialDPArgExtensionImpl);
+        assertTrue(result.getResult() instanceof InitialDPArgExtensionV3Impl);
         
-        elem = (InitialDPArgExtensionImpl)result.getResult(); 
-        elem.patchVersion(4);        
+        elem = (InitialDPArgExtensionV3Impl)result.getResult(); 
         assertNull(elem.getGmscAddress());
         assertNull(elem.getForwardingDestinationNumber());
-        assertEquals(elem.getMSClassmark2().getData(), getMSClassmark2Data());
+        assertTrue(ByteBufUtil.equals(elem.getMSClassmark2().getValue(), Unpooled.wrappedBuffer(getMSClassmark2Data())));
         assertEquals(elem.getIMEI().getIMEI(), "00000112345");
         assertTrue(elem.getSupportedCamelPhases().getPhase1Supported());
         assertTrue(elem.getSupportedCamelPhases().getPhase2Supported());
@@ -176,8 +178,8 @@ public class InitialDPArgExtensionTest {
         assertEquals(elem.getBearerCapability2().getBearerCap().getUserServiceInformation().getCodingStandart(), UserServiceInformation._CS_INTERNATIONAL);
         assertEquals(elem.getExtBasicServiceCode2().getExtBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_9600bps);
         assertEquals(elem.getHighLayerCompatibility2().getHighLayerCompatibility().getCodingStandard(), UserTeleserviceInformation._CODING_STANDARD_ISO_IEC);
-        assertEquals(elem.getLowLayerCompatibility().getData(), getLowLayerCompatibilityData());
-        assertEquals(elem.getLowLayerCompatibility2().getData(), getLowLayerCompatibility2Data());
+        assertTrue(ByteBufUtil.equals(elem.getLowLayerCompatibility().getValue(), Unpooled.wrappedBuffer(getLowLayerCompatibilityData())));
+        assertTrue(ByteBufUtil.equals(elem.getLowLayerCompatibility2().getValue(), Unpooled.wrappedBuffer(getLowLayerCompatibility2Data())));
         assertTrue(elem.getEnhancedDialledServicesAllowed());
         assertEquals(elem.getUUData().getUUIndicator().getData(), new Integer(129));
         assertTrue(elem.getCollectInformationAllowed());
@@ -187,11 +189,11 @@ public class InitialDPArgExtensionTest {
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(InitialDPArgExtensionImpl.class);
+    	parser.replaceClass(InitialDPArgExtensionV1Impl.class);
     	
         ISDNAddressStringImpl gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "2207750007");
-        InitialDPArgExtensionImpl elem = new InitialDPArgExtensionImpl(null, gmscAddress);
+        InitialDPArgExtension elem = new InitialDPArgExtensionV1Impl(null, gmscAddress);
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -203,7 +205,7 @@ public class InitialDPArgExtensionTest {
         CalledPartyNumberImpl calledPartyNumber = new CalledPartyNumberImpl(1, "2222", 1, 0);
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int internalNetworkNumberIndicator
         CalledPartyNumberIsupImpl forwardingDestinationNumber = new CalledPartyNumberIsupImpl(calledPartyNumber);
-        elem = new InitialDPArgExtensionImpl(gmscAddress, forwardingDestinationNumber, null, null, null, null, null, null,
+        elem = new InitialDPArgExtensionV3Impl(gmscAddress, forwardingDestinationNumber, null, null, null, null, null, null,
                 null, null, null, false, null, false, false);
         rawData = this.getData2();
         buffer=parser.encode(elem);
@@ -211,7 +213,7 @@ public class InitialDPArgExtensionTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        MSClassmark2Impl msClassmark2 = new MSClassmark2Impl(getMSClassmark2Data());
+        MSClassmark2Impl msClassmark2 = new MSClassmark2Impl(Unpooled.wrappedBuffer(getMSClassmark2Data()));
         IMEIImpl imei = new IMEIImpl("00000112345");
         SupportedCamelPhasesImpl supportedCamelPhases = new SupportedCamelPhasesImpl(true, true, true, false);
         // boolean phase1, boolean phase2, boolean phase3, boolean phase4
@@ -228,11 +230,11 @@ public class InitialDPArgExtensionTest {
         UserTeleserviceInformation userTeleserviceInformation = new UserTeleserviceInformationImpl();
         userTeleserviceInformation.setCodingStandard(UserTeleserviceInformation._CODING_STANDARD_ISO_IEC);
         HighLayerCompatibilityIsupImpl highLayerCompatibility2 = new HighLayerCompatibilityIsupImpl(userTeleserviceInformation);
-        LowLayerCompatibilityImpl lowLayerCompatibility = new LowLayerCompatibilityImpl(getLowLayerCompatibilityData());
-        LowLayerCompatibilityImpl lowLayerCompatibility2 = new LowLayerCompatibilityImpl(getLowLayerCompatibility2Data());
+        LowLayerCompatibilityImpl lowLayerCompatibility = new LowLayerCompatibilityImpl(Unpooled.wrappedBuffer(getLowLayerCompatibilityData()));
+        LowLayerCompatibilityImpl lowLayerCompatibility2 = new LowLayerCompatibilityImpl(Unpooled.wrappedBuffer(getLowLayerCompatibility2Data()));
         UUIndicatorImpl uuIndicator = new UUIndicatorImpl(129);
         UUDataImpl uuData = new UUDataImpl(uuIndicator, null, false, null);
-        elem = new InitialDPArgExtensionImpl(null, null, msClassmark2, imei, supportedCamelPhases, offeredCamel4Functionalities, bearerCapability2,
+        elem = new InitialDPArgExtensionV3Impl(null, null, msClassmark2, imei, supportedCamelPhases, offeredCamel4Functionalities, bearerCapability2,
                 extBasicServiceCode2, highLayerCompatibility2, lowLayerCompatibility, lowLayerCompatibility2, true, uuData, true, true);
         rawData = this.getData3();
         buffer=parser.encode(elem);
@@ -249,113 +251,4 @@ public class InitialDPArgExtensionTest {
         // LowLayerCompatibility lowLayerCompatibility2, boolean enhancedDialledServicesAllowed, UUData uuData, boolean
         // isCAPVersion3orLater
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
-    public void testXMLSerialize() throws Exception {
-
-        ISDNAddressStringImpl gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
-                "2207750007");
-        CalledPartyNumberImpl calledPartyNumber = new CalledPartyNumberImpl(1, "2222", 1, 0);
-        CalledPartyNumberCapImpl forwardingDestinationNumber = new CalledPartyNumberCapImpl(calledPartyNumber);
-        InitialDPArgExtensionImpl original = new InitialDPArgExtensionImpl(gmscAddress, forwardingDestinationNumber, null,
-                null, null, null, null, null, null, null, null, false, null, false, false, false);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "initialDPArgExtension", InitialDPArgExtensionImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        InitialDPArgExtensionImpl copy = reader.read("initialDPArgExtension", InitialDPArgExtensionImpl.class);
-
-        assertEquals(copy.getGmscAddress().getAddress(), original.getGmscAddress().getAddress());
-        assertEquals(copy.getForwardingDestinationNumber().getCalledPartyNumber().getAddress(), original
-                .getForwardingDestinationNumber().getCalledPartyNumber().getAddress());
-        assertNull(copy.getMSClassmark2());
-        assertNull(copy.getIMEI());
-        assertNull(copy.getSupportedCamelPhases());
-        assertNull(copy.getOfferedCamel4Functionalities());
-        assertNull(copy.getBearerCapability2());
-        assertNull(copy.getExtBasicServiceCode2());
-        assertNull(copy.getHighLayerCompatibility2());
-        assertNull(copy.getLowLayerCompatibility());
-        assertNull(copy.getLowLayerCompatibility2());
-        assertFalse(copy.getEnhancedDialledServicesAllowed());
-        assertNull(copy.getUUData());
-        assertEquals(copy.getCollectInformationAllowed(), original.getCollectInformationAllowed());
-        assertEquals(copy.getReleaseCallArgExtensionAllowed(), original.getReleaseCallArgExtensionAllowed());
-
-
-        MSClassmark2 msClassmark2 = new MSClassmark2Impl(getMSClassmark2Data());
-        IMEI imei = new IMEIImpl("00000112345");
-        SupportedCamelPhases supportedCamelPhases = new SupportedCamelPhasesImpl(true, true, true, false);
-        // boolean phase1, boolean phase2, boolean phase3, boolean phase4
-        OfferedCamel4Functionalities offeredCamel4Functionalities = new OfferedCamel4FunctionalitiesImpl(false, false, true, false, false, false, false, false,
-                false, false, false, false, false, false, false, false, false, false, false, false);
-
-        UserServiceInformation userServiceInformation = new UserServiceInformationImpl();
-        userServiceInformation.setCodingStandart(UserServiceInformation._CS_INTERNATIONAL);
-        BearerCap bearerCap = new BearerCapImpl(userServiceInformation);
-        BearerCapability bearerCapability2 = new BearerCapabilityImpl(bearerCap);
-
-        ExtBearerServiceCode extBearerService = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
-        ExtBasicServiceCode extBasicServiceCode2 = new ExtBasicServiceCodeImpl(extBearerService);
-        UserTeleserviceInformation userTeleserviceInformation = new UserTeleserviceInformationImpl();
-        userTeleserviceInformation.setCodingStandard(UserTeleserviceInformation._CODING_STANDARD_ISO_IEC);
-        HighLayerCompatibilityInap highLayerCompatibility2 = new HighLayerCompatibilityInapImpl(userTeleserviceInformation);
-        LowLayerCompatibility lowLayerCompatibility = new LowLayerCompatibilityImpl(getLowLayerCompatibilityData());
-        LowLayerCompatibility lowLayerCompatibility2 = new LowLayerCompatibilityImpl(getLowLayerCompatibility2Data());
-        UUIndicator uuIndicator = new UUIndicatorImpl(129);
-        UUData uuData = new UUDataImpl(uuIndicator, null, false, null);
-        original = new InitialDPArgExtensionImpl(null, null, msClassmark2, imei, supportedCamelPhases, offeredCamel4Functionalities, bearerCapability2,
-                extBasicServiceCode2, highLayerCompatibility2, lowLayerCompatibility, lowLayerCompatibility2, true, uuData, true, true, true);
-
-        // Writes the area to a file.
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "initialDPArgExtension", InitialDPArgExtensionImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-        copy = reader.read("initialDPArgExtension", InitialDPArgExtensionImpl.class);
-
-        assertNull(copy.getGmscAddress());
-        assertNull(copy.getForwardingDestinationNumber());
-
-        assertEquals(copy.getMSClassmark2().getData(), original.getMSClassmark2().getData());
-        assertEquals(copy.getIMEI().getIMEI(), original.getIMEI().getIMEI());
-        assertEquals(copy.getSupportedCamelPhases().getPhase1Supported(), original.getSupportedCamelPhases().getPhase1Supported());
-        assertEquals(copy.getSupportedCamelPhases().getPhase4Supported(), original.getSupportedCamelPhases().getPhase4Supported());
-        assertEquals(copy.getOfferedCamel4Functionalities().getMoveLeg(), original.getOfferedCamel4Functionalities().getMoveLeg());
-        assertEquals(copy.getOfferedCamel4Functionalities().getChangeOfPositionDP(), original.getOfferedCamel4Functionalities().getChangeOfPositionDP());
-        assertEquals(copy.getBearerCapability2().getBearerCap().getUserServiceInformation().getCodingStandart(), original.getBearerCapability2().getBearerCap()
-                .getUserServiceInformation().getCodingStandart());
-        assertEquals(copy.getExtBasicServiceCode2().getExtBearerService().getBearerServiceCodeValue(), original.getExtBasicServiceCode2().getExtBearerService()
-                .getBearerServiceCodeValue());
-        assertEquals(copy.getHighLayerCompatibility2().getHighLayerCompatibility().getCodingStandard(), original.getHighLayerCompatibility2()
-                .getHighLayerCompatibility().getCodingStandard());
-        assertEquals(copy.getLowLayerCompatibility().getData(), original.getLowLayerCompatibility().getData());
-        assertEquals(copy.getLowLayerCompatibility2().getData(), original.getLowLayerCompatibility2().getData());
-        assertEquals(copy.getEnhancedDialledServicesAllowed(), original.getEnhancedDialledServicesAllowed());
-        assertEquals(copy.getUUData().getUUIndicator().getData(), original.getUUData().getUUIndicator().getData());
-        assertEquals(copy.getCollectInformationAllowed(), original.getCollectInformationAllowed());
-        assertEquals(copy.getReleaseCallArgExtensionAllowed(), original.getReleaseCallArgExtensionAllowed());
-    }*/
 }

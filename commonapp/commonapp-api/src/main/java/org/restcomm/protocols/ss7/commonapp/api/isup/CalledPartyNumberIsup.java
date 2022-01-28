@@ -54,7 +54,5 @@ maxCalledPartyNumberLength ::= 18
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface CalledPartyNumberIsup {
 
-    byte[] getData();
-
     CalledPartyNumber getCalledPartyNumber() throws APPException;
 }

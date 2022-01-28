@@ -35,12 +35,14 @@ import org.restcomm.protocols.ss7.commonapp.gap.GapCriteriaWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.gap.GapOnServiceImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ScfIDImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -87,7 +89,7 @@ public class GapCriteriaTest {
         assertTrue(result.getResult() instanceof GapCriteriaWrapperImpl);
         
         GapCriteriaWrapperImpl elem = (GapCriteriaWrapperImpl)result.getResult();        
-        assertEquals(elem.getGapCriteria().getBasicGapCriteria().getCalledAddressValue().getData(), getDigitsData());
+        assertTrue(ByteBufUtil.equals(DigitsIsupImpl.translate(elem.getGapCriteria().getBasicGapCriteria().getCalledAddressDigits().getGenericDigits()),Unpooled.wrappedBuffer(getDigitsData())));
     }
 
     @Test(groups = { "functional.encode", "gap" })
@@ -95,7 +97,7 @@ public class GapCriteriaTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GapCriteriaWrapperImpl.class);
     	
-        DigitsIsupImpl calledAddressValue = new DigitsIsupImpl(getDigitsData());
+        DigitsIsupImpl calledAddressValue = new DigitsIsupImpl(new GenericDigitsImpl(Unpooled.wrappedBuffer(getDigitsData())));
         BasicGapCriteriaImpl basicGapCriteria = new BasicGapCriteriaImpl(calledAddressValue);
         GapCriteriaImpl elem = new GapCriteriaImpl(basicGapCriteria);
         GapCriteriaWrapperImpl param = new GapCriteriaWrapperImpl(elem);
@@ -150,7 +152,7 @@ public class GapCriteriaTest {
         
         GapCriteriaWrapperImpl elem = (GapCriteriaWrapperImpl)result.getResult();        
         assertEquals(elem.getGapCriteria().getCompoundGapCriteria().getBasicGapCriteria().getGapOnService().getServiceKey(), SERVICE_KEY);
-        assertEquals(elem.getGapCriteria().getCompoundGapCriteria().getScfID().getData(), getScfIDData());
+        assertTrue(ByteBufUtil.equals(elem.getGapCriteria().getCompoundGapCriteria().getScfID().getValue(), Unpooled.wrappedBuffer(getScfIDData())));
     }
 
     @Test(groups = { "functional.encode", "gap" })
@@ -161,7 +163,7 @@ public class GapCriteriaTest {
         GapOnServiceImpl gapOnService = new GapOnServiceImpl(SERVICE_KEY);
         BasicGapCriteriaImpl basicGapCriteria = new BasicGapCriteriaImpl(gapOnService);
         // BasicGapCriteria basicGapCriteria, ScfID scfId
-        ScfIDImpl scfId = new ScfIDImpl(getScfIDData());
+        ScfIDImpl scfId = new ScfIDImpl(Unpooled.wrappedBuffer(getScfIDData()));
         CompoundCriteriaImpl compoundCriteria = new CompoundCriteriaImpl(basicGapCriteria, scfId);
         GapCriteriaImpl elem = new GapCriteriaImpl(compoundCriteria);
         GapCriteriaWrapperImpl param = new GapCriteriaWrapperImpl(elem);
@@ -171,73 +173,4 @@ public class GapCriteriaTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        GenericNumberImpl gn = new GenericNumberImpl(GenericNumber._NAI_NATIONAL_SN, "12345",
-                GenericNumber._NQIA_CONNECTED_NUMBER, GenericNumber._NPI_TELEX, GenericNumber._APRI_ALLOWED,
-                GenericNumber._NI_INCOMPLETE, GenericNumber._SI_USER_PROVIDED_VERIFIED_FAILED);
-        Digits digits = new DigitsImpl(gn);
-
-        CalledAddressAndServiceImpl calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
-        BasicGapCriteriaImpl basicGapCriteria = new BasicGapCriteriaImpl(calledAddressAndService);
-        ScfIDImpl scfId = new ScfIDImpl(getScfIDData());
-        CompoundCriteriaImpl compoundCriteria = new CompoundCriteriaImpl(basicGapCriteria, scfId);
-
-        GapCriteriaImpl original = new GapCriteriaImpl(basicGapCriteria);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "gapCriteriaArg", GapCriteriaImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-
-        GapCriteriaImpl copy = reader.read("gapCriteriaArg", GapCriteriaImpl.class);
-
-        assertTrue(isEqual(original, copy));
-
-
-        original = new GapCriteriaImpl(compoundCriteria);
-
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "gapCriteriaArg", GapCriteriaImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        copy = reader.read("gapCriteriaArg", GapCriteriaImpl.class);
-
-        assertTrue(isEqual(original, copy));
-    }
-
-    private boolean isEqual(GapCriteriaImpl o1, GapCriteriaImpl o2) {
-        if (o1 == o2)
-            return true;
-        if (o1 == null && o2 != null || o1 != null && o2 == null)
-            return false;
-        if (o1 == null && o2 == null)
-            return true;
-        if (!o1.toString().equals(o2.toString()))
-            return false;
-        return true;
-    }*/
 }

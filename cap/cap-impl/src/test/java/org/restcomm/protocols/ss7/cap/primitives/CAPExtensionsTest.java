@@ -82,8 +82,8 @@ public class CAPExtensionsTest {
     }
 
     public static CAPINAPExtensions createTestCAPExtensions() {
-        ExtensionFieldImpl a1 = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, new byte[] {}, false);
-        ExtensionFieldImpl a2 = new ExtensionFieldImpl(3, CriticalityType.typeAbort, new byte[] { -1 }, false);
+        ExtensionFieldImpl a1 = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, Unpooled.wrappedBuffer(new byte[] {}), false);
+        ExtensionFieldImpl a2 = new ExtensionFieldImpl(3, CriticalityType.typeAbort, Unpooled.wrappedBuffer(new byte[] { -1 }), false);
         List<ExtensionField> flds = new ArrayList<ExtensionField>();
         flds.add(a1);
         flds.add(a2);
@@ -101,82 +101,15 @@ public class CAPExtensionsTest {
             return false;
         if (a1.getCriticalityType() != CriticalityType.typeIgnore || a2.getCriticalityType() != CriticalityType.typeAbort)
             return false;
-        if (a1.getData() == null || a1.getData().length != 0)
+        if (a1.getValue() == null || a1.getValue().readableBytes() != 0)
             return false;
-        if (a2.getData() == null || a2.getData().length != 1 || (a2.getData()[0]) != -1)
+        if (a2.getValue() == null || a2.getValue().readableBytes() != 1 || (a2.getValue().readByte()) != -1)
             return false;
 
         return true;
     }
 
-    /*private byte[] getDataSer() {
-        return new byte[] { 1, (byte) 255, 3 };
-    }*/
-
     public long[] getDataOid() {
         return new long[] { 1, 0, 22 };
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "primitives" })
-    public void testXMLSerialize() throws Exception {
-
-        ArrayList<ExtensionField> fieldsList = new ArrayList<ExtensionField>();
-        fieldsList.add(new ExtensionFieldImpl(234, CriticalityType.typeIgnore, getDataSer()));
-        fieldsList.add(new ExtensionFieldImpl(getDataOid(), null, getDataSer()));
-        CAPExtensionsImpl original = new CAPExtensionsImpl(fieldsList);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "capExtensions", CAPExtensionsImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        CAPExtensionsImpl copy = reader.read("capExtensions", CAPExtensionsImpl.class);
-
-        assertEquals(copy.getExtensionFields().size(), original.getExtensionFields().size());
-
-        assertEquals((int) copy.getExtensionFields().get(0).getLocalCode(), (int) original.getExtensionFields().get(0)
-                .getLocalCode());
-        assertTrue(Arrays.equals(copy.getExtensionFields().get(0).getGlobalCode(), original.getExtensionFields().get(0)
-                .getGlobalCode()));
-        assertEquals(copy.getExtensionFields().get(0).getCriticalityType(), original.getExtensionFields().get(0)
-                .getCriticalityType());
-        assertEquals(copy.getExtensionFields().get(0).getData(), original.getExtensionFields().get(0).getData());
-
-        assertTrue(Arrays.equals(copy.getExtensionFields().get(1).getGlobalCode(), original.getExtensionFields().get(1)
-                .getGlobalCode()));
-        assertEquals(copy.getExtensionFields().get(1).getCriticalityType(), original.getExtensionFields().get(1)
-                .getCriticalityType());
-        assertEquals(copy.getExtensionFields().get(1).getData(), original.getExtensionFields().get(1).getData());
-
-        original = CAPExtensionsTest.createTestCAPExtensions();
-
-        // Writes the area to a file.
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "capExtensions", CAPExtensionsImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-        copy = reader.read("capExtensions", CAPExtensionsImpl.class);
-
-        CAPExtensionsTest.checkTestCAPExtensions(copy);
-    }*/
 }

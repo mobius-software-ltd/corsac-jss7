@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.Ca
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNCancellationTypeImpl extends ASNEnumerated {
-	public void setType(CancellationType t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNCancellationTypeImpl() {
+		
+	}
+	
+	public ASNCancellationTypeImpl(CancellationType t) {
+		super(t.getCode());
 	}
 	
 	public CancellationType getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return CancellationType.getInstance(getValue().intValue());
+		return CancellationType.getInstance(realValue);
 	}
 }

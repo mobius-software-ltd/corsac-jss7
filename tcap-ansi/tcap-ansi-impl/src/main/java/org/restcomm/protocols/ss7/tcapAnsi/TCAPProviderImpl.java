@@ -543,7 +543,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         this.dialogs.clear();
     }
 
-    protected void sendProviderAbort(PAbortCause pAbortCause, byte[] remoteTransactionId, SccpAddress remoteAddress,
+    protected void sendProviderAbort(PAbortCause pAbortCause, ByteBuf remoteTransactionId, SccpAddress remoteAddress,
             SccpAddress localAddress, int seqControl, int networkId) {
         TCAbortMessage msg = TcapFactory.createTCAbortMessage();
         msg.setDestinationTransactionId(remoteTransactionId);
@@ -559,7 +559,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         }
     }
 
-    protected void sendRejectAsProviderAbort(PAbortCause pAbortCause, byte[] remoteTransactionId, SccpAddress remoteAddress,
+    protected void sendRejectAsProviderAbort(PAbortCause pAbortCause, ByteBuf remoteTransactionId, SccpAddress remoteAddress,
             SccpAddress localAddress, int seqControl, int networkId) {
     	RejectProblem rp = RejectProblem.getFromPAbortCause(pAbortCause);
         if (rp == null)
@@ -589,7 +589,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 
     public void postProcessElement(Object parent,Object element,ConcurrentHashMap<Integer,Object> data) {
     	if(element instanceof TransactionID) {
-    		byte[] txID = null;
+    		ByteBuf txID = null;
     		if(parent instanceof TCResponseMessage)
     			txID =((TransactionID)element).getFirstElem();
     		else if(parent instanceof TCConversationMessage)
@@ -729,7 +729,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         }
     }
 
-    private void unrecognizedPackageType(SccpDataMessage message,byte[] transactionID, SccpAddress localAddress, SccpAddress remoteAddress,int networkId) throws ParseException {
+    private void unrecognizedPackageType(SccpDataMessage message,ByteBuf transactionID, SccpAddress localAddress, SccpAddress remoteAddress,int networkId) throws ParseException {
     	logger.error(String.format("Rx unidentified.SccpMessage=%s", message));
         this.sendProviderAbort(PAbortCause.UnrecognizedPackageType, transactionID, remoteAddress, localAddress, message.getSls(), networkId);        
     }

@@ -40,7 +40,12 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=0,constructed=false,lengthIndefinite=false)
 public abstract class ASNGeneric {
-	public ASNGeneric() {		
+	public ASNGeneric() {
+		
+	}
+	
+	public ASNGeneric(Object value) {
+		this.value=value;
 	}
 	
 	Object value;
@@ -107,9 +112,5 @@ public abstract class ASNGeneric {
 
 	public Object getValue() {
 		return value;
-	}
-
-	public void setValue(Object value) {
-		this.value = value;
 	}		
 }

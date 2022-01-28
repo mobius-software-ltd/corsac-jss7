@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.HoldTreatmen
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNHoldTreatmentIndicatorImpl extends ASNEnumerated {
-	public void setType(HoldTreatmentIndicator t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNHoldTreatmentIndicatorImpl() {
+		
+	}
+	
+	public ASNHoldTreatmentIndicatorImpl(HoldTreatmentIndicator t) {
+		super(t.getCode());
 	}
 	
 	public HoldTreatmentIndicator getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return HoldTreatmentIndicator.getInstance(getValue().intValue());
+		return HoldTreatmentIndicator.getInstance(realValue);
 	}
 }

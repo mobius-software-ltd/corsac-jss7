@@ -56,21 +56,6 @@ public class CorrelationIDTest extends ParameterHarness {
         // super.goodBodies.add(getBody2());
     }
 
-    /*private byte[] getBody1() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        // we will use odd number of digits, so we leave zero as MSB
-
-        bos.write(super.getSixDigits());
-        return bos.toByteArray();
-    }
-
-    private byte[] getBody2() throws IOException {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-        bos.write(super.getFiveDigits());
-        return bos.toByteArray();
-    }*/
-
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, IOException {

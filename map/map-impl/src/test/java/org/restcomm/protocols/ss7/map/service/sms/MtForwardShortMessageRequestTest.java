@@ -36,12 +36,14 @@ import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest
 import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DA;
 import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OA;
 import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfo;
+import org.restcomm.protocols.ss7.map.smstpdu.SmsTpduImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -52,15 +54,16 @@ import io.netty.buffer.Unpooled;
 public class MtForwardShortMessageRequestTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 73, -128, 8, 16, 33, 34, 34, 17, -126, 21, -12, -124, 7, -111, -127, 33, 105, 0, -112, -10, 4,
-                52, 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-                3, 4, 4, 4, 4, 4, 4, 99, 88, 77, 66, 55, 44, 44, 33, 22, 11, 11, 0 };
+        return new byte[] { 48, 60, -128, 8, 16, 33, 34, 34, 17, -126, 21, -12, -124, 7, -111, -127, 33, 105, 0, -112, -10, 4, 
+        		39, -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1, -112, 101, 
+        		54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 };
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { 48, 70, -128, 8, 1, -128, 56, 67, 84, 101, 118, -9, -124, 6, -111, 17, 17, 33, 34, 34, 4, 7, 11,
-                22, 33, 44, 55, 66, 77, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3,
-                6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
+        return new byte[] { 48, 102, -128, 8, 1, -128, 56, 67, 84, 101, 118, -9, -124, 6, -111, 17, 17, 33, 34, 34, 4, 39, -28, 
+        		10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1, -112, 101, 54, -5, -51, 
+        		2, -35, -33, 114, 54, 25, 20, 10, -123, 0, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 
+        		5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     }
 
     @Test(groups = { "functional.decode", "service.sms" })
@@ -84,12 +87,10 @@ public class MtForwardShortMessageRequestTest {
         assertEquals(oa.getServiceCentreAddressOA().getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(oa.getServiceCentreAddressOA().getAddress(), "18129600096");
         
-        ByteBuf buffer=ui.getValue();
-        byte[] data=new byte[buffer.readableBytes()];
-        buffer.readBytes(data);
-        
-        assertTrue(Arrays.equals(data, new byte[] { 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8, 1, 2, 2,
-                2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 99, 88, 77, 66, 55, 44, 44, 33, 22, 11, 11, 0 }));
+        ByteBuf buffer=Unpooled.buffer();
+        ui.decodeTpdu(false).encodeData(buffer);
+        assertTrue(ByteBufUtil.equals(buffer,Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
 
         rawData = getEncodedDataFull();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
@@ -108,11 +109,11 @@ public class MtForwardShortMessageRequestTest {
         assertEquals(oa.getServiceCentreAddressOA().getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(oa.getServiceCentreAddressOA().getAddress(), "1111122222");
         
-        buffer=ui.getValue();
-        data=new byte[buffer.readableBytes()];
-        buffer.readBytes(data);
+        buffer=Unpooled.buffer();
+        ui.decodeTpdu(false).encodeData(buffer);
+        assertTrue(ByteBufUtil.equals(buffer,Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
         
-        assertTrue(Arrays.equals(data, new byte[] { 11, 22, 33, 44, 55, 66, 77 }));
         assertTrue(moreMesToSend);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(ind.getExtensionContainer()));
     }
@@ -127,9 +128,8 @@ public class MtForwardShortMessageRequestTest {
         AddressStringImpl sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "18129600096");
         SM_RP_OAImpl sm_RP_OA = new SM_RP_OAImpl();
         sm_RP_OA.setServiceCentreAddressOA(sca);
-        SmsSignalInfoImpl sm_RP_UI = new SmsSignalInfoImpl(new byte[] { 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8,
-                1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 99, 88, 77, 66, 55, 44, 44, 33, 22, 11,
-                11, 0 }, null);
+        SmsSignalInfoImpl sm_RP_UI = new SmsSignalInfoImpl(SmsTpduImpl.createInstance(Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 }), false, null), null);
         MtForwardShortMessageRequestImpl ind = new MtForwardShortMessageRequestImpl(sm_RP_DA, sm_RP_OA, sm_RP_UI, false, null);
 
         ByteBuf buffer=parser.encode(ind);
@@ -143,7 +143,8 @@ public class MtForwardShortMessageRequestTest {
         sca = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1111122222");
         sm_RP_OA = new SM_RP_OAImpl();
         sm_RP_OA.setServiceCentreAddressOA(sca);
-        sm_RP_UI = new SmsSignalInfoImpl(new byte[] { 11, 22, 33, 44, 55, 66, 77 }, null);
+        sm_RP_UI = new SmsSignalInfoImpl(SmsTpduImpl.createInstance(Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 }), false, null), null);
         ind = new MtForwardShortMessageRequestImpl(sm_RP_DA, sm_RP_OA, sm_RP_UI, true,
                 MAPExtensionContainerTest.GetTestExtensionContainer());
 

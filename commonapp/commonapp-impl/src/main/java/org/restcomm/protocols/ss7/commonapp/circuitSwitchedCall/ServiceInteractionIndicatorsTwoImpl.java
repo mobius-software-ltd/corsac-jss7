@@ -80,33 +80,23 @@ public class ServiceInteractionIndicatorsTwoImpl implements ServiceInteractionIn
     	this.forwardServiceInteractionInd = forwardServiceInteractionInd;
         this.backwardServiceInteractionInd = backwardServiceInteractionInd;
         
-        if(bothwayThroughConnectionInd!=null) {
-        	this.bothwayThroughConnectionInd = new ASNBothwayThroughConnectionInd();
-        	this.bothwayThroughConnectionInd.setType(bothwayThroughConnectionInd);
-        }
-        
-        if(connectedNumberTreatmentInd!=null) {
-        	this.connectedNumberTreatmentInd = new ASNConnectedNumberTreatmentIndicatorImpl();
-        	this.connectedNumberTreatmentInd.setType(connectedNumberTreatmentInd);
-        }
-        
+        if(bothwayThroughConnectionInd!=null)
+        	this.bothwayThroughConnectionInd = new ASNBothwayThroughConnectionInd(bothwayThroughConnectionInd);
+        	
+        if(connectedNumberTreatmentInd!=null)
+        	this.connectedNumberTreatmentInd = new ASNConnectedNumberTreatmentIndicatorImpl(connectedNumberTreatmentInd);
+        	
         if(nonCUGCall)
         	this.nonCUGCall = new ASNNull();
         
-        if(holdTreatmentIndicator!=null) {
-        	this.holdTreatmentIndicator = new ASNHoldTreatmentIndicatorImpl();
-        	this.holdTreatmentIndicator.setType(holdTreatmentIndicator);
-        }
-        
-        if(cwTreatmentIndicator!=null) {
-        	this.cwTreatmentIndicator = new ASNCwTreatmentIndicatorImpl();
-        	this.cwTreatmentIndicator.setType(cwTreatmentIndicator);
-        }
-        
-        if(ectTreatmentIndicator!=null) {
-        	this.ectTreatmentIndicator = new ASNEctTreatmentIndicatorImpl();
-        	this.ectTreatmentIndicator.setType(ectTreatmentIndicator);
-        }
+        if(holdTreatmentIndicator!=null)
+        	this.holdTreatmentIndicator = new ASNHoldTreatmentIndicatorImpl(holdTreatmentIndicator);
+        	
+        if(cwTreatmentIndicator!=null)
+        	this.cwTreatmentIndicator = new ASNCwTreatmentIndicatorImpl(cwTreatmentIndicator);
+        	
+        if(ectTreatmentIndicator!=null)
+        	this.ectTreatmentIndicator = new ASNEctTreatmentIndicatorImpl(ectTreatmentIndicator);        	
     }
 
     public ForwardServiceInteractionInd getForwardServiceInteractionInd() {

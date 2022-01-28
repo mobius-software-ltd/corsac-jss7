@@ -61,17 +61,12 @@ public class DPAnalysedInfoCriteriumImpl implements DPAnalysedInfoCriterium {
     public DPAnalysedInfoCriteriumImpl(ISDNAddressString dialledNumber, long serviceKey, ISDNAddressString gsmSCFAddress,
             DefaultCallHandling defaultCallHandling, MAPExtensionContainer extensionContainer) {
         this.dialledNumber = dialledNumber;
-        
-        this.serviceKey = new ASNInteger();
-    	this.serviceKey.setValue(serviceKey);
-        
+        this.serviceKey = new ASNInteger(serviceKey);
         this.gsmSCFAddress = gsmSCFAddress;
         
-        if(defaultCallHandling!=null) {
-        	this.defaultCallHandling = new ASNDefaultCallHandling();
-        	this.defaultCallHandling.setType(defaultCallHandling);
-        }
-        
+        if(defaultCallHandling!=null)
+        	this.defaultCallHandling = new ASNDefaultCallHandling(defaultCallHandling);
+        	
         this.extensionContainer = extensionContainer;
     }
 

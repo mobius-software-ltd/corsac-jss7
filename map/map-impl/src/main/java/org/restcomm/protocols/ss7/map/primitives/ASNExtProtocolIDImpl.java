@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.primitives.ExtProtocolId;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNExtProtocolIDImpl extends ASNEnumerated {
-	public void setType(ExtProtocolId t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNExtProtocolIDImpl() {
+		
+	}
+	
+	public ASNExtProtocolIDImpl(ExtProtocolId t) {
+		super(t.getCode());
 	}
 	
 	public ExtProtocolId getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return ExtProtocolId.getExtProtocolId(getValue().intValue());
+		return ExtProtocolId.getExtProtocolId(realValue);
 	}
 }

@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.cap.api.service.gprs.primitive;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  FreeFormatData ::= OCTET STRING (SIZE (1..160))
@@ -41,5 +43,5 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface FreeFormatDataGprs {
-    byte[] getData();
+    ByteBuf getValue();
 }

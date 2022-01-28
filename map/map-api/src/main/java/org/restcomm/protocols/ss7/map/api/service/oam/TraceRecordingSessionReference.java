@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.oam;
 
 import java.io.Serializable;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  TraceRecordingSessionReference ::= OCTET STRING (SIZE (2))
@@ -34,6 +36,5 @@ import java.io.Serializable;
  */
 public interface TraceRecordingSessionReference extends Serializable {
 
-    byte[] getData();
-
+	ByteBuf getValue();
 }

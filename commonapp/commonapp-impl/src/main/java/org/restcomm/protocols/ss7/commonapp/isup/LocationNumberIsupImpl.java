@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,38 +39,24 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class LocationNumberIsupImpl extends ASNOctetString implements LocationNumberIsup {
+public class LocationNumberIsupImpl extends ASNOctetString2 implements LocationNumberIsup {
 	public LocationNumberIsupImpl() {
     }
 
-    public LocationNumberIsupImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public LocationNumberIsupImpl(LocationNumber locationNumber) throws APPException {
-        setLocationNumber(locationNumber);
+        super(translate(locationNumber));
     }
 
-    public void setLocationNumber(LocationNumber locationNumber) throws APPException {
+    public static ByteBuf translate(LocationNumber locationNumber) throws APPException {
         if (locationNumber == null)
             throw new APPException("The locationNumber parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((LocationNumberImpl) locationNumber).encode(buffer);
-            setValue(buffer);
+            return buffer;
         } catch (ParameterException e) {
             throw new APPException("ParameterException when encoding locationNumber: " + e.getMessage(), e);
         }
-    }
-
-    public byte[] getData() {
-    	ByteBuf buffer=getValue();
-    	if(buffer==null)
-    		return null;
-    	
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
-        return data;
     }
 
     public LocationNumber getLocationNumber() throws APPException {
@@ -91,11 +77,7 @@ public class LocationNumberIsupImpl extends ASNOctetString implements LocationNu
         StringBuilder sb = new StringBuilder();
         sb.append("LocationNumberCap [");
 
-        byte[] data=this.getData();
-        if (data != null) {
-            sb.append("data=[");
-            sb.append(printDataArr(data));
-            sb.append("]");
+        if (getValue() != null) {
             try {
                 LocationNumber ln = this.getLocationNumber();
                 sb.append(", ");

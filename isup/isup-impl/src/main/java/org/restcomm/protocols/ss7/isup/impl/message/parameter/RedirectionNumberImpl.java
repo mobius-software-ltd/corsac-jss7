@@ -64,12 +64,12 @@ public class RedirectionNumberImpl extends AbstractNAINumber implements Redirect
     /*
      * (non-Javadoc)
      *
-     * @seeorg.restcomm.isup.parameters.AbstractNumber#decodeBody(java.io. ByteArrayInputStream)
+     * @seeorg.restcomm.isup.parameters.AbstractNumber#decodeBody(io.netty.buffer.ByteBuf)
      */
 
     public void decodeBody(ByteBuf buf) throws IllegalArgumentException, ParameterException {
     	if(buf.readableBytes()==0) {
-    		throw new ParameterException("byte[] must  not be null and length must  be greater than 0");
+    		throw new ParameterException("buffer must  not be null and length must  be greater than 0");
     	}
     	
         int b = buf.readByte() & 0xff;
@@ -81,7 +81,7 @@ public class RedirectionNumberImpl extends AbstractNAINumber implements Redirect
     /*
      * (non-Javadoc)
      *
-     * @seeorg.restcomm.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
+     * @seeorg.restcomm.isup.parameters.AbstractNumber#encodeBody(io.netty.buffer.ByteBuf)
      */
 
     public void encodeBody(ByteBuf bos) {

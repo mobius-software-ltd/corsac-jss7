@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
 
+import io.netty.buffer.ByteBuf;
+
 /*
  * Mobius Software LTD
  * Copyright 2019, Mobius Software LTD and individual contributors
@@ -37,7 +39,7 @@ public interface External
 	
 	public void setIdentifier(List<Long> ids);
 	
-	public void setChild(byte[] value);
+	public void setChild(ByteBuf value);
 	
 	public void setChild(ASNBitString bitString);
 	
@@ -63,7 +65,7 @@ public interface External
 	
 	public Object getChild();
 	
-	public byte[] getChildString();
+	public ByteBuf getChildString();
 	
 	public ASNBitString getBitString();		
 }

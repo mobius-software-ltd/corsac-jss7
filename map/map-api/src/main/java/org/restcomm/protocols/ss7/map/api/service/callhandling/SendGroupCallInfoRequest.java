@@ -31,6 +31,8 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LongGroupId;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  MAP V3:
@@ -66,7 +68,7 @@ public interface SendGroupCallInfoRequest extends CallHandlingMessage {
 
      TalkerPriority getTalkerPriority();
 
-     byte[] getCksn();
+     ByteBuf getCksn();
 
      MAPExtensionContainer getExtensionContainer();
 }

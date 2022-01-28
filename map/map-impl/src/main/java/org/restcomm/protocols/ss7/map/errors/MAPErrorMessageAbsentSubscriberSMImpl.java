@@ -53,17 +53,13 @@ public class MAPErrorMessageAbsentSubscriberSMImpl extends MAPErrorMessageImpl i
     		MAPExtensionContainer extensionContainer, AbsentSubscriberDiagnosticSM additionalAbsentSubscriberDiagnosticSM) {
         super((long) MAPErrorCode.absentSubscriberSM);
 
-        if(absentSubscriberDiagnosticSM!=null){
-        	this.absentSubscriberDiagnosticSM = new ASNAbsentSubscriberDiagnosticSMImpl();
-        	this.absentSubscriberDiagnosticSM.setType(absentSubscriberDiagnosticSM);
-        }
-        
+        if(absentSubscriberDiagnosticSM!=null)
+        	this.absentSubscriberDiagnosticSM = new ASNAbsentSubscriberDiagnosticSMImpl(absentSubscriberDiagnosticSM);
+        	
         this.extensionContainer = extensionContainer;
         
-        if(additionalAbsentSubscriberDiagnosticSM!=null) {
-        	this.additionalAbsentSubscriberDiagnosticSM = new ASNAbsentSubscriberDiagnosticSMImpl();
-        	this.additionalAbsentSubscriberDiagnosticSM.setType(additionalAbsentSubscriberDiagnosticSM);
-        }
+        if(additionalAbsentSubscriberDiagnosticSM!=null)
+        	this.additionalAbsentSubscriberDiagnosticSM = new ASNAbsentSubscriberDiagnosticSMImpl(additionalAbsentSubscriberDiagnosticSM);        	
     }
 
     public MAPErrorMessageAbsentSubscriberSMImpl() {
@@ -91,10 +87,8 @@ public class MAPErrorMessageAbsentSubscriberSMImpl extends MAPErrorMessageImpl i
     public void setAbsentSubscriberDiagnosticSM(AbsentSubscriberDiagnosticSM absentSubscriberDiagnosticSM) {
     	if(absentSubscriberDiagnosticSM==null)
     		this.absentSubscriberDiagnosticSM=null;
-    	else {
-    		this.absentSubscriberDiagnosticSM = new ASNAbsentSubscriberDiagnosticSMImpl();
-    		this.absentSubscriberDiagnosticSM.setType(absentSubscriberDiagnosticSM);
-    	}
+    	else 
+    		this.absentSubscriberDiagnosticSM = new ASNAbsentSubscriberDiagnosticSMImpl(absentSubscriberDiagnosticSM);    		
     }
 
     public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
@@ -104,10 +98,8 @@ public class MAPErrorMessageAbsentSubscriberSMImpl extends MAPErrorMessageImpl i
     public void setAdditionalAbsentSubscriberDiagnosticSM(AbsentSubscriberDiagnosticSM additionalAbsentSubscriberDiagnosticSM) {
     	if(additionalAbsentSubscriberDiagnosticSM==null)
     		this.additionalAbsentSubscriberDiagnosticSM=null;
-    	else {
-    		this.additionalAbsentSubscriberDiagnosticSM = new ASNAbsentSubscriberDiagnosticSMImpl();
-    		this.additionalAbsentSubscriberDiagnosticSM.setType(additionalAbsentSubscriberDiagnosticSM);
-    	}
+    	else
+    		this.additionalAbsentSubscriberDiagnosticSM = new ASNAbsentSubscriberDiagnosticSMImpl(additionalAbsentSubscriberDiagnosticSM);    		
     }
 
     public boolean isEmAbsentSubscriberSM() {

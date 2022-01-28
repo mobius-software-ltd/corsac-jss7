@@ -22,14 +22,11 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersion;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 
 /**
  * @author baranowb
@@ -37,65 +34,54 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
  *
  */
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=26,constructed=false,lengthIndefinite=false)
-public class ProtocolVersionImpl extends ASNOctetString implements ProtocolVersion {
-	private static byte _TAG_T1_114_1996 = 0x01;
-	private static byte _TAG_T1_114_2000 = 0x02;
+public class ProtocolVersionImpl extends ASNSingleByte implements ProtocolVersion {
+	private static int _TAG_T1_114_1996 = 0x01;
+	private static int _TAG_T1_114_2000 = 0x02;
 
-	private static final ByteBuf T1_EMPTY=Unpooled.wrappedBuffer(new byte[] { 0x00 });
-	private static final ByteBuf T1_1996=Unpooled.wrappedBuffer(new byte[] {_TAG_T1_114_1996});
-	private static final ByteBuf T1_2000=Unpooled.wrappedBuffer(new byte[] {_TAG_T1_114_2000});
-	private static final ByteBuf T1_COMMON=Unpooled.wrappedBuffer(new byte[] {(byte)(_TAG_T1_114_1996 + _TAG_T1_114_2000)});
-    
-	private Boolean has1996=true;
-	private Boolean has2000=true;
-	
 	/**
      * Creating ProtocolVersion that support both T1_114_1996Supported and T1_114_2000Supported
      */
     public ProtocolVersionImpl() {
-    	setValue(Unpooled.wrappedBuffer(T1_COMMON));        
+    	super(_TAG_T1_114_1996 + _TAG_T1_114_2000);        
     }
 
+    public ProtocolVersionImpl(boolean isT1_114_1996Supported,boolean isT1_114_2000Supported) {
+    	super(translate(isT1_114_1996Supported, isT1_114_2000Supported));    	
+    }
+    
+    private static Integer translate(boolean isT1_114_1996Supported,boolean isT1_114_2000Supported) {
+    	if(isT1_114_1996Supported) {
+	    	if(isT1_114_2000Supported)
+	    		return _TAG_T1_114_1996 + _TAG_T1_114_2000;
+	    	else
+	    		return _TAG_T1_114_1996;
+    	} else {
+    		if(isT1_114_2000Supported)
+    			return _TAG_T1_114_2000;
+	    	else
+	    		return 0;
+    	}
+    }
+    
     public boolean isT1_114_1996Supported() {
-    	return has1996;
+    	Integer value=getValue();
+    	if(value==null || (value & _TAG_T1_114_1996)==0)
+    		return false;
+    	
+    	return true;
     }
 
     public boolean isT1_114_2000Supported() {
-    	return has2000;
+    	Integer value=getValue();
+    	if(value==null || (value & _TAG_T1_114_2000)==0)
+    		return false;
+    	
+    	return true;
     }
 
     public boolean isSupportedVersion() {
-    	return has1996 || has2000;
-    }
-
-    public void setT1_114_1996Supported(boolean val) {
-    	has1996=val;
-    	if(val) {
-	    	if(has2000)
-	    		setValue(Unpooled.wrappedBuffer(T1_COMMON));
-	    	else
-	    		setValue(Unpooled.wrappedBuffer(T1_1996));
-    	} else {
-    		if(has2000)
-	    		setValue(Unpooled.wrappedBuffer(T1_2000));
-	    	else
-	    		setValue(Unpooled.wrappedBuffer(T1_EMPTY));
-    	}    
-    }
-
-    public void setT1_114_2000Supported(boolean val) {
-    	has2000=val;
-    	if(val) {
-	    	if(has1996)
-	    		setValue(Unpooled.wrappedBuffer(T1_COMMON));
-	    	else
-	    		setValue(Unpooled.wrappedBuffer(T1_2000));
-    	} else {
-    		if(has1996)
-	    		setValue(Unpooled.wrappedBuffer(T1_1996));
-	    	else
-	    		setValue(Unpooled.wrappedBuffer(T1_EMPTY));
-    	}        
+    	Integer value=getValue();
+    	return value!=null && value!=0;
     }
 
     public String toString() {

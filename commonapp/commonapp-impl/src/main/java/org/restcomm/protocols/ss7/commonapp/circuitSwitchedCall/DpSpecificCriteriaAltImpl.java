@@ -54,10 +54,8 @@ public class DpSpecificCriteriaAltImpl implements DpSpecificCriteriaAlt {
         	this.changeOfPositionControlInfo = new ChangeOfLocationListWrapperImpl(changeOfPositionControlInfo);
         }
         
-        if(numberOfDigits!=null) {
-        	this.numberOfDigits = new ASNInteger();
-        	this.numberOfDigits.setValue(numberOfDigits.longValue());
-        }
+        if(numberOfDigits!=null)
+        	this.numberOfDigits = new ASNInteger(numberOfDigits);        	
     }
 
     public List<ChangeOfLocation> getChangeOfPositionControlInfo() {
@@ -71,7 +69,7 @@ public class DpSpecificCriteriaAltImpl implements DpSpecificCriteriaAlt {
     	if(numberOfDigits==null)
     		return null;
     	
-        return numberOfDigits.getValue().intValue();
+        return numberOfDigits.getIntValue();
     }
 
     @Override

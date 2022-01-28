@@ -51,10 +51,8 @@ public class FCIBCCCAMELSequence1SMSImpl implements FCIBCCCAMELSequence1SMS {
     public FCIBCCCAMELSequence1SMSImpl(FreeFormatDataSMS freeFormatData, AppendFreeFormatData appendFreeFormatData) {
         this.freeFormatData = freeFormatData;
         
-        if(appendFreeFormatData!=null) {
-        	this.appendFreeFormatData = new ASNAppendFreeFormatData();
-        	this.appendFreeFormatData.setType(appendFreeFormatData);
-        }
+        if(appendFreeFormatData!=null)
+        	this.appendFreeFormatData = new ASNAppendFreeFormatData(appendFreeFormatData);        	
     }
 
     public FreeFormatDataSMS getFreeFormatData() {

@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import io.netty.buffer.ByteBuf;
-
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
@@ -31,6 +29,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPostprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -40,22 +41,28 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=7,constructed=false,lengthIndefinite=false)
 @ASNPostprocess
 public class TransactionID {
-    private byte[] firstElem;
-    private byte[] secondElem;
+    private ByteBuf firstElem;
+    private ByteBuf secondElem;
 
-    public byte[] getFirstElem() {
-        return firstElem;
+    public ByteBuf getFirstElem() {
+    	if(firstElem!=null)
+    		return Unpooled.wrappedBuffer(firstElem);
+    	
+    	return null;
     }
 
-    public void setFirstElem(byte[] firstElem) {
+    public void setFirstElem(ByteBuf firstElem) {
         this.firstElem = firstElem;
     }
 
-    public byte[] getSecondElem() {
-        return secondElem;
+    public ByteBuf getSecondElem() {
+    	if(secondElem!=null)
+    		return Unpooled.wrappedBuffer(secondElem);
+    	
+    	return null;
     }
 
-    public void setSecondElem(byte[] secondElem) {
+    public void setSecondElem(ByteBuf secondElem) {
         this.secondElem = secondElem;
     }
     
@@ -82,15 +89,12 @@ public class TransactionID {
 	
 	@ASNDecode
 	public Boolean decode(ASNParser parser, Object parent,ByteBuf buffer,Boolean skipErrors) {
-		if(buffer.readableBytes()>=4) {
-			firstElem=new byte[4];
-			buffer.readBytes(firstElem);
-		}			
+		if(buffer.readableBytes()>=4)
+			firstElem=buffer.readSlice(4);
+					
 		
-		if(buffer.readableBytes()>=4) {
-			secondElem=new byte[4];
-			buffer.readBytes(secondElem);
-		}			
+		if(buffer.readableBytes()>=4)
+			secondElem=buffer.readSlice(4);
 		
 		return false;
 	}

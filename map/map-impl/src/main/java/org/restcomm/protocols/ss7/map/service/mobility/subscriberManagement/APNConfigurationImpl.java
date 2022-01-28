@@ -111,19 +111,16 @@ public class APNConfigurationImpl implements APNConfiguration {
             List<SpecificAPNInfo> specificAPNInfoList, MAPExtensionContainer extensionContainer,
             PDPAddress servedPartyIPIPv6Address, APNOIReplacement apnOiReplacement, SIPTOPermission siptoPermission,
             LIPAPermission lipaPermission) {
-        this.contextId = new ASNInteger();
-        this.contextId.setValue((long)contextId & 0x0FFFFFFFFL);
+        this.contextId = new ASNInteger(contextId);
         this.pDNType = pDNType;
         this.servedPartyIPIPv4Address = servedPartyIPIPv4Address;
         this.apn = apn;
         this.ePSQoSSubscribed = ePSQoSSubscribed;
         this.pdnGwIdentity = pdnGwIdentity;
         
-        if(pdnGwAllocationType!=null) {
-        	this.pdnGwAllocationType = new ASNPDNGWAllocationType();
-        	this.pdnGwAllocationType.setType(pdnGwAllocationType);
-        }
-        
+        if(pdnGwAllocationType!=null)
+        	this.pdnGwAllocationType = new ASNPDNGWAllocationType(pdnGwAllocationType);
+        	
         if(vplmnAddressAllowed)
         	this.vplmnAddressAllowed = new ASNNull();
         
@@ -137,22 +134,18 @@ public class APNConfigurationImpl implements APNConfiguration {
         this.servedPartyIPIPv6Address = servedPartyIPIPv6Address;
         this.apnOiReplacement = apnOiReplacement;
         
-        if(siptoPermission!=null) {
-        	this.siptoPermission = new ASNSIPTOPermissionImpl();
-        	this.siptoPermission.setType(siptoPermission);
-        }
-        
-        if(lipaPermission!=null) {
-        	this.lipaPermission = new ASNLIPAPermissionImpl();
-        	this.lipaPermission.setType(lipaPermission);
-        }
+        if(siptoPermission!=null)
+        	this.siptoPermission = new ASNSIPTOPermissionImpl(siptoPermission);
+        	
+        if(lipaPermission!=null)
+        	this.lipaPermission = new ASNLIPAPermissionImpl(lipaPermission);        	
     }
 
     public int getContextId() {
-    	if(this.contextId==null)
+    	if(this.contextId==null || this.contextId.getValue()==null)
     		return -1;
     	
-        return this.contextId.getValue().intValue();
+        return this.contextId.getIntValue();
     }
 
     public PDNType getPDNType() {

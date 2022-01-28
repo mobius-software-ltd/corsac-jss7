@@ -31,4 +31,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=18,constructed=true,lengthIndefinite=false)
 public class ASNInvokeSetParameterImpl extends ASNGeneric {
+	public ASNInvokeSetParameterImpl() {
+		
+	}
+	
+	public ASNInvokeSetParameterImpl(Object value) {
+		super(value);
+	}
 }

@@ -130,11 +130,9 @@ public class AnalysedInformationRequestImpl extends CircuitSwitchedCallMessageIm
         if(callingFacilityGroup!=null)
         	this.callingFacilityGroup=new FacilityGroupWrapperImpl(callingFacilityGroup);
         
-        if(callingFacilityGroupMember!=null) {
-        	this.callingFacilityGroupMember=new ASNInteger();
-        	this.callingFacilityGroupMember.setValue(callingFacilityGroupMember.longValue());
-        }
-        
+        if(callingFacilityGroupMember!=null)
+        	this.callingFacilityGroupMember=new ASNInteger(callingFacilityGroupMember);
+        	
         this.originalCalledPartyID=originalCalledPartyID;
         this.prefix=prefix;
         this.redirectingPartyID=redirectingPartyID;
@@ -187,10 +185,10 @@ public class AnalysedInformationRequestImpl extends CircuitSwitchedCallMessageIm
 
     @Override
     public Integer getCallingFacilityGroupMember() {
-    	if(callingFacilityGroupMember==null || callingFacilityGroupMember.getValue()==null)
+    	if(callingFacilityGroupMember==null)
     		return null;
     	
-		return callingFacilityGroupMember.getValue().intValue();
+		return callingFacilityGroupMember.getIntValue();
 	}
 
     @Override

@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNAreaType extends ASNEnumerated {
-	public void setType(AreaType t) {
-		super.setValue(Long.valueOf(t.getType()));
+	public ASNAreaType() {
+		
+	}
+	
+	public ASNAreaType(AreaType t) {
+		super(t.getType());
 	}
 	
 	public AreaType getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return AreaType.getAreaType(getValue().intValue());
+		return AreaType.getAreaType(realValue);
 	}
 }

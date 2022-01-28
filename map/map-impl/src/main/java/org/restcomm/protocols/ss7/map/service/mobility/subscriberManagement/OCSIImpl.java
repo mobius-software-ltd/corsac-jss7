@@ -67,11 +67,9 @@ public class OCSIImpl implements OCSI {
     	
         this.extensionContainer = extensionContainer;
         
-        if(camelCapabilityHandling!=null) {
-        	this.camelCapabilityHandling = new ASNInteger();
-        	this.camelCapabilityHandling.setValue(camelCapabilityHandling.longValue());
-        }
-        
+        if(camelCapabilityHandling!=null)
+        	this.camelCapabilityHandling = new ASNInteger(camelCapabilityHandling);
+        	
         if(notificationToCSE)
         	this.notificationToCSE = new ASNNull();
         
@@ -94,7 +92,7 @@ public class OCSIImpl implements OCSI {
     	if(camelCapabilityHandling==null)
     		return null;
     	
-        return camelCapabilityHandling.getValue().intValue();
+        return camelCapabilityHandling.getIntValue();
     }
 
     public boolean getNotificationToCSE() {

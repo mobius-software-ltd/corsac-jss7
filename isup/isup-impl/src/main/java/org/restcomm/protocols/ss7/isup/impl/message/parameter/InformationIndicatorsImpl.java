@@ -30,10 +30,10 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.InformationIndicators;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:14:36:25 2009-03-31<br>
@@ -77,7 +77,7 @@ public class InformationIndicatorsImpl extends AbstractISUPParameter implements 
 
     public void decode(ByteBuf buffer) throws ParameterException {
         if (buffer == null || buffer.readableBytes() != 2) {
-            throw new ParameterException("byte[] must  not be null and length must  be 2");
+            throw new ParameterException("buffer must  not be null and length must  be 2");
         }
 
         byte b=buffer.readByte();

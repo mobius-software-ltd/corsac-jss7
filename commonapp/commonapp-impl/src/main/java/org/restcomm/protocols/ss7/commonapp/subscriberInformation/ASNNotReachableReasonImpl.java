@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.NotReachab
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNNotReachableReasonImpl extends ASNEnumerated {
-	public void setType(NotReachableReason t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNNotReachableReasonImpl() {
+		
+	}
+	
+	public ASNNotReachableReasonImpl(NotReachableReason t) {
+		super(t.getCode());
 	}
 	
 	public NotReachableReason getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return NotReachableReason.getInstance(getValue().intValue());
+		return NotReachableReason.getInstance(realValue);
 	}
 }

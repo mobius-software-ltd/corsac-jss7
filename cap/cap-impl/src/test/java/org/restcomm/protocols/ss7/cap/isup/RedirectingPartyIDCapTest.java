@@ -67,7 +67,6 @@ public class RedirectingPartyIDCapTest {
         
         RedirectingPartyIDIsupImpl elem = (RedirectingPartyIDIsupImpl)result.getResult();                
         RedirectingNumber rn = elem.getRedirectingNumber();
-        assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         assertEquals(rn.getNatureOfAddressIndicator(), 3);
         assertTrue(rn.getAddress().equals("7010900"));
         assertEquals(rn.getNumberingPlanIndicator(), 1);
@@ -79,53 +78,14 @@ public class RedirectingPartyIDCapTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(RedirectingPartyIDIsupImpl.class);
     	
-        RedirectingPartyIDIsupImpl elem = new RedirectingPartyIDIsupImpl(this.getIntData());
+        RedirectingNumber rn = new RedirectingNumberImpl(3, "7010900", 1, 1);
+        RedirectingPartyIDIsupImpl elem = new RedirectingPartyIDIsupImpl(rn);
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        RedirectingNumber rn = new RedirectingNumberImpl(3, "7010900", 1, 1);
-        elem = new RedirectingPartyIDIsupImpl(rn);
-        rawData = this.getData();
-        buffer=parser.encode(elem);
-        encodedData = new byte[buffer.readableBytes()];
-        buffer.readBytes(encodedData);
-        assertTrue(Arrays.equals(rawData, encodedData));
-
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int addressRepresentationRestrictedIndicator
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "isup" })
-    public void testXMLSerialize() throws Exception {
-
-        RedirectingPartyIDCapImpl original = new RedirectingPartyIDCapImpl(new RedirectingNumberImpl(
-                RedirectingNumber._NAI_NATIONAL_SN, "12345", RedirectingNumber._NPI_TELEX, RedirectingNumber._APRI_RESTRICTED));
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "redirectingPartyIDCap", RedirectingPartyIDCapImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        RedirectingPartyIDCapImpl copy = reader.read("redirectingPartyIDCap", RedirectingPartyIDCapImpl.class);
-
-        assertEquals(copy.getRedirectingNumber().getNatureOfAddressIndicator(), original.getRedirectingNumber()
-                .getNatureOfAddressIndicator());
-        assertEquals(copy.getRedirectingNumber().getAddress(), original.getRedirectingNumber().getAddress());
-        assertEquals(copy.getRedirectingNumber().getNumberingPlanIndicator(), original.getRedirectingNumber()
-                .getNumberingPlanIndicator());
-        assertEquals(copy.getRedirectingNumber().getAddressRepresentationRestrictedIndicator(), original.getRedirectingNumber()
-                .getAddressRepresentationRestrictedIndicator());
-    }*/
 }

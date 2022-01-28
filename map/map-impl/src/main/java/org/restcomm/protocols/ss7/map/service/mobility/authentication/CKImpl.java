@@ -24,32 +24,20 @@ package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CK;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author Lasith Waruna Perera
  *
  */
-public class CKImpl extends ASNOctetString implements CK {
-	public CKImpl(byte[] data) {
-		setValue(Unpooled.wrappedBuffer(data));        
+public class CKImpl extends ASNOctetString2 implements CK {
+	public CKImpl(ByteBuf value) {
+		super(value);     
     }
 
     public CKImpl() {
     }
-
-    public byte[] getData() {
-    	ByteBuf value=this.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
-    }
-
 }

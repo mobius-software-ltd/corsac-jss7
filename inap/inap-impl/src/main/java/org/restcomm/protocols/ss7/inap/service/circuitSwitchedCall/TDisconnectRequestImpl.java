@@ -88,18 +88,14 @@ public class TDisconnectRequestImpl extends CircuitSwitchedCallMessageImpl imple
         if(calledFacilityGroup!=null)
         	this.calledFacilityGroup=new FacilityGroupWrapperImpl(calledFacilityGroup);
         
-        if(calledFacilityGroupMember!=null) {
-        	this.calledFacilityGroupMember=new ASNInteger();
-        	this.calledFacilityGroupMember.setValue(calledFacilityGroupMember.longValue());
-        }
-        
+        if(calledFacilityGroupMember!=null)
+        	this.calledFacilityGroupMember=new ASNInteger(calledFacilityGroupMember);
+        	
         this.releaseCause=releaseCause;
         this.extensions = extensions;
         
-        if(connectTime!=null) {
-        	this.connectTime=new ASNInteger();
-        	this.connectTime.setValue(connectTime.longValue());
-        }
+        if(connectTime!=null)
+        	this.connectTime=new ASNInteger(connectTime);        	
     }
 
     @Override
@@ -137,10 +133,10 @@ public class TDisconnectRequestImpl extends CircuitSwitchedCallMessageImpl imple
 
     @Override
     public Integer getCalledFacilityGroupMember() {
-    	if(calledFacilityGroupMember==null || calledFacilityGroupMember.getValue()==null)
+    	if(calledFacilityGroupMember==null)
     		return null;
     	
-		return calledFacilityGroupMember.getValue().intValue();
+		return calledFacilityGroupMember.getIntValue();
 	}
 
     @Override
@@ -155,10 +151,10 @@ public class TDisconnectRequestImpl extends CircuitSwitchedCallMessageImpl imple
 
     @Override
     public Integer getConnectTime() {
-    	if(connectTime==null || connectTime.getValue()==null)
+    	if(connectTime==null)
     		return null;
     	
-		return connectTime.getValue().intValue();
+		return connectTime.getIntValue();
 	}
 
 	@Override

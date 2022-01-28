@@ -72,7 +72,7 @@ public class GT0011Test {
      */
     @Test(groups = { "parameter", "functional.decode" })
     public void testDecode() throws Exception {
-        // create GT object and read data from stream
+        // create GT object and read data from ByteBuf
         GlobalTitle0011Impl gt1 = new GlobalTitle0011Impl();
         gt1.decode(Unpooled.wrappedBuffer(data), factory, SccpProtocolVersion.ITU);
 
@@ -92,28 +92,4 @@ public class GT0011Test {
         gt.encode(bout, false, SccpProtocolVersion.ITU);
         MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(data), bout);        
     }
-
-    /*@Test(groups = { "parameter", "functional.encode" })
-    public void testSerialization() throws Exception {
-        GlobalTitle0011Impl gt = new GlobalTitle0011Impl("9023629581",0, BCDEvenEncodingScheme.INSTANCE, NumberingPlan.ISDN_TELEPHONY);
-
-        // Writes
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(output);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-        // indentation).
-        writer.write(gt, "GT0011", GlobalTitle0011Impl.class);
-        writer.close();
-
-        System.out.println(output.toString());
-
-        ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
-        XMLObjectReader reader = XMLObjectReader.newInstance(input);
-        GlobalTitle0011Impl aiOut = reader.read("GT0011", GlobalTitle0011Impl.class);
-
-        // check results
-        assertEquals(aiOut.getTranslationType(), 0);
-        assertEquals(aiOut.getNumberingPlan(), NumberingPlan.ISDN_TELEPHONY);
-        assertEquals(aiOut.getDigits(), "9023629581");
-    }*/
 }

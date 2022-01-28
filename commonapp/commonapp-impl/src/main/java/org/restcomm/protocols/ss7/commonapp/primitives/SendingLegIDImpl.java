@@ -37,16 +37,15 @@ public class SendingLegIDImpl extends ASNEnumerated {
     }
 
     public SendingLegIDImpl(LegType legID) {
-    	if(legID!=null)
-			setValue((long)legID.getCode());    
+    	super(legID.getCode());    
     }
 
     public LegType getSendingSideID() {
-    	Long realValue=getValue();
+    	Integer realValue=getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return LegType.getInstance(realValue.intValue());
+		return LegType.getInstance(realValue);
     }
 
     @Override

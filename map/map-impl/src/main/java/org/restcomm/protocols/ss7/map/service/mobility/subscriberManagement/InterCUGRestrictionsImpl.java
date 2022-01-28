@@ -37,11 +37,11 @@ public class InterCUGRestrictionsImpl extends ASNSingleByte implements InterCUGR
     }
 
     public InterCUGRestrictionsImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public InterCUGRestrictionsImpl(InterCUGRestrictionsValue val) {
-    	setValue((val != null ? val.getCode() : 0));
+    	super((val != null ? val.getCode() : 0));
     }
 
     public int getData() {

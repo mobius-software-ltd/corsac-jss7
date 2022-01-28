@@ -75,27 +75,4 @@ public class ChargeIndicatorTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })
-    public void testXMLSerializaion() throws Exception {
-        ChargeIndicatorImpl original = new ChargeIndicatorImpl(ChargeIndicatorValue.spare);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "chargeIndicator", ChargeIndicatorImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        ChargeIndicatorImpl copy = reader.read("chargeIndicator", ChargeIndicatorImpl.class);
-
-        assertEquals(copy.getChargeIndicatorValue(), original.getChargeIndicatorValue());
-    }*/
 }

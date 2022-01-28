@@ -43,8 +43,6 @@ Octet 18: Guaranteed bit rate for uplink (extended)
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface Ext3QoSSubscribed {
 
-    byte[] getData();
-
     ExtQoSSubscribed_BitRateExtended getMaximumBitRateForUplinkExtended();
 
     ExtQoSSubscribed_BitRateExtended getGuaranteedBitRateForUplinkExtended();

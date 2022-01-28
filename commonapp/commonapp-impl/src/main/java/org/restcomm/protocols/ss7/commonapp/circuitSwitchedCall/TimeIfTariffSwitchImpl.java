@@ -47,27 +47,24 @@ public class TimeIfTariffSwitchImpl implements TimeIfTariffSwitch {
     }
 
     public TimeIfTariffSwitchImpl(int timeSinceTariffSwitch, Integer tariffSwitchInterval) {
-        this.timeSinceTariffSwitch = new ASNInteger();
-        this.timeSinceTariffSwitch.setValue(Long.valueOf(timeSinceTariffSwitch));
+        this.timeSinceTariffSwitch = new ASNInteger(timeSinceTariffSwitch);
         
-        if(tariffSwitchInterval!=null) {
-        	this.tariffSwitchInterval = new ASNInteger();
-        	this.tariffSwitchInterval.setValue(tariffSwitchInterval.longValue());
-        }
+        if(tariffSwitchInterval!=null)
+        	this.tariffSwitchInterval = new ASNInteger(tariffSwitchInterval);        	
     }
 
     public int getTimeSinceTariffSwitch() {
     	if(timeSinceTariffSwitch==null || timeSinceTariffSwitch.getValue()==null)
     		return 0;
     	
-        return timeSinceTariffSwitch.getValue().intValue();
+        return timeSinceTariffSwitch.getIntValue();
     }
 
     public Integer getTariffSwitchInterval() {
-    	if(tariffSwitchInterval==null || tariffSwitchInterval.getValue()==null)
+    	if(tariffSwitchInterval==null)
     		return null;
     	
-        return tariffSwitchInterval.getValue().intValue();
+        return tariffSwitchInterval.getIntValue();
     }
 
     @Override

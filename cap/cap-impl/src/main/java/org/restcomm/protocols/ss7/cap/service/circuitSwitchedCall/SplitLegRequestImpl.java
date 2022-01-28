@@ -57,11 +57,9 @@ public class SplitLegRequestImpl extends CircuitSwitchedCallMessageImpl implemen
     	if(legIDToMove!=null)
     		this.legToBeSplit =  new LegIDWrapperImpl(legIDToMove);
     	
-    	if(newCallSegment!=null) {
-    		this.newCallSegment = new ASNInteger();
-    		this.newCallSegment.setValue(newCallSegment.longValue());
-    	}
-    	
+    	if(newCallSegment!=null)
+    		this.newCallSegment = new ASNInteger(newCallSegment);
+    		
         this.extensions = extensions;
     }
 
@@ -81,10 +79,10 @@ public class SplitLegRequestImpl extends CircuitSwitchedCallMessageImpl implemen
     }
 
     public Integer getNewCallSegment() {
-    	if(newCallSegment==null || newCallSegment.getValue()==null)
+    	if(newCallSegment==null)
     		return null;
     	
-        return newCallSegment.getValue().intValue();
+        return newCallSegment.getIntValue();
     }
 
     @Override

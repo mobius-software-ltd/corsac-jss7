@@ -36,6 +36,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -77,9 +78,9 @@ public class CollectedDigitsTest {
         CollectedDigitsImpl elem = (CollectedDigitsImpl)result.getResult();        
         assertEquals((int) elem.getMinimumNbOfDigits(), 15);
         assertEquals((int) elem.getMaximumNbOfDigits(), 30);
-        assertTrue(Arrays.equals(elem.getEndOfReplyDigit(), getEndOfReplyDigit()));
-        assertTrue(Arrays.equals(elem.getCancelDigit(), getCancelDigit()));
-        assertTrue(Arrays.equals(elem.getStartDigit(), getStartDigit()));
+        assertTrue(ByteBufUtil.equals(elem.getEndOfReplyDigit(), Unpooled.wrappedBuffer(getEndOfReplyDigit())));
+        assertTrue(ByteBufUtil.equals(elem.getCancelDigit(), Unpooled.wrappedBuffer(getCancelDigit())));
+        assertTrue(ByteBufUtil.equals(elem.getStartDigit(), Unpooled.wrappedBuffer(getStartDigit())));
         assertEquals((int) elem.getFirstDigitTimeOut(), 100);
         assertEquals((int) elem.getInterDigitTimeOut(), 101);
         assertEquals(elem.getErrorTreatment(), ErrorTreatment.repeatPrompt);
@@ -93,7 +94,8 @@ public class CollectedDigitsTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CollectedDigitsImpl.class);
     	
-        CollectedDigitsImpl elem = new CollectedDigitsImpl(15, 30, getEndOfReplyDigit(), getCancelDigit(), getStartDigit(),
+        CollectedDigitsImpl elem = new CollectedDigitsImpl(15, 30, Unpooled.wrappedBuffer(getEndOfReplyDigit()), 
+        		Unpooled.wrappedBuffer(getCancelDigit()), Unpooled.wrappedBuffer(getStartDigit()),
                 100, 101, ErrorTreatment.repeatPrompt, false, true, false);
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
@@ -106,71 +108,4 @@ public class CollectedDigitsTest {
         // Boolean voiceInformation,
         // Boolean voiceBack
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        CollectedDigitsImpl original = new CollectedDigitsImpl(15, 30, getEndOfReplyDigit(), getCancelDigit(), getStartDigit(),
-                100, 101, ErrorTreatment.repeatPrompt, false, true, false);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "collectedDigits", CollectedDigitsImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        CollectedDigitsImpl copy = reader.read("collectedDigits", CollectedDigitsImpl.class);
-
-        assertEquals((int) copy.getMinimumNbOfDigits(), 15);
-        assertEquals(copy.getMaximumNbOfDigits(), 30);
-        assertEquals(copy.getEndOfReplyDigit(), getEndOfReplyDigit());
-        assertEquals(copy.getCancelDigit(), getCancelDigit());
-        assertEquals(copy.getStartDigit(), getStartDigit());
-        assertEquals((int) copy.getFirstDigitTimeOut(), 100);
-        assertEquals((int) copy.getInterDigitTimeOut(), 101);
-        assertEquals(copy.getErrorTreatment(), ErrorTreatment.repeatPrompt);
-        assertFalse(copy.getInterruptableAnnInd());
-        assertTrue(copy.getVoiceInformation());
-        assertFalse(copy.getVoiceBack());
-
-
-        original = new CollectedDigitsImpl(null, 31, null, null, null, null, null, null, null, null, null);
-
-        // Writes the area to a file.
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "collectedDigits", CollectedDigitsImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-        copy = reader.read("collectedDigits", CollectedDigitsImpl.class);
-
-        assertNull(copy.getMinimumNbOfDigits());
-        assertEquals(copy.getMaximumNbOfDigits(), 31);
-        assertNull(copy.getEndOfReplyDigit());
-        assertNull(copy.getCancelDigit());
-        assertNull(copy.getStartDigit());
-        assertNull(copy.getFirstDigitTimeOut());
-        assertNull(copy.getInterDigitTimeOut());
-        assertNull(copy.getErrorTreatment());
-        assertNull(copy.getInterruptableAnnInd());
-        assertNull(copy.getVoiceInformation());
-        assertNull(copy.getVoiceBack());
-
-    }*/
 }

@@ -24,31 +24,35 @@ package org.restcomm.protocols.ss7.commonapp.subscriberInformation;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.RAIdentity;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
  * @author sergey vetyutnev
  *
  */
-public class RAIdentityImpl extends ASNOctetString implements RAIdentity {
+public class RAIdentityImpl extends ASNOctetString2 implements RAIdentity {
 	public RAIdentityImpl() {
     }
 
-    public RAIdentityImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));        
+    public RAIdentityImpl(ByteBuf value) {
+    	super(value);        
     }
 
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-        byte[] data=new byte[value.readableBytes()];
-        value.readBytes(data);
-        return data;
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("RAIdentity [");
+
+        if (getValue() != null) {
+        	 sb.append(", ");
+             sb.append(printDataArr());
+        }
+
+        sb.append("]");
+
+        return sb.toString();
     }
 }

@@ -42,6 +42,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -76,7 +77,7 @@ public class LocationInfoWithLMSITest {
         assertEquals(nnm.getAddressNature(), AddressNature.international_number);
         assertEquals(nnm.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(nnm.getAddress(), "79033700222");
-        assertTrue(Arrays.equals(new byte[] { 0, 3, 98, 49 }, liw.getLMSI().getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(new byte[] { 0, 3, 98, 49 }), liw.getLMSI().getValue()));
         assertFalse(liw.getGprsNodeIndicator());
         assertNull(liw.getAdditionalNumber());
 
@@ -90,7 +91,7 @@ public class LocationInfoWithLMSITest {
         assertEquals(nnm.getAddressNature(), AddressNature.national_significant_number);
         assertEquals(nnm.getNumberingPlan(), NumberingPlan.national);
         assertEquals(nnm.getAddress(), "1234567890");
-        assertTrue(Arrays.equals(new byte[] { 4, 3, 2, 1 }, liw.getLMSI().getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(new byte[] { 4, 3, 2, 1 }), liw.getLMSI().getValue()));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(liw.getExtensionContainer()));
         nnm = liw.getAdditionalNumber().getSGSNNumber();
         assertEquals(nnm.getAddressNature(), AddressNature.network_specific_number);
@@ -105,7 +106,7 @@ public class LocationInfoWithLMSITest {
     	parser.replaceClass(LocationInfoWithLMSIImpl.class);
     	                
         ISDNAddressStringImpl nnm = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "79033700222");
-        LMSIImpl lmsi = new LMSIImpl(new byte[] { 0, 3, 98, 49 });
+        LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(new byte[] { 0, 3, 98, 49 }));
         LocationInfoWithLMSIImpl liw = new LocationInfoWithLMSIImpl(nnm, lmsi, null, false, null);
 
         ByteBuf buffer=parser.encode(liw);
@@ -117,7 +118,7 @@ public class LocationInfoWithLMSITest {
         nnm = new ISDNAddressStringImpl(AddressNature.national_significant_number, NumberingPlan.national, "1234567890");
         ISDNAddressStringImpl sgsnAn = new ISDNAddressStringImpl(AddressNature.network_specific_number, NumberingPlan.private_plan,
                 "987654321");
-        lmsi = new LMSIImpl(new byte[] { 4, 3, 2, 1 });
+        lmsi = new LMSIImpl(Unpooled.wrappedBuffer(new byte[] { 4, 3, 2, 1 }));
         AdditionalNumberImpl an = new AdditionalNumberImpl(null, sgsnAn);
         liw = new LocationInfoWithLMSIImpl(nnm, lmsi, MAPExtensionContainerTest.GetTestExtensionContainer(), true, an);
         buffer=parser.encode(liw);

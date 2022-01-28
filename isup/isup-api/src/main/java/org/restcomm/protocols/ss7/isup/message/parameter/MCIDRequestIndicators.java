@@ -37,7 +37,7 @@ package org.restcomm.protocols.ss7.isup.message.parameter;
 public interface MCIDRequestIndicators extends ISUPParameter {
     int _PARAMETER_CODE = 0x3B;
 
-    // FIXME: its byte[], there may be more indicators than one byte
+    // FIXME: its buffer, there may be more indicators than one byte
 
     /**
      * Flag that indicates that information is requested

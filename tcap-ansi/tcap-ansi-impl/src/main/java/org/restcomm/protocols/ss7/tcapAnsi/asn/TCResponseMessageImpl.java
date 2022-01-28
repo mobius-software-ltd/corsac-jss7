@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import java.util.Arrays;
-
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCResponseMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
@@ -32,6 +30,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ComponentPortionImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * @author baranowb
@@ -71,7 +72,7 @@ public class TCResponseMessageImpl extends TCUnifiedMessageImpl implements TCRes
 
         if (this.getDestinationTransactionId() != null) {
             sb.append("destinationTransactionId=[");
-            sb.append(Arrays.toString(this.getDestinationTransactionId()));
+            sb.append(ASNOctetString.printDataArr(this.getDestinationTransactionId()));
             sb.append("], ");
         }
         if (this.getDialogPortion() != null) {
@@ -96,22 +97,22 @@ public class TCResponseMessageImpl extends TCUnifiedMessageImpl implements TCRes
     }
     
     @Override
-    public byte[] getOriginatingTransactionId() {
+    public ByteBuf getOriginatingTransactionId() {
         return super.getDestinationTransactionId();
     }
 
     @Override
-    public byte[] getDestinationTransactionId() {
+    public ByteBuf getDestinationTransactionId() {
         return super.getOriginatingTransactionId();
     }
 
     @Override
-	public void setOriginatingTransactionId(byte[] txID) {
+	public void setOriginatingTransactionId(ByteBuf txID) {
 		super.setDestinationTransactionId(txID);
 	}
 
 	@Override
-	public void setDestinationTransactionId(byte[] txID) {
+	public void setDestinationTransactionId(ByteBuf txID) {
 		super.setOriginatingTransactionId(txID);
 	}
 	

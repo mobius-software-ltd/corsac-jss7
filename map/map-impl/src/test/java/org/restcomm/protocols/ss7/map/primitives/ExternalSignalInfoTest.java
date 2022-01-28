@@ -40,6 +40,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /*
@@ -80,9 +81,9 @@ public class ExternalSignalInfoTest {
         ExternalSignalInfoImpl extSignalInfo = (ExternalSignalInfoImpl)result.getResult();
         
         ProtocolId protocolId = extSignalInfo.getProtocolId();
-        byte[] signalInfo = extSignalInfo.getSignalInfo().getData();
+        ByteBuf signalInfo = extSignalInfo.getSignalInfo().getValue();
 
-        assertTrue(Arrays.equals(data_, signalInfo));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(data_), signalInfo));
         assertNotNull(protocolId);
         assertTrue(protocolId == ProtocolId.gsm_0806);
     }
@@ -95,7 +96,7 @@ public class ExternalSignalInfoTest {
         byte[] data = new byte[] { 48, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40 };
         byte[] data_ = new byte[] { 10, 20, 30, 40 };
 
-        SignalInfoImpl signalInfo = new SignalInfoImpl(data_);
+        SignalInfoImpl signalInfo = new SignalInfoImpl(Unpooled.wrappedBuffer(data_));
         ProtocolId protocolId = ProtocolId.gsm_0806;
         ExternalSignalInfoImpl extSignalInfo = new ExternalSignalInfoImpl(signalInfo, protocolId, null);
 

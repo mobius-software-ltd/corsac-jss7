@@ -78,30 +78,4 @@ public class BurstListTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "primitives" })
-    public void testXMLSerialize() throws Exception {
-
-        BurstImpl burst = new BurstImpl(null, 10, null, null, null);
-        BurstListImpl original = new BurstListImpl(101, burst);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "burstList", BurstListImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        BurstListImpl copy = reader.read("burstList", BurstListImpl.class);
-
-        assertEquals((int) copy.getWarningPeriod(), (int) original.getWarningPeriod());
-        assertEquals((int) copy.getBursts().getBurstInterval(), (int) original.getBursts().getBurstInterval());
-    }*/
 }

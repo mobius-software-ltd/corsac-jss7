@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPTypeValue;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,7 +35,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class PDPTypeImpl extends ASNOctetString implements PDPType {
+public class PDPTypeImpl extends ASNOctetString2 implements PDPType {
 	public static final int _VALUE_ETSI = 0xF0 + 0; // PPP
     public static final int _VALUE_IETF = 0xF0 + 1; // IPv4, IPv6
 
@@ -46,55 +46,43 @@ public class PDPTypeImpl extends ASNOctetString implements PDPType {
     public PDPTypeImpl() {
     }
 
-    public PDPTypeImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public PDPTypeImpl(PDPTypeValue value) {
-        this.setPDPTypeValue(value);
+        super(translate(value));
     }
 
-    protected void setPDPTypeValue(PDPTypeValue value) {
-        byte[] data = new byte[2];
+    protected static ByteBuf translate(PDPTypeValue value) {
+        ByteBuf result = Unpooled.buffer(2);
 
         switch (value) {
         case PPP:
-            data[0] = (byte) _VALUE_ETSI;
-            data[1] = (byte) _VALUE_PPP;
+        	result.writeByte((byte) _VALUE_ETSI);
+        	result.writeByte(_VALUE_PPP);
             break;
         case IPv4:
-            data[0] = (byte) _VALUE_IETF;
-            data[1] = (byte) _VALUE_IPv4;
+        	result.writeByte((byte) _VALUE_IETF)	;
+        	result.writeByte((byte) _VALUE_IPv4);
             break;
         case IPv6:
-            data[0] = (byte) _VALUE_IETF;
-            data[1] = (byte) _VALUE_IPv6;
+        	result.writeByte((byte) _VALUE_IETF);
+        	result.writeByte((byte) _VALUE_IPv6);
             break;
         }
         
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        return result;
     }
 
     public PDPTypeValue getPDPTypeValue() {
-    	byte[] data=getData();
-        if (data != null && data.length == 2) {
-            if ((data[0] & 0x0F) == (_VALUE_ETSI & 0x0F)) {
-                if (data[1] == _VALUE_PPP)
+    	ByteBuf value=getValue();
+        if (value != null && value.readableBytes() == 2) {
+        	byte firstByte=value.readByte();
+            if ((firstByte & 0x0F) == (_VALUE_ETSI & 0x0F)) {
+                if (value.readByte() == _VALUE_PPP)
                     return PDPTypeValue.PPP;
-            } else if ((data[0] & 0x0F) == (_VALUE_IETF & 0x0F)) {
-                if (data[1] == _VALUE_IPv4)
+            } else if ((firstByte & 0x0F) == (_VALUE_IETF & 0x0F)) {
+            	byte secondByte=value.readByte();
+                if (secondByte == _VALUE_IPv4)
                     return PDPTypeValue.IPv4;
-                if (data[1] == _VALUE_IPv6)
+                if (secondByte == _VALUE_IPv6)
                     return PDPTypeValue.IPv6;
             }
         }

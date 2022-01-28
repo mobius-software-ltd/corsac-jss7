@@ -76,18 +76,14 @@ public class RequestFirstStatusMatchReportRequestImpl extends CircuitSwitchedCal
     	if(resourceID!=null)
     		this.resourceID=new ResourceIDWrapperImpl(resourceID);
     	
-    	if(resourceStatus!=null) {
-    		this.resourceStatus=new ASNResourceStatus();
-    		this.resourceStatus.setType(resourceStatus);
-    	}
-    	
+    	if(resourceStatus!=null)
+    		this.resourceStatus=new ASNResourceStatus(resourceStatus);
+    		
         this.correlationID=correlationID;
         
-        if(duration!=null) {
-        	this.duration=new ASNInteger();
-        	this.duration.setValue(duration.longValue());
-        }
-        
+        if(duration!=null)
+        	this.duration=new ASNInteger(duration);
+        	
         this.extensions=extensions;
         if(bearerCapability!=null)
     		this.bearerCapability=new BearerCapabilityWrapperImpl(bearerCapability);
@@ -128,10 +124,10 @@ public class RequestFirstStatusMatchReportRequestImpl extends CircuitSwitchedCal
 
     @Override
     public Integer getDuration() {
-    	if(duration==null || duration.getValue()==null)
+    	if(duration==null)
     		return null;
     	
-		return duration.getValue().intValue();
+		return duration.getIntValue();
 	}
 
     @Override

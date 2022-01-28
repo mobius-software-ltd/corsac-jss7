@@ -34,6 +34,7 @@ import org.restcomm.protocols.ss7.commonapp.gap.CalledAddressAndServiceImpl;
 import org.restcomm.protocols.ss7.commonapp.gap.CallingAddressAndServiceImpl;
 import org.restcomm.protocols.ss7.commonapp.gap.GapOnServiceImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.testng.annotations.Test;
@@ -42,6 +43,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -87,8 +89,8 @@ public class BasicGapCriteriaTest {
         assertTrue(result.getResult() instanceof BasicGapCriteriaWrapperImpl);
         
         BasicGapCriteriaWrapperImpl elem = (BasicGapCriteriaWrapperImpl)result.getResult();        
-        assertEquals(elem.getBasicGapCriteria().getCalledAddressValue().getGenericNumber().getAddress(), "2468");
-        assertEquals(elem.getBasicGapCriteria().getCalledAddressValue().getGenericNumber().getNumberingPlanIndicator(), 4);
+        assertEquals(elem.getBasicGapCriteria().getCalledAddressNumber().getGenericNumber().getAddress(), "2468");
+        assertEquals(elem.getBasicGapCriteria().getCalledAddressNumber().getGenericNumber().getNumberingPlanIndicator(), 4);
     }
 
     @Test(groups = { "functional.encode", "gap" })
@@ -152,7 +154,7 @@ public class BasicGapCriteriaTest {
         
         BasicGapCriteriaWrapperImpl elem = (BasicGapCriteriaWrapperImpl)result.getResult();        
         assertEquals(elem.getBasicGapCriteria().getCalledAddressAndService().getServiceKey(), SERVICE_KEY);
-        assertEquals(elem.getBasicGapCriteria().getCalledAddressAndService().getCalledAddressValue().getData(), getDigitsData());
+        assertTrue(ByteBufUtil.equals(DigitsIsupImpl.translate(elem.getBasicGapCriteria().getCalledAddressAndService().getCalledAddressDigits().getGenericDigits()),Unpooled.wrappedBuffer(getDigitsData())));
     }
 
     @Test(groups = { "functional.encode", "gap" })
@@ -160,7 +162,7 @@ public class BasicGapCriteriaTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
     	
-        DigitsIsupImpl digits = new DigitsIsupImpl(getDigitsData());
+        DigitsIsupImpl digits = new DigitsIsupImpl(new GenericDigitsImpl(Unpooled.wrappedBuffer(getDigitsData())));
         CalledAddressAndServiceImpl calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
         BasicGapCriteriaImpl elem = new BasicGapCriteriaImpl(calledAddressAndService);
         BasicGapCriteriaWrapperImpl prim=new BasicGapCriteriaWrapperImpl(elem);
@@ -185,7 +187,8 @@ public class BasicGapCriteriaTest {
         
         BasicGapCriteriaWrapperImpl elem = (BasicGapCriteriaWrapperImpl)result.getResult();        
         assertEquals(elem.getBasicGapCriteria().getCallingAddressAndService().getServiceKey(), SERVICE_KEY);
-        assertEquals(elem.getBasicGapCriteria().getCallingAddressAndService().getCallingAddressValue().getData(), getDigitsData());
+        assertTrue(ByteBufUtil.equals(DigitsIsupImpl.translate(elem.getBasicGapCriteria().getCallingAddressAndService().getCallingAddressDigits().getGenericDigits()),Unpooled.wrappedBuffer(getDigitsData())));
+        
     }
 
     @Test(groups = { "functional.encode", "gap" })
@@ -193,7 +196,7 @@ public class BasicGapCriteriaTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
     	
-        DigitsIsupImpl digits = new DigitsIsupImpl(getDigitsData());
+        DigitsIsupImpl digits = new DigitsIsupImpl(new GenericDigitsImpl(Unpooled.wrappedBuffer(getDigitsData())));
         CallingAddressAndServiceImpl callingAddressAndService = new CallingAddressAndServiceImpl(digits, SERVICE_KEY);
         BasicGapCriteriaImpl elem = new BasicGapCriteriaImpl(callingAddressAndService);
         BasicGapCriteriaWrapperImpl prim=new BasicGapCriteriaWrapperImpl(elem);
@@ -204,75 +207,4 @@ public class BasicGapCriteriaTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "gap" })
-    public void testXMLSerialize() throws Exception {
-
-        GenericNumberImpl gn = new GenericNumberImpl(GenericNumber._NAI_NATIONAL_SN, "12345",
-                GenericNumber._NQIA_CONNECTED_NUMBER, GenericNumber._NPI_TELEX, GenericNumber._APRI_ALLOWED,
-                GenericNumber._NI_INCOMPLETE, GenericNumber._SI_USER_PROVIDED_VERIFIED_FAILED);
-        Digits digits = new DigitsImpl(gn);
-
-        CalledAddressAndServiceImpl calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
-        CallingAddressAndServiceImpl callingAddressAndService = new CallingAddressAndServiceImpl(digits, SERVICE_KEY);
-        GapOnService gapOnService = new GapOnServiceImpl(SERVICE_KEY);
-
-        BasicGapCriteriaImpl original;
-
-        int i = 0;
-        while(i < 4) {
-            switch (i) {
-                case 0:
-                    original = new BasicGapCriteriaImpl(digits);
-                    test(original);
-                    break;
-                case 1:
-                    original = new BasicGapCriteriaImpl(calledAddressAndService);
-                    test(original);
-                    break;
-                case 2:
-                    original = new BasicGapCriteriaImpl(callingAddressAndService);
-                    test(original);
-                    break;
-                case 3:
-                    original = new BasicGapCriteriaImpl(gapOnService);
-                    test(original);
-                    break;
-            }
-            i++;
-        }
-    }
-
-    private void test(BasicGapCriteriaImpl original) throws Exception {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "basicGapCriteriaArg", BasicGapCriteriaImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-
-        BasicGapCriteriaImpl copy = reader.read("basicGapCriteriaArg", BasicGapCriteriaImpl.class);
-
-        assertTrue(isEqual(original, copy));
-    }
-
-    private boolean isEqual(BasicGapCriteriaImpl o1, BasicGapCriteriaImpl o2) {
-        if (o1 == o2)
-            return true;
-        if (o1 == null && o2 != null || o1 != null && o2 == null)
-            return false;
-        if (o1 == null && o2 == null)
-            return true;
-        if (!o1.toString().equals(o2.toString()))
-            return false;
-        return true;
-    }*/
 }

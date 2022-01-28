@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  ZoneCode ::= OCTET STRING (SIZE (2)) -- internal structure is defined in TS 3GPP TS 23.003 [17]
@@ -36,7 +38,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface ZoneCode {
 
-    byte[] getData();
+	ByteBuf getValue();
 
     int getIntValue();
 

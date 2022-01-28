@@ -112,10 +112,7 @@ public class SmsDeliverReportTpduImpl extends SmsTpduImpl implements SmsDeliverR
                 throw new MAPException(
                         "Error creating a new SmsDeliverTpduImpl instance: userDataLength field has not been found");
 
-            int avail = stm.readableBytes();
-            byte[] buf = new byte[avail];
-            stm.readBytes(buf);
-            userData = new UserDataImpl(buf, dataCodingScheme, userDataLength, userDataHeaderIndicator, gsm8Charset);
+            userData = new UserDataImpl(stm.readSlice(stm.readableBytes()), dataCodingScheme, userDataLength, userDataHeaderIndicator, gsm8Charset);
         }
     }
 
@@ -155,7 +152,7 @@ public class SmsDeliverReportTpduImpl extends SmsTpduImpl implements SmsDeliverR
             this.userDataLength = this.userData.getEncodedUserDataLength();
             this.dataCodingScheme = this.userData.getDataCodingScheme();
 
-            if (this.userData.getEncodedData().length > _UserDataDeliverReportLimit)
+            if (this.userData.getEncodedData().readableBytes() > _UserDataDeliverReportLimit)
                 throw new MAPException("User data field length may not increase " + _UserDataDeliverReportLimit);
         }
 

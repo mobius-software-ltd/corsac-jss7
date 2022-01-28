@@ -34,6 +34,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -77,10 +78,10 @@ public class EpcAvTest {
         assertTrue(result.getResult() instanceof EpcAvImpl);
         EpcAvImpl asc = (EpcAvImpl)result.getResult();
         
-        assertTrue(Arrays.equals(asc.getRand(), getRandData()));
-        assertTrue(Arrays.equals(asc.getXres(), getXresData()));
-        assertTrue(Arrays.equals(asc.getAutn(), getAutnData()));
-        assertTrue(Arrays.equals(asc.getKasme(), getKasmeData()));
+        assertTrue(ByteBufUtil.equals(asc.getRand(), Unpooled.wrappedBuffer(getRandData())));
+        assertTrue(ByteBufUtil.equals(asc.getXres(), Unpooled.wrappedBuffer(getXresData())));
+        assertTrue(ByteBufUtil.equals(asc.getAutn(), Unpooled.wrappedBuffer(getAutnData())));
+        assertTrue(ByteBufUtil.equals(asc.getKasme(), Unpooled.wrappedBuffer(getKasmeData())));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(asc.getExtensionContainer()));
     }
 
@@ -89,7 +90,10 @@ public class EpcAvTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(EpcAvImpl.class);
 
-        EpcAvImpl asc = new EpcAvImpl(getRandData(), getXresData(), getAutnData(), getKasmeData(),MAPExtensionContainerTest.GetTestExtensionContainer());
+        EpcAvImpl asc = new EpcAvImpl(Unpooled.wrappedBuffer(getRandData()), Unpooled.wrappedBuffer(getXresData()), 
+        		Unpooled.wrappedBuffer(getAutnData()), Unpooled.wrappedBuffer(getKasmeData()),
+        		MAPExtensionContainerTest.GetTestExtensionContainer());
+        
         byte[] data=getEncodedData();
         ByteBuf buffer=parser.encode(asc);
         byte[] encodedData = new byte[buffer.readableBytes()];

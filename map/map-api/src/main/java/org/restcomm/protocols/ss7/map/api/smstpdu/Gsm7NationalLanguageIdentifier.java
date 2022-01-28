@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.smstpdu;
 
 import org.restcomm.protocols.ss7.commonapp.api.datacoding.NationalLanguageIdentifier;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * User data header for National Language Locking Shift & National Language Single Shift (Gsm7 encoding)
  *
@@ -50,6 +52,6 @@ public interface Gsm7NationalLanguageIdentifier extends UserDataHeaderElement {
 
     NationalLanguageIdentifier getNationalLanguageIdentifier();
 
-    byte[] getEncodedInformationElementData();
+    ByteBuf getEncodedInformationElementData();
 
 }

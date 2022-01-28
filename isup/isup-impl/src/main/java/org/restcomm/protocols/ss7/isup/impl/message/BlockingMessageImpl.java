@@ -28,8 +28,6 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.Map;
 import java.util.Set;
 
@@ -39,6 +37,8 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.MessageTypeImpl;
 import org.restcomm.protocols.ss7.isup.message.BlockingMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageName;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:00:03:30 2009-09-07<br>
@@ -78,7 +78,7 @@ public class BlockingMessageImpl extends ISUPMessageImpl implements BlockingMess
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(byte[], byte)
+     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(ByteBuf, byte)
      */
 
     protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
@@ -87,7 +87,7 @@ public class BlockingMessageImpl extends ISUPMessageImpl implements BlockingMess
 
     }
 
-    protected int decodeMandatoryVariableParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected int decodeMandatoryVariableParameters(ISUPParameterFactory parameterFactory, ByteBuf b, int index)
             throws ParameterException {
         throw new UnsupportedOperationException("This message does not support mandatory variable parameters.");
     }

@@ -46,8 +46,7 @@ public class RequestedInformationTypeWrapperImpl {
     	if(requestedInformationTypes!=null) {
     		this.requestedInformationTypes=new ArrayList<ASNRequestedInformationTypeImpl>();
     		for(RequestedInformationType currType:requestedInformationTypes) {
-    			ASNRequestedInformationTypeImpl currValue=new ASNRequestedInformationTypeImpl();
-    			currValue.setType(currType);
+    			ASNRequestedInformationTypeImpl currValue=new ASNRequestedInformationTypeImpl(currType);
     			this.requestedInformationTypes.add(currValue);
     		}
     	}    	

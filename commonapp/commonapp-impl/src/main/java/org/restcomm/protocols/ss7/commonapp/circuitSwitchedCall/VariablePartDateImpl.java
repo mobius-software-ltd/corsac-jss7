@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePartDate;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -34,31 +34,21 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class VariablePartDateImpl extends ASNOctetString implements VariablePartDate {
+public class VariablePartDateImpl extends ASNOctetString2 implements VariablePartDate {
 	public VariablePartDateImpl() {
     }
 
-    public VariablePartDateImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public VariablePartDateImpl(int year, int month, int day) {
-        ByteBuf buffer=Unpooled.buffer(4);
-        buffer.writeByte((byte) this.encodeByte(year / 100));
-        buffer.writeByte((byte) this.encodeByte(year % 100));
-        buffer.writeByte(this.encodeByte(month));
-        buffer.writeByte(this.encodeByte(day));
-        setValue(buffer);
+    	super(translate(year, month, day));
     }
-
-    public byte[] getData() {
-    	ByteBuf buffer=getValue();
-    	if(buffer==null)
-    		return null;
-    	
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
-        return data;
+    
+    private static ByteBuf translate(int year, int month, int day) {
+        ByteBuf buffer=Unpooled.buffer(4);
+        buffer.writeByte(encodeByte(year / 100));
+        buffer.writeByte(encodeByte(year % 100));
+        buffer.writeByte(encodeByte(month));
+        buffer.writeByte(encodeByte(day));
+        return buffer;
     }
 
     public int getYear() {
@@ -66,7 +56,7 @@ public class VariablePartDateImpl extends ASNOctetString implements VariablePart
         if (value == null || value.readableBytes() != 4)
             return 0;
 
-        return this.decodeByte(value.readByte()) * 100 + this.decodeByte(value.readByte());
+        return decodeByte(value.readByte()) * 100 + decodeByte(value.readByte());
     }
 
     public int getMonth() {
@@ -75,7 +65,7 @@ public class VariablePartDateImpl extends ASNOctetString implements VariablePart
             return 0;
 
         value.skipBytes(2);
-        return this.decodeByte(value.readByte());
+        return decodeByte(value.readByte());
     }
 
     public int getDay() {
@@ -84,14 +74,14 @@ public class VariablePartDateImpl extends ASNOctetString implements VariablePart
             return 0;
 
         value.skipBytes(3);
-        return this.decodeByte(value.readByte());
+        return decodeByte(value.readByte());
     }
 
-    private int decodeByte(int bt) {
+    private static int decodeByte(int bt) {
         return (bt & 0x0F) * 10 + ((bt & 0xF0) >> 4);
     }
 
-    private int encodeByte(int val) {
+    private static int encodeByte(int val) {
         return (val / 10) | (val % 10) << 4;
     }
 

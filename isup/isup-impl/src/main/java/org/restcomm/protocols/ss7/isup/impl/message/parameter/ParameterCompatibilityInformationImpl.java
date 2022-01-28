@@ -60,7 +60,7 @@ public class ParameterCompatibilityInformationImpl extends AbstractISUPParameter
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() < 2) {
-            throw new ParameterException("byte[] must  not be null and length must  greater than 1");
+            throw new ParameterException("buffer must  not be null and length must  greater than 1");
         }
 
         boolean newParameter = true;

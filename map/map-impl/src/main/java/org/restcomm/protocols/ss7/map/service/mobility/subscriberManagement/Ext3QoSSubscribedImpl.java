@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_BitRateExtended;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext3QoSSubscribed;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,77 +35,59 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class Ext3QoSSubscribedImpl extends ASNOctetString implements Ext3QoSSubscribed {
+public class Ext3QoSSubscribedImpl extends ASNOctetString2 implements Ext3QoSSubscribed {
 	public Ext3QoSSubscribedImpl() {
-    }
-
-    public Ext3QoSSubscribedImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
     }
 
     public Ext3QoSSubscribedImpl(ExtQoSSubscribed_BitRateExtended maximumBitRateForUplinkExtended,
             ExtQoSSubscribed_BitRateExtended guaranteedBitRateForUplinkExtended) {
-        this.setData(maximumBitRateForUplinkExtended, guaranteedBitRateForUplinkExtended);
+        super(translate(maximumBitRateForUplinkExtended, guaranteedBitRateForUplinkExtended));
     }
 
-    protected void setData(ExtQoSSubscribed_BitRateExtended maximumBitRateForUplinkExtended, ExtQoSSubscribed_BitRateExtended guaranteedBitRateForUplinkExtended) {
-        byte[] data = new byte[2];
-        data[0] = (byte) (maximumBitRateForUplinkExtended != null ? maximumBitRateForUplinkExtended.getSourceData() : 0);
-        data[1] = (byte) (guaranteedBitRateForUplinkExtended != null ? guaranteedBitRateForUplinkExtended.getSourceData() : 0);
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    protected static ByteBuf translate(ExtQoSSubscribed_BitRateExtended maximumBitRateForUplinkExtended, ExtQoSSubscribed_BitRateExtended guaranteedBitRateForUplinkExtended) {
+        ByteBuf value = Unpooled.buffer(2);
+        value.writeByte((byte) (maximumBitRateForUplinkExtended != null ? maximumBitRateForUplinkExtended.getSourceData() : 0));
+        value.writeByte((byte) (guaranteedBitRateForUplinkExtended != null ? guaranteedBitRateForUplinkExtended.getSourceData() : 0));
+        return value;
     }
 
     public ExtQoSSubscribed_BitRateExtended getMaximumBitRateForUplinkExtended() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 1)
+    	ByteBuf value=getValue();
+    	if (value == null || value.readableBytes() < 1)
             return null;
 
-        return new ExtQoSSubscribed_BitRateExtended(data[0] & 0xFF, true);
+        return new ExtQoSSubscribed_BitRateExtended(value.readByte() & 0xFF, true);
     }
 
     public ExtQoSSubscribed_BitRateExtended getGuaranteedBitRateForUplinkExtended() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 2)
+    	ByteBuf value=getValue();
+    	if (value == null || value.readableBytes() < 2)
             return null;
 
-        return new ExtQoSSubscribed_BitRateExtended(data[1] & 0xFF, true);
+    	value.skipBytes(1);
+        return new ExtQoSSubscribed_BitRateExtended(value.readByte() & 0xFF, true);
     }
 
     @Override
     public String toString() {
-    	byte[] data=getData();
-        if (data != null && data.length >= 1) {
-            ExtQoSSubscribed_BitRateExtended maximumBitRateForUplinkExtended = getMaximumBitRateForUplinkExtended();
-            ExtQoSSubscribed_BitRateExtended guaranteedBitRateForUplinkExtended = getGuaranteedBitRateForUplinkExtended();
+    	ExtQoSSubscribed_BitRateExtended maximumBitRateForUplinkExtended = getMaximumBitRateForUplinkExtended();
+        ExtQoSSubscribed_BitRateExtended guaranteedBitRateForUplinkExtended = getGuaranteedBitRateForUplinkExtended();
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("Ext3QoSSubscribed [");
+        StringBuilder sb = new StringBuilder();
+        sb.append("Ext3QoSSubscribed [");
 
-            if (maximumBitRateForUplinkExtended != null) {
-                sb.append("maximumBitRateForUplinkExtended=");
-                sb.append(maximumBitRateForUplinkExtended);
-                sb.append(", ");
-            }
-            if (guaranteedBitRateForUplinkExtended != null) {
-                sb.append("guaranteedBitRateForUplinkExtended=");
-                sb.append(guaranteedBitRateForUplinkExtended);
-                sb.append(", ");
-            }
-            sb.append("]");
-
-            return sb.toString();
-        } else {
-            return super.toString();
+        if (maximumBitRateForUplinkExtended != null) {
+            sb.append("maximumBitRateForUplinkExtended=");
+            sb.append(maximumBitRateForUplinkExtended);
+            sb.append(", ");
         }
+        if (guaranteedBitRateForUplinkExtended != null) {
+            sb.append("guaranteedBitRateForUplinkExtended=");
+            sb.append(guaranteedBitRateForUplinkExtended);
+            sb.append(", ");
+        }
+        sb.append("]");
+
+        return sb.toString();
     }
 }

@@ -57,23 +57,23 @@ public class AbsoluteTimeStampImpl implements AbsoluteTimeStamp {
     public static AbsoluteTimeStampImpl createMessage(ByteBuf data) throws APPException {
 
         if (data == null)
-            throw new APPException("Error creating ServiceCentreTimeStamp: stream must not be null");
+            throw new APPException("Error creating ServiceCentreTimeStamp: buffer must not be null");
 
         if (data.readableBytes() < 7)
-            throw new APPException("Error creating ServiceCentreTimeStamp: not enouph data in the stream");
+            throw new APPException("Error creating ServiceCentreTimeStamp: not enouph data in the buffer");
 
         
         AbsoluteTimeStampImpl res = new AbsoluteTimeStampImpl();
-        byte[] buf = new byte[7];
-        data.readBytes(buf);
-        res.year = constractDigitVal(buf[0]);
-        res.month = constractDigitVal(buf[1]);
-        res.day = constractDigitVal(buf[2]);
-        res.hour = constractDigitVal(buf[3]);
-        res.minute = constractDigitVal(buf[4]);
-        res.second = constractDigitVal(buf[5]);
-        res.timeZone = constractDigitVal((byte) (buf[6] & 0xF7));
-        if ((buf[6] & 0x08) != 0)
+        res.year = constractDigitVal(data.readByte());
+        res.month = constractDigitVal(data.readByte());
+        res.day = constractDigitVal(data.readByte());
+        res.hour = constractDigitVal(data.readByte());
+        res.minute = constractDigitVal(data.readByte());
+        res.second = constractDigitVal(data.readByte());
+        
+        byte currByte=data.readByte();
+        res.timeZone = constractDigitVal((byte) (currByte & 0xF7));
+        if ((currByte & 0x08) != 0)
             res.timeZone = -res.timeZone;
         
         return res;

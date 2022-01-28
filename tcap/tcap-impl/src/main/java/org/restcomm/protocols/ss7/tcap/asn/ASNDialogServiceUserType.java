@@ -34,8 +34,7 @@ public class ASNDialogServiceUserType {
 	private ASNInteger innerValue;
 	
 	public void setType(DialogServiceUserType t) {
-		innerValue=new ASNInteger();
-		innerValue.setValue(t.getType());
+		innerValue=new ASNInteger(t.getType());		
 	}
 	
 	public DialogServiceUserType getType() throws ParseException {

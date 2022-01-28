@@ -24,10 +24,9 @@ package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.FreeFormatData;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -35,21 +34,27 @@ import io.netty.buffer.Unpooled;
 * @author sergey vetyutnev
 *
 */
-public class FreeFormatDataImpl extends ASNOctetString implements FreeFormatData {
+public class FreeFormatDataImpl extends ASNOctetString2 implements FreeFormatData {
 	public FreeFormatDataImpl() {
     }
 
-    public FreeFormatDataImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
+    public FreeFormatDataImpl(ByteBuf value) {
+    	super(value);
     }
 
-    public byte[] getData() {
-    	ByteBuf buffer=getValue();
-    	if(buffer==null)
-    		return null;
-    	
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
-        return data;
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("FreeFormatDataImpl [");
+
+        if (getValue() != null) {
+            sb.append("data=[");
+            sb.append(printDataArr());
+            sb.append("]");            
+        }
+
+        sb.append("]");
+
+        return sb.toString();
     }
 }

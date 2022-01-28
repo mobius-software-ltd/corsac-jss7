@@ -24,20 +24,28 @@ package org.restcomm.protocols.ss7.commonapp.smstpu;
 
 import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityEnhancedFormatData;
 
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  *
  * @author sergey vetyutnev
  *
  */
 public class ValidityEnhancedFormatDataImpl implements ValidityEnhancedFormatData {
-	public byte[] data;
+	public ByteBuf value;
 
-    public ValidityEnhancedFormatDataImpl(byte[] data) {
-        this.data = data;
+    public ValidityEnhancedFormatDataImpl(ByteBuf value) {
+        this.value = value;
     }
 
-    public byte[] getData() {
-        return this.data;
+    public ByteBuf getValue() {
+    	if(value!=null)
+    		return Unpooled.wrappedBuffer(this.value);
+    	
+    	return null;
     }
 
     @Override
@@ -46,21 +54,8 @@ public class ValidityEnhancedFormatDataImpl implements ValidityEnhancedFormatDat
 
         sb.append("ValidityEnhancedFormatData [");
 
-        sb.append(printDataArr(data));
+        sb.append(ASNOctetString.printDataArr(getValue()));
         sb.append("]");
-
-        return sb.toString();
-    }
-
-    private String printDataArr(byte[] arr) {
-        if (arr == null)
-            return null;
-
-        StringBuilder sb = new StringBuilder();
-        for (int b : arr) {
-            sb.append(b);
-            sb.append(", ");
-        }
 
         return sb.toString();
     }

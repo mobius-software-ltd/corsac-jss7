@@ -28,6 +28,8 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -46,7 +48,7 @@ FilteredCallTreatment ::= SEQUENCE {
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public interface FilteredCallTreatment {
 
-	byte[] getSFBillingChargingCharacteristics();
+	ByteBuf getSFBillingChargingCharacteristics();
 
 	InformationToSend getInformationToSend();
 

@@ -30,6 +30,8 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.Up
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  *
@@ -46,7 +48,7 @@ public class UpdateResponseImpl extends CircuitSwitchedCallMessageImpl implement
     public UpdateResponseImpl() {
     }
 
-    public UpdateResponseImpl(byte[] operationReturnID) {
+    public UpdateResponseImpl(ByteBuf operationReturnID) {
         this.updateResponseChoise = new UpdateResultChoiseImpl(operationReturnID);
     }
 
@@ -61,7 +63,7 @@ public class UpdateResponseImpl extends CircuitSwitchedCallMessageImpl implement
     }
 
     @Override
-    public byte[] getOperationReturnID() {
+    public ByteBuf getOperationReturnID() {
     	if(updateResponseChoise==null)
         	return null;
     	

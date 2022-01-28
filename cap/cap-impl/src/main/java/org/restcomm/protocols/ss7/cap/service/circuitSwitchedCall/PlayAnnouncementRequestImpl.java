@@ -74,27 +74,19 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
     	if(informationToSend!=null)
     		this.informationToSend = new InformationToSendWrapperImpl(informationToSend);
     	
-    	if(disconnectFromIPForbidden!=null) {
-    		this.disconnectFromIPForbidden = new ASNBoolean();
-    		this.disconnectFromIPForbidden.setValue(disconnectFromIPForbidden);
-    	}
-    	
-    	if(requestAnnouncementCompleteNotification!=null) {
-    		this.requestAnnouncementCompleteNotification = new ASNBoolean();
-    		this.requestAnnouncementCompleteNotification.setValue(requestAnnouncementCompleteNotification);
-    	}
-    	
+    	if(disconnectFromIPForbidden!=null)
+    		this.disconnectFromIPForbidden = new ASNBoolean(disconnectFromIPForbidden);
+
+    	if(requestAnnouncementCompleteNotification!=null)
+    		this.requestAnnouncementCompleteNotification = new ASNBoolean(requestAnnouncementCompleteNotification);
+    		
         this.extensions = extensions;
         
-        if(callSegmentID!=null) {
-        	this.callSegmentID = new ASNInteger(); 
-        	this.callSegmentID.setValue(callSegmentID.longValue());
-        }
+        if(callSegmentID!=null)
+        	this.callSegmentID = new ASNInteger(callSegmentID);
         
-        if(requestAnnouncementStartedNotification!=null) {
-        	this.requestAnnouncementStartedNotification = new ASNBoolean();
-        	this.requestAnnouncementStartedNotification.setValue(requestAnnouncementStartedNotification);
-        }
+        if(requestAnnouncementStartedNotification!=null)
+        	this.requestAnnouncementStartedNotification = new ASNBoolean(requestAnnouncementStartedNotification);        	
     }
 
     @Override
@@ -138,10 +130,10 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
 
     @Override
     public Integer getCallSegmentID() {
-    	if(callSegmentID==null || callSegmentID.getValue()==null)
+    	if(callSegmentID==null)
     		return null;
     	
-        return callSegmentID.getValue().intValue();
+        return callSegmentID.getIntValue();
     }
 
     @Override

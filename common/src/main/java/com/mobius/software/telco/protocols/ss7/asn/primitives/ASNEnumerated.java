@@ -30,5 +30,15 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=10,constructed=false,lengthIndefinite=false)
 public class ASNEnumerated extends ASNInteger {
-
+	public ASNEnumerated() {
+		super();
+	}
+	
+	public ASNEnumerated(Integer value) {
+		super(value);
+	}
+	
+	public ASNEnumerated(Long value) {
+		super(value);
+	}
 }

@@ -54,6 +54,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -102,7 +103,7 @@ public class ContinueWithArgumentRequestTest {
         assertEquals(elem.getGenericNumbers().size(), 1);
         GenericNumberIsup gn = elem.getGenericNumbers().get(0);
         assertEquals(gn.getGenericNumber().getAddress(), "111222");
-        assertEquals(elem.getCugInterlock().getData(), getCUGInterlock());
+        assertTrue(ByteBufUtil.equals(elem.getCugInterlock().getValue(),Unpooled.wrappedBuffer(getCUGInterlock())));
         assertFalse(elem.getCugOutgoingAccess());
         assertNull(elem.getChargeNumber());
         assertNull(elem.getCarrier());
@@ -126,10 +127,10 @@ public class ContinueWithArgumentRequestTest {
         assertEquals(elem.getGenericNumbers().size(), 1);
         gn = elem.getGenericNumbers().get(0);
         assertEquals(gn.getGenericNumber().getAddress(), "111222");
-        assertEquals(elem.getCugInterlock().getData(), getCUGInterlock());
+        assertTrue(ByteBufUtil.equals(elem.getCugInterlock().getValue(), Unpooled.wrappedBuffer(getCUGInterlock())));
         assertTrue(elem.getCugOutgoingAccess());
         assertEquals(elem.getChargeNumber().getLocationNumber().getAddress(), "222333");
-        assertEquals(elem.getCarrier().getData(), getCarrier());
+        assertTrue(ByteBufUtil.equals(elem.getCarrier().getValue(),Unpooled.wrappedBuffer(getCarrier())));
         assertTrue(elem.getSuppressionOfAnnouncement());
         assertEquals((int) elem.getNaOliInfo().getData(), 11);
         assertTrue(elem.getBorInterrogationRequested());
@@ -154,7 +155,7 @@ public class ContinueWithArgumentRequestTest {
         genericNumber.setAddress("111222");
         GenericNumberIsupImpl gn = new GenericNumberIsupImpl(genericNumber);
         genericNumbers.add(gn);
-        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getCUGInterlock());
+        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(Unpooled.wrappedBuffer(getCUGInterlock()));
 
         ContinueWithArgumentRequestImpl elem = new ContinueWithArgumentRequestImpl(alertingPattern, CAPExtensionsTest.createTestCAPExtensions(),
                 serviceInteractionIndicatorsTwo, callingPartysCategory, genericNumbers, cugInterlock, false, null, null, false, null, false, false, null);
@@ -179,7 +180,7 @@ public class ContinueWithArgumentRequestTest {
         LocationNumberImpl locationNumber = new LocationNumberImpl();
         locationNumber.setAddress("222333");
         LocationNumberIsupImpl chargeNumber = new LocationNumberIsupImpl(locationNumber);
-        CarrierImpl carrier = new CarrierImpl(getCarrier());
+        CarrierImpl carrier = new CarrierImpl(Unpooled.wrappedBuffer(getCarrier()));
         NAOliInfoImpl naOliInfo = new NAOliInfoImpl(11);
         ContinueWithArgumentArgExtensionImpl continueWithArgumentArgExtension = new ContinueWithArgumentArgExtensionImpl(true, false, false, null);
         elem = new ContinueWithArgumentRequestImpl(alertingPattern, CAPExtensionsTest.createTestCAPExtensions(), serviceInteractionIndicatorsTwo,
@@ -191,71 +192,4 @@ public class ContinueWithArgumentRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        CallingPartyCategoryImpl callingPartyCategory = new CallingPartyCategoryImpl();
-        callingPartyCategory.setCallingPartyCategory(CallingPartyCategory._CATEGORY_OL_RUSSIAN);
-        CallingPartysCategoryInapImpl callingPartysCategory = new CallingPartysCategoryInapImpl(callingPartyCategory);
-        ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo = new ServiceInteractionIndicatorsTwoImpl(null, null,
-                BothwayThroughConnectionInd.bothwayPathNotRequired, null, false, null, null, null);
-        AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingLevel.Level2);
-        AlertingPatternCapImpl alertingPatternCap = new AlertingPatternCapImpl(alertingPattern);
-        ArrayList<GenericNumberCap> genericNumbers = new ArrayList<GenericNumberCap>();
-        GenericNumberImpl genericNumber = new GenericNumberImpl();
-        genericNumber.setAddress("111222");
-        GenericNumberCapImpl gn = new GenericNumberCapImpl(genericNumber);
-        genericNumbers.add(gn);
-        LocationNumberImpl locationNumber = new LocationNumberImpl();
-        locationNumber.setAddress("222333");
-        LocationNumberCapImpl chargeNumber = new LocationNumberCapImpl(locationNumber);
-//        CarrierImpl carrier = new CarrierImpl(getCarrier());
-        NAOliInfoImpl naOliInfo = new NAOliInfoImpl(11);
-        ContinueWithArgumentArgExtensionImpl continueWithArgumentArgExtension = new ContinueWithArgumentArgExtensionImpl(true, false, false, null);
-
-        ContinueWithArgumentRequestImpl original = new ContinueWithArgumentRequestImpl(alertingPatternCap, CAPExtensionsTest.createTestCAPExtensions(),
-                serviceInteractionIndicatorsTwo, callingPartysCategory, genericNumbers, null, true, chargeNumber, null, true, naOliInfo, true, true,
-                continueWithArgumentArgExtension);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "continueWithArgumentRequest", ContinueWithArgumentRequestImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        ContinueWithArgumentRequestImpl copy = reader.read("continueWithArgumentRequest", ContinueWithArgumentRequestImpl.class);
-
-        assertEquals(original.getAlertingPattern().getAlertingPattern().getAlertingLevel(), copy.getAlertingPattern().getAlertingPattern().getAlertingLevel());
-        assertTrue(CAPExtensionsTest.checkTestCAPExtensions(original.getExtensions()));
-        assertTrue(CAPExtensionsTest.checkTestCAPExtensions(copy.getExtensions()));
-        assertEquals(original.getServiceInteractionIndicatorsTwo().getBothwayThroughConnectionInd(), copy.getServiceInteractionIndicatorsTwo()
-                .getBothwayThroughConnectionInd());
-        assertEquals(original.getCallingPartysCategory().getCallingPartyCategory().getCallingPartyCategory(), copy.getCallingPartysCategory()
-                .getCallingPartyCategory().getCallingPartyCategory());
-        assertEquals(original.getGenericNumbers().size(), copy.getGenericNumbers().size());
-        GenericNumberCap gnn = original.getGenericNumbers().get(0);
-        GenericNumberCap gnn2 = copy.getGenericNumbers().get(0);
-        assertEquals(gnn.getGenericNumber().getAddress(), gnn2.getGenericNumber().getAddress());
-//        assertEquals(original.getCugInterlock().getData(), copy.getCugInterlock().getData());
-        assertEquals(original.getCugOutgoingAccess(), copy.getCugOutgoingAccess());
-        assertEquals(original.getChargeNumber().getLocationNumber().getAddress(), copy.getChargeNumber().getLocationNumber().getAddress());
-//        assertEquals(original.getCarrier().getData(), copy.getCarrier().getData());
-        assertEquals(original.getSuppressionOfAnnouncement(), copy.getSuppressionOfAnnouncement());
-        assertEquals((int) original.getNaOliInfo().getData(), (int) copy.getNaOliInfo().getData());
-        assertEquals(original.getBorInterrogationRequested(), copy.getBorInterrogationRequested());
-        assertEquals(original.getSuppressOCsi(), copy.getSuppressOCsi());
-        assertEquals(original.getContinueWithArgumentArgExtension().getSuppressDCsi(), copy.getContinueWithArgumentArgExtension().getSuppressDCsi());
-        assertEquals(original.getContinueWithArgumentArgExtension().getSuppressNCsi(), copy.getContinueWithArgumentArgExtension().getSuppressNCsi());
-    }*/
 }

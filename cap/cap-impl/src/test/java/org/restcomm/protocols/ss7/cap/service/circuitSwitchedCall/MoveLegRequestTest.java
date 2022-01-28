@@ -80,33 +80,4 @@ public class MoveLegRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        LegIDImpl legIDToMove = new LegIDImpl(false, LegType.leg6);
-        MoveLegRequestImpl original = new MoveLegRequestImpl(legIDToMove, CAPExtensionsTest.createTestCAPExtensions());
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "moveLegRequest", MoveLegRequestImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        MoveLegRequestImpl copy = reader.read("moveLegRequest", MoveLegRequestImpl.class);
-
-        assertEquals(original.getLegIDToMove().getReceivingSideID(), copy.getLegIDToMove().getReceivingSideID());
-        assertTrue(CAPExtensionsTest.checkTestCAPExtensions(original.getExtensions()));
-        assertTrue(CAPExtensionsTest.checkTestCAPExtensions(copy.getExtensions()));
-    }*/
 }

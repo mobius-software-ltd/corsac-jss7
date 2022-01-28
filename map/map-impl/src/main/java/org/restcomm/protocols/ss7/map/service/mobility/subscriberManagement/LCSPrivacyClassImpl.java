@@ -82,19 +82,16 @@ public class LCSPrivacyClassImpl implements LCSPrivacyClass {
         this.ssCode = ssCode;
         this.ssStatus = ssStatus;
         
-        if(notificationToMSUser!=null) {
-        	this.notificationToMSUser = new ASNNotificationToMSUser();
-        	this.notificationToMSUser.setType(notificationToMSUser);
-        }
-        
+        if(notificationToMSUser!=null)
+        	this.notificationToMSUser = new ASNNotificationToMSUser(notificationToMSUser);
+        	
         if(externalClientList!=null)
         	this.externalClientList = new ExternalClientIDListWrapperImpl(externalClientList);
         
         if(plmnClientList!=null) {
         	List<ASNLCSClientInternalID> realData=new ArrayList<ASNLCSClientInternalID>();
         	for(LCSClientInternalID curr:plmnClientList) {
-        		ASNLCSClientInternalID currData=new ASNLCSClientInternalID();
-        		currData.setType(curr);
+        		ASNLCSClientInternalID currData=new ASNLCSClientInternalID(curr);
         		realData.add(currData);
         	}
         	

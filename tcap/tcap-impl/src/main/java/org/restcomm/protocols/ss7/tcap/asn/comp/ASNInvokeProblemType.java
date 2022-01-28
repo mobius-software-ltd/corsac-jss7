@@ -32,8 +32,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=false,lengthIndefinite=false)
 public class ASNInvokeProblemType extends ASNEnumerated {
-	public void setType(InvokeProblemType t) {
-		super.setValue(t.getType());
+	public ASNInvokeProblemType() {
+		
+	}
+	
+	public ASNInvokeProblemType(InvokeProblemType t) {
+		super(t.getType());
 	}
 	
 	public InvokeProblemType getType() throws ParseException {
@@ -41,6 +45,6 @@ public class ASNInvokeProblemType extends ASNEnumerated {
 		if(realValue==null)
 			return null;
 		
-		return InvokeProblemType.getFromInt(getValue());
+		return InvokeProblemType.getFromInt(realValue);
 	}
 }

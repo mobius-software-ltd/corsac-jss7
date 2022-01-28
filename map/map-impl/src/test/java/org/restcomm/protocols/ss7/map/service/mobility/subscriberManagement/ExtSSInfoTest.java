@@ -66,6 +66,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -167,7 +168,7 @@ public class ExtSSInfoTest {
         assertEquals(forwardedToNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(forwardedToNumber.getNumberingPlan(), NumberingPlan.ISDN);
 
-        assertTrue(Arrays.equals(extForwFeature.getForwardedToSubaddress().getData(), this.getISDNSubaddressStringData()));
+        assertTrue(ByteBufUtil.equals(extForwFeature.getForwardedToSubaddress().getValue(),Unpooled.wrappedBuffer(this.getISDNSubaddressStringData())));
         assertTrue(extForwFeature.getForwardingOptions().getNotificationToCallingParty());
         assertTrue(extForwFeature.getForwardingOptions().getNotificationToForwardingParty());
         assertTrue(!extForwFeature.getForwardingOptions().getRedirectingPresentation());
@@ -304,7 +305,7 @@ public class ExtSSInfoTest {
         ExtSSStatusImpl ssStatus = new ExtSSStatusImpl(false, false, true, true);
         ISDNAddressStringImpl forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22228");
-        ISDNSubaddressStringImpl forwardedToSubaddress = new ISDNSubaddressStringImpl(this.getISDNSubaddressStringData());
+        ISDNSubaddressStringImpl forwardedToSubaddress = new ISDNSubaddressStringImpl(Unpooled.wrappedBuffer(this.getISDNSubaddressStringData()));
         ExtForwOptionsImpl forwardingOptions = new ExtForwOptionsImpl(true, false, true, ExtForwOptionsForwardingReason.msBusy);
         Integer noReplyConditionTime = 2;
         FTNAddressStringImpl longForwardedToNumber = new FTNAddressStringImpl(AddressNature.international_number,
@@ -333,7 +334,7 @@ public class ExtSSInfoTest {
 
         List<CUGSubscription> cugSubscriptionList = new ArrayList<CUGSubscription>();
         int cugIndex = 1;
-        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getcugData());
+        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(Unpooled.wrappedBuffer(getcugData()));
         IntraCUGOptions intraCugOptions = IntraCUGOptions.getInstance(0);
         List<ExtBasicServiceCode> basicServiceList = new ArrayList<ExtBasicServiceCode>();
         basicServiceList.add(basicService);

@@ -47,10 +47,8 @@ public class ElapsedTimeImpl implements ElapsedTime {
     }
 
     public ElapsedTimeImpl(Integer timeGPRSIfNoTariffSwitch) {
-    	if(timeGPRSIfNoTariffSwitch!=null) {
-    		this.timeGPRSIfNoTariffSwitch = new ASNInteger();
-    		this.timeGPRSIfNoTariffSwitch.setValue(timeGPRSIfNoTariffSwitch.longValue());
-    	}
+    	if(timeGPRSIfNoTariffSwitch!=null)
+    		this.timeGPRSIfNoTariffSwitch = new ASNInteger(timeGPRSIfNoTariffSwitch);    		
     }
 
     public ElapsedTimeImpl(TimeGPRSIfTariffSwitch timeGPRSIfTariffSwitch) {
@@ -58,10 +56,10 @@ public class ElapsedTimeImpl implements ElapsedTime {
     }
 
     public Integer getTimeGPRSIfNoTariffSwitch() {
-    	if(this.timeGPRSIfNoTariffSwitch==null || this.timeGPRSIfNoTariffSwitch.getValue()==null)
+    	if(this.timeGPRSIfNoTariffSwitch==null)
     		return null;
     	
-        return this.timeGPRSIfNoTariffSwitch.getValue().intValue();
+        return this.timeGPRSIfNoTariffSwitch.getIntValue();
     }
 
     public TimeGPRSIfTariffSwitch getTimeGPRSIfTariffSwitch() {

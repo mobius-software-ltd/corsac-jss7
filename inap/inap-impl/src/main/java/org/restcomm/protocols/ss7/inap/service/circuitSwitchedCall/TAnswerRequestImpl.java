@@ -80,11 +80,9 @@ public class TAnswerRequestImpl extends CircuitSwitchedCallMessageImpl implement
         if(calledFacilityGroup!=null)
         	this.calledFacilityGroup=new FacilityGroupWrapperImpl(calledFacilityGroup);
         
-        if(calledFacilityGroupMember!=null) {
-        	this.calledFacilityGroupMember=new ASNInteger();
-        	this.calledFacilityGroupMember.setValue(calledFacilityGroupMember.longValue());
-        }
-        
+        if(calledFacilityGroupMember!=null)
+        	this.calledFacilityGroupMember=new ASNInteger(calledFacilityGroupMember);
+        	
         this.extensions = extensions;
     }
 
@@ -123,10 +121,10 @@ public class TAnswerRequestImpl extends CircuitSwitchedCallMessageImpl implement
 
     @Override
     public Integer getCalledFacilityGroupMember() {
-    	if(calledFacilityGroupMember==null || calledFacilityGroupMember.getValue()==null)
+    	if(calledFacilityGroupMember==null)
     		return null;
     	
-		return calledFacilityGroupMember.getValue().intValue();
+		return calledFacilityGroupMember.getIntValue();
 	}
 
     @Override

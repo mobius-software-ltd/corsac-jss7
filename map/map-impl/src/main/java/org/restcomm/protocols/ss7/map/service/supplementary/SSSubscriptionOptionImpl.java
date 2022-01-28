@@ -48,18 +48,14 @@ public class SSSubscriptionOptionImpl  implements SSSubscriptionOption {
 
     public SSSubscriptionOptionImpl(CliRestrictionOption cliRestrictionOption) {
 
-    	if(cliRestrictionOption!=null) {
-    		this.cliRestrictionOption = new ASNCliRestrictionOptionImpl();
-    		this.cliRestrictionOption.setType(cliRestrictionOption);
-    	}
+    	if(cliRestrictionOption!=null)
+    		this.cliRestrictionOption = new ASNCliRestrictionOptionImpl(cliRestrictionOption);    		
     }
 
     public SSSubscriptionOptionImpl(OverrideCategory overrideCategory) {
 
-    	if(overrideCategory!=null) {
-    		this.overrideCategory = new ASNOverrideCategoryImpl(); 
-    		this.overrideCategory.setType(overrideCategory);
-    	}
+    	if(overrideCategory!=null)
+    		this.overrideCategory = new ASNOverrideCategoryImpl(overrideCategory);     		
     }
 
     public CliRestrictionOption getCliRestrictionOption() {

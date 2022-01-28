@@ -37,11 +37,11 @@ public class CallDiversionTreatmentIndicatorImpl extends ASNSingleByte implement
     }
 
     public CallDiversionTreatmentIndicatorImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public CallDiversionTreatmentIndicatorImpl(CallDiversionTreatmentIndicatorValue value) {
-        setValue(value != null ? value.getCode() : 0);
+    	super(value != null ? value.getCode() : 0);
     }
 
     public Integer getData() {

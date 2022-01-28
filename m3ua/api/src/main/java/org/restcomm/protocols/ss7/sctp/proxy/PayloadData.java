@@ -20,7 +20,6 @@ package org.restcomm.protocols.ss7.sctp.proxy;
  */
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.util.ReferenceCountUtil;
 
 /**
@@ -39,7 +38,7 @@ public class PayloadData {
 
     /**
      * @param dataLength
-     *            Length of byte[] data
+     *            Length of data data
      * @param byteBuf
      *            the payload data
      * @param complete
@@ -55,30 +54,6 @@ public class PayloadData {
         super();
         this.dataLength = dataLength;
         this.byteBuf = byteBuf;
-        this.complete = complete;
-        this.unordered = unordered;
-        this.payloadProtocolId = payloadProtocolId;
-        this.streamNumber = streamNumber;
-    }
-
-    /**
-     * @param dataLength
-     *            Length of byte[] data
-     * @param data
-     *            the payload data
-     * @param complete
-     *            if this data represents complete protocol data
-     * @param unordered
-     *            set to true if we don't care for oder
-     * @param payloadProtocolId
-     *            protocol ID of the data carried
-     * @param streamNumber
-     *            the SCTP stream number
-     */
-    public PayloadData(int dataLength, byte[] data, boolean complete, boolean unordered, int payloadProtocolId, int streamNumber) {
-        super();
-        this.dataLength = dataLength;
-        this.byteBuf = Unpooled.wrappedBuffer(data);
         this.complete = complete;
         this.unordered = unordered;
         this.payloadProtocolId = payloadProtocolId;
@@ -146,9 +121,6 @@ public class PayloadData {
 	 */
 	@Override
 	public String toString() {
-        byte[] array = new byte[byteBuf.readableBytes()];
-        byteBuf.getBytes(0, array);
-
         StringBuffer sb = new StringBuffer();
         sb.append("PayloadData [dataLength=").append(dataLength).append(", complete=").append(complete).append(", unordered=")
                 .append(unordered).append(", payloadProtocolId=").append(payloadProtocolId).append(", streamNumber=")

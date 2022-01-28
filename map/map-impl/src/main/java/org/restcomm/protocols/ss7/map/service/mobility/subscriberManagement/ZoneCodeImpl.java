@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCode;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -34,29 +34,19 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class ZoneCodeImpl extends ASNOctetString implements ZoneCode {
+public class ZoneCodeImpl extends ASNOctetString2 implements ZoneCode {
 	public ZoneCodeImpl() {
     }
 
-    public ZoneCodeImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));        
-    }
-
-    public ZoneCodeImpl(int value) {
-        byte[] data = new byte[2];
-        data[0] = (byte) ((value & 0xFF00) >> 8);
-        data[1] = (byte) (value & 0xFF);
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+	public ZoneCodeImpl(int value) {
+		super(translate(value));
+	}
+	
+    public static ByteBuf translate(int value) {
+        ByteBuf result = Unpooled.buffer(2);
+        result.writeByte((byte) ((value & 0xFF00) >> 8));
+        result.writeByte((byte) (value & 0xFF));
+        return result;
     }
 
     public int getIntValue() {
@@ -66,5 +56,21 @@ public class ZoneCodeImpl extends ASNOctetString implements ZoneCode {
     	
         int res = ((value.readByte() & 0xFF) << 8) | (value.readByte() & 0xFF);
         return res;
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("ZoneCodeImpl");
+        sb.append(" [");
+        Integer value=getIntValue();
+        if (value!=null) {
+            sb.append("value=");
+            sb.append(value);            
+        }
+        sb.append("]");
+
+        return sb.toString();
     }
 }

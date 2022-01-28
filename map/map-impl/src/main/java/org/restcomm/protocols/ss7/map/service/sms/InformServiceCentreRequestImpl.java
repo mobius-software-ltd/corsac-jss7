@@ -69,15 +69,11 @@ public class InformServiceCentreRequestImpl extends SmsMessageImpl implements In
         this.mwStatus = mwStatus;
         this.extensionContainer = extensionContainer;
         
-        if(absentSubscriberDiagnosticSM!=null) {
-        	this.absentSubscriberDiagnosticSM = new ASNInteger();
-        	this.absentSubscriberDiagnosticSM.setValue(absentSubscriberDiagnosticSM.longValue());
-        }
-        
-        if(additionalAbsentSubscriberDiagnosticSM!=null) {
-        	this.additionalAbsentSubscriberDiagnosticSM = new ASNInteger();
-        	this.additionalAbsentSubscriberDiagnosticSM.setValue(additionalAbsentSubscriberDiagnosticSM.longValue());
-        }
+        if(absentSubscriberDiagnosticSM!=null)
+        	this.absentSubscriberDiagnosticSM = new ASNInteger(absentSubscriberDiagnosticSM);
+        	
+        if(additionalAbsentSubscriberDiagnosticSM!=null)
+        	this.additionalAbsentSubscriberDiagnosticSM = new ASNInteger(additionalAbsentSubscriberDiagnosticSM);        	
     }
 
     public MAPMessageType getMessageType() {
@@ -104,14 +100,14 @@ public class InformServiceCentreRequestImpl extends SmsMessageImpl implements In
     	if(this.absentSubscriberDiagnosticSM==null)
     		return null;
     	
-        return this.absentSubscriberDiagnosticSM.getValue().intValue();
+        return this.absentSubscriberDiagnosticSM.getIntValue();
     }
 
     public Integer getAdditionalAbsentSubscriberDiagnosticSM() {
     	if(this.additionalAbsentSubscriberDiagnosticSM==null)
     		return null;
     	
-        return this.additionalAbsentSubscriberDiagnosticSM.getValue().intValue();
+        return this.additionalAbsentSubscriberDiagnosticSM.getIntValue();
     }
 
     @Override

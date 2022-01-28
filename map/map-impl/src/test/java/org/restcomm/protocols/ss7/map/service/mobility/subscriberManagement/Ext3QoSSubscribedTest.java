@@ -65,7 +65,6 @@ public class Ext3QoSSubscribedTest {
         assertEquals(prim.getGuaranteedBitRateForUplinkExtended().getBitRate(), 256000);
         assertFalse(prim.getGuaranteedBitRateForUplinkExtended().isUseNonextendedValue());
 
-
         data = this.getData2();
         result=parser.decode(Unpooled.wrappedBuffer(data));
         assertFalse(result.getHadErrors());

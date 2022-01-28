@@ -34,12 +34,14 @@ import java.util.List;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.DestinationRoutingAddressImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -71,7 +73,7 @@ public class DestinationRoutingAddressTest {
         DestinationRoutingAddressImpl elem = (DestinationRoutingAddressImpl)result.getResult();                
         assertNotNull(elem.getCalledPartyNumber());
         assertEquals(elem.getCalledPartyNumber().size(), 1);
-        assertTrue(Arrays.equals(elem.getCalledPartyNumber().get(0).getData(), this.getIntData1()));
+        assertTrue(ByteBufUtil.equals(CalledPartyNumberIsupImpl.translate(elem.getCalledPartyNumber().get(0).getCalledPartyNumber()),Unpooled.wrappedBuffer(this.getIntData1())));
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
@@ -80,7 +82,7 @@ public class DestinationRoutingAddressTest {
     	parser.replaceClass(DestinationRoutingAddressImpl.class);
     	
     	List<CalledPartyNumberIsup> cpnl = new ArrayList<CalledPartyNumberIsup>();
-        CalledPartyNumberIsupImpl cpn = new CalledPartyNumberIsupImpl(getIntData1());
+        CalledPartyNumberIsupImpl cpn = new CalledPartyNumberIsupImpl(new CalledPartyNumberImpl(Unpooled.wrappedBuffer(getIntData1())));
         cpnl.add(cpn);
         DestinationRoutingAddressImpl elem = new DestinationRoutingAddressImpl(cpnl);
         byte[] rawData = this.getData1();
@@ -91,34 +93,4 @@ public class DestinationRoutingAddressTest {
 
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int internalNetworkNumberIndicator
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
-    public void testXMLSerialize() throws Exception {
-
-        ArrayList<CalledPartyNumberCap> cpnl = new ArrayList<CalledPartyNumberCap>();
-        CalledPartyNumberCapImpl cpn = new CalledPartyNumberCapImpl(getIntData1());
-        cpnl.add(cpn);
-        DestinationRoutingAddressImpl original = new DestinationRoutingAddressImpl(cpnl);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "destinationRoutingAddress", DestinationRoutingAddressImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        DestinationRoutingAddressImpl copy = reader.read("destinationRoutingAddress", DestinationRoutingAddressImpl.class);
-
-        assertEquals(copy.getCalledPartyNumber().size(), original.getCalledPartyNumber().size());
-        assertEquals(copy.getCalledPartyNumber().get(0).getData(), original.getCalledPartyNumber().get(0).getData());
-
-    }*/
 }

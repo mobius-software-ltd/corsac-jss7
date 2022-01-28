@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddress;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -36,88 +36,58 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class GSNAddressImpl extends ASNOctetString implements GSNAddress {
+public class GSNAddressImpl extends ASNOctetString2 implements GSNAddress {
 	public GSNAddressImpl() {        
     }
 
-    public GSNAddressImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
+    public GSNAddressImpl(GSNAddressAddressType addressType, ByteBuf addressData) throws APPException {
+    	super(translate(addressType, addressData));
     }
 
-    public GSNAddressImpl(GSNAddressAddressType addressType, byte[] addressData) throws APPException {
+    private static ByteBuf translate(GSNAddressAddressType addressType, ByteBuf addressData) throws APPException {
     	if (addressType == null)
             throw new APPException("addressType argument must not be null");
         if (addressData == null)
             throw new APPException("addressData argument must not be null");
 
-        fillData(addressType, addressData);
-    }
-
-    private void fillData(GSNAddressAddressType addressType, byte[] addressData) throws APPException {
         switch (addressType) {
-        case IPv4:
-            if (addressData.length != 4)
-                throw new APPException("addressData argument must have length=4 for IPv4");
-            break;
-        case IPv6:
-            if (addressData.length != 16)
-                throw new APPException("addressData argument must have length=4 for IPv6");
-            break;
+        	case IPv4:
+        		if (addressData.readableBytes() != 4)
+        			throw new APPException("addressData argument must have length=4 for IPv4");
+        		break;
+        	case IPv6:
+        		if (addressData.readableBytes() != 16)
+        			throw new APPException("addressData argument must have length=4 for IPv6");
+        		break;
         }
 
-        byte[] data = new byte[addressData.length + 1];
-        data[0] = (byte) addressType.createGSNAddressFirstByte();
-        System.arraycopy(addressData, 0, data, 1, addressData.length);
-        setValue(Unpooled.wrappedBuffer(data));        
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        ByteBuf typeBuffer = Unpooled.buffer(1);
+        typeBuffer.writeByte(addressType.createGSNAddressFirstByte());
+        return Unpooled.wrappedBuffer(typeBuffer,addressData);        
     }
 
     public GSNAddressAddressType getGSNAddressAddressType() {
     	ByteBuf data=getValue();
         if (data == null || data.readableBytes() == 0)
             return null;
+        
         int val = data.readByte() & 0xFF;
         return GSNAddressAddressType.getFromGSNAddressFirstByte(val);
     }
 
-    public byte[] getGSNAddressData() {
-        GSNAddressAddressType type = getGSNAddressAddressType();
-        if (type == null)
-            return null;
+    public ByteBuf getGSNAddressData() {
+        ByteBuf value=getValue();
+        if(value==null || (value.readableBytes()!=5 && value.readableBytes()!=17))
+        	return null;
 
-        byte[] data=getData();
-        switch (type) {
-        case IPv4:
-            if (data.length >= 5) {
-                byte[] res = new byte[4];
-                System.arraycopy(data, 1, res, 0, 4);
-                return res;
-            }
-            break;
-        case IPv6:
-            if (data.length >= 17) {
-                byte[] res = new byte[16];
-                System.arraycopy(data, 1, res, 0, 16);
-                return res;
-            }
-            break;
-        }
-
-        return null;
+        return value.skipBytes(1);
     }
 
     @Override
     public String toString() {
         GSNAddressAddressType type = getGSNAddressAddressType();
-        byte[] val = getGSNAddressData();
-
-        if (type != null && val != null) {
+        
+        if (type != null) {
             StringBuilder sb = new StringBuilder();
             sb.append("GSN Address Impl");
             sb.append(" [");
@@ -125,7 +95,7 @@ public class GSNAddressImpl extends ASNOctetString implements GSNAddress {
             sb.append("type=");
             sb.append(type);
             sb.append(", data=[");
-            sb.append(printDataArr(val));
+            sb.append(printDataArr());
             sb.append("]");
 
             sb.append("]");

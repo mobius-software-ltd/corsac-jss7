@@ -44,6 +44,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -89,7 +90,7 @@ public class ActivateTraceModeRequestTest {
         ActivateTraceModeRequestImpl asc = (ActivateTraceModeRequestImpl)result.getResult();
         
         assertEquals(asc.getImsi().getData(), "33333222220011");
-        assertEquals(asc.getTraceReference().getData(), getTraceReferenceData());
+        assertEquals(asc.getTraceReference().getValue(), Unpooled.wrappedBuffer(getTraceReferenceData()));
         assertEquals(asc.getTraceType().getData(), 55);
 
         assertNull(asc.getOmcId());
@@ -110,12 +111,12 @@ public class ActivateTraceModeRequestTest {
         asc = (ActivateTraceModeRequestImpl)result.getResult();
         
         assertEquals(asc.getImsi().getData(), "33333222220011");
-        assertEquals(asc.getTraceReference().getData(), getTraceReferenceData());
+        assertTrue(ByteBufUtil.equals(asc.getTraceReference().getValue(),Unpooled.wrappedBuffer(getTraceReferenceData())));
         assertEquals(asc.getTraceType().getData(), 55);
 
         assertEquals(asc.getOmcId().getAddress(), "1111133333");
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(asc.getExtensionContainer()));
-        assertEquals(asc.getTraceReference2().getData(), getTraceReference2Data());
+        assertTrue(ByteBufUtil.equals(asc.getTraceReference2().getValue(),Unpooled.wrappedBuffer(getTraceReference2Data())));
         assertEquals(asc.getTraceDepthList().getMscSTraceDepth(), TraceDepth.maximum);
         assertEquals(asc.getTraceDepthList().getMgwTraceDepth(), TraceDepth.minimum);
         assertTrue(asc.getTraceNeTypeList().getGgsn());
@@ -125,7 +126,7 @@ public class ActivateTraceModeRequestTest {
         assertTrue(asc.getTraceEventList().getMscSList().getMoMtCall());
         assertFalse(asc.getTraceEventList().getMscSList().getMoMtSms());
         assertEquals(asc.getTraceCollectionEntity().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
-        assertEquals(asc.getTraceCollectionEntity().getGSNAddressData(), getTraceCollectionEntityData());
+        assertTrue(ByteBufUtil.equals(asc.getTraceCollectionEntity().getGSNAddressData(),Unpooled.wrappedBuffer(getTraceCollectionEntityData())));
         assertEquals(asc.getMdtConfiguration().getJobType(), JobType.immediateMdtAndTrace);
     }
 
@@ -135,7 +136,7 @@ public class ActivateTraceModeRequestTest {
     	parser.replaceClass(ActivateTraceModeRequestImpl.class);
     	
         IMSIImpl imsi = new IMSIImpl("33333222220011");
-        TraceReferenceImpl traceReference = new TraceReferenceImpl(getTraceReferenceData());
+        TraceReferenceImpl traceReference = new TraceReferenceImpl(Unpooled.wrappedBuffer(getTraceReferenceData()));
         TraceTypeImpl traceType = new TraceTypeImpl(55);
         ActivateTraceModeRequestImpl asc = new ActivateTraceModeRequestImpl(imsi, traceReference, traceType, null, null, null, null, null, null, null, null,
                 null);
@@ -147,14 +148,14 @@ public class ActivateTraceModeRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         AddressStringImpl omcId = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "1111133333");
-        TraceReference2Impl traceReference2 = new TraceReference2Impl(getTraceReference2Data());
+        TraceReference2Impl traceReference2 = new TraceReference2Impl(Unpooled.wrappedBuffer(getTraceReference2Data()));
         TraceDepthListImpl traceDepthList = new TraceDepthListImpl(TraceDepth.maximum, TraceDepth.minimum, null, null, null, null, null, null, null, null);
         TraceNETypeListImpl traceNeTypeList = new TraceNETypeListImpl(false, false, false, true, false, false, false, false, false, false);
         MSCSInterfaceListImpl mscSList = new MSCSInterfaceListImpl(false, true, false, false, false, false, false, false, false, false);
         TraceInterfaceListImpl traceInterfaceList = new TraceInterfaceListImpl(mscSList, null, null, null, null, null, null, null, null, null);
         MSCSEventListImpl mscSList2 = new MSCSEventListImpl(true, false, false, false, false);
         TraceEventListImpl traceEventList = new TraceEventListImpl(mscSList2, null, null, null, null, null, null, null);
-        GSNAddressImpl traceCollectionEntity = new GSNAddressImpl(GSNAddressAddressType.IPv4, getTraceCollectionEntityData());
+        GSNAddressImpl traceCollectionEntity = new GSNAddressImpl(GSNAddressAddressType.IPv4,Unpooled.wrappedBuffer(getTraceCollectionEntityData()));
         MDTConfigurationImpl mdtConfiguration = new MDTConfigurationImpl(JobType.immediateMdtAndTrace, null, null, null, null, null, null, null, null, null, null);
         asc = new ActivateTraceModeRequestImpl(imsi, traceReference, traceType, omcId, MAPExtensionContainerTest.GetTestExtensionContainer(), traceReference2,
                 traceDepthList, traceNeTypeList, traceInterfaceList, traceEventList, traceCollectionEntity, mdtConfiguration);

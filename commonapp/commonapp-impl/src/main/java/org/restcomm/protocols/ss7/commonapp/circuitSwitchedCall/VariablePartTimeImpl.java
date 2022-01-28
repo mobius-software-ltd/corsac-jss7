@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePartTime;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -34,36 +34,21 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class VariablePartTimeImpl extends ASNOctetString implements VariablePartTime {
+public class VariablePartTimeImpl extends ASNOctetString2 implements VariablePartTime {
 	public VariablePartTimeImpl() {
     }
 
-    public VariablePartTimeImpl(byte[] data) {
-    	if(data!=null)
-    		setValue(Unpooled.wrappedBuffer(data));        
-    }
-
     public VariablePartTimeImpl(int hour, int minute) {
-        setParameters(hour, minute);
+        super(translate(hour, minute));
     }
 
-    protected void setParameters(int hour, int minute) {
+    protected static ByteBuf translate(int hour, int minute) {
     	ByteBuf buffer=Unpooled.buffer(2);
         
-        buffer.writeByte((byte) this.encodeByte(hour));
-        buffer.writeByte((byte) this.encodeByte(minute));
+        buffer.writeByte((byte) encodeByte(hour));
+        buffer.writeByte((byte) encodeByte(minute));
         
-        setValue(buffer);
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        return buffer;
     }
 
     public int getHour() {
@@ -71,7 +56,7 @@ public class VariablePartTimeImpl extends ASNOctetString implements VariablePart
         if (value == null || value.readableBytes() != 2)
             return 0;
 
-        return this.decodeByte(value.readByte());
+        return decodeByte(value.readByte());
     }
 
     public int getMinute() {
@@ -80,14 +65,14 @@ public class VariablePartTimeImpl extends ASNOctetString implements VariablePart
             return 0;
 
         value.skipBytes(1);
-        return this.decodeByte(value.readByte());
+        return decodeByte(value.readByte());
     }
 
-    private int decodeByte(int bt) {
+    private static int decodeByte(int bt) {
         return (bt & 0x0F) * 10 + ((bt & 0xF0) >> 4);
     }
 
-    private int encodeByte(int val) {
+    private static int encodeByte(int val) {
         return (val / 10) | (val % 10) << 4;
     }
 

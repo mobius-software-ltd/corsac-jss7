@@ -63,11 +63,9 @@ public class DeferredmtlrDataImpl implements DeferredmtlrData {
     		LCSLocationInfo lcsLocationInfo) {
         this.deferredLocationEventType = deferredLocationEventType;
         
-        if(terminationCause!=null) {
-        	this.terminationCause = new ASNTerminateCause();
-        	this.terminationCause.setType(terminationCause);
-        }
-        
+        if(terminationCause!=null)
+        	this.terminationCause = new ASNTerminateCause(terminationCause);
+        	
         this.lcsLocationInfo = lcsLocationInfo;
     }
 

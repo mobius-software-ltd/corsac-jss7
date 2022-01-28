@@ -198,11 +198,9 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
         
         this.pagingArea = pagingArea;
         
-        if(callPriority!=null) {
-        	this.callPriority = new ASNEMLPPPriorityImpl();
-        	this.callPriority.setType(callPriority);
-        }
-        
+        if(callPriority!=null)
+        	this.callPriority = new ASNEMLPPPriorityImpl(callPriority);
+        	
         if(mtrfIndicator)
         	this.mtrfIndicator = new ASNNull();
         

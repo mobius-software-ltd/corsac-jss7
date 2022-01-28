@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -41,33 +41,21 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class DigitsIsupImpl extends ASNOctetString implements DigitsIsup {
+public class DigitsIsupImpl extends ASNOctetString2 implements DigitsIsup {
 	private boolean isGenericDigits;
     private boolean isGenericNumber;
 
     public DigitsIsupImpl() {
     }
 
-    public DigitsIsupImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));        
-    }
-
     public DigitsIsupImpl(GenericDigits genericDigits) throws APPException {
-        this.setGenericDigits(genericDigits);
+    	super(translate(genericDigits));
+    	setIsGenericDigits();
     }
 
     public DigitsIsupImpl(GenericNumber genericNumber) throws APPException {
-        this.setGenericNumber(genericNumber);
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        super(translate(genericNumber));
+        setIsGenericNumber();
     }
 
     public GenericDigits getGenericDigits() throws APPException {
@@ -100,33 +88,27 @@ public class DigitsIsupImpl extends ASNOctetString implements DigitsIsup {
         }
     }
 
-    public void setData(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public void setGenericDigits(GenericDigits genericDigits) throws APPException {
+    public static ByteBuf translate(GenericDigits genericDigits) throws APPException {
 
         if (genericDigits == null)
             throw new APPException("The genericDigits parameter must not be null");
         try {
         	ByteBuf value=Unpooled.buffer();
         	((GenericDigitsImpl) genericDigits).encode(value);
-        	setValue(value);
-            setIsGenericDigits();
+        	return value;            
         } catch (ParameterException e) {
             throw new APPException("ParameterException when encoding genericDigits: " + e.getMessage(), e);
         }
     }
 
-    public void setGenericNumber(GenericNumber genericNumber) throws APPException {
+    public static ByteBuf translate(GenericNumber genericNumber) throws APPException {
 
         if (genericNumber == null)
             throw new APPException("The genericNumber parameter must not be null");
         try {
         	ByteBuf value=Unpooled.buffer();
         	((GenericNumberImpl) genericNumber).encode(value);
-        	setValue(value);
-            setIsGenericNumber();
+        	return value;            
         } catch (ParameterException e) {
             throw new APPException("ParameterException when encoding genericNumber: " + e.getMessage(), e);
         }
@@ -155,11 +137,7 @@ public class DigitsIsupImpl extends ASNOctetString implements DigitsIsup {
         StringBuilder sb = new StringBuilder();
         sb.append("Digits [");
 
-        byte[] data=this.getData();
-        if (data != null) {
-            sb.append("data=[");
-            sb.append(printDataArr(data));
-            sb.append("]");
+        if (getValue() != null) {
             try {
                 if (this.getIsGenericNumber()) {
                     GenericNumber gn = this.getGenericNumber();

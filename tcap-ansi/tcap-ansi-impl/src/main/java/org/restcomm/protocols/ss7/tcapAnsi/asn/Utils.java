@@ -32,41 +32,36 @@ import io.netty.buffer.Unpooled;
  *
  */
 public final class Utils {
-    public static long decodeTransactionId(byte[] data, boolean swapBytes) {
-    	byte[] longRep = new byte[8];
+    public static long decodeTransactionId(ByteBuf data, boolean swapBytes) {
 
         if (swapBytes) {
-            // copy data so longRep = {0,0,0,...,data};
-            System.arraycopy(data, 0, longRep, longRep.length - data.length, data.length);
+        	return Unpooled.wrappedBuffer(data).readUnsignedInt();
         } else {
-            longRep[4] = data[3];
-            longRep[5] = data[2];
-            longRep[6] = data[1];
-            longRep[7] = data[0];
+        	ByteBuf longRep = Unpooled.buffer(8);
+        	longRep.writeInt(0);
+        	longRep.writeInt(Unpooled.wrappedBuffer(data).readIntLE());
+            return longRep.readLong();
         }
-        ByteBuf bb = Unpooled.wrappedBuffer(longRep);
-        return bb.readLong();
-
     }
 
-    public static byte[] encodeTransactionId(long txId, boolean swapBytes) {
+    public static ByteBuf encodeTransactionId(long txId, boolean swapBytes) {
         // txId may only be up to 4 bytes, that is 0xFF FF FF FF
-        byte[] data = new byte[4];
+    	ByteBuf data = Unpooled.buffer(4);
         // long ll = txId.longValue();
         // data[3] = (byte) ll;
         // data[2] = (byte) (ll>> 8);
         // data[1] = (byte) (ll>>16);
         // data[0] = (byte) (ll >> 24);
         if (swapBytes) {
-            data[3] = (byte) txId;
-            data[2] = (byte) (txId >> 8);
-            data[1] = (byte) (txId >> 16);
-            data[0] = (byte) (txId >> 24);
+        	data.writeByte((byte) (txId >> 24));
+        	data.writeByte((byte) (txId >> 16));
+        	data.writeByte((byte) (txId >> 8));
+        	data.writeByte((byte) txId);            
         } else {
-            data[0] = (byte) txId;
-            data[1] = (byte) (txId >> 8);
-            data[2] = (byte) (txId >> 16);
-            data[3] = (byte) (txId >> 24);
+        	data.writeByte((byte) txId);
+        	data.writeByte((byte) (txId >> 8));
+        	data.writeByte((byte) (txId >> 16));
+        	data.writeByte((byte) (txId >> 24));
         }
 
         return data;

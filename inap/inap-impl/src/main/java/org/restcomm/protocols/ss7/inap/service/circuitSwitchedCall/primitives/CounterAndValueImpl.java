@@ -47,29 +47,25 @@ public class CounterAndValueImpl implements CounterAndValue {
     }
 
     public CounterAndValueImpl(Integer counterID,Integer counterValue) {
-    	if(counterID!=null) {
-    		this.counterID=new ASNInteger();
-    		this.counterID.setValue(counterID.longValue());
-    	}
-    	
-    	if(counterValue!=null) {
-    		this.counterValue=new ASNInteger();
-    		this.counterValue.setValue(counterValue.longValue());
-    	}
+    	if(counterID!=null)
+    		this.counterID=new ASNInteger(counterID);
+    		
+    	if(counterValue!=null)
+    		this.counterValue=new ASNInteger(counterValue);    		
     }
 
     public Integer getCounterID() {
-    	if(counterID==null || counterID.getValue()==null)
+    	if(counterID==null)
     		return null;
     	
-    	return counterID.getValue().intValue();
+    	return counterID.getIntValue();
     }
 
     public Integer getCounterValue() {
-    	if(counterValue==null || counterValue.getValue()==null)
+    	if(counterValue==null)
     		return null;
     	
-    	return counterValue.getValue().intValue();
+    	return counterValue.getIntValue();
     }
 
     @Override

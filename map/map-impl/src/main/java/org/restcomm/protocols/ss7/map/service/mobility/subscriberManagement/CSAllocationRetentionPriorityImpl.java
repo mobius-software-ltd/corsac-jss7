@@ -36,7 +36,7 @@ public class CSAllocationRetentionPriorityImpl extends ASNSingleByte implements 
     }
 
     public CSAllocationRetentionPriorityImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public int getData() {

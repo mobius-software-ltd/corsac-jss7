@@ -30,6 +30,8 @@ import org.restcomm.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCaus
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpdu;
 import org.restcomm.protocols.ss7.map.smstpdu.SmsDeliverReportTpduImpl;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author sergey vetyutnev
@@ -101,12 +103,12 @@ MAPErrorMessageSMDeliveryFailure {
 	}
 
 	@Override
-	public byte[] getSignalInfo() {
+	public ByteBuf getSignalInfo() {
 		return null;
 	}
 
 	@Override
-	public void setSignalInfo(byte[] signalInfo) {		
+	public void setSignalInfo(ByteBuf signalInfo) {		
 	}
 
 	@Override

@@ -204,6 +204,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.TimeAndTimezone;
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.AbsoluteTimeStamp;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSChargingID;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeodeticInformation;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeographicalInformation;
@@ -233,6 +234,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author sergey vetyutnev
@@ -241,8 +244,6 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformat
 public interface CAPParameterFactory {
 
     CAPGprsReferenceNumber createCAPGprsReferenceNumber(Integer destinationReference, Integer originationReference);
-
-    CauseIsup createCause(byte[] data);
 
     CauseIsup createCause(CauseIndicators causeIndicators) throws CAPException;
 
@@ -258,9 +259,9 @@ public interface CAPParameterFactory {
     CalledPartyBCDNumber createCalledPartyBCDNumber(AddressNature addressNature, NumberingPlan numberingPlan,
             String address) throws CAPException;
 
-    ExtensionField createExtensionField(Integer localCode, CriticalityType criticalityType, byte[] data, boolean isConstructed);
+    ExtensionField createExtensionField(Integer localCode, CriticalityType criticalityType, ByteBuf data, boolean isConstructed);
 
-    ExtensionField createExtensionField(List<Long> globalCode, CriticalityType criticalityType, byte[] data, boolean isConstructed);
+    ExtensionField createExtensionField(List<Long> globalCode, CriticalityType criticalityType, ByteBuf data, boolean isConstructed);
 
     CAPINAPExtensions createCAPExtensions(List<ExtensionField> fieldsList);
 
@@ -277,41 +278,23 @@ public interface CAPParameterFactory {
 
     TimeAndTimezone createTimeAndTimezone(int year, int month, int day, int hour, int minute, int second, int timeZone);
 
-    BearerIsup createBearer(byte[] data);
-
     BearerIsup createBearer(UserServiceInformation userServiceInformation) throws CAPException;
 
     BearerCapability createBearerCapability(BearerIsup bearer);
-
-    DigitsIsup createDigits_GenericNumber(byte[] data);
-
-    DigitsIsup createDigits_GenericDigits(byte[] data);
 
     DigitsIsup createDigits_GenericNumber(GenericNumber genericNumber) throws CAPException;
 
     DigitsIsup createDigits_GenericDigits(GenericDigits genericDigits) throws CAPException;
 
-    CalledPartyNumberIsup createCalledPartyNumber(byte[] data);
-
     CalledPartyNumberIsup createCalledPartyNumber(CalledPartyNumber calledPartyNumber) throws CAPException;
-
-    CallingPartyNumberIsup createCallingPartyNumber(byte[] data);
 
     CallingPartyNumberIsup createCallingPartyNumber(CallingPartyNumber callingPartyNumber) throws CAPException;
 
-    GenericNumberIsup createGenericNumber(byte[] data);
-
     GenericNumberIsup createGenericNumber(GenericNumber genericNumber) throws CAPException;
-
-    LocationNumberIsup createLocationNumber(byte[] data);
 
     LocationNumberIsup createLocationNumber(LocationNumber locationNumber) throws CAPException;
 
-    OriginalCalledNumberIsup createOriginalCalledNumber(byte[] data);
-
     OriginalCalledNumberIsup createOriginalCalledNumber(OriginalCalledNumber originalCalledNumber) throws CAPException;
-
-    RedirectingPartyIDIsup createRedirectingPartyID(byte[] data);
 
     RedirectingPartyIDIsup createRedirectingPartyID(RedirectingNumber redirectingNumber) throws CAPException;
 
@@ -399,7 +382,7 @@ public interface CAPParameterFactory {
 
     IPSSPCapabilities createIPSSPCapabilities(boolean IPRoutingAddressSupported, boolean VoiceBackSupported,
             boolean VoiceInformationSupportedViaSpeechRecognition, boolean VoiceInformationSupportedViaVoiceRecognition,
-            boolean GenerationOfVoiceAnnouncementsFromTextSupported, byte[] extraData);
+            boolean GenerationOfVoiceAnnouncementsFromTextSupported, ByteBuf extraData);
 
     InitialDPArgExtension createInitialDPArgExtension(NACarrierInformation naCarrierInformation, ISDNAddressString gmscAddress);
 
@@ -413,11 +396,9 @@ public interface CAPParameterFactory {
 
     AlertingPatternWrapper createAlertingPattern(AlertingPattern alertingPattern);
 
-    AlertingPatternWrapper createAlertingPattern(byte[] data);
-
     NAOliInfo createNAOliInfo(int value);
 
-    ScfID createScfID(byte[] data);
+    ScfID createScfID(ByteBuf data);
 
     ServiceInteractionIndicatorsTwo createServiceInteractionIndicatorsTwo(
             ForwardServiceInteractionInd forwardServiceInteractionInd,
@@ -444,17 +425,11 @@ public interface CAPParameterFactory {
     SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(
             CAMELSCIBillingChargingCharacteristicsAlt aocExtension);
 
-    VariablePartPrice createVariablePartPrice(byte[] data);
-
     VariablePartPrice createVariablePartPrice(double price);
 
     VariablePartPrice createVariablePartPrice(int integerPart, int hundredthPart);
 
-    VariablePartDate createVariablePartDate(byte[] data);
-
     VariablePartDate createVariablePartDate(int year, int month, int day);
-
-    VariablePartTime createVariablePartTime(byte[] data);
 
     VariablePartTime createVariablePartTime(int hour, int minute);
 
@@ -468,7 +443,7 @@ public interface CAPParameterFactory {
 
     VariablePart createVariablePart(VariablePartPrice price);
 
-    MessageIDText createMessageIDText(String messageContent, byte[] attributes);
+    MessageIDText createMessageIDText(String messageContent, ByteBuf attributes);
 
     VariableMessage createVariableMessage(int elementaryMessageID, List<VariablePart> variableParts);
 
@@ -488,15 +463,15 @@ public interface CAPParameterFactory {
 
     InformationToSend createInformationToSend(Tone tone);
 
-    CollectedDigits createCollectedDigits(Integer minimumNbOfDigits, int maximumNbOfDigits, byte[] endOfReplyDigit,
-            byte[] cancelDigit, byte[] startDigit, Integer firstDigitTimeOut, Integer interDigitTimeOut,
+    CollectedDigits createCollectedDigits(Integer minimumNbOfDigits, int maximumNbOfDigits, ByteBuf endOfReplyDigit,
+    		ByteBuf cancelDigit, ByteBuf startDigit, Integer firstDigitTimeOut, Integer interDigitTimeOut,
             ErrorTreatment errorTreatment, Boolean interruptableAnnInd, Boolean voiceInformation, Boolean voiceBack);
 
     CollectedInfo createCollectedInfo(CollectedDigits collectedDigits);
 
     CallSegmentToCancel createCallSegmentToCancel(Integer invokeID, Integer callSegmentID);
 
-    AccessPointName createAccessPointName(byte[] data);
+    AccessPointName createAccessPointName(ByteBuf data);
 
     AOCGPRS createAOCGPRS(CAI_GSM0224 aocInitial, AOCSubsequent aocSubsequent);
 
@@ -532,9 +507,9 @@ public interface CAPParameterFactory {
     FCIBCCCAMELSequence1Gprs createFCIBCCCAMELsequence1(
             FreeFormatDataGprs freeFormatData, PDPID pdpID, AppendFreeFormatData appendFreeFormatData);
 
-    FreeFormatData createFreeFormatData(byte[] data);
+    FreeFormatData createFreeFormatData(ByteBuf data);
 
-    FreeFormatDataGprs createFreeFormatDataGprs(byte[] data);
+    FreeFormatDataGprs createFreeFormatDataGprs(ByteBuf data);
 
     GPRSCause createGPRSCause(int data);
 
@@ -562,7 +537,7 @@ public interface CAPParameterFactory {
 
     GPRSQoS createGPRSQoS(ExtQoSSubscribed longQoSFormat);
 
-    PDPAddress createPDPAddress(byte[] data);
+    PDPAddress createPDPAddress(ByteBuf data);
 
     PDPID createPDPID(int data);
 
@@ -621,7 +596,9 @@ public interface CAPParameterFactory {
             QualityOfService qualityOfService, LocationInformationGPRS locationInformationGPRS, TimeAndTimezone timeAndTimezone,
             PDPInitiationType pdpInitiationType, boolean secondaryPDPContext);
 
-    TPValidityPeriod createTPValidityPeriod(byte[] data);
+    TPValidityPeriod createTPValidityPeriod(int relativeFormat);
+
+    TPValidityPeriod createTPValidityPeriod(AbsoluteTimeStamp absoluteFormatValue);
 
     TPShortMessageSpecificInfo createTPShortMessageSpecificInfo(int data);
 
@@ -637,7 +614,7 @@ public interface CAPParameterFactory {
 
     MTSMSCause createMTSMSCause(int data);
 
-    FreeFormatDataSMS createFreeFormatDataSMS(byte[] data);
+    FreeFormatDataSMS createFreeFormatDataSMS(ByteBuf data);
 
     FCIBCCCAMELSequence1SMS createFCIBCCCAMELsequence1(FreeFormatDataSMS freeFormatData, AppendFreeFormatData appendFreeFormatData);
 
@@ -668,12 +645,12 @@ public interface CAPParameterFactory {
     BackwardServiceInteractionInd createBackwardServiceInteractionInd(ConferenceTreatmentIndicator conferenceTreatmentIndicator,
             CallCompletionTreatmentIndicator callCompletionTreatmentIndicator);
 
-    Carrier createCarrier(byte[] data);
+    Carrier createCarrier(ByteBuf data);
 
     ForwardServiceInteractionInd createForwardServiceInteractionInd(ConferenceTreatmentIndicator conferenceTreatmentIndicator,
             CallDiversionTreatmentIndicator callDiversionTreatmentIndicator, CallingPartyRestrictionIndicator callingPartyRestrictionIndicator);
 
-    LowLayerCompatibility createLowLayerCompatibility(byte[] data);
+    LowLayerCompatibility createLowLayerCompatibility(ByteBuf data);
 
     MidCallEvents createMidCallEvents_Completed(DigitsIsup dtmfDigits);
 

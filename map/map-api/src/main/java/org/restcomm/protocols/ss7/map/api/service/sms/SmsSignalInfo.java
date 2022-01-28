@@ -30,8 +30,6 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpdu;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
-import io.netty.buffer.ByteBuf;
-
 /**
  * Sms signal info
  *
@@ -46,6 +44,4 @@ public interface SmsSignalInfo {
     void setGsm8Charset(Charset gsm8Charset);
 
     SmsTpdu decodeTpdu(boolean mobileOriginatedMessage) throws MAPException;
-
-    ByteBuf getValue();
 }

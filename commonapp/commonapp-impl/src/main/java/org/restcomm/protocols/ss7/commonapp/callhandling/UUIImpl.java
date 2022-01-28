@@ -24,32 +24,35 @@ package org.restcomm.protocols.ss7.commonapp.callhandling;
 
 import org.restcomm.protocols.ss7.commonapp.api.callhandling.UUI;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
 *
 * @author sergey vetyutnev
 *
 */
-public class UUIImpl extends ASNOctetString implements UUI {
+public class UUIImpl extends ASNOctetString2 implements UUI {
 	public UUIImpl() {
     }
 
-    public UUIImpl(byte[] data) {
-    	if(data!=null)
-    		setValue(Unpooled.wrappedBuffer(data));
+    public UUIImpl(ByteBuf value) {
+    	super(value);
     }
+    
+    public String toString() {
 
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-        byte[] data=new byte[value.readableBytes()];
-        value.readBytes(data);
-        return data;
+        StringBuilder sb = new StringBuilder();
+        sb.append("UUI [");
+
+        if (this.getValue() != null) {
+            sb.append("data=");
+            sb.append(printDataArr());            
+        }
+
+        sb.append("]");
+
+        return sb.toString();
     }
 }

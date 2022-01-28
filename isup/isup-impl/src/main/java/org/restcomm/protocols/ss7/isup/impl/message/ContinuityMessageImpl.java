@@ -28,8 +28,6 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,6 +42,8 @@ import org.restcomm.protocols.ss7.isup.message.ContinuityMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.ContinuityIndicators;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageName;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:23:59:08 2009-09-06<br>
@@ -84,7 +84,7 @@ public class ContinuityMessageImpl extends ISUPMessageImpl implements Continuity
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryParameters(byte[], int)
+     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryParameters(ByteBuf, int)
      */
 
     protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
@@ -97,14 +97,14 @@ public class ContinuityMessageImpl extends ISUPMessageImpl implements Continuity
             b.skipBytes(1);
             this.setContinuityIndicators(_ci);
         } else {
-            throw new ParameterException("byte[] must have exact one octets");
+            throw new ParameterException("buffer must have exact one readable octets");
         }
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryVariableBody(byte[], int)
+     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryVariableBody(ByteBuf, int)
      */
 
     protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody,int parameterIndex)
@@ -116,7 +116,7 @@ public class ContinuityMessageImpl extends ISUPMessageImpl implements Continuity
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(byte[], byte)
+     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(ByteBuf, byte)
      */
 
     protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)

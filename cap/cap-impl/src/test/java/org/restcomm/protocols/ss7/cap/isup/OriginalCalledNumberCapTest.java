@@ -71,7 +71,6 @@ public class OriginalCalledNumberCapTest {
         
         OriginalCalledNumberIsupImpl elem = (OriginalCalledNumberIsupImpl)result.getResult();        
         OriginalCalledNumber ocn = elem.getOriginalCalledNumber();
-        assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         assertEquals(ocn.getNatureOfAddressIndicator(), 3);
         assertTrue(ocn.getAddress().equals("7010900"));
         assertEquals(ocn.getNumberingPlanIndicator(), 1);
@@ -96,18 +95,11 @@ public class OriginalCalledNumberCapTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(OriginalCalledNumberIsupImpl.class);
     	
-        OriginalCalledNumberIsupImpl elem = new OriginalCalledNumberIsupImpl(this.getIntData());
+        OriginalCalledNumber cpn = new OriginalCalledNumberImpl(3, "7010900", 1, 1);
+        OriginalCalledNumberIsupImpl elem = new OriginalCalledNumberIsupImpl(cpn);
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
-        buffer.readBytes(encodedData);
-        assertTrue(Arrays.equals(rawData, encodedData));
-
-        OriginalCalledNumber cpn = new OriginalCalledNumberImpl(3, "7010900", 1, 1);
-        elem = new OriginalCalledNumberIsupImpl(cpn);
-        rawData = this.getData();
-        buffer=parser.encode(elem);
-        encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
@@ -121,37 +113,4 @@ public class OriginalCalledNumberCapTest {
 
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int addressRepresentationREstrictedIndicator
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "isup" })
-    public void testXMLSerialize() throws Exception {
-
-        OriginalCalledNumberCapImpl original = new OriginalCalledNumberCapImpl(new OriginalCalledNumberImpl(
-                OriginalCalledNumber._NAI_NATIONAL_SN, "12345", OriginalCalledNumber._NPI_TELEX,
-                OriginalCalledNumber._APRI_RESTRICTED));
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "originalCalledNumberCap", OriginalCalledNumberCapImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        OriginalCalledNumberCapImpl copy = reader.read("originalCalledNumberCap", OriginalCalledNumberCapImpl.class);
-
-        assertEquals(copy.getOriginalCalledNumber().getNatureOfAddressIndicator(), original.getOriginalCalledNumber()
-                .getNatureOfAddressIndicator());
-        assertEquals(copy.getOriginalCalledNumber().getAddress(), original.getOriginalCalledNumber().getAddress());
-        assertEquals(copy.getOriginalCalledNumber().getNumberingPlanIndicator(), original.getOriginalCalledNumber()
-                .getNumberingPlanIndicator());
-        assertEquals(copy.getOriginalCalledNumber().getAddressRepresentationRestrictedIndicator(), original
-                .getOriginalCalledNumber().getAddressRepresentationRestrictedIndicator());
-    }*/
 }

@@ -109,11 +109,9 @@ public class EstablishTemporaryConnectionRequestImpl extends CircuitSwitchedCall
         this.carrier = carrier;
         this.serviceInteractionIndicatorsTwo = serviceInteractionIndicatorsTwo;
         
-        if(callSegmentID!=null) {
-        	this.callSegmentID = new ASNInteger();
-        	this.callSegmentID.setValue(callSegmentID.longValue());
-        }
-        
+        if(callSegmentID!=null)
+        	this.callSegmentID = new ASNInteger(callSegmentID);
+        	
         this.naOliInfo = naOliInfo;
         this.chargeNumber = chargeNumber;
         this.originalCalledPartyID = originalCalledPartyID;
@@ -187,10 +185,10 @@ public class EstablishTemporaryConnectionRequestImpl extends CircuitSwitchedCall
 
     @Override
     public Integer getCallSegmentID() {
-    	if(callSegmentID==null || callSegmentID.getValue()==null)
+    	if(callSegmentID==null)
     		return null;
     	
-        return callSegmentID.getValue().intValue();
+        return callSegmentID.getIntValue();
     }
 
     @Override

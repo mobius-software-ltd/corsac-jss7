@@ -54,10 +54,9 @@ public class MAPErrorMessageCallBarredImpl extends MAPErrorMessageImpl implement
         super((long) MAPErrorCode.callBarred);
 
         this.mapProtocolVersion = mapProtocolVersion;
-        if(callBarringCause!=null) {
-        	this.callBarringCause = new ASNCallBaringCauseImpl();
-        	this.callBarringCause.setType(callBarringCause);
-        }
+        if(callBarringCause!=null)
+        	this.callBarringCause = new ASNCallBaringCauseImpl(callBarringCause);
+        	
         this.extensionContainer = extensionContainer;
         if(unauthorisedMessageOriginator!=null && unauthorisedMessageOriginator)
         	this.unauthorisedMessageOriginator = new ASNNull();
@@ -97,10 +96,8 @@ public class MAPErrorMessageCallBarredImpl extends MAPErrorMessageImpl implement
     public void setCallBarringCause(CallBarringCause callBarringCause) {
     	if(callBarringCause==null)
     		this.callBarringCause=null;
-    	else {
-    		this.callBarringCause = new ASNCallBaringCauseImpl();
-    		this.callBarringCause.setType(callBarringCause);
-    	}
+    	else
+    		this.callBarringCause = new ASNCallBaringCauseImpl(callBarringCause);    		
     }
 
     public void setExtensionContainer(MAPExtensionContainer extensionContainer) {

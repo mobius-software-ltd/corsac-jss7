@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.commonapp.primitives;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.TimeAndTimezone;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -34,25 +34,29 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class TimeAndTimezoneImpl extends ASNOctetString implements TimeAndTimezone {
+public class TimeAndTimezoneImpl extends ASNOctetString2 implements TimeAndTimezone {
 	public TimeAndTimezoneImpl() {
     }
 
-    public TimeAndTimezoneImpl(int year, int month, int day, int hour, int minute, int second, int timeZone) {
-        byte[] data = new byte[8];
-        data[0] = (byte) encodeByte(year / 100);
-        data[1] = (byte) encodeByte(year % 100);
-        data[2] = (byte) encodeByte(month);
-        data[3] = (byte) encodeByte(day);
-        data[4] = (byte) encodeByte(hour);
-        data[5] = (byte) encodeByte(minute);
-        data[6] = (byte) encodeByte(second);
+	public TimeAndTimezoneImpl(int year, int month, int day, int hour, int minute, int second, int timeZone) {
+		super(translate(year, month, day, hour, minute, second, timeZone));
+	}
+    
+	private static ByteBuf translate(int year, int month, int day, int hour, int minute, int second, int timeZone) {
+		ByteBuf buffer=Unpooled.buffer(8);
+		buffer.writeByte(encodeByte(year / 100));
+		buffer.writeByte(encodeByte(year % 100));
+		buffer.writeByte(encodeByte(month));
+		buffer.writeByte(encodeByte(day));
+		buffer.writeByte(encodeByte(hour));
+		buffer.writeByte(encodeByte(minute));
+		buffer.writeByte(encodeByte(second));
         if (timeZone >= 0)
-            data[7] = (byte) encodeByte(timeZone);
+        	buffer.writeByte(encodeByte(timeZone));
         else
-            data[7] = (byte) (encodeByte(-timeZone) | 0x08);
+        	buffer.writeByte((encodeByte(-timeZone) | 0x08));
         
-        setValue(Unpooled.wrappedBuffer(data));
+        return buffer;
     }
 
     public int getYear() {
@@ -60,7 +64,7 @@ public class TimeAndTimezoneImpl extends ASNOctetString implements TimeAndTimezo
         if (data == null || data.readableBytes() != 8)
             return 0;
 
-        return this.decodeByte((int) data.readByte()) * 100 + (int) this.decodeByte(data.readByte());
+        return decodeByte((int) data.readByte()) * 100 + (int) decodeByte(data.readByte());
     }
 
     public int getMonth() {
@@ -69,7 +73,7 @@ public class TimeAndTimezoneImpl extends ASNOctetString implements TimeAndTimezo
             return 0;
 
         data.skipBytes(2);
-        return this.decodeByte((int) data.readByte());
+        return decodeByte((int) data.readByte());
     }
 
     public int getDay() {
@@ -78,7 +82,7 @@ public class TimeAndTimezoneImpl extends ASNOctetString implements TimeAndTimezo
             return 0;
 
         data.skipBytes(3);
-        return this.decodeByte((int) data.readByte());
+        return decodeByte((int) data.readByte());
     }
 
     public int getHour() {
@@ -87,7 +91,7 @@ public class TimeAndTimezoneImpl extends ASNOctetString implements TimeAndTimezo
             return 0;
 
         data.skipBytes(4);
-        return this.decodeByte((int) data.readByte());
+        return decodeByte((int) data.readByte());
     }
 
     public int getMinute() {
@@ -96,7 +100,7 @@ public class TimeAndTimezoneImpl extends ASNOctetString implements TimeAndTimezo
             return 0;
 
         data.skipBytes(5);
-        return this.decodeByte((int) data.readByte());
+        return decodeByte((int) data.readByte());
     }
 
     public int getSecond() {
@@ -105,7 +109,7 @@ public class TimeAndTimezoneImpl extends ASNOctetString implements TimeAndTimezo
             return 0;
 
         data.skipBytes(6);
-        return this.decodeByte((int) data.readByte());
+        return decodeByte((int) data.readByte());
     }
 
     public int getTimeZone() {
@@ -121,11 +125,11 @@ public class TimeAndTimezoneImpl extends ASNOctetString implements TimeAndTimezo
         return res;
     }
 
-    private int decodeByte(int bt) {
+    private static int decodeByte(int bt) {
         return (bt & 0x0F) * 10 + ((bt & 0xF0) >> 4);
     }
 
-    private int encodeByte(int val) {
+    private static int encodeByte(int val) {
         return (val / 10) | (val % 10) << 4;
     }
 

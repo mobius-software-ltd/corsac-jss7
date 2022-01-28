@@ -33,12 +33,14 @@ import org.restcomm.protocols.ss7.commonapp.gap.CalledAddressAndServiceImpl;
 import org.restcomm.protocols.ss7.commonapp.gap.CompoundCriteriaImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ScfIDImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -75,8 +77,8 @@ public class CompoundCriteriaTest {
         
         CompoundCriteriaImpl elem = (CompoundCriteriaImpl)result.getResult();        
         assertEquals(elem.getBasicGapCriteria().getCalledAddressAndService().getServiceKey(), SERVICE_KEY);
-        assertEquals(elem.getBasicGapCriteria().getCalledAddressAndService().getCalledAddressValue().getData(), getDigitsData());
-        assertEquals(elem.getScfID().getData(), getDigitsData1());
+        assertTrue(ByteBufUtil.equals(DigitsIsupImpl.translate(elem.getBasicGapCriteria().getCalledAddressAndService().getCalledAddressDigits().getGenericDigits()),Unpooled.wrappedBuffer(getDigitsData())));
+        assertTrue(ByteBufUtil.equals(elem.getScfID().getValue(), Unpooled.wrappedBuffer(getDigitsData1())));
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
@@ -84,11 +86,11 @@ public class CompoundCriteriaTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CompoundCriteriaImpl.class);
     	
-    	DigitsIsupImpl digits = new DigitsIsupImpl(getDigitsData());
+    	DigitsIsupImpl digits = new DigitsIsupImpl(new GenericDigitsImpl(Unpooled.wrappedBuffer(getDigitsData())));
         CalledAddressAndServiceImpl calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
         BasicGapCriteriaImpl basicGapCriteria = new BasicGapCriteriaImpl(calledAddressAndService);
 
-        ScfIDImpl scfId = new ScfIDImpl(getDigitsData1());
+        ScfIDImpl scfId = new ScfIDImpl(Unpooled.wrappedBuffer(getDigitsData1()));
 
         CompoundCriteriaImpl elem = new CompoundCriteriaImpl(basicGapCriteria, scfId);
         byte[] rawData = this.getData();
@@ -97,79 +99,4 @@ public class CompoundCriteriaTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "gap" })
-    public void testXMLSerialize() throws Exception {
-
-        GenericNumberImpl gn = new GenericNumberImpl(GenericNumber._NAI_NATIONAL_SN, "12345",
-                GenericNumber._NQIA_CONNECTED_NUMBER, GenericNumber._NPI_TELEX, GenericNumber._APRI_ALLOWED,
-                GenericNumber._NI_INCOMPLETE, GenericNumber._SI_USER_PROVIDED_VERIFIED_FAILED);
-        Digits digits = new DigitsImpl(gn);
-
-        CalledAddressAndServiceImpl calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
-        CallingAddressAndServiceImpl callingAddressAndService = new CallingAddressAndServiceImpl(digits, SERVICE_KEY);
-        GapOnService gapOnService = new GapOnServiceImpl(SERVICE_KEY);
-
-        BasicGapCriteriaImpl basicGapCriteria;
-
-        int i = 0;
-        while(i < 4) {
-            switch (i) {
-                case 0:
-                    basicGapCriteria = new BasicGapCriteriaImpl(digits);
-                    test(basicGapCriteria);
-                    break;
-                case 1:
-                    basicGapCriteria = new BasicGapCriteriaImpl(calledAddressAndService);
-                    test(basicGapCriteria);
-                    break;
-                case 2:
-                    basicGapCriteria = new BasicGapCriteriaImpl(callingAddressAndService);
-                    test(basicGapCriteria);
-                    break;
-                case 3:
-                    basicGapCriteria = new BasicGapCriteriaImpl(gapOnService);
-                    test(basicGapCriteria);
-                    break;
-            }
-            i++;
-        }
-    }
-
-    private void test(BasicGapCriteriaImpl basicGapCriteria) throws Exception {
-
-        ScfID scfId = new ScfIDImpl(getDigitsData1());
-        CompoundCriteriaImpl original = new CompoundCriteriaImpl(basicGapCriteria, scfId);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "compoundCriteriaArg", CompoundCriteriaImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-
-        CompoundCriteriaImpl copy = reader.read("compoundCriteriaArg", CompoundCriteriaImpl.class);
-
-        assertTrue(isEqual(original, copy));
-    }
-
-    private boolean isEqual(CompoundCriteriaImpl o1, CompoundCriteriaImpl o2) {
-        if (o1 == o2)
-            return true;
-        if (o1 == null && o2 != null || o1 != null && o2 == null)
-            return false;
-        if (o1 == null && o2 == null)
-            return true;
-        if (!o1.toString().equals(o2.toString()))
-            return false;
-        return true;
-    }*/
 }

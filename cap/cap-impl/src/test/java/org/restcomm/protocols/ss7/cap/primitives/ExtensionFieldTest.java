@@ -76,7 +76,7 @@ public class ExtensionFieldTest {
         ExtensionFieldImpl elem = (ExtensionFieldImpl)result.getResult();
         assertEquals((int) elem.getLocalCode(), 2);
         assertEquals(elem.getCriticalityType(), CriticalityType.typeIgnore);
-        assertEquals(elem.getData().length,0);
+        assertEquals(elem.getValue().readableBytes(),0);
        
         rawData = this.getData2();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
@@ -87,8 +87,8 @@ public class ExtensionFieldTest {
         elem = (ExtensionFieldImpl)result.getResult();
         assertEquals(elem.getGlobalCode(), this.getDataOid());
         assertEquals(elem.getCriticalityType(), CriticalityType.typeIgnore);
-        assertEquals(elem.getData().length,1);
-        assertEquals(elem.getData()[0],-1);
+        assertEquals(elem.getValue().readableBytes(),1);
+        assertEquals(elem.getValue().readByte(),-1);
         
         rawData = this.getData3();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
@@ -99,9 +99,10 @@ public class ExtensionFieldTest {
         elem = (ExtensionFieldImpl)result.getResult();
         assertEquals((int) elem.getLocalCode(), 2222);
         assertEquals(elem.getCriticalityType(), CriticalityType.typeAbort);
-        assertEquals(elem.getData().length,2);
-        assertEquals(elem.getData()[0],-3);        
-        assertEquals(elem.getData()[1],-43);
+        ByteBuf value=elem.getValue();
+        assertEquals(value.readableBytes(),2);
+        assertEquals(value.readByte(),-3);        
+        assertEquals(value.readByte(),-43);
     }
 
     @Test(groups = { "functional.encode", "primitives" })
@@ -109,83 +110,25 @@ public class ExtensionFieldTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ExtensionFieldImpl.class);
     	
-        ExtensionFieldImpl elem = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, new byte[] {}, false);
+        ExtensionFieldImpl elem = new ExtensionFieldImpl(2, CriticalityType.typeIgnore, Unpooled.wrappedBuffer(new byte[] {}), false);
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        elem = new ExtensionFieldImpl(this.getDataOid(), null, new byte[] { -1 }, false);
+        elem = new ExtensionFieldImpl(this.getDataOid(), null, Unpooled.wrappedBuffer(new byte[] { -1 }), false);
         rawData = this.getData2();
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        elem = new ExtensionFieldImpl(2222, CriticalityType.typeAbort, new byte[] { -3, -43 }, false);
+        elem = new ExtensionFieldImpl(2222, CriticalityType.typeAbort, Unpooled.wrappedBuffer(new byte[] { -3, -43 }), false);
         rawData = this.getData3();
         buffer=parser.encode(elem);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*private byte[] getDataSer() {
-        return new byte[] { 1, (byte) 255, 3 };
-    }
-
-    @Test(groups = { "functional.xml.serialize", "primitives" })
-    public void testXMLSerialize() throws Exception {
-
-        ExtensionFieldImpl original = new ExtensionFieldImpl(234, CriticalityType.typeIgnore, getDataSer());
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "extensionField", ExtensionFieldImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        ExtensionFieldImpl copy = reader.read("extensionField", ExtensionFieldImpl.class);
-
-        assertEquals((int) copy.getLocalCode(), (int) original.getLocalCode());
-        assertTrue(Arrays.equals(copy.getGlobalCode(), original.getGlobalCode()));
-        assertEquals(copy.getCriticalityType(), original.getCriticalityType());
-        assertEquals(copy.getData(), original.getData());
-
-        original = new ExtensionFieldImpl(getDataOid(), null, getDataSer());
-
-        // Writes the area to a file.
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "extensionField", ExtensionFieldImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-        copy = reader.read("extensionField", ExtensionFieldImpl.class);
-
-        assertNull(copy.getLocalCode());
-        assertNull(original.getLocalCode());
-        assertTrue(Arrays.equals(copy.getGlobalCode(), original.getGlobalCode()));
-        assertEquals(copy.getCriticalityType(), original.getCriticalityType());
-        assertEquals(copy.getData(), original.getData());
-
-    }*/
 }

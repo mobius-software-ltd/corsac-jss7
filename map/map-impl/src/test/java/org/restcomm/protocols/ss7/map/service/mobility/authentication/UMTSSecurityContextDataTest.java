@@ -33,6 +33,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -66,8 +67,8 @@ public class UMTSSecurityContextDataTest {
         assertTrue(result.getResult() instanceof UMTSSecurityContextDataImpl);
         UMTSSecurityContextDataImpl prim = (UMTSSecurityContextDataImpl)result.getResult();
         
-        assertTrue(Arrays.equals(prim.getCK().getData(), getDataCk()));
-        assertTrue(Arrays.equals(prim.getIK().getData(), getDataIk()));
+        assertTrue(ByteBufUtil.equals(prim.getCK().getValue(), Unpooled.wrappedBuffer(getDataCk())));
+        assertTrue(ByteBufUtil.equals(prim.getIK().getValue(), Unpooled.wrappedBuffer(getDataIk())));
         assertEquals(prim.getKSI().getData(), 2);
     }
 
@@ -76,8 +77,8 @@ public class UMTSSecurityContextDataTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(UMTSSecurityContextDataImpl.class);
 
-        CKImpl ck = new CKImpl(getDataCk());
-        IKImpl ik = new IKImpl(getDataIk());
+        CKImpl ck = new CKImpl(Unpooled.wrappedBuffer(getDataCk()));
+        IKImpl ik = new IKImpl(Unpooled.wrappedBuffer(getDataIk()));
         KSIImpl ksi = new KSIImpl(2);
         UMTSSecurityContextDataImpl prim = new UMTSSecurityContextDataImpl(ck, ik, ksi);
 

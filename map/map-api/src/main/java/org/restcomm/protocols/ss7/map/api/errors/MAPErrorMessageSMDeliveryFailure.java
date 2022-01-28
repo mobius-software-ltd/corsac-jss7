@@ -26,6 +26,8 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpdu;
 
+import io.netty.buffer.ByteBuf;
+
 
 /**
  *
@@ -55,7 +57,7 @@ public interface MAPErrorMessageSMDeliveryFailure extends MAPErrorMessage {
 
     SMEnumeratedDeliveryFailureCause getSMEnumeratedDeliveryFailureCause();
 
-    byte[] getSignalInfo();
+    ByteBuf getSignalInfo();
 
     MAPExtensionContainer getExtensionContainer();
 
@@ -63,7 +65,7 @@ public interface MAPErrorMessageSMDeliveryFailure extends MAPErrorMessage {
 
     void setSMEnumeratedDeliveryFailureCause(SMEnumeratedDeliveryFailureCause sMEnumeratedDeliveryFailureCause);
 
-    void setSignalInfo(byte[] signalInfo);
+    void setSignalInfo(ByteBuf signalInfo);
 
     void setExtensionContainer(MAPExtensionContainer extensionContainer);
 

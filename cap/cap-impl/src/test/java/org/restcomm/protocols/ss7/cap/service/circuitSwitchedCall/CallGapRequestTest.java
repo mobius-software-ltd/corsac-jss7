@@ -48,12 +48,14 @@ import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ExtensionFieldImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ScfIDImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -114,8 +116,8 @@ public class CallGapRequestTest {
         
         CallGapRequestImpl elem = (CallGapRequestImpl)result.getResult();
         assertEquals(elem.getGapCriteria().getCompoundGapCriteria().getBasicGapCriteria().getCalledAddressAndService().getServiceKey(), SERVICE_KEY);
-        assertEquals(elem.getGapCriteria().getCompoundGapCriteria().getBasicGapCriteria().getCalledAddressAndService().getCalledAddressValue().getData(), getDigitsData());
-        assertEquals(elem.getGapCriteria().getCompoundGapCriteria().getScfID().getData(), getDigitsData1());
+        assertTrue(ByteBufUtil.equals(DigitsIsupImpl.translate(elem.getGapCriteria().getCompoundGapCriteria().getBasicGapCriteria().getCalledAddressAndService().getCalledAddressDigits().getGenericDigits()),Unpooled.wrappedBuffer(getDigitsData())));
+        assertTrue(ByteBufUtil.equals(elem.getGapCriteria().getCompoundGapCriteria().getScfID().getValue(), Unpooled.wrappedBuffer(getDigitsData1())));
 
         assertEquals(elem.getGapIndicators().getDuration(), DURATION);
         assertEquals(elem.getGapIndicators().getGapInterval(), -GAP_INTERVAL);
@@ -129,7 +131,7 @@ public class CallGapRequestTest {
 
         assertEquals(elem.getExtensions().getExtensionFields().get(0).getLocalCode().intValue(), Integer.MIN_VALUE);
         assertEquals(elem.getExtensions().getExtensionFields().get(0).getCriticalityType(), CriticalityType.typeIgnore);
-        assertEquals(elem.getExtensions().getExtensionFields().get(0).getData(), getDigitsData2());
+        assertTrue(ByteBufUtil.equals(elem.getExtensions().getExtensionFields().get(0).getValue(),Unpooled.wrappedBuffer(getDigitsData2())));
 
         rawData = this.getData2();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
@@ -139,7 +141,7 @@ public class CallGapRequestTest {
         
         elem = (CallGapRequestImpl)result.getResult();
         assertEquals(elem.getGapCriteria().getBasicGapCriteria().getCalledAddressAndService().getServiceKey(), SERVICE_KEY);
-        assertEquals(elem.getGapCriteria().getBasicGapCriteria().getCalledAddressAndService().getCalledAddressValue().getData(), getDigitsData());
+        assertTrue(ByteBufUtil.equals(DigitsIsupImpl.translate(elem.getGapCriteria().getBasicGapCriteria().getCalledAddressAndService().getCalledAddressDigits().getGenericDigits()), Unpooled.wrappedBuffer(getDigitsData())));
 
         assertEquals(elem.getGapIndicators().getDuration(), DURATION);
         assertEquals(elem.getGapIndicators().getGapInterval(), -GAP_INTERVAL);
@@ -154,10 +156,10 @@ public class CallGapRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CallGapRequestImpl.class);
     	
-        DigitsIsupImpl digits = new DigitsIsupImpl(getDigitsData());
+        DigitsIsupImpl digits = new DigitsIsupImpl(new GenericDigitsImpl(Unpooled.wrappedBuffer(getDigitsData())));
         CalledAddressAndServiceImpl calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
         BasicGapCriteriaImpl basicGapCriteria = new BasicGapCriteriaImpl(calledAddressAndService);
-        ScfIDImpl scfId = new ScfIDImpl(getDigitsData1());
+        ScfIDImpl scfId = new ScfIDImpl(Unpooled.wrappedBuffer(getDigitsData1()));
         CompoundCriteriaImpl compoundCriteria = new CompoundCriteriaImpl(basicGapCriteria, scfId);
         GapCriteriaImpl gapCriteria = new GapCriteriaImpl(compoundCriteria);
 
@@ -169,7 +171,7 @@ public class CallGapRequestTest {
         GapTreatmentImpl gapTreatment = new GapTreatmentImpl(informationToSend);
 
         List<ExtensionField> fieldsList = new ArrayList<>();
-        ExtensionFieldImpl extensionField = new ExtensionFieldImpl(Integer.MIN_VALUE, CriticalityType.typeIgnore, getDigitsData2(), false);
+        ExtensionFieldImpl extensionField = new ExtensionFieldImpl(Integer.MIN_VALUE, CriticalityType.typeIgnore, Unpooled.wrappedBuffer(getDigitsData2()), false);
         fieldsList.add(extensionField);
         CAPINAPExtensions cAPExtensions = new CAPINAPExtensionsImpl(fieldsList);
 
@@ -188,109 +190,4 @@ public class CallGapRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        //Min parameters
-        GenericNumberImpl gn = new GenericNumberImpl(GenericNumber._NAI_NATIONAL_SN, "12345",
-                GenericNumber._NQIA_CONNECTED_NUMBER, GenericNumber._NPI_TELEX, GenericNumber._APRI_ALLOWED,
-                GenericNumber._NI_INCOMPLETE, GenericNumber._SI_USER_PROVIDED_VERIFIED_FAILED);
-        Digits digits = new DigitsImpl(gn);
-
-        BasicGapCriteriaImpl basicGapCriteria = new BasicGapCriteriaImpl(digits);
-
-        GapCriteriaImpl gapCriteria = new GapCriteriaImpl(basicGapCriteria);
-
-        GapIndicatorsImpl gapIndicators = new GapIndicatorsImpl(60, -1);
-
-        CallGapRequestImpl original = new CallGapRequestImpl(gapCriteria, gapIndicators, null, null, null);
-        original.setInvokeId(24);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "callGapArg", CallGapRequestImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-
-        CallGapRequestImpl copy = reader.read("callGapArg", CallGapRequestImpl.class);
-
-        assertTrue(isEqual(original, copy));
-
-
-        //Max paramters
-        gn = new GenericNumberImpl(GenericNumber._NAI_NATIONAL_SN, "12345",
-                GenericNumber._NQIA_CONNECTED_NUMBER, GenericNumber._NPI_TELEX, GenericNumber._APRI_ALLOWED,
-                GenericNumber._NI_INCOMPLETE, GenericNumber._SI_USER_PROVIDED_VERIFIED_FAILED);
-        digits = new DigitsImpl(gn);
-
-        CalledAddressAndServiceImpl calledAddressAndService = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
-//        GapOnService gapOnService = new GapOnServiceImpl(SERVICE_KEY);
-        basicGapCriteria = new BasicGapCriteriaImpl(calledAddressAndService);
-        byte[] data2 = new byte[]{12, 32, 23, 56};
-        ScfIDImpl scfId = new ScfIDImpl(data2);
-        CompoundCriteriaImpl compoundCriteria = new CompoundCriteriaImpl(basicGapCriteria, null);
-        gapCriteria = new GapCriteriaImpl(compoundCriteria);
-
-        gapIndicators = new GapIndicatorsImpl(60, -1);
-
-        ArrayList<VariablePart> aL = new ArrayList<VariablePart>();
-        aL.add(new VariablePartImpl(new VariablePartDateImpl(2015, 6, 27)));
-        aL.add(new VariablePartImpl(new VariablePartTimeImpl(15, 10)));
-        aL.add(new VariablePartImpl(new Integer(145)));
-        VariableMessageImpl vm = new VariableMessageImpl(145, aL);
-        MessageIDImpl mi = new MessageIDImpl(vm);
-        InbandInfoImpl inbandInfo = new InbandInfoImpl(mi, new Integer(5), new Integer(8), new Integer(2));
-        InformationToSendImpl informationToSend = new InformationToSendImpl(inbandInfo);
-        GapTreatmentImpl gapTreatment = new GapTreatmentImpl(informationToSend);
-
-        ArrayList<ExtensionField> fieldsList = new ArrayList<>();
-        byte[] data3 = new byte[]{13, 14, 15, 16};
-        ExtensionFieldImpl extensionField = new ExtensionFieldImpl(Integer.MIN_VALUE, CriticalityType.typeIgnore, data3);
-        fieldsList.add(extensionField);
-        CAPExtensionsImpl cAPExtensions = new CAPExtensionsImpl(fieldsList);
-
-        original = new CallGapRequestImpl(gapCriteria, gapIndicators, ControlType.sCPOverloaded, gapTreatment, cAPExtensions);
-        original.setInvokeId(24);
-
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "callGapArg", CallGapRequestImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-
-        copy = reader.read("callGapArg", CallGapRequestImpl.class);
-
-        assertTrue(isEqual(original, copy));
-    }
-
-    private boolean isEqual(CallGapRequestImpl o1, CallGapRequestImpl o2) {
-        if (o1 == o2)
-            return true;
-        if (o1 == null && o2 != null || o1 != null && o2 == null)
-            return false;
-        if (o1 == null && o2 == null)
-            return true;
-        if (!o1.toString().equals(o2.toString()))
-            return false;
-        return true;
-    }*/
 }

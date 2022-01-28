@@ -27,9 +27,17 @@ package org.restcomm.protocols.ss7.tcap.asn;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+
+import io.netty.buffer.ByteBuf;
 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=true,lengthIndefinite=false)
-public class TCContinueTestASN extends ASNOctetString {
-
+public class TCContinueTestASN extends ASNOctetString2 {
+	public TCContinueTestASN() {
+		
+	}
+	
+	public TCContinueTestASN(ByteBuf value) {
+		super(value);
+	}
 }

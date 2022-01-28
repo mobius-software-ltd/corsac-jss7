@@ -159,7 +159,8 @@ import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.AOCS
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CAMELSCIBillingChargingCharacteristicsAltImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSMImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InitialDPArgExtensionV1Impl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InitialDPArgExtensionV3Impl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.SCIBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.AOCGPRSImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.AccessPointNameImpl;
@@ -291,6 +292,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.TimeAndTimezone;
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.AbsoluteTimeStamp;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSChargingID;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeodeticInformation;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeographicalInformation;
@@ -383,6 +385,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author sergey vetyutnev
@@ -397,11 +401,6 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     @Override
     public RouteSelectFailureSpecificInfo createRouteSelectFailureSpecificInfo(CauseIsup failureCause) {
         return new RouteSelectFailureSpecificInfoImpl(failureCause);
-    }
-
-    @Override
-    public CauseIsup createCause(byte[] data) {
-        return new CauseIsupImpl(data);
     }
 
     @Override
@@ -447,12 +446,12 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public ExtensionField createExtensionField(Integer localCode, CriticalityType criticalityType, byte[] data, boolean isConstructed) {
+    public ExtensionField createExtensionField(Integer localCode, CriticalityType criticalityType, ByteBuf data, boolean isConstructed) {
         return new ExtensionFieldImpl(localCode, criticalityType, data, isConstructed);
     }
 
     @Override
-    public ExtensionField createExtensionField(List<Long> globalCode, CriticalityType criticalityType, byte[] data, boolean isConstructed) {
+    public ExtensionField createExtensionField(List<Long> globalCode, CriticalityType criticalityType, ByteBuf data, boolean isConstructed) {
         return new ExtensionFieldImpl(globalCode, criticalityType, data, isConstructed);
     }
 
@@ -492,11 +491,6 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public BearerIsup createBearer(byte[] data) {
-        return new BearerIsupImpl(data);
-    }
-
-    @Override
     public BearerIsup createBearer(UserServiceInformation userServiceInformation) throws CAPException {
     	try {
         	return new BearerIsupImpl(userServiceInformation);
@@ -509,20 +503,6 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     @Override
     public BearerCapability createBearerCapability(BearerIsup bearerCap) {
         return new BearerCapabilityImpl(bearerCap);
-    }
-
-    @Override
-    public DigitsIsup createDigits_GenericNumber(byte[] data) {
-        DigitsIsupImpl res = new DigitsIsupImpl(data);
-        res.setIsGenericNumber();
-        return res;
-    }
-
-    @Override
-    public DigitsIsup createDigits_GenericDigits(byte[] data) {
-        DigitsIsupImpl res = new DigitsIsupImpl(data);
-        res.setIsGenericDigits();
-        return res;
     }
 
     @Override
@@ -546,11 +526,6 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public CalledPartyNumberIsup createCalledPartyNumber(byte[] data) {
-        return new CalledPartyNumberIsupImpl(data);
-    }
-
-    @Override
     public CalledPartyNumberIsup createCalledPartyNumber(CalledPartyNumber calledPartyNumber) throws CAPException {
     	try {
     		return new CalledPartyNumberIsupImpl(calledPartyNumber);
@@ -558,11 +533,6 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     	catch(APPException ex) {
     		throw new CAPException(ex.getMessage(), ex.getCause());
     	}
-    }
-
-    @Override
-    public CallingPartyNumberIsup createCallingPartyNumber(byte[] data) {
-        return new CallingPartyNumberIsupImpl(data);
     }
 
     @Override
@@ -576,11 +546,6 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public GenericNumberIsup createGenericNumber(byte[] data) {
-        return new GenericNumberIsupImpl(data);
-    }
-
-    @Override
     public GenericNumberIsup createGenericNumber(GenericNumber genericNumber) throws CAPException {
     	try {
     		return new GenericNumberIsupImpl(genericNumber);
@@ -588,11 +553,6 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     	catch(APPException ex) {
     		throw new CAPException(ex.getMessage(), ex.getCause());
     	}
-    }
-
-    @Override
-    public LocationNumberIsup createLocationNumber(byte[] data) {
-        return new LocationNumberIsupImpl(data);
     }
 
     @Override
@@ -606,11 +566,6 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public OriginalCalledNumberIsup createOriginalCalledNumber(byte[] data) {
-        return new OriginalCalledNumberIsupImpl(data);
-    }
-
-    @Override
     public OriginalCalledNumberIsup createOriginalCalledNumber(OriginalCalledNumber originalCalledNumber) throws CAPException {
     	try {
     		return new OriginalCalledNumberIsupImpl(originalCalledNumber);
@@ -618,11 +573,6 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
 		catch(APPException ex) {
 			throw new CAPException(ex.getMessage(), ex.getCause());
 		}
-    }
-
-    @Override
-    public RedirectingPartyIDIsup createRedirectingPartyID(byte[] data) {
-        return new RedirectingPartyIDIsupImpl(data);
     }
 
     @Override
@@ -828,7 +778,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     @Override
     public IPSSPCapabilities createIPSSPCapabilities(boolean IPRoutingAddressSupported, boolean VoiceBackSupported,
             boolean VoiceInformationSupportedViaSpeechRecognition, boolean VoiceInformationSupportedViaVoiceRecognition,
-            boolean GenerationOfVoiceAnnouncementsFromTextSupported, byte[] extraData) {
+            boolean GenerationOfVoiceAnnouncementsFromTextSupported, ByteBuf extraData) {
         return new IPSSPCapabilitiesImpl(IPRoutingAddressSupported, VoiceBackSupported,
                 VoiceInformationSupportedViaSpeechRecognition, VoiceInformationSupportedViaVoiceRecognition,
                 GenerationOfVoiceAnnouncementsFromTextSupported, extraData);
@@ -836,7 +786,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
 
     @Override
     public InitialDPArgExtension createInitialDPArgExtension(NACarrierInformation naCarrierInformation, ISDNAddressString gmscAddress) {
-        return new InitialDPArgExtensionImpl(naCarrierInformation, gmscAddress);
+        return new InitialDPArgExtensionV1Impl(naCarrierInformation, gmscAddress);
     }
 
     @Override
@@ -847,7 +797,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
             HighLayerCompatibilityIsup highLayerCompatibility2, LowLayerCompatibility lowLayerCompatibility,
             LowLayerCompatibility lowLayerCompatibility2, boolean enhancedDialledServicesAllowed, UUData uuData,
             boolean collectInformationAllowed, boolean releaseCallArgExtensionAllowed) {
-        return new InitialDPArgExtensionImpl(gmscAddress, forwardingDestinationNumber, msClassmark2, imei,
+        return new InitialDPArgExtensionV3Impl(gmscAddress, forwardingDestinationNumber, msClassmark2, imei,
                 supportedCamelPhases, offeredCamel4Functionalities, bearerCapability2, extBasicServiceCode2,
                 highLayerCompatibility2, lowLayerCompatibility, lowLayerCompatibility2, enhancedDialledServicesAllowed, uuData,
                 collectInformationAllowed, releaseCallArgExtensionAllowed);
@@ -859,17 +809,12 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public AlertingPatternWrapper createAlertingPattern(byte[] data) {
-        return new AlertingPatternWrapperImpl(data);
-    }
-
-    @Override
     public NAOliInfo createNAOliInfo(int value) {
         return new NAOliInfoImpl(value);
     }
 
     @Override
-    public ScfID createScfID(byte[] data) {
+    public ScfID createScfID(ByteBuf data) {
         return new ScfIDImpl(data);
     }
 
@@ -928,11 +873,6 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public VariablePartPrice createVariablePartPrice(byte[] data) {
-        return new VariablePartPriceImpl(data);
-    }
-
-    @Override
     public VariablePartPrice createVariablePartPrice(double price) {
         return new VariablePartPriceImpl(price);
     }
@@ -943,18 +883,8 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public VariablePartDate createVariablePartDate(byte[] data) {
-        return new VariablePartDateImpl(data);
-    }
-
-    @Override
     public VariablePartDate createVariablePartDate(int year, int month, int day) {
         return new VariablePartDateImpl(year, month, day);
-    }
-
-    @Override
-    public VariablePartTime createVariablePartTime(byte[] data) {
-        return new VariablePartTimeImpl(data);
     }
 
     @Override
@@ -988,7 +918,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public MessageIDText createMessageIDText(String messageContent, byte[] attributes) {
+    public MessageIDText createMessageIDText(String messageContent, ByteBuf attributes) {
         return new MessageIDTextImpl(messageContent, attributes);
     }
 
@@ -1038,8 +968,8 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public CollectedDigits createCollectedDigits(Integer minimumNbOfDigits, int maximumNbOfDigits, byte[] endOfReplyDigit,
-            byte[] cancelDigit, byte[] startDigit, Integer firstDigitTimeOut, Integer interDigitTimeOut,
+    public CollectedDigits createCollectedDigits(Integer minimumNbOfDigits, int maximumNbOfDigits, ByteBuf endOfReplyDigit,
+    		ByteBuf cancelDigit, ByteBuf startDigit, Integer firstDigitTimeOut, Integer interDigitTimeOut,
             ErrorTreatment errorTreatment, Boolean interruptableAnnInd, Boolean voiceInformation, Boolean voiceBack) {
         return new CollectedDigitsImpl(minimumNbOfDigits, maximumNbOfDigits, endOfReplyDigit, cancelDigit, startDigit,
                 firstDigitTimeOut, interDigitTimeOut, errorTreatment, interruptableAnnInd, voiceInformation, voiceBack);
@@ -1056,7 +986,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public AccessPointName createAccessPointName(byte[] data) {
+    public AccessPointName createAccessPointName(ByteBuf data) {
         return new AccessPointNameImpl(data);
     }
 
@@ -1143,8 +1073,8 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public FreeFormatDataGprs createFreeFormatDataGprs(byte[] data) {
-        return new FreeFormatDataGprsImpl(data);
+    public FreeFormatDataGprs createFreeFormatDataGprs(ByteBuf value) {
+        return new FreeFormatDataGprsImpl(value);
     }
 
     @Override
@@ -1207,8 +1137,8 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public PDPAddress createPDPAddress(byte[] data) {
-        return new PDPAddressImpl(data);
+    public PDPAddress createPDPAddress(ByteBuf value) {
+        return new PDPAddressImpl(value);
     }
 
     @Override
@@ -1337,8 +1267,12 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public TPValidityPeriod createTPValidityPeriod(byte[] data) {
-        return new TPValidityPeriodImpl(data);
+    public TPValidityPeriod createTPValidityPeriod(int relativeFormat) {
+    	return new TPValidityPeriodImpl(relativeFormat);
+    }
+
+    public TPValidityPeriod createTPValidityPeriod(AbsoluteTimeStamp absoluteFormatValue) {
+        return new TPValidityPeriodImpl(absoluteFormatValue);
     }
 
     @Override
@@ -1377,7 +1311,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public FreeFormatData createFreeFormatData(byte[] data) {
+    public FreeFormatData createFreeFormatData(ByteBuf data) {
         return new FreeFormatDataImpl(data);
     }
 
@@ -1414,8 +1348,8 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public FreeFormatDataSMS createFreeFormatDataSMS(byte[] data) {
-        return new FreeFormatDataSMSImpl(data);
+    public FreeFormatDataSMS createFreeFormatDataSMS(ByteBuf value) {
+        return new FreeFormatDataSMSImpl(value);
     }
 
     @Override
@@ -1465,7 +1399,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public Carrier createCarrier(byte[] data) {
+    public Carrier createCarrier(ByteBuf data) {
         return new CarrierImpl(data);
     }
 
@@ -1476,8 +1410,8 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     }
 
     @Override
-    public LowLayerCompatibility createLowLayerCompatibility(byte[] data) {
-        return new LowLayerCompatibilityImpl(data);
+    public LowLayerCompatibility createLowLayerCompatibility(ByteBuf value) {
+        return new LowLayerCompatibilityImpl(value);
     }
 
     @Override

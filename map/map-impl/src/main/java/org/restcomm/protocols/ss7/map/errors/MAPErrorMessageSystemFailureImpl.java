@@ -55,16 +55,12 @@ public class MAPErrorMessageSystemFailureImpl extends MAPErrorMessageImpl implem
         super((long) MAPErrorCode.systemFailure);
 
         this.mapProtocolVersion = mapProtocolVersion;
-        if(networkResource!=null) {
-        	this.networkResource=new ASNNetworkResourceImpl();
-        	this.networkResource.setType(networkResource);
-        }
-        
-        if(additionalNetworkResource!=null) {
-        	this.additionalNetworkResource = new ASNAdditionalNetworkResourceImpl();
-        	this.additionalNetworkResource.setType(additionalNetworkResource);
-        }
-        
+        if(networkResource!=null)
+        	this.networkResource=new ASNNetworkResourceImpl(networkResource);
+        	
+        if(additionalNetworkResource!=null)
+        	this.additionalNetworkResource = new ASNAdditionalNetworkResourceImpl(additionalNetworkResource);
+        	
         this.extensionContainer = extensionContainer;
     }
 
@@ -98,10 +94,8 @@ public class MAPErrorMessageSystemFailureImpl extends MAPErrorMessageImpl implem
     public void setAdditionalNetworkResource(AdditionalNetworkResource additionalNetworkResource) {
     	if(additionalNetworkResource==null)
     		this.additionalNetworkResource=null;
-    	else {
-    		this.additionalNetworkResource=new ASNAdditionalNetworkResourceImpl();
-    		this.additionalNetworkResource.setType(additionalNetworkResource);
-    	}
+    	else
+    		this.additionalNetworkResource=new ASNAdditionalNetworkResourceImpl(additionalNetworkResource);    		
     }
 
 	@Override
@@ -116,11 +110,8 @@ public class MAPErrorMessageSystemFailureImpl extends MAPErrorMessageImpl implem
 	public void setNetworkResource(NetworkResource networkResource) {
 		if(networkResource==null)
 			this.networkResource=null;
-		else {
-			this.networkResource=new ASNNetworkResourceImpl();
-			this.networkResource.setType(networkResource);
-		}
-			
+		else 
+			this.networkResource=new ASNNetworkResourceImpl(networkResource);				
 	}
 
     public void setExtensionContainer(MAPExtensionContainer extensionContainer) {

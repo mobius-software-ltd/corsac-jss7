@@ -66,7 +66,7 @@ public class LoopPreventionIndicatorsImpl extends AbstractISUPParameter implemen
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() != 1) {
-            throw new ParameterException("byte[] must  not be null and length must  be 1");
+            throw new ParameterException("buffer must  not be null and length must  be 1");
         }
 
         byte curr=b.readByte();

@@ -83,11 +83,9 @@ public class CollectInformationRequestImpl extends CircuitSwitchedCallMessageImp
 		if(alertingPattern!=null)
 			this.alertingPattern=new AlertingPatternWrapperImpl(alertingPattern);			
 		
-        if(numberingPlan!=null) {
-	    	this.numberingPlan = new ASNNumberingPlan();
-	    	this.numberingPlan.setType(numberingPlan);
-	    }
-        
+        if(numberingPlan!=null)
+	    	this.numberingPlan = new ASNNumberingPlan(numberingPlan);
+	    	
 	    this.originalCalledPartyID = originalCalledPartyID;
 	    this.travellingClassMark = travellingClassMark;
 	    this.extensions = extensions;

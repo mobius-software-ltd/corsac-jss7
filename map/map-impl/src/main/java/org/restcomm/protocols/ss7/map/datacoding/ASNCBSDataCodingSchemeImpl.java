@@ -38,11 +38,11 @@ public class ASNCBSDataCodingSchemeImpl extends ASNSingleByte {
     }
 
     public ASNCBSDataCodingSchemeImpl(Integer data) {
-    	setValue(data);
+    	super(data);
     }
 
     public ASNCBSDataCodingSchemeImpl(CBSDataCodingScheme scheme) {
-    	setValue(scheme.getCode());
+    	super(scheme.getCode());
     }
 
     public CBSDataCodingScheme getDataCoding() {

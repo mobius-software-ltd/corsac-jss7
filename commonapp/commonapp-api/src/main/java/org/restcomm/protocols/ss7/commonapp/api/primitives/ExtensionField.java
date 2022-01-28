@@ -27,6 +27,8 @@ import java.util.List;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  ExtensionField ::= SEQUENCE {
@@ -51,5 +53,5 @@ public interface ExtensionField {
 
     CriticalityType getCriticalityType();
 
-    byte[] getData();   
+    ByteBuf getValue();   
 }

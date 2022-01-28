@@ -70,11 +70,9 @@ public class MNPInfoResImpl implements MNPInfoRes {
         this.imsi = imsi;
         this.msisdn = msisdn;
         
-        if(numberPortabilityStatus!=null) {
-        	this.numberPortabilityStatus = new ASNNumberPortabilityStatusImpl();
-        	this.numberPortabilityStatus.setType(numberPortabilityStatus);
-        }
-        
+        if(numberPortabilityStatus!=null)
+        	this.numberPortabilityStatus = new ASNNumberPortabilityStatusImpl(numberPortabilityStatus);
+        	
         this.extensionContainer = extensionContainer;
     }
 

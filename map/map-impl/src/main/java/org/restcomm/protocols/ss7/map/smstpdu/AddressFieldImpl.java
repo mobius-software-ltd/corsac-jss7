@@ -62,7 +62,7 @@ public class AddressFieldImpl implements AddressField {
     public static AddressFieldImpl createMessage(ByteBuf buf) throws MAPException {
 
         if (buf == null)
-            throw new MAPException("Error creating AddressField: stream must not be null");
+            throw new MAPException("Error creating AddressField: buffer must not be null");
 
         AddressFieldImpl res = new AddressFieldImpl();
 

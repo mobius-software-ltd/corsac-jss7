@@ -39,8 +39,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface LAC {
 
-    byte[] getData();
-
     int getLac() throws MAPException;
 
 }

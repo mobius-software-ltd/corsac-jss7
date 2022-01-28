@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.EctTreatment
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNEctTreatmentIndicatorImpl extends ASNEnumerated {
-	public void setType(EctTreatmentIndicator t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNEctTreatmentIndicatorImpl() {
+		
+	}
+	
+	public ASNEctTreatmentIndicatorImpl(EctTreatmentIndicator t) {
+		super(t.getCode());
 	}
 	
 	public EctTreatmentIndicator getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return EctTreatmentIndicator.getInstance(getValue().intValue());
+		return EctTreatmentIndicator.getInstance(realValue);
 	}
 }

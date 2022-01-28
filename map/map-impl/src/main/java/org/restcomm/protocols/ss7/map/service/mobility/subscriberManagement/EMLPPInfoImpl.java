@@ -54,25 +54,23 @@ public class EMLPPInfoImpl implements EMLPPInfo {
      *
      */
     public EMLPPInfoImpl(int maximumentitledPriority, int defaultPriority, MAPExtensionContainer extensionContainer) {
-        this.maximumentitledPriority = new ASNInteger();
-        this.maximumentitledPriority.setValue((long)maximumentitledPriority & 0x0FFFFFFFFL);
-        this.defaultPriority = new ASNInteger();
-        this.defaultPriority.setValue((long)defaultPriority & 0x0FFFFFFFFL);
+        this.maximumentitledPriority = new ASNInteger(maximumentitledPriority);
+        this.defaultPriority = new ASNInteger(defaultPriority);
         this.extensionContainer = extensionContainer;
     }
 
     public int getMaximumentitledPriority() {
-    	if(this.maximumentitledPriority==null)
+    	if(this.maximumentitledPriority==null || this.maximumentitledPriority.getValue()==null)
     		return 0;
     	
-        return this.maximumentitledPriority.getValue().intValue();
+        return this.maximumentitledPriority.getIntValue();
     }
 
     public int getDefaultPriority() {
-    	if(this.defaultPriority==null)
+    	if(this.defaultPriority==null || this.defaultPriority.getValue()==null)
     		return 0;
     	
-        return this.defaultPriority.getValue().intValue();
+        return this.defaultPriority.getIntValue();
     }
 
     public MAPExtensionContainer getExtensionContainer() {

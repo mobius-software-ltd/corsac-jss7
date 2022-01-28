@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -45,9 +47,9 @@ ChargingAnalysisInputData ::= SEQUENCE {
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public interface ChargingAnalysisInputData {
 
-	byte[] getChargingOrigin();
+	ByteBuf getChargingOrigin();
 
-    byte[] getTariffActivityCode();
+	ByteBuf getTariffActivityCode();
 
     Integer getChargingCode();
 }

@@ -33,9 +33,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -46,7 +46,7 @@ import io.netty.buffer.Unpooled;
 public class FilteredCallTreatmentImpl implements FilteredCallTreatment {
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false, index=-1)
-    private ASNOctetString sfBillingChargingCharacteristics;
+    private ASNOctetString2 sfBillingChargingCharacteristics;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true, index=-1, defaultImplementation = InformationToSendImpl.class)
     private InformationToSend informationToSend;
@@ -60,31 +60,24 @@ public class FilteredCallTreatmentImpl implements FilteredCallTreatment {
     public FilteredCallTreatmentImpl() {
     }
 
-    public FilteredCallTreatmentImpl(byte[] sfBillingChargingCharacteristics,InformationToSend informationToSend,
+    public FilteredCallTreatmentImpl(ByteBuf sfBillingChargingCharacteristics,InformationToSend informationToSend,
     		Integer maximumNumberOfCounters,CauseIsup cause) {
-    	if(sfBillingChargingCharacteristics!=null) {
-    		this.sfBillingChargingCharacteristics=new ASNOctetString();
-    		this.sfBillingChargingCharacteristics.setValue(Unpooled.wrappedBuffer(sfBillingChargingCharacteristics));
-    	}
+    	if(sfBillingChargingCharacteristics!=null)
+    		this.sfBillingChargingCharacteristics=new ASNOctetString2(sfBillingChargingCharacteristics);
     	
     	this.informationToSend=informationToSend;
     	
-    	if(maximumNumberOfCounters!=null) {
-    		this.maximumNumberOfCounters=new ASNInteger();
-    		this.maximumNumberOfCounters.setValue(maximumNumberOfCounters.longValue());
-    	}
-    	
+    	if(maximumNumberOfCounters!=null)
+    		this.maximumNumberOfCounters=new ASNInteger(maximumNumberOfCounters);
+    		
     	this.cause=cause;
     }
 
-    public byte[] getSFBillingChargingCharacteristics() {
-    	if(sfBillingChargingCharacteristics==null || sfBillingChargingCharacteristics.getValue()==null)
+    public ByteBuf getSFBillingChargingCharacteristics() {
+    	if(sfBillingChargingCharacteristics==null)
     		return null;
     	
-    	ByteBuf value=sfBillingChargingCharacteristics.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-    	return data;
+    	return sfBillingChargingCharacteristics.getValue();
     }
 
     public InformationToSend getInformationToSend() {
@@ -92,10 +85,10 @@ public class FilteredCallTreatmentImpl implements FilteredCallTreatment {
     }
 
     public Integer getMaximumNumberOfCounters() {
-    	if(maximumNumberOfCounters==null || maximumNumberOfCounters.getValue()==null)
+    	if(maximumNumberOfCounters==null)
     		return null;
     	
-    	return maximumNumberOfCounters.getValue().intValue();
+    	return maximumNumberOfCounters.getIntValue();
     }
 
     public CauseIsup getCause() {

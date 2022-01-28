@@ -33,6 +33,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -79,11 +80,11 @@ public class AuthenticationQuintupletTest {
         assertTrue(result.getResult() instanceof AuthenticationQuintupletImpl);
         AuthenticationQuintupletImpl asc = (AuthenticationQuintupletImpl)result.getResult();
         
-        assertTrue(Arrays.equals(asc.getRand(), getRandData()));
-        assertTrue(Arrays.equals(asc.getXres(), getXresData()));
-        assertTrue(Arrays.equals(asc.getCk(), getCkData()));
-        assertTrue(Arrays.equals(asc.getIk(), getIkData()));
-        assertTrue(Arrays.equals(asc.getAutn(), getAutnData()));
+        assertTrue(ByteBufUtil.equals(asc.getRand(), Unpooled.wrappedBuffer(getRandData())));
+        assertTrue(ByteBufUtil.equals(asc.getXres(), Unpooled.wrappedBuffer(getXresData())));
+        assertTrue(ByteBufUtil.equals(asc.getCk(), Unpooled.wrappedBuffer(getCkData())));
+        assertTrue(ByteBufUtil.equals(asc.getIk(), Unpooled.wrappedBuffer(getIkData())));
+        assertTrue(ByteBufUtil.equals(asc.getAutn(), Unpooled.wrappedBuffer(getAutnData())));
     }
 
     @Test(groups = { "functional.encode" })
@@ -91,8 +92,9 @@ public class AuthenticationQuintupletTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AuthenticationQuintupletImpl.class);
 
-        AuthenticationQuintupletImpl asc = new AuthenticationQuintupletImpl(getRandData(), getXresData(), getCkData(),
-                getIkData(), getAutnData());
+        AuthenticationQuintupletImpl asc = new AuthenticationQuintupletImpl(Unpooled.wrappedBuffer(getRandData()), 
+        		Unpooled.wrappedBuffer(getXresData()), Unpooled.wrappedBuffer(getCkData()),
+        		Unpooled.wrappedBuffer(getIkData()), Unpooled.wrappedBuffer(getAutnData()));
 
         byte[] data=getEncodedData();
         ByteBuf buffer=parser.encode(asc);

@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.F
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ForwardSuppressionIndicators;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.InstructionIndicator;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -37,21 +37,31 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class ForwardSuppressionIndicatorsmpl extends ASNOctetString implements ForwardSuppressionIndicators {
+public class ForwardSuppressionIndicatorsmpl extends ASNOctetString2 implements ForwardSuppressionIndicators {
 	public ForwardSuppressionIndicatorsmpl() {
     }
 
-    public ForwardSuppressionIndicatorsmpl(ForwardSuppression forwardSuppression,InstructionIndicator instructionIndicator) {
+	public ForwardSuppressionIndicatorsmpl(ForwardSuppression forwardSuppression,InstructionIndicator instructionIndicator) {
+		super(translate(forwardSuppression, instructionIndicator));
+	}
+	
+    public static ByteBuf translate(ForwardSuppression forwardSuppression,InstructionIndicator instructionIndicator) {
     	if(forwardSuppression!=null || instructionIndicator!=null) {
-    		byte[] value=new byte[2];
+    		ByteBuf value=Unpooled.buffer(2);
     		if(forwardSuppression!=null)
-    			value[0]=(byte)forwardSuppression.getCode();
+    			value.writeByte((byte)forwardSuppression.getCode());
+    		else
+    			value.writeByte(0);
     		
     		if(instructionIndicator!=null)
-    			value[1]=(byte)instructionIndicator.getCode();
+    			value.writeByte((byte)instructionIndicator.getCode());
+    		else
+    			value.writeByte(0);
     		
-    		setValue(Unpooled.wrappedBuffer(value));    	
+    		return value;
     	}
+    	
+    	return null;
     }
 
     public ForwardSuppression getForwardSuppression() {

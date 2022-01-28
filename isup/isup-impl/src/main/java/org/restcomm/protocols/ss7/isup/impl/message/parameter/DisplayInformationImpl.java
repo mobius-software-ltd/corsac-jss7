@@ -48,7 +48,6 @@ public class DisplayInformationImpl extends AbstractISUPParameter implements Dis
     public DisplayInformationImpl(ByteBuf info) throws ParameterException {
         super();
         // FIXME: this is only elementID
-        // super.tag = new byte[] { 0x28 };
         decode(info);
     }
 
@@ -84,7 +83,7 @@ public class DisplayInformationImpl extends AbstractISUPParameter implements Dis
 
     public void setInfo(ByteBuf info) throws IllegalArgumentException {
         if (info == null || info.readableBytes() == 0) {
-            throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
+            throw new IllegalArgumentException("buffer must not be null and length must be greater than 0");
         }
         this.info = info;
     }

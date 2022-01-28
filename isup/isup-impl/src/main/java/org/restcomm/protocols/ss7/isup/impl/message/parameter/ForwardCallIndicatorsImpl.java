@@ -80,7 +80,7 @@ public class ForwardCallIndicatorsImpl extends AbstractISUPParameter implements 
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() != 2) {
-            throw new IllegalArgumentException("byte[] must not be null or have different size than 2");
+            throw new IllegalArgumentException("buffer must not be null or have different size than 2");
         }
         int v = 0;
 

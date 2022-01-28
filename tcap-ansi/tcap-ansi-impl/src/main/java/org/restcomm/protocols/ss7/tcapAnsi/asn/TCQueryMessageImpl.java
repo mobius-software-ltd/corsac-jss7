@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import java.util.Arrays;
-
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCQueryMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
@@ -32,6 +30,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ComponentPortionImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
  * @author baranowb
@@ -80,7 +79,7 @@ public class TCQueryMessageImpl extends TCUnifiedMessageImpl implements TCQueryM
 
         if (this.getOriginatingTransactionId() != null) {
             sb.append("originatingTransactionId=");
-            sb.append(Arrays.toString(this.getOriginatingTransactionId()));
+            sb.append(ASNOctetString.printDataArr(this.getOriginatingTransactionId()));
             sb.append(", ");
         }
         if (this.getDialogPortion() != null) {

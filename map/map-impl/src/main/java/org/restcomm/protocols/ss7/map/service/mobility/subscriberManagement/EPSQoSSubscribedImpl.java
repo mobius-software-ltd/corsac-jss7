@@ -52,11 +52,9 @@ public class EPSQoSSubscribedImpl implements EPSQoSSubscribed {
 
     public EPSQoSSubscribedImpl(QoSClassIdentifier qoSClassIdentifier, AllocationRetentionPriority allocationRetentionPriority,
             MAPExtensionContainer extensionContainer) {
-        if(qoSClassIdentifier!=null) {
-        	this.qoSClassIdentifier = new ASNQoSClassIdentifier();
-        	this.qoSClassIdentifier.setType(qoSClassIdentifier);
-        }
-        
+        if(qoSClassIdentifier!=null)
+        	this.qoSClassIdentifier = new ASNQoSClassIdentifier(qoSClassIdentifier);
+        	
         this.allocationRetentionPriority = allocationRetentionPriority;
         this.extensionContainer = extensionContainer;
     }

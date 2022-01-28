@@ -48,10 +48,6 @@ public class ExtBearerServiceCodeTest {
         return new byte[] { 4, 1, 38 };
     }
 
-    private byte[] getData1() {
-        return new byte[] { 38 };
-    }
-
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
@@ -62,8 +58,6 @@ public class ExtBearerServiceCodeTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ExtBearerServiceCodeImpl);
         ExtBearerServiceCodeImpl impl = (ExtBearerServiceCodeImpl)result.getResult();
-        
-        assertTrue(Arrays.equals(impl.getData(), this.getData1()));
         assertEquals(impl.getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_9600bps);
     }
 
@@ -72,18 +66,11 @@ public class ExtBearerServiceCodeTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ExtBearerServiceCodeImpl.class);
     	        
-        ExtBearerServiceCodeImpl impl = new ExtBearerServiceCodeImpl(this.getData1());
+        ExtBearerServiceCodeImpl impl = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
         ByteBuf buffer=parser.encode(impl);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData1();
-        assertTrue(Arrays.equals(rawData, encodedData));
-
-        impl = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
-        buffer=parser.encode(impl);
-        encodedData = new byte[buffer.readableBytes()];
-        buffer.readBytes(encodedData);
-        rawData = getEncodedData1();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 }

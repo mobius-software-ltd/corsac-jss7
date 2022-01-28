@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.commonapp.subscriberManagement;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBearerServiceCode;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,41 +35,30 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class ExtBearerServiceCodeImpl extends ASNOctetString implements ExtBearerServiceCode {
+public class ExtBearerServiceCodeImpl extends ASNOctetString2 implements ExtBearerServiceCode {
 	public ExtBearerServiceCodeImpl() {  
     }
 
-    public ExtBearerServiceCodeImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public ExtBearerServiceCodeImpl(BearerServiceCodeValue value) {
-        setBearerServiceCode(value);
+        super(translate(value));
     }
 
-    public void setBearerServiceCode(BearerServiceCodeValue value) {
+    private static ByteBuf translate(BearerServiceCodeValue value) {
         if (value != null) {
-            byte[] data = new byte[] { (byte) (value.getCode()) };
-            setValue(Unpooled.wrappedBuffer(data));
+        	ByteBuf buffer=Unpooled.buffer();
+        	buffer.writeByte(value.getCode());
+            return buffer;
         }
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(getValue()==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        else
+        	return Unpooled.EMPTY_BUFFER;
     }
 
     public BearerServiceCodeValue getBearerServiceCodeValue() {
-    	byte[] data=getData();
-        if (data == null || data.length < 1)
+    	ByteBuf buffer=getValue();
+        if (buffer == null || buffer.readableBytes() < 1)
             return null;
         else
-            return BearerServiceCodeValue.getInstance(data[0]);
+            return BearerServiceCodeValue.getInstance(buffer.readByte());
     }
 
     @Override
@@ -79,16 +68,6 @@ public class ExtBearerServiceCodeImpl extends ASNOctetString implements ExtBeare
 
         sb.append("Value=");
         sb.append(this.getBearerServiceCodeValue());
-
-        sb.append(", Data=[");
-        byte[] data=getData();
-        if (data != null) {
-            for (int i1 : data) {
-                sb.append(i1);
-                sb.append(", ");
-            }
-        }
-        sb.append("]");
 
         sb.append("]");
 

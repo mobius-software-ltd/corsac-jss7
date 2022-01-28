@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserServiceInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,38 +39,24 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class BearerIsupImpl extends ASNOctetString implements BearerIsup {
+public class BearerIsupImpl extends ASNOctetString2 implements BearerIsup {
 	public BearerIsupImpl() {
     }
 
-    public BearerIsupImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public BearerIsupImpl(UserServiceInformation userServiceInformation) throws APPException {
-        setUserServiceInformation(userServiceInformation);
+        super(translate(userServiceInformation));
     }
 
-    public void setUserServiceInformation(UserServiceInformation userServiceInformation) throws APPException {
+    public static ByteBuf translate(UserServiceInformation userServiceInformation) throws APPException {
         if (userServiceInformation == null)
             throw new APPException("The userServiceInformation parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((UserServiceInformationImpl) userServiceInformation).encode(buffer);
-            setValue(buffer);
+            return buffer;
         } catch (ParameterException e) {
             throw new APPException("ParameterException when encoding userServiceInformation: " + e.getMessage(), e);
         }
-    }
-
-    public byte[] getData() {
-    	ByteBuf buffer=getValue();
-    	if(buffer==null)
-    		return null;
-    	
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
-        return data;
     }
 
     public UserServiceInformation getUserServiceInformation() throws APPException {
@@ -91,11 +77,7 @@ public class BearerIsupImpl extends ASNOctetString implements BearerIsup {
         StringBuilder sb = new StringBuilder();
         sb.append("BearerCap [");
 
-        byte[] data=this.getData();
-        if (data != null) {
-            sb.append("data=[");
-            sb.append(printDataArr(data));
-            sb.append("]");
+        if (getValue() != null) {
             try {
                 UserServiceInformation usi = this.getUserServiceInformation();
                 sb.append(", ");

@@ -28,8 +28,6 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.Map;
 import java.util.Set;
 
@@ -71,6 +69,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UIDActionIndicators;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserIndicators;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessTransport;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:23:56:30 2009-09-06<br>
@@ -129,7 +129,7 @@ public class CallProgressMessageImpl extends ISUPMessageImpl implements CallProg
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryParameters (byte[], int)
+     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryParameters (ByteBuf, int)
      */
 
     protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
@@ -147,7 +147,7 @@ public class CallProgressMessageImpl extends ISUPMessageImpl implements CallProg
                 throw new ParameterException("Failed to parse EventInformation due to: ", e);
             }
         } else {
-            throw new ParameterException("byte[] must have atleast four octets");
+            throw new ParameterException("buffer must have atleast four readable octets");
         }
     }
 

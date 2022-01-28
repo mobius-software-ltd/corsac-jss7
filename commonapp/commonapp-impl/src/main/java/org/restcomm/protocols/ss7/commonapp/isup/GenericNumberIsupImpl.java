@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,38 +39,24 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  * @author tamas gyorgyey
  */
-public class GenericNumberIsupImpl extends ASNOctetString implements GenericNumberIsup {
+public class GenericNumberIsupImpl extends ASNOctetString2 implements GenericNumberIsup {
 	public GenericNumberIsupImpl() {
     }
 
-    public GenericNumberIsupImpl(byte[] data) {
-       setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public GenericNumberIsupImpl(GenericNumber genericNumber) throws APPException {
-        setGenericNumber(genericNumber);
+        super(translate(genericNumber));
     }
 
-    public void setGenericNumber(GenericNumber genericNumber) throws APPException {
+    public static ByteBuf translate(GenericNumber genericNumber) throws APPException {
         if (genericNumber == null)
             throw new APPException("The genericNumber parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((GenericNumberImpl) genericNumber).encode(buffer);
-            setValue(buffer);
+            return buffer;
         } catch (ParameterException e) {
             throw new APPException("ParameterException when encoding genericNumber: " + e.getMessage(), e);
         }
-    }
-
-    public byte[] getData() {
-    	ByteBuf buffer=getValue();
-    	if(buffer==null)
-    		return null;
-    	
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
-        return data;
     }
 
     public GenericNumber getGenericNumber() throws APPException {
@@ -91,11 +77,7 @@ public class GenericNumberIsupImpl extends ASNOctetString implements GenericNumb
         StringBuilder sb = new StringBuilder();
         sb.append("GenericNumberCap [");
         
-        byte[] data=this.getData();
-        if (data != null) {
-            sb.append("data=[");
-            sb.append(printDataArr(data));
-            sb.append("]");
+        if (getValue() != null) {
             try {
                 GenericNumber gn = this.getGenericNumber();
                 sb.append(", ");

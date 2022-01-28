@@ -35,7 +35,7 @@ public class RPCauseImpl extends ASNSingleByte implements RPCause {
     }
 
     public RPCauseImpl(int data) {
-    	setValue(data);
+    	super(data);
     }
 
     public int getData() {

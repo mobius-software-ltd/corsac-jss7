@@ -174,14 +174,12 @@ public abstract class InvokeImpl implements Invoke {
     }
 
     public void setSetParameter(Object p) {
-    	this.setParameter = new ASNInvokeSetParameterImpl();
-        this.setParameter.setValue(p);
+    	this.setParameter = new ASNInvokeSetParameterImpl(p);
         this.seqParameter=null;
     }
 
     public void setSeqParameter(Object p) {
-    	this.seqParameter = new ASNInvokeParameterImpl();
-        this.seqParameter.setValue(p);
+    	this.seqParameter = new ASNInvokeParameterImpl(p);
         this.setParameter=null;        
     }
 

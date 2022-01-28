@@ -20,6 +20,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 public class ConnectToResourceTest 
@@ -50,7 +51,7 @@ public class ConnectToResourceTest
 	        
 		ConnectToResourceRequestImpl elem = (ConnectToResourceRequestImpl)result.getResult();
 		assertNotNull(elem.getServiceInteractionIndicators());
-		assertTrue(Arrays.equals(serviceIndicatorsData, elem.getServiceInteractionIndicators().getData()));
+		assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(serviceIndicatorsData), elem.getServiceInteractionIndicators().getValue()));
 		assertNotNull(elem.getResourceAddress());
 		assertNotNull(elem.getResourceAddress().getLegID());
 		assertEquals(elem.getResourceAddress().getLegID(),LegType.leg1);
@@ -62,7 +63,7 @@ public class ConnectToResourceTest
 		ASNParser parser=new ASNParser(true);
 		parser.replaceClass(ConnectToResourceRequestImpl.class);
 	    	
-		ServiceInteractionIndicators serviceInteractionIndicators=new ServiceInteractionIndicatorsImpl(serviceIndicatorsData);
+		ServiceInteractionIndicators serviceInteractionIndicators=new ServiceInteractionIndicatorsImpl(Unpooled.wrappedBuffer(serviceIndicatorsData));
 		ConnectToResourceRequestImpl elem = new ConnectToResourceRequestImpl(LegType.leg1, null,serviceInteractionIndicators);
 	    byte[] rawData = this.message1;
 	    ByteBuf buffer=parser.encode(elem);

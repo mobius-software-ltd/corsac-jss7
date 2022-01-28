@@ -62,21 +62,15 @@ public class GPRSCamelTDPDataImpl implements GPRSCamelTDPData {
     public GPRSCamelTDPDataImpl(GPRSTriggerDetectionPoint gprsTriggerDetectionPoint, long serviceKey,
             ISDNAddressString gsmSCFAddress, DefaultGPRSHandling defaultSessionHandling,
             MAPExtensionContainer extensionContainer) {
-        if(gprsTriggerDetectionPoint!=null) {
-        	this.gprsTriggerDetectionPoint =  new ASNGPRSTriggerDetectionPoint();
-        	this.gprsTriggerDetectionPoint.setType(gprsTriggerDetectionPoint);
-        }
-        
-        this.serviceKey = new ASNInteger();
-        this.serviceKey.setValue(serviceKey);
-        
+        if(gprsTriggerDetectionPoint!=null)
+        	this.gprsTriggerDetectionPoint =  new ASNGPRSTriggerDetectionPoint(gprsTriggerDetectionPoint);
+        	
+        this.serviceKey = new ASNInteger(serviceKey);
         this.gsmSCFAddress = gsmSCFAddress;
         
-        if(defaultSessionHandling!=null) {
-        	this.defaultSessionHandling = new ASNDefaultGPRSHandling();
-        	this.defaultSessionHandling.setType(defaultSessionHandling);
-        }
-        
+        if(defaultSessionHandling!=null)
+        	this.defaultSessionHandling = new ASNDefaultGPRSHandling(defaultSessionHandling);
+        	
         this.extensionContainer = extensionContainer;
     }
 

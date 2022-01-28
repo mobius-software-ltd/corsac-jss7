@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -36,21 +36,17 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class CellGlobalIdOrServiceAreaIdFixedLengthImpl extends ASNOctetString implements CellGlobalIdOrServiceAreaIdFixedLength {
+public class CellGlobalIdOrServiceAreaIdFixedLengthImpl extends ASNOctetString2 implements CellGlobalIdOrServiceAreaIdFixedLength {
 	
 	public CellGlobalIdOrServiceAreaIdFixedLengthImpl() {
     }
 
-    public CellGlobalIdOrServiceAreaIdFixedLengthImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public CellGlobalIdOrServiceAreaIdFixedLengthImpl(int mcc, int mnc, int lac, int cellIdOrServiceAreaCode)
             throws APPException {
-        this.setData(mcc, mnc, lac, cellIdOrServiceAreaCode);
+        super(translate(mcc, mnc, lac, cellIdOrServiceAreaCode));
     }
 
-    public void setData(int mcc, int mnc, int lac, int cellIdOrServiceAreaCode) throws APPException {
+    public static ByteBuf translate(int mcc, int mnc, int lac, int cellIdOrServiceAreaCode) throws APPException {
         if (mcc < 1 || mcc > 999)
             throw new APPException("Bad mcc value");
         if (mnc < 0 || mnc > 999)
@@ -79,7 +75,7 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthImpl extends ASNOctetString i
         TbcdStringImpl.encodeString(data, sb2.toString());
         data.writeShort(lac);
         data.writeShort(cellIdOrServiceAreaCode);
-        setValue(data);
+        return data;
     }
 
     public int getMCC() throws APPException {

@@ -83,45 +83,31 @@ public class MDTConfigurationImpl implements MDTConfiguration {
     public MDTConfigurationImpl(JobType jobType, AreaScope areaScope, ListOfMeasurements listOfMeasurements, ReportingTrigger reportingTrigger,
             ReportInterval reportInterval, ReportAmount reportAmount, Integer eventThresholdRSRP, Integer eventThresholdRSRQ, LoggingInterval loggingInterval,
             LoggingDuration loggingDuration, MAPExtensionContainer extensionContainer) {
-    	if(jobType!=null) {
-        	this.jobType = new ASNJobTypeImpl();
-        	this.jobType.setType(jobType);
-        }
-        
+    	if(jobType!=null)
+        	this.jobType = new ASNJobTypeImpl(jobType);
+        	
         this.areaScope = areaScope;
         this.listOfMeasurements = listOfMeasurements;
         this.reportingTrigger = reportingTrigger;
         
-        if(reportInterval!=null) {
-        	this.reportInterval = new ASNReportIntervalImpl();
-        	this.reportInterval.setType(reportInterval);
-        }
-        
-        if(reportAmount!=null) {
-        	this.reportAmount = new ASNReportAmountImpl();
-        	this.reportAmount.setType(reportAmount);
-        }
-        
-        if(eventThresholdRSRP!=null) {
-        	this.eventThresholdRSRP = new ASNInteger();
-        	this.eventThresholdRSRP.setValue(eventThresholdRSRP.longValue());
-        }
-        
-        if(eventThresholdRSRQ!=null) {
-        	this.eventThresholdRSRQ = new ASNInteger();
-        	this.eventThresholdRSRQ.setValue(eventThresholdRSRQ.longValue());
-        }
-        
-        if(loggingInterval!=null) {
-        	this.loggingInterval = new ASNLoggingIntervalImpl();
-        	this.loggingInterval.setType(loggingInterval);
-        }
-        
-        if(loggingDuration!=null) {
-        	this.loggingDuration = new ASNLoggingDurationImpl();
-        	this.loggingDuration.setType(loggingDuration);
-        }
-        
+        if(reportInterval!=null)
+        	this.reportInterval = new ASNReportIntervalImpl(reportInterval);
+        	
+        if(reportAmount!=null)
+        	this.reportAmount = new ASNReportAmountImpl(reportAmount);
+        	
+        if(eventThresholdRSRP!=null)
+        	this.eventThresholdRSRP = new ASNInteger(eventThresholdRSRP);
+        	
+        if(eventThresholdRSRQ!=null)
+        	this.eventThresholdRSRQ = new ASNInteger(eventThresholdRSRQ);
+        	
+        if(loggingInterval!=null)
+        	this.loggingInterval = new ASNLoggingIntervalImpl(loggingInterval);
+        	
+        if(loggingDuration!=null)
+        	this.loggingDuration = new ASNLoggingDurationImpl(loggingDuration);
+        	
         this.extensionContainer = extensionContainer;
     }
 
@@ -162,14 +148,14 @@ public class MDTConfigurationImpl implements MDTConfiguration {
     	if(eventThresholdRSRP==null)
     		return null;
     	
-        return eventThresholdRSRP.getValue().intValue();
+        return eventThresholdRSRP.getIntValue();
     }
 
     public Integer getEventThresholdRSRQ() {
     	if(eventThresholdRSRQ==null)
     		return null;
     	
-        return eventThresholdRSRQ.getValue().intValue();
+        return eventThresholdRSRQ.getIntValue();
     }
 
     public LoggingInterval getLoggingInterval() {

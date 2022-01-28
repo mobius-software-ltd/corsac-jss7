@@ -66,51 +66,39 @@ public class TariffInformationImpl implements TariffInformation {
 
     public TariffInformationImpl(Integer numberOfStartPulses,Integer startInterval,IntervalAccuracy startIntervalAccuracy,
     		Integer numberOfPeriodicPulses,Integer periodicInterval,IntervalAccuracy periodicIntervalAccuracy,DateAndTime activationTime) {
-    	if(numberOfStartPulses!=null) {
-    		this.numberOfStartPulses=new ASNInteger();
-    		this.numberOfStartPulses.setValue(numberOfStartPulses.longValue());
-    	}
-    	
-    	if(startInterval!=null) {
-    		this.startInterval=new ASNInteger();
-    		this.startInterval.setValue(startInterval.longValue());
-    	}
-    	
-    	if(startIntervalAccuracy!=null) {
-    		this.startIntervalAccuracy=new ASNIntervalAccuracy();
-    		this.startIntervalAccuracy.setType(startIntervalAccuracy);
-    	}
-    	
-    	if(numberOfPeriodicPulses!=null) {
-    		this.numberOfPeriodicPulses=new ASNInteger();
-    		this.numberOfPeriodicPulses.setValue(numberOfPeriodicPulses.longValue());
-    	}
-    	
-    	if(periodicInterval!=null) {
-    		this.periodicInterval=new ASNInteger();
-    		this.periodicInterval.setValue(periodicInterval.longValue());
-    	}
-    	
-    	if(periodicIntervalAccuracy!=null) {
-    		this.periodicIntervalAccuracy=new ASNIntervalAccuracy();
-    		this.periodicIntervalAccuracy.setType(periodicIntervalAccuracy);
-    	}
-    	
+    	if(numberOfStartPulses!=null)
+    		this.numberOfStartPulses=new ASNInteger(numberOfStartPulses);
+    		
+    	if(startInterval!=null)
+    		this.startInterval=new ASNInteger(startInterval);
+    		
+    	if(startIntervalAccuracy!=null)
+    		this.startIntervalAccuracy=new ASNIntervalAccuracy(startIntervalAccuracy);
+    		
+    	if(numberOfPeriodicPulses!=null)
+    		this.numberOfPeriodicPulses=new ASNInteger(numberOfPeriodicPulses);
+    		
+    	if(periodicInterval!=null)
+    		this.periodicInterval=new ASNInteger(periodicInterval);
+    		
+    	if(periodicIntervalAccuracy!=null)
+    		this.periodicIntervalAccuracy=new ASNIntervalAccuracy(periodicIntervalAccuracy);
+    		
     	this.activationTime=activationTime;    	
     }       
 
     public Integer getNumberOfStartPulses() {
-    	if(numberOfStartPulses==null || numberOfStartPulses.getValue()==null)
+    	if(numberOfStartPulses==null)
     		return null;
     	
-    	return numberOfStartPulses.getValue().intValue();
+    	return numberOfStartPulses.getIntValue();
     }      
 
     public Integer getStartInterval() {
-    	if(startInterval==null || startInterval.getValue()==null)
+    	if(startInterval==null)
     		return null;
     	
-    	return startInterval.getValue().intValue();
+    	return startInterval.getIntValue();
     } 
     
     public IntervalAccuracy getStartIntervalAccuracy() {
@@ -121,18 +109,18 @@ public class TariffInformationImpl implements TariffInformation {
     }       
 
     public Integer getNumberOfPeriodicPulses() {
-    	if(numberOfPeriodicPulses==null || numberOfPeriodicPulses.getValue()==null)
+    	if(numberOfPeriodicPulses==null)
     		return null;
     	
-    	return numberOfPeriodicPulses.getValue().intValue();
+    	return numberOfPeriodicPulses.getIntValue();
     }      
 
     public Integer getPeriodicInterval() {
-    	if(periodicInterval==null || periodicInterval.getValue()==null)
+    	if(periodicInterval==null)
     		return null;
     	
-    	return periodicInterval.getValue().intValue();
-    }   
+    	return periodicInterval.getIntValue();
+    }
     
     public IntervalAccuracy getPeriodicIntervalAccuracy() {
     	if(periodicIntervalAccuracy==null)

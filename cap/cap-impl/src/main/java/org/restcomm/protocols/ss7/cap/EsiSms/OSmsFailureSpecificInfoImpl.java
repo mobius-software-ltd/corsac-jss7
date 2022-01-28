@@ -43,10 +43,8 @@ public class OSmsFailureSpecificInfoImpl implements OSmsFailureSpecificInfo {
     }
 
     public OSmsFailureSpecificInfoImpl(MOSMSCause failureCause) {
-        if(failureCause!=null) {
-        	this.failureCause = new ASNMOSMSCauseImpl();
-        	this.failureCause.setType(failureCause);
-        }
+        if(failureCause!=null)
+        	this.failureCause = new ASNMOSMSCauseImpl(failureCause);        	
     }
 
     public MOSMSCause getFailureCause() {

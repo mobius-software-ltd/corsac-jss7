@@ -39,7 +39,7 @@ public class PasswordImpl extends ASNIA5String implements Password {
     }
 
     public PasswordImpl(String data) {
-        setValue(data);
+        super(data);
     }
 
     public String getData() {

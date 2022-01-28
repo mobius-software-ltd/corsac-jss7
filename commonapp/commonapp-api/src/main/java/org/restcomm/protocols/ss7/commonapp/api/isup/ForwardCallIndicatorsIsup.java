@@ -39,8 +39,6 @@ ForwardCallIndicators ::= OCTET STRING (SIZE(2))
 */
 public interface ForwardCallIndicatorsIsup {
 
-    byte[] getData();
-
     ForwardCallIndicators getForwardCallIndicators() throws APPException;
 
 }

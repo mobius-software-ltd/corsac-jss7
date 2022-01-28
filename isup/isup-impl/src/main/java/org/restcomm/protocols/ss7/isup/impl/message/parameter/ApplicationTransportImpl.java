@@ -30,11 +30,11 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.ApplicationTransport;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Start time:15:10:58 2009-04-05<br>
@@ -62,7 +62,7 @@ public class ApplicationTransportImpl extends AbstractISUPParameter implements A
     public void decode(ByteBuf b) throws ParameterException {
         // 4+ lines, depending on "ext" bits...
         if (b == null || b.readableBytes() < 1) {
-            throw new ParameterException("byte[] must not be null or have bigger size.");
+            throw new ParameterException("buffer must not be null or have bigger size.");
         }
 
         // integrity check

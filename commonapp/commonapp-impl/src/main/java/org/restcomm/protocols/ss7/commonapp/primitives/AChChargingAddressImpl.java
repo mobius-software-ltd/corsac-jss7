@@ -52,8 +52,7 @@ public class AChChargingAddressImpl implements AChChargingAddress {
     }
 
     public AChChargingAddressImpl(int srfConnection) {
-        this.srfConnection = new ASNInteger();
-        this.srfConnection.setValue(Long.valueOf(srfConnection));
+        this.srfConnection = new ASNInteger(srfConnection);        
     }
 
     public LegID getLegID() {
@@ -67,7 +66,7 @@ public class AChChargingAddressImpl implements AChChargingAddress {
     	if(srfConnection==null)
     		return 0;
     	
-        return srfConnection.getValue().intValue();
+        return srfConnection.getIntValue();
     }
 
     @Override

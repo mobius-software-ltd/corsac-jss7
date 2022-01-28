@@ -55,7 +55,10 @@ import org.restcomm.protocols.ss7.commonapp.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.CUGInterlockImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.OriginalCalledNumberImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectingNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectionInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 import org.testng.annotations.Test;
@@ -64,6 +67,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -169,7 +173,7 @@ public class ConnectRequestTest {
         assertTrue(elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber().getAddress()
                 .equals("972201"));
         assertEquals(elem.getGenericNumbers().size(), 1);
-        assertTrue(Arrays.equals(elem.getGenericNumbers().get(0).getData(), getDataGenericNumber()));
+        assertTrue(ByteBufUtil.equals(GenericNumberIsupImpl.translate(elem.getGenericNumbers().get(0).getGenericNumber()),Unpooled.wrappedBuffer(getDataGenericNumber())));
         assertNull(elem.getCarrier());
         assertNull(elem.getServiceInteractionIndicatorsTwo());
         assertNull(elem.getChargeNumber());
@@ -196,13 +200,13 @@ public class ConnectRequestTest {
         assertTrue(elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber().getAddress()
                 .equals("972201"));
         assertEquals(elem.getGenericNumbers().size(), 1);
-        assertTrue(Arrays.equals(elem.getGenericNumbers().get(0).getData(), getDataGenericNumber()));
+        assertTrue(ByteBufUtil.equals(GenericNumberIsupImpl.translate(elem.getGenericNumbers().get(0).getGenericNumber()),Unpooled.wrappedBuffer(getDataGenericNumber())));
         assertEquals(elem.getAlertingPattern().getAlertingCategory(), AlertingCategory.Category5);
-        assertTrue(Arrays.equals(elem.getOriginalCalledPartyID().getData(), getOriginalCalledPartyID()));
+        assertTrue(ByteBufUtil.equals(OriginalCalledNumberIsupImpl.translate(elem.getOriginalCalledPartyID().getOriginalCalledNumber()),Unpooled.wrappedBuffer(getOriginalCalledPartyID())));
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
         
         assertEquals(elem.getCallingPartysCategory().getCallingPartyCategory().getCallingPartyCategory(), getCallingPartysCategory()[0]);
-        assertTrue(Arrays.equals(elem.getRedirectingPartyID().getData(), getRedirectingPartyID()));
+        assertTrue(ByteBufUtil.equals(RedirectingPartyIDIsupImpl.translate(elem.getRedirectingPartyID().getRedirectingNumber()),Unpooled.wrappedBuffer(getRedirectingPartyID())));
         
         ByteBuf buffer=Unpooled.buffer();
         ((RedirectionInformationIsupImpl)elem.getRedirectionInformation()).encode(parser,buffer);
@@ -249,12 +253,12 @@ public class ConnectRequestTest {
         assertFalse(elem.getSuppressionOfAnnouncement());
         assertFalse(elem.getOCSIApplicable());
         assertNull(elem.getNAOliInfo());
-        assertEquals(elem.getCarrier().getData(), getCarrierData());
+        assertTrue(ByteBufUtil.equals(elem.getCarrier().getValue(), Unpooled.wrappedBuffer(getCarrierData())));
         assertEquals(elem.getServiceInteractionIndicatorsTwo().getForwardServiceInteractionInd().getConferenceTreatmentIndicator(),
                 ConferenceTreatmentIndicator.rejectConferenceRequest);
         assertEquals(elem.getChargeNumber().getLocationNumber().getAddress(), "0000077777");
         assertEquals(elem.getLegToBeConnected().getSendingSideID(), LegType.leg5);
-        assertEquals(elem.getCUGInterlock().getData(), getCUGInterlockData());
+        assertTrue(ByteBufUtil.equals(elem.getCUGInterlock().getValue(), Unpooled.wrappedBuffer(getCUGInterlockData())));
         assertTrue(elem.getCugOutgoingAccess());
         assertTrue(elem.getBorInterrogationRequested());
         assertTrue(elem.getSuppressNCSI());
@@ -280,7 +284,7 @@ public class ConnectRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         List<GenericNumberIsup> genericNumbers = new ArrayList<GenericNumberIsup>();
-        GenericNumberIsupImpl genericNumberCap = new GenericNumberIsupImpl(getDataGenericNumber());
+        GenericNumberIsupImpl genericNumberCap = new GenericNumberIsupImpl(new GenericNumberImpl(Unpooled.wrappedBuffer(getDataGenericNumber())));
         genericNumbers.add(genericNumberCap);
         elem = new ConnectRequestImpl(destinationRoutingAddress, null, null, null, null, null, null, null, genericNumbers,
                 null, null, null, null, false, false, false, null, false, false);
@@ -291,9 +295,9 @@ public class ConnectRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingCategory.Category5);
-        OriginalCalledNumberIsupImpl originalCalledPartyID = new OriginalCalledNumberIsupImpl(getOriginalCalledPartyID());
+        OriginalCalledNumberIsupImpl originalCalledPartyID = new OriginalCalledNumberIsupImpl(new OriginalCalledNumberImpl(Unpooled.wrappedBuffer(getOriginalCalledPartyID())));
         CallingPartysCategoryIsupImpl callingPartysCategory = new CallingPartysCategoryIsupImpl(new CallingPartyCategoryImpl(getCallingPartysCategory()[0]));
-        RedirectingPartyIDIsupImpl redirectingPartyID = new RedirectingPartyIDIsupImpl(getRedirectingPartyID());
+        RedirectingPartyIDIsupImpl redirectingPartyID = new RedirectingPartyIDIsupImpl(new RedirectingNumberImpl(Unpooled.wrappedBuffer(getRedirectingPartyID())));
         RedirectionInformationIsupImpl redirectionInformation = new RedirectionInformationIsupImpl(new RedirectionInformationImpl(Unpooled.wrappedBuffer(getRedirectionInformation())));
         NAOliInfoImpl naoliInfo = new NAOliInfoImpl(40);
 
@@ -307,7 +311,7 @@ public class ConnectRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));        
 
-        CarrierImpl carrier = new CarrierImpl(getCarrierData());
+        CarrierImpl carrier = new CarrierImpl(Unpooled.wrappedBuffer(getCarrierData()));
         ForwardServiceInteractionIndImpl forwardServiceInteractionInd = new ForwardServiceInteractionIndImpl(ConferenceTreatmentIndicator.rejectConferenceRequest, null, null);
         ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo = new ServiceInteractionIndicatorsTwoImpl(forwardServiceInteractionInd, null, null,
                 null, false, null, null, null);
@@ -316,7 +320,7 @@ public class ConnectRequestTest {
         locationNumber.setAddress("0000077777");
         LocationNumberIsupImpl chargeNumber = new LocationNumberIsupImpl(locationNumber);
         LegIDImpl legToBeConnected = new LegIDImpl(null,LegType.leg5);
-        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getCUGInterlockData());
+        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(Unpooled.wrappedBuffer(getCUGInterlockData()));
         elem = new ConnectRequestImpl(destinationRoutingAddress, null, null, null, carrier, null, null, null, null, serviceInteractionIndicatorsTwo,
                 chargeNumber, legToBeConnected, cugInterlock, true, false, false, null, true, true);
         rawData = this.getData4();
@@ -335,132 +339,4 @@ public class ConnectRequestTest {
         // boolean cugOutgoingAccess, boolean suppressionOfAnnouncement, boolean ocsIApplicable, NAOliInfo naoliInfo, boolean
         // borInterrogationRequested
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        ArrayList<CalledPartyNumberCap> calledPartyNumbers = new ArrayList<CalledPartyNumberCap>();
-        CalledPartyNumberImpl cpn = new CalledPartyNumberImpl(2, "972201", 1, 2);
-        CalledPartyNumberCapImpl calledPartyNumber = new CalledPartyNumberCapImpl(cpn);
-        calledPartyNumbers.add(calledPartyNumber);
-        DestinationRoutingAddressImpl destinationRoutingAddress = new DestinationRoutingAddressImpl(calledPartyNumbers);
-
-        ArrayList<GenericNumberCap> genericNumbers = new ArrayList<GenericNumberCap>();
-        GenericNumberCapImpl genericNumberCap = new GenericNumberCapImpl(getDataGenericNumber());
-        genericNumbers.add(genericNumberCap);
-
-        AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingCategory.Category5);
-        AlertingPatternCapImpl alertingPatternCap = new AlertingPatternCapImpl(alertingPattern);
-        OriginalCalledNumberCapImpl originalCalledPartyID = new OriginalCalledNumberCapImpl(getOriginalCalledPartyID());
-        CallingPartysCategoryInapImpl callingPartysCategory = new CallingPartysCategoryInapImpl(getCallingPartysCategory());
-        RedirectingPartyIDCapImpl redirectingPartyID = new RedirectingPartyIDCapImpl(getRedirectingPartyID());
-        RedirectionInformationInapImpl redirectionInformation = new RedirectionInformationInapImpl(getRedirectionInformation());
-        NAOliInfoImpl naoliInfo = new NAOliInfoImpl(40);
-
-        ConnectRequestImpl original = new ConnectRequestImpl(destinationRoutingAddress, alertingPatternCap,
-                originalCalledPartyID, CAPExtensionsTest.createTestCAPExtensions(), null, callingPartysCategory,
-                redirectingPartyID, redirectionInformation, genericNumbers, null, null, null, null, false, true, true,
-                naoliInfo, false, false);
-        original.setInvokeId(24);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "connectRequest", ConnectRequestImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        ConnectRequestImpl copy = reader.read("connectRequest", ConnectRequestImpl.class);
-
-        assertEquals(copy.getInvokeId(), original.getInvokeId());
-        assertEquals(copy.getDestinationRoutingAddress().getCalledPartyNumber().size(), original.getDestinationRoutingAddress()
-                .getCalledPartyNumber().size());
-        assertEquals(copy.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber()
-                .getInternalNetworkNumberIndicator(), original.getDestinationRoutingAddress().getCalledPartyNumber().get(0)
-                .getCalledPartyNumber().getInternalNetworkNumberIndicator());
-        assertEquals(copy.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber().getAddress()
-                .equals("972201"), original.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber()
-                .getAddress().equals("972201"));
-        assertEquals(copy.getAlertingPattern().getAlertingPattern().getAlertingCategory(), original.getAlertingPattern()
-                .getAlertingPattern().getAlertingCategory());
-        assertEquals(copy.getOriginalCalledPartyID().getData(), original.getOriginalCalledPartyID().getData());
-        assertTrue(CAPExtensionsTest.checkTestCAPExtensions(copy.getExtensions()));
-        assertEquals(copy.getCallingPartysCategory().getData(), original.getCallingPartysCategory().getData());
-        assertEquals(copy.getRedirectingPartyID().getData(), original.getRedirectingPartyID().getData());
-        assertEquals(copy.getRedirectionInformation().getData(), original.getRedirectionInformation().getData());
-        assertEquals(copy.getGenericNumbers().size(), original.getGenericNumbers().size());
-        assertEquals(copy.getGenericNumbers().get(0).getData(), original.getGenericNumbers().get(0).getData());
-        assertEquals(copy.getSuppressionOfAnnouncement(), original.getSuppressionOfAnnouncement());
-        assertEquals(copy.getOCSIApplicable(), original.getOCSIApplicable());
-        assertEquals(copy.getNAOliInfo().getData(), original.getNAOliInfo().getData());
-
-
-        Carrier carrier = new CarrierImpl(getCarrierData());
-        ForwardServiceInteractionInd forwardServiceInteractionInd = new ForwardServiceInteractionIndImpl(ConferenceTreatmentIndicator.rejectConferenceRequest, null, null);
-        ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo = new ServiceInteractionIndicatorsTwoImpl(forwardServiceInteractionInd, null, null,
-                null, false, null, null, null);
-        LocationNumber locationNumber = new LocationNumberImpl();
-        locationNumber.setNatureOfAddresIndicator(LocationNumber._NAI_INTERNATIONAL_NUMBER);
-        locationNumber.setAddress("0000077777");
-        LocationNumberCap chargeNumber = new LocationNumberCapImpl(locationNumber);
-        LegID legToBeConnected = new LegIDImpl(true, LegType.leg5);
-        CUGInterlock cugInterlock = new CUGInterlockImpl(getCUGInterlockData());
-        original = new ConnectRequestImpl(destinationRoutingAddress, null, null, null, carrier, null, null, null, null, serviceInteractionIndicatorsTwo,
-                chargeNumber, legToBeConnected, cugInterlock, true, false, false, null, true, true);
-        original.setInvokeId(24);
-
-        // Writes the area to a file.
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "connectRequest", ConnectRequestImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-        copy = reader.read("connectRequest", ConnectRequestImpl.class);
-
-        assertEquals(copy.getInvokeId(), original.getInvokeId());
-        assertEquals(copy.getDestinationRoutingAddress().getCalledPartyNumber().size(), original.getDestinationRoutingAddress()
-                .getCalledPartyNumber().size());
-        assertEquals(copy.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber()
-                .getInternalNetworkNumberIndicator(), original.getDestinationRoutingAddress().getCalledPartyNumber().get(0)
-                .getCalledPartyNumber().getInternalNetworkNumberIndicator());
-        assertEquals(copy.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber().getAddress()
-                .equals("972201"), original.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber()
-                .getAddress().equals("972201"));
-
-        assertNull(copy.getGenericNumbers());
-        assertNull(copy.getAlertingPattern());
-        assertNull(copy.getOriginalCalledPartyID());
-        assertNull(copy.getExtensions());
-        assertNull(copy.getCallingPartysCategory());
-        assertNull(copy.getRedirectingPartyID());
-        assertNull(copy.getRedirectionInformation());
-        assertEquals(copy.getSuppressionOfAnnouncement(), original.getSuppressionOfAnnouncement());
-        assertEquals(copy.getOCSIApplicable(), original.getOCSIApplicable());
-        assertNull(copy.getNAOliInfo());
-        assertEquals(copy.getCarrier().getData(), original.getCarrier().getData());
-        assertEquals(copy.getServiceInteractionIndicatorsTwo().getForwardServiceInteractionInd().getConferenceTreatmentIndicator(),
-                original.getServiceInteractionIndicatorsTwo().getForwardServiceInteractionInd().getConferenceTreatmentIndicator());
-        assertEquals(copy.getChargeNumber().getLocationNumber().getAddress(), original.getChargeNumber().getLocationNumber().getAddress());
-        assertEquals(copy.getLegToBeConnected().getSendingSideID(), original.getLegToBeConnected().getSendingSideID());
-        assertEquals(copy.getCUGInterlock().getData(), original.getCUGInterlock().getData());
-        assertEquals(copy.getCugOutgoingAccess(), original.getCugOutgoingAccess());
-        assertEquals(copy.getBorInterrogationRequested(), original.getBorInterrogationRequested());
-        assertEquals(copy.getSuppressNCSI(), original.getSuppressNCSI());
-    }*/
 }

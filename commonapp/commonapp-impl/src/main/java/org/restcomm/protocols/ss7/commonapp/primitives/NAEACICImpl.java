@@ -27,7 +27,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.NAEACIC;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationPlanValue;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationTypeValue;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -45,7 +45,7 @@ import io.netty.buffer.Unpooled;
  * @author Lasith Waruna Perera
  *
  */
-public class NAEACICImpl extends ASNOctetString implements NAEACIC {
+public class NAEACICImpl extends ASNOctetString2 implements NAEACIC {
 	protected static final int NETWORK_IND_PLAN_MASK = 0x0F;
     protected static final int NETWORK_IND_TYPE_MASK = 0x70;
     protected static final int THREE_OCTET_CARRIER_CODE_MASK = 0x0F;
@@ -53,20 +53,9 @@ public class NAEACICImpl extends ASNOctetString implements NAEACIC {
     public NAEACICImpl() {
     }
 
-    public NAEACICImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public NAEACICImpl(String carrierCode, NetworkIdentificationPlanValue networkIdentificationPlanValue,
             NetworkIdentificationTypeValue networkIdentificationTypeValue) throws APPException {
-        setParameters(carrierCode, networkIdentificationPlanValue, networkIdentificationTypeValue);
-    }
-
-    public byte[] getData() {
-    	ByteBuf buf=getValue();
-    	byte[] data=new byte[buf.readableBytes()];
-    	buf.readBytes(data);
-        return data;
+        super(translate(carrierCode, networkIdentificationPlanValue, networkIdentificationTypeValue));
     }
 
     public String getCarrierCode() {
@@ -107,7 +96,7 @@ public class NAEACICImpl extends ASNOctetString implements NAEACIC {
         return NetworkIdentificationTypeValue.getInstance(typeValue);
     }
 
-    private void setParameters(String carrierCode, NetworkIdentificationPlanValue networkIdentificationPlanValue,
+    private static ByteBuf translate(String carrierCode, NetworkIdentificationPlanValue networkIdentificationPlanValue,
             NetworkIdentificationTypeValue networkIdentificationTypeValue) throws APPException {
 
         if (carrierCode == null || networkIdentificationPlanValue == null || networkIdentificationTypeValue == null)
@@ -134,7 +123,7 @@ public class NAEACICImpl extends ASNOctetString implements NAEACIC {
         	value.setByte(2, value.getByte(2)& THREE_OCTET_CARRIER_CODE_MASK);            
         }
         
-        setValue(value);
+        return value;
     }
 
     public String toString() {

@@ -84,7 +84,7 @@ public abstract class AbstractNAINumber extends AbstractNumber implements NAINum
     }
 
     /**
-     * This method is used in constructor that takes byte[] or ByteArrayInputStream as parameter. Decodes header part (its 1 or
+     * This method is used in constructor that takes ByteBuf as parameter. Decodes header part (its 1 or
      * 2 bytes usually.) Default implemetnation decodes header of one byte - where most significant bit is O/E indicator and
      * bits 7-1 are NAI. This method should be over
      *

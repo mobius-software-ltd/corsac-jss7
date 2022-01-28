@@ -117,14 +117,12 @@ public abstract class ReturnImpl implements Return {
     }
 
     public void setSetParameter(Object p) {
-    	this.setParameter = new ASNReturnSetParameterImpl();
-        this.setParameter.setValue(p);
+    	this.setParameter = new ASNReturnSetParameterImpl(p);
         this.seqParameter=null;        
     }
 
     public void setSeqParameter(Object p) {
-    	this.seqParameter = new ASNReturnParameterImpl();
-        this.seqParameter.setValue(p);
+    	this.seqParameter = new ASNReturnParameterImpl(p);
         this.setParameter=null;        
     }
 

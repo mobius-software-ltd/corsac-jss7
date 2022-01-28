@@ -24,31 +24,35 @@ package org.restcomm.protocols.ss7.commonapp.subscriberInformation;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GPRSChargingID;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
-public class GPRSChargingIDImpl extends ASNOctetString implements GPRSChargingID {
+public class GPRSChargingIDImpl extends ASNOctetString2 implements GPRSChargingID {
 	public GPRSChargingIDImpl() {       
     }
 
-    public GPRSChargingIDImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
+    public GPRSChargingIDImpl(ByteBuf value) {
+        super(value);
     }
 
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("GPRSChargingID [");
+
+        if (getValue() != null) {
+        	 sb.append(", ");
+             sb.append(printDataArr());
+        }
+
+        sb.append("]");
+
+        return sb.toString();
     }
 }

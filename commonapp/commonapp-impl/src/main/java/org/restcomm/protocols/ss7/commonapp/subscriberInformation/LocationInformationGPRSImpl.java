@@ -122,10 +122,8 @@ public class LocationInformationGPRSImpl implements LocationInformationGPRS {
         if(currentLocationRetrieved)
         	this.currentLocationRetrieved = new ASNNull();
         
-        if(ageOfLocationInformation!=null) {
-        	this.ageOfLocationInformation = new ASNInteger();
-        	this.ageOfLocationInformation.setValue(ageOfLocationInformation.longValue());
-        }
+        if(ageOfLocationInformation!=null)
+        	this.ageOfLocationInformation = new ASNInteger(ageOfLocationInformation);        	
     }
 
     /*
@@ -227,7 +225,7 @@ public class LocationInformationGPRSImpl implements LocationInformationGPRS {
     	if(this.ageOfLocationInformation==null)
     		return null;
     	
-        return this.ageOfLocationInformation.getValue().intValue();
+        return this.ageOfLocationInformation.getIntValue();
     }
 
     public String toString() {

@@ -69,10 +69,8 @@ public class PSSubscriberStateImpl implements PSSubscriberState {
             List<PDPContextInfo> pdpContextInfoList) {
         switch (choice) {
 			case netDetNotReachable:
-				if(netDetNotReachable!=null) {
-					this.netDetNotReachable=new ASNNotReachableReasonImpl();
-					this.netDetNotReachable.setType(netDetNotReachable);
-				}					
+				if(netDetNotReachable!=null)
+					this.netDetNotReachable=new ASNNotReachableReasonImpl(netDetNotReachable);								
 				break;
 			case notProvidedFromSGSNorMME:
 				this.notProvidedFromSGSNorMME=new ASNNull();

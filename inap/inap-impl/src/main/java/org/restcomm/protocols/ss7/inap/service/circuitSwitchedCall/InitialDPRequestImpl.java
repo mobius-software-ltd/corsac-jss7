@@ -261,8 +261,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
             DigitsIsup additionalCallingPartyNumber,ForwardCallIndicators forwardCallIndicators,BearerCapability bearerCapability, 
             EventTypeBCSM eventTypeBCSM, RedirectingPartyIDIsup redirectingPartyID,RedirectionInformationIsup redirectionInformation) {
         
-    	this.serviceKey = new ASNInteger();
-    	this.serviceKey.setValue(Long.valueOf(serviceKey));
+    	this.serviceKey = new ASNInteger(serviceKey);
     	
     	this.dialedDigits=dialedDigits;
         this.calledPartyNumber = calledPartyNumber;
@@ -271,11 +270,9 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
         this.callingPartysCategory = callingPartysCategory;
         this.callingPartySubaddress=callingPartySubaddress;
         
-        if(cgEncountered!=null) {
-        	this.cgEncountered = new ASNCGEncountered();
-        	this.cgEncountered.setType(cgEncountered);
-        }
-        
+        if(cgEncountered!=null)
+        	this.cgEncountered = new ASNCGEncountered(cgEncountered);
+        	
         this.ipsspCapabilities = ipsspCapabilities;
         this.ipAvailable=ipAvailable;
         this.locationNumber = locationNumber;
@@ -283,18 +280,14 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
         this.originalCalledPartyID = originalCalledPartyID;
         this.serviceProfileIdentifier=serviceProfileIdentifier;
         
-        if(terminalType!=null) {
-        	this.terminalType = new ASNTerminalType();
-        	this.terminalType.setType(terminalType);
-        }
-        
+        if(terminalType!=null)
+        	this.terminalType = new ASNTerminalType(terminalType);
+        	
         this.extensions = extensions;
         
-        if(triggerType!=null) {
-        	this.triggerType = new ASNTriggerType();
-        	this.triggerType.setType(triggerType);
-        }
-        
+        if(triggerType!=null)
+        	this.triggerType = new ASNTriggerType(triggerType);
+        	
         this.highLayerCompatibility = highLayerCompatibility;
         this.serviceInteractionIndicators=serviceInteractionIndicators;
         this.additionalCallingPartyNumber = additionalCallingPartyNumber;
@@ -302,11 +295,9 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
         if(bearerCapability!=null)
         	this.bearerCapability = new BearerCapabilityWrapperImpl(bearerCapability);
         
-        if(eventTypeBCSM!=null) {
-        	this.eventTypeBCSM = new ASNEventTypeBCSM();
-        	this.eventTypeBCSM.setType(eventTypeBCSM);
-        }
-        
+        if(eventTypeBCSM!=null)
+        	this.eventTypeBCSM = new ASNEventTypeBCSM(eventTypeBCSM);
+        	
         this.redirectingPartyID = redirectingPartyID;
         this.redirectionInformation = redirectionInformation;        
     }
@@ -326,7 +317,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     	if(this.serviceKey==null || this.serviceKey.getValue()==null)
     		return 0;
     	
-        return this.serviceKey.getValue().intValue();
+        return this.serviceKey.getIntValue();
     }
 
     @Override

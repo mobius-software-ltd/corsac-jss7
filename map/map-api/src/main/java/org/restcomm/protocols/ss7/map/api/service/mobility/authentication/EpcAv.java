@@ -27,6 +27,8 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  EPC-AV ::= SEQUENCE { rand RAND, xres XRES, autn AUTN, kasme KASME, extensionContainer ExtensionContainer OPTIONAL, ...}
@@ -41,13 +43,13 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public interface EpcAv {
 
-    byte[] getRand();
+    ByteBuf getRand();
 
-    byte[] getXres();
+    ByteBuf getXres();
 
-    byte[] getAutn();
+    ByteBuf getAutn();
 
-    byte[] getKasme();
+    ByteBuf getKasme();
 
     MAPExtensionContainer getExtensionContainer();
 

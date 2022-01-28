@@ -24,10 +24,9 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus;
 
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.GenericName;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -35,24 +34,12 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class GenericNameImpl extends ASNOctetString implements GenericName {
+public class GenericNameImpl extends ASNOctetString2 implements GenericName {
 	public GenericNameImpl() {
     }
 
-    public GenericNameImpl(byte[] data) {
-    	if(data!=null) {
-    		setValue(Unpooled.wrappedBuffer(data));
-    	}
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-        if (value == null)
-            return null;
-
-        byte[] data=new byte[value.readableBytes()];
-        value.readBytes(data);
-        return data;
+    public GenericNameImpl(ByteBuf value) {
+    	super(value);
     }
 
     @Override
@@ -60,10 +47,9 @@ public class GenericNameImpl extends ASNOctetString implements GenericName {
 
         StringBuilder sb = new StringBuilder();
         sb.append("GenericName [");
-        byte[] data=getData();
-        if (data != null) {
+        if (getValue() != null) {
             sb.append("data=");
-            sb.append(ASNOctetString.printDataArr(data));            
+            sb.append(printDataArr());            
         }
         sb.append("]");
 

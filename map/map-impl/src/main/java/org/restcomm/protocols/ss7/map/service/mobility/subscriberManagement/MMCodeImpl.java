@@ -36,7 +36,7 @@ public class MMCodeImpl extends ASNSingleByte implements MMCode {
     }
 
     public MMCodeImpl(MMCodeValue value) {
-        setValue(value != null ? value.getCode() : 0);
+    	super(value != null ? value.getCode() : 0);
     }
 
     public MMCodeValue getMMCodeValue() {

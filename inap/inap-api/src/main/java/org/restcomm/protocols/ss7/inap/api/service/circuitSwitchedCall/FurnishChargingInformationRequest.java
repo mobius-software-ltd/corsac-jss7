@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -50,5 +52,5 @@ FCIBillingChargingCharacteristics ::= OCTET STRING (SIZE (minFCIBillingChargingL
  *
  */ 
 public interface FurnishChargingInformationRequest extends CircuitSwitchedCallMessage {
-	byte[] getFCIBillingChargingCharacteristics();
+	ByteBuf getFCIBillingChargingCharacteristics();
 }

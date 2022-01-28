@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.OriginalCalledNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,38 +39,24 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class OriginalCalledPartyIDIsupImpl extends ASNOctetString implements OriginalCalledPartyIDIsup {
+public class OriginalCalledPartyIDIsupImpl extends ASNOctetString2 implements OriginalCalledPartyIDIsup {
 	public OriginalCalledPartyIDIsupImpl() {
     }
 
-    public OriginalCalledPartyIDIsupImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public OriginalCalledPartyIDIsupImpl(OriginalCalledNumber originalCalledNumber) throws APPException {
-    	setOriginalCalledNumber(originalCalledNumber);
+    	super(translate(originalCalledNumber));
     }
 
-    public void setOriginalCalledNumber(OriginalCalledNumber originalCalledNumber) throws APPException {
+    public static ByteBuf translate(OriginalCalledNumber originalCalledNumber) throws APPException {
         if (originalCalledNumber == null)
             throw new APPException("The redirectingNumber parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((OriginalCalledNumberImpl) originalCalledNumber).encode(buffer);
-            setValue(buffer);
+        	return buffer;
         } catch (ParameterException e) {
             throw new APPException("ParameterException when encoding redirectingNumber: " + e.getMessage(), e);
         }
-    }
-
-    public byte[] getData() {
-    	ByteBuf buffer=getValue();
-    	if(buffer==null)
-    		return null;
-    	
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
-        return data;
     }
 
     public OriginalCalledNumber getOriginalCalledNumber() throws APPException {
@@ -91,11 +77,7 @@ public class OriginalCalledPartyIDIsupImpl extends ASNOctetString implements Ori
         StringBuilder sb = new StringBuilder();
         sb.append("OriginalCalledPartyIDIsup [");
 
-        byte[] data=this.getData();
-        if (data != null) {
-            sb.append("data=[");
-            sb.append(printDataArr(data));
-            sb.append("]");
+        if (getValue() != null) {
             try {
             	OriginalCalledNumber rn = this.getOriginalCalledNumber();
                 sb.append(", ");

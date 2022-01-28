@@ -42,12 +42,12 @@ public class ASNBoolean
 	public ASNBoolean() {		
 	}
 	
+	public ASNBoolean(Boolean value) {		
+		this.value=value;
+	}
+	
 	public Boolean getValue() {
 		return value;
-	}
-
-	public void setValue(Boolean value) {
-		this.value = value;
 	}
 
 	@ASNLength

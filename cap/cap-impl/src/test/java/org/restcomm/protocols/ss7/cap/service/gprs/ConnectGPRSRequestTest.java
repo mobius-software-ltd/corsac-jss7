@@ -35,6 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -64,7 +65,7 @@ public class ConnectGPRSRequestTest {
         assertTrue(result.getResult() instanceof ConnectGPRSRequestImpl);
         
         ConnectGPRSRequestImpl prim = (ConnectGPRSRequestImpl)result.getResult();        
-        assertTrue(Arrays.equals(prim.getAccessPointName().getData(), this.getAccessPointNameData()));
+        assertTrue(ByteBufUtil.equals(prim.getAccessPointName().getValue(),Unpooled.wrappedBuffer(this.getAccessPointNameData())));
         assertEquals(prim.getPDPID().getId(), 2);
     }
 
@@ -73,7 +74,7 @@ public class ConnectGPRSRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ConnectGPRSRequestImpl.class);
     	
-        AccessPointNameImpl accessPointName = new AccessPointNameImpl(this.getAccessPointNameData());
+        AccessPointNameImpl accessPointName = new AccessPointNameImpl(Unpooled.wrappedBuffer(this.getAccessPointNameData()));
         PDPIDImpl pdpID = new PDPIDImpl(2);
         ConnectGPRSRequestImpl prim = new ConnectGPRSRequestImpl(accessPointName, pdpID);
         byte[] rawData = this.getData();

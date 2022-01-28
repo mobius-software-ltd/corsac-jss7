@@ -27,6 +27,8 @@ import java.util.List;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
 *
 <code>
@@ -42,6 +44,6 @@ SIZE (bound.&minRouteListLength..bound.&maxRouteListLength))
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public interface RouteList {
 
-    List<byte[]> getDataList();
+    List<ByteBuf> getDataList();
 
 }

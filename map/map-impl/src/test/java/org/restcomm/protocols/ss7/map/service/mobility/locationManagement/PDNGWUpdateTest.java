@@ -47,7 +47,7 @@ import io.netty.buffer.Unpooled;
 public class PDNGWUpdateTest {
 
     public byte[] getData() {
-        return new byte[] { 48, 92, -128, 3, 18, 32, 6, -95, 41, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
+        return new byte[] { 48, 93, -128, 4, 3, 18, 32, 6, -95, 41, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
                 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -126, 1, 2, -93, 39,
                 -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23,
                 24, 25, 26, -95, 3, 31, 32, 33 };
@@ -68,11 +68,10 @@ public class PDNGWUpdateTest {
         assertTrue(result.getResult() instanceof PDNGWUpdateImpl);
         PDNGWUpdateImpl prim = (PDNGWUpdateImpl)result.getResult();
         
-        assertTrue(Arrays.equals(prim.getAPN().getData(), this.getAPNData()));
+        assertEquals(prim.getAPN().getApn(), new String(this.getAPNData()));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getPdnGwIdentity().getExtensionContainer()));
         assertEquals(prim.getContextId(), Integer.valueOf(2));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
-
     }
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -81,7 +80,7 @@ public class PDNGWUpdateTest {
     	parser.replaceClass(PDNGWUpdateImpl.class);
     	
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        APNImpl apn = new APNImpl(getAPNData());
+        APNImpl apn = new APNImpl(new String(getAPNData()));
         PDNGWIdentityImpl pdnGwIdentity = new PDNGWIdentityImpl(null, null, null, extensionContainer);
         PDNGWUpdateImpl prim = new PDNGWUpdateImpl(apn, pdnGwIdentity, 2, extensionContainer);
         byte[] data=this.getData();

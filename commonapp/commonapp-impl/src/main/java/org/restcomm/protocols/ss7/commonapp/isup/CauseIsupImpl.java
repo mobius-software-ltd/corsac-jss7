@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,38 +39,24 @@ import io.netty.buffer.Unpooled;
  * @author Amit Bhayani
  *
  */
-public class CauseIsupImpl extends ASNOctetString implements CauseIsup {
+public class CauseIsupImpl extends ASNOctetString2 implements CauseIsup {
 	public CauseIsupImpl() {
     }
 
-    public CauseIsupImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public CauseIsupImpl(CauseIndicators causeIndicators) throws APPException {
-        setCauseIndicators(causeIndicators);
+        super(translate(causeIndicators));
     }
 
-    public void setCauseIndicators(CauseIndicators causeIndicators) throws APPException {
+    public static ByteBuf translate(CauseIndicators causeIndicators) throws APPException {
         if (causeIndicators == null)
             throw new APPException("The causeIndicators parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((CauseIndicatorsImpl) causeIndicators).encode(buffer);
-            setValue(buffer);
+            return buffer;
         } catch (ParameterException e) {
             throw new APPException("ParameterException when encoding causeIndicators: " + e.getMessage(), e);
         }
-    }
-
-    public byte[] getData() {
-    	ByteBuf buffer=this.getValue();
-    	if(buffer==null)
-    		return null;
-    	
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
-        return data;
     }
 
     public CauseIndicators getCauseIndicators() throws APPException {
@@ -91,11 +77,7 @@ public class CauseIsupImpl extends ASNOctetString implements CauseIsup {
         StringBuilder sb = new StringBuilder();
         sb.append("CauseCap [");
 
-        byte[] data=this.getData();
-        if (data != null) {
-            sb.append("data=[");
-            sb.append(printDataArr(data));
-            sb.append("]");
+        if (getValue() != null) {
             try {
                 CauseIndicators ci = this.getCauseIndicators();
                 sb.append(", ");

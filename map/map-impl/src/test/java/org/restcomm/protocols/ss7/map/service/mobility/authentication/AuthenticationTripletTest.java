@@ -33,6 +33,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -71,9 +72,9 @@ public class AuthenticationTripletTest {
         assertTrue(result.getResult() instanceof AuthenticationTripletImpl);
         AuthenticationTripletImpl asc = (AuthenticationTripletImpl)result.getResult();
         
-        assertTrue(Arrays.equals(asc.getRand(), getRandData()));
-        assertTrue(Arrays.equals(asc.getSres(), getSresData()));
-        assertTrue(Arrays.equals(asc.getKc(), getKcData()));
+        assertTrue(ByteBufUtil.equals(asc.getRand(), Unpooled.wrappedBuffer(getRandData())));
+        assertTrue(ByteBufUtil.equals(asc.getSres(), Unpooled.wrappedBuffer(getSresData())));
+        assertTrue(ByteBufUtil.equals(asc.getKc(), Unpooled.wrappedBuffer(getKcData())));
 
     }
 
@@ -82,7 +83,8 @@ public class AuthenticationTripletTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AuthenticationTripletImpl.class);
 
-        AuthenticationTripletImpl asc = new AuthenticationTripletImpl(getRandData(), getSresData(), getKcData());
+        AuthenticationTripletImpl asc = new AuthenticationTripletImpl(Unpooled.wrappedBuffer(getRandData()), 
+        		Unpooled.wrappedBuffer(getSresData()), Unpooled.wrappedBuffer(getKcData()));
         byte[] data=getEncodedData();        		
         ByteBuf buffer=parser.encode(asc);
         byte[] encodedData = new byte[buffer.readableBytes()];

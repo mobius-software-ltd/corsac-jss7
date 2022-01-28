@@ -101,8 +101,8 @@ public class AuthenticationSetListTest {
     	parser.replaceClass(AuthenticationSetListImpl.class);
 
         List<AuthenticationTriplet> ats = new ArrayList<AuthenticationTriplet>();
-        AuthenticationTripletImpl at = new AuthenticationTripletImpl(AuthenticationTripletTest.getRandData(),
-                AuthenticationTripletTest.getSresData(), AuthenticationTripletTest.getKcData());
+        AuthenticationTripletImpl at = new AuthenticationTripletImpl(Unpooled.wrappedBuffer(AuthenticationTripletTest.getRandData()),
+        		Unpooled.wrappedBuffer(AuthenticationTripletTest.getSresData()), Unpooled.wrappedBuffer(AuthenticationTripletTest.getKcData()));
         ats.add(at);
         TripletList tl = new TripletListImpl(ats);
         AuthenticationSetListImpl asc = new AuthenticationSetListImpl(tl,3);        
@@ -114,8 +114,8 @@ public class AuthenticationSetListTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         ats = new ArrayList<AuthenticationTriplet>();
-        at = new AuthenticationTripletImpl(AuthenticationTripletTest.getRandData(), AuthenticationTripletTest.getSresData(),
-                AuthenticationTripletTest.getKcData());
+        at = new AuthenticationTripletImpl(Unpooled.wrappedBuffer(AuthenticationTripletTest.getRandData()), Unpooled.wrappedBuffer(AuthenticationTripletTest.getSresData()),
+        		Unpooled.wrappedBuffer(AuthenticationTripletTest.getKcData()));
         ats.add(at);
         tl = new TripletListImpl(ats);
         asc = new AuthenticationSetListImpl(tl,2);
@@ -127,9 +127,9 @@ public class AuthenticationSetListTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         List<AuthenticationQuintuplet> qts = new ArrayList<AuthenticationQuintuplet>();
-        AuthenticationQuintupletImpl qt = new AuthenticationQuintupletImpl(AuthenticationQuintupletTest.getRandData(),
-                AuthenticationQuintupletTest.getXresData(), AuthenticationQuintupletTest.getCkData(),
-                AuthenticationQuintupletTest.getIkData(), AuthenticationQuintupletTest.getAutnData());
+        AuthenticationQuintupletImpl qt = new AuthenticationQuintupletImpl(Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getRandData()),
+        		Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getXresData()), Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getCkData()),
+        		Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getIkData()), Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getAutnData()));
         qts.add(qt);
         QuintupletList ql = new QuintupletListImpl(qts);
         asc = new AuthenticationSetListImpl(ql);

@@ -26,8 +26,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import java.util.Arrays;
-
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -51,10 +49,6 @@ public class ZoneCodeTest {
         return new byte[] { 4, 2, 2, 5 };
     };
 
-    public byte[] getZoneCodeData() {
-        return new byte[] { 2, 5 };
-    };
-
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
@@ -72,7 +66,7 @@ public class ZoneCodeTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ZoneCodeImpl);
         prim = (ZoneCodeImpl)result.getResult();
-        assertTrue(Arrays.equals(prim.getData(), this.getZoneCodeData()));
+        assertEquals(prim.getIntValue(), 517);
     }
 
     @Test(groups = { "functional.encode", "primitives" })
@@ -87,7 +81,7 @@ public class ZoneCodeTest {
         byte[] rawData = this.getData();
         assertEquals(encodedData, rawData);
 
-        prim = new ZoneCodeImpl(this.getZoneCodeData());
+        prim = new ZoneCodeImpl(517);
         buffer=parser.encode(prim);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);

@@ -50,10 +50,6 @@ public class GenericNumberCapTest {
         return new byte[] { 4, 7, 1, (byte) 131, 20, 7, 1, 9, 0 };
     }
 
-    public byte[] getIntData() {
-        return new byte[] { 1, -125, 20, 7, 1, 9, 0 };
-    }
-
     @Test(groups = { "functional.decode", "isup" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
@@ -67,7 +63,6 @@ public class GenericNumberCapTest {
         
         GenericNumberIsupImpl elem = (GenericNumberIsupImpl)result.getResult();        
         GenericNumber gn = elem.getGenericNumber();
-        assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         assertEquals(gn.getNatureOfAddressIndicator(), 3);
         assertTrue(gn.getAddress().equals("7010900"));
         assertEquals(gn.getNumberingPlanIndicator(), 1);
@@ -81,18 +76,11 @@ public class GenericNumberCapTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GenericNumberIsupImpl.class);
     	
-        GenericNumberIsupImpl elem = new GenericNumberIsupImpl(this.getIntData());
+        GenericNumber rn = new GenericNumberImpl(3, "7010900", 1, 1, 1, false, 0);
+        GenericNumberIsupImpl elem = new GenericNumberIsupImpl(rn);
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
-        buffer.readBytes(encodedData);
-        assertTrue(Arrays.equals(rawData, encodedData));
-
-        GenericNumber rn = new GenericNumberImpl(3, "7010900", 1, 1, 1, false, 0);
-        elem = new GenericNumberIsupImpl(rn);
-        rawData = this.getData();
-        buffer=parser.encode(elem);
-        encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
@@ -100,44 +88,4 @@ public class GenericNumberCapTest {
         // addressRepresentationREstrictedIndicator,
         // boolean numberIncomplete, int screeningIndicator
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "isup" })
-    public void testXMLSerialize() throws Exception {
-
-        GenericNumberImpl gn = new GenericNumberImpl(GenericNumber._NAI_NATIONAL_SN, "12345",
-                GenericNumber._NQIA_CONNECTED_NUMBER, GenericNumber._NPI_TELEX, GenericNumber._APRI_ALLOWED,
-                GenericNumber._NI_INCOMPLETE, GenericNumber._SI_USER_PROVIDED_VERIFIED_FAILED);
-        GenericNumberCapImpl original = new GenericNumberCapImpl(gn);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "genericNumberCap", GenericNumberCapImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        GenericNumberCapImpl copy = reader.read("genericNumberCap", GenericNumberCapImpl.class);
-
-        assertEquals(copy.getGenericNumber().getNatureOfAddressIndicator(), original.getGenericNumber()
-                .getNatureOfAddressIndicator());
-        assertEquals(copy.getGenericNumber().getAddress(), original.getGenericNumber().getAddress());
-        assertEquals(copy.getGenericNumber().getNumberQualifierIndicator(), original.getGenericNumber()
-                .getNumberQualifierIndicator());
-        assertEquals(copy.getGenericNumber().getNumberingPlanIndicator(), original.getGenericNumber()
-                .getNumberingPlanIndicator());
-        assertEquals(copy.getGenericNumber().isNumberIncomplete(), original.getGenericNumber().isNumberIncomplete());
-        assertEquals(copy.getGenericNumber().getAddressRepresentationRestrictedIndicator(), original.getGenericNumber()
-                .getAddressRepresentationRestrictedIndicator());
-        assertEquals(copy.getGenericNumber().getScreeningIndicator(), original.getGenericNumber().getScreeningIndicator());
-        assertEquals(copy.getGenericNumber().isOddFlag(), original.getGenericNumber().isOddFlag());
-
-    }*/
 }

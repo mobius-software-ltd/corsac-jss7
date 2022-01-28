@@ -21,12 +21,29 @@
  */
 package org.restcomm.protocols.ss7.cap.service.gprs.primitive;
 
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.Ext2QoSSubscribed_SourceStatisticsDescriptor;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_BitRate;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_BitRateExtended;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_DeliveryOfErroneousSdus;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_DeliveryOrder;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_MaximumSduSize;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_ResidualBER;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_SduErrorRatio;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_TrafficClass;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_TrafficHandlingPriority;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_TransferDelay;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_DelayClass;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_MeanThroughput;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_PeakThroughput;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_PrecedenceClass;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_ReliabilityClass;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.Ext2QoSSubscribedImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtQoSSubscribedImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.QoSSubscribedImpl;
@@ -46,21 +63,9 @@ import io.netty.buffer.Unpooled;
 public class QualityOfServiceTest {
 
     public byte[] getData() {
-        return new byte[] { 48, 35, -96, 5, -128, 3, 4, 7, 7, -95, 4, -127, 2, 1, 7, -94, 5, -128, 3, 4, 7, 7, -93, 3, -128, 1,
-                52, -92, 3, -128, 1, 53, -91, 3, -128, 1, 54 };
+        return new byte[] { 48, 48, -96, 5, -128, 3, 4, 7, 7, -95, 11, -127, 9, 1, 0, 0, 0, 0, 0, 0, 0, 0, -94, 5, 
+        		-128, 3, 4, 7, 7, -93, 5, -128, 3, 0, 0, 0, -92, 5, -128, 3, 16, 0, 0, -91, 5, -128, 3, 17, 0, 0 };
     };
-
-    private byte[] getEncodedqos2Subscribed1() {
-        return new byte[] { 52 };
-    }
-
-    private byte[] getEncodedqos2Subscribed2() {
-        return new byte[] { 53 };
-    }
-
-    private byte[] getEncodedqos2Subscribed3() {
-        return new byte[] { 54 };
-    }
 
     public byte[] getQoSSubscribedData() {
         return new byte[] { 4, 7, 7 };
@@ -82,23 +87,53 @@ public class QualityOfServiceTest {
         assertTrue(result.getResult() instanceof QualityOfServiceImpl);
         
         QualityOfServiceImpl prim = (QualityOfServiceImpl)result.getResult();        
-        assertTrue(Arrays.equals(prim.getRequestedQoS().getShortQoSFormat().getData(), this.getQoSSubscribedData()));
+        assertEquals(prim.getRequestedQoS().getShortQoSFormat().getReliabilityClass(),
+        		QoSSubscribed_ReliabilityClass.unacknowledgedGtpLlcAndRlc_ProtectedData);
+        assertEquals(prim.getRequestedQoS().getShortQoSFormat().getDelayClass(),
+        		QoSSubscribed_DelayClass.subscribedDelayClass_Reserved);
+        assertEquals(prim.getRequestedQoS().getShortQoSFormat().getPrecedenceClass(),
+        		QoSSubscribed_PrecedenceClass.reserved);
+        assertEquals(prim.getRequestedQoS().getShortQoSFormat().getPeakThroughput(),
+        		QoSSubscribed_PeakThroughput.subscribedPeakThroughput_Reserved);
+        assertEquals(prim.getRequestedQoS().getShortQoSFormat().getMeanThroughput(),
+        		QoSSubscribed_MeanThroughput._10000_octetH);
+        
+        
         assertNull(prim.getRequestedQoS().getLongQoSFormat());
 
-        assertTrue(Arrays.equals(prim.getSubscribedQoS().getLongQoSFormat().getData(), this.getExtQoSSubscribedData()));
         assertNull(prim.getSubscribedQoS().getShortQoSFormat());
 
-        assertTrue(Arrays.equals(prim.getNegotiatedQoS().getShortQoSFormat().getData(), this.getQoSSubscribedData()));
+        assertEquals(prim.getNegotiatedQoS().getShortQoSFormat().getReliabilityClass(),
+        		QoSSubscribed_ReliabilityClass.unacknowledgedGtpLlcAndRlc_ProtectedData);
+        assertEquals(prim.getNegotiatedQoS().getShortQoSFormat().getDelayClass(),
+        		QoSSubscribed_DelayClass.subscribedDelayClass_Reserved);
+        assertEquals(prim.getNegotiatedQoS().getShortQoSFormat().getPrecedenceClass(),
+        		QoSSubscribed_PrecedenceClass.reserved);
+        assertEquals(prim.getNegotiatedQoS().getShortQoSFormat().getPeakThroughput(),
+        		QoSSubscribed_PeakThroughput.subscribedPeakThroughput_Reserved);
+        assertEquals(prim.getNegotiatedQoS().getShortQoSFormat().getMeanThroughput(),
+        		QoSSubscribed_MeanThroughput._10000_octetH);
+        
         assertNull(prim.getNegotiatedQoS().getLongQoSFormat());
 
-        assertTrue(Arrays.equals(prim.getRequestedQoSExtension().getSupplementToLongQoSFormat().getData(),
-                this.getEncodedqos2Subscribed1()));
-
-        assertTrue(Arrays.equals(prim.getSubscribedQoSExtension().getSupplementToLongQoSFormat().getData(),
-                this.getEncodedqos2Subscribed2()));
-
-        assertTrue(Arrays.equals(prim.getNegotiatedQoSExtension().getSupplementToLongQoSFormat().getData(),
-                this.getEncodedqos2Subscribed3()));
+        assertEquals(prim.getRequestedQoSExtension().getSupplementToLongQoSFormat().getSourceStatisticsDescriptor(),
+        		Ext2QoSSubscribed_SourceStatisticsDescriptor.unknown);
+        assertEquals(prim.getRequestedQoSExtension().getSupplementToLongQoSFormat().isOptimisedForSignallingTraffic(),false);
+        assertEquals(prim.getRequestedQoSExtension().getSupplementToLongQoSFormat().getGuaranteedBitRateForDownlinkExtended().getBitRate(),0);
+        assertEquals(prim.getRequestedQoSExtension().getSupplementToLongQoSFormat().getMaximumBitRateForDownlinkExtended().getBitRate(),0);
+        
+        assertEquals(prim.getSubscribedQoSExtension().getSupplementToLongQoSFormat().getSourceStatisticsDescriptor(),
+        		Ext2QoSSubscribed_SourceStatisticsDescriptor.unknown);
+        assertEquals(prim.getSubscribedQoSExtension().getSupplementToLongQoSFormat().isOptimisedForSignallingTraffic(),true);
+        assertEquals(prim.getSubscribedQoSExtension().getSupplementToLongQoSFormat().getGuaranteedBitRateForDownlinkExtended().getBitRate(),0);
+        assertEquals(prim.getSubscribedQoSExtension().getSupplementToLongQoSFormat().getMaximumBitRateForDownlinkExtended().getBitRate(),0);
+        
+        assertEquals(prim.getNegotiatedQoSExtension().getSupplementToLongQoSFormat().getSourceStatisticsDescriptor(),
+        		Ext2QoSSubscribed_SourceStatisticsDescriptor.speech);
+        assertEquals(prim.getNegotiatedQoSExtension().getSupplementToLongQoSFormat().isOptimisedForSignallingTraffic(),true);
+        assertEquals(prim.getNegotiatedQoSExtension().getSupplementToLongQoSFormat().getGuaranteedBitRateForDownlinkExtended().getBitRate(),0);
+        assertEquals(prim.getNegotiatedQoSExtension().getSupplementToLongQoSFormat().getMaximumBitRateForDownlinkExtended().getBitRate(),0);
+        
     }
 
     @Test(groups = { "functional.encode", "primitives" })
@@ -106,23 +141,28 @@ public class QualityOfServiceTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(QualityOfServiceImpl.class);
     	
-        QoSSubscribedImpl qosSubscribed = new QoSSubscribedImpl(this.getQoSSubscribedData());
+        QoSSubscribedImpl qosSubscribed = new QoSSubscribedImpl(QoSSubscribed_ReliabilityClass.unacknowledgedGtpLlcAndRlc_ProtectedData,
+        		QoSSubscribed_DelayClass.subscribedDelayClass_Reserved,QoSSubscribed_PrecedenceClass.reserved,QoSSubscribed_PeakThroughput.subscribedPeakThroughput_Reserved,
+        		QoSSubscribed_MeanThroughput._10000_octetH);
         GPRSQoSImpl requestedQoS = new GPRSQoSImpl(qosSubscribed);
 
-        ExtQoSSubscribedImpl extQoSSubscribed = new ExtQoSSubscribedImpl(this.getExtQoSSubscribedData());
+        ExtQoSSubscribedImpl extQoSSubscribed = new ExtQoSSubscribedImpl(1,ExtQoSSubscribed_DeliveryOfErroneousSdus.subscribedDeliveryOfErroneousSdus_Reserved,
+                ExtQoSSubscribed_DeliveryOrder.subscribeddeliveryOrder_Reserved, ExtQoSSubscribed_TrafficClass.subscribedTrafficClass_Reserved, new ExtQoSSubscribed_MaximumSduSize(0,true),
+                new ExtQoSSubscribed_BitRate(0,true), new ExtQoSSubscribed_BitRate(0,true), ExtQoSSubscribed_ResidualBER.subscribedResidualBER_Reserved,
+                ExtQoSSubscribed_SduErrorRatio.subscribedSduErrorRatio_Reserved, ExtQoSSubscribed_TrafficHandlingPriority.subscribedTrafficHandlingPriority_Reserved,
+                new ExtQoSSubscribed_TransferDelay(0,true), new ExtQoSSubscribed_BitRate(0,true),new ExtQoSSubscribed_BitRate(0,true));
+        
         GPRSQoSImpl subscribedQoS = new GPRSQoSImpl(extQoSSubscribed);
 
         GPRSQoSImpl negotiatedQoS = new GPRSQoSImpl(qosSubscribed);
 
-        Ext2QoSSubscribedImpl qos2Subscribed1 = new Ext2QoSSubscribedImpl(this.getEncodedqos2Subscribed1());
+        Ext2QoSSubscribedImpl qos2Subscribed1 = new Ext2QoSSubscribedImpl(Ext2QoSSubscribed_SourceStatisticsDescriptor.unknown,false,new ExtQoSSubscribed_BitRateExtended(0, true), new ExtQoSSubscribed_BitRateExtended(0, true));
         GPRSQoSExtensionImpl requestedQoSExtension = new GPRSQoSExtensionImpl(qos2Subscribed1);
-
-        Ext2QoSSubscribedImpl qos2Subscribed2 = new Ext2QoSSubscribedImpl(this.getEncodedqos2Subscribed2());
+        Ext2QoSSubscribedImpl qos2Subscribed2 = new Ext2QoSSubscribedImpl(Ext2QoSSubscribed_SourceStatisticsDescriptor.unknown,true,new ExtQoSSubscribed_BitRateExtended(0, true), new ExtQoSSubscribed_BitRateExtended(0, true));
         GPRSQoSExtensionImpl subscribedQoSExtension = new GPRSQoSExtensionImpl(qos2Subscribed2);
-
-        Ext2QoSSubscribedImpl qos2Subscribed3 = new Ext2QoSSubscribedImpl(this.getEncodedqos2Subscribed3());
+        Ext2QoSSubscribedImpl qos2Subscribed3 = new Ext2QoSSubscribedImpl(Ext2QoSSubscribed_SourceStatisticsDescriptor.speech,true,new ExtQoSSubscribed_BitRateExtended(0, true), new ExtQoSSubscribed_BitRateExtended(0, true));
         GPRSQoSExtensionImpl negotiatedQoSExtension = new GPRSQoSExtensionImpl(qos2Subscribed3);
-
+        
         QualityOfServiceImpl prim = new QualityOfServiceImpl(requestedQoS, subscribedQoS, negotiatedQoS, requestedQoSExtension,
                 subscribedQoSExtension, negotiatedQoSExtension);
         byte[] rawData = this.getData();

@@ -28,8 +28,6 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
-import io.netty.buffer.ByteBuf;
-
 /**
  *
  * SM-RP-SMEA ::= OCTET STRING (SIZE (1..12)) -- this parameter contains an address field which is encoded -- as defined in 3GPP
@@ -42,6 +40,4 @@ import io.netty.buffer.ByteBuf;
 public interface SM_RP_SMEA {
 
     AddressField getAddressField() throws MAPException;
-
-    ByteBuf getValue();
 }

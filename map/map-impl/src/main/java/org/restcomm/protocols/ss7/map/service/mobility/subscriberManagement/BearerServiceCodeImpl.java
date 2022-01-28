@@ -38,11 +38,11 @@ public class BearerServiceCodeImpl extends ASNSingleByte implements BearerServic
     }
 
     public BearerServiceCodeImpl(int data) {
-        setValue(data);
+        super(data);
     }
 
     public BearerServiceCodeImpl(BearerServiceCodeValue value) {
-        setValue(value != null ? value.getCode() : 0);
+    	super(value != null ? value.getCode() : 0);
     }
 
     public int getData() {

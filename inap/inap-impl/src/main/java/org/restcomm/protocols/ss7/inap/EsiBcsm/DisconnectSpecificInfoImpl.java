@@ -50,17 +50,15 @@ public class DisconnectSpecificInfoImpl implements DisconnectSpecificInfo {
     public DisconnectSpecificInfoImpl(CauseIsup releaseCause,Integer connectTime) {
         this.releaseCause = releaseCause;
         
-        if(connectTime!=null) {
-        	this.connectTime = new ASNInteger();
-        	this.connectTime.setValue(connectTime.longValue());
-        }
+        if(connectTime!=null)
+        	this.connectTime = new ASNInteger(connectTime);        	
     }
 
     public Integer getConnectTime() {
-    	if(connectTime==null || connectTime.getValue()==null)
+    	if(connectTime==null)
     		return null;
     	
-        return connectTime.getValue().intValue();
+        return connectTime.getIntValue();
     }
 
     public CauseIsup getReleaseCause() {

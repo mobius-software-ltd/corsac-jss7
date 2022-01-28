@@ -105,9 +105,7 @@ public class SmsCommandTpduImpl extends SmsTpduImpl implements SmsCommandTpdu {
             throw new MAPException("Error creating a new SmsCommandTpdu instance: commandDataLength field has not been found");
 
         int avail = this.commandDataLength;
-        byte[] commandDataArr = new byte[avail];
-        buf.readBytes(commandDataArr);
-        commandData = new CommandDataImpl(commandDataArr);
+        commandData = new CommandDataImpl(buf.readSlice(avail));
     }
 
     public boolean getUserDataHeaderIndicator() {
@@ -157,7 +155,7 @@ public class SmsCommandTpduImpl extends SmsTpduImpl implements SmsCommandTpdu {
                 | (this.statusReportRequest ? _MASK_TP_SRR : 0));
 
         this.commandData.encode();
-        this.commandDataLength = this.commandData.getEncodedData().length;
+        this.commandDataLength = this.commandData.getEncodedData().readableBytes();
 
         if (this.commandDataLength > _CommandDataLimit) {
         	throw new MAPException("Command data field length may not increase " + _CommandDataLimit);

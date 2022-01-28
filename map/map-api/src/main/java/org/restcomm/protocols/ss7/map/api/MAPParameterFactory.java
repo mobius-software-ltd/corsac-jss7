@@ -349,23 +349,23 @@ public interface MAPParameterFactory {
             throws MAPException;
 
     /**
-     * Creates a new instance of {@link USSDString}. The passed USSD String byte[] is encoded by using the default Charset
+     * Creates a new instance of {@link USSDString}. The passed USSD String ByteBuf is encoded by using the default Charset
      * defined in GSM 03.38 Specs
      *
      * @param ussdString The USSD String
      * @return new instance of {@link USSDString}
      */
-    USSDString createUSSDString(byte[] ussdString);
+    USSDString createUSSDString(ByteBuf ussdString);
 
     /**
      * Creates a new instance of {@link USSDString} using the passed {@link java.nio.charset.Charset} for encoding the passed
-     * ussdString byte[]
+     * ussdString ByteBuf
      *
-     * @param ussdString The byte[] of the USSD String
-     * @param charSet The Charset used for encoding the passed USSD String byte[]
+     * @param ussdString The ByteBuf of the USSD String
+     * @param charSet The Charset used for encoding the passed USSD String ByteBuf
      * @return new instance of {@link USSDString}
      */
-    USSDString createUSSDString(byte[] ussdString, CBSDataCodingScheme dataCodingScheme, Charset gsm8Charset);
+    USSDString createUSSDString(ByteBuf ussdString, CBSDataCodingScheme dataCodingScheme, Charset gsm8Charset);
 
     /**
      * Creates a new instance of {@link AddressString}
@@ -411,7 +411,7 @@ public interface MAPParameterFactory {
      *
      * @return new instance of {@link LMSI}
      */
-    LMSI createLMSI(byte[] data);
+    LMSI createLMSI(ByteBuf value);
 
     /**
      * Creates a new instance of {@link SM_RP_DA} with imsi parameter
@@ -467,11 +467,7 @@ public interface MAPParameterFactory {
      */
     SM_RP_OA createSM_RP_OA();
 
-    SmsSignalInfo createSmsSignalInfo(byte[] data, Charset gsm8Charset);
-
     SmsSignalInfo createSmsSignalInfo(SmsTpdu data, Charset gsm8Charset) throws MAPException;
-
-    SM_RP_SMEA createSM_RP_SMEA(byte[] data);
 
     SM_RP_SMEA createSM_RP_SMEA(AddressField addressField) throws MAPException;
 
@@ -502,16 +498,12 @@ public interface MAPParameterFactory {
 
     CellGlobalIdOrServiceAreaIdOrLAI createCellGlobalIdOrServiceAreaIdOrLAI(LAIFixedLength laiFixedLength);
 
-    CellGlobalIdOrServiceAreaIdFixedLength createCellGlobalIdOrServiceAreaIdFixedLength(byte[] data);
-
     CellGlobalIdOrServiceAreaIdFixedLength createCellGlobalIdOrServiceAreaIdFixedLength(int mcc, int mnc, int lac,
             int cellId) throws MAPException;
 
-    LAIFixedLength createLAIFixedLength(byte[] data);
-
     LAIFixedLength createLAIFixedLength(int mcc, int mnc, int lac) throws MAPException;
 
-    CallReferenceNumber createCallReferenceNumber(byte[] data);
+    CallReferenceNumber createCallReferenceNumber(ByteBuf value);
 
     LocationInformation createLocationInformation(Integer ageOfLocationInformation,
             GeographicalInformation geographicalInformation, ISDNAddressString vlrNumber, LocationNumberMap locationNumber,
@@ -520,24 +512,18 @@ public interface MAPParameterFactory {
             boolean currentLocationRetrieved, boolean saiPresent, LocationInformationEPS locationInformationEPS,
             UserCSGInformation userCSGInformation);
 
-    LocationNumberMap createLocationNumberMap(byte[] data);
-
     LocationNumberMap createLocationNumberMap(LocationNumber locationNumber) throws MAPException;
 
     SubscriberState createSubscriberState(SubscriberStateChoice subscriberStateChoice,
             NotReachableReason notReachableReason);
 
-    PlmnId createPlmnId(byte[] data);
-
     PlmnId createPlmnId(int mcc, int mnc);
 
-    GSNAddress createGSNAddress(byte[] data);
+    GSNAddress createGSNAddress(GSNAddressAddressType addressType, ByteBuf addressData) throws MAPException;
 
-    GSNAddress createGSNAddress(GSNAddressAddressType addressType, byte[] addressData) throws MAPException;
+    AuthenticationTriplet createAuthenticationTriplet(ByteBuf rand, ByteBuf sres, ByteBuf kc);
 
-    AuthenticationTriplet createAuthenticationTriplet(byte[] rand, byte[] sres, byte[] kc);
-
-    AuthenticationQuintuplet createAuthenticationQuintuplet(byte[] rand, byte[] xres, byte[] ck, byte[] ik, byte[] autn);
+    AuthenticationQuintuplet createAuthenticationQuintuplet(ByteBuf rand, ByteBuf xres, ByteBuf ck, ByteBuf ik, ByteBuf autn);
 
     TripletList createTripletList(List<AuthenticationTriplet> authenticationTriplets);
 
@@ -547,11 +533,11 @@ public interface MAPParameterFactory {
 
     AuthenticationSetList createAuthenticationSetList(QuintupletList quintupletList);
 
-    ReSynchronisationInfo createReSynchronisationInfo(byte[] rand, byte[] auts);
+    ReSynchronisationInfo createReSynchronisationInfo(ByteBuf rand, ByteBuf auts);
 
     EpsAuthenticationSetList createEpsAuthenticationSetList(List<EpcAv> epcAv);
 
-    EpcAv createEpcAv(byte[] rand, byte[] xres, byte[] autn, byte[] kasme, MAPExtensionContainer extensionContainer);
+    EpcAv createEpcAv(ByteBuf rand, ByteBuf xres, ByteBuf autn, ByteBuf kasme, MAPExtensionContainer extensionContainer);
 
     VLRCapability createVlrCapability(SupportedCamelPhases supportedCamelPhases,
     		MAPExtensionContainer extensionContainer, boolean solsaSupportIndicator, ISTSupportIndicator istSupportIndicator,
@@ -563,7 +549,7 @@ public interface MAPParameterFactory {
 
     SuperChargerInfo createSuperChargerInfo();
 
-    SuperChargerInfo createSuperChargerInfo(byte[] subscriberDataStored);
+    SuperChargerInfo createSuperChargerInfo(ByteBuf subscriberDataStored);
 
     SupportedLCSCapabilitySets createSupportedLCSCapabilitySets(boolean lcsCapabilitySetRelease98_99,
             boolean lcsCapabilitySetRelease4, boolean lcsCapabilitySetRelease5, boolean lcsCapabilitySetRelease6,
@@ -579,8 +565,6 @@ public interface MAPParameterFactory {
 
     PagingArea createPagingArea(List<LocationArea> locationAreas);
 
-    LAC createLAC(byte[] data);
-
     LAC createLAC(int lac) throws MAPException;
 
     LocationArea createLocationArea(LAIFixedLength laiFixedLength);
@@ -593,19 +577,15 @@ public interface MAPParameterFactory {
     AnyTimeInterrogationResponse createAnyTimeInterrogationResponse(SubscriberInfo subscriberInfo,
     		MAPExtensionContainer extensionContainer);
 
-    DiameterIdentity createDiameterIdentity(byte[] data);
+    DiameterIdentity createDiameterIdentity(ByteBuf value);
 
     SubscriberIdentity createSubscriberIdentity(IMSI imsi);
 
     SubscriberIdentity createSubscriberIdentity(ISDNAddressString msisdn);
 
-    APN createAPN(byte[] data);
-
     APN createAPN(String data) throws MAPException;
 
-    PDPAddress createPDPAddress(byte[] data);
-
-    PDPType createPDPType(byte[] data);
+    PDPAddress createPDPAddress(ByteBuf value);
 
     PDPType createPDPType(PDPTypeValue data);
 
@@ -625,23 +605,17 @@ public interface MAPParameterFactory {
             Ext3QoSSubscribed ext3QoSSubscribed, Ext4QoSSubscribed ext4QoSSubscribed, APNOIReplacement apnoiReplacement,
             ExtPDPType extpdpType, PDPAddress extpdpAddress, SIPTOPermission sipToPermission, LIPAPermission lipaPermission);
 
-    APNOIReplacement createAPNOIReplacement(byte[] data);
-
-    QoSSubscribed createQoSSubscribed(byte[] data);
+    APNOIReplacement createAPNOIReplacement(ByteBuf data);
 
     QoSSubscribed createQoSSubscribed(QoSSubscribed_ReliabilityClass reliabilityClass, QoSSubscribed_DelayClass delayClass,
             QoSSubscribed_PrecedenceClass precedenceClass, QoSSubscribed_PeakThroughput peakThroughput, QoSSubscribed_MeanThroughput meanThroughput);
 
-    LSAIdentity createLSAIdentity(byte[] data);
+    LSAIdentity createLSAIdentity(ByteBuf data);
 
-    GPRSChargingID createGPRSChargingID(byte[] data);
-
-    ChargingCharacteristics createChargingCharacteristics(byte[] data);
+    GPRSChargingID createGPRSChargingID(ByteBuf data);
 
     ChargingCharacteristics createChargingCharacteristics(boolean isNormalCharging, boolean isPrepaidCharging, boolean isFlatRateChargingCharging,
             boolean isChargingByHotBillingCharging);
-
-    ExtQoSSubscribed createExtQoSSubscribed(byte[] data);
 
     ExtQoSSubscribed createExtQoSSubscribed(int allocationRetentionPriority, ExtQoSSubscribed_DeliveryOfErroneousSdus deliveryOfErroneousSdus,
             ExtQoSSubscribed_DeliveryOrder deliveryOrder, ExtQoSSubscribed_TrafficClass trafficClass, ExtQoSSubscribed_MaximumSduSize maximumSduSize,
@@ -650,39 +624,31 @@ public interface MAPParameterFactory {
             ExtQoSSubscribed_TransferDelay transferDelay, ExtQoSSubscribed_BitRate guaranteedBitRateForUplink,
             ExtQoSSubscribed_BitRate guaranteedBitRateForDownlink);
 
-    Ext2QoSSubscribed createExt2QoSSubscribed(byte[] data);
-
     Ext2QoSSubscribed createExt2QoSSubscribed(Ext2QoSSubscribed_SourceStatisticsDescriptor sourceStatisticsDescriptor, boolean optimisedForSignallingTraffic,
             ExtQoSSubscribed_BitRateExtended maximumBitRateForDownlinkExtended, ExtQoSSubscribed_BitRateExtended guaranteedBitRateForDownlinkExtended);
-
-    Ext3QoSSubscribed createExt3QoSSubscribed(byte[] data);
 
     Ext3QoSSubscribed createExt3QoSSubscribed(ExtQoSSubscribed_BitRateExtended maximumBitRateForUplinkExtended,
             ExtQoSSubscribed_BitRateExtended guaranteedBitRateForUplinkExtended);
 
     Ext4QoSSubscribed createExt4QoSSubscribed(int data);
 
-    ExtPDPType createExtPDPType(byte[] data);
+    ExtPDPType createExtPDPType(ByteBuf value);
 
-    TransactionId createTransactionId(byte[] data);
+    TransactionId createTransactionId(ByteBuf value);
 
-    TAId createTAId(byte[] data);
+    TAId createTAId(ByteBuf value);
 
-    RAIdentity createRAIdentity(byte[] data);
+    RAIdentity createRAIdentity(ByteBuf value);
 
-    EUtranCgi createEUtranCgi(byte[] data);
+    EUtranCgi createEUtranCgi(ByteBuf value);
 
-    TEID createTEID(byte[] data);
+    TEID createTEID(ByteBuf value);
 
     GPRSMSClass createGPRSMSClass(MSNetworkCapability mSNetworkCapability,
             MSRadioAccessCapability mSRadioAccessCapability);
 
-    GeographicalInformation createGeographicalInformation(byte[] data);
-
     GeographicalInformation createGeographicalInformation(double latitude, double longitude, double uncertainty)
             throws MAPException;
-
-    GeodeticInformation createGeodeticInformation(byte[] data);
 
     GeodeticInformation createGeodeticInformation(int screeningAndPresentationIndicators, double latitude,
             double longitude, double uncertainty, int confidence) throws MAPException;
@@ -698,11 +664,11 @@ public interface MAPParameterFactory {
             MAPExtensionContainer extensionContainer, boolean saiPresent, GeodeticInformation geodeticInformation,
             boolean currentLocationRetrieved, Integer ageOfLocationInformation);
 
-    MSNetworkCapability createMSNetworkCapability(byte[] data);
+    MSNetworkCapability createMSNetworkCapability(ByteBuf value);
 
-    MSRadioAccessCapability createMSRadioAccessCapability(byte[] data);
+    MSRadioAccessCapability createMSRadioAccessCapability(ByteBuf value);
 
-    MSClassmark2 createMSClassmark2(byte[] data);
+    MSClassmark2 createMSClassmark2(ByteBuf value);
 
     MNPInfoRes createMNPInfoRes(RouteingNumber routeingNumber, IMSI imsi, ISDNAddressString msisdn,
             NumberPortabilityStatus numberPortabilityStatus, MAPExtensionContainer extensionContainer);
@@ -723,8 +689,6 @@ public interface MAPParameterFactory {
 
     PSSubscriberState createPSSubscriberState(PSSubscriberStateChoise choice, NotReachableReason netDetNotReachable,
             List<PDPContextInfo> pdpContextInfoList);
-
-    AddGeographicalInformation createAddGeographicalInformation(byte[] data);
 
     AddGeographicalInformation createAddGeographicalInformation_EllipsoidPointWithUncertaintyCircle(double latitude,
             double longitude, double uncertainty) throws MAPException;
@@ -752,8 +716,6 @@ public interface MAPParameterFactory {
 
     AreaEventInfo createAreaEventInfo(AreaDefinition areaDefinition, OccurrenceInfo occurrenceInfo, Integer intervalTime);
 
-    AreaIdentification createAreaIdentification(byte[] data);
-
     AreaIdentification createAreaIdentification(AreaType type, int mcc, int mnc, int lac, int Rac_CellId_UtranCellId)
             throws MAPException;
 
@@ -764,8 +726,6 @@ public interface MAPParameterFactory {
 
     DeferredmtlrData createDeferredmtlrData(DeferredLocationEventType deferredLocationEventType,
             TerminationCause terminationCause, LCSLocationInfo lcsLocationInfo);
-
-    ExtGeographicalInformation createExtGeographicalInformation(byte[] data);
 
     ExtGeographicalInformation createExtGeographicalInformation_EllipsoidPointWithUncertaintyCircle(double latitude,
             double longitude, double uncertainty) throws MAPException;
@@ -785,7 +745,7 @@ public interface MAPParameterFactory {
     ExtGeographicalInformation createExtGeographicalInformation_EllipsoidPoint(double latitude, double longitude)
             throws MAPException;
 
-    GeranGANSSpositioningData createGeranGANSSpositioningData(byte[] data);
+    GeranGANSSpositioningData createGeranGANSSpositioningData(ByteBuf value);
 
     LCSClientID createLCSClientID(LCSClientType lcsClientType, LCSClientExternalID lcsClientExternalID,
             LCSClientInternalID lcsClientInternalID, LCSClientName lcsClientName, AddressString lcsClientDialedByMS,
@@ -818,7 +778,7 @@ public interface MAPParameterFactory {
 
     PeriodicLDRInfo createPeriodicLDRInfo(int reportingAmount, int reportingInterval);
 
-    PositioningDataInformation createPositioningDataInformation(byte[] data);
+    PositioningDataInformation createPositioningDataInformation(ByteBuf value);
 
     ReportingPLMN createReportingPLMN(PlmnId plmnId, RANTechnology ranTechnology, boolean ranPeriodicLocationSupport);
 
@@ -841,11 +801,9 @@ public interface MAPParameterFactory {
             boolean ellipsoidPointWithUncertaintyEllipse, boolean polygon, boolean ellipsoidPointWithAltitude,
             boolean ellipsoidPointWithAltitudeAndUncertaintyElipsoid, boolean ellipsoidArc);
 
-    UtranGANSSpositioningData createUtranGANSSpositioningData(byte[] data);
+    UtranGANSSpositioningData createUtranGANSSpositioningData(ByteBuf value);
 
-    UtranPositioningDataInfo createUtranPositioningDataInfo(byte[] data);
-
-    VelocityEstimate createVelocityEstimate(byte[] data);
+    UtranPositioningDataInfo createUtranPositioningDataInfo(ByteBuf value);
 
     VelocityEstimate createVelocityEstimate_HorizontalVelocity(int horizontalSpeed, int bearing) throws MAPException;
 
@@ -862,15 +820,11 @@ public interface MAPParameterFactory {
 
     ExtBasicServiceCode createExtBasicServiceCode(ExtTeleserviceCode extTeleserviceCode);
 
-    ExtBearerServiceCode createExtBearerServiceCode(byte[] data);
-
     ExtBearerServiceCode createExtBearerServiceCode(BearerServiceCodeValue value);
 
     BearerServiceCode createBearerServiceCode(int data);
 
     BearerServiceCode createBearerServiceCode(BearerServiceCodeValue value);
-
-    ExtTeleserviceCode createExtTeleserviceCode(byte[] data);
 
     ExtTeleserviceCode createExtTeleserviceCode(TeleserviceCodeValue value);
 
@@ -900,7 +854,7 @@ public interface MAPParameterFactory {
     CamelInfo createCamelInfo(SupportedCamelPhases supportedCamelPhases, boolean suppressTCSI,
     		MAPExtensionContainer extensionContainer, OfferedCamel4CSIs offeredCamel4CSIs);
 
-    CUGInterlock createCUGInterlock(byte[] data);
+    CUGInterlock createCUGInterlock(ByteBuf value);
 
     CUGCheckInfo createCUGCheckInfo(CUGInterlock cugInterlock, boolean cugOutgoingAccess,
     		MAPExtensionContainer extensionContainer);
@@ -954,8 +908,6 @@ public interface MAPParameterFactory {
     ExtForwOptions createExtForwOptions(boolean notificationToForwardingParty, boolean redirectingPresentation,
             boolean notificationToCallingParty, ExtForwOptionsForwardingReason extForwOptionsForwardingReason);
 
-    ExtForwOptions createExtForwOptions(byte[] data);
-
     ExtSSData createExtSSData(SSCode ssCode, ExtSSStatus ssStatus, SSSubscriptionOption ssSubscriptionOption,
             List<ExtBasicServiceCode> basicServiceGroupList, MAPExtensionContainer extensionContainer);
 
@@ -971,8 +923,6 @@ public interface MAPParameterFactory {
 
     ExtSSStatus createExtSSStatus(boolean bitQ, boolean bitP, boolean bitR, boolean bitA);
 
-    ExtSSStatus createExtSSStatus(byte data);
-
     GPRSSubscriptionData createGPRSSubscriptionData(boolean completeDataListIncluded,
             List<PDPContext> gprsDataList, MAPExtensionContainer extensionContainer, APNOIReplacement apnOiReplacement);
 
@@ -986,9 +936,7 @@ public interface MAPParameterFactory {
 
     ZoneCode createZoneCode(int value);
 
-    ZoneCode createZoneCode(byte[] data);
-
-    AgeIndicator createAgeIndicator(byte[] data);
+    AgeIndicator createAgeIndicator(ByteBuf data);
 
     CSAllocationRetentionPriority createCSAllocationRetentionPriority(int data);
 
@@ -1041,7 +989,7 @@ public interface MAPParameterFactory {
     ExternalClient createExternalClient(LCSClientExternalID clientIdentity, GMLCRestriction gmlcRestriction,
             NotificationToMSUser notificationToMSUser, MAPExtensionContainer extensionContainer);
 
-    FQDN createFQDN(byte[] data);
+    FQDN createFQDN(ByteBuf value);
 
     GPRSCamelTDPData createGPRSCamelTDPData(GPRSTriggerDetectionPoint gprsTriggerDetectionPoint, long serviceKey,
             ISDNAddressString gsmSCFAddress, DefaultGPRSHandling defaultSessionHandling,
@@ -1148,7 +1096,7 @@ public interface MAPParameterFactory {
     VoiceGroupCallData createVoiceGroupCallData(GroupId groupId, MAPExtensionContainer extensionContainer,
             AdditionalSubscriptions additionalSubscriptions, AdditionalInfo additionalInfo, LongGroupId longGroupId);
 
-    ISDNSubaddressString createISDNSubaddressString(byte[] data);
+    ISDNSubaddressString createISDNSubaddressString(ByteBuf value);
 
     CauseValue createCauseValue(CauseValueCodeValue value);
 
@@ -1165,12 +1113,8 @@ public interface MAPParameterFactory {
 
     Time createTime(int year, int month, int day, int hour, int minute, int second);
 
-    Time createTime(byte[] data);
-
     NAEACIC createNAEACIC(String carrierCode, NetworkIdentificationPlanValue networkIdentificationPlanValue,
             NetworkIdentificationTypeValue networkIdentificationTypeValue) throws MAPException;
-
-    NAEACIC createNAEACIC(byte[] data);
 
     NAEAPreferredCI createNAEAPreferredCI(NAEACIC naeaPreferredCIC, MAPExtensionContainer extensionContainer);
 
@@ -1186,9 +1130,9 @@ public interface MAPParameterFactory {
 
     ExtendedRoutingInfo createExtendedRoutingInfo(CamelRoutingInfo camelRoutingInfo);
 
-    TMSI createTMSI(byte[] data);
+    TMSI createTMSI(ByteBuf value);
 
-    CK createCK(byte[] data);
+    CK createCK(ByteBuf value);
 
     Cksn createCksn(int data);
 
@@ -1198,9 +1142,9 @@ public interface MAPParameterFactory {
 
     GSMSecurityContextData createGSMSecurityContextData(Kc kc, Cksn cksn);
 
-    IK createIK(byte[] data);
+    IK createIK(ByteBuf value);
 
-    Kc createKc(byte[] data);
+    Kc createKc(ByteBuf value);
 
     KSI createKSI(int data);
 
@@ -1269,7 +1213,7 @@ public interface MAPParameterFactory {
     GenericServiceInfo createGenericServiceInfo(SSStatus ssStatus, CliRestrictionOption cliRestrictionOption, EMLPPPriority maximumEntitledPriority,
             EMLPPPriority defaultPriority, List<CCBSFeature> ccbsFeatureList, Integer nbrSB, Integer nbrUser, Integer nbrSN);
 
-    TraceReference createTraceReference(byte[] data);
+    TraceReference createTraceReference(ByteBuf value);
 
     TraceType createTraceType(int data);
 
@@ -1331,14 +1275,12 @@ public interface MAPParameterFactory {
     TraceEventList createTraceEventList(MSCSEventList mscSList, MGWEventList mgwList, SGSNEventList sgsnList, GGSNEventList ggsnList, BMSCEventList bmscList,
             MMEEventList mmeList, SGWEventList sgwList, PGWEventList pgwList);
 
-    GlobalCellId createGlobalCellId(byte[] data);
-
     GlobalCellId createGlobalCellId(int mcc, int mnc, int lac, int cellId) throws MAPException;
 
     AreaScope createAreaScope(List<GlobalCellId> cgiList, List<EUtranCgi> eUtranCgiList, List<RAIdentity> routingAreaIdList,
             List<LAIFixedLength> locationAreaIdList, List<TAId> trackingAreaIdList, MAPExtensionContainer extensionContainer);
 
-    ListOfMeasurements createListOfMeasurements(byte[] data);
+    ListOfMeasurements createListOfMeasurements(ByteBuf value);
 
     ReportingTrigger createReportingTrigger(int data);
 
@@ -1348,7 +1290,7 @@ public interface MAPParameterFactory {
 
     UUData createUUData(UUIndicator uuIndicator, UUI uuI, boolean uusCFInteraction, MAPExtensionContainer extensionContainer);
 
-    UUI createUUI(byte[] data);
+    UUI createUUI(ByteBuf data);
 
     UUIndicator createUUIndicator(int data);
 

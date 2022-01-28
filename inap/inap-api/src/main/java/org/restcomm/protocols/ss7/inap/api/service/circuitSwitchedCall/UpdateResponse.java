@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
+import io.netty.buffer.ByteBuf;
+
 /**
 <code>
 Update ::= OPERATION
@@ -49,5 +51,5 @@ UpdateResultArg ::= CHOICE {
  */
 public interface UpdateResponse extends CircuitSwitchedCallMessage {
 
-    byte[] getOperationReturnID();
+    ByteBuf getOperationReturnID();
 }

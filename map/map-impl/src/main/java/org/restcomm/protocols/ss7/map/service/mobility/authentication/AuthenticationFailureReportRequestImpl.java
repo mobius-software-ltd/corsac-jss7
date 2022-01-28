@@ -40,9 +40,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -64,7 +64,7 @@ public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl 
     
     private ASNBoolean reAttempt;
     private ASNAccessType accessType;
-    private ASNOctetString rand;
+    private ASNOctetString2 rand;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
     private ISDNAddressString vlrNumber;
@@ -76,30 +76,22 @@ public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl 
     }
 
     public AuthenticationFailureReportRequestImpl(IMSI imsi, FailureCause failureCause, MAPExtensionContainer extensionContainer, Boolean reAttempt,
-            AccessType accessType, byte[] rand, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber) {
+            AccessType accessType, ByteBuf rand, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber) {
         this.imsi = imsi;
         
-        if(failureCause!=null) {
-        	this.failureCause = new ASNFailureCause();
-        	this.failureCause.setType(failureCause);
-        }
-        
+        if(failureCause!=null)
+        	this.failureCause = new ASNFailureCause(failureCause);
+        	
         this.extensionContainer = extensionContainer;
         
-        if(reAttempt!=null) {
-        	this.reAttempt = new ASNBoolean();
-        	this.reAttempt.setValue(reAttempt);
-        }
+        if(reAttempt!=null)
+        	this.reAttempt = new ASNBoolean(reAttempt);        	
         
-        if(accessType!=null) {
-        	this.accessType = new ASNAccessType();
-        	this.accessType.setType(accessType);
-        }
+        if(accessType!=null)
+        	this.accessType = new ASNAccessType(accessType);
         
-        if(rand!=null) {
-        	this.rand = new ASNOctetString();
-        	this.rand.setValue(Unpooled.wrappedBuffer(rand));
-        }
+        if(rand!=null)
+        	this.rand = new ASNOctetString2(rand);
         
         this.vlrNumber = vlrNumber;
         this.sgsnNumber = sgsnNumber;
@@ -150,17 +142,11 @@ public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl 
     }
 
     @Override
-    public byte[] getRand() {
+    public ByteBuf getRand() {
     	if(rand==null)
     		return null;
     		
-    	ByteBuf value=rand.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return rand.getValue();    	
     }
 
     @Override

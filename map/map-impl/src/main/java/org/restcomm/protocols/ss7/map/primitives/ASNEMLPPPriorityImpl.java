@@ -4,16 +4,20 @@ import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
-public class ASNEMLPPPriorityImpl extends ASNEnumerated {
-	public void setType(EMLPPPriority t) {
-		super.setValue(Long.valueOf(t.getCode()));
+public class ASNEMLPPPriorityImpl extends ASNEnumerated	 {
+	public ASNEMLPPPriorityImpl() {
+		
+	}
+	
+	public ASNEMLPPPriorityImpl(EMLPPPriority t) {
+		super(t.getCode());
 	}
 	
 	public EMLPPPriority getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return EMLPPPriority.getEMLPPPriority(getValue().intValue());
+		return EMLPPPriority.getEMLPPPriority(realValue);
 	}
 }

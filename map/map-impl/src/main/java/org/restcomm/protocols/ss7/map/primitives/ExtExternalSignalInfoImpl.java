@@ -53,10 +53,9 @@ public class ExtExternalSignalInfoImpl implements ExtExternalSignalInfo {
     public ExtExternalSignalInfoImpl(SignalInfo signalInfo, ExtProtocolId extProtocolId,
             MAPExtensionContainer extensionContainer) {
         this.signalInfo = signalInfo;
-        if(extProtocolId!=null) {
-        	this.extProtocolId = new ASNExtProtocolIDImpl();
-        	this.extProtocolId.setType(extProtocolId);
-        }        
+        if(extProtocolId!=null)
+        	this.extProtocolId = new ASNExtProtocolIDImpl(extProtocolId);
+        	     
         this.extensionContainer = extensionContainer;
     }
 

@@ -61,15 +61,11 @@ public class SMSEventImpl implements SMSEvent {
     }
 
     public SMSEventImpl(EventTypeSMS eventTypeSMS, MonitorMode monitorMode) {
-    	if(eventTypeSMS!=null) {
-    		this.eventTypeSMS = new ASNEventTypeSMSImpl();
-    		this.eventTypeSMS.setType(eventTypeSMS);
-    	}
-    	
-    	if(monitorMode!=null) {
-    		this.monitorMode = new ASNMonitorMode();
-    		this.monitorMode.setType(monitorMode);
-    	}
+    	if(eventTypeSMS!=null)
+    		this.eventTypeSMS = new ASNEventTypeSMSImpl(eventTypeSMS);
+    		
+    	if(monitorMode!=null)
+    		this.monitorMode = new ASNMonitorMode(monitorMode);    		
     }
 
     @Override

@@ -41,6 +41,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -88,7 +89,7 @@ public class SM_RP_DATest {
         assertTrue(result.getResult() instanceof SM_RP_DAImpl);
         da = (SM_RP_DAImpl)result.getResult();
 
-        assertTrue(Arrays.equals(new byte[] { 0, 7, -112, -78 }, da.getLMSI().getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(new byte[] { 0, 7, -112, -78 }), da.getLMSI().getValue()));
 
         rawData = getEncodedData_IMSI();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
@@ -123,7 +124,7 @@ public class SM_RP_DATest {
         byte[] rawData = getEncodedData_ServiceCentreAddressDA();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        LMSIImpl lmsi = new LMSIImpl(new byte[] { 0, 7, -112, -78 });
+        LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(new byte[] { 0, 7, -112, -78 }));
         da = new SM_RP_DAImpl(lmsi);
         buffer=parser.encode(da);
         encodedData = new byte[buffer.readableBytes()];

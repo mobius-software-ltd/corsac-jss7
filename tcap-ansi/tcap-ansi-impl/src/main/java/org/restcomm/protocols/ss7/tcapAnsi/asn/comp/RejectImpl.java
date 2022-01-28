@@ -54,8 +54,7 @@ public class RejectImpl implements Reject {
     }
 
     public void setProblem(RejectProblem p) {
-        rejectProblem = new ASNRejectProblemType();
-        rejectProblem.setType(p);
+        rejectProblem = new ASNRejectProblemType(p);        
     }
 
     public Long getCorrelationId() {

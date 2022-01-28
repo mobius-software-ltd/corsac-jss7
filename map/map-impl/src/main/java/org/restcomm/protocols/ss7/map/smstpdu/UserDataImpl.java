@@ -38,6 +38,8 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.Gsm7NationalLanguageIdentifier
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeader;
 
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -52,7 +54,7 @@ public class UserDataImpl implements UserData {
 
     private DataCodingScheme dataCodingScheme;
     private Charset gsm8Charset;
-    private byte[] encodedData;
+    private ByteBuf encodedData;
     private int encodedUserDataLength;
     private boolean encodedUserDataHeaderIndicator;
     private UserDataHeader decodedUserDataHeader;
@@ -61,7 +63,7 @@ public class UserDataImpl implements UserData {
     private boolean isDecoded;
     private boolean isEncoded;
 
-    public UserDataImpl(byte[] encodedData, DataCodingScheme dataCodingScheme, int encodedUserDataLength,
+    public UserDataImpl(ByteBuf encodedData, DataCodingScheme dataCodingScheme, int encodedUserDataLength,
             boolean encodedUserDataHeaderIndicator, Charset gsm8Charset) {
         this.encodedData = encodedData;
         this.encodedUserDataLength = encodedUserDataLength;
@@ -92,7 +94,7 @@ public class UserDataImpl implements UserData {
         return this.dataCodingScheme;
     }
 
-    public byte[] getEncodedData() {
+    public ByteBuf getEncodedData() {
         return this.encodedData;
     }
 
@@ -171,25 +173,19 @@ public class UserDataImpl implements UserData {
                         // This can not occur
                     }
                     this.encodedUserDataLength = encoder.getGSMCharsetEncodingData().getTotalSeptetCount();
-                    if (bb != null) {
-                        this.encodedData = new byte[bb.readableBytes()];
-                        bb.readBytes(this.encodedData);
-                    } else {
-                        this.encodedData = new byte[0];
-                    }
+                    if (bb != null)
+                        this.encodedData = bb.readSlice(bb.readableBytes());                        
+                    else
+                        this.encodedData = Unpooled.EMPTY_BUFFER;                    
                     break;
 
                 case GSM8:
-                    if (gsm8Charset != null) {
-                        this.encodedData = this.decodedMessage.getBytes(gsm8Charset);
-                        if (buf2 != null) {
-                            byte[] tempBuf = this.encodedData;
-                            int buf2Length=buf2.readableBytes();
-                            this.encodedData = new byte[buf2Length + tempBuf.length];
-                            buf2.readBytes(this.encodedData,0,buf2Length);
-                            System.arraycopy(tempBuf, 0, this.encodedData, buf2Length, tempBuf.length);
-                        }
-                        this.encodedUserDataLength = this.encodedData.length;
+                    if (gsm8Charset != null) {                    	
+                        this.encodedData = Unpooled.wrappedBuffer(this.decodedMessage.getBytes(gsm8Charset));
+                        if (buf2 != null)
+                            this.encodedData = Unpooled.wrappedBuffer(buf2,encodedData);                            
+                        
+                        this.encodedUserDataLength = this.encodedData.readableBytes();
                     } else {
                         throw new MAPException(
                                 "Error encoding a text in Sms UserData: gsm8Charset is not defined for GSM8 dataCodingScheme");
@@ -197,15 +193,11 @@ public class UserDataImpl implements UserData {
                     break;
 
                 case UCS2:
-                    this.encodedData = this.decodedMessage.getBytes(ucs2Charset);
-                    if (buf2 != null) {
-                        byte[] tempBuf = this.encodedData;
-                        int buf2Length=buf2.readableBytes();
-                        this.encodedData = new byte[buf2Length + tempBuf.length];
-                        buf2.readBytes(this.encodedData,0,buf2Length);
-                        System.arraycopy(tempBuf, 0, this.encodedData, buf2Length, tempBuf.length);
-                    }
-                    this.encodedUserDataLength = this.encodedData.length;
+                    this.encodedData = Unpooled.wrappedBuffer(this.decodedMessage.getBytes(ucs2Charset));
+                    if (buf2 != null)
+                        this.encodedData = Unpooled.wrappedBuffer(buf2,encodedData);                            
+                    
+                    this.encodedUserDataLength = this.encodedData.readableBytes();
                     break;
 				default:
 					break;
@@ -228,13 +220,18 @@ public class UserDataImpl implements UserData {
         int offset = 0;
         if (this.encodedUserDataHeaderIndicator) {
             // decode userDataHeader
-            if (this.encodedData.length < 1)
+            if (this.encodedData.readableBytes() < 1)
                 return;
-            offset = (this.encodedData[0] & 0xFF) + 1;
-            if (offset > this.encodedData.length)
+            
+            this.encodedData.markReaderIndex();
+            offset = (this.encodedData.readByte() & 0xFF) + 1;
+            this.encodedData.resetReaderIndex();
+            if (offset > this.encodedData.readableBytes())
                 return;
 
+            this.encodedData.markReaderIndex();
             this.decodedUserDataHeader = new UserDataHeaderImpl(this.encodedData);
+            this.encodedData.resetReaderIndex();            
         }
 
         if (this.dataCodingScheme.getIsCompressed()) {
@@ -270,36 +267,32 @@ public class UserDataImpl implements UserData {
 
                 case GSM8:
                     if (gsm8Charset != null) {
-                        byte[] buf = this.encodedData;
+                        ByteBuf buf = this.encodedData;
                         int len = this.encodedUserDataLength;
-                        if (len > buf.length)
-                            len = buf.length;
+                        if (len > buf.readableBytes())
+                            len = buf.readableBytes();
                         if (offset > 0) {
                             if (offset > len)
-                                buf = new byte[0];
-                            else {
-                                buf = new byte[len - offset];
-                                System.arraycopy(this.encodedData, offset, buf, 0, len - offset);
-                            }
+                                buf = Unpooled.EMPTY_BUFFER;
+                            else
+                            	buf.skipBytes(offset);                            
                         }
-                        this.decodedMessage = new String(buf, gsm8Charset);
+                        this.decodedMessage = buf.toString(gsm8Charset);
                     }
                     break;
 
                 case UCS2:
-                    byte[] buf = this.encodedData;
+                    ByteBuf buf = this.encodedData;
                     int len = this.encodedUserDataLength;
-                    if (len > buf.length)
-                        len = buf.length;
+                    if (len > buf.readableBytes())
+                        len = buf.readableBytes();
                     if (offset > 0) {
                         if (offset > len)
-                            buf = new byte[0];
-                        else {
-                            buf = new byte[len - offset];
-                            System.arraycopy(this.encodedData, offset, buf, 0, len - offset);
-                        }
+                        	 buf = Unpooled.EMPTY_BUFFER;
+                        else 
+                        	buf.skipBytes(offset);
                     }
-                    this.decodedMessage = new String(buf, ucs2Charset);
+                    this.decodedMessage = buf.toString(ucs2Charset);
                     break;
 				default:
 					break;
@@ -361,7 +354,7 @@ public class UserDataImpl implements UserData {
         sb.append("TP-User-Data [");
         if (this.decodedMessage == null) {
             if (this.encodedData != null)
-                sb.append(printDataArr(this.encodedData));
+                sb.append(ASNOctetString.printDataArr(Unpooled.wrappedBuffer(this.encodedData)));
         } else {
             sb.append("Msg:[");
             sb.append(this.decodedMessage);
@@ -372,16 +365,6 @@ public class UserDataImpl implements UserData {
             }
         }
         sb.append("]");
-
-        return sb.toString();
-    }
-
-    private String printDataArr(byte[] arr) {
-        StringBuilder sb = new StringBuilder();
-        for (int b : arr) {
-            sb.append(b);
-            sb.append(", ");
-        }
 
         return sb.toString();
     }

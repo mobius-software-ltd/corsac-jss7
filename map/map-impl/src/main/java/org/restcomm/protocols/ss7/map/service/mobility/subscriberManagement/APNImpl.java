@@ -29,7 +29,7 @@ import java.util.List;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APN;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,86 +39,63 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class APNImpl extends ASNOctetString implements APN {
+public class APNImpl extends ASNOctetString2 implements APN {
 	private static Charset ascii = Charset.forName("US-ASCII");
 
     public APNImpl() {
     }
 
-    public APNImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
+    public APNImpl(String apn) throws MAPException {
+    	super(setApnString(apn));        
     }
 
-    public APNImpl(String apn) throws MAPException {
-        if (apn == null)
+    private static ByteBuf setApnString(String apn) throws MAPException {
+    	if (apn == null)
             throw new MAPException("apn paramater must not be null");
         if (apn.length() == 0)
             throw new MAPException("apn paramater must not have zero length");
 
-        setApnString(apn);
-    }
-
-    private void setApnString(String apn) throws MAPException {
         String[] ss = apn.split("\\.");
         int tLen = ss.length;
         for (String s : ss) {
             tLen += s.length();
         }
-        byte[] data = new byte[tLen];
-        if (data.length > 63)
-            throw new MAPException("apn paramater encoded length is greater than max value (63): " + data.length);
+        
+        if (tLen > 63)
+            throw new MAPException("apn paramater encoded length is greater than max value (63): " + tLen);
 
-        int i1 = 0;
+        ByteBuf value=Unpooled.buffer(tLen);
         for (String s : ss) {
-            data[i1++] = (byte) s.length();
-            byte[] bb = s.getBytes(ascii);
-            System.arraycopy(bb, 0, data, i1, bb.length);
-            i1 += bb.length;
+        	value.writeByte((byte) s.length());
+        	value.writeBytes(s.getBytes(ascii));            
         }
         
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        return value;
     }
 
     public String getApn() throws MAPException {
-    	byte[] data=getData();
-        if (data == null)
+    	ByteBuf buf=getValue();
+        if (buf == null)
             throw new MAPException("Can not decode: data array is null");
-        if (data.length < 2 || data.length > 63)
-            throw new MAPException("Can not decode: data array must have length 2-63, found: " + data.length);
+        if (buf.readableBytes() < 2 || buf.readableBytes() > 63)
+            throw new MAPException("Can not decode: data array must have length 2-63, found: " + buf.readableBytes());
 
         List<String> ress = new ArrayList<String>();
 
-        int i1 = 0;
-        while (true) {
-            int len = (data[i1++] & 0xFF);
-            if (len > data.length - i1)
+        while (buf.readableBytes()>0) {
+            int len = buf.readByte() & 0x0FF;
+            if (len > buf.readableBytes())
                 throw new MAPException("Can not decode: read length byte has a value more then left byte count: " + len);
 
-            byte[] bb = new byte[len];
-            System.arraycopy(data, i1, bb, 0, len);
-            String s = new String(bb, ascii);
+            String s = buf.readSlice(len).toString(ascii);
             ress.add(s);
-
-            i1 += len;
-            if (i1 == data.length)
-                break;
         }
 
         StringBuilder sb = new StringBuilder();
-        i1 = 0;
+        boolean first=true;
         for (String s : ress) {
-            if (i1 == 0)
-                i1 = 1;
+            if (first)
+                first=false;
             else
                 sb.append(".");
             sb.append(s);

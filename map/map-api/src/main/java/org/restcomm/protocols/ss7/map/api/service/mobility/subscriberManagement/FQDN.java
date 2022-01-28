@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  FQDN ::= OCTET STRING (SIZE (9..255))
@@ -36,6 +38,5 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface FQDN {
 
-    byte[] getData();
-
+	ByteBuf getValue();
 }

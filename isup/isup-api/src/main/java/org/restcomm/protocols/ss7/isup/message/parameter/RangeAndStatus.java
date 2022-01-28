@@ -28,6 +28,8 @@
  */
 package org.restcomm.protocols.ss7.isup.message.parameter;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * Start time:13:52:59 2009-07-23<br>
  * Project: restcomm-isup-stack<br>
@@ -68,14 +70,14 @@ public interface RangeAndStatus extends ISUPParameter {
      *
      * @return
      */
-    byte[] getStatus();
+    ByteBuf getStatus();
 
     /**
      * Gets raw status part.
      *
      * @return
      */
-    void setStatus(byte[] status);
+    void setStatus(ByteBuf status);
 
     void setAffected(byte subrange, boolean v) throws IllegalArgumentException;
 

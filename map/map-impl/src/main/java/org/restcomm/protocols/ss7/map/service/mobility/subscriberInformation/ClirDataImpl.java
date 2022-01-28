@@ -50,11 +50,9 @@ public class ClirDataImpl implements ClirData {
     public ClirDataImpl(ExtSSStatus ssStatus, CliRestrictionOption cliRestrictionOption, boolean notificationToCSE) {
         this.ssStatus = ssStatus;
         
-        if(cliRestrictionOption!=null) {
-        	this.cliRestrictionOption = new ASNCliRestrictionOptionImpl();
-        	this.cliRestrictionOption.setType(cliRestrictionOption);
-        }
-        
+        if(cliRestrictionOption!=null)
+        	this.cliRestrictionOption = new ASNCliRestrictionOptionImpl(cliRestrictionOption);
+        	
         if(notificationToCSE)
         	this.notificationToCSE = new ASNNull();
     }

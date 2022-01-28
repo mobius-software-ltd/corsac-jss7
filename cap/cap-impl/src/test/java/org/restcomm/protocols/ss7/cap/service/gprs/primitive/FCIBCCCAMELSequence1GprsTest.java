@@ -34,6 +34,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -63,7 +64,7 @@ public class FCIBCCCAMELSequence1GprsTest {
         assertTrue(result.getResult() instanceof FCIBCCCAMELSequence1GprsImpl);
         
         FCIBCCCAMELSequence1GprsImpl prim = (FCIBCCCAMELSequence1GprsImpl)result.getResult();        
-        assertEquals(prim.getFreeFormatData().getData(), this.getFreeFormatData());
+        assertTrue(ByteBufUtil.equals(prim.getFreeFormatData().getValue(), Unpooled.wrappedBuffer(this.getFreeFormatData())));
         assertEquals(prim.getPDPID().getId(), 2);
         assertEquals(prim.getAppendFreeFormatData(), AppendFreeFormatData.append);
     }
@@ -73,7 +74,7 @@ public class FCIBCCCAMELSequence1GprsTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(FCIBCCCAMELSequence1GprsImpl.class);
     	
-        FreeFormatDataGprsImpl freeFormatData = new FreeFormatDataGprsImpl(this.getFreeFormatData());
+        FreeFormatDataGprsImpl freeFormatData = new FreeFormatDataGprsImpl(Unpooled.wrappedBuffer(this.getFreeFormatData()));
         PDPIDImpl pdpID = new PDPIDImpl(2);
         FCIBCCCAMELSequence1GprsImpl prim = new FCIBCCCAMELSequence1GprsImpl(freeFormatData, pdpID, AppendFreeFormatData.append);
         byte[] rawData = this.getData();

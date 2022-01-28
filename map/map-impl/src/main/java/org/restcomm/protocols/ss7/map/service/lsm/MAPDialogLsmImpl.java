@@ -98,7 +98,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer, java.util.BitSet, java.lang.Byte,
      * java.lang.Integer, org.restcomm.protocols.ss7.map.api.service.lsm.LCSCodeword,
      * org.restcomm.protocols.ss7.map.api.service.lsm.LCSPrivacyCheck,
-     * org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfo, byte[])
+     * org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfo, ByteBuf)
      */
     public Long addProvideSubscriberLocationRequest(LocationType locationType, ISDNAddressString mlcNumber,
             LCSClientID lcsClientID, boolean privacyOverride, IMSI imsi, ISDNAddressString msisdn, LMSI lmsi, IMEI imei,
@@ -148,8 +148,8 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.map.api.service.lsm.MAPDialogLsm# addProvideSubscriberLocationResponse(long, byte[],
-     * byte[], byte[], java.lang.Integer, byte[], org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer,
+     * @see org.restcomm.protocols.ss7.map.api.service.lsm.MAPDialogLsm# addProvideSubscriberLocationResponse(long, ByteBuf,
+     * ByteBuf, ByteBuf, java.lang.Integer, ByteBuf, org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer,
      * java.lang.Boolean, org.restcomm.protocols.ss7.map.api.service.lsm. CellGlobalIdOrServiceAreaIdOrLAI, java.lang.Boolean,
      * org.restcomm.protocols .ss7.map.api.service.lsm.AccuracyFulfilmentIndicator)
      */
@@ -306,7 +306,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * @see org.restcomm.protocols.ss7.map.api.service.lsm.MAPDialogLsm# addSendRoutingInforForLCSResponseIndication
      * (org.restcomm.protocols.ss7.map.api.service.lsm.SubscriberIdentity,
      * org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfo,
-     * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer, byte[], byte[], byte[], byte[])
+     * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer, ByteBuf, ByteBuf, ByteBuf, ByteBuf)
      */
     public void addSendRoutingInfoForLCSResponse(long invokeId, SubscriberIdentity targetMS, LCSLocationInfo lcsLocationInfo,
     		MAPExtensionContainer extensionContainer, GSNAddress vgmlcAddress, GSNAddress hGmlcAddress, GSNAddress pprAddress,

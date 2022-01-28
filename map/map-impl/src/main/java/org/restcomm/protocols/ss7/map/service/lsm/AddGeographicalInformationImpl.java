@@ -35,15 +35,11 @@ public class AddGeographicalInformationImpl extends ExtGeographicalInformationIm
 	public AddGeographicalInformationImpl() {
     }
 
-    public AddGeographicalInformationImpl(byte[] data) {
-        super(data);
-    }
-
     public AddGeographicalInformationImpl(TypeOfShape typeOfShape, double latitude, double longitude, double uncertainty,
             double uncertaintySemiMajorAxis, double uncertaintySemiMinorAxis, double angleOfMajorAxis, int confidence,
             int altitude, double uncertaintyAltitude, int innerRadius, double uncertaintyRadius, double offsetAngle,
             double includedAngle) throws MAPException {
-        initData(typeOfShape, latitude, longitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis,
+        super(typeOfShape, latitude, longitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis,
                 angleOfMajorAxis, confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyRadius, offsetAngle,
                 includedAngle);
     }

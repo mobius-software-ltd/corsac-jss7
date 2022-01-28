@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.oam.LoggingDuration;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNLoggingDurationImpl extends ASNEnumerated {
-	public void setType(LoggingDuration t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNLoggingDurationImpl() {
+		
+	}
+	
+	public ASNLoggingDurationImpl(LoggingDuration t) {
+		super(t.getCode());
 	}
 	
 	public LoggingDuration getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return LoggingDuration.getInstance(getValue().intValue());
+		return LoggingDuration.getInstance(realValue);
 	}
 }

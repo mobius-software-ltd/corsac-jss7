@@ -22,45 +22,37 @@
 
 package org.restcomm.protocols.ss7.map.primitives;
 
-import java.util.Arrays;
-
 import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import io.netty.buffer.ByteBufUtil;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
-public class LMSIImpl extends ASNOctetString implements LMSI {
+public class LMSIImpl extends ASNOctetString2 implements LMSI {
 	public LMSIImpl() {
     }
 
-    public LMSIImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    public LMSIImpl(ByteBuf value) {
+        super(value);
     }
 
     @Override
     public String toString() {
-        return "LMSI [Data= " + printDataArr(getData()) + "]";
+        return "LMSI [Data= " + printDataArr() + "]";
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + Arrays.hashCode(getData());
+        if(getValue()!=null)        	
+        	result = prime * result + ByteBufUtil.hashCode(getValue());
         return result;
     }
 
@@ -73,8 +65,20 @@ public class LMSIImpl extends ASNOctetString implements LMSI {
         if (getClass() != obj.getClass())
             return false;
         LMSIImpl other = (LMSIImpl) obj;
-        if (!Arrays.equals(getData(), other.getData()))
-            return false;
+        
+        ByteBuf value=getValue();
+        ByteBuf otherValue=other.getValue();
+        if(value==null) {
+        	if(otherValue!=null)
+        		return false;        	
+        }
+        else {
+        	if(otherValue==null)
+        		return false;
+        	
+        	if (!ByteBufUtil.equals(value, otherValue))
+        		return false;
+        }
         return true;
     }
 }

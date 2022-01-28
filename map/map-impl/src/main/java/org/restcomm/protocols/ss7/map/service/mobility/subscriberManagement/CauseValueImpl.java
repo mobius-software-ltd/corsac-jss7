@@ -36,11 +36,11 @@ public class CauseValueImpl extends ASNSingleByte implements CauseValue {
     }
 
     public CauseValueImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public CauseValueImpl(CauseValueCodeValue value) {
-    	setValue(value != null ? value.getCode() : 0);
+    	super(value != null ? value.getCode() : 0);
     }
 
     public CauseValueCodeValue getCauseValueCodeValue() {

@@ -101,11 +101,9 @@ public class LocationInformationImpl implements LocationInformation {
             LSAIdentity selectedLSAId, ISDNAddressString mscNumber, GeodeticInformation geodeticInformation,
             boolean currentLocationRetrieved, boolean saiPresent, LocationInformationEPS locationInformationEPS,
             UserCSGInformation userCSGInformation) {
-        if(ageOfLocationInformation!=null) {
-        	this.ageOfLocationInformation = new ASNInteger();
-        	this.ageOfLocationInformation.setValue(ageOfLocationInformation.longValue());
-        }
-        
+        if(ageOfLocationInformation!=null)
+        	this.ageOfLocationInformation = new ASNInteger(ageOfLocationInformation);
+        	
         this.geographicalInformation = geographicalInformation;
         this.vlrNumber = vlrNumber;
         this.locationNumber = locationNumber;
@@ -131,7 +129,7 @@ public class LocationInformationImpl implements LocationInformation {
     	if(this.ageOfLocationInformation==null)
     		return null;
     	
-        return this.ageOfLocationInformation.getValue().intValue();
+        return this.ageOfLocationInformation.getIntValue();
     }
 
     public GeographicalInformation getGeographicalInformation() {

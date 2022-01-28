@@ -73,6 +73,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -83,11 +84,11 @@ import io.netty.buffer.Unpooled;
 public class InitialDPSMSRequestTest {
 
     public byte[] getData() {
-        return new byte[] { 48, -127, -44, -128, 1, 2, -127, 7, -111, 20, -121, 8, 80, 64, -9, -126, 9, -111, 33, 67, 101, -121, 25, 50, 84, 118, -125, 1, 3, -124, 5, 17, 17, 33, 34, 34, -91, 3, 2, 1, 111, -90, 57, -96, 7, -127, 5, 82, -16, 16, 17, 92, -127, 6, 11, 12, 13, 14, 15, 16, -126, 8, 31, 32, 33, 34, 35, 36, 37, 38, -125, 4, -111, 86, 52, 18, -124, 3, 91, 92, 93, -122, 0, -121, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -120, 0, -119, 1, 13, -121, 6, -111, 34, 112, 87, 0, 112, -120, 8, 2, 80, 17, 66, 49, 1, 101, 0, -119, 1, 5, -118, 1, 5, -117, 1, 5, -116, 6, 1, 2, 3, 4, 5, 6, -83, 18, 48, 5, 2, 1, 2, -127, 0, 48, 9, 2, 1, 3, 10, 1, 1, -127, 1, -1, -114, 6, 1, 2, 3, 4, 5, 6, -113, 6, -111, 34, 112, 87, 0, -128, -112, 6, -111, 34, 112, 87, 0, -112, -111, 3, 1, 2, 3, -78, 11, -128, 3, 1, 2, 3, -127, 4, 11, 22, 33, 44, -109, 8, 17, 34, 51, 68, 85, 102, 119, -120, -108, 6, -111, 34, 112, 87, 0, 1 };
+        return new byte[] { 48, -127, -49, -128, 1, 2, -127, 7, -111, 20, -121, 8, 80, 64, -9, -126, 9, -111, 33, 67, 101, -121, 25, 50, 84, 118, -125, 1, 3, -124, 5, 17, 17, 33, 34, 34, -91, 3, 2, 1, 111, -90, 57, -96, 7, -127, 5, 82, -16, 16, 17, 92, -127, 6, 11, 12, 13, 14, 15, 16, -126, 8, 16, 32, 33, 34, 35, 36, 37, 38, -125, 4, -111, 86, 52, 18, -124, 3, 91, 92, 93, -122, 0, -121, 10, 1, 16, 3, 4, 5, 6, 7, 8, 9, 10, -120, 0, -119, 1, 13, -121, 6, -111, 34, 112, 87, 0, 112, -120, 8, 2, 80, 17, 66, 49, 1, 101, 0, -119, 1, 5, -118, 1, 5, -117, 1, 5, -116, 1, 4, -83, 18, 48, 5, 2, 1, 2, -127, 0, 48, 9, 2, 1, 3, 10, 1, 1, -127, 1, -1, -114, 6, 1, 2, 3, 4, 5, 6, -113, 6, -111, 34, 112, 87, 0, -128, -112, 6, -111, 34, 112, 87, 0, -112, -111, 3, 1, 2, 3, -78, 11, -128, 3, 1, 2, 3, -127, 4, 11, 22, 33, 44, -109, 8, 17, 34, 51, 68, 85, 102, 119, -120, -108, 6, -111, 34, 112, 87, 0, 1 };
     };
 
     private byte[] getGeographicalInformation() {
-        return new byte[] { 31, 32, 33, 34, 35, 36, 37, 38 };
+        return new byte[] { 16, 32, 33, 34, 35, 36, 37, 38 };
     }
 
     private byte[] getEncodedDataRAIdentity() {
@@ -99,11 +100,7 @@ public class InitialDPSMSRequestTest {
     }
 
     private byte[] getGeodeticInformation() {
-        return new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-    }
-
-    private byte[] getTPValidityPeriod() {
-        return new byte[] { 1, 2, 3, 4, 5, 6 };
+        return new byte[] { 1, 16, 3, 4, 5, 6, 7, 8, 9, 10 };
     }
 
     private byte[] getCallReferenceNumber() {
@@ -176,16 +173,16 @@ public class InitialDPSMSRequestTest {
                 .getMNC(), 1);
         assertEquals(prim.getLocationInformationGPRS().getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength()
                 .getLac(), 4444);
-        assertTrue(Arrays.equals(prim.getLocationInformationGPRS().getRouteingAreaIdentity().getData(),
-                this.getEncodedDataRAIdentity()));
-        assertTrue(Arrays.equals(prim.getLocationInformationGPRS().getGeographicalInformation().getData(),
-                this.getGeographicalInformation()));
+        assertTrue(ByteBufUtil.equals(prim.getLocationInformationGPRS().getRouteingAreaIdentity().getValue(),
+        		Unpooled.wrappedBuffer(this.getEncodedDataRAIdentity())));
+        assertTrue(ByteBufUtil.equals(prim.getLocationInformationGPRS().getGeographicalInformation().getValue(),
+                Unpooled.wrappedBuffer(this.getGeographicalInformation())));
         assertTrue(prim.getLocationInformationGPRS().getSGSNNumber().getAddress().equals("654321"));
-        assertTrue(Arrays.equals(prim.getLocationInformationGPRS().getLSAIdentity().getData(),
-                this.getEncodedDataLSAIdentity()));
+        assertTrue(ByteBufUtil.equals(prim.getLocationInformationGPRS().getLSAIdentity().getValue(),
+        		Unpooled.wrappedBuffer(this.getEncodedDataLSAIdentity())));
         assertTrue(prim.getLocationInformationGPRS().isSaiPresent());
-        assertTrue(Arrays.equals(prim.getLocationInformationGPRS().getGeodeticInformation().getData(),
-                this.getGeodeticInformation()));
+        assertTrue(ByteBufUtil.equals(prim.getLocationInformationGPRS().getGeodeticInformation().getValue(),
+                Unpooled.wrappedBuffer(this.getGeodeticInformation())));
         assertTrue(prim.getLocationInformationGPRS().isCurrentLocationRetrieved());
         assertEquals((int) prim.getLocationInformationGPRS().getAgeOfLocationInformation(), 13);
 
@@ -193,10 +190,9 @@ public class InitialDPSMSRequestTest {
         assertTrue(smscCAddress.getAddress().equals("2207750007"));
 
         // gprsMSClass
-        assertTrue(Arrays
-                .equals(gprsMSClass.getMSNetworkCapability().getData(), this.getEncodedDataNetworkCapability()));
-        assertTrue(Arrays.equals(gprsMSClass.getMSRadioAccessCapability().getData(),
-                this.getEncodedDataRadioAccessCapability()));
+        assertTrue(ByteBufUtil
+                .equals(gprsMSClass.getMSNetworkCapability().getValue(), Unpooled.wrappedBuffer(this.getEncodedDataNetworkCapability())));
+        assertTrue(ByteBufUtil.equals(gprsMSClass.getMSRadioAccessCapability().getValue(), Unpooled.wrappedBuffer(this.getEncodedDataRadioAccessCapability())));
 
         // getTimeAndTimezone
         assertEquals(prim.getTimeAndTimezone().getYear(), 2005);
@@ -213,12 +209,12 @@ public class InitialDPSMSRequestTest {
 
         assertEquals(tPDataCodingScheme.getData(), 5);
 
-        assertTrue(Arrays.equals(tPValidityPeriod.getData(), this.getTPValidityPeriod()));
+        assertEquals(tPValidityPeriod.getValidityPeriod().getRelativeFormatValue(), new Integer(4));
 
         // extensions
         CAPExtensionsTest.checkTestCAPExtensions(prim.getExtensions());
 
-        assertTrue(Arrays.equals(smsReferenceNumber.getData(), this.getCallReferenceNumber()));
+        assertTrue(ByteBufUtil.equals(smsReferenceNumber.getValue(),Unpooled.wrappedBuffer(this.getCallReferenceNumber())));
 
         assertNotNull(mscAddress);
         assertTrue(mscAddress.getAddress().equals("2207750008"));
@@ -252,12 +248,18 @@ public class InitialDPSMSRequestTest {
         // locationInformationGPRS
         LAIFixedLengthImpl lai = new LAIFixedLengthImpl(250, 1, 4444);
         CellGlobalIdOrServiceAreaIdOrLAIImpl cgi = new CellGlobalIdOrServiceAreaIdOrLAIImpl(lai);
-        RAIdentityImpl ra = new RAIdentityImpl(this.getEncodedDataRAIdentity());
-        GeographicalInformationImpl ggi = new GeographicalInformationImpl(this.getGeographicalInformation());
+        RAIdentityImpl ra = new RAIdentityImpl(Unpooled.wrappedBuffer(this.getEncodedDataRAIdentity()));
+        
+        ByteBuf geoBuffer=Unpooled.wrappedBuffer(getGeographicalInformation());
+        GeographicalInformationImpl ggi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
+        
         ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "654321");
-        LSAIdentityImpl lsa = new LSAIdentityImpl(this.getEncodedDataLSAIdentity());
-        GeodeticInformationImpl gdi = new GeodeticInformationImpl(this.getGeodeticInformation());
+        LSAIdentityImpl lsa = new LSAIdentityImpl(Unpooled.wrappedBuffer(this.getEncodedDataLSAIdentity()));
+        
+        ByteBuf geodeticBuffer=Unpooled.wrappedBuffer(getGeodeticInformation());
+        GeodeticInformationImpl gdi = new GeodeticInformationImpl(geodeticBuffer.readByte() & 0x0FF, GeographicalInformationImpl.decodeTypeOfShape(geodeticBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geodeticBuffer), GeographicalInformationImpl.decodeLongitude(geodeticBuffer), GeographicalInformationImpl.decodeUncertainty(geodeticBuffer.readByte() & 0x0FF),geodeticBuffer.readByte() & 0x0FF);
+        
         LocationInformationGPRSImpl locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, ggi, sgsn, lsa,
                 null, true, gdi, true, 13);
 
@@ -267,18 +269,18 @@ public class InitialDPSMSRequestTest {
         TPShortMessageSpecificInfoImpl tPShortMessageSpecificInfo = new TPShortMessageSpecificInfoImpl(5);
         TPProtocolIdentifierImpl tPProtocolIdentifier = new TPProtocolIdentifierImpl(5);
         TPDataCodingSchemeImpl tPDataCodingScheme = new TPDataCodingSchemeImpl(5);
-        TPValidityPeriodImpl tPValidityPeriod = new TPValidityPeriodImpl(getTPValidityPeriod());
+        TPValidityPeriodImpl tPValidityPeriod = new TPValidityPeriodImpl(4);
         CAPINAPExtensions extensions = CAPExtensionsTest.createTestCAPExtensions();
-        CallReferenceNumberImpl smsReferenceNumber = new CallReferenceNumberImpl(getCallReferenceNumber());
+        CallReferenceNumberImpl smsReferenceNumber = new CallReferenceNumberImpl(Unpooled.wrappedBuffer(getCallReferenceNumber()));
         ISDNAddressStringImpl mscAddress = new ISDNAddressStringImpl(AddressNature.international_number,
                 NumberingPlan.ISDN, "2207750008");
         ISDNAddressStringImpl sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number,
                 NumberingPlan.ISDN, "2207750009");
-        MSClassmark2Impl mSClassmark2 = new MSClassmark2Impl(getMSClassmark2());
+        MSClassmark2Impl mSClassmark2 = new MSClassmark2Impl(Unpooled.wrappedBuffer(getMSClassmark2()));
 
         // gprsMSClass
-        MSNetworkCapabilityImpl nc = new MSNetworkCapabilityImpl(this.getEncodedDataNetworkCapability());
-        MSRadioAccessCapabilityImpl rac = new MSRadioAccessCapabilityImpl(this.getEncodedDataRadioAccessCapability());
+        MSNetworkCapabilityImpl nc = new MSNetworkCapabilityImpl(Unpooled.wrappedBuffer(this.getEncodedDataNetworkCapability()));
+        MSRadioAccessCapabilityImpl rac = new MSRadioAccessCapabilityImpl(Unpooled.wrappedBuffer(this.getEncodedDataRadioAccessCapability()));
         GPRSMSClassImpl gprsMSClass = new GPRSMSClassImpl(nc, rac);
 
         IMEIImpl imei = new IMEIImpl("1122334455667788");

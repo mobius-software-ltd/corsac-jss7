@@ -75,16 +75,11 @@ public class SSDataImpl implements SSData {
         if(basicServiceGroupList!=null)
         	this.basicServiceGroupList = new BasicServiceCodeListWrapperImpl(basicServiceGroupList);
         
-        if(defaultPriority!=null) {
-        	this.defaultPriority = new ASNEMLPPPriorityImpl();
-        	this.defaultPriority.setType(defaultPriority);
-        }
-        
-        if(nbrUser!=null) {
-        	this.nbrUser = new ASNInteger();
-        	this.nbrUser.setValue(nbrUser.longValue());
-        }
-        
+        if(defaultPriority!=null)
+        	this.defaultPriority = new ASNEMLPPPriorityImpl(defaultPriority);
+        	
+        if(nbrUser!=null)
+        	this.nbrUser = new ASNInteger(nbrUser);        	
     }
 
     public SSCode getSsCode() {
@@ -117,7 +112,7 @@ public class SSDataImpl implements SSData {
     	if(nbrUser==null)
     		return null;
     	
-        return nbrUser.getValue().intValue();
+        return nbrUser.getIntValue();
     }
 
     public String toString() {

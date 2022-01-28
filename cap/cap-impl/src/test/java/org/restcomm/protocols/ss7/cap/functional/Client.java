@@ -50,7 +50,7 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
 import org.restcomm.protocols.ss7.cap.api.service.sms.CAPDialogSms;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.InitialDPRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.InitialDPRequestV3Impl;
 import org.restcomm.protocols.ss7.cap.service.gprs.InitialDpGprsRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ChargingResultImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ElapsedTimeImpl;
@@ -101,6 +101,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -396,7 +399,7 @@ public class Client extends EventTestHarness {
             CalledPartyNumberIsup calledPartyNumberCap = this.capParameterFactory.createCalledPartyNumber(calledPartyNumber);
             calledPartyNumberCap = new CalledPartyNumberIsupImpl(calledPartyNumber);
 
-            InitialDPRequestImpl res = new InitialDPRequestImpl(321, calledPartyNumberCap, null, null, null, null, null, null,
+            InitialDPRequestV3Impl res = new InitialDPRequestV3Impl(321, calledPartyNumberCap, null, null, null, null, null, null,
                     null, null, null, null, null, null, null, null, null, null, null, null, false, null, null, null, null,
                     null, null, null, null, false, null);
 
@@ -754,11 +757,26 @@ public class Client extends EventTestHarness {
             throw new CAPException(e.getMessage(), e);
         }
         CellGlobalIdOrServiceAreaIdOrLAIImpl cgi = new CellGlobalIdOrServiceAreaIdOrLAIImpl(lai);
-        RAIdentityImpl ra = new RAIdentityImpl(new byte[] { 11, 12, 13, 14, 15, 16 });
-        GeographicalInformationImpl ggi = new GeographicalInformationImpl(new byte[] { 31, 32, 33, 34, 35, 36, 37, 38 });
+        RAIdentityImpl ra = new RAIdentityImpl(Unpooled.wrappedBuffer(new byte[] { 11, 12, 13, 14, 15, 16 }));
+        GeographicalInformationImpl ggi = null;
+        try {                                
+        	ByteBuf geoBuffer=Unpooled.wrappedBuffer(new byte[] { 16, 32, 33, 34, 35, 36, 37, 38 });
+        	ggi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
+        } catch (APPException e) {
+            throw new CAPException(e.getMessage(), e);
+        }
+        
         ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "654321");
-        LSAIdentityImpl lsa = new LSAIdentityImpl(new byte[] { 91, 92, 93 });
-        GeodeticInformationImpl gdi = new GeodeticInformationImpl(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        LSAIdentityImpl lsa = new LSAIdentityImpl(Unpooled.wrappedBuffer(new byte[] { 91, 92, 93 }));
+        
+        GeodeticInformationImpl gdi = null;
+        try {
+        	ByteBuf geodeticBuffer=Unpooled.wrappedBuffer(new byte[] { 1, 16, 3, 4, 5, 6, 7, 8, 9, 10 });
+        	gdi = new GeodeticInformationImpl(geodeticBuffer.readByte() & 0x0FF, GeographicalInformationImpl.decodeTypeOfShape(geodeticBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geodeticBuffer), GeographicalInformationImpl.decodeLongitude(geodeticBuffer), GeographicalInformationImpl.decodeUncertainty(geodeticBuffer.readByte() & 0x0FF),geodeticBuffer.readByte() & 0x0FF);
+        } catch (APPException e) {
+            throw new CAPException(e.getMessage(), e);
+        }
+        
         LocationInformationGPRSImpl locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, ggi, sgsn, lsa, null, true,
                 gdi, true, 13);
         GPRSEventSpecificInformationImpl gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl(

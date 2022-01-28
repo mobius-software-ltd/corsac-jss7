@@ -68,58 +68,43 @@ public class TimeDurationChargingImpl {
     //V2
     public TimeDurationChargingImpl(long maxCallPeriodDuration, Boolean tone, CAPINAPExtensions extensions,
             Long tariffSwitchInterval) {
-        this.maxCallPeriodDuration = new ASNInteger();
-        this.maxCallPeriodDuration.setValue(maxCallPeriodDuration);
-        
+        this.maxCallPeriodDuration = new ASNInteger(maxCallPeriodDuration);
+
         if(tone!=null || extensions!=null)
         	this.releaseIfDurationExceeded = new ReleaseIfDurationExceededImpl(tone, extensions);
         
-        if(tariffSwitchInterval!=null) {
-        	this.tariffSwitchInterval = new ASNInteger();
-        	this.tariffSwitchInterval.setValue(tariffSwitchInterval.longValue());
-        }
+        if(tariffSwitchInterval!=null)
+        	this.tariffSwitchInterval = new ASNInteger(tariffSwitchInterval);        	
     }
     
     //V3
     public TimeDurationChargingImpl(long maxCallPeriodDuration, boolean releaseIfdurationExceeded,
             Long tariffSwitchInterval, Boolean tone, CAPINAPExtensions extensions) {
-    	this.maxCallPeriodDuration = new ASNInteger();
-        this.maxCallPeriodDuration.setValue(maxCallPeriodDuration);
+    	this.maxCallPeriodDuration = new ASNInteger(maxCallPeriodDuration);
         
-        if(releaseIfdurationExceeded) {
-        	this.releaseIfdurationExceededB = new ASNBoolean();
-        	this.releaseIfdurationExceededB.setValue(releaseIfdurationExceeded);
-        }
-        
-        if(tone!=null) {
-        	this.tone = new ASNBoolean();
-            this.tone.setValue(tone);            
-        }
-        
-        if(tariffSwitchInterval!=null) {
-        	this.tariffSwitchInterval = new ASNInteger();
-        	this.tariffSwitchInterval.setValue(tariffSwitchInterval.longValue());
-        }
-        
+        if(releaseIfdurationExceeded)
+        	this.releaseIfdurationExceededB = new ASNBoolean(releaseIfdurationExceeded);
+        	
+        if(tone!=null)
+        	this.tone = new ASNBoolean(tone);
+            
+        if(tariffSwitchInterval!=null)
+        	this.tariffSwitchInterval = new ASNInteger(tariffSwitchInterval);
+        	
         this.extensions = extensions;        
     }
     
     //V4
     public TimeDurationChargingImpl(long maxCallPeriodDuration, boolean releaseIfdurationExceeded,
             Long tariffSwitchInterval, AudibleIndicator audibleIndicator, CAPINAPExtensions extensions) {
-    	this.maxCallPeriodDuration = new ASNInteger();
-        this.maxCallPeriodDuration.setValue(maxCallPeriodDuration);
+    	this.maxCallPeriodDuration = new ASNInteger(maxCallPeriodDuration);
         
-        if(releaseIfdurationExceeded) {
-        	this.releaseIfdurationExceededB = new ASNBoolean();
-        	this.releaseIfdurationExceededB.setValue(releaseIfdurationExceeded);
-        }
-        
-        if(tariffSwitchInterval!=null) {
-        	this.tariffSwitchInterval = new ASNInteger();
-        	this.tariffSwitchInterval.setValue(tariffSwitchInterval.longValue());
-        }
-        
+        if(releaseIfdurationExceeded)
+        	this.releaseIfdurationExceededB = new ASNBoolean(releaseIfdurationExceeded);
+        	
+        if(tariffSwitchInterval!=null)
+        	this.tariffSwitchInterval = new ASNInteger(tariffSwitchInterval);
+        	
         if(audibleIndicator!=null)
         	this.audibleIndicator = new AudibleIndicatorWrapperImpl(audibleIndicator);
         

@@ -27,6 +27,8 @@ import java.util.List;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
 *
 <code>
@@ -50,5 +52,5 @@ public interface USIServiceIndicator {
 
     List<Long> getGlobal();
 
-    byte[] getLocal();
+    ByteBuf getLocal();
 }

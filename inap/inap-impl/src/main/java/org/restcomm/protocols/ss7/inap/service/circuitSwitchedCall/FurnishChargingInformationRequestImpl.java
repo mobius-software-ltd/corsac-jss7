@@ -29,10 +29,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.FurnishCh
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -45,16 +44,14 @@ public class FurnishChargingInformationRequestImpl extends CircuitSwitchedCallMe
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.UNIVERSAL,tag = 4,constructed = false,index = -1)
-    private ASNOctetString fciBillingChargingCharacteristics;
+    private ASNOctetString2 fciBillingChargingCharacteristics;
 
     public FurnishChargingInformationRequestImpl() {
     }
 
-    public FurnishChargingInformationRequestImpl(byte[] fciBillingChargingCharacteristics) {
-    	if(fciBillingChargingCharacteristics!=null) {
-    		this.fciBillingChargingCharacteristics = new ASNOctetString();
-    		this.fciBillingChargingCharacteristics.setValue(Unpooled.wrappedBuffer(fciBillingChargingCharacteristics));
-    	}
+    public FurnishChargingInformationRequestImpl(ByteBuf fciBillingChargingCharacteristics) {
+    	if(fciBillingChargingCharacteristics!=null)
+    		this.fciBillingChargingCharacteristics = new ASNOctetString2(fciBillingChargingCharacteristics);    
     }
 
     @Override
@@ -68,14 +65,11 @@ public class FurnishChargingInformationRequestImpl extends CircuitSwitchedCallMe
     }
 
     @Override
-    public byte[] getFCIBillingChargingCharacteristics() {
-    	if(fciBillingChargingCharacteristics==null || fciBillingChargingCharacteristics.getValue()==null)
+    public ByteBuf getFCIBillingChargingCharacteristics() {
+    	if(fciBillingChargingCharacteristics==null)
     		return null;
     	
-    	ByteBuf value=fciBillingChargingCharacteristics.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return fciBillingChargingCharacteristics.getValue();
     }
 
     @Override
@@ -87,7 +81,7 @@ public class FurnishChargingInformationRequestImpl extends CircuitSwitchedCallMe
 
         if (this.fciBillingChargingCharacteristics != null && fciBillingChargingCharacteristics.getValue()!=null) {
             sb.append(", FCIBillingChargingCharacteristics=");
-            sb.append(ASNOctetString.printDataArr(getFCIBillingChargingCharacteristics()));
+            sb.append(fciBillingChargingCharacteristics.printDataArr());
         }
 
         sb.append("]");

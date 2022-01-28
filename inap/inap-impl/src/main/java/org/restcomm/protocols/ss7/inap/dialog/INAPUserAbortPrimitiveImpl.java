@@ -41,13 +41,14 @@ public class INAPUserAbortPrimitiveImpl extends ASNEnumerated {
     }
 
     public INAPUserAbortPrimitiveImpl(INAPUserAbortReason reason) {
-        setValue(Long.valueOf(reason.getCode()));
+        super(reason.getCode());
     }
 
     public INAPUserAbortReason getINAPUserAbortReason() {
-    	if(getValue()==null)
+    	Integer value=getIntValue();
+    	if(value==null)
     		return null;
     	
-        return INAPUserAbortReason.getInstance(getValue().intValue());
+        return INAPUserAbortReason.getInstance(value);
     }
 }

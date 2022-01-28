@@ -74,10 +74,8 @@ public class ProvideSubscriberInfoRequestImpl extends MobilityMessageImpl implem
         this.requestedInfo = requestedInfo;
         this.extensionContainer = extensionContainer;
         
-        if(callPriority!=null) {
-        	this.callPriority = new ASNEMLPPPriorityImpl();
-        	this.callPriority.setType(callPriority);
-        }
+        if(callPriority!=null)
+        	this.callPriority = new ASNEMLPPPriorityImpl(callPriority);        	
     }
 
     @Override

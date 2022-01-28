@@ -77,7 +77,7 @@ public class GT0100Test {
      */
     @Test(groups = { "parameter", "functional.decode" })
     public void testDecodeEven() throws Exception {
-    	// create GT object and read data from stream
+    	// create GT object and read data from ByteBuf
         GlobalTitle0100Impl gt1 = new GlobalTitle0100Impl();
         gt1.decode(Unpooled.wrappedBuffer(dataEven), factory, SccpProtocolVersion.ITU);
 
@@ -103,7 +103,7 @@ public class GT0100Test {
      */
     @Test(groups = { "parameter", "functional.decode" })
     public void testDecodeOdd() throws Exception {
-        // create GT object and read data from stream
+        // create GT object and read data from ByteBuf
         GlobalTitle0100Impl gt1 = new GlobalTitle0100Impl();
         gt1.decode(Unpooled.wrappedBuffer(dataOdd), factory, SccpProtocolVersion.ITU);
 
@@ -129,7 +129,7 @@ public class GT0100Test {
 
     @Test(groups = { "parameter", "functional.decode" })
     public void testDecodeHex() throws Exception {
-        // create GT object and read data from stream
+        // create GT object and read data from ByteBuf
         GlobalTitle0100Impl gt1 = new GlobalTitle0100Impl();
         gt1.decode(Unpooled.wrappedBuffer(dataHex), factory, SccpProtocolVersion.ITU);
 
@@ -149,30 +149,4 @@ public class GT0100Test {
         gt.encode(bout, false, SccpProtocolVersion.ITU);
         MessageSegmentationTest.assertByteBufs(dataOdd, bout);        
     }
-
-    /*@Test(groups = { "parameter", "functional.encode" })
-    public void testSerialization() throws Exception {
-
-        GlobalTitle0100Impl gt = new GlobalTitle0100Impl("9023629581",0, BCDEvenEncodingScheme.INSTANCE,NumberingPlan.ISDN_MOBILE, NatureOfAddress.NATIONAL);
-
-        // Writes
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(output);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-        // indentation).
-        writer.write(gt, "GT0100", GlobalTitle0100Impl.class);
-        writer.close();
-
-        System.out.println(output.toString());
-
-        ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
-        XMLObjectReader reader = XMLObjectReader.newInstance(input);
-        GlobalTitle0100Impl aiOut = reader.read("GT0100", GlobalTitle0100Impl.class);
-
-        // check results
-        assertEquals(aiOut.getNatureOfAddress(), NatureOfAddress.NATIONAL);
-        assertEquals(aiOut.getTranslationType(), 0);
-        assertEquals(aiOut.getNumberingPlan(), NumberingPlan.ISDN_MOBILE);
-        assertEquals(aiOut.getDigits(), "9023629581");
-    }*/
 }

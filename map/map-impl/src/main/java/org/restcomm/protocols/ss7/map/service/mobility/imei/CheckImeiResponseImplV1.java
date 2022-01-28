@@ -58,10 +58,8 @@ public class CheckImeiResponseImplV1 extends MobilityMessageImpl implements Chec
     public CheckImeiResponseImplV1(long mapProtocolVersion, EquipmentStatus equipmentStatus) {
         this.mapProtocolVersion = mapProtocolVersion;
         
-        if(equipmentStatus!=null) {
-        	this.equipmentStatus = new ASNEquipmentStatusImpl();
-        	this.equipmentStatus.setType(equipmentStatus);
-        }
+        if(equipmentStatus!=null)
+        	this.equipmentStatus = new ASNEquipmentStatusImpl(equipmentStatus);        	
     }
 
     public long getMapProtocolVersion() {

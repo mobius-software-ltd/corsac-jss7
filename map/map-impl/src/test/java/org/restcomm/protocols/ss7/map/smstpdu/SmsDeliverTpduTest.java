@@ -34,6 +34,7 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.testng.annotations.Test;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -77,14 +78,14 @@ public class SmsDeliverTpduTest {
         assertEquals(impl.getServiceCentreTimeStamp().getTimeZone(), 12);
         assertEquals(impl.getUserDataLength(), 23);
         assertTrue(impl.getUserData().getDecodedMessage().equals("Hello, world !!!"));
-        assertTrue(Arrays.equals(impl.getUserData().getDecodedUserDataHeader().getInformationElementData(0), this.getData1A()));
+        assertTrue(ByteBufUtil.equals(impl.getUserData().getDecodedUserDataHeader().getInformationElementData(0), Unpooled.wrappedBuffer(this.getData1A())));
     }
 
     @Test(groups = { "functional.encode", "smstpdu" })
     public void testEncode() throws Exception {
 
         UserDataHeaderImpl udh = new UserDataHeaderImpl();
-        udh.addInformationElement(0, this.getData1A());
+        udh.addInformationElement(0, Unpooled.wrappedBuffer(this.getData1A()));
         UserDataImpl ud = new UserDataImpl("Hello, world !!!", new DataCodingSchemeImpl(0), udh, null);
         AddressFieldImpl originatingAddress = new AddressFieldImpl(TypeOfNumber.InternationalNumber,
                 NumberingPlanIdentification.ISDNTelephoneNumberingPlan, "1234567890");

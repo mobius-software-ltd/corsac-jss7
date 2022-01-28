@@ -133,42 +133,4 @@ public class ServiceInteractionIndicatorsTwoTest {
 
         // TODO: implement full testing for CAP V4
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
-    public void testXMLSerialize() throws Exception {
-
-        ForwardServiceInteractionInd forwardServiceInteractionInd = new ForwardServiceInteractionIndImpl(ConferenceTreatmentIndicator.acceptConferenceRequest,
-                null, null);
-        BackwardServiceInteractionInd backwardServiceInteractionInd = new BackwardServiceInteractionIndImpl(
-                ConferenceTreatmentIndicator.rejectConferenceRequest, null);
-        ServiceInteractionIndicatorsTwoImpl original = new ServiceInteractionIndicatorsTwoImpl(forwardServiceInteractionInd, backwardServiceInteractionInd,
-                BothwayThroughConnectionInd.bothwayPathRequired, ConnectedNumberTreatmentInd.presentCalledINNumber, true,
-                HoldTreatmentIndicator.acceptHoldRequest, CwTreatmentIndicator.rejectCw, EctTreatmentIndicator.acceptEctRequest);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "serviceInteractionIndicatorsTwo", ServiceInteractionIndicatorsTwoImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        ServiceInteractionIndicatorsTwoImpl copy = reader.read("serviceInteractionIndicatorsTwo", ServiceInteractionIndicatorsTwoImpl.class);
-
-        assertEquals(original.getForwardServiceInteractionInd().getConferenceTreatmentIndicator(), copy.getForwardServiceInteractionInd().getConferenceTreatmentIndicator());
-        assertEquals(original.getBackwardServiceInteractionInd().getConferenceTreatmentIndicator(), copy.getBackwardServiceInteractionInd().getConferenceTreatmentIndicator());
-        assertEquals(original.getBothwayThroughConnectionInd(), copy.getBothwayThroughConnectionInd());
-        assertEquals(original.getConnectedNumberTreatmentInd(), copy.getConnectedNumberTreatmentInd());
-        assertEquals(original.getNonCUGCall(), copy.getNonCUGCall());
-        assertEquals(original.getHoldTreatmentIndicator(), copy.getHoldTreatmentIndicator());
-        assertEquals(original.getCwTreatmentIndicator(), copy.getCwTreatmentIndicator());
-        assertEquals(original.getEctTreatmentIndicator(), copy.getEctTreatmentIndicator());
-    }*/
 }

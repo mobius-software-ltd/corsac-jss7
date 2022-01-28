@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.commonapp.api.primitives;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -52,14 +54,11 @@ The IP v6 address structure is defined in RFC 2373 [15].
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface GSNAddress {
 
-    byte[] getData();
-
     GSNAddressAddressType getGSNAddressAddressType();
 
     /**
      * @return the content of Address field (4 bytes for IPv4 and 16 bytes for
      *         IPv6) or null if GSNAddress contains bad data
      */
-    byte[] getGSNAddressData();
-
+    ByteBuf getGSNAddressData();
 }

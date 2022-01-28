@@ -65,11 +65,9 @@ public class DCSIImpl implements DCSI {
     	if(dpAnalysedInfoCriteriaList!=null)
     		this.dpAnalysedInfoCriteriaList = new DPAnalyzedInfoCriteriaListWrapperImpl(dpAnalysedInfoCriteriaList);
     	
-    	if(camelCapabilityHandling!=null) {
-    		this.camelCapabilityHandling = new ASNInteger();
-    		this.camelCapabilityHandling.setValue(camelCapabilityHandling.longValue());
-    	}
-    	
+    	if(camelCapabilityHandling!=null)
+    		this.camelCapabilityHandling = new ASNInteger(camelCapabilityHandling);
+    		
         this.extensionContainer = extensionContainer;
         
         if(notificationToCSE)
@@ -90,7 +88,7 @@ public class DCSIImpl implements DCSI {
     	if(this.camelCapabilityHandling==null)
     		return null;
     	
-        return this.camelCapabilityHandling.getValue().intValue();
+        return this.camelCapabilityHandling.getIntValue();
     }
 
     public MAPExtensionContainer getExtensionContainer() {

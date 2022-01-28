@@ -21,8 +21,6 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.Map;
 import java.util.Set;
 
@@ -35,6 +33,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ConnectionRequest;
 import org.restcomm.protocols.ss7.isup.message.parameter.FacilityIndicator;
 import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserIndicators;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Base class for FAA and FAR - both have the same content.
@@ -95,7 +95,7 @@ public abstract class AbstractFacilityMessageImpl extends ISUPMessageImpl implem
                 throw new ParameterException("Failed to parse BackwardCallIndicators due to: ", e);
             }
         } else {
-            throw new IllegalArgumentException("byte[] must have atleast four octets");
+            throw new IllegalArgumentException("buffer must have atleast four readable octets");
         }
 
     }

@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNSubscriberStatus extends ASNEnumerated {
-	public void setType(SubscriberStatus t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNSubscriberStatus() {
+		
+	}
+	
+	public ASNSubscriberStatus(SubscriberStatus t) {
+		super(t.getCode());
 	}
 	
 	public SubscriberStatus getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return SubscriberStatus.getInstance(getValue().intValue());
+		return SubscriberStatus.getInstance(realValue);
 	}
 }

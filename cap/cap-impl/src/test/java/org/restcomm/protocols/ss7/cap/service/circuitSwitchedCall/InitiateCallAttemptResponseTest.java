@@ -91,43 +91,4 @@ public class InitiateCallAttemptResponseTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        SupportedCamelPhasesImpl supportedCamelPhases = new SupportedCamelPhasesImpl(true, true, true, false);
-        OfferedCamel4FunctionalitiesImpl offeredCamel4Functionalities = new OfferedCamel4FunctionalitiesImpl(true, false, false, false, false, false, false,
-                false, false, false, false, false, false, false, false, false, false, false, false, false);
-        InitiateCallAttemptResponseImpl original = new InitiateCallAttemptResponseImpl(supportedCamelPhases, offeredCamel4Functionalities,
-                CAPExtensionsTest.createTestCAPExtensions(), true);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "initiateCallAttemptResponse", InitiateCallAttemptResponseImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        InitiateCallAttemptResponseImpl copy = reader.read("initiateCallAttemptResponse", InitiateCallAttemptResponseImpl.class);
-
-        assertEquals(original.getSupportedCamelPhases().getPhase1Supported(), copy.getSupportedCamelPhases().getPhase1Supported());
-        assertEquals(original.getSupportedCamelPhases().getPhase2Supported(), copy.getSupportedCamelPhases().getPhase2Supported());
-        assertEquals(original.getSupportedCamelPhases().getPhase3Supported(), copy.getSupportedCamelPhases().getPhase3Supported());
-        assertEquals(original.getSupportedCamelPhases().getPhase4Supported(), copy.getSupportedCamelPhases().getPhase4Supported());
-        assertEquals(original.getOfferedCamel4Functionalities().getInitiateCallAttempt(), copy.getOfferedCamel4Functionalities().getInitiateCallAttempt());
-        assertEquals(original.getOfferedCamel4Functionalities().getCollectInformation(), copy.getOfferedCamel4Functionalities().getCollectInformation());
-        assertEquals(original.getReleaseCallArgExtensionAllowed(), copy.getReleaseCallArgExtensionAllowed());
-        assertTrue(CAPExtensionsTest.checkTestCAPExtensions(original.getExtensions()));
-        assertTrue(CAPExtensionsTest.checkTestCAPExtensions(copy.getExtensions()));
-
-    }*/
 }

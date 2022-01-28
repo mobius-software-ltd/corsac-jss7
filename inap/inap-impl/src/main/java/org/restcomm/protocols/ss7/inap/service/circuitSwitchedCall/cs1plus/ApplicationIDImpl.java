@@ -37,8 +37,7 @@ public class ApplicationIDImpl extends ASNSingleByte implements ApplicationID {
     }
 
     public ApplicationIDImpl(Integer value) {
-    	if(value!=null)
-    		setValue(value);    		
+    	super(value);    		
     }
 
     public Integer getData() {

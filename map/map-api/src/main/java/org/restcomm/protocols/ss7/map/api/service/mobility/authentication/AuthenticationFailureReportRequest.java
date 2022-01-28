@@ -27,6 +27,8 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -71,7 +73,7 @@ public interface AuthenticationFailureReportRequest extends MobilityMessage {
 
     AccessType getAccessType();
 
-    byte[] getRand();
+    ByteBuf getRand();
 
     ISDNAddressString getVlrNumber();
 

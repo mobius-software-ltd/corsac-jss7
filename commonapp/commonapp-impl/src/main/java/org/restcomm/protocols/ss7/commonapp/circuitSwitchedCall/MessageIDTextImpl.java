@@ -28,10 +28,9 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNIA5String;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -44,21 +43,17 @@ public class MessageIDTextImpl implements MessageIDText {
     private ASNIA5String messageContent;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private ASNOctetString attributes;
+    private ASNOctetString2 attributes;
 
     public MessageIDTextImpl() {
     }
 
-    public MessageIDTextImpl(String messageContent, byte[] attributes) {
-        if(messageContent!=null) {
-        	this.messageContent = new ASNIA5String();
-        	this.messageContent.setValue(messageContent);
-        }
-        
-        if(attributes!=null) {
-        	this.attributes = new ASNOctetString();
-        	this.attributes.setValue(Unpooled.wrappedBuffer(attributes));
-        }
+    public MessageIDTextImpl(String messageContent, ByteBuf attributes) {
+        if(messageContent!=null)
+        	this.messageContent = new ASNIA5String(messageContent);
+        	
+        if(attributes!=null)
+        	this.attributes = new ASNOctetString2(attributes);        
     }
 
     public String getMessageContent() {
@@ -68,17 +63,11 @@ public class MessageIDTextImpl implements MessageIDText {
         return messageContent.getValue();
     }
 
-    public byte[] getAttributes() {
+    public ByteBuf getAttributes() {
     	if(attributes==null)
     		return null;
     	
-    	ByteBuf value=attributes.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return attributes.getValue();    	
     }
 
     @Override
@@ -93,10 +82,9 @@ public class MessageIDTextImpl implements MessageIDText {
             sb.append("]");
         }
         
-        byte[] data=this.getAttributes();
-        if (data != null) {
+        if (getAttributes() != null) {
             sb.append(", attributes=");
-            sb.append(ASNOctetString.printDataArr(data));
+            sb.append(attributes.printDataArr());
         }
 
         sb.append("]");

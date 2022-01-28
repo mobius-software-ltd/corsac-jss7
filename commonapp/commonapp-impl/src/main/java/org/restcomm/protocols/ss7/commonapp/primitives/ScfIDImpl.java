@@ -24,32 +24,21 @@ package org.restcomm.protocols.ss7.commonapp.primitives;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
-public class ScfIDImpl extends ASNOctetString implements ScfID {
+public class ScfIDImpl extends ASNOctetString2 implements ScfID {
 	public ScfIDImpl() {
     }
 
-    public ScfIDImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf buffer=getValue();
-    	if(getValue()==null)
-    		return null;
-    	
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
-        return data;
+    public ScfIDImpl(ByteBuf value) {
+        super(value);
     }
 
     @Override
@@ -57,10 +46,9 @@ public class ScfIDImpl extends ASNOctetString implements ScfID {
         StringBuilder sb = new StringBuilder();
         sb.append("ScfID [");
 
-        byte[] data=this.getData();
-        if (data != null) {
+        if (getValue() != null) {
             sb.append("data=[");
-            sb.append(printDataArr(data));
+            sb.append(printDataArr());
             sb.append("]");
         }
 

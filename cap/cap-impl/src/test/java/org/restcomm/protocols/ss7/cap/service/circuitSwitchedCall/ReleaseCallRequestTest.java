@@ -28,12 +28,14 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -63,7 +65,7 @@ public class ReleaseCallRequestTest {
         assertTrue(result.getResult() instanceof ReleaseCallRequestImpl);
         
         ReleaseCallRequestImpl elem = (ReleaseCallRequestImpl)result.getResult();        
-        assertTrue(Arrays.equals(elem.getCause().getData(), getDataIntData()));
+        assertTrue(ByteBufUtil.equals(CauseIsupImpl.translate(elem.getCause().getCauseIndicators()),Unpooled.wrappedBuffer(getDataIntData())));
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })
@@ -71,7 +73,9 @@ public class ReleaseCallRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ReleaseCallRequestImpl.class);
     	
-        CauseIsupImpl cause = new CauseIsupImpl(getDataIntData());
+    	CauseIndicatorsImpl ci=new CauseIndicatorsImpl();
+    	ci.decode(Unpooled.wrappedBuffer(getDataIntData()));
+        CauseIsupImpl cause = new CauseIsupImpl(ci);
 
         ReleaseCallRequestImpl elem = new ReleaseCallRequestImpl(cause);
         byte[] rawData = this.getData1();
@@ -80,32 +84,4 @@ public class ReleaseCallRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        CauseCapImpl cause = new CauseCapImpl(getDataIntData());
-        ReleaseCallRequestImpl original = new ReleaseCallRequestImpl(cause);
-        original.setInvokeId(24);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "releaseCallRequest", ReleaseCallRequestImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        ReleaseCallRequestImpl copy = reader.read("releaseCallRequest", ReleaseCallRequestImpl.class);
-
-        assertEquals(copy.getInvokeId(), original.getInvokeId());
-        assertEquals(copy.getCause().getData(), original.getCause().getData());
-    }*/
 }

@@ -34,8 +34,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.fail;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.message.CircuitGroupQueryResponseMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
@@ -43,6 +41,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallReference;
 import org.restcomm.protocols.ss7.isup.message.parameter.CircuitStateIndicator;
 import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
 import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Start time:09:26:46 2009-04-22<br>
@@ -67,8 +68,7 @@ public class CQRTest extends MessageHarness {
                 return;
             byte range = RS.getRange();
             assertEquals(range, 0x01, "Range is wrong,");
-            byte[] b = RS.getStatus();
-            assertNull(b, "RangeAndStatus.getRange() is not null");
+            assertNull(RS.getStatus(), "RangeAndStatus.getRange() is not null");
 
         } catch (Exception e) {
             e.printStackTrace();

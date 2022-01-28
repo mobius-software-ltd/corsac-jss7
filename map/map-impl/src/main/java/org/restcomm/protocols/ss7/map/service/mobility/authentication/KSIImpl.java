@@ -36,7 +36,7 @@ public class KSIImpl extends ASNSingleByte implements KSI {
     }
 
     public KSIImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public int getData() {

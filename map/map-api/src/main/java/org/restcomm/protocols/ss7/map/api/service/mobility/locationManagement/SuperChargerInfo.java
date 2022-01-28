@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * SuperChargerInfo ::= CHOICE { sendSubscriberData [0] NULL, subscriberDataStored [1] AgeIndicator }
@@ -41,6 +43,6 @@ public interface SuperChargerInfo {
 
     Boolean getSendSubscriberData();
 
-    byte[] getSubscriberDataStored();
+    ByteBuf getSubscriberDataStored();
 
 }

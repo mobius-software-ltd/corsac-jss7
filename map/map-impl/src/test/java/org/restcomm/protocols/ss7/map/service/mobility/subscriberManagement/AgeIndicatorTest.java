@@ -21,7 +21,6 @@
  */
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
@@ -34,6 +33,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -62,7 +62,7 @@ public class AgeIndicatorTest {
         assertTrue(result.getResult() instanceof AgeIndicatorImpl);
         AgeIndicatorImpl prim = (AgeIndicatorImpl)result.getResult();
         
-        assertEquals(prim.getData(), this.getAgeIndicatorData());
+        assertTrue(ByteBufUtil.equals(prim.getValue(), Unpooled.wrappedBuffer(this.getAgeIndicatorData())));
 
     }
 
@@ -71,7 +71,7 @@ public class AgeIndicatorTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AgeIndicatorImpl.class);
     	
-        AgeIndicatorImpl prim = new AgeIndicatorImpl(this.getAgeIndicatorData());
+        AgeIndicatorImpl prim = new AgeIndicatorImpl(Unpooled.wrappedBuffer(this.getAgeIndicatorData()));
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);

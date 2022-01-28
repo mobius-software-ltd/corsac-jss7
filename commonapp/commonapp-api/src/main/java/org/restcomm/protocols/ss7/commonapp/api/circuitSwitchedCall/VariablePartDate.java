@@ -47,8 +47,6 @@ date [3] OCTET STRING (SIZE(4)),
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface VariablePartDate {
 
-    byte[] getData();
-
     int getYear();
 
     int getMonth();

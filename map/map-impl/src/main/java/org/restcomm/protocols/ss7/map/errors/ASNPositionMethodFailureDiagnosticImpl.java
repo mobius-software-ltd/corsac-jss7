@@ -8,15 +8,19 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,lengthIndefinite=false)
 public class ASNPositionMethodFailureDiagnosticImpl extends ASNEnumerated {
-	public void setType(PositionMethodFailureDiagnostic t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNPositionMethodFailureDiagnosticImpl() {
+		
+	}
+	
+	public ASNPositionMethodFailureDiagnosticImpl(PositionMethodFailureDiagnostic t) {
+		super(t.getCode());
 	}
 	
 	public PositionMethodFailureDiagnostic getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return PositionMethodFailureDiagnostic.getInstance(getValue().intValue());
+		return PositionMethodFailureDiagnostic.getInstance(realValue);
 	}
 }

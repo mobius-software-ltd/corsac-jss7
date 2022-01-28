@@ -142,36 +142,4 @@ public class CallingPartyNumberTest {
 
         assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "parameter" })
-    public void testXMLSerialize() throws Exception {
-
-        CallingPartyNumberImpl original = new CallingPartyNumberImpl(NAINumber._NAI_NATIONAL_SN, "12345",
-                CallingPartyNumber._NPI_TELEX, CallingPartyNumber._NI_INCOMPLETE, CallingPartyNumber._APRI_ALLOWED,
-                CallingPartyNumber._SI_USER_PROVIDED_FAILED);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "callingPartyNumber", CallingPartyNumberImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        CallingPartyNumberImpl copy = reader.read("callingPartyNumber", CallingPartyNumberImpl.class);
-
-        assertEquals(copy.getNatureOfAddressIndicator(), original.getNatureOfAddressIndicator());
-        assertEquals(copy.getAddress(), original.getAddress());
-        assertEquals(copy.getNumberingPlanIndicator(), original.getNumberingPlanIndicator());
-        assertEquals(copy.getNumberIncompleteIndicator(), original.getNumberIncompleteIndicator());
-        assertEquals(copy.getAddressRepresentationRestrictedIndicator(), original.getAddressRepresentationRestrictedIndicator());
-        assertEquals(copy.getScreeningIndicator(), original.getScreeningIndicator());
-    }*/
 }

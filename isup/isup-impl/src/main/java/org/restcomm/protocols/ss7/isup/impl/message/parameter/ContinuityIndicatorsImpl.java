@@ -64,7 +64,7 @@ public class ContinuityIndicatorsImpl extends AbstractISUPParameter implements C
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() != 1) {
-            throw new ParameterException("byte[] must not be null or have different size than 1");
+            throw new ParameterException("buffer must not be null or have different size than 1");
         }
         this.continuityCheck = (b.readByte() & 0x01) == _TURN_ON;        
     }

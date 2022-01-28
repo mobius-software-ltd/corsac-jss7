@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.faultRecovery;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
@@ -43,6 +42,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -95,7 +95,7 @@ public class RestoreDataRequestTest {
         imsi = prim.getImsi();
         assertTrue(imsi.getData().equals("11122233344455"));
 
-        assertEquals(prim.getLmsi().getData(), getLmsiData());
+        assertTrue(ByteBufUtil.equals(prim.getLmsi().getValue(), Unpooled.wrappedBuffer(getLmsiData())));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
         VLRCapability vlrCapability = prim.getVLRCapability();
         SupportedCamelPhases supportedCamelPhases = vlrCapability.getSupportedCamelPhases();
@@ -122,7 +122,7 @@ public class RestoreDataRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        LMSIImpl lmsi = new LMSIImpl(getLmsiData());
+        LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(getLmsiData()));
         SupportedCamelPhasesImpl supportedCamelPhases = new SupportedCamelPhasesImpl(true, true, false, false);
         VLRCapabilityImpl vlrCapability = new VLRCapabilityImpl(supportedCamelPhases, null, false, null, null, false, null, null, null, false, false);
         prim = new RestoreDataRequestImpl(imsi, lmsi, vlrCapability, MAPExtensionContainerTest.GetTestExtensionContainer(), true);

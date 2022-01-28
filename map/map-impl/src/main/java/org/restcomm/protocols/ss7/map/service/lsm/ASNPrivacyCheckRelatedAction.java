@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.PrivacyCheckRelatedAction;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNPrivacyCheckRelatedAction extends ASNEnumerated {
-	public void setType(PrivacyCheckRelatedAction t) {
-		super.setValue(Long.valueOf(t.getAction()));
+	public ASNPrivacyCheckRelatedAction() {
+		
+	}
+	
+	public ASNPrivacyCheckRelatedAction(PrivacyCheckRelatedAction t) {
+		super(t.getAction());
 	}
 	
 	public PrivacyCheckRelatedAction getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return PrivacyCheckRelatedAction.getPrivacyCheckRelatedAction(getValue().intValue());
+		return PrivacyCheckRelatedAction.getPrivacyCheckRelatedAction(realValue);
 	}
 }

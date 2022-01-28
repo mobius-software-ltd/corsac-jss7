@@ -68,17 +68,9 @@ SIZE: 2..16
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface DigitsIsup {
 
-    byte[] getData();
-
     GenericDigits getGenericDigits() throws APPException;
 
     GenericNumber getGenericNumber() throws APPException;
-
-    void setData(byte[] data);
-
-    void setGenericDigits(GenericDigits genericDigits) throws APPException;
-
-    void setGenericNumber(GenericNumber genericNumber) throws APPException;
 
     boolean getIsGenericDigits();
 

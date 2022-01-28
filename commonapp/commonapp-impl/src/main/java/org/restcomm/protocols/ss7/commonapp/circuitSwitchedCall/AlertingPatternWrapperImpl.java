@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.commonapp.primitives.AlertingPatternImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,36 +39,28 @@ import io.netty.buffer.Unpooled;
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
-public class AlertingPatternWrapperImpl extends ASNOctetString implements AlertingPatternWrapper {
+public class AlertingPatternWrapperImpl extends ASNOctetString2 implements AlertingPatternWrapper {
 	public AlertingPatternWrapperImpl() {
     }
 
-    public AlertingPatternWrapperImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
+    public AlertingPatternWrapperImpl(ByteBuf value) {
+    	super(value);
     }
 
     public AlertingPatternWrapperImpl(AlertingPattern alertingPattern) {
-        setAlertingPattern(alertingPattern);
+        super(translateAlertingPattern(alertingPattern));
     }
 
-    public void setAlertingPattern(AlertingPattern alertingPattern) {
+    public static ByteBuf translateAlertingPattern(AlertingPattern alertingPattern) {
 
         if (alertingPattern == null || alertingPattern.getData()==null)
-            return;
+            return Unpooled.EMPTY_BUFFER;
 
-        byte[] data = new byte[3];
-        data[2] = alertingPattern.getData().byteValue();
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-        if(value==null)
-        	return null;
-        
-        byte[] data=new byte[value.readableBytes()];
-        value.readBytes(data);
-    	return data;
+        ByteBuf result=Unpooled.buffer(3);
+        result.writeByte(0);
+        result.writeByte(0);
+        result.writeByte(alertingPattern.getData().byteValue());
+        return result;
     }
 
     public AlertingPattern getAlertingPattern() {

@@ -74,16 +74,12 @@ public class LCSQoSImpl implements LCSQoS {
             ResponseTime responseTime, MAPExtensionContainer extensionContainer) {
         super();
         
-        if(horizontalAccuracy!=null) {
-        	this.horizontalAccuracy = new ASNSingleByte();
-        	this.horizontalAccuracy.setValue(horizontalAccuracy);
-        }
-        
-        if(verticalAccuracy!=null) {
-        	this.verticalAccuracy = new ASNSingleByte();
-        	this.verticalAccuracy.setValue(verticalAccuracy);
-        }
-        
+        if(horizontalAccuracy!=null)
+        	this.horizontalAccuracy = new ASNSingleByte(horizontalAccuracy);
+        	
+        if(verticalAccuracy!=null)
+        	this.verticalAccuracy = new ASNSingleByte(verticalAccuracy);
+        	
         if(verticalCoordinateRequest)
         	this.verticalCoordinateRequest = new ASNNull();
         

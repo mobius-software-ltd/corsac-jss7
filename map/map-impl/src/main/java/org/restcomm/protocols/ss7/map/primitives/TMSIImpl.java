@@ -24,30 +24,36 @@ package org.restcomm.protocols.ss7.map.primitives;
 
 import org.restcomm.protocols.ss7.map.api.primitives.TMSI;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author Lasith Waruna Perera
  *
  */
-public class TMSIImpl extends ASNOctetString implements TMSI {
-	public TMSIImpl(byte[] data) {
-		setValue(Unpooled.wrappedBuffer(data));
+public class TMSIImpl extends ASNOctetString2 implements TMSI {
+	public TMSIImpl(ByteBuf value) {
+		super(value);
     }
 
     public TMSIImpl() {
         super();
     }
 
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
-    }
+    @Override
+    public String toString() {
 
+        StringBuilder sb = new StringBuilder();
+        sb.append("TMSIImpl");
+        sb.append(" [");
+        if (getValue()!=null) {
+            sb.append("data=");
+            sb.append(printDataArr());            
+        }
+        sb.append("]");
+
+        return sb.toString();
+    }
 }

@@ -75,6 +75,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /*
@@ -194,7 +195,7 @@ public class ProvideRoamingNumberRequestTest {
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(msisdn.getAddress(), "22227");
         assertNotNull(lmsi);
-        assertTrue(Arrays.equals(lmsi.getData(), getDataLmsi()));
+        assertTrue(ByteBufUtil.equals(lmsi.getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
         assertNotNull(gsmBearerCapability);
         assertNotNull(networkSignalInfo);
         assertFalse(suppressionOfAnnouncement);
@@ -203,7 +204,7 @@ public class ProvideRoamingNumberRequestTest {
         assertEquals(gmscAddress.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(gmscAddress.getAddress(), "22226");
         assertNotNull(callReferenceNumber);
-        assertTrue(Arrays.equals(callReferenceNumber.getData(), getCallReferenceNumber()));
+        assertTrue(ByteBufUtil.equals(callReferenceNumber.getValue(), Unpooled.wrappedBuffer(getCallReferenceNumber())));
         assertFalse(orInterrogation);
         assertNotNull(extensionContainer);
         assertNotNull(alertingPattern);
@@ -270,7 +271,7 @@ public class ProvideRoamingNumberRequestTest {
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(msisdn.getAddress(), "22227");
         assertNotNull(lmsi);
-        assertTrue(Arrays.equals(lmsi.getData(), getDataLmsi()));
+        assertTrue(ByteBufUtil.equals(lmsi.getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
         assertNotNull(gsmBearerCapability);
         assertNotNull(networkSignalInfo);
 
@@ -339,7 +340,7 @@ public class ProvideRoamingNumberRequestTest {
         assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(msisdn.getAddress(), "22227");
         assertNotNull(lmsi);
-        assertTrue(Arrays.equals(lmsi.getData(), getDataLmsi()));
+        assertTrue(ByteBufUtil.equals(lmsi.getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
         assertNotNull(gsmBearerCapability);
         assertNotNull(networkSignalInfo);
         assertTrue(suppressionOfAnnouncement);
@@ -348,7 +349,7 @@ public class ProvideRoamingNumberRequestTest {
         assertEquals(gmscAddress.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(gmscAddress.getAddress(), "22226");
         assertNotNull(callReferenceNumber);
-        assertTrue(Arrays.equals(callReferenceNumber.getData(), getCallReferenceNumber()));
+        assertTrue(ByteBufUtil.equals(callReferenceNumber.getValue(), Unpooled.wrappedBuffer(getCallReferenceNumber())));
         assertTrue(orInterrogation);
         assertNotNull(extensionContainer);
         assertNotNull(alertingPattern);
@@ -380,11 +381,11 @@ public class ProvideRoamingNumberRequestTest {
         IMSIImpl imsi = new IMSIImpl("011220200198227");
         ISDNAddressStringImpl mscNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22228");
         ISDNAddressStringImpl msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22227");
-        LMSIImpl lmsi = new LMSIImpl(getDataLmsi());
+        LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(getDataLmsi()));
 
         MAPExtensionContainer extensionContainerForExtSigInfo = MAPExtensionContainerTest.GetTestExtensionContainer();
         byte[] data_ = new byte[] { 10, 20, 30, 40 };
-        SignalInfoImpl signalInfo = new SignalInfoImpl(data_);
+        SignalInfoImpl signalInfo = new SignalInfoImpl(Unpooled.wrappedBuffer(data_));
         ProtocolId protocolId = ProtocolId.gsm_0806;
         ExternalSignalInfoImpl gsmBearerCapability = new ExternalSignalInfoImpl(signalInfo, protocolId,
                 extensionContainerForExtSigInfo);
@@ -394,7 +395,7 @@ public class ProvideRoamingNumberRequestTest {
         boolean suppressionOfAnnouncement = false;
         ISDNAddressStringImpl gmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22226");
-        CallReferenceNumberImpl callReferenceNumber = new CallReferenceNumberImpl(getCallReferenceNumber());
+        CallReferenceNumberImpl callReferenceNumber = new CallReferenceNumberImpl(Unpooled.wrappedBuffer(getCallReferenceNumber()));
         boolean orInterrogation = false;
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         AlertingPatternImpl alertingPattern = new AlertingPatternImpl(AlertingCategory.Category5);

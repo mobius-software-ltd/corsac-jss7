@@ -77,30 +77,4 @@ public class VariablePartDateTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        VariablePartDateImpl original = new VariablePartDateImpl(2015, 12, 3);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "variablePartDate", VariablePartDateImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        VariablePartDateImpl copy = reader.read("variablePartDate", VariablePartDateImpl.class);
-
-        assertEquals(copy.getYear(), original.getYear());
-        assertEquals(copy.getMonth(), original.getMonth());
-        assertEquals(copy.getDay(), original.getDay());
-    }*/
 }

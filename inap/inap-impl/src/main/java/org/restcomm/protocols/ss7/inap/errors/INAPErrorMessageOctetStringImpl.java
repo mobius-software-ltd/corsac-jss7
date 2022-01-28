@@ -26,10 +26,9 @@ import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorCode;
 import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessageOctetString;
 
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  * Base class of INAP CS1+ messages
@@ -41,7 +40,7 @@ import io.netty.buffer.Unpooled;
 public class INAPErrorMessageOctetStringImpl extends INAPErrorMessageImpl implements INAPErrorMessageOctetString {
 	protected Long errorCode;
 
-	private ASNOctetString value;
+	private ASNOctetString2 value;
 	
     protected INAPErrorMessageOctetStringImpl(Long errorCode) {
         this.errorCode = errorCode;
@@ -50,36 +49,28 @@ public class INAPErrorMessageOctetStringImpl extends INAPErrorMessageImpl implem
     public INAPErrorMessageOctetStringImpl() {
     }
 
-    @Override
-    public byte[] getData() {
-    	if(this.value==null || this.value.getValue()==null)
-    		return null;
-    	
-    	ByteBuf realValue=this.value.getValue();
-    	byte[] data=new byte[realValue.readableBytes()];
-    	realValue.readBytes(data);
-		return data;
-	}
-
-    protected void setValue(byte[] value) {
-    	if(this.value==null && value!=null)
-    		this.value=new ASNOctetString();
-    	
+    protected void setValue(ByteBuf value) {
     	if(value!=null)
-    		this.value.setValue(Unpooled.wrappedBuffer(value));
+    		this.value=new ASNOctetString2(value);
     	else
-    		this.value=new ASNOctetString();
+    		this.value=null;
 	}
 	
     public Long getErrorCode() {
         return errorCode;
     }
 
+    public ByteBuf getValue() {
+    	if(value==null)
+    		return null;
+    	
+    	return value.getValue();
+    }
+    
     @Override
     public String toString() {
-    	byte[] data=getData();
-    	if(data!=null)
-    		return "INAPErrorMessageOctetString [errorCode=" + errorCode + ":" + inapErrorCodeName() + ",data=" + ASNOctetString.printDataArr(data) + "]";
+    	if(getValue()!=null)
+    		return "INAPErrorMessageOctetString [errorCode=" + errorCode + ":" + inapErrorCodeName() + ",data=" + value.printDataArr() + "]";
     	else
     		return "INAPErrorMessageOctetString [errorCode=" + errorCode + ":" + inapErrorCodeName() + "]";
     }

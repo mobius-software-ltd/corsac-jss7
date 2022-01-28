@@ -28,12 +28,29 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.Ext2QoSSubscribed_SourceStatisticsDescriptor;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_BitRate;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_BitRateExtended;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_DeliveryOfErroneousSdus;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_DeliveryOrder;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_MaximumSduSize;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_ResidualBER;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_SduErrorRatio;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_TrafficClass;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_TrafficHandlingPriority;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_TransferDelay;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_DelayClass;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_MeanThroughput;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_PeakThroughput;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_PrecedenceClass;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_ReliabilityClass;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.Ext2QoSSubscribedImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtQoSSubscribedImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.QoSSubscribedImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.LIPAPermission;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.SIPTOPermission;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPTypeValue;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.APNOIReplacementImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ChargingCharacteristicsImpl;
@@ -48,6 +65,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -58,41 +76,22 @@ import io.netty.buffer.Unpooled;
 public class PDPContextTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 102, 2, 1, 15, -112, 2, 11, 12, -111, 1, 21, -110, 3, 91, 92, 93, -109, 0, -108, 2, 22, 23, -75, 39, -96, 32, 48, 10, 6, 3, 42,
-                3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 1, 15, -127, 2, 45,
-                46, -126, 1, 52, -125, 1, 55, -124, 1, 91, -123, 9, 81, 92, 83, 84, 85, 86, 87, 88, 89, -122, 2, 58, 59, -121, 1, 60, -120, 1, 1, -119, 1, 1 };
+        return new byte[] { 48, 114, 2, 1, 15, -112, 2, -15, 33, -111, 1, 21, -110, 3, 4, 7, 7, -109, 0, -108, 3, 2, 22, 23, -75, 39, -96, 32, 48, 10, 6, 3, 42,
+                3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 9, 3, 115, -106, -2, 
+                -2, 116, 3, 0, 0, -127, 2, 12, 0, -126, 3, 0, 0, 0, -125, 2, 74, -6, -124, 1, 91, -123, 9, 81, 92, 83, 84, 85, 86, 87, 88, 89, -122, 2, 58, 59, 
+                -121, 1, 60, -120, 1, 1, -119, 1, 1 };
     }
 
     private byte[] getEncodedPDPType() {
-        return new byte[] { 11, 12 };
+        return new byte[] { -15, 33 };
     }
 
     private byte[] getEncodedPDPAddress() {
         return new byte[] { 21 };
     }
 
-    private byte[] getEncodedQosSubscribed() {
-        return new byte[] { 91, 92, 93 };
-    }
-
-    private byte[] getEncodedExtQosSubscribed() {
-        return new byte[] { 15 };
-    }
-
     private byte[] getEncodedApn() {
         return new byte[] { 22, 23 };
-    }
-
-    private byte[] getEncodedchargingCharacteristics() {
-        return new byte[] { 45, 46 };
-    }
-
-    private byte[] getEncodedqos2Subscribed() {
-        return new byte[] { 52 };
-    }
-
-    private byte[] getEncodedqos3Subscribed() {
-        return new byte[] { 55 };
     }
 
     private byte[] getAPNOIReplacement() {
@@ -120,20 +119,57 @@ public class PDPContextTest {
         PDPContextImpl impl = (PDPContextImpl)result.getResult();
         
         assertEquals((int) impl.getPDPContextId(), 15);
-        assertTrue(Arrays.equals(impl.getPDPType().getData(), this.getEncodedPDPType()));
-        assertTrue(Arrays.equals(impl.getPDPAddress().getData(), this.getEncodedPDPAddress()));
+        assertTrue(ByteBufUtil.equals(impl.getPDPType().getValue(),Unpooled.wrappedBuffer(this.getEncodedPDPType())));
+        assertTrue(ByteBufUtil.equals(impl.getPDPAddress().getValue(), Unpooled.wrappedBuffer(this.getEncodedPDPAddress())));
         assertTrue(impl.isVPLMNAddressAllowed());
-        assertTrue(Arrays.equals(impl.getAPN().getData(), this.getEncodedApn()));
-        assertTrue(Arrays.equals(impl.getQoSSubscribed().getData(), this.getEncodedQosSubscribed()));
-        assertTrue(Arrays.equals(impl.getExtQoSSubscribed().getData(), this.getEncodedExtQosSubscribed()));
-        assertTrue(Arrays.equals(impl.getChargingCharacteristics().getData(), this.getEncodedchargingCharacteristics()));
+        assertEquals(impl.getAPN().getApn(), new String(this.getEncodedApn()));
+        
+        assertEquals(impl.getQoSSubscribed().getReliabilityClass(),
+        		QoSSubscribed_ReliabilityClass.unacknowledgedGtpLlcAndRlc_ProtectedData);
+        assertEquals(impl.getQoSSubscribed().getDelayClass(),
+        		QoSSubscribed_DelayClass.subscribedDelayClass_Reserved);
+        assertEquals(impl.getQoSSubscribed().getPrecedenceClass(),
+        		QoSSubscribed_PrecedenceClass.reserved);
+        assertEquals(impl.getQoSSubscribed().getPeakThroughput(),
+        		QoSSubscribed_PeakThroughput.subscribedPeakThroughput_Reserved);
+        assertEquals(impl.getQoSSubscribed().getMeanThroughput(),
+        		QoSSubscribed_MeanThroughput._10000_octetH);
+        
+        assertEquals(impl.getExtQoSSubscribed().getAllocationRetentionPriority(), 3);
+        assertEquals(impl.getExtQoSSubscribed().getDeliveryOfErroneousSdus(), ExtQoSSubscribed_DeliveryOfErroneousSdus.erroneousSdusAreNotDelivered_No);
+        assertEquals(impl.getExtQoSSubscribed().getDeliveryOrder(), ExtQoSSubscribed_DeliveryOrder.withoutDeliveryOrderNo);
+        assertEquals(impl.getExtQoSSubscribed().getTrafficClass(), ExtQoSSubscribed_TrafficClass.interactiveClass);
+        assertEquals(impl.getExtQoSSubscribed().getMaximumSduSize().getMaximumSduSize(), 1500);
+        assertEquals(impl.getExtQoSSubscribed().getMaximumBitRateForUplink().getBitRate(), 8640);
+        assertEquals(impl.getExtQoSSubscribed().getMaximumBitRateForDownlink().getBitRate(), 8640);
+        assertEquals(impl.getExtQoSSubscribed().getResidualBER(), ExtQoSSubscribed_ResidualBER._1_10_minus_5);
+        assertEquals(impl.getExtQoSSubscribed().getSduErrorRatio(), ExtQoSSubscribed_SduErrorRatio._1_10_minus_4);
+        assertEquals(impl.getExtQoSSubscribed().getTrafficHandlingPriority(), ExtQoSSubscribed_TrafficHandlingPriority.priorityLevel_3);
+        assertEquals(impl.getExtQoSSubscribed().getTransferDelay().getSourceData(), 0);
+        assertEquals(impl.getExtQoSSubscribed().getGuaranteedBitRateForUplink().getSourceData(), 0);
+        assertEquals(impl.getExtQoSSubscribed().getGuaranteedBitRateForDownlink().getSourceData(), 0);
+
+        assertEquals(impl.getChargingCharacteristics().isNormalCharging(), true);
+        assertEquals(impl.getChargingCharacteristics().isPrepaidCharging(), true);
+        assertEquals(impl.getChargingCharacteristics().isChargingByHotBillingCharging(), false);
+        assertEquals(impl.getChargingCharacteristics().isFlatRateChargingCharging(), false);
+        
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(impl.getExtensionContainer()));
-        assertTrue(Arrays.equals(impl.getExt2QoSSubscribed().getData(), this.getEncodedqos2Subscribed()));
-        assertTrue(Arrays.equals(impl.getExt3QoSSubscribed().getData(), this.getEncodedqos3Subscribed()));
+        
+        assertEquals(impl.getExt2QoSSubscribed().getSourceStatisticsDescriptor(),
+        		Ext2QoSSubscribed_SourceStatisticsDescriptor.unknown);
+        assertEquals(impl.getExt2QoSSubscribed().isOptimisedForSignallingTraffic(),false);
+        assertEquals(impl.getExt2QoSSubscribed().getGuaranteedBitRateForDownlinkExtended().getBitRate(),0);
+        assertEquals(impl.getExt2QoSSubscribed().getMaximumBitRateForDownlinkExtended().getBitRate(),0);
+        
+        assertEquals(impl.getExt3QoSSubscribed().getMaximumBitRateForUplinkExtended().getBitRate(), 16000);
+        assertEquals(impl.getExt3QoSSubscribed().getGuaranteedBitRateForUplinkExtended().getBitRate(), 256000);
+        assertFalse(impl.getExt3QoSSubscribed().getGuaranteedBitRateForUplinkExtended().isUseNonextendedValue());
+
         assertEquals(impl.getExt4QoSSubscribed().getData(), new Integer(91));
-        assertTrue(Arrays.equals(impl.getExtPDPType().getData(), this.getEncodedExtPDPType()));
-        assertTrue(Arrays.equals(impl.getExtPDPAddress().getData(), this.getEncodedExtPdpAddress()));
-        assertTrue(Arrays.equals(impl.getAPNOIReplacement().getData(), this.getAPNOIReplacement()));
+        assertTrue(ByteBufUtil.equals(impl.getExtPDPType().getValue(), Unpooled.wrappedBuffer(this.getEncodedExtPDPType())));
+        assertTrue(ByteBufUtil.equals(impl.getExtPDPAddress().getValue(), Unpooled.wrappedBuffer(this.getEncodedExtPdpAddress())));
+        assertTrue(ByteBufUtil.equals(impl.getAPNOIReplacement().getValue(), Unpooled.wrappedBuffer(this.getAPNOIReplacement())));
         assertEquals(impl.getSIPTOPermission(), SIPTOPermission.siptoNotAllowed);
         assertEquals(impl.getLIPAPermission(), LIPAPermission.lipaOnly);
 
@@ -144,19 +180,36 @@ public class PDPContextTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(PDPContextImpl.class);
     	
-        PDPTypeImpl pdpType = new PDPTypeImpl(getEncodedPDPType());
-        PDPAddressImpl pdpAddress = new PDPAddressImpl(getEncodedPDPAddress());
-        APNImpl apn = new APNImpl(getEncodedApn());
-        QoSSubscribedImpl qosSubscribed = new QoSSubscribedImpl(getEncodedQosSubscribed());
-        ExtQoSSubscribedImpl extQoSSubscribed = new ExtQoSSubscribedImpl(getEncodedExtQosSubscribed());
-        ChargingCharacteristicsImpl chargingCharacteristics = new ChargingCharacteristicsImpl(
-                getEncodedchargingCharacteristics());
-        Ext2QoSSubscribedImpl ext2QoSSubscribed = new Ext2QoSSubscribedImpl(getEncodedqos2Subscribed());
-        Ext3QoSSubscribedImpl ext3QoSSubscribed = new Ext3QoSSubscribedImpl(getEncodedqos3Subscribed());
+        PDPTypeImpl pdpType = new PDPTypeImpl(PDPTypeValue.IPv4);
+        PDPAddressImpl pdpAddress = new PDPAddressImpl(Unpooled.wrappedBuffer(getEncodedPDPAddress()));
+        APNImpl apn = new APNImpl(new String(getEncodedApn()));
+        QoSSubscribedImpl qosSubscribed = new QoSSubscribedImpl(QoSSubscribed_ReliabilityClass.unacknowledgedGtpLlcAndRlc_ProtectedData,
+        		QoSSubscribed_DelayClass.subscribedDelayClass_Reserved,QoSSubscribed_PrecedenceClass.reserved,QoSSubscribed_PeakThroughput.subscribedPeakThroughput_Reserved,
+        		QoSSubscribed_MeanThroughput._10000_octetH);
+        
+        ExtQoSSubscribed_MaximumSduSize maximumSduSize = new ExtQoSSubscribed_MaximumSduSize(1500, false);
+        ExtQoSSubscribed_BitRate maximumBitRateForUplink = new ExtQoSSubscribed_BitRate(8640, false);
+        ExtQoSSubscribed_BitRate maximumBitRateForDownlink = new ExtQoSSubscribed_BitRate(8640, false);
+        ExtQoSSubscribed_TransferDelay transferDelay = new ExtQoSSubscribed_TransferDelay(0, true);
+        ExtQoSSubscribed_BitRate guaranteedBitRateForUplink = new ExtQoSSubscribed_BitRate(0, true);
+        ExtQoSSubscribed_BitRate guaranteedBitRateForDownlink = new ExtQoSSubscribed_BitRate(0, true);
+        ExtQoSSubscribedImpl extQoSSubscribed = new ExtQoSSubscribedImpl(3, ExtQoSSubscribed_DeliveryOfErroneousSdus.erroneousSdusAreNotDelivered_No,
+                ExtQoSSubscribed_DeliveryOrder.withoutDeliveryOrderNo, ExtQoSSubscribed_TrafficClass.interactiveClass, maximumSduSize, maximumBitRateForUplink,
+                maximumBitRateForDownlink, ExtQoSSubscribed_ResidualBER._1_10_minus_5, ExtQoSSubscribed_SduErrorRatio._1_10_minus_4,
+                ExtQoSSubscribed_TrafficHandlingPriority.priorityLevel_3, transferDelay, guaranteedBitRateForUplink, guaranteedBitRateForDownlink);
+
+        ChargingCharacteristicsImpl chargingCharacteristics = new ChargingCharacteristicsImpl(true,true,false,false);
+        
+        Ext2QoSSubscribedImpl ext2QoSSubscribed = new Ext2QoSSubscribedImpl(Ext2QoSSubscribed_SourceStatisticsDescriptor.unknown,false,new ExtQoSSubscribed_BitRateExtended(0, true), new ExtQoSSubscribed_BitRateExtended(0, true));
+        
+        ExtQoSSubscribed_BitRateExtended maximumBitRateForUplinkExtended = new ExtQoSSubscribed_BitRateExtended(16000, false);
+        ExtQoSSubscribed_BitRateExtended guaranteedBitRateForUplinkExtended = new ExtQoSSubscribed_BitRateExtended(256000, false);
+        Ext3QoSSubscribedImpl ext3QoSSubscribed = new Ext3QoSSubscribedImpl(maximumBitRateForUplinkExtended, guaranteedBitRateForUplinkExtended);
+        
         Ext4QoSSubscribedImpl ext4QoSSubscribed = new Ext4QoSSubscribedImpl(91);
-        ExtPDPTypeImpl extPdpType = new ExtPDPTypeImpl(getEncodedExtPDPType());
-        PDPAddressImpl extPdpAddress = new PDPAddressImpl(getEncodedExtPdpAddress());
-        APNOIReplacementImpl apnoiReplacement = new APNOIReplacementImpl(this.getAPNOIReplacement());
+        ExtPDPTypeImpl extPdpType = new ExtPDPTypeImpl(Unpooled.wrappedBuffer(getEncodedExtPDPType()));
+        PDPAddressImpl extPdpAddress = new PDPAddressImpl(Unpooled.wrappedBuffer(getEncodedExtPdpAddress()));
+        APNOIReplacementImpl apnoiReplacement = new APNOIReplacementImpl(Unpooled.wrappedBuffer(this.getAPNOIReplacement()));
 
         PDPContextImpl impl = new PDPContextImpl(15, pdpType, pdpAddress, qosSubscribed,
                 true, apn, MAPExtensionContainerTest.GetTestExtensionContainer(), extQoSSubscribed,

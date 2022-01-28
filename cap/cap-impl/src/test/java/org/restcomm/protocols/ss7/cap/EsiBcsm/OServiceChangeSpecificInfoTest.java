@@ -79,30 +79,4 @@ public class OServiceChangeSpecificInfoTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })
-    public void testXMLSerializaion() throws Exception {
-        ExtTeleserviceCode extTeleservice = new ExtTeleserviceCodeImpl(TeleserviceCodeValue.facsimileGroup4);
-        ExtBasicServiceCode extBasicServiceCode = new ExtBasicServiceCodeImpl(extTeleservice);
-        OServiceChangeSpecificInfoImpl original = new OServiceChangeSpecificInfoImpl(extBasicServiceCode);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "oServiceChangeSpecificInfo", OServiceChangeSpecificInfoImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        OServiceChangeSpecificInfoImpl copy = reader.read("oServiceChangeSpecificInfo", OServiceChangeSpecificInfoImpl.class);
-
-        assertEquals(copy.getExtBasicServiceCode().getExtTeleservice().getTeleserviceCodeValue(), original.getExtBasicServiceCode().getExtTeleservice()
-                .getTeleserviceCodeValue());
-    }*/
 }

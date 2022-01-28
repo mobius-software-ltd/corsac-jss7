@@ -18,9 +18,12 @@
  */
 package org.restcomm.protocols.ss7.isup.util;
 
+import java.io.UnsupportedEncodingException;
+
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 
-import java.io.UnsupportedEncodingException;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * <p>
@@ -31,9 +34,10 @@ import java.io.UnsupportedEncodingException;
  */
 public class BcdHelper {
 
-    public static String getBinString(byte[] bytes) {
+    public static String getBinString(ByteBuf buffer) {
         String result = "";
-        for (byte b : bytes) {
+        while(buffer.readableBytes()>0) {
+        	byte b=buffer.readByte();
             result += Integer.toBinaryString((b & 0xFF) + 0x100).substring(1);
             result += " ";
         }
@@ -99,7 +103,7 @@ public class BcdHelper {
      * @param hexString hex digit string to be encoded
      * @return BCD even or odd encoded digits
      */
-    public static byte[] encodeHexStringToBCD(String hexString) {
+    public static ByteBuf encodeHexStringToBCD(String hexString) {
         hexString=hexString.toLowerCase();
         int noOfDigits = hexString.length();
 
@@ -108,20 +112,25 @@ public class BcdHelper {
         if (isOdd) {
             noOfBytes++;
         }
-        byte[] bcdDigits = new byte[noOfBytes];
+        ByteBuf bcdDigits = Unpooled.buffer(noOfBytes);
 
         char[] chars = hexString.toCharArray();
         int digit = -1;
+        byte currByte = 0;
         for (int i = 0; i< noOfDigits; i++) {
             digit = Character.digit(convertTelcoCharToHexDigit(chars[i]), 16);
             byte tmpByte = (byte) digit;
             if (i % 2 == 0) {
-                bcdDigits[i / 2] = tmpByte;
+            	currByte = tmpByte;
+            	if(i+1==noOfDigits)
+            		bcdDigits.writeByte(currByte);
             } else {
-                bcdDigits[i / 2] |= (byte) (tmpByte << 4);
+            	currByte = (byte)(currByte | (tmpByte << 4));
+            	bcdDigits.writeByte(currByte);
             }
         }
 
+        
         return bcdDigits;
     }
 
@@ -157,10 +166,11 @@ public class BcdHelper {
      * @param bcdBytes bytes table to decode.
      * @return hex string representation of BCD encoded digits
      */
-    public static String bcdDecodeToHexString(int encodingScheme, byte[] bcdBytes) throws UnsupportedEncodingException {
+    public static String bcdDecodeToHexString(int encodingScheme, ByteBuf bcdBytes) throws UnsupportedEncodingException {
         StringBuilder sb = new StringBuilder();
 
-        for (byte b : bcdBytes) {
+        while (bcdBytes.readableBytes()>0) {
+        	byte b = bcdBytes.readByte();
             sb.append(bcdToHexString(encodingScheme, b));
         }
         if (GenericDigits._ENCODING_SCHEME_BCD_ODD == encodingScheme) {

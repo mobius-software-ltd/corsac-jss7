@@ -79,7 +79,7 @@ public class ResetCircuitMessageImpl extends ISUPMessageImpl implements ResetCir
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(byte[], byte)
+     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(ByteBuf, byte)
      */
 
     protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)
@@ -88,7 +88,7 @@ public class ResetCircuitMessageImpl extends ISUPMessageImpl implements ResetCir
 
     }
 
-    protected int decodeMandatoryVariableParameters(ISUPParameterFactory parameterFactory, byte[] b, int index)
+    protected int decodeMandatoryVariableParameters(ISUPParameterFactory parameterFactory, ByteBuf b, int index)
             throws ParameterException {
         throw new UnsupportedOperationException("This message does not support mandatory variable parameters.");
     }

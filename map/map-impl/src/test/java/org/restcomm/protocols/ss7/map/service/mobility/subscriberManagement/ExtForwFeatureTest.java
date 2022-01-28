@@ -50,6 +50,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -100,7 +101,7 @@ public class ExtForwFeatureTest {
         assertEquals(forwardedToNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(forwardedToNumber.getNumberingPlan(), NumberingPlan.ISDN);
 
-        assertTrue(Arrays.equals(prim.getForwardedToSubaddress().getData(), this.getISDNSubaddressStringData()));
+        assertTrue(ByteBufUtil.equals(prim.getForwardedToSubaddress().getValue(),Unpooled.wrappedBuffer(this.getISDNSubaddressStringData())));
         assertTrue(prim.getForwardingOptions().getNotificationToCallingParty());
         assertTrue(prim.getForwardingOptions().getNotificationToForwardingParty());
         assertTrue(!prim.getForwardingOptions().getRedirectingPresentation());
@@ -160,7 +161,7 @@ public class ExtForwFeatureTest {
         ExtSSStatusImpl ssStatus = new ExtSSStatusImpl(false, false, true, true);
         ISDNAddressStringImpl forwardedToNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22228");
-        ISDNSubaddressStringImpl forwardedToSubaddress = new ISDNSubaddressStringImpl(this.getISDNSubaddressStringData());
+        ISDNSubaddressStringImpl forwardedToSubaddress = new ISDNSubaddressStringImpl(Unpooled.wrappedBuffer(this.getISDNSubaddressStringData()));
         ExtForwOptionsImpl forwardingOptions = new ExtForwOptionsImpl(true, false, true, ExtForwOptionsForwardingReason.msBusy);
         Integer noReplyConditionTime = 2;
         FTNAddressStringImpl longForwardedToNumber = new FTNAddressStringImpl(AddressNature.international_number,

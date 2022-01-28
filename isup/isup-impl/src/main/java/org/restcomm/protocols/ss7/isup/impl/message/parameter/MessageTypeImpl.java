@@ -48,7 +48,7 @@ public class MessageTypeImpl extends AbstractISUPParameter implements MessageTyp
 	// we even cant use -1, since it may be avlid value, ech, those binary protocols.
     private MessageName messageName;
 
-//    public MessageTypeImpl(byte[] code) throws ParameterException {
+//    public MessageTypeImpl(buffer code) throws ParameterException {
 //        super();
 //        this.decode(code);
 //    }

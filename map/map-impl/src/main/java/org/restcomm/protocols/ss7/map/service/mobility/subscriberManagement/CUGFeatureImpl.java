@@ -64,11 +64,9 @@ public class CUGFeatureImpl implements CUGFeature {
         
     	this.basicService = basicService;
     		
-        if(preferentialCugIndicator!=null) {
-        	this.preferentialCugIndicator = new ASNInteger();
-        	this.preferentialCugIndicator.setValue(preferentialCugIndicator.longValue());
-        }
-        
+        if(preferentialCugIndicator!=null)
+        	this.preferentialCugIndicator = new ASNInteger(preferentialCugIndicator);
+        	
         this.interCugRestrictions = interCugRestrictions;
         this.extensionContainer = extensionContainer;
     }
@@ -81,7 +79,7 @@ public class CUGFeatureImpl implements CUGFeature {
     	if(this.preferentialCugIndicator==null)
     		return null;
     	
-        return this.preferentialCugIndicator.getValue().intValue();
+        return this.preferentialCugIndicator.getIntValue();
     }
 
     public InterCUGRestrictions getInterCugRestrictions() {

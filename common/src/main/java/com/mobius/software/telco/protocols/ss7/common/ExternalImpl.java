@@ -1,7 +1,5 @@
 package com.mobius.software.telco.protocols.ss7.common;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -12,7 +10,9 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGraphicString;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNObjectIdentifier;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+
+import io.netty.buffer.ByteBuf;
 
 /*
  * Mobius Software LTD
@@ -49,34 +49,30 @@ public abstract class ExternalImpl<T extends ASNGeneric>
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=true,index=1)
 	private T child;
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=false,index=1)	
-	private ASNOctetString childString;
+	private ASNOctetString2 childString;
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x02,constructed=false,index=1)
 	private ASNBitString bitString;
 	
 	public void setIdentifier(Long value) {
 		this.objectIdentifier=null;
 		this.descriptor=null;
-		this.indirectReference=new ASNInteger();
-		this.indirectReference.setValue(value);
+		this.indirectReference=new ASNInteger(value);		
 	}
 	
 	public void setIdentifier(String value) {
 		this.objectIdentifier=null;
 		this.indirectReference=null;
-		this.descriptor=new ASNGraphicString();
-		this.descriptor.setValue(value);
+		this.descriptor=new ASNGraphicString(value);		
 	}
 	
 	public void setIdentifier(List<Long> ids) {
 		this.descriptor=null;
 		this.indirectReference=null;
-		this.objectIdentifier=new ASNObjectIdentifier();
-		this.objectIdentifier.setValue(ids);
+		this.objectIdentifier=new ASNObjectIdentifier(ids);		
 	}
 	
 	public void setChild(ByteBuf value) {
-		this.childString=new ASNOctetString();
-		this.childString.setValue(value);
+		this.childString=new ASNOctetString2(value);
 		this.child=null;
 		this.bitString=null;
 	}
@@ -120,6 +116,7 @@ public abstract class ExternalImpl<T extends ASNGeneric>
 	public Long getIndirectReference() {
 		if(indirectReference==null)
 			return null;
+		
 		return indirectReference.getValue();
 	}
 

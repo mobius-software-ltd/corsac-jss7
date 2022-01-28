@@ -597,7 +597,7 @@ public class ConnectMessageImpl extends ISUPMessageImpl implements ConnectMessag
                 throw new ParameterException("Failed to parse BackwardCallIndicators due to: ", e);
             }
         } else {
-            throw new ParameterException("byte[] must have at least 5 octets");
+            throw new ParameterException("buffer must have at least 5 octets");
         }
     }
 

@@ -53,13 +53,10 @@ public class ResetTimerGPRSRequestImpl extends GprsMessageImpl implements ResetT
     public ResetTimerGPRSRequestImpl(TimerID timerID, int timerValue) {
         super();
         
-        if(timerID!=null) {
-        	this.timerID = new ASNTimerID();
-        	this.timerID.setType(timerID);
-        }
-        
-        this.timerValue = new ASNInteger();
-        this.timerValue.setValue(Long.valueOf(timerValue));
+        if(timerID!=null)
+        	this.timerID = new ASNTimerID(timerID);
+        	
+        this.timerValue = new ASNInteger(timerValue);        
     }
 
     @Override
@@ -75,7 +72,7 @@ public class ResetTimerGPRSRequestImpl extends GprsMessageImpl implements ResetT
     	if(this.timerValue==null || this.timerValue.getValue()==null)
     		return -1;
     	
-        return this.timerValue.getValue().intValue();
+        return this.timerValue.getIntValue();
     }
 
     @Override

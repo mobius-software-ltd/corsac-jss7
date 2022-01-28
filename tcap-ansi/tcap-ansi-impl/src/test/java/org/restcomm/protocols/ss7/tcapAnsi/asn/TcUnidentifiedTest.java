@@ -23,6 +23,8 @@
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
 import static org.testng.Assert.*;
+
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUnifiedMessage;
@@ -55,8 +57,8 @@ public class TcUnidentifiedTest {
         assertTrue(result.getResult() instanceof TCUnifiedMessage);
         TCUnifiedMessage tcm = (TCUnifiedMessage)result.getResult();        
 
-        assertEquals(tcm.getOriginatingTransactionId(), trIdO);
-        assertEquals(tcm.getDestinationTransactionId(), trIdD);
+        assertTrue(ByteBufUtil.equals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(trIdO)));
+        assertTrue(ByteBufUtil.equals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(trIdD)));
         assertTrue(tcm.isDialogPortionExists());
     }
 }

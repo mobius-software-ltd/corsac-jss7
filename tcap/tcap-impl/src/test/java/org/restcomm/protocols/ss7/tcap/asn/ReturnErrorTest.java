@@ -194,8 +194,7 @@ public class ReturnErrorTest {
         re.setInvokeId(5l);
         re.setErrorCode(15L);
         
-        TCBeginTestASN3 pm=new TCBeginTestASN3();
-        pm.setValue(Unpooled.wrappedBuffer(getParameterData()));
+        TCBeginTestASN3 pm=new TCBeginTestASN3(Unpooled.wrappedBuffer(getParameterData()));
         re.setParameter(pm);
         comp=new ComponentImpl();
         comp.setReturnError(re);

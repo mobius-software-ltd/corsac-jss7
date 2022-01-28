@@ -78,7 +78,7 @@ public class InformationRequestIndicatorsImpl extends AbstractISUPParameter impl
 
     public void decode(ByteBuf buffer) throws ParameterException {
         if (buffer == null || buffer.readableBytes() != 2) {
-            throw new IllegalArgumentException("byte[] must  not be null and length must  be 2");
+            throw new IllegalArgumentException("buffer must  not be null and length must  be 2");
         }
 
         byte b=buffer.readByte();

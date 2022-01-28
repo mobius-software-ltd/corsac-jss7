@@ -41,9 +41,10 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 @Test(groups = { "asn" })
@@ -70,22 +71,22 @@ public class TcResponseTest {
         assertTrue(result.getResult() instanceof TCResponseMessageImpl);
         TCResponseMessage tcm = (TCResponseMessage)result.getResult();
 
-        assertEquals(tcm.getDestinationTransactionId(), trId);
+        assertTrue(ByteBufUtil.equals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(trId)));
         assertNull(tcm.getDialogPortion());
         assertEquals(tcm.getComponent().getComponents().size(), 1);
         WrappedComponent cmp = tcm.getComponent().getComponents().get(0);
         assertEquals(cmp.getType(), ComponentType.ReturnResultLast);
         Return rrl = cmp.getReturnResultLast();
         assertEquals((long) rrl.getCorrelationId(), 1);
-        assertTrue(rrl.getParameter() instanceof ASNOctetString);
-        UserInformationElementTest.byteBufEquals(((ASNOctetString)rrl.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
+        assertTrue(rrl.getParameter() instanceof ASNOctetString2);
+        UserInformationElementTest.byteBufEquals(((ASNOctetString2)rrl.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
 
         // 2
         result=parser.decode(Unpooled.wrappedBuffer(this.data2));
         assertTrue(result.getResult() instanceof TCResponseMessageImpl);
         tcm = (TCResponseMessage)result.getResult();
 
-        assertEquals(tcm.getDestinationTransactionId(), trId);
+        assertTrue(ByteBufUtil.equals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(trId)));
         DialogPortion dp = tcm.getDialogPortion();
         assertNull(dp.getProtocolVersion());
         ApplicationContext ac = dp.getApplicationContext();
@@ -109,12 +110,11 @@ public class TcResponseTest {
         component.setReturnResultLast(rrl);
         cc.add(component);
         rrl.setCorrelationId(1L);
-        ASNOctetString p=new ASNOctetString();
-        p.setValue(Unpooled.wrappedBuffer(parData));
+        ASNOctetString2 p=new ASNOctetString2(Unpooled.wrappedBuffer(parData));
         rrl.setSetParameter(p);
 
         TCResponseMessage tcm = TcapFactory.createTCResponseMessage();
-        tcm.setDestinationTransactionId(trId);
+        tcm.setDestinationTransactionId(Unpooled.wrappedBuffer(trId));
         ComponentPortionImpl cp=new ComponentPortionImpl();
         cp.setComponents(cc);
         tcm.setComponent(cp);
@@ -125,7 +125,7 @@ public class TcResponseTest {
 
         // 2
         tcm = TcapFactory.createTCResponseMessage();
-        tcm.setDestinationTransactionId(trId);
+        tcm.setDestinationTransactionId(Unpooled.wrappedBuffer(trId));
 
         DialogPortion dp = TcapFactory.createDialogPortion();
         ApplicationContext ac = TcapFactory.createApplicationContext(66);

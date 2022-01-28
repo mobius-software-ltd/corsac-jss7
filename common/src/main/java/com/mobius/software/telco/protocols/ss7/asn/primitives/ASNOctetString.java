@@ -39,17 +39,20 @@ import io.netty.buffer.Unpooled;
 public class ASNOctetString {
 	private ByteBuf value;
 	
+	public ASNOctetString(ByteBuf value) {
+		if(value!=null)
+			this.value = Unpooled.wrappedBuffer(value);
+		else
+			this.value = null;
+	}
+	
 	public ByteBuf getValue() {
 		if(value==null)
 			return Unpooled.EMPTY_BUFFER;
 		
 		return Unpooled.wrappedBuffer(value);
 	}
-
-	public void setValue(ByteBuf value) {
-		this.value = Unpooled.wrappedBuffer(value);				
-	}
-
+	
 	@ASNLength
 	public Integer getLength(ASNParser parser) {
 		return getLength(getValue());
@@ -75,11 +78,34 @@ public class ASNOctetString {
 		return value.readableBytes();
 	}
 	
-	public static String printDataArr(byte[] arr) {
+	public String printDataArr() {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
-        if (arr != null) {
-            for (byte b : arr) {
+        ByteBuf buffer=getValue();
+        if (buffer != null) {
+            while(buffer.readableBytes()>0) {
+            	byte b=buffer.readByte();
+                if (first)
+                    first = false;
+                else
+                    sb.append(", ");
+                
+                if((b & 0xFF)<=127)
+                	sb.append(b & 0xFF);
+                else
+                	sb.append("-").append(256 - b & 0xFF);
+            }
+        }
+
+        return sb.toString();
+    }
+	
+	public static String printDataArr(ByteBuf buffer) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        if (buffer != null) {
+            while(buffer.readableBytes()>0) {
+            	byte b=buffer.readByte();
                 if (first)
                     first = false;
                 else

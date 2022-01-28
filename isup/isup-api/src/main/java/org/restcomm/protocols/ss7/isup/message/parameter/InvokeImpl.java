@@ -123,8 +123,7 @@ public class InvokeImpl implements RemoteOperation {
         if ((i == null) || (i < -128 || i > 127)) {
             throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
         }
-        this.invokeId = new ASNInteger();
-        this.invokeId.setValue(i);
+        this.invokeId = new ASNInteger(i);        
 
     }
 
@@ -137,8 +136,7 @@ public class InvokeImpl implements RemoteOperation {
         if ((i == null) || (i < -128 || i > 127)) {
             throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
         }
-        this.linkedId = new ASNInteger();
-        this.linkedId.setValue(i);
+        this.linkedId = new ASNInteger(i);        
     }
 
     /*
@@ -157,8 +155,7 @@ public class InvokeImpl implements RemoteOperation {
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setParameter(org.restcomm.protocols.ss7.tcap.asn.comp.Parameter)
      */
     public void setParameter(Object p) {
-    	this.parameter=new ASNInvokeParameterImpl();
-    	this.parameter.setValue(p);
+    	this.parameter=new ASNInvokeParameterImpl(p);    	
     }
 
     public OperationType getType() {

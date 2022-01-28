@@ -118,9 +118,7 @@ public class PDPContextImpl implements PDPContext {
             ChargingCharacteristics chargingCharacteristics, Ext2QoSSubscribed ext2QoSSubscribed,
             Ext3QoSSubscribed ext3QoSSubscribed, Ext4QoSSubscribed ext4QoSSubscribed, APNOIReplacement apnoiReplacement,
             ExtPDPType extpdpType, PDPAddress extpdpAddress, SIPTOPermission sipToPermission, LIPAPermission lipaPermission) {
-        this.pdpContextId = new ASNInteger();
-        this.pdpContextId.setValue((long)pdpContextId & 0x0FFFFFFFFL);
-        
+        this.pdpContextId = new ASNInteger(pdpContextId);
         this.pdpType = pdpType;
         this.pdpAddress = pdpAddress;
         this.qosSubscribed = qosSubscribed;
@@ -139,20 +137,15 @@ public class PDPContextImpl implements PDPContext {
         this.extpdpType = extpdpType;
         this.extpdpAddress = extpdpAddress;
         
-        if(sipToPermission!=null) {
-        	this.sipToPermission = new ASNSIPTOPermissionImpl();
-        	this.sipToPermission.setType(sipToPermission);
-        }
-        
-        if(lipaPermission!=null) {
-        	this.lipaPermission = new ASNLIPAPermissionImpl();
-        	this.lipaPermission.setType(lipaPermission);
-        }
+        if(sipToPermission!=null)
+        	this.sipToPermission = new ASNSIPTOPermissionImpl(sipToPermission);
+        	
+        if(lipaPermission!=null)
+        	this.lipaPermission = new ASNLIPAPermissionImpl(lipaPermission);        	
     }
 
     public PDPContextImpl(int pdpContextId) {
-        this.pdpContextId = new ASNInteger();
-        this.pdpContextId.setValue((long)pdpContextId & 0x0FFFFFFFFL);
+        this.pdpContextId = new ASNInteger(pdpContextId);        
     }
 
     public PDPContextImpl() {
@@ -164,10 +157,10 @@ public class PDPContextImpl implements PDPContext {
      * @see org.restcomm.protocols.ss7.map.api.service.subscriberInformation.PDPContext #getPDPContextId()
      */
     public int getPDPContextId() {
-    	if(this.pdpContextId==null)
+    	if(this.pdpContextId==null || this.pdpContextId.getValue()==null)
     		return 0;
     	
-        return this.pdpContextId.getValue().intValue();
+        return this.pdpContextId.getIntValue();
     }
 
     /*

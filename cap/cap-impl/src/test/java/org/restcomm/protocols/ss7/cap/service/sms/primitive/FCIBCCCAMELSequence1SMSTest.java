@@ -34,6 +34,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -63,7 +64,7 @@ public class FCIBCCCAMELSequence1SMSTest {
         assertTrue(result.getResult() instanceof FCIBCCCAMELSequence1SMSImpl);
         
         FCIBCCCAMELSequence1SMSImpl prim = (FCIBCCCAMELSequence1SMSImpl)result.getResult();                
-		assertTrue(Arrays.equals(prim.getFreeFormatData().getData(), this.getFreeFormatData()));
+		assertTrue(ByteBufUtil.equals(prim.getFreeFormatData().getValue(), Unpooled.wrappedBuffer(this.getFreeFormatData())));
 		assertEquals(prim.getAppendFreeFormatData(), AppendFreeFormatData.append);		
 	}
 	
@@ -72,7 +73,7 @@ public class FCIBCCCAMELSequence1SMSTest {
 		ASNParser parser=new ASNParser(true);
     	parser.replaceClass(FCIBCCCAMELSequence1SMSImpl.class);
     	
-    	FreeFormatDataSMSImpl freeFormatData = new FreeFormatDataSMSImpl(getFreeFormatData());
+    	FreeFormatDataSMSImpl freeFormatData = new FreeFormatDataSMSImpl(Unpooled.wrappedBuffer(getFreeFormatData()));
 		FCIBCCCAMELSequence1SMSImpl prim = new FCIBCCCAMELSequence1SMSImpl(freeFormatData, AppendFreeFormatData.append);
 		byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(prim);
@@ -80,51 +81,4 @@ public class FCIBCCCAMELSequence1SMSTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 	}
-
-	/*@Test(groups = {"functional.xml.serialize", "primitives"})
-	public void testXMLSerialize() throws Exception {
-
-		FreeFormatDataSMS freeFormatData = new FreeFormatDataSMSImpl(getFreeFormatData());
-		FCIBCCCAMELsequence1SMSImpl original = new FCIBCCCAMELsequence1SMSImpl(freeFormatData, AppendFreeFormatData.append);
-
-		// Writes the area to a file.
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-		writer.setIndentation("\t");
-		writer.write(original, "fciBCCCAMELsequence1SMS", FCIBCCCAMELsequence1SMSImpl.class);
-		writer.close();
-
-		byte[] rawData = baos.toByteArray();
-		String serializedEvent = new String(rawData);
-
-		System.out.println(serializedEvent);
-
-		ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-		XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-		FCIBCCCAMELsequence1SMSImpl copy = reader.read("fciBCCCAMELsequence1SMS", FCIBCCCAMELsequence1SMSImpl.class);
-
-		assertEquals(copy.getFreeFormatData().getData(), this.getFreeFormatData());
-		assertEquals(copy.getAppendFreeFormatData(), AppendFreeFormatData.append);
-
-		original = new FCIBCCCAMELsequence1SMSImpl(freeFormatData, null);
-
-		// Writes the area to a file.
-		baos = new ByteArrayOutputStream();
-		writer = XMLObjectWriter.newInstance(baos);
-		writer.setIndentation("\t");
-		writer.write(original, "fciBCCCAMELsequence1SMS", FCIBCCCAMELsequence1SMSImpl.class);
-		writer.close();
-
-		rawData = baos.toByteArray();
-		serializedEvent = new String(rawData);
-
-		System.out.println(serializedEvent);
-
-		bais = new ByteArrayInputStream(rawData);
-		reader = XMLObjectReader.newInstance(bais);
-		copy = reader.read("fciBCCCAMELsequence1SMS", FCIBCCCAMELsequence1SMSImpl.class);
-
-		assertEquals(copy.getFreeFormatData().getData(), this.getFreeFormatData());
-		assertNull(copy.getAppendFreeFormatData());
-	}*/
 }

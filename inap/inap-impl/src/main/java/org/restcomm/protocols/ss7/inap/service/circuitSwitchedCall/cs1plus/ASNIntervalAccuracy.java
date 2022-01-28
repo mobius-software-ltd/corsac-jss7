@@ -4,7 +4,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.I
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 
 /*
@@ -32,17 +32,20 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 *
 */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
-public class ASNIntervalAccuracy extends ASNInteger {
-	public void setType(IntervalAccuracy t) {
-		if(t!=null)
-			setValue((long)t.getCode());
+public class ASNIntervalAccuracy extends ASNEnumerated {
+	public ASNIntervalAccuracy() {
+		
+	}
+	
+	public ASNIntervalAccuracy(IntervalAccuracy t) {
+		super(t.getCode());
 	}
 	
 	public IntervalAccuracy getType() {
-		Long realValue=getValue();
+		Integer realValue=getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return IntervalAccuracy.getInstance(realValue.intValue());
+		return IntervalAccuracy.getInstance(realValue);
 	}
 }

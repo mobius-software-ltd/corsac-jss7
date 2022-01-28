@@ -16,6 +16,7 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.DestinationRoutingAddressImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ConnectRequestImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -23,6 +24,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 public class ConnectTest 
@@ -56,7 +58,7 @@ public class ConnectTest
 		assertNotNull(elem.getDestinationRoutingAddress());
 		assertNotNull(elem.getDestinationRoutingAddress().getCalledPartyNumber());
 		assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().size(), 1);
-		assertTrue(Arrays.equals(calledPartyData1, elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getData()));
+		assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(calledPartyData1),CalledPartyNumberIsupImpl.translate(elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber())));
 		assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber().getNumberingPlanIndicator(), 1);
 		assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber().getInternalNetworkNumberIndicator(), 1);
 		assertEquals(elem.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber().getNatureOfAddressIndicator(), 4);
@@ -71,7 +73,7 @@ public class ConnectTest
 		parser.replaceClass(ConnectRequestImpl.class);
 	    	
 		List<CalledPartyNumberIsup> calledPartyNumber=new ArrayList<CalledPartyNumberIsup>();
-		calledPartyNumber.add(new CalledPartyNumberIsupImpl(calledPartyData1));
+		calledPartyNumber.add(new CalledPartyNumberIsupImpl(new CalledPartyNumberImpl(Unpooled.wrappedBuffer(calledPartyData1))));
 		DestinationRoutingAddress destinationAddress=new DestinationRoutingAddressImpl(calledPartyNumber);
 		
 		ConnectRequestImpl elem = new ConnectRequestImpl(destinationAddress, null, null, null, null, null,

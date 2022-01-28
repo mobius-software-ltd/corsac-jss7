@@ -37,16 +37,11 @@ public class TariffDurationImpl extends ASNInteger implements TariffDuration {
     }
 
     public TariffDurationImpl(Integer value) {
-    	if(value!=null)
-    		setValue(value.longValue());    	
+    	super(value);   	
     }
 
     public Integer getData() {
-    	Long value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	return value.intValue();
+    	return getIntValue();
     }
 
     @Override

@@ -25,6 +25,7 @@ package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.IPSSPCapabilities;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -34,7 +35,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class IPSSPCapabilitiesImpl extends ASNOctetString implements IPSSPCapabilities {
+public class IPSSPCapabilitiesImpl extends ASNOctetString2 implements IPSSPCapabilities {
 	public static int _Mask_IPRoutingAddress = 0x01;
     public static int _Mask_VoiceBack = 0x02;
     public static int _Mask_VoiceInformation_SpeechRecognition = 0x04;
@@ -46,46 +47,28 @@ public class IPSSPCapabilitiesImpl extends ASNOctetString implements IPSSPCapabi
     public IPSSPCapabilitiesImpl() {
     }
 
-    public IPSSPCapabilitiesImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public IPSSPCapabilitiesImpl(boolean IPRoutingAddressSupported, boolean VoiceBackSupported,
             boolean VoiceInformationSupportedViaSpeechRecognition, boolean VoiceInformationSupportedViaVoiceRecognition,
-            boolean GenerationOfVoiceAnnouncementsFromTextSupported, byte[] extraData) {
-        setData(IPRoutingAddressSupported, VoiceBackSupported, VoiceInformationSupportedViaSpeechRecognition,
-                VoiceInformationSupportedViaVoiceRecognition, GenerationOfVoiceAnnouncementsFromTextSupported, extraData);
+            boolean GenerationOfVoiceAnnouncementsFromTextSupported, ByteBuf extraData) {
+        super(translate(IPRoutingAddressSupported, VoiceBackSupported, VoiceInformationSupportedViaSpeechRecognition,
+                VoiceInformationSupportedViaVoiceRecognition, GenerationOfVoiceAnnouncementsFromTextSupported, extraData));
     }
 
-    public void setData(boolean IPRoutingAddressSupported, boolean VoiceBackSupported,
+    public static ByteBuf translate(boolean IPRoutingAddressSupported, boolean VoiceBackSupported,
             boolean VoiceInformationSupportedViaSpeechRecognition, boolean VoiceInformationSupportedViaVoiceRecognition,
-            boolean GenerationOfVoiceAnnouncementsFromTextSupported, byte[] extraData) {
+            boolean GenerationOfVoiceAnnouncementsFromTextSupported, ByteBuf extraData) {
         int firstByte = (IPRoutingAddressSupported ? _Mask_IPRoutingAddress : 0) | (VoiceBackSupported ? _Mask_VoiceBack : 0)
                 | (VoiceInformationSupportedViaSpeechRecognition ? _Mask_VoiceInformation_SpeechRecognition : 0)
                 | (VoiceInformationSupportedViaVoiceRecognition ? _Mask_VoiceInformation_VoiceRecognition : 0)
                 | (GenerationOfVoiceAnnouncementsFromTextSupported ? _Mask_GenerationOfVoiceAnnouncementsFromTextSupported : 0);
-        int extraCnt = 0;
-        if (extraData != null)
-            extraCnt = extraData.length;
-        if (extraCnt > 3)
-            extraCnt = 3;
 
-        byte[] data = new byte[1 + extraCnt];
-        data[0] = (byte) firstByte;
-        if (extraCnt > 0)
-            System.arraycopy(extraData, 0, data, 1, extraCnt);
+
+        ByteBuf buffer=Unpooled.buffer(1);
+        buffer.writeByte(firstByte);
+        if (extraData!=null && extraData.readableBytes()>0)
+            buffer=Unpooled.wrappedBuffer(buffer,extraData);
         
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        return buffer;
     }
 
     public boolean getIPRoutingAddressSupported() {
@@ -128,7 +111,7 @@ public class IPSSPCapabilitiesImpl extends ASNOctetString implements IPSSPCapabi
         return (((int) buffer.readByte()) & _Mask_GenerationOfVoiceAnnouncementsFromTextSupported) != 0;
     }
 
-    public byte[] getExtraData() {
+    public ByteBuf getExtraData() {
     	ByteBuf buffer=getValue();
         if (buffer == null || buffer.readableBytes() < 2)
             return null;
@@ -137,9 +120,8 @@ public class IPSSPCapabilitiesImpl extends ASNOctetString implements IPSSPCapabi
         if (extraCount > 3)
             extraCount = 3;
         
-        byte[] res = new byte[extraCount];
-        System.arraycopy(this.getData(), 1, res, 0, extraCount);
-        return res;
+        buffer.skipBytes(1);
+        return buffer;
     }
 
     @Override
@@ -158,13 +140,10 @@ public class IPSSPCapabilitiesImpl extends ASNOctetString implements IPSSPCapabi
                 sb.append("VoiceInformationSupportedViaVoiceRecognition, ");
             if (this.getGenerationOfVoiceAnnouncementsFromTextSupported())
                 sb.append("GenerationOfVoiceAnnouncementsFromTextSupported, ");
-            byte[] eArr = this.getExtraData();
-            if (eArr != null) {
+            ByteBuf extraBuffer = this.getExtraData();
+            if (extraBuffer != null) {
                 sb.append("ExtraData=");
-                for (int i1 = 0; i1 < eArr.length; i1++) {
-                    sb.append(eArr[i1]);
-                    sb.append(", ");
-                }
+                sb.append(ASNOctetString.printDataArr(extraBuffer));               
             }
         }
         sb.append("]");

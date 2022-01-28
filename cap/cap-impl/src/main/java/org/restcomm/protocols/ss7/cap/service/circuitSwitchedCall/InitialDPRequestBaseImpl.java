@@ -25,8 +25,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.InitialDPRequest;
-import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtension;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
 import org.restcomm.protocols.ss7.commonapp.api.callhandling.CallReferenceNumber;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountered;
@@ -90,11 +88,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl implements InitialDPRequest {
+public abstract class InitialDPRequestBaseImpl extends CircuitSwitchedCallMessageImpl implements InitialDPRequest {
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = 0)
@@ -187,16 +185,13 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 58,constructed = false,index = -1)
     private ASNNull callForwardingSSPending;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 59,constructed = true,index = -1, defaultImplementation = InitialDPArgExtensionImpl.class)
-    private InitialDPArgExtension initialDPArgExtension;
-
     /**
      * This constructor is only for deserialisation purpose
      */
-    public InitialDPRequestImpl() {
+    public InitialDPRequestBaseImpl() {
     }
 
-    public InitialDPRequestImpl(int serviceKey, CalledPartyNumberIsup calledPartyNumber,
+    public InitialDPRequestBaseImpl(int serviceKey, CalledPartyNumberIsup calledPartyNumber,
             CallingPartyNumberIsup callingPartyNumber, CallingPartysCategoryIsup callingPartysCategory,
             CGEncountered cgEncountered, IPSSPCapabilities IPSSPCapabilities, LocationNumberIsup locationNumber,
             OriginalCalledNumberIsup originalCalledPartyID, CAPINAPExtensions extensions,
@@ -207,20 +202,16 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
             CUGInterlock cugInterlock, boolean cugOutgoingAccess, IMSI imsi, SubscriberState subscriberState,
             LocationInformation locationInformation, ExtBasicServiceCode extBasicServiceCode,
             CallReferenceNumber callReferenceNumber, ISDNAddressString mscAddress, CalledPartyBCDNumber calledPartyBCDNumber,
-            TimeAndTimezone timeAndTimezone, boolean callForwardingSSPending, InitialDPArgExtension initialDPArgExtension) {
+            TimeAndTimezone timeAndTimezone, boolean callForwardingSSPending) {
         
-    	this.serviceKey = new ASNInteger();
-    	this.serviceKey.setValue(Long.valueOf(serviceKey));
-    	
-        this.calledPartyNumber = calledPartyNumber;
+    	this.serviceKey = new ASNInteger(serviceKey);
+    	this.calledPartyNumber = calledPartyNumber;
         this.callingPartyNumber = callingPartyNumber;
         this.callingPartysCategory = callingPartysCategory;
         
-        if(cgEncountered!=null) {
-        	this.cgEncountered = new ASNCGEncountered();
-        	this.cgEncountered.setType(cgEncountered);
-        }
-        
+        if(cgEncountered!=null)
+        	this.cgEncountered = new ASNCGEncountered(cgEncountered);
+        	
         this.IPSSPCapabilities = IPSSPCapabilities;
         this.locationNumber = locationNumber;
         this.originalCalledPartyID = originalCalledPartyID;
@@ -231,11 +222,9 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
         if(bearerCapability!=null)
         	this.bearerCapability = new BearerCapabilityWrapperImpl(bearerCapability);
         
-        if(eventTypeBCSM!=null) {
-        	this.eventTypeBCSM = new ASNEventTypeBCSM();
-        	this.eventTypeBCSM.setType(eventTypeBCSM);
-        }
-        
+        if(eventTypeBCSM!=null)
+        	this.eventTypeBCSM = new ASNEventTypeBCSM(eventTypeBCSM);
+        	
         this.redirectingPartyID = redirectingPartyID;
         this.redirectionInformation = redirectionInformation;
         this.cause = cause;
@@ -264,8 +253,6 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
         
         if(callForwardingSSPending)
         	this.callForwardingSSPending = new ASNNull();
-        
-        this.initialDPArgExtension = initialDPArgExtension;
     }
 
     @Override
@@ -283,7 +270,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     	if(this.serviceKey==null || this.serviceKey.getValue()==null)
     		return 0;
     	
-        return this.serviceKey.getValue().intValue();
+        return this.serviceKey.getIntValue();
     }
 
     @Override
@@ -450,17 +437,10 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     }
 
     @Override
-    public InitialDPArgExtension getInitialDPArgExtension() {
-        return initialDPArgExtension;
-    }
-
-    @Override
     public String toString() {
 
         StringBuilder sb = new StringBuilder();
-        sb.append("InitialDPRequestIndication [");
-        this.addInvokeIdInfo(sb);
-
+        
         sb.append(", serviceKey=");
         sb.append(serviceKey);
         if (this.calledPartyNumber != null) {
@@ -577,12 +557,6 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
         if (this.callForwardingSSPending!=null) {
             sb.append(", callForwardingSSPending");
         }
-        if (this.initialDPArgExtension != null) {
-            sb.append(", initialDPArgExtension=");
-            sb.append(initialDPArgExtension.toString());
-        }
-
-        sb.append("]");
 
         return sb.toString();
     }

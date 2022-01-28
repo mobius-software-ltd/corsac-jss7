@@ -58,11 +58,9 @@ public class RequestCurrentStatusReportResponseImpl extends CircuitSwitchedCallM
     }
 
     public RequestCurrentStatusReportResponseImpl(ResourceStatus resourceStatus, ResourceID resourceID, CAPINAPExtensions extensions) {
-        if(resourceStatus!=null) {
-        	this.resourceStatus=new ASNResourceStatus();
-        	this.resourceStatus.setType(resourceStatus);
-        }
-        
+        if(resourceStatus!=null)
+        	this.resourceStatus=new ASNResourceStatus(resourceStatus);
+        	
         if(resourceID!=null)
         	this.resourceID=new ResourceIDWrapperImpl(resourceID);
         

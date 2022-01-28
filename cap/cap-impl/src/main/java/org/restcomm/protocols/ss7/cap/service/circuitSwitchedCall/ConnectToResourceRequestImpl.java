@@ -74,10 +74,8 @@ public class ConnectToResourceRequestImpl extends CircuitSwitchedCallMessageImpl
         this.extensions = extensions;
         this.serviceInteractionIndicatorsTwo = serviceInteractionIndicatorsTwo;
         
-        if(callSegmentID!=null) {
-        	this.callSegmentID = new ASNInteger();
-        	this.callSegmentID.setValue(callSegmentID.longValue());
-        }
+        if(callSegmentID!=null)
+        	this.callSegmentID = new ASNInteger(callSegmentID);        	
     }
 
     @Override

@@ -57,7 +57,9 @@ BasicGapCriteria {PARAMETERS-BOUND : bound} ::= CHOICE {
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public interface BasicGapCriteria {
 
-    DigitsIsup getCalledAddressValue();
+    DigitsIsup getCalledAddressDigits();
+
+    DigitsIsup getCalledAddressNumber();
 
     GapOnService getGapOnService();
 

@@ -28,40 +28,40 @@ package org.restcomm.protocols.ss7.tcap.asn;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x04,constructed=true,lengthIndefinite=false)
 public class TCBeginTestASN2 {
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=0x04,constructed=false,index=0)
-	private ASNOctetString o1;
+	private ASNOctetString2 o1;
 	
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=0x04,constructed=false,index=1)
-	private ASNOctetString o2;
+	private ASNOctetString2 o2;
 	
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,index=-1)
-	private ASNOctetString o3;
+	private ASNOctetString2 o3;
 	
-	public ASNOctetString getO1() {
+	public ASNOctetString2 getO1() {
 		return o1;
 	}
 	
-	public void setO1(ASNOctetString o1) {
+	public void setO1(ASNOctetString2 o1) {
 		this.o1 = o1;
 	}
 	
-	public ASNOctetString getO2() {
+	public ASNOctetString2 getO2() {
 		return o2;
 	}
 	
-	public void setO2(ASNOctetString o2) {
+	public void setO2(ASNOctetString2 o2) {
 		this.o2 = o2;
 	}
 
-	public ASNOctetString getO3() {
+	public ASNOctetString2 getO3() {
 		return o3;
 	}
 
-	public void setO3(ASNOctetString o3) {
+	public void setO3(ASNOctetString2 o3) {
 		this.o3 = o3;
-	}		
+	}
 }

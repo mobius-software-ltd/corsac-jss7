@@ -35,6 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -66,7 +67,7 @@ public class EndUserAddressTest {
         EndUserAddressImpl prim = (EndUserAddressImpl)result.getResult();        
         assertEquals(prim.getPDPTypeNumber().getPDPTypeNumberValue(), PDPTypeNumberValue.PPP);
         assertEquals(prim.getPDPTypeOrganization().getPDPTypeOrganizationValue(), PDPTypeOrganizationValue.ETSI);
-        assertTrue(Arrays.equals(prim.getPDPAddress().getData(), this.getPDPAddressData()));
+        assertTrue(ByteBufUtil.equals(prim.getPDPAddress().getValue(), Unpooled.wrappedBuffer(this.getPDPAddressData())));
     }
 
     @Test(groups = { "functional.encode", "primitives" })
@@ -74,7 +75,7 @@ public class EndUserAddressTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(EndUserAddressImpl.class);
     	
-    	PDPAddressImpl pdpAddress = new PDPAddressImpl(getPDPAddressData());
+    	PDPAddressImpl pdpAddress = new PDPAddressImpl(Unpooled.wrappedBuffer(getPDPAddressData()));
         PDPTypeNumberImpl pdpTypeNumber = new PDPTypeNumberImpl(PDPTypeNumberValue.PPP);
         PDPTypeOrganizationImpl pdpTypeOrganization = new PDPTypeOrganizationImpl(PDPTypeOrganizationValue.ETSI);
 

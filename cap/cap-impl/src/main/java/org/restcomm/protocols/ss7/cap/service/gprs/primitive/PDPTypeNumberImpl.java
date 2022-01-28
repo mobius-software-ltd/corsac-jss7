@@ -36,14 +36,11 @@ public class PDPTypeNumberImpl extends ASNSingleByte implements PDPTypeNumber {
     }
 
     public PDPTypeNumberImpl(int data) {
-    	setValue(data);
+    	super(data);
     }
 
     public PDPTypeNumberImpl(PDPTypeNumberValue value) {
-    	if(value==null)
-    		setValue(0);
-    	else
-    		setValue(value.getCode());
+    	super(value==null?0:value.getCode());    	
     }
 
     public PDPTypeNumberValue getPDPTypeNumberValue() {

@@ -164,8 +164,7 @@ public class ReturnResultLastTest {
         rrl = TcapFactory.createComponentReturnResultLast();
         rrl.setInvokeId(1l);
         rrl.setOperationCode(45L);
-        TCEndTestASN parameter=new TCEndTestASN();
-        parameter.setValue(Unpooled.wrappedBuffer(getParameterData()));
+        TCEndTestASN parameter=new TCEndTestASN(Unpooled.wrappedBuffer(getParameterData()));
         rrl.setParameter(parameter);
         comp=new ComponentImpl();
         comp.setReturnResultLast(rrl);
@@ -178,8 +177,7 @@ public class ReturnResultLastTest {
         rr = TcapFactory.createComponentReturnResult();
         rr.setInvokeId(1l);
         rr.setOperationCode(45L);
-        parameter=new TCEndTestASN();
-        parameter.setValue(Unpooled.wrappedBuffer(getParameterData()));
+        parameter=new TCEndTestASN(Unpooled.wrappedBuffer(getParameterData()));
         rr.setParameter(parameter);
         comp=new ComponentImpl();
         comp.setReturnResult(rr);

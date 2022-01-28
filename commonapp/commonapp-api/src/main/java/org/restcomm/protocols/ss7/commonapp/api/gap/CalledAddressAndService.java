@@ -44,7 +44,9 @@ ServiceKey::= Integer4
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public interface CalledAddressAndService {
-	DigitsIsup getCalledAddressValue();
+	DigitsIsup getCalledAddressNumber();
+
+	DigitsIsup getCalledAddressDigits();
 
     int getServiceKey();
 }

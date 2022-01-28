@@ -25,7 +25,7 @@ import org.restcomm.protocols.ss7.cap.api.EsiSms.TSmsDeliverySpecificInfo;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 /**
  *
@@ -33,7 +33,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
  *
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public class TSmsDeliverySpecificInfoImpl extends ASNOctetString implements TSmsDeliverySpecificInfo {
+public class TSmsDeliverySpecificInfoImpl extends ASNOctetString2 implements TSmsDeliverySpecificInfo {
 	public TSmsDeliverySpecificInfoImpl() {
     }
 }

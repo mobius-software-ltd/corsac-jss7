@@ -29,9 +29,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -48,72 +48,58 @@ public class FacilityGroupImpl implements FacilityGroup {
     private ASNInteger privateFacilityID;
 
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false, index=-1)
-    private ASNOctetString huntGroup;
+    private ASNOctetString2 huntGroup;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false, index=-1)
-    private ASNOctetString routeIndex;
+    private ASNOctetString2 routeIndex;
 
     public FacilityGroupImpl() {
     }
 
     public FacilityGroupImpl(Integer value,Boolean isTrunkGroupID) {
     	if(value!=null) {
-    		if(isTrunkGroupID) {
-    			this.trunkGroupID = new ASNInteger();
-    			this.trunkGroupID.setValue(value.longValue());
-    		}
-    		else {
-    			this.privateFacilityID = new ASNInteger();
-    			this.privateFacilityID.setValue(value.longValue());
-    		}
+    		if(isTrunkGroupID)
+    			this.trunkGroupID = new ASNInteger(value);    			
+    		else
+    			this.privateFacilityID = new ASNInteger(value);    			
     	}
     }
 
-    public FacilityGroupImpl(byte[] value,Boolean isHuntGroup) {
+    public FacilityGroupImpl(ByteBuf value,Boolean isHuntGroup) {
     	if(value!=null) {
-    		if(isHuntGroup) {
-    			this.huntGroup = new ASNOctetString();
-    			this.huntGroup.setValue(Unpooled.wrappedBuffer(value));
-    		}
-    		else {
-    			this.routeIndex = new ASNOctetString();
-    			this.routeIndex.setValue(Unpooled.wrappedBuffer(value));
-    		}
+    		if(isHuntGroup)
+    			this.huntGroup = new ASNOctetString2(value);
+    		else
+    			this.routeIndex = new ASNOctetString2(value);    		
     	}
     }
 
     public Integer getTrunkGroupID() {
-    	if(trunkGroupID==null || trunkGroupID.getValue()==null)
+    	if(trunkGroupID==null)
     		return null;
     	
-        return trunkGroupID.getValue().intValue();
+        return trunkGroupID.getIntValue();
     }
 
     public Integer getPrivateFacilityID() {
-    	if(privateFacilityID==null || privateFacilityID.getValue()==null)
+    	if(privateFacilityID==null)
     		return null;
     	
-        return privateFacilityID.getValue().intValue();
+        return privateFacilityID.getIntValue();
     }
 
-    public byte[] getHuntGroup() {
-    	if(huntGroup==null || huntGroup.getValue()==null)
+    public ByteBuf getHuntGroup() {
+    	if(huntGroup==null)
     		return null;
     	
-    	ByteBuf value=huntGroup.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return huntGroup.getValue();
     }
 
-    public byte[] getRouteIndex() {
-    	if(routeIndex==null || routeIndex.getValue()==null)
+    public ByteBuf getRouteIndex() {
+    	if(routeIndex==null)
     		return null;
     	
-    	ByteBuf value=routeIndex.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return routeIndex.getValue();
     }
 
     @Override

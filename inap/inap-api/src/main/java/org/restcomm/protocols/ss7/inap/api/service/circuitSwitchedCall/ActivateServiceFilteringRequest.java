@@ -29,6 +29,8 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringCriteria;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringTimeOut;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -89,5 +91,5 @@ public interface ActivateServiceFilteringRequest extends CircuitSwitchedCallMess
 
     CAPINAPExtensions getExtensions();
     
-    byte[] getSCFCorrelationInfo();
+    ByteBuf getSCFCorrelationInfo();
 }

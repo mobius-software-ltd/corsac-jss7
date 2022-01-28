@@ -66,9 +66,7 @@ public class MGCSIImpl implements MGCSI {
         if(mobilityTriggers!=null)
         	this.mobilityTriggers = new MMCodeListWrapperImpl(mobilityTriggers);
         
-        this.serviceKey = new ASNInteger();
-        this.serviceKey.setValue(serviceKey);
-        
+        this.serviceKey = new ASNInteger(serviceKey);
         this.gsmSCFAddress = gsmSCFAddress;
         this.extensionContainer = extensionContainer;
         

@@ -124,9 +124,8 @@ public class DialogPortionImpl implements DialogPortion {
      * @param dialogAPDU the dialogAPDU to set
      */
     public void setDialogAPDU(DialogAPDU dialogAPDU) {
-    	ASNDialogPortionObjectImpl innerObject=new ASNDialogPortionObjectImpl();
-    	innerObject.setValue(dialogAPDU);
-        this.ext.setChildAsObject(innerObject);
+    	ASNDialogPortionObjectImpl innerObject=new ASNDialogPortionObjectImpl(dialogAPDU);
+    	this.ext.setChildAsObject(innerObject);
     }
 
     public String toString() {

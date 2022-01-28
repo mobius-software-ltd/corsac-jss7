@@ -24,31 +24,35 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.TransactionId;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
-public class TransactionIdImpl extends ASNOctetString implements TransactionId {
+public class TransactionIdImpl extends ASNOctetString2 implements TransactionId {
 	public TransactionIdImpl() {
     }
 
-    public TransactionIdImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
+    public TransactionIdImpl(ByteBuf value) {
+        super(value);
     }
 
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("TransactionIdImpl");
+        sb.append(" [");
+        if (getValue()!=null) {
+            sb.append("data=");
+            sb.append(printDataArr());            
+        }
+        sb.append("]");
+
+        return sb.toString();
     }
 }

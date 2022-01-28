@@ -83,16 +83,14 @@ public class MAPUserAbortChoiseImpl implements MAPUserAbortChoice {
     }
 
     public void setProcedureCancellationReason(ProcedureCancellationReason procCanReasn) {
-        this.procedureCancellationReason =new ASNProcedureCancellationReason();
-        this.procedureCancellationReason.setType(procCanReasn); 
+        this.procedureCancellationReason =new ASNProcedureCancellationReason(procCanReasn);
         this.resourceUnavailableReason=null;
         this.userResourceLimitation=null;
         this.userSpecificReason=null;
     }
 
     public void setResourceUnavailableReason(ResourceUnavailableReason resUnaReas) {
-        this.resourceUnavailableReason = new ASNResourceUnavailableReason();
-        this.resourceUnavailableReason.setType(resUnaReas);
+        this.resourceUnavailableReason = new ASNResourceUnavailableReason(resUnaReas);
         this.procedureCancellationReason=null;
         this.userResourceLimitation=null;
         this.userSpecificReason=null;

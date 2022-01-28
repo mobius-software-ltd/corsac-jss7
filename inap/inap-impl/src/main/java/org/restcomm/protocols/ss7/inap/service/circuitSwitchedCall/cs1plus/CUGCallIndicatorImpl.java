@@ -34,9 +34,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public class CUGCallIndicatorImpl extends ASNSingleByte implements CUGCallIndicator {
-	public void setType(CUGCall t) {
-		if(t!=null)
-			setValue(t.getCode());
+	public CUGCallIndicatorImpl() {
+		
+	}
+	
+	public CUGCallIndicatorImpl(CUGCall t) {
+		super(t.getCode());
 	}
 	
 	public CUGCall getCUGCall() {

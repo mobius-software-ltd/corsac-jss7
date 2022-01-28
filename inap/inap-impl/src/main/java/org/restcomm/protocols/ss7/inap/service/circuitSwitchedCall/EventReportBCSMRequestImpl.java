@@ -75,11 +75,9 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
     public EventReportBCSMRequestImpl(EventTypeBCSM eventTypeBCSM, DigitsIsup bcsmEventCorrelationID, EventSpecificInformationBCSM eventSpecificInformationBCSM,
             LegID legID, MiscCallInfo miscCallInfo, CAPINAPExtensions extensions) {
     	    	
-    	if(eventTypeBCSM!=null) {
-    		this.eventTypeBCSM = new ASNEventTypeBCSM();
-    		this.eventTypeBCSM.setType(eventTypeBCSM);
-    	}
-    	
+    	if(eventTypeBCSM!=null)
+    		this.eventTypeBCSM = new ASNEventTypeBCSM(eventTypeBCSM);
+    		
         this.bcsmEventCorrelationID=bcsmEventCorrelationID;
     	if(eventSpecificInformationBCSM!=null)
         	this.eventSpecificInformationBCSM = new EventSpecificInformationBCSMWrapperImpl(eventSpecificInformationBCSM);

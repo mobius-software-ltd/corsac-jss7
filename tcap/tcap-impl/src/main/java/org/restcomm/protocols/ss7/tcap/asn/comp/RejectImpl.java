@@ -86,8 +86,7 @@ public class RejectImpl implements Reject {
         	this.invokeId=null;
         	this.nullInvokeId=new ASNNull();
         } else {
-	        this.invokeId = new ASNInteger();
-	        this.invokeId.setValue(i);
+	        this.invokeId = new ASNInteger(i);
 	        this.nullInvokeId=null;
         }
     }

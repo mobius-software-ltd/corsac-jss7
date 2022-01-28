@@ -45,29 +45,25 @@ public class ROVolumeIfTariffSwitchImpl implements ROVolumeIfTariffSwitch {
     }
 
     public ROVolumeIfTariffSwitchImpl(Integer roVolumeSinceLastTariffSwitch, Integer roVolumeTariffSwitchInterval) {
-    	if(roVolumeSinceLastTariffSwitch!=null) {
-    		this.roVolumeSinceLastTariffSwitch = new ASNInteger();
-    		this.roVolumeSinceLastTariffSwitch.setValue(roVolumeSinceLastTariffSwitch.longValue());
-    	}
-    	
-    	if(roVolumeTariffSwitchInterval!=null) {
-    		this.roVolumeTariffSwitchInterval = new ASNInteger();
-    		this.roVolumeTariffSwitchInterval.setValue(roVolumeTariffSwitchInterval.longValue());
-    	}
+    	if(roVolumeSinceLastTariffSwitch!=null)
+    		this.roVolumeSinceLastTariffSwitch = new ASNInteger(roVolumeSinceLastTariffSwitch);
+    		
+    	if(roVolumeTariffSwitchInterval!=null)
+    		this.roVolumeTariffSwitchInterval = new ASNInteger(roVolumeTariffSwitchInterval);    		
     }
 
     public Integer getROVolumeSinceLastTariffSwitch() {
-    	if(this.roVolumeSinceLastTariffSwitch==null || this.roVolumeSinceLastTariffSwitch.getValue()==null)
+    	if(this.roVolumeSinceLastTariffSwitch==null)
     		return null;
     	
-        return this.roVolumeSinceLastTariffSwitch.getValue().intValue();
+        return this.roVolumeSinceLastTariffSwitch.getIntValue();
     }
 
     public Integer getROVolumeTariffSwitchInterval() {
-    	if(this.roVolumeTariffSwitchInterval==null || this.roVolumeTariffSwitchInterval.getValue()==null)
+    	if(this.roVolumeTariffSwitchInterval==null)
     		return null;
     	
-        return this.roVolumeTariffSwitchInterval.getValue().intValue();
+        return this.roVolumeTariffSwitchInterval.getIntValue();
     }
 
     @Override

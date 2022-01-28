@@ -47,8 +47,6 @@ by a length byte of zero.
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface APN {
 
-    byte[] getData();
-
     String getApn() throws MAPException;
 
 }

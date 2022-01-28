@@ -64,11 +64,9 @@ public class SendRoutingInfoForGprsResponseImpl extends PdpContextActivationMess
         this.sgsnAddress = sgsnAddress;
         this.ggsnAddress = ggsnAddress;
         
-        if(mobileNotReachableReason!=null) {
-        	this.mobileNotReachableReason = new ASNInteger();
-        	this.mobileNotReachableReason.setValue(mobileNotReachableReason.longValue());
-        }
-        
+        if(mobileNotReachableReason!=null)
+        	this.mobileNotReachableReason = new ASNInteger(mobileNotReachableReason);
+        	
         this.extensionContainer = extensionContainer;
     }
 
@@ -97,7 +95,7 @@ public class SendRoutingInfoForGprsResponseImpl extends PdpContextActivationMess
     	if(mobileNotReachableReason==null)
     		return null;
     	
-        return mobileNotReachableReason.getValue().intValue();
+        return mobileNotReachableReason.getIntValue();
     }
 
     @Override

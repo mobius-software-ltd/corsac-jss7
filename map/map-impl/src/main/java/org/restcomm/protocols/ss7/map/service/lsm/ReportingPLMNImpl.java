@@ -54,11 +54,9 @@ public class ReportingPLMNImpl implements ReportingPLMN {
     public ReportingPLMNImpl(PlmnId plmnId, RANTechnology ranTechnology, boolean ranPeriodicLocationSupport) {
         this.plmnId = plmnId;
         
-        if(ranTechnology!=null) {
-        	this.ranTechnology = new ASNRANTechnology();
-        	this.ranTechnology.setType(ranTechnology);
-        }
-        
+        if(ranTechnology!=null)
+        	this.ranTechnology = new ASNRANTechnology(ranTechnology);
+        	
         if(ranPeriodicLocationSupport)
         	this.ranPeriodicLocationSupport = new ASNNull();
     }

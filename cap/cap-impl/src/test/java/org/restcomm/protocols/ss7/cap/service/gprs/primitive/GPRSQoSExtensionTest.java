@@ -21,11 +21,14 @@
  */
 package org.restcomm.protocols.ss7.cap.service.gprs.primitive;
 
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.Ext2QoSSubscribed_SourceStatisticsDescriptor;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_BitRateExtended;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.Ext2QoSSubscribedImpl;
 import org.testng.annotations.Test;
 
@@ -43,12 +46,8 @@ import io.netty.buffer.Unpooled;
 public class GPRSQoSExtensionTest {
 
     public byte[] getData() {
-        return new byte[] { 48, 3, -128, 1, 52 };
+        return new byte[] { 48, 5, -128, 3, 16, 0, 0 };
     };
-
-    private byte[] getEncodedqos2Subscribed() {
-        return new byte[] { 52 };
-    }
 
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
@@ -62,7 +61,12 @@ public class GPRSQoSExtensionTest {
         assertTrue(result.getResult() instanceof GPRSQoSExtensionImpl);
         
         GPRSQoSExtensionImpl prim = (GPRSQoSExtensionImpl)result.getResult();        
-        assertTrue(Arrays.equals(prim.getSupplementToLongQoSFormat().getData(), this.getEncodedqos2Subscribed()));
+        assertEquals(prim.getSupplementToLongQoSFormat().getSourceStatisticsDescriptor(),
+        		Ext2QoSSubscribed_SourceStatisticsDescriptor.unknown);
+        assertEquals(prim.getSupplementToLongQoSFormat().isOptimisedForSignallingTraffic(),true);
+        assertEquals(prim.getSupplementToLongQoSFormat().getGuaranteedBitRateForDownlinkExtended().getBitRate(),0);
+        assertEquals(prim.getSupplementToLongQoSFormat().getMaximumBitRateForDownlinkExtended().getBitRate(),0);
+        
     }
 
     @Test(groups = { "functional.encode", "primitives" })
@@ -70,7 +74,7 @@ public class GPRSQoSExtensionTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GPRSQoSExtensionImpl.class);
     	
-    	Ext2QoSSubscribedImpl qos2Subscribed = new Ext2QoSSubscribedImpl(this.getEncodedqos2Subscribed());
+    	Ext2QoSSubscribedImpl qos2Subscribed = new Ext2QoSSubscribedImpl(Ext2QoSSubscribed_SourceStatisticsDescriptor.unknown,true,new ExtQoSSubscribed_BitRateExtended(0, true), new ExtQoSSubscribed_BitRateExtended(0, true));
         GPRSQoSExtensionImpl prim = new GPRSQoSExtensionImpl(qos2Subscribed);
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(prim);

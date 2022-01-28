@@ -67,8 +67,7 @@ public class CQMTest extends MessageHarness {
                 return;
             byte range = RS.getRange();
             assertEquals(range, 0x01, "Range is wrong,");
-            byte[] b = RS.getStatus();
-            assertNull(b, "RangeAndStatus.getRange() is not null");
+            assertNull(RS.getStatus(), "RangeAndStatus.getRange() is not null");
 
         } catch (Exception e) {
             e.printStackTrace();

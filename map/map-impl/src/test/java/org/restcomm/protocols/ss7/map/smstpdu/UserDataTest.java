@@ -28,10 +28,13 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -85,30 +88,30 @@ public class UserDataTest {
     @Test(groups = { "functional.decode", "smstpdu" })
     public void testDecode() throws Exception {
 
-        UserDataImpl impl = new UserDataImpl(this.getData1(), new DataCodingSchemeImpl(8), 50, false, null);
+        UserDataImpl impl = new UserDataImpl(Unpooled.wrappedBuffer(this.getData1()), new DataCodingSchemeImpl(8), 50, false, null);
         impl.decode();
         assertEquals(impl.getDecodedMessage(),
                 "\u042f \u0443 \u043c\u0430\u0448\u0438,\u043c\u044b \u0432 \u043a\u0438\u043d\u043e \u043f\u043e\u0439\u0434\u0451\u043c");
         assertNull(impl.getDecodedUserDataHeader());
 
-        impl = new UserDataImpl(this.getData2(), new DataCodingSchemeImpl(0), 160, true, null);
+        impl = new UserDataImpl(Unpooled.wrappedBuffer(this.getData2()), new DataCodingSchemeImpl(0), 160, true, null);
         impl.decode();
         assertEquals(
                 impl.getDecodedMessage(),
                 "Tyapse? a chto tebya s tyapse svyazivaet? my otprasilis' s fizrh,shas ya s Dashei sxojy vmagazin ei nado.a potom poedy k Lene,ya togda popoje tebe skiny ");
         assertNotNull(impl.getDecodedUserDataHeader());
-        Map<Integer, byte[]> mp = impl.getDecodedUserDataHeader().getAllData();
+        Map<Integer, ByteBuf> mp = impl.getDecodedUserDataHeader().getAllData();
         assertEquals(mp.size(), 1);
-        assertTrue(Arrays.equals(mp.get(0), new byte[] { -21, 2, 1 }));
+        assertTrue(ByteBufUtil.equals(mp.get(0),Unpooled.wrappedBuffer(new byte[] { -21, 2, 1 })));
 
-        impl = new UserDataImpl(this.getData3(), new DataCodingSchemeImpl(8), 114, false, null);
+        impl = new UserDataImpl(Unpooled.wrappedBuffer(this.getData3()), new DataCodingSchemeImpl(8), 114, false, null);
         impl.decode();
         assertEquals(
                 impl.getDecodedMessage(),
                 "\u041f\u0420\u0418\u0412\u0415\u0422 \u041f\u041e\u0414\u0420\u0423\u0416\u0415\u041d\u042c\u041a\u0410!\u041a\u0410\u041a \u0422\u042b,\u0427\u0422\u041e \u041d\u041e\u0412\u041e\u0413\u041e?\u0427\u0415\u041c \u0417\u0410\u041d\u0418\u041c\u0410\u0415\u0428\u042c\u0421\u042f?\u0418\u041d\u041d\u0410");
         assertNull(impl.getDecodedUserDataHeader());
 
-        impl = new UserDataImpl(this.getData4(), new DataCodingSchemeImpl(8), 139, true, null);
+        impl = new UserDataImpl(Unpooled.wrappedBuffer(this.getData4()), new DataCodingSchemeImpl(8), 139, true, null);
         impl.decode();
         assertEquals(
                 impl.getDecodedMessage(),
@@ -116,15 +119,15 @@ public class UserDataTest {
         assertNotNull(impl.getDecodedUserDataHeader());
         mp = impl.getDecodedUserDataHeader().getAllData();
         assertEquals(mp.size(), 1);
-        assertTrue(Arrays.equals(mp.get(8), new byte[] { 0, -47, 3, 2 }));
+        assertTrue(ByteBufUtil.equals(mp.get(8), Unpooled.wrappedBuffer(new byte[] { 0, -47, 3, 2 })));
 
-        impl = new UserDataImpl(this.getData5(), new DataCodingSchemeImpl(0), 79, false, null);
+        impl = new UserDataImpl(Unpooled.wrappedBuffer(this.getData5()), new DataCodingSchemeImpl(0), 79, false, null);
         impl.decode();
         assertEquals(impl.getDecodedMessage(),
                 "A u nas xolodno.I opjat' gorjachuy vodu otkluchili.Dazhe boshku pomit' ne mogu.");
         assertNull(impl.getDecodedUserDataHeader());
 
-        impl = new UserDataImpl(this.getData6(), new DataCodingSchemeImpl(0), 63, false, null);
+        impl = new UserDataImpl(Unpooled.wrappedBuffer(this.getData6()), new DataCodingSchemeImpl(0), 63, false, null);
         impl.decode();
         assertEquals(impl.getDecodedMessage(), "        /\\_/\\\n       (-  \u00a4  -)                    \n          ");
         assertNull(impl.getDecodedUserDataHeader());
@@ -138,46 +141,46 @@ public class UserDataTest {
                 "\u042f \u0443 \u043c\u0430\u0448\u0438,\u043c\u044b \u0432 \u043a\u0438\u043d\u043e \u043f\u043e\u0439\u0434\u0451\u043c",
                 new DataCodingSchemeImpl(8), null, null);
         impl.encode();
-        assertTrue(Arrays.equals(impl.getEncodedData(), this.getData1()));
+        assertTrue(ByteBufUtil.equals(impl.getEncodedData(), Unpooled.wrappedBuffer(this.getData1())));
         assertEquals(impl.getEncodedUserDataLength(), 50);
         assertFalse(impl.getEncodedUserDataHeaderIndicator());
 
         UserDataHeaderImpl udh = new UserDataHeaderImpl();
-        udh.addInformationElement(0, new byte[] { -21, 2, 1 });
+        udh.addInformationElement(0, Unpooled.wrappedBuffer(new byte[] { -21, 2, 1 }));
         impl = new UserDataImpl(
                 "Tyapse? a chto tebya s tyapse svyazivaet? my otprasilis' s fizrh,shas ya s Dashei sxojy vmagazin ei nado.a potom poedy k Lene,ya togda popoje tebe skiny ",
                 new DataCodingSchemeImpl(0), udh, null);
         impl.encode();
         assertTrue(impl.getEncodedUserDataHeaderIndicator());
-        assertTrue(Arrays.equals(impl.getEncodedData(), this.getData2()));
+        assertTrue(ByteBufUtil.equals(impl.getEncodedData(), Unpooled.wrappedBuffer(this.getData2())));
         assertEquals(impl.getEncodedUserDataLength(), 160);
 
         impl = new UserDataImpl(
                 "\u041f\u0420\u0418\u0412\u0415\u0422 \u041f\u041e\u0414\u0420\u0423\u0416\u0415\u041d\u042c\u041a\u0410!\u041a\u0410\u041a \u0422\u042b,\u0427\u0422\u041e \u041d\u041e\u0412\u041e\u0413\u041e?\u0427\u0415\u041c \u0417\u0410\u041d\u0418\u041c\u0410\u0415\u0428\u042c\u0421\u042f?\u0418\u041d\u041d\u0410",
                 new DataCodingSchemeImpl(8), null, null);
         impl.encode();
-        assertTrue(Arrays.equals(impl.getEncodedData(), this.getData3()));
+        assertTrue(ByteBufUtil.equals(impl.getEncodedData(), Unpooled.wrappedBuffer(this.getData3())));
         assertEquals(impl.getEncodedUserDataLength(), 114);
 
         udh = new UserDataHeaderImpl();
-        udh.addInformationElement(8, new byte[] { 0, -47, 3, 2 });
+        udh.addInformationElement(8, Unpooled.wrappedBuffer(new byte[] { 0, -47, 3, 2 }));
         impl = new UserDataImpl(
                 " \u043e\u0442 \u043d\u0435\u0433\u043e \u0443\u043b\u0435\u0442\u0438\u0442 \u0441\u0430\u043c\u044b\u0439 \u0437\u0430\u043c\u0435\u0447\u0430\u0442\u0435\u043b\u044c\u043d\u044b\u0439 \u0430\u043d\u0433\u0435\u043b\u043e\u0447\u0435\u043a!\u041f\u0440\u043e\u0441\u0442\u043e \u0443\u043b\u0435\u0442,\u0430 \u0442\u044b \u043a\u0430\u043a",
                 new DataCodingSchemeImpl(8), udh, null);
         impl.encode();
-        assertTrue(Arrays.equals(impl.getEncodedData(), this.getData4()));
+        assertTrue(ByteBufUtil.equals(impl.getEncodedData(), Unpooled.wrappedBuffer(this.getData4())));
         assertEquals(impl.getEncodedUserDataLength(), 139);
 
         impl = new UserDataImpl("A u nas xolodno.I opjat' gorjachuy vodu otkluchili.Dazhe boshku pomit' ne mogu.",
                 new DataCodingSchemeImpl(0), null, null);
         impl.encode();
-        assertTrue(Arrays.equals(impl.getEncodedData(), this.getData5()));
+        assertTrue(ByteBufUtil.equals(impl.getEncodedData(), Unpooled.wrappedBuffer(this.getData5())));
         assertEquals(impl.getEncodedUserDataLength(), 79);
 
         impl = new UserDataImpl("        /\\_/\\\n       (-  \u00a4  -)                    \n          ",
                 new DataCodingSchemeImpl(0), null, null);
         impl.encode();
-        assertTrue(Arrays.equals(impl.getEncodedData(), this.getData6()));
+        assertTrue(ByteBufUtil.equals(impl.getEncodedData(), Unpooled.wrappedBuffer(this.getData6())));
         assertEquals(impl.getEncodedUserDataLength(), 63);
 
     }

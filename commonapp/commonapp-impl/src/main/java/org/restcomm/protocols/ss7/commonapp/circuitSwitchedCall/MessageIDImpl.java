@@ -58,10 +58,8 @@ public class MessageIDImpl implements MessageID {
     }
 
     public MessageIDImpl(Integer elementaryMessageID) {
-    	if(elementaryMessageID!=null) {
-    		this.elementaryMessageID = new ASNInteger();
-    		this.elementaryMessageID.setValue(elementaryMessageID.longValue());
-    	}
+    	if(elementaryMessageID!=null)
+    		this.elementaryMessageID = new ASNInteger(elementaryMessageID);    		
     }
 
     public MessageIDImpl(MessageIDText text) {
@@ -72,8 +70,7 @@ public class MessageIDImpl implements MessageID {
     	if(elementaryMessageIDs!=null) {
     		List<ASNInteger> wrappedList=new ArrayList<ASNInteger>();
     		for(Integer curr:elementaryMessageIDs) {
-    			ASNInteger currValue=new ASNInteger();
-    			currValue.setValue(curr.longValue());
+    			ASNInteger currValue=new ASNInteger(curr);
     			wrappedList.add(currValue);
     		}
     		
@@ -86,10 +83,10 @@ public class MessageIDImpl implements MessageID {
     }
 
     public Integer getElementaryMessageID() {
-    	if(elementaryMessageID==null || elementaryMessageID.getValue()==null)
+    	if(elementaryMessageID==null)
     		return null;
     	
-        return elementaryMessageID.getValue().intValue();
+        return elementaryMessageID.getIntValue();
     }
 
     public MessageIDText getText() {
@@ -102,7 +99,7 @@ public class MessageIDImpl implements MessageID {
     	
     	List<Integer> result=new ArrayList<Integer>();
     	for(ASNInteger curr:elementaryMessageIDs.getValues())
-    		result.add(curr.getValue().intValue());
+    		result.add(curr.getIntValue());
     	
         return result;
     }

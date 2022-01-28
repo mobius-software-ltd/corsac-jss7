@@ -55,11 +55,9 @@ public class TBcsmCamelTdpCriteriaImpl implements TBcsmCamelTdpCriteria {
 
     public TBcsmCamelTdpCriteriaImpl(TBcsmTriggerDetectionPoint tBcsmTriggerDetectionPoint,
             List<ExtBasicServiceCode> basicServiceCriteria, List<CauseValue> tCauseValueCriteria) {
-        if(tBcsmTriggerDetectionPoint!=null) {
-        	this.tBcsmTriggerDetectionPoint = new ASNTBcsmTriggerDetectionPoint();
-        	this.tBcsmTriggerDetectionPoint.setType(tBcsmTriggerDetectionPoint);
-        }
-        
+        if(tBcsmTriggerDetectionPoint!=null)
+        	this.tBcsmTriggerDetectionPoint = new ASNTBcsmTriggerDetectionPoint(tBcsmTriggerDetectionPoint);
+        	
         if(basicServiceCriteria!=null)
         	this.basicServiceCriteria = new ExtBasicServiceCodeListWrapperImpl(basicServiceCriteria);
         

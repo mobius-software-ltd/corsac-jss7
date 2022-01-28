@@ -91,11 +91,9 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
         if(legToBeCreated!=null)
         	this.legToBeCreated = new LegIDWrapperImpl(legToBeCreated);
         
-        if(newCallSegment!=null) {
-        	this.newCallSegment = new ASNInteger();
-        	this.newCallSegment.setValue(newCallSegment.longValue());
-        }
-        
+        if(newCallSegment!=null)
+        	this.newCallSegment = new ASNInteger(newCallSegment);
+        	
         this.callingPartyNumber = callingPartyNumber;
         this.callReferenceNumber = callReferenceNumber;
         this.gsmSCFAddress = gsmSCFAddress;
@@ -176,10 +174,10 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
 
     @Override
     public Integer getNewCallSegment() {
-    	if(newCallSegment==null || newCallSegment.getValue()==null)
+    	if(newCallSegment==null)
     		return null;
     	
-        return newCallSegment.getValue().intValue();
+        return newCallSegment.getIntValue();
     }
 
     @Override

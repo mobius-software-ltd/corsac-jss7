@@ -24,31 +24,36 @@ package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
 *
 * @author sergey vetyutnev
 *
 */
-public class CarrierImpl extends ASNOctetString implements Carrier {
+public class CarrierImpl extends ASNOctetString2 implements Carrier {
 	public CarrierImpl() {
     }
 
-    public CarrierImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));        
+    public CarrierImpl(ByteBuf value) {
+    	super(value); 
     }
 
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Carrier [");
+
+        if (getValue() != null) {
+            sb.append("data=[");
+            sb.append(printDataArr());
+            sb.append("]");            
+        }
+
+        sb.append("]");
+
+        return sb.toString();
     }
 }

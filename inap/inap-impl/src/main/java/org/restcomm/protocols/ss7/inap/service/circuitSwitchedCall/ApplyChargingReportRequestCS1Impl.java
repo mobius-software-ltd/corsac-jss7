@@ -32,6 +32,8 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author yulian.oifa
@@ -67,7 +69,7 @@ public class ApplyChargingReportRequestCS1Impl extends CircuitSwitchedCallMessag
     }
 
     @Override
-    public byte[] getCallResult() {
+    public ByteBuf getCallResult() {
     	return null;
     }
 

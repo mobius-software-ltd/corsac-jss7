@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.InitiatingEntit
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNInitiatingEntityImpl extends ASNEnumerated {
-	public void setType(InitiatingEntity t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNInitiatingEntityImpl() {
+		
+	}
+	
+	public ASNInitiatingEntityImpl(InitiatingEntity t) {
+		super(t.getCode());
 	}
 	
 	public InitiatingEntity getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return InitiatingEntity.getInstance(getValue().intValue());
+		return InitiatingEntity.getInstance(realValue);
 	}
 }

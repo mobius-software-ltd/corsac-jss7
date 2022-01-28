@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 IPSSPCapabilities {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE( bound.&minIPSSPCapabilitiesLength ..bound.&maxIPSSPCapabilitiesLength)) (SIZE = 1..4)
@@ -60,8 +62,6 @@ IPSSPCapabilities {PARAMETERS-BOUND : bound} ::= OCTET STRING (SIZE( bound.&minI
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface IPSSPCapabilities {
 
-    byte[] getData();
-
     boolean getIPRoutingAddressSupported();
 
     boolean getVoiceBackSupported();
@@ -75,6 +75,6 @@ public interface IPSSPCapabilities {
     /**
      * @return 2, 3 and 3 byte array: Bilateral Part: Network operator/equipment vendor specific (if present)
      */
-    byte[] getExtraData();
+    ByteBuf getExtraData();
 
 }

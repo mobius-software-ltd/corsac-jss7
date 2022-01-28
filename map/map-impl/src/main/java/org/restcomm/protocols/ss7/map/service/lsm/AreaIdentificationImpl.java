@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentification;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,16 +39,16 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class AreaIdentificationImpl extends ASNOctetString implements AreaIdentification {
+public class AreaIdentificationImpl extends ASNOctetString2 implements AreaIdentification {
 	
 	public AreaIdentificationImpl() {
     }
 
-    public AreaIdentificationImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public AreaIdentificationImpl(AreaType type, int mcc, int mnc, int lac, int Rac_CellId_UtranCellId) throws MAPException {
+    	super(translate(type, mcc, mnc, lac, Rac_CellId_UtranCellId));
+    }
+    
+    private static ByteBuf translate(AreaType type, int mcc, int mnc, int lac, int Rac_CellId_UtranCellId) throws MAPException {
         if (type == null)
             throw new MAPException("type is undefined");
         if (mcc < 1 || mcc > 999)
@@ -56,23 +56,23 @@ public class AreaIdentificationImpl extends ASNOctetString implements AreaIdenti
         if (mnc < 0 || mnc > 999)
             throw new MAPException("Bad mnc value");
 
-        byte[] data;
+        ByteBuf result;
         switch (type) {
             case countryCode:
-                data = new byte[2];
+            	result = Unpooled.buffer(2);
                 break;
             case plmnId:
-                data = new byte[3];
+            	result = Unpooled.buffer(3);
                 break;
             case locationAreaId:
-                data = new byte[5];
+            	result = Unpooled.buffer(5);
                 break;
             case routingAreaId:
-                data = new byte[6];
+            	result = Unpooled.buffer(6);
                 break;
             case cellGlobalId:
             case utranCellId:
-                data = new byte[7];
+            	result = Unpooled.buffer(7);
                 break;
             default:
                 throw new MAPException("Bad type value");
@@ -97,7 +97,6 @@ public class AreaIdentificationImpl extends ASNOctetString implements AreaIdenti
             }
         }
 
-        ByteBuf result=Unpooled.wrappedBuffer(data);
         result.resetWriterIndex();
         try {
 	        TbcdStringImpl.encodeString(result, sb.toString());
@@ -111,49 +110,39 @@ public class AreaIdentificationImpl extends ASNOctetString implements AreaIdenti
         }
 
         if (type == AreaType.locationAreaId || type == AreaType.routingAreaId || type == AreaType.cellGlobalId) {
-            data[3] = (byte) (lac / 256);
-            data[4] = (byte) (lac % 256);
+            result.writeByte(lac / 256);
+            result.writeByte(lac % 256);
         }
 
         if (type == AreaType.routingAreaId) {
-            data[5] = (byte) (Rac_CellId_UtranCellId);
+        	result.writeByte(Rac_CellId_UtranCellId);
         }
 
         if (type == AreaType.cellGlobalId) {
-            data[5] = (byte) (Rac_CellId_UtranCellId / 256);
-            data[6] = (byte) (Rac_CellId_UtranCellId % 256);
+        	result.writeByte(Rac_CellId_UtranCellId / 256);
+        	result.writeByte(Rac_CellId_UtranCellId % 256);
         }
 
         if (type == AreaType.utranCellId) {
-            data[3] = (byte) ((Rac_CellId_UtranCellId >> 24) & 0xFF);
-            data[4] = (byte) ((Rac_CellId_UtranCellId >> 16) & 0xFF);
-            data[5] = (byte) ((Rac_CellId_UtranCellId >> 8) & 0xFF);
-            data[6] = (byte) ((Rac_CellId_UtranCellId) & 0xFF);
+        	result.writeByte((Rac_CellId_UtranCellId >> 24) & 0xFF);
+        	result.writeByte((Rac_CellId_UtranCellId >> 16) & 0xFF);
+        	result.writeByte((Rac_CellId_UtranCellId >> 8) & 0xFF);
+        	result.writeByte((Rac_CellId_UtranCellId) & 0xFF);
         }
         
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        return result;
     }
 
     public int getMCC() throws MAPException {
-    	byte[] data=getData();    			
-        if (data == null)
+    	ByteBuf buffer=getValue();    			
+        if (buffer == null)
             throw new MAPException("Data must not be empty");
-        if (data.length < 2)
+        if (buffer.readableBytes() < 2)
             throw new MAPException("Data length must be at least 2");
         
         String res;
         try {
-            res = TbcdStringImpl.decodeString(Unpooled.wrappedBuffer(data,0,2));
+            res = TbcdStringImpl.decodeString(buffer.readSlice(2));
         } catch (APPParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding TbcdString: " + e.getMessage(), e);
         }
@@ -167,15 +156,15 @@ public class AreaIdentificationImpl extends ASNOctetString implements AreaIdenti
     }
 
     public int getMNC() throws MAPException {
-    	byte[] data=getData();    			
-        if (data == null)
+    	ByteBuf buffer=getValue();    			
+        if (buffer == null)
             throw new MAPException("Data must not be empty");
-        if (data.length < 3)
+        if (buffer.readableBytes() < 3)
             throw new MAPException("Data length must be at least 3");
 
         String res = null;
-        try {
-            res = TbcdStringImpl.decodeString(Unpooled.wrappedBuffer(data,0,3));
+        try {        	
+            res = TbcdStringImpl.decodeString(buffer.readSlice(3));
         } catch (APPParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding TbcdString: " + e.getMessage(), e);
         }
@@ -194,46 +183,50 @@ public class AreaIdentificationImpl extends ASNOctetString implements AreaIdenti
     }
 
     public int getLac() throws MAPException {
-    	byte[] data=getData();    			
-        if (data == null)
+    	ByteBuf buffer=getValue();    			
+        if (buffer == null)
             throw new MAPException("Data must not be empty");
-        if (data.length < 5)
+        if (buffer.readableBytes() < 5)
             throw new MAPException("Data length must be at least 5");
 
-        int res = (data[3] & 0xFF) * 256 + (data[4] & 0xFF);
+        buffer.skipBytes(3);
+        int res = (buffer.readByte() & 0x0FF) * 256 + (buffer.readByte() & 0x0FF);
         return res;
     }
 
     public int getRac() throws MAPException {
-    	byte[] data=getData();    			
-        if (data == null)
+    	ByteBuf buffer=getValue();    			
+        if (buffer == null)
             throw new MAPException("Data must not be empty");
-        if (data.length < 6)
+        if (buffer.readableBytes() < 6)
             throw new MAPException("Data length must be at least 6");
 
-        int res = (data[5] & 0xFF);
+        buffer.skipBytes(5);
+        int res = (buffer.readByte() & 0x0FF);
         return res;
     }
 
     public int getCellId() throws MAPException {
-    	byte[] data=getData();    			
-        if (data == null)
+    	ByteBuf buffer=getValue();    			
+        if (buffer == null)
             throw new MAPException("Data must not be empty");
-        if (data.length < 7)
+        if (buffer.readableBytes() < 7)
             throw new MAPException("Data length must be at least 7");
 
-        int res = (data[5] & 0xFF) * 256 + (data[6] & 0xFF);
+        buffer.skipBytes(5);
+        int res = (buffer.readByte() & 0x0FF) * 256 + (buffer.readByte() & 0x0FF);
         return res;
     }
 
     public int getUtranCellId() throws MAPException {
-    	byte[] data=getData();    			
-        if (data == null)
+    	ByteBuf buffer=getValue();    			
+        if (buffer == null)
             throw new MAPException("Data must not be empty");
-        if (data.length < 7)
+        if (buffer.readableBytes() < 7)
             throw new MAPException("Data length must be at least 7");
 
-        int res = ((data[3] & 0xFF) << 24) + ((data[4] & 0xFF) << 16) + ((data[5] & 0xFF) << 8) + (data[6] & 0xFF);
+        buffer.skipBytes(3);
+        int res = ((buffer.readByte() & 0x0FF) << 24) + ((buffer.readByte() & 0x0FF) << 16) + ((buffer.readByte() & 0x0FF) << 8) + (buffer.readByte() & 0x0FF);
         return res;
     }
 

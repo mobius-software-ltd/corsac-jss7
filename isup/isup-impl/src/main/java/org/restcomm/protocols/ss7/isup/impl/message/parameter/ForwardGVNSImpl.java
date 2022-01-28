@@ -71,7 +71,7 @@ public class ForwardGVNSImpl extends AbstractISUPParameter implements ForwardGVN
     public void decode(ByteBuf b) throws ParameterException {
         // Add kength ? || b.length != xxx
         if (b == null) {
-            throw new ParameterException("byte[] must  not be null");
+            throw new ParameterException("buffer must  not be null");
         }
         
         this.opServiceProvider = new OriginatingParticipatingServiceProviderImpl();

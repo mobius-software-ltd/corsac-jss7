@@ -132,9 +132,7 @@ public class ReturnErrorImpl implements ReturnError {
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#setInvokeId(java .lang.Long)
      */
     public void setInvokeId(Long i) {    	
-        this.invokeId = new ASNInteger();
-        this.invokeId.setValue(i);
-
+        this.invokeId = new ASNInteger(i);
     }
 
     /*
@@ -144,9 +142,7 @@ public class ReturnErrorImpl implements ReturnError {
      * .restcomm.protocols.ss7.tcap.asn.comp.Parameter)
      */
     public void setParameter(Object p) {
-        this.parameter = new ASNReturnErrorParameterImpl();
-        this.parameter.setValue(p);
-
+        this.parameter = new ASNReturnErrorParameterImpl(p);
     }
 
     public ComponentType getType() {

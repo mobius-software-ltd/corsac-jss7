@@ -31,10 +31,9 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.DataI
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -46,7 +45,7 @@ public class RetrieveResponseImpl extends CircuitSwitchedCallMessageImpl impleme
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private ASNOctetString operationReturnID;
+    private ASNOctetString2 operationReturnID;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1,defaultImplementation = DataItemInformationImpl.class)
     private DataItemInformation dataItemInformation;
@@ -54,11 +53,9 @@ public class RetrieveResponseImpl extends CircuitSwitchedCallMessageImpl impleme
 	public RetrieveResponseImpl() {
     }
 
-    public RetrieveResponseImpl(byte[] operationReturnID,DataItemInformation dataItemInformation) {
-    	if(operationReturnID!=null) {
-    		this.operationReturnID=new ASNOctetString();
-    		this.operationReturnID.setValue(Unpooled.wrappedBuffer(operationReturnID));
-    	}
+    public RetrieveResponseImpl(ByteBuf operationReturnID,DataItemInformation dataItemInformation) {
+    	if(operationReturnID!=null)
+    		this.operationReturnID=new ASNOctetString2(operationReturnID);    	
     	
     	this.dataItemInformation=dataItemInformation;
     }
@@ -74,15 +71,12 @@ public class RetrieveResponseImpl extends CircuitSwitchedCallMessageImpl impleme
     }
     
     @Override
-    public byte[] getOperationReturnID() 
+    public ByteBuf getOperationReturnID() 
     {
-    	if(operationReturnID==null || operationReturnID.getValue()==null)
+    	if(operationReturnID==null)
     		return null;
     	
-    	ByteBuf value=operationReturnID.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-		return data;
+    	return operationReturnID.getValue();
 	}
 
     @Override
@@ -99,7 +93,7 @@ public class RetrieveResponseImpl extends CircuitSwitchedCallMessageImpl impleme
 
         if (this.operationReturnID != null && this.operationReturnID.getValue()!=null) {
             sb.append(", operationReturnID=");
-            sb.append(ASNOctetString.printDataArr(getOperationReturnID()));
+            sb.append(operationReturnID.printDataArr());
         }
         if (this.dataItemInformation != null) {
             sb.append(", dataItemInformation=");

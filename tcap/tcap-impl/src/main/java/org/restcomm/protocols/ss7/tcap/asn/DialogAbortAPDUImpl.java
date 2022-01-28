@@ -54,10 +54,8 @@ public class DialogAbortAPDUImpl implements DialogAbortAPDU {
     public void setAbortSource(AbortSourceType abortSource) {
     	if(abortSource==null)
     		this.abortSource=null;
-    	else if(this.abortSource==null) {
-    		this.abortSource=new ASNAbortSource();
-    		this.abortSource.setAbortSourceType(abortSource);
-    	}
+    	else if(this.abortSource==null)
+    		this.abortSource=new ASNAbortSource(abortSource);    		
     }
 
     /**

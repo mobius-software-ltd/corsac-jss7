@@ -81,6 +81,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -291,7 +292,7 @@ public class MAPErrorMessageTest {
         assertEquals(tpdu.getParameterIndicator().getCode(), 7);
         assertEquals(tpdu.getProtocolIdentifier().getCode(), 127);
         assertEquals(tpdu.getDataCodingScheme().getCode(), 246);
-        assertEquals(tpdu.getUserData().getEncodedData(), uData);
+        assertTrue(ByteBufUtil.equals(tpdu.getUserData().getEncodedData(), Unpooled.wrappedBuffer(uData)));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(emSMDeliveryFailure.getExtensionContainer()));
         assertEquals(emSMDeliveryFailure.getMapProtocolVersion(), 3);
         
@@ -915,7 +916,7 @@ public class MAPErrorMessageTest {
         FailureCauseImpl failureCause = new FailureCauseImpl(213);
         ProtocolIdentifierImpl protocolIdentifier = new ProtocolIdentifierImpl(127);
         DataCodingSchemeImpl dataCodingScheme = new DataCodingSchemeImpl(246);
-        UserDataImpl userData = new UserDataImpl(uData, dataCodingScheme, uData.length, false, null);
+        UserDataImpl userData = new UserDataImpl(Unpooled.wrappedBuffer(uData), dataCodingScheme, uData.length, false, null);
         SmsDeliverReportTpduImpl tpdu = new SmsDeliverReportTpduImpl(failureCause, protocolIdentifier, userData);
         ((MAPErrorMessageSMDeliveryFailure)em).setSmsDeliverReportTpdu(tpdu);
         re=new ReturnErrorImpl();

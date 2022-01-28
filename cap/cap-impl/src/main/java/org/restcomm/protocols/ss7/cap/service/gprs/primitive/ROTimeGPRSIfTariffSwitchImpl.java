@@ -45,29 +45,25 @@ public class ROTimeGPRSIfTariffSwitchImpl implements ROTimeGPRSIfTariffSwitch {
     }
 
     public ROTimeGPRSIfTariffSwitchImpl(Integer roTimeGPRSSinceLastTariffSwitch, Integer roTimeGPRSTariffSwitchInterval) {
-    	if(roTimeGPRSSinceLastTariffSwitch!=null) {
-    		this.roTimeGPRSSinceLastTariffSwitch = new ASNInteger();
-    		this.roTimeGPRSSinceLastTariffSwitch.setValue(roTimeGPRSSinceLastTariffSwitch.longValue());
-    	}
-    	
-    	if(roTimeGPRSTariffSwitchInterval!=null) {
-    		this.roTimeGPRSTariffSwitchInterval = new ASNInteger();
-    		this.roTimeGPRSTariffSwitchInterval.setValue(roTimeGPRSTariffSwitchInterval.longValue());
-    	}
+    	if(roTimeGPRSSinceLastTariffSwitch!=null)
+    		this.roTimeGPRSSinceLastTariffSwitch = new ASNInteger(roTimeGPRSSinceLastTariffSwitch);
+    		
+    	if(roTimeGPRSTariffSwitchInterval!=null)
+    		this.roTimeGPRSTariffSwitchInterval = new ASNInteger(roTimeGPRSTariffSwitchInterval);
     }
 
     public Integer getROTimeGPRSSinceLastTariffSwitch() {
-    	if(roTimeGPRSSinceLastTariffSwitch==null || roTimeGPRSSinceLastTariffSwitch.getValue()==null)
+    	if(roTimeGPRSSinceLastTariffSwitch==null)
     		return null;
     	
-        return this.roTimeGPRSSinceLastTariffSwitch.getValue().intValue();
+        return this.roTimeGPRSSinceLastTariffSwitch.getIntValue();
     }
 
     public Integer getROTimeGPRSTariffSwitchInterval() {
-    	if(roTimeGPRSTariffSwitchInterval==null || roTimeGPRSTariffSwitchInterval.getValue()==null)
+    	if(roTimeGPRSTariffSwitchInterval==null)
     		return null;
     	
-        return this.roTimeGPRSTariffSwitchInterval.getValue().intValue();
+        return this.roTimeGPRSTariffSwitchInterval.getIntValue();
     }
 
     @Override

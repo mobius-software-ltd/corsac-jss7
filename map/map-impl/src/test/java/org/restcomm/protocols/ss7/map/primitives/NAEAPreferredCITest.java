@@ -29,6 +29,8 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationPlanValue;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationTypeValue;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.commonapp.primitives.NAEACICImpl;
 import org.testng.annotations.Test;
@@ -47,12 +49,12 @@ import io.netty.buffer.Unpooled;
 public class NAEAPreferredCITest {
 
     public byte[] getData() {
-        return new byte[] { 48, 46, -128, 3, 15, 48, 5, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6,
+        return new byte[] { 48, 46, -128, 3, 34, 33, 67, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6,
                 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     };
 
     public byte[] getNAEACICIData() {
-        return new byte[] { 15, 48, 5 };
+        return new byte[] { 34, 33, 67 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -68,7 +70,11 @@ public class NAEAPreferredCITest {
         NAEAPreferredCIImpl prim = (NAEAPreferredCIImpl)result.getResult();
         
         MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
-        assertEquals(prim.getNaeaPreferredCIC().getData(), this.getNAEACICIData());
+        
+        assertTrue(prim.getNaeaPreferredCIC().getCarrierCode().equals("1234"));
+        assertEquals(prim.getNaeaPreferredCIC().getNetworkIdentificationPlanValue(), NetworkIdentificationPlanValue.fourDigitCarrierIdentification);
+        assertEquals(prim.getNaeaPreferredCIC().getNetworkIdentificationTypeValue(), NetworkIdentificationTypeValue.nationalNetworkIdentification);
+
         assertNotNull(extensionContainer);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
     }
@@ -79,7 +85,7 @@ public class NAEAPreferredCITest {
     	parser.replaceClass(NAEAPreferredCIImpl.class);
     	
     	MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        NAEACICImpl naeaPreferredCIC = new NAEACICImpl(this.getNAEACICIData());
+        NAEACICImpl naeaPreferredCIC = new NAEACICImpl("1234", NetworkIdentificationPlanValue.fourDigitCarrierIdentification, NetworkIdentificationTypeValue.nationalNetworkIdentification);
         NAEAPreferredCIImpl prim = new NAEAPreferredCIImpl(naeaPreferredCIC, extensionContainer);
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];

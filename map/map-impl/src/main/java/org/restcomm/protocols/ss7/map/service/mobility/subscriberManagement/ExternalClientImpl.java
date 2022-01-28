@@ -59,16 +59,12 @@ public class ExternalClientImpl implements ExternalClient {
             NotificationToMSUser notificationToMSUser, MAPExtensionContainer extensionContainer) {
         this.clientIdentity = clientIdentity;
         
-        if(gmlcRestriction!=null) {
-        	this.gmlcRestriction = new ASNGMLCRestriction();
-        	this.gmlcRestriction.setType(gmlcRestriction);
-        }
-        
-        if(notificationToMSUser!=null) {
-        	this.notificationToMSUser = new ASNNotificationToMSUser();
-        	this.notificationToMSUser.setType(notificationToMSUser);
-        }
-        
+        if(gmlcRestriction!=null)
+        	this.gmlcRestriction = new ASNGMLCRestriction(gmlcRestriction);
+        	
+        if(notificationToMSUser!=null)
+        	this.notificationToMSUser = new ASNNotificationToMSUser(notificationToMSUser);
+        	
         this.extensionContainer = extensionContainer;
     }
 

@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.cap.api.service.sms.primitive;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
 *
 <code>
@@ -35,5 +37,5 @@ freeFormatData      [0] OCTET STRING (SIZE(1 .. 160))
 */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface FreeFormatDataSMS {
-    byte[] getData();
+    ByteBuf getValue();
 }

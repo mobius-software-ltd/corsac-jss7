@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.authentication;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  AuthenticationTriplet ::= SEQUENCE { rand RAND, sres SRES, kc Kc, ...}
@@ -38,9 +40,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public interface AuthenticationTriplet {
 
-    byte[] getRand();
+    ByteBuf getRand();
 
-    byte[] getSres();
+    ByteBuf getSres();
 
-    byte[] getKc();
+    ByteBuf getKc();
 }

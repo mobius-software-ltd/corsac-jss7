@@ -57,14 +57,10 @@ public class ResourceIDImpl implements ResourceID {
 
     public ResourceIDImpl(Integer value,Boolean isTrunkGroupID) {
     	if(value!=null) {
-    		if(isTrunkGroupID) {
-    			this.trunkGroupID = new ASNInteger();
-    			this.trunkGroupID.setValue(value.longValue());
-    		}
-    		else {
-    			this.facilityGroupMemberID = new ASNInteger();
-    			this.facilityGroupMemberID.setValue(value.longValue());
-    		}
+    		if(isTrunkGroupID)
+    			this.trunkGroupID = new ASNInteger(value);    			
+    		else
+    			this.facilityGroupMemberID = new ASNInteger(value);    			
     	}
     }
 
@@ -86,24 +82,24 @@ public class ResourceIDImpl implements ResourceID {
     }
 
     public FacilityGroup getFacilityGroup() {
-    	if(facilityGroup==null || facilityGroup.getFacilityGroup()==null)
+    	if(facilityGroup==null)
     		return null;
     	
     	return facilityGroup.getFacilityGroup();
     }
 
     public Integer getTrunkGroupID() {
-    	if(trunkGroupID==null || trunkGroupID.getValue()==null)
+    	if(trunkGroupID==null)
     		return null;
     	
-        return trunkGroupID.getValue().intValue();
+        return trunkGroupID.getIntValue();
     }
 
     public Integer getFacilityGroupMemberID() {
-    	if(facilityGroupMemberID==null || facilityGroupMemberID.getValue()==null)
+    	if(facilityGroupMemberID==null)
     		return null;
     	
-        return facilityGroupMemberID.getValue().intValue();
+        return facilityGroupMemberID.getIntValue();
     }
 
     @Override

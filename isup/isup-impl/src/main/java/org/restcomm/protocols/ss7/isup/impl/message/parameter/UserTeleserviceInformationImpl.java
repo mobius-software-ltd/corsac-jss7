@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:12:43:13 2009-04-04<br>
@@ -90,7 +90,7 @@ public class UserTeleserviceInformationImpl extends AbstractISUPParameter implem
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() < 2) {
-            throw new ParameterException("byte[] must not be null and length must be greater than  1");
+            throw new ParameterException("buffer must not be null and length must be greater than  1");
         }
 
         byte b0=b.readByte(),b1=b.readByte();
@@ -106,7 +106,7 @@ public class UserTeleserviceInformationImpl extends AbstractISUPParameter implem
         boolean ext = ((b1 >> 7) & 0x01) == 0;
         if (ext && b.readableBytes()==0) {
             throw new ParameterException(
-                    "byte[] indicates extension to high layer cahracteristic indicator, however there isnt enough bytes");
+                    "buffer indicates extension to high layer cahracteristic indicator, however there isnt enough bytes");
         }
         if (!ext) {
             return;

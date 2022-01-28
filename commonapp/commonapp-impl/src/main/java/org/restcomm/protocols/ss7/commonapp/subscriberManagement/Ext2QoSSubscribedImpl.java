@@ -27,7 +27,7 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.Ext2QoSSubs
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.Ext2QoSSubscribed_SourceStatisticsDescriptor;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_BitRateExtended;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -37,77 +37,64 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class Ext2QoSSubscribedImpl extends ASNOctetString implements Ext2QoSSubscribed {
+public class Ext2QoSSubscribedImpl extends ASNOctetString2 implements Ext2QoSSubscribed {
 	public Ext2QoSSubscribedImpl() {
-    }
-
-    public Ext2QoSSubscribedImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
     }
 
     public Ext2QoSSubscribedImpl(Ext2QoSSubscribed_SourceStatisticsDescriptor sourceStatisticsDescriptor, boolean optimisedForSignallingTraffic,
             ExtQoSSubscribed_BitRateExtended maximumBitRateForDownlinkExtended, ExtQoSSubscribed_BitRateExtended guaranteedBitRateForDownlinkExtended) {
-        this.setData(sourceStatisticsDescriptor, optimisedForSignallingTraffic, maximumBitRateForDownlinkExtended, guaranteedBitRateForDownlinkExtended);
+        super(translate(sourceStatisticsDescriptor, optimisedForSignallingTraffic, maximumBitRateForDownlinkExtended, guaranteedBitRateForDownlinkExtended));
     }
 
-    protected void setData(Ext2QoSSubscribed_SourceStatisticsDescriptor sourceStatisticsDescriptor, boolean optimisedForSignallingTraffic,
+    protected static ByteBuf translate(Ext2QoSSubscribed_SourceStatisticsDescriptor sourceStatisticsDescriptor, boolean optimisedForSignallingTraffic,
             ExtQoSSubscribed_BitRateExtended maximumBitRateForDownlinkExtended, ExtQoSSubscribed_BitRateExtended guaranteedBitRateForDownlinkExtended) {
-        byte[] data = new byte[3];
-        data[0] = (byte) ((sourceStatisticsDescriptor != null ? sourceStatisticsDescriptor.getCode() : 0) | ((optimisedForSignallingTraffic ? 1 : 0) << 4));
-        data[1] = (byte) (maximumBitRateForDownlinkExtended != null ? maximumBitRateForDownlinkExtended.getSourceData() : 0);
-        data[2] = (byte) (guaranteedBitRateForDownlinkExtended != null ? guaranteedBitRateForDownlinkExtended.getSourceData() : 0);
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        ByteBuf buffer=Unpooled.buffer(3);
+        buffer.writeByte(((sourceStatisticsDescriptor != null ? sourceStatisticsDescriptor.getCode() : 0) | ((optimisedForSignallingTraffic ? 1 : 0) << 4)));
+        buffer.writeByte((maximumBitRateForDownlinkExtended != null ? maximumBitRateForDownlinkExtended.getSourceData() : 0));
+        buffer.writeByte((guaranteedBitRateForDownlinkExtended != null ? guaranteedBitRateForDownlinkExtended.getSourceData() : 0));
+        return buffer;
     }
 
     public Ext2QoSSubscribed_SourceStatisticsDescriptor getSourceStatisticsDescriptor() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 1)
+    	ByteBuf value=getValue();
+    	if (value == null || value.readableBytes() < 1)
             return null;
 
-        return Ext2QoSSubscribed_SourceStatisticsDescriptor.getInstance(data[0] & 0x07);
+        return Ext2QoSSubscribed_SourceStatisticsDescriptor.getInstance(value.readByte() & 0x07);
     }
 
     public boolean isOptimisedForSignallingTraffic() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 1)
-            return false;
+    	ByteBuf value=getValue();
+    	if (value == null || value.readableBytes() < 1)
+                return false;
 
-        if ((data[0] & 0x10) != 0)
+        if ((value.readByte() & 0x10) != 0)
             return true;
         else
             return false;
     }
 
     public ExtQoSSubscribed_BitRateExtended getMaximumBitRateForDownlinkExtended() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 2)
-            return null;
+    	ByteBuf value=getValue();
+    	if (value == null || value.readableBytes() < 2)
+    		return null;
 
-        return new ExtQoSSubscribed_BitRateExtended(data[1] & 0xFF, true);
+    	value.skipBytes(1);
+        return new ExtQoSSubscribed_BitRateExtended(value.readByte() & 0xFF, true);
     }
 
     public ExtQoSSubscribed_BitRateExtended getGuaranteedBitRateForDownlinkExtended() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 3)
-            return null;
+    	ByteBuf value=getValue();
+    	if (value == null || value.readableBytes() < 3)
+    		return null;
 
-        return new ExtQoSSubscribed_BitRateExtended(data[2] & 0xFF, true);
+    	value.skipBytes(2);
+        return new ExtQoSSubscribed_BitRateExtended(value.readByte() & 0xFF, true);
     }
 
     @Override
     public String toString() {
-    	byte[] data=getData();
-        if (data != null && data.length >= 1) {
+    	if (getValue() != null) {
             Ext2QoSSubscribed_SourceStatisticsDescriptor sourceStatisticsDescriptor = getSourceStatisticsDescriptor();
             boolean optimisedForSignallingTraffic = isOptimisedForSignallingTraffic();
             ExtQoSSubscribed_BitRateExtended maximumBitRateForDownlinkExtended = getMaximumBitRateForDownlinkExtended();

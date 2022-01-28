@@ -82,7 +82,7 @@ public class RedirectStatusImpl extends AbstractISUPParameter implements Redirec
 
     public void setStatus(ByteBuf status) {
         if (status == null || status.readableBytes() == 0) {
-            throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
+            throw new IllegalArgumentException("buffer must not be null and length must be greater than 0");
         }
         this.status = status;
     }

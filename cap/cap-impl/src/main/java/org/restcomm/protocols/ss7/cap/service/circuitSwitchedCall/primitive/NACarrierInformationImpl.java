@@ -51,10 +51,8 @@ public class NACarrierInformationImpl implements NACarrierInformation {
             NACarrierSelectionInfo naCarrierSelectionInfo) {
     	this.naEACIC = naEACIC;
     	
-    	if(naCarrierSelectionInfo!=null) {
-    		this.carrierSelectionInfo = new ASNNACarrierSelectionInfoImpl();
-    		this.carrierSelectionInfo.setType(naCarrierSelectionInfo);
-    	}
+    	if(naCarrierSelectionInfo!=null)
+    		this.carrierSelectionInfo = new ASNNACarrierSelectionInfoImpl(naCarrierSelectionInfo);    		
     }
 
     public NAEACIC getNAEACIC() {

@@ -279,7 +279,6 @@ public class GSMCharsetTest {
 
         //GSMCharsetEncoder encoder = (GSMCharsetEncoder) cSet.newEncoder();
 //        encoder.setGSMCharsetEncodingData(new GSMCharsetEncodingData(buf2));
-        //ByteBuffer bb = null;
 
         
     }

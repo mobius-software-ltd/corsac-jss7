@@ -107,36 +107,4 @@ public class TimeAndTimezoneTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "primitives" })
-    public void testXMLSerialize() throws Exception {
-
-        TimeAndTimezoneImpl original = new TimeAndTimezoneImpl(2011, 12, 30, 10, 7, 18, 32);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "timeAndTimezone", TimeAndTimezoneImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        TimeAndTimezoneImpl copy = reader.read("timeAndTimezone", TimeAndTimezoneImpl.class);
-
-        assertEquals(copy.getYear(), original.getYear());
-        assertEquals(copy.getMonth(), original.getMonth());
-        assertEquals(copy.getDay(), original.getDay());
-        assertEquals(copy.getHour(), original.getHour());
-        assertEquals(copy.getMinute(), original.getMinute());
-        assertEquals(copy.getSecond(), original.getSecond());
-        assertEquals(copy.getTimeZone(), original.getTimeZone());
-    }*/
-    
 }

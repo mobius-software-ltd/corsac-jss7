@@ -77,31 +77,4 @@ public class TimeIfTariffSwitchTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerializaion() throws Exception {
-        TimeIfTariffSwitchImpl original = new TimeIfTariffSwitchImpl(11, 22);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "timeIfTariffSwitch", TimeIfTariffSwitchImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        TimeIfTariffSwitchImpl copy = reader.read("timeIfTariffSwitch", TimeIfTariffSwitchImpl.class);
-
-        assertEquals(copy.getTimeSinceTariffSwitch(), original.getTimeSinceTariffSwitch());
-        assertEquals(copy.getTariffSwitchInterval(), original.getTariffSwitchInterval());
-
-    }*/
 }

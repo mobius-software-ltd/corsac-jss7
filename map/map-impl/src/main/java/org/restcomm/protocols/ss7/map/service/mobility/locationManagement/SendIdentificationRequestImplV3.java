@@ -95,11 +95,9 @@ public class SendIdentificationRequestImplV3 extends MobilityMessageImpl impleme
         super();
         this.tmsi = tmsi;
         
-        if(numberOfRequestedVectors!=null) {
-        	this.numberOfRequestedVectors = new ASNInteger();
-        	this.numberOfRequestedVectors.setValue(numberOfRequestedVectors.longValue());
-        }
-        
+        if(numberOfRequestedVectors!=null)
+        	this.numberOfRequestedVectors = new ASNInteger(numberOfRequestedVectors);
+        	
         if(segmentationProhibited)
         	this.segmentationProhibited = new ASNNull();
         
@@ -107,11 +105,9 @@ public class SendIdentificationRequestImplV3 extends MobilityMessageImpl impleme
         this.mscNumber = mscNumber;
         this.previousLAI = previousLAI;
         
-        if(hopCounter!=null) {
-        	this.hopCounter = new ASNInteger();
-        	this.hopCounter.setValue(hopCounter.longValue());
-        }
-        
+        if(hopCounter!=null)
+        	this.hopCounter = new ASNInteger(hopCounter);
+        	
         if(mtRoamingForwardingSupported)
         	this.mtRoamingForwardingSupported = new ASNNull();
         
@@ -168,7 +164,7 @@ public class SendIdentificationRequestImplV3 extends MobilityMessageImpl impleme
     	if(this.hopCounter==null)
     		return null;
     	
-        return this.hopCounter.getValue().intValue();
+        return this.hopCounter.getIntValue();
     }
 
     @Override

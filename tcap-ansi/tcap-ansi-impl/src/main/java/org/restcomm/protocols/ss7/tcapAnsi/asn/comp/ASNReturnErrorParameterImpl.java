@@ -31,4 +31,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=16,constructed=true,lengthIndefinite=false)
 public class ASNReturnErrorParameterImpl extends ASNGeneric {
+	public ASNReturnErrorParameterImpl() {
+		
+	}
+	
+	public ASNReturnErrorParameterImpl(Object value) {
+		super(value);
+	}
 }

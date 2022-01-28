@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import io.netty.buffer.ByteBuf;
-
 import org.restcomm.protocols.ss7.isup.ISUPMessageFactory;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Base class for implementation of ISUP Messages.
@@ -37,7 +37,7 @@ import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
  */
 public abstract class AbstractISUPMessage implements ISUPMessage {
 	/**
-     * Decodes this element from passed byte[] array. This array must contain only element data. however in case of constructor
+     * Decodes this element from passed buffer. This array must contain only element data. however in case of constructor
      * elements it may contain more information elements that consist of tag, length and contents elements, this has to be
      * handled by specific implementation of this method.
      *
@@ -49,9 +49,8 @@ public abstract class AbstractISUPMessage implements ISUPMessage {
     public abstract void decode(ByteBuf b, ISUPMessageFactory isupMessageFactory, ISUPParameterFactory parameterFactory) throws ParameterException;
 
     /**
-     * Encodes message as byte[]. See B.4/Q.763 - page 119)
+     * Encodes message into buffer. See B.4/Q.763 - page 119)
      *
-     * @return byte[] with encoded element.
      * @throws ParameterException
      */
     public abstract void encode(ByteBuf buffer) throws ParameterException;

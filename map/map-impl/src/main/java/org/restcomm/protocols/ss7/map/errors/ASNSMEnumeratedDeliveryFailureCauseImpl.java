@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCaus
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNSMEnumeratedDeliveryFailureCauseImpl extends ASNEnumerated {
-	public void setType(SMEnumeratedDeliveryFailureCause t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNSMEnumeratedDeliveryFailureCauseImpl() {
+		
+	}
+	
+	public ASNSMEnumeratedDeliveryFailureCauseImpl(SMEnumeratedDeliveryFailureCause t) {
+		super(t.getCode());
 	}
 	
 	public SMEnumeratedDeliveryFailureCause getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return SMEnumeratedDeliveryFailureCause.getInstance(getValue().intValue());
+		return SMEnumeratedDeliveryFailureCause.getInstance(realValue);
 	}
 }

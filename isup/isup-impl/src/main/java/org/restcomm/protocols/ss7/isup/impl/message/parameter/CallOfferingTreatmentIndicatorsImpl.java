@@ -57,7 +57,7 @@ public class CallOfferingTreatmentIndicatorsImpl extends AbstractISUPParameter i
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() == 0) {
-            throw new ParameterException("byte[] must not be null and length must be greater than 0");
+            throw new ParameterException("buffer must not be null and length must be greater than 0");
         }
         setCallOfferingTreatmentIndicators(b);        
     }
@@ -81,7 +81,7 @@ public class CallOfferingTreatmentIndicatorsImpl extends AbstractISUPParameter i
 
     public void setCallOfferingTreatmentIndicators(ByteBuf callOfferingTreatmentIndicators) {
         if (callOfferingTreatmentIndicators == null || callOfferingTreatmentIndicators.readableBytes() == 0) {
-            throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
+            throw new IllegalArgumentException("buffer must not be null and length must be greater than 0");
         }
 
         this.callOfferingTreatmentIndicators = callOfferingTreatmentIndicators;

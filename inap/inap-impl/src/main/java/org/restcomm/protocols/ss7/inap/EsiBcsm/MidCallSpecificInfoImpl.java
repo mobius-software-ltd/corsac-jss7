@@ -47,10 +47,8 @@ public class MidCallSpecificInfoImpl implements MidCallSpecificInfo {
     }
 
     public MidCallSpecificInfoImpl(Integer connectTime) {
-        if(connectTime!=null) {
-        	this.connectTime = new ASNInteger();
-        	this.connectTime.setValue(connectTime.longValue());
-        }
+        if(connectTime!=null)
+        	this.connectTime = new ASNInteger(connectTime);        	
     }
 
     public MidCallSpecificInfoImpl(MidCallEvents midCallEvents) {
@@ -59,10 +57,10 @@ public class MidCallSpecificInfoImpl implements MidCallSpecificInfo {
     }
 
     public Integer getConnectTime() {
-    	if(connectTime==null || connectTime.getValue()==null)
+    	if(connectTime==null)
     		return null;
     	
-        return connectTime.getValue().intValue();
+        return connectTime.getIntValue();
     }
 
     public MidCallEvents getMidCallEvents() {

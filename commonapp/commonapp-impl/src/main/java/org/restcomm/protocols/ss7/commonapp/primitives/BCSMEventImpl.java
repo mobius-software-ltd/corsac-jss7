@@ -62,16 +62,12 @@ public class BCSMEventImpl implements BCSMEvent {
 
     public BCSMEventImpl(EventTypeBCSM eventTypeBCSM, MonitorMode monitorMode, LegID legID,
             DpSpecificCriteria dpSpecificCriteria, boolean automaticRearm) {
-    	if(eventTypeBCSM!=null) {
-    		this.eventTypeBCSM = new ASNEventTypeBCSM();
-    		this.eventTypeBCSM.setType(eventTypeBCSM);    	
-    	}
-    	
-    	if(monitorMode!=null) {
-    		this.monitorMode = new ASNMonitorMode();
-    		this.monitorMode.setType(monitorMode);
-    	}
-    	
+    	if(eventTypeBCSM!=null)
+    		this.eventTypeBCSM = new ASNEventTypeBCSM(eventTypeBCSM);
+    		
+    	if(monitorMode!=null)
+    		this.monitorMode = new ASNMonitorMode(monitorMode);
+    		
         if(legID!=null)
         	this.legID = new LegIDWrapperImpl(legID);
         

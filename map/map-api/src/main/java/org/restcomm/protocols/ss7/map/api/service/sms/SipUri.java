@@ -3,6 +3,8 @@ package org.restcomm.protocols.ss7.map.api.service.sms;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
 <code>
 SIP-URI ::= OCTET STRING
@@ -15,6 +17,6 @@ SIP-URI ::= OCTET STRING
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface SipUri {
 
-    byte[] getData();
+    ByteBuf getValue();
 
 }

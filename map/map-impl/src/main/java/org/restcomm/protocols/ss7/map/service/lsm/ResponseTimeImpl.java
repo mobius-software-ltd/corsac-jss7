@@ -47,10 +47,8 @@ public class ResponseTimeImpl implements ResponseTime {
      * @param responseTimeCategory
      */
     public ResponseTimeImpl(ResponseTimeCategory responseTimeCategory) {
-        if(responseTimeCategory!=null) {
-        	this.responseTimeCategory = new ASNResponseTimeCategory();
-        	this.responseTimeCategory.setType(responseTimeCategory);
-        }
+        if(responseTimeCategory!=null)
+        	this.responseTimeCategory = new ASNResponseTimeCategory(responseTimeCategory);        	
     }
 
     /*

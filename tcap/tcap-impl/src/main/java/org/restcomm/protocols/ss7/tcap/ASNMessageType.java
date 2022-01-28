@@ -2,18 +2,22 @@ package org.restcomm.protocols.ss7.tcap;
 
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
-public class ASNMessageType extends ASNInteger {
-	public void setType(MessageType t) {
-		super.setValue(Long.valueOf(t.getValue()));
+public class ASNMessageType extends ASNEnumerated {
+	public ASNMessageType() {
+		
+	}
+	
+	public ASNMessageType(MessageType t) {
+		super(t.getValue());
 	}
 	
 	public MessageType getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return MessageType.getValue(getValue().intValue());
+		return MessageType.getValue(realValue);
 	}
 }

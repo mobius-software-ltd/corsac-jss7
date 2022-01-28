@@ -35,6 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -45,8 +46,8 @@ import io.netty.buffer.Unpooled;
 public class LocationInformationEPSTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 54, -128, 7, 11, 12, 13, 14, 15, 16, 17, -127, 5, 21, 22, 23, 24, 25, -125, 8, 31, 32, 33, 34,
-                35, 36, 37, 38, -124, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -123, 0, -122, 1, 5, -121, 9, 41, 42, 43, 44, 45, 46,
+        return new byte[] { 48, 54, -128, 7, 11, 12, 13, 14, 15, 16, 17, -127, 5, 21, 22, 23, 24, 25, -125, 8, 16, 32, 33, 34,
+                35, 36, 37, 38, -124, 10, 1, 16, 3, 4, 5, 6, 7, 8, 9, 10, -123, 0, -122, 1, 5, -121, 9, 41, 42, 43, 44, 45, 46,
                 47, 48, 49 };
     }
 
@@ -59,11 +60,11 @@ public class LocationInformationEPSTest {
     }
 
     private byte[] getGeographicalInformation() {
-        return new byte[] { 31, 32, 33, 34, 35, 36, 37, 38 };
+        return new byte[] { 16, 32, 33, 34, 35, 36, 37, 38 };
     }
 
     private byte[] getGeodeticInformation() {
-        return new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        return new byte[] { 1, 16, 3, 4, 5, 6, 7, 8, 9, 10 };
     }
 
     private byte[] getDiameterIdentity() {
@@ -82,13 +83,13 @@ public class LocationInformationEPSTest {
         assertTrue(result.getResult() instanceof LocationInformationEPSImpl);
         LocationInformationEPSImpl impl = (LocationInformationEPSImpl)result.getResult();
         
-        assertTrue(Arrays.equals(impl.getEUtranCellGlobalIdentity().getData(), this.getEncodedDataEUtranCgi()));
-        assertTrue(Arrays.equals(impl.getTrackingAreaIdentity().getData(), this.getTAId()));
-        assertTrue(Arrays.equals(impl.getGeographicalInformation().getData(), this.getGeographicalInformation()));
-        assertTrue(Arrays.equals(impl.getGeodeticInformation().getData(), this.getGeodeticInformation()));
+        assertTrue(ByteBufUtil.equals(impl.getEUtranCellGlobalIdentity().getValue(), Unpooled.wrappedBuffer(this.getEncodedDataEUtranCgi())));
+        assertTrue(ByteBufUtil.equals(impl.getTrackingAreaIdentity().getValue(), Unpooled.wrappedBuffer(this.getTAId())));
+        assertTrue(ByteBufUtil.equals(impl.getGeographicalInformation().getValue(), Unpooled.wrappedBuffer(this.getGeographicalInformation())));
+        assertTrue(ByteBufUtil.equals(impl.getGeodeticInformation().getValue(), Unpooled.wrappedBuffer(this.getGeodeticInformation())));
         assertTrue(impl.getCurrentLocationRetrieved());
         assertEquals((int) impl.getAgeOfLocationInformation(), 5);
-        assertTrue(Arrays.equals(impl.getMmeName().getData(), this.getDiameterIdentity()));
+        assertTrue(ByteBufUtil.equals(impl.getMmeName().getValue(), Unpooled.wrappedBuffer(this.getDiameterIdentity())));
     }
 
     @Test(groups = { "functional.encode", "subscriberInformation" })
@@ -96,11 +97,16 @@ public class LocationInformationEPSTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(LocationInformationEPSImpl.class);
     	
-        EUtranCgiImpl euc = new EUtranCgiImpl(this.getEncodedDataEUtranCgi());
-        TAIdImpl ta = new TAIdImpl(this.getTAId());
-        GeographicalInformationImpl ggi = new GeographicalInformationImpl(this.getGeographicalInformation());
-        GeodeticInformationImpl gdi = new GeodeticInformationImpl(this.getGeodeticInformation());
-        DiameterIdentityImpl di = new DiameterIdentityImpl(this.getDiameterIdentity());
+        EUtranCgiImpl euc = new EUtranCgiImpl(Unpooled.wrappedBuffer(this.getEncodedDataEUtranCgi()));
+        TAIdImpl ta = new TAIdImpl(Unpooled.wrappedBuffer(this.getTAId()));
+        
+        ByteBuf geoBuffer=Unpooled.wrappedBuffer(getGeographicalInformation());
+        GeographicalInformationImpl ggi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
+        
+        ByteBuf geodeticBuffer=Unpooled.wrappedBuffer(getGeodeticInformation());
+        GeodeticInformationImpl gdi = new GeodeticInformationImpl(geodeticBuffer.readByte() & 0x0FF, GeographicalInformationImpl.decodeTypeOfShape(geodeticBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geodeticBuffer), GeographicalInformationImpl.decodeLongitude(geodeticBuffer), GeographicalInformationImpl.decodeUncertainty(geodeticBuffer.readByte() & 0x0FF),geodeticBuffer.readByte() & 0x0FF);
+        
+        DiameterIdentityImpl di = new DiameterIdentityImpl(Unpooled.wrappedBuffer(this.getDiameterIdentity()));
         LocationInformationEPSImpl impl = new LocationInformationEPSImpl(euc, ta, null, ggi, gdi, true, 5, di);
         ByteBuf buffer=parser.encode(impl);
         byte[] encodedData = new byte[buffer.readableBytes()];

@@ -47,11 +47,9 @@ public class DetachSpecificInformationImpl implements DetachSpecificInformation 
     }
 
     public DetachSpecificInformationImpl(InitiatingEntity initiatingEntity, boolean routeingAreaUpdate) {
-    	if(initiatingEntity!=null) {
-    		this.initiatingEntity = new ASNInitiatingEntityImpl(); 
-    		this.initiatingEntity.setType(initiatingEntity);
-    	}
-    	
+    	if(initiatingEntity!=null)
+    		this.initiatingEntity = new ASNInitiatingEntityImpl(initiatingEntity); 
+    		
     	if(routeingAreaUpdate)
     		this.routeingAreaUpdate = new ASNNull();
     }

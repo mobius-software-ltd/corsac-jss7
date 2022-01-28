@@ -65,11 +65,9 @@ public class EventReportGPRSRequestImpl extends GprsMessageImpl implements Event
             GPRSEventSpecificInformation gprsEventSpecificInformation, PDPID pdpID) {
         super();
         
-        if(gprsEventType!=null) {
-        	this.gprsEventType = new ASNGPRSEventTypeImpl();
-        	this.gprsEventType.setType(gprsEventType);
-        }
-        
+        if(gprsEventType!=null)
+        	this.gprsEventType = new ASNGPRSEventTypeImpl(gprsEventType);
+        	
         this.miscGPRSInfo = miscGPRSInfo;
         
         if(gprsEventSpecificInformation!=null)

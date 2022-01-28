@@ -41,15 +41,14 @@ public class GapOnServiceImpl implements GapOnService {
     }
 
     public GapOnServiceImpl(int serviceKey) {
-    	this.serviceKey = new ASNInteger();
-    	this.serviceKey.setValue(Long.valueOf(serviceKey));
+    	this.serviceKey = new ASNInteger(serviceKey);    	
     }
 
     public int getServiceKey() {
     	if(serviceKey==null || serviceKey.getValue()==null)
     		return 0;
     	
-        return serviceKey.getValue().intValue();
+        return serviceKey.getIntValue();
     }
 
     @Override

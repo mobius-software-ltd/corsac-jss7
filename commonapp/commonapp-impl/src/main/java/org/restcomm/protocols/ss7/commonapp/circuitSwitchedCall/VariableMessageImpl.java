@@ -49,9 +49,8 @@ public class VariableMessageImpl implements VariableMessage {
     }
 
     public VariableMessageImpl(int elementaryMessageID, List<VariablePart> variableParts) {
-        this.elementaryMessageID = new ASNInteger();
-        this.elementaryMessageID.setValue(Long.valueOf(elementaryMessageID));
-        
+        this.elementaryMessageID = new ASNInteger(elementaryMessageID);
+
         if(variableParts!=null) {
         	this.variableParts = new VariablePartWrapperImpl(variableParts);
         }
@@ -61,7 +60,7 @@ public class VariableMessageImpl implements VariableMessage {
     	if(elementaryMessageID==null || elementaryMessageID.getValue()==null)
     		return 0;
     	
-        return elementaryMessageID.getValue().intValue();
+        return elementaryMessageID.getIntValue();
     }
 
     public List<VariablePart> getVariableParts() {

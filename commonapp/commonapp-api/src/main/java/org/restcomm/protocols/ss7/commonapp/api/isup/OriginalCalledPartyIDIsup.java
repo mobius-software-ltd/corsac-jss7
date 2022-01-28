@@ -42,8 +42,5 @@ maxOriginalCalledPartyIDLength=5
 */
 public interface OriginalCalledPartyIDIsup {
 
-    byte[] getData();
-
     OriginalCalledNumber getOriginalCalledNumber() throws APPException;
-
 }

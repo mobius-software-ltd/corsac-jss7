@@ -32,10 +32,9 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -55,7 +54,7 @@ public class HandOverInfoImpl implements HandOverInfo {
     private SCPDialogueInfo sendingSCPDialogueInfo;
 
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false, index=-1)
-    private ASNOctetString sendingSCPCorrelationInfo;
+    private ASNOctetString2 sendingSCPCorrelationInfo;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true, index=-1)
     private SCPAddressWrapperImpl receivingSCPAddress;
@@ -64,7 +63,7 @@ public class HandOverInfoImpl implements HandOverInfo {
     private SCPDialogueInfo receivingSCPDialogueInfo;
 
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = false, index=-1)
-    private ASNOctetString receivingSCPCorrelationInfo;
+    private ASNOctetString2 receivingSCPCorrelationInfo;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = false, index=-1, defaultImplementation = CalledPartyNumberIsupImpl.class)
     private CalledPartyNumberIsup handoverNumber;
@@ -76,43 +75,36 @@ public class HandOverInfoImpl implements HandOverInfo {
     }
 
     public HandOverInfoImpl(Integer handoverCounter,SCPAddress sendingSCPAddress,SCPDialogueInfo sendingSCPDialogueInfo,
-    		byte[] sendingSCPCorrelationInfo, SCPAddress receivingSCPAddress, SCPDialogueInfo receivingSCPDialogueInfo,
-    		byte[] receivingSCPCorrelationInfo,CalledPartyNumberIsup handoverNumber,Integer handoverData) {
-    	if(handoverCounter!=null) {
-    		this.handoverCounter=new ASNInteger();
-    		this.handoverCounter.setValue(handoverCounter.longValue());
-    	}
-    	
+    		ByteBuf sendingSCPCorrelationInfo, SCPAddress receivingSCPAddress, SCPDialogueInfo receivingSCPDialogueInfo,
+    		ByteBuf receivingSCPCorrelationInfo,CalledPartyNumberIsup handoverNumber,Integer handoverData) {
+    	if(handoverCounter!=null)
+    		this.handoverCounter=new ASNInteger(handoverCounter);
+    		
     	if(sendingSCPAddress!=null)
     		this.sendingSCPAddress=new SCPAddressWrapperImpl(sendingSCPAddress);
     	
     	this.sendingSCPDialogueInfo=sendingSCPDialogueInfo;
     	if(sendingSCPCorrelationInfo!=null) {
-    		this.sendingSCPCorrelationInfo=new ASNOctetString();
-    		this.sendingSCPCorrelationInfo.setValue(Unpooled.wrappedBuffer(sendingSCPCorrelationInfo));
+    		this.sendingSCPCorrelationInfo=new ASNOctetString2(sendingSCPCorrelationInfo);    		
     	}
     	
     	if(receivingSCPAddress!=null)
     		this.receivingSCPAddress=new SCPAddressWrapperImpl(receivingSCPAddress);
     	
     	this.receivingSCPDialogueInfo=receivingSCPDialogueInfo;
-    	if(receivingSCPCorrelationInfo!=null) {
-    		this.receivingSCPCorrelationInfo=new ASNOctetString();
-    		this.receivingSCPCorrelationInfo.setValue(Unpooled.wrappedBuffer(receivingSCPCorrelationInfo));
-    	}
-    	
+    	if(receivingSCPCorrelationInfo!=null)
+    		this.receivingSCPCorrelationInfo=new ASNOctetString2(receivingSCPCorrelationInfo);
+    		
     	this.handoverNumber=handoverNumber;
-    	if(handoverData!=null) {
-    		this.handoverData=new ASNInteger();
-    		this.handoverData.setValue(handoverData.longValue());
-    	}
+    	if(handoverData!=null)
+    		this.handoverData=new ASNInteger(handoverData);    		
     }       
 
     public Integer getHandoverCounter() {
-    	if(handoverCounter==null || handoverCounter.getValue()==null)
+    	if(handoverCounter==null)
     		return null;
     	
-    	return handoverCounter.getValue().intValue();
+    	return handoverCounter.getIntValue();
     }      
 
     public SCPAddress getSendingSCPAddress() {
@@ -126,14 +118,11 @@ public class HandOverInfoImpl implements HandOverInfo {
     	return sendingSCPDialogueInfo;
     }      
 
-    public byte[] getSendingSCPCorrelationInfo() {
-    	if(sendingSCPCorrelationInfo==null || sendingSCPCorrelationInfo.getValue()==null)
+    public ByteBuf getSendingSCPCorrelationInfo() {
+    	if(sendingSCPCorrelationInfo==null)
     		return null;
     	
-    	ByteBuf value=sendingSCPCorrelationInfo.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-    	return data;
+    	return sendingSCPCorrelationInfo.getValue();
     }      
 
     public SCPAddress getReceivingSCPAddress() {
@@ -147,14 +136,11 @@ public class HandOverInfoImpl implements HandOverInfo {
     	return receivingSCPDialogueInfo;
     }      
 
-    public byte[] getReceivingSCPCorrelationInfo() {
-    	if(receivingSCPCorrelationInfo==null || receivingSCPCorrelationInfo.getValue()==null)
+    public ByteBuf getReceivingSCPCorrelationInfo() {
+    	if(receivingSCPCorrelationInfo==null)
     		return null;
     	
-    	ByteBuf value=receivingSCPCorrelationInfo.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-    	return data;
+    	return receivingSCPCorrelationInfo.getValue();
     }  
 
     public CalledPartyNumberIsup getHandoverNumber() {
@@ -162,10 +148,10 @@ public class HandOverInfoImpl implements HandOverInfo {
     }
     
     public Integer getHandoverData() {
-    	if(handoverData==null || handoverData.getValue()==null)
+    	if(handoverData==null)
     		return null;
     	
-    	return handoverData.getValue().intValue();
+    	return handoverData.getIntValue();
     }
 
     @Override
@@ -191,7 +177,7 @@ public class HandOverInfoImpl implements HandOverInfo {
         
         if (this.sendingSCPCorrelationInfo != null && this.sendingSCPCorrelationInfo.getValue()!=null) {
             sb.append(", sendingSCPCorrelationInfo=");
-            sb.append(ASNOctetString.printDataArr(getSendingSCPCorrelationInfo()));
+            sb.append(sendingSCPCorrelationInfo.printDataArr());
         }
         
         if (this.receivingSCPAddress != null && this.receivingSCPAddress.getSCPAddress()!=null) {
@@ -206,7 +192,7 @@ public class HandOverInfoImpl implements HandOverInfo {
         
         if (this.receivingSCPCorrelationInfo != null && this.receivingSCPCorrelationInfo.getValue()!=null) {
             sb.append(", receivingSCPCorrelationInfo=");
-            sb.append(ASNOctetString.printDataArr(getReceivingSCPCorrelationInfo()));
+            sb.append(receivingSCPCorrelationInfo.printDataArr());
         }
         
         if (this.handoverNumber != null) {

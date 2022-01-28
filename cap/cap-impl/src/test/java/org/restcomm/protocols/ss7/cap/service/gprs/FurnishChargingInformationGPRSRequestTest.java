@@ -38,6 +38,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -67,8 +68,8 @@ public class FurnishChargingInformationGPRSRequestTest {
         assertTrue(result.getResult() instanceof FurnishChargingInformationGPRSRequestImpl);
         
         FurnishChargingInformationGPRSRequestImpl prim = (FurnishChargingInformationGPRSRequestImpl)result.getResult();        
-        assertEquals(prim.getFCIGPRSBillingChargingCharacteristics().getFCIBCCCAMELsequence1().getFreeFormatData().getData(),
-                this.getFreeFormatData());
+        assertTrue(ByteBufUtil.equals(prim.getFCIGPRSBillingChargingCharacteristics().getFCIBCCCAMELsequence1().getFreeFormatData().getValue(),
+                Unpooled.wrappedBuffer(this.getFreeFormatData())));
         assertEquals(prim.getFCIGPRSBillingChargingCharacteristics().getFCIBCCCAMELsequence1().getPDPID().getId(), 2);
         assertEquals(prim.getFCIGPRSBillingChargingCharacteristics().getFCIBCCCAMELsequence1().getAppendFreeFormatData(),
                 AppendFreeFormatData.append);
@@ -79,7 +80,7 @@ public class FurnishChargingInformationGPRSRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(FurnishChargingInformationGPRSRequestImpl.class);
     	
-        FreeFormatDataGprsImpl freeFormatData = new FreeFormatDataGprsImpl(this.getFreeFormatData());
+        FreeFormatDataGprsImpl freeFormatData = new FreeFormatDataGprsImpl(Unpooled.wrappedBuffer(this.getFreeFormatData()));
         PDPIDImpl pdpID = new PDPIDImpl(2);
         FCIBCCCAMELSequence1GprsImpl fcIBCCCAMELsequence1 = new FCIBCCCAMELSequence1GprsImpl(freeFormatData, pdpID,
                 AppendFreeFormatData.append);

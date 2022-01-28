@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,38 +39,24 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class CallingPartyNumberIsupImpl extends ASNOctetString implements CallingPartyNumberIsup {
+public class CallingPartyNumberIsupImpl extends ASNOctetString2 implements CallingPartyNumberIsup {
 	public CallingPartyNumberIsupImpl() {
     }
 
-    public CallingPartyNumberIsupImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public CallingPartyNumberIsupImpl(CallingPartyNumber callingPartyNumber) throws APPException {
-        setCallingPartyNumber(callingPartyNumber);
+        super(translate(callingPartyNumber));
     }
 
-    public void setCallingPartyNumber(CallingPartyNumber callingPartyNumber) throws APPException {
+    public static ByteBuf translate(CallingPartyNumber callingPartyNumber) throws APPException {
         if (callingPartyNumber == null)
             throw new APPException("The callingPartyNumber parameter must not be null");
         try {
         	ByteBuf buf=Unpooled.buffer();
         	((CallingPartyNumberImpl) callingPartyNumber).encode(buf);
-            setValue(buf);
+        	return buf;
         } catch (ParameterException e) {
             throw new APPException("ParameterException when encoding callingPartyNumber: " + e.getMessage(), e);
         }
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
     }
 
     public CallingPartyNumber getCallingPartyNumber() throws APPException {
@@ -91,10 +77,9 @@ public class CallingPartyNumberIsupImpl extends ASNOctetString implements Callin
         StringBuilder sb = new StringBuilder();
         sb.append("CallingPartyNumberCap [");
 
-        byte[] data=this.getData();
-        if (data != null) {
+        if (getValue() != null) {
             sb.append("data=[");
-            sb.append(printDataArr(data));
+            sb.append(printDataArr());
             sb.append("]");
             try {
                 CallingPartyNumber cpn = this.getCallingPartyNumber();

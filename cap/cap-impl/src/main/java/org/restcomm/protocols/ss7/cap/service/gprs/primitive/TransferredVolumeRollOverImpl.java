@@ -46,10 +46,8 @@ public class TransferredVolumeRollOverImpl implements TransferredVolumeRollOver 
     }
 
     public TransferredVolumeRollOverImpl(Integer roVolumeIfNoTariffSwitch) {
-    	if(roVolumeIfNoTariffSwitch!=null) {
-    		this.roVolumeIfNoTariffSwitch = new ASNInteger();
-    		this.roVolumeIfNoTariffSwitch.setValue(roVolumeIfNoTariffSwitch.longValue());
-    	}
+    	if(roVolumeIfNoTariffSwitch!=null)
+    		this.roVolumeIfNoTariffSwitch = new ASNInteger(roVolumeIfNoTariffSwitch);    		
     }
 
     public TransferredVolumeRollOverImpl(ROVolumeIfTariffSwitch roVolumeIfTariffSwitch) {
@@ -57,10 +55,10 @@ public class TransferredVolumeRollOverImpl implements TransferredVolumeRollOver 
     }
 
     public Integer getROVolumeIfNoTariffSwitch() {
-    	if(this.roVolumeIfNoTariffSwitch==null || this.roVolumeIfNoTariffSwitch.getValue()==null)
+    	if(this.roVolumeIfNoTariffSwitch==null)
     		return null;
     	
-        return this.roVolumeIfNoTariffSwitch.getValue().intValue();
+        return this.roVolumeIfNoTariffSwitch.getIntValue();
     }
 
     public ROVolumeIfTariffSwitch getROVolumeIfTariffSwitch() {

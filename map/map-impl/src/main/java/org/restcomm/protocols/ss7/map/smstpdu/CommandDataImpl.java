@@ -27,32 +27,38 @@ import java.nio.charset.Charset;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.smstpdu.CommandData;
 
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  *
  * @author sergey vetyutnev
  *
  */
 public class CommandDataImpl implements CommandData {
-	private byte[] encodedData;
+	private ByteBuf encodedData;
     private String decodedMessage;
 
     private boolean isDecoded;
     private boolean isEncoded;
 
-    public CommandDataImpl(byte[] data) {
+    public CommandDataImpl(ByteBuf data) {
         this.encodedData = data;
-
         this.isEncoded = true;
     }
 
     public CommandDataImpl(String decodedMessage) {
         this.decodedMessage = decodedMessage;
-
         this.isDecoded = true;
     }
 
-    public byte[] getEncodedData() {
-        return this.encodedData;
+    public ByteBuf getEncodedData() {
+    	if(this.encodedData==null)
+    		return null;
+    	
+        return Unpooled.wrappedBuffer(this.encodedData);
     }
 
     public String getDecodedMessage() {
@@ -72,7 +78,7 @@ public class CommandDataImpl implements CommandData {
 
         // TODO: what is an encoding algorithm ?
         Charset chs = Charset.forName("US-ASCII");
-        this.encodedData = this.decodedMessage.getBytes(chs);
+        this.encodedData = Unpooled.wrappedBuffer(this.decodedMessage.getBytes(chs));
     }
 
     public void decode() throws MAPException {
@@ -88,21 +94,7 @@ public class CommandDataImpl implements CommandData {
 
         // TODO: what is an encoding algorithm ?
         Charset chs = Charset.forName("US-ASCII");
-        byte[] buf = this.encodedData;
-        this.decodedMessage = new String(buf, chs);
-    }
-
-    private String printDataArr(byte[] arr) {
-        if (arr == null)
-            return "null";
-
-        StringBuilder sb = new StringBuilder();
-        for (int b : arr) {
-            sb.append(b);
-            sb.append(", ");
-        }
-
-        return sb.toString();
+        this.decodedMessage = Unpooled.wrappedBuffer(this.encodedData).toString(chs);
     }
 
     @Override
@@ -112,7 +104,7 @@ public class CommandDataImpl implements CommandData {
         sb.append("TP-Command-Data [");
         if (this.decodedMessage == null) {
             if (this.encodedData != null)
-                sb.append(printDataArr(this.encodedData));
+                sb.append(ASNOctetString.printDataArr(Unpooled.wrappedBuffer(this.encodedData)));
         } else {
             sb.append("Msg:[");
             sb.append(this.decodedMessage);

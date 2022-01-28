@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:13:31:04 2009-03-30<br>
@@ -53,7 +53,7 @@ public class CallingPartyCategoryImpl extends AbstractISUPParameter implements C
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() != 1) {
-            throw new ParameterException("byte[] must not be null or have different size than 1");
+            throw new ParameterException("buffer must not be null or have different size than 1");
         }
         this.callingPartyCategory = b.readByte();
     }

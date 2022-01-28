@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.map.service.supplementary;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptions;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,19 +35,22 @@ import io.netty.buffer.Unpooled;
  * @author cristian veliscu
  *
  */
-public class ForwardingOptionsImpl extends ASNOctetString implements ForwardingOptions {
+public class ForwardingOptionsImpl extends ASNOctetString2 implements ForwardingOptions {
 	private static final int MASK_notificationForwarding = 0x80;
     private static final int MASK_redirectingPresentation = 0x40;
     private static final int MASK_notificationCalling = 0x20;
     private static final int MASK_forwardingReason = 0x0C;
     private static final int MASK_forwardingOptions = 0xEC;
 
-    private static final String _PrimitiveName = "ForwardingOptions";
-
     public ForwardingOptionsImpl() {
     }
 
     public ForwardingOptionsImpl(boolean notificationToForwardingParty, boolean redirectingPresentation,
+            boolean notificationToCallingParty, ForwardingReason forwardingReason) {
+    	super(translate(notificationToForwardingParty, redirectingPresentation, notificationToCallingParty, forwardingReason));
+    }
+    
+    public static ByteBuf translate(boolean notificationToForwardingParty, boolean redirectingPresentation,
             boolean notificationToCallingParty, ForwardingReason forwardingReason) {
         int forwardingReasonCode = 3;
         if (forwardingReason != null) {
@@ -60,9 +63,9 @@ public class ForwardingOptionsImpl extends ASNOctetString implements ForwardingO
         code = notificationToCallingParty ? (code | MASK_notificationCalling) : (code & ~MASK_notificationCalling);
         code = code | (forwardingReasonCode << 2) & MASK_forwardingReason;
         
-        byte[] data=new byte[1];
-        data[0]=(byte)code;
-        setValue(Unpooled.wrappedBuffer(data));
+        ByteBuf data=Unpooled.buffer(1);
+        data.writeByte((byte)code);
+        return data;
     }
 
     public boolean isNotificationToCallingParty() {
@@ -91,8 +94,7 @@ public class ForwardingOptionsImpl extends ASNOctetString implements ForwardingO
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("ForwardingOptions [");
 
         sb.append("NotificationToCallingParty: ");
         sb.append(isNotificationToCallingParty());

@@ -71,26 +71,21 @@ public class CallResultCS1Impl implements CallResultCS1 {
     public CallResultCS1Impl(CallResultReportCondition callResultReportCondition,DateAndTime timeStamp,
     		LegType partyToCharge,Integer accumulatedCharge,TariffInformation actualTariff,
     		Integer chargeableDuration,DateAndTime timeOfAnswer) {    	
-    	if(callResultReportCondition!=null) {
-    		this.callResultReportCondition=new ASNCallResultReportCondition();
-    		this.callResultReportCondition.setType(callResultReportCondition);
-    	}
+    	if(callResultReportCondition!=null)
+    		this.callResultReportCondition=new ASNCallResultReportCondition(callResultReportCondition);
+    	
     	this.timeStamp=timeStamp;
     	if(partyToCharge!=null)
     		this.partyToCharge=new ReceivingLegIDWrapperImpl(new ReceivingLegIDImpl(partyToCharge));
     	
-    	if(accumulatedCharge!=null) {
-    		this.accumulatedCharge=new ASNInteger();
-    		this.accumulatedCharge.setValue(accumulatedCharge.longValue());
-    	}
+    	if(accumulatedCharge!=null)
+    		this.accumulatedCharge=new ASNInteger(accumulatedCharge);    		
     	
     	this.actualTariff=actualTariff;
     	
-    	if(chargeableDuration!=null) {
-    		this.chargeableDuration=new ASNInteger();
-    		this.chargeableDuration.setValue(chargeableDuration.longValue());
-    	}
-    	
+    	if(chargeableDuration!=null)
+    		this.chargeableDuration=new ASNInteger(chargeableDuration);
+    		
     	this.timeOfAnswer=timeOfAnswer;
     }
 
@@ -114,10 +109,10 @@ public class CallResultCS1Impl implements CallResultCS1 {
     }
 
     public Integer getAccumulatedCharge() {
-    	if(accumulatedCharge==null || accumulatedCharge.getValue()==null)
+    	if(accumulatedCharge==null)
     		return null;
     	
-    	return accumulatedCharge.getValue().intValue();
+    	return accumulatedCharge.getIntValue();
     }
 
     public TariffInformation getTariffInformation() {
@@ -125,10 +120,10 @@ public class CallResultCS1Impl implements CallResultCS1 {
     }
 
     public Integer getChargeableDuration() {
-    	if(chargeableDuration==null || chargeableDuration.getValue()==null)
+    	if(chargeableDuration==null)
     		return null;
     	
-    	return chargeableDuration.getValue().intValue();
+    	return chargeableDuration.getIntValue();
     }
 
     public DateAndTime getTimeOfAnswer() {

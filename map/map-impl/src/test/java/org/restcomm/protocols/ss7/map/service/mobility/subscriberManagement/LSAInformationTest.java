@@ -42,6 +42,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -81,7 +82,7 @@ public class LSAInformationTest {
         assertEquals(lsaDataList.size(), 1);
         LSAData lsaData = lsaDataList.get(0);
 
-        assertTrue(Arrays.equals(lsaData.getLSAIdentity().getData(), this.getDataLSAIdentity()));
+        assertTrue(ByteBufUtil.equals(lsaData.getLSAIdentity().getValue(), Unpooled.wrappedBuffer(this.getDataLSAIdentity())));
         assertEquals(lsaData.getLSAAttributes().getData(), 5);
         assertTrue(lsaData.getLsaActiveModeIndicator());
         assertNotNull(lsaData.getExtensionContainer());
@@ -100,7 +101,7 @@ public class LSAInformationTest {
         boolean completeDataListIncluded = true;
         LSAOnlyAccessIndicator lsaOnlyAccessIndicator = LSAOnlyAccessIndicator.accessOutsideLSAsRestricted;
         List<LSAData> lsaDataList = new ArrayList<LSAData>();
-        LSAIdentityImpl lsaIdentity = new LSAIdentityImpl(this.getDataLSAIdentity());
+        LSAIdentityImpl lsaIdentity = new LSAIdentityImpl(Unpooled.wrappedBuffer(this.getDataLSAIdentity()));
         LSAAttributesImpl lsaAttributes = new LSAAttributesImpl(5);
         boolean lsaActiveModeIndicator = true;
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();

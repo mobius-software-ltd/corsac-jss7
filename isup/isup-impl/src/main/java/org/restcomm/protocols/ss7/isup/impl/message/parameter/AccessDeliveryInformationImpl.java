@@ -62,7 +62,7 @@ public class AccessDeliveryInformationImpl extends AbstractISUPParameter impleme
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() != 1) {
-            throw new IllegalArgumentException("byte[] must not be null or have different size than 1");
+            throw new IllegalArgumentException("buffer must not be null or have different size than 1");
         }
         this.accessDeliveryIndicator = (byte) (b.readByte() & 0x01);
     }

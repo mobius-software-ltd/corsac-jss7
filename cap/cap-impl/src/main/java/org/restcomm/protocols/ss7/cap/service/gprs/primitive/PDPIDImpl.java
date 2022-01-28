@@ -35,7 +35,7 @@ public class PDPIDImpl extends ASNSingleByte implements PDPID {
     }
 
     public PDPIDImpl(int data) {
-    	setValue(data);
+    	super(data);
     }
 
     public int getId() {

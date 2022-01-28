@@ -76,7 +76,7 @@ public class CircuitStateIndicatorImpl extends AbstractISUPParameter implements 
 
     public void setCircuitState(ByteBuf circuitState) throws IllegalArgumentException {
         if (circuitState == null || circuitState.readableBytes() == 0) {
-            throw new IllegalArgumentException("byte[] must nto be null and length must be greater than 0");
+            throw new IllegalArgumentException("buffer must nto be null and length must be greater than 0");
         }
         this.circuitState = circuitState;
     }

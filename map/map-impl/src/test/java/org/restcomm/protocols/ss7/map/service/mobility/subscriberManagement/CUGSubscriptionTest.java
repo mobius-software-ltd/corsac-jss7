@@ -45,6 +45,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -77,7 +78,7 @@ public class CUGSubscriptionTest {
         
         MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
         assertTrue(prim.getCUGIndex() == 1);
-        assertTrue(Arrays.equals(prim.getCugInterlock().getData(), getGugData()));
+        assertTrue(ByteBufUtil.equals(prim.getCugInterlock().getValue(), Unpooled.wrappedBuffer(getGugData())));
         assertEquals(prim.getIntraCugOptions(), IntraCUGOptions.noCUGRestrictions);
         assertNotNull(prim.getBasicServiceGroupList());
         assertTrue(prim.getBasicServiceGroupList().size() == 1);
@@ -95,7 +96,7 @@ public class CUGSubscriptionTest {
     	parser.replaceClass(CUGSubscriptionImpl.class);
     	                
         int cugIndex = 1;
-        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getGugData());
+        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(Unpooled.wrappedBuffer(getGugData()));
         IntraCUGOptions intraCugOptions = IntraCUGOptions.noCUGRestrictions;
         ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
         ExtBasicServiceCodeImpl bs = new ExtBasicServiceCodeImpl(b);

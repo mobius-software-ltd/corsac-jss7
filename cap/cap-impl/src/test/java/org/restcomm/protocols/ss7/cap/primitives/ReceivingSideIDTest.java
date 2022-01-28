@@ -76,29 +76,4 @@ public class ReceivingSideIDTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "primitives" })
-    public void testXMLSerializaion() throws Exception {
-        ReceivingSideIDImpl original = new ReceivingSideIDImpl(LegType.leg2);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "receivingSideID", ReceivingSideIDImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        ReceivingSideIDImpl copy = reader.read("receivingSideID", ReceivingSideIDImpl.class);
-
-        assertEquals(copy.getReceivingSideID(), original.getReceivingSideID());
-    }*/
 }

@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.ExtGeographicalInformation
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -40,24 +40,20 @@ import io.netty.buffer.Unpooled;
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
-public class ExtGeographicalInformationImpl extends ASNOctetString implements ExtGeographicalInformation {
+public class ExtGeographicalInformationImpl extends ASNOctetString2 implements ExtGeographicalInformation {
 	public ExtGeographicalInformationImpl() {
     }
 
-    public ExtGeographicalInformationImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public ExtGeographicalInformationImpl(TypeOfShape typeOfShape, double latitude, double longitude, double uncertainty,
+	public ExtGeographicalInformationImpl(TypeOfShape typeOfShape, double latitude, double longitude, double uncertainty,
             double uncertaintySemiMajorAxis, double uncertaintySemiMinorAxis, double angleOfMajorAxis, int confidence,
             int altitude, double uncertaintyAltitude, int innerRadius, double uncertaintyRadius, double offsetAngle,
             double includedAngle) throws MAPException {     
-        initData(typeOfShape, latitude, longitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis,
+	    super(initData(typeOfShape, latitude, longitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis,
                 angleOfMajorAxis, confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyRadius, offsetAngle,
-                includedAngle);
+                includedAngle));
     }
 
-    protected void initData(TypeOfShape typeOfShape, double latitude, double longitude, double uncertainty,
+    protected static ByteBuf initData(TypeOfShape typeOfShape, double latitude, double longitude, double uncertainty,
             double uncertaintySemiMajorAxis, double uncertaintySemiMinorAxis, double angleOfMajorAxis, int confidence,
             int altitude, double uncertaintyAltitude, int innerRadius, double uncertaintyRadius, double offsetAngle,
             double includedAngle) throws MAPException {
@@ -66,23 +62,23 @@ public class ExtGeographicalInformationImpl extends ASNOctetString implements Ex
             throw new MAPException("typeOfShape parameter is null");
         }
 
-        byte[] data;
+        ByteBuf data;
         switch (typeOfShape) {
             case EllipsoidPointWithUncertaintyCircle:
-                data=this.initData(8, typeOfShape, latitude, longitude);
-                data[7] = (byte) GeographicalInformationImpl.encodeUncertainty(uncertainty);
+                data=initData(8, typeOfShape, latitude, longitude);
+                data.writeByte((byte) GeographicalInformationImpl.encodeUncertainty(uncertainty));
                 break;
 
             case EllipsoidPointWithUncertaintyEllipse:
-            	data=this.initData(11, typeOfShape, latitude, longitude);
-                data[7] = (byte) GeographicalInformationImpl.encodeUncertainty(uncertaintySemiMajorAxis);
-                data[8] = (byte) GeographicalInformationImpl.encodeUncertainty(uncertaintySemiMinorAxis);
-                data[9] = (byte) (angleOfMajorAxis / 2);
-                data[10] = (byte) confidence;
+            	data=initData(11, typeOfShape, latitude, longitude);
+            	data.writeByte((byte) GeographicalInformationImpl.encodeUncertainty(uncertaintySemiMajorAxis));
+            	data.writeByte((byte) GeographicalInformationImpl.encodeUncertainty(uncertaintySemiMinorAxis));
+            	data.writeByte((byte) (angleOfMajorAxis / 2));
+            	data.writeByte((byte) confidence);
                 break;
 
             case EllipsoidPointWithAltitudeAndUncertaintyEllipsoid:
-            	data=this.initData(14, typeOfShape, latitude, longitude);
+            	data=initData(14, typeOfShape, latitude, longitude);
 
                 boolean negativeSign = false;
                 if (altitude < 0) {
@@ -93,108 +89,103 @@ public class ExtGeographicalInformationImpl extends ASNOctetString implements Ex
                     altitude = 0x7FFF;
                 if (negativeSign)
                     altitude |= 0x8000;
-                data[7] = (byte) ((altitude & 0xFF00) >> 8);
-                data[8] = (byte) (altitude & 0xFF);
+                data.writeByte((byte) ((altitude & 0xFF00) >> 8));
+                data.writeByte((byte) (altitude & 0xFF));
 
-                data[9] = (byte) GeographicalInformationImpl.encodeUncertainty(uncertaintySemiMajorAxis);
-                data[10] = (byte) GeographicalInformationImpl.encodeUncertainty(uncertaintySemiMinorAxis);
-                data[11] = (byte) (angleOfMajorAxis / 2);
-                data[12] = (byte) GeographicalInformationImpl.encodeUncertainty(uncertaintyAltitude);
-                data[13] = (byte) confidence;
+                data.writeByte((byte) GeographicalInformationImpl.encodeUncertainty(uncertaintySemiMajorAxis));
+                data.writeByte((byte) GeographicalInformationImpl.encodeUncertainty(uncertaintySemiMinorAxis));
+                data.writeByte((byte) (angleOfMajorAxis / 2));
+                data.writeByte((byte) GeographicalInformationImpl.encodeUncertainty(uncertaintyAltitude));
+                data.writeByte((byte) confidence);
                 break;
 
             case EllipsoidArc:
-            	data=this.initData(13, typeOfShape, latitude, longitude);
+            	data=initData(13, typeOfShape, latitude, longitude);
 
                 if (innerRadius > 0x7FFF)
                     innerRadius = 0x7FFF;
-                data[7] = (byte) ((innerRadius & 0xFF00) >> 8);
-                data[8] = (byte) (innerRadius & 0xFF);
-                data[9] = (byte) GeographicalInformationImpl.encodeUncertainty(uncertaintyRadius);
-                data[10] = (byte) (offsetAngle / 2);
-                data[11] = (byte) (includedAngle / 2);
-                data[12] = (byte) confidence;
+                
+                data.writeByte((byte) ((innerRadius & 0xFF00) >> 8));
+                data.writeByte((byte) (innerRadius & 0xFF));
+                data.writeByte((byte) GeographicalInformationImpl.encodeUncertainty(uncertaintyRadius));
+                data.writeByte((byte) (offsetAngle / 2));
+                data.writeByte((byte) (includedAngle / 2));
+                data.writeByte((byte) confidence);
 
                 break;
 
             case EllipsoidPoint:
-            	data=this.initData(7, typeOfShape, latitude, longitude);
+            	data=initData(7, typeOfShape, latitude, longitude);
                 break;
 
             default:
                 throw new MAPException("typeOfShape parameter has bad value");                
         }
         
-        if(data!=null)
-        	setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    private byte[] initData(int len, TypeOfShape typeOfShape, double latitude, double longitude) {
-        byte[] data = new byte[len];
-        data[0] = (byte) (typeOfShape.getCode() << 4);
-        GeographicalInformationImpl.encodeLatitude(data, 1, latitude);
-        GeographicalInformationImpl.encodeLongitude(data, 4, longitude);
-        
         return data;
     }
 
-    public byte[] getData() {
-    	ByteBuf buffer=getValue();
-    	if(getValue()==null)
-    		return null;
-    	
-        byte[] data=new byte[buffer.readableBytes()];
-        buffer.readBytes(data);
-    	return data;
+    private static ByteBuf initData(int len, TypeOfShape typeOfShape, double latitude, double longitude) {
+        ByteBuf buf = Unpooled.buffer(len);
+        buf.writeByte((byte) (typeOfShape.getCode() << 4));
+        GeographicalInformationImpl.encodeLatitude(buf, latitude);
+        GeographicalInformationImpl.encodeLongitude(buf, longitude);        
+        return buf;
     }
 
     public TypeOfShape getTypeOfShape() {
-    	byte[] data=getData();
-        if (data == null || data.length < 1)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 1)
             return null;
 
-        return TypeOfShape.getInstance((data[0] & 0xFF) >> 4);
+        return TypeOfShape.getInstance((value.readByte() & 0xFF) >> 4);
     }
 
     public double getLatitude() {
-    	byte[] data=getData();
-        if (data == null || data.length < 7)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 7)
             return 0;
 
-        return GeographicalInformationImpl.decodeLatitude(data, 1);
+        value.skipBytes(1);
+        return GeographicalInformationImpl.decodeLatitude(value);
     }
 
     public double getLongitude() {
-    	byte[] data=getData();
-        if (data == null || data.length < 7)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 7)
             return 0;
 
-        return GeographicalInformationImpl.decodeLongitude(data, 4);
+        value.skipBytes(4);
+        return GeographicalInformationImpl.decodeLongitude(value);
     }
 
     public double getUncertainty() {
-    	byte[] data=getData();
-        if (this.getTypeOfShape() != TypeOfShape.EllipsoidPointWithUncertaintyCircle || data == null
-                || data.length != 8)
+    	ByteBuf value=getValue();
+        if (this.getTypeOfShape() != TypeOfShape.EllipsoidPointWithUncertaintyCircle || value == null
+                || value.readableBytes() != 8)
             return 0;
 
-        return GeographicalInformationImpl.decodeUncertainty(data[7]);
+        value.skipBytes(7);
+        return GeographicalInformationImpl.decodeUncertainty(value.readByte());
     }
 
     public double getUncertaintySemiMajorAxis() {
-    	byte[] data=getData();
+    	ByteBuf value=getValue();
         TypeOfShape typeOfShape = this.getTypeOfShape();
         if (typeOfShape != null) {
             switch (typeOfShape) {
                 case EllipsoidPointWithUncertaintyEllipse:
-                    if (data == null || data.length != 11)
+                    if (value == null || value.readableBytes() != 11)
                         return 0;
-                    return GeographicalInformationImpl.decodeUncertainty(data[7]);
-
+                    
+                    value.skipBytes(7);
+                    return GeographicalInformationImpl.decodeUncertainty(value.readByte());
                 case EllipsoidPointWithAltitudeAndUncertaintyEllipsoid:
-                    if (data == null || data.length != 14)
+                    if (value == null || value.readableBytes() != 14)
                         return 0;
-                    return GeographicalInformationImpl.decodeUncertainty(data[9]);
+                    
+                    value.skipBytes(9);
+                    return GeographicalInformationImpl.decodeUncertainty(value.readByte());
 				default:
 					break;
             }
@@ -204,19 +195,22 @@ public class ExtGeographicalInformationImpl extends ASNOctetString implements Ex
     }
 
     public double getUncertaintySemiMinorAxis() {
-    	byte[] data=getData();
+    	ByteBuf value=getValue();
         TypeOfShape typeOfShape = this.getTypeOfShape();
         if (typeOfShape != null) {
             switch (typeOfShape) {
                 case EllipsoidPointWithUncertaintyEllipse:
-                    if (data == null || data.length != 11)
+                    if (value == null || value.readableBytes() != 11)
                         return 0;
-                    return GeographicalInformationImpl.decodeUncertainty(data[8]);
-
+                    
+                    value.skipBytes(8);
+                    return GeographicalInformationImpl.decodeUncertainty(value.readByte());
                 case EllipsoidPointWithAltitudeAndUncertaintyEllipsoid:
-                    if (data == null || data.length != 14)
+                    if (value == null || value.readableBytes() != 14)
                         return 0;
-                    return GeographicalInformationImpl.decodeUncertainty(data[10]);
+                    
+                    value.skipBytes(10);
+                    return GeographicalInformationImpl.decodeUncertainty(value.readByte());
 				default:
 					break;
             }
@@ -226,19 +220,22 @@ public class ExtGeographicalInformationImpl extends ASNOctetString implements Ex
     }
 
     public double getAngleOfMajorAxis() {
-    	byte[] data=getData();
+    	ByteBuf value=getValue();
         TypeOfShape typeOfShape = this.getTypeOfShape();
         if (typeOfShape != null) {
             switch (typeOfShape) {
                 case EllipsoidPointWithUncertaintyEllipse:
-                    if (data == null || data.length != 11)
+                    if (value == null || value.readableBytes() != 11)
                         return 0;
-                    return (data[9] & 0xFF) * 2;
-
+                    
+                    value.skipBytes(9);
+                    return (value.readByte() & 0xFF) * 2;
                 case EllipsoidPointWithAltitudeAndUncertaintyEllipsoid:
-                    if (data == null || data.length != 14)
+                    if (value == null || value.readableBytes() != 14)
                         return 0;
-                    return (data[11] & 0xFF) * 2;
+                    
+                    value.skipBytes(11);
+                    return (value.readByte() & 0xFF) * 2;
 				default:
 					break;
             }
@@ -248,24 +245,26 @@ public class ExtGeographicalInformationImpl extends ASNOctetString implements Ex
     }
 
     public int getConfidence() {
-    	byte[] data=getData();
+    	ByteBuf value=getValue();
         TypeOfShape typeOfShape = this.getTypeOfShape();
         if (typeOfShape != null) {
             switch (typeOfShape) {
                 case EllipsoidPointWithUncertaintyEllipse:
-                    if (data == null || data.length != 11)
+                    if (value == null || value.readableBytes() != 11)
                         return 0;
-                    return data[10];
-
+                    value.skipBytes(10);
+                    return value.readByte();
                 case EllipsoidPointWithAltitudeAndUncertaintyEllipsoid:
-                    if (data == null || data.length != 14)
+                    if (value == null || value.readableBytes() != 14)
                         return 0;
-                    return data[13];
-
+                    value.skipBytes(13);
+                    return value.readByte();
                 case EllipsoidArc:
-                    if (data == null || data.length != 13)
+                    if (value == null || value.readableBytes() != 13)
                         return 0;
-                    return data[12];
+                    
+                    value.skipBytes(12);
+                    return value.readByte();
 				default:
 					break;
             }
@@ -275,12 +274,13 @@ public class ExtGeographicalInformationImpl extends ASNOctetString implements Ex
     }
 
     public int getAltitude() {
-    	byte[] data=getData();
-        if (this.getTypeOfShape() != TypeOfShape.EllipsoidPointWithAltitudeAndUncertaintyEllipsoid || data == null
-                || data.length != 14)
+    	ByteBuf value=getValue();
+        if (this.getTypeOfShape() != TypeOfShape.EllipsoidPointWithAltitudeAndUncertaintyEllipsoid || value == null
+                || value.readableBytes() != 14)
             return 0;
 
-        int i1 = ((data[7] & 0xFF) << 8) + (data[8] & 0xFF);
+        value.skipBytes(7);
+        int i1 = ((value.readByte() & 0xFF) << 8) + (value.readByte() & 0xFF);
         int sign = 1;
         if ((i1 & 0x8000) != 0) {
             sign = -1;
@@ -290,45 +290,50 @@ public class ExtGeographicalInformationImpl extends ASNOctetString implements Ex
     }
 
     public double getUncertaintyAltitude() {
-    	byte[] data=getData();
-        if (this.getTypeOfShape() != TypeOfShape.EllipsoidPointWithAltitudeAndUncertaintyEllipsoid || data == null
-                || data.length != 14)
+    	ByteBuf value=getValue();
+        if (this.getTypeOfShape() != TypeOfShape.EllipsoidPointWithAltitudeAndUncertaintyEllipsoid || value == null
+                || value.readableBytes() != 14)
             return 0;
 
-        return GeographicalInformationImpl.decodeUncertainty(data[12]);
+        value.skipBytes(12);
+        return GeographicalInformationImpl.decodeUncertainty(value.readByte());
     }
 
     public int getInnerRadius() {
-    	byte[] data=getData();
-        if (this.getTypeOfShape() != TypeOfShape.EllipsoidArc || data == null || data.length != 13)
+    	ByteBuf value=getValue();
+        if (this.getTypeOfShape() != TypeOfShape.EllipsoidArc || value == null || value.readableBytes() != 13)
             return 0;
 
-        int i1 = ((data[7] & 0xFF) << 8) + (data[8] & 0xFF);
+        value.skipBytes(7);
+        int i1 = ((value.readByte() & 0xFF) << 8) + (value.readByte() & 0xFF);
         return i1;
     }
 
     public double getUncertaintyRadius() {
-    	byte[] data=getData();
-        if (this.getTypeOfShape() != TypeOfShape.EllipsoidArc || data == null || data.length != 13)
+    	ByteBuf value=getValue();
+        if (this.getTypeOfShape() != TypeOfShape.EllipsoidArc || value == null || value.readableBytes() != 13)
             return 0;
 
-        return GeographicalInformationImpl.decodeUncertainty(data[9]);
+        value.skipBytes(9);
+        return GeographicalInformationImpl.decodeUncertainty(value.readByte());
     }
 
     public double getOffsetAngle() {
-    	byte[] data=getData();
-        if (this.getTypeOfShape() != TypeOfShape.EllipsoidArc || data == null || data.length != 13)
+    	ByteBuf value=getValue();
+        if (this.getTypeOfShape() != TypeOfShape.EllipsoidArc || value == null || value.readableBytes() != 13)
             return 0;
 
-        return (data[10] & 0xFF) * 2;
+        value.skipBytes(10);
+        return (value.readByte() & 0xFF) * 2;
     }
 
     public double getIncludedAngle() {
-    	byte[] data=getData();
-        if (this.getTypeOfShape() != TypeOfShape.EllipsoidArc || data == null || data.length != 13)
+    	ByteBuf value=getValue();
+        if (this.getTypeOfShape() != TypeOfShape.EllipsoidArc || value == null || value.readableBytes() != 13)
             return 0;
 
-        return (data[11] & 0xFF) * 2;
+        value.skipBytes(11);
+        return (value.readByte() & 0xFF) * 2;
     }
 
     @Override

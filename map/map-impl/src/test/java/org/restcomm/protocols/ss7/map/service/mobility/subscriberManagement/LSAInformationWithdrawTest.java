@@ -39,6 +39,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -83,7 +84,7 @@ public class LSAInformationWithdrawTest {
         
         assertFalse(asc.getAllLSAData());
         assertEquals(asc.getLSAIdentityList().size(), 1);
-        assertEquals(asc.getLSAIdentityList().get(0).getData(), getLsaIdData());
+        assertTrue(ByteBufUtil.equals(asc.getLSAIdentityList().get(0).getValue(), Unpooled.wrappedBuffer(getLsaIdData())));
     }
 
     @Test(groups = { "functional.encode" })
@@ -101,7 +102,7 @@ public class LSAInformationWithdrawTest {
 
 
         List<LSAIdentity> arr = new ArrayList<LSAIdentity>();
-        LSAIdentityImpl lsaId = new LSAIdentityImpl(getLsaIdData());
+        LSAIdentityImpl lsaId = new LSAIdentityImpl(Unpooled.wrappedBuffer(getLsaIdData()));
         arr.add(lsaId);
         asc = new LSAInformationWithdrawImpl(arr);
         buffer=parser.encode(asc);

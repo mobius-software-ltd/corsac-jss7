@@ -104,33 +104,4 @@ public class CalledPartyBCDNumberTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "primitives" })
-    public void testXMLSerialize() throws Exception {
-
-        CalledPartyBCDNumberImpl original = new CalledPartyBCDNumberImpl(AddressNature.international_number,
-                NumberingPlan.ISDN, "41788005047");
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "calledPartyBCDNumber", CalledPartyBCDNumberImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        CalledPartyBCDNumberImpl copy = reader.read("calledPartyBCDNumber", CalledPartyBCDNumberImpl.class);
-
-        assertEquals(copy.getAddressNature(), original.getAddressNature());
-        assertEquals(copy.getNumberingPlan(), original.getNumberingPlan());
-        assertEquals(copy.getAddress(), original.getAddress());
-        assertEquals(copy.isExtension(), original.isExtension());
-    }*/
 }

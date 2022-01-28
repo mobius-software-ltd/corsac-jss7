@@ -65,7 +65,7 @@ public class EventInformationImpl extends AbstractISUPParameter implements Event
 
     public void decode(ByteBuf buffer) throws ParameterException {
         if (buffer == null || buffer.readableBytes() != 1) {
-            throw new ParameterException("byte[] must not be null or have different size than 1");
+            throw new ParameterException("buffer must not be null or have different size than 1");
         }
 
         byte b=buffer.readByte();

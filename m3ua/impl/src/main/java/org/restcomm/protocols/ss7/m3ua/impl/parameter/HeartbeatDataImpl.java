@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
 import org.restcomm.protocols.ss7.m3ua.parameter.HeartbeatData;
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -52,11 +52,6 @@ public class HeartbeatDataImpl extends ParameterImpl implements HeartbeatData {
 
     @Override
     public String toString() {
-    	byte[] data=new byte[value.readableBytes()];
-    	value.markReaderIndex();
-    	value.readBytes(data);
-    	value.resetReaderIndex();
-    	
-        return String.format("HeartbeatData");
+    	return String.format("HeartbeatData");
     }
 }

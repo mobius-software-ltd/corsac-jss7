@@ -34,9 +34,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public class BackwardGVNSIndicatorImpl extends ASNSingleByte implements BackwardGVNSIndicator {
-	public void setType(BackwardGVNS t) {
-		if(t!=null)
-			setValue(t.getCode());
+	public BackwardGVNSIndicatorImpl() {
+		
+	}
+	
+	public BackwardGVNSIndicatorImpl(BackwardGVNS t) {
+		super(t==null?null:t.getCode());		
 	}
 	
 	public BackwardGVNS getBackwardGVNS() {

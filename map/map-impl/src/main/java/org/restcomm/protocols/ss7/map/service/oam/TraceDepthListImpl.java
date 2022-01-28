@@ -73,55 +73,35 @@ public class TraceDepthListImpl implements TraceDepthList {
             TraceDepth rncTraceDepth, TraceDepth bmscTraceDepth, TraceDepth mmeTraceDepth, TraceDepth sgwTraceDepth, TraceDepth pgwTraceDepth,
             TraceDepth enbTraceDepth) {
 
-    	if(mscSTraceDepth!=null) {
-    		this.mscSTraceDepth = new ASNTraceDepthImpl();
-    		this.mscSTraceDepth.setType(mscSTraceDepth);
-    	}
-    	
-    	if(mgwTraceDepth!=null) {
-    		this.mgwTraceDepth = new ASNTraceDepthImpl();
-    		this.mgwTraceDepth.setType(mgwTraceDepth);
-    	}
-    	
-    	if(sgsnTraceDepth!=null) {
-    		this.sgsnTraceDepth = new ASNTraceDepthImpl();
-    		this.sgsnTraceDepth.setType(sgsnTraceDepth);
-    	}
-    	
-    	if(ggsnTraceDepth!=null) {
-    		this.ggsnTraceDepth = new ASNTraceDepthImpl();
-    		this.ggsnTraceDepth.setType(ggsnTraceDepth);
-    	}
-    	
-    	if(rncTraceDepth!=null) {
-    		this.rncTraceDepth = new ASNTraceDepthImpl();
-    		this.rncTraceDepth.setType(rncTraceDepth);
-    	}
-    	
-    	if(bmscTraceDepth!=null) {
-    		this.bmscTraceDepth = new ASNTraceDepthImpl();
-    		this.bmscTraceDepth.setType(bmscTraceDepth);
-    	}
-    	
-    	if(mmeTraceDepth!=null) {
-    		this.mmeTraceDepth = new ASNTraceDepthImpl();
-    		this.mmeTraceDepth.setType(mmeTraceDepth);
-    	}
-    	
-    	if(sgwTraceDepth!=null) {
-    		this.sgwTraceDepth = new ASNTraceDepthImpl();
-    		this.sgwTraceDepth.setType(sgwTraceDepth);
-    	}
-    	
-    	if(pgwTraceDepth!=null) {
-    		this.pgwTraceDepth = new ASNTraceDepthImpl();
-    		this.pgwTraceDepth.setType(pgwTraceDepth);
-    	} 
-    	
-    	if(enbTraceDepth!=null) {
-    		this.enbTraceDepth = new ASNTraceDepthImpl();
-    		this.enbTraceDepth.setType(enbTraceDepth);
-    	} 
+    	if(mscSTraceDepth!=null)
+    		this.mscSTraceDepth = new ASNTraceDepthImpl(mscSTraceDepth);
+    		
+    	if(mgwTraceDepth!=null)
+    		this.mgwTraceDepth = new ASNTraceDepthImpl(mgwTraceDepth);
+    		
+    	if(sgsnTraceDepth!=null)
+    		this.sgsnTraceDepth = new ASNTraceDepthImpl(sgsnTraceDepth);
+    		
+    	if(ggsnTraceDepth!=null)
+    		this.ggsnTraceDepth = new ASNTraceDepthImpl(ggsnTraceDepth);
+    		
+    	if(rncTraceDepth!=null)
+    		this.rncTraceDepth = new ASNTraceDepthImpl(rncTraceDepth);
+    		
+    	if(bmscTraceDepth!=null)
+    		this.bmscTraceDepth = new ASNTraceDepthImpl(bmscTraceDepth);
+    		
+    	if(mmeTraceDepth!=null)
+    		this.mmeTraceDepth = new ASNTraceDepthImpl(mmeTraceDepth);
+    		
+    	if(sgwTraceDepth!=null)
+    		this.sgwTraceDepth = new ASNTraceDepthImpl(sgwTraceDepth);
+    		
+    	if(pgwTraceDepth!=null)
+    		this.pgwTraceDepth = new ASNTraceDepthImpl(pgwTraceDepth);
+    		
+    	if(enbTraceDepth!=null)
+    		this.enbTraceDepth = new ASNTraceDepthImpl(enbTraceDepth);    		
     }
 
     public TraceDepth getMscSTraceDepth() {

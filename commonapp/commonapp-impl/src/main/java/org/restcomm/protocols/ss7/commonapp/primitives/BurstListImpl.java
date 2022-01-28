@@ -47,11 +47,9 @@ public class BurstListImpl implements BurstList {
     }
 
     public BurstListImpl(Integer warningPeriod, Burst burst) {
-    	if(warningPeriod!=null) {
-    		this.warningPeriod = new ASNInteger();
-    		this.warningPeriod.setValue(warningPeriod.longValue());    				
-    	}
-    	
+    	if(warningPeriod!=null)
+    		this.warningPeriod = new ASNInteger(warningPeriod);
+    		
         this.bursts = burst;
     }
 
@@ -59,7 +57,7 @@ public class BurstListImpl implements BurstList {
     	if(warningPeriod==null)
     		return null;
     	
-        return warningPeriod.getValue().intValue();
+        return warningPeriod.getIntValue();
     }
 
     public Burst getBursts() {

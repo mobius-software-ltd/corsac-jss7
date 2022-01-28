@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.inap.primitives;
 
 import org.restcomm.protocols.ss7.inap.api.primitives.DateAndTime;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,19 +35,23 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class DateAndTimeImpl extends ASNOctetString implements DateAndTime {
+public class DateAndTimeImpl extends ASNOctetString2 implements DateAndTime {
 	public DateAndTimeImpl() {
     }
 
-    public DateAndTimeImpl(int year, int month, int day, int hour, int minute, int second) {
-        byte[] data = new byte[6];
-        data[0] = (byte) encodeByte(year % 100);
-        data[1] = (byte) encodeByte(month);
-        data[2] = (byte) encodeByte(day);
-        data[3] = (byte) encodeByte(hour);
-        data[4] = (byte) encodeByte(minute);
-        data[5] = (byte) encodeByte(second);        
-        setValue(Unpooled.wrappedBuffer(data));
+	public DateAndTimeImpl(int year, int month, int day, int hour, int minute, int second) {
+		super(translate(year, month, day, hour, minute, second));
+	}
+	
+    public static ByteBuf translate(int year, int month, int day, int hour, int minute, int second) {
+    	ByteBuf data = Unpooled.buffer(6);
+        data.writeByte((byte) encodeByte(year % 100));
+        data.writeByte((byte) encodeByte(month));
+        data.writeByte((byte) encodeByte(day));
+        data.writeByte((byte) encodeByte(hour));
+        data.writeByte((byte) encodeByte(minute));
+        data.writeByte((byte) encodeByte(second));        
+        return data;
     }
 
     public int getYear() {
@@ -55,7 +59,7 @@ public class DateAndTimeImpl extends ASNOctetString implements DateAndTime {
         if (data == null || data.readableBytes() != 6)
             return 0;
 
-        return (int) this.decodeByte(data.readByte());
+        return (int) decodeByte(data.readByte());
     }
 
     public int getMonth() {
@@ -64,7 +68,7 @@ public class DateAndTimeImpl extends ASNOctetString implements DateAndTime {
             return 0;
 
         data.skipBytes(1);
-        return this.decodeByte((int) data.readByte());
+        return decodeByte((int) data.readByte());
     }
 
     public int getDay() {
@@ -73,7 +77,7 @@ public class DateAndTimeImpl extends ASNOctetString implements DateAndTime {
             return 0;
 
         data.skipBytes(2);
-        return this.decodeByte((int) data.readByte());
+        return decodeByte((int) data.readByte());
     }
 
     public int getHour() {
@@ -82,7 +86,7 @@ public class DateAndTimeImpl extends ASNOctetString implements DateAndTime {
             return 0;
 
         data.skipBytes(3);
-        return this.decodeByte((int) data.readByte());
+        return decodeByte((int) data.readByte());
     }
 
     public int getMinute() {
@@ -91,7 +95,7 @@ public class DateAndTimeImpl extends ASNOctetString implements DateAndTime {
             return 0;
 
         data.skipBytes(4);
-        return this.decodeByte((int) data.readByte());
+        return decodeByte((int) data.readByte());
     }
 
     public int getSecond() {
@@ -100,14 +104,14 @@ public class DateAndTimeImpl extends ASNOctetString implements DateAndTime {
             return 0;
 
         data.skipBytes(5);
-        return this.decodeByte((int) data.readByte());
+        return decodeByte((int) data.readByte());
     }
 
-    private int decodeByte(int bt) {
+    private static int decodeByte(int bt) {
         return (bt & 0x0F) * 10 + ((bt & 0xF0) >> 4);
     }
 
-    private int encodeByte(int val) {
+    private static int encodeByte(int val) {
         return (val / 10) | (val % 10) << 4;
     }
 

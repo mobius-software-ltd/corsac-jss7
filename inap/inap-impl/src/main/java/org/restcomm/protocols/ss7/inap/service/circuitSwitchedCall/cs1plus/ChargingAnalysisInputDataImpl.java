@@ -28,10 +28,9 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -42,10 +41,10 @@ import io.netty.buffer.Unpooled;
 public class ChargingAnalysisInputDataImpl implements ChargingAnalysisInputData {
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false, index=-1)
-	private ASNOctetString chargingOrigin;
+	private ASNOctetString2 chargingOrigin;
 	    
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true, index=-1)
-    private ASNOctetString tariffActivityCode;
+    private ASNOctetString2 tariffActivityCode;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false, index=-1)
     private ASNInteger chargingCode;
@@ -53,41 +52,29 @@ public class ChargingAnalysisInputDataImpl implements ChargingAnalysisInputData 
 	public ChargingAnalysisInputDataImpl() {
     }
 
-    public ChargingAnalysisInputDataImpl(byte[] chargingOrigin, byte[] tariffActivityCode, Integer chargingCode) {
-    	if(chargingOrigin!=null) {
-    		this.chargingOrigin=new ASNOctetString();
-    		this.chargingOrigin.setValue(Unpooled.wrappedBuffer(chargingOrigin));
-    	}
+    public ChargingAnalysisInputDataImpl(ByteBuf chargingOrigin, ByteBuf tariffActivityCode, Integer chargingCode) {
+    	if(chargingOrigin!=null)
+    		this.chargingOrigin=new ASNOctetString2(chargingOrigin);    	
     	
-    	if(tariffActivityCode!=null) {
-    		this.tariffActivityCode=new ASNOctetString();
-    		this.tariffActivityCode.setValue(Unpooled.wrappedBuffer(tariffActivityCode));
-    	}
+    	if(tariffActivityCode!=null)
+    		this.tariffActivityCode=new ASNOctetString2(tariffActivityCode);    	
     	
-    	if(chargingCode!=null) {
-    		this.chargingCode=new ASNInteger();
-    		this.chargingCode.setValue(chargingCode.longValue());
-    	}
+    	if(chargingCode!=null)
+    		this.chargingCode=new ASNInteger(chargingCode);    		
     }
 
-    public byte[] getChargingOrigin() {
-    	if(chargingOrigin==null || chargingOrigin.getValue()==null)
+    public ByteBuf getChargingOrigin() {
+    	if(chargingOrigin==null)
     		return null;
     	
-    	ByteBuf value=chargingOrigin.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-    	return data;
+    	return chargingOrigin.getValue();
     }
 
-    public byte[] getTariffActivityCode() {
-    	if(tariffActivityCode==null || tariffActivityCode.getValue()==null)
+    public ByteBuf getTariffActivityCode() {
+    	if(tariffActivityCode==null)
     		return null;
     	
-    	ByteBuf value=tariffActivityCode.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-    	return data;
+    	return tariffActivityCode.getValue();
     }
 
     public Integer getChargingCode() {
@@ -105,12 +92,12 @@ public class ChargingAnalysisInputDataImpl implements ChargingAnalysisInputData 
 
         if (this.chargingOrigin != null && this.chargingOrigin.getValue()!=null) {
             sb.append(", chargingOrigin=");
-            sb.append(ASNOctetString.printDataArr(getChargingOrigin()));
+            sb.append(chargingOrigin.printDataArr());
         }
         
         if (this.tariffActivityCode != null && this.tariffActivityCode.getValue()!=null) {
             sb.append(", tariffActivityCode=");
-            sb.append(ASNOctetString.printDataArr(getTariffActivityCode()));
+            sb.append(chargingOrigin.printDataArr());
         }
         
         if (this.chargingCode != null && this.chargingCode.getValue()!=null) {

@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.accessTransport.Ac
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessTransport;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -41,38 +41,24 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class ISDNAccessRelatedInformationIsupImpl extends ASNOctetString implements ISDNAccessRelatedInformationIsup {
+public class ISDNAccessRelatedInformationIsupImpl extends ASNOctetString2 implements ISDNAccessRelatedInformationIsup {
 	public ISDNAccessRelatedInformationIsupImpl() {
     }
 
-    public ISDNAccessRelatedInformationIsupImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public ISDNAccessRelatedInformationIsupImpl(LocationNumber locationNumber) throws APPException {
-        setLocationNumber(locationNumber);
+        super(translate(locationNumber));
     }
 
-    public void setLocationNumber(LocationNumber locationNumber) throws APPException {
+    public static ByteBuf translate(LocationNumber locationNumber) throws APPException {
         if (locationNumber == null)
             throw new APPException("The locationNumber parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((LocationNumberImpl) locationNumber).encode(buffer);
-            setValue(buffer);
+            return buffer;
         } catch (ParameterException e) {
             throw new APPException("ParameterException when encoding locationNumber: " + e.getMessage(), e);
         }
-    }
-
-    public byte[] getData() {
-    	ByteBuf buffer=getValue();
-    	if(buffer==null)
-    		return null;
-    	
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
-        return data;
     }
 
     public AccessTransport getAccessTransport() throws APPException {
@@ -93,10 +79,9 @@ public class ISDNAccessRelatedInformationIsupImpl extends ASNOctetString impleme
         StringBuilder sb = new StringBuilder();
         sb.append("ISDNAccessRelatedInformationIsup [");
 
-        byte[] data=this.getData();
-        if (data != null) {
+        if (getValue() != null) {
             sb.append("data=[");
-            sb.append(printDataArr(data));
+            sb.append(printDataArr());
             sb.append("]");
             try {
                 AccessTransport ln = this.getAccessTransport();

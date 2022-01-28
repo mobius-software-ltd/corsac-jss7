@@ -61,7 +61,7 @@ public class CircuitGroupSuperVisionMessageTypeImpl extends AbstractISUPParamete
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() != 1) {
-            throw new ParameterException("byte[] must not be null or has size different than 1.");
+            throw new ParameterException("buffer must not be null or has size different than 1.");
         }
         this.CircuitGroupSuperVisionMessageTypeIndicator = b.readByte() & 0x03;        
     }

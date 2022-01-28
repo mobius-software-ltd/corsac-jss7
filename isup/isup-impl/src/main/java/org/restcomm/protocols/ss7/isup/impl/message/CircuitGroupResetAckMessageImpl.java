@@ -28,8 +28,6 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.Map;
 import java.util.Set;
 
@@ -41,6 +39,8 @@ import org.restcomm.protocols.ss7.isup.message.CircuitGroupResetAckMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageName;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
 import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:23:56:44 2009-09-06<br>
@@ -98,7 +98,7 @@ public class CircuitGroupResetAckMessageImpl extends ISUPMessageImpl implements 
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(byte[], byte)
+     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeOptionalBody(ByteBuf, byte)
      */
 
     protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)

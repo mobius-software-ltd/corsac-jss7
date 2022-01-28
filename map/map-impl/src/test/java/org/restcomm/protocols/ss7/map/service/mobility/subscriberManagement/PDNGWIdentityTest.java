@@ -37,6 +37,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -73,13 +74,13 @@ public class PDNGWIdentityTest {
         
         PDPAddress pdnGwIpv4Address = prim.getPdnGwIpv4Address();
         assertNotNull(pdnGwIpv4Address);
-        assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv4Address.getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(this.getPDPAddressData()), pdnGwIpv4Address.getValue()));
         PDPAddress pdnGwIpv6Address = prim.getPdnGwIpv6Address();
         assertNotNull(pdnGwIpv6Address);
-        assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv6Address.getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(this.getPDPAddressData()), pdnGwIpv6Address.getValue()));
         FQDN pdnGwName = prim.getPdnGwName();
         assertNotNull(pdnGwName);
-        assertTrue(Arrays.equals(this.getFQDNData(), pdnGwName.getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(this.getFQDNData()), pdnGwName.getValue()));
 
         MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
         assertNotNull(extensionContainer);
@@ -92,9 +93,9 @@ public class PDNGWIdentityTest {
     	parser.replaceClass(PDNGWIdentityImpl.class);
     	
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        PDPAddressImpl pdnGwIpv4Address = new PDPAddressImpl(this.getPDPAddressData());
-        PDPAddressImpl pdnGwIpv6Address = new PDPAddressImpl(this.getPDPAddressData());
-        FQDNImpl pdnGwName = new FQDNImpl(this.getFQDNData());
+        PDPAddressImpl pdnGwIpv4Address = new PDPAddressImpl(Unpooled.wrappedBuffer(this.getPDPAddressData()));
+        PDPAddressImpl pdnGwIpv6Address = new PDPAddressImpl(Unpooled.wrappedBuffer(this.getPDPAddressData()));
+        FQDNImpl pdnGwName = new FQDNImpl(Unpooled.wrappedBuffer(this.getFQDNData()));
         PDNGWIdentityImpl prim = new PDNGWIdentityImpl(pdnGwIpv4Address, pdnGwIpv6Address, pdnGwName, extensionContainer);
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];

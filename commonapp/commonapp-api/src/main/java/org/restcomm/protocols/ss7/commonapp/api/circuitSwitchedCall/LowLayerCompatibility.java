@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -60,5 +62,5 @@ ETS 300 102-1 (12-90) shall be accepted)
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface LowLayerCompatibility {
-    byte[] getData();
+    ByteBuf getValue();
 }

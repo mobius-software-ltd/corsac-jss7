@@ -26,6 +26,8 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  *
@@ -58,9 +60,9 @@ EventSpecificInformationCharging ::= OCTET STRING (SIZE(minEventSpecificInformat
  */
 public interface EventNotificationChargingRequest extends CircuitSwitchedCallMessage {
 
-    byte[] getEventTypeCharging();
+    ByteBuf getEventTypeCharging();
 
-    byte[] getEventSpecificInformationCharging();
+    ByteBuf getEventSpecificInformationCharging();
     
     LegID getLegID();
     

@@ -34,8 +34,7 @@ public class ASNDialogServiceProviderType {
 	private ASNInteger innerValue;
 	
 	public void setType(DialogServiceProviderType t) {
-		innerValue=new ASNInteger();
-		innerValue.setValue(t.getType());
+		innerValue=new ASNInteger(t.getType());		
 	}
 	
 	public DialogServiceProviderType getType() throws ParseException {

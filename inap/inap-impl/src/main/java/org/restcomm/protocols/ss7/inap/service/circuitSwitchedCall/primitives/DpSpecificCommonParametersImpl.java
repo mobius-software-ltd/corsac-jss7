@@ -125,19 +125,15 @@ public class DpSpecificCommonParametersImpl implements DpSpecificCommonParameter
     	this.ipAvailable=ipAvailable;
     	this.isdnAccessRelatedInformation=isdnAccessRelatedInformation;
     	
-    	if(cgEncountered!=null) {
-    		this.cgEncountered=new ASNCGEncountered();
-    		this.cgEncountered.setType(cgEncountered);
-    	}
-    	
+    	if(cgEncountered!=null)
+    		this.cgEncountered=new ASNCGEncountered(cgEncountered);
+    		
     	this.locationNumber=locationNumber;
     	this.serviceProfileIdentifier=serviceProfileIdentifier;
     	
-    	if(terminalType!=null) {
-    		this.terminalType=new ASNTerminalType();
-    		this.terminalType.setType(terminalType);
-    	}
-    	
+    	if(terminalType!=null)
+    		this.terminalType=new ASNTerminalType(terminalType);
+    		
     	this.extensions=extensions;
     	this.chargeNumber=chargeNumber;
     	this.servingAreaID=servingAreaID;

@@ -65,11 +65,9 @@ public class TCSIImpl implements TCSI {
         this.tBcsmCamelTDPDataList = new TBcsmCamelTDPDataWrapperImpl(tBcsmCamelTDPDataList);        
         this.extensionContainer = extensionContainer;
         
-        if(camelCapabilityHandling!=null) {
-        	this.camelCapabilityHandling = new ASNInteger();
-        	this.camelCapabilityHandling.setValue(camelCapabilityHandling.longValue());
-        }
-        
+        if(camelCapabilityHandling!=null)
+        	this.camelCapabilityHandling = new ASNInteger(camelCapabilityHandling);
+        	
         if(notificationToCSE)
         	this.notificationToCSE = new ASNNull();
         
@@ -92,7 +90,7 @@ public class TCSIImpl implements TCSI {
     	if(this.camelCapabilityHandling==null)
     		return null;
     	
-        return camelCapabilityHandling.getValue().intValue();
+        return camelCapabilityHandling.getIntValue();
     }
 
     public boolean getNotificationToCSE() {

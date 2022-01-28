@@ -48,10 +48,8 @@ public class FilteringCriteriaImpl implements FilteringCriteria {
     }
 
     public FilteringCriteriaImpl(Integer serviceKey) {
-    	if(serviceKey!=null) {
-    		this.serviceKey=new ASNInteger();
-    		this.serviceKey.setValue(serviceKey.longValue());
-    	}
+    	if(serviceKey!=null)
+    		this.serviceKey=new ASNInteger(serviceKey);    		
     }
     
     public FilteringCriteriaImpl(AddressAndService addressAndService) {
@@ -59,10 +57,10 @@ public class FilteringCriteriaImpl implements FilteringCriteria {
     }
 
     public Integer getServiceKey() {
-    	if(serviceKey==null || serviceKey.getValue()==null)
+    	if(serviceKey==null)
     		return null;
     	
-    	return serviceKey.getValue().intValue();
+    	return serviceKey.getIntValue();
     }
 
     public AddressAndService getAddressAndService() {

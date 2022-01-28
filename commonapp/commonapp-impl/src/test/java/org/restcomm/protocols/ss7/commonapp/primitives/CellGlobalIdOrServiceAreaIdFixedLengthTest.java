@@ -47,10 +47,6 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthTest {
         return new byte[] { 4, 7, 82, (byte) 240, 16, 17, 92, 13, 5 };
     };
 
-    public byte[] getDataVal() {
-        return new byte[] { 82, (byte) 240, 16, 17, 92, 13, 5 };
-    };
-
     public byte[] getData2() {
         return new byte[] { 4, 7, 16, 97, 66, 1, 77, 1, (byte) 188 };
     };
@@ -97,13 +93,6 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthTest {
         
         assertTrue(Arrays.equals(data, this.getData()));
 
-        prim = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(getDataVal());
-        buffer = parser.encode(prim);
-        data=new byte[buffer.readableBytes()];
-        buffer.readBytes(data);
-
-        assertTrue(Arrays.equals(data, this.getData()));
-
         prim = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(11, 246, 333, 444);
         buffer = parser.encode(prim);
         data=new byte[buffer.readableBytes()];
@@ -111,34 +100,4 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthTest {
         
         assertTrue(Arrays.equals(data, this.getData2()));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "primitives" })
-    public void testXMLSerialize() throws Exception {
-
-        CellGlobalIdOrServiceAreaIdFixedLengthImpl original = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(250, 1, 4444, 3333);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "cellGlobalIdOrServiceAreaIdFixedLength", CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        CellGlobalIdOrServiceAreaIdFixedLengthImpl copy = reader.read("cellGlobalIdOrServiceAreaIdFixedLength",
-                CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
-
-        assertEquals(copy.getMCC(), original.getMCC());
-        assertEquals(copy.getMNC(), original.getMNC());
-        assertEquals(copy.getLac(), original.getLac());
-        assertEquals(copy.getCellIdOrServiceAreaCode(), original.getCellIdOrServiceAreaCode());
-
-    }*/
 }

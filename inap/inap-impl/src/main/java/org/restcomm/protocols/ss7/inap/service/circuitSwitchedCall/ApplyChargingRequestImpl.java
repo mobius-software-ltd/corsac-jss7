@@ -65,10 +65,9 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
     		Boolean sendCalculationToSCPIndication, LegID partyToCharge, CAPINAPExtensions extensions) {
         this.aChBillingChargingCharacteristics = aChBillingChargingCharacteristics;
         
-        if(sendCalculationToSCPIndication!=null) {
-        	this.sendCalculationToSCPIndication=new ASNBoolean();
-        	this.sendCalculationToSCPIndication.setValue(sendCalculationToSCPIndication);
-        }
+        if(sendCalculationToSCPIndication!=null)
+        	this.sendCalculationToSCPIndication=new ASNBoolean(sendCalculationToSCPIndication);
+        	
         
         if(partyToCharge!=null)
         	this.partyToCharge = new LegIDWrapperImpl(partyToCharge);

@@ -29,12 +29,14 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.smstpdu.SmsTpduImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -45,7 +47,7 @@ import io.netty.buffer.Unpooled;
 public class MtForwardShortMessageResponseTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 48, 4, 5, 11, 22, 33, 44, 55, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48,
+        return new byte[] { 48, 46, 4, 3, 0, 1, 44, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48,
                 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     }
 
@@ -60,11 +62,9 @@ public class MtForwardShortMessageResponseTest {
         assertTrue(result.getResult() instanceof MtForwardShortMessageResponseImpl);
         MtForwardShortMessageResponseImpl ind = (MtForwardShortMessageResponseImpl)result.getResult();  
         
-        ByteBuf buffer=ind.getSM_RP_UI().getValue();
-        byte[] data=new byte[buffer.readableBytes()];
-        buffer.readBytes(data);
-
-        assertTrue(Arrays.equals(new byte[] { 11, 22, 33, 44, 55 }, data));
+        ByteBuf buffer=Unpooled.buffer();
+        ind.getSM_RP_UI().decodeTpdu(true).encodeData(buffer);
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(new byte[] { 0, 1, 44 }), buffer));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(ind.getExtensionContainer()));
     }
 
@@ -73,7 +73,7 @@ public class MtForwardShortMessageResponseTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(MtForwardShortMessageResponseImpl.class);
 
-        SmsSignalInfoImpl ui = new SmsSignalInfoImpl(new byte[] { 11, 22, 33, 44, 55 }, null);
+        SmsSignalInfoImpl ui = new SmsSignalInfoImpl(SmsTpduImpl.createInstance(Unpooled.wrappedBuffer(new byte[] { 0, 1, 44 }), true, null), null);
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         MtForwardShortMessageResponseImpl ind = new MtForwardShortMessageResponseImpl(ui, extensionContainer);
 

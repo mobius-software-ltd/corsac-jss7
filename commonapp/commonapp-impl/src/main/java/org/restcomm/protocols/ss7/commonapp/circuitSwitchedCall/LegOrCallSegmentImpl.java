@@ -48,10 +48,8 @@ public class LegOrCallSegmentImpl implements LegOrCallSegment {
     }
 
     public LegOrCallSegmentImpl(Integer callSegmentID) {
-    	if(callSegmentID!=null) {
-    		this.callSegmentID = new ASNInteger();
-    		this.callSegmentID.setValue(callSegmentID.longValue());
-    	}
+    	if(callSegmentID!=null)
+    		this.callSegmentID = new ASNInteger(callSegmentID);    		
     }
 
     public LegOrCallSegmentImpl(LegID legID) {
@@ -81,10 +79,10 @@ public class LegOrCallSegmentImpl implements LegOrCallSegment {
     }
 
     public Integer getCallSegmentID() {
-    	if(callSegmentID==null || callSegmentID.getValue()==null)
+    	if(callSegmentID==null)
     		return null;
     	
-        return callSegmentID.getValue().intValue();
+        return callSegmentID.getIntValue();
     }
 
     public LegID getLegID() {

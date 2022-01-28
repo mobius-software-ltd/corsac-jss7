@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.commonapp.api.subscriberInformation;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -55,7 +57,7 @@ octet 5: 8:CM3 0 - 7:0 spare - 6:LCSVA CAP - 5:UCS2 - 4:SoLSA - 3:CMSP - 2:A5/3 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface MSClassmark2 {
 
-    byte[] getData();
+    ByteBuf getValue();
 
     // TODO: implement internal structure from 3GPP TS 24.008
 

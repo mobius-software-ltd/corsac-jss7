@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.smstpdu;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author sergey vetyutnev
@@ -29,6 +31,6 @@ package org.restcomm.protocols.ss7.commonapp.api.smstpdu;
  */
 public interface ValidityEnhancedFormatData {
 
-    byte[] getData();
+    ByteBuf getValue();
 
 }

@@ -38,12 +38,11 @@ public class ChargeIndicatorImpl extends ASNSingleByte implements ChargeIndicato
 	}
 	
 	public ChargeIndicatorImpl(int data) {
-		setValue(data);
+		super(data);
     }
 
     public ChargeIndicatorImpl(ChargeIndicatorValue value) {
-        if (value != null)
-            setValue(value.getCode());
+    	super(value.getCode());
     }
 
     public int getData() {

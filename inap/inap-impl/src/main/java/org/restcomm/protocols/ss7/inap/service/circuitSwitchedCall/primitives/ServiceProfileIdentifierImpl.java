@@ -24,10 +24,9 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives;
 
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceProfileIdentifier;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -35,24 +34,12 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class ServiceProfileIdentifierImpl extends ASNOctetString implements ServiceProfileIdentifier {
+public class ServiceProfileIdentifierImpl extends ASNOctetString2 implements ServiceProfileIdentifier {
 	public ServiceProfileIdentifierImpl() {
     }
 
-    public ServiceProfileIdentifierImpl(byte[] data) {
-    	if(data!=null) {
-    		setValue(Unpooled.wrappedBuffer(data));
-    	}
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-        if (value == null)
-            return null;
-
-        byte[] data=new byte[value.readableBytes()];
-        value.readBytes(data);
-        return data;
+    public ServiceProfileIdentifierImpl(ByteBuf value) {
+    	super(value);
     }
 
     @Override
@@ -60,10 +47,9 @@ public class ServiceProfileIdentifierImpl extends ASNOctetString implements Serv
 
         StringBuilder sb = new StringBuilder();
         sb.append("ServiceProfileIdentifier [");
-        byte[] data=getData();
-        if (data != null) {
+        if (getValue() != null) {
             sb.append("data=");
-            sb.append(ASNOctetString.printDataArr(data));            
+            sb.append(printDataArr());            
         }
         sb.append("]");
 

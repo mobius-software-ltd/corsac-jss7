@@ -111,33 +111,4 @@ public class OriginalCalledNumberTest {
 
         assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "parameter" })
-    public void testXMLSerialize() throws Exception {
-
-        OriginalCalledNumberImpl original = new OriginalCalledNumberImpl(OriginalCalledNumber._NAI_NATIONAL_SN, "12345",
-                OriginalCalledNumber._NPI_TELEX, OriginalCalledNumber._APRI_RESTRICTED);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "originalCalledNumber", OriginalCalledNumberImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        OriginalCalledNumberImpl copy = reader.read("originalCalledNumber", OriginalCalledNumberImpl.class);
-
-        assertEquals(copy.getNatureOfAddressIndicator(), original.getNatureOfAddressIndicator());
-        assertEquals(copy.getAddress(), original.getAddress());
-        assertEquals(copy.getNumberingPlanIndicator(), original.getNumberingPlanIndicator());
-        assertEquals(copy.getAddressRepresentationRestrictedIndicator(), original.getAddressRepresentationRestrictedIndicator());
-    }*/
 }

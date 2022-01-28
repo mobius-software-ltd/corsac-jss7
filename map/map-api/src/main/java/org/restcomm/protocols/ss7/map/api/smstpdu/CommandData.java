@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.smstpdu;
 
 import org.restcomm.protocols.ss7.map.api.MAPException;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author sergey vetyutnev
@@ -31,7 +33,7 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
  */
 public interface CommandData {
 
-    byte[] getEncodedData();
+	ByteBuf getEncodedData();
 
     String getDecodedMessage();
 

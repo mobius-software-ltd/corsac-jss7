@@ -74,7 +74,7 @@ public class ClosedUserGroupInterlockCodeImpl extends AbstractISUPParameter impl
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() != 4) {
-            throw new ParameterException("byte[] must not be null and must have length of 4");
+            throw new ParameterException("buffer must not be null and must have length of 4");
         }
         int v = 0;
         this.niDigits = Unpooled.buffer(4);

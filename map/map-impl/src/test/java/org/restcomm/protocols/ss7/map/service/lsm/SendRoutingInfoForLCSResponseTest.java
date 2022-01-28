@@ -31,6 +31,7 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
@@ -51,6 +52,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -88,24 +90,24 @@ public class SendRoutingInfoForLCSResponseTest {
     public byte[] getEncodedDataFull() {
         return new byte[] { 48, 89, -96, 9, -127, 7, -111, 85, 22, 40, -127, 0, 112, -95, 7, 4, 5, -111, 85, 22, 9, 0, -94, 39,
                 -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23,
-                24, 25, 26, -95, 3, 31, 32, 33, -125, 5, 11, 12, 13, 14, 15, -124, 5, 21, 22, 23, 24, 25, -123, 5, 31, 32, 33,
-                34, 35, -122, 5, 41, 42, 43, 44, 45 };
+                24, 25, 26, -95, 3, 31, 32, 33, -125, 5, 4, 12, 13, 14, 15, -124, 5, 4, 22, 23, 24, 25, -123, 5, 4, 32, 33,
+                34, 35, -122, 5, 4, 42, 43, 44, 45 };
     }
 
     public byte[] getEncodedGSNAddress1() {
-        return new byte[] { 11, 12, 13, 14, 15 };
+        return new byte[] { 12, 13, 14, 15 };
     }
 
     public byte[] getEncodedGSNAddress2() {
-        return new byte[] { 21, 22, 23, 24, 25 };
+        return new byte[] { 22, 23, 24, 25 };
     }
 
     public byte[] getEncodedGSNAddress3() {
-        return new byte[] { 31, 32, 33, 34, 35 };
+        return new byte[] { 32, 33, 34, 35 };
     }
 
     public byte[] getEncodedGSNAddress4() {
-        return new byte[] { 41, 42, 43, 44, 45 };
+        return new byte[] { 42, 43, 44, 45 };
     }
 
     @Test(groups = { "functional.decode", "service.lsm" })
@@ -176,10 +178,14 @@ public class SendRoutingInfoForLCSResponseTest {
         assertTrue(networkNodeNumber.getAddress().equals("55619000"));
 
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(impl.getExtensionContainer()));
-        assertTrue(Arrays.equals(impl.getVgmlcAddress().getData(), getEncodedGSNAddress1()));
-        assertTrue(Arrays.equals(impl.getHGmlcAddress().getData(), getEncodedGSNAddress2()));
-        assertTrue(Arrays.equals(impl.getPprAddress().getData(), getEncodedGSNAddress3()));
-        assertTrue(Arrays.equals(impl.getAdditionalVGmlcAddress().getData(), getEncodedGSNAddress4()));
+        assertEquals(impl.getVgmlcAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
+        assertTrue(ByteBufUtil.equals(impl.getVgmlcAddress().getGSNAddressData(), Unpooled.wrappedBuffer(getEncodedGSNAddress1())));
+        assertEquals(impl.getHGmlcAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
+        assertTrue(ByteBufUtil.equals(impl.getHGmlcAddress().getGSNAddressData(), Unpooled.wrappedBuffer(getEncodedGSNAddress2())));
+        assertEquals(impl.getPprAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
+        assertTrue(ByteBufUtil.equals(impl.getPprAddress().getGSNAddressData(), Unpooled.wrappedBuffer(getEncodedGSNAddress3())));
+        assertEquals(impl.getAdditionalVGmlcAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
+        assertTrue(ByteBufUtil.equals(impl.getAdditionalVGmlcAddress().getGSNAddressData(), Unpooled.wrappedBuffer(getEncodedGSNAddress4())));
     }
 
     @Test(groups = { "functional.encode", "service.lsm" })
@@ -205,10 +211,10 @@ public class SendRoutingInfoForLCSResponseTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        GSNAddressImpl vgmlcAddress = new GSNAddressImpl(getEncodedGSNAddress1());
-        GSNAddressImpl hGmlcAddress = new GSNAddressImpl(getEncodedGSNAddress2());
-        GSNAddressImpl pprAddress = new GSNAddressImpl(getEncodedGSNAddress3());
-        GSNAddressImpl additionalVGmlcAddress = new GSNAddressImpl(getEncodedGSNAddress4());
+        GSNAddressImpl vgmlcAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4,Unpooled.wrappedBuffer(getEncodedGSNAddress1()));
+        GSNAddressImpl hGmlcAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4,Unpooled.wrappedBuffer(getEncodedGSNAddress2()));
+        GSNAddressImpl pprAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4,Unpooled.wrappedBuffer(getEncodedGSNAddress3()));
+        GSNAddressImpl additionalVGmlcAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4,Unpooled.wrappedBuffer(getEncodedGSNAddress4()));
 
         impl = new SendRoutingInfoForLCSResponseImpl(subsIdent, lcsLocInfo,
                 MAPExtensionContainerTest.GetTestExtensionContainer(), vgmlcAddress, hGmlcAddress, pprAddress,

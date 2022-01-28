@@ -92,11 +92,9 @@ public class RequestedSubscriptionInfoImpl implements RequestedSubscriptionInfo 
         if(isOdb)
         	this.isOdb = new ASNNull();
         
-        if(requestedCAMELSubscriptionInfo!=null) {
-        	this.requestedCAMELSubscriptionInfo = new ASNRequestedCamelSubscriptionInfoImpl();
-        	this.requestedCAMELSubscriptionInfo.setType(requestedCAMELSubscriptionInfo);;
-        }
-        
+        if(requestedCAMELSubscriptionInfo!=null)
+        	this.requestedCAMELSubscriptionInfo = new ASNRequestedCamelSubscriptionInfoImpl(requestedCAMELSubscriptionInfo);
+        	
         if(isSupportedVlrCamelPhases)
         	this.isSupportedVlrCamelPhases = new ASNNull();
         
@@ -105,11 +103,9 @@ public class RequestedSubscriptionInfoImpl implements RequestedSubscriptionInfo 
         
         this.extensionContainer = extensionContainer;
         
-        if(additionalRequestedCAMELSubscriptionInfo!=null) {
-        	this.additionalRequestedCAMELSubscriptionInfo = new ASNAdditionalRequestedCamelSubscriptionInfoImpl();
-        	this.additionalRequestedCAMELSubscriptionInfo.setType(additionalRequestedCAMELSubscriptionInfo);
-        }
-        
+        if(additionalRequestedCAMELSubscriptionInfo!=null)
+        	this.additionalRequestedCAMELSubscriptionInfo = new ASNAdditionalRequestedCamelSubscriptionInfoImpl(additionalRequestedCAMELSubscriptionInfo);
+        	
         if(isMsisdnBsList)
         	this.isMsisdnBsList = new ASNNull();
         

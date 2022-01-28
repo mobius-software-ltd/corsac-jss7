@@ -41,13 +41,14 @@ public class CAPUserAbortPrimitiveImpl extends ASNEnumerated {
     }
 
     public CAPUserAbortPrimitiveImpl(CAPUserAbortReason reason) {
-        setValue(Long.valueOf(reason.getCode()));
+        super(reason.getCode());
     }
 
     public CAPUserAbortReason getCAPUserAbortReason() {
-    	if(getValue()==null)
+    	Integer value=getIntValue();
+    	if(value==null)
     		return null;
     	
-        return CAPUserAbortReason.getInstance(getValue().intValue());
+        return CAPUserAbortReason.getInstance(value);
     }
 }

@@ -98,20 +98,16 @@ public class ODisconnectRequestImpl extends CircuitSwitchedCallMessageImpl imple
         if(callingFacilityGroup!=null)
         	this.callingFacilityGroup=new FacilityGroupWrapperImpl(callingFacilityGroup);
         
-        if(callingFacilityGroupMember!=null) {
-        	this.callingFacilityGroupMember=new ASNInteger();
-        	this.callingFacilityGroupMember.setValue(callingFacilityGroupMember.longValue());
-        }
-        
+        if(callingFacilityGroupMember!=null)
+        	this.callingFacilityGroupMember=new ASNInteger(callingFacilityGroupMember);
+        	
         this.releaseCause=releaseCause;
         this.routeList=routeList;
         this.extensions = extensions;
         this.carrier=carrier;
         
-        if(connectTime!=null) {
-        	this.connectTime=new ASNInteger();
-        	this.connectTime.setValue(connectTime.longValue());
-        }
+        if(connectTime!=null)
+        	this.connectTime=new ASNInteger(connectTime);        	
     }
 
     @Override
@@ -149,10 +145,10 @@ public class ODisconnectRequestImpl extends CircuitSwitchedCallMessageImpl imple
 
     @Override
     public Integer getCallingFacilityGroupMember() {
-    	if(callingFacilityGroupMember==null || callingFacilityGroupMember.getValue()==null)
+    	if(callingFacilityGroupMember==null)
     		return null;
     	
-		return callingFacilityGroupMember.getValue().intValue();
+		return callingFacilityGroupMember.getIntValue();
 	}
 
     @Override
@@ -177,10 +173,10 @@ public class ODisconnectRequestImpl extends CircuitSwitchedCallMessageImpl imple
 
     @Override
     public Integer getConnectTime() {
-    	if(connectTime==null || connectTime.getValue()==null)
+    	if(connectTime==null)
     		return null;
     	
-		return connectTime.getValue().intValue();
+		return connectTime.getIntValue();
 	}
 
 	@Override

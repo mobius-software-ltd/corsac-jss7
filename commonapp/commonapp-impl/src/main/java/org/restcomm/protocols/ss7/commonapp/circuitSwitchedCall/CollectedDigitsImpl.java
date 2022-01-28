@@ -31,10 +31,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -50,13 +49,13 @@ public class CollectedDigitsImpl implements CollectedDigits {
     private ASNInteger maximumNbOfDigits;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
-    private ASNOctetString endOfReplyDigit;
+    private ASNOctetString2 endOfReplyDigit;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
-    private ASNOctetString cancelDigit;
+    private ASNOctetString2 cancelDigit;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = false,index = -1)
-    private ASNOctetString startDigit;
+    private ASNOctetString2 startDigit;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = false,index = -1)
     private ASNInteger firstDigitTimeOut;
@@ -79,128 +78,89 @@ public class CollectedDigitsImpl implements CollectedDigits {
     public CollectedDigitsImpl() {
     }
 
-    public CollectedDigitsImpl(Integer minimumNbOfDigits, int maximumNbOfDigits, byte[] endOfReplyDigit, byte[] cancelDigit,
-            byte[] startDigit, Integer firstDigitTimeOut, Integer interDigitTimeOut, ErrorTreatment errorTreatment,
+    public CollectedDigitsImpl(Integer minimumNbOfDigits, int maximumNbOfDigits, ByteBuf endOfReplyDigit, ByteBuf cancelDigit,
+    		ByteBuf startDigit, Integer firstDigitTimeOut, Integer interDigitTimeOut, ErrorTreatment errorTreatment,
             Boolean interruptableAnnInd, Boolean voiceInformation, Boolean voiceBack) {
-        if(minimumNbOfDigits!=null) {
-        	this.minimumNbOfDigits = new ASNInteger();
-        	this.minimumNbOfDigits.setValue(minimumNbOfDigits.longValue());
-        }
+        if(minimumNbOfDigits!=null)
+        	this.minimumNbOfDigits = new ASNInteger(minimumNbOfDigits);
+        	
+        this.maximumNbOfDigits = new ASNInteger(maximumNbOfDigits);
         
-        this.maximumNbOfDigits = new ASNInteger();
-        this.maximumNbOfDigits.setValue(Long.valueOf(maximumNbOfDigits));
+        if(endOfReplyDigit!=null)
+        	this.endOfReplyDigit = new ASNOctetString2(endOfReplyDigit);        
         
-        if(endOfReplyDigit!=null) {
-        	this.endOfReplyDigit = new ASNOctetString();
-        	this.endOfReplyDigit.setValue(Unpooled.wrappedBuffer(endOfReplyDigit));
-        }
+        if(cancelDigit!=null)
+        	this.cancelDigit = new ASNOctetString2(cancelDigit);        
         
-        if(cancelDigit!=null) {
-        	this.cancelDigit = new ASNOctetString();
-        	this.cancelDigit.setValue(Unpooled.wrappedBuffer(cancelDigit));
-        }
+        if(startDigit!=null)
+        	this.startDigit = new ASNOctetString2(startDigit);        
         
-        if(startDigit!=null) {
-        	this.startDigit = new ASNOctetString();
-        	this.startDigit.setValue(Unpooled.wrappedBuffer(startDigit));
-        }
+        if(firstDigitTimeOut!=null)
+        	this.firstDigitTimeOut = new ASNInteger(firstDigitTimeOut);
+        	
+        if(interDigitTimeOut!=null)
+        	this.interDigitTimeOut = new ASNInteger(interDigitTimeOut);
+        	
+        if(errorTreatment!=null)
+        	this.errorTreatment = new ASNErrorTreatment(errorTreatment);
+        	
+        if(interruptableAnnInd!=null)
+        	this.interruptableAnnInd = new ASNBoolean(interruptableAnnInd);        	
         
-        if(firstDigitTimeOut!=null) {
-        	this.firstDigitTimeOut = new ASNInteger();
-        	this.firstDigitTimeOut.setValue(firstDigitTimeOut.longValue());
-        }
+        if(voiceInformation!=null)
+        	this.voiceInformation = new ASNBoolean(voiceInformation);        	
         
-        if(interDigitTimeOut!=null) {
-        	this.interDigitTimeOut = new ASNInteger();
-        	this.interDigitTimeOut.setValue(interDigitTimeOut.longValue());
-        }
-        
-        if(errorTreatment!=null) {
-        	this.errorTreatment = new ASNErrorTreatment();
-        	this.errorTreatment.setType(errorTreatment);
-        }
-        
-        if(interruptableAnnInd!=null) {
-        	this.interruptableAnnInd = new ASNBoolean();
-        	this.interruptableAnnInd.setValue(interruptableAnnInd);
-        }
-        
-        if(voiceInformation!=null) {
-        	this.voiceInformation = new ASNBoolean();
-        	this.voiceInformation.setValue(voiceInformation);
-        }
-        
-        if(voiceBack!=null) {
-        	this.voiceBack = new ASNBoolean();
-        	this.voiceBack.setValue(voiceBack);
-        }
+        if(voiceBack!=null)
+        	this.voiceBack = new ASNBoolean(voiceBack);        	
     }
 
     public Integer getMinimumNbOfDigits() {
-    	if(minimumNbOfDigits==null || minimumNbOfDigits.getValue()==null)
+    	if(minimumNbOfDigits==null)
     		return null;
     	
-        return minimumNbOfDigits.getValue().intValue();
+        return minimumNbOfDigits.getIntValue();
     }
 
     public int getMaximumNbOfDigits() {
     	if(maximumNbOfDigits==null || maximumNbOfDigits.getValue()==null)
     		return 0;
     	
-        return maximumNbOfDigits.getValue().intValue();
+        return maximumNbOfDigits.getIntValue();
     }
 
-    public byte[] getEndOfReplyDigit() {
+    public ByteBuf getEndOfReplyDigit() {
     	if(endOfReplyDigit==null)
     		return null;
     	
-    	ByteBuf value=endOfReplyDigit.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return endOfReplyDigit.getValue();    	
     }
 
-    public byte[] getCancelDigit() {
+    public ByteBuf getCancelDigit() {
     	if(cancelDigit==null)
     		return null;
     	
-    	ByteBuf value=cancelDigit.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return cancelDigit.getValue();    	
     }
 
-    public byte[] getStartDigit() {
+    public ByteBuf getStartDigit() {
     	if(startDigit==null)
     		return null;
     	
-    	ByteBuf value=startDigit.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return startDigit.getValue();
     }
 
     public Integer getFirstDigitTimeOut() {
-    	if(firstDigitTimeOut==null || firstDigitTimeOut.getValue()==null)
+    	if(firstDigitTimeOut==null)
     		return null;
     	
-        return firstDigitTimeOut.getValue().intValue();
+        return firstDigitTimeOut.getIntValue();
     }
 
     public Integer getInterDigitTimeOut() {
-    	if(interDigitTimeOut==null || interDigitTimeOut.getValue()==null)
+    	if(interDigitTimeOut==null)
     		return null;
     	
-        return interDigitTimeOut.getValue().intValue();
+        return interDigitTimeOut.getIntValue();
     }
 
     public ErrorTreatment getErrorTreatment() {
@@ -245,17 +205,17 @@ public class CollectedDigitsImpl implements CollectedDigits {
         sb.append(this.maximumNbOfDigits);
         if (this.endOfReplyDigit != null) {
             sb.append(", endOfReplyDigit=[");
-            sb.append(ASNOctetString.printDataArr(this.getEndOfReplyDigit()));
+            sb.append(endOfReplyDigit.printDataArr());
             sb.append("]");
         }
         if (this.cancelDigit != null) {
             sb.append(", cancelDigit=[");
-            sb.append(ASNOctetString.printDataArr(this.getCancelDigit()));
+            sb.append(cancelDigit.printDataArr());
             sb.append("]");
         }
         if (this.startDigit != null) {
             sb.append(", startDigit=[");
-            sb.append(ASNOctetString.printDataArr(this.getStartDigit()));
+            sb.append(startDigit.printDataArr());
             sb.append("]");
         }
         if (this.firstDigitTimeOut != null) {

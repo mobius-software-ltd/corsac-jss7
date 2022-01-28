@@ -52,9 +52,10 @@ public class ResultImpl implements Result {
      * @see org.restcomm.protocols.ss7.tcap.asn.Result#setResultType(org.restcomm .protocols.ss7.tcap.asn.ResultType)
      */
     public void setResultType(ResultType t) {
-        this.resultType = new ASNResultType();
-        this.resultType.setType(t);
-
+    	if(t!=null)
+    		this.resultType = new ASNResultType(t);
+    	else
+    		this.resultType = null;
     }
 
     public String toString() {

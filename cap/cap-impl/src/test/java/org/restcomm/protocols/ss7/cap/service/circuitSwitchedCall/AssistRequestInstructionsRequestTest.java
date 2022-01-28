@@ -43,7 +43,7 @@ import io.netty.buffer.Unpooled;
 public class AssistRequestInstructionsRequestTest {
 
     public byte[] getData1() {
-        return new byte[] { 48, 33, (byte) 128, 8, 0, (byte) 128, 20, 17, 33, 34, 51, 3, (byte) 130, 1, 111, (byte) 163, 18,
+        return new byte[] { 48, 33, (byte) 128, 8, 0, (byte) 128, 20, 17, 33, 34, 51, 3, (byte) 130, 1, 15, (byte) 163, 18,
                 48, 5, 2, 1, 2, (byte) 129, 0, 48, 9, 2, 1, 3, 10, 1, 1, (byte) 129, 1, (byte) 255 };
     }
 
@@ -73,7 +73,11 @@ public class AssistRequestInstructionsRequestTest {
         assertEquals(elem.getCorrelationID().getGenericNumber().getNumberingPlanIndicator(), 1);
         assertEquals(elem.getCorrelationID().getGenericNumber().getAddressRepresentationRestrictedIndicator(), 1);
         assertEquals(elem.getCorrelationID().getGenericNumber().getScreeningIndicator(), 0);
-        assertTrue(Arrays.equals(elem.getIPSSPCapabilities().getData(), getIPSSPCapabilitiesInt()));
+        assertEquals(elem.getIPSSPCapabilities().getIPRoutingAddressSupported(), true);
+        assertEquals(elem.getIPSSPCapabilities().getVoiceBackSupported(), true);
+        assertEquals(elem.getIPSSPCapabilities().getVoiceInformationSupportedViaSpeechRecognition(), true);
+        assertEquals(elem.getIPSSPCapabilities().getVoiceInformationSupportedViaVoiceRecognition(), true);
+        assertEquals(elem.getIPSSPCapabilities().getGenerationOfVoiceAnnouncementsFromTextSupported(), false);
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
     }
 
@@ -88,7 +92,7 @@ public class AssistRequestInstructionsRequestTest {
         // addressRepresentationREstrictedIndicator,
         // boolean numberIncomplete, int screeningIndicator
         DigitsIsupImpl correlationID = new DigitsIsupImpl(genericNumber);
-        IPSSPCapabilitiesImpl ipSSPCapabilities = new IPSSPCapabilitiesImpl(getIPSSPCapabilitiesInt());
+        IPSSPCapabilitiesImpl ipSSPCapabilities = new IPSSPCapabilitiesImpl(true, true, true, true, false, null);
 
         AssistRequestInstructionsRequestImpl elem = new AssistRequestInstructionsRequestImpl(correlationID, ipSSPCapabilities,
                 CAPExtensionsTest.createTestCAPExtensions());

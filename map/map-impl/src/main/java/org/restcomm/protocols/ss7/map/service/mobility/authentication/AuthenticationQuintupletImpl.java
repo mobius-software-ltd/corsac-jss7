@@ -28,9 +28,9 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -41,114 +41,74 @@ import io.netty.buffer.Unpooled;
 public class AuthenticationQuintupletImpl implements AuthenticationQuintuplet {
 	
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-	private ASNOctetString rand;
+	private ASNOctetString2 rand;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
-	private ASNOctetString xres;
+	private ASNOctetString2 xres;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=2)
-	private ASNOctetString ck;
+	private ASNOctetString2 ck;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=3)
-	private ASNOctetString ik;
+	private ASNOctetString2 ik;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=4)
-	private ASNOctetString autn;
+	private ASNOctetString2 autn;
 
     public AuthenticationQuintupletImpl() {
     }
 
-    public AuthenticationQuintupletImpl(byte[] rand, byte[] xres, byte[] ck, byte[] ik, byte[] autn) {
+    public AuthenticationQuintupletImpl(ByteBuf rand, ByteBuf xres, ByteBuf ck, ByteBuf ik, ByteBuf autn) {
     	
-    	if(rand!=null) {
-    		this.rand = new ASNOctetString();
-    		this.rand.setValue(Unpooled.wrappedBuffer(rand));
-    	}
+    	if(rand!=null)
+    		this.rand = new ASNOctetString2(rand);
     	
-    	if(xres!=null) {
-    		this.xres = new ASNOctetString();
-    		this.xres.setValue(Unpooled.wrappedBuffer(xres));
-    	}
+    	if(xres!=null)
+    		this.xres = new ASNOctetString2(xres);
     	
-    	if(ck!=null) {
-    		this.ck = new ASNOctetString();
-    		this.ck.setValue(Unpooled.wrappedBuffer(ck));
-    	}
+    	if(ck!=null)
+    		this.ck = new ASNOctetString2(ck);
     	
-    	if(ik!=null) {
-    		this.ik = new ASNOctetString();
-    		this.ik.setValue(Unpooled.wrappedBuffer(ik));
-    	}
+    	if(ik!=null)
+    		this.ik = new ASNOctetString2(ik);
     	
-    	if(autn!=null) {
-    		this.autn = new ASNOctetString();
-    		this.autn.setValue(Unpooled.wrappedBuffer(autn));
-    	}    	
+    	if(autn!=null)
+    		this.autn = new ASNOctetString2(autn);    	
     }
 
-    public byte[] getRand() {
+    public ByteBuf getRand() {
     	if(this.rand==null)
     		return null;
     	
-    	ByteBuf value=this.rand.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return this.rand.getValue();    	
     }
 
-    public byte[] getXres() {
+    public ByteBuf getXres() {
     	if(this.xres==null)
     		return null;
     	
-    	ByteBuf value=this.xres.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return this.xres.getValue();    	
     }
 
-    public byte[] getCk() {
+    public ByteBuf getCk() {
     	if(this.ck==null)
     		return null;
     	
-    	ByteBuf value=this.ck.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return this.ck.getValue();    	
     }
 
-    public byte[] getIk() {
+    public ByteBuf getIk() {
     	if(this.ik==null)
     		return null;
     	
-    	ByteBuf value=this.ik.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return this.ik.getValue();    	
     }
 
-    public byte[] getAutn() {
+    public ByteBuf getAutn() {
     	if(this.autn==null)
     		return null;
     	
-    	ByteBuf value=this.autn.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return this.autn.getValue();    	
     }
 
     @Override

@@ -27,6 +27,8 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.ErrorTreatment;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -65,11 +67,11 @@ public interface CollectedDigits {
 
     int getMaximumNbOfDigits();
 
-    byte[] getEndOfReplyDigit();
+    ByteBuf getEndOfReplyDigit();
 
-    byte[] getCancelDigit();
+    ByteBuf getCancelDigit();
 
-    byte[] getStartDigit();
+    ByteBuf getStartDigit();
 
     Integer getFirstDigitTimeOut();
 

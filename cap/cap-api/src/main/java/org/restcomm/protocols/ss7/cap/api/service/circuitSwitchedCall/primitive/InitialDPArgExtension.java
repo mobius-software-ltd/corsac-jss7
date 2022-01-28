@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
 import org.restcomm.protocols.ss7.commonapp.api.callhandling.UUData;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.LowLayerCompatibility;
@@ -109,7 +108,4 @@ public interface InitialDPArgExtension {
     boolean getCollectInformationAllowed();
 
     boolean getReleaseCallArgExtensionAllowed();
-    
-    void patchVersion(int version) throws APPParsingComponentException;
-
 }

@@ -29,6 +29,8 @@ import org.restcomm.protocols.ss7.map.api.primitives.ASCICallReference;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.AdditionalSubscriptions;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  SendGroupCallInfoRes ::= SEQUENCE { anchorMSC-Address [0] ISDN-AddressString OPTIONAL, asciCallReference [1]
@@ -53,7 +55,7 @@ public interface SendGroupCallInfoResponse extends CallHandlingMessage {
 
      AdditionalSubscriptions getAdditionalSubscriptions();
 
-     byte[] getKc();
+     ByteBuf getKc();
 
      MAPExtensionContainer getExtensionContainer();
 }

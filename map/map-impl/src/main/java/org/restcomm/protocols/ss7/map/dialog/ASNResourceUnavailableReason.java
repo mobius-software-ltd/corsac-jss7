@@ -8,15 +8,19 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,lengthIndefinite=false)
 public class ASNResourceUnavailableReason extends ASNEnumerated {
-	public void setType(ResourceUnavailableReason t) {
-		super.setValue(new Long(t.getCode()));
+	public ASNResourceUnavailableReason() {
+		
+	}
+	
+	public ASNResourceUnavailableReason(ResourceUnavailableReason t) {
+		super(t.getCode());
 	}
 	
 	public ResourceUnavailableReason getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return ResourceUnavailableReason.getInstance(getValue().intValue());
+		return ResourceUnavailableReason.getInstance(realValue);
 	}
 }

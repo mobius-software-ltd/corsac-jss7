@@ -4,7 +4,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.BothwayThroughConnect
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 
 /*
@@ -32,17 +32,20 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 *
 */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,lengthIndefinite=false)
-public class ASNBothwayThroughConnectionInd extends ASNInteger {
-	public void setType(BothwayThroughConnectionInd t) {
-		if(t!=null)
-			setValue((long)t.getCode());
+public class ASNBothwayThroughConnectionInd extends ASNEnumerated {
+	public ASNBothwayThroughConnectionInd() {
+		
+	}
+	
+	public ASNBothwayThroughConnectionInd(BothwayThroughConnectionInd t) {
+		super(t.getCode());
 	}
 	
 	public BothwayThroughConnectionInd getType() {
-		Long realValue=getValue();
+		Integer realValue=getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return BothwayThroughConnectionInd.getInstance(realValue.intValue());
+		return BothwayThroughConnectionInd.getInstance(realValue);
 	}
 }

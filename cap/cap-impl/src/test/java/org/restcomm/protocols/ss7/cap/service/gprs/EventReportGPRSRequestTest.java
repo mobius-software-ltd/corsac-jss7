@@ -64,8 +64,8 @@ public class EventReportGPRSRequestTest {
 
     public byte[] getData() {
         return new byte[] { 48, 72, -128, 1, 2, -95, 3, -128, 1, 1, -94, 59, -96, 57, -96, 7, -127, 5, 82, -16, 16, 17, 92,
-                -127, 6, 11, 12, 13, 14, 15, 16, -126, 8, 31, 32, 33, 34, 35, 36, 37, 38, -125, 4, -111, 86, 52, 18, -124, 3,
-                91, 92, 93, -122, 0, -121, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, -120, 0, -119, 1, 13, -125, 1, 1 };
+                -127, 6, 11, 12, 13, 14, 15, 16, -126, 8, 16, 32, 33, 34, 35, 36, 37, 38, -125, 4, -111, 86, 52, 18, -124, 3,
+                91, 92, 93, -122, 0, -121, 10, 1, 16, 3, 4, 5, 6, 7, 8, 9, 10, -120, 0, -119, 1, 13, -125, 1, 1 };
     };
 
     public byte[] getDataLiveTrace() {
@@ -88,7 +88,7 @@ public class EventReportGPRSRequestTest {
     }
 
     private byte[] getGeodeticInformation() {
-        return new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        return new byte[] { 1, 16, 3, 4, 5, 6, 7, 8, 9, 10 };
     }
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -157,11 +157,17 @@ public class EventReportGPRSRequestTest {
         // gprsEventSpecificInformation
         LAIFixedLengthImpl lai = new LAIFixedLengthImpl(250, 1, 4444);
         CellGlobalIdOrServiceAreaIdOrLAIImpl cgi = new CellGlobalIdOrServiceAreaIdOrLAIImpl(lai);
-        RAIdentityImpl ra = new RAIdentityImpl(this.getEncodedDataRAIdentity());
-        GeographicalInformationImpl ggi = new GeographicalInformationImpl(this.getGeographicalInformation());
+        RAIdentityImpl ra = new RAIdentityImpl(Unpooled.wrappedBuffer(this.getEncodedDataRAIdentity()));
+        
+        ByteBuf geoBuffer=Unpooled.wrappedBuffer(getGeographicalInformation());
+        GeographicalInformationImpl ggi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
+        
         ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "654321");
-        LSAIdentityImpl lsa = new LSAIdentityImpl(this.getEncodedDataLSAIdentity());
-        GeodeticInformationImpl gdi = new GeodeticInformationImpl(this.getGeodeticInformation());
+        LSAIdentityImpl lsa = new LSAIdentityImpl(Unpooled.wrappedBuffer(this.getEncodedDataLSAIdentity()));
+        
+        ByteBuf geodeticBuffer=Unpooled.wrappedBuffer(getGeodeticInformation());
+        GeodeticInformationImpl gdi = new GeodeticInformationImpl(geodeticBuffer.readByte() & 0x0FF, GeographicalInformationImpl.decodeTypeOfShape(geodeticBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geodeticBuffer), GeographicalInformationImpl.decodeLongitude(geodeticBuffer), GeographicalInformationImpl.decodeUncertainty(geodeticBuffer.readByte() & 0x0FF),geodeticBuffer.readByte() & 0x0FF);
+        
         LocationInformationGPRSImpl locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, ggi, sgsn, lsa, null, true,
                 gdi, true, 13);
         GPRSEventSpecificInformationImpl gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl(
@@ -188,12 +194,11 @@ public class EventReportGPRSRequestTest {
         MiscCallInfoImpl miscGPRSInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.request, null);
 
         // gprsEventSpecificInformation
-        CellGlobalIdOrServiceAreaIdFixedLengthImpl cellGlobalIdOrServiceAreaIdFixedLength = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(
-                new byte[] { 0x27, (byte) 0xf4, 0x43, 0x08, (byte) 0xba, 0x16, 0x4e });
+        CellGlobalIdOrServiceAreaIdFixedLengthImpl cellGlobalIdOrServiceAreaIdFixedLength = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(724,34,0x08ba,0x164e);                
 
         CellGlobalIdOrServiceAreaIdOrLAIImpl cgi = new CellGlobalIdOrServiceAreaIdOrLAIImpl(
                 cellGlobalIdOrServiceAreaIdFixedLength);
-        RAIdentityImpl ra = new RAIdentityImpl(new byte[] { 0x27, (byte) 0xf4, 0x43, 0x08, (byte) 0xba, 0x00 });
+        RAIdentityImpl ra = new RAIdentityImpl(Unpooled.wrappedBuffer(new byte[] { 0x27, (byte) 0xf4, 0x43, 0x08, (byte) 0xba, 0x00 }));
         ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "553496629995");
         LocationInformationGPRSImpl locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, null, sgsn, null, null,

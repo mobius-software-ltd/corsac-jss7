@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.commonapp.subscriberManagement;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtTeleserviceCode;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.TeleserviceCodeValue;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,42 +35,30 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class ExtTeleserviceCodeImpl extends ASNOctetString implements ExtTeleserviceCode {
+public class ExtTeleserviceCodeImpl extends ASNOctetString2 implements ExtTeleserviceCode {
 	
 	public ExtTeleserviceCodeImpl() {
     }
-
-    public ExtTeleserviceCodeImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public ExtTeleserviceCodeImpl(TeleserviceCodeValue value) {
-        setTeleserviceCode(value);
+        super(translate(value));
     }
 
-    public void setTeleserviceCode(TeleserviceCodeValue value) {
+    private static ByteBuf translate(TeleserviceCodeValue value) {
         if (value != null) {
-            byte[] data = new byte[] { (byte) (value.getCode()) };
-            setValue(Unpooled.wrappedBuffer(data));
+        	ByteBuf buffer=Unpooled.buffer(1);
+        	buffer.writeByte(value.getCode());
+            return buffer;
         }
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(getValue()==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        else
+        	return Unpooled.EMPTY_BUFFER;
     }
 
     public TeleserviceCodeValue getTeleserviceCodeValue() {
-    	byte[] data=getData();
-        if (data == null || data.length < 1)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 1)
             return null;
         else
-            return TeleserviceCodeValue.getInstance(data[0]);
+            return TeleserviceCodeValue.getInstance(value.readByte());
     }
 
     @Override
@@ -80,16 +68,6 @@ public class ExtTeleserviceCodeImpl extends ASNOctetString implements ExtTeleser
 
         sb.append("Value=");
         sb.append(this.getTeleserviceCodeValue());
-
-        sb.append(", Data=[");
-        byte[] data=getData();
-        if (data != null) {
-            for (int i1 : data) {
-                sb.append(i1);
-                sb.append(", ");
-            }
-        }
-        sb.append("]");
 
         sb.append("]");
 

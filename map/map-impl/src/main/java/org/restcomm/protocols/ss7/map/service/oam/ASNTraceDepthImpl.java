@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.oam.TraceDepth;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNTraceDepthImpl extends ASNEnumerated {
-	public void setType(TraceDepth t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNTraceDepthImpl() {
+		
+	}
+	
+	public ASNTraceDepthImpl(TraceDepth t) {
+		super(t.getCode());
 	}
 	
 	public TraceDepth getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return TraceDepth.getInstance(getValue().intValue());
+		return TraceDepth.getInstance(realValue);
 	}
 }

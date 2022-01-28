@@ -56,27 +56,22 @@ public class ServiceTypeImpl implements ServiceType {
 
     public ServiceTypeImpl(int serviceTypeIdentity, GMLCRestriction gmlcRestriction, NotificationToMSUser notificationToMSUser,
             MAPExtensionContainer extensionContainer) {
-        this.serviceTypeIdentity = new ASNInteger();
-        this.serviceTypeIdentity.setValue((long)serviceTypeIdentity & 0x0FFFFFFFFL);
+        this.serviceTypeIdentity = new ASNInteger(serviceTypeIdentity);
         
-        if(gmlcRestriction!=null) {
-        	this.gmlcRestriction = new ASNGMLCRestriction();
-        	this.gmlcRestriction.setType(gmlcRestriction);
-        }
-        
-        if(notificationToMSUser!=null) {
-        	this.notificationToMSUser = new ASNNotificationToMSUser();
-        	this.notificationToMSUser.setType(notificationToMSUser);
-        }
-        
+        if(gmlcRestriction!=null)
+        	this.gmlcRestriction = new ASNGMLCRestriction(gmlcRestriction);
+        	
+        if(notificationToMSUser!=null)
+        	this.notificationToMSUser = new ASNNotificationToMSUser(notificationToMSUser);
+        	
         this.extensionContainer = extensionContainer;
     }
 
     public int getServiceTypeIdentity() {
-    	if(serviceTypeIdentity==null)
+    	if(serviceTypeIdentity==null || serviceTypeIdentity.getValue()==null)
     		return 0;
     	
-        return this.serviceTypeIdentity.getValue().intValue();
+        return this.serviceTypeIdentity.getIntValue();
     }
 
     public GMLCRestriction getGMLCRestriction() {

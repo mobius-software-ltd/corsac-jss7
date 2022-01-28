@@ -118,10 +118,8 @@ public class SGSNCapabilityImpl implements SGSNCapability {
         if(tAdsDataRetrieval)
         	this.tAdsDataRetrieval = new ASNNull();
         
-        if(homogeneousSupportOfIMSVoiceOverPSSessions!=null) {
-        	this.homogeneousSupportOfIMSVoiceOverPSSessions = new ASNBoolean();
-        	this.homogeneousSupportOfIMSVoiceOverPSSessions.setValue(homogeneousSupportOfIMSVoiceOverPSSessions);
-        }
+        if(homogeneousSupportOfIMSVoiceOverPSSessions!=null)
+        	this.homogeneousSupportOfIMSVoiceOverPSSessions = new ASNBoolean(homogeneousSupportOfIMSVoiceOverPSSessions);        	
     }
 
     public boolean getSolsaSupportIndicator() {

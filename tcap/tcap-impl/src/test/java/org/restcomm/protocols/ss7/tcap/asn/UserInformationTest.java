@@ -102,8 +102,7 @@ public class UserInformationTest {
         UserInformationImpl userInformation = new UserInformationImpl();
         userInformation.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
-        UserInformationTestASN demo=new UserInformationTestASN();
-        demo.setValue(Unpooled.wrappedBuffer(new byte[] { (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24,
+        UserInformationTestASN demo=new UserInformationTestASN(Unpooled.wrappedBuffer(new byte[] { (byte) 0x80, 0x09, (byte) 0x96, 0x02, 0x24,
                 (byte) 0x80, 0x03, 0x00, (byte) 0x80, 0x00, (byte) 0xf2, (byte) 0x81, 0x07, (byte) 0x91, 0x13, 0x26,
                 (byte) 0x98, (byte) 0x86, 0x03, (byte) 0xf0 }));
                

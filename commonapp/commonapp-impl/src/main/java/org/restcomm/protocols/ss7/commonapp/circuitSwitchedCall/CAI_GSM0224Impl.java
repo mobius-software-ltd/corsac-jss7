@@ -61,89 +61,75 @@ public class CAI_GSM0224Impl implements CAI_GSM0224 {
     }
 
     public CAI_GSM0224Impl(Integer e1, Integer e2, Integer e3, Integer e4, Integer e5, Integer e6, Integer e7) {
-    	if(e1!=null) {
-    		this.e1 = new ASNInteger();
-    		this.e1.setValue(e1.longValue());
-    	}
-    	
-    	if(e2!=null) {
-    		this.e2 = new ASNInteger();
-    		this.e2.setValue(e2.longValue());
-    	}
-    	
-    	if(e3!=null) {
-    		this.e3 = new ASNInteger();
-    		this.e3.setValue(e3.longValue());
-    	}
-    	
-    	if(e4!=null) {
-    		this.e4 = new ASNInteger();
-    		this.e4.setValue(e4.longValue());
-    	}
-    	
-    	if(e5!=null) {
-    		this.e5 = new ASNInteger();
-    		this.e5.setValue(e5.longValue());
-    	}
-
-    	if(e6!=null) {
-    		this.e6 = new ASNInteger();
-    		this.e6.setValue(e6.longValue());
-    	}
-    	
-    	if(e7!=null) {
-    		this.e7 = new ASNInteger();
-    		this.e7.setValue(e7.longValue());
-    	}
+    	if(e1!=null)
+    		this.e1 = new ASNInteger(e1);
+    		
+    	if(e2!=null)
+    		this.e2 = new ASNInteger(e2);
+    		
+    	if(e3!=null)
+    		this.e3 = new ASNInteger(e3);
+    		
+    	if(e4!=null)
+    		this.e4 = new ASNInteger(e4);
+    		
+    	if(e5!=null)
+    		this.e5 = new ASNInteger(e5);
+    		
+    	if(e6!=null)
+    		this.e6 = new ASNInteger(e6);
+    		
+    	if(e7!=null)
+    		this.e7 = new ASNInteger(e7);    		
     }
 
     public Integer getE1() {
-    	if(e1==null || e1.getValue()==null)
+    	if(e1==null)
     		return null;
     	
-        return e1.getValue().intValue();
+        return e1.getIntValue();
     }
 
     public Integer getE2() {
-    	if(e2==null || e2.getValue()==null)
+    	if(e2==null)
     		return null;
     	
-        return e2.getValue().intValue();
+        return e2.getIntValue();
     }
 
     public Integer getE3() {
-    	if(e3==null || e3.getValue()==null)
+    	if(e3==null)
     		return null;
     	
-        return e3.getValue().intValue();
+        return e3.getIntValue();
     }
 
     public Integer getE4() {
-    	if(e4==null || e4.getValue()==null)
+    	if(e4==null)
     		return null;
     	
-        return e4.getValue().intValue();
+        return e4.getIntValue();
     }
 
     public Integer getE5() {
-    	if(e5==null || e5.getValue()==null)
+    	if(e5==null)
     		return null;
     	
-        return e5.getValue().intValue();
+        return e5.getIntValue();
     }
 
     public Integer getE6() {
-    	if(e6==null || e6.getValue()==null)
+    	if(e6==null)
     		return null;
     	
-        return e6.getValue().intValue();
+        return e6.getIntValue();
     }
 
     public Integer getE7() {
-    	if(e7==null || e7.getValue()==null)
+    	if(e7==null)
     		return null;
     	
-        return e7.getValue().intValue();
+        return e7.getIntValue();
     }
 
     @Override

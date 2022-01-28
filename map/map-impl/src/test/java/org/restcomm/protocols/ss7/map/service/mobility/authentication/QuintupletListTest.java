@@ -38,6 +38,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -66,11 +67,11 @@ public class QuintupletListTest {
         
         assertEquals(prim.getAuthenticationQuintuplets().size(), 1);
 
-        assertTrue(Arrays.equals(prim.getAuthenticationQuintuplets().get(0).getRand(),AuthenticationQuintupletTest.getRandData()));
-        assertTrue(Arrays.equals(prim.getAuthenticationQuintuplets().get(0).getXres(),AuthenticationQuintupletTest.getXresData()));
-        assertTrue(Arrays.equals(prim.getAuthenticationQuintuplets().get(0).getCk(), AuthenticationQuintupletTest.getCkData()));
-        assertTrue(Arrays.equals(prim.getAuthenticationQuintuplets().get(0).getIk(), AuthenticationQuintupletTest.getIkData()));
-        assertTrue(Arrays.equals(prim.getAuthenticationQuintuplets().get(0).getAutn(),AuthenticationQuintupletTest.getAutnData()));
+        assertTrue(ByteBufUtil.equals(prim.getAuthenticationQuintuplets().get(0).getRand(),Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getRandData())));
+        assertTrue(ByteBufUtil.equals(prim.getAuthenticationQuintuplets().get(0).getXres(),Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getXresData())));
+        assertTrue(ByteBufUtil.equals(prim.getAuthenticationQuintuplets().get(0).getCk(), Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getCkData())));
+        assertTrue(ByteBufUtil.equals(prim.getAuthenticationQuintuplets().get(0).getIk(), Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getIkData())));
+        assertTrue(ByteBufUtil.equals(prim.getAuthenticationQuintuplets().get(0).getAutn(),Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getAutnData())));
     }
 
     @Test(groups = { "functional.encode" })
@@ -78,7 +79,10 @@ public class QuintupletListTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(QuintupletListImpl.class);
 
-        AuthenticationQuintupletImpl d1 = new AuthenticationQuintupletImpl(AuthenticationQuintupletTest.getRandData(),AuthenticationQuintupletTest.getXresData(), AuthenticationQuintupletTest.getCkData(),AuthenticationQuintupletTest.getIkData(), AuthenticationQuintupletTest.getAutnData());
+        AuthenticationQuintupletImpl d1 = new AuthenticationQuintupletImpl(Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getRandData()),
+        		Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getXresData()), Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getCkData()),
+        		Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getIkData()), Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getAutnData()));
+
         List<AuthenticationQuintuplet> arr = new ArrayList<AuthenticationQuintuplet>();
         arr.add(d1);
         QuintupletList asc = new QuintupletListImpl(arr);

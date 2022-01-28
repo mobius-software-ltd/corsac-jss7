@@ -48,8 +48,7 @@ public class ErrorCodeImpl implements ErrorCode {
 
 	public void setGlobalErrorCode(List<Long> globalErrorCode) {
 		this.localErrorCode=null;
-		this.globalErrorCode=new ASNObjectIdentifier();
-		this.globalErrorCode.setValue(globalErrorCode);		
+		this.globalErrorCode=new ASNObjectIdentifier(globalErrorCode);		
 	}
 
 	public Long getLocalErrorCode() {
@@ -61,8 +60,7 @@ public class ErrorCodeImpl implements ErrorCode {
 
 	public void setLocalErrorCode(Long localErrorCode) {
 		this.globalErrorCode=null;
-		this.localErrorCode = new ASNInteger();
-		this.localErrorCode.setValue(localErrorCode);
+		this.localErrorCode = new ASNInteger(localErrorCode);
 	}
 
 	public ErrorCodeType getErrorType() {

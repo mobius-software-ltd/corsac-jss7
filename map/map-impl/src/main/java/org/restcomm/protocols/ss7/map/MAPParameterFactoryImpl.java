@@ -650,11 +650,11 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new USSDStringImpl(ussdString, null, null);
     }
 
-    public USSDString createUSSDString(byte[] ussdString, CBSDataCodingScheme dataCodingScheme, Charset gsm8Charset) {
+    public USSDString createUSSDString(ByteBuf ussdString, CBSDataCodingScheme dataCodingScheme, Charset gsm8Charset) {
         return new USSDStringImpl(ussdString, dataCodingScheme);
     }
 
-    public USSDString createUSSDString(byte[] ussdString) {
+    public USSDString createUSSDString(ByteBuf ussdString) {
         return new USSDStringImpl(ussdString, null);
     }
 
@@ -695,8 +695,8 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new IMEIImpl(imei);
     }
 
-    public LMSI createLMSI(byte[] data) {
-        return new LMSIImpl(data);
+    public LMSI createLMSI(ByteBuf value) {
+        return new LMSIImpl(value);
     }
 
     public SM_RP_DA createSM_RP_DA(IMSI imsi) {
@@ -731,16 +731,8 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new SM_RP_OAImpl();
     }
 
-    public SmsSignalInfo createSmsSignalInfo(byte[] data, Charset gsm8Charset) {
-        return new SmsSignalInfoImpl(data, gsm8Charset);
-    }
-
     public SmsSignalInfo createSmsSignalInfo(SmsTpdu data, Charset gsm8Charset) throws MAPException {
         return new SmsSignalInfoImpl(data, gsm8Charset);
-    }
-
-    public SM_RP_SMEA createSM_RP_SMEA(byte[] data) {
-        return new SM_RP_SMEAImpl(data);
     }
 
     public SM_RP_SMEA createSM_RP_SMEA(AddressField addressField) throws MAPException {
@@ -789,10 +781,6 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new CellGlobalIdOrServiceAreaIdOrLAIImpl(laiFixedLength);
     }
 
-    public CellGlobalIdOrServiceAreaIdFixedLength createCellGlobalIdOrServiceAreaIdFixedLength(byte[] data) {
-        return new CellGlobalIdOrServiceAreaIdFixedLengthImpl(data);
-    }
-
     public CellGlobalIdOrServiceAreaIdFixedLength createCellGlobalIdOrServiceAreaIdFixedLength(int mcc, int mnc, int lac,
             int cellIdOrServiceAreaCode) throws MAPException {
     	try {
@@ -801,10 +789,6 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     	catch(APPException ex) {
     		throw new MAPException(ex.getMessage(), ex.getCause());
     	}
-    }
-
-    public LAIFixedLength createLAIFixedLength(byte[] data) {
-        return new LAIFixedLengthImpl(data);
     }
 
     public LAIFixedLength createLAIFixedLength(int mcc, int mnc, int lac) throws MAPException {
@@ -816,8 +800,8 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     	}
     }
 
-    public CallReferenceNumber createCallReferenceNumber(byte[] data) {
-        return new CallReferenceNumberImpl(data);
+    public CallReferenceNumber createCallReferenceNumber(ByteBuf value) {
+        return new CallReferenceNumberImpl(value);
     }
 
     public LocationInformation createLocationInformation(Integer ageOfLocationInformation,
@@ -829,10 +813,6 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new LocationInformationImpl(ageOfLocationInformation, geographicalInformation, vlrNumber, locationNumber,
                 cellGlobalIdOrServiceAreaIdOrLAI, extensionContainer, selectedLSAId, mscNumber, geodeticInformation,
                 currentLocationRetrieved, saiPresent, locationInformationEPS, userCSGInformation);
-    }
-
-    public LocationNumberMap createLocationNumberMap(byte[] data) {
-        return new LocationNumberMapImpl(data);
     }
 
     public LocationNumberMap createLocationNumberMap(LocationNumber locationNumber) throws MAPException {
@@ -857,10 +837,6 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new ExtBasicServiceCodeImpl(extTeleserviceCode);
     }
 
-    public ExtBearerServiceCode createExtBearerServiceCode(byte[] data) {
-        return new ExtBearerServiceCodeImpl(data);
-    }
-
     public ExtBearerServiceCode createExtBearerServiceCode(BearerServiceCodeValue value) {
         return new ExtBearerServiceCodeImpl(value);
     }
@@ -871,10 +847,6 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
 
     public BearerServiceCode createBearerServiceCode(BearerServiceCodeValue value) {
         return new BearerServiceCodeImpl(value);
-    }
-
-    public ExtTeleserviceCode createExtTeleserviceCode(byte[] data) {
-        return new ExtTeleserviceCodeImpl(data);
     }
 
     public ExtTeleserviceCode createExtTeleserviceCode(TeleserviceCodeValue value) {
@@ -889,11 +861,11 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new TeleserviceCodeImpl(value);
     }
 
-    public AuthenticationTriplet createAuthenticationTriplet(byte[] rand, byte[] sres, byte[] kc) {
+    public AuthenticationTriplet createAuthenticationTriplet(ByteBuf rand, ByteBuf sres, ByteBuf kc) {
         return new AuthenticationTripletImpl(rand, sres, kc);
     }
 
-    public AuthenticationQuintuplet createAuthenticationQuintuplet(byte[] rand, byte[] xres, byte[] ck, byte[] ik, byte[] autn) {
+    public AuthenticationQuintuplet createAuthenticationQuintuplet(ByteBuf rand, ByteBuf xres, ByteBuf ck, ByteBuf ik, ByteBuf autn) {
         return new AuthenticationQuintupletImpl(rand, xres, ck, ik, autn);
     }
 
@@ -913,19 +885,11 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new AuthenticationSetListImpl(quintupletList);
     }
 
-    public PlmnId createPlmnId(byte[] data) {
-        return new PlmnIdImpl(data);
-    }
-
     public PlmnId createPlmnId(int mcc, int mnc) {
         return new PlmnIdImpl(mcc, mnc);
     }
 
-    public GSNAddress createGSNAddress(byte[] data) {
-        return new GSNAddressImpl(data);
-    }
-
-    public GSNAddress createGSNAddress(GSNAddressAddressType addressType, byte[] addressData) throws MAPException {
+    public GSNAddress createGSNAddress(GSNAddressAddressType addressType, ByteBuf addressData) throws MAPException {
         try {
         	return new GSNAddressImpl(addressType, addressData);
         }
@@ -934,7 +898,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     	}
     }
 
-    public ReSynchronisationInfo createReSynchronisationInfo(byte[] rand, byte[] auts) {
+    public ReSynchronisationInfo createReSynchronisationInfo(ByteBuf rand, ByteBuf auts) {
         return new ReSynchronisationInfoImpl(rand, auts);
     }
 
@@ -942,7 +906,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new EpsAuthenticationSetListImpl(epcAv);
     }
 
-    public EpcAv createEpcAv(byte[] rand, byte[] xres, byte[] autn, byte[] kasme, MAPExtensionContainer extensionContainer) {
+    public EpcAv createEpcAv(ByteBuf rand, ByteBuf xres, ByteBuf autn, ByteBuf kasme, MAPExtensionContainer extensionContainer) {
         return new EpcAvImpl(rand, xres, autn, kasme, extensionContainer);
     }
 
@@ -964,7 +928,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new SuperChargerInfoImpl(true);
     }
 
-    public SuperChargerInfo createSuperChargerInfo(byte[] subscriberDataStored) {
+    public SuperChargerInfo createSuperChargerInfo(ByteBuf subscriberDataStored) {
         return new SuperChargerInfoImpl(subscriberDataStored);
     }
 
@@ -993,10 +957,6 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new PagingAreaImpl(locationAreas);
     }
 
-    public LAC createLAC(byte[] data) {
-        return new LACImpl(data);
-    }
-
     public LAC createLAC(int lac) throws MAPException {
         return new LACImpl(lac);
     }
@@ -1019,8 +979,8 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new AnyTimeInterrogationResponseImpl(subscriberInfo, extensionContainer);
     }
 
-    public DiameterIdentity createDiameterIdentity(byte[] data) {
-        return new DiameterIdentityImpl(data);
+    public DiameterIdentity createDiameterIdentity(ByteBuf value) {
+        return new DiameterIdentityImpl(value);
     }
 
     public SubscriberIdentity createSubscriberIdentity(IMSI imsi) {
@@ -1031,21 +991,13 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new SubscriberIdentityImpl(msisdn);
     }
 
-    public APN createAPN(byte[] data) {
-        return new APNImpl(data);
-    }
-
     @Override
     public APN createAPN(String data) throws MAPException {
         return new APNImpl(data);
     }
 
-    public PDPAddress createPDPAddress(byte[] data) {
-        return new PDPAddressImpl(data);
-    }
-
-    public PDPType createPDPType(byte[] data) {
-        return new PDPTypeImpl(data);
+    public PDPAddress createPDPAddress(ByteBuf value) {
+        return new PDPAddressImpl(value);
     }
 
     @Override
@@ -1069,26 +1021,18 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
                 extPdpType, extPdpAddress);
     }
 
-    public LSAIdentity createLSAIdentity(byte[] data) {
+    public LSAIdentity createLSAIdentity(ByteBuf data) {
         return new LSAIdentityImpl(data);
     }
 
-    public GPRSChargingID createGPRSChargingID(byte[] data) {
+    public GPRSChargingID createGPRSChargingID(ByteBuf data) {
         return new GPRSChargingIDImpl(data);
-    }
-
-    public ChargingCharacteristics createChargingCharacteristics(byte[] data) {
-        return new ChargingCharacteristicsImpl(data);
     }
 
     @Override
     public ChargingCharacteristics createChargingCharacteristics(boolean isNormalCharging, boolean isPrepaidCharging, boolean isFlatRateChargingCharging,
             boolean isChargingByHotBillingCharging) {
         return new ChargingCharacteristicsImpl(isNormalCharging, isPrepaidCharging, isFlatRateChargingCharging, isChargingByHotBillingCharging);
-    }
-
-    public ExtQoSSubscribed createExtQoSSubscribed(byte[] data) {
-        return new ExtQoSSubscribedImpl(data);
     }
 
     @Override
@@ -1103,20 +1047,12 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
                 guaranteedBitRateForUplink, guaranteedBitRateForDownlink);
     }
 
-    public Ext2QoSSubscribed createExt2QoSSubscribed(byte[] data) {
-        return new Ext2QoSSubscribedImpl(data);
-    }
-
     @Override
     public Ext2QoSSubscribed createExt2QoSSubscribed(Ext2QoSSubscribed_SourceStatisticsDescriptor sourceStatisticsDescriptor,
             boolean optimisedForSignallingTraffic, ExtQoSSubscribed_BitRateExtended maximumBitRateForDownlinkExtended,
             ExtQoSSubscribed_BitRateExtended guaranteedBitRateForDownlinkExtended) {
         return new Ext2QoSSubscribedImpl(sourceStatisticsDescriptor, optimisedForSignallingTraffic, maximumBitRateForDownlinkExtended,
                 guaranteedBitRateForDownlinkExtended);
-    }
-
-    public Ext3QoSSubscribed createExt3QoSSubscribed(byte[] data) {
-        return new Ext3QoSSubscribedImpl(data);
     }
 
     @Override
@@ -1129,41 +1065,33 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new Ext4QoSSubscribedImpl(data);
     }
 
-    public ExtPDPType createExtPDPType(byte[] data) {
-        return new ExtPDPTypeImpl(data);
+    public ExtPDPType createExtPDPType(ByteBuf value) {
+        return new ExtPDPTypeImpl(value);
     }
 
-    public TransactionId createTransactionId(byte[] data) {
-        return new TransactionIdImpl(data);
+    public TransactionId createTransactionId(ByteBuf value) {
+        return new TransactionIdImpl(value);
     }
 
-    public TAId createTAId(byte[] data) {
-        return new TAIdImpl(data);
+    public TAId createTAId(ByteBuf value) {
+        return new TAIdImpl(value);
     }
 
-    public RAIdentity createRAIdentity(byte[] data) {
-        return new RAIdentityImpl(data);
+    public RAIdentity createRAIdentity(ByteBuf value) {
+        return new RAIdentityImpl(value);
     }
 
-    public EUtranCgi createEUtranCgi(byte[] data) {
-        return new EUtranCgiImpl(data);
+    public EUtranCgi createEUtranCgi(ByteBuf value) {
+        return new EUtranCgiImpl(value);
     }
 
-    public TEID createTEID(byte[] data) {
-        return new TEIDImpl(data);
+    public TEID createTEID(ByteBuf value) {
+        return new TEIDImpl(value);
     }
 
     public GPRSMSClass createGPRSMSClass(MSNetworkCapability mSNetworkCapability,
             MSRadioAccessCapability mSRadioAccessCapability) {
         return new GPRSMSClassImpl(mSNetworkCapability, mSRadioAccessCapability);
-    }
-
-    public GeodeticInformation createGeodeticInformation(byte[] data) {
-        return new GeodeticInformationImpl(data);
-    }
-
-    public GeographicalInformation createGeographicalInformation(byte[] data) {
-        return new GeographicalInformationImpl(data);
     }
 
     public LocationInformationEPS createLocationInformationEPS(EUtranCgi eUtranCellGlobalIdentity, TAId trackingAreaIdentity,
@@ -1184,16 +1112,16 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
                 ageOfLocationInformation);
     }
 
-    public MSNetworkCapability createMSNetworkCapability(byte[] data) {
-        return new MSNetworkCapabilityImpl(data);
+    public MSNetworkCapability createMSNetworkCapability(ByteBuf value) {
+    	return new MSNetworkCapabilityImpl(value);
+    }
+    
+    public MSRadioAccessCapability createMSRadioAccessCapability(ByteBuf value) {
+        return new MSRadioAccessCapabilityImpl(value);
     }
 
-    public MSRadioAccessCapability createMSRadioAccessCapability(byte[] data) {
-        return new MSRadioAccessCapabilityImpl(data);
-    }
-
-    public MSClassmark2 createMSClassmark2(byte[] data) {
-        return new MSClassmark2Impl(data);
+    public MSClassmark2 createMSClassmark2(ByteBuf value) {
+        return new MSClassmark2Impl(value);
     }
 
     public MNPInfoRes createMNPInfoRes(RouteingNumber routeingNumber, IMSI imsi, ISDNAddressString msisdn,
@@ -1230,10 +1158,6 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new PSSubscriberStateImpl(choice, netDetNotReachable, pdpContextInfoList);
     }
 
-    public AddGeographicalInformation createAddGeographicalInformation(byte[] data) {
-        return new AddGeographicalInformationImpl(data);
-    }
-
     public AdditionalNumber createAdditionalNumberMscNumber(ISDNAddressString mSCNumber) {
         return new AdditionalNumberImpl(mSCNumber, null);
     }
@@ -1248,10 +1172,6 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
 
     public AreaEventInfo createAreaEventInfo(AreaDefinition areaDefinition, OccurrenceInfo occurrenceInfo, Integer intervalTime) {
         return new AreaEventInfoImpl(areaDefinition, occurrenceInfo, intervalTime);
-    }
-
-    public AreaIdentification createAreaIdentification(byte[] data) {
-        return new AreaIdentificationImpl(data);
     }
 
     public AreaIdentification createAreaIdentification(AreaType type, int mcc, int mnc, int lac, int Rac_CellId_UtranCellId)
@@ -1273,12 +1193,8 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new DeferredmtlrDataImpl(deferredLocationEventType, terminationCause, lcsLocationInfo);
     }
 
-    public ExtGeographicalInformation createExtGeographicalInformation(byte[] data) {
-        return new ExtGeographicalInformationImpl(data);
-    }
-
-    public GeranGANSSpositioningData createGeranGANSSpositioningData(byte[] data) {
-        return new GeranGANSSpositioningDataImpl(data);
+    public GeranGANSSpositioningData createGeranGANSSpositioningData(ByteBuf value) {
+        return new GeranGANSSpositioningDataImpl(value);
     }
 
     public LCSClientIDImpl createLCSClientID(LCSClientType lcsClientType, LCSClientExternalID lcsClientExternalID,
@@ -1334,8 +1250,8 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new PeriodicLDRInfoImpl(reportingAmount, reportingInterval);
     }
 
-    public PositioningDataInformation createPositioningDataInformation(byte[] data) {
-        return new PositioningDataInformationImpl(data);
+    public PositioningDataInformation createPositioningDataInformation(ByteBuf value) {
+        return new PositioningDataInformationImpl(value);
     }
 
     public ReportingPLMN createReportingPLMN(PlmnId plmnId, RANTechnology ranTechnology, boolean ranPeriodicLocationSupport) {
@@ -1379,16 +1295,12 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
                 ellipsoidPointWithAltitudeAndUncertaintyElipsoid, ellipsoidArc);
     }
 
-    public UtranGANSSpositioningData createUtranGANSSpositioningData(byte[] data) {
-        return new UtranGANSSpositioningDataImpl(data);
+    public UtranGANSSpositioningData createUtranGANSSpositioningData(ByteBuf value) {
+        return new UtranGANSSpositioningDataImpl(value);
     }
 
-    public UtranPositioningDataInfo createUtranPositioningDataInfo(byte[] data) {
-        return new UtranPositioningDataInfoImpl(data);
-    }
-
-    public VelocityEstimate createVelocityEstimate(byte[] data) {
-        return new VelocityEstimateImpl(data);
+    public UtranPositioningDataInfo createUtranPositioningDataInfo(ByteBuf value) {
+        return new UtranPositioningDataInfoImpl(value);
     }
 
     @Override
@@ -1452,8 +1364,8 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public CUGInterlockImpl createCUGInterlock(byte[] data) {
-        return new CUGInterlockImpl(data);
+    public CUGInterlockImpl createCUGInterlock(ByteBuf value) {
+        return new CUGInterlockImpl(value);
     }
 
     @Override
@@ -1474,13 +1386,8 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public APNOIReplacementImpl createAPNOIReplacement(byte[] data) {
+    public APNOIReplacement createAPNOIReplacement(ByteBuf data) {
         return new APNOIReplacementImpl(data);
-    }
-
-    @Override
-    public QoSSubscribedImpl createQoSSubscribed(byte[] data) {
-        return new QoSSubscribedImpl(data);
     }
 
     @Override
@@ -1699,11 +1606,6 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public ExtForwOptions createExtForwOptions(byte[] data) {
-        return new ExtForwOptionsImpl(data);
-    }
-
-    @Override
     public ExtSSData createExtSSData(SSCode ssCode, ExtSSStatus ssStatus, SSSubscriptionOption ssSubscriptionOption,
             List<ExtBasicServiceCode> basicServiceGroupList, MAPExtensionContainer extensionContainer) {
         return new ExtSSDataImpl(ssCode, ssStatus, ssSubscriptionOption, basicServiceGroupList, extensionContainer);
@@ -1740,11 +1642,6 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public ExtSSStatus createExtSSStatus(byte data) {
-        return new ExtSSStatusImpl(data);
-    }
-
-    @Override
     public GPRSSubscriptionData createGPRSSubscriptionData(boolean completeDataListIncluded,
             List<PDPContext> gprsDataList, MAPExtensionContainer extensionContainer, APNOIReplacement apnOiReplacement) {
         return new GPRSSubscriptionDataImpl(completeDataListIncluded, gprsDataList, extensionContainer, apnOiReplacement);
@@ -1776,12 +1673,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public ZoneCode createZoneCode(byte[] data) {
-        return new ZoneCodeImpl(data);
-    }
-
-    @Override
-    public AgeIndicatorImpl createAgeIndicator(byte[] data) {
+    public AgeIndicatorImpl createAgeIndicator(ByteBuf data) {
         return new AgeIndicatorImpl(data);
     }
 
@@ -1890,8 +1782,8 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public FQDN createFQDN(byte[] data) {
-        return new FQDNImpl(data);
+    public FQDN createFQDN(ByteBuf value) {
+        return new FQDNImpl(value);
     }
 
     @Override
@@ -2106,8 +1998,8 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public ISDNSubaddressString createISDNSubaddressString(byte[] data) {
-        return new ISDNSubaddressStringImpl(data);
+    public ISDNSubaddressString createISDNSubaddressString(ByteBuf value) {
+        return new ISDNSubaddressStringImpl(value);
     }
 
     @Override
@@ -2147,11 +2039,6 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public Time createTime(byte[] data) {
-        return new TimeImpl(data);
-    }
-
-    @Override
     public NAEACIC createNAEACIC(String carrierCode, NetworkIdentificationPlanValue networkIdentificationPlanValue,
             NetworkIdentificationTypeValue networkIdentificationTypeValue) throws MAPException {
         try {
@@ -2160,11 +2047,6 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     	catch(APPException ex) {
     		throw new MAPException(ex.getMessage(),ex.getCause());
     	}
-    }
-
-    @Override
-    public NAEACIC createNAEACIC(byte[] data) {
-        return new NAEACICImpl(data);
     }
 
     @Override
@@ -2203,13 +2085,13 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public TMSI createTMSI(byte[] data) {
-        return new TMSIImpl(data);
+    public TMSI createTMSI(ByteBuf value) {
+        return new TMSIImpl(value);
     }
 
     @Override
-    public CK createCK(byte[] data) {
-        return new CKImpl(data);
+    public CK createCK(ByteBuf value) {
+        return new CKImpl(value);
     }
 
     @Override
@@ -2233,13 +2115,13 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public IK createIK(byte[] data) {
-        return new IKImpl(data);
+    public IK createIK(ByteBuf value) {
+        return new IKImpl(value);
     }
 
     @Override
-    public Kc createKc(byte[] data) {
-        return new KcImpl(data);
+    public Kc createKc(ByteBuf value) {
+        return new KcImpl(value);
     }
 
     @Override
@@ -2394,8 +2276,8 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public TraceReferenceImpl createTraceReference(byte[] data) {
-        return new TraceReferenceImpl(data);
+    public TraceReferenceImpl createTraceReference(ByteBuf value) {
+        return new TraceReferenceImpl(value);
     }
 
     @Override
@@ -2536,11 +2418,6 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public GlobalCellId createGlobalCellId(byte[] data) {
-        return new GlobalCellIdImpl(data);
-    }
-
-    @Override
     public GlobalCellId createGlobalCellId(int mcc, int mnc, int lac, int cellId) throws MAPException {
         return new GlobalCellIdImpl(mcc, mnc, lac, cellId);
     }
@@ -2552,8 +2429,8 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public ListOfMeasurements createListOfMeasurements(byte[] data) {
-        return new ListOfMeasurementsImpl(data);
+    public ListOfMeasurements createListOfMeasurements(ByteBuf value) {
+        return new ListOfMeasurementsImpl(value);
     }
 
     @Override
@@ -2575,7 +2452,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public UUI createUUI(byte[] data) {
+    public UUI createUUI(ByteBuf data) {
         return new UUIImpl(data);
     }
 

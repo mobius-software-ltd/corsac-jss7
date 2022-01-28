@@ -46,11 +46,7 @@ import io.netty.buffer.Unpooled;
 public class ReportingPLMNTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 10, -128, 3, 1, 2, 3, -127, 1, 1, -126, 0 };
-    }
-
-    private byte[] getDataPlmnId() {
-        return new byte[] { 1, 2, 3 };
+        return new byte[] { 48, 10, -128, 3, 1, 34, 3, -127, 1, 1, -126, 0 };
     }
 
     @Test(groups = { "functional.decode", "service.lms" })
@@ -64,7 +60,8 @@ public class ReportingPLMNTest {
         assertTrue(result.getResult() instanceof ReportingPLMNImpl);
         ReportingPLMNImpl imp = (ReportingPLMNImpl)result.getResult();
         
-        assertTrue(Arrays.equals(imp.getPlmnId().getData(), getDataPlmnId()));
+        assertEquals(imp.getPlmnId().getMcc(), 102);
+        assertEquals(imp.getPlmnId().getMnc(), 302);
         assertEquals(imp.getRanTechnology(), RANTechnology.umts);
         assertTrue(imp.getRanPeriodicLocationSupport());
     }
@@ -74,7 +71,7 @@ public class ReportingPLMNTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ReportingPLMNImpl.class);
 
-        PlmnIdImpl plmnId = new PlmnIdImpl(getDataPlmnId());
+        PlmnIdImpl plmnId = new PlmnIdImpl(102,302);
         ReportingPLMNImpl imp = new ReportingPLMNImpl(plmnId, RANTechnology.umts, true);
         
         byte[] data=getEncodedData();

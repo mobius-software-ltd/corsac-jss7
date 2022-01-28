@@ -76,41 +76,4 @@ public class GapIndicatorsTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        GapIndicatorsImpl original = new GapIndicatorsImpl(100, -1);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "gapIndicators", GapIndicatorsImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-
-        GapIndicatorsImpl copy = reader.read("gapIndicators", GapIndicatorsImpl.class);
-
-        assertTrue(isEqual(original, copy));
-    }
-
-    private boolean isEqual(GapIndicatorsImpl o1, GapIndicatorsImpl o2) {
-        if (o1 == o2)
-            return true;
-        if (o1 == null && o2 != null || o1 != null && o2 == null)
-            return false;
-        if (o1 == null && o2 == null)
-            return true;
-        if (!o1.toString().equals(o2.toString()))
-            return false;
-        return true;
-    }*/
 }

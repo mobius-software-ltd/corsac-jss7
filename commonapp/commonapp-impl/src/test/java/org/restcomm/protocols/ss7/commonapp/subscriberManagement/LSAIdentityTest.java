@@ -88,14 +88,14 @@ public class LSAIdentityTest {
     	parser.replaceClass(LSAIdentityImpl.class);
     	
         // option 1
-        LSAIdentityImpl prim = new LSAIdentityImpl(this.getLSAIdentityData());
+        LSAIdentityImpl prim = new LSAIdentityImpl(Unpooled.wrappedBuffer(this.getLSAIdentityData()));
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData); 
         assertTrue(Arrays.equals(encodedData, this.getData()));
 
         // option 2
-        prim = new LSAIdentityImpl(this.getLSAIdentityData2());
+        prim = new LSAIdentityImpl(Unpooled.wrappedBuffer(this.getLSAIdentityData2()));
         buffer=parser.encode(prim);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData); 

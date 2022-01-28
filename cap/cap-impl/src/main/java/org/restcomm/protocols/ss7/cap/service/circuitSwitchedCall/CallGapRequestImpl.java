@@ -73,11 +73,9 @@ public class CallGapRequestImpl extends CircuitSwitchedCallMessageImpl implement
     	
         this.gapIndicators = gapIndicators;
         
-        if(controlType!=null) {
-        	this.controlType = new ASNControlTypeImpl();
-        	this.controlType.setType(controlType);
-        }
-        
+        if(controlType!=null)
+        	this.controlType = new ASNControlTypeImpl(controlType);
+        	
         if(gapTreatment!=null)
         	this.gapTreatment = new GapTreatmentWrapperImpl(gapTreatment);
         

@@ -76,10 +76,8 @@ public class AddOnChargingInformationImpl implements AddOnChargingInformation {
     	this.originationIdentification=originationIdentification;
     	this.destinationIdentification=destinationIdentification;
     	
-    	if(currency!=null) {
-    		this.currency=new ASNCurrency();
-    		this.currency.setType(currency);
-    	}
+    	if(currency!=null)
+    		this.currency=new ASNCurrency(currency);    		
     }
 
     public ChargingControlIndicators getChargingControlIndicators() {

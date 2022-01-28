@@ -10,13 +10,14 @@ import java.util.Arrays;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ApplyChargingReportRequestImpl;
-import org.testng.annotations.Test;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 public class ContinueTest 
@@ -50,8 +51,8 @@ public class ContinueTest
 	        
 		ApplyChargingReportRequestImpl elem = (ApplyChargingReportRequestImpl)result.getResult();
 		assertNotNull(elem.getCallResult());
-		assertEquals(elem.getCallResult().length,0x13);	    
-		assertTrue(Arrays.equals(octetData1, elem.getCallResult()));
+		assertEquals(elem.getCallResult().readableBytes(),0x13);	    
+		assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(octetData1), elem.getCallResult()));
 		logger.info(elem);		
 	}
 	
@@ -60,7 +61,7 @@ public class ContinueTest
 		ASNParser parser=new ASNParser(true);
 		parser.replaceClass(ApplyChargingReportRequestImpl.class);
 	    	
-	    ApplyChargingReportRequestImpl elem = new ApplyChargingReportRequestImpl(octetData1);
+	    ApplyChargingReportRequestImpl elem = new ApplyChargingReportRequestImpl(Unpooled.wrappedBuffer(octetData1));
 	    byte[] rawData = this.message1;
 	    ByteBuf buffer=parser.encode(elem);
 	    byte[] encodedData = new byte[buffer.readableBytes()];

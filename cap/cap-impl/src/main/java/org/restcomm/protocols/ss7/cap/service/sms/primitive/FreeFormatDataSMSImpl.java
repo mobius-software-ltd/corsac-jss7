@@ -23,10 +23,9 @@ package org.restcomm.protocols.ss7.cap.service.sms.primitive;
 
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMS;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -34,21 +33,26 @@ import io.netty.buffer.Unpooled;
  * @author alerant appngin
  *
  */
-public class FreeFormatDataSMSImpl extends ASNOctetString implements FreeFormatDataSMS {
+public class FreeFormatDataSMSImpl extends ASNOctetString2 implements FreeFormatDataSMS {
 	public FreeFormatDataSMSImpl() {
     }
 
-    public FreeFormatDataSMSImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
+    public FreeFormatDataSMSImpl(ByteBuf value) {
+    	super(value);
     }
 
-    public byte[] getData() {
-    	ByteBuf buffer=getValue();
-    	if(buffer==null)
-    		return null;
-    	
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
-        return data;
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("FreeFormatDataSMSImpl [");
+
+        if (this.getValue() != null) {
+            sb.append("data=");
+            sb.append(printDataArr());
+        }
+        
+        sb.append("]");
+
+        return sb.toString();
     }
 }

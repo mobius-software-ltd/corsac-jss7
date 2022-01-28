@@ -237,6 +237,7 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSResponse;
+import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
@@ -266,6 +267,7 @@ import org.restcomm.protocols.ss7.map.service.sms.SmsSignalInfoImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.ProcessUnstructuredSSResponseImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.RegisterSSRequestImpl;
 import org.restcomm.protocols.ss7.map.smstpdu.SmsSubmitTpduImpl;
+import org.restcomm.protocols.ss7.map.smstpdu.SmsTpduImpl;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
@@ -285,9 +287,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -2512,12 +2515,10 @@ public class MAPFunctionalTest extends SccpHarness {
             public void onDialogDelimiter(MAPDialog mapDialog) {
                 super.onDialogDelimiter(mapDialog);
                 try {
-                    ASNOctetString octetString=new ASNOctetString();
-                    octetString.setValue(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }));
+                    ASNOctetString2 octetString=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }));
                     ((MAPDialogImpl)mapDialog).getTcapDialog().sendData(invokeId1, null, null, null, TcapFactory.createLocalOperationCode((long) MAPOperationCode.processUnstructuredSS_Request), octetString, false, true);
 
-                    octetString=new ASNOctetString();
-                    octetString.setValue(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }));
+                    octetString=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }));
                     ((MAPDialogImpl) mapDialog).getTcapDialog().sendError(invokeId2,TcapFactory.createLocalErrorCode((long) MAPErrorCode.systemFailure),octetString);
 
                     ((MAPDialogImpl) mapDialog).getTcapDialog().sendError(invokeId3,TcapFactory.createLocalErrorCode(1000L),null);
@@ -3077,10 +3078,15 @@ public class MAPFunctionalTest extends SccpHarness {
                 Assert.assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
                 Assert.assertEquals(sm_RP_OA.getMsisdn().getAddress(), "111222333");
                 Assert.assertNotNull(sm_RP_UI);
-                ByteBuf value=sm_RP_UI.getValue();
-                byte[] data=new byte[value.readableBytes()];
-                value.readBytes(data);
-                Assert.assertTrue(Arrays.equals(data, new byte[] { 21, 22, 23, 24, 25 }));
+                ByteBuf translatedValue=Unpooled.buffer();
+                try {
+                	sm_RP_UI.decodeTpdu(false).encodeData(translatedValue);
+                }
+                catch(Exception ex) {
+                	Assert.assertFalse(true);
+                }
+                Assert.assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                        -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
                 Assert.assertFalse(forwSmInd.getMoreMessagesToSend());
             }
 
@@ -3280,10 +3286,15 @@ public class MAPFunctionalTest extends SccpHarness {
                 Assert.assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
                 Assert.assertEquals(sm_RP_OA.getMsisdn().getAddress(), "111222333");
                 Assert.assertNotNull(sm_RP_UI);
-                ByteBuf value=sm_RP_UI.getValue();
-                byte[] data=new byte[value.readableBytes()];
-                value.readBytes(data);
-                Assert.assertTrue(Arrays.equals(data, new byte[] { 21, 22, 23, 24, 25 }));
+                ByteBuf translatedValue=Unpooled.buffer();
+                try {
+                	sm_RP_UI.decodeTpdu(false).encodeData(translatedValue);
+                }
+                catch(Exception ex) {
+                	Assert.assertFalse(true);
+                }
+                Assert.assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                        -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
                 Assert.assertTrue(forwSmInd.getMoreMessagesToSend());
                 try {
                     d.addForwardShortMessageResponse(forwSmInd.getInvokeId());
@@ -3369,10 +3380,15 @@ public class MAPFunctionalTest extends SccpHarness {
                 MAPExtensionContainer extensionContainer = moForwSmRespInd.getExtensionContainer();
 
                 Assert.assertNotNull(sm_RP_UI);
-                ByteBuf buffer=sm_RP_UI.getValue();
-                byte[] data=new byte[buffer.readableBytes()];
-                buffer.readBytes(data);
-                Assert.assertTrue(Arrays.equals(data, new byte[] { 21, 22, 23, 24, 25 }));
+                ByteBuf translatedValue=Unpooled.buffer();
+                try {
+                	sm_RP_UI.decodeTpdu(false).encodeData(translatedValue);
+                }
+                catch(Exception ex) {
+                	Assert.assertFalse(true);
+                }
+                Assert.assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                        -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
                 Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
 
             }
@@ -3425,9 +3441,12 @@ public class MAPFunctionalTest extends SccpHarness {
                 Assert.assertNotNull(imsi2);
                 Assert.assertEquals(imsi2.getData(), "25007123456789");
 
-                SmsSignalInfoImpl sm_RP_UI2 = new SmsSignalInfoImpl(new byte[] { 21, 22, 23, 24, 25 }, null);
                 try {
-                    d.addMoForwardShortMessageResponse(moForwSmInd.getInvokeId(), sm_RP_UI2,
+                	SmsSignalInfoImpl sm_RP_UI2 = new SmsSignalInfoImpl(SmsTpduImpl.createInstance(Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                            -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 }),false, null),
+                            null);
+                	
+                	d.addMoForwardShortMessageResponse(moForwSmInd.getInvokeId(), sm_RP_UI2,
                             MAPExtensionContainerTest.GetTestExtensionContainer());
                 } catch (MAPException e) {
                     this.error("Error while adding MoForwardShortMessageResponse", e);
@@ -3511,10 +3530,15 @@ public class MAPFunctionalTest extends SccpHarness {
                 MAPExtensionContainer extensionContainer = mtForwSmRespInd.getExtensionContainer();
 
                 Assert.assertNotNull(sm_RP_UI);
-                ByteBuf buffer=sm_RP_UI.getValue();
-                byte[] data=new byte[buffer.readableBytes()];
-                buffer.readBytes(data);
-                Assert.assertTrue(Arrays.equals(data, new byte[] { 21, 22, 23, 24, 25 }));
+                ByteBuf translatedValue=Unpooled.buffer();
+                try {
+                	sm_RP_UI.decodeTpdu(false).encodeData(translatedValue);
+                }
+                catch(Exception ex) {
+                	Assert.assertFalse(true);
+                }
+                Assert.assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                        -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
                 Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
 
             }
@@ -3536,23 +3560,30 @@ public class MAPFunctionalTest extends SccpHarness {
 
                 Assert.assertNotNull(sm_RP_DA);
                 Assert.assertNotNull(sm_RP_DA.getLMSI());
-                Assert.assertTrue(Arrays.equals(sm_RP_DA.getLMSI().getData(), new byte[] { 49, 48, 47, 46 }));
+                Assert.assertTrue(ByteBufUtil.equals(sm_RP_DA.getLMSI().getValue(),Unpooled.wrappedBuffer(new byte[] { 49, 48, 47, 46 })));
                 Assert.assertNotNull(sm_RP_OA);
                 Assert.assertNotNull(sm_RP_OA.getServiceCentreAddressOA());
                 Assert.assertEquals(sm_RP_OA.getServiceCentreAddressOA().getAddressNature(), AddressNature.international_number);
                 Assert.assertEquals(sm_RP_OA.getServiceCentreAddressOA().getNumberingPlan(), NumberingPlan.ISDN);
                 Assert.assertEquals(sm_RP_OA.getServiceCentreAddressOA().getAddress(), "111222333");
                 Assert.assertNotNull(sm_RP_UI);
-                ByteBuf buffer=sm_RP_UI.getValue();
-                byte[] data=new byte[buffer.readableBytes()];
-                buffer.readBytes(data);
-                Assert.assertTrue(Arrays.equals(data, new byte[] { 21, 22, 23, 24, 25 }));
+                ByteBuf translatedValue=Unpooled.buffer();
+                try {
+                	sm_RP_UI.decodeTpdu(false).encodeData(translatedValue);
+                }
+                catch(Exception ex) {
+                	Assert.assertFalse(true);
+                }
+                Assert.assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                        -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
                 Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
                 Assert.assertTrue(moreMessagesToSend);
 
-                SmsSignalInfoImpl sm_RP_UI2 = new SmsSignalInfoImpl(new byte[] { 21, 22, 23, 24, 25 }, null);
-
                 try {
+                	SmsSignalInfoImpl sm_RP_UI2 = new SmsSignalInfoImpl(SmsTpduImpl.createInstance(Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                            -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 }),false, null),
+                            null);
+                	
                     d.addMtForwardShortMessageResponse(mtForwSmInd.getInvokeId(), sm_RP_UI2,
                             MAPExtensionContainerTest.GetTestExtensionContainer());
                 } catch (MAPException e) {
@@ -3914,7 +3945,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer2));
                 Assert.assertTrue(locationInfoWithLMSI.getGprsNodeIndicator());
                 Assert.assertNotNull(lmsi);
-                Assert.assertTrue(Arrays.equals(lmsi.getData(), new byte[] { 75, 74, 73, 72 }));
+                Assert.assertTrue(ByteBufUtil.equals(lmsi.getValue(), Unpooled.wrappedBuffer(new byte[] { 75, 74, 73, 72 })));
                 Assert.assertNotNull(additionalNumber);
                 Assert.assertEquals(additionalNumber.getSGSNNumber().getAddressNature(), AddressNature.subscriber_number);
                 Assert.assertEquals(additionalNumber.getSGSNNumber().getNumberingPlan(), NumberingPlan.private_plan);
@@ -3967,15 +3998,21 @@ public class MAPFunctionalTest extends SccpHarness {
                 Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
                 Assert.assertTrue(gprsSupportIndicator);
                 Assert.assertEquals(sM_RP_MTI, SM_RP_MTI.SMS_Status_Report);
-                ByteBuf value=sM_RP_SMEA.getValue();
-                byte[] data=new byte[value.readableBytes()];
-                value.readBytes(data);
-                Assert.assertTrue(Arrays.equals(data, new byte[] { 90, 91 }));
-
+                
+                try {
+	                AddressField af=sM_RP_SMEA.getAddressField();
+	                assertEquals(af.getTypeOfNumber(), TypeOfNumber.InternationalNumber);
+	                assertEquals(af.getNumberingPlanIdentification(), NumberingPlanIdentification.ISDNTelephoneNumberingPlan);
+	                assertEquals(af.getAddressValue(), "72223884321");
+                }
+                catch(MAPException ex) {
+                	Assert.assertTrue(false);
+                }
+                
                 IMSI imsi = this.mapParameterFactory.createIMSI("25099777000");
                 ISDNAddressString networkNodeNumber = this.mapParameterFactory.createISDNAddressString(
                         AddressNature.network_specific_number, NumberingPlan.national, "111000111");
-                LMSI lmsi = this.mapParameterFactory.createLMSI(new byte[] { 75, 74, 73, 72 });
+                LMSI lmsi = this.mapParameterFactory.createLMSI(Unpooled.wrappedBuffer(new byte[] { 75, 74, 73, 72 }));
                 ISDNAddressString sgsnAdditionalNumber = this.mapParameterFactory.createISDNAddressString(
                         AddressNature.subscriber_number, NumberingPlan.private_plan, "000111000");
                 AdditionalNumber additionalNumber = this.mapParameterFactory.createAdditionalNumberSgsnNumber(sgsnAdditionalNumber);
@@ -4231,8 +4268,7 @@ public class MAPFunctionalTest extends SccpHarness {
             SmsSignalInfoImpl sm_RP_UI;
             byte[] data=new byte[dataLength];
             Arrays.fill(data, (byte) 11);
-            sm_RP_UI = new SmsSignalInfoImpl(data, null);            
-            
+            sm_RP_UI = new SmsSignalInfoImpl(Unpooled.wrappedBuffer(data));            
             IMSI imsi1 = this.mapParameterFactory.createIMSI("250991357999");
             SM_RP_DA sm_RP_DA = this.mapParameterFactory.createSM_RP_DA(imsi1);
             ISDNAddressString msisdn1 = this.mapParameterFactory.createISDNAddressString(AddressNature.international_number,
@@ -4261,11 +4297,15 @@ public class MAPFunctionalTest extends SccpHarness {
             SmsSignalInfo sm_RP_UI = moForwSmRespInd.getSM_RP_UI();
             MAPExtensionContainer extensionContainer = moForwSmRespInd.getExtensionContainer();
 
-            Assert.assertNotNull(sm_RP_UI);
-            ByteBuf value=sm_RP_UI.getValue();
-            byte[] data=new byte[value.readableBytes()];
-            value.readBytes(data);
-            Assert.assertTrue(Arrays.equals(data, new byte[] { 21, 22, 23, 24, 25 }));
+            ByteBuf translatedValue=Unpooled.buffer();
+            try {
+            	sm_RP_UI.decodeTpdu(false).encodeData(translatedValue);
+            }
+            catch(Exception ex) {
+            	Assert.assertFalse(true);
+            }
+            Assert.assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                    -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
             Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
         }
 
@@ -4323,9 +4363,12 @@ public class MAPFunctionalTest extends SccpHarness {
             Assert.assertNotNull(imsi2);
             Assert.assertEquals(imsi2.getData(), "25007123456789");
 
-            SmsSignalInfoImpl sm_RP_UI2 = new SmsSignalInfoImpl(new byte[] { 21, 22, 23, 24, 25 }, null);
             try {
-                d.addMoForwardShortMessageResponse(moForwSmInd.getInvokeId(), sm_RP_UI2,
+            	SmsSignalInfoImpl sm_RP_UI2 = new SmsSignalInfoImpl(SmsTpduImpl.createInstance(Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                        -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 }),false, null),
+                        null);
+                
+            	d.addMoForwardShortMessageResponse(moForwSmInd.getInvokeId(), sm_RP_UI2,
                         MAPExtensionContainerTest.GetTestExtensionContainer());
             } catch (MAPException e) {
                 this.error("Error while adding MoForwardShortMessageResponse", e);
@@ -4368,9 +4411,9 @@ public class MAPFunctionalTest extends SccpHarness {
 
                 Assert.assertEquals(ind.getMapProtocolVersion(), 3);
                 Assert.assertEquals(asl.getTripletList().getAuthenticationTriplets().size(), 1);
-                Assert.assertTrue(Arrays.equals(at.getRand(), TripletListTest.getRandData()));
-                Assert.assertTrue(Arrays.equals(at.getSres(), TripletListTest.getSresData()));
-                Assert.assertTrue(Arrays.equals(at.getKc(), TripletListTest.getKcData()));
+                Assert.assertTrue(ByteBufUtil.equals(at.getRand(),Unpooled.wrappedBuffer(TripletListTest.getRandData())));
+                Assert.assertTrue(ByteBufUtil.equals(at.getSres(), Unpooled.wrappedBuffer(TripletListTest.getSresData())));
+                Assert.assertTrue(ByteBufUtil.equals(at.getKc(), Unpooled.wrappedBuffer(TripletListTest.getKcData())));
                 Assert.assertNull(asl.getQuintupletList());
                 Assert.assertNull(ind.getEpsAuthenticationSetList());
                 Assert.assertNull(ind.getExtensionContainer());
@@ -4400,8 +4443,8 @@ public class MAPFunctionalTest extends SccpHarness {
                 Assert.assertFalse(ind.getAdditionalVectorsAreForEPS());
 
                 ArrayList<AuthenticationTriplet> authenticationTriplets = new ArrayList<AuthenticationTriplet>();
-                AuthenticationTriplet at = this.mapParameterFactory.createAuthenticationTriplet(TripletListTest.getRandData(),
-                        TripletListTest.getSresData(), TripletListTest.getKcData());
+                AuthenticationTriplet at = this.mapParameterFactory.createAuthenticationTriplet(Unpooled.wrappedBuffer(TripletListTest.getRandData()),
+                		Unpooled.wrappedBuffer(TripletListTest.getSresData()), Unpooled.wrappedBuffer(TripletListTest.getKcData()));
                 authenticationTriplets.add(at);
                 TripletList tripletList = this.mapParameterFactory.createTripletList(authenticationTriplets);
                 AuthenticationSetList asl = this.mapParameterFactory.createAuthenticationSetList(tripletList,3L);
@@ -4490,9 +4533,9 @@ public class MAPFunctionalTest extends SccpHarness {
 
                 Assert.assertEquals(ind.getMapProtocolVersion(), 2);
                 Assert.assertEquals(asl.getTripletList().getAuthenticationTriplets().size(), 1);
-                Assert.assertTrue(Arrays.equals(at.getRand(), TripletListTest.getRandData()));
-                Assert.assertTrue(Arrays.equals(at.getSres(), TripletListTest.getSresData()));
-                Assert.assertTrue(Arrays.equals(at.getKc(), TripletListTest.getKcData()));
+                Assert.assertTrue(ByteBufUtil.equals(at.getRand(),Unpooled.wrappedBuffer(TripletListTest.getRandData())));
+                Assert.assertTrue(ByteBufUtil.equals(at.getSres(), Unpooled.wrappedBuffer(TripletListTest.getSresData())));
+                Assert.assertTrue(ByteBufUtil.equals(at.getKc(), Unpooled.wrappedBuffer(TripletListTest.getKcData())));
                 Assert.assertNull(asl.getQuintupletList());
                 Assert.assertNull(ind.getEpsAuthenticationSetList());
                 Assert.assertNull(ind.getExtensionContainer());
@@ -4522,8 +4565,8 @@ public class MAPFunctionalTest extends SccpHarness {
                 Assert.assertFalse(ind.getAdditionalVectorsAreForEPS());
 
                 ArrayList<AuthenticationTriplet> authenticationTriplets = new ArrayList<AuthenticationTriplet>();
-                AuthenticationTriplet at = this.mapParameterFactory.createAuthenticationTriplet(TripletListTest.getRandData(),
-                        TripletListTest.getSresData(), TripletListTest.getKcData());
+                AuthenticationTriplet at = this.mapParameterFactory.createAuthenticationTriplet(Unpooled.wrappedBuffer(TripletListTest.getRandData()),
+                		Unpooled.wrappedBuffer(TripletListTest.getSresData()), Unpooled.wrappedBuffer(TripletListTest.getKcData()));
                 authenticationTriplets.add(at);
                 TripletList tripletList = this.mapParameterFactory.createTripletList(authenticationTriplets);
                 AuthenticationSetList asl = this.mapParameterFactory.createAuthenticationSetList(tripletList,2L);
@@ -4641,7 +4684,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 Assert.assertEquals(vlrNumber.getAddressNature(), AddressNature.network_specific_number);
                 Assert.assertEquals(vlrNumber.getNumberingPlan(), NumberingPlan.ISDN);
                 Assert.assertTrue(vlrNumber.getAddress().equals("700000111"));
-                Assert.assertTrue(Arrays.equals(lmsi.getData(), new byte[] { 1, 2, 3, 4 }));
+                Assert.assertTrue(ByteBufUtil.equals(lmsi.getValue(),Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 })));
                 Assert.assertNull(ind.getExtensionContainer());
                 Assert.assertNull(ind.getVlrCapability());
                 Assert.assertTrue(ind.getInformPreviousNetworkEntity());
@@ -5138,7 +5181,7 @@ TC-END + provideSubscriberInfoResponse
             public void onProvideSubscriberLocationResponse(ProvideSubscriberLocationResponse ind) {
                 super.onProvideSubscriberLocationResponse(ind);
 
-//                Assert.assertTrue(Arrays.equals(ind.getLocationEstimate().getData(), new byte[] { 50 }));
+//                Assert.assertTrue(ByteBufUtil.equals(ind.getLocationEstimate().getData(), new byte[] { 50 }));
                 Assert.assertEquals((int) ind.getAgeOfLocationEstimate(), 6);
 
                 Assert.assertTrue(ind.getLocationEstimate().getLatitude() - (-31) < 0.001);
@@ -6038,7 +6081,7 @@ TC-END + provideSubscriberInfoResponse
                 assertTrue(newVLRNumber.getAddress().equals("22229"));
                 assertEquals(newVLRNumber.getAddressNature(), AddressNature.international_number);
                 assertEquals(newVLRNumber.getNumberingPlan(), NumberingPlan.ISDN);
-                assertTrue(Arrays.equals(newLmsi.getData(), new byte[] { 0, 3, 98, 39 }));
+                assertTrue(ByteBufUtil.equals(newLmsi.getValue(),Unpooled.wrappedBuffer(new byte[] { 0, 3, 98, 39 })));
                 assertEquals(mapProtocolVersion, 3);
 
                 try {
@@ -7743,7 +7786,7 @@ TC-END + SendRoutingInformationResponse
 
                 MAPDialogMobility d = ind.getMAPDialog();
 
-                assertTrue(Arrays.equals(ind.getTmsi().getData(), new byte[] { 1, 2, 3, 4 }));
+                assertTrue(ByteBufUtil.equals(ind.getTmsi().getValue(),Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 })));
                 long mapProtocolVersion = ((SendIdentificationRequestImplV1) ind).getMapProtocolVersion();
 
                 assertEquals(mapProtocolVersion, 2);
@@ -7839,7 +7882,7 @@ TC-END + SendRoutingInformationResponse
 
                 MAPDialogMobility d = ind.getMAPDialog();
 
-                assertTrue(Arrays.equals(ind.getTmsi().getData(), new byte[] { 1, 2, 3, 4 }));
+                assertTrue(ByteBufUtil.equals(ind.getTmsi().getValue(), Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 })));
                 long mapProtocolVersion = ((SendIdentificationRequestImplV3) ind).getMapProtocolVersion();
                 assertEquals(mapProtocolVersion, 3);
 
@@ -9247,7 +9290,7 @@ TC-END + SendRoutingInformationResponse
 
                 byte[] addressData = new byte[] { (byte) 192, (byte) 168, 4, 22 };
                 assertEquals(ind.getSgsnAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
-                assertEquals(ind.getSgsnAddress().getGSNAddressData(), addressData);
+                assertTrue(ByteBufUtil.equals(ind.getSgsnAddress().getGSNAddressData(), Unpooled.wrappedBuffer(addressData)));
             }
 
         };
@@ -9263,11 +9306,11 @@ TC-END + SendRoutingInformationResponse
                 byte[] addressData = new byte[] { (byte) 192, (byte) 168, 4, 22 };
                 assertEquals(request.getImsi().getData(), "88888777773333");
                 assertEquals(request.getGgsnAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
-                assertEquals(request.getGgsnAddress().getGSNAddressData(), addressData);
+                assertTrue(ByteBufUtil.equals(request.getGgsnAddress().getGSNAddressData(),Unpooled.wrappedBuffer(addressData)));
                 assertEquals(request.getGgsnNumber().getAddress(), "31628838002");
 
                 try {
-                    GSNAddress sgsnAddress = this.mapParameterFactory.createGSNAddress(GSNAddressAddressType.IPv4, addressData);
+                    GSNAddress sgsnAddress = this.mapParameterFactory.createGSNAddress(GSNAddressAddressType.IPv4,Unpooled.wrappedBuffer(addressData));
                     d.addSendRoutingInfoForGprsResponse(request.getInvokeId(), sgsnAddress, null, null, null);
 //                    GSNAddress sgsnAddress, GSNAddress ggsnAddress, Integer mobileNotReachableReason,
 //                    MAPExtensionContainer extensionContainer
@@ -9368,7 +9411,7 @@ TC-END + SendRoutingInformationResponse
                 assertEquals(request.getImsi().getData(), "88888777773333");
 
                 byte[] traceReferenceData = new byte[] { 19 };
-                assertEquals(request.getTraceReference().getData(), traceReferenceData);
+                assertTrue(ByteBufUtil.equals(request.getTraceReference().getValue(), Unpooled.wrappedBuffer(traceReferenceData)));
                 assertEquals(request.getTraceType().getData(), 21);
 
                 try {
@@ -9471,7 +9514,7 @@ TC-END + SendRoutingInformationResponse
                 assertEquals(request.getImsi().getData(), "88888777773333");
 
                 byte[] traceReferenceData = new byte[] { 19 };
-                assertEquals(request.getTraceReference().getData(), traceReferenceData);
+                assertTrue(ByteBufUtil.equals(request.getTraceReference().getValue(), Unpooled.wrappedBuffer(traceReferenceData)));
                 assertEquals(request.getTraceType().getData(), 21);
 
                 try {

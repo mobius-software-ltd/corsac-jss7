@@ -62,7 +62,7 @@ public class CauseIndicatorsImpl extends AbstractISUPParameter implements CauseI
         // FIXME: "Recommendation" optional field must be encoded/decoded when codingStandard!=_CODING_STANDARD_ITUT
 
         if (b == null || b.readableBytes() < 2) {
-            throw new ParameterException("byte[] must not be null or has size less than 2");
+            throw new ParameterException("buffer must not be null or has size less than 2");
         }
         // Used because of Q.850 - we must ignore recomendation
         // first two bytes are mandatory

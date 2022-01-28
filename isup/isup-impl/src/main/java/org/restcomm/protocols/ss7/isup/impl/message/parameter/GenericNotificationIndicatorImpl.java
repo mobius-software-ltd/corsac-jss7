@@ -33,10 +33,10 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNotificationIndicator;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:13:44:22 2009-03-31<br>
@@ -64,7 +64,7 @@ public class GenericNotificationIndicatorImpl extends AbstractISUPParameter impl
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() < 2) {
-            throw new ParameterException("byte[] must  not be null and length must be 1 or greater");
+            throw new ParameterException("buffer must  not be null and length must be 1 or greater");
         }
 
         this.notificationIndicator = new ArrayList<Integer>(b.readableBytes());
@@ -73,7 +73,7 @@ public class GenericNotificationIndicatorImpl extends AbstractISUPParameter impl
         	byte curr=b.readByte();
             int extFlag = (curr >> 7) & 0x01;
             if (extFlag == 0x01 && (b.readableBytes()!=0)) {
-                throw new ParameterException("Extenstion flag idnicates end of data, however byte[] has more octets.");
+                throw new ParameterException("Extenstion flag idnicates end of data, however buffer has more octets.");
             }
             this.notificationIndicator.add(curr & 0x7F);
         }

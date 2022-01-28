@@ -22,14 +22,14 @@
 
 package org.restcomm.protocols.ss7.sccp.message;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.Serializable;
 
 import org.restcomm.protocols.ss7.sccp.parameter.Credit;
 import org.restcomm.protocols.ss7.sccp.parameter.HopCounter;
 import org.restcomm.protocols.ss7.sccp.parameter.Importance;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Factory for creating messages.
@@ -73,7 +73,7 @@ public interface MessageFactory extends Serializable {
             int localSsn, boolean returnMessageOnError, HopCounter hopCounter, Importance importance);
 
     // SccpNoticeMessage createNoticeMessage(ReturnCause returnCause, int outgoingSls, SccpAddress calledParty,
-    // SccpAddress callingParty, byte[] data,
+    // SccpAddress callingParty, ByteBuf data,
     // HopCounter hopCounter, Importance importance);
 
     /**

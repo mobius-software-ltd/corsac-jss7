@@ -24,31 +24,20 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNOIReplacement;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author daniel bichara
  *
  */
-public class APNOIReplacementImpl extends ASNOctetString implements APNOIReplacement {
+public class APNOIReplacementImpl extends ASNOctetString2 implements APNOIReplacement {
 	public APNOIReplacementImpl() {
     }
 
-    public APNOIReplacementImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    public APNOIReplacementImpl(ByteBuf value) {
+        super(value);
     }
 }

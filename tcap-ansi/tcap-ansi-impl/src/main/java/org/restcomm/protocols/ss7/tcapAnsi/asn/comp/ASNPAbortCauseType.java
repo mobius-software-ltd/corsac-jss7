@@ -33,15 +33,19 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=23,constructed=false,lengthIndefinite=false)
 public class ASNPAbortCauseType extends ASNEnumerated {
-	public void setCause(PAbortCause t) {
-		super.setValue((long)t.getType());
+	public ASNPAbortCauseType() {
+		
+	}
+	
+	public ASNPAbortCauseType(PAbortCause t) {
+		super(t.getType());
 	}
 	
 	public PAbortCause getCause() throws ParseException {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return PAbortCause.getFromInt(realValue.intValue());
+		return PAbortCause.getFromInt(realValue);
 	}
 }

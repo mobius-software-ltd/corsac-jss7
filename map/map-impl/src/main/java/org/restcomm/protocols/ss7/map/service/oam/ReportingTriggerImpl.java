@@ -36,7 +36,7 @@ public class ReportingTriggerImpl extends ASNSingleByte implements ReportingTrig
     }
 
     public ReportingTriggerImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public int getData() {

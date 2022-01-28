@@ -22,9 +22,9 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.*;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Return;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultLastImpl;
@@ -33,7 +33,10 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -64,8 +67,8 @@ public class ReturnResultTest {
     	ReturnResultLastImpl rrl = (ReturnResultLastImpl)result.getResult();
         
         assertEquals((long) rrl.getCorrelationId(), 0);        
-        assertTrue(rrl.getParameter() instanceof ASNOctetString);
-        UserInformationElementTest.byteBufEquals(((ASNOctetString)rrl.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
+        assertTrue(rrl.getParameter() instanceof ASNOctetString2);
+        UserInformationElementTest.byteBufEquals(((ASNOctetString2)rrl.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
 
         // 2
         result=parser.decode(Unpooled.wrappedBuffer(this.data2));
@@ -86,8 +89,7 @@ public class ReturnResultTest {
         // 1
         Return rrl = TcapFactory.createComponentReturnResultLast();
         rrl.setCorrelationId(0L);
-        ASNOctetString p=new ASNOctetString();
-        p.setValue(Unpooled.wrappedBuffer(parData));
+        ASNOctetString2 p=new ASNOctetString2(Unpooled.wrappedBuffer(parData));
         rrl.setSetParameter(p);        
 
         ByteBuf encodedData=parser.encode(rrl);

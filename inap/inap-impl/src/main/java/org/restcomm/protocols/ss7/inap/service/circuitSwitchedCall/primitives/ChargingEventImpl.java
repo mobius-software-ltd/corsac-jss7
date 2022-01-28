@@ -55,16 +55,12 @@ public class ChargingEventImpl implements ChargingEvent {
     }
 
     public ChargingEventImpl(EventTypeCharging eventTypeCharging,MonitorMode monitorMode,LegID legID) {
-    	if(eventTypeCharging!=null) {
-    		this.eventTypeCharging=new ASNEventTypeCharging();
-    		this.eventTypeCharging.setType(eventTypeCharging);
-    	}
-    	
-    	if(monitorMode!=null) {
-    		this.monitorMode=new ASNMonitorMode();
-    		this.monitorMode.setType(monitorMode);
-    	}
-    	
+    	if(eventTypeCharging!=null)
+    		this.eventTypeCharging=new ASNEventTypeCharging(eventTypeCharging);
+    		
+    	if(monitorMode!=null)
+    		this.monitorMode=new ASNMonitorMode(monitorMode);
+    		
     	if(legID!=null)
     		this.legID=new LegIDWrapperImpl(legID);    	
     }

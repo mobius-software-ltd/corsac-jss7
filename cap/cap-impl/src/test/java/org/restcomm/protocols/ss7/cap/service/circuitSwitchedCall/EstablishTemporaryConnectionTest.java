@@ -54,6 +54,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -118,7 +119,7 @@ public class EstablishTemporaryConnectionTest {
         byte[] data = new byte[buffer.readableBytes()];
         buffer.readBytes(data);
         assertTrue(Arrays.equals(data, getCorrelationIDDigits()));
-        assertTrue(Arrays.equals(elem.getScfID().getData(), getScfIDData()));
+        assertTrue(ByteBufUtil.equals(elem.getScfID().getValue(),Unpooled.wrappedBuffer(getScfIDData())));
         assertEquals(elem.getServiceInteractionIndicatorsTwo().getBothwayThroughConnectionInd(),
                 BothwayThroughConnectionInd.bothwayPathNotRequired);
         assertNull(elem.getCallSegmentID());
@@ -150,7 +151,7 @@ public class EstablishTemporaryConnectionTest {
         data = new byte[buffer.readableBytes()];
         buffer.readBytes(data);
         assertTrue(Arrays.equals(data, getCorrelationIDDigits()));
-        assertTrue(Arrays.equals(elem.getScfID().getData(), getScfIDData()));
+        assertTrue(ByteBufUtil.equals(elem.getScfID().getValue(),Unpooled.wrappedBuffer(getScfIDData())));
         assertEquals(elem.getServiceInteractionIndicatorsTwo().getBothwayThroughConnectionInd(),
                 BothwayThroughConnectionInd.bothwayPathNotRequired);
         assertEquals((int) elem.getCallSegmentID(), 8);
@@ -179,7 +180,7 @@ public class EstablishTemporaryConnectionTest {
         assertNull(elem.getCallSegmentID());
         assertNull(elem.getNAOliInfo());
         assertNull(elem.getExtensions());
-        assertEquals(elem.getCarrier().getData(), getCarrierData());
+        assertTrue(ByteBufUtil.equals(elem.getCarrier().getValue(), Unpooled.wrappedBuffer(getCarrierData())));
         assertEquals(elem.getChargeNumber().getLocationNumber().getNatureOfAddressIndicator(), LocationNumber._NAI_INTERNATIONAL_NUMBER);
         assertEquals(elem.getChargeNumber().getLocationNumber().getAddress(), "0000077777");
         assertEquals(elem.getOriginalCalledPartyID().getOriginalCalledNumber().getAddress(), "1111188888");
@@ -199,7 +200,7 @@ public class EstablishTemporaryConnectionTest {
         GenericDigitsImpl genericDigits = new GenericDigitsImpl(2, 0, Unpooled.wrappedBuffer(getCorrelationIDDigits()));
         // int encodingScheme, int typeOfDigits, int[] digits
         DigitsIsupImpl correlationID = new DigitsIsupImpl(genericDigits);
-        ScfIDImpl scfID = new ScfIDImpl(getScfIDData());
+        ScfIDImpl scfID = new ScfIDImpl(Unpooled.wrappedBuffer(getScfIDData()));
         ServiceInteractionIndicatorsTwoImpl serviceInteractionIndicatorsTwo = new ServiceInteractionIndicatorsTwoImpl(null,
                 null, BothwayThroughConnectionInd.bothwayPathNotRequired, null, false, null, null, null);
         // ForwardServiceInteractionInd forwardServiceInteractionInd,
@@ -234,7 +235,7 @@ public class EstablishTemporaryConnectionTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        CarrierImpl carrier = new CarrierImpl(getCarrierData());
+        CarrierImpl carrier = new CarrierImpl(Unpooled.wrappedBuffer(getCarrierData()));
         LocationNumber locationNumber = new LocationNumberImpl();
         locationNumber.setNatureOfAddresIndicator(LocationNumber._NAI_INTERNATIONAL_NUMBER);
         locationNumber.setAddress("0000077777");

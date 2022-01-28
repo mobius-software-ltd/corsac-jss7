@@ -28,8 +28,6 @@
  */
 package org.restcomm.protocols.ss7.isup.impl;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -50,6 +48,8 @@ import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPart;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:12:14:57 2009-09-04<br>
@@ -107,8 +107,7 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
         // this.executor = Executors.newFixedThreadPool(1);
         // this.layer3exec = Executors.newFixedThreadPool(1);
         this.provider.start();
-        // this.layer3exec.execute(new MtpStreamHandler());
-
+        
         this.mtp3UserPart.addMtp3UserPartListener(this);
 
         this.state = State.RUNNING;
@@ -224,7 +223,7 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
         // 2(CIC) + 1(CODE)
         ByteBuf payload = mtpMsg.getData();
         if(payload.readableBytes()<3)
-        	throw new IllegalArgumentException("byte[] must have atleast three octets");
+        	throw new IllegalArgumentException("buffer must have atleast three readable octets");
         
         payload.markReaderIndex();
         payload.skipBytes(2);

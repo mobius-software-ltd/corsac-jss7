@@ -50,6 +50,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -121,7 +122,7 @@ public class CancelLocationRequestTest {
 		assertTrue(newVLRNumber.getAddress().equals("22229"));
 		assertEquals(newVLRNumber.getAddressNature(), AddressNature.international_number);
 		assertEquals(newVLRNumber.getNumberingPlan(), NumberingPlan.ISDN);
-		assertTrue(Arrays.equals(newLmsi.getData(), getDataLmsi()));
+		assertTrue(ByteBufUtil.equals(newLmsi.getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
 		assertEquals(mapProtocolVersion, 3);
 
 		// encode data 1
@@ -147,7 +148,7 @@ public class CancelLocationRequestTest {
 		assertNotNull(imsiWithLmsi);
 		assertTrue(imsiWithLmsi.getImsi().getData().equals("1111122222"));
 		LMSI lmsi = imsiWithLmsi.getLmsi();
-		assertTrue(Arrays.equals(lmsi.getData(), getDataLmsi()));
+		assertTrue(ByteBufUtil.equals(lmsi.getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
 
 		assertEquals(cancellationType.getCode(), 1);
 		assertNotNull(extensionContainer);
@@ -160,7 +161,7 @@ public class CancelLocationRequestTest {
 		assertTrue(newVLRNumber.getAddress().equals("22229"));
 		assertEquals(newVLRNumber.getAddressNature(), AddressNature.international_number);
 		assertEquals(newVLRNumber.getNumberingPlan(), NumberingPlan.ISDN);
-		assertTrue(Arrays.equals(newLmsi.getData(), getDataLmsi()));
+		assertTrue(ByteBufUtil.equals(newLmsi.getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
 		assertEquals(mapProtocolVersion, 3);
 
 		// encode data 2
@@ -217,7 +218,7 @@ public class CancelLocationRequestTest {
 		// assertNotNull(imsiWithLmsi);
 		assertTrue(imsiWithLmsi.getImsi().getData().equals("1111122222"));
 		lmsi = imsiWithLmsi.getLmsi();
-		assertTrue(Arrays.equals(lmsi.getData(), getDataLmsi()));
+		assertTrue(ByteBufUtil.equals(lmsi.getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
 		assertNull(cancellationType);
 		assertNull(extensionContainer);
 		assertNull(typeOfUpdate);
@@ -236,7 +237,7 @@ public class CancelLocationRequestTest {
 		parser.replaceClass(CancelLocationRequestImplV3.class);
 
 		IMSIImpl imsi = new IMSIImpl("1111122222");
-		LMSIImpl lmsi = new LMSIImpl(getDataLmsi());
+		LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(getDataLmsi()));
 		IMSIWithLMSIImpl imsiWithLmsi = new IMSIWithLMSIImpl(imsi, lmsi);
 		CancellationType cancellationType = CancellationType.getInstance(1);
 		MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
@@ -247,7 +248,7 @@ public class CancelLocationRequestTest {
 				NumberingPlan.ISDN, "22228");
 		ISDNAddressStringImpl newVLRNumber = new ISDNAddressStringImpl(AddressNature.international_number,
 				NumberingPlan.ISDN, "22229");
-		LMSIImpl newLmsi = new LMSIImpl(getDataLmsi());
+		LMSIImpl newLmsi = new LMSIImpl(Unpooled.wrappedBuffer(getDataLmsi()));
 		long mapProtocolVersion = 3;
 
 		CancelLocationRequest asc = new CancelLocationRequestImplV3(imsi, null, cancellationType, extensionContainer,

@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPPrivateExtension;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 
@@ -45,7 +45,7 @@ public class MAPExtensionContainerImpl implements MAPExtensionContainer {
     private MAPPrivateExtensionsListWrapperImpl privateExtensionList;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
-    private ASNOctetString pcsExtensions;
+    private ASNOctetString2 pcsExtensions;
 
     public MAPExtensionContainerImpl() {
     }
@@ -53,10 +53,8 @@ public class MAPExtensionContainerImpl implements MAPExtensionContainer {
     public MAPExtensionContainerImpl(List<MAPPrivateExtension> privateExtensionList, ByteBuf pcsExtensions) {
         this.privateExtensionList = new MAPPrivateExtensionsListWrapperImpl(privateExtensionList);
         
-        if(pcsExtensions!=null) {
-        	this.pcsExtensions = new ASNOctetString();
-        	this.pcsExtensions.setValue(pcsExtensions);
-        }
+        if(pcsExtensions!=null)
+        	this.pcsExtensions = new ASNOctetString2(pcsExtensions);        	
     }
     
     public List<MAPPrivateExtension> getPrivateExtensionList() {
@@ -77,11 +75,8 @@ public class MAPExtensionContainerImpl implements MAPExtensionContainer {
         return this.pcsExtensions.getValue();
     }
 
-    public void setPcsExtensions(ByteBuf pcsExtensions) {
-    	if(this.pcsExtensions==null)
-    		this.pcsExtensions=new ASNOctetString();
-    	
-        this.pcsExtensions.setValue(pcsExtensions);
+    public void setPcsExtensions(ByteBuf pcsExtensions) {    	
+    	this.pcsExtensions=new ASNOctetString2(pcsExtensions);    	
     }
 
     @Override
@@ -99,10 +94,7 @@ public class MAPExtensionContainerImpl implements MAPExtensionContainer {
 
         if (this.pcsExtensions != null && this.pcsExtensions.getValue()!=null) {
             sb.append("\nPcsExtensions=");
-            ByteBuf value=this.pcsExtensions.getValue();
-            byte[] data=new byte[value.readableBytes()];
-            value.readBytes(data);
-            sb.append(ASNOctetString.printDataArr(data));
+            sb.append(pcsExtensions.printDataArr());
         }
 
         sb.append("]");

@@ -39,6 +39,7 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.testng.annotations.Test;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -97,7 +98,7 @@ public class SmsSubmitTpduTest {
         assertEquals((int) impl.getValidityPeriod().getRelativeFormatValue(), 173);
         assertEquals(impl.getUserDataLength(), 41);
         assertTrue(impl.getUserData().getDecodedMessage().equals("Hello !!!! 111 222 333 444 555 666"));
-        assertTrue(Arrays.equals(impl.getUserData().getDecodedUserDataHeader().getInformationElementData(0), this.getData1A()));
+        assertTrue(ByteBufUtil.equals(impl.getUserData().getDecodedUserDataHeader().getInformationElementData(0),Unpooled.wrappedBuffer(this.getData1A())));
 
         impl = new SmsSubmitTpduImpl(Unpooled.wrappedBuffer(this.getData2()), null);
         ;
@@ -139,7 +140,7 @@ public class SmsSubmitTpduTest {
         assertTrue(impl.getDestinationAddress().getAddressValue().equals("000"));
         assertEquals(impl.getProtocolIdentifier().getCode(), 2);
         assertEquals(impl.getDataCodingScheme().getCode(), 4);
-        assertTrue(Arrays.equals(impl.getValidityPeriod().getEnhancedFormatValue().getData(), this.getData3B()));
+        assertTrue(ByteBufUtil.equals(impl.getValidityPeriod().getEnhancedFormatValue().getValue(), Unpooled.wrappedBuffer(this.getData3B())));
         assertEquals(impl.getUserDataLength(), 51);
         assertTrue(impl.getUserData().getDecodedMessage().equals("AddressFieldImpl destAddress = new AddressFieldImpl"));
         assertNull(impl.getUserData().getDecodedUserDataHeader());
@@ -151,7 +152,7 @@ public class SmsSubmitTpduTest {
         // SortedMap<String,Charset> rr = Charset.availableCharsets();
 
         UserDataHeaderImpl udh = new UserDataHeaderImpl();
-        udh.addInformationElement(0, this.getData1A());
+        udh.addInformationElement(0, Unpooled.wrappedBuffer(this.getData1A()));
         UserDataImpl ud = new UserDataImpl("Hello !!!! 111 222 333 444 555 666", new DataCodingSchemeImpl(0), udh, null);
         AddressFieldImpl destAddress = new AddressFieldImpl(TypeOfNumber.InternationalNumber,
                 NumberingPlanIdentification.ISDNTelephoneNumberingPlan, "99988877700");
@@ -181,7 +182,7 @@ public class SmsSubmitTpduTest {
                 Charset.forName("US-ASCII"));
         destAddress = new AddressFieldImpl(TypeOfNumber.AbbreviatedNumber, NumberingPlanIdentification.DataNumberingPlan, "000");
         pi = new ProtocolIdentifierImpl(2);
-        ValidityEnhancedFormatDataImpl efd = new ValidityEnhancedFormatDataImpl(this.getData3B());
+        ValidityEnhancedFormatDataImpl efd = new ValidityEnhancedFormatDataImpl(Unpooled.wrappedBuffer(this.getData3B()));
         vp = new ValidityPeriodImpl(efd);
         impl = new SmsSubmitTpduImpl(false, true, true, 0, destAddress, pi, vp, ud);
         encData=new byte[this.getData3().length];

@@ -4,7 +4,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 
 /*
@@ -32,17 +32,20 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 *
 */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
-public class ASNFeatureRequestIndicator extends ASNInteger {
-	public void setType(FeatureRequestIndicator t) {
-		if(t!=null)
-			setValue((long)t.getCode());
+public class ASNFeatureRequestIndicator extends ASNEnumerated {
+	public ASNFeatureRequestIndicator() {
+		
+	}
+	
+	public ASNFeatureRequestIndicator(FeatureRequestIndicator t) {
+		super(t.getCode());
 	}
 	
 	public FeatureRequestIndicator getType() {
-		Long realValue=getValue();
+		Integer realValue=getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return FeatureRequestIndicator.getInstance(realValue.intValue());
+		return FeatureRequestIndicator.getInstance(realValue);
 	}
 }

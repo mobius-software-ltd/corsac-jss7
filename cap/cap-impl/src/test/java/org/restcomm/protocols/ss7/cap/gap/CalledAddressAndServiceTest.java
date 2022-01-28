@@ -30,12 +30,14 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.gap.CalledAddressAndServiceImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -67,7 +69,7 @@ public class CalledAddressAndServiceTest {
         assertTrue(result.getResult() instanceof CalledAddressAndServiceImpl);
         
         CalledAddressAndServiceImpl elem = (CalledAddressAndServiceImpl)result.getResult();        
-        assertEquals(elem.getCalledAddressValue().getData(), getDigitsData());
+        assertTrue(ByteBufUtil.equals(DigitsIsupImpl.translate(elem.getCalledAddressDigits().getGenericDigits()),Unpooled.wrappedBuffer(getDigitsData())));
         assertEquals(elem.getServiceKey(), SERVICE_KEY);
     }
 
@@ -76,7 +78,7 @@ public class CalledAddressAndServiceTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CalledAddressAndServiceImpl.class);
     	
-        DigitsIsupImpl calledAddressValue = new DigitsIsupImpl(getDigitsData());
+        DigitsIsupImpl calledAddressValue = new DigitsIsupImpl(new GenericDigitsImpl(Unpooled.wrappedBuffer(getDigitsData())));
         CalledAddressAndServiceImpl elem = new CalledAddressAndServiceImpl(calledAddressValue, SERVICE_KEY);
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
@@ -84,46 +86,4 @@ public class CalledAddressAndServiceTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "gap" })
-    public void testXMLSerialize() throws Exception {
-
-        GenericNumberImpl gn = new GenericNumberImpl(GenericNumber._NAI_NATIONAL_SN, "12345",
-                GenericNumber._NQIA_CONNECTED_NUMBER, GenericNumber._NPI_TELEX, GenericNumber._APRI_ALLOWED,
-                GenericNumber._NI_INCOMPLETE, GenericNumber._SI_USER_PROVIDED_VERIFIED_FAILED);
-        Digits digits = new DigitsImpl(gn);
-
-        CalledAddressAndServiceImpl original = new CalledAddressAndServiceImpl(digits, SERVICE_KEY);
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "CalledAddressAndServiceArg", CalledAddressAndServiceImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-
-        CalledAddressAndServiceImpl copy = reader.read("CalledAddressAndServiceArg", CalledAddressAndServiceImpl.class);
-
-        assertTrue(isEqual(original, copy));
-    }
-
-    private boolean isEqual(CalledAddressAndServiceImpl o1, CalledAddressAndServiceImpl o2) {
-        if (o1 == o2)
-            return true;
-        if (o1 == null && o2 != null || o1 != null && o2 == null)
-            return false;
-        if (o1 == null && o2 == null)
-            return true;
-        if (!o1.toString().equals(o2.toString()))
-            return false;
-        return true;
-    }*/
 }

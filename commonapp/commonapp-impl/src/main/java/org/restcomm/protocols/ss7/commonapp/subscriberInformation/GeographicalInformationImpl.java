@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeographicalInformation;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.TypeOfShape;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -37,7 +37,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class GeographicalInformationImpl extends ASNOctetString implements GeographicalInformation {
+public class GeographicalInformationImpl extends ASNOctetString2 implements GeographicalInformation {
 	private static double koef23 = Math.pow(2.0, 23) / 90;
     private static double koef24 = Math.pow(2.0, 24) / 360;
     private static double[] uncertaintyTable = initUncertaintyTable();
@@ -57,33 +57,28 @@ public class GeographicalInformationImpl extends ASNOctetString implements Geogr
     public GeographicalInformationImpl() {       
     }
 
-    public GeographicalInformationImpl(byte[] data) {
-    	 setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public GeographicalInformationImpl(TypeOfShape typeOfShape, double latitude, double longitude, double uncertainty)
             throws APPException {
-        setData(typeOfShape, latitude, longitude, uncertainty);
+        super(translate(typeOfShape, latitude, longitude, uncertainty));
     }
 
-    public void setData(TypeOfShape typeOfShape, double latitude, double longitude, double uncertainty) throws APPException {
+    public static ByteBuf translate(TypeOfShape typeOfShape, double latitude, double longitude, double uncertainty) throws APPException {
         if (typeOfShape != TypeOfShape.EllipsoidPointWithUncertaintyCircle) {
             throw new APPException(
                     "typeOfShape parameter for GeographicalInformation can be only \"ellipsoid point with uncertainty circle\"");
         }
 
-        byte[] data = new byte[8];
+        ByteBuf value=Unpooled.buffer(8);
+        value.writeByte((typeOfShape.getCode() << 4));
 
-        data[0] = (byte) (typeOfShape.getCode() << 4);
-
-        encodeLatitude(data, 1, latitude);
-        encodeLongitude(data, 4, longitude);
-        data[7] = (byte) encodeUncertainty(uncertainty);
-        setValue(Unpooled.wrappedBuffer(data));
+        encodeLatitude(value, latitude);
+        encodeLongitude(value, longitude);
+        value.writeByte(encodeUncertainty(uncertainty));
+        return value;
     }
 
-    public static double decodeLatitude(byte[] data, int begin) {
-        int i1 = ((data[begin] & 0xFF) << 16) + ((data[begin + 1] & 0xFF) << 8) + (data[begin + 2] & 0xFF);
+    public static double decodeLatitude(ByteBuf buffer) {
+        int i1 = ((buffer.readByte() & 0xFF) << 16) + ((buffer.readByte() & 0xFF) << 8) + (buffer.readByte() & 0xFF);
 
         int sign = 1;
         if ((i1 & 0x800000) != 0) {
@@ -94,8 +89,8 @@ public class GeographicalInformationImpl extends ASNOctetString implements Geogr
         return i1 / koef23 * sign;
     }
 
-    public static double decodeLongitude(byte[] data, int begin) {
-        int i1 = ((data[begin] & 0xFF) << 16) | ((data[begin + 1] & 0xFF) << 8) | (data[begin + 2] & 0xFF);
+    public static double decodeLongitude(ByteBuf buffer) {
+        int i1 = ((buffer.readByte() & 0xFF) << 16) | ((buffer.readByte() & 0xFF) << 8) | (buffer.readByte() & 0xFF);
 
         if ((i1 & 0x800000) != 0) {
             i1 = i1 | ((int) 0xFF000000);
@@ -111,7 +106,11 @@ public class GeographicalInformationImpl extends ASNOctetString implements Geogr
         return d;
     }
 
-    public static void encodeLatitude(byte[] data, int begin, double val) {
+    public static TypeOfShape decodeTypeOfShape(int data) {
+    	return TypeOfShape.getInstance(data >> 4);
+    }
+
+    public static void encodeLatitude(ByteBuf buffer, double val) {
         boolean negativeSign = false;
         if (val < 0) {
             negativeSign = true;
@@ -125,12 +124,12 @@ public class GeographicalInformationImpl extends ASNOctetString implements Geogr
         if (negativeSign)
             res |= 0x800000;
 
-        data[begin] = (byte) ((res & 0xFF0000) >> 16);
-        data[begin + 1] = (byte) ((res & 0xFF00) >> 8);
-        data[begin + 2] = (byte) (res & 0xFF);
+        buffer.writeByte(((res & 0xFF0000) >> 16));
+        buffer.writeByte(((res & 0xFF00) >> 8));
+        buffer.writeByte((res & 0xFF));
     }
 
-    public static void encodeLongitude(byte[] data, int begin, double val) {
+    public static void encodeLongitude(ByteBuf buffer, double val) {
         int res = (int) (koef24 * val);
 
         if (res > 0x7FFFFF)
@@ -139,9 +138,9 @@ public class GeographicalInformationImpl extends ASNOctetString implements Geogr
         if (val < 0)
             res |= 0x800000;
 
-        data[begin] = (byte) ((res & 0xFF0000) >> 16);
-        data[begin + 1] = (byte) ((res & 0xFF00) >> 8);
-        data[begin + 2] = (byte) (res & 0xFF);
+        buffer.writeByte(((res & 0xFF0000) >> 16));
+        buffer.writeByte(((res & 0xFF00) >> 8));
+        buffer.writeByte((res & 0xFF));
     }
 
     public static int encodeUncertainty(double val) {
@@ -154,46 +153,39 @@ public class GeographicalInformationImpl extends ASNOctetString implements Geogr
         return 127;
     }
 
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
-    }
-
     public TypeOfShape getTypeOfShape() {
-    	byte[] data=getData();
-        if (data == null || data.length != 8)
+    	ByteBuf buffer=getValue();
+        if (buffer == null || buffer.readableBytes() != 8)
             return null;
 
-        return TypeOfShape.getInstance((data[0] & 0xFF) >> 4);
+        return TypeOfShape.getInstance((buffer.readByte() & 0xFF) >> 4);
     }
 
     public double getLatitude() {
-    	byte[] data=getData();
-        if (data == null || data.length != 8)
+    	ByteBuf buffer=getValue();
+        if (buffer == null || buffer.readableBytes() != 8)
             return 0;
 
-        return decodeLatitude(data, 1);
+        buffer.skipBytes(1);
+        return decodeLatitude(buffer);
     }
 
     public double getLongitude() {
-    	byte[] data=getData();
-        if (data == null || data.length != 8)
+    	ByteBuf buffer=getValue();
+        if (buffer == null || buffer.readableBytes() != 8)
             return 0;
 
-        return decodeLongitude(data, 4);
+        buffer.skipBytes(4);
+        return decodeLongitude(buffer);
     }
 
     public double getUncertainty() {
-    	byte[] data=getData();
-        if (data == null || data.length != 8)
+    	ByteBuf buffer=getValue();
+        if (buffer == null || buffer.readableBytes() != 8)
             return 0;
 
-        return decodeUncertainty(data[7]);
+        buffer.skipBytes(7);
+        return decodeUncertainty(buffer.readByte());
     }
 
     @Override

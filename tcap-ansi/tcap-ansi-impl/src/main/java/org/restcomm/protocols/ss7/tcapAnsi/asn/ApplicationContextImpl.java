@@ -69,8 +69,7 @@ public class ApplicationContextImpl implements ApplicationContext {
 
 	public void setObj(List<Long> value) {
 		this.intApplicationContext=null;
-		this.objApplicationContext=new ASNObjectIdentifier();
-		this.objApplicationContext.setValue(value);		
+		this.objApplicationContext=new ASNObjectIdentifier(value);		
 	}
 
 	public Long getInt() {
@@ -82,7 +81,6 @@ public class ApplicationContextImpl implements ApplicationContext {
 
 	public void setInt(long value) {
 		this.objApplicationContext=null;
-		this.intApplicationContext = new ASNInteger();
-		this.intApplicationContext.setValue(value);
+		this.intApplicationContext = new ASNInteger(value);		
 	}
 }

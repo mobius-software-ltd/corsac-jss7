@@ -27,6 +27,8 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtTeleserv
 import org.restcomm.protocols.ss7.map.api.primitives.ASCICallReference;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  MAP V3:
@@ -65,7 +67,7 @@ public interface PrepareGroupCallRequest extends CallHandlingMessage {
 
      Integer getGroupKeyNumberVkId();
 
-     byte[] getGroupKey();
+     ByteBuf getGroupKey();
 
      EMLPPPriority getPriority();
 
@@ -73,9 +75,9 @@ public interface PrepareGroupCallRequest extends CallHandlingMessage {
 
      MAPExtensionContainer getExtensionContainer();
 
-     byte[] getVstk();
+     ByteBuf getVstk();
 
-     byte[] getVstkRand();
+     ByteBuf getVstkRand();
 
      boolean getTalkerChannelParameter();
 

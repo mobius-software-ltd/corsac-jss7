@@ -30,11 +30,11 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.BackwardGVNS;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Start time:13:15:04 2009-04-04<br>
@@ -57,7 +57,7 @@ public class BackwardGVNSImpl extends AbstractISUPParameter implements BackwardG
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() == 0) {
-            throw new ParameterException("byte[] must  not be null and length must  be greater than 0");
+            throw new ParameterException("buffer must  not be null and length must  be greater than 0");
         }
         this.backwardGVNS = Unpooled.wrappedBuffer(b);
     }

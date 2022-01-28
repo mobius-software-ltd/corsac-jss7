@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CallDiversio
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNCallDiversionTreatmentIndicatorImpl extends ASNEnumerated {
-	public void setType(CallDiversionTreatmentIndicator t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNCallDiversionTreatmentIndicatorImpl() {
+		
+	}
+	
+	public ASNCallDiversionTreatmentIndicatorImpl(CallDiversionTreatmentIndicator t) {
+		super(t.getCode());
 	}
 	
 	public CallDiversionTreatmentIndicator getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return CallDiversionTreatmentIndicator.getInstance(getValue().intValue());
+		return CallDiversionTreatmentIndicator.getInstance(realValue);
 	}
 }

@@ -37,8 +37,7 @@ public class TariffSwitchoverTimeImpl extends ASNSingleByte implements TariffSwi
     }
 
     public TariffSwitchoverTimeImpl(Integer value) {
-    	if(value!=null)
-    		setValue(value);    	
+    	super(value);    	
     }
 
     public Integer getData() {

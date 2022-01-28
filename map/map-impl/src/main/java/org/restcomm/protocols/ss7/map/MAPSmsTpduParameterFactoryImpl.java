@@ -79,6 +79,8 @@ import org.restcomm.protocols.ss7.map.smstpdu.StatusImpl;
 import org.restcomm.protocols.ss7.map.smstpdu.UserDataHeaderImpl;
 import org.restcomm.protocols.ss7.map.smstpdu.UserDataImpl;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author amit bhayani
@@ -171,8 +173,8 @@ public class MAPSmsTpduParameterFactoryImpl implements MAPSmsTpduParameterFactor
         return new StatusImpl(code);
     }
 
-    public ValidityEnhancedFormatData createValidityEnhancedFormatData(byte[] data) {
-        return new ValidityEnhancedFormatDataImpl(data);
+    public ValidityEnhancedFormatData createValidityEnhancedFormatData(ByteBuf value) {
+        return new ValidityEnhancedFormatDataImpl(value);
     }
 
     public ValidityPeriod createValidityPeriod(int relativeFormatValue) {
@@ -191,11 +193,11 @@ public class MAPSmsTpduParameterFactoryImpl implements MAPSmsTpduParameterFactor
         return new UserDataHeaderImpl();
     }
 
-    public UserDataHeader createUserDataHeader(byte[] encodedData) {
+    public UserDataHeader createUserDataHeader(ByteBuf encodedData) {
         return new UserDataHeaderImpl(encodedData);
     }
 
-    public UserData createUserData(byte[] encodedData, DataCodingScheme dataCodingScheme, int encodedUserDataLength,
+    public UserData createUserData(ByteBuf encodedData, DataCodingScheme dataCodingScheme, int encodedUserDataLength,
             boolean encodedUserDataHeaderIndicator, Charset gsm8Charset) {
         return new UserDataImpl(encodedData, dataCodingScheme, encodedUserDataLength, encodedUserDataHeaderIndicator,
                 gsm8Charset);
@@ -206,7 +208,7 @@ public class MAPSmsTpduParameterFactoryImpl implements MAPSmsTpduParameterFactor
         return new UserDataImpl(decodedMessage, dataCodingScheme, decodedUserDataHeader, gsm8Charset);
     }
 
-    public CommandData createCommandData(byte[] data) {
+    public CommandData createCommandData(ByteBuf data) {
         return new CommandDataImpl(data);
     }
 

@@ -54,8 +54,7 @@ public class OperationCodeImpl implements OperationCode {
 
 	public void setNationalOperationCode(Long nationalOperationCode) {
 		this.privateOperationCode=null;
-		this.nationalOperationCode=new ASNInteger();
-		this.nationalOperationCode.setValue(nationalOperationCode);		
+		this.nationalOperationCode=new ASNInteger(nationalOperationCode);		
 	}
 
 	public Long getPrivateOperationCode() {
@@ -67,8 +66,7 @@ public class OperationCodeImpl implements OperationCode {
 
 	public void setPrivateOperationCode(Long privateOperationCode) {
 		this.nationalOperationCode=null;
-		this.privateOperationCode = new ASNInteger();
-		this.privateOperationCode.setValue(privateOperationCode);
+		this.privateOperationCode = new ASNInteger(privateOperationCode);		
 	}
 
 	public OperationCodeType getOperationType() {

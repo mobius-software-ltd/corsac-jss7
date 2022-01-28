@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Access
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNAccessType extends ASNEnumerated {
-	public void setType(AccessType t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNAccessType() {
+		
+	}
+	
+	public ASNAccessType(AccessType t) {
+		super(t.getCode());
 	}
 	
 	public AccessType getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return AccessType.getInstance(getValue().intValue());
+		return AccessType.getInstance(realValue);
 	}
 }

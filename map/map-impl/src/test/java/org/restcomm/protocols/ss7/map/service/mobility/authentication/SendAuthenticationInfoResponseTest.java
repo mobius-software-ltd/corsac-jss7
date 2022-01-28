@@ -43,6 +43,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -98,10 +99,10 @@ public class SendAuthenticationInfoResponseTest {
 
         EpsAuthenticationSetList easl = asc.getEpsAuthenticationSetList();
         assertEquals(easl.getEpcAv().size(), 1);
-        assertTrue(Arrays.equals(easl.getEpcAv().get(0).getRand(), EpcAvTest.getRandData()));
-        assertTrue(Arrays.equals(easl.getEpcAv().get(0).getXres(), EpcAvTest.getXresData()));
-        assertTrue(Arrays.equals(easl.getEpcAv().get(0).getAutn(), EpcAvTest.getAutnData()));
-        assertTrue(Arrays.equals(easl.getEpcAv().get(0).getKasme(), EpcAvTest.getKasmeData()));
+        assertTrue(ByteBufUtil.equals(easl.getEpcAv().get(0).getRand(), Unpooled.wrappedBuffer(EpcAvTest.getRandData())));
+        assertTrue(ByteBufUtil.equals(easl.getEpcAv().get(0).getXres(), Unpooled.wrappedBuffer(EpcAvTest.getXresData())));
+        assertTrue(ByteBufUtil.equals(easl.getEpcAv().get(0).getAutn(), Unpooled.wrappedBuffer(EpcAvTest.getAutnData())));
+        assertTrue(ByteBufUtil.equals(easl.getEpcAv().get(0).getKasme(), Unpooled.wrappedBuffer(EpcAvTest.getKasmeData())));
 
         assertNull(asc.getExtensionContainer());
 
@@ -113,8 +114,8 @@ public class SendAuthenticationInfoResponseTest {
         
         asl = asc.getAuthenticationSetList();
         assertEquals(asl.getTripletList().getAuthenticationTriplets().size(), 1);
-        assertTrue(Arrays.equals(asl.getTripletList().getAuthenticationTriplets().get(0).getRand(),
-                TripletListTest.getRandData()));
+        assertTrue(ByteBufUtil.equals(asl.getTripletList().getAuthenticationTriplets().get(0).getRand(),
+                Unpooled.wrappedBuffer(TripletListTest.getRandData())));
         assertNull(asl.getQuintupletList());
 
         assertNull(asc.getEpsAuthenticationSetList());
@@ -128,7 +129,8 @@ public class SendAuthenticationInfoResponseTest {
     	parser.replaceClass(SendAuthenticationInfoResponseImplV1.class);
     
         List<AuthenticationTriplet> ats = new ArrayList<AuthenticationTriplet>();
-        AuthenticationTripletImpl at = new AuthenticationTripletImpl(AuthenticationTripletTest.getRandData(), AuthenticationTripletTest.getSresData(), AuthenticationTripletTest.getKcData());
+        AuthenticationTripletImpl at = new AuthenticationTripletImpl(Unpooled.wrappedBuffer(AuthenticationTripletTest.getRandData()), 
+        		Unpooled.wrappedBuffer(AuthenticationTripletTest.getSresData()), Unpooled.wrappedBuffer(AuthenticationTripletTest.getKcData()));
         ats.add(at);
         TripletList tl = new TripletListImpl(ats);
         AuthenticationSetListImpl asl = new AuthenticationSetListImpl(tl,3);
@@ -140,7 +142,8 @@ public class SendAuthenticationInfoResponseTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        EpcAvImpl d1 = new EpcAvImpl(EpcAvTest.getRandData(), EpcAvTest.getXresData(), EpcAvTest.getAutnData(), EpcAvTest.getKasmeData(), null);
+        EpcAvImpl d1 = new EpcAvImpl(Unpooled.wrappedBuffer(EpcAvTest.getRandData()), Unpooled.wrappedBuffer(EpcAvTest.getXresData()), 
+        		Unpooled.wrappedBuffer(EpcAvTest.getAutnData()), Unpooled.wrappedBuffer(EpcAvTest.getKasmeData()), null);
         List<EpcAv> epcAvs = new ArrayList<EpcAv>();
         epcAvs.add(d1);
         EpsAuthenticationSetList easl = new EpsAuthenticationSetListImpl(epcAvs);
@@ -153,8 +156,8 @@ public class SendAuthenticationInfoResponseTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         ats = new ArrayList<AuthenticationTriplet>();
-        at = new AuthenticationTripletImpl(TripletListTest.getRandData(), TripletListTest.getSresData(),
-                TripletListTest.getKcData());
+        at = new AuthenticationTripletImpl(Unpooled.wrappedBuffer(TripletListTest.getRandData()), Unpooled.wrappedBuffer(TripletListTest.getSresData()),
+        		Unpooled.wrappedBuffer(TripletListTest.getKcData()));
         ats.add(at);
         tl = new TripletListImpl(ats);
         asl = new AuthenticationSetListImpl(tl,2);        

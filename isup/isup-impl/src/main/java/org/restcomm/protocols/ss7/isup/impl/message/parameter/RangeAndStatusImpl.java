@@ -30,10 +30,11 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Start time:14:44:16 2009-04-02<br>
@@ -43,7 +44,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
  */
 public class RangeAndStatusImpl extends AbstractISUPParameter implements RangeAndStatus {
 	private byte range;
-    private byte[] status;
+    private ByteBuf status;
 
     // FIXME:
     // private Status[] status = null;
@@ -62,7 +63,7 @@ public class RangeAndStatusImpl extends AbstractISUPParameter implements RangeAn
 
     }
 
-    public RangeAndStatusImpl(byte range, byte[] status) {
+    public RangeAndStatusImpl(byte range, ByteBuf status) {
         super();
         this.range = range;
         setStatus(status);
@@ -74,8 +75,7 @@ public class RangeAndStatusImpl extends AbstractISUPParameter implements RangeAn
         if (b.readableBytes()==0)
             return;
         
-        this.status = new byte[b.readableBytes()];
-        b.readBytes(this.status);
+        this.status = b.readSlice(b.readableBytes());        
     }
 
     public void encode(ByteBuf b) throws ParameterException {
@@ -104,15 +104,17 @@ public class RangeAndStatusImpl extends AbstractISUPParameter implements RangeAn
             if ((range + 1) % 8 != 0) {
                 len++;
             }
-            this.status = new byte[len];
+            this.status = Unpooled.buffer(len);
+            for(int i=0;i<len;i++)
+            	this.status.writeByte(0);
         }
     }
 
-    public byte[] getStatus() {
+    public ByteBuf getStatus() {
         return status;
     }
 
-    public void setStatus(byte[] status) {
+    public void setStatus(ByteBuf status) {
         this.status = status;
     }
 
@@ -122,14 +124,14 @@ public class RangeAndStatusImpl extends AbstractISUPParameter implements RangeAn
      * @see org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus#isAffected (byte)
      */
     public boolean isAffected(byte b) throws IllegalArgumentException {
-        if (this.status.length < (b / 8)) {
+        if (this.status.readableBytes() < (b / 8)) {
             throw new IllegalArgumentException("Argument exceeds status!");
         }
         int index_l = (b / 8);
 
         int index = b % 8; // number of bit to lit... ech
         int n2Pattern = (int) Math.pow(2, index); // hmm no int pows... sucks
-        return (this.status[index_l] & n2Pattern) > 0;
+        return (this.status.getByte(index_l) & n2Pattern) > 0;
     }
 
     /*
@@ -142,7 +144,7 @@ public class RangeAndStatusImpl extends AbstractISUPParameter implements RangeAn
             throw new IllegalArgumentException("Can not set affected if no status present!");
         }
         // ceck
-        if (this.status.length < (subrange / 8)) {
+        if (this.status.readableBytes() < (subrange / 8)) {
             throw new IllegalArgumentException("Argument exceeds status!");
         }
         int index_l = (subrange / 8);
@@ -150,11 +152,11 @@ public class RangeAndStatusImpl extends AbstractISUPParameter implements RangeAn
         int n2Pattern = (int) Math.pow(2, index); // hmm no int pows... sucks
 
         if (v) {
-            this.status[index_l] |= n2Pattern;
+            this.status.setByte(index_l,this.status.getByte(index_l) | n2Pattern);
         } else {
             // not, we have to inverse pattern...
             n2Pattern = 0xFF ^ n2Pattern; // this will create bits with zeros in place of n2Pattern ones!
-            this.status[index_l] &= n2Pattern; // do logical and, this will kill proper bit and leave rest unchanged
+            this.status.setByte(index_l,this.status.getByte(index_l) & n2Pattern); // do logical and, this will kill proper bit and leave rest unchanged
         }
     }
 
@@ -163,7 +165,7 @@ public class RangeAndStatusImpl extends AbstractISUPParameter implements RangeAn
         return _PARAMETER_CODE;
     }
 
-    private static void checkData(byte range, byte[] status) throws ParameterException {
+    private static void checkData(byte range, ByteBuf status) throws ParameterException {
         // FIXME: add checks specific to messages~!
         if (status != null) {
 
@@ -171,8 +173,8 @@ public class RangeAndStatusImpl extends AbstractISUPParameter implements RangeAn
             if ((range + 1) % 8 != 0) {
                 len++;
             }
-            if (status.length != len) {
-                throw new ParameterException("Wrong length of status part: " + status.length + ", range: " + range);
+            if (status.readableBytes() != len) {
+                throw new ParameterException("Wrong length of status part: " + status.readableBytes() + ", range: " + range);
             }
         } else {
             // there are cases when this can be null;

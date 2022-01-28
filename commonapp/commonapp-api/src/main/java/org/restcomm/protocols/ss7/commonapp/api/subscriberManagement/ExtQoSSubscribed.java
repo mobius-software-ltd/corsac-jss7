@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.commonapp.api.subscriberManagement;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -206,7 +208,7 @@ or Maximum bit rate for downlink is set to 0 kbps.
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface ExtQoSSubscribed {
 
-    byte[] getData();
+    ByteBuf getValue();
 
     int getAllocationRetentionPriority();
 

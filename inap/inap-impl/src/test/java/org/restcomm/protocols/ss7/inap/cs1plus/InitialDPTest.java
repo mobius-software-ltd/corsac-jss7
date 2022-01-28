@@ -26,6 +26,10 @@ import org.restcomm.protocols.ss7.commonapp.isup.LocationNumberIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ExtensionFieldImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.InitialDPRequestImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyNumberImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserServiceInformationImpl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -33,6 +37,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 public class InitialDPTest {
@@ -77,14 +82,14 @@ public class InitialDPTest {
 		assertEquals(elem.getServiceKey(),10);
 		
 		assertNotNull(elem.getCalledPartyNumber());
-		assertTrue(Arrays.equals(calledPartyData, elem.getCalledPartyNumber().getData()));
+		assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(calledPartyData),CalledPartyNumberIsupImpl.translate(elem.getCalledPartyNumber().getCalledPartyNumber())));
 		assertEquals(elem.getCalledPartyNumber().getCalledPartyNumber().getNumberingPlanIndicator(), 1);
 		assertEquals(elem.getCalledPartyNumber().getCalledPartyNumber().getInternalNetworkNumberIndicator(), 1);
 		assertEquals(elem.getCalledPartyNumber().getCalledPartyNumber().getNatureOfAddressIndicator(), 2);
 		assertEquals(elem.getCalledPartyNumber().getCalledPartyNumber().getAddress(), "0115255555688722");
 		
 		assertNotNull(elem.getCallingPartyNumber());
-		assertTrue(Arrays.equals(callingPartyData, elem.getCallingPartyNumber().getData()));
+		assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(callingPartyData),CallingPartyNumberIsupImpl.translate(elem.getCallingPartyNumber().getCallingPartyNumber())));
 		assertEquals(elem.getCallingPartyNumber().getCallingPartyNumber().getNumberingPlanIndicator(), 1);
 		assertEquals(elem.getCallingPartyNumber().getCallingPartyNumber().getNumberIncompleteIndicator(), 0);
 		assertEquals(elem.getCallingPartyNumber().getCallingPartyNumber().getAddressRepresentationRestrictedIndicator(), 0);
@@ -93,7 +98,7 @@ public class InitialDPTest {
 		assertEquals(elem.getCallingPartyNumber().getCallingPartyNumber().getAddress(), "8768658368");
 		
 		assertNotNull(elem.getLocationNumber());
-		assertTrue(Arrays.equals(locationNumberData, elem.getLocationNumber().getData()));
+		assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(locationNumberData), LocationNumberIsupImpl.translate(elem.getLocationNumber().getLocationNumber())));
 		assertEquals(elem.getLocationNumber().getLocationNumber().getNumberingPlanIndicator(), 1);
 		assertEquals(elem.getLocationNumber().getLocationNumber().getInternalNetworkNumberIndicator(), 1);
 		assertEquals(elem.getLocationNumber().getLocationNumber().getAddressRepresentationRestrictedIndicator(), 0);
@@ -106,13 +111,13 @@ public class InitialDPTest {
 		assertEquals(elem.getExtensions().getExtensionFields().size(), 2);
 		assertNotNull(elem.getExtensions().getExtensionFields().get(0).getLocalCode());
 		assertEquals(elem.getExtensions().getExtensionFields().get(0).getLocalCode(), new Integer(35));
-		assertTrue(Arrays.equals(extension1Data, elem.getExtensions().getExtensionFields().get(0).getData()));
+		assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(extension1Data), elem.getExtensions().getExtensionFields().get(0).getValue()));
 		assertNotNull(elem.getExtensions().getExtensionFields().get(1).getLocalCode());
 		assertEquals(elem.getExtensions().getExtensionFields().get(1).getLocalCode(), new Integer(47));
-		assertTrue(Arrays.equals(extension2Data, elem.getExtensions().getExtensionFields().get(1).getData()));
+		assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(extension2Data), elem.getExtensions().getExtensionFields().get(1).getValue()));
 		
 		assertNotNull(elem.getBearerCapability());
-		assertTrue(Arrays.equals(bearerData, elem.getBearerCapability().getBearerCap().getData()));
+		assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(bearerData),BearerIsupImpl.translate(elem.getBearerCapability().getBearerCap().getUserServiceInformation())));
 		assertNotNull(elem.getBearerCapability().getBearerCap().getUserServiceInformation());
 		assertEquals(elem.getBearerCapability().getBearerCap().getUserServiceInformation().getAssignor(), 0);
 		assertEquals(elem.getBearerCapability().getBearerCap().getUserServiceInformation().getCodingStandart(), 0);
@@ -154,16 +159,16 @@ public class InitialDPTest {
 		ASNParser parser=new ASNParser(true);
 		parser.replaceClass(InitialDPRequestImpl.class);
 	    	
-		CalledPartyNumberIsup calledPartyNumber=new CalledPartyNumberIsupImpl(calledPartyData);
-		CallingPartyNumberIsup callingPartyNumber=new CallingPartyNumberIsupImpl(callingPartyData);
-		LocationNumberIsup locationNumber=new LocationNumberIsupImpl(locationNumberData);
+		CalledPartyNumberIsup calledPartyNumber=new CalledPartyNumberIsupImpl(new CalledPartyNumberImpl(Unpooled.wrappedBuffer(calledPartyData)));
+		CallingPartyNumberIsup callingPartyNumber=new CallingPartyNumberIsupImpl(new CallingPartyNumberImpl(Unpooled.wrappedBuffer(callingPartyData)));
+		LocationNumberIsup locationNumber=new LocationNumberIsupImpl(new LocationNumberImpl(Unpooled.wrappedBuffer(locationNumberData)));
 		
 		List<ExtensionField> fieldsList=new ArrayList<ExtensionField>();
-		fieldsList.add(new ExtensionFieldImpl(35, null, extension1Data, true));
-		fieldsList.add(new ExtensionFieldImpl(47, null, extension2Data, true));
+		fieldsList.add(new ExtensionFieldImpl(35, null, Unpooled.wrappedBuffer(extension1Data), true));
+		fieldsList.add(new ExtensionFieldImpl(47, null, Unpooled.wrappedBuffer(extension2Data), true));
 		CAPINAPExtensions extensions=new CAPINAPExtensionsImpl(fieldsList);
 		
-		BearerCapability bearerCapability=new BearerCapabilityImpl(new BearerIsupImpl(bearerData));
+		BearerCapability bearerCapability=new BearerCapabilityImpl(new BearerIsupImpl(new UserServiceInformationImpl(Unpooled.wrappedBuffer(bearerData))));
 		
 		InitialDPRequestImpl elem = new InitialDPRequestImpl(10, null, calledPartyNumber,callingPartyNumber, 
 				null,null,null,null,null,null,locationNumber,null, null, null,null,extensions,null,null,null, 

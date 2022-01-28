@@ -48,6 +48,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -86,7 +87,7 @@ public class CUGInfoTest {
         CUGSubscription cugSub = prim.getCUGSubscriptionList().get(0);
         assertNotNull(cugSub);
         assertEquals(cugSub.getCUGIndex(), 1);
-        assertTrue(Arrays.equals(cugSub.getCugInterlock().getData(), getGugData()));
+        assertTrue(ByteBufUtil.equals(cugSub.getCugInterlock().getValue(),Unpooled.wrappedBuffer(getGugData())));
         assertEquals(cugSub.getIntraCugOptions(), IntraCUGOptions.noCUGRestrictions);
         List<ExtBasicServiceCode> basicServiceList = cugSub.getBasicServiceGroupList();
         assertEquals(basicServiceList.size(), 1);
@@ -124,7 +125,7 @@ public class CUGInfoTest {
 
         List<CUGSubscription> cugSubscriptionList = new ArrayList<CUGSubscription>();
         int cugIndex = 1;
-        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getGugData());
+        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(Unpooled.wrappedBuffer(getGugData()));
         IntraCUGOptions intraCugOptions = IntraCUGOptions.noCUGRestrictions;
         List<ExtBasicServiceCode> basicServiceList = new ArrayList<ExtBasicServiceCode>();
         basicServiceList.add(basicService);

@@ -59,20 +59,14 @@ public class DialogueUserInformationRequestImpl extends CircuitSwitchedCallMessa
     public DialogueUserInformationRequestImpl(SendingFunctionsActive sendingFunctionsActive,ReceivingFunctionsRequested receivingFunctionsRequested,
     		Integer trafficSimulationSessionID) {
     	    	
-    	if(sendingFunctionsActive!=null) {
-    		this.sendingFunctionsActive = new ASNSendingFunctionsActive();
-    		this.sendingFunctionsActive.setType(sendingFunctionsActive);
-    	}
-    	
-    	if(receivingFunctionsRequested!=null) {
-    		this.receivingFunctionsRequested = new ASNReceivingFunctionsRequested();
-    		this.receivingFunctionsRequested.setType(receivingFunctionsRequested);
-    	}
-    	
-    	if(trafficSimulationSessionID!=null) {
-    		this.trafficSimulationSessionID = new ASNInteger();
-    		this.trafficSimulationSessionID.setValue(trafficSimulationSessionID.longValue());
-    	}
+    	if(sendingFunctionsActive!=null)
+    		this.sendingFunctionsActive = new ASNSendingFunctionsActive(sendingFunctionsActive);
+    		
+    	if(receivingFunctionsRequested!=null)
+    		this.receivingFunctionsRequested = new ASNReceivingFunctionsRequested(receivingFunctionsRequested);
+    		
+    	if(trafficSimulationSessionID!=null)
+    		this.trafficSimulationSessionID = new ASNInteger(trafficSimulationSessionID);    		
     }
 
     @Override
@@ -103,10 +97,10 @@ public class DialogueUserInformationRequestImpl extends CircuitSwitchedCallMessa
 
     @Override
     public Integer getTrafficSimulationSessionID() {
-    	if(trafficSimulationSessionID==null || trafficSimulationSessionID.getValue()==null)
+    	if(trafficSimulationSessionID==null)
     		return null;
     	
-    	return trafficSimulationSessionID.getValue().intValue();
+    	return trafficSimulationSessionID.getIntValue();
     }
 
     @Override

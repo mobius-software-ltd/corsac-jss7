@@ -61,6 +61,8 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * The factory of MAP ReturnError messages
  *
@@ -183,7 +185,7 @@ public class MAPErrorMessageFactoryImpl implements MAPErrorMessageFactory {
     }
 
     public MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(long mapProtocolVersion,
-            SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, byte[] signalInfo,
+            SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, ByteBuf signalInfo,
             MAPExtensionContainer extensionContainer) {
     	if(mapProtocolVersion<3)
     		return new MAPErrorMessageSMDeliveryFailure1Impl(smEnumeratedDeliveryFailureCause);

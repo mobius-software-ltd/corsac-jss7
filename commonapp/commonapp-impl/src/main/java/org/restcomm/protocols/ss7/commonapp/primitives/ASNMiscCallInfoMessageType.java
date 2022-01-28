@@ -4,7 +4,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoMessageTy
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 
 /*
@@ -32,17 +32,20 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 *
 */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,lengthIndefinite=false)
-public class ASNMiscCallInfoMessageType extends ASNInteger {
-	public void setType(MiscCallInfoMessageType t) {
-		if(t!=null)
-			setValue((long)t.getCode());
+public class ASNMiscCallInfoMessageType extends ASNEnumerated {
+	public ASNMiscCallInfoMessageType() {
+		
+	}
+	
+	public ASNMiscCallInfoMessageType(MiscCallInfoMessageType t) {
+		super(t.getCode());
 	}
 	
 	public MiscCallInfoMessageType getType() {
-		Long realValue=getValue();
+		Integer realValue=getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return MiscCallInfoMessageType.getInstance(realValue.intValue());
+		return MiscCallInfoMessageType.getInstance(realValue);
 	}
 }

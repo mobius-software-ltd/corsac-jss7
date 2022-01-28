@@ -37,13 +37,17 @@ import io.netty.buffer.ByteBuf;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public class ASNSingleByte {
 	private Integer value;
+	
+	public ASNSingleByte() {
 		
+	}
+	
+	public ASNSingleByte(Integer value) {
+		this.value=value;
+	}
+	
 	public Integer getValue() {
 		return value;
-	}
-
-	public void setValue(Integer value) {
-		this.value = value;
 	}
 
 	@ASNLength
@@ -66,9 +70,6 @@ public class ASNSingleByte {
 	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) {
 		if(buffer.readableBytes()==0)
 			return false;
-		
-		if(buffer.readableBytes()!=1)
-			return true;
 		
 		value=buffer.readByte() & 0x0FF;
 		return false;

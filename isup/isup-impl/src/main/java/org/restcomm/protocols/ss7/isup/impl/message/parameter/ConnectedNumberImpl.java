@@ -78,7 +78,7 @@ public class ConnectedNumberImpl extends AbstractNAINumber implements ConnectedN
     /*
      * (non-Javadoc)
      *
-     * @seeorg.restcomm.isup.parameters.AbstractNumber#decodeBody(java.io. ByteArrayInputStream)
+     * @seeorg.restcomm.isup.parameters.AbstractNumber#decodeBody(io.netty.buffer.ByteBuf)
      */
 
     public void decodeBody(ByteBuf buffer) throws IllegalArgumentException {
@@ -114,7 +114,7 @@ public class ConnectedNumberImpl extends AbstractNAINumber implements ConnectedN
     /*
      * (non-Javadoc)
      *
-     * @seeorg.restcomm.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
+     * @seeorg.restcomm.isup.parameters.AbstractNumber#encodeBody(io.netty.buffer.ByteBuf)
      */
 
     public void encodeBody(ByteBuf buffer) {

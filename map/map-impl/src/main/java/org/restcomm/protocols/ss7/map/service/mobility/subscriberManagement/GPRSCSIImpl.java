@@ -64,11 +64,9 @@ public class GPRSCSIImpl implements GPRSCSI {
         if(gprsCamelTDPDataList!=null)
         	this.gprsCamelTDPDataList = new GPRSCamelTDPDataListWrapperImpl(gprsCamelTDPDataList);
         
-        if(camelCapabilityHandling!=null) {
-        	this.camelCapabilityHandling = new ASNInteger();
-        	this.camelCapabilityHandling.setValue(camelCapabilityHandling.longValue());
-        }
-        
+        if(camelCapabilityHandling!=null)
+        	this.camelCapabilityHandling = new ASNInteger(camelCapabilityHandling);
+        	
         this.extensionContainer = extensionContainer;
         
         if(notificationToCSE)
@@ -89,7 +87,7 @@ public class GPRSCSIImpl implements GPRSCSI {
     	if(this.camelCapabilityHandling==null)
     		return null;
     	
-        return this.camelCapabilityHandling.getValue().intValue();
+        return this.camelCapabilityHandling.getIntValue();
     }
 
     public MAPExtensionContainer getExtensionContainer() {

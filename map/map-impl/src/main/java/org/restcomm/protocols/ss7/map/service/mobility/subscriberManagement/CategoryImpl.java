@@ -38,11 +38,11 @@ public class CategoryImpl extends ASNSingleByte implements Category {
     }
 
     public CategoryImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public CategoryImpl(CategoryValue value) {
-        setValue(value != null ? value.getCode() : 0);
+    	super(value != null ? value.getCode() : 0);
     }
 
     public int getData() {

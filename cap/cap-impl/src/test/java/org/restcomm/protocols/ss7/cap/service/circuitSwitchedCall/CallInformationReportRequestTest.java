@@ -37,12 +37,14 @@ import org.restcomm.protocols.ss7.cap.primitives.DateAndTimeImpl;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.RequestedInformationType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -94,7 +96,7 @@ public class CallInformationReportRequestTest {
         assertEquals(elem.getRequestedInformationList().get(1).getCallStopTimeValue().getSecond(), 18);
         assertEquals(elem.getRequestedInformationList().get(2).getRequestedInformationType(),
                 RequestedInformationType.releaseCause);
-        assertTrue(Arrays.equals(elem.getRequestedInformationList().get(2).getReleaseCauseValue().getData(), getDataInt1()));
+        assertTrue(ByteBufUtil.equals(CauseIsupImpl.translate(elem.getRequestedInformationList().get(2).getReleaseCauseValue().getCauseIndicators()), Unpooled.wrappedBuffer(getDataInt1())));
         assertEquals(elem.getLegID(), LegType.leg2);
         assertNull(elem.getExtensions());
 
@@ -118,7 +120,7 @@ public class CallInformationReportRequestTest {
         assertEquals(elem.getRequestedInformationList().get(1).getCallStopTimeValue().getSecond(), 18);
         assertEquals(elem.getRequestedInformationList().get(2).getRequestedInformationType(),
                 RequestedInformationType.releaseCause);
-        assertTrue(Arrays.equals(elem.getRequestedInformationList().get(2).getReleaseCauseValue().getData(), getDataInt1()));
+        assertTrue(ByteBufUtil.equals(CauseIsupImpl.translate(elem.getRequestedInformationList().get(2).getReleaseCauseValue().getCauseIndicators()), Unpooled.wrappedBuffer(getDataInt1())));
         assertEquals(elem.getLegID(), LegType.leg2);
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
     }
@@ -134,7 +136,9 @@ public class CallInformationReportRequestTest {
         DateAndTimeImpl callStopTimeValue = new DateAndTimeImpl(2011, 12, 30, 10, 7, 18);
         ri = new RequestedInformationImpl(callStopTimeValue);
         requestedInformationList.add(ri);
-        CauseIsupImpl releaseCauseValue = new CauseIsupImpl(getDataInt1());
+        CauseIndicatorsImpl ci=new CauseIndicatorsImpl();
+        ci.decode(Unpooled.wrappedBuffer(getDataInt1()));
+        CauseIsupImpl releaseCauseValue = new CauseIsupImpl(ci);
         ri = new RequestedInformationImpl(releaseCauseValue);
         requestedInformationList.add(ri);
         

@@ -82,9 +82,9 @@ public class LCSClientIDTest {
     }
 
     public byte[] getDataFull() {
-        return new byte[] { 48, 69, -128, 1, 2, -95, 7, -128, 5, -111, 68, 51, 34, 17, -126, 6, -111, 85, 68, 51, 34, 17,
+        return new byte[] { 48, 70, -128, 1, 2, -95, 7, -128, 5, -111, 68, 51, 34, 17, -126, 6, -111, 85, 68, 51, 34, 17,
                 -125, 1, 0, -92, 19, -128, 1, 15, -126, 14, 110, 114, -5, 28, -122, -61, 101, 110, 114, -5, 28, -122, -61, 101,
-                -123, 2, 11, 12, -90, 19, -128, 1, 15, -127, 14, 110, 114, -5, 28, -122, -61, 101, 110, 114, -5, 28, -122, -61,
+                -123, 3, 2, 11, 12, -90, 19, -128, 1, 15, -127, 14, 110, 114, -5, 28, -122, -61, 101, 110, 114, -5, 28, -122, -61,
                 101 };
     }
 
@@ -140,7 +140,7 @@ public class LCSClientIDTest {
 
         assertTrue(lcsClientID.getLCSClientExternalID().getExternalAddress().getAddress().equals("44332211"));
         assertTrue(lcsClientID.getLCSClientDialedByMS().getAddress().equals("5544332211"));
-        assertTrue(Arrays.equals(lcsClientID.getLCSAPN().getData(), getDataAPN()));
+        assertEquals(lcsClientID.getLCSAPN().getApn(), new String(getDataAPN()));
         assertEquals(lcsClientID.getLCSRequestorID().getDataCodingScheme().getCode(), 0x0f);
         assertTrue(lcsClientID.getLCSRequestorID().getRequestorIDString().getString(null).equals("ndmgapp2ndmgapp2"));
     }
@@ -165,7 +165,7 @@ public class LCSClientIDTest {
         ISDNAddressStringImpl externalAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,"44332211");
         LCSClientExternalIDImpl extId = new LCSClientExternalIDImpl(externalAddress, null);
         AddressStringImpl clientDialedByMS = new AddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,"5544332211");
-        APNImpl apn = new APNImpl(getDataAPN());
+        APNImpl apn = new APNImpl(new String(getDataAPN()));
         LCSRequestorIDImpl reqId = new LCSRequestorIDImpl(new CBSDataCodingSchemeImpl(0x0f), nameString, null);
         lcsClientID = new LCSClientIDImpl(LCSClientType.plmnOperatorServices, extId, LCSClientInternalID.broadcastService,lcsClientName, clientDialedByMS, apn, reqId);
         buffer=parser.encode(lcsClientID);

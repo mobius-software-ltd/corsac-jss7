@@ -32,10 +32,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNObjectIdentifier;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -46,7 +45,7 @@ import io.netty.buffer.Unpooled;
 public class ExtensionFieldImpl implements ExtensionField {
 
 	@ASNProperty(asnClass = ASNClass.UNIVERSAL,tag = 2,constructed = false,index = 0)
-    private ASNInteger localCode;    
+    private ASNInteger localCode;
 
 	@ASNProperty(asnClass = ASNClass.UNIVERSAL,tag = 6,constructed = false,index = 0)
 	private ASNObjectIdentifier globalCode;
@@ -54,57 +53,41 @@ public class ExtensionFieldImpl implements ExtensionField {
 	private ASNCriticalityType criticalityType;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    public ASNOctetString data;
+    public ASNOctetString2 data;
 
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1)
-    public ASNOctetString data1;
+    public ASNOctetString2 data1;
     
     public ExtensionFieldImpl() {
     }
 
-    public ExtensionFieldImpl(Integer localCode, CriticalityType criticalityType, byte[] data, boolean isConstructred) {
-    	if(localCode!=null) {
-    		this.localCode = new ASNInteger();
-    		this.localCode.setValue(localCode.longValue());
-    	}
-    	
-        if(criticalityType!=null && criticalityType!=CriticalityType.typeIgnore) {
-        	this.criticalityType = new ASNCriticalityType();
-        	this.criticalityType.setType(criticalityType);
-        }
-                
+    public ExtensionFieldImpl(Integer localCode, CriticalityType criticalityType, ByteBuf data, boolean isConstructred) {
+    	if(localCode!=null)
+    		this.localCode = new ASNInteger(localCode);
+    		
+        if(criticalityType!=null && criticalityType!=CriticalityType.typeIgnore)
+        	this.criticalityType = new ASNCriticalityType(criticalityType);
+        	       
         if(data!=null) {
-        	if(!isConstructred) {
-        		this.data = new ASNOctetString();
-        		this.data.setValue(Unpooled.wrappedBuffer(data));
-        	}
-        	else if(isConstructred) {
-        		this.data1 = new ASNOctetString();
-        		this.data1.setValue(Unpooled.wrappedBuffer(data));
-        	}
+        	if(!isConstructred)
+        		this.data = new ASNOctetString2(data);        		
+        	else if(isConstructred)
+        		this.data1 = new ASNOctetString2(data);        		
         }
     }
 
-    public ExtensionFieldImpl(List<Long> globalCode, CriticalityType criticalityType, byte[] data, boolean isConstructred) {
-    	if(globalCode!=null) {
-    		this.globalCode = new ASNObjectIdentifier();
-    		this.globalCode.setValue(globalCode);
-    	}
-    	
-        if(criticalityType!=null) {
-        	this.criticalityType = new ASNCriticalityType();
-        	this.criticalityType.setType(criticalityType);
-        }
-        
+    public ExtensionFieldImpl(List<Long> globalCode, CriticalityType criticalityType, ByteBuf data, boolean isConstructred) {
+    	if(globalCode!=null)
+    		this.globalCode = new ASNObjectIdentifier(globalCode);
+    		
+        if(criticalityType!=null)
+        	this.criticalityType = new ASNCriticalityType(criticalityType);
+        	
         if(data!=null) {
-        	if(!isConstructred) {
-        		this.data = new ASNOctetString();
-        		this.data.setValue(Unpooled.wrappedBuffer(data));
-        	}
-        	else if(isConstructred) {
-        		this.data1 = new ASNOctetString();
-        		this.data1.setValue(Unpooled.wrappedBuffer(data));
-        	}
+        	if(!isConstructred)
+        		this.data = new ASNOctetString2(data);        	
+        	else if(isConstructred)
+        		this.data1 = new ASNOctetString2(data);        	
         }
     }
 
@@ -112,7 +95,7 @@ public class ExtensionFieldImpl implements ExtensionField {
     	if(localCode==null)
     		return null;
     	
-        return localCode.getValue().intValue();
+        return localCode.getIntValue();
     }
 
     public List<Long> getGlobalCode() {
@@ -129,19 +112,14 @@ public class ExtensionFieldImpl implements ExtensionField {
         return criticalityType.getType();
     }
 
-    public byte[] getData() {
-    	if((data==null || data.getValue()==null) && (data1==null || data1.getValue()==null))
+    public ByteBuf getValue() {
+    	if(data==null && data1==null)
     		return null;
     	
-    	ByteBuf buffer;
-    	if(data!=null && data.getValue()!=null)
-    		buffer=data.getValue();
+    	if(data!=null)
+    		return data.getValue();
     	else
-    		buffer=data1.getValue();
-    	
-    	byte[] data=new byte[buffer.readableBytes()];    	
-    	buffer.readBytes(data);
-    	return data;
+    		return data1.getValue();    	
     }
 
     @Override
@@ -164,12 +142,12 @@ public class ExtensionFieldImpl implements ExtensionField {
         }
         if (this.data != null && this.data.getValue()!=null) {
             sb.append(", data=[");
-            sb.append(ASNOctetString.printDataArr(getData()));
+            sb.append(this.data.printDataArr());
             sb.append("]");
         }
         if (this.data1 != null && this.data1.getValue()!=null) {
             sb.append(", data=[");
-            sb.append(ASNOctetString.printDataArr(getData()));
+            sb.append(this.data1.printDataArr());
             sb.append("]");
         }
         sb.append("]");

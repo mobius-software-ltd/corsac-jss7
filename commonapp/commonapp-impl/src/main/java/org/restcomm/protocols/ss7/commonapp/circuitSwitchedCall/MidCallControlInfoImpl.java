@@ -60,16 +60,12 @@ public class MidCallControlInfoImpl implements MidCallControlInfo {
 
     public MidCallControlInfoImpl(Integer minimumNumberOfDigits, Integer maximumNumberOfDigits, String endOfReplyDigit, String cancelDigit, String startDigit,
             Integer interDigitTimeout) {
-        if(minimumNumberOfDigits!=null) {
-        	this.minimumNumberOfDigits = new ASNInteger();
-        	this.minimumNumberOfDigits.setValue(minimumNumberOfDigits.longValue());        			
-        }
-        
-        if(maximumNumberOfDigits!=null) {
-        	this.maximumNumberOfDigits = new ASNInteger();
-        	this.maximumNumberOfDigits.setValue(maximumNumberOfDigits.longValue());
-        }
-        
+        if(minimumNumberOfDigits!=null)
+        	this.minimumNumberOfDigits = new ASNInteger(minimumNumberOfDigits);
+        	
+        if(maximumNumberOfDigits!=null)
+        	this.maximumNumberOfDigits = new ASNInteger(maximumNumberOfDigits);
+        	
         if(endOfReplyDigit!=null)
         	this.endOfReplyDigit = new SingleTbcdStringImpl("endOfReplyDigit",endOfReplyDigit);
         
@@ -79,24 +75,22 @@ public class MidCallControlInfoImpl implements MidCallControlInfo {
         if(startDigit!=null)
         	this.startDigit = new SingleTbcdStringImpl("startDigit",startDigit);
         
-        if(interDigitTimeout!=null) {
-            this.interDigitTimeout = new ASNInteger();
-            this.interDigitTimeout.setValue(interDigitTimeout.longValue());
-        }
+        if(interDigitTimeout!=null)
+            this.interDigitTimeout = new ASNInteger(interDigitTimeout);            
     }
 
     public Integer getMinimumNumberOfDigits() {
     	if(this.minimumNumberOfDigits==null)
     		return null;
     	
-        return minimumNumberOfDigits.getValue().intValue();
+        return minimumNumberOfDigits.getIntValue();
     }
 
     public Integer getMaximumNumberOfDigits() {
     	if(this.maximumNumberOfDigits==null)
     		return null;
     	
-        return maximumNumberOfDigits.getValue().intValue();
+        return maximumNumberOfDigits.getIntValue();
     }
 
     public String getEndOfReplyDigit() {
@@ -124,7 +118,7 @@ public class MidCallControlInfoImpl implements MidCallControlInfo {
     	if(interDigitTimeout==null)
     		return null;
     	
-        return interDigitTimeout.getValue().intValue();
+        return interDigitTimeout.getIntValue();
     }
 
     @Override

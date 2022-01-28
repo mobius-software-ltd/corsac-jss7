@@ -49,17 +49,14 @@ public class MTsmsCAMELTDPCriteriaImpl implements MTsmsCAMELTDPCriteria {
 
     public MTsmsCAMELTDPCriteriaImpl(SMSTriggerDetectionPoint smsTriggerDetectionPoint,
             List<MTSMSTPDUType> tPDUTypeCriterion) {
-        if(smsTriggerDetectionPoint!=null) {
-        	this.smsTriggerDetectionPoint = new ASNSMSTriggerDetectionPoint();
-        	this.smsTriggerDetectionPoint.setType(smsTriggerDetectionPoint);
-        }
-        
+        if(smsTriggerDetectionPoint!=null)
+        	this.smsTriggerDetectionPoint = new ASNSMSTriggerDetectionPoint(smsTriggerDetectionPoint);
+        	
         if(tPDUTypeCriterion!=null)
         {
         	List<ASNMTSMSTPDUType> wrappedData=new ArrayList<ASNMTSMSTPDUType>();
         	for(MTSMSTPDUType curr:tPDUTypeCriterion) {
-        		ASNMTSMSTPDUType item=new ASNMTSMSTPDUType();
-        		item.setType(curr);
+        		ASNMTSMSTPDUType item=new ASNMTSMSTPDUType(curr);
         		wrappedData.add(item);
         	}
         	

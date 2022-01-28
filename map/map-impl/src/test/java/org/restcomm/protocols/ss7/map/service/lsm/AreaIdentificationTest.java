@@ -38,6 +38,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -86,8 +87,8 @@ public class AreaIdentificationTest {
         assertTrue(result.getResult() instanceof AreaIdentificationImpl);
         AreaIdentificationImpl prim = (AreaIdentificationImpl)result.getResult();
         
-        assertNotNull(prim.getData());
-        assertTrue(Arrays.equals(getData1Val(), prim.getData()));
+        assertNotNull(prim.getValue());
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(getData1Val()), prim.getValue()));
 
         assertEquals(prim.getMCC(), 250);
         try {
@@ -127,7 +128,7 @@ public class AreaIdentificationTest {
         assertTrue(result.getResult() instanceof AreaIdentificationImpl);
         prim = (AreaIdentificationImpl)result.getResult();
 
-        assertNotNull(prim.getData());
+        assertNotNull(prim.getValue());
 
         assertEquals(prim.getMCC(), 250);
         assertEquals(prim.getMNC(), 7);
@@ -162,7 +163,7 @@ public class AreaIdentificationTest {
         assertTrue(result.getResult() instanceof AreaIdentificationImpl);
         prim = (AreaIdentificationImpl)result.getResult();
         
-        assertNotNull(prim.getData());
+        assertNotNull(prim.getValue());
 
         assertEquals(prim.getMCC(), 250);
         assertEquals(prim.getMNC(), 678);
@@ -192,7 +193,7 @@ public class AreaIdentificationTest {
         assertTrue(result.getResult() instanceof AreaIdentificationImpl);
         prim = (AreaIdentificationImpl)result.getResult();
 
-        assertNotNull(prim.getData());
+        assertNotNull(prim.getValue());
 
         assertEquals(prim.getMCC(), 250);
         assertEquals(prim.getMNC(), 678);
@@ -217,7 +218,7 @@ public class AreaIdentificationTest {
         assertTrue(result.getResult() instanceof AreaIdentificationImpl);
         prim = (AreaIdentificationImpl)result.getResult();
 
-        assertNotNull(prim.getData());
+        assertNotNull(prim.getValue());
 
         assertEquals(prim.getMCC(), 250);
         assertEquals(prim.getMNC(), 678);
@@ -230,7 +231,7 @@ public class AreaIdentificationTest {
         assertTrue(result.getResult() instanceof AreaIdentificationImpl);
         prim = (AreaIdentificationImpl)result.getResult();
 
-        assertNotNull(prim.getData());
+        assertNotNull(prim.getValue());
 
         assertEquals(prim.getMCC(), 250);
         assertEquals(prim.getMNC(), 678);
@@ -246,13 +247,6 @@ public class AreaIdentificationTest {
         byte[] data=getData1();
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];
-        buffer.readBytes(encodedData);
-        assertTrue(Arrays.equals(data, encodedData));
-
-        prim = new AreaIdentificationImpl(getData1Val());
-        data=getData1();
-        buffer=parser.encode(prim);
-        encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 

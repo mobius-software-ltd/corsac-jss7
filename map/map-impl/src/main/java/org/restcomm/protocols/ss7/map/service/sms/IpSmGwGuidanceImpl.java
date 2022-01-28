@@ -29,10 +29,8 @@ public class IpSmGwGuidanceImpl implements IpSmGwGuidance {
     public IpSmGwGuidanceImpl(int minimumDeliveryTimeValue, int recommendedDeliveryTimeValue, MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
                 
-        this.minimumDeliveryTimeValue = new ASNInteger();
-        this.minimumDeliveryTimeValue.setValue((long)minimumDeliveryTimeValue & 0x0FFFFFFFFL);
-        this.recommendedDeliveryTimeValue = new ASNInteger();
-        this.recommendedDeliveryTimeValue.setValue((long)recommendedDeliveryTimeValue & 0x0FFFFFFFFL);
+        this.minimumDeliveryTimeValue = new ASNInteger(minimumDeliveryTimeValue);
+        this.recommendedDeliveryTimeValue = new ASNInteger(recommendedDeliveryTimeValue);        
     }
 
     public MAPExtensionContainer getExtensionContainer() {
@@ -40,17 +38,17 @@ public class IpSmGwGuidanceImpl implements IpSmGwGuidance {
     }
 
     public int getMinimumDeliveryTimeValue() {
-    	if(minimumDeliveryTimeValue==null)
+    	if(minimumDeliveryTimeValue==null || minimumDeliveryTimeValue.getValue()==null)
     		return 0;
     	
-        return minimumDeliveryTimeValue.getValue().intValue();
+        return minimumDeliveryTimeValue.getIntValue();
     }
 
     public int getRecommendedDeliveryTimeValue() {
-    	if(recommendedDeliveryTimeValue==null)
+    	if(recommendedDeliveryTimeValue==null || recommendedDeliveryTimeValue.getValue()==null)
     		return 0;
     	
-        return recommendedDeliveryTimeValue.getValue().intValue();
+        return recommendedDeliveryTimeValue.getIntValue();
     }
 
     @Override

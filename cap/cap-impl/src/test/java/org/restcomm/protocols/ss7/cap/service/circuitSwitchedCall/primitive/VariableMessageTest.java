@@ -93,45 +93,4 @@ public class VariableMessageTest {
 
         // int elementaryMessageID, ArrayList<VariablePart> variableParts
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        int elementaryMessageID = 2;
-        ArrayList<VariablePart> variableParts = new ArrayList<VariablePart>();
-        int integer = 14;
-        VariablePart vp = new VariablePartImpl(integer);
-        variableParts.add(vp);
-        int hour = 22;
-        int minute = 31;
-        VariablePartTime time = new VariablePartTimeImpl(hour, minute);
-        vp = new VariablePartImpl(time);
-        variableParts.add(vp);
-        VariableMessageImpl original = new VariableMessageImpl(elementaryMessageID, variableParts);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "variableMessage", VariableMessageImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        VariableMessageImpl copy = reader.read("variableMessage", VariableMessageImpl.class);
-
-        assertEquals(copy.getElementaryMessageID(), elementaryMessageID);
-        ArrayList<VariablePart> vps = copy.getVariableParts();
-        assertEquals(vps.size(), 2);
-        VariablePart vp1 = vps.get(0);
-        assertEquals((int)vp1.getInteger(), integer);
-        VariablePart vp2 = vps.get(1);
-        assertEquals(vp2.getTime().getHour(), hour);
-        assertEquals(vp2.getTime().getMinute(), minute);
-    }*/
 }

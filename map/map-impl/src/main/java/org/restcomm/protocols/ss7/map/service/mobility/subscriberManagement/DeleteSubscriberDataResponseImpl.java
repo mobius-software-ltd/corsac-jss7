@@ -53,11 +53,9 @@ public class DeleteSubscriberDataResponseImpl extends MobilityMessageImpl implem
     }
 
     public DeleteSubscriberDataResponseImpl(RegionalSubscriptionResponse regionalSubscriptionResponse, MAPExtensionContainer extensionContainer) {
-    	if(regionalSubscriptionResponse!=null) {
-    		this.regionalSubscriptionResponse = new ASNRegionalSubscriptionResponse();
-    		this.regionalSubscriptionResponse.setType(regionalSubscriptionResponse);;
-    	}
-    	
+    	if(regionalSubscriptionResponse!=null)
+    		this.regionalSubscriptionResponse = new ASNRegionalSubscriptionResponse(regionalSubscriptionResponse);
+    		
         this.extensionContainer = extensionContainer;
     }
 

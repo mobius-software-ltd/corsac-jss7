@@ -68,21 +68,17 @@ public class OBcsmCamelTdpCriteriaImpl implements OBcsmCamelTdpCriteria {
             DestinationNumberCriteria destinationNumberCriteria, List<ExtBasicServiceCode> basicServiceCriteria,
             CallTypeCriteria callTypeCriteria, List<CauseValue> oCauseValueCriteria,
             MAPExtensionContainer extensionContainer) {
-        if(oBcsmTriggerDetectionPoint!=null) {
-        	this.oBcsmTriggerDetectionPoint = new ASNOBcsmTriggerDetectionPoint();
-        	this.oBcsmTriggerDetectionPoint.setType(oBcsmTriggerDetectionPoint);
-        }
-        
+        if(oBcsmTriggerDetectionPoint!=null)
+        	this.oBcsmTriggerDetectionPoint = new ASNOBcsmTriggerDetectionPoint(oBcsmTriggerDetectionPoint);
+        	
         this.destinationNumberCriteria = destinationNumberCriteria;
         
         if(basicServiceCriteria!=null)
         this.basicServiceCriteria = new ExtBasicServiceCodeListWrapperImpl(basicServiceCriteria);
         
-        if(callTypeCriteria!=null) {
-        	this.callTypeCriteria = new ASNCallTypeCriteria();
-        	this.callTypeCriteria.setType(callTypeCriteria);
-        }
-        
+        if(callTypeCriteria!=null)
+        	this.callTypeCriteria = new ASNCallTypeCriteria(callTypeCriteria);
+        	
         if(oCauseValueCriteria!=null)
         	this.oCauseValueCriteria = new CauseValueWrapperImpl(oCauseValueCriteria);
         

@@ -47,8 +47,7 @@ public class OperationCodeImpl {
 
 	public void setGlobalOperationCode(List<Long> globalOperationCode) {
 		this.localOperationCode=null;
-		this.globalOperationCode=new ASNObjectIdentifier();
-		this.globalOperationCode.setValue(globalOperationCode);		
+		this.globalOperationCode=new ASNObjectIdentifier(globalOperationCode);		
 	}
 
 	public Long getLocalOperationCode() {
@@ -60,8 +59,7 @@ public class OperationCodeImpl {
 
 	public void setLocalOperationCode(Long localOperationCode) {
 		this.globalOperationCode=null;
-		this.localOperationCode = new ASNInteger();
-		this.localOperationCode.setValue(localOperationCode);
+		this.localOperationCode = new ASNInteger(localOperationCode);		
 	}
 
 	public OperationCodeType getOperationType() {

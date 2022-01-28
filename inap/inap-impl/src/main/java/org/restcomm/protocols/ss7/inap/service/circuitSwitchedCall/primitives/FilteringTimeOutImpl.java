@@ -49,10 +49,8 @@ public class FilteringTimeOutImpl implements FilteringTimeOut {
     }
 
     public FilteringTimeOutImpl(Integer duration) {
-    	if(duration!=null) {
-    		this.duration=new ASNInteger();
-    		this.duration.setValue(duration.longValue());
-    	}
+    	if(duration!=null)
+    		this.duration=new ASNInteger(duration);    		
     }
     
     public FilteringTimeOutImpl(DateAndTime stopTime) {
@@ -60,10 +58,10 @@ public class FilteringTimeOutImpl implements FilteringTimeOut {
     }
 
     public Integer getDuration() {
-    	if(duration==null || duration.getValue()==null)
+    	if(duration==null)
     		return null;
     	
-    	return duration.getValue().intValue();
+    	return duration.getIntValue();
     }
 
     public DateAndTime getStopTime() {

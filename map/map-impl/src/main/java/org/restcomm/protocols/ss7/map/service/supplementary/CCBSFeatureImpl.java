@@ -61,11 +61,9 @@ public class CCBSFeatureImpl implements CCBSFeature {
     }
 
     public CCBSFeatureImpl(Integer ccbsIndex, ISDNAddressString bSubscriberNumber, ISDNAddressString bSubscriberSubaddress, BasicServiceCode basicServiceCode) {
-        if(ccbsIndex!=null) {
-        	this.ccbsIndex = new ASNInteger();
-        	this.ccbsIndex.setValue(ccbsIndex.longValue());
-        }
-        
+        if(ccbsIndex!=null)
+        	this.ccbsIndex = new ASNInteger(ccbsIndex);
+        	
         this.bSubscriberNumber = bSubscriberNumber;
         this.bSubscriberSubaddress = bSubscriberSubaddress;
         
@@ -77,7 +75,7 @@ public class CCBSFeatureImpl implements CCBSFeature {
     	if(ccbsIndex==null)
     		return null;
     	
-        return ccbsIndex.getValue().intValue();
+        return ccbsIndex.getIntValue();
     }
 
     public ISDNAddressString getBSubscriberNumber() {

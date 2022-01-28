@@ -206,11 +206,9 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
                                                ServingNodeAddress targetServingNodeForHandover) {
         super();
         
-        if(lcsEvent!=null) {
-        	this.lcsEvent = new ASNLCSEvent();
-        	this.lcsEvent.setType(lcsEvent);
-        }
-        
+        if(lcsEvent!=null)
+        	this.lcsEvent = new ASNLCSEvent(lcsEvent);
+        	
         this.lcsClientID = lcsClientID;
         this.lcsLocationInfo = lcsLocationInfo;
         this.msisdn = msisdn;
@@ -220,20 +218,16 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         this.naEsrk = naEsrk;
         this.locationEstimate = locationEstimate;
         
-        if(ageOfLocationEstimate!=null) {
-        	this.ageOfLocationEstimate = new ASNInteger();
-        	this.ageOfLocationEstimate.setValue(ageOfLocationEstimate.longValue());
-        }
-        
+        if(ageOfLocationEstimate!=null)
+        	this.ageOfLocationEstimate = new ASNInteger(ageOfLocationEstimate);
+        	
         this.slrArgExtensionContainer = slrArgExtensionContainer;
         this.addLocationEstimate = addLocationEstimate;
         this.deferredmtlrData = deferredmtlrData;
         
-        if(lcsReferenceNumber!=null) {
-        	this.lcsReferenceNumber = new ASNSingleByte();
-        	this.lcsReferenceNumber.setValue(lcsReferenceNumber);
-        }
-        
+        if(lcsReferenceNumber!=null)
+        	this.lcsReferenceNumber = new ASNSingleByte(lcsReferenceNumber);
+        	
         this.geranPositioningData = geranPositioningData;
         this.utranPositioningData = utranPositioningData;
         
@@ -242,29 +236,23 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         
         this.hgmlcAddress = hgmlcAddress;
         
-        if(lcsServiceTypeID!=null) {
-        	this.lcsServiceTypeID = new ASNInteger();
-        	this.lcsServiceTypeID.setValue(lcsServiceTypeID.longValue());
-        }
-        
+        if(lcsServiceTypeID!=null)
+        	this.lcsServiceTypeID = new ASNInteger(lcsServiceTypeID);
+        	
         if(saiPresent)
         	this.saiPresent = new ASNNull();
         
         if(pseudonymIndicator)
         	this.pseudonymIndicator = new ASNNull();
         
-        if(accuracyFulfilmentIndicator!=null) {
-        	this.accuracyFulfilmentIndicator = new ASNAccuracyFulfilmentIndicator();
-        	this.accuracyFulfilmentIndicator.setType(accuracyFulfilmentIndicator);
-        }
-        
+        if(accuracyFulfilmentIndicator!=null)
+        	this.accuracyFulfilmentIndicator = new ASNAccuracyFulfilmentIndicator(accuracyFulfilmentIndicator);
+        	
         this.velocityEstimate = velocityEstimate;
         
-        if(sequenceNumber!=null) {
-        	this.sequenceNumber = new ASNInteger();
-        	this.sequenceNumber.setValue(sequenceNumber.longValue());
-        }
-        
+        if(sequenceNumber!=null)
+        	this.sequenceNumber = new ASNInteger(sequenceNumber);
+        	
         this.periodicLDRInfo = periodicLDRInfo;
         
         if(moLrShortCircuitIndicator)
@@ -315,11 +303,9 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
                                                ReportingPLMNList reportingPLMNList) {
         super();
         
-        if(lcsEvent!=null) {
-        	this.lcsEvent = new ASNLCSEvent();
-        	this.lcsEvent.setType(lcsEvent);
-        }
-        
+        if(lcsEvent!=null)
+        	this.lcsEvent = new ASNLCSEvent(lcsEvent);
+        	
         this.lcsClientID = lcsClientID;
         this.lcsLocationInfo = lcsLocationInfo;
         this.msisdn = msisdn;
@@ -329,20 +315,16 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         this.naEsrk = naEsrk;
         this.locationEstimate = locationEstimate;
         
-        if(ageOfLocationEstimate!=null) {
-        	this.ageOfLocationEstimate = new ASNInteger();
-        	this.ageOfLocationEstimate.setValue(ageOfLocationEstimate.longValue());
-        }
-        
+        if(ageOfLocationEstimate!=null)
+        	this.ageOfLocationEstimate = new ASNInteger(ageOfLocationEstimate);
+        	
         this.slrArgExtensionContainer = slrArgExtensionContainer;
         this.addLocationEstimate = addLocationEstimate;
         this.deferredmtlrData = deferredmtlrData;
         
-        if(lcsReferenceNumber!=null) {
-        	this.lcsReferenceNumber = new ASNSingleByte();
-        	this.lcsReferenceNumber.setValue(lcsReferenceNumber);
-        }
-        
+        if(lcsReferenceNumber!=null)
+        	this.lcsReferenceNumber = new ASNSingleByte(lcsReferenceNumber);
+        	
         this.geranPositioningData = geranPositioningData;
         this.utranPositioningData = utranPositioningData;
         
@@ -351,29 +333,23 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         
         this.hgmlcAddress = hgmlcAddress;
         
-        if(lcsServiceTypeID!=null) {
-        	this.lcsServiceTypeID = new ASNInteger();
-        	this.lcsServiceTypeID.setValue(lcsServiceTypeID.longValue());
-        }
-        
+        if(lcsServiceTypeID!=null)
+        	this.lcsServiceTypeID = new ASNInteger(lcsServiceTypeID);
+        	
         if(saiPresent)
         	this.saiPresent = new ASNNull();
         
         if(pseudonymIndicator)
         	this.pseudonymIndicator = new ASNNull();
         
-        if(this.accuracyFulfilmentIndicator!=null) {
-        	this.accuracyFulfilmentIndicator = new ASNAccuracyFulfilmentIndicator();
-        	this.accuracyFulfilmentIndicator.setType(accuracyFulfilmentIndicator);
-        }
-        
+        if(this.accuracyFulfilmentIndicator!=null)
+        	this.accuracyFulfilmentIndicator = new ASNAccuracyFulfilmentIndicator(accuracyFulfilmentIndicator);
+        	
         this.velocityEstimate = velocityEstimate;
 
-        if(sequenceNumber!=null) {
-        	this.sequenceNumber = new ASNInteger();
-        	this.sequenceNumber.setValue(sequenceNumber.longValue());
-        }
-        
+        if(sequenceNumber!=null)
+        	this.sequenceNumber = new ASNInteger(sequenceNumber);
+        	
         this.periodicLDRInfo = periodicLDRInfo;
         
         if(moLrShortCircuitIndicator)
@@ -491,7 +467,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
     	if(this.ageOfLocationEstimate==null)
     		return null;
     	
-        return this.ageOfLocationEstimate.getValue().intValue();
+        return this.ageOfLocationEstimate.getIntValue();
     }
 
     /*
@@ -532,7 +508,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
     	if(this.lcsReferenceNumber==null)
     		return null;
     	
-        return this.lcsReferenceNumber.getValue().intValue();
+        return this.lcsReferenceNumber.getValue();
     }
 
     /*
@@ -593,7 +569,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
     	if(this.lcsServiceTypeID==null)
     		return null;
     	
-        return this.lcsServiceTypeID.getValue().intValue();
+        return this.lcsServiceTypeID.getIntValue();
     }
 
     /*
@@ -626,7 +602,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
     	if(this.sequenceNumber==null)
     		return null;
     	
-        return sequenceNumber.getValue().intValue();
+        return sequenceNumber.getIntValue();
     }
 
     public PeriodicLDRInfo getPeriodicLDRInfo() {

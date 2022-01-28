@@ -49,6 +49,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -88,7 +89,7 @@ public class AnyTimeInterrogationResponseTest {
         LocationInformation locInfo = subscriberInfo.getLocationInformation();
         assertNotNull(locInfo);
         assertEquals((int) locInfo.getAgeOfLocationInformation(), 1);
-        assertTrue(Arrays.equals(locInfo.getGeographicalInformation().getData(), dataGeoInfo));
+        assertTrue(ByteBufUtil.equals(locInfo.getGeographicalInformation().getValue(),Unpooled.wrappedBuffer(dataGeoInfo)));
         assertTrue(locInfo.getVlrNumber().getAddress().equals("553496629910"));
         assertEquals(locInfo.getVlrNumber().getAddressNature(), AddressNature.international_number);
         assertEquals(locInfo.getVlrNumber().getNumberingPlan(), NumberingPlan.ISDN);
@@ -129,7 +130,10 @@ public class AnyTimeInterrogationResponseTest {
                 "553496629910");
         ISDNAddressStringImpl mscNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "553496629910");
-        GeographicalInformationImpl gi = new GeographicalInformationImpl(dataGeoInfo);
+
+        ByteBuf geoBuffer=Unpooled.wrappedBuffer(dataGeoInfo);
+        GeographicalInformationImpl gi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
+        
         CellGlobalIdOrServiceAreaIdFixedLengthImpl c2 = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(724, 34, 31134, 10656);
         CellGlobalIdOrServiceAreaIdOrLAIImpl c1 = new CellGlobalIdOrServiceAreaIdOrLAIImpl(c2);
         LocationInformationImpl li = new LocationInformationImpl(1, gi, vlrNumber, null, c1, null, null, mscNumber, null,

@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.GPRSEventType;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNGPRSEventTypeImpl extends ASNEnumerated {
-	public void setType(GPRSEventType t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNGPRSEventTypeImpl() {
+		
+	}
+	
+	public ASNGPRSEventTypeImpl(GPRSEventType t) {
+		super(t.getCode());
 	}
 	
 	public GPRSEventType getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return GPRSEventType.getInstance(getValue().intValue());
+		return GPRSEventType.getInstance(realValue);
 	}
 }

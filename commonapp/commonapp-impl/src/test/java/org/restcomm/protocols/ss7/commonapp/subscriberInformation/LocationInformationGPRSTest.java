@@ -42,6 +42,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -52,14 +53,14 @@ import io.netty.buffer.Unpooled;
 public class LocationInformationGPRSTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 57, -96, 7, -127, 5, 82, -16, 16, 17, 92, -127, 6, 11, 12, 13, 14, 15, 16, -126, 8, 31, 32, 33,
-                34, 35, 36, 37, 38, -125, 4, -111, 86, 52, 18, -124, 3, 91, 92, 93, -122, 0, -121, 10, 1, 2, 3, 4, 5, 6, 7, 8,
+        return new byte[] { 48, 57, -96, 7, -127, 5, 82, -16, 16, 17, 92, -127, 6, 11, 12, 13, 14, 15, 16, -126, 8, 16, 32, 33,
+                34, 35, 36, 37, 38, -125, 4, -111, 86, 52, 18, -124, 3, 91, 92, 93, -122, 0, -121, 10, 1, 16, 3, 4, 5, 6, 7, 8,
                 9, 10, -120, 0, -119, 1, 13 };
     }
 
     private byte[] getEncodedData_2() {
-        return new byte[] { 48, 55, (byte) 128, 5, 82, -16, 16, 17, 92, -127, 6, 11, 12, 13, 14, 15, 16, -126, 8, 31, 32, 33,
-                34, 35, 36, 37, 38, -125, 4, -111, 86, 52, 18, -124, 3, 91, 92, 93, -122, 0, -121, 10, 1, 2, 3, 4, 5, 6, 7, 8,
+        return new byte[] { 48, 55, (byte) 128, 5, 82, -16, 16, 17, 92, -127, 6, 11, 12, 13, 14, 15, 16, -126, 8, 16, 32, 33,
+                34, 35, 36, 37, 38, -125, 4, -111, 86, 52, 18, -124, 3, 91, 92, 93, -122, 0, -121, 10, 1, 16, 3, 4, 5, 6, 7, 8,
                 9, 10, -120, 0, -119, 1, 13 };
     }
 
@@ -76,7 +77,7 @@ public class LocationInformationGPRSTest {
     }
 
     private byte[] getGeographicalInformation() {
-        return new byte[] { 31, 32, 33, 34, 35, 36, 37, 38 };
+        return new byte[] { 16, 32, 33, 34, 35, 36, 37, 38 };
     }
 
     private byte[] getEncodedDataLSAIdentity() {
@@ -84,7 +85,7 @@ public class LocationInformationGPRSTest {
     }
 
     private byte[] getGeodeticInformation() {
-        return new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        return new byte[] { 1, 16, 3, 4, 5, 6, 7, 8, 9, 10 };
     }
 
     @Test(groups = { "functional.decode", "subscriberInformation" })
@@ -102,12 +103,12 @@ public class LocationInformationGPRSTest {
         assertEquals(impl.getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength().getMCC(), 250);
         assertEquals(impl.getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength().getMNC(), 1);
         assertEquals(impl.getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength().getLac(), 4444);
-        assertTrue(Arrays.equals(impl.getRouteingAreaIdentity().getData(), this.getEncodedDataRAIdentity()));
-        assertTrue(Arrays.equals(impl.getGeographicalInformation().getData(), this.getGeographicalInformation()));
+        assertTrue(ByteBufUtil.equals(impl.getRouteingAreaIdentity().getValue(), Unpooled.wrappedBuffer(this.getEncodedDataRAIdentity())));
+        assertTrue(ByteBufUtil.equals(impl.getGeographicalInformation().getValue(), Unpooled.wrappedBuffer(this.getGeographicalInformation())));
         assertTrue(impl.getSGSNNumber().getAddress().equals("654321"));
-        assertTrue(Arrays.equals(impl.getLSAIdentity().getData(), this.getEncodedDataLSAIdentity()));
+        assertTrue(ByteBufUtil.equals(impl.getLSAIdentity().getValue(), Unpooled.wrappedBuffer(this.getEncodedDataLSAIdentity())));
         assertTrue(impl.isSaiPresent());
-        assertTrue(Arrays.equals(impl.getGeodeticInformation().getData(), this.getGeodeticInformation()));
+        assertTrue(ByteBufUtil.equals(impl.getGeodeticInformation().getValue(), Unpooled.wrappedBuffer(this.getGeodeticInformation())));
         assertTrue(impl.isCurrentLocationRetrieved());
         assertEquals((int) impl.getAgeOfLocationInformation(), 13);
 
@@ -120,12 +121,12 @@ public class LocationInformationGPRSTest {
         assertEquals(impl.getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength().getMCC(), 250);
         assertEquals(impl.getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength().getMNC(), 1);
         assertEquals(impl.getCellGlobalIdOrServiceAreaIdOrLAI().getLAIFixedLength().getLac(), 4444);
-        assertTrue(Arrays.equals(impl.getRouteingAreaIdentity().getData(), this.getEncodedDataRAIdentity()));
-        assertTrue(Arrays.equals(impl.getGeographicalInformation().getData(), this.getGeographicalInformation()));
+        assertTrue(ByteBufUtil.equals(impl.getRouteingAreaIdentity().getValue(), Unpooled.wrappedBuffer(this.getEncodedDataRAIdentity())));
+        assertTrue(ByteBufUtil.equals(impl.getGeographicalInformation().getValue(), Unpooled.wrappedBuffer(this.getGeographicalInformation())));
         assertTrue(impl.getSGSNNumber().getAddress().equals("654321"));
-        assertTrue(Arrays.equals(impl.getLSAIdentity().getData(), this.getEncodedDataLSAIdentity()));
+        assertTrue(ByteBufUtil.equals(impl.getLSAIdentity().getValue(), Unpooled.wrappedBuffer(this.getEncodedDataLSAIdentity())));
         assertTrue(impl.isSaiPresent());
-        assertTrue(Arrays.equals(impl.getGeodeticInformation().getData(), this.getGeodeticInformation()));
+        assertTrue(ByteBufUtil.equals(impl.getGeodeticInformation().getValue(), Unpooled.wrappedBuffer(this.getGeodeticInformation())));
         assertTrue(impl.isCurrentLocationRetrieved());
         assertEquals((int) impl.getAgeOfLocationInformation(), 13);
 
@@ -163,12 +164,17 @@ public class LocationInformationGPRSTest {
     	            	        
         LAIFixedLengthImpl lai = new LAIFixedLengthImpl(250, 1, 4444);
         CellGlobalIdOrServiceAreaIdOrLAIImpl cgi = new CellGlobalIdOrServiceAreaIdOrLAIImpl(lai);
-        RAIdentityImpl ra = new RAIdentityImpl(this.getEncodedDataRAIdentity());
-        GeographicalInformationImpl ggi = new GeographicalInformationImpl(this.getGeographicalInformation());
+        RAIdentityImpl ra = new RAIdentityImpl(Unpooled.wrappedBuffer(this.getEncodedDataRAIdentity()));
+        
+        ByteBuf geoBuffer=Unpooled.wrappedBuffer(getGeographicalInformation());
+        GeographicalInformationImpl ggi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
+        
         ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "654321");
-        LSAIdentityImpl lsa = new LSAIdentityImpl(this.getEncodedDataLSAIdentity());
-        GeodeticInformationImpl gdi = new GeodeticInformationImpl(this.getGeodeticInformation());
-
+        LSAIdentityImpl lsa = new LSAIdentityImpl(Unpooled.wrappedBuffer(this.getEncodedDataLSAIdentity()));
+        
+        ByteBuf geodeticBuffer=Unpooled.wrappedBuffer(getGeodeticInformation());
+        GeodeticInformationImpl gdi = new GeodeticInformationImpl(geodeticBuffer.readByte() & 0x0FF, GeographicalInformationImpl.decodeTypeOfShape(geodeticBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geodeticBuffer), GeographicalInformationImpl.decodeLongitude(geodeticBuffer), GeographicalInformationImpl.decodeUncertainty(geodeticBuffer.readByte() & 0x0FF),geodeticBuffer.readByte() & 0x0FF);
+        
         LocationInformationGPRSImpl impl = new LocationInformationGPRSImpl(cgi, ra, ggi, sgsn, lsa, null, true, gdi, true, 13);
         ByteBuf buffer=parser.encode(impl);
         byte[] encodedData = new byte[buffer.readableBytes()];

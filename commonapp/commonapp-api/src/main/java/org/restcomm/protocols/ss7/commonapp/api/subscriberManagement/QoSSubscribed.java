@@ -143,8 +143,6 @@ Bits 8 to 6 of octet 5 are spare and shall be coded all 0.
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface QoSSubscribed {
 
-    byte[] getData();
-
     QoSSubscribed_ReliabilityClass getReliabilityClass();
 
     QoSSubscribed_DelayClass getDelayClass();

@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.map.api.service.oam;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -38,6 +40,6 @@ TraceReference2 ::= OCTET STRING (SIZE (3))
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface TraceReference2 {
 
-    byte[] getData();
+	ByteBuf getValue();
 
 }

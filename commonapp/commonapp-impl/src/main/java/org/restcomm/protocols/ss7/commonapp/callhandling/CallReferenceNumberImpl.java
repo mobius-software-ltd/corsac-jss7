@@ -24,35 +24,21 @@ package org.restcomm.protocols.ss7.commonapp.callhandling;
 
 import org.restcomm.protocols.ss7.commonapp.api.callhandling.CallReferenceNumber;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
-public class CallReferenceNumberImpl extends ASNOctetString implements CallReferenceNumber {
+public class CallReferenceNumberImpl extends ASNOctetString2 implements CallReferenceNumber {
 	public CallReferenceNumberImpl() {        
     }
 
-    public CallReferenceNumberImpl(byte[] data) {
-    	if(data!=null)
-    		setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value!=null)
-    	{
-    		byte[] data=new byte[value.readableBytes()];
-    		value.readBytes(data);
-    		return data;
-    	}
-    	
-    	return null;
+    public CallReferenceNumberImpl(ByteBuf value) {
+    	super(value);
     }
 
     public String toString() {
@@ -60,10 +46,9 @@ public class CallReferenceNumberImpl extends ASNOctetString implements CallRefer
         StringBuilder sb = new StringBuilder();
         sb.append("CallReferenceNumber [");
 
-        byte[] data=getData();
-        if (data != null) {
+        if (getValue() != null) {
             sb.append("data=");
-            sb.append(ASNOctetString.printDataArr(data));
+            sb.append(printDataArr());
             sb.append(", ");
         }
 

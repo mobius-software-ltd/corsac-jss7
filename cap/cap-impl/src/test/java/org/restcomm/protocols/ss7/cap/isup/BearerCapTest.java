@@ -28,12 +28,14 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.isup.BearerIsupImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserServiceInformationImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -63,7 +65,7 @@ public class BearerCapTest {
         assertTrue(result.getResult() instanceof BearerIsupImpl);
         
         BearerIsupImpl elem = (BearerIsupImpl)result.getResult();        
-        assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
+        assertTrue(ByteBufUtil.equals(elem.getValue(), Unpooled.wrappedBuffer(this.getIntData())));
         //UserServiceInformation usi = elem.getUserServiceInformation();
         
         // TODO: implement UserServiceInformation (ISUP) and then implement CAP unit tests for UserServiceInformation usi
@@ -76,7 +78,8 @@ public class BearerCapTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BearerIsupImpl.class);
     	
-        BearerIsupImpl elem = new BearerIsupImpl(this.getIntData());
+    	UserServiceInformationImpl usi=new UserServiceInformationImpl(Unpooled.wrappedBuffer(this.getIntData()));
+        BearerIsupImpl elem = new BearerIsupImpl(usi);
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -87,46 +90,7 @@ public class BearerCapTest {
 
         // UserServiceInformation usi = new UserServiceInformationImpl(cdata);
         // elem = new BearerCapImpl(usi);
-        // aos = new AsnOutputStream();
         // elem.encodeAll(aos, Tag.CLASS_CONTEXT_SPECIFIC, 0);
         // assertTrue(Arrays.equals(aos.toByteArray(), this.getData()));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "isup" })
-    public void testXMLSerialize() throws Exception {
-
-        UserServiceInformationImpl original0 = new UserServiceInformationImpl();
-        original0.setCodingStandart(UserServiceInformation._CS_INTERNATIONAL);
-        original0.setInformationTransferCapability(UserServiceInformation._ITS_VIDEO);
-        original0.setTransferMode(UserServiceInformation._TM_PACKET);
-        original0.setInformationTransferRate(UserServiceInformation._ITR_64x2);
-
-        BearerCapImpl original = new BearerCapImpl(original0);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "bearerCap", BearerCapImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        BearerCapImpl copy = reader.read("bearerCap", BearerCapImpl.class);
-
-        assertEquals(copy.getUserServiceInformation().getCodingStandart(), original.getUserServiceInformation()
-                .getCodingStandart());
-        assertEquals(copy.getUserServiceInformation().getInformationTransferCapability(), original.getUserServiceInformation()
-                .getInformationTransferCapability());
-        assertEquals(copy.getUserServiceInformation().getTransferMode(), original.getUserServiceInformation().getTransferMode());
-        assertEquals(copy.getUserServiceInformation().getInformationTransferRate(), original.getUserServiceInformation()
-                .getInformationTransferRate());
-
-    }*/
 }

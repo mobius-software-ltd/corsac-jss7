@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.commonapp.api.subscriberInformation;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
 <code>
 RAIdentity ::= OCTET STRING (SIZE (6))
@@ -38,5 +40,6 @@ RAIdentity ::= OCTET STRING (SIZE (6))
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface RAIdentity {
-    byte[] getData();
+	
+    ByteBuf getValue();
 }

@@ -64,8 +64,7 @@ public class MAPRefuseInfoImpl {
     }
 
     public void setReason(Reason reason) {
-        this.reason = new ASNReason();
-        this.reason.setType(reason);
+        this.reason = new ASNReason(reason);        
     }
 
     public void setExtensionContainer(MAPExtensionContainer extensionContainer) {

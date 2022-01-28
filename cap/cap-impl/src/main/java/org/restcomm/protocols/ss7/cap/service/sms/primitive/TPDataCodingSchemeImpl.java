@@ -35,7 +35,7 @@ public class TPDataCodingSchemeImpl extends ASNSingleByte implements TPDataCodin
     }
 
     public TPDataCodingSchemeImpl(int data) {
-    	setValue(data);
+    	super(data);
     }
 
     public int getData() {

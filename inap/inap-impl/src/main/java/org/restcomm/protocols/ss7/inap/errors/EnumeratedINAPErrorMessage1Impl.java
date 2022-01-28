@@ -53,9 +53,7 @@ public abstract class EnumeratedINAPErrorMessage1Impl extends INAPErrorMessageIm
 
     protected void setValue(Long value) {
     	if(this.value==null)
-    		this.value=new ASNEnumerated();
-    	
-		this.value.setValue(value);
+    		this.value=new ASNEnumerated(value);    	
 	}
 	
     public Long getErrorCode() {

@@ -27,10 +27,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSync
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -40,50 +39,34 @@ import io.netty.buffer.Unpooled;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ReSynchronisationInfoImpl implements ReSynchronisationInfo {
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-	private ASNOctetString rand;
+	private ASNOctetString2 rand;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
-	private ASNOctetString auts;
+	private ASNOctetString2 auts;
     
     public ReSynchronisationInfoImpl() {
     }
 
-    public ReSynchronisationInfoImpl(byte[] rand, byte[] auts) {
-    	if(rand!=null) {
-    		this.rand = new ASNOctetString();
-    		this.rand.setValue(Unpooled.wrappedBuffer(rand));
-    	}
+    public ReSynchronisationInfoImpl(ByteBuf rand, ByteBuf auts) {
+    	if(rand!=null)
+    		this.rand = new ASNOctetString2(rand);
     	
-    	if(auts!=null) {
-    		this.auts = new ASNOctetString();
-    		this.auts.setValue(Unpooled.wrappedBuffer(auts));
-    	}
+    	if(auts!=null)
+    		this.auts = new ASNOctetString2(auts);    	
     }
 
-    public byte[] getRand() {
+    public ByteBuf getRand() {
     	if(this.rand==null)
     		return null;
     	
-    	ByteBuf value=this.rand.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return this.rand.getValue();    	
     }
 
-    public byte[] getAuts() {
+    public ByteBuf getAuts() {
     	if(this.auts==null)
     		return null;
     	
-    	ByteBuf value=this.auts.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return this.auts.getValue();    	
     }
 
     @Override
@@ -93,12 +76,12 @@ public class ReSynchronisationInfoImpl implements ReSynchronisationInfo {
 
         if (this.rand != null) {
             sb.append("rand=[");
-            sb.append(ASNOctetString.printDataArr(getRand()));
+            sb.append(rand.printDataArr());
             sb.append("], ");
         }
         if (this.auts != null) {
             sb.append("auts=[");
-            sb.append(ASNOctetString.printDataArr(getAuts()));
+            sb.append(auts.printDataArr());
             sb.append("], ");
         }
 

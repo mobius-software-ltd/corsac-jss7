@@ -25,10 +25,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwOptions;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtForwOptionsForwardingReason;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 
 /**
  *
@@ -36,7 +33,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class ExtForwOptionsImpl extends ASNOctetString implements ExtForwOptions {
+public class ExtForwOptionsImpl extends ASNSingleByte implements ExtForwOptions {
 	private static int _MASK_NotificationToForwardingParty = 0x80;
     private static int _MASK_RedirectingPresentation = 0x40;
     private static int _MASK_NotificationToCallingParty = 0x20;
@@ -45,82 +42,73 @@ public class ExtForwOptionsImpl extends ASNOctetString implements ExtForwOptions
     public ExtForwOptionsImpl() {
     }
 
-    public ExtForwOptionsImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public ExtForwOptionsImpl(boolean notificationToForwardingParty, boolean redirectingPresentation,
             boolean notificationToCallingParty, ExtForwOptionsForwardingReason extForwOptionsForwardingReason) {
-        byte[] data = new byte[1];
+    	super(translate(notificationToForwardingParty, redirectingPresentation, notificationToCallingParty, extForwOptionsForwardingReason));
+    }
+    
+    public static Integer translate(boolean notificationToForwardingParty, boolean redirectingPresentation,
+            boolean notificationToCallingParty, ExtForwOptionsForwardingReason extForwOptionsForwardingReason) {
+        Integer value=0;
 
         if (notificationToForwardingParty) {
-            data[0] |= _MASK_NotificationToForwardingParty;
+            value |= _MASK_NotificationToForwardingParty;
         }
 
         if (redirectingPresentation) {
-            data[0] |= _MASK_RedirectingPresentation;
+            value |= _MASK_RedirectingPresentation;
         }
 
         if (notificationToCallingParty) {
-            data[0] |= _MASK_NotificationToCallingParty;
+            value |= _MASK_NotificationToCallingParty;
         }
 
         if (extForwOptionsForwardingReason != null) {
-            data[0] |= (extForwOptionsForwardingReason.getCode() << 2);
+            value |= (extForwOptionsForwardingReason.getCode() << 2);
         }
         
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        return value;
     }
 
     public boolean getNotificationToForwardingParty() {
-    	byte[] data=getData();
+    	Integer value=getValue();
         /*
          * -- bit 8: notification to forwarding party -- 0 no notification -- 1 notification
          */
-        if (data == null || data.length < 1)
+    	if (value == null)            
             return false;
 
-        return ((data[0] & _MASK_NotificationToForwardingParty) != 0 ? true : false);
+        return ((value & _MASK_NotificationToForwardingParty) != 0 ? true : false);
     }
 
     public boolean getRedirectingPresentation() {
-    	byte[] data=getData();    			
+    	Integer value=getValue();
         /*
          * -- bit 7: redirecting presentation -- 0 no presentation -- 1 presentation
          */
-        if (data == null || data.length < 1)
-            return false;
+    	if (value == null)
+    		return false;
 
-        return ((data[0] & _MASK_RedirectingPresentation) > 0 ? true : false);
+        return ((value & _MASK_RedirectingPresentation) > 0 ? true : false);
     }
 
     public boolean getNotificationToCallingParty() {
-    	byte[] data=getData();
+    	Integer value=getValue();
         /*
          * -- bit 6: notification to calling party -- 0 no notification -- 1 notification
          */
-        if (data == null || data.length < 1)
-            return false;
+    	if (value == null)
+    		return false;
 
-        return ((data[0] & _MASK_NotificationToCallingParty) > 0 ? true : false);
+        return ((value & _MASK_NotificationToCallingParty) > 0 ? true : false);
     }
 
     public ExtForwOptionsForwardingReason getExtForwOptionsForwardingReason() {
-    	byte[] data=getData();
-        if (data == null || data.length < 1)
+    	Integer value=getValue();
+        if (value == null)
             return null;
 
-        return ExtForwOptionsForwardingReason.getInstance((int) ((data[0] & _MASK_ForwardingReason) >> 2));
+        return ExtForwOptionsForwardingReason.getInstance((int) ((value & _MASK_ForwardingReason) >> 2));
     }
 
     @Override

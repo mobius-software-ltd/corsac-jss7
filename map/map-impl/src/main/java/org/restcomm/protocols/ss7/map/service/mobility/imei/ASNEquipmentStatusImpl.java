@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.imei.EquipmentStatus;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNEquipmentStatusImpl extends ASNEnumerated {
-	public void setType(EquipmentStatus t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNEquipmentStatusImpl() {
+		
+	}
+	
+	public ASNEquipmentStatusImpl(EquipmentStatus t) {
+		super(t.getCode());
 	}
 	
 	public EquipmentStatus getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return EquipmentStatus.getInstance(getValue().intValue());
+		return EquipmentStatus.getInstance(realValue);
 	}
 }

@@ -74,9 +74,6 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.Specialize
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SplitLegResponse;
 import org.restcomm.protocols.ss7.cap.dialog.ServingCheckDataImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.InitialDPArgExtensionImpl;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
@@ -182,24 +179,7 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
                         || acn == CAPApplicationContext.CapV4_gsmSSF_scfGeneric) {
                 	if(parameter instanceof InitialDPRequest) {
         				processed = true;
-        				InitialDPRequest ind = (InitialDPRequest)parameter;
-        	        	if(ind.getInitialDPArgExtension()!=null && ind.getInitialDPArgExtension() instanceof InitialDPArgExtensionImpl) {
-        	        		int version=2;
-        	        		if (acn == CAPApplicationContext.CapV3_gsmSSF_scfGeneric || acn == CAPApplicationContext.CapV4_gsmSSF_scfGeneric)
-        	        			version=4;
-        	        		
-        	        		try {
-        	        			((InitialDPArgExtensionImpl)ind.getInitialDPArgExtension()).patchVersion(version);
-        	        		}
-        	        		catch(APPParsingComponentException ex) {
-        	        			if(ex.getReason()==null)
-        	        				throw new CAPParsingComponentException(ex.getMessage(),ex.getCause(),null);
-        	        			else if(ex.getReason()==APPParsingComponentExceptionReason.MistypedParameter)
-        	        				throw new CAPParsingComponentException(ex.getMessage(),ex.getCause(),CAPParsingComponentExceptionReason.MistypedParameter);
-        	        			else
-        	        				throw new CAPParsingComponentException(ex.getMessage(),ex.getCause(),CAPParsingComponentExceptionReason.UnrecognizedOperation);
-        	        		}
-        	        	}
+        				InitialDPRequest ind = (InitialDPRequest)parameter;        	        	
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);

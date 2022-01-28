@@ -97,7 +97,7 @@ public class ProvideSubscriberInfoRequestTest {
         assertTrue(asc.getRequestedInfo().getLocationInformation());
         assertFalse(asc.getRequestedInfo().getSubscriberState());
 
-        assertEquals(asc.getLmsi().getData(), getLmsiData());
+        assertEquals(asc.getLmsi().getValue(), Unpooled.wrappedBuffer(getLmsiData()));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(asc.getExtensionContainer()));
 
         assertEquals(asc.getCallPriority(), EMLPPPriority.priorityLevel4);
@@ -120,7 +120,7 @@ public class ProvideSubscriberInfoRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        LMSIImpl lmsi = new LMSIImpl(getLmsiData());
+        LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(getLmsiData()));
         asc = new ProvideSubscriberInfoRequestImpl(imsi, lmsi, requestedInfo, MAPExtensionContainerTest.GetTestExtensionContainer(), EMLPPPriority.priorityLevel4);
 
         buffer=parser.encode(asc);

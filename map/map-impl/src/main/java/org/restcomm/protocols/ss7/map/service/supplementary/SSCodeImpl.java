@@ -39,11 +39,11 @@ public class SSCodeImpl extends ASNSingleByte implements SSCode {
     }
 
     public SSCodeImpl(int data) {        
-        setValue(data);        
+    	super(data);        
     }
 
     public SSCodeImpl(SupplementaryCodeValue value) {
-    	setValue(value.getCode());
+    	super(value.getCode());
     }
 
     public Integer getData() {

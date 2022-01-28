@@ -43,10 +43,6 @@ import io.netty.buffer.Unpooled;
  */
 public class PlmnIdTest {
 
-    private byte[] getEncodedData() {
-        return new byte[] { 4, 3, -71, -2, -59 };
-    }
-
     private byte[] getEncodedData3Dig() {
         return new byte[] { 4, 3, 0x04, 0x15, (byte) 0x93 };
     }
@@ -55,30 +51,17 @@ public class PlmnIdTest {
         return new byte[] { 4, 3, 0x04, (byte) 0xF5, (byte) 0x93 };
     }
 
-    private byte[] getData() {
-        return new byte[] { -71, -2, -59 };
-    }
-
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(PlmnIdImpl.class);
     	        
-        byte[] rawData = getEncodedData();
+        byte[] rawData= getEncodedData3Dig();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
         
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof PlmnIdImpl);
         PlmnIdImpl pi = (PlmnIdImpl)result.getResult();
-        
-        assertTrue(Arrays.equals(getData(), pi.getData()));
-
-        rawData = getEncodedData3Dig();
-        result=parser.decode(Unpooled.wrappedBuffer(rawData));
-        
-        assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof PlmnIdImpl);
-        pi = (PlmnIdImpl)result.getResult();
         
         assertEquals(pi.getMcc(), 405);
         assertEquals(pi.getMnc(), 391);
@@ -99,20 +82,12 @@ public class PlmnIdTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(PlmnIdImpl.class);
     	                
-        PlmnIdImpl pi = new PlmnIdImpl(getData());
+        PlmnIdImpl pi = new PlmnIdImpl(405, 391);
         ByteBuf buffer=parser.encode(pi);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         
-        byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
-
-        pi = new PlmnIdImpl(405, 391);
-        buffer=parser.encode(pi);
-        encodedData = new byte[buffer.readableBytes()];
-        buffer.readBytes(encodedData);
-        
-        rawData = getEncodedData3Dig();
+        byte[] rawData = getEncodedData3Dig();
         assertTrue(Arrays.equals(rawData, encodedData));
 
         pi = new PlmnIdImpl(405, 39);

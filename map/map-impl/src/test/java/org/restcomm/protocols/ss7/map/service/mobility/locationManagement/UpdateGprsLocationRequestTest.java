@@ -28,6 +28,7 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.commonapp.primitives.GSNAddressImpl;
@@ -43,6 +44,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -53,16 +55,16 @@ import io.netty.buffer.Unpooled;
 public class UpdateGprsLocationRequestTest {
 
     public byte[] getData() {
-        return new byte[] { 48, -127, -105, 4, 3, 17, 33, 34, 4, 4, -111, 34, 34, -8, 4, 6, 23, 5, 38, 48, 81, 5, 48, 39, -96,
+        return new byte[] { 48, -127, -107, 4, 3, 17, 33, 34, 4, 4, -111, 34, 34, -8, 4, 5, 4, 38, 48, 81, 5, 48, 39, -96,
                 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24,
                 25, 26, -95, 3, 31, 32, 33, -96, 43, 5, 0, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5,
-                6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 0, -126, 0, -125, 6,
-                23, 5, 38, 48, 81, 5, -92, 6, -128, 4, 33, 67, 33, 67, -91, 4, -127, 2, 5, -32, -122, 0, -121, 0, -120, 1, 2,
+                6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -127, 0, -126, 0, -125, 5,
+                4, 38, 48, 81, 5, -92, 6, -128, 4, 33, 67, 33, 67, -91, 4, -127, 2, 5, -32, -122, 0, -121, 0, -120, 1, 2,
                 -119, 0, -118, 0, -117, 0, -116, 0, -115, 0, -114, 1, 1 };
     };
 
     public byte[] getGSNAddressData() {
-        return new byte[] { 23, 5, 38, 48, 81, 5 };
+        return new byte[] { 38, 48, 81, 5 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -80,12 +82,18 @@ public class UpdateGprsLocationRequestTest {
         assertTrue(prim.getSgsnNumber().getAddress().equals("22228"));
         assertEquals(prim.getSgsnNumber().getAddressNature(), AddressNature.international_number);
         assertEquals(prim.getSgsnNumber().getNumberingPlan(), NumberingPlan.ISDN);
-        assertTrue(Arrays.equals(prim.getSgsnAddress().getData(), getGSNAddressData()));
+        
+        assertEquals(prim.getSgsnAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
+        assertTrue(ByteBufUtil.equals(prim.getSgsnAddress().getGSNAddressData(), Unpooled.wrappedBuffer(getGSNAddressData())));
+        
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
         assertTrue(prim.getSGSNCapability().getSolsaSupportIndicator());
         assertTrue(prim.getInformPreviousNetworkEntity());
         assertTrue(prim.getPsLCSNotSupportedByUE());
-        assertTrue(Arrays.equals(prim.getVGmlcAddress().getData(), getGSNAddressData()));
+        
+        assertEquals(prim.getVGmlcAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
+        assertTrue(ByteBufUtil.equals(prim.getVGmlcAddress().getGSNAddressData(), Unpooled.wrappedBuffer(getGSNAddressData())));
+        
         assertTrue(prim.getADDInfo().getImeisv().getIMEI().equals("12341234"));
         assertTrue(prim.getEPSInfo().getIsrInformation().getCancelSGSN());
         assertTrue(prim.getServingNodeTypeIndicator());
@@ -108,13 +116,13 @@ public class UpdateGprsLocationRequestTest {
     	IMSIImpl imsi = new IMSIImpl("111222");
         ISDNAddressStringImpl sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22228");
-        GSNAddressImpl sgsnAddress = new GSNAddressImpl(getGSNAddressData());
+        GSNAddressImpl sgsnAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4,Unpooled.wrappedBuffer(getGSNAddressData()));
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         SGSNCapabilityImpl sgsnCapability = new SGSNCapabilityImpl(true, extensionContainer, null, false, null, null, null, false,
                 null, null, false, null);
         boolean informPreviousNetworkEntity = true;
         boolean psLCSNotSupportedByUE = true;
-        GSNAddressImpl vGmlcAddress = new GSNAddressImpl(getGSNAddressData());
+        GSNAddressImpl vGmlcAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4,Unpooled.wrappedBuffer(getGSNAddressData()));
         ADDInfoImpl addInfo = new ADDInfoImpl(new IMEIImpl("12341234"), false);
         EPSInfoImpl epsInfo = new EPSInfoImpl(new ISRInformationImpl(true, true, true));
         boolean servingNodeTypeIndicator = true;

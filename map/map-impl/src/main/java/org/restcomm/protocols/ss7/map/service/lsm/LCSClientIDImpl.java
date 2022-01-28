@@ -77,18 +77,14 @@ public class LCSClientIDImpl implements LCSClientID {
             LCSClientInternalID lcsClientInternalID, LCSClientName lcsClientName, AddressString lcsClientDialedByMS,
             APN lcsAPN, LCSRequestorID lcsRequestorID) {
         super();
-        if(lcsClientType!=null) {
-        	this.lcsClientType = new ASNLCSClientType();
-        	this.lcsClientType.setType(lcsClientType);
-        }
-        
+        if(lcsClientType!=null)
+        	this.lcsClientType = new ASNLCSClientType(lcsClientType);
+        	
         this.lcsClientExternalID = lcsClientExternalID;
 
-        if(lcsClientInternalID!=null) {
-        	this.lcsClientInternalID = new ASNLCSClientInternalID();
-        	this.lcsClientInternalID.setType(lcsClientInternalID);
-        }
-        
+        if(lcsClientInternalID!=null)
+        	this.lcsClientInternalID = new ASNLCSClientInternalID(lcsClientInternalID);
+        	
         this.lcsClientName = lcsClientName;
         this.lcsClientDialedByMS = lcsClientDialedByMS;
         this.lcsAPN = lcsAPN;

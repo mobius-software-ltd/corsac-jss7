@@ -165,6 +165,8 @@ import org.restcomm.protocols.ss7.map.service.oam.ActivateTraceModeResponseImpl;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author sergey vetyutnev
@@ -286,14 +288,14 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
 
     @Override
     public Long addAuthenticationFailureReportRequest(IMSI imsi, FailureCause failureCause, MAPExtensionContainer extensionContainer, Boolean reAttempt,
-            AccessType accessType, byte[] rand, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber) throws MAPException {
+            AccessType accessType, ByteBuf rand, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber) throws MAPException {
         return this.addAuthenticationFailureReportRequest(_Timer_Default, imsi, failureCause, extensionContainer, reAttempt, accessType, rand, vlrNumber,
                 sgsnNumber);
     }
 
     @Override
     public Long addAuthenticationFailureReportRequest(int customInvokeTimeout, IMSI imsi, FailureCause failureCause, MAPExtensionContainer extensionContainer,
-            Boolean reAttempt, AccessType accessType, byte[] rand, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber) throws MAPException {
+            Boolean reAttempt, AccessType accessType, ByteBuf rand, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.authenticationFailureReportContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3))

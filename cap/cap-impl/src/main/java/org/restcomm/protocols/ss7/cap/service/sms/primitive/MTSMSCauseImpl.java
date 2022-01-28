@@ -35,7 +35,7 @@ public class MTSMSCauseImpl extends ASNSingleByte implements MTSMSCause {
     }
 
     public MTSMSCauseImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public int getData() {

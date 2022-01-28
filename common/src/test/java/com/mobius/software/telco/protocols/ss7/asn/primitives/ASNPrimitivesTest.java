@@ -4,17 +4,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
 import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /*
  * Mobius Software LTD
@@ -71,11 +72,9 @@ public class ASNPrimitivesTest
 		byte[] encodedTrue = new byte[] { 0x01, 0x01, (byte) 0xFF };
 		byte[] encodedFalse = new byte[] { 0x01, 0x01, (byte) 0x00 };
 		
-		ASNBoolean trueValue=new ASNBoolean();
-		trueValue.setValue(true);
+		ASNBoolean trueValue=new ASNBoolean(true);
 		
-		ASNBoolean falseValue=new ASNBoolean();
-		falseValue.setValue(false);
+		ASNBoolean falseValue=new ASNBoolean(false);
 		
 		try
 		{
@@ -132,11 +131,8 @@ public class ASNPrimitivesTest
 		System.arraycopy(longLengthBytes, 0, encodedLongString, 1, longLengthBytes.length);
 		System.arraycopy(plainLongBytes, 0, encodedLongString, 1+longLengthBytes.length, plainLongBytes.length);
 		
-		ASNUTF8String value=new ASNUTF8String();
-		value.setValue(testString);
-		
-		ASNUTF8String longValue=new ASNUTF8String();
-		longValue.setValue(longTestString);
+		ASNUTF8String value=new ASNUTF8String(testString);
+		ASNUTF8String longValue=new ASNUTF8String(longTestString);
 		
 		try
 		{
@@ -193,11 +189,8 @@ public class ASNPrimitivesTest
 		System.arraycopy(longLengthBytes, 0, encodedLongString, 1, longLengthBytes.length);
 		System.arraycopy(plainLongBytes, 0, encodedLongString, 1+longLengthBytes.length, plainLongBytes.length);
 		
-		ASNIA5String value=new ASNIA5String();
-		value.setValue(testString);
-		
-		ASNIA5String longValue=new ASNIA5String();
-		longValue.setValue(longTestString);
+		ASNIA5String value=new ASNIA5String(testString);
+		ASNIA5String longValue=new ASNIA5String(longTestString);
 		
 		try
 		{
@@ -236,23 +229,12 @@ public class ASNPrimitivesTest
 		byte[] encodedInteger5 = new byte[] { 0x02, 0x02, (byte) 0x80 , 0x00};
 		byte[] encodedInteger6 = new byte[] { 0x02, 0x03, 0x00, (byte) 0x80, 0x00 };
 		
-		ASNInteger value1=new ASNInteger();
-		value1.setValue(35L);
-		
-		ASNInteger value2=new ASNInteger();
-		value2.setValue(127L);
-		
-		ASNInteger value3=new ASNInteger();
-		value3.setValue(-128L);
-		
-		ASNInteger value4=new ASNInteger();
-		value4.setValue(128L);
-		
-		ASNInteger value5=new ASNInteger();
-		value5.setValue(-32768L);
-		
-		ASNInteger value6=new ASNInteger();
-		value6.setValue(32768L);
+		ASNInteger value1=new ASNInteger(35L);
+		ASNInteger value2=new ASNInteger(127L);
+		ASNInteger value3=new ASNInteger(-128L);
+		ASNInteger value4=new ASNInteger(128L);
+		ASNInteger value5=new ASNInteger(-32768L);
+		ASNInteger value6=new ASNInteger(32768L);
 		
 		try
 		{
@@ -329,8 +311,7 @@ public class ASNPrimitivesTest
 		
 		byte[] encodedEnum1 = new byte[] { (byte)0xD9, 0x01, (byte) 0x02 };
 				
-		ASNCustomEnumerated value1=new ASNCustomEnumerated();
-		value1.setValue(TestEnum.VALUE_2);
+		ASNCustomEnumerated value1=new ASNCustomEnumerated(TestEnum.VALUE_2);
 		
 		try
 		{
@@ -378,11 +359,8 @@ public class ASNPrimitivesTest
 		encodedLongOctetString.writeBytes(longLengthBytes);
 		encodedLongOctetString.writeBytes(Unpooled.wrappedBuffer(plainLongBytes));
 		
-		ASNOctetString value=new ASNOctetString();
-		value.setValue(Unpooled.wrappedBuffer(plainBytes));
-		
-		ASNOctetString longValue=new ASNOctetString();
-		longValue.setValue(Unpooled.wrappedBuffer(plainLongBytes));
+		ASNOctetString2 value=new ASNOctetString2(Unpooled.wrappedBuffer(plainBytes));		
+		ASNOctetString2 longValue=new ASNOctetString2(Unpooled.wrappedBuffer(plainLongBytes));		
 		
 		try
 		{
@@ -394,13 +372,13 @@ public class ASNPrimitivesTest
 			
 			ByteBuf bufferToDecode=Unpooled.wrappedBuffer(encodedOctetString);
 			Object decodedValue=parser.decode(bufferToDecode).getResult();
-			assertTrue(decodedValue instanceof ASNOctetString);
-			assertTrue(byteBufEquals(((ASNOctetString)decodedValue).getValue(),Unpooled.wrappedBuffer(plainBytes)));
+			assertTrue(decodedValue instanceof ASNOctetString2);
+			assertTrue(byteBufEquals(((ASNOctetString2)decodedValue).getValue(),Unpooled.wrappedBuffer(plainBytes)));
 			
 			bufferToDecode=Unpooled.wrappedBuffer(encodedLongOctetString);
 			decodedValue=parser.decode(bufferToDecode).getResult();
-			assertTrue(decodedValue instanceof ASNOctetString);
-			assertTrue(byteBufEquals(((ASNOctetString)decodedValue).getValue(),plainLongBytes));
+			assertTrue(decodedValue instanceof ASNOctetString2);
+			assertTrue(byteBufEquals(((ASNOctetString2)decodedValue).getValue(),plainLongBytes));
 		}
 		catch(Exception ex)
 		{
@@ -450,13 +428,13 @@ public class ASNPrimitivesTest
 		byte[] encodedOids1 = new byte[] { 0x06, 0x4, 0x28, (byte) 0xC2, (byte) 0x7B, 0x02 };
 		byte[] encodedOids2 = new byte[] { 0x06, 0x2, (byte)180, 1 };
 
-		ASNObjectIdentifier value1=new ASNObjectIdentifier();
+		ASNObjectIdentifier value1=new ASNObjectIdentifier(new ArrayList<Long>());
 		value1.addOid(1L);
 		value1.addOid(0L);
 		value1.addOid(8571L);
 		value1.addOid(2L);
 		
-		ASNObjectIdentifier value2=new ASNObjectIdentifier();
+		ASNObjectIdentifier value2=new ASNObjectIdentifier(new ArrayList<Long>());
 		value2.addOid(2L);
 		value2.addOid(100L);
 		value2.addOid(1L);

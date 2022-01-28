@@ -38,11 +38,11 @@ public class TeleserviceCodeImpl extends ASNSingleByte implements TeleserviceCod
     }
 
     public TeleserviceCodeImpl(int data) {
-    	setValue(data);
+    	super(data);
     }
 
     public TeleserviceCodeImpl(TeleserviceCodeValue value) {
-        setValue(value != null ? value.getCode() : 0);
+    	super(value != null ? value.getCode() : 0);
     }
 
     public int getData() {

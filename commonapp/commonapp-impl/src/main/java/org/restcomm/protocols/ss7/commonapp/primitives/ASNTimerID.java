@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.TimerID;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNTimerID extends ASNEnumerated {
-	public void setType(TimerID t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNTimerID() {
+		
+	}
+	
+	public ASNTimerID(TimerID t) {
+		super(t.getCode());
 	}
 	
 	public TimerID getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return TimerID.getInstance(getValue().intValue());
+		return TimerID.getInstance(realValue);
 	}
 }

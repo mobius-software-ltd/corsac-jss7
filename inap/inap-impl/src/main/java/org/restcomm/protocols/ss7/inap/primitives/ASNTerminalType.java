@@ -4,7 +4,7 @@ import org.restcomm.protocols.ss7.inap.api.primitives.TerminalType;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 
 /*
@@ -32,17 +32,20 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 *
 */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
-public class ASNTerminalType extends ASNInteger {
-	public void setType(TerminalType t) {
-		if(t!=null)
-			setValue((long)t.getCode());
+public class ASNTerminalType extends ASNEnumerated {
+	public ASNTerminalType() {
+		
+	}
+	
+	public ASNTerminalType(TerminalType t) {
+		super(t.getCode());
 	}
 	
 	public TerminalType getType() {
-		Long realValue=getValue();
+		Integer realValue=getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return TerminalType.getInstance(realValue.intValue());
+		return TerminalType.getInstance(realValue);
 	}
 }

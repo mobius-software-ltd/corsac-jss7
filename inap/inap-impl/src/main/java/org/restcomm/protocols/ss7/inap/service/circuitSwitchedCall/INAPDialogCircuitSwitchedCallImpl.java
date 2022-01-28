@@ -123,6 +123,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author yulian.oifa
@@ -252,12 +254,12 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addApplyChargingReportRequest(byte[] callResult) throws INAPException {
+	public Long addApplyChargingReportRequest(ByteBuf callResult) throws INAPException {
 		return addApplyChargingReportRequest(_Timer_Default, callResult);
 	}
 
 	@Override
-	public Long addApplyChargingReportRequest(int customInvokeTimeout, byte[] callResult) throws INAPException {
+	public Long addApplyChargingReportRequest(int customInvokeTimeout, ByteBuf callResult) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_assist_handoff_SSF_to_SCF_AC
@@ -1170,12 +1172,12 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addFurnishChargingInformationRequest(byte[] FCIBCCCAMELsequence1) throws INAPException {
+	public Long addFurnishChargingInformationRequest(ByteBuf FCIBCCCAMELsequence1) throws INAPException {
 		return addFurnishChargingInformationRequest(_Timer_Default, FCIBCCCAMELsequence1);
 	}
 
 	@Override
-	public Long addFurnishChargingInformationRequest(int customInvokeTimeout, byte[] FCIBCCCAMELsequence1)
+	public Long addFurnishChargingInformationRequest(int customInvokeTimeout, ByteBuf FCIBCCCAMELsequence1)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
@@ -1906,7 +1908,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	public Long addActivateServiceFilteringRequest(FilteredCallTreatment filteredCallTreatment,
 			FilteringCharacteristics filteringCharacteristics, FilteringTimeOut filteringTimeOut,
 			FilteringCriteria filteringCriteria, DateAndTime startTime, CAPINAPExtensions extensions,
-			byte[] scfCorrelationInfo) throws INAPException {
+			ByteBuf scfCorrelationInfo) throws INAPException {
 		return addActivateServiceFilteringRequest(_Timer_Default, filteredCallTreatment, filteringCharacteristics,
 				filteringTimeOut, filteringCriteria, startTime, extensions, scfCorrelationInfo);
 	}
@@ -1915,7 +1917,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	public Long addActivateServiceFilteringRequest(int customInvokeTimeout, FilteredCallTreatment filteredCallTreatment,
 			FilteringCharacteristics filteringCharacteristics, FilteringTimeOut filteringTimeOut,
 			FilteringCriteria filteringCriteria, DateAndTime startTime, CAPINAPExtensions extensions,
-			byte[] scfCorrelationInfo) throws INAPException {
+			ByteBuf scfCorrelationInfo) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
@@ -1940,15 +1942,15 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addEventNotificationCharging(byte[] eventTypeCharging, byte[] eventSpecificInformationCharging,
+	public Long addEventNotificationCharging(ByteBuf eventTypeCharging, ByteBuf eventSpecificInformationCharging,
 			LegID legID, CAPINAPExtensions extensions, MonitorMode monitorMode) throws INAPException {
 		return addEventNotificationCharging(_Timer_Default, eventTypeCharging, eventSpecificInformationCharging, legID,
 				extensions, monitorMode);
 	}
 
 	@Override
-	public Long addEventNotificationCharging(int customInvokeTimeout, byte[] eventTypeCharging,
-			byte[] eventSpecificInformationCharging, LegID legID, CAPINAPExtensions extensions, MonitorMode monitorMode)
+	public Long addEventNotificationCharging(int customInvokeTimeout, ByteBuf eventTypeCharging,
+			ByteBuf eventSpecificInformationCharging, LegID legID, CAPINAPExtensions extensions, MonitorMode monitorMode)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
@@ -2046,7 +2048,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 	@Override
 	public Long addServiceFilteringResponseRequest(List<CounterAndValue> counterAndValue,
-			FilteringCriteria filteringCriteria, ResponseCondition responseCondition, byte[] scfCorrelationInfo)
+			FilteringCriteria filteringCriteria, ResponseCondition responseCondition, ByteBuf scfCorrelationInfo)
 			throws INAPException {
 		return addServiceFilteringResponseRequest(_Timer_Default, counterAndValue, filteringCriteria, responseCondition,
 				scfCorrelationInfo);
@@ -2054,7 +2056,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 	@Override
 	public Long addServiceFilteringResponseRequest(int customInvokeTimeout, List<CounterAndValue> counterAndValue,
-			FilteringCriteria filteringCriteria, ResponseCondition responseCondition, byte[] scfCorrelationInfo)
+			FilteringCriteria filteringCriteria, ResponseCondition responseCondition, ByteBuf scfCorrelationInfo)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
@@ -2988,13 +2990,13 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addUpdateRequest(byte[] operationID, ApplicationID applicationID, DataItemID dataItemID,
+	public Long addUpdateRequest(ByteBuf operationID, ApplicationID applicationID, DataItemID dataItemID,
 			DataItemInformation dataItemInformation) throws INAPException {
 		return addUpdateRequest(_Timer_Default, operationID, applicationID, dataItemID, dataItemInformation);
 	}
 
 	@Override
-	public Long addUpdateRequest(int customInvokeTimeout, byte[] operationID, ApplicationID applicationID,
+	public Long addUpdateRequest(int customInvokeTimeout, ByteBuf operationID, ApplicationID applicationID,
 			DataItemID dataItemID, DataItemInformation dataItemInformation) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC_REV_B)
@@ -3013,7 +3015,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public void addUpdateResponse(long invokeId, byte[] operationReturnID) throws INAPException {
+	public void addUpdateResponse(long invokeId, ByteBuf operationReturnID) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC_REV_B)
 			throw new INAPException(
@@ -3024,13 +3026,13 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addRetrieveRequest(byte[] operationID, ApplicationID applicationID, DataItemID dataItemID)
+	public Long addRetrieveRequest(ByteBuf operationID, ApplicationID applicationID, DataItemID dataItemID)
 			throws INAPException {
 		return addRetrieveRequest(_Timer_Default, operationID, applicationID, dataItemID);
 	}
 
 	@Override
-	public Long addRetrieveRequest(int customInvokeTimeout, byte[] operationID, ApplicationID applicationID,
+	public Long addRetrieveRequest(int customInvokeTimeout, ByteBuf operationID, ApplicationID applicationID,
 			DataItemID dataItemID) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC_REV_B)
@@ -3049,7 +3051,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public void addRetrieveResponse(long invokeId, byte[] operationReturnID, DataItemInformation dataItemInformation)
+	public void addRetrieveResponse(long invokeId, ByteBuf operationReturnID, DataItemInformation dataItemInformation)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC_REV_B)

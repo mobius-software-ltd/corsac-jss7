@@ -41,12 +41,12 @@ public class LSAAttributesImpl extends ASNSingleByte implements LSAAttributes {
     }
     
     public LSAAttributesImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public LSAAttributesImpl(LSAIdentificationPriorityValue value, boolean preferentialAccessAvailable,
             boolean activeModeSupportAvailable) {
-    	setValue(value.getCode() | (preferentialAccessAvailable ? preferentialAccess_mask : 0)
+    	super(value.getCode() | (preferentialAccessAvailable ? preferentialAccess_mask : 0)
                 | (activeModeSupportAvailable ? activeModeSupport_mask : 0));
     }
 

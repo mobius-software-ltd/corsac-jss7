@@ -59,10 +59,8 @@ public class FCIBCCCAMELSequence1Impl implements FCIBCCCAMELSequence1 {
         if(partyToCharge!=null)
         	this.partyToCharge = new SendingLegIDWrapperImpl(new SendingLegIDImpl(partyToCharge));
         
-        if(appendFreeFormatData!=null) {
-        	this.appendFreeFormatData = new ASNAppendFreeFormatData();
-        	this.appendFreeFormatData.setType(appendFreeFormatData);
-        }
+        if(appendFreeFormatData!=null)
+        	this.appendFreeFormatData = new ASNAppendFreeFormatData(appendFreeFormatData);        	
     }
 
     public FreeFormatData getFreeFormatData() {

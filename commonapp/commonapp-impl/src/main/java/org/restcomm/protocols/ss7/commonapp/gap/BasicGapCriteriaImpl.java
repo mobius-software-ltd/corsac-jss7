@@ -69,9 +69,16 @@ public class BasicGapCriteriaImpl implements BasicGapCriteria {
         this.callingAddressAndService = callingAddressAndService;
     }
 
-    public DigitsIsup getCalledAddressValue() {
+    public DigitsIsup getCalledAddressNumber() {
     	if(calledAddressValue!=null)
     		calledAddressValue.setIsGenericNumber();
+    	
+        return calledAddressValue;
+    }
+
+    public DigitsIsup getCalledAddressDigits() {
+    	if(calledAddressValue!=null)
+    		calledAddressValue.setIsGenericDigits();
     	
         return calledAddressValue;
     }

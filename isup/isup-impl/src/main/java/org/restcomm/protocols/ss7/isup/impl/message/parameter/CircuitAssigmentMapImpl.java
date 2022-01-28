@@ -66,7 +66,7 @@ public class CircuitAssigmentMapImpl extends AbstractISUPParameter implements Ci
 
     public void decode(ByteBuf buffer) throws ParameterException {
         if (buffer == null || buffer.readableBytes() != 5) {
-            throw new ParameterException("byte[] must  not be null and length must  be 5");
+            throw new ParameterException("buffer must  not be null and length must  be 5");
         }
 
         this.mapType = buffer.readByte() & 0x3F;

@@ -75,11 +75,9 @@ public class EPSSubscriptionDataImpl implements EPSSubscriptionData {
             boolean mpsCSPriority, boolean mpsEPSPriority) {
         this.apnOiReplacement = apnOiReplacement;
         
-        if(rfspId!=null) {
-        	this.rfspId = new ASNInteger();
-        	this.rfspId.setValue(rfspId.longValue());
-        }
-        
+        if(rfspId!=null)
+        	this.rfspId = new ASNInteger(rfspId);
+        	
         this.ambr = ambr;
         this.apnConfigurationProfile = apnConfigurationProfile;
         this.stnSr = stnSr;
@@ -100,7 +98,7 @@ public class EPSSubscriptionDataImpl implements EPSSubscriptionData {
     	if(this.rfspId==null)
     		return null;
     	
-        return this.rfspId.getValue().intValue();
+        return this.rfspId.getIntValue();
     }
 
     public AMBR getAmbr() {

@@ -25,10 +25,12 @@ package org.restcomm.protocols.ss7.cap.service.sms.primitive;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriod;
 import org.restcomm.protocols.ss7.commonapp.api.APPException;
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.AbsoluteTimeStamp;
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityPeriod;
 import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
 import org.restcomm.protocols.ss7.commonapp.smstpu.ValidityPeriodImpl;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -38,40 +40,35 @@ import io.netty.buffer.Unpooled;
  * @author Lasith Waruna Perera
  *
  */
-public class TPValidityPeriodImpl extends ASNOctetString implements TPValidityPeriod {
+public class TPValidityPeriodImpl extends ASNOctetString2 implements TPValidityPeriod {
 	public TPValidityPeriodImpl() {
     }
 
-    public TPValidityPeriodImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public TPValidityPeriodImpl(int relativeFormat) {
-    	byte[] data = new byte[] { (byte) relativeFormat };
-    	setValue(Unpooled.wrappedBuffer(data));
+    	super(translate(relativeFormat));
+    }
+    
+    private static ByteBuf translate(int relativeFormat) {
+    	ByteBuf value=Unpooled.buffer(1);
+    	value.writeByte(relativeFormat);
+    	return value;
     }
 
-    public TPValidityPeriodImpl(AbsoluteTimeStampImpl absoluteFormatValue) {
+    public TPValidityPeriodImpl(AbsoluteTimeStamp absoluteFormatValue) {
+    	super(translate(absoluteFormatValue));
+    }
+    
+    private static ByteBuf translate(AbsoluteTimeStamp absoluteFormatValue) {    	
         ByteBuf buffer=Unpooled.buffer(7);
         try {
             absoluteFormatValue.encodeData(buffer);
         } catch (APPException e) {
             // This can not occur
         }
-        setValue(buffer);
+        return buffer;
     }
 
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
-    }
-
-    public ValidityPeriodImpl getValidityPeriod() throws CAPException {
+    public ValidityPeriod getValidityPeriod() throws CAPException {
     	ByteBuf value=getValue();
         if (value == null)
             throw new CAPException("Error when getting ValidityPeriod: data must not be null");
@@ -99,7 +96,7 @@ public class TPValidityPeriodImpl extends ASNOctetString implements TPValidityPe
     public String toString() {
 
         try {
-            ValidityPeriodImpl vp = this.getValidityPeriod();
+            ValidityPeriod vp = this.getValidityPeriod();
             return "TPValidityPeriod [" + vp + "]";
         } catch (CAPException e) {
             return super.toString();

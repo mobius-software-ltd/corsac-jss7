@@ -55,27 +55,23 @@ public class AllocationRetentionPriorityImpl implements AllocationRetentionPrior
 
     public AllocationRetentionPriorityImpl(int priorityLevel, Boolean preEmptionCapability, Boolean preEmptionVulnerability,
             MAPExtensionContainer extensionContainer) {    	
-        this.priorityLevel = new ASNInteger();
-        this.priorityLevel.setValue((long)priorityLevel & 0x0FFFFFFFFL);
+        this.priorityLevel = new ASNInteger(priorityLevel);
         
-        if(preEmptionCapability!=null) {
-        	this.preEmptionCapability = new ASNBoolean();
-        	this.preEmptionCapability.setValue(preEmptionCapability);
-        }
+        if(preEmptionCapability!=null)
+        	this.preEmptionCapability = new ASNBoolean(preEmptionCapability);
+        	
         
-        if(preEmptionVulnerability!=null) {
-        	this.preEmptionVulnerability = new ASNBoolean();
-        	this.preEmptionVulnerability.setValue(preEmptionVulnerability);
-        }
-        
+        if(preEmptionVulnerability!=null)
+        	this.preEmptionVulnerability = new ASNBoolean(preEmptionVulnerability);
+        	
         this.extensionContainer = extensionContainer;
     }
 
     public int getPriorityLevel() {
-    	if(this.priorityLevel==null)
+    	if(this.priorityLevel==null || this.priorityLevel.getValue()==null)
     		return -1;
     	
-        return this.priorityLevel.getValue().intValue();
+        return this.priorityLevel.getIntValue();
     }
 
     public Boolean getPreEmptionCapability() {

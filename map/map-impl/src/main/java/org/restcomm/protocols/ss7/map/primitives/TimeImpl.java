@@ -27,7 +27,7 @@ import java.util.TimeZone;
 
 import org.restcomm.protocols.ss7.map.api.primitives.Time;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -37,7 +37,7 @@ import io.netty.buffer.Unpooled;
  * @author Lasith Waruna Perera
  *
  */
-public class TimeImpl extends ASNOctetString implements Time {
+public class TimeImpl extends ASNOctetString2 implements Time {
 	private static final long msbZero = 2085978496000L;
 
     private static final long msbOne = -2208988800000L;
@@ -45,28 +45,21 @@ public class TimeImpl extends ASNOctetString implements Time {
     public TimeImpl() {
     }
 
-    public TimeImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public TimeImpl(int year, int month, int day, int hour, int minute, int second) {
+    	super(translate(year, month, day, hour, minute, second));
+    }
+    
+    public static ByteBuf translate(int year, int month, int day, int hour, int minute, int second) {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         cal.set(year, month - 1, day, hour, minute, second);
         long ntpTime = getNtpTime(cal.getTimeInMillis());
         ByteBuf buf=Unpooled.buffer(4);
         buf.writeBytes(longToBytes(ntpTime));
-        setValue(buf);
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        return buf;
     }
 
     public int getYear() {
-        long time = bytesToLong(getData());
+        long time = bytesToLong(getValue());
         time = getTime(time);
         Date d = new Date(time);
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -75,7 +68,7 @@ public class TimeImpl extends ASNOctetString implements Time {
     }
 
     public int getMonth() {
-        long time = bytesToLong(getData());
+        long time = bytesToLong(getValue());
         time = getTime(time);
         Date d = new Date(time);
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -84,7 +77,7 @@ public class TimeImpl extends ASNOctetString implements Time {
     }
 
     public int getDay() {
-        long time = bytesToLong(getData());
+        long time = bytesToLong(getValue());
         time = getTime(time);
         Date d = new Date(time);
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -93,7 +86,7 @@ public class TimeImpl extends ASNOctetString implements Time {
     }
 
     public int getHour() {
-        long time = bytesToLong(getData());
+        long time = bytesToLong(getValue());
         time = getTime(time);
         Date d = new Date(time);
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -102,7 +95,7 @@ public class TimeImpl extends ASNOctetString implements Time {
     }
 
     public int getMinute() {
-        long time = bytesToLong(getData());
+        long time = bytesToLong(getValue());
         time = getTime(time);
         Date d = new Date(time);
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -111,7 +104,7 @@ public class TimeImpl extends ASNOctetString implements Time {
     }
 
     public int getSecond() {
-        long time = bytesToLong(getData());
+        long time = bytesToLong(getValue());
         time = getTime(time);
         Date d = new Date(time);
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -119,7 +112,7 @@ public class TimeImpl extends ASNOctetString implements Time {
         return cal.get(Calendar.SECOND);
     }
 
-    private long getNtpTime(long time) {
+    private static long getNtpTime(long time) {
         boolean isMSBSet = time < msbZero;
         long timeWithMills;
         if (isMSBSet) {
@@ -134,7 +127,7 @@ public class TimeImpl extends ASNOctetString implements Time {
         return seconds;
     }
 
-    public long getTime(long ntpTime) {
+    public static long getTime(long ntpTime) {
         long msb = ntpTime & 0x80000000L;
         if (msb == 0) {
             return msbZero + (ntpTime * 1000);
@@ -143,17 +136,15 @@ public class TimeImpl extends ASNOctetString implements Time {
         }
     }
 
-    public ByteBuf longToBytes(long x) {
+    public static ByteBuf longToBytes(long x) {
         ByteBuf buffer = Unpooled.buffer(8);
         buffer.writeLong(x);
-        return buffer.slice(4,4);
+        buffer.skipBytes(4);
+        return buffer.readSlice(4);
     }
 
-    public long bytesToLong(byte[] bytes) {
-        byte[] eightbytes = new byte[8];
-        System.arraycopy(bytes, 0, eightbytes, 4, 4);
-        ByteBuf buffer = Unpooled.wrappedBuffer(eightbytes);        
-        return buffer.readLong();
+    public static long bytesToLong(ByteBuf value) {
+        return value.readUnsignedInt();
     }
 
     @Override
@@ -162,7 +153,7 @@ public class TimeImpl extends ASNOctetString implements Time {
         StringBuilder sb = new StringBuilder();
         sb.append("Time");
         sb.append(" [");
-        if (getData() != null) {
+        if (getValue() != null) {
             sb.append("year=");
             sb.append(this.getYear());
             sb.append(", month=");

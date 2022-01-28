@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.commonapp.api.subscriberManagement;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * CUG-Interlock ::= OCTET STRING (SIZE (4))
  *
@@ -40,5 +42,5 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface CUGInterlock {
-    byte[] getData();
+    ByteBuf getValue();
 }

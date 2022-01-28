@@ -24,6 +24,9 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 
 import org.restcomm.protocols.ss7.map.api.smstpdu.ApplicationPortAddressing16BitAddress;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
 *
 * @author sergey vetyutnev
@@ -48,13 +51,13 @@ public class ApplicationPortAddressing16BitAddressImpl implements ApplicationPor
         this.originatorPort = originatorPort;
     }
 
-    public ApplicationPortAddressing16BitAddressImpl(byte[] encodedInformationElementData) {
+    public ApplicationPortAddressing16BitAddressImpl(ByteBuf encodedInformationElementData) {
 
-        if (encodedInformationElementData == null || encodedInformationElementData.length != 4)
+        if (encodedInformationElementData == null || encodedInformationElementData.readableBytes() != 4)
             return;
 
-        this.destinationPort = ((encodedInformationElementData[0] & 0xFF) << 8) + (encodedInformationElementData[1] & 0xFF);
-        this.originatorPort = ((encodedInformationElementData[2] & 0xFF) << 8) + (encodedInformationElementData[3] & 0xFF);
+        this.destinationPort = ((encodedInformationElementData.readByte() & 0xFF) << 8) + (encodedInformationElementData.readByte() & 0xFF);
+        this.originatorPort = ((encodedInformationElementData.readByte() & 0xFF) << 8) + (encodedInformationElementData.readByte() & 0xFF);
     }
 
     public int getDestinationPort() {
@@ -69,12 +72,12 @@ public class ApplicationPortAddressing16BitAddressImpl implements ApplicationPor
         return UserDataHeaderImpl._InformationElementIdentifier_ApplicationPortAddressingScheme16BitAddress;
     }
 
-    public byte[] getEncodedInformationElementData() {
-        byte[] res = new byte[4];
-        res[0] = (byte) ((this.destinationPort & 0xFF00) >> 8);
-        res[1] = (byte) (this.destinationPort & 0x00FF);
-        res[2] = (byte) ((this.originatorPort & 0xFF00) >> 8);
-        res[3] = (byte) (this.originatorPort & 0x00FF);
+    public ByteBuf getEncodedInformationElementData() {
+    	ByteBuf res = Unpooled.buffer(4);
+        res.writeByte((byte) ((this.destinationPort & 0xFF00) >> 8));
+        res.writeByte((byte) (this.destinationPort & 0x00FF));
+        res.writeByte((byte) ((this.originatorPort & 0xFF00) >> 8));
+        res.writeByte((byte) (this.originatorPort & 0x00FF));
         return res;
     }
 

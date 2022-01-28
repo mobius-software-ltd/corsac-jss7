@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.InitialDPArgExtension;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.NACarrierInformation;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
 import org.restcomm.protocols.ss7.commonapp.api.callhandling.UUData;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.LowLayerCompatibility;
@@ -53,8 +52,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
-import io.netty.buffer.Unpooled;
-
 /**
  *
  * @author sergey vetyutnev
@@ -62,16 +59,8 @@ import io.netty.buffer.Unpooled;
  *
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public class InitialDPArgExtensionImpl implements InitialDPArgExtension {
-	//CAP V2
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1, defaultImplementation = NACarrierInformationImpl.class)
-    private NACarrierInformation naCarrierInformation;
-    
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1, defaultImplementation = ISDNAddressStringImpl.class)
-    private ISDNAddressString gmscAddress;
-    
-    //CAP V4
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1, defaultImplementation = ISDNAddressStringImpl.class)
+public class InitialDPArgExtensionV3Impl implements InitialDPArgExtension {
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1, defaultImplementation = ISDNAddressStringImpl.class)
     private ISDNAddressString gmscAddress2;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1, defaultImplementation = CalledPartyNumberIsupImpl.class)
@@ -119,15 +108,10 @@ public class InitialDPArgExtensionImpl implements InitialDPArgExtension {
     /**
      * This constructor is for deserializing purposes
      */
-    public InitialDPArgExtensionImpl() {
+    public InitialDPArgExtensionV3Impl() {
     }
     
-    public InitialDPArgExtensionImpl(NACarrierInformation naCarrierInformation, ISDNAddressString gmscAddress) {
-    	this.naCarrierInformation = naCarrierInformation;
-    	this.gmscAddress = gmscAddress;
-    }
-
-    public InitialDPArgExtensionImpl(ISDNAddressString gmscAddress, CalledPartyNumberIsup forwardingDestinationNumber,
+    public InitialDPArgExtensionV3Impl(ISDNAddressString gmscAddress, CalledPartyNumberIsup forwardingDestinationNumber,
             MSClassmark2 msClassmark2, IMEI imei, SupportedCamelPhases supportedCamelPhases,
             OfferedCamel4Functionalities offeredCamel4Functionalities, BearerCapability bearerCapability2,
             ExtBasicServiceCode extBasicServiceCode2, HighLayerCompatibilityIsup highLayerCompatibility2,
@@ -161,27 +145,13 @@ public class InitialDPArgExtensionImpl implements InitialDPArgExtension {
         if(releaseCallArgExtensionAllowed)
         	this.releaseCallArgExtensionAllowed = new ASNNull();        
     }
-
-    public void patchVersion(int version) throws APPParsingComponentException {
-    	if(forwardingDestinationNumber==null)
-    		return;
-    	    	
-    	if(version<3) {
-    		gmscAddress=new ISDNAddressStringImpl();
-    		((ISDNAddressStringImpl)gmscAddress).decode(null, this, Unpooled.wrappedBuffer(forwardingDestinationNumber.getData()), null);
-    		forwardingDestinationNumber = null;
-    	}
-    }
     
     public ISDNAddressString getGmscAddress() {
-    	if(gmscAddress!=null)
-    		return gmscAddress;
-    	
     	return gmscAddress2;
     }
 
     public NACarrierInformation getNACarrierInformation() {
-    	return naCarrierInformation;
+    	return null;
     }
     
     public CalledPartyNumberIsup getForwardingDestinationNumber() {
@@ -251,16 +221,6 @@ public class InitialDPArgExtensionImpl implements InitialDPArgExtension {
 
         StringBuilder sb = new StringBuilder();
         sb.append("InitialDPArgExtension [");
-
-        if (this.naCarrierInformation != null) {
-            sb.append(", naCarrierInformation=");
-            sb.append(naCarrierInformation);
-        }
-        
-        if (this.gmscAddress != null) {
-            sb.append(", gmscAddress=");
-            sb.append(gmscAddress);
-        }
 
         if (this.gmscAddress2 != null) {
             sb.append(", gmscAddress=");

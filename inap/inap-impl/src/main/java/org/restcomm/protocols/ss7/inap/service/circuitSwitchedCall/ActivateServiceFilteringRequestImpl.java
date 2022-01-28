@@ -41,10 +41,9 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.Fi
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -74,19 +73,17 @@ public class ActivateServiceFilteringRequestImpl extends CircuitSwitchedCallMess
 	private CAPINAPExtensions extensions;
 	
 	@ASNProperty(asnClass = ASNClass.PRIVATE,tag = 1,constructed = false,index = -1)
-	private ASNOctetString scfCorrelationInfo;
+	private ASNOctetString2 scfCorrelationInfo;
     
     public ActivateServiceFilteringRequestImpl() {
     }
 
     public ActivateServiceFilteringRequestImpl(FilteredCallTreatment filteredCallTreatment,FilteringCharacteristics filteringCharacteristics,
-    		FilteringTimeOut filteringTimeOut,FilteringCriteria filteringCriteria,DateAndTime startTime,CAPINAPExtensions extensions,byte[] scfCorrelationInfo) {
+    		FilteringTimeOut filteringTimeOut,FilteringCriteria filteringCriteria,DateAndTime startTime,CAPINAPExtensions extensions,ByteBuf scfCorrelationInfo) {
     	this(filteredCallTreatment, filteringCharacteristics, filteringTimeOut, filteringCriteria, startTime, extensions);
     	
-    	if(scfCorrelationInfo!=null) {
-    		this.scfCorrelationInfo=new ASNOctetString();
-    		this.scfCorrelationInfo.setValue(Unpooled.wrappedBuffer(scfCorrelationInfo));
-    	}
+    	if(scfCorrelationInfo!=null)
+    		this.scfCorrelationInfo=new ASNOctetString2(scfCorrelationInfo);    		    
     }
     
     public ActivateServiceFilteringRequestImpl(FilteredCallTreatment filteredCallTreatment,FilteringCharacteristics filteringCharacteristics,
@@ -156,14 +153,11 @@ public class ActivateServiceFilteringRequestImpl extends CircuitSwitchedCallMess
 	}
 
     @Override
-    public byte[] getSCFCorrelationInfo() {
-    	if(scfCorrelationInfo==null || scfCorrelationInfo.getValue()==null)
+    public ByteBuf getSCFCorrelationInfo() {
+    	if(scfCorrelationInfo==null)
     		return null;
     	
-    	ByteBuf value=scfCorrelationInfo.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-		return data;
+    	return scfCorrelationInfo.getValue();
 	}
 
 	@Override
@@ -199,7 +193,7 @@ public class ActivateServiceFilteringRequestImpl extends CircuitSwitchedCallMess
         }
         if (this.scfCorrelationInfo != null && this.scfCorrelationInfo.getValue()!=null) {
             sb.append(", scfCorrelationInfo=");
-            sb.append(ASNOctetString.printDataArr(getSCFCorrelationInfo()));
+            sb.append(scfCorrelationInfo.printDataArr());
         }
 
         sb.append("]");

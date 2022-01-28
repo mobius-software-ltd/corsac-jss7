@@ -95,11 +95,9 @@ public class RequestedInfoImpl implements RequestedInfo {
         if(currentLocation)
         	this.currentLocation = new ASNNull();
         
-        if(requestedDomain!=null) {
-        	this.requestedDomain = new ASNDomainTypeImpl();
-        	this.requestedDomain.setType(requestedDomain);;
-        }
-        
+        if(requestedDomain!=null)
+        	this.requestedDomain = new ASNDomainTypeImpl(requestedDomain);
+        	
         if(imei)
         	this.imei = new ASNNull();
         

@@ -42,8 +42,6 @@ LocationNumber ::= OCTET STRING (SIZE (2..10))
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface LocationNumberMap {
 
-    byte[] getData();
-
     LocationNumber getLocationNumber() throws APPException;
 
 }

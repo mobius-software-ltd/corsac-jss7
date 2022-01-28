@@ -34,9 +34,9 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -48,7 +48,7 @@ public class RetrieveRequestImpl extends CircuitSwitchedCallMessageImpl implemen
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private ASNOctetString operationID;
+    private ASNOctetString2 operationID;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1,defaultImplementation = ApplicationIDImpl.class)
     private ApplicationID applicationID;
@@ -59,11 +59,9 @@ public class RetrieveRequestImpl extends CircuitSwitchedCallMessageImpl implemen
 	public RetrieveRequestImpl() {
     }
 
-    public RetrieveRequestImpl(byte[] operationID,ApplicationID applicationID,DataItemID dataItemID) {
-    	if(operationID!=null) {
-    		this.operationID=new ASNOctetString();
-    		this.operationID.setValue(Unpooled.wrappedBuffer(operationID));
-    	}
+    public RetrieveRequestImpl(ByteBuf operationID,ApplicationID applicationID,DataItemID dataItemID) {
+    	if(operationID!=null)
+    		this.operationID=new ASNOctetString2(operationID);    	
     	
     	this.applicationID=applicationID;
     	this.dataItemID=dataItemID;
@@ -80,15 +78,12 @@ public class RetrieveRequestImpl extends CircuitSwitchedCallMessageImpl implemen
     }
     
     @Override
-    public byte[] getOperationID() 
+    public ByteBuf getOperationID() 
     {
-    	if(operationID==null || operationID.getValue()==null)
+    	if(operationID==null)
     		return null;
     	
-    	ByteBuf value=operationID.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-		return data;
+    	return operationID.getValue();
 	}
 
     @Override

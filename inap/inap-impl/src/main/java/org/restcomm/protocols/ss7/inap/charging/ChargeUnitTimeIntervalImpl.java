@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.inap.charging;
 
 import org.restcomm.protocols.ss7.inap.api.charging.ChargeUnitTimeInterval;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,19 +35,22 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class ChargeUnitTimeIntervalImpl extends ASNOctetString implements ChargeUnitTimeInterval {
+public class ChargeUnitTimeIntervalImpl extends ASNOctetString2 implements ChargeUnitTimeInterval {
 	public ChargeUnitTimeIntervalImpl() {
     }
 
-    public ChargeUnitTimeIntervalImpl(Integer value) {
+	public ChargeUnitTimeIntervalImpl(Integer value) {
+		super(translate(value));
+	}
+	
+    public static ByteBuf translate(Integer value) {
     	if(value!=null) {
-    		byte[] data = new byte[2];
-    		ByteBuf buffer=Unpooled.wrappedBuffer(data);
-    		buffer.markWriterIndex();
+    		ByteBuf buffer=Unpooled.buffer(2);
     		buffer.writeShort(value);
-    		buffer.resetWriterIndex();
-    		setValue(buffer);
+    		return buffer;
     	}
+    	else
+    		return Unpooled.EMPTY_BUFFER;
     }
 
     public Integer getData() {

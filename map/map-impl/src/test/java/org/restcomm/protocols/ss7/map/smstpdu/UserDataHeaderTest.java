@@ -34,6 +34,7 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderElement;
 import org.testng.annotations.Test;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -91,10 +92,10 @@ public class UserDataHeaderTest {
     @Test(groups = { "functional.decode", "smstpdu" })
     public void testDecode() throws Exception {
 
-        UserDataHeaderImpl impl = new UserDataHeaderImpl(this.getData1());
-        Map<Integer, byte[]> mp = impl.getAllData();
+        UserDataHeaderImpl impl = new UserDataHeaderImpl(Unpooled.wrappedBuffer(this.getData1()));
+        Map<Integer, ByteBuf> mp = impl.getAllData();
         assertEquals(impl.getAllData().size(), 1);
-        assertTrue(Arrays.equals(mp.get(8), new byte[] { 0, -47, 3, 2 }));
+        assertTrue(ByteBufUtil.equals(mp.get(8), Unpooled.wrappedBuffer(new byte[] { 0, -47, 3, 2 })));
         ConcatenatedShortMessagesIdentifierImpl conc = impl.getConcatenatedShortMessagesIdentifier();
         assertNotNull(conc);
         assertEquals(conc.getReferenceIs16bit(), true);
@@ -102,10 +103,10 @@ public class UserDataHeaderTest {
         assertEquals(conc.getMesageSegmentCount(), 3);
         assertEquals(conc.getMesageSegmentNumber(), 2);
 
-        impl = new UserDataHeaderImpl(this.getData11());
+        impl = new UserDataHeaderImpl(Unpooled.wrappedBuffer(this.getData11()));
         mp = impl.getAllData();
         assertEquals(impl.getAllData().size(), 1);
-        assertTrue(Arrays.equals(mp.get(8), new byte[] { 10, 1, 3, 2 }));
+        assertTrue(ByteBufUtil.equals(mp.get(8), Unpooled.wrappedBuffer(new byte[] { 10, 1, 3, 2 })));
         conc = impl.getConcatenatedShortMessagesIdentifier();
         assertNotNull(conc);
         assertEquals(conc.getReferenceIs16bit(), true);
@@ -113,10 +114,10 @@ public class UserDataHeaderTest {
         assertEquals(conc.getMesageSegmentCount(), 3);
         assertEquals(conc.getMesageSegmentNumber(), 2);
 
-        impl = new UserDataHeaderImpl(this.getData2());
+        impl = new UserDataHeaderImpl(Unpooled.wrappedBuffer(this.getData2()));
         mp = impl.getAllData();
         assertEquals(impl.getAllData().size(), 1);
-        assertTrue(Arrays.equals(mp.get(0), new byte[] { -116, 2, 1 }));
+        assertTrue(ByteBufUtil.equals(mp.get(0), Unpooled.wrappedBuffer(new byte[] { -116, 2, 1 })));
         conc = impl.getConcatenatedShortMessagesIdentifier();
         assertNotNull(conc);
         assertEquals(conc.getReferenceIs16bit(), false);
@@ -124,28 +125,28 @@ public class UserDataHeaderTest {
         assertEquals(conc.getMesageSegmentCount(), 2);
         assertEquals(conc.getMesageSegmentNumber(), 1);
 
-        impl = new UserDataHeaderImpl(this.getDataA1());
+        impl = new UserDataHeaderImpl(Unpooled.wrappedBuffer(this.getDataA1()));
         mp = impl.getAllData();
         assertEquals(impl.getAllData().size(), 1);
-        assertTrue(Arrays.equals(mp.get(37), new byte[] { 2 }));
+        assertTrue(ByteBufUtil.equals(mp.get(37), Unpooled.wrappedBuffer(new byte[] { 2 })));
         NationalLanguageLockingShiftIdentifierImpl nls = impl.getNationalLanguageLockingShift();
         assertNotNull(nls);
         assertEquals(nls.getNationalLanguageIdentifier(), NationalLanguageIdentifier.Spanish);
 
-        impl = new UserDataHeaderImpl(this.getDataA2());
+        impl = new UserDataHeaderImpl(Unpooled.wrappedBuffer(this.getDataA2()));
         mp = impl.getAllData();
         assertEquals(impl.getAllData().size(), 1);
-        assertTrue(Arrays.equals(mp.get(36), new byte[] { 3 }));
+        assertTrue(ByteBufUtil.equals(mp.get(36), Unpooled.wrappedBuffer(new byte[] { 3 })));
         NationalLanguageSingleShiftIdentifierImpl nss = impl.getNationalLanguageSingleShift();
         assertNotNull(nss);
         assertEquals(nss.getNationalLanguageIdentifier(), NationalLanguageIdentifier.Portuguese);
 
         // TODO: implement getData3()-getData7() decoding
 
-        impl = new UserDataHeaderImpl(this.getData8());
+        impl = new UserDataHeaderImpl(Unpooled.wrappedBuffer(this.getData8()));
         mp = impl.getAllData();
         assertEquals(impl.getAllData().size(), 1);
-        assertTrue(Arrays.equals(mp.get(112), new byte[] { }));
+        assertTrue(ByteBufUtil.equals(mp.get(112),Unpooled.wrappedBuffer(new byte[] { })));
     }
 
     @Test(groups = { "functional.encode", "smstpdu" })
@@ -200,7 +201,7 @@ public class UserDataHeaderTest {
 
         impl = new UserDataHeaderImpl();
         ie = new ConcatenatedShortMessagesIdentifierImpl(false, 140, 2, 1);
-        impl.addInformationElement(112, new byte[] {});
+        impl.addInformationElement(112, Unpooled.wrappedBuffer(new byte[] {}));
         encodedData=new byte[this.getData8().length];
         buffer=Unpooled.wrappedBuffer(encodedData);
         buffer.resetWriterIndex();

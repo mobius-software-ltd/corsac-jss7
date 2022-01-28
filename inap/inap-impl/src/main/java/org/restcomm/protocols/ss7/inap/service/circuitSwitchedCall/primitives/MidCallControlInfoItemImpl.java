@@ -50,10 +50,8 @@ public class MidCallControlInfoItemImpl implements MidCallControlInfoItem {
 
     public MidCallControlInfoItemImpl(MidCallInfoType midCallInfoType, MidCallReportType midCallReportType) {
     	this.midCallInfoType=midCallInfoType;
-    	if(midCallReportType != null) {
-    		this.midCallReportType=new ASNMidCallReportType();
-    		this.midCallReportType.setType(midCallReportType);
-    	}
+    	if(midCallReportType != null)
+    		this.midCallReportType=new ASNMidCallReportType(midCallReportType);    		
     }
 
     public MidCallInfoType getMidCallInfoType() {

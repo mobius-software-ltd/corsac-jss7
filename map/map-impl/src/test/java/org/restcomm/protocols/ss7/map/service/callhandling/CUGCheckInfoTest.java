@@ -35,6 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -64,7 +65,7 @@ public class CUGCheckInfoTest {
         assertTrue(result.getResult() instanceof CUGCheckInfoImpl);
         CUGCheckInfoImpl ind = (CUGCheckInfoImpl)result.getResult();
         
-        assertTrue(Arrays.equals(ind.getCUGInterlock().getData(), getGugData()));
+        assertTrue(ByteBufUtil.equals(ind.getCUGInterlock().getValue(), Unpooled.wrappedBuffer(getGugData())));
         assertTrue(ind.getCUGOutgoingAccess());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(ind.getExtensionContainer()));
     }
@@ -74,7 +75,7 @@ public class CUGCheckInfoTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CUGCheckInfoImpl.class);
 
-        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getGugData());
+        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(Unpooled.wrappedBuffer(getGugData()));
         CUGCheckInfoImpl ind = new CUGCheckInfoImpl(cugInterlock, true, MAPExtensionContainerTest.GetTestExtensionContainer());
        
         byte[] data=this.getEncodedData();

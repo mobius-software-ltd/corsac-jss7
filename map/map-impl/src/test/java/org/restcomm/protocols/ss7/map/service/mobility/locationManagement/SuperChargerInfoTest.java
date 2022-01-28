@@ -68,8 +68,8 @@ public class SuperChargerInfoTest {
         asc = (SuperChargerInfoImpl)result.getResult();
 
         assertFalse(asc.getSendSubscriberData());
-        assertEquals(asc.getSubscriberDataStored().length, 1);
-        assertEquals(asc.getSubscriberDataStored()[0], 5);
+        assertEquals(asc.getSubscriberDataStored().readableBytes(), 1);
+        assertEquals(asc.getSubscriberDataStored().readByte(), 5);
     }
 
     @Test(groups = { "functional.encode" })
@@ -85,7 +85,7 @@ public class SuperChargerInfoTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        asc = new SuperChargerInfoImpl(new byte[] { 5 });
+        asc = new SuperChargerInfoImpl(Unpooled.wrappedBuffer(new byte[] { 5 }));
         data=this.getEncodedData2();
         buffer=parser.encode(asc);
         encodedData = new byte[buffer.readableBytes()];

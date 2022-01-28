@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.smstpdu;
 
 import org.restcomm.protocols.ss7.map.api.MAPException;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author sergey vetyutnev
@@ -33,7 +35,7 @@ public interface UserData {
 
     DataCodingScheme getDataCodingScheme();
 
-    byte[] getEncodedData();
+    ByteBuf getEncodedData();
 
     boolean getEncodedUserDataHeaderIndicator();
 

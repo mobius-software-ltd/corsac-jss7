@@ -117,7 +117,7 @@ public class ParameterCompatibilityInstructionIndicatorsImpl implements Paramete
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() < 1) {
-            throw new ParameterException("byte[] must  not be null and length must  be greater than  0");
+            throw new ParameterException("buffer must  not be null and length must  be greater than  0");
         }
 
         // XXX: Cheat, we read only defined in Q763 2 octets, rest we ignore...

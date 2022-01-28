@@ -47,15 +47,11 @@ public class GPRSEventImpl implements GPRSEvent {
     }
 
     public GPRSEventImpl(GPRSEventType gprsEventType, MonitorMode monitorMode) {
-        if(gprsEventType!=null) {
-        	this.gprsEventType = new ASNGPRSEventTypeImpl();
-        	this.gprsEventType.setType(gprsEventType);
-        }
-        
-        if(monitorMode!=null) {
-        	this.monitorMode = new ASNMonitorMode();
-        	this.monitorMode.setType(monitorMode);
-        }
+        if(gprsEventType!=null)
+        	this.gprsEventType = new ASNGPRSEventTypeImpl(gprsEventType);
+        	
+        if(monitorMode!=null)
+        	this.monitorMode = new ASNMonitorMode(monitorMode);        	
     }
 
     public GPRSEventType getGPRSEventType() {

@@ -26,8 +26,7 @@ package com.mobius.software.telco.protocols.ss7.asn.primitives;
 */
 
 import java.io.UnsupportedEncodingException;
-
-import io.netty.buffer.ByteBuf;
+import java.nio.charset.Charset;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -36,17 +35,23 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=22,constructed=false,lengthIndefinite=false)
 public class ASNIA5String {
-	public static final String ENCODING="US-ASCII";
+	public static final Charset ENCODING=Charset.forName("US-ASCII");
 	private String value;
+	
+	public ASNIA5String() {
 		
+	}
+	
+	public ASNIA5String(String value) {
+		this.value=value;
+	}
+	
 	public String getValue() {
 		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
 	}
 
 	@ASNLength
@@ -61,9 +66,7 @@ public class ASNIA5String {
 	
 	@ASNDecode
 	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) throws UnsupportedEncodingException {
-		byte[] data=new byte[buffer.readableBytes()];
-		buffer.readBytes(data);
-		value=new String(data, ENCODING);
+		value=buffer.toString(ENCODING);
 		return false;
 	}
 	

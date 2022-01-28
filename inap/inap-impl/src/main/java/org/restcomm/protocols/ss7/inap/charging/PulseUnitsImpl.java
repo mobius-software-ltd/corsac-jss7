@@ -37,8 +37,7 @@ public class PulseUnitsImpl extends ASNSingleByte implements PulseUnits {
     }
 
     public PulseUnitsImpl(Integer value) {
-    	if(value!=null)
-    		setValue(value);    	
+    	super(value);    	
     }
 
     public Integer getData() {

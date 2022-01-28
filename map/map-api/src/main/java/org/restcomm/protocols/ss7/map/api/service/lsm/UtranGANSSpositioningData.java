@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.map.api.service.lsm;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  UtranGANSSpositioningData ::= OCTET STRING (SIZE (1..9)) -- Refers to the Position Data defined in 3GPP TS 25.413. -- This is
@@ -37,6 +39,5 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface UtranGANSSpositioningData {
 
-    byte[] getData();
-
+	ByteBuf getValue();
 }

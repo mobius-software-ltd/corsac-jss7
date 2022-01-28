@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.primitives;
 
 import org.restcomm.protocols.ss7.map.api.primitives.PlmnId;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,16 +35,16 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class PlmnIdImpl extends ASNOctetString implements PlmnId {
+public class PlmnIdImpl extends ASNOctetString2 implements PlmnId {
 	
 	public PlmnIdImpl() {
     }
 
-    public PlmnIdImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public PlmnIdImpl(int mcc, int mnc) {
+	public PlmnIdImpl(int mcc, int mnc) {
+		super(translate(mcc, mnc));
+	}
+	
+    public static ByteBuf translate(int mcc, int mnc) {
         int a1 = mcc / 100;
         int tv = mcc % 100;
         int a2 = tv / 10;
@@ -55,47 +55,43 @@ public class PlmnIdImpl extends ASNOctetString implements PlmnId {
         int b2 = tv / 10;
         int b3 = tv % 10;
 
-        byte[] data = new byte[3];
-        data[0] = (byte) ((a2 << 4) + a1);
+        ByteBuf data = Unpooled.buffer(3);
+        data.writeByte((byte) ((a2 << 4) + a1));
         if (b1 == 0) {
-            data[1] = (byte) (0xF0 + a3);
-            data[2] = (byte) ((b3 << 4) + b2);
+        	data.writeByte((byte) (0xF0 + a3));
+        	data.writeByte((byte) ((b3 << 4) + b2));
         } else {
-            data[1] = (byte) ((b3 << 4) + a3);
-            data[2] = (byte) ((b2 << 4) + b1);
+        	data.writeByte((byte) ((b3 << 4) + a3));
+        	data.writeByte((byte) ((b2 << 4) + b1));
         }
         
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf buf=getValue();
-    	byte[] data=new byte[buf.readableBytes()];
-    	buf.readBytes(data);
         return data;
     }
 
     public int getMcc() {
-    	byte[] data=getData();
-        if (data == null || data.length != 3)
+    	ByteBuf data=getValue();
+        if (data == null || data.readableBytes() != 3)
             return 0;
 
-        int a1 = data[0] & 0x0F;
-        int a2 = (data[0] & 0xF0) >> 4;
-        int a3 = data[1] & 0x0F;
+        byte firstByte=data.readByte();
+        int a1 = firstByte & 0x0F;
+        int a2 = (firstByte & 0xF0) >> 4;
+        int a3 = data.readByte() & 0x0F;
 
         return a1 * 100 + a2 * 10 + a3;
     }
 
     public int getMnc() {
-    	byte[] data=getData();
-        if (data == null || data.length != 3)
+    	ByteBuf data=getValue();
+        if (data == null || data.readableBytes() != 3)
             return 0;
 
-        int a1 = data[2] & 0x0F;
-        int a2 = (data[2] & 0xF0) >> 4;
-        int a3 = (data[1] & 0xF0) >> 4;
-
+        data.skipBytes(1);
+        int a3 = (data.readByte() & 0xF0) >> 4;
+        byte thirdByte=data.readByte();
+        int a1 = thirdByte & 0x0F;
+        int a2 = (thirdByte & 0xF0) >> 4;
+        
         if (a3 == 15)
             return a1 * 10 + a2;
         else

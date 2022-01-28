@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimate;
 import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityType;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -36,93 +36,84 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class VelocityEstimateImpl extends ASNOctetString implements VelocityEstimate {
+public class VelocityEstimateImpl extends ASNOctetString2 implements VelocityEstimate {
 	public VelocityEstimateImpl() {
     }
 
-    public VelocityEstimateImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public VelocityEstimateImpl(VelocityType velocityType, int horizontalSpeed, int bearing, int verticalSpeed,
+	public VelocityEstimateImpl(VelocityType velocityType, int horizontalSpeed, int bearing, int verticalSpeed,
+            int uncertaintyHorizontalSpeed, int uncertaintyVerticalSpeed) throws MAPException {
+		super(translate(velocityType, horizontalSpeed, bearing, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed));
+	}
+	
+    public static ByteBuf translate(VelocityType velocityType, int horizontalSpeed, int bearing, int verticalSpeed,
             int uncertaintyHorizontalSpeed, int uncertaintyVerticalSpeed) throws MAPException {
         if (velocityType == null) {
             throw new MAPException("velocityType parameter is null");
         }
         
-        byte[] data=null;
+        ByteBuf value=null;
         switch (velocityType) {
             case HorizontalVelocity:
-                data=initData(4, velocityType, horizontalSpeed, bearing, 0);
+            	value=initData(4, velocityType, horizontalSpeed, bearing, 0);
                 break;
 
             case HorizontalWithVerticalVelocity:
-            	data=initData(5, velocityType, horizontalSpeed, bearing, verticalSpeed);
+            	value=initData(5, velocityType, horizontalSpeed, bearing, verticalSpeed);
                 if (verticalSpeed < 0)
                     verticalSpeed = -verticalSpeed;
-                data[4] = (byte) (verticalSpeed & 0xFF);
+                value.writeByte((byte) (verticalSpeed & 0xFF));
                 break;
 
             case HorizontalVelocityWithUncertainty:
-            	data=initData(5, velocityType, horizontalSpeed, bearing, 0);
-                data[4] = (byte) (uncertaintyHorizontalSpeed & 0xFF);
+            	value=initData(5, velocityType, horizontalSpeed, bearing, 0);
+            	value.writeByte((byte) (uncertaintyHorizontalSpeed & 0xFF));
                 break;
 
             case HorizontalWithVerticalVelocityAndUncertainty:
-            	data=initData(7, velocityType, horizontalSpeed, bearing, verticalSpeed);
-                data[4] = (byte) (verticalSpeed & 0xFF);
-                data[5] = (byte) (uncertaintyHorizontalSpeed & 0xFF);
-                data[6] = (byte) (uncertaintyVerticalSpeed & 0xFF);
+            	value=initData(7, velocityType, horizontalSpeed, bearing, verticalSpeed);
+            	value.writeByte((byte) (verticalSpeed & 0xFF));
+            	value.writeByte((byte) (uncertaintyHorizontalSpeed & 0xFF));
+            	value.writeByte((byte) (uncertaintyVerticalSpeed & 0xFF));
                 break;
         }
         
-        if(data!=null)
-        	setValue(Unpooled.wrappedBuffer(data));
+        return value;
     }
 
-    private byte[] initData(int len, VelocityType velocityType, int horizontalSpeed, int bearing, int verticalSpeed) {
-        byte[] data = new byte[len];
+    private static ByteBuf initData(int len, VelocityType velocityType, int horizontalSpeed, int bearing, int verticalSpeed) {
+    	ByteBuf buf = Unpooled.buffer(len);
 
-        data[0] = (byte) ((velocityType.getCode() << 4) | (verticalSpeed < 0 ? 0x02 : 0) | (bearing & 0x0100) >> 8);
-        data[1] = (byte) (bearing & 0xFF);
-        data[2] = (byte) ((horizontalSpeed & 0xFF00) >> 8);
-        data[3] = (byte) (horizontalSpeed & 0xFF);
-        return data;
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	buf.writeByte((byte) ((velocityType.getCode() << 4) | (verticalSpeed < 0 ? 0x02 : 0) | (bearing & 0x0100) >> 8));
+    	buf.writeByte((byte) (bearing & 0xFF));
+    	buf.writeByte((byte) ((horizontalSpeed & 0xFF00) >> 8));
+    	buf.writeByte((byte) (horizontalSpeed & 0xFF));
+        return buf;
     }
 
     public VelocityType getVelocityType() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 1)
+    	ByteBuf value=getValue();
+    	if (value == null || value.readableBytes() < 1)
             return null;
 
-        return VelocityType.getInstance((data[0] & 0xF0) >> 4);
+        return VelocityType.getInstance((value.readByte() & 0xF0) >> 4);
     }
 
     public int getHorizontalSpeed() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 4)
+    	ByteBuf value=getValue();
+    	if (value == null || value.readableBytes() < 4)
             return 0;
 
-        int res = ((data[2] & 0xFF) << 8) + (data[3] & 0xFF);
+    	value.skipBytes(2);
+        int res = ((value.readByte() & 0xFF) << 8) + (value.readByte() & 0xFF);
         return res;
     }
 
     public int getBearing() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 4)
+    	ByteBuf value=getValue();
+    	if (value == null || value.readableBytes() < 4)
             return 0;
 
-        int res = ((data[0] & 0x01) << 8) + (data[1] & 0xFF);
+        int res = ((value.readByte() & 0x01) << 8) + (value.readByte() & 0xFF);
         return res;
     }
 
@@ -131,11 +122,12 @@ public class VelocityEstimateImpl extends ASNOctetString implements VelocityEsti
         if (velocityType == null)
             return 0;
 
-        byte[] data=getData();
-        switch (velocityType) {
+        ByteBuf value=getValue();
+    	switch (velocityType) {
             case HorizontalWithVerticalVelocity:
             case HorizontalWithVerticalVelocityAndUncertainty:
-                int res = (data[4] & 0xFF);
+            	value.skipBytes(4);
+                int res = (value.readByte() & 0xFF);
                 return res;
 			default:
 				break;
@@ -149,13 +141,15 @@ public class VelocityEstimateImpl extends ASNOctetString implements VelocityEsti
         if (velocityType == null)
             return 0;
 
-        byte[] data=getData();
-        switch (velocityType) {
+        ByteBuf value=getValue();
+    	switch (velocityType) {
             case HorizontalVelocityWithUncertainty:
-                int res = (data[4] & 0xFF);
+            	value.skipBytes(4);
+                int res = (value.readByte() & 0xFF);
                 return res;
             case HorizontalWithVerticalVelocityAndUncertainty:
-                res = (data[5] & 0xFF);
+            	value.skipBytes(5);
+                res = (value.readByte() & 0xFF);
                 return res;
 			default:
 				break;
@@ -169,10 +163,11 @@ public class VelocityEstimateImpl extends ASNOctetString implements VelocityEsti
         if (velocityType == null)
             return 0;
 
-        byte[] data=getData();
-        switch (velocityType) {
+        ByteBuf value=getValue();
+    	switch (velocityType) {
             case HorizontalWithVerticalVelocityAndUncertainty:
-                int res = (data[6] & 0xFF);
+            	value.skipBytes(6);
+                int res = (value.readByte() & 0xFF);
                 return res;
 			default:
 				break;

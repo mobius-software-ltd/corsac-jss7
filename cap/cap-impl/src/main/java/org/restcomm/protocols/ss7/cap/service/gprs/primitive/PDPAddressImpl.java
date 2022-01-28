@@ -23,31 +23,35 @@ package org.restcomm.protocols.ss7.cap.service.gprs.primitive;
 
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPAddress;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author Lasith Waruna Perera
  *
  */
-public class PDPAddressImpl extends ASNOctetString implements PDPAddress {
+public class PDPAddressImpl extends ASNOctetString2 implements PDPAddress {
 	public PDPAddressImpl() {
     }
 
-    public PDPAddressImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
+    public PDPAddressImpl(ByteBuf value) {
+    	super(value);
     }
 
-    public byte[] getData() {
-        ByteBuf buffer=getValue();
-        if(buffer==null)
-        	return null;
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("PDPAddress [");
+
+        if(getValue()!=null) {
+        	sb.append(", data=");
+        	sb.append(printDataArr());
+        }
         
-        byte[] data=new byte[buffer.readableBytes()];
-        buffer.readBytes(data);
-    	return data;
+        sb.append("]");
+
+        return sb.toString();
     }
 }

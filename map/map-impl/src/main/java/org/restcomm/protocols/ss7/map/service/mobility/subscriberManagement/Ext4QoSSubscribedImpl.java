@@ -36,7 +36,7 @@ public class Ext4QoSSubscribedImpl extends ASNSingleByte implements Ext4QoSSubsc
     }
 
     public Ext4QoSSubscribedImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public Integer getData() {

@@ -49,16 +49,8 @@ import io.netty.buffer.Unpooled;
 public class ReportingPLMNListTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 26, -128, 0, -95, 22, 48, 10, -128, 3, 11, 12, 13, -127, 1, 0, -126, 0, 48, 8, -128, 3, 21, 22,
+        return new byte[] { 48, 26, -128, 0, -95, 22, 48, 10, -128, 3, 17, 33, 17, -127, 1, 0, -126, 0, 48, 8, -128, 3, 21, 22,
                 33, -127, 1, 1 };
-    }
-
-    private byte[] getDataPlmnId1() {
-        return new byte[] { 11, 12, 13 };
-    }
-
-    private byte[] getDataPlmnId2() {
-        return new byte[] { 21, 22, 33 };
     }
 
     @Test(groups = { "functional.decode", "service.lms" })
@@ -78,8 +70,10 @@ public class ReportingPLMNListTest {
         assertEquals(al.size(), 2);
         ReportingPLMN p1 = al.get(0);
         ReportingPLMN p2 = al.get(1);
-        assertTrue(Arrays.equals(p1.getPlmnId().getData(), getDataPlmnId1()));
-        assertTrue(Arrays.equals(p2.getPlmnId().getData(), getDataPlmnId2()));
+        assertEquals(p1.getPlmnId().getMcc(), 111);
+        assertEquals(p1.getPlmnId().getMnc(), 112);
+        assertEquals(p2.getPlmnId().getMcc(), 516);
+        assertEquals(p2.getPlmnId().getMnc(), 121);
         assertEquals(p1.getRanTechnology(), RANTechnology.gsm);
         assertEquals(p2.getRanTechnology(), RANTechnology.umts);
         assertTrue(p1.getRanPeriodicLocationSupport());
@@ -91,9 +85,9 @@ public class ReportingPLMNListTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ReportingPLMNListImpl.class);
     	
-        PlmnIdImpl plmnId = new PlmnIdImpl(getDataPlmnId1());
+        PlmnIdImpl plmnId = new PlmnIdImpl(111,112);
         ReportingPLMNImpl rp1 = new ReportingPLMNImpl(plmnId, RANTechnology.gsm, true);
-        plmnId = new PlmnIdImpl(getDataPlmnId2());
+        plmnId = new PlmnIdImpl(516,121);
         ReportingPLMNImpl rp2 = new ReportingPLMNImpl(plmnId, RANTechnology.umts, false);
 
         List<ReportingPLMN> plmnList = new ArrayList<ReportingPLMN>();

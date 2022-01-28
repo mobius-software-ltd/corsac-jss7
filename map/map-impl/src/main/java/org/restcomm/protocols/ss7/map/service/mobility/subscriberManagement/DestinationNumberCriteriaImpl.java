@@ -54,11 +54,9 @@ public class DestinationNumberCriteriaImpl implements DestinationNumberCriteria 
 
     public DestinationNumberCriteriaImpl(MatchType matchType, List<ISDNAddressString> destinationNumberList,
             List<Integer> destinationNumberLengthList) {
-    	if(matchType!=null) {
-    		this.matchType = new ASNMatchType();
-    		this.matchType.setType(matchType);
-    	}
-    	
+    	if(matchType!=null)
+    		this.matchType = new ASNMatchType(matchType);
+    		
     	if(destinationNumberList!=null) {
     		this.destinationNumberList = new DestinationNumberListWrapperImpl(destinationNumberList);    		
     	}
@@ -66,8 +64,7 @@ public class DestinationNumberCriteriaImpl implements DestinationNumberCriteria 
     	if(destinationNumberLengthList!=null) {
     		List<ASNInteger> realList=new ArrayList<ASNInteger>();
     		for(Integer curr:destinationNumberLengthList) {
-    			ASNInteger wrappedCurr=new ASNInteger();
-    			wrappedCurr.setValue(curr.longValue());
+    			ASNInteger wrappedCurr=new ASNInteger(curr);
     			realList.add(wrappedCurr);
     		}
     		this.destinationNumberLengthList = new DestinationNumberLengthListWrapperImpl(realList);
@@ -94,7 +91,7 @@ public class DestinationNumberCriteriaImpl implements DestinationNumberCriteria 
     	
     	List<Integer> output=new ArrayList<Integer>();
     	for(ASNInteger curr:this.destinationNumberLengthList.getDestinationNumberLengthList())
-    		output.add(curr.getValue().intValue());
+    		output.add(curr.getIntValue());
     	
         return output;
     }

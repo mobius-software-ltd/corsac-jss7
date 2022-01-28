@@ -37,6 +37,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -67,7 +68,7 @@ public class CalledPartyNumberCapTest {
         
         CalledPartyNumberIsupImpl elem = (CalledPartyNumberIsupImpl)result.getResult();        
         CalledPartyNumber cpn = elem.getCalledPartyNumber();
-        assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
+        assertTrue(ByteBufUtil.equals(elem.getValue(), Unpooled.wrappedBuffer(this.getIntData())));
         assertFalse(cpn.isOddFlag());
         assertEquals(cpn.getNumberingPlanIndicator(), 1);
         assertEquals(cpn.getInternalNetworkNumberIndicator(), 1);
@@ -80,7 +81,7 @@ public class CalledPartyNumberCapTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CalledPartyNumberIsupImpl.class);
     	
-        CalledPartyNumberIsupImpl elem = new CalledPartyNumberIsupImpl(this.getIntData());
+    	CalledPartyNumberIsupImpl elem = new CalledPartyNumberIsupImpl(new CalledPartyNumberImpl(Unpooled.wrappedBuffer(this.getIntData())));
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -96,38 +97,4 @@ public class CalledPartyNumberCapTest {
 
         // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int internalNetworkNumberIndicator
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "isup" })
-    public void testXMLSerialize() throws Exception {
-
-        CalledPartyNumberCapImpl original = new CalledPartyNumberCapImpl(new CalledPartyNumberImpl(
-                CalledPartyNumber._NAI_INTERNATIONAL_NUMBER, "664422", CalledPartyNumber._NPI_ISDN,
-                CalledPartyNumber._NAI_NRNINNF));
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "calledPartyNumberCap", CalledPartyNumberCapImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        CalledPartyNumberCapImpl copy = reader.read("calledPartyNumberCap", CalledPartyNumberCapImpl.class);
-
-        assertEquals(copy.getCalledPartyNumber().getNatureOfAddressIndicator(), original.getCalledPartyNumber()
-                .getNatureOfAddressIndicator());
-        assertEquals(copy.getCalledPartyNumber().getAddress(), original.getCalledPartyNumber().getAddress());
-        assertEquals(copy.getCalledPartyNumber().getNumberingPlanIndicator(), original.getCalledPartyNumber()
-                .getNumberingPlanIndicator());
-        assertEquals(copy.getCalledPartyNumber().getInternalNetworkNumberIndicator(), original.getCalledPartyNumber()
-                .getInternalNetworkNumberIndicator());
-
-    }*/
 }

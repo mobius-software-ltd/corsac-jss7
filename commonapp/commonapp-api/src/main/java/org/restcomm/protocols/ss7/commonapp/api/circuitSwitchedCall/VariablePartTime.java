@@ -44,8 +44,6 @@ time [2] OCTET STRING (SIZE(2)),
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface VariablePartTime {
 
-    byte[] getData();
-
     int getHour();
 
     int getMinute();

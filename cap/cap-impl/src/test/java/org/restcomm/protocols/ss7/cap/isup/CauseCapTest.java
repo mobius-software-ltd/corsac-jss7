@@ -31,6 +31,7 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.isup.CallingPartyNumberIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.testng.annotations.Test;
 
@@ -38,6 +39,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -68,7 +70,7 @@ public class CauseCapTest {
         assertTrue(result.getResult() instanceof CauseIsupImpl);
         
         CauseIsupImpl elem = (CauseIsupImpl)result.getResult();        
-        assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
+        assertTrue(ByteBufUtil.equals(elem.getValue(),Unpooled.wrappedBuffer(this.getIntData())));
         CauseIndicators ci = elem.getCauseIndicators();
         assertEquals(ci.getCodingStandard(), 0);
         assertEquals(ci.getLocation(), 4);
@@ -76,74 +78,18 @@ public class CauseCapTest {
         assertNull(ci.getDiagnostics());
     }
 
-    /*@Test(groups = { "functional.xml.serialize", "isup" })
-    public void testXMLSerializaion() throws Exception {
-
-        CauseCapImpl original = new CauseCapImpl(this.getIntData());
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "causeCap", CauseCapImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        CauseCapImpl copy = reader.read("causeCap", CauseCapImpl.class);
-
-        assertEquals(copy.getCauseIndicators().getCauseValue(), original.getCauseIndicators().getCauseValue());
-    }*/
-
     @Test(groups = { "functional.encode", "isup" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CallingPartyNumberIsupImpl.class);
     	
-    	CauseIsupImpl elem = new CauseIsupImpl(this.getIntData());
+    	CauseIndicatorsImpl ci=new CauseIndicatorsImpl();
+    	ci.decode(Unpooled.wrappedBuffer(this.getIntData()));
+    	CauseIsupImpl elem = new CauseIsupImpl(ci);
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "isup" })
-    public void testXMLSerialize() throws Exception {
-
-        CauseIndicatorsImpl original0 = new CauseIndicatorsImpl(CauseIndicators._CODING_STANDARD_NATIONAL,
-                CauseIndicators._LOCATION_PRIVATE_NSRU, 1, CauseIndicators._CV_CALL_REJECTED, null);
-
-        CauseCapImpl original = new CauseCapImpl(original0);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "causeCap", CauseCapImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        CauseCapImpl copy = reader.read("causeCap", CauseCapImpl.class);
-
-        assertEquals(copy.getCauseIndicators().getCodingStandard(), original.getCauseIndicators().getCodingStandard());
-        assertEquals(copy.getCauseIndicators().getLocation(), original.getCauseIndicators().getLocation());
-        assertEquals(copy.getCauseIndicators().getRecommendation(), original.getCauseIndicators().getRecommendation());
-        assertEquals(copy.getCauseIndicators().getCauseValue(), original.getCauseIndicators().getCauseValue());
-    }*/
 }

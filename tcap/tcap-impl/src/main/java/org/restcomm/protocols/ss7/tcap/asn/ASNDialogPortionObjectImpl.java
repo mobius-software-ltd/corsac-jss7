@@ -27,5 +27,11 @@ package org.restcomm.protocols.ss7.tcap.asn;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 
-public class ASNDialogPortionObjectImpl extends ASNGeneric {	
+public class ASNDialogPortionObjectImpl extends ASNGeneric {
+	public ASNDialogPortionObjectImpl() {		
+	}
+	
+	public ASNDialogPortionObjectImpl(Object value) {
+		super(value);
+	}
 }

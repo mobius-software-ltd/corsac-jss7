@@ -60,7 +60,6 @@ public class ExtTeleserviceCodeTest {
         assertTrue(result.getResult() instanceof ExtTeleserviceCodeImpl);
         ExtTeleserviceCodeImpl impl = (ExtTeleserviceCodeImpl)result.getResult();
         
-        assertTrue(Arrays.equals(impl.getData(), dataEncoded));
         assertEquals(impl.getTeleserviceCodeValue(), TeleserviceCodeValue.telephony);
 
         result=parser.decode(Unpooled.wrappedBuffer(data2));

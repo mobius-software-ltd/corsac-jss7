@@ -27,7 +27,7 @@ import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_SMEA;
 import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
 import org.restcomm.protocols.ss7.map.smstpdu.AddressFieldImpl;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -37,26 +37,47 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class SM_RP_SMEAImpl extends ASNOctetString implements SM_RP_SMEA {
+public class SM_RP_SMEAImpl extends ASNOctetString2 implements SM_RP_SMEA {
 	public SM_RP_SMEAImpl() {
     }
 
-    public SM_RP_SMEAImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public SM_RP_SMEAImpl(AddressField addressField) throws MAPException {
+	public SM_RP_SMEAImpl(AddressField addressField) throws MAPException {
+		super(translate(addressField));
+	}
+	
+    public static ByteBuf translate(AddressField addressField) throws MAPException {
         if (addressField == null) {
             throw new MAPException("addressField field must not be equal null");
         }
 
         ByteBuf buffer=Unpooled.buffer();
         addressField.encodeData(buffer);
-        setValue(buffer);
+        return buffer;
     }
 
     public AddressField getAddressField() throws MAPException {
         AddressFieldImpl res = AddressFieldImpl.createMessage(getValue());
         return res;
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("SM_RP_SMEAImpl");
+        sb.append(" [");
+        try {
+	        AddressField addressField=getAddressField();
+	        if (addressField!=null) {
+	            sb.append("addressField=");
+	            sb.append(addressField);            
+	        }
+        }
+        catch(MAPException ex) {
+        	
+        }
+        
+        sb.append("]");
+        return sb.toString();
     }
 }

@@ -75,10 +75,8 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
     	if(legID!=null)
     		this.legID=new SendingLegIDWrapperImpl(new SendingLegIDImpl(legID));
     	
-    	if(requestAnnouncementStarted!=null) {
-    		this.requestAnnouncementStarted = new ASNBoolean();
-    		this.requestAnnouncementStarted.setValue(requestAnnouncementStarted);
-    	}
+    	if(requestAnnouncementStarted!=null)
+    		this.requestAnnouncementStarted = new ASNBoolean(requestAnnouncementStarted);    		
     }
     
     public PlayAnnouncementRequestImpl(InformationToSend informationToSend, Boolean disconnectFromIPForbidden,
@@ -87,16 +85,12 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
     	if(informationToSend!=null)
     		this.informationToSend = new InformationToSendWrapperImpl(informationToSend);
     	
-    	if(disconnectFromIPForbidden!=null) {
-    		this.disconnectFromIPForbidden = new ASNBoolean();
-    		this.disconnectFromIPForbidden.setValue(disconnectFromIPForbidden);
-    	}
-    	
-    	if(requestAnnouncementCompleteNotification!=null) {
-    		this.requestAnnouncementCompleteNotification = new ASNBoolean();
-    		this.requestAnnouncementCompleteNotification.setValue(requestAnnouncementCompleteNotification);
-    	}
-    	
+    	if(disconnectFromIPForbidden!=null)
+    		this.disconnectFromIPForbidden = new ASNBoolean(disconnectFromIPForbidden);
+    		
+    	if(requestAnnouncementCompleteNotification!=null)
+    		this.requestAnnouncementCompleteNotification = new ASNBoolean(requestAnnouncementCompleteNotification);
+    		
         this.extensions = extensions;        
     }
 

@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus;
 
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.PointCodeAndSSNANSI;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,27 +35,41 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class PointCodeAndSSNANSIImpl extends ASNOctetString implements PointCodeAndSSNANSI {
+public class PointCodeAndSSNANSIImpl extends ASNOctetString2 implements PointCodeAndSSNANSI {
 	public PointCodeAndSSNANSIImpl() {
     }
 
-    public PointCodeAndSSNANSIImpl(Integer network,Integer cluster,Integer member,Integer ssn) {
+	public PointCodeAndSSNANSIImpl(Integer network,Integer cluster,Integer member,Integer ssn) {
+		super(translate(network, cluster, member, ssn));
+	}
+	
+    public static ByteBuf translate(Integer network,Integer cluster,Integer member,Integer ssn) {
     	if(network!=null || cluster!=null || member!=null || ssn!=null) {
-    		byte[] value=new byte[4];
+    		ByteBuf value=Unpooled.buffer(4);
     		if(network!=null)
-    			value[0]=network.byteValue();
+    			value.writeByte(network.byteValue());
+    		else
+    			value.writeByte(0);
     		
     		if(cluster!=null)
-    			value[1]=cluster.byteValue();
-    		
+    			value.writeByte(cluster.byteValue());
+    		else
+        		value.writeByte(0);
+        		
     		if(member!=null)
-    			value[2]=member.byteValue();
-    		
+    			value.writeByte(member.byteValue());
+    		else
+        		value.writeByte(0);
+        			
     		if(ssn!=null)
-    			value[3]=ssn.byteValue();
-    		
-    		setValue(Unpooled.wrappedBuffer(value));    	
+    			value.writeByte(ssn.byteValue());
+    		else
+        		value.writeByte(0);
+        			
+    		return value;	
     	}
+    	
+    	return null;
     }
 
     public Integer getNetwork() {

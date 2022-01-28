@@ -24,31 +24,35 @@ package org.restcomm.protocols.ss7.map.service.oam;
 
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
-public class TraceReferenceImpl extends ASNOctetString implements TraceReference {
+public class TraceReferenceImpl extends ASNOctetString2 implements TraceReference {
 	public TraceReferenceImpl() {
     }
 
-    public TraceReferenceImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
+    public TraceReferenceImpl(ByteBuf value) {
+        super(value);
     }
 
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("TraceReferenceImpl");
+        sb.append(" [");
+        if (getValue()!=null) {
+            sb.append("data=");
+            sb.append(printDataArr());            
+        }
+        sb.append("]");
+
+        return sb.toString();
     }
 }

@@ -50,6 +50,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -60,21 +61,21 @@ import io.netty.buffer.Unpooled;
 public class APNConfigurationTest {
 
 	public byte[] getData() {
-        return new byte[] { 48, -126, 1, -99, -128, 1, 1, -127, 1, 1, -126, 3, 5, 6, 7, -125, 2, 6, 7, -92, 96, -128, 1, 1,
-                -95, 50, -128, 1, 1, -127, 1, -1, -126, 1, -1, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15,
-                48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -94, 39, -96, 32,
-                48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25,
-                26, -95, 3, 31, 32, 33, -91, 63, -128, 3, 5, 6, 7, -127, 3, 5, 6, 7, -126, 10, 4, 1, 6, 8, 3, 2, 5, 6, 1, 7,
-                -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5,
-                21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -122, 1, 1, -121, 0, -120, 2, 6, 5, -87, 47, -128, 1, 2, -127, 1,
-                4, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5,
-                21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -86, 112, 48, 110, -128, 2, 6, 7, -95, 63, -128, 3, 5, 6, 7, -127,
-                3, 5, 6, 7, -126, 10, 4, 1, 6, 8, 3, 2, 5, 6, 1, 7, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14,
-                15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -94, 39, -96,
-                32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24,
-                25, 26, -95, 3, 31, 32, 33, -85, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3,
-                6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -116, 3, 5, 6, 7, -115, 9, 48, 12, 17,
-                17, 119, 22, 62, 34, 12, -114, 1, 0, -113, 1, 2 };
+        return new byte[] { 48, -126, 1, -97, -128, 1, 1, -127, 1, 1, -126, 3, 5, 6, 7, -125, 3, 2, 6, 7, -92, 96, -128, 
+        		1, 1, -95, 50, -128, 1, 1, -127, 1, -1, -126, 1, -1, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 
+        		14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -94, 39, 
+        		-96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 
+        		23, 24, 25, 26, -95, 3, 31, 32, 33, -91, 63, -128, 3, 5, 6, 7, -127, 3, 5, 6, 7, -126, 10, 4, 1, 6, 8, 3, 2, 
+        		5, 6, 1, 7, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 
+        		3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -122, 1, 1, -121, 0, -120, 2, 6, 0, -87, 47, -128, 
+        		1, 2, -127, 1, 4, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 
+        		6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -86, 113, 48, 111, -128, 3, 2, 6, 7, -95, 63, -128, 
+        		3, 5, 6, 7, -127, 3, 5, 6, 7, -126, 10, 4, 1, 6, 8, 3, 2, 5, 6, 1, 7, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 
+        		11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 
+        		-94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 
+        		22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -85, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 
+        		3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -116, 3, 5, 6, 7, -115, 9, 48, 
+        		12, 17, 17, 119, 22, 62, 34, 12, -114, 1, 0, -113, 1, 2 };
     };
 
     public byte[] getPDPAddressData() {
@@ -90,7 +91,7 @@ public class APNConfigurationTest {
     };
 
     public byte[] getChargingCharacteristicsData() {
-        return new byte[] { 6, 5 };
+        return new byte[] { 6, 0 };
     };
 
     public byte[] getAPNOIReplacementData() {
@@ -112,8 +113,8 @@ public class APNConfigurationTest {
         assertEquals(prim.getPDNType().getPDNTypeValue(), PDNTypeValue.IPv4);
         PDPAddress servedPartyIPIPv4Address = prim.getServedPartyIPIPv4Address();
         assertNotNull(servedPartyIPIPv4Address);
-        assertTrue(Arrays.equals(this.getPDPAddressData(), servedPartyIPIPv4Address.getData()));
-        assertTrue(Arrays.equals(prim.getApn().getData(), this.getAPNData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(this.getPDPAddressData()), servedPartyIPIPv4Address.getValue()));
+        assertEquals(prim.getApn().getApn(), new String(this.getAPNData()));
 
         EPSQoSSubscribed ePSQoSSubscribed = prim.getEPSQoSSubscribed();
         AllocationRetentionPriority allocationRetentionPriority = ePSQoSSubscribed.getAllocationRetentionPriority();
@@ -131,20 +132,24 @@ public class APNConfigurationTest {
         PDNGWIdentity pdnGWIdentity = prim.getPdnGwIdentity();
         PDPAddress pdnGwIpv4Address = pdnGWIdentity.getPdnGwIpv4Address();
         assertNotNull(pdnGwIpv4Address);
-        assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv4Address.getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(this.getPDPAddressData()), pdnGwIpv4Address.getValue()));
         PDPAddress pdnGwIpv6Address = pdnGWIdentity.getPdnGwIpv6Address();
         assertNotNull(pdnGwIpv6Address);
-        assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv6Address.getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(this.getPDPAddressData()), pdnGwIpv6Address.getValue()));
         FQDN pdnGwName = pdnGWIdentity.getPdnGwName();
         assertNotNull(pdnGwName);
-        assertTrue(Arrays.equals(this.getFQDNData(), pdnGwName.getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(this.getFQDNData()), pdnGwName.getValue()));
         assertNotNull(pdnGWIdentity.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(pdnGWIdentity.getExtensionContainer()));
 
         assertEquals(prim.getPdnGwAllocationType(), PDNGWAllocationType._dynamic);
         assertTrue(prim.getVplmnAddressAllowed());
-        assertTrue(Arrays.equals(this.getChargingCharacteristicsData(), prim.getChargingCharacteristics().getData()));
-
+        
+        assertEquals(prim.getChargingCharacteristics().isNormalCharging(), false);
+        assertEquals(prim.getChargingCharacteristics().isPrepaidCharging(), true);
+        assertEquals(prim.getChargingCharacteristics().isFlatRateChargingCharging(), true);
+        assertEquals(prim.getChargingCharacteristics().isChargingByHotBillingCharging(), false);
+        
         AMBR ambr = prim.getAmbr();
         MAPExtensionContainer extensionContainerambr = ambr.getExtensionContainer();
         assertEquals(ambr.getMaxRequestedBandwidthDL(), 4);
@@ -160,25 +165,25 @@ public class APNConfigurationTest {
         PDNGWIdentity pdnGWIdentitySpecificAPNInfo = specificAPNInfo.getPdnGwIdentity();
         PDPAddress pdnGwIpv4AddressSpecificAPNInfo = pdnGWIdentitySpecificAPNInfo.getPdnGwIpv4Address();
         assertNotNull(pdnGwIpv4AddressSpecificAPNInfo);
-        assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv4AddressSpecificAPNInfo.getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(this.getPDPAddressData()), pdnGwIpv4AddressSpecificAPNInfo.getValue()));
         PDPAddress pdnGwIpv6AddressSpecificAPNInfo = pdnGWIdentitySpecificAPNInfo.getPdnGwIpv6Address();
         assertNotNull(pdnGwIpv6AddressSpecificAPNInfo);
-        assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv6AddressSpecificAPNInfo.getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(this.getPDPAddressData()), pdnGwIpv6AddressSpecificAPNInfo.getValue()));
         FQDN pdnGwNameSpecificAPNInfo = pdnGWIdentitySpecificAPNInfo.getPdnGwName();
         assertNotNull(pdnGwNameSpecificAPNInfo);
-        assertTrue(Arrays.equals(this.getFQDNData(), pdnGwNameSpecificAPNInfo.getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(this.getFQDNData()), pdnGwNameSpecificAPNInfo.getValue()));
         assertNotNull(pdnGWIdentitySpecificAPNInfo.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(pdnGWIdentitySpecificAPNInfo.getExtensionContainer()));
         MAPExtensionContainer extensionContainerspecificAPNInfo = specificAPNInfo.getExtensionContainer();
         assertNotNull(extensionContainerspecificAPNInfo);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainerspecificAPNInfo));
 
-        assertTrue(Arrays.equals(specificAPNInfo.getAPN().getData(), this.getAPNData()));
+        assertEquals(specificAPNInfo.getAPN().getApn(), new String(this.getAPNData()));
 
         PDPAddress servedPartyIPIPv6Address = prim.getServedPartyIPIPv6Address();
         assertNotNull(servedPartyIPIPv6Address);
-        assertTrue(Arrays.equals(this.getPDPAddressData(), servedPartyIPIPv6Address.getData()));
-        assertTrue(Arrays.equals(this.getAPNOIReplacementData(), prim.getApnOiReplacement().getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(this.getPDPAddressData()), servedPartyIPIPv6Address.getValue()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(this.getAPNOIReplacementData()), prim.getApnOiReplacement().getValue()));
         assertEquals(prim.getSiptoPermission(), SIPTOPermission.siptoAllowed);
         assertEquals(prim.getLipaPermission(), LIPAPermission.lipaConditional);
         MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
@@ -195,8 +200,8 @@ public class APNConfigurationTest {
 
         int contextId = 1;
         PDNTypeImpl pDNType = new PDNTypeImpl(PDNTypeValue.IPv4);
-        PDPAddressImpl servedPartyIPIPv4Address = new PDPAddressImpl(this.getPDPAddressData());
-        APNImpl apn = new APNImpl(this.getAPNData());
+        PDPAddressImpl servedPartyIPIPv4Address = new PDPAddressImpl(Unpooled.wrappedBuffer(this.getPDPAddressData()));
+        APNImpl apn = new APNImpl(new String(this.getAPNData()));
 
         QoSClassIdentifier qoSClassIdentifier = QoSClassIdentifier.QCI_1;
         AllocationRetentionPriorityImpl allocationRetentionPriority = new AllocationRetentionPriorityImpl(1, Boolean.TRUE,
@@ -204,22 +209,22 @@ public class APNConfigurationTest {
         EPSQoSSubscribedImpl ePSQoSSubscribed = new EPSQoSSubscribedImpl(qoSClassIdentifier, allocationRetentionPriority,
                 extensionContainer);
 
-        PDPAddressImpl pdnGwIpv4Address = new PDPAddressImpl(this.getPDPAddressData());
-        PDPAddressImpl pdnGwIpv6Address = new PDPAddressImpl(this.getPDPAddressData());
-        FQDNImpl pdnGwName = new FQDNImpl(this.getFQDNData());
+        PDPAddressImpl pdnGwIpv4Address = new PDPAddressImpl(Unpooled.wrappedBuffer(this.getPDPAddressData()));
+        PDPAddressImpl pdnGwIpv6Address = new PDPAddressImpl(Unpooled.wrappedBuffer(this.getPDPAddressData()));
+        FQDNImpl pdnGwName = new FQDNImpl(Unpooled.wrappedBuffer(this.getFQDNData()));
         PDNGWIdentityImpl pdnGwIdentity = new PDNGWIdentityImpl(pdnGwIpv4Address, pdnGwIpv6Address, pdnGwName, extensionContainer);
 
         PDNGWAllocationType pdnGwAllocationType = PDNGWAllocationType._dynamic;
         boolean vplmnAddressAllowed = true;
-        ChargingCharacteristicsImpl chargingCharacteristics = new ChargingCharacteristicsImpl(this.getChargingCharacteristicsData());
+        ChargingCharacteristicsImpl chargingCharacteristics = new ChargingCharacteristicsImpl(false,true,true,false);
         AMBRImpl ambr = new AMBRImpl(2, 4, extensionContainer);
 
         SpecificAPNInfoImpl specificAPNInfo = new SpecificAPNInfoImpl(apn, pdnGwIdentity, extensionContainer);
         List<SpecificAPNInfo> specificAPNInfoList = new ArrayList<SpecificAPNInfo>();
         specificAPNInfoList.add(specificAPNInfo);
 
-        PDPAddressImpl servedPartyIPIPv6Address = new PDPAddressImpl(this.getPDPAddressData());
-        APNOIReplacementImpl apnOiReplacement = new APNOIReplacementImpl(this.getAPNOIReplacementData());
+        PDPAddressImpl servedPartyIPIPv6Address = new PDPAddressImpl(Unpooled.wrappedBuffer(this.getPDPAddressData()));
+        APNOIReplacementImpl apnOiReplacement = new APNOIReplacementImpl(Unpooled.wrappedBuffer(this.getAPNOIReplacementData()));
         SIPTOPermission siptoPermission = SIPTOPermission.siptoAllowed;
         LIPAPermission lipaPermission = LIPAPermission.lipaConditional;
 

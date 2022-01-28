@@ -45,13 +45,10 @@ public class VolumeIfTariffSwitchImpl implements VolumeIfTariffSwitch {
     }
 
     public VolumeIfTariffSwitchImpl(long volumeSinceLastTariffSwitch, Long volumeTariffSwitchInterval) {
-        this.volumeSinceLastTariffSwitch = new ASNInteger();
-        this.volumeSinceLastTariffSwitch.setValue(volumeSinceLastTariffSwitch);
+        this.volumeSinceLastTariffSwitch = new ASNInteger(volumeSinceLastTariffSwitch);
         
-        if(volumeTariffSwitchInterval!=null) {
-        	this.volumeTariffSwitchInterval = new ASNInteger();
-        	this.volumeTariffSwitchInterval.setValue(volumeTariffSwitchInterval);
-        }
+        if(volumeTariffSwitchInterval!=null)
+        	this.volumeTariffSwitchInterval = new ASNInteger(volumeTariffSwitchInterval);        	
     }
 
     public long getVolumeSinceLastTariffSwitch() {

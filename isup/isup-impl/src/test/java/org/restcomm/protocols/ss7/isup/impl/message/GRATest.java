@@ -34,14 +34,16 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.message.CircuitGroupResetAckMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallReference;
 import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
 import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 
 /**
  * Start time:09:26:46 2009-04-22<br>
@@ -67,15 +69,15 @@ public class GRATest extends MessageHarness {
                 return;
             byte range = RS.getRange();
             assertEquals(range, 0x01, "Range is wrong,");
-            byte[] b = RS.getStatus();
+            ByteBuf b = RS.getStatus();
             assertNotNull(b, "RangeAndStatus.getRange() is null");
             if (b == null) {
                 return;
             }
-            assertEquals(b.length, 1, "Length of param is wrong");
-            if (b.length != 1)
+            assertEquals(b.readableBytes(), 1, "Length of param is wrong");
+            if (b.readByte() != 1)
                 return;
-            assertTrue(super.makeCompare(b, new byte[] { 0x02 }), "RangeAndStatus.getRange() is wrong");
+            assertTrue(ByteBufUtil.equals(b,Unpooled.wrappedBuffer(new byte[] { 0x02 })), "RangeAndStatus.getRange() is wrong");
 
         } catch (Exception e) {
             e.printStackTrace();

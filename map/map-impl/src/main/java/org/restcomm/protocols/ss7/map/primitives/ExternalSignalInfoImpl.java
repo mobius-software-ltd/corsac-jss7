@@ -54,10 +54,9 @@ public class ExternalSignalInfoImpl implements ExternalSignalInfo {
 
     public ExternalSignalInfoImpl(SignalInfo signalInfo, ProtocolId protocolId, MAPExtensionContainer extensionContainer) {
         this.signalInfo = signalInfo;
-        if(protocolId!=null) {
-	        this.protocolId = new ASNProtocolIDImpl();
-	        this.protocolId.setType(protocolId);
-        }
+        if(protocolId!=null)
+	        this.protocolId = new ASNProtocolIDImpl(protocolId);
+	        
         this.extensionContainer = extensionContainer;
     }
 

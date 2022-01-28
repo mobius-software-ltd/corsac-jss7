@@ -38,6 +38,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -78,7 +79,7 @@ public class SendRoutingInfoForGprsResponseTest {
         
 
         assertEquals(impl.getSgsnAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
-        assertEquals(impl.getSgsnAddress().getGSNAddressData(), getAddressData());
+        assertTrue(ByteBufUtil.equals(impl.getSgsnAddress().getGSNAddressData(), Unpooled.wrappedBuffer(getAddressData())));
         assertNull(impl.getGgsnAddress());
         assertNull(impl.getMobileNotReachableReason());
         assertNull(impl.getExtensionContainer());
@@ -91,9 +92,9 @@ public class SendRoutingInfoForGprsResponseTest {
         impl = (SendRoutingInfoForGprsResponseImpl)result.getResult();
 
         assertEquals(impl.getSgsnAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
-        assertEquals(impl.getSgsnAddress().getGSNAddressData(), getAddressData());
+        assertTrue(ByteBufUtil.equals(impl.getSgsnAddress().getGSNAddressData(), Unpooled.wrappedBuffer(getAddressData())));
         assertEquals(impl.getGgsnAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
-        assertEquals(impl.getGgsnAddress().getGSNAddressData(), getAddressData2());
+        assertTrue(ByteBufUtil.equals(impl.getGgsnAddress().getGSNAddressData(), Unpooled.wrappedBuffer(getAddressData2())));
         assertEquals((int) impl.getMobileNotReachableReason(), 6);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(impl.getExtensionContainer()));
 
@@ -104,7 +105,7 @@ public class SendRoutingInfoForGprsResponseTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SendRoutingInfoForGprsResponseImpl.class);
     	
-        GSNAddressImpl sgsnAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4, getAddressData());
+        GSNAddressImpl sgsnAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4, Unpooled.wrappedBuffer(getAddressData()));
         SendRoutingInfoForGprsResponseImpl impl = new SendRoutingInfoForGprsResponseImpl(sgsnAddress, null, null, null);
 
         ByteBuf buffer=parser.encode(impl);
@@ -114,7 +115,7 @@ public class SendRoutingInfoForGprsResponseTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
 
-        GSNAddressImpl ggsnAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4, getAddressData2());
+        GSNAddressImpl ggsnAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4, Unpooled.wrappedBuffer(getAddressData2()));
         impl = new SendRoutingInfoForGprsResponseImpl(sgsnAddress, ggsnAddress, 6, MAPExtensionContainerTest.GetTestExtensionContainer());
         buffer=parser.encode(impl);
         encodedData = new byte[buffer.readableBytes()];

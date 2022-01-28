@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.oam.LoggingInterval;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNLoggingIntervalImpl extends ASNEnumerated {
-	public void setType(LoggingInterval t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNLoggingIntervalImpl() {
+		
+	}
+	
+	public ASNLoggingIntervalImpl(LoggingInterval t) {
+		super(t.getCode());
 	}
 	
 	public LoggingInterval getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return LoggingInterval.getInstance(getValue().intValue());
+		return LoggingInterval.getInstance(realValue);
 	}
 }

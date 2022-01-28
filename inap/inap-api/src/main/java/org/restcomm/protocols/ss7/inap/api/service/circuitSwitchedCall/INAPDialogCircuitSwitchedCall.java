@@ -116,6 +116,8 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.TriggerType;
 import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author yulian.oifa
@@ -172,9 +174,9 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
             CauseIsup cause,HandOverInfo handOverInfo,ForwardGVNSIsup forwardGVNSIndicator,BackwardGVNS backwardGVNSIndicator) throws INAPException;
 
     //CS1 Flavour
-    Long addApplyChargingReportRequest(byte[] callResult) throws INAPException;
+    Long addApplyChargingReportRequest(ByteBuf callResult) throws INAPException;
 
-    Long addApplyChargingReportRequest(int customInvokeTimeout, byte[] callResult) throws INAPException;
+    Long addApplyChargingReportRequest(int customInvokeTimeout, ByteBuf callResult) throws INAPException;
 
     //CS1+ Flavour
     Long addApplyChargingReportRequest(CallResultCS1 callResult) throws INAPException;
@@ -358,9 +360,9 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
     Long addConnectToResourceRequest(int customInvokeTimeout, boolean none, 
     		CAPINAPExtensions extensions, ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException;
 
-    Long addFurnishChargingInformationRequest(byte[] FCIBCCCAMELsequence1) throws INAPException;
+    Long addFurnishChargingInformationRequest(ByteBuf FCIBCCCAMELsequence1) throws INAPException;
 
-    Long addFurnishChargingInformationRequest(int customInvokeTimeout, byte[] FCIBCCCAMELsequence1)
+    Long addFurnishChargingInformationRequest(int customInvokeTimeout, ByteBuf FCIBCCCAMELsequence1)
             throws INAPException;
 
     //cs1 flavour
@@ -508,18 +510,18 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
     Long addActivateServiceFilteringRequest(FilteredCallTreatment filteredCallTreatment, 
     		FilteringCharacteristics filteringCharacteristics, FilteringTimeOut filteringTimeOut, 
     		FilteringCriteria filteringCriteria, DateAndTime startTime, CAPINAPExtensions extensions,
-    		byte[] scfCorrelationInfo) throws INAPException;
+    		ByteBuf scfCorrelationInfo) throws INAPException;
 
     Long addActivateServiceFilteringRequest(int customInvokeTimeout, FilteredCallTreatment filteredCallTreatment, 
     		FilteringCharacteristics filteringCharacteristics, FilteringTimeOut filteringTimeOut, 
     		FilteringCriteria filteringCriteria, DateAndTime startTime, CAPINAPExtensions extensions,
-    		byte[] scfCorrelationInfo) throws INAPException;
+    		ByteBuf scfCorrelationInfo) throws INAPException;
     
-    Long addEventNotificationCharging(byte[] eventTypeCharging,  byte[] eventSpecificInformationCharging, 
+    Long addEventNotificationCharging(ByteBuf eventTypeCharging,  ByteBuf eventSpecificInformationCharging, 
     		LegID legID, CAPINAPExtensions extensions, MonitorMode monitorMode) throws INAPException;
 
-    Long addEventNotificationCharging(int customInvokeTimeout,byte[] eventTypeCharging, 
-    		byte[] eventSpecificInformationCharging, LegID legID, CAPINAPExtensions extensions, MonitorMode monitorMode) throws INAPException;
+    Long addEventNotificationCharging(int customInvokeTimeout,ByteBuf eventTypeCharging, 
+    		ByteBuf eventSpecificInformationCharging, LegID legID, CAPINAPExtensions extensions, MonitorMode monitorMode) throws INAPException;
     
     Long addRequestNotificationChargingEvent(List<ChargingEvent> chargingEventList) throws INAPException;
 
@@ -534,10 +536,10 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
 
     //cs1+ flavour
     Long addServiceFilteringResponseRequest(List<CounterAndValue> counterAndValue, FilteringCriteria filteringCriteria, 
-    		ResponseCondition responseCondition,byte[] scfCorrelationInfo) throws INAPException;
+    		ResponseCondition responseCondition,ByteBuf scfCorrelationInfo) throws INAPException;
 
     Long addServiceFilteringResponseRequest(int customInvokeTimeout,List<CounterAndValue> counterAndValue, 
-    		FilteringCriteria filteringCriteria, ResponseCondition responseCondition,byte[] scfCorrelationInfo) throws INAPException;
+    		FilteringCriteria filteringCriteria, ResponseCondition responseCondition,ByteBuf scfCorrelationInfo) throws INAPException;
 
     Long addAnalysedInformationRequest(DpSpecificCommonParameters dpSpecificCommonParameters,CalledPartyNumberIsup dialedDigits,
     		CallingPartyBusinessGroupID callingPartyBusinessGroupID,CallingPartySubaddress callingPartySubaddress,
@@ -774,20 +776,20 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
     Long addStatusReportRequest(int customInvokeTimeout,ResourceStatus resourceStatus,DigitsIsup correlationID,
     		ResourceID resourceID,CAPINAPExtensions extensions,ReportCondition reportCondition) throws INAPException;
     
-    Long addUpdateRequest(byte[] operationID,ApplicationID applicationID,DataItemID dataItemID,
+    Long addUpdateRequest(ByteBuf operationID,ApplicationID applicationID,DataItemID dataItemID,
     		DataItemInformation dataItemInformation) throws INAPException;
 
-    Long addUpdateRequest(int customInvokeTimeout,byte[] operationID,ApplicationID applicationID,
+    Long addUpdateRequest(int customInvokeTimeout,ByteBuf operationID,ApplicationID applicationID,
     		DataItemID dataItemID, DataItemInformation dataItemInformation) throws INAPException;
     
-    void addUpdateResponse(long invokeId, byte[] operationReturnID) throws INAPException;
+    void addUpdateResponse(long invokeId, ByteBuf operationReturnID) throws INAPException;
     
-    Long addRetrieveRequest(byte[] operationID,ApplicationID applicationID,DataItemID dataItemID) throws INAPException;
+    Long addRetrieveRequest(ByteBuf operationID,ApplicationID applicationID,DataItemID dataItemID) throws INAPException;
 
-    Long addRetrieveRequest(int customInvokeTimeout,byte[] operationID,ApplicationID applicationID,
+    Long addRetrieveRequest(int customInvokeTimeout,ByteBuf operationID,ApplicationID applicationID,
     		DataItemID dataItemID) throws INAPException;
     
-    void addRetrieveResponse(long invokeId, byte[] operationReturnID, DataItemInformation dataItemInformation) throws INAPException;
+    void addRetrieveResponse(long invokeId, ByteBuf operationReturnID, DataItemInformation dataItemInformation) throws INAPException;
     
     Long addSignallingInformationRequest(BackwardSuppressionIndicators backwardSuppressionIndicators,
     		CalledPartyNumberIsup connectedNumber,ForwardSuppressionIndicators forwardSuppressionIndicators,

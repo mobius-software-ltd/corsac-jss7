@@ -24,32 +24,35 @@ package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Kc;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author Lasith Waruna Perera
  *
  */
-public class KcImpl extends ASNOctetString implements Kc {
-	public KcImpl(byte[] data) {
-		setValue(Unpooled.wrappedBuffer(data));  
+public class KcImpl extends ASNOctetString2 implements Kc {
+	public KcImpl(ByteBuf value) {
+		super(value);  
     }
 
     public KcImpl() {
     }
 
-    public byte[] getData() {
-    	ByteBuf value=this.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
-    }
+    @Override
+    public String toString() {
 
+        StringBuilder sb = new StringBuilder();
+        sb.append("KcImpl");
+        sb.append(" [");
+        if (getValue()!=null) {
+            sb.append("data=");
+            sb.append(printDataArr());            
+        }
+        sb.append("]");
+
+        return sb.toString();
+    }
 }

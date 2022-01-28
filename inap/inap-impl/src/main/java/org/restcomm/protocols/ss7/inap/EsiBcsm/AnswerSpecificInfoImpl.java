@@ -53,11 +53,9 @@ public class AnswerSpecificInfoImpl implements AnswerSpecificInfo {
     }
 
     public AnswerSpecificInfoImpl(Integer timeToAnswer,BackwardCallIndicatorsIsup backwardCallIndicators,BackwardGVNSIndicator backwardGVNSIndicator) {
-    	if(timeToAnswer!=null) {
-        	this.timeToAnswer = new ASNInteger();
-        	this.timeToAnswer.setValue(timeToAnswer.longValue());
-    	}
-    	
+    	if(timeToAnswer!=null)
+        	this.timeToAnswer = new ASNInteger(timeToAnswer);
+        	
         this.backwardCallIndicators=backwardCallIndicators;
         this.backwardGVNSIndicator=backwardGVNSIndicator;        
     }
@@ -71,10 +69,10 @@ public class AnswerSpecificInfoImpl implements AnswerSpecificInfo {
     }
 
     public Integer getTimeToAnswer() {
-    	if(timeToAnswer==null || timeToAnswer.getValue()==null)
+    	if(timeToAnswer==null)
     		return null;
     	
-        return timeToAnswer.getValue().intValue();
+        return timeToAnswer.getIntValue();
     }
 
     @Override

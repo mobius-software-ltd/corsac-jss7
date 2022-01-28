@@ -100,18 +100,14 @@ public class CancelLocationRequestImplV3 extends MobilityMessageImpl implements 
         else if(imsiWithLmsi!=null)
         	this.imsiWithLmsi = imsiWithLmsi;
         
-        if(cancellationType!=null) {
-        	this.cancellationType = new ASNCancellationTypeImpl();
-        	this.cancellationType.setType(cancellationType);
-        }
-        
+        if(cancellationType!=null)
+        	this.cancellationType = new ASNCancellationTypeImpl(cancellationType);
+        	
         this.extensionContainer = extensionContainer;
         
-        if(typeOfUpdate!=null) {
-        	this.typeOfUpdate = new ASNTypeOfUpdateImpl();
-        	this.typeOfUpdate.setType(typeOfUpdate);
-        }
-        
+        if(typeOfUpdate!=null)
+        	this.typeOfUpdate = new ASNTypeOfUpdateImpl(typeOfUpdate);
+        	
         if(mtrfSupportedAndAuthorized)
         	this.mtrfSupportedAndAuthorized = new ASNNull();
         

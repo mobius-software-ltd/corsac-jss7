@@ -39,6 +39,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -71,7 +72,7 @@ public class CollectedInfoTest {
         CollectedInfoWrapperImpl elem = (CollectedInfoWrapperImpl)result.getResult();                
         assertEquals((int) elem.getCollectedInfo().getCollectedDigits().getMinimumNbOfDigits(), 2);
         assertEquals((int) elem.getCollectedInfo().getCollectedDigits().getMaximumNbOfDigits(), 9);
-        assertTrue(Arrays.equals(elem.getCollectedInfo().getCollectedDigits().getEndOfReplyDigit(), getEndOfReplyDigit()));
+        assertTrue(ByteBufUtil.equals(elem.getCollectedInfo().getCollectedDigits().getEndOfReplyDigit(), Unpooled.wrappedBuffer(getEndOfReplyDigit())));
         assertNull(elem.getCollectedInfo().getCollectedDigits().getCancelDigit());
         assertNull(elem.getCollectedInfo().getCollectedDigits().getStartDigit());
         assertEquals((int) elem.getCollectedInfo().getCollectedDigits().getFirstDigitTimeOut(), 50);
@@ -87,7 +88,7 @@ public class CollectedInfoTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CollectedInfoWrapperImpl.class);
     	
-        CollectedDigitsImpl cd = new CollectedDigitsImpl(2, 9, getEndOfReplyDigit(), null, null, 50, null,
+        CollectedDigitsImpl cd = new CollectedDigitsImpl(2, 9, Unpooled.wrappedBuffer(getEndOfReplyDigit()), null, null, 50, null,
                 ErrorTreatment.stdErrorAndInfo, true, false, false);
         CollectedInfoImpl elem = new CollectedInfoImpl(cd);
         CollectedInfoWrapperImpl wrapper = new CollectedInfoWrapperImpl(elem);
@@ -102,29 +103,4 @@ public class CollectedInfoTest {
         // Boolean voiceInformation,
         // Boolean voiceBack
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        CollectedDigitsImpl elem = new CollectedDigitsImpl(null, 31, null, null, null, null, null, null, null, null, null);
-        CollectedInfoImpl original = new CollectedInfoImpl(elem);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "collectedInfo", CollectedInfoImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        CollectedInfoImpl copy = reader.read("collectedInfo", CollectedInfoImpl.class);
-
-        assertEquals(copy.getCollectedDigits().getMaximumNbOfDigits(), 31);
-    }*/
 }

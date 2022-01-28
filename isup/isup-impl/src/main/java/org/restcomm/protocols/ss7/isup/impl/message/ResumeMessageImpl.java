@@ -28,8 +28,6 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +43,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CallReference;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageName;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
 import org.restcomm.protocols.ss7.isup.message.parameter.SuspendResumeIndicators;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:00:02:03 2009-09-07<br>
@@ -95,7 +95,7 @@ public class ResumeMessageImpl extends ISUPMessageImpl implements ResumeMessage 
             this.setSuspendResumeIndicators(sri);
             b.skipBytes(1);
         } else {
-            throw new ParameterException("byte[] must have atleast eight octets");
+            throw new ParameterException("buffer must have atleast eight readable octets");
         }
     }
 

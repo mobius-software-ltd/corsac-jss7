@@ -56,13 +56,10 @@ public class RequestedInformationValueImpl {
     }
 
     public RequestedInformationValueImpl(RequestedInformationType requestedInformationType, int intValue) {
-        if (requestedInformationType == RequestedInformationType.callAttemptElapsedTime) {
-            this.callAttemptElapsedTimeValue = new ASNInteger();
-            this.callAttemptElapsedTimeValue.setValue(Long.valueOf(intValue));
-        } else if(requestedInformationType == RequestedInformationType.callConnectedElapsedTime) {
-        	this.callConnectedElapsedTimeValue = new ASNInteger();
-            this.callConnectedElapsedTimeValue.setValue(Long.valueOf(intValue));
-        }
+        if (requestedInformationType == RequestedInformationType.callAttemptElapsedTime)
+            this.callAttemptElapsedTimeValue = new ASNInteger(intValue);
+        else if(requestedInformationType == RequestedInformationType.callConnectedElapsedTime)
+        	this.callConnectedElapsedTimeValue = new ASNInteger(intValue);            
     }
 
     public RequestedInformationValueImpl(DateAndTime callStopTimeValue) {
@@ -74,10 +71,10 @@ public class RequestedInformationValueImpl {
     }
 
     public Integer getCallAttemptElapsedTimeValue() {
-    	if(callAttemptElapsedTimeValue==null || callAttemptElapsedTimeValue.getValue()==null)
+    	if(callAttemptElapsedTimeValue==null)
     		return null;
     	
-        return callAttemptElapsedTimeValue.getValue().intValue();
+        return callAttemptElapsedTimeValue.getIntValue();
     }
 
     public DateAndTime getCallStopTimeValue() {
@@ -85,10 +82,10 @@ public class RequestedInformationValueImpl {
     }
 
     public Integer getCallConnectedElapsedTimeValue() {
-    	if(callConnectedElapsedTimeValue==null || callConnectedElapsedTimeValue.getValue()==null)
+    	if(callConnectedElapsedTimeValue==null)
     		return null;
     	
-        return callConnectedElapsedTimeValue.getValue().intValue();
+        return callConnectedElapsedTimeValue.getIntValue();
     }
 
     public CauseIsup getReleaseCauseValue() {

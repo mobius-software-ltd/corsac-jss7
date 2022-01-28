@@ -84,21 +84,15 @@ public class RegisterSSRequestImpl extends SupplementaryMessageImpl implements R
         this.forwardedToNumber = forwardedToNumber;
         this.forwardedToSubaddress = forwardedToSubaddress;
         
-        if(noReplyConditionTime!=null) {
-        	this.noReplyConditionTime = new ASNInteger();
-        	this.noReplyConditionTime.setValue(noReplyConditionTime.longValue());
-        }
-        
-        if(defaultPriority!=null) {
-        	this.defaultPriority = new ASNEMLPPPriorityImpl();
-        	this.defaultPriority.setType(defaultPriority);
-        }
-        
-        if(nbrUser!=null) {
-        	this.nbrUser = new ASNInteger();
-        	this.nbrUser.setValue(nbrUser.longValue());
-        }
-        
+        if(noReplyConditionTime!=null)
+        	this.noReplyConditionTime = new ASNInteger(noReplyConditionTime);
+        	
+        if(defaultPriority!=null)
+        	this.defaultPriority = new ASNEMLPPPriorityImpl(defaultPriority);
+        	
+        if(nbrUser!=null)
+        	this.nbrUser = new ASNInteger(nbrUser);
+        	
         this.longFTNSupported = longFTNSupported;
     }
 
@@ -135,7 +129,7 @@ public class RegisterSSRequestImpl extends SupplementaryMessageImpl implements R
     	if(noReplyConditionTime==null)
     		return null;
     	
-        return noReplyConditionTime.getValue().intValue();
+        return noReplyConditionTime.getIntValue();
     }
 
     @Override
@@ -151,7 +145,7 @@ public class RegisterSSRequestImpl extends SupplementaryMessageImpl implements R
     	if(nbrUser==null)
     		return null;
     	
-        return nbrUser.getValue().intValue();
+        return nbrUser.getIntValue();
     }
 
     @Override

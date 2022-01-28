@@ -68,15 +68,12 @@ public class CUGSubscriptionImpl implements CUGSubscription {
      */
     public CUGSubscriptionImpl(int cugIndex, CUGInterlock cugInterlock, IntraCUGOptions intraCugOptions,
             List<ExtBasicServiceCode> basicService, MAPExtensionContainer extensionContainer) {
-        this.cugIndex = new ASNInteger();
-        this.cugIndex.setValue((long)cugIndex & 0x0FFFFFFFFL);
+        this.cugIndex = new ASNInteger(cugIndex);
         this.cugInterlock = cugInterlock;
         
-        if(intraCugOptions!=null) {
-        	this.intraCugOptions = new ASNIntraCUGOptions();
-        	this.intraCugOptions.setType(intraCugOptions);
-        }
-        
+        if(intraCugOptions!=null)
+        	this.intraCugOptions = new ASNIntraCUGOptions(intraCugOptions);
+        	
         if(basicService!=null) {
         	this.basicService = new ExtBasicServiceCodeListWrapperImpl(basicService);
         }
@@ -85,10 +82,10 @@ public class CUGSubscriptionImpl implements CUGSubscription {
     }
 
     public int getCUGIndex() {
-    	if(this.cugIndex==null)
+    	if(this.cugIndex==null || this.cugIndex.getValue()==null)
     		return 0;
     	
-        return this.cugIndex.getValue().intValue();
+        return this.cugIndex.getIntValue();
     }
 
     public CUGInterlock getCugInterlock() {

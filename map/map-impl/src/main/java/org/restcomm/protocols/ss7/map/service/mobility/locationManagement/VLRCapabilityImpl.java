@@ -93,11 +93,9 @@ public class VLRCapabilityImpl implements VLRCapability {
         if(solsaSupportIndicator)
         	this.solsaSupportIndicator = new ASNNull();
         
-        if(istSupportIndicator!=null) {
-        	this.istSupportIndicator = new ASNISTSupportIndicatorImpl();
-        	this.istSupportIndicator.setType(istSupportIndicator);
-        }
-        
+        if(istSupportIndicator!=null)
+        	this.istSupportIndicator = new ASNISTSupportIndicatorImpl(istSupportIndicator);
+        	
         if(superChargerSupportedInServingNetworkEntity!=null)
         	this.superChargerSupportedInServingNetworkEntity = new SuperChargerInfoWrapperImpl(superChargerSupportedInServingNetworkEntity);
         

@@ -42,8 +42,6 @@ bound.&maxISDNAccessRelatedInformationLength))
 */
 public interface ISDNAccessRelatedInformationIsup {
 
-    byte[] getData();
-
     AccessTransport getAccessTransport() throws APPException;
 
 }

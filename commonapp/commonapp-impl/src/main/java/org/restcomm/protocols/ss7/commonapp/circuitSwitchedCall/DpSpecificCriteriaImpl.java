@@ -52,10 +52,8 @@ public class DpSpecificCriteriaImpl implements DpSpecificCriteria {
     }
 
     public DpSpecificCriteriaImpl(Integer applicationTimer) {
-    	if(applicationTimer!=null) {
-    		this.applicationTimer = new ASNInteger();
-    		this.applicationTimer.setValue(applicationTimer.longValue());
-    	}
+    	if(applicationTimer!=null)
+    		this.applicationTimer = new ASNInteger(applicationTimer);    		
     }
 
     public DpSpecificCriteriaImpl(MidCallControlInfo midCallControlInfo) {
@@ -70,7 +68,7 @@ public class DpSpecificCriteriaImpl implements DpSpecificCriteria {
     	if(applicationTimer==null)
     		return null;
     	
-        return applicationTimer.getValue().intValue();
+        return applicationTimer.getIntValue();
     }
 
     public MidCallControlInfo getMidCallControlInfo() {    	

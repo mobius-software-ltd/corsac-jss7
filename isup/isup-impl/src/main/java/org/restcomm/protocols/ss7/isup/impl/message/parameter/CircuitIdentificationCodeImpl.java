@@ -77,7 +77,7 @@ public class CircuitIdentificationCodeImpl extends AbstractISUPParameter impleme
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() != 2) {
-            throw new ParameterException("byte[] must not be null or has size equal to 2.");
+            throw new ParameterException("buffer must not be null or has size equal to 2.");
         }
         this.cic = (b.readByte() & 0xFF);
         this.cic |= (b.readByte() << 8);        

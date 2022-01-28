@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
 import java.io.Serializable;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  lassmarkInfo ::= octet STRING (SIZE (1..2)) -- classmark information element type 1 or 2 contents as defined -- in TS GSM
@@ -35,6 +37,5 @@ import java.io.Serializable;
  */
 public interface ClassmarkInfo extends Serializable {
 
-    byte[] getData();
-
+	ByteBuf getValue();
 }

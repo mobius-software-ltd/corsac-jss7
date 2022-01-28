@@ -56,6 +56,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -91,7 +92,7 @@ public class SubscriberInfoTest {
         LocationInformation locInfo = subscriberInfo.getLocationInformation();
         assertNotNull(locInfo);
         assertEquals((int) locInfo.getAgeOfLocationInformation(), 1);
-        assertTrue(Arrays.equals(locInfo.getGeographicalInformation().getData(), dataGeographicalInformation));
+        assertTrue(ByteBufUtil.equals(locInfo.getGeographicalInformation().getValue(),Unpooled.wrappedBuffer(dataGeographicalInformation)));
         ISDNAddressString vlrN = locInfo.getVlrNumber();
         assertTrue(vlrN.getAddress().equals("553496629910"));
         assertEquals(vlrN.getAddressNature(), AddressNature.international_number);
@@ -128,10 +129,9 @@ public class SubscriberInfoTest {
         assertEquals(lai.getLac(), 144);
         assertEquals(subscriberInfo.getPSSubscriberState().getChoice(), PSSubscriberStateChoise.notProvidedFromSGSNorMME);
         assertTrue(subscriberInfo.getIMEI().getIMEI().equals("1122334455667788"));
-        assertTrue(Arrays.equals(subscriberInfo.getMSClassmark2().getData(), dataMsClassMark2));
-        assertTrue(Arrays.equals(subscriberInfo.getGPRSMSClass().getMSNetworkCapability().getData(), dataMSNetworkCapability));
+        assertTrue(ByteBufUtil.equals(subscriberInfo.getMSClassmark2().getValue(), Unpooled.wrappedBuffer(dataMsClassMark2)));
+        assertTrue(ByteBufUtil.equals(subscriberInfo.getGPRSMSClass().getMSNetworkCapability().getValue(),Unpooled.wrappedBuffer(dataMSNetworkCapability)));
         assertTrue(subscriberInfo.getMNPInfoRes().getIMSI().getData().equals("456787654"));
-
     }
 
     @Test(groups = { "functional.encode", "subscriberInformation" })
@@ -145,7 +145,10 @@ public class SubscriberInfoTest {
                 "553496629910");
         CellGlobalIdOrServiceAreaIdFixedLengthImpl c0 = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(724, 34, 31134, 10656);
         CellGlobalIdOrServiceAreaIdOrLAIImpl c = new CellGlobalIdOrServiceAreaIdOrLAIImpl(c0);
-        GeographicalInformationImpl gi = new GeographicalInformationImpl(dataGeographicalInformation);
+        
+        ByteBuf geoBuffer=Unpooled.wrappedBuffer(dataGeographicalInformation);
+        GeographicalInformationImpl gi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
+        
         LocationInformationImpl li = new LocationInformationImpl(1, gi, vlrN, null, c, null, null, mscN, null, false, true,
                 null, null);
         SubscriberStateImpl ss = new SubscriberStateImpl(SubscriberStateChoice.assumedIdle, null);
@@ -167,8 +170,8 @@ public class SubscriberInfoTest {
         PSSubscriberStateImpl psSubscriberState = new PSSubscriberStateImpl(PSSubscriberStateChoise.notProvidedFromSGSNorMME,
                 null, null);
         IMEIImpl imei = new IMEIImpl("1122334455667788");
-        MSClassmark2Impl msClassmark2 = new MSClassmark2Impl(dataMsClassMark2);
-        MSNetworkCapabilityImpl mSNetworkCapability = new MSNetworkCapabilityImpl(dataMSNetworkCapability);
+        MSClassmark2Impl msClassmark2 = new MSClassmark2Impl(Unpooled.wrappedBuffer(dataMsClassMark2));
+        MSNetworkCapabilityImpl mSNetworkCapability = new MSNetworkCapabilityImpl(Unpooled.wrappedBuffer(dataMSNetworkCapability));
         GPRSMSClassImpl gprsMSClass = new GPRSMSClassImpl(mSNetworkCapability, null);
         IMSIImpl imsi2 = new IMSIImpl("456787654");
         MNPInfoResImpl mnpInfoRes = new MNPInfoResImpl(null, imsi2, null, null, null);

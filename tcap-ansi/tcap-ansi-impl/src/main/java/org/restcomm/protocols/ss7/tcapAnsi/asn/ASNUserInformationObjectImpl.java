@@ -31,4 +31,8 @@ public class ASNUserInformationObjectImpl extends ASNGeneric {
 	public ASNUserInformationObjectImpl() {
 		
 	}
+	
+	public ASNUserInformationObjectImpl(Object value) {
+		super(value);
+	}
 }

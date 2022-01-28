@@ -28,7 +28,10 @@ import java.util.Map;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeader;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderElement;
 
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -36,28 +39,26 @@ import io.netty.buffer.ByteBuf;
  *
  */
 public class UserDataHeaderImpl implements UserDataHeader {
-    private Map<Integer, byte[]> data = new HashMap<Integer, byte[]>();
+    private Map<Integer, ByteBuf> data = new HashMap<Integer, ByteBuf>();
 
     public UserDataHeaderImpl() {
     }
 
-    public UserDataHeaderImpl(byte[] encodedData) {
-        if (encodedData == null || encodedData.length < 1)
+    public UserDataHeaderImpl(ByteBuf encodedData) {
+        if (encodedData == null || encodedData.readableBytes() < 1)
             return;
-        int udhl = encodedData[0] & 0xFF;
-        if (udhl > encodedData.length)
-            udhl = encodedData.length;
-        int ind = 1;
-        while (ind <= udhl - 1) {
-            int id = encodedData[ind++];
-            int len = encodedData[ind++];
-            if (len <= udhl + 1 - ind) {
-                byte[] buf = new byte[len];
-                System.arraycopy(encodedData, ind, buf, 0, len);
-                ind += len;
-
-                data.put(id, buf);
-            }
+        //we just read it
+        int udhl = encodedData.readByte();
+        if (udhl > encodedData.readableBytes())
+            udhl = encodedData.readableBytes();
+        
+        while (udhl>0) {
+            int id = encodedData.readByte();
+            int len = encodedData.readByte();
+            udhl-=2;
+            udhl-=len;
+            if (len <= encodedData.readableBytes())
+                data.put(id, encodedData.readSlice(len));             
         }
     }
 
@@ -69,13 +70,13 @@ public class UserDataHeaderImpl implements UserDataHeader {
         int index=buf.writerIndex();
         buf.writeByte(0);
         for (int id : data.keySet()) {
-            byte[] innerData = data.get(id);
+            ByteBuf innerData = data.get(id);
 
             buf.writeByte(id);
             if (innerData == null)
             	buf.writeByte(0);
             else {
-            	buf.writeByte(innerData.length);
+            	buf.writeByte(innerData.readableBytes());
             	buf.writeBytes(innerData);
             }
         }
@@ -84,11 +85,11 @@ public class UserDataHeaderImpl implements UserDataHeader {
         buf.setByte(index, newIndex-index-1);        
     }
 
-    public Map<Integer, byte[]> getAllData() {
+    public Map<Integer, ByteBuf> getAllData() {
         return data;
     }
 
-    public void addInformationElement(int informationElementIdentifier, byte[] encodedData) {
+    public void addInformationElement(int informationElementIdentifier, ByteBuf encodedData) {
         this.data.put(informationElementIdentifier, encodedData);
     }
 
@@ -97,33 +98,33 @@ public class UserDataHeaderImpl implements UserDataHeader {
                 informationElement.getEncodedInformationElementData());
     }
 
-    public byte[] getInformationElementData(int informationElementIdentifier) {
+    public ByteBuf getInformationElementData(int informationElementIdentifier) {
         return this.data.get(informationElementIdentifier);
     }
 
     public NationalLanguageLockingShiftIdentifierImpl getNationalLanguageLockingShift() {
-        byte[] buf = this.data.get(_InformationElementIdentifier_NationalLanguageLockingShift);
-        if (buf != null && buf.length == 1)
+    	ByteBuf buf = this.data.get(_InformationElementIdentifier_NationalLanguageLockingShift);
+        if (buf != null && buf.readableBytes() == 1)
             return new NationalLanguageLockingShiftIdentifierImpl(buf);
         else
             return null;
     }
 
     public NationalLanguageSingleShiftIdentifierImpl getNationalLanguageSingleShift() {
-        byte[] buf = this.data.get(_InformationElementIdentifier_NationalLanguageSingleShift);
-        if (buf != null && buf.length == 1)
+    	ByteBuf buf = this.data.get(_InformationElementIdentifier_NationalLanguageSingleShift);
+        if (buf != null && buf.readableBytes() == 1)
             return new NationalLanguageSingleShiftIdentifierImpl(buf);
         else
             return null;
     }
 
     public ConcatenatedShortMessagesIdentifierImpl getConcatenatedShortMessagesIdentifier() {
-        byte[] buf = this.data.get(_InformationElementIdentifier_ConcatenatedShortMessages16bit);
-        if (buf != null && buf.length == 4)
+    	ByteBuf buf = this.data.get(_InformationElementIdentifier_ConcatenatedShortMessages16bit);
+        if (buf != null && buf.readableBytes() == 4)
             return new ConcatenatedShortMessagesIdentifierImpl(buf);
         else {
             buf = this.data.get(_InformationElementIdentifier_ConcatenatedShortMessages8bit);
-            if (buf != null && buf.length == 3)
+            if (buf != null && buf.readableBytes() == 3)
                 return new ConcatenatedShortMessagesIdentifierImpl(buf);
             else
                 return null;
@@ -131,8 +132,8 @@ public class UserDataHeaderImpl implements UserDataHeader {
     }
 
     public ApplicationPortAddressing16BitAddressImpl getApplicationPortAddressing16BitAddress() {
-        byte[] buf = this.data.get(_InformationElementIdentifier_ApplicationPortAddressingScheme16BitAddress);
-        if (buf != null && buf.length == 4)
+    	ByteBuf buf = this.data.get(_InformationElementIdentifier_ApplicationPortAddressingScheme16BitAddress);
+        if (buf != null && buf.readableBytes() == 4)
             return new ApplicationPortAddressing16BitAddressImpl(buf);
         else
             return null;
@@ -144,7 +145,7 @@ public class UserDataHeaderImpl implements UserDataHeader {
         sb.append("UserDataHeader [");
         boolean isFirst = true;
         for (int id : data.keySet()) {
-            byte[] buf = data.get(id);
+            ByteBuf buf = Unpooled.wrappedBuffer(data.get(id));
 
             if (isFirst)
                 isFirst = false;
@@ -152,7 +153,7 @@ public class UserDataHeaderImpl implements UserDataHeader {
                 sb.append("\n\t");
             sb.append(id);
             sb.append(" = ");
-            sb.append(printDataArr(buf));
+            sb.append(ASNOctetString.printDataArr(buf));
         }
 
         NationalLanguageLockingShiftIdentifierImpl nllsi = this.getNationalLanguageLockingShift();
@@ -181,16 +182,6 @@ public class UserDataHeaderImpl implements UserDataHeader {
         }
 
         sb.append("]");
-
-        return sb.toString();
-    }
-
-    private String printDataArr(byte[] arr) {
-        StringBuilder sb = new StringBuilder();
-        for (int b : arr) {
-            sb.append(b);
-            sb.append(", ");
-        }
 
         return sb.toString();
     }

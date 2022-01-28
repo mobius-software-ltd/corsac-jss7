@@ -96,13 +96,6 @@ public class LAIFixedLengthTest {
         
         assertTrue(Arrays.equals(encodedData, this.getData()));
 
-        prim = new LAIFixedLengthImpl(getDataVal());
-        buffer=parser.encode(prim);
-        encodedData = new byte[buffer.readableBytes()];
-        buffer.readBytes(encodedData);
-
-        assertTrue(Arrays.equals(encodedData, this.getData()));
-
         prim = new LAIFixedLengthImpl(11, 246, 333);
         buffer=parser.encode(prim);
         encodedData = new byte[buffer.readableBytes()];

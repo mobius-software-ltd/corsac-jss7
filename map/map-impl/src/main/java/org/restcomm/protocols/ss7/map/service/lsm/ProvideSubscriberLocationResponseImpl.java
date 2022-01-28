@@ -121,10 +121,8 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
         this.geranPositioningData = geranPositioningData;
         this.utranPositioningData = utranPositioningData;
         
-        if(ageOfLocationEstimate!=null) {
-        	this.ageOfLocationEstimate = new ASNInteger();
-        	this.ageOfLocationEstimate.setValue(ageOfLocationEstimate.longValue());
-        }
+        if(ageOfLocationEstimate!=null)
+        	this.ageOfLocationEstimate = new ASNInteger(ageOfLocationEstimate);        	
         
         this.additionalLocationEstimate = additionalLocationEstimate;
         this.extensionContainer = extensionContainer;
@@ -138,11 +136,9 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
         if(saiPresent)
         	this.saiPresent = new ASNNull();
         
-        if(accuracyFulfilmentIndicator!=null) {
-        	this.accuracyFulfilmentIndicator = new ASNAccuracyFulfilmentIndicator();
-        	this.accuracyFulfilmentIndicator.setType(accuracyFulfilmentIndicator);
-        }
-        
+        if(accuracyFulfilmentIndicator!=null)
+        	this.accuracyFulfilmentIndicator = new ASNAccuracyFulfilmentIndicator(accuracyFulfilmentIndicator);
+        	
         this.velocityEstimate = velocityEstimate;
         
         if(moLrShortCircuitIndicator)
@@ -202,7 +198,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
     	if(this.ageOfLocationEstimate==null)
     		return null;
     	
-        return this.ageOfLocationEstimate.getValue().intValue();
+        return this.ageOfLocationEstimate.getIntValue();
     }
 
     /*

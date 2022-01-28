@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNDomainTypeImpl extends ASNEnumerated {
-	public void setType(DomainType t) {
-		super.setValue(Long.valueOf(t.getType()));
+	public ASNDomainTypeImpl() {
+		
+	}
+	
+	public ASNDomainTypeImpl(DomainType t) {
+		super(t.getType());
 	}
 	
 	public DomainType getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return DomainType.getInstance(getValue().intValue());
+		return DomainType.getInstance(realValue);
 	}
 }

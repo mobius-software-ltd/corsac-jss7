@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.map.api.primitives;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * SignalInfo ::= OCTET STRING (SIZE (1..maxSignalInfoLength)) maxSignalInfoLength INTEGER ::= 200 -- This NamedValue represents
  * the theoretical maximum number of octets which is -- available to carry a single instance of the SignalInfo data type, --
@@ -37,5 +39,5 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface SignalInfo {
-    byte[] getData();
+	ByteBuf getValue();
 }

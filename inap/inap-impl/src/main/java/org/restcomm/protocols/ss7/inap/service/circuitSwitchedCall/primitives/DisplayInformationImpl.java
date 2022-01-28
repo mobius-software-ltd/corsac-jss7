@@ -37,8 +37,7 @@ public class DisplayInformationImpl extends ASNIA5String implements DisplayInfor
     }
 
     public DisplayInformationImpl(String value) {
-    	if(value!=null)
-    		setValue(value);    		
+    	super(value);
     }
 
     public String getString() {

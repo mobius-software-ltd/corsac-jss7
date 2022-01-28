@@ -43,6 +43,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -100,7 +101,7 @@ public class AuthenticationFailureReportRequestTest {
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(asc.getExtensionContainer()));
         assertTrue(asc.getReAttempt());
         assertEquals(asc.getAccessType(), AccessType.locationUpdating);
-        assertEquals(asc.getRand(), getRandBalue());
+        assertTrue(ByteBufUtil.equals(asc.getRand(),Unpooled.wrappedBuffer(getRandBalue())));
         assertEquals(asc.getVlrNumber().getAddress(), "111133");
         assertEquals(asc.getSgsnNumber().getAddress(), "111144");
 
@@ -124,7 +125,7 @@ public class AuthenticationFailureReportRequestTest {
         ISDNAddressStringImpl vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "111133");
         ISDNAddressStringImpl sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "111144");
         asc = new AuthenticationFailureReportRequestImpl(imsi, FailureCause.wrongNetworkSignature, MAPExtensionContainerTest.GetTestExtensionContainer(), true,
-                AccessType.locationUpdating, getRandBalue(), vlrNumber, sgsnNumber);
+                AccessType.locationUpdating, Unpooled.wrappedBuffer(getRandBalue()), vlrNumber, sgsnNumber);
         
         data=getEncodedData2();
         buffer=parser.encode(asc);

@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledNumber;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:13:05:28 2009-04-05<br>
@@ -61,11 +61,11 @@ public abstract class CalledNumberImpl extends AbstractNAINumber implements Call
     /*
      * (non-Javadoc)
      *
-     * @seeorg.restcomm.isup.parameters.AbstractNumber#decodeBody(java.io. ByteArrayInputStream)
+     * @seeorg.restcomm.isup.parameters.AbstractNumber#decodeBody(java.io. ByteBuf)
      */
     public void decodeBody(ByteBuf buffer) throws IllegalArgumentException, ParameterException {
     	if(buffer.readableBytes()==0) {
-    		throw new ParameterException("byte[] must  not be null and length must  be greater than 0");
+    		throw new ParameterException("buffer must  not be null and length must  be greater than 0");
     	}
     	
         int b = buffer.readByte() & 0xff;
@@ -86,7 +86,7 @@ public abstract class CalledNumberImpl extends AbstractNAINumber implements Call
     /*
      * (non-Javadoc)
      *
-     * @seeorg.restcomm.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
+     * @seeorg.restcomm.isup.parameters.AbstractNumber#encodeBody(io.netty.buffer.ByteBuf)
      */
 
     public void encodeBody(ByteBuf buffer) {

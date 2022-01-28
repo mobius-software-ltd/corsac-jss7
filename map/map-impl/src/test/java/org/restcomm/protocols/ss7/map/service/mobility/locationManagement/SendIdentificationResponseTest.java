@@ -51,6 +51,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -119,7 +120,7 @@ public class SendIdentificationResponseTest {
         GSMSecurityContextData gsm = prim.getCurrentSecurityContext().getGSMSecurityContextData();
         UMTSSecurityContextData umts = prim.getCurrentSecurityContext().getUMTSSecurityContextData();
         assertNull(umts);
-        assertTrue(Arrays.equals(gsm.getKc().getData(), SendIdentificationResponseTest.getKcData()));
+        assertTrue(ByteBufUtil.equals(gsm.getKc().getValue(), Unpooled.wrappedBuffer(SendIdentificationResponseTest.getKcData())));
         assertEquals(gsm.getCksn().getData(), 4);
 
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
@@ -136,8 +137,8 @@ public class SendIdentificationResponseTest {
         IMSIImpl imsi = new IMSIImpl("011220200198227");
 
         List<AuthenticationTriplet> ats = new ArrayList<AuthenticationTriplet>();
-        AuthenticationTripletImpl at = new AuthenticationTripletImpl(SendIdentificationResponseTest.getRandData(),
-                SendIdentificationResponseTest.getSresData(), SendIdentificationResponseTest.getKcData());
+        AuthenticationTripletImpl at = new AuthenticationTripletImpl(Unpooled.wrappedBuffer(SendIdentificationResponseTest.getRandData()),
+        		Unpooled.wrappedBuffer(SendIdentificationResponseTest.getSresData()), Unpooled.wrappedBuffer(SendIdentificationResponseTest.getKcData()));
         ats.add(at);
         TripletList tl = new TripletListImpl(ats);
         AuthenticationSetListImpl authenticationSetList = new AuthenticationSetListImpl(tl,2);
@@ -155,13 +156,13 @@ public class SendIdentificationResponseTest {
         imsi = new IMSIImpl("011220200198227");
 
         ats = new ArrayList<AuthenticationTriplet>();
-        at = new AuthenticationTripletImpl(SendIdentificationResponseTest.getRandData(),
-                SendIdentificationResponseTest.getSresData(), SendIdentificationResponseTest.getKcData());
+        at = new AuthenticationTripletImpl(Unpooled.wrappedBuffer(SendIdentificationResponseTest.getRandData()),
+        		Unpooled.wrappedBuffer(SendIdentificationResponseTest.getSresData()), Unpooled.wrappedBuffer(SendIdentificationResponseTest.getKcData()));
         ats.add(at);
         tl = new TripletListImpl(ats);
         authenticationSetList = new AuthenticationSetListImpl(tl,3);
         
-        KcImpl kc = new KcImpl(SendIdentificationResponseTest.getKcData());
+        KcImpl kc = new KcImpl(Unpooled.wrappedBuffer(SendIdentificationResponseTest.getKcData()));
         CksnImpl cksn = new CksnImpl(4);
         GSMSecurityContextDataImpl gsm = new GSMSecurityContextDataImpl(kc, cksn);
         currentSecurityContext = new CurrentSecurityContextImpl(gsm);

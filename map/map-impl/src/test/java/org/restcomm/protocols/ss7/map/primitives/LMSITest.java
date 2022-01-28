@@ -33,6 +33,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -58,7 +59,7 @@ public class LMSITest {
         assertTrue(result.getResult() instanceof LMSIImpl);
         LMSIImpl lmsi = (LMSIImpl)result.getResult();
         
-        assertTrue(Arrays.equals(new byte[] { 0, 3, 98, 49 }, lmsi.getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(new byte[] { 0, 3, 98, 49 }), lmsi.getValue()));
     }
 
     @Test(groups = { "functional.encode", "primitives" })
@@ -66,7 +67,7 @@ public class LMSITest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(LMSIImpl.class);
     	
-        LMSIImpl lmsi = new LMSIImpl(new byte[] { 0, 3, 98, 49 });
+        LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(new byte[] { 0, 3, 98, 49 }));
         
         ByteBuf buffer=parser.encode(lmsi);
         byte[] encodedData = new byte[buffer.readableBytes()];

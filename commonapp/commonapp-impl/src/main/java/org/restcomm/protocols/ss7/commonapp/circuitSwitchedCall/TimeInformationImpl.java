@@ -48,8 +48,7 @@ public class TimeInformationImpl implements TimeInformation {
     }
 
     public TimeInformationImpl(int timeIfNoTariffSwitch) {
-        this.timeIfNoTariffSwitch = new ASNInteger();
-        this.timeIfNoTariffSwitch.setValue(Long.valueOf(timeIfNoTariffSwitch));
+        this.timeIfNoTariffSwitch = new ASNInteger(timeIfNoTariffSwitch);        
     }
 
     public TimeInformationImpl(TimeIfTariffSwitch timeIfTariffSwitch) {
@@ -57,10 +56,10 @@ public class TimeInformationImpl implements TimeInformation {
     }
 
     public Integer getTimeIfNoTariffSwitch() {
-    	if(timeIfNoTariffSwitch==null || timeIfNoTariffSwitch.getValue()==null)
+    	if(timeIfNoTariffSwitch==null)
     		return null;
     	
-        return timeIfNoTariffSwitch.getValue().intValue();
+        return timeIfNoTariffSwitch.getIntValue();
     }
 
     public TimeIfTariffSwitch getTimeIfTariffSwitch() {

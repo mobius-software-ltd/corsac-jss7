@@ -46,6 +46,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -108,7 +109,7 @@ public class MDTConfigurationTest {
         assertEquals(asc.getAreaScope().getCgiList().get(0).getLac(), 2000);
         assertEquals(asc.getAreaScope().getCgiList().get(0).getCellId(), 1111);
 
-        assertEquals(asc.getListOfMeasurements().getData(), getListOfMeasurements());
+        assertTrue(ByteBufUtil.equals(asc.getListOfMeasurements().getValue(),Unpooled.wrappedBuffer(getListOfMeasurements())));
         assertEquals(asc.getReportingTrigger().getData(), 121);
         assertEquals(asc.getReportInterval(), ReportInterval.lte2048ms);
         assertEquals(asc.getReportAmount(), ReportAmount.d64);
@@ -138,7 +139,7 @@ public class MDTConfigurationTest {
         GlobalCellIdImpl globalCellId = new GlobalCellIdImpl(120, 1, 2000, 1111); // int mcc, int mnc, int lac, int cellId
         cgiList.add(globalCellId);
         AreaScope areaScope = new AreaScopeImpl(cgiList, null, null, null, null, null);
-        ListOfMeasurementsImpl listOfMeasurements = new ListOfMeasurementsImpl(getListOfMeasurements());
+        ListOfMeasurementsImpl listOfMeasurements = new ListOfMeasurementsImpl(Unpooled.wrappedBuffer(getListOfMeasurements()));
         ReportingTriggerImpl reportingTrigger = new ReportingTriggerImpl(121);
         asc = new MDTConfigurationImpl(JobType.traceOnly, areaScope, listOfMeasurements, reportingTrigger, ReportInterval.lte2048ms, ReportAmount.d64, 10, 11,
                 LoggingInterval.d20dot48, LoggingDuration.d2400sec, MAPExtensionContainerTest.GetTestExtensionContainer());

@@ -28,6 +28,8 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUnifiedMessage;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * @author amit bhayani
  *
@@ -48,21 +50,21 @@ public class TCUnifiedMessageImpl implements TCUnifiedMessage {
         return this.dp!=null;
     }
 
-    public byte[] getOriginatingTransactionId() {
+    public ByteBuf getOriginatingTransactionId() {
         return transactionId.getFirstElem();
     }
 
-    public byte[] getDestinationTransactionId() {
+    public ByteBuf getDestinationTransactionId() {
         return transactionId.getSecondElem();
     }
 
     @Override
-	public void setOriginatingTransactionId(byte[] txID) {
+	public void setOriginatingTransactionId(ByteBuf txID) {
 		this.transactionId.setFirstElem(txID);
 	}
 
 	@Override
-	public void setDestinationTransactionId(byte[] txID) {
+	public void setDestinationTransactionId(ByteBuf txID) {
 		this.transactionId.setSecondElem(txID);
 	}
 

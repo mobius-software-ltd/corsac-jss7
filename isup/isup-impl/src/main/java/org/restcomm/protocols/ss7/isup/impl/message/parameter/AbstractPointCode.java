@@ -46,7 +46,7 @@ public abstract class AbstractPointCode extends AbstractISUPParameter implements
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() != 2) {
-            throw new ParameterException("byte[] must  not be null and length must  be 1");
+            throw new ParameterException("buffer must  not be null and length must  be 1");
         }
 
         this.signalingPointCode = b.readByte();

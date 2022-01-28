@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.P
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ProtocolIndicator;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.TCAPDialogueLevel;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -37,21 +37,31 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class ProtocolIndicatorImpl extends ASNOctetString implements ProtocolIndicator {
+public class ProtocolIndicatorImpl extends ASNOctetString2 implements ProtocolIndicator {
 	public ProtocolIndicatorImpl() {
     }
 
-    public ProtocolIndicatorImpl(ProtocolIdentifier protocolIdentifier,TCAPDialogueLevel tcapDialogueLevel) {
+	public ProtocolIndicatorImpl(ProtocolIdentifier protocolIdentifier,TCAPDialogueLevel tcapDialogueLevel) {
+		super(translate(protocolIdentifier, tcapDialogueLevel));
+	}
+	
+    public static ByteBuf translate(ProtocolIdentifier protocolIdentifier,TCAPDialogueLevel tcapDialogueLevel) {
     	if(protocolIdentifier!=null || tcapDialogueLevel!=null) {
-    		byte[] value=new byte[2];
+    		ByteBuf value=Unpooled.buffer(2);
     		if(protocolIdentifier!=null)
-    			value[0]=(byte)protocolIdentifier.getCode();
+    			value.writeByte((byte)protocolIdentifier.getCode());
+    		else
+    			value.writeByte(0);
     		
     		if(tcapDialogueLevel!=null)
-    			value[1]=(byte)tcapDialogueLevel.getCode();
+    			value.writeByte((byte)tcapDialogueLevel.getCode());
+    		else
+    			value.writeByte(0);
     		
-    		setValue(Unpooled.wrappedBuffer(value));    	
+    		return value; 	
     	}
+    	
+    	return null;
     }
 
     public ProtocolIdentifier getProtocolIdentifier() {

@@ -24,31 +24,34 @@ package org.restcomm.protocols.ss7.commonapp.subscriberManagement;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.CUGInterlock;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
-public class CUGInterlockImpl extends ASNOctetString implements CUGInterlock {
+public class CUGInterlockImpl extends ASNOctetString2 implements CUGInterlock {
 	public CUGInterlockImpl() {        
     }
 
-    public CUGInterlockImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
+    public CUGInterlockImpl(ByteBuf value) {
+    	super(value);
     }
 
-    public byte[] getData() {
-    	ByteBuf buffer=getValue();
-    	if(buffer==null)
-    		return null;
-    	
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
-        return data;
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("CUGInterlock [");
+        if (getValue() != null) {
+            sb.append("data=");
+            sb.append(printDataArr());            
+        }
+        sb.append("]");
+
+        return sb.toString();
     }
 }

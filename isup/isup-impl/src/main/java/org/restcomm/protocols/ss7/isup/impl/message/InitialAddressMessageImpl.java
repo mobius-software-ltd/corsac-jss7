@@ -29,8 +29,6 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -103,6 +101,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformat
 import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserIndicators;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessTransport;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:08:17:13 2009-07-17<br>
@@ -205,7 +205,7 @@ public class InitialAddressMessageImpl extends ISUPMessageImpl implements Initia
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.isup.messages.ISUPMessage#decodeMandatoryParameters(byte[], int)
+     * @see org.restcomm.isup.messages.ISUPMessage#decodeMandatoryParameters(ByteBuf, int)
      */
 
     protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
@@ -256,7 +256,7 @@ public class InitialAddressMessageImpl extends ISUPMessageImpl implements Initia
                 throw new ParameterException("Failed to parse TransmissionMediumRequirement due to: ", e);
             }
         } else {
-            throw new ParameterException("byte[] must have atleast eight octets");
+            throw new ParameterException("buffer must have atleast eight readable octets");
         }
     }
 
@@ -282,7 +282,7 @@ public class InitialAddressMessageImpl extends ISUPMessageImpl implements Initia
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.isup.messages.ISUPMessage#decodeOptionalBody(byte[], byte)
+     * @see org.restcomm.isup.messages.ISUPMessage#decodeOptionalBody(ByteBuf, byte)
      */
 
     protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)

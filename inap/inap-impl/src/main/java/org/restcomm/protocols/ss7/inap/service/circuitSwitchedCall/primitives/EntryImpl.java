@@ -50,17 +50,13 @@ public class EntryImpl implements Entry {
     }
 
     public EntryImpl(List<Long> agreements) {
-    	if(agreements!=null) {
-    		this.agreements = new ASNObjectIdentifier();
-    		this.agreements.setValue(agreements);    	
-    	}
+    	if(agreements!=null)
+    		this.agreements = new ASNObjectIdentifier(agreements);    		
     }
 
     public EntryImpl(Integer networkSpecific) {
-    	if(networkSpecific!=null) {
-    		this.networkSpecific = new ASNInteger();
-    		this.networkSpecific.setValue(networkSpecific.longValue());
-    	}
+    	if(networkSpecific!=null)
+    		this.networkSpecific = new ASNInteger(networkSpecific);    		
     }
 
     public List<Long> getAgreements() {
@@ -71,10 +67,10 @@ public class EntryImpl implements Entry {
     }
 
     public Integer getNetworkSpecific() {
-    	if(networkSpecific==null || networkSpecific.getValue()==null)
+    	if(networkSpecific==null)
     		return null;
     	
-        return networkSpecific.getValue().intValue();
+        return networkSpecific.getIntValue();
     }
 
     @Override

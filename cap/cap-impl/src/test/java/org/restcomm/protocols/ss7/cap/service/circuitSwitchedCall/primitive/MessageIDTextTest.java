@@ -27,7 +27,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.AlertingPatternWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.MessageIDTextImpl;
 import org.testng.annotations.Test;
 
@@ -35,6 +34,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -65,15 +65,15 @@ public class MessageIDTextTest {
         
         MessageIDTextImpl elem = (MessageIDTextImpl)result.getResult();         
         assertTrue(elem.getMessageContent().equals("Hello !!!"));
-        assertTrue(Arrays.equals(elem.getAttributes(), this.getDataInt()));
+        assertTrue(ByteBufUtil.equals(elem.getAttributes(),Unpooled.wrappedBuffer(this.getDataInt())));
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
-    	parser.replaceClass(AlertingPatternWrapperImpl.class);
+    	parser.replaceClass(MessageIDTextImpl.class);
     	
-        MessageIDTextImpl elem = new MessageIDTextImpl("Hello !!!", getDataInt());
+        MessageIDTextImpl elem = new MessageIDTextImpl("Hello !!!", Unpooled.wrappedBuffer(getDataInt()));
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -82,31 +82,4 @@ public class MessageIDTextTest {
 
         // String messageContent, byte[] attributes
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        String messageContent = "123 ASzs!";
-        byte[] attributes = new byte[] { 0x01, (byte) 0xEE };
-        MessageIDTextImpl original = new MessageIDTextImpl(messageContent, attributes);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "messageIDText", MessageIDTextImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        MessageIDTextImpl copy = reader.read("messageIDText", MessageIDTextImpl.class);
-
-        assertEquals(copy.getMessageContent(), messageContent);
-        assertEquals(copy.getAttributes(), attributes);
-    }*/
 }

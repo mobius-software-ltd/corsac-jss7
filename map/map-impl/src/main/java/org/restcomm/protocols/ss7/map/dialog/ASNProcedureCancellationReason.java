@@ -8,15 +8,19 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=false,lengthIndefinite=false)
 public class ASNProcedureCancellationReason extends ASNEnumerated {
-	public void setType(ProcedureCancellationReason t) {
-		super.setValue(new Long(t.getCode()));
+	public ASNProcedureCancellationReason() {
+		
+	}
+	
+	public ASNProcedureCancellationReason(ProcedureCancellationReason t) {
+		super(t.getCode());
 	}
 	
 	public ProcedureCancellationReason getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return ProcedureCancellationReason.getInstance(getValue().intValue());
+		return ProcedureCancellationReason.getInstance(realValue);
 	}
 }

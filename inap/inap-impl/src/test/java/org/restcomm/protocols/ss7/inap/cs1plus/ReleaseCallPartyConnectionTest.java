@@ -13,6 +13,7 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ReleaseCallPartyConnectionRequestImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -20,6 +21,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 public class ReleaseCallPartyConnectionTest 
@@ -50,7 +52,7 @@ public class ReleaseCallPartyConnectionTest
 	        
 		ReleaseCallPartyConnectionRequestImpl elem = (ReleaseCallPartyConnectionRequestImpl)result.getResult();
 		assertNotNull(elem.getReleaseCause());
-		assertTrue(Arrays.equals(elem.getReleaseCause().getData(), causeData1));
+		assertTrue(ByteBufUtil.equals(CauseIsupImpl.translate(elem.getReleaseCause().getCauseIndicators()),Unpooled.wrappedBuffer(causeData1)));
 		assertEquals(elem.getReleaseCause().getCauseIndicators().getCodingStandard(), 0);
 		assertEquals(elem.getReleaseCause().getCauseIndicators().getLocation(), 2);
 		assertEquals(elem.getReleaseCause().getCauseIndicators().getRecommendation(), 0);
@@ -58,7 +60,7 @@ public class ReleaseCallPartyConnectionTest
 		assertNotNull(elem.getLegToBeReleased());
 		assertEquals(elem.getLegToBeReleased(), LegType.leg1);
 		
-		logger.info(elem);		
+		logger.info(elem);
 	}
 	
 	@Test(groups = { "functional.encode", "circuitSwitchedCall" })
@@ -66,7 +68,9 @@ public class ReleaseCallPartyConnectionTest
 		ASNParser parser=new ASNParser(true);
 		parser.replaceClass(ReleaseCallPartyConnectionRequestImpl.class);
 	    	
-		CauseIsup causeIsup=new CauseIsupImpl(causeData1);
+		CauseIndicatorsImpl ci=new CauseIndicatorsImpl();
+		ci.decode(Unpooled.wrappedBuffer(causeData1));
+		CauseIsup causeIsup=new CauseIsupImpl(ci);
 		ReleaseCallPartyConnectionRequestImpl elem = new ReleaseCallPartyConnectionRequestImpl(LegType.leg1,causeIsup);
 	    byte[] rawData = this.message1;
 	    ByteBuf buffer=parser.encode(elem);

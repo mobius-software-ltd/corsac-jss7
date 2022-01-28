@@ -47,15 +47,11 @@ public class MiscCallInfoImpl implements MiscCallInfo {
     }
 
     public MiscCallInfoImpl(MiscCallInfoMessageType messageType, MiscCallInfoDpAssignment dpAssignment) {
-    	if(messageType!=null) {
-	        this.messageType = new ASNMiscCallInfoMessageType();
-	        this.messageType.setType(messageType);
-    	}
-    	
-    	if(dpAssignment!=null) {
-	        this.dpAssignment = new ASNMiscCallInfoDpAssignment();
-	        this.dpAssignment.setType(dpAssignment);
-    	}
+    	if(messageType!=null)
+	        this.messageType = new ASNMiscCallInfoMessageType(messageType);
+	        
+    	if(dpAssignment!=null)
+	        this.dpAssignment = new ASNMiscCallInfoDpAssignment(dpAssignment);	        
     }
 
     public MiscCallInfoMessageType getMessageType() {

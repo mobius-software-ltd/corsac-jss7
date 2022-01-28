@@ -204,34 +204,4 @@ public class GenericDigitsTest {
         assertEquals(prim.getTypeOfDigits(), GenericDigits._TOD_BGCI);
         assertEquals(prim.getDecodedDigits(), digitsIA5String);
     }
-
-
-    /*@Test(groups = { "functional.xml.serialize", "parameter" })
-    public void testXMLSerialize() throws Exception {
-
-        GenericDigitsImpl original = new GenericDigitsImpl(GenericDigits._ENCODING_SCHEME_BCD_EVEN, GenericDigits._TOD_BGCI,
-                                                           getEncodedEvenData());
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "genericDigits", GenericDigitsImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        GenericDigitsImpl copy = reader.read("genericDigits", GenericDigitsImpl.class);
-
-        assertEquals(copy.getEncodingScheme(), original.getEncodingScheme());
-        assertEquals(copy.getTypeOfDigits(), original.getTypeOfDigits());
-        assertEquals(copy.getEncodedDigits(), original.getEncodedDigits());
-        assertEquals(copy.getDecodedDigits(), original.getDecodedDigits());
-    }*/
 }

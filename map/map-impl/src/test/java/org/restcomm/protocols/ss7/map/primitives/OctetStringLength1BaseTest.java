@@ -70,7 +70,8 @@ public class OctetStringLength1BaseTest {
         // bad data
         rawData = getEncodedDataTooLong();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
-        assertTrue(result.getHadErrors());
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof TestOctetStringLength1Impl);        
     }
 
     @Test(groups = { "functional.encode", "primitives" })

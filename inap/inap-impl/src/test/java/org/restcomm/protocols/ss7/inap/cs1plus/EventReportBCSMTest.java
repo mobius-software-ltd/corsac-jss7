@@ -24,6 +24,7 @@ import org.restcomm.protocols.ss7.inap.api.EsiBcsm.DisconnectSpecificInfo;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.EventReportBCSMRequestImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.EventSpecificInformationBCSMImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -31,6 +32,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 public class EventReportBCSMTest {
@@ -63,7 +65,7 @@ public class EventReportBCSMTest {
 		assertNotNull(elem.getEventSpecificInformationBCSM());
 		assertNotNull(elem.getEventSpecificInformationBCSM().getODisconnectSpecificInfo());
 		assertNotNull(elem.getEventSpecificInformationBCSM().getODisconnectSpecificInfo().getReleaseCause());
-		assertTrue(Arrays.equals(elem.getEventSpecificInformationBCSM().getODisconnectSpecificInfo().getReleaseCause().getData(),causeInd1));
+		assertTrue(ByteBufUtil.equals(CauseIsupImpl.translate(elem.getEventSpecificInformationBCSM().getODisconnectSpecificInfo().getReleaseCause().getCauseIndicators()),Unpooled.wrappedBuffer(causeInd1)));
 		assertEquals(elem.getEventSpecificInformationBCSM().getODisconnectSpecificInfo().getReleaseCause().getCauseIndicators().getCauseValue(),16);
 		assertEquals(elem.getEventSpecificInformationBCSM().getODisconnectSpecificInfo().getReleaseCause().getCauseIndicators().getCodingStandard(),0);
 		assertEquals(elem.getEventSpecificInformationBCSM().getODisconnectSpecificInfo().getReleaseCause().getCauseIndicators().getLocation(),0);
@@ -82,7 +84,9 @@ public class EventReportBCSMTest {
 		ASNParser parser=new ASNParser(true);
 		parser.replaceClass(EventReportBCSMRequestImpl.class);
 	    	
-		CauseIsup cause=new CauseIsupImpl(causeInd1);
+		CauseIndicatorsImpl ci=new CauseIndicatorsImpl();
+		ci.decode(Unpooled.wrappedBuffer(causeInd1));
+		CauseIsup cause=new CauseIsupImpl(ci);
 		DisconnectSpecificInfo oDisconnectInfo=new DisconnectSpecificInfoImpl(cause,null);
 		EventSpecificInformationBCSM eventInformation=new EventSpecificInformationBCSMImpl(oDisconnectInfo,false);
 		LegID legID=new LegIDImpl(LegType.leg1, null);

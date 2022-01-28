@@ -22,14 +22,13 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
-import java.util.Arrays;
-
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LAC;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -38,41 +37,29 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class LACImpl extends ASNOctetString implements LAC {
+public class LACImpl extends ASNOctetString2 implements LAC {
 	public LACImpl() {
     }
 
-    public LACImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));        
-    }
-
-    public LACImpl(int lac) throws MAPException {
-
-        byte[] data = new byte[2];
-
-        data[0] = (byte) (lac / 256);
-        data[1] = (byte) (lac % 256);
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
+	public LACImpl(int lac) throws MAPException {
+		super(translate(lac));
+	}
+	
+    public static ByteBuf translate(int lac) throws MAPException {
+        ByteBuf data = Unpooled.buffer(2);
+        data.writeByte((byte) (lac / 256));
+        data.writeByte((lac % 256));
         return data;
     }
 
     public int getLac() throws MAPException {
-    	byte[] data=getData();
-        if (data == null)
+    	ByteBuf value=getValue();
+        if (value == null)
             throw new MAPException("Data must not be empty");
-        if (data.length != 2)
+        if (value.readableBytes() != 2)
             throw new MAPException("Data length must be equal 5");
 
-        int res = (data[0] & 0xFF) * 256 + (data[1] & 0xFF);
+        int res = (value.readByte() & 0xFF) * 256 + (value.readByte() & 0xFF);
         return res;
     }
 
@@ -95,7 +82,7 @@ public class LACImpl extends ASNOctetString implements LAC {
             sb.append(lac);
         } else {
             sb.append("Data=");
-            sb.append(printDataArr(getData()));
+            sb.append(printDataArr());
         }
         sb.append("]");
 
@@ -106,7 +93,10 @@ public class LACImpl extends ASNOctetString implements LAC {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + Arrays.hashCode(getData());
+        
+        if(getValue()!=null)
+        	result = prime * result + ByteBufUtil.hashCode(getValue());
+        
         return result;
     }
 
@@ -119,8 +109,20 @@ public class LACImpl extends ASNOctetString implements LAC {
         if (getClass() != obj.getClass())
             return false;
         LACImpl other = (LACImpl) obj;
-        if (!Arrays.equals(getData(), other.getData()))
-            return false;
+        ByteBuf value=getValue();
+        ByteBuf otherValue=other.getValue();
+        if(value==null) {
+        	if(otherValue!=null)
+        		return false;
+        }
+        else {
+        	if(otherValue==null)
+        		return false;
+        	
+        	if (!ByteBufUtil.equals(value, otherValue))
+        		return false;
+        }
+        
         return true;
     }
 }

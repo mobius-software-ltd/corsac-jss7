@@ -65,10 +65,10 @@ public abstract class BooleanMAPErrorMessage1Impl extends MAPErrorMessageImpl {
     }
 
     protected void setValue(Boolean value) {
-    	if(this.value==null)
-    		this.value=new ASNBoolean();
-    	
-    	this.value.setValue(value);
+    	if(value==null)
+    		this.value=null;
+    	else
+    		this.value=new ASNBoolean(value);    	
     }
     
     protected Boolean getValue() {

@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.errors.AbsentSubscriberDiagnosticSM;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNAbsentSubscriberDiagnosticSMImpl extends ASNEnumerated {
-	public void setType(AbsentSubscriberDiagnosticSM t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNAbsentSubscriberDiagnosticSMImpl() {
+		
+	}
+	
+	public ASNAbsentSubscriberDiagnosticSMImpl(AbsentSubscriberDiagnosticSM t) {
+		super(t.getCode());
 	}
 	
 	public AbsentSubscriberDiagnosticSM getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return AbsentSubscriberDiagnosticSM.getInstance(getValue().intValue());
+		return AbsentSubscriberDiagnosticSM.getInstance(realValue);
 	}
 }

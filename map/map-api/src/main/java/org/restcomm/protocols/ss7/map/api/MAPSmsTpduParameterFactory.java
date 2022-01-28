@@ -56,6 +56,8 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeader;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author sergey vetyutnev
@@ -111,7 +113,7 @@ public interface MAPSmsTpduParameterFactory {
 
     Status createStatus(int code);
 
-    ValidityEnhancedFormatData createValidityEnhancedFormatData(byte[] data);
+    ValidityEnhancedFormatData createValidityEnhancedFormatData(ByteBuf value);
 
     ValidityPeriod createValidityPeriod(int relativeFormatValue);
 
@@ -121,15 +123,15 @@ public interface MAPSmsTpduParameterFactory {
 
     UserDataHeader createUserDataHeader();
 
-    UserDataHeader createUserDataHeader(byte[] encodedData);
+    UserDataHeader createUserDataHeader(ByteBuf encodedData);
 
-    UserData createUserData(byte[] encodedData, DataCodingScheme dataCodingScheme, int encodedUserDataLength,
+    UserData createUserData(ByteBuf encodedData, DataCodingScheme dataCodingScheme, int encodedUserDataLength,
             boolean encodedUserDataHeaderIndicator, Charset gsm8Charset);
 
     UserData createUserData(String decodedMessage, DataCodingScheme dataCodingScheme,
             UserDataHeader decodedUserDataHeader, Charset gsm8Charset);
 
-    CommandData createCommandData(byte[] data);
+    CommandData createCommandData(ByteBuf data);
 
     CommandData createCommandData(String decodedMessage);
 

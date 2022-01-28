@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
 import java.io.Serializable;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  IntegrityProtectionInformation ::= OCTET STRING (SIZE (18..maxNumOfIntegrityInfo)) -- Octets contain a complete
@@ -37,6 +39,5 @@ import java.io.Serializable;
  */
 public interface IntegrityProtectionInformation extends Serializable {
 
-    byte[] getData();
-
+	ByteBuf getValue();
 }

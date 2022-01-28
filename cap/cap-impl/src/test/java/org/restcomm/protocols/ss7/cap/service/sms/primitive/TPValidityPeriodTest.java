@@ -28,9 +28,9 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.smstpdu.AbsoluteTimeStamp;
+import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityPeriod;
 import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityPeriodFormat;
 import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
-import org.restcomm.protocols.ss7.commonapp.smstpu.ValidityPeriodImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -70,8 +70,7 @@ public class TPValidityPeriodTest {
         assertTrue(result.getResult() instanceof TPValidityPeriodImpl);
         
         TPValidityPeriodImpl prim = (TPValidityPeriodImpl)result.getResult();        
-        assertTrue(Arrays.equals(prim.getData(), getTPValidityPeriod()));
-        ValidityPeriodImpl vp = prim.getValidityPeriod();
+        ValidityPeriod vp = prim.getValidityPeriod();
         assertEquals(vp.getValidityPeriodFormat(), ValidityPeriodFormat.fieldPresentRelativeFormat);
         assertEquals((int)vp.getRelativeFormatValue(), 4);
 

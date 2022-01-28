@@ -36,6 +36,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingCategory;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.commonapp.callhandling.CallReferenceNumberImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.AlertingPatternImpl;
@@ -68,6 +69,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /*
@@ -130,10 +132,6 @@ public class SendRoutingInformationRequestTest {
         return new byte[] { 10, 20, 30, 40 };
     };
 
-    private byte[] getExtBearerServiceData() {
-        return new byte[] { 22 };
-    }
-
     @Test(groups = { "functional.decode", "service.callhandling" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
@@ -164,7 +162,7 @@ public class SendRoutingInformationRequestTest {
 
         // cugCheckInfo
         CUGCheckInfo cugCheckInfo = prim.getCUGCheckInfo();
-        assertTrue(Arrays.equals(cugCheckInfo.getCUGInterlock().getData(), getGugData()));
+        assertTrue(ByteBufUtil.equals(cugCheckInfo.getCUGInterlock().getValue(), Unpooled.wrappedBuffer(getGugData())));
         assertTrue(cugCheckInfo.getCUGOutgoingAccess());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(cugCheckInfo.getExtensionContainer()));
 
@@ -184,13 +182,13 @@ public class SendRoutingInformationRequestTest {
         assertEquals(prim.getForwardingReason(), ForwardingReason.noReply);
 
         // basicServiceGroup
-        assertTrue(Arrays.equals(prim.getBasicServiceGroup().getExtBearerService().getData(), this.getExtBearerServiceData()));
+        assertEquals(prim.getBasicServiceGroup().getExtBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.dataCDA_9600bps);
         assertNull(prim.getBasicServiceGroup().getExtTeleservice());
 
         // networkSignalInfo
         ProtocolId protocolId = prim.getNetworkSignalInfo().getProtocolId();
-        byte[] signalInfo = prim.getNetworkSignalInfo().getSignalInfo().getData();
-        assertTrue(Arrays.equals(getSignalInfoData(), signalInfo));
+        ByteBuf signalInfo = prim.getNetworkSignalInfo().getSignalInfo().getValue();
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(getSignalInfoData()), signalInfo));
         assertNotNull(protocolId);
         assertEquals(protocolId, ProtocolId.gsm_0806);
 
@@ -226,8 +224,8 @@ public class SendRoutingInformationRequestTest {
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(additionalSignalInfo.getExtensionContainer()));
         assertEquals(additionalSignalInfo.getExtProtocolId(), ExtProtocolId.ets_300356);
         additionalSignalInfo.getSignalInfo();
-        byte[] signalInfoAdd = additionalSignalInfo.getSignalInfo().getData();
-        assertTrue(Arrays.equals(getSignalInfoData(), signalInfoAdd));
+        ByteBuf signalInfoAdd = additionalSignalInfo.getSignalInfo().getValue();
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(getSignalInfoData()), signalInfoAdd));
 
         // istSupportIndicator
         assertEquals(prim.getIstSupportIndicator(), ISTSupportIndicator.istCommandSupported);
@@ -245,13 +243,13 @@ public class SendRoutingInformationRequestTest {
         assertTrue(prim.getGsmSCFInitiatedCall());
 
         // basicServiceGroup2
-        assertTrue(Arrays.equals(prim.getBasicServiceGroup2().getExtBearerService().getData(), this.getExtBearerServiceData()));
+        assertEquals(prim.getBasicServiceGroup2().getExtBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.dataCDA_9600bps);
         assertNull(prim.getBasicServiceGroup2().getExtTeleservice());
 
         // networkSignalInfo2
         ProtocolId protocolId2 = prim.getNetworkSignalInfo2().getProtocolId();
-        byte[] signalInfo2 = prim.getNetworkSignalInfo2().getSignalInfo().getData();
-        assertTrue(Arrays.equals(getSignalInfoData(), signalInfo2));
+        ByteBuf signalInfo2 = prim.getNetworkSignalInfo2().getSignalInfo().getValue();
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(getSignalInfoData()), signalInfo2));
         assertNotNull(protocolId2);
         assertEquals(protocolId2, ProtocolId.gsm_0806);
 
@@ -283,7 +281,7 @@ public class SendRoutingInformationRequestTest {
         assertEquals(msisdn.getAddress(), "29113123311");
         // cugCheckInfo
         cugCheckInfo = prim.getCUGCheckInfo();
-        assertTrue(Arrays.equals(cugCheckInfo.getCUGInterlock().getData(), getGugData()));
+        assertTrue(ByteBufUtil.equals(cugCheckInfo.getCUGInterlock().getValue(), Unpooled.wrappedBuffer(getGugData())));
         assertTrue(cugCheckInfo.getCUGOutgoingAccess());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(cugCheckInfo.getExtensionContainer()));
         // numberOfForwarding
@@ -300,8 +298,8 @@ public class SendRoutingInformationRequestTest {
         assertNull(prim.getBasicServiceGroup());
         // networkSignalInfo
         protocolId = prim.getNetworkSignalInfo().getProtocolId();
-        signalInfo = prim.getNetworkSignalInfo().getSignalInfo().getData();
-        assertTrue(Arrays.equals(getSignalInfoData(), signalInfo));
+        signalInfo = prim.getNetworkSignalInfo().getSignalInfo().getValue();
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(getSignalInfoData()), signalInfo));
         assertNotNull(protocolId);
         assertEquals(protocolId, ProtocolId.gsm_0806);
         // camelInfo
@@ -369,8 +367,8 @@ public class SendRoutingInformationRequestTest {
         assertNull(prim.getBasicServiceGroup());
         // networkSignalInfo
         protocolId = prim.getNetworkSignalInfo().getProtocolId();
-        signalInfo = prim.getNetworkSignalInfo().getSignalInfo().getData();
-        assertTrue(Arrays.equals(getSignalInfoData(), signalInfo));
+        signalInfo = prim.getNetworkSignalInfo().getSignalInfo().getValue();
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(getSignalInfoData()), signalInfo));
         assertNotNull(protocolId);
         assertEquals(protocolId, ProtocolId.gsm_0806);
         // camelInfo
@@ -420,7 +418,7 @@ public class SendRoutingInformationRequestTest {
                 "29113123311");
 
         // cugCheckInfo
-        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getGugData());
+        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(Unpooled.wrappedBuffer(getGugData()));
         CUGCheckInfoImpl cugCheckInfo = new CUGCheckInfoImpl(cugInterlock, true,
                 MAPExtensionContainerTest.GetTestExtensionContainer());
 
@@ -441,17 +439,17 @@ public class SendRoutingInformationRequestTest {
                 "49883700292");
 
         // callReferenceNumber
-        CallReferenceNumberImpl callReferenceNumber = new CallReferenceNumberImpl(getCallReferenceNumberData());
+        CallReferenceNumberImpl callReferenceNumber = new CallReferenceNumberImpl(Unpooled.wrappedBuffer(getCallReferenceNumberData()));
 
         // forwardingReason
         ForwardingReason forwardingReason = ForwardingReason.noReply;
 
         // basicServiceGroup
-        ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(this.getExtBearerServiceData());
+        ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.dataCDA_9600bps);
         ExtBasicServiceCodeImpl basicServiceGroup = new ExtBasicServiceCodeImpl(b);
 
         // networkSignalInfo
-        SignalInfoImpl signalInfo = new SignalInfoImpl(getSignalInfoData());
+        SignalInfoImpl signalInfo = new SignalInfoImpl(Unpooled.wrappedBuffer(getSignalInfoData()));
         ProtocolId protocolId = ProtocolId.gsm_0806;
         ExternalSignalInfoImpl networkSignalInfo = new ExternalSignalInfoImpl(signalInfo, protocolId, null);
 

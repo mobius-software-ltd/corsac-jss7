@@ -29,6 +29,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.TeleserviceCodeValue;
 import org.testng.annotations.Test;
 
@@ -57,14 +58,6 @@ public class ExtBasicServiceCodeTest {
         return new byte[] { 48, 3, (byte) 131, 1, 16 };
     }
 
-    private byte[] getData1() {
-        return new byte[] { 22 };
-    }
-
-    private byte[] getData2() {
-        return new byte[] { 17 };
-    }
-
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
@@ -76,7 +69,7 @@ public class ExtBasicServiceCodeTest {
         assertTrue(result.getResult() instanceof ExtBasicServiceCodeImpl);
         ExtBasicServiceCodeImpl impl = (ExtBasicServiceCodeImpl)result.getResult();
         
-        assertTrue(Arrays.equals(impl.getExtBearerService().getData(), this.getData1()));
+        assertEquals(impl.getExtBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.dataCDA_9600bps);
         assertNull(impl.getExtTeleservice());
 
         rawData = getEncodedData2();
@@ -84,7 +77,7 @@ public class ExtBasicServiceCodeTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ExtBasicServiceCodeImpl);
         impl = (ExtBasicServiceCodeImpl)result.getResult();
-        assertTrue(Arrays.equals(impl.getExtTeleservice().getData(), this.getData2()));
+        assertEquals(impl.getExtTeleservice().getTeleserviceCodeValue(), TeleserviceCodeValue.telephony);
         assertNull(impl.getExtBearerService());
 
         rawData = getEncodedData3();
@@ -101,7 +94,7 @@ public class ExtBasicServiceCodeTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ExtBasicServiceCodeImpl.class);
     	        
-    	ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(this.getData1());
+    	ExtBearerServiceCodeImpl b = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.dataCDA_9600bps);
     	ExtBasicServiceCodeImpl impl = new ExtBasicServiceCodeImpl(b);
     	ByteBuf buffer=parser.encode(impl);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -109,7 +102,7 @@ public class ExtBasicServiceCodeTest {
     	byte[] rawData = getEncodedData1();
     	assertTrue(Arrays.equals(rawData, encodedData));
         
-    	ExtTeleserviceCodeImpl t = new ExtTeleserviceCodeImpl(this.getData2());
+    	ExtTeleserviceCodeImpl t = new ExtTeleserviceCodeImpl(TeleserviceCodeValue.telephony);
     	impl = new ExtBasicServiceCodeImpl(t);
     	buffer=parser.encode(impl);
         encodedData = new byte[buffer.readableBytes()];

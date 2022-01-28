@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.primitives.ProtocolId;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNProtocolIDImpl extends ASNEnumerated {
-	public void setType(ProtocolId t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNProtocolIDImpl() {
+		
+	}
+	
+	public ASNProtocolIDImpl(ProtocolId t) {
+		super(t.getCode());
 	}
 	
 	public ProtocolId getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return ProtocolId.getProtocolId(getValue().intValue());
+		return ProtocolId.getProtocolId(realValue);
 	}
 }

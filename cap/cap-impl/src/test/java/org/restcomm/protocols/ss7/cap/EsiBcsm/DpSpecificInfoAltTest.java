@@ -99,42 +99,4 @@ public class DpSpecificInfoAltTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })
-    public void testXMLSerializaion() throws Exception {
-        ExtBearerServiceCode extBearerService = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.padAccessCA_9600bps);
-        ExtBasicServiceCode extBasicServiceCode = new ExtBasicServiceCodeImpl(extBearerService);
-        OServiceChangeSpecificInfo oServiceChangeSpecificInfo = new OServiceChangeSpecificInfoImpl(extBasicServiceCode);
-        CalledPartyNumber calledPartyNumber = new CalledPartyNumberImpl();
-        calledPartyNumber.setAddress("3333311111");
-        CalledPartyNumberCap calledPartyNumberCap = new CalledPartyNumberCapImpl(calledPartyNumber);
-        CollectedInfoSpecificInfo collectedInfoSpecificInfo = new CollectedInfoSpecificInfoImpl(calledPartyNumberCap);
-        ExtTeleserviceCode extTeleservice = new ExtTeleserviceCodeImpl(TeleserviceCodeValue.automaticFacsimileGroup3);
-        ExtBasicServiceCode extBasicServiceCode2 = new ExtBasicServiceCodeImpl(extTeleservice);
-        TServiceChangeSpecificInfo tServiceChangeSpecificInfo = new TServiceChangeSpecificInfoImpl(extBasicServiceCode2);
-        DpSpecificInfoAltImpl original = new DpSpecificInfoAltImpl(oServiceChangeSpecificInfo, collectedInfoSpecificInfo, tServiceChangeSpecificInfo);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "dpSpecificInfoAlt", DpSpecificInfoAltImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        DpSpecificInfoAltImpl copy = reader.read("dpSpecificInfoAlt", DpSpecificInfoAltImpl.class);
-
-        assertEquals(copy.getOServiceChangeSpecificInfo().getExtBasicServiceCode().getExtBearerService().getBearerServiceCodeValue(), original
-                .getOServiceChangeSpecificInfo().getExtBasicServiceCode().getExtBearerService().getBearerServiceCodeValue());
-        assertEquals(copy.getCollectedInfoSpecificInfo().getCalledPartyNumber().getCalledPartyNumber().getAddress(), original.getCollectedInfoSpecificInfo()
-                .getCalledPartyNumber().getCalledPartyNumber().getAddress());
-        assertEquals(copy.getTServiceChangeSpecificInfo().getExtBasicServiceCode().getExtTeleservice().getTeleserviceCodeValue(), original
-                .getTServiceChangeSpecificInfo().getExtBasicServiceCode().getExtTeleservice().getTeleserviceCodeValue());
-    }*/
 }

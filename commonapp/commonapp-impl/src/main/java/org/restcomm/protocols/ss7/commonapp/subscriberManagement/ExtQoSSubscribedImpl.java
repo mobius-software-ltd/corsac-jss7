@@ -33,7 +33,7 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubsc
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_TrafficHandlingPriority;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_TransferDelay;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -43,12 +43,8 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class ExtQoSSubscribedImpl extends ASNOctetString implements ExtQoSSubscribed {
+public class ExtQoSSubscribedImpl extends ASNOctetString2 implements ExtQoSSubscribed {
 	public ExtQoSSubscribedImpl() {
-    }
-
-    public ExtQoSSubscribedImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
     }
 
     public ExtQoSSubscribedImpl(int allocationRetentionPriority, ExtQoSSubscribed_DeliveryOfErroneousSdus deliveryOfErroneousSdus,
@@ -57,150 +53,151 @@ public class ExtQoSSubscribedImpl extends ASNOctetString implements ExtQoSSubscr
             ExtQoSSubscribed_SduErrorRatio sduErrorRatio, ExtQoSSubscribed_TrafficHandlingPriority trafficHandlingPriority,
             ExtQoSSubscribed_TransferDelay transferDelay, ExtQoSSubscribed_BitRate guaranteedBitRateForUplink,
             ExtQoSSubscribed_BitRate guaranteedBitRateForDownlink) {
-        this.setData(allocationRetentionPriority, deliveryOfErroneousSdus, deliveryOrder, trafficClass, maximumSduSize, maximumBitRateForUplink,
+        super(translate(allocationRetentionPriority, deliveryOfErroneousSdus, deliveryOrder, trafficClass, maximumSduSize, maximumBitRateForUplink,
                 maximumBitRateForDownlink, residualBER, sduErrorRatio, trafficHandlingPriority, transferDelay, guaranteedBitRateForUplink,
-                guaranteedBitRateForDownlink);
+                guaranteedBitRateForDownlink));
     }
 
-    protected void setData(int allocationRetentionPriority, ExtQoSSubscribed_DeliveryOfErroneousSdus deliveryOfErroneousSdus,
+    protected static ByteBuf translate(int allocationRetentionPriority, ExtQoSSubscribed_DeliveryOfErroneousSdus deliveryOfErroneousSdus,
             ExtQoSSubscribed_DeliveryOrder deliveryOrder, ExtQoSSubscribed_TrafficClass trafficClass, ExtQoSSubscribed_MaximumSduSize maximumSduSize,
             ExtQoSSubscribed_BitRate maximumBitRateForUplink, ExtQoSSubscribed_BitRate maximumBitRateForDownlink, ExtQoSSubscribed_ResidualBER residualBER,
             ExtQoSSubscribed_SduErrorRatio sduErrorRatio, ExtQoSSubscribed_TrafficHandlingPriority trafficHandlingPriority,
             ExtQoSSubscribed_TransferDelay transferDelay, ExtQoSSubscribed_BitRate guaranteedBitRateForUplink,
             ExtQoSSubscribed_BitRate guaranteedBitRateForDownlink) {
-        byte[] data = new byte[9];
+        ByteBuf buffer=Unpooled.buffer(9);
 
-        data[0] = (byte) allocationRetentionPriority;
-        data[1] = (byte) ((deliveryOfErroneousSdus != null ? deliveryOfErroneousSdus.getCode() : 0)
-                | ((deliveryOrder != null ? deliveryOrder.getCode() : 0) << 3) | ((trafficClass != null ? trafficClass.getCode() : 0) << 5));
-        data[2] = (byte) (maximumSduSize != null ? maximumSduSize.getSourceData() : 0);
-        data[3] = (byte) (maximumBitRateForUplink != null ? maximumBitRateForUplink.getSourceData() : 0);
-        data[4] = (byte) (maximumBitRateForDownlink != null ? maximumBitRateForDownlink.getSourceData() : 0);
-        data[5] = (byte) ((sduErrorRatio != null ? sduErrorRatio.getCode() : 0) | ((residualBER != null ? residualBER.getCode() : 0) << 4));
-        data[6] = (byte) ((trafficHandlingPriority != null ? trafficHandlingPriority.getCode() : 0) | ((transferDelay != null ? transferDelay
-                .getSourceData() : 0) << 2));
-        data[7] = (byte) (guaranteedBitRateForUplink != null ? guaranteedBitRateForUplink.getSourceData() : 0);
-        data[8] = (byte) (guaranteedBitRateForDownlink != null ? guaranteedBitRateForDownlink.getSourceData() : 0);
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        buffer.writeByte(allocationRetentionPriority);
+        buffer.writeByte(((deliveryOfErroneousSdus != null ? deliveryOfErroneousSdus.getCode() : 0)
+                | ((deliveryOrder != null ? deliveryOrder.getCode() : 0) << 3) | ((trafficClass != null ? trafficClass.getCode() : 0) << 5)));
+        buffer.writeByte((maximumSduSize != null ? maximumSduSize.getSourceData() : 0));
+        buffer.writeByte((maximumBitRateForUplink != null ? maximumBitRateForUplink.getSourceData() : 0));
+        buffer.writeByte((maximumBitRateForDownlink != null ? maximumBitRateForDownlink.getSourceData() : 0));
+        buffer.writeByte(((sduErrorRatio != null ? sduErrorRatio.getCode() : 0) | ((residualBER != null ? residualBER.getCode() : 0) << 4)));
+        buffer.writeByte(((trafficHandlingPriority != null ? trafficHandlingPriority.getCode() : 0) | ((transferDelay != null ? transferDelay
+                .getSourceData() : 0) << 2)));
+        buffer.writeByte((guaranteedBitRateForUplink != null ? guaranteedBitRateForUplink.getSourceData() : 0));
+        buffer.writeByte((guaranteedBitRateForDownlink != null ? guaranteedBitRateForDownlink.getSourceData() : 0));
+        return buffer;
     }
 
     public int getAllocationRetentionPriority() {
-    	byte[] data=getData();
-        if (data == null || data.length < 1)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 1)
             return 0;
 
-        return data[0] & 0xFF;
+        return value.readByte() & 0xFF;
     }
 
     public ExtQoSSubscribed_DeliveryOfErroneousSdus getDeliveryOfErroneousSdus() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 2)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 2)
             return null;
 
-        return ExtQoSSubscribed_DeliveryOfErroneousSdus.getInstance(data[1] & 0x07);
+        value.skipBytes(1);
+        return ExtQoSSubscribed_DeliveryOfErroneousSdus.getInstance(value.readByte() & 0x07);
     }
 
     public ExtQoSSubscribed_DeliveryOrder getDeliveryOrder() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 2)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 2)
             return null;
 
-        return ExtQoSSubscribed_DeliveryOrder.getInstance((data[1] & 0x18) >> 3);
+        value.skipBytes(1);
+        return ExtQoSSubscribed_DeliveryOrder.getInstance((value.readByte() & 0x18) >> 3);
     }
 
     public ExtQoSSubscribed_TrafficClass getTrafficClass() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 2)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 2)
             return null;
 
-        return ExtQoSSubscribed_TrafficClass.getInstance((data[1] & 0xE0) >> 5);
+        value.skipBytes(1);
+        return ExtQoSSubscribed_TrafficClass.getInstance((value.readByte() & 0xE0) >> 5);
     }
 
     public ExtQoSSubscribed_MaximumSduSize getMaximumSduSize() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 3)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 3)
             return null;
 
-        return new ExtQoSSubscribed_MaximumSduSize(data[2] & 0xFF, true);
+        value.skipBytes(2);
+        return new ExtQoSSubscribed_MaximumSduSize(value.readByte() & 0xFF, true);
     }
 
     public ExtQoSSubscribed_BitRate getMaximumBitRateForUplink() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 4)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 4)
             return null;
 
-        return new ExtQoSSubscribed_BitRate(data[3] & 0xFF, true);
+        value.skipBytes(3);
+        return new ExtQoSSubscribed_BitRate(value.readByte() & 0xFF, true);
     }
 
     public ExtQoSSubscribed_BitRate getMaximumBitRateForDownlink() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 5)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 5)
             return null;
 
-        return new ExtQoSSubscribed_BitRate(data[4] & 0xFF, true);
+        value.skipBytes(4);
+        return new ExtQoSSubscribed_BitRate(value.readByte() & 0xFF, true);
     }
 
     public ExtQoSSubscribed_ResidualBER getResidualBER() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 6)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 6)
             return null;
 
-        return ExtQoSSubscribed_ResidualBER.getInstance((data[5] & 0xF0) >> 4);
+        value.skipBytes(5);
+        return ExtQoSSubscribed_ResidualBER.getInstance((value.readByte() & 0xF0) >> 4);
     }
 
     public ExtQoSSubscribed_SduErrorRatio getSduErrorRatio() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 6)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 6)
             return null;
 
-        return ExtQoSSubscribed_SduErrorRatio.getInstance(data[5] & 0x0F);
+        value.skipBytes(5);
+        return ExtQoSSubscribed_SduErrorRatio.getInstance(value.readByte() & 0x0F);
     }
 
     public ExtQoSSubscribed_TrafficHandlingPriority getTrafficHandlingPriority() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 7)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 7)
             return null;
 
-        return ExtQoSSubscribed_TrafficHandlingPriority.getInstance(data[6] & 0x03);
+        value.skipBytes(6);
+        return ExtQoSSubscribed_TrafficHandlingPriority.getInstance(value.readByte() & 0x03);
     }
 
     public ExtQoSSubscribed_TransferDelay getTransferDelay() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 7)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 7)
             return null;
 
-        return new ExtQoSSubscribed_TransferDelay((data[6] & 0xFC) >> 2, true);
+        value.skipBytes(6);
+        return new ExtQoSSubscribed_TransferDelay((value.readByte() & 0xFC) >> 2, true);
     }
 
     public ExtQoSSubscribed_BitRate getGuaranteedBitRateForUplink() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 8)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 8)
             return null;
 
-        return new ExtQoSSubscribed_BitRate(data[7] & 0xFF, true);
+        value.skipBytes(7);
+        return new ExtQoSSubscribed_BitRate(value.readByte() & 0xFF, true);
     }
 
     public ExtQoSSubscribed_BitRate getGuaranteedBitRateForDownlink() {
-    	byte[] data=getData();
-    	if (data == null || data.length < 9)
+    	ByteBuf value=getValue();
+        if (value == null || value.readableBytes() < 9)
             return null;
 
-        return new ExtQoSSubscribed_BitRate(data[8] & 0xFF, true);
+        value.skipBytes(8);
+        return new ExtQoSSubscribed_BitRate(value.readByte() & 0xFF, true);
     }
 
     public String toString() {
-    	byte[] data=getData();
-    	if (data != null && data.length >= 1) {
+    	if (getValue() != null) {
             int allocationRetentionPriority = getAllocationRetentionPriority();
             ExtQoSSubscribed_DeliveryOfErroneousSdus deliveryOfErroneousSdus = getDeliveryOfErroneousSdus();
             ExtQoSSubscribed_DeliveryOrder deliveryOrder = getDeliveryOrder();

@@ -8,15 +8,19 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 @ASNTag(asnClass=ASNClass.APPLICATION,tag=10,constructed=false,lengthIndefinite=false)
 public class ASNPAbortCause extends ASNEnumerated {
-	public void setType(PAbortCauseType t) {
-		super.setValue(Integer.valueOf(t.getType()).longValue());
+	public ASNPAbortCause() {
+		
+	}
+	
+	public ASNPAbortCause(PAbortCauseType t) {
+		super(t.getType());
 	}
 	
 	public PAbortCauseType getType() throws ParseException {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return PAbortCauseType.getFromInt(getValue().intValue());
+		return PAbortCauseType.getFromInt(realValue);
 	}
 }

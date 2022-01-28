@@ -50,6 +50,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -113,7 +114,7 @@ public class InitiateCallAttemptRequestTest {
         assertEquals((int) elem.getNewCallSegment(), 15);
         assertEquals(elem.getCallingPartyNumber().getCallingPartyNumber().getAddress(), "01267");
         assertEquals(elem.getCallingPartyNumber().getCallingPartyNumber().getNatureOfAddressIndicator(), 2);
-        assertEquals(elem.getCallReferenceNumber().getData(), getDataCallReferenceNumber());
+        assertTrue(ByteBufUtil.equals(elem.getCallReferenceNumber().getValue(), Unpooled.wrappedBuffer(getDataCallReferenceNumber())));
         assertEquals(elem.getGsmSCFAddress().getAddress(), "88448");
         assertTrue(elem.getSuppressTCsi());
     }
@@ -147,7 +148,7 @@ public class InitiateCallAttemptRequestTest {
 //        int natureOfAddresIndicator, String address, int numberingPlanIndicator,
 //        int numberIncompleteIndicator, int addressRepresentationREstrictedIndicator, int screeningIndicator
         CallingPartyNumberIsupImpl callingPartyNumber = new CallingPartyNumberIsupImpl(cpn2);
-        CallReferenceNumberImpl callReferenceNumber = new CallReferenceNumberImpl(getDataCallReferenceNumber());
+        CallReferenceNumberImpl callReferenceNumber = new CallReferenceNumberImpl(Unpooled.wrappedBuffer(getDataCallReferenceNumber()));
         ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "88448");
         elem = new InitiateCallAttemptRequestImpl(destinationRoutingAddress, CAPExtensionsTest.createTestCAPExtensions(), legToBeCreated, 15,
                 callingPartyNumber, callReferenceNumber, gsmSCFAddress, true);
@@ -158,55 +159,4 @@ public class InitiateCallAttemptRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-        CalledPartyNumberImpl calledPartyNumber = new CalledPartyNumberImpl(1, "2224444", 0, 0);
-        CalledPartyNumberCapImpl cpn = new CalledPartyNumberCapImpl(calledPartyNumber);
-        ArrayList<CalledPartyNumberCap> calledPartyNumberArr = new ArrayList<CalledPartyNumberCap>();
-        calledPartyNumberArr.add(cpn);
-        DestinationRoutingAddressImpl destinationRoutingAddress = new DestinationRoutingAddressImpl(calledPartyNumberArr);
-        LegIDImpl legToBeCreated = new LegIDImpl(false, LegType.leg6);
-        CallingPartyNumberImpl cpn2 = new CallingPartyNumberImpl(2, "01267", 0, 0, 0, 1);
-        CallingPartyNumberCapImpl callingPartyNumber = new CallingPartyNumberCapImpl(cpn2);
-        CallReferenceNumberImpl callReferenceNumber = new CallReferenceNumberImpl(getDataCallReferenceNumber());
-        ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "88448");
-        InitiateCallAttemptRequestImpl original = new InitiateCallAttemptRequestImpl(destinationRoutingAddress, CAPExtensionsTest.createTestCAPExtensions(),
-                legToBeCreated, 15, callingPartyNumber, callReferenceNumber, gsmSCFAddress, true);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "initiateCallAttemptRequest", InitiateCallAttemptRequestImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        InitiateCallAttemptRequestImpl copy = reader.read("initiateCallAttemptRequest", InitiateCallAttemptRequestImpl.class);
-
-        assertEquals(original.getDestinationRoutingAddress().getCalledPartyNumber().size(), copy.getDestinationRoutingAddress().getCalledPartyNumber().size());
-        CalledPartyNumberCap cpn11 = original.getDestinationRoutingAddress().getCalledPartyNumber().get(0);
-        CalledPartyNumberCap cpn12 = copy.getDestinationRoutingAddress().getCalledPartyNumber().get(0);
-        assertEquals(cpn11.getCalledPartyNumber().getAddress(), cpn12.getCalledPartyNumber().getAddress());
-        assertEquals(cpn11.getCalledPartyNumber().getNatureOfAddressIndicator(), cpn12.getCalledPartyNumber().getNatureOfAddressIndicator());
-        assertTrue(CAPExtensionsTest.checkTestCAPExtensions(original.getExtensions()));
-        assertTrue(CAPExtensionsTest.checkTestCAPExtensions(copy.getExtensions()));
-
-        assertEquals(original.getLegToBeCreated().getReceivingSideID(), copy.getLegToBeCreated().getReceivingSideID());
-        assertEquals((int) original.getNewCallSegment(), (int) copy.getNewCallSegment());
-        assertEquals(original.getCallingPartyNumber().getCallingPartyNumber().getAddress(), copy.getCallingPartyNumber().getCallingPartyNumber().getAddress());
-        assertEquals(original.getCallingPartyNumber().getCallingPartyNumber().getNatureOfAddressIndicator(), copy.getCallingPartyNumber()
-                .getCallingPartyNumber().getNatureOfAddressIndicator());
-        assertEquals(original.getCallReferenceNumber().getData(), copy.getCallReferenceNumber().getData());
-        assertEquals(original.getGsmSCFAddress().getAddress(), copy.getGsmSCFAddress().getAddress());
-        assertEquals(original.getSuppressTCsi(), copy.getSuppressTCsi());
-    }*/
 }

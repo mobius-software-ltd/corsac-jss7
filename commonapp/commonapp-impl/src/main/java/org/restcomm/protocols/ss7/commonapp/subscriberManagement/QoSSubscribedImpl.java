@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscrib
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_PrecedenceClass;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_ReliabilityClass;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -40,90 +40,71 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class QoSSubscribedImpl extends ASNOctetString implements QoSSubscribed {
+public class QoSSubscribedImpl extends ASNOctetString2 implements QoSSubscribed {
 	public QoSSubscribedImpl() {
-    }
-
-    public QoSSubscribedImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
     }
 
     public QoSSubscribedImpl(QoSSubscribed_ReliabilityClass reliabilityClass, QoSSubscribed_DelayClass delayClass,
             QoSSubscribed_PrecedenceClass precedenceClass, QoSSubscribed_PeakThroughput peakThroughput, QoSSubscribed_MeanThroughput meanThroughput) {
-    	this.setData(reliabilityClass, delayClass, precedenceClass, peakThroughput, meanThroughput);
+    	super(translate(reliabilityClass, delayClass, precedenceClass, peakThroughput, meanThroughput));
     }
 
-    protected void setData(QoSSubscribed_ReliabilityClass reliabilityClass, QoSSubscribed_DelayClass delayClass,
+    public static ByteBuf translate(QoSSubscribed_ReliabilityClass reliabilityClass, QoSSubscribed_DelayClass delayClass,
             QoSSubscribed_PrecedenceClass precedenceClass, QoSSubscribed_PeakThroughput peakThroughput, QoSSubscribed_MeanThroughput meanThroughput) {
-        byte[] data = new byte[3];
+        ByteBuf buffer=Unpooled.buffer(3);
 
-        data[0] = (byte) (((delayClass != null ? delayClass.getCode() : 0) << 3) + (reliabilityClass != null ? reliabilityClass.getCode() : 0));
-        data[1] = (byte) (((peakThroughput != null ? peakThroughput.getCode() : 0) << 4) + (precedenceClass != null ? precedenceClass.getCode() : 0));
-        data[2] = (byte) (meanThroughput != null ? meanThroughput.getCode() : 0);
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
-    }
-
-    private boolean checkDataLen() {
-    	ByteBuf value=getValue();
-        if (value != null && value.readableBytes() == 3)
-            return true;
-        else
-            return false;
+        buffer.writeByte((((delayClass != null ? delayClass.getCode() : 0) << 3) + (reliabilityClass != null ? reliabilityClass.getCode() : 0)));
+        buffer.writeByte((((peakThroughput != null ? peakThroughput.getCode() : 0) << 4) + (precedenceClass != null ? precedenceClass.getCode() : 0)));
+        buffer.writeByte((meanThroughput != null ? meanThroughput.getCode() : 0));
+        return buffer;
     }
 
     public QoSSubscribed_ReliabilityClass getReliabilityClass() {
-    	byte[] data=getData();
-    	if (!checkDataLen())
+    	ByteBuf value=getValue();
+    	if (value == null || value.readableBytes() != 3)
             return null;
 
-        return QoSSubscribed_ReliabilityClass.getInstance(data[0] & 0x07);
+        return QoSSubscribed_ReliabilityClass.getInstance(value.readByte() & 0x07);
     }
 
     public QoSSubscribed_DelayClass getDelayClass() {
-    	byte[] data=getData();
-    	if (!checkDataLen())
+    	ByteBuf value=getValue();
+    	if (value == null || value.readableBytes() != 3)
             return null;
 
-        return QoSSubscribed_DelayClass.getInstance((data[0] & 0x38) >> 3);
+        return QoSSubscribed_DelayClass.getInstance((value.readByte() & 0x38) >> 3);
     }
 
     public QoSSubscribed_PrecedenceClass getPrecedenceClass() {
-    	byte[] data=getData();
-    	if (!checkDataLen())
+    	ByteBuf value=getValue();
+    	if (value == null || value.readableBytes() != 3)
             return null;
 
-        return QoSSubscribed_PrecedenceClass.getInstance(data[1] & 0x07);
+    	value.skipBytes(1);
+        return QoSSubscribed_PrecedenceClass.getInstance(value.readByte() & 0x07);
     }
 
     public QoSSubscribed_PeakThroughput getPeakThroughput() {
-    	byte[] data=getData();
-    	if (!checkDataLen())
+    	ByteBuf value=getValue();
+    	if (value == null || value.readableBytes() != 3)
             return null;
 
-        return QoSSubscribed_PeakThroughput.getInstance((data[1] & 0xF0) >> 4);
+    	value.skipBytes(1);
+        return QoSSubscribed_PeakThroughput.getInstance((value.readByte() & 0xF0) >> 4);
     }
 
     public QoSSubscribed_MeanThroughput getMeanThroughput() {
-    	byte[] data=getData();
-    	if (!checkDataLen())
+    	ByteBuf value=getValue();
+    	if (value == null || value.readableBytes() != 3)
             return null;
 
-        return QoSSubscribed_MeanThroughput.getInstance(data[2] & 0x1F);
+    	value.skipBytes(2);
+        return QoSSubscribed_MeanThroughput.getInstance(value.readByte() & 0x1F);
     }
 
     @Override
     public String toString() {
-        if (checkDataLen()) {
+        if (getValue()!=null) {
             QoSSubscribed_ReliabilityClass reliabilityClass = getReliabilityClass();
             QoSSubscribed_DelayClass delayClass = getDelayClass();
             QoSSubscribed_PrecedenceClass precedenceClass = getPrecedenceClass();

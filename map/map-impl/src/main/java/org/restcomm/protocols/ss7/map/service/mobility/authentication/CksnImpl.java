@@ -33,7 +33,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class CksnImpl extends ASNSingleByte implements Cksn {
 	public CksnImpl(int data) {
-        setValue(data);
+		super(data);
     }
 
     public CksnImpl() {        

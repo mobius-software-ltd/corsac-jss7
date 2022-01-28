@@ -42,11 +42,11 @@ public class ASNCompundPrimitive3 {
 	}
 	
 	public ASNCompundPrimitive3(String field1,String field2) {
-		this.field1=new ASNUTF8String();
-		this.field1.setValue(field1);
-				
-		this.field2=new ASNUTF8String();
-		this.field2.setValue(field2);		
+		if(field1!=null)
+			this.field1=new ASNUTF8String(field1);
+		
+		if(field2!=null)
+			this.field2=new ASNUTF8String(field2);			
 	}
 
 	public String getField1() {
@@ -62,10 +62,7 @@ public class ASNCompundPrimitive3 {
 			return;
 		}
 		
-		if(this.field1==null)
-			this.field1=new ASNUTF8String();
-		
-		this.field1.setValue(field1);
+		this.field1=new ASNUTF8String(field1);		
 	}
 
 	public String getField2() {
@@ -81,9 +78,6 @@ public class ASNCompundPrimitive3 {
 			return;
 		}
 		
-		if(this.field2==null)
-			this.field2=new ASNUTF8String();
-		
-		this.field2.setValue(field2);
+		this.field2=new ASNUTF8String(field2);		
 	}
 }

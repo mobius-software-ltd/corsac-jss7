@@ -25,10 +25,9 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -38,26 +37,21 @@ import io.netty.buffer.Unpooled;
 @ASNTag(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,lengthIndefinite = false)
 public class UpdateResultChoiseImpl {
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-	private ASNOctetString operationReturnID;
+	private ASNOctetString2 operationReturnID;
     
     public UpdateResultChoiseImpl() {
     }
 
-    public UpdateResultChoiseImpl(byte[] operationReturnID) {
-    	if(operationReturnID!=null) {
-    		this.operationReturnID=new ASNOctetString();
-    		this.operationReturnID.setValue(Unpooled.wrappedBuffer(operationReturnID));
-    	}
+    public UpdateResultChoiseImpl(ByteBuf operationReturnID) {
+    	if(operationReturnID!=null)
+    		this.operationReturnID=new ASNOctetString2(operationReturnID);    	
     }
 
-    public byte[] getOperationReturnID() {
-    	if(operationReturnID==null || operationReturnID.getValue()==null)
+    public ByteBuf getOperationReturnID() {
+    	if(operationReturnID==null)
     		return null;
     	
-    	ByteBuf value=operationReturnID.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-    	return data;
+    	return operationReturnID.getValue();
     }
 
     @Override
@@ -67,7 +61,7 @@ public class UpdateResultChoiseImpl {
         sb.append("UpdateResultRequest [");
         if (this.operationReturnID != null && this.operationReturnID.getValue()!=null) {
             sb.append("operationReturnID=");
-            sb.append(ASNOctetString.printDataArr(getOperationReturnID()));
+            sb.append(operationReturnID.printDataArr());
         }
         
         sb.append("]");

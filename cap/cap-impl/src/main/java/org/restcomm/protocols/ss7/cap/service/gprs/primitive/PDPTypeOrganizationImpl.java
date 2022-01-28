@@ -36,14 +36,11 @@ public class PDPTypeOrganizationImpl extends ASNSingleByte implements PDPTypeOrg
     }
 
     public PDPTypeOrganizationImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public PDPTypeOrganizationImpl(PDPTypeOrganizationValue value) {
-    	if(value==null)
-    		setValue(0);
-    	else
-    		setValue(value.getCode() | 0xF0);        
+    	super(value==null?0:(value.getCode() | 0xF0));    	       
     }
 
     public PDPTypeOrganizationValue getPDPTypeOrganizationValue() {

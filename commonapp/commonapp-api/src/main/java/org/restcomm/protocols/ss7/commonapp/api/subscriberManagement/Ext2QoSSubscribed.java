@@ -88,8 +88,6 @@ In MS to network direction and in network to MS direction:
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface Ext2QoSSubscribed {
 
-    byte[] getData();
-
     Ext2QoSSubscribed_SourceStatisticsDescriptor getSourceStatisticsDescriptor();
 
     boolean isOptimisedForSignallingTraffic();

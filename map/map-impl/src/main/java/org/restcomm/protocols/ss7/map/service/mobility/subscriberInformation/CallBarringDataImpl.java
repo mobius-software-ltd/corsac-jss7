@@ -62,11 +62,9 @@ public class CallBarringDataImpl implements CallBarringData {
         
         this.password = password;
         
-        if(wrongPasswordAttemptsCounter!=null) {
-        	this.wrongPasswordAttemptsCounter = new ASNInteger();
-        	this.wrongPasswordAttemptsCounter.setValue(wrongPasswordAttemptsCounter.longValue());
-        }
-        
+        if(wrongPasswordAttemptsCounter!=null)
+        	this.wrongPasswordAttemptsCounter = new ASNInteger(wrongPasswordAttemptsCounter);
+        	
         if(notificationToCSE)
         	this.notificationToCSE = new ASNNull();
         
@@ -88,7 +86,7 @@ public class CallBarringDataImpl implements CallBarringData {
     	if(this.wrongPasswordAttemptsCounter==null)
     		return null;
     	
-        return this.wrongPasswordAttemptsCounter.getValue().intValue();
+        return this.wrongPasswordAttemptsCounter.getIntValue();
     }
 
     public boolean getNotificationToCSE() {

@@ -34,6 +34,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -63,7 +64,7 @@ public class ScfIDTest {
         assertTrue(result.getResult() instanceof ScfIDImpl);
         
         ScfIDImpl elem = (ScfIDImpl)result.getResult();
-        assertTrue(Arrays.equals(elem.getData(), this.getDataInt()));
+        assertTrue(ByteBufUtil.equals(elem.getValue(), Unpooled.wrappedBuffer(this.getDataInt())));
     }
 
     @Test(groups = { "functional.encode", "primitives" })
@@ -71,7 +72,7 @@ public class ScfIDTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ScfIDImpl.class);
     	
-        ScfIDImpl elem = new ScfIDImpl(getDataInt());
+        ScfIDImpl elem = new ScfIDImpl(Unpooled.wrappedBuffer(getDataInt()));
         byte[] rawData = this.getData1();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];

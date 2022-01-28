@@ -95,7 +95,7 @@ public class SuspendMessageImpl extends ISUPMessageImpl implements SuspendMessag
             this.setSuspendResumeIndicators(sri);
             b.skipBytes(1);
         } else {
-            throw new ParameterException("byte[] must have atleast eight octets");
+            throw new ParameterException("buffer must have atleast eight readable octets");
         }
     }
 

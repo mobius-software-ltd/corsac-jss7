@@ -45,10 +45,8 @@ public class CancelRequestChoisempl {
     }
 
     public CancelRequestChoisempl(Integer invokeID) {
-    	if(invokeID!=null) {
-    		this.invokeID = new ASNInteger();
-    		this.invokeID.setValue(invokeID.longValue());
-    	}
+    	if(invokeID!=null)
+    		this.invokeID = new ASNInteger(invokeID);    		
     }
 
     public CancelRequestChoisempl(boolean allRequests) {
@@ -57,10 +55,10 @@ public class CancelRequestChoisempl {
     }
 
     public Integer getInvokeID() {
-    	if(invokeID==null || invokeID.getValue()==null)
+    	if(invokeID==null)
     		return null;
     	
-        return invokeID.getValue().intValue();
+        return invokeID.getIntValue();
     }
 
     public boolean getAllRequests() {

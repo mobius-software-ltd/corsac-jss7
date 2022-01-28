@@ -4,7 +4,7 @@ import org.restcomm.protocols.ss7.inap.api.charging.Currency;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 
 /*
@@ -32,17 +32,20 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 *
 */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
-public class ASNCurrency extends ASNInteger {
-	public void setType(Currency t) {
-		if(t!=null)
-			setValue((long)t.getCode());
+public class ASNCurrency extends ASNEnumerated {
+	public ASNCurrency() {
+		
+	}
+	
+	public ASNCurrency(Currency t) {
+		super(t.getCode());
 	}
 	
 	public Currency getType() {
-		Long realValue=getValue();
+		Integer realValue=getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return Currency.getInstance(realValue.intValue());
+		return Currency.getInstance(realValue);
 	}
 }

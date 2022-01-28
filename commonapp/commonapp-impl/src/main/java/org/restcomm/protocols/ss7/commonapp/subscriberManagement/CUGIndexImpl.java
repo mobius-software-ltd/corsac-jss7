@@ -36,15 +36,15 @@ public class CUGIndexImpl extends ASNInteger implements CUGIndex {
     }
 
     public CUGIndexImpl(int data) {
-        setValue((long)data & 0x0FFFFFFFFL);
+        super(data);
     }
 
     public int getData() {
-    	Long value=getValue();
+    	Integer value=getIntValue();
     	if(value==null)
     		return 0;
     	
-        return value.intValue();
+        return value;
     }
 
     @Override

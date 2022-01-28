@@ -62,7 +62,7 @@ public class PropagationDelayCounterImpl extends AbstractISUPParameter implement
     public void decode(ByteBuf b) throws ParameterException {
         // This one is other way around, as Eduardo might say.
         if (b == null || b.readableBytes() != 2) {
-            throw new ParameterException("byte[] must  not be null and length must be 2");
+            throw new ParameterException("buffer must  not be null and length must be 2");
         }
 
         this.propagationDelay = b.readByte() << 8;

@@ -48,29 +48,25 @@ public class FilteringCharacteristicsImpl implements FilteringCharacteristics {
 
     public FilteringCharacteristicsImpl(Integer value,Boolean isInterval) {
     	if(value!=null) {
-    		if(isInterval) {
-    			this.interval = new ASNInteger();
-    			this.interval.setValue(value.longValue());
-    		}
-    		else {
-    			this.numberOfCalls = new ASNInteger();
-    			this.numberOfCalls.setValue(value.longValue());
-    		}
+    		if(isInterval)
+    			this.interval = new ASNInteger(value);    			
+    		else
+    			this.numberOfCalls = new ASNInteger(value);    			
     	}
     }
 
     public Integer getInterval() {
-    	if(interval==null || interval.getValue()==null)
+    	if(interval==null)
     		return null;
     	
-        return interval.getValue().intValue();
+        return interval.getIntValue();
     }
 
     public Integer getNumberOfCalls() {
-    	if(numberOfCalls==null || numberOfCalls.getValue()==null)
+    	if(numberOfCalls==null)
     		return null;
     	
-        return numberOfCalls.getValue().intValue();
+        return numberOfCalls.getIntValue();
     }
 
     @Override

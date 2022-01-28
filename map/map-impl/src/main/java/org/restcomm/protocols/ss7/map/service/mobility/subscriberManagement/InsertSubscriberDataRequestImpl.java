@@ -217,11 +217,9 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
         this.msisdn = msisdn;
         this.category = category;
         
-        if(subscriberStatus!=null) {
-        	this.subscriberStatus = new ASNSubscriberStatus();
-        	this.subscriberStatus.setType(subscriberStatus);
-        }
-        
+        if(subscriberStatus!=null)
+        	this.subscriberStatus = new ASNSubscriberStatus(subscriberStatus);
+        	
         if(bearerServiceList!=null)
         	this.bearerServiceList = new ExtBearerServiceCodeListWrapperImpl(bearerServiceList);
         
@@ -271,11 +269,9 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
         this.msisdn = msisdn;
         this.category = category;
         
-        if(subscriberStatus!=null) {
-        	this.subscriberStatus = new ASNSubscriberStatus();
-        	this.subscriberStatus.setType(subscriberStatus);
-        }
-        
+        if(subscriberStatus!=null)
+        	this.subscriberStatus = new ASNSubscriberStatus(subscriberStatus);
+        	
         if(bearerServiceList!=null)
         	this.bearerServiceList = new ExtBearerServiceCodeListWrapperImpl(bearerServiceList);
         
@@ -309,11 +305,9 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
             if(roamingRestrictedInSgsnDueToUnsupportedFeature)
             	this.roamingRestrictedInSgsnDueToUnsupportedFeature = new ASNNull();
             
-            if(networkAccessMode!=null) {
-            	this.networkAccessMode = new ASNNetworkAccessMode();
-            	this.networkAccessMode.setType(networkAccessMode);
-            }
-            
+            if(networkAccessMode!=null)
+            	this.networkAccessMode = new ASNNetworkAccessMode(networkAccessMode);
+            	
             this.lsaInformation = lsaInformation;
             
             if(lmuIndicator)
@@ -321,11 +315,9 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
             
             this.lcsInformation = lcsInformation;
             
-            if(istAlertTimer!=null) {
-            	this.istAlertTimer = new ASNInteger();
-            	this.istAlertTimer.setValue(istAlertTimer.longValue());
-            }
-            
+            if(istAlertTimer!=null)
+            	this.istAlertTimer = new ASNInteger(istAlertTimer);
+            	
             this.superChargerSupportedInHLR = superChargerSupportedInHLR;
             this.mcSsInfo = mcSsInfo;
             this.csAllocationRetentionPriority = csAllocationRetentionPriority;
@@ -333,11 +325,9 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
             this.chargingCharacteristics = chargingCharacteristics;
             this.accessRestrictionData = accessRestrictionData;
             
-            if(icsIndicator!=null) {
-            	this.icsIndicator = new ASNBoolean();
-            	this.icsIndicator.setValue(icsIndicator);
-            }
-            
+            if(icsIndicator!=null)
+            	this.icsIndicator = new ASNBoolean(icsIndicator);
+            	
             this.epsSubscriptionData = epsSubscriptionData;
             
             if(csgSubscriptionDataList!=null)
@@ -349,23 +339,17 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
             this.sgsnNumber = sgsnNumber;
             this.mmeName = mmeName;
             
-            if(subscribedPeriodicRAUTAUtimer!=null) {
-            	this.subscribedPeriodicRAUTAUtimer = new ASNInteger();
-            	this.subscribedPeriodicRAUTAUtimer.setValue(subscribedPeriodicRAUTAUtimer);
-            }
-            
+            if(subscribedPeriodicRAUTAUtimer!=null)
+            	this.subscribedPeriodicRAUTAUtimer = new ASNInteger(subscribedPeriodicRAUTAUtimer);
+            	
             if(vplmnLIPAAllowed)
             	this.vplmnLIPAAllowed = new ASNNull();
             
-            if(mdtUserConsent!=null) {
-            	this.mdtUserConsent = new ASNBoolean();
-            	this.mdtUserConsent.setValue(mdtUserConsent);
-            }
-            
-            if(subscribedPeriodicLAUtimer!=null) {
-            	this.subscribedPeriodicLAUtimer = new ASNInteger();
-            	this.subscribedPeriodicLAUtimer.setValue(subscribedPeriodicLAUtimer);
-            }
+            if(mdtUserConsent!=null)
+            	this.mdtUserConsent = new ASNBoolean(mdtUserConsent);
+            	
+            if(subscribedPeriodicLAUtimer!=null)
+            	this.subscribedPeriodicLAUtimer = new ASNInteger(subscribedPeriodicLAUtimer);            	
         }
     }
 
@@ -517,7 +501,7 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     	if(this.istAlertTimer==null)
     		return null;
     	
-        return this.istAlertTimer.getValue().intValue();
+        return this.istAlertTimer.getIntValue();
     }
 
     @Override

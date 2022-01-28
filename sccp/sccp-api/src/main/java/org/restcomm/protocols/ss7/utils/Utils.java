@@ -35,6 +35,7 @@
  */
 package org.restcomm.protocols.ss7.utils;
 
+import io.netty.buffer.ByteBuf;
 
 /**
  * This class contains various static utility methods.
@@ -49,7 +50,7 @@ public class Utils {
      * @param bytes the data to dump
      * @return a string containing the hexdump
      */
-    public static String hexDump(byte[] bytes) {
+    public static String hexDump(ByteBuf bytes) {
         return hexDump(null, bytes);
     }
 
@@ -60,7 +61,7 @@ public class Utils {
      * @param bytes the data to dump
      * @return a string containing the hexdump
      */
-    public static String hexDump(String label, byte[] bytes) {
+    public static String hexDump(String label, ByteBuf bytes) {
         final int modulo = 16;
         final int brk = modulo / 2;
         int indent = (label == null) ? 0 : label.length();
@@ -78,13 +79,13 @@ public class Utils {
             return null;
         }
 
-        sb = new StringBuffer(bytes.length * 4);
+        sb = new StringBuffer(bytes.readableBytes() * 4);
 
         StringBuffer cb = new StringBuffer(16);
         boolean nl = true;
         int i = 0;
 
-        for (i = 1; i <= bytes.length; i++) {
+        for (i = 1; bytes.readableBytes()>0; i++) {
             // start of line?
             if (nl) {
                 nl = false;
@@ -106,7 +107,7 @@ public class Utils {
 
             sb.append(" ");
 
-            int c = (bytes[i - 1] & 0xFF);
+            int c = (bytes.readByte() & 0xFF);
             String hx = Integer.toHexString(c).toUpperCase();
 
             if (hx.length() == 1) {

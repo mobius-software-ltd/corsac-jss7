@@ -34,6 +34,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -62,8 +63,8 @@ public class CallReferenceNumberTest {
         assertTrue(result.getResult() instanceof CallReferenceNumberImpl);
         CallReferenceNumberImpl prim = (CallReferenceNumberImpl)result.getResult();
         
-        assertNotNull(prim.getData());
-        assertTrue(Arrays.equals(getDataVal(), prim.getData()));
+        assertNotNull(prim.getValue());
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(getDataVal()), prim.getValue()));
 
     }
 
@@ -72,7 +73,7 @@ public class CallReferenceNumberTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CallReferenceNumberImpl.class);
 
-        CallReferenceNumberImpl prim = new CallReferenceNumberImpl(getDataVal());
+        CallReferenceNumberImpl prim = new CallReferenceNumberImpl(Unpooled.wrappedBuffer(getDataVal()));
         byte[] data=this.getData();
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];

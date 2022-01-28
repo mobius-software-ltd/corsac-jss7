@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
 import java.io.Serializable;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  EncryptionInformation ::= OCTET STRING (SIZE (18..maxNumOfEncryptionInfo)) -- Octets contain a complete EncryptionInformation
@@ -36,6 +38,5 @@ import java.io.Serializable;
  */
 public interface EncryptionInformation extends Serializable {
 
-    byte[] getData();
-
+	ByteBuf getValue();
 }

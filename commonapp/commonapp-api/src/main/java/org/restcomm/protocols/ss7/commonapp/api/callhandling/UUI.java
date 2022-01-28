@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.commonapp.api.callhandling;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
 *
 <code>
@@ -39,7 +41,7 @@ UUI  ::= OCTET STRING (SIZE (1..131))
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface UUI {
 
-    byte[] getData();
+    ByteBuf getValue();
 
     // TODO: implement the internal structure
 

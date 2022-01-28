@@ -30,7 +30,6 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.cap.CAPStackImpl;
@@ -203,6 +202,10 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -419,7 +422,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                 super.onFurnishChargingInformationRequest(ind);
 
                 byte[] freeFormatData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
-                assertTrue(Arrays.equals(ind.getFCIBCCCAMELsequence1().getFreeFormatData().getData(), freeFormatData));
+                assertTrue(ByteBufUtil.equals(ind.getFCIBCCCAMELsequence1().getFreeFormatData().getValue(), Unpooled.wrappedBuffer(freeFormatData)));
                 assertEquals(ind.getFCIBCCCAMELsequence1().getPartyToCharge(), LegType.leg1);
                 assertEquals(ind.getFCIBCCCAMELsequence1().getAppendFreeFormatData(), AppendFreeFormatData.append);
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
@@ -635,7 +638,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                             }
 
                             byte[] freeFormatData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
-                            FreeFormatDataImpl ffd = new FreeFormatDataImpl(freeFormatData);
+                            FreeFormatDataImpl ffd = new FreeFormatDataImpl(Unpooled.wrappedBuffer(freeFormatData));
                             FCIBCCCAMELSequence1 FCIBCCCAMELsequence1 = this.capParameterFactory.createFCIBCCCAMELsequence1(
                                     ffd, LegType.leg1, AppendFreeFormatData.append);
                             dlg.addFurnishChargingInformationRequest(FCIBCCCAMELsequence1);
@@ -3285,8 +3288,8 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 super.onFurnishChargingInformationGPRSRequest(ind);
 
                 byte[] bFreeFormatData = new byte[] { 48, 6, -128, 1, 5, -127, 1, 2 };
-                assertEquals(ind.getFCIGPRSBillingChargingCharacteristics().getFCIBCCCAMELsequence1().getFreeFormatData()
-                        .getData(), bFreeFormatData);
+                assertTrue(ByteBufUtil.equals(ind.getFCIGPRSBillingChargingCharacteristics().getFCIBCCCAMELsequence1().getFreeFormatData()
+                        .getValue(), Unpooled.wrappedBuffer(bFreeFormatData)));
                 assertEquals(ind.getFCIGPRSBillingChargingCharacteristics().getFCIBCCCAMELsequence1().getPDPID().getId(), 2);
                 assertEquals(
                         ind.getFCIGPRSBillingChargingCharacteristics().getFCIBCCCAMELsequence1().getAppendFreeFormatData(),
@@ -3310,7 +3313,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             @Override
             public void onConnectGPRSRequest(ConnectGPRSRequest ind) {
                 super.onConnectGPRSRequest(ind);
-                assertTrue(Arrays.equals(ind.getAccessPointName().getData(), new byte[] { 52, 20, 30 }));
+                assertTrue(ByteBufUtil.equals(ind.getAccessPointName().getValue(),Unpooled.wrappedBuffer(new byte[] { 52, 20, 30 })));
                 assertEquals(ind.getPDPID().getId(), 2);
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
                 dialogStep = 2;
@@ -3342,14 +3345,28 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                                 throw new CAPException(e.getMessage(), e);
                             }
                             CellGlobalIdOrServiceAreaIdOrLAIImpl cgi = new CellGlobalIdOrServiceAreaIdOrLAIImpl(lai);
-                            RAIdentityImpl ra = new RAIdentityImpl(new byte[] { 11, 12, 13, 14, 15, 16 });
-                            GeographicalInformationImpl ggi = new GeographicalInformationImpl(new byte[] { 31, 32, 33, 34, 35,
-                                    36, 37, 38 });
+                            RAIdentityImpl ra = new RAIdentityImpl(Unpooled.wrappedBuffer(new byte[] { 11, 12, 13, 14, 15, 16 }));
+                            
+                            GeographicalInformationImpl ggi = null;
+                            try {                                
+                            	ByteBuf geoBuffer=Unpooled.wrappedBuffer(new byte[] { 31, 32, 33, 34, 35, 36, 37, 38 });
+                            	ggi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
+                            } catch (APPException e) {
+                                throw new CAPException(e.getMessage(), e);
+                            }
+                            
                             ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number,
                                     NumberingPlan.ISDN, "654321");
-                            LSAIdentityImpl lsa = new LSAIdentityImpl(new byte[] { 91, 92, 93 });
-                            GeodeticInformationImpl gdi = new GeodeticInformationImpl(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9,
-                                    10 });
+                            LSAIdentityImpl lsa = new LSAIdentityImpl(Unpooled.wrappedBuffer(new byte[] { 91, 92, 93 }));
+                            
+                            GeodeticInformationImpl gdi = null;
+                            try {
+                            	ByteBuf geodeticBuffer=Unpooled.wrappedBuffer(new byte[] { 1, 16, 3, 4, 5, 6, 7, 8, 9, 10 });
+                            	gdi = new GeodeticInformationImpl(geodeticBuffer.readByte() & 0x0FF, GeographicalInformationImpl.decodeTypeOfShape(geodeticBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geodeticBuffer), GeographicalInformationImpl.decodeLongitude(geodeticBuffer), GeographicalInformationImpl.decodeUncertainty(geodeticBuffer.readByte() & 0x0FF),geodeticBuffer.readByte() & 0x0FF);
+                            } catch (APPException e) {
+                                throw new CAPException(e.getMessage(), e);
+                            }
+                            
                             LocationInformationGPRSImpl locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, ggi,
                                     sgsn, lsa, null, true, gdi, true, 13);
                             GPRSEventSpecificInformationImpl gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl(
@@ -3446,7 +3463,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             
                             byte[] bFreeFormatData = new byte[] { 48, 6, -128, 1, 5, -127, 1, 2 };
 
-                            FreeFormatDataGprsImpl freeFormatData = new FreeFormatDataGprsImpl(bFreeFormatData);
+                            FreeFormatDataGprsImpl freeFormatData = new FreeFormatDataGprsImpl(Unpooled.wrappedBuffer(bFreeFormatData));
                             PDPIDImpl pdpID = new PDPIDImpl(2);
                             FCIBCCCAMELSequence1GprsImpl fcIBCCCAMELsequence1 = new FCIBCCCAMELSequence1GprsImpl(freeFormatData, pdpID,
                                     AppendFreeFormatData.append);
@@ -3496,7 +3513,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ApplyChargingGPRSRequest, null,
                                     sequence++));
 
-                            AccessPointNameImpl accessPointName = new AccessPointNameImpl(new byte[] { 52, 20, 30 });
+                            AccessPointNameImpl accessPointName = new AccessPointNameImpl(Unpooled.wrappedBuffer(new byte[] { 52, 20, 30 }));
                             PDPIDImpl pdpIDConnectRequest = new PDPIDImpl(2);
                             dlg.addConnectGPRSRequest(accessPointName, pdpIDConnectRequest);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ConnectGPRSRequest, null, sequence++));
@@ -3677,7 +3694,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     switch (dialogStep) {
                         case 1:
                             byte[] bFreeFormatData = new byte[] { 48, 6, -128, 1, 5, -127, 1, 2 };
-                            FreeFormatDataGprsImpl freeFormatData = new FreeFormatDataGprsImpl(bFreeFormatData);
+                            FreeFormatDataGprsImpl freeFormatData = new FreeFormatDataGprsImpl(Unpooled.wrappedBuffer(bFreeFormatData));
                             PDPIDImpl pdpID = new PDPIDImpl(2);
                             FCIBCCCAMELSequence1GprsImpl fcIBCCCAMELsequence1 = new FCIBCCCAMELSequence1GprsImpl(freeFormatData, pdpID,
                                     AppendFreeFormatData.append);
@@ -3734,8 +3751,8 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 super.onFurnishChargingInformationGPRSRequest(ind);
 
                 byte[] bFreeFormatData = new byte[] { 48, 6, -128, 1, 5, -127, 1, 2 };
-                assertEquals(ind.getFCIGPRSBillingChargingCharacteristics().getFCIBCCCAMELsequence1().getFreeFormatData()
-                        .getData(), bFreeFormatData);
+                assertTrue(ByteBufUtil.equals(ind.getFCIGPRSBillingChargingCharacteristics().getFCIBCCCAMELsequence1().getFreeFormatData()
+                        .getValue(),Unpooled.wrappedBuffer(bFreeFormatData)));
                 assertEquals(ind.getFCIGPRSBillingChargingCharacteristics().getFCIBCCCAMELsequence1().getPDPID().getId(), 2);
                 assertEquals(
                         ind.getFCIGPRSBillingChargingCharacteristics().getFCIBCCCAMELsequence1().getAppendFreeFormatData(),
@@ -3782,14 +3799,28 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                                 throw new CAPException(e.getMessage(), e);
                             }
                             CellGlobalIdOrServiceAreaIdOrLAIImpl cgi = new CellGlobalIdOrServiceAreaIdOrLAIImpl(lai);
-                            RAIdentityImpl ra = new RAIdentityImpl(new byte[] { 11, 12, 13, 14, 15, 16 });
-                            GeographicalInformationImpl ggi = new GeographicalInformationImpl(new byte[] { 31, 32, 33, 34, 35,
-                                    36, 37, 38 });
+                            RAIdentityImpl ra = new RAIdentityImpl(Unpooled.wrappedBuffer(new byte[] { 11, 12, 13, 14, 15, 16 }));
+                          
+                            GeographicalInformationImpl ggi = null;
+                            try {                                
+                            	ByteBuf geoBuffer=Unpooled.wrappedBuffer(new byte[] { 31, 32, 33, 34, 35, 36, 37, 38 });
+                            	ggi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
+                            } catch (APPException e) {
+                                throw new CAPException(e.getMessage(), e);
+                            }
+                            
                             ISDNAddressStringImpl sgsn = new ISDNAddressStringImpl(AddressNature.international_number,
                                     NumberingPlan.ISDN, "654321");
-                            LSAIdentityImpl lsa = new LSAIdentityImpl(new byte[] { 91, 92, 93 });
-                            GeodeticInformationImpl gdi = new GeodeticInformationImpl(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9,
-                                    10 });
+                            LSAIdentityImpl lsa = new LSAIdentityImpl(Unpooled.wrappedBuffer(new byte[] { 91, 92, 93 }));
+                            
+                            GeodeticInformationImpl gdi = null;
+                            try {
+                            	ByteBuf geodeticBuffer=Unpooled.wrappedBuffer(new byte[] { 1, 16, 3, 4, 5, 6, 7, 8, 9, 10 });
+                            	gdi = new GeodeticInformationImpl(geodeticBuffer.readByte() & 0x0FF, GeographicalInformationImpl.decodeTypeOfShape(geodeticBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geodeticBuffer), GeographicalInformationImpl.decodeLongitude(geodeticBuffer), GeographicalInformationImpl.decodeUncertainty(geodeticBuffer.readByte() & 0x0FF),geodeticBuffer.readByte() & 0x0FF);
+                            } catch (APPException e) {
+                                throw new CAPException(e.getMessage(), e);
+                            }
+                            
                             LocationInformationGPRSImpl locationInformationGPRS = new LocationInformationGPRSImpl(cgi, ra, ggi,
                                     sgsn, lsa, null, true, gdi, true, 13);
                             GPRSEventSpecificInformationImpl gprsEventSpecificInformation = new GPRSEventSpecificInformationImpl(
@@ -3938,7 +3969,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             @Override
             public void onConnectGPRSRequest(ConnectGPRSRequest ind) {
                 super.onConnectGPRSRequest(ind);
-                assertTrue(Arrays.equals(ind.getAccessPointName().getData(), new byte[] { 52, 20, 30 }));
+                assertTrue(ByteBufUtil.equals(ind.getAccessPointName().getValue(),Unpooled.wrappedBuffer(new byte[] { 52, 20, 30 })));
                 assertEquals(ind.getPDPID().getId(), 2);
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
             }
@@ -3979,7 +4010,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.EventReportGPRSResponse, null,
                                     sequence++));
 
-                            AccessPointNameImpl accessPointName = new AccessPointNameImpl(new byte[] { 52, 20, 30 });
+                            AccessPointNameImpl accessPointName = new AccessPointNameImpl(Unpooled.wrappedBuffer(new byte[] { 52, 20, 30 }));
                             PDPIDImpl pdpIDConnectRequest = new PDPIDImpl(2);
                             dlg.addConnectGPRSRequest(accessPointName, pdpIDConnectRequest);
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ConnectGPRSRequest, null, sequence++));
@@ -4210,7 +4241,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             public void onFurnishChargingInformationSMSRequest(FurnishChargingInformationSMSRequest ind) {
                 super.onFurnishChargingInformationSMSRequest(ind);
 
-                assertEquals(ind.getFCIBCCCAMELsequence1().getFreeFormatData().getData(), freeFD);
+                assertTrue(ByteBufUtil.equals(ind.getFCIBCCCAMELsequence1().getFreeFormatData().getValue(),Unpooled.wrappedBuffer(freeFD)));
 
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
                 dialogStep = 2;
@@ -4312,7 +4343,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                         break;
 
                     case 2:
-                        FreeFormatDataSMS freeFormatData = this.capParameterFactory.createFreeFormatDataSMS(freeFD);
+                        FreeFormatDataSMS freeFormatData = this.capParameterFactory.createFreeFormatDataSMS(Unpooled.wrappedBuffer(freeFD));
                         FCIBCCCAMELSequence1SMS fciBCCCAMELsequence1 = this.capParameterFactory.createFCIBCCCAMELsequence1(freeFormatData, null);
                         dlg.addFurnishChargingInformationSMSRequest(fciBCCCAMELsequence1);
                         this.observerdEvents.add(TestEvent.createSentEvent(EventType.FurnishChargingInformationSMSRequest,
@@ -5133,7 +5164,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
 
                 try {
                     assertEquals(ind.getGapCriteria().getBasicGapCriteria().getCalledAddressAndService()
-                            .getCalledAddressValue().getGenericNumber().getAddress(), "501090500");
+                            .getCalledAddressNumber().getGenericNumber().getAddress(), "501090500");
                 } catch (APPException e) {
                 	fail("CAPException in onCallGapRequest: " + e);
                 }

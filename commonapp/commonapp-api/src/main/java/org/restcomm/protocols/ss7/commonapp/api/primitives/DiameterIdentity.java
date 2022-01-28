@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.commonapp.api.primitives;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -45,5 +47,5 @@ FQDN=fully qualified domain name
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface DiameterIdentity {
-    byte[] getData();
+    ByteBuf getValue();
 }

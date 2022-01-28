@@ -93,35 +93,6 @@ public class RedirectionInformationTest extends ParameterHarness {
         assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
     }
 
-    /*@Test(groups = { "functional.xml.serialize", "parameter" })
-    public void testXMLSerialize() throws Exception {
-
-        RedirectionInformationImpl original = new RedirectionInformationImpl(RedirectionInformation._RI_CALL_D,
-                RedirectionInformation._ORR_NO_REPLY, 4, RedirectionInformation._RI_CALL_REROUTED);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "redirectionInformation", RedirectionInformationImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        RedirectionInformationImpl copy = reader.read("redirectionInformation", RedirectionInformationImpl.class);
-
-        assertEquals(copy.getRedirectingIndicator(), original.getRedirectingIndicator());
-        assertEquals(copy.getOriginalRedirectionReason(), original.getOriginalRedirectionReason());
-        assertEquals(copy.getRedirectionCounter(), original.getRedirectionCounter());
-        assertEquals(copy.getRedirectionReason(), original.getRedirectionReason());
-    }*/
-
     public RedirectionInformationTest() {
         super();
         super.goodBodies.add(Unpooled.wrappedBuffer(new byte[] { (byte) 0xC5, (byte) 0x03 }));

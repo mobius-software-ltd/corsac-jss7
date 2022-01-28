@@ -35,12 +35,14 @@ import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_DA;
 import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_OA;
 import org.restcomm.protocols.ss7.map.api.service.sms.SmsSignalInfo;
+import org.restcomm.protocols.ss7.map.smstpdu.SmsTpduImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -51,14 +53,15 @@ import io.netty.buffer.Unpooled;
 public class ForwardShortMessageRequestTest {
 
     private byte[] getEncodedDataSimple() {
-        return new byte[] { 48, 38, -124, 7, -111, 34, 51, 67, -103, 32, 50, -126, 8, -111, 50, 17, 50, 33, 67, 51, -12, 4, 17,
-                11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8 };
+        return new byte[] { 48, 60, -124, 7, -111, 34, 51, 67, -103, 32, 50, -126, 8, -111, 50, 17, 50, 33, 67, 51, -12, 4, 39, 
+        		-28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1, -112, 101, 54, 
+        		-5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 };
     }
 
     private byte[] getEncodedDataComplex() {
-        return new byte[] { 48, 63, -124, 8, -111, 50, 17, 50, 33, 67, 51, -12, -126, 7, -111, 34, 51, 67, -103, 32, 50, 4, 40,
-                11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4,
-                4, 4, 4, 4, 4, 5, 0 };
+        return new byte[] { 48, 62, -124, 8, -111, 50, 17, 50, 33, 67, 51, -12, -126, 7, -111, 34, 51, 67, -103, 32, 50, 4, 39, 
+        		-28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1, -112, 101, 54, 
+        		-5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0, 5, 0 };
     }
 
     @Test(groups = { "functional.decode", "service.sms" })
@@ -81,12 +84,11 @@ public class ForwardShortMessageRequestTest {
         assertEquals(AddressNature.international_number, oa.getMsisdn().getAddressNature());
         assertEquals(NumberingPlan.ISDN, oa.getMsisdn().getNumberingPlan());
         assertEquals("2311231234334", oa.getMsisdn().getAddress());
-        
-        ByteBuf buffer=ui.getValue();
-        byte[] data=new byte[buffer.readableBytes()];
-        buffer.readBytes(data);
-        
-        assertTrue(Arrays.equals(data, new byte[] { 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8 }));
+                
+        ByteBuf translatedValue=Unpooled.buffer();
+        ui.decodeTpdu(false).encodeData(translatedValue);
+        assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
         assertFalse(ind.getMoreMessagesToSend());
 
         rawData = getEncodedDataComplex();
@@ -105,12 +107,10 @@ public class ForwardShortMessageRequestTest {
         assertEquals(NumberingPlan.ISDN, oa.getMsisdn().getNumberingPlan());
         assertEquals("223334990223", oa.getMsisdn().getAddress());
         
-        buffer=ui.getValue();
-        data=new byte[buffer.readableBytes()];
-        buffer.readBytes(data);
-        
-        assertTrue(Arrays.equals(data, new byte[] { 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8, 1, 2, 2,
-                2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4 }));
+        translatedValue=Unpooled.buffer();
+        ui.decodeTpdu(false).encodeData(translatedValue);
+        assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
         assertTrue(ind.getMoreMessagesToSend());
     }
 
@@ -125,7 +125,8 @@ public class ForwardShortMessageRequestTest {
                 "2311231234334");
         SM_RP_OAImpl sm_RP_OA = new SM_RP_OAImpl();
         sm_RP_OA.setMsisdn(msisdn);
-        SmsSignalInfoImpl sm_RP_UI = new SmsSignalInfoImpl(new byte[] { 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8 },
+        SmsSignalInfoImpl sm_RP_UI = new SmsSignalInfoImpl(SmsTpduImpl.createInstance(Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 }),false, null),
                 null);
         MoForwardShortMessageRequestImpl ind = new MoForwardShortMessageRequestImpl(sm_RP_DA, sm_RP_OA, sm_RP_UI, false);
 
@@ -141,8 +142,8 @@ public class ForwardShortMessageRequestTest {
         msisdn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "223334990223");
         sm_RP_OA = new SM_RP_OAImpl();
         sm_RP_OA.setMsisdn(msisdn);
-        sm_RP_UI = new SmsSignalInfoImpl(new byte[] { 11, 22, 33, 44, 55, 66, 77, 0, 1, 2, 3, 4, 5, 6, 7, 9, 8, 1, 2, 2, 2, 2,
-                2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4 }, null);
+        sm_RP_UI = new SmsSignalInfoImpl(SmsTpduImpl.createInstance(Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 }),false, null), null);
         ind = new MoForwardShortMessageRequestImpl(sm_RP_DA, sm_RP_OA, sm_RP_UI, true);
 
         buffer=parser.encode(ind);

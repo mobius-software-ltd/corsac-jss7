@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.CliRestrictionOp
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNCliRestrictionOptionImpl extends ASNEnumerated {
-	public void setType(CliRestrictionOption t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNCliRestrictionOptionImpl() {
+		
+	}
+	
+	public ASNCliRestrictionOptionImpl(CliRestrictionOption t) {
+		super(t.getCode());
 	}
 	
 	public CliRestrictionOption getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return CliRestrictionOption.getInstance(getValue().intValue());
+		return CliRestrictionOption.getInstance(realValue);
 	}
 }

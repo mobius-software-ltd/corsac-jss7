@@ -75,11 +75,9 @@ public class TimeDurationChargingResultImpl implements TimeDurationChargingResul
         if(timeInformation!=null)
         	this.timeInformation = new TimeInformationWrapperImpl(timeInformation);
         
-        if(!legActive) {
-        	this.legActive = new ASNBoolean();
-        	this.legActive.setValue(legActive);
-        }
-        
+        if(!legActive)
+        	this.legActive = new ASNBoolean(legActive);
+        	
         if(callLegReleasedAtTcpExpiry)
         	this.callLegReleasedAtTcpExpiry = new ASNNull();
         

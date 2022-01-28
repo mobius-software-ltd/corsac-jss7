@@ -30,7 +30,6 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.commonapp.api.APPException;
@@ -122,6 +121,9 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -338,7 +340,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
 
                 byte[] freeFormatData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
                 assertNotNull(ind.getFCIBillingChargingCharacteristics());
-                assertTrue(Arrays.equals(freeFormatData, ind.getFCIBillingChargingCharacteristics()));
+                assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(freeFormatData), ind.getFCIBillingChargingCharacteristics()));
                 ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
             }
 
@@ -533,7 +535,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                             }
 
                             byte[] freeFormatData = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 };
-                            dlg.addFurnishChargingInformationRequest(freeFormatData);
+                            dlg.addFurnishChargingInformationRequest(Unpooled.wrappedBuffer(freeFormatData));
                             dlg.send();
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.FurnishChargingInformationRequest,
                                     null, sequence++));
@@ -3138,7 +3140,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
 
                 try {
                     assertEquals(ind.getGapCriteria().getBasicGapCriteria().getCalledAddressAndService()
-                            .getCalledAddressValue().getGenericNumber().getAddress(), "501090500");
+                            .getCalledAddressNumber().getGenericNumber().getAddress(), "501090500");
                 } catch (APPException e) {
                 	fail("INAPException in onCallGapRequest: " + e);
                 }

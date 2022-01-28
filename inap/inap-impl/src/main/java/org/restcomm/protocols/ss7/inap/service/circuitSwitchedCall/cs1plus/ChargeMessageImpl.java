@@ -49,11 +49,9 @@ public class ChargeMessageImpl implements ChargeMessage {
     }
 
     public ChargeMessageImpl(EventTypeCharging eventTypeCharging, EventSpecificInfoCharging eventSpecificInfoCharging) {
-    	if(eventTypeCharging!=null) {
-    		this.eventTypeCharging=new ASNEventTypeCharging();
-    		this.eventTypeCharging.setType(eventTypeCharging);
-    	}
-    	
+    	if(eventTypeCharging!=null)
+    		this.eventTypeCharging=new ASNEventTypeCharging(eventTypeCharging);
+    		
     	if(eventSpecificInfoCharging!=null)
     		this.eventSpecificInfoCharging=new EventSpecificInfoChargingWrapperImpl(eventSpecificInfoCharging);
     }

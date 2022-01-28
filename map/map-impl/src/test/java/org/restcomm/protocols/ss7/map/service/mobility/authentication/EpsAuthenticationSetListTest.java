@@ -38,6 +38,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -73,15 +74,15 @@ public class EpsAuthenticationSetListTest {
         List<EpcAv> epcAvs = asc.getEpcAv();
         assertEquals(epcAvs.size(), 2);
 
-        assertTrue(Arrays.equals(epcAvs.get(0).getRand(), EpcAvTest.getRandData()));
-        assertTrue(Arrays.equals(epcAvs.get(0).getXres(), EpcAvTest.getXresData()));
-        assertTrue(Arrays.equals(epcAvs.get(0).getAutn(), EpcAvTest.getAutnData()));
-        assertTrue(Arrays.equals(epcAvs.get(0).getKasme(), EpcAvTest.getKasmeData()));
+        assertTrue(ByteBufUtil.equals(epcAvs.get(0).getRand(), Unpooled.wrappedBuffer(EpcAvTest.getRandData())));
+        assertTrue(ByteBufUtil.equals(epcAvs.get(0).getXres(), Unpooled.wrappedBuffer(EpcAvTest.getXresData())));
+        assertTrue(ByteBufUtil.equals(epcAvs.get(0).getAutn(), Unpooled.wrappedBuffer(EpcAvTest.getAutnData())));
+        assertTrue(ByteBufUtil.equals(epcAvs.get(0).getKasme(), Unpooled.wrappedBuffer(EpcAvTest.getKasmeData())));
 
-        assertTrue(Arrays.equals(epcAvs.get(1).getRand(), EpcAvTest.getRandData()));
-        assertTrue(Arrays.equals(epcAvs.get(1).getXres(), getXresData()));
-        assertTrue(Arrays.equals(epcAvs.get(1).getAutn(), EpcAvTest.getAutnData()));
-        assertTrue(Arrays.equals(epcAvs.get(1).getKasme(), EpcAvTest.getKasmeData()));
+        assertTrue(ByteBufUtil.equals(epcAvs.get(1).getRand(), Unpooled.wrappedBuffer(EpcAvTest.getRandData())));
+        assertTrue(ByteBufUtil.equals(epcAvs.get(1).getXres(), Unpooled.wrappedBuffer(getXresData())));
+        assertTrue(ByteBufUtil.equals(epcAvs.get(1).getAutn(), Unpooled.wrappedBuffer(EpcAvTest.getAutnData())));
+        assertTrue(ByteBufUtil.equals(epcAvs.get(1).getKasme(), Unpooled.wrappedBuffer(EpcAvTest.getKasmeData())));
     }
 
     @Test(groups = { "functional.encode" })
@@ -89,8 +90,10 @@ public class EpsAuthenticationSetListTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(EpsAuthenticationSetListImpl.class);
 
-        EpcAvImpl d1 = new EpcAvImpl(EpcAvTest.getRandData(), EpcAvTest.getXresData(), EpcAvTest.getAutnData(),EpcAvTest.getKasmeData(), null);
-        EpcAvImpl d2 = new EpcAvImpl(EpcAvTest.getRandData(), getXresData(), EpcAvTest.getAutnData(), EpcAvTest.getKasmeData(),null);
+        EpcAvImpl d1 = new EpcAvImpl(Unpooled.wrappedBuffer(EpcAvTest.getRandData()), Unpooled.wrappedBuffer(EpcAvTest.getXresData()), 
+        		Unpooled.wrappedBuffer(EpcAvTest.getAutnData()),Unpooled.wrappedBuffer(EpcAvTest.getKasmeData()), null);
+        EpcAvImpl d2 = new EpcAvImpl(Unpooled.wrappedBuffer(EpcAvTest.getRandData()), Unpooled.wrappedBuffer(getXresData()), 
+        		Unpooled.wrappedBuffer(EpcAvTest.getAutnData()), Unpooled.wrappedBuffer(EpcAvTest.getKasmeData()),null);
         List<EpcAv> arr = new ArrayList<EpcAv>();
         arr.add(d1);
         arr.add(d2);

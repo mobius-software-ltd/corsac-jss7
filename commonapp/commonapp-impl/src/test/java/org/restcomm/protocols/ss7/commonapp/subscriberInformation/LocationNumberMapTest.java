@@ -36,6 +36,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -67,7 +68,7 @@ public class LocationNumberMapTest {
         
         LocationNumber ln = impl.getLocationNumber();
 
-        assertTrue(Arrays.equals(impl.getData(), this.getIntData()));
+        assertTrue(ByteBufUtil.equals(impl.getValue(), Unpooled.wrappedBuffer(this.getIntData())));
         assertEquals(ln.getNatureOfAddressIndicator(), LocationNumber._NAI_NATIONAL_SN);
         assertTrue(ln.getAddress().equals("80207910020"));
         assertEquals(ln.getNumberingPlanIndicator(), LocationNumber._NPI_TELEX);
@@ -81,21 +82,14 @@ public class LocationNumberMapTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(LocationNumberMapImpl.class);
         
-        LocationNumberMapImpl impl = new LocationNumberMapImpl(this.getIntData());
+         LocationNumberImpl ln = new LocationNumberImpl(LocationNumber._NAI_NATIONAL_SN, "80207910020",
+                LocationNumber._NPI_TELEX, LocationNumber._INN_ROUTING_NOT_ALLOWED, LocationNumber._APRI_ALLOWED,
+                LocationNumber._SI_USER_PROVIDED_VERIFIED_PASSED);
+        LocationNumberMapImpl impl = new LocationNumberMapImpl(ln);
         ByteBuf buffer=parser.encode(impl);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         byte[] rawData = getData();
-        assertTrue(Arrays.equals(rawData, encodedData));
-
-        LocationNumberImpl ln = new LocationNumberImpl(LocationNumber._NAI_NATIONAL_SN, "80207910020",
-                LocationNumber._NPI_TELEX, LocationNumber._INN_ROUTING_NOT_ALLOWED, LocationNumber._APRI_ALLOWED,
-                LocationNumber._SI_USER_PROVIDED_VERIFIED_PASSED);
-        impl = new LocationNumberMapImpl(ln);
-        buffer=parser.encode(impl);
-        encodedData = new byte[buffer.readableBytes()];
-        buffer.readBytes(encodedData);
-        rawData = getData();
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 }

@@ -29,6 +29,8 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * USSD-String ::= OCTET STRING (SIZE (1..maxUSSD-StringLength)) -- The structure of the contents of the USSD-String is
  * dependent -- on the USSD-DataCodingScheme as described in TS 3GPP TS 23.038 [25].
@@ -44,11 +46,11 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public interface USSDString {
 
     /**
-     * Get the byte[] that represents encoded USSD String
+     * Get the ByteBuf that represents encoded USSD String
      *
      * @return
      */
-    byte[] getEncodedString();
+	ByteBuf getValue();
 
     /**
      * Get the decoded USSD String

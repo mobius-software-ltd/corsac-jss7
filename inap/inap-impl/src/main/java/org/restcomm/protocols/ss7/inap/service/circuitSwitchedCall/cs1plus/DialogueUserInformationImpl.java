@@ -53,20 +53,14 @@ public class DialogueUserInformationImpl implements DialogueUserInformation {
 
     public DialogueUserInformationImpl(SendingFunctionsActive sendingFunctionsActive,
     		ReceivingFunctionsRequested receivingFunctionsRequested, Integer trafficSimulationSessionID) {
-    	if(sendingFunctionsActive!=null) {
-    		this.sendingFunctionsActive=new ASNSendingFunctionsActive();
-    		this.sendingFunctionsActive.setType(sendingFunctionsActive);
-    	}
-    	
-    	if(receivingFunctionsRequested!=null) {
-    		this.receivingFunctionsRequested=new ASNReceivingFunctionsRequested();
-    		this.receivingFunctionsRequested.setType(receivingFunctionsRequested);
-    	}
-    	
-    	if(trafficSimulationSessionID!=null) {
-    		this.trafficSimulationSessionID=new ASNInteger();
-    		this.trafficSimulationSessionID.setValue(trafficSimulationSessionID.longValue());
-    	}
+    	if(sendingFunctionsActive!=null)
+    		this.sendingFunctionsActive=new ASNSendingFunctionsActive(sendingFunctionsActive);
+    		
+    	if(receivingFunctionsRequested!=null)
+    		this.receivingFunctionsRequested=new ASNReceivingFunctionsRequested(receivingFunctionsRequested);
+    		
+    	if(trafficSimulationSessionID!=null)
+    		this.trafficSimulationSessionID=new ASNInteger(trafficSimulationSessionID);    		
     }
 
     public SendingFunctionsActive getSendingFunctionsActive() {

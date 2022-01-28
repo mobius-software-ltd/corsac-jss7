@@ -45,27 +45,24 @@ public class TimeGPRSIfTariffSwitchImpl implements TimeGPRSIfTariffSwitch {
     }
 
     public TimeGPRSIfTariffSwitchImpl(int timeGPRSSinceLastTariffSwitch, Integer timeGPRSTariffSwitchInterval) {
-        this.timeGPRSSinceLastTariffSwitch = new ASNInteger();
-        this.timeGPRSSinceLastTariffSwitch.setValue(Long.valueOf(timeGPRSSinceLastTariffSwitch));
+        this.timeGPRSSinceLastTariffSwitch = new ASNInteger(timeGPRSSinceLastTariffSwitch);        
         
-        if(timeGPRSTariffSwitchInterval!=null) {
-        	this.timeGPRSTariffSwitchInterval = new ASNInteger();
-        	this.timeGPRSTariffSwitchInterval.setValue(timeGPRSTariffSwitchInterval.longValue());
-        }
+        if(timeGPRSTariffSwitchInterval!=null)
+        	this.timeGPRSTariffSwitchInterval = new ASNInteger(timeGPRSTariffSwitchInterval);        
     }
 
     public int getTimeGPRSSinceLastTariffSwitch() {
     	if(this.timeGPRSSinceLastTariffSwitch==null || this.timeGPRSSinceLastTariffSwitch.getValue()==null)
     		return 0;
     	
-        return this.timeGPRSSinceLastTariffSwitch.getValue().intValue();
+        return this.timeGPRSSinceLastTariffSwitch.getIntValue();
     }
 
     public Integer getTimeGPRSTariffSwitchInterval() {
-    	if(this.timeGPRSTariffSwitchInterval==null || timeGPRSTariffSwitchInterval.getValue()==null)
+    	if(this.timeGPRSTariffSwitchInterval==null)
     		return null;
     	
-        return this.timeGPRSTariffSwitchInterval.getValue().intValue();
+        return this.timeGPRSTariffSwitchInterval.getIntValue();
     }
 
     @Override

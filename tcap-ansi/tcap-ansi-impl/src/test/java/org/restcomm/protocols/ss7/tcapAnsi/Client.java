@@ -42,7 +42,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.Unpooled;
 
@@ -126,15 +126,12 @@ public class Client extends EventTestHarness {
         OperationCode oc = TcapFactory.createPrivateOperationCode(59L);
         invoke.setOperationCode(oc);
 
-        ASNOctetString p1=new ASNOctetString();
-        p1.setValue(Unpooled.wrappedBuffer(new byte[] { 0x0F }));        
-
-        ASNOctetString p2=new ASNOctetString();
-        p2.setValue(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
+        ASNOctetString2 p1=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { 0x0F }));        
+        ASNOctetString2 p2=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
                 0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }));
 
         ClientTestASN pm = new ClientTestASN();
-        pm.setO1(Arrays.asList(new ASNOctetString[] { p1, p2 }));
+        pm.setO1(Arrays.asList(new ASNOctetString2[] { p1, p2 }));
         invoke.setSeqParameter(pm);
 
         return invoke;

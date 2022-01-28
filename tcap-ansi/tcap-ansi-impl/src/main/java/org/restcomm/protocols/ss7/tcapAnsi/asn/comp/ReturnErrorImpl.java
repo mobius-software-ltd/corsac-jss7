@@ -72,14 +72,12 @@ public class ReturnErrorImpl implements ReturnError {
     }
 
     public void setSetParameter(Object p) {
-    	this.setParameter = new ASNReturnErrorSetParameterImpl();
-        this.setParameter.setValue(p);
+    	this.setParameter = new ASNReturnErrorSetParameterImpl(p);
         this.seqParameter=null;        
     }
 
     public void setSeqParameter(Object p) {
-    	this.seqParameter = new ASNReturnErrorParameterImpl();
-        this.seqParameter.setValue(p);
+    	this.seqParameter = new ASNReturnErrorParameterImpl(p);
         this.setParameter=null;        
     }
 

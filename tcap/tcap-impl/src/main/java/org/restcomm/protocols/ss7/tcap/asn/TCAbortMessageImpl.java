@@ -59,8 +59,7 @@ public class TCAbortMessageImpl extends TCUnifiedMessageImpl implements TCAbortM
      * (org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType)
      */
     public void setPAbortCause(PAbortCauseType t) {
-        this.type = new ASNPAbortCause();
-        this.type.setType(t);
+        this.type = new ASNPAbortCause(t);        
     }
 
 	@Override

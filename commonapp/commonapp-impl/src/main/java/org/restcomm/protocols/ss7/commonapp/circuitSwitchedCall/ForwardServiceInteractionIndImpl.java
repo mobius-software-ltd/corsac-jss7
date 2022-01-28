@@ -52,20 +52,14 @@ public class ForwardServiceInteractionIndImpl implements ForwardServiceInteracti
 
     public ForwardServiceInteractionIndImpl(ConferenceTreatmentIndicator conferenceTreatmentIndicator,
             CallDiversionTreatmentIndicator callDiversionTreatmentIndicator, CallingPartyRestrictionIndicator callingPartyRestrictionIndicator) {
-        if(conferenceTreatmentIndicator!=null) {
-        	this.conferenceTreatmentIndicator = new ASNConferenceTreatmentIndicatorImpl();
-        	this.conferenceTreatmentIndicator.setType(conferenceTreatmentIndicator);
-        }
-        
-        if(callDiversionTreatmentIndicator!=null) {
-        	this.callDiversionTreatmentIndicator = new ASNCallDiversionTreatmentIndicatorImpl();
-        	this.callDiversionTreatmentIndicator.setType(callDiversionTreatmentIndicator);
-        }
-        
-        if(callingPartyRestrictionIndicator!=null) {
-        	this.callingPartyRestrictionIndicator = new ASNCallingPartyRestrictionTreatmentIndicatorImpl();
-        	this.callingPartyRestrictionIndicator.setType(callingPartyRestrictionIndicator);
-        }
+        if(conferenceTreatmentIndicator!=null)
+        	this.conferenceTreatmentIndicator = new ASNConferenceTreatmentIndicatorImpl(conferenceTreatmentIndicator);
+        	
+        if(callDiversionTreatmentIndicator!=null)
+        	this.callDiversionTreatmentIndicator = new ASNCallDiversionTreatmentIndicatorImpl(callDiversionTreatmentIndicator);
+        	
+        if(callingPartyRestrictionIndicator!=null)
+        	this.callingPartyRestrictionIndicator = new ASNCallingPartyRestrictionTreatmentIndicatorImpl(callingPartyRestrictionIndicator);        	
     }
 
     public ConferenceTreatmentIndicator getConferenceTreatmentIndicator() {

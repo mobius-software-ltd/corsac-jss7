@@ -33,6 +33,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -66,8 +67,8 @@ public class ReSynchronisationInfoTest {
         assertTrue(result.getResult() instanceof ReSynchronisationInfoImpl);
         ReSynchronisationInfoImpl asc = (ReSynchronisationInfoImpl)result.getResult();
 
-        assertTrue(Arrays.equals(asc.getRand(), getRandData()));
-        assertTrue(Arrays.equals(asc.getAuts(), getAutsData()));
+        assertTrue(ByteBufUtil.equals(asc.getRand(), Unpooled.wrappedBuffer(getRandData())));
+        assertTrue(ByteBufUtil.equals(asc.getAuts(), Unpooled.wrappedBuffer(getAutsData())));
 
     }
 
@@ -76,7 +77,7 @@ public class ReSynchronisationInfoTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ReSynchronisationInfoImpl.class);
 
-        ReSynchronisationInfoImpl asc = new ReSynchronisationInfoImpl(getRandData(), getAutsData());
+        ReSynchronisationInfoImpl asc = new ReSynchronisationInfoImpl(Unpooled.wrappedBuffer(getRandData()), Unpooled.wrappedBuffer(getAutsData()));
 
         byte[] data=getEncodedData();
         ByteBuf buffer=parser.encode(asc);

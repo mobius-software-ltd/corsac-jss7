@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitiv
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
 *
 <code>
@@ -40,6 +42,6 @@ ISDNAccessRelatedInformation ::= OCTET STRING
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 4,constructed = false,lengthIndefinite = false)
 public interface ISDNAccessRelatedInformation {
 
-    byte[] getData();
+	ByteBuf getValue();
 
 }

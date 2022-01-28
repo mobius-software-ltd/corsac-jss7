@@ -44,10 +44,8 @@ public class GetPasswordRequestImpl extends SupplementaryMessageImpl implements 
     }
 
     public GetPasswordRequestImpl(GuidanceInfo guidanceInfo) {
-    	if(guidanceInfo!=null) {
-    		this.guidanceInfo = new ASNGuidanceInfoImpl();
-    		this.guidanceInfo.setType(guidanceInfo);
-    	}
+    	if(guidanceInfo!=null)
+    		this.guidanceInfo = new ASNGuidanceInfoImpl(guidanceInfo);    		
     }
 
 

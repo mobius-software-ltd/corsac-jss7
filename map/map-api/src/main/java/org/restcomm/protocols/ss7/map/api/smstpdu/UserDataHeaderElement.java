@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.smstpdu;
 
 import java.io.Serializable;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author sergey vetyutnev
@@ -33,6 +35,6 @@ public interface UserDataHeaderElement extends Serializable {
 
     int getEncodedInformationElementIdentifier();
 
-    byte[] getEncodedInformationElementData();
+    ByteBuf getEncodedInformationElementData();
 
 }

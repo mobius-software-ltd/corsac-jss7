@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.ControlType;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNControlTypeImpl extends ASNEnumerated {
-	public void setType(ControlType t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNControlTypeImpl() {
+		
+	}
+	
+	public ASNControlTypeImpl(ControlType t) {
+		super(t.getCode());
 	}
 	
 	public ControlType getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return ControlType.getInstance(getValue().intValue());
+		return ControlType.getInstance(realValue);
 	}
 }

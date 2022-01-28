@@ -24,10 +24,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 
 /**
  *
@@ -35,7 +32,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class ExtSSStatusImpl extends ASNOctetString implements ExtSSStatus {
+public class ExtSSStatusImpl extends ASNSingleByte implements ExtSSStatus {
 	/**
      * SSStatus bits TS 3GPP TS 23.011
      */
@@ -47,11 +44,11 @@ public class ExtSSStatusImpl extends ASNOctetString implements ExtSSStatus {
     public ExtSSStatusImpl() {
     }
 
-    public ExtSSStatusImpl(byte data) {
-        setValue(Unpooled.wrappedBuffer(new byte[] {(byte)(data & 0x0FF)}));
-    }
-
     public ExtSSStatusImpl(boolean bitQ, boolean bitP, boolean bitR, boolean bitA) {
+    	super(translate(bitQ, bitP, bitR, bitA));
+    }
+    
+    public static Integer translate(boolean bitQ, boolean bitP, boolean bitR, boolean bitA) {
         Integer data=0;
 
         if (bitQ)
@@ -63,47 +60,39 @@ public class ExtSSStatusImpl extends ASNOctetString implements ExtSSStatus {
         if (bitA)
             data |= sssBitA;
         
-        setValue(Unpooled.wrappedBuffer(new byte[] {(byte)(data & 0x0FF)}));
-    }
-
-    public byte getData() {
-    	ByteBuf buffer=getValue();
-    	if(buffer==null || buffer.readableBytes()==0)
-    		return 0;
-    	
-    	return buffer.readByte();
+        return data;
     }
 
     public boolean getBitQ() {
-    	ByteBuf data=getValue();
-        if (data == null || data.readableBytes()==0)
+    	Integer value=getValue();
+        if (value == null)
             return false;
 
-        return (((data.readByte() & sssBitQ) > 0) ? true : false);
+        return (((value & sssBitQ) > 0) ? true : false);
     }
 
     public boolean getBitP() {
-    	ByteBuf data=getValue();
-    	if (data == null || data.readableBytes()==0)
+    	Integer value=getValue();
+    	if (value == null)
             return false;
 
-        return (((data.readByte() & sssBitP) > 0) ? true : false);
+        return (((value & sssBitP) > 0) ? true : false);
     }
 
     public boolean getBitR() {
-    	ByteBuf data=getValue();
-    	if (data == null || data.readableBytes()==0)
-            return false;
+    	Integer value=getValue();
+    	if (value == null)
+    		return false;
 
-        return (((data.readByte() & sssBitR) > 0) ? true : false);
+        return (((value & sssBitR) > 0) ? true : false);
     }
 
     public boolean getBitA() {
-    	ByteBuf data=getValue();
-    	if (data == null || data.readableBytes()==0)
+    	Integer value=getValue();
+        if (value == null)
             return false;
 
-        return (((data.readByte() & sssBitA) > 0) ? true : false);
+        return (((value & sssBitA) > 0) ? true : false);
     }
 
     @Override

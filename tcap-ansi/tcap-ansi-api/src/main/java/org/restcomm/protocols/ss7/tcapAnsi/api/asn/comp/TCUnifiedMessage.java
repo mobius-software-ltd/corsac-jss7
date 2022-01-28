@@ -24,18 +24,20 @@ package org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * @author amit bhayani
  *
  */
 public interface TCUnifiedMessage {
-	public byte[] getOriginatingTransactionId();
+	public ByteBuf getOriginatingTransactionId();
 
-    public byte[] getDestinationTransactionId();
+    public ByteBuf getDestinationTransactionId();
 
-    public void setOriginatingTransactionId(byte[] txID);
+    public void setOriginatingTransactionId(ByteBuf txID);
     
-    public void setDestinationTransactionId(byte[] txID);
+    public void setDestinationTransactionId(ByteBuf txID);
     
     public boolean isDialogPortionExists();
     

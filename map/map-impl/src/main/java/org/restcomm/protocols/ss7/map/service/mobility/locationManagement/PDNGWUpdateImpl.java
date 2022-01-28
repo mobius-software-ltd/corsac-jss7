@@ -61,11 +61,9 @@ public class PDNGWUpdateImpl implements PDNGWUpdate {
         this.apn = apn;
         this.pdnGwIdentity = pdnGwIdentity;
         
-        if(contextId!=null) {
-        	this.contextId = new ASNInteger();
-        	this.contextId.setValue(contextId.longValue());
-        }
-        
+        if(contextId!=null)
+        	this.contextId = new ASNInteger(contextId);
+        	
         this.extensionContainer = extensionContainer;
     }
 
@@ -81,7 +79,7 @@ public class PDNGWUpdateImpl implements PDNGWUpdate {
     	if(this.contextId==null)
     		return null;
     	
-        return this.contextId.getValue().intValue();
+        return this.contextId.getIntValue();
     }
 
     public MAPExtensionContainer getExtensionContainer() {

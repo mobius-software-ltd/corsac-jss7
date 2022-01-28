@@ -24,31 +24,20 @@ package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.AgeIndicator;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
  * @author sergey vetyutnev
  *
  */
-public class AgeIndicatorImpl extends ASNOctetString implements AgeIndicator {
+public class AgeIndicatorImpl extends ASNOctetString2 implements AgeIndicator {
 	public AgeIndicatorImpl() {
     }
 
-    public AgeIndicatorImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    public AgeIndicatorImpl(ByteBuf value) {
+        super(value);
     }
 }

@@ -85,16 +85,12 @@ public class ReportSMDeliveryStatusRequestImpl extends SmsMessageImpl implements
         this.msisdn = msisdn;
         this.serviceCentreAddress = serviceCentreAddress;
         
-        if(sMDeliveryOutcome!=null) {
-        	this.sMDeliveryOutcome = new ASNSMDeliveryOutcome();
-        	this.sMDeliveryOutcome.setType(sMDeliveryOutcome);
-        }
-        
-        if(absentSubscriberDiagnosticSM!=null) {
-        	this.absentSubscriberDiagnosticSM = new ASNInteger();
-        	this.absentSubscriberDiagnosticSM.setValue(absentSubscriberDiagnosticSM.longValue());
-        }
-        
+        if(sMDeliveryOutcome!=null)
+        	this.sMDeliveryOutcome = new ASNSMDeliveryOutcome(sMDeliveryOutcome);
+        	
+        if(absentSubscriberDiagnosticSM!=null)
+        	this.absentSubscriberDiagnosticSM = new ASNInteger(absentSubscriberDiagnosticSM);
+        	
         this.extensionContainer = extensionContainer;
         
         if(gprsSupportIndicator)
@@ -103,15 +99,11 @@ public class ReportSMDeliveryStatusRequestImpl extends SmsMessageImpl implements
         if(deliveryOutcomeIndicator)
         	this.deliveryOutcomeIndicator = new ASNNull();
         
-        if(additionalSMDeliveryOutcome!=null) { 
-        	this.additionalSMDeliveryOutcome = new ASNSMDeliveryOutcome();
-        	this.additionalSMDeliveryOutcome.setType(additionalSMDeliveryOutcome);
-        }
-        
-        if(additionalAbsentSubscriberDiagnosticSM!=null) {
-        	this.additionalAbsentSubscriberDiagnosticSM = new ASNInteger();
-        	this.additionalAbsentSubscriberDiagnosticSM.setValue(additionalAbsentSubscriberDiagnosticSM.longValue());
-        }
+        if(additionalSMDeliveryOutcome!=null)
+        	this.additionalSMDeliveryOutcome = new ASNSMDeliveryOutcome(additionalSMDeliveryOutcome);
+        	
+        if(additionalAbsentSubscriberDiagnosticSM!=null)
+        	this.additionalAbsentSubscriberDiagnosticSM = new ASNInteger(additionalAbsentSubscriberDiagnosticSM);        	
     }
 
     public MAPMessageType getMessageType() {
@@ -141,7 +133,7 @@ public class ReportSMDeliveryStatusRequestImpl extends SmsMessageImpl implements
     	if(this.absentSubscriberDiagnosticSM==null)
     		return null;
     	
-        return this.absentSubscriberDiagnosticSM.getValue().intValue();
+        return this.absentSubscriberDiagnosticSM.getIntValue();
     }
 
     public MAPExtensionContainer getExtensionContainer() {
@@ -167,7 +159,7 @@ public class ReportSMDeliveryStatusRequestImpl extends SmsMessageImpl implements
     	if(this.additionalAbsentSubscriberDiagnosticSM==null)
     		return null;
     	
-        return this.additionalAbsentSubscriberDiagnosticSM.getValue().intValue();
+        return this.additionalAbsentSubscriberDiagnosticSM.getIntValue();
     }
 
     @Override

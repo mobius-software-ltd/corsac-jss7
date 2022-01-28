@@ -38,6 +38,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -70,7 +71,7 @@ public class FurnishChargingInformationSMSRequestTest {
         FurnishChargingInformationSMSRequestImpl prim = (FurnishChargingInformationSMSRequestImpl)result.getResult();        
         FCIBCCCAMELSequence1SMS fcIBCCCAMELsequence1 = prim.getFCIBCCCAMELsequence1();
         assertNotNull(fcIBCCCAMELsequence1);
-        assertTrue(Arrays.equals(fcIBCCCAMELsequence1.getFreeFormatData().getData(), this.getFreeFormatData()));
+        assertTrue(ByteBufUtil.equals(fcIBCCCAMELsequence1.getFreeFormatData().getValue(),Unpooled.wrappedBuffer(this.getFreeFormatData())));
         assertEquals(fcIBCCCAMELsequence1.getAppendFreeFormatData(), AppendFreeFormatData.append);
     }
 
@@ -79,7 +80,7 @@ public class FurnishChargingInformationSMSRequestTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(FurnishChargingInformationSMSRequestImpl.class);
     	    	
-        FreeFormatDataSMSImpl freeFormatData = new FreeFormatDataSMSImpl(getFreeFormatData());
+        FreeFormatDataSMSImpl freeFormatData = new FreeFormatDataSMSImpl(Unpooled.wrappedBuffer(getFreeFormatData()));
         FCIBCCCAMELSequence1SMSImpl fcIBCCCAMELsequence1 = new FCIBCCCAMELSequence1SMSImpl(freeFormatData,
                 AppendFreeFormatData.append);
 
@@ -90,32 +91,4 @@ public class FurnishChargingInformationSMSRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-    
-    /*@Test(groups = {"functional.xml.serialize", "primitives"})
-    public void testXMLSerialize() throws Exception {
-
-        FreeFormatDataSMS freeFormatData = new FreeFormatDataSMSImpl(getFreeFormatData());
-        FCIBCCCAMELsequence1SMSImpl fcIBCCCAMELsequence1 = new FCIBCCCAMELsequence1SMSImpl(freeFormatData, AppendFreeFormatData.append);
-        FurnishChargingInformationSMSRequestImpl original = new FurnishChargingInformationSMSRequestImpl(fcIBCCCAMELsequence1);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "furnishChargingInformationSMSRequest", FurnishChargingInformationSMSRequestImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        FurnishChargingInformationSMSRequestImpl copy = reader.read("furnishChargingInformationSMSRequest", FurnishChargingInformationSMSRequestImpl.class);
-
-        assertNotNull(copy.getFCIBCCCAMELsequence1());
-        assertTrue(Arrays.equals(copy.getFCIBCCCAMELsequence1().getFreeFormatData().getData(), this.getFreeFormatData()));
-        assertEquals(copy.getFCIBCCCAMELsequence1().getAppendFreeFormatData(), AppendFreeFormatData.append);
-    }*/
 }

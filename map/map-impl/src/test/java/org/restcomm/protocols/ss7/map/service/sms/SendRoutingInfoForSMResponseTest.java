@@ -47,6 +47,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -97,7 +98,7 @@ public class SendRoutingInfoForSMResponseTest {
         assertEquals(nnn.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(nnn.getAddress(), "12032100295");
         LMSI lmsi = li.getLMSI();
-        assertTrue(Arrays.equals(new byte[] { 0, 3, 98, 49 }, lmsi.getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(new byte[] { 0, 3, 98, 49 }), lmsi.getValue()));
         assertNull(ind.getMwdSet());
 
         rawData = getEncodedDataFull();
@@ -169,7 +170,7 @@ public class SendRoutingInfoForSMResponseTest {
                 
         IMSIImpl imsi = new IMSIImpl("200990200111227");
         ISDNAddressStringImpl nnn = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "12032100295");
-        LMSIImpl lmsi = new LMSIImpl(new byte[] { 0, 3, 98, 49 });
+        LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(new byte[] { 0, 3, 98, 49 }));
 
         LocationInfoWithLMSIImpl li = new LocationInfoWithLMSIImpl(nnn, lmsi, null, false, null);
         SendRoutingInfoForSMResponseImpl ind = new SendRoutingInfoForSMResponseImpl(imsi, li, null, null, null);
@@ -183,7 +184,7 @@ public class SendRoutingInfoForSMResponseTest {
 
         imsi = new IMSIImpl("11103222333111");
         nnn = new ISDNAddressStringImpl(AddressNature.subscriber_number, NumberingPlan.land_mobile, "00001111");
-        lmsi = new LMSIImpl(new byte[] { 0, 2, 1, 0 });
+        lmsi = new LMSIImpl(Unpooled.wrappedBuffer(new byte[] { 0, 2, 1, 0 }));
         ISDNAddressStringImpl sgsnAdditionalNumber = new ISDNAddressStringImpl(AddressNature.national_significant_number,
                 NumberingPlan.land_mobile, "99999999");
         AdditionalNumberImpl additionalNumber = new AdditionalNumberImpl(null, sgsnAdditionalNumber);

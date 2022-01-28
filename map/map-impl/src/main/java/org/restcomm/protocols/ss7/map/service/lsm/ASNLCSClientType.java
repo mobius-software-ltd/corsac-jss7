@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.LCSClientType;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNLCSClientType extends ASNEnumerated {
-	public void setType(LCSClientType t) {
-		super.setValue(Long.valueOf(t.getType()));
+	public ASNLCSClientType() {
+		
+	}
+	
+	public ASNLCSClientType(LCSClientType t) {
+		super(t.getType());
 	}
 	
 	public LCSClientType getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return LCSClientType.getLCSClientType(getValue().intValue());
+		return LCSClientType.getLCSClientType(realValue);
 	}
 }

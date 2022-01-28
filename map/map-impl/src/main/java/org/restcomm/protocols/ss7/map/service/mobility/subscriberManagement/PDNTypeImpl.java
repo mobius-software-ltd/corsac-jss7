@@ -36,11 +36,11 @@ public class PDNTypeImpl extends ASNSingleByte implements PDNType {
     }
 
     public PDNTypeImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public PDNTypeImpl(PDNTypeValue value) {
-    	setValue(value != null ? value.getCode() : 0);
+    	super(value != null ? value.getCode() : 0);
     }
 
     public int getData() {

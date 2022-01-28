@@ -70,10 +70,8 @@ public class SendRoutingInfoForSMResponseImpl extends SmsMessageImpl implements 
         this.locationInfoWithLMSI = locationInfoWithLMSI;
         this.extensionContainer = extensionContainer;
         
-        if(mwdSet!=null) {
-        	this.mwdSet = new ASNBoolean();
-        	this.mwdSet.setValue(mwdSet);
-        }
+        if(mwdSet!=null)
+        	this.mwdSet = new ASNBoolean(mwdSet);        	
         
         this.ipSmGwGuidance = ipSmGwGuidance;
     }

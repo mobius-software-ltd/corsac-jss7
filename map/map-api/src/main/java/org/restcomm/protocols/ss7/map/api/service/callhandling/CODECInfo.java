@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.callhandling;
 
 import java.io.Serializable;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  CODEC-Info ::= OCTET STRING (SIZE (5..10)) -- Refers to channel type -- coded according to 3GPP TS 48.008 [49] and including
@@ -35,6 +37,6 @@ import java.io.Serializable;
  */
 public interface CODECInfo extends Serializable {
 
-    byte[] getData();
+	ByteBuf getValue();
 
 }

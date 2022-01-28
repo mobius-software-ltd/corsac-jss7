@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
 import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ReleaseCallRequestImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -19,6 +20,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 public class ReleaseCallTest 
@@ -48,7 +50,7 @@ public class ReleaseCallTest
 	        
 		ReleaseCallRequestImpl elem = (ReleaseCallRequestImpl)result.getResult();
 		assertNotNull(elem.getCause());
-		assertTrue(Arrays.equals(causeData1, elem.getCause().getData()));
+		assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(causeData1),CauseIsupImpl.translate(elem.getCause().getCauseIndicators())));
 		assertEquals(elem.getCause().getCauseIndicators().getCodingStandard(),0);	    
 		assertEquals(elem.getCause().getCauseIndicators().getLocation(),0);	    
 		assertEquals(elem.getCause().getCauseIndicators().getRecommendation(),0);	    
@@ -61,7 +63,9 @@ public class ReleaseCallTest
 		ASNParser parser=new ASNParser(true);
 		parser.replaceClass(ReleaseCallRequestImpl.class);
 	    	
-		CauseIsup cause=new CauseIsupImpl(causeData1);
+		CauseIndicatorsImpl ci=new CauseIndicatorsImpl();
+		ci.decode(Unpooled.wrappedBuffer(causeData1));
+		CauseIsup cause=new CauseIsupImpl(ci);
 		ReleaseCallRequestImpl elem = new ReleaseCallRequestImpl(cause);
 	    byte[] rawData = this.message1;
 	    ByteBuf buffer=parser.encode(elem);

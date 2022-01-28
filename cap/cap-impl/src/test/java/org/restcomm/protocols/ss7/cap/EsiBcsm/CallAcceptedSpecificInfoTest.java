@@ -76,28 +76,4 @@ public class CallAcceptedSpecificInfoTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })
-    public void testXMLSerializaion() throws Exception {
-        LocationInformation locationInformation = new LocationInformationImpl(200, null, null, null, null, null, null, null, null, false, false, null, null);
-        CallAcceptedSpecificInfoImpl original = new CallAcceptedSpecificInfoImpl(locationInformation);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "callAcceptedSpecificInfo", CallAcceptedSpecificInfoImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        CallAcceptedSpecificInfoImpl copy = reader.read("callAcceptedSpecificInfo", CallAcceptedSpecificInfoImpl.class);
-
-        assertEquals((int) copy.getLocationInformation().getAgeOfLocationInformation(), (int) original.getLocationInformation().getAgeOfLocationInformation());
-    }*/
 }

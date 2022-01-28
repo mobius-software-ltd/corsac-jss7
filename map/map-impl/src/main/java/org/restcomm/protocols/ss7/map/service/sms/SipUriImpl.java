@@ -2,10 +2,9 @@ package org.restcomm.protocols.ss7.map.service.sms;
 
 import org.restcomm.protocols.ss7.map.api.service.sms.SipUri;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -13,21 +12,27 @@ import io.netty.buffer.Unpooled;
 *
 */
 
-public class SipUriImpl extends ASNOctetString implements SipUri {
-	public byte[] getData() {
-		ByteBuf value=getValue();
-		if(value==null)
-			return null;
-		
-		byte[] data=new byte[value.readableBytes()];
-		value.readBytes(data);
-        return data;
+public class SipUriImpl extends ASNOctetString2 implements SipUri {
+	
+	public SipUriImpl() {
     }
 
-    public SipUriImpl() {
+    public SipUriImpl(ByteBuf value) {
+        super(value);
     }
 
-    public SipUriImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("ISDNSubaddressStringImpl");
+        sb.append(" [");
+        if (getValue()!=null) {
+            sb.append("data=");
+            sb.append(printDataArr());            
+        }
+        sb.append("]");
+
+        return sb.toString();
     }
 }

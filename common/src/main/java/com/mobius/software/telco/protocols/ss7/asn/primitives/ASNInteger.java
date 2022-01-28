@@ -39,13 +39,29 @@ public class ASNInteger {
 	private static Long[] shifts= {0x00FFFFFFFFFFFFFFL, 0x00FFFFFFFFFFFFL, 0x00FFFFFFFFFFL, 0x00FFFFFFFFL, 0x00FFFFFFL, 0x00FFFFL, 0x00FFL, 0x00L};
 	
 	private Long value;
+	
+	public ASNInteger() {
 		
+	}
+	
+	public ASNInteger(Long value) {
+		this.value=value;
+	}
+	
+	public ASNInteger(Integer value) {
+		if(value!=null)
+			this.value=value.longValue();
+	}
+	
 	public Long getValue() {
 		return value;
 	}
-
-	public void setValue(Long value) {
-		this.value = value;
+	
+	public Integer getIntValue() {
+		if(value==null)
+			return null;
+		
+		return value.intValue();
 	}
 
 	@ASNLength
@@ -61,11 +77,9 @@ public class ASNInteger {
 		if(value==null)
 			return;
 		
-		byte[] data=new byte[getLength(value)];
-		for(int i=0,size=0;i<data.length;i++,size+=8)
-			data[data.length-i-1]=(byte)((value>>size)&0xFF);
-
-		buffer.writeBytes(data);
+		int length=getLength(value);
+		for(int i=0,size=8*(length-1);i<length;i++,size-=8)
+			buffer.writeByte((byte)((value>>size)&0xFF));				
 	}
 	
 	@ASNDecode

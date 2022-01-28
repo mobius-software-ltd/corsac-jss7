@@ -69,7 +69,7 @@ public class MLPPPrecedenceImpl extends AbstractISUPParameter implements MLPPPre
 
     public void decode(ByteBuf buffer) throws ParameterException {
         if (buffer == null || buffer.readableBytes() != 6) {
-            throw new ParameterException("byte[] must  not be null and length must  be 6");
+            throw new ParameterException("buffer must  not be null and length must  be 6");
         }
 
         byte b=buffer.readByte();

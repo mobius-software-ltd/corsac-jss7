@@ -70,13 +70,7 @@ public class TCUnifiedMessageImpl implements TCUnifiedMessage {
 		if(t==null)
 			return;
 		
-		if(this.originatingTransactionId==null && t!=null)
-			this.originatingTransactionId=new OriginatingTransactionID();
-		
-		if(t!=null)
-			this.originatingTransactionId.setValue(t);
-		else
-			this.originatingTransactionId=null;
+		this.originatingTransactionId=new OriginatingTransactionID(t);		
 	}
 
 	@Override
@@ -84,13 +78,7 @@ public class TCUnifiedMessageImpl implements TCUnifiedMessage {
 		if(t==null)
 			return;
 		
-		if(this.destinationTransactionId==null && t!=null)
-			this.destinationTransactionId=new DestinationTransactionID();
-		
-		if(t!=null)
-			this.destinationTransactionId.setValue(t);
-		else
-			this.destinationTransactionId=null;
+		this.destinationTransactionId=new DestinationTransactionID(t);		
 	}
 
 	@Override

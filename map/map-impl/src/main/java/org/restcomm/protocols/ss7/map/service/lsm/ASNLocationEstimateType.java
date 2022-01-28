@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.LocationEstimateType;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNLocationEstimateType extends ASNEnumerated {
-	public void setType(LocationEstimateType t) {
-		super.setValue(Long.valueOf(t.getType()));
+	public ASNLocationEstimateType() {
+		
+	}
+	
+	public ASNLocationEstimateType(LocationEstimateType t) {
+		super(t.getType());
 	}
 	
 	public LocationEstimateType getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return LocationEstimateType.getLocationEstimateType(getValue().intValue());
+		return LocationEstimateType.getLocationEstimateType(realValue);
 	}
 }

@@ -115,7 +115,6 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoDpAssignm
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.TimeAndTimezone;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeodeticInformation;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeographicalInformation;
@@ -188,7 +187,6 @@ import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MiscCallInfoImpl;
-import org.restcomm.protocols.ss7.commonapp.primitives.ScfIDImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.TimeAndTimezoneImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInformationImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.SupportedCamelPhasesImpl;
@@ -430,6 +428,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle0100;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author yulian.oifa
@@ -442,22 +442,12 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public CauseIsup createCause(byte[] data) {
-		return new CauseIsupImpl(data);
-	}
-
-	@Override
 	public CauseIsup createCause(CauseIndicators causeIndicators) throws INAPException {
 		try {
 			return new CauseIsupImpl(causeIndicators);
 		} catch (APPException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
-	}
-
-	@Override
-	public ForwardCallIndicatorsIsup createForwardCallIndicatorsIsup(byte[] data) {
-		return new ForwardCallIndicatorsIsupImpl(data);
 	}
 
 	@Override
@@ -471,22 +461,12 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public ForwardGVNSIsup createForwardGVNS(byte[] data) {
-		return new ForwardGVNSIsupImpl(data);
-	}
-
-	@Override
 	public ForwardGVNSIsup createForwardGVNS(ForwardGVNS forwardGVNS) throws INAPException {
 		try {
 			return new ForwardGVNSIsupImpl(forwardGVNS);
 		} catch (APPException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
-	}
-
-	@Override
-	public ISDNAccessRelatedInformationIsup createISDNAccessRelatedInformationIsup(byte[] data) {
-		return new ISDNAccessRelatedInformationIsupImpl(data);
 	}
 
 	@Override
@@ -497,11 +477,6 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 		} catch (APPException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
-	}
-
-	@Override
-	public OriginalCalledPartyIDIsup createOriginalCalledPartyIDIsup(byte[] data) {
-		return new OriginalCalledPartyIDIsupImpl(data);
 	}
 
 	@Override
@@ -546,13 +521,13 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public ExtensionField createExtensionField(Integer localCode, CriticalityType criticalityType, byte[] data,
+	public ExtensionField createExtensionField(Integer localCode, CriticalityType criticalityType, ByteBuf data,
 			boolean isConstructed) {
 		return new ExtensionFieldImpl(localCode, criticalityType, data, isConstructed);
 	}
 
 	@Override
-	public ExtensionField createExtensionField(List<Long> globalCode, CriticalityType criticalityType, byte[] data,
+	public ExtensionField createExtensionField(List<Long> globalCode, CriticalityType criticalityType, ByteBuf data,
 			boolean isConstructed) {
 		return new ExtensionFieldImpl(globalCode, criticalityType, data, isConstructed);
 	}
@@ -563,7 +538,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public AChBillingChargingCharacteristics createAChBillingChargingCharacteristics(byte[] data) {
+	public AChBillingChargingCharacteristics createAChBillingChargingCharacteristics(ByteBuf data) {
 		return new AChBillingChargingCharacteristicsImpl(data);
 	}
 
@@ -579,11 +554,6 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public BearerIsup createBearer(byte[] data) {
-		return new BearerIsupImpl(data);
-	}
-
-	@Override
 	public BearerIsup createBearer(UserServiceInformation userServiceInformation) throws INAPException {
 		try {
 			return new BearerIsupImpl(userServiceInformation);
@@ -595,20 +565,6 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	@Override
 	public BearerCapability createBearerCapability(BearerIsup bearerCap) {
 		return new BearerCapabilityImpl(bearerCap);
-	}
-
-	@Override
-	public DigitsIsup createDigits_GenericNumber(byte[] data) {
-		DigitsIsupImpl res = new DigitsIsupImpl(data);
-		res.setIsGenericNumber();
-		return res;
-	}
-
-	@Override
-	public DigitsIsup createDigits_GenericDigits(byte[] data) {
-		DigitsIsupImpl res = new DigitsIsupImpl(data);
-		res.setIsGenericDigits();
-		return res;
 	}
 
 	@Override
@@ -630,22 +586,12 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public CalledPartyNumberIsup createCalledPartyNumber(byte[] data) {
-		return new CalledPartyNumberIsupImpl(data);
-	}
-
-	@Override
 	public CalledPartyNumberIsup createCalledPartyNumber(CalledPartyNumber calledPartyNumber) throws INAPException {
 		try {
 			return new CalledPartyNumberIsupImpl(calledPartyNumber);
 		} catch (APPException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
-	}
-
-	@Override
-	public CallingPartyNumberIsup createCallingPartyNumber(byte[] data) {
-		return new CallingPartyNumberIsupImpl(data);
 	}
 
 	@Override
@@ -658,22 +604,12 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public GenericNumberIsup createGenericNumber(byte[] data) {
-		return new GenericNumberIsupImpl(data);
-	}
-
-	@Override
 	public GenericNumberIsup createGenericNumber(GenericNumber genericNumber) throws INAPException {
 		try {
 			return new GenericNumberIsupImpl(genericNumber);
 		} catch (APPException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
-	}
-
-	@Override
-	public LocationNumberIsup createLocationNumber(byte[] data) {
-		return new LocationNumberIsupImpl(data);
 	}
 
 	@Override
@@ -686,11 +622,6 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public OriginalCalledNumberIsup createOriginalCalledNumber(byte[] data) {
-		return new OriginalCalledNumberIsupImpl(data);
-	}
-
-	@Override
 	public OriginalCalledNumberIsup createOriginalCalledNumber(OriginalCalledNumber originalCalledNumber)
 			throws INAPException {
 		try {
@@ -698,11 +629,6 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 		} catch (APPException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
-	}
-
-	@Override
-	public RedirectingPartyIDIsup createRedirectingPartyID(byte[] data) {
-		return new RedirectingPartyIDIsupImpl(data);
 	}
 
 	@Override
@@ -853,7 +779,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	@Override
 	public IPSSPCapabilities createIPSSPCapabilities(boolean IPRoutingAddressSupported, boolean VoiceBackSupported,
 			boolean VoiceInformationSupportedViaSpeechRecognition, boolean VoiceInformationSupportedViaVoiceRecognition,
-			boolean GenerationOfVoiceAnnouncementsFromTextSupported, byte[] extraData) {
+			boolean GenerationOfVoiceAnnouncementsFromTextSupported, ByteBuf extraData) {
 		return new IPSSPCapabilitiesImpl(IPRoutingAddressSupported, VoiceBackSupported,
 				VoiceInformationSupportedViaSpeechRecognition, VoiceInformationSupportedViaVoiceRecognition,
 				GenerationOfVoiceAnnouncementsFromTextSupported, extraData);
@@ -865,18 +791,8 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public AlertingPatternWrapper createAlertingPattern(byte[] data) {
-		return new AlertingPatternWrapperImpl(data);
-	}
-
-	@Override
 	public NAOliInfo createNAOliInfo(int value) {
 		return new NAOliInfoImpl(value);
-	}
-
-	@Override
-	public ScfID createScfID(byte[] data) {
-		return new ScfIDImpl(data);
 	}
 
 	@Override
@@ -905,13 +821,8 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(byte[] data) {
-		return new SCIBillingChargingCharacteristicsImpl(data);
-	}
-
-	@Override
-	public VariablePartPrice createVariablePartPrice(byte[] data) {
-		return new VariablePartPriceImpl(data);
+	public SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(ByteBuf value) {
+		return new SCIBillingChargingCharacteristicsImpl(value);
 	}
 
 	@Override
@@ -925,18 +836,8 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public VariablePartDate createVariablePartDate(byte[] data) {
-		return new VariablePartDateImpl(data);
-	}
-
-	@Override
 	public VariablePartDate createVariablePartDate(int year, int month, int day) {
 		return new VariablePartDateImpl(year, month, day);
-	}
-
-	@Override
-	public VariablePartTime createVariablePartTime(byte[] data) {
-		return new VariablePartTimeImpl(data);
 	}
 
 	@Override
@@ -970,7 +871,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public MessageIDText createMessageIDText(String messageContent, byte[] attributes) {
+	public MessageIDText createMessageIDText(String messageContent, ByteBuf attributes) {
 		return new MessageIDTextImpl(messageContent, attributes);
 	}
 
@@ -1022,7 +923,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 
 	@Override
 	public CollectedDigits createCollectedDigits(Integer minimumNbOfDigits, int maximumNbOfDigits,
-			byte[] endOfReplyDigit, byte[] cancelDigit, byte[] startDigit, Integer firstDigitTimeOut,
+			ByteBuf endOfReplyDigit, ByteBuf cancelDigit, ByteBuf startDigit, Integer firstDigitTimeOut,
 			Integer interDigitTimeOut, ErrorTreatment errorTreatment, Boolean interruptableAnnInd,
 			Boolean voiceInformation, Boolean voiceBack) {
 		return new CollectedDigitsImpl(minimumNbOfDigits, maximumNbOfDigits, endOfReplyDigit, cancelDigit, startDigit,
@@ -1057,7 +958,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public Carrier createCarrier(byte[] data) {
+	public Carrier createCarrier(ByteBuf data) {
 		return new CarrierImpl(data);
 	}
 
@@ -1071,8 +972,8 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public LowLayerCompatibility createLowLayerCompatibility(byte[] data) {
-		return new LowLayerCompatibilityImpl(data);
+	public LowLayerCompatibility createLowLayerCompatibility(ByteBuf value) {
+		return new LowLayerCompatibilityImpl(value);
 	}
 
 	@Override
@@ -1286,8 +1187,8 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public FreeFormatData createFreeFormatData(byte[] data) {
-		return new FreeFormatDataImpl(data);
+	public FreeFormatData createFreeFormatData(ByteBuf value) {
+		return new FreeFormatDataImpl(value);
 	}
 
 	// billing
@@ -1437,8 +1338,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 
 	@Override
 	public BackwardGVNSIndicator getBackwardGVNSIndicator(BackwardGVNS backwardGVNS) {
-		BackwardGVNSIndicatorImpl result = new BackwardGVNSIndicatorImpl();
-		result.setType(backwardGVNS);
+		BackwardGVNSIndicatorImpl result = new BackwardGVNSIndicatorImpl(backwardGVNS);
 		return result;
 	}
 
@@ -1450,24 +1350,23 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 
 	@Override
 	public CUGCallIndicator getCUGCallIndicator(CUGCall cugCall) {
-		CUGCallIndicatorImpl result = new CUGCallIndicatorImpl();
-		result.setType(cugCall);
+		CUGCallIndicatorImpl result = new CUGCallIndicatorImpl(cugCall);
 		return result;
 	}
 
 	@Override
-	public CUGInterLockCode getCUGInterLockCode(byte data[]) {
-		return new CUGInterLockCodeImpl(data);
+	public CUGInterLockCode getCUGInterLockCode(ByteBuf value) {
+		return new CUGInterLockCodeImpl(value);
 	}
 
 	@Override
-	public DataItemID getDataItemID(byte[] attribute0, byte[] attribute1, byte[] attribute2, byte[] attribute3,
-			byte[] attribute4, byte[] attribute5, byte[] attribute6, byte[] attribute7, byte[] attribute8,
-			byte[] attribute9, byte[] attribute10, byte[] attribute11, byte[] attribute12, byte[] attribute13,
-			byte[] attribute14, byte[] attribute15, byte[] attribute16, byte[] attribute17, byte[] attribute18,
-			byte[] attribute19, byte[] attribute20, byte[] attribute21, byte[] attribute22, byte[] attribute23,
-			byte[] attribute24, byte[] attribute25, byte[] attribute26, byte[] attribute27, byte[] attribute28,
-			byte[] attribute29, byte[] attribute30) {
+	public DataItemID getDataItemID(ByteBuf attribute0, ByteBuf attribute1, ByteBuf attribute2, ByteBuf attribute3,
+			ByteBuf attribute4, ByteBuf attribute5, ByteBuf attribute6, ByteBuf attribute7, ByteBuf attribute8,
+			ByteBuf attribute9, ByteBuf attribute10, ByteBuf attribute11, ByteBuf attribute12, ByteBuf attribute13,
+			ByteBuf attribute14, ByteBuf attribute15, ByteBuf attribute16, ByteBuf attribute17, ByteBuf attribute18,
+			ByteBuf attribute19, ByteBuf attribute20, ByteBuf attribute21, ByteBuf attribute22, ByteBuf attribute23,
+			ByteBuf attribute24, ByteBuf attribute25, ByteBuf attribute26, ByteBuf attribute27, ByteBuf attribute28,
+			ByteBuf attribute29, ByteBuf attribute30) {
 		return new DataItemIDImpl(attribute0, attribute1, attribute2, attribute3, attribute4, attribute5, attribute6,
 				attribute7, attribute8, attribute9, attribute10, attribute11, attribute12, attribute13, attribute14,
 				attribute15, attribute16, attribute17, attribute18, attribute19, attribute20, attribute21, attribute22,
@@ -1475,13 +1374,13 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public DataItemInformation getDataItemInformation(byte[] attribute0, byte[] attribute1, byte[] attribute2,
-			byte[] attribute3, byte[] attribute4, byte[] attribute5, byte[] attribute6, byte[] attribute7,
-			byte[] attribute8, byte[] attribute9, byte[] attribute10, byte[] attribute11, byte[] attribute12,
-			byte[] attribute13, byte[] attribute14, byte[] attribute15, byte[] attribute16, byte[] attribute17,
-			byte[] attribute18, byte[] attribute19, byte[] attribute20, byte[] attribute21, byte[] attribute22,
-			byte[] attribute23, byte[] attribute24, byte[] attribute25, byte[] attribute26, byte[] attribute27,
-			byte[] attribute28, byte[] attribute29, byte[] attribute30) {
+	public DataItemInformation getDataItemInformation(ByteBuf attribute0, ByteBuf attribute1, ByteBuf attribute2,
+			ByteBuf attribute3, ByteBuf attribute4, ByteBuf attribute5, ByteBuf attribute6, ByteBuf attribute7,
+			ByteBuf attribute8, ByteBuf attribute9, ByteBuf attribute10, ByteBuf attribute11, ByteBuf attribute12,
+			ByteBuf attribute13, ByteBuf attribute14, ByteBuf attribute15, ByteBuf attribute16, ByteBuf attribute17,
+			ByteBuf attribute18, ByteBuf attribute19, ByteBuf attribute20, ByteBuf attribute21, ByteBuf attribute22,
+			ByteBuf attribute23, ByteBuf attribute24, ByteBuf attribute25, ByteBuf attribute26, ByteBuf attribute27,
+			ByteBuf attribute28, ByteBuf attribute29, ByteBuf attribute30) {
 		return new DataItemInformationImpl(attribute0, attribute1, attribute2, attribute3, attribute4, attribute5,
 				attribute6, attribute7, attribute8, attribute9, attribute10, attribute11, attribute12, attribute13,
 				attribute14, attribute15, attribute16, attribute17, attribute18, attribute19, attribute20, attribute21,
@@ -1513,8 +1412,8 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public GenericName getGenericName(byte[] data) {
-		return new GenericNameImpl(data);
+	public GenericName getGenericName(ByteBuf value) {
+		return new GenericNameImpl(value);
 	}
 
 	@Override
@@ -1534,8 +1433,8 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 
 	@Override
 	public HandOverInfo getHandOverInfo(Integer handoverCounter, SCPAddress sendingSCPAddress,
-			SCPDialogueInfo sendingSCPDialogueInfo, byte[] sendingSCPCorrelationInfo, SCPAddress receivingSCPAddress,
-			SCPDialogueInfo receivingSCPDialogueInfo, byte[] receivingSCPCorrelationInfo,
+			SCPDialogueInfo sendingSCPDialogueInfo, ByteBuf sendingSCPCorrelationInfo, SCPAddress receivingSCPAddress,
+			SCPDialogueInfo receivingSCPDialogueInfo, ByteBuf receivingSCPCorrelationInfo,
 			CalledPartyNumberIsup handoverNumber, Integer handoverData) {
 		return new HandOverInfoImpl(handoverCounter, sendingSCPAddress, sendingSCPDialogueInfo,
 				sendingSCPCorrelationInfo, receivingSCPAddress, receivingSCPDialogueInfo, receivingSCPCorrelationInfo,
@@ -1569,8 +1468,8 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public RouteOrigin getRouteOrigin(byte[] data) {
-		return new RouteOriginImpl(data);
+	public RouteOrigin getRouteOrigin(ByteBuf value) {
+		return new RouteOriginImpl(value);
 	}
 
 	@Override
@@ -1612,22 +1511,22 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public CalledPartyBusinessGroupID getCalledPartyBusinessGroupID(byte[] data) {
-		return new CalledPartyBusinessGroupIDImpl(data);
+	public CalledPartyBusinessGroupID getCalledPartyBusinessGroupID(ByteBuf value) {
+		return new CalledPartyBusinessGroupIDImpl(value);
 	}
 
 	@Override
-	public CalledPartySubaddress getCalledPartySubaddress(byte[] data) {
-		return new CalledPartySubaddressImpl(data);
+	public CalledPartySubaddress getCalledPartySubaddress(ByteBuf value) {
+		return new CalledPartySubaddressImpl(value);
 	}
 
 	@Override
-	public CallingPartyBusinessGroupID getCallingPartyBusinessGroupID(byte[] data) {
-		return new CallingPartyBusinessGroupIDImpl(data);
+	public CallingPartyBusinessGroupID getCallingPartyBusinessGroupID(ByteBuf value) {
+		return new CallingPartyBusinessGroupIDImpl(value);
 	}
 
 	@Override
-	public CallingPartySubaddress getCallingPartySubaddress(byte[] data) {
+	public CallingPartySubaddress getCallingPartySubaddress(ByteBuf data) {
 		return new CallingPartySubaddressImpl(data);
 	}
 
@@ -1677,12 +1576,12 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public FacilityGroup getFacilityGroup(byte[] value, boolean isHuntGroup) {
+	public FacilityGroup getFacilityGroup(ByteBuf value, boolean isHuntGroup) {
 		return new FacilityGroupImpl(value, isHuntGroup);
 	}
 
 	@Override
-	public FilteredCallTreatment getFilteredCallTreatment(byte[] sfBillingChargingCharacteristics,
+	public FilteredCallTreatment getFilteredCallTreatment(ByteBuf sfBillingChargingCharacteristics,
 			InformationToSend informationToSend, Integer maximumNumberOfCounters, CauseIsup cause) {
 		return new FilteredCallTreatmentImpl(sfBillingChargingCharacteristics, informationToSend,
 				maximumNumberOfCounters, cause);
@@ -1719,8 +1618,8 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public HoldCause getHoldCause(byte[] data) {
-		return new HoldCauseImpl(data);
+	public HoldCause getHoldCause(ByteBuf value) {
+		return new HoldCauseImpl(value);
 	}
 
 	@Override
@@ -1729,13 +1628,13 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public IPAvailable getIPAvailable(byte[] data) {
-		return new IPAvailableImpl(data);
+	public IPAvailable getIPAvailable(ByteBuf value) {
+		return new IPAvailableImpl(value);
 	}
 
 	@Override
-	public ISDNAccessRelatedInformation getISDNAccessRelatedInformation(byte[] data) {
-		return new ISDNAccessRelatedInformationImpl(data);
+	public ISDNAccessRelatedInformation getISDNAccessRelatedInformation(ByteBuf value) {
+		return new ISDNAccessRelatedInformationImpl(value);
 	}
 
 	@Override
@@ -1785,7 +1684,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public RouteList getRouteList(List<byte[]> data) {
+	public RouteList getRouteList(List<ByteBuf> data) {
 		return new RouteListImpl(data);
 	}
 
@@ -1796,13 +1695,13 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public ServiceInteractionIndicators getServiceInteractionIndicators(byte[] data) {
-		return new ServiceInteractionIndicatorsImpl(data);
+	public ServiceInteractionIndicators getServiceInteractionIndicators(ByteBuf value) {
+		return new ServiceInteractionIndicatorsImpl(value);
 	}
 
 	@Override
-	public ServiceProfileIdentifier getServiceProfileIdentifier(byte[] data) {
-		return new ServiceProfileIdentifierImpl(data);
+	public ServiceProfileIdentifier getServiceProfileIdentifier(ByteBuf value) {
+		return new ServiceProfileIdentifierImpl(value);
 	}
 
 	@Override
@@ -1816,8 +1715,8 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public USIInformation getUSIInformation(byte[] data) {
-		return new USIInformationImpl(data);
+	public USIInformation getUSIInformation(ByteBuf value) {
+		return new USIInformationImpl(value);
 	}
 
 	@Override
@@ -1826,7 +1725,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public USIServiceIndicator getUSIServiceIndicator(byte[] local) {
+	public USIServiceIndicator getUSIServiceIndicator(ByteBuf local) {
 		return new USIServiceIndicatorImpl(local);
 	}
 
@@ -1844,7 +1743,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public EventSpecificInfoCharging getEventSpecificInfoCharging(byte[] tariffIndicator) {
+	public EventSpecificInfoCharging getEventSpecificInfoCharging(ByteBuf tariffIndicator) {
 		return new EventSpecificInfoChargingImpl(tariffIndicator);
 	}
 
@@ -1866,7 +1765,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	}
 
 	@Override
-	public ChargingAnalysisInputData getChargingAnalysisInputData(byte[] chargingOrigin, byte[] tariffActivityCode,
+	public ChargingAnalysisInputData getChargingAnalysisInputData(ByteBuf chargingOrigin, ByteBuf tariffActivityCode,
 			Integer chargingCode) {
 		return new ChargingAnalysisInputDataImpl(chargingOrigin, tariffActivityCode, chargingCode);
 	}

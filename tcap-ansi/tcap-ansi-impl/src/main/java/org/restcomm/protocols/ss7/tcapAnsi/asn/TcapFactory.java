@@ -69,9 +69,7 @@ public final class TcapFactory {
     }
 
     public static ProtocolVersion createProtocolVersionEmpty() {
-        ProtocolVersionImpl pv = new ProtocolVersionImpl();
-        pv.setT1_114_1996Supported(false);
-        pv.setT1_114_2000Supported(false);
+        ProtocolVersionImpl pv = new ProtocolVersionImpl(false,false);
         return pv;
     }
 

@@ -46,10 +46,8 @@ public class ElapsedTimeRollOverImpl implements ElapsedTimeRollOver {
     }
 
     public ElapsedTimeRollOverImpl(Integer roTimeGPRSIfNoTariffSwitch) {
-    	if(roTimeGPRSIfNoTariffSwitch!=null) {
-    		this.roTimeGPRSIfNoTariffSwitch = new ASNInteger();
-    		this.roTimeGPRSIfNoTariffSwitch.setValue(roTimeGPRSIfNoTariffSwitch.longValue());
-    	}
+    	if(roTimeGPRSIfNoTariffSwitch!=null)
+    		this.roTimeGPRSIfNoTariffSwitch = new ASNInteger(roTimeGPRSIfNoTariffSwitch);    		
     }
 
     public ElapsedTimeRollOverImpl(ROTimeGPRSIfTariffSwitch roTimeGPRSIfTariffSwitch) {
@@ -57,10 +55,10 @@ public class ElapsedTimeRollOverImpl implements ElapsedTimeRollOver {
     }
 
     public Integer getROTimeGPRSIfNoTariffSwitch() {
-    	if(this.roTimeGPRSIfNoTariffSwitch==null || this.roTimeGPRSIfNoTariffSwitch.getValue()==null)
+    	if(this.roTimeGPRSIfNoTariffSwitch==null )
     		return null;
     	
-        return this.roTimeGPRSIfNoTariffSwitch.getValue().intValue();
+        return this.roTimeGPRSIfNoTariffSwitch.getIntValue();
     }
 
     public ROTimeGPRSIfTariffSwitch getROTimeGPRSIfTariffSwitch() {

@@ -147,11 +147,9 @@ public class UpdateGprsLocationRequestImpl extends MobilityMessageImpl implement
         if(skipSubscriberDataUpdate)
         	this.skipSubscriberDataUpdate = new ASNNull();
         
-        if(usedRATType!=null) {
-        	this.usedRATType = new ASNUsedRatTypeImpl();
-        	this.usedRATType.setType(usedRATType);
-        }
-        
+        if(usedRATType!=null)
+        	this.usedRATType = new ASNUsedRatTypeImpl(usedRATType);
+        	
         if(gprsSubscriptionDataNotNeeded)
         	this.gprsSubscriptionDataNotNeeded = new ASNNull();
         
@@ -167,10 +165,8 @@ public class UpdateGprsLocationRequestImpl extends MobilityMessageImpl implement
         if(epsSubscriptionDataNotNeeded)
         	this.epsSubscriptionDataNotNeeded = new ASNNull();
         
-        if(uesrvccCapability!=null) {
-        	this.uesrvccCapability = new ASNUESRVCCCapabilityImpl();
-        	this.uesrvccCapability.setType(uesrvccCapability);
-        }
+        if(uesrvccCapability!=null)
+        	this.uesrvccCapability = new ASNUESRVCCCapabilityImpl(uesrvccCapability);        	
     }
 
     @Override

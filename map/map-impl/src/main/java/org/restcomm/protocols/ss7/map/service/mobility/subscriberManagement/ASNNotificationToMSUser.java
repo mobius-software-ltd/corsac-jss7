@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNNotificationToMSUser extends ASNEnumerated {
-	public void setType(NotificationToMSUser t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNNotificationToMSUser() {
+		
+	}
+	
+	public ASNNotificationToMSUser(NotificationToMSUser t) {
+		super(t.getCode());
 	}
 	
 	public NotificationToMSUser getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return NotificationToMSUser.getInstance(getValue().intValue());
+		return NotificationToMSUser.getInstance(realValue);
 	}
 }

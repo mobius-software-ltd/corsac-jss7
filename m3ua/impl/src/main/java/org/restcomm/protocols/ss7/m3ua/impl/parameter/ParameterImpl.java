@@ -41,24 +41,6 @@ public abstract class ParameterImpl implements Parameter {
 
     protected abstract ByteBuf getValue();
 
-    // public void encode(OutputStream out) throws IOException {
-    // // obtain encoded value
-    // byte[] value = getValue();
-    //
-    // // encode tag
-    // out.write((byte) (tag >> 8));
-    // out.write((byte) (tag));
-    //
-    // // encode length including value, tag and length field itself
-    // length = (short) (value.length + 4);
-    //
-    // out.write((byte) (length >> 8));
-    // out.write((byte) (length));
-    //
-    // // encode value
-    // out.write(value);
-    // }
-
     public void write(ByteBuf buf) {
         // obtain encoded value
         ByteBuf value = getValue();

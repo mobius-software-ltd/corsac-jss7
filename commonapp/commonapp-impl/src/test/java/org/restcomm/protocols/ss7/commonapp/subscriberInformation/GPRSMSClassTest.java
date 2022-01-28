@@ -33,6 +33,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -65,8 +66,8 @@ public class GPRSMSClassTest {
         assertTrue(result.getResult() instanceof GPRSMSClassImpl);
         GPRSMSClassImpl impl = (GPRSMSClassImpl)result.getResult();
         
-        assertTrue(Arrays.equals(impl.getMSNetworkCapability().getData(), this.getEncodedDataNetworkCapability()));
-        assertTrue(Arrays.equals(impl.getMSRadioAccessCapability().getData(), this.getEncodedDataRadioAccessCapability()));               
+        assertTrue(ByteBufUtil.equals(impl.getMSNetworkCapability().getValue(), Unpooled.wrappedBuffer(this.getEncodedDataNetworkCapability())));
+        assertTrue(ByteBufUtil.equals(impl.getMSRadioAccessCapability().getValue(),Unpooled.wrappedBuffer(this.getEncodedDataRadioAccessCapability())));               
     }
 
     @Test(groups = { "functional.encode", "subscriberInformation" })
@@ -74,8 +75,8 @@ public class GPRSMSClassTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(GPRSMSClassImpl.class);
     	
-        MSNetworkCapabilityImpl nc = new MSNetworkCapabilityImpl(this.getEncodedDataNetworkCapability());
-        MSRadioAccessCapabilityImpl rac = new MSRadioAccessCapabilityImpl(this.getEncodedDataRadioAccessCapability());
+        MSNetworkCapabilityImpl nc = new MSNetworkCapabilityImpl(Unpooled.wrappedBuffer(this.getEncodedDataNetworkCapability()));
+        MSRadioAccessCapabilityImpl rac = new MSRadioAccessCapabilityImpl(Unpooled.wrappedBuffer(this.getEncodedDataRadioAccessCapability()));
         GPRSMSClassImpl impl = new GPRSMSClassImpl(nc, rac);
         ByteBuf buffer=parser.encode(impl);
         byte[] encodedData = new byte[buffer.readableBytes()];

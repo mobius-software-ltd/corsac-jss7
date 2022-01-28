@@ -37,12 +37,14 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MiscCallInfoImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -98,8 +100,8 @@ public class EventReportBCSMRequestTest {
         
         elem = (EventReportBCSMRequestImpl)result.getResult();  
         assertEquals(elem.getEventTypeBCSM(), EventTypeBCSM.routeSelectFailure);
-        assertTrue(Arrays.equals(elem.getEventSpecificInformationBCSM().getRouteSelectFailureSpecificInfo().getFailureCause()
-                .getData(), getDataFailureCause()));
+        assertTrue(ByteBufUtil.equals(CauseIsupImpl.translate(elem.getEventSpecificInformationBCSM().getRouteSelectFailureSpecificInfo().getFailureCause()
+                .getCauseIndicators()),Unpooled.wrappedBuffer(getDataFailureCause())));
         assertEquals(elem.getLegID(), LegType.leg2);
         assertNull(elem.getMiscCallInfo());
         assertNull(elem.getExtensions());
@@ -112,8 +114,8 @@ public class EventReportBCSMRequestTest {
         
         elem = (EventReportBCSMRequestImpl)result.getResult();  
         assertEquals(elem.getEventTypeBCSM(), EventTypeBCSM.routeSelectFailure);
-        assertTrue(Arrays.equals(elem.getEventSpecificInformationBCSM().getRouteSelectFailureSpecificInfo().getFailureCause()
-                .getData(), getDataFailureCause()));
+        assertTrue(ByteBufUtil.equals(CauseIsupImpl.translate(elem.getEventSpecificInformationBCSM().getRouteSelectFailureSpecificInfo().getFailureCause()
+                .getCauseIndicators()),Unpooled.wrappedBuffer(getDataFailureCause())));
         assertEquals(elem.getLegID(), LegType.leg2);
         assertEquals(elem.getMiscCallInfo().getMessageType(), MiscCallInfoMessageType.request);
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
@@ -134,7 +136,9 @@ public class EventReportBCSMRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        CauseIsupImpl failureCause = new CauseIsupImpl(getDataFailureCause());
+        CauseIndicatorsImpl ci=new CauseIndicatorsImpl();
+        ci.decode(Unpooled.wrappedBuffer(getDataFailureCause()));
+        CauseIsupImpl failureCause = new CauseIsupImpl(ci);
         RouteSelectFailureSpecificInfoImpl routeSelectFailureSpecificInfo = new RouteSelectFailureSpecificInfoImpl(failureCause);
         EventSpecificInformationBCSMImpl eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(
                 routeSelectFailureSpecificInfo);
@@ -158,46 +162,4 @@ public class EventReportBCSMRequestTest {
         // eventSpecificInformationBCSM, ReceivingSideID legID,
         // MiscCallInfo miscCallInfo, CAPExtensions extensions
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerializaion() throws Exception {
-        CauseCapImpl failureCause = new CauseCapImpl(getDataFailureCause());
-        RouteSelectFailureSpecificInfoImpl routeSelectFailureSpecificInfo = new RouteSelectFailureSpecificInfoImpl(failureCause);
-        EventSpecificInformationBCSMImpl eventSpecificInformationBCSM = new EventSpecificInformationBCSMImpl(
-                routeSelectFailureSpecificInfo);
-        ReceivingSideIDImpl legID = new ReceivingSideIDImpl(LegType.leg2);
-
-        MiscCallInfoImpl miscCallInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.request, null);
-
-        EventReportBCSMRequestImpl original = new EventReportBCSMRequestImpl(EventTypeBCSM.routeSelectFailure,
-                eventSpecificInformationBCSM, legID, miscCallInfo, CAPExtensionsTest.createTestCAPExtensions());
-        original.setInvokeId(24);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "eventReportBCSMRequest", EventReportBCSMRequestImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        EventReportBCSMRequestImpl copy = reader.read("eventReportBCSMRequest", EventReportBCSMRequestImpl.class);
-
-        assertEquals(copy.getInvokeId(), original.getInvokeId());
-        assertEquals(copy.getEventTypeBCSM(), original.getEventTypeBCSM());
-        assertEquals(copy.getEventSpecificInformationBCSM().getRouteSelectFailureSpecificInfo().getFailureCause().getData(),
-                original.getEventSpecificInformationBCSM().getRouteSelectFailureSpecificInfo().getFailureCause().getData());
-
-        assertEquals(copy.getLegID().getReceivingSideID(), original.getLegID().getReceivingSideID());
-
-        assertEquals(copy.getMiscCallInfo().getMessageType(), original.getMiscCallInfo().getMessageType());
-    }*/
 }

@@ -31,12 +31,14 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.TypeOfShape;
 import org.restcomm.protocols.ss7.commonapp.primitives.CellGlobalIdOrServiceAreaIdOrLAIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.MAPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.map.api.MAPParameterFactory;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AccuracyFulfilmentIndicator;
+import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityType;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
@@ -47,6 +49,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -76,17 +79,13 @@ public class ProvideSubscriberLocationResponseTest {
     }
 
     public byte[] getEncodedData() {
-        return new byte[] { 48, 6, 4, 1, 99, -128, 1, 15 };
+        return new byte[] { 48, 13, 4, 8, 16, 92, 113, -57, -106, 11, 97, 7, -128, 1, 15 };
     }
 
     public byte[] getEncodedDataFull() {
-        return new byte[] { 48, 59, 4, 1, 99, -128, 1, 15, -126, 1, 19, -125, 0, -124, 2, 11, 12, -123, 3, 15, 16, 17, -90, 7,
-                -127, 5, 33, -15, 16, 8, -82, -121, 0, -120, 1, 0, -119, 4, 21, 22, 23, 24, -118, 0, -117, 2, 25, 26, -116, 1,
-                29, -83, 8, -128, 6, -111, 68, 100, 102, -120, -8 };
-    }
-
-    public byte[] getExtGeographicalInformation() {
-        return new byte[] { 99 };
+        return new byte[] { 48, 73, 4, 8, 16, 92, 113, -57, -106, 11, 97, 7, -128, 1, 15, -126, 8, 16, 92, 113, -57, -106, 11, 97, 7, -125, 0, -124, 2, 11, 
+        		12, -123, 3, 15, 16, 17, -90, 7, -127, 5, 33, -15, 16, 8, -82, -121, 0, -120, 1, 0, -119, 4, 0, 90, 0, 59, -118, 
+        		0, -117, 2, 25, 26, -116, 1, 29, -83, 8, -128, 6, -111, 68, 100, 102, -120, -8 };
     }
 
     public byte[] getPositioningDataInformation() {
@@ -95,14 +94,6 @@ public class ProvideSubscriberLocationResponseTest {
 
     public byte[] getUtranPositioningDataInfo() {
         return new byte[] { 15, 16, 17 };
-    }
-
-    public byte[] getAddGeographicalInformation() {
-        return new byte[] { 19 };
-    }
-
-    public byte[] getVelocityEstimate() {
-        return new byte[] { 21, 22, 23, 24 };
     }
 
     public byte[] getGeranGANSSpositioningData() {
@@ -124,7 +115,11 @@ public class ProvideSubscriberLocationResponseTest {
         assertTrue(result.getResult() instanceof ProvideSubscriberLocationResponseImpl);
         ProvideSubscriberLocationResponseImpl impl = (ProvideSubscriberLocationResponseImpl)result.getResult();
 
-        assertTrue(Arrays.equals(impl.getLocationEstimate().getData(), getExtGeographicalInformation()));
+        assertEquals(impl.getLocationEstimate().getTypeOfShape(), TypeOfShape.EllipsoidPointWithUncertaintyCircle);
+        assertTrue(Math.abs(impl.getLocationEstimate().getLatitude() - 65) < 0.01);
+        assertTrue(Math.abs(impl.getLocationEstimate().getLongitude() - (-149)) < 0.01);  // -31
+        assertTrue(Math.abs(impl.getLocationEstimate().getUncertainty() - 9.48) < 0.01);
+        
         assertEquals((int) impl.getAgeOfLocationEstimate(), 15);
 
         assertNull(impl.getExtensionContainer());
@@ -147,24 +142,36 @@ public class ProvideSubscriberLocationResponseTest {
         assertTrue(result.getResult() instanceof ProvideSubscriberLocationResponseImpl);
         impl = (ProvideSubscriberLocationResponseImpl)result.getResult();
 
-        assertTrue(Arrays.equals(impl.getLocationEstimate().getData(), getExtGeographicalInformation()));
+        assertEquals(impl.getLocationEstimate().getTypeOfShape(), TypeOfShape.EllipsoidPointWithUncertaintyCircle);
+        assertTrue(Math.abs(impl.getLocationEstimate().getLatitude() - 65) < 0.01);
+        assertTrue(Math.abs(impl.getLocationEstimate().getLongitude() - (-149)) < 0.01);  // -31
+        assertTrue(Math.abs(impl.getLocationEstimate().getUncertainty() - 9.48) < 0.01);
+        
         assertEquals((int) impl.getAgeOfLocationEstimate(), 15);
 
         assertNull(impl.getExtensionContainer());
 
-        assertTrue(Arrays.equals(impl.getAdditionalLocationEstimate().getData(), getAddGeographicalInformation()));
+        assertEquals(impl.getAdditionalLocationEstimate().getTypeOfShape(), TypeOfShape.EllipsoidPointWithUncertaintyCircle);
+        assertTrue(Math.abs(impl.getAdditionalLocationEstimate().getLatitude() - 65) < 0.01);
+        assertTrue(Math.abs(impl.getAdditionalLocationEstimate().getLongitude() - (-149)) < 0.01); // -31
+        assertTrue(Math.abs(impl.getAdditionalLocationEstimate().getUncertainty() - 9.48) < 0.01);
+        
         assertTrue(impl.getDeferredMTLRResponseIndicator());
-        assertTrue(Arrays.equals(impl.getGeranPositioningData().getData(), getPositioningDataInformation()));
-        assertTrue(Arrays.equals(impl.getUtranPositioningData().getData(), getUtranPositioningDataInfo()));
+        assertTrue(ByteBufUtil.equals(impl.getGeranPositioningData().getValue(),Unpooled.wrappedBuffer(getPositioningDataInformation())));
+        assertTrue(ByteBufUtil.equals(impl.getUtranPositioningData().getValue(),Unpooled.wrappedBuffer(getUtranPositioningDataInfo())));
         assertEquals(impl.getCellIdOrSai().getLAIFixedLength().getMCC(), 121);
         assertEquals(impl.getCellIdOrSai().getLAIFixedLength().getMNC(), 1);
         assertEquals(impl.getCellIdOrSai().getLAIFixedLength().getLac(), 2222);
         assertTrue(impl.getSaiPresent());
         assertEquals(impl.getAccuracyFulfilmentIndicator(), AccuracyFulfilmentIndicator.requestedAccuracyFulfilled);
-        assertTrue(Arrays.equals(impl.getVelocityEstimate().getData(), getVelocityEstimate()));
+        
+        assertEquals(impl.getVelocityEstimate().getVelocityType(), VelocityType.HorizontalVelocity);
+        assertEquals(impl.getVelocityEstimate().getHorizontalSpeed(), 59);
+        assertEquals(impl.getVelocityEstimate().getBearing(), 90);
+        
         assertTrue(impl.getMoLrShortCircuitIndicator());
-        assertTrue(Arrays.equals(impl.getGeranGANSSpositioningData().getData(), getGeranGANSSpositioningData()));
-        assertTrue(Arrays.equals(impl.getUtranGANSSpositioningData().getData(), getUtranGANSSpositioningData()));
+        assertTrue(ByteBufUtil.equals(impl.getGeranGANSSpositioningData().getValue(), Unpooled.wrappedBuffer(getGeranGANSSpositioningData())));
+        assertTrue(ByteBufUtil.equals(impl.getUtranGANSSpositioningData().getValue(), Unpooled.wrappedBuffer(getUtranGANSSpositioningData())));
         assertTrue(impl.getTargetServingNodeForHandover().getMscNumber().getAddress().equals("444666888"));
     }
 
@@ -173,7 +180,7 @@ public class ProvideSubscriberLocationResponseTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ProvideSubscriberLocationResponseImpl.class);
     	
-        ExtGeographicalInformationImpl egeo = new ExtGeographicalInformationImpl(getExtGeographicalInformation());
+        ExtGeographicalInformationImpl egeo = new ExtGeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle, 65, -149, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
         ProvideSubscriberLocationResponseImpl reqInd = new ProvideSubscriberLocationResponseImpl(egeo, null, null, 15, null,
                 null, false, null, false, null, null, false, null, null, null);
@@ -184,19 +191,18 @@ public class ProvideSubscriberLocationResponseTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        PositioningDataInformationImpl geranPositioningData = new PositioningDataInformationImpl(
-                getPositioningDataInformation());
-        UtranPositioningDataInfoImpl utranPositioningData = new UtranPositioningDataInfoImpl(getUtranPositioningDataInfo());
-        AddGeographicalInformationImpl additionalLocationEstimate = new AddGeographicalInformationImpl(
-                getAddGeographicalInformation());
+        PositioningDataInformationImpl geranPositioningData = new PositioningDataInformationImpl(Unpooled.wrappedBuffer(
+                getPositioningDataInformation()));
+        UtranPositioningDataInfoImpl utranPositioningData = new UtranPositioningDataInfoImpl(Unpooled.wrappedBuffer(getUtranPositioningDataInfo()));
+        AddGeographicalInformationImpl additionalLocationEstimate = new AddGeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle, 65, -149, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         LAIFixedLengthImpl laiFixedLength = new LAIFixedLengthImpl(121, 1, 2222);
         CellGlobalIdOrServiceAreaIdOrLAIImpl cellGlobalIdOrServiceAreaIdOrLAI = new CellGlobalIdOrServiceAreaIdOrLAIImpl(
                 laiFixedLength);
-        VelocityEstimateImpl velocityEstimate = new VelocityEstimateImpl(getVelocityEstimate());
-        GeranGANSSpositioningDataImpl geranGANSSpositioningData = new GeranGANSSpositioningDataImpl(
-                getGeranGANSSpositioningData());
-        UtranGANSSpositioningDataImpl utranGANSSpositioningData = new UtranGANSSpositioningDataImpl(
-                getUtranGANSSpositioningData());
+        VelocityEstimateImpl velocityEstimate = new VelocityEstimateImpl(VelocityType.HorizontalVelocity, 59, 90, 0, 0, 0);;
+        GeranGANSSpositioningDataImpl geranGANSSpositioningData = new GeranGANSSpositioningDataImpl(Unpooled.wrappedBuffer(
+                getGeranGANSSpositioningData()));
+        UtranGANSSpositioningDataImpl utranGANSSpositioningData = new UtranGANSSpositioningDataImpl(Unpooled.wrappedBuffer(
+                getUtranGANSSpositioningData()));
         ISDNAddressStringImpl isdnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "444666888");
         ServingNodeAddressImpl targetServingNodeForHandover = new ServingNodeAddressImpl(isdnNumber, true);

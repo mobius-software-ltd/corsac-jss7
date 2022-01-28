@@ -137,14 +137,11 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
             PDPInitiationType pdpInitiationType, CAPINAPExtensions extensions, GSNAddress gsnAddress, boolean secondaryPDPContext,
             IMEI imei) {
         super();
-        this.serviceKey = new ASNInteger();
-        this.serviceKey.setValue(Long.valueOf(serviceKey));
+        this.serviceKey = new ASNInteger(serviceKey);
         
-        if(gprsEventType!=null) {
-        	this.gprsEventType = new ASNGPRSEventTypeImpl();
-        	this.gprsEventType.setType(gprsEventType);
-        }
-        
+        if(gprsEventType!=null)
+        	this.gprsEventType = new ASNGPRSEventTypeImpl(gprsEventType);
+        	
         this.msisdn = msisdn;
         this.imsi = imsi;
         this.timeAndTimezone = timeAndTimezone;
@@ -157,11 +154,9 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
         this.sgsnCapabilities = sgsnCapabilities;
         this.locationInformationGPRS = locationInformationGPRS;
         
-        if(pdpInitiationType!=null) {
-        	this.pdpInitiationType = new ASNPDPInitiationTypeImpl();
-        	this.pdpInitiationType.setType(pdpInitiationType);
-        }
-        
+        if(pdpInitiationType!=null)
+        	this.pdpInitiationType = new ASNPDPInitiationTypeImpl(pdpInitiationType);
+        	
         this.extensions = extensions;
         this.gsnAddress = gsnAddress;
         
@@ -176,7 +171,7 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
     	if(this.serviceKey==null || this.serviceKey.getValue()==null)
     		return 0;
     	
-        return this.serviceKey.getValue().intValue();
+        return this.serviceKey.getIntValue();
     }
 
     @Override

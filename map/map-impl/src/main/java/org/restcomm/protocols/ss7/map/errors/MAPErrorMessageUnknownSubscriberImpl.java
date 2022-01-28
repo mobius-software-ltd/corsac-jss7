@@ -50,8 +50,7 @@ public class MAPErrorMessageUnknownSubscriberImpl extends MAPErrorMessageImpl im
         super((long) MAPErrorCode.unknownSubscriber);
 
         this.extensionContainer = extensionContainer;
-        this.unknownSubscriberDiagnostic = new ASNUnknownSubscriberDiagnosticImpl();
-        this.unknownSubscriberDiagnostic.setType(unknownSubscriberDiagnostic);
+        this.unknownSubscriberDiagnostic = new ASNUnknownSubscriberDiagnosticImpl(unknownSubscriberDiagnostic);        
     }
 
     public MAPErrorMessageUnknownSubscriberImpl() {
@@ -84,10 +83,8 @@ public class MAPErrorMessageUnknownSubscriberImpl extends MAPErrorMessageImpl im
     public void setUnknownSubscriberDiagnostic(UnknownSubscriberDiagnostic unknownSubscriberDiagnostic) {
     	if(unknownSubscriberDiagnostic==null)
     		this.unknownSubscriberDiagnostic=null;
-    	else {
-    		this.unknownSubscriberDiagnostic = new ASNUnknownSubscriberDiagnosticImpl();
-    		this.unknownSubscriberDiagnostic.setType(unknownSubscriberDiagnostic);
-    	}
+    	else
+    		this.unknownSubscriberDiagnostic = new ASNUnknownSubscriberDiagnosticImpl(unknownSubscriberDiagnostic);    		
     }
 
     @Override

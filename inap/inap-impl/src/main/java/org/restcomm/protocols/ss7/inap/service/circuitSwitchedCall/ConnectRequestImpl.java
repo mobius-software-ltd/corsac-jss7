@@ -214,16 +214,12 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
         
         this.correlationID=correlationID;
         
-        if(cutAndPaste!=null) {
-        	this.cutAndPaste=new ASNInteger();
-        	this.cutAndPaste.setValue(cutAndPaste.longValue());
-        }
-        
-        if(forwardingCondition!=null) {
-        	this.forwardingCondition=new ASNForwardingCondition();
-        	this.forwardingCondition.setType(forwardingCondition);
-        }
-        
+        if(cutAndPaste!=null)
+        	this.cutAndPaste=new ASNInteger(cutAndPaste);
+        	
+        if(forwardingCondition!=null)
+        	this.forwardingCondition=new ASNForwardingCondition(forwardingCondition);
+        	
         this.isdnAccessRelatedInformation=isdnAccessRelatedInformation;        
         this.originalCalledPartyID = originalCalledPartyID;
         this.routeList=routeList;
@@ -317,10 +313,10 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
 
     @Override
     public Integer getCutAndPaste() {
-    	if(cutAndPaste==null || cutAndPaste.getValue()==null)
+    	if(cutAndPaste==null)
     		return null;
     	
-		return cutAndPaste.getValue().intValue();
+		return cutAndPaste.getIntValue();
 	}
 
 	@Override

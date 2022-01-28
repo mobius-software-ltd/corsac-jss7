@@ -108,8 +108,7 @@ public class ReturnResultInnerImpl {
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setParameter(org.restcomm .protocols.ss7.tcap.asn.comp.Parameter)
      */
     public void setParameter(Object p) {
-    	this.parameter=new ASNReturnResultParameterImpl();
-    	this.parameter.setValue(p);
+    	this.parameter=new ASNReturnResultParameterImpl(p);    	
     }
 
     @ASNGenericMapping

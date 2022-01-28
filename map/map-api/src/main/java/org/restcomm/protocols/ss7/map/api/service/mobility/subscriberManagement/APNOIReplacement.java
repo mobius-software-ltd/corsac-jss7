@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  APN-OI-Replacement ::= OCTET STRING (SIZE (9..100)) -- Octets are coded as APN Operator Identifier according to TS 3GPP TS
@@ -37,7 +39,5 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface APNOIReplacement {
-
-    byte[] getData();
-
+    ByteBuf getValue();
 }

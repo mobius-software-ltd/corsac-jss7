@@ -2,7 +2,7 @@ package org.restcomm.protocols.ss7.tcap.asn;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 
 /*
@@ -30,16 +30,20 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 *
 */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,lengthIndefinite=false)
-public class ASNAbortSource extends ASNInteger {
-	public void setAbortSourceType(AbortSourceType t) {
-		super.setValue(t.getType());
+public class ASNAbortSource extends ASNEnumerated {
+	public ASNAbortSource() {
+		
+	}
+	
+	public ASNAbortSource(AbortSourceType t) {
+		super(t.getType());
 	}
 	
 	public AbortSourceType getAbortSourceType() throws ParseException {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return AbortSourceType.getFromInt(getValue());
+		return AbortSourceType.getFromInt(realValue);
 	}
 }

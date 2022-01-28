@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.commonapp.api.subscriberManagement;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * <pre>
  * LSAIdentity ::= OCTET STRING (SIZE (3))
@@ -53,7 +55,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface LSAIdentity {
 
-    byte[] getData();
+    ByteBuf getValue();
 
     boolean isPlmnSignificantLSA();
 

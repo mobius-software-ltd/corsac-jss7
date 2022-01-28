@@ -39,17 +39,15 @@ public class ReferenceNumberWrapperImpl {
     }
 
     public ReferenceNumberWrapperImpl(Integer reference) {
-    	if(reference!=null) {
-    		this.reference = new ASNInteger();
-    		this.reference.setValue(reference.longValue());
-    	}
+    	if(reference!=null)
+    		this.reference = new ASNInteger(reference);    		
     }
 
     public Integer getReference() {
     	if(this.reference==null)
     		return null;
     	
-        return this.reference.getValue().intValue();
+        return this.reference.getIntValue();
     }
 
     @Override

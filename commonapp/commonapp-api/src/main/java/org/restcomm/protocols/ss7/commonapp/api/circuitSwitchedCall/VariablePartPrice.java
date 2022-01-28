@@ -47,8 +47,6 @@ price [4] OCTET STRING (SIZE(4))
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface VariablePartPrice {
 
-    byte[] getData();
-
     double getPrice();
 
     int getPriceIntegerPart();

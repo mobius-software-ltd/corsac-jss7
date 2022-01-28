@@ -35,6 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -64,7 +65,7 @@ public class IMSIWithLMSITest {
         IMSIWithLMSIImpl prim = (IMSIWithLMSIImpl)result.getResult();
         
         assertTrue(prim.getImsi().getData().equals("11117777"));
-        assertTrue(Arrays.equals(prim.getLmsi().getData(), getDataLmsi()));
+        assertTrue(ByteBufUtil.equals(prim.getLmsi().getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
     }
 
     @Test(groups = { "functional.decode", "primitives" })
@@ -73,7 +74,7 @@ public class IMSIWithLMSITest {
     	parser.replaceClass(IMSIWithLMSIImpl.class);
     	
         IMSIImpl imsi = new IMSIImpl("11117777");
-        LMSIImpl lmsi = new LMSIImpl(getDataLmsi());
+        LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(getDataLmsi()));
         IMSIWithLMSIImpl prim = new IMSIWithLMSIImpl(imsi, lmsi);
 
         byte[] data=this.getData1();

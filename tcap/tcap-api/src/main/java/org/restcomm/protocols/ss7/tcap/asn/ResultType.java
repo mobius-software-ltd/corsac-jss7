@@ -33,20 +33,20 @@ public enum ResultType {
 
     Accepted(0), RejectedPermanent(1);
 
-    private long type = -1;
+    private int type = -1;
 
-    ResultType(long t) {
+    ResultType(int t) {
         this.type = t;
     }
 
     /**
      * @return the type
      */
-    public long getType() {
+    public int getType() {
         return type;
     }
 
-    public static ResultType getFromInt(long t) throws ParseException {
+    public static ResultType getFromInt(int t) throws ParseException {
         if (t == 0) {
             return Accepted;
         } else if (t == 1) {

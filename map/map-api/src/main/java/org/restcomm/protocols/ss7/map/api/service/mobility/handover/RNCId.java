@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
 import java.io.Serializable;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  RNCId ::= OCTET STRING (SIZE (7)) -- The internal structure is defined as follows: -- octet 1 bits 4321 Mobile Country Code
@@ -39,8 +41,8 @@ import java.io.Serializable;
  */
 public interface RNCId extends Serializable {
 
-    byte[] getData();
-
+	ByteBuf getValue();
+	
     int getMcc();
 
     int getMnc();
@@ -48,5 +50,4 @@ public interface RNCId extends Serializable {
     int getLac();
 
     int getRncId();
-
 }

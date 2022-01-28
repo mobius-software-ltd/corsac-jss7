@@ -42,6 +42,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -52,7 +53,7 @@ import io.netty.buffer.Unpooled;
 public class SendAuthenticationInfoRequestTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 21, -128, 6, 17, 33, 34, 51, 67, 68, 2, 1, 4, -125, 1, 0, -124, 3, -71, -2, -59, -122, 0 };
+        return new byte[] { 48, 21, -128, 6, 17, 33, 34, 51, 67, 68, 2, 1, 4, -125, 1, 0, -124, 3, 0x04, 0x15, (byte) 0x93, -122, 0 };
     }
 
     private byte[] getEncodedData2() {
@@ -63,11 +64,6 @@ public class SendAuthenticationInfoRequestTest {
     private byte[] getEncodedData_V2() {
         return new byte[] { 4, 8, 82, 0, 7, 34, 2, 35, 103, -9 };
     }
-
-    private byte[] getRequestingPlmnId() {
-        return new byte[] { (byte) 185, (byte) 254, (byte) 197 };
-    }
-
     @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
@@ -86,7 +82,8 @@ public class SendAuthenticationInfoRequestTest {
         assertEquals(asc.getNumberOfRequestedVectors(), 4);
 
         assertNotNull(asc.getRequestingPlmnId());
-        assertTrue(Arrays.equals(asc.getRequestingPlmnId().getData(), getRequestingPlmnId()));
+        assertEquals(asc.getRequestingPlmnId().getMcc(), 405);
+        assertEquals(asc.getRequestingPlmnId().getMnc(), 391);
 
         assertNull(asc.getReSynchronisationInfo());
         assertNull(asc.getExtensionContainer());
@@ -110,8 +107,8 @@ public class SendAuthenticationInfoRequestTest {
         assertNull(asc.getRequestingPlmnId());
 
         ReSynchronisationInfo rsi = asc.getReSynchronisationInfo();
-        assertTrue(Arrays.equals(rsi.getRand(), ReSynchronisationInfoTest.getRandData()));
-        assertTrue(Arrays.equals(rsi.getAuts(), ReSynchronisationInfoTest.getAutsData()));
+        assertTrue(ByteBufUtil.equals(rsi.getRand(), Unpooled.wrappedBuffer(ReSynchronisationInfoTest.getRandData())));
+        assertTrue(ByteBufUtil.equals(rsi.getAuts(), Unpooled.wrappedBuffer(ReSynchronisationInfoTest.getAutsData())));
 
         assertNull(asc.getExtensionContainer());
         assertEquals((int) asc.getNumberOfRequestedAdditionalVectors(), 6);
@@ -150,7 +147,7 @@ public class SendAuthenticationInfoRequestTest {
     	parser.replaceClass(SendAuthenticationInfoRequestImplV1.class);
 
         IMSIImpl imsi = new IMSIImpl("111222333444");
-        PlmnIdImpl plmnId = new PlmnIdImpl(getRequestingPlmnId());
+        PlmnIdImpl plmnId = new PlmnIdImpl(405,391);
         SendAuthenticationInfoRequest asc = new SendAuthenticationInfoRequestImplV3(3, imsi, 4, false, false, null, null, RequestingNodeType.vlr, plmnId, null, true);
 
         byte[] data=getEncodedData();
@@ -160,7 +157,7 @@ public class SendAuthenticationInfoRequestTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         imsi = new IMSIImpl("33333444444");
-        ReSynchronisationInfoImpl rsi = new ReSynchronisationInfoImpl(ReSynchronisationInfoTest.getRandData(), ReSynchronisationInfoTest.getAutsData());
+        ReSynchronisationInfoImpl rsi = new ReSynchronisationInfoImpl(Unpooled.wrappedBuffer(ReSynchronisationInfoTest.getRandData()), Unpooled.wrappedBuffer(ReSynchronisationInfoTest.getAutsData()));
         asc = new SendAuthenticationInfoRequestImplV3(3, imsi, 5, true, true, rsi, null, RequestingNodeType.sgsn, null, 6, false);
 
         data=getEncodedData2();

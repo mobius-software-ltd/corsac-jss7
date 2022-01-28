@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -71,65 +73,65 @@ Attribute ::= OCTET STRING
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public interface DataItemInformation {
-	byte[] getAttribute0();
+	ByteBuf getAttribute0();
 	
-	byte[] getAttribute1();
+	ByteBuf getAttribute1();
 
-	byte[] getAttribute2();    
+	ByteBuf getAttribute2();    
 	
-	byte[] getAttribute3();
+	ByteBuf getAttribute3();
 
-	byte[] getAttribute4();
+	ByteBuf getAttribute4();
 	
-	byte[] getAttribute5();
+	ByteBuf getAttribute5();
 
-	byte[] getAttribute6();    
+	ByteBuf getAttribute6();    
 	
-	byte[] getAttribute7();
+	ByteBuf getAttribute7();
 
-	byte[] getAttribute8();
+	ByteBuf getAttribute8();
 	
-	byte[] getAttribute9();
+	ByteBuf getAttribute9();
 
-	byte[] getAttribute10();    
+	ByteBuf getAttribute10();    
 	
-	byte[] getAttribute11();
+	ByteBuf getAttribute11();
 
-	byte[] getAttribute12();
+	ByteBuf getAttribute12();
 	
-	byte[] getAttribute13();
+	ByteBuf getAttribute13();
 
-	byte[] getAttribute14();    
+	ByteBuf getAttribute14();    
 	
-	byte[] getAttribute15();
+	ByteBuf getAttribute15();
 
-	byte[] getAttribute16();
+	ByteBuf getAttribute16();
 	
-	byte[] getAttribute17();
+	ByteBuf getAttribute17();
 
-	byte[] getAttribute18();
+	ByteBuf getAttribute18();
 	
-	byte[] getAttribute19();
+	ByteBuf getAttribute19();
 
-	byte[] getAttribute20();    
+	ByteBuf getAttribute20();    
 	
-	byte[] getAttribute21();
+	ByteBuf getAttribute21();
 
-	byte[] getAttribute22();
+	ByteBuf getAttribute22();
 	
-	byte[] getAttribute23();
+	ByteBuf getAttribute23();
 
-	byte[] getAttribute24();    
+	ByteBuf getAttribute24();    
 	
-	byte[] getAttribute25();
+	ByteBuf getAttribute25();
 
-	byte[] getAttribute26();
+	ByteBuf getAttribute26();
 	
-	byte[] getAttribute27();
+	ByteBuf getAttribute27();
 
-	byte[] getAttribute28();    
+	ByteBuf getAttribute28();    
 	
-	byte[] getAttribute29();
+	ByteBuf getAttribute29();
 
-	byte[] getAttribute30();
+	ByteBuf getAttribute30();
 }

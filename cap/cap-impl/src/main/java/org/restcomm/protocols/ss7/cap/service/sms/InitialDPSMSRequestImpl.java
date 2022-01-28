@@ -150,17 +150,13 @@ public class InitialDPSMSRequestImpl extends SmsMessageImpl implements InitialDP
             CallReferenceNumber smsReferenceNumber, ISDNAddressString mscAddress, ISDNAddressString sgsnNumber,
             MSClassmark2 mSClassmark2, GPRSMSClass gprsMSClass, IMEI imei, ISDNAddressString calledPartyNumber) {
         super();
-        this.serviceKey = new ASNInteger();
-        this.serviceKey.setValue(Long.valueOf(serviceKey));
-        
+        this.serviceKey = new ASNInteger(serviceKey);
         this.destinationSubscriberNumber = destinationSubscriberNumber;
         this.callingPartyNumber = callingPartyNumber;
         
-        if(eventTypeSMS!=null) {
-        	this.eventTypeSMS = new ASNEventTypeSMSImpl();
-        	this.eventTypeSMS.setType(eventTypeSMS);
-        }
-        
+        if(eventTypeSMS!=null)
+        	this.eventTypeSMS = new ASNEventTypeSMSImpl(eventTypeSMS);
+        	
         this.imsi = imsi;
         this.locationInformationMSC = locationInformationMSC;
         this.locationInformationGPRS = locationInformationGPRS;
@@ -185,7 +181,7 @@ public class InitialDPSMSRequestImpl extends SmsMessageImpl implements InitialDP
     	if(this.serviceKey==null || this.serviceKey.getValue()==null)
     		return -1;
     	
-        return this.serviceKey.getValue().intValue();
+        return this.serviceKey.getIntValue();
     }
 
     @Override

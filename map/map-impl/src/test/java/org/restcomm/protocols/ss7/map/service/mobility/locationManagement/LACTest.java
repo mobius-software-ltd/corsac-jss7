@@ -58,9 +58,7 @@ public class LACTest {
         assertTrue(result.getResult() instanceof LACImpl);
         LACImpl prim = (LACImpl)result.getResult();
         
-        assertNotNull(prim.getData());
-        assertTrue(Arrays.equals(getDataVal(), prim.getData()));
-
+        assertNotNull(prim.getLac());
         assertEquals(prim.getLac(), 4444);
     }
 

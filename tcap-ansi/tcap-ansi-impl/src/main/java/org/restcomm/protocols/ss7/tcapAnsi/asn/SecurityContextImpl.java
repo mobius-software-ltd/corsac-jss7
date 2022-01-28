@@ -69,8 +69,7 @@ public class SecurityContextImpl implements SecurityContext {
 
 	public void setObj(List<Long> value) {
 		this.intSecurityContext=null;
-		this.objSecurityContext=new ASNObjectIdentifier();
-		this.objSecurityContext.setValue(value);		
+		this.objSecurityContext=new ASNObjectIdentifier(value);		
 	}
 
 	public Long getInt() {
@@ -82,7 +81,6 @@ public class SecurityContextImpl implements SecurityContext {
 
 	public void setInt(Long value) {
 		this.objSecurityContext=null;
-		this.intSecurityContext = new ASNInteger();
-		this.intSecurityContext.setValue(value);
+		this.intSecurityContext = new ASNInteger(value);		
 	}
 }

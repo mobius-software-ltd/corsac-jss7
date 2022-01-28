@@ -30,12 +30,14 @@ import java.util.Arrays;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.BearerCapabilityImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.BearerCapabilityWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.BearerIsupImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserServiceInformationImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -65,7 +67,7 @@ public class BearerCapabilityTest {
         assertTrue(result.getResult() instanceof BearerCapabilityWrapperImpl);
         
         BearerCapabilityWrapperImpl elem = (BearerCapabilityWrapperImpl)result.getResult();        
-        assertTrue(Arrays.equals(elem.getBearerCapability().getBearerCap().getData(), this.getIntData1()));
+        assertTrue(ByteBufUtil.equals(BearerIsupImpl.translate(elem.getBearerCapability().getBearerCap().getUserServiceInformation()), Unpooled.wrappedBuffer(this.getIntData1())));
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
@@ -73,7 +75,7 @@ public class BearerCapabilityTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BearerCapabilityWrapperImpl.class);
     	
-        BearerIsupImpl bc = new BearerIsupImpl(this.getIntData1());
+        BearerIsupImpl bc = new BearerIsupImpl(new UserServiceInformationImpl(Unpooled.wrappedBuffer(this.getIntData1())));
         BearerCapabilityImpl elem = new BearerCapabilityImpl(bc);
         BearerCapabilityWrapperImpl wrapper = new BearerCapabilityWrapperImpl(elem);
         byte[] rawData = this.getData1();
@@ -82,40 +84,4 @@ public class BearerCapabilityTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
-    public void testXMLSerialize() throws Exception {
-
-        UserServiceInformationImpl original0 = new UserServiceInformationImpl();
-        original0.setCodingStandart(UserServiceInformation._CS_INTERNATIONAL);
-        original0.setInformationTransferCapability(UserServiceInformation._ITS_VIDEO);
-        original0.setTransferMode(UserServiceInformation._TM_PACKET);
-        original0.setInformationTransferRate(UserServiceInformation._ITR_64x2);
-
-        BearerCapImpl bc = new BearerCapImpl(original0);
-        BearerCapabilityImpl original = new BearerCapabilityImpl(bc);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "bearerCapability", BearerCapabilityImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        BearerCapabilityImpl copy = reader.read("bearerCapability", BearerCapabilityImpl.class);
-
-        assertEquals(copy.getBearerCap().getUserServiceInformation().getCodingStandart(), original.getBearerCap()
-                .getUserServiceInformation().getCodingStandart());
-        assertEquals(copy.getBearerCap().getUserServiceInformation().getInformationTransferCapability(), original
-                .getBearerCap().getUserServiceInformation().getInformationTransferCapability());
-
-    }*/
 }

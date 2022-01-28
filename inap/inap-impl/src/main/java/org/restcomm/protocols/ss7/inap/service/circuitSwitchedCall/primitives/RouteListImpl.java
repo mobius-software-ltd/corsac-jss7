@@ -30,10 +30,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -44,34 +43,30 @@ import io.netty.buffer.Unpooled;
 public class RouteListImpl implements RouteList {
 	
 	@ASNProperty(asnClass = ASNClass.UNIVERSAL,tag = 4,constructed = false,index = -1)
-	private List<ASNOctetString> dataList;
+	private List<ASNOctetString2> dataList;
 
     public RouteListImpl() {
     }
 
-    public RouteListImpl(List<byte[]> dataList) {
+    public RouteListImpl(List<ByteBuf> dataList) {
     	if(dataList!=null) {
-    		this.dataList=new ArrayList<ASNOctetString>();
-    		for(byte[] curr:dataList) {
-    			ASNOctetString currStr=new ASNOctetString();
-    			currStr.setValue(Unpooled.wrappedBuffer(curr));
+    		this.dataList=new ArrayList<ASNOctetString2>();
+    		for(ByteBuf curr:dataList) {
+    			ASNOctetString2 currStr=new ASNOctetString2(curr);
     			this.dataList.add(currStr);
     		}
     	}    	  	
     }
 
-    public List<byte[]> getDataList() {
+    public List<ByteBuf> getDataList() {
     	if(dataList==null)
     		return null;
     	
-    	List<byte[]> result=new ArrayList<byte[]>();
-    	for(ASNOctetString curr:dataList) {
+    	List<ByteBuf> result=new ArrayList<ByteBuf>();
+    	for(ASNOctetString2 curr:dataList) {
     		ByteBuf value=curr.getValue();
-    		if(value!=null) {
-    			byte[] data=new byte[value.readableBytes()];
-    			value.readBytes(data);
-    			result.add(data);
-    		}
+    		if(value!=null)
+    			result.add(value);    		
     	}
     	return result;
     }
@@ -82,17 +77,16 @@ public class RouteListImpl implements RouteList {
         StringBuilder sb = new StringBuilder();
         sb.append("RouteList [");
         
-        List<byte[]> items=getDataList();
-        if (items != null && items.size()!=0) {
+        if (dataList != null && dataList.size()!=0) {
             sb.append("dataList=");
             boolean isFirst=false;
-            for(byte[] curr:items) {
+            for(ASNOctetString2 curr:dataList) {
             	if(!isFirst)
             		sb.append(",");
             	
-            	sb.append(ASNOctetString.printDataArr(curr));
+            	sb.append(curr.printDataArr());
             	isFirst=false;
-            }         
+            }
         }
         
         sb.append("]");

@@ -28,12 +28,14 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -63,7 +65,7 @@ public class ODisconnectSpecificInfoTest {
         assertTrue(result.getResult() instanceof ODisconnectSpecificInfoImpl);
         
         ODisconnectSpecificInfoImpl elem = (ODisconnectSpecificInfoImpl)result.getResult();        
-        assertTrue(Arrays.equals(elem.getReleaseCause().getData(), this.getIntData()));
+        assertTrue(ByteBufUtil.equals(CauseIsupImpl.translate(elem.getReleaseCause().getCauseIndicators()),Unpooled.wrappedBuffer(this.getIntData())));
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
@@ -71,7 +73,9 @@ public class ODisconnectSpecificInfoTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ODisconnectSpecificInfoImpl.class);
     	
-    	CauseIsupImpl cause = new CauseIsupImpl(this.getIntData());
+    	CauseIndicatorsImpl ci=new CauseIndicatorsImpl();
+    	ci.decode(Unpooled.wrappedBuffer(this.getIntData()));
+    	CauseIsupImpl cause = new CauseIsupImpl(ci);
         ODisconnectSpecificInfoImpl elem = new ODisconnectSpecificInfoImpl(cause);
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
@@ -80,39 +84,4 @@ public class ODisconnectSpecificInfoTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
-    public void testXMLSerializaion() throws Exception {
-
-        CauseIndicatorsImpl prim = new CauseIndicatorsImpl(CauseIndicators._CODING_STANDARD_ITUT,
-                CauseIndicators._LOCATION_PRIVATE_NSRU, 0, CauseIndicators._CV_CALL_REJECTED, null);
-
-        CauseCapImpl cause = new CauseCapImpl(prim);
-        ODisconnectSpecificInfoImpl original = new ODisconnectSpecificInfoImpl(cause);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "oDisconnectSpecificInfo", ODisconnectSpecificInfoImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        ODisconnectSpecificInfoImpl copy = reader.read("oDisconnectSpecificInfo", ODisconnectSpecificInfoImpl.class);
-
-        assertEquals(copy.getReleaseCause().getCauseIndicators().getLocation(), original.getReleaseCause().getCauseIndicators()
-                .getLocation());
-        assertEquals(copy.getReleaseCause().getCauseIndicators().getCauseValue(), original.getReleaseCause()
-                .getCauseIndicators().getCauseValue());
-        assertEquals(copy.getReleaseCause().getCauseIndicators().getCodingStandard(), original.getReleaseCause()
-                .getCauseIndicators().getCodingStandard());
-    }*/
 }

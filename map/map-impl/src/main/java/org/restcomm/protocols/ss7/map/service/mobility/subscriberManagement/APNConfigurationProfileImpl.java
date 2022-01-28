@@ -56,8 +56,7 @@ public class APNConfigurationProfileImpl implements APNConfigurationProfile {
 
     public APNConfigurationProfileImpl(int defaultContext, boolean completeDataListIncluded,
             List<APNConfiguration> ePSDataList, MAPExtensionContainer extensionContainer) {
-        this.defaultContext = new ASNInteger();
-        this.defaultContext.setValue((long)defaultContext & 0x0FFFFFFFFL);
+        this.defaultContext = new ASNInteger(defaultContext);
         
         if(completeDataListIncluded)
         	this.completeDataListIncluded = new ASNNull();
@@ -69,10 +68,10 @@ public class APNConfigurationProfileImpl implements APNConfigurationProfile {
     }
 
     public int getDefaultContext() {
-    	if(this.defaultContext==null)
+    	if(this.defaultContext==null || this.defaultContext.getValue()==null)
     		return 0;
     	
-        return this.defaultContext.getValue().intValue();
+        return this.defaultContext.getIntValue();
     }
 
     public boolean getCompleteDataListIncluded() {

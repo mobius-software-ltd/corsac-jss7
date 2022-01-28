@@ -41,13 +41,17 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ASNObjectIdentifier {
 	private List<Long> value=new ArrayList<Long>();
 	
+	public ASNObjectIdentifier() {
+		
+	}
+	
+	public ASNObjectIdentifier(List<Long> value) {
+		this.value=value;
+	}
+	
 	@ASNLength
 	public Integer getLength(ASNParser parser) {
 		return getLength(value);
-	}
-	
-	public void setValue(List<Long> value) {
-		this.value=value;
 	}
 	
 	public void addOid(Long value) {

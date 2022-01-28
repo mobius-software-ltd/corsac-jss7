@@ -173,25 +173,19 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
         this.lmsi = lmsi;
         this.imei = imei;
         
-        if(lcsPriority!=null) {
-        	this.lcsPriority = new ASNLCSPriority();
-        	this.lcsPriority.setType(lcsPriority);
-        }
-        
+        if(lcsPriority!=null)
+        	this.lcsPriority = new ASNLCSPriority(lcsPriority);
+        	
         this.lcsQoS = lcsQoS;
         this.extensionContainer = extensionContainer;
         this.supportedGADShapes = supportedGADShapes;
         
-        if(lcsReferenceNumber!=null) {
-        	this.lcsReferenceNumber = new ASNSingleByte();
-        	this.lcsReferenceNumber.setValue(lcsReferenceNumber);
-        }
-        
-        if(lcsServiceTypeID!=null) {
-        	this.lcsServiceTypeID = new ASNInteger();
-        	this.lcsServiceTypeID.setValue(lcsServiceTypeID.longValue());
-        }
-        
+        if(lcsReferenceNumber!=null)
+        	this.lcsReferenceNumber = new ASNSingleByte(lcsReferenceNumber);
+        	
+        if(lcsServiceTypeID!=null)
+        	this.lcsServiceTypeID = new ASNInteger(lcsServiceTypeID);
+        	
         this.lcsCodeword = lcsCodeword;
         this.lcsPrivacyCheck = lcsPrivacyCheck;
         this.areaEventInfo = areaEventInfo;
@@ -353,7 +347,7 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
     	if(this.lcsServiceTypeID==null)
     		return null;
     	
-        return this.lcsServiceTypeID.getValue().intValue();
+        return this.lcsServiceTypeID.getIntValue();
     }
 
     /*

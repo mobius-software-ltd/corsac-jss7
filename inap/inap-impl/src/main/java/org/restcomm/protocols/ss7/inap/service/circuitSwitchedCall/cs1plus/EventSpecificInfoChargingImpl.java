@@ -29,10 +29,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.T
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -46,7 +45,7 @@ public class EventSpecificInfoChargingImpl implements EventSpecificInfoCharging 
     private TariffInformation tariffInformation;
 
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false, index=-1)
-    private ASNOctetString tariffIndicator;
+    private ASNOctetString2 tariffIndicator;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false, index=-1)
     private ASNChargeNoChargeIndication chargeNoChargeIndication;
@@ -58,32 +57,25 @@ public class EventSpecificInfoChargingImpl implements EventSpecificInfoCharging 
     	this.tariffInformation=tariffInformation;
     }
     
-    public EventSpecificInfoChargingImpl(byte[] tariffIndicator) {
-    	if(tariffIndicator!=null) {
-    		this.tariffIndicator=new ASNOctetString();
-    		this.tariffIndicator.setValue(Unpooled.wrappedBuffer(tariffIndicator));
-    	}
+    public EventSpecificInfoChargingImpl(ByteBuf tariffIndicator) {
+    	if(tariffIndicator!=null)
+    		this.tariffIndicator=new ASNOctetString2(tariffIndicator);    	
     }
     
     public EventSpecificInfoChargingImpl(ChargeNoChargeIndication chargeNoChargeIndication) {
-    	if(chargeNoChargeIndication!=null) {
-    		this.chargeNoChargeIndication=new ASNChargeNoChargeIndication();
-    		this.chargeNoChargeIndication.setType(chargeNoChargeIndication);
-    	}
+    	if(chargeNoChargeIndication!=null)
+    		this.chargeNoChargeIndication=new ASNChargeNoChargeIndication(chargeNoChargeIndication);    		
     }
 
     public TariffInformation getTariffInformation() {
     	return tariffInformation;
     }
 
-    public byte[] getTariffIndicator() {
-    	if(tariffIndicator==null || tariffIndicator.getValue()==null)
+    public ByteBuf getTariffIndicator() {
+    	if(tariffIndicator==null)
     		return null;
     	
-    	ByteBuf value=tariffIndicator.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-    	return data;
+    	return tariffIndicator.getValue();
     }
 
     public ChargeNoChargeIndication getChargeNoChargeIndication() {
@@ -106,7 +98,7 @@ public class EventSpecificInfoChargingImpl implements EventSpecificInfoCharging 
         
         if (this.tariffIndicator != null && this.tariffIndicator.getValue()!=null) {
             sb.append(", tariffIndicator=");
-            sb.append(ASNOctetString.printDataArr(getTariffIndicator()));
+            sb.append(tariffIndicator.printDataArr());
         }
         
         if (this.chargeNoChargeIndication != null && this.chargeNoChargeIndication.getType()!=null) {

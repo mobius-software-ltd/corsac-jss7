@@ -61,21 +61,15 @@ public class SMSCAMELTDPDataImpl implements SMSCAMELTDPData {
 
     public SMSCAMELTDPDataImpl(SMSTriggerDetectionPoint smsTriggerDetectionPoint, long serviceKey,
             ISDNAddressString gsmSCFAddress, DefaultSMSHandling defaultSMSHandling, MAPExtensionContainer extensionContainer) {
-        if(smsTriggerDetectionPoint!=null) {
-        	this.smsTriggerDetectionPoint = new ASNSMSTriggerDetectionPoint();
-        	this.smsTriggerDetectionPoint.setType(smsTriggerDetectionPoint);
-        }
-        
-        this.serviceKey = new ASNInteger();
-        this.serviceKey.setValue(serviceKey);
-        
+        if(smsTriggerDetectionPoint!=null)
+        	this.smsTriggerDetectionPoint = new ASNSMSTriggerDetectionPoint(smsTriggerDetectionPoint);
+        	
+        this.serviceKey = new ASNInteger(serviceKey);
         this.gsmSCFAddress = gsmSCFAddress;
         
-        if(defaultSMSHandling!=null) {
-        	this.defaultSMSHandling = new ASNDefaultSMSHandling();
-        	this.defaultSMSHandling.setType(defaultSMSHandling);
-        }
-        
+        if(defaultSMSHandling!=null)
+        	this.defaultSMSHandling = new ASNDefaultSMSHandling(defaultSMSHandling);
+        	
         this.extensionContainer = extensionContainer;
     }
 

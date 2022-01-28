@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
 import java.io.Serializable;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  PermittedEncryptionAlgorithms ::= OCTET STRING (SIZE (1..8)) -- Octets contain a complete PermittedEncryptionAlgorithms data
@@ -36,6 +38,5 @@ import java.io.Serializable;
  */
 public interface PermittedEncryptionAlgorithms extends Serializable {
 
-    byte[] getData();
-
+	ByteBuf getValue();
 }

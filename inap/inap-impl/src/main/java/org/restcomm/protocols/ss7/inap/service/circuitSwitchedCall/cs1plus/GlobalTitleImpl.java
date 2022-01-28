@@ -39,7 +39,7 @@ import org.restcomm.protocols.ss7.sccp.impl.parameter.GlobalTitle0100Impl;
 import org.restcomm.protocols.ss7.sccp.parameter.EncodingScheme;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle0100;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -50,19 +50,22 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class GlobalTitleImpl extends ASNOctetString implements GlobalTitle {
+public class GlobalTitleImpl extends ASNOctetString2 implements GlobalTitle {
 	public GlobalTitleImpl() {
     }
 
-    public GlobalTitleImpl(GlobalTitle0100 globalTitle) throws INAPException {
+	public GlobalTitleImpl(GlobalTitle0100 globalTitle) throws INAPException {
+		super(translate(globalTitle));
+	}
+	
+    public static ByteBuf translate(GlobalTitle0100 globalTitle) throws INAPException {
     	if(globalTitle!=null) {
     		int length=3;
     		
     		if(globalTitle.getDigits()!=null)
     			length+=TbcdStringImpl.getLength(false, null, globalTitle.getDigits());
     		
-    		byte[] value=new byte[length];
-    		ByteBuf result=Unpooled.wrappedBuffer(value);
+    		ByteBuf result=Unpooled.buffer(length);
     		
     		result.writeByte(globalTitle.getTranslationType());
     		int currByte=0;
@@ -87,8 +90,10 @@ public class GlobalTitleImpl extends ASNOctetString implements GlobalTitle {
     			}
     		}
 
-    		setValue(Unpooled.wrappedBuffer(value));    	
+    		return result;	
     	}
+    	
+    	return null;
     }
 
     public GlobalTitle0100 getTitle() throws INAPParsingComponentException {

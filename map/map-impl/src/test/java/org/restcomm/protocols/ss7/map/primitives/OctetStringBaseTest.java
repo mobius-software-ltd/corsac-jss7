@@ -37,6 +37,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -83,7 +84,7 @@ public class OctetStringBaseTest {
         assertTrue(result.getResult() instanceof TestOctetStringImpl);
         TestOctetStringImpl pi = (TestOctetStringImpl)result.getResult();        
         
-        assertTrue(Arrays.equals(getData(), pi.getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(getData()), pi.getValue()));
 
         // bad data
         rawData = getEncodedDataTooShort();
@@ -107,7 +108,7 @@ public class OctetStringBaseTest {
     	parser.replaceClass(TestOctetStringImpl.class);
     	
         // correct data
-        TestOctetStringImpl pi = new TestOctetStringImpl(getData());
+        TestOctetStringImpl pi = new TestOctetStringImpl(Unpooled.wrappedBuffer(getData()));
         ByteBuf buffer = parser.encode(pi);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
@@ -123,14 +124,14 @@ public class OctetStringBaseTest {
             assertNotNull(e);
         }
 
-        pi = new TestOctetStringImpl(getDataTooShort());
+        pi = new TestOctetStringImpl(Unpooled.wrappedBuffer(getDataTooShort()));
         try {
         	parser.encode(pi);                       
         } catch (ASNException e) {
             assertNotNull(e);
         }
 
-        pi = new TestOctetStringImpl(getDataTooLong());
+        pi = new TestOctetStringImpl(Unpooled.wrappedBuffer(getDataTooLong()));
         try {
         	parser.encode(pi);                       
         } catch (ASNException e) {
@@ -151,13 +152,13 @@ public class OctetStringBaseTest {
         testD3[0] = 21;
         testD3[1] = 22;
 
-        ExtPDPTypeImpl imp1 = new ExtPDPTypeImpl(testD1);
-        ExtPDPTypeImpl imp2 = new ExtPDPTypeImpl(testD2);
-        ExtPDPTypeImpl imp3 = new ExtPDPTypeImpl(testD3);
+        ExtPDPTypeImpl imp1 = new ExtPDPTypeImpl(Unpooled.wrappedBuffer(testD1));
+        ExtPDPTypeImpl imp2 = new ExtPDPTypeImpl(Unpooled.wrappedBuffer(testD2));
+        ExtPDPTypeImpl imp3 = new ExtPDPTypeImpl(Unpooled.wrappedBuffer(testD3));
         
-        assertTrue(Arrays.equals(imp1.getData(),imp1.getData()));
-        assertTrue(Arrays.equals(imp1.getData(),imp2.getData()));
-        assertFalse(Arrays.equals(imp1.getData(),imp3.getData()));
-        assertFalse(Arrays.equals(imp2.getData(),imp3.getData()));
+        assertTrue(ByteBufUtil.equals(imp1.getValue(),imp1.getValue()));
+        assertTrue(ByteBufUtil.equals(imp1.getValue(),imp2.getValue()));
+        assertFalse(ByteBufUtil.equals(imp1.getValue(),imp3.getValue()));
+        assertFalse(ByteBufUtil.equals(imp2.getValue(),imp3.getValue()));
     }
 }

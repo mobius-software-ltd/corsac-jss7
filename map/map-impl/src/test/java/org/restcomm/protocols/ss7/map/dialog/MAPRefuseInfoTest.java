@@ -104,8 +104,7 @@ public class MAPRefuseInfoTest {
 
         mapRefuseInfoImpl = new MAPRefuseInfoImpl();
         mapRefuseInfoImpl.setReason(Reason.invalidOriginatingReference);
-        ASNObjectIdentifier identifier=new ASNObjectIdentifier();
-        identifier.setValue(Arrays.asList(new Long[] { 1L, 2L, 3L, 4L, 5L, 6L }));
+        ASNObjectIdentifier identifier=new ASNObjectIdentifier(Arrays.asList(new Long[] { 1L, 2L, 3L, 4L, 5L, 6L }));
         mapRefuseInfoImpl.setAlternativeAcn(identifier);
         mapRefuseInfoImpl.setExtensionContainer(MAPExtensionContainerTest.GetTestExtensionContainer());
         buffer=parser.encode(mapRefuseInfoImpl);

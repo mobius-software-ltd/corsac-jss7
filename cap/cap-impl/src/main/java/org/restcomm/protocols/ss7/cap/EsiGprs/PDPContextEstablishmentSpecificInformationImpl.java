@@ -80,11 +80,9 @@ public class PDPContextEstablishmentSpecificInformationImpl implements PDPContex
         this.locationInformationGPRS = locationInformationGPRS;
         this.timeAndTimezone = timeAndTimezone;
         
-        if(pdpInitiationType!=null) {
-        	this.pdpInitiationType = new ASNPDPInitiationTypeImpl();
-        	this.pdpInitiationType.setType(pdpInitiationType);
-        }
-        
+        if(pdpInitiationType!=null)
+        	this.pdpInitiationType = new ASNPDPInitiationTypeImpl(pdpInitiationType);
+        	
         if(secondaryPDPContext)
         	this.secondaryPDPContext = new ASNNull();
     }

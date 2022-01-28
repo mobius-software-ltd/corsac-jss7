@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.BackwardCallIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.BackwardCallIndicators;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,38 +39,24 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class BackwardCallIndicatorsIsupImpl extends ASNOctetString implements BackwardCallIndicatorsIsup {
+public class BackwardCallIndicatorsIsupImpl extends ASNOctetString2 implements BackwardCallIndicatorsIsup {
 	public BackwardCallIndicatorsIsupImpl() {
     }
 
-    public BackwardCallIndicatorsIsupImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public BackwardCallIndicatorsIsupImpl(BackwardCallIndicators BackwardCallIndicators) throws APPException {
-        setBackwardCallIndicators(BackwardCallIndicators);
+        super(translate(BackwardCallIndicators));
     }
 
-    public void setBackwardCallIndicators(BackwardCallIndicators BackwardCallIndicators) throws APPException {
+    private static ByteBuf translate(BackwardCallIndicators BackwardCallIndicators) throws APPException {
         if (BackwardCallIndicators == null)
             throw new APPException("The BackwardCallIndicators parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((BackwardCallIndicatorsImpl) BackwardCallIndicators).encode(buffer);
-            setValue(buffer);
+        	return buffer;
         } catch (ParameterException e) {
             throw new APPException("ParameterException when encoding originalCalledNumber: " + e.getMessage(), e);
         }
-    }
-
-    public byte[] getData() {
-    	ByteBuf buffer=getValue();
-    	if(buffer==null)
-    		return null;
-    	
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
-        return data;
     }
 
     public BackwardCallIndicators getBackwardCallIndicators() throws APPException {
@@ -91,11 +77,7 @@ public class BackwardCallIndicatorsIsupImpl extends ASNOctetString implements Ba
         StringBuilder sb = new StringBuilder();
         sb.append("BackwardCallIndicatorsIsup [");
 
-        byte[] data=this.getData();
-        if (data != null) {
-            sb.append("data=[");
-            sb.append(printDataArr(data));
-            sb.append("]");
+        if (getValue() != null) {
             try {
                 BackwardCallIndicators fci = this.getBackwardCallIndicators();
                 sb.append(", ");

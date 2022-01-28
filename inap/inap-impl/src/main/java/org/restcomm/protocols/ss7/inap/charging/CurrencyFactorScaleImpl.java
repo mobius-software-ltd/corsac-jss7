@@ -47,29 +47,25 @@ public class CurrencyFactorScaleImpl implements CurrencyFactorScale {
     }
 
     public CurrencyFactorScaleImpl(Integer currencyFactor,Integer currencyScale) {
-    	if(currencyFactor!=null) {
-    		this.currencyFactor = new ASNInteger();
-    		this.currencyFactor.setValue(currencyFactor.longValue());
-    	}
+    	if(currencyFactor!=null)
+    		this.currencyFactor = new ASNInteger(currencyFactor);    		
     	
-    	if(currencyScale!=null) {
-    		this.currencyScale = new ASNInteger();
-    		this.currencyScale.setValue(currencyScale.longValue());
-    	}
+    	if(currencyScale!=null)
+    		this.currencyScale = new ASNInteger(currencyScale);    		
     }
 
     public Integer getCurrencyFactor() {
-    	if(currencyFactor==null || currencyFactor.getValue()==null)
+    	if(currencyFactor==null)
     		return null;
     	
-        return currencyFactor.getValue().intValue();
+        return currencyFactor.getIntValue();
     }
 
     public Integer getCurrencyScale() {
-    	if(currencyScale==null || currencyScale.getValue()==null)
+    	if(currencyScale==null)
     		return null;
     	
-        return currencyScale.getValue().intValue();
+        return currencyScale.getIntValue();
     }
 
     @Override

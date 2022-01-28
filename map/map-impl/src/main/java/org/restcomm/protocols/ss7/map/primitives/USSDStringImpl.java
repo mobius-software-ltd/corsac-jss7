@@ -38,7 +38,7 @@ import org.restcomm.protocols.ss7.map.api.datacoding.CBSNationalLanguage;
 import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -49,7 +49,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class USSDStringImpl extends ASNOctetString implements USSDString {
+public class USSDStringImpl extends ASNOctetString2 implements USSDString {
 	private CBSDataCodingScheme dataCodingScheme;
 
     private static GSMCharset gsm7Charset = new GSMCharset();
@@ -60,16 +60,9 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
     public USSDStringImpl() {
     	
     }
-    
-    public USSDStringImpl(CBSDataCodingScheme dataCodingScheme) {
-        if (dataCodingScheme == null) {
-            dataCodingScheme = new CBSDataCodingSchemeImpl(15);
-        }
-        this.dataCodingScheme = dataCodingScheme;
-    }
 
-    public USSDStringImpl(byte[] data, CBSDataCodingScheme dataCodingScheme) {
-    	setValue(Unpooled.wrappedBuffer(data));
+    public USSDStringImpl(ByteBuf data, CBSDataCodingScheme dataCodingScheme) {
+    	super(data);
         if (dataCodingScheme == null) {
             dataCodingScheme = new CBSDataCodingSchemeImpl(15);
         }
@@ -77,14 +70,22 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
     }
 
     public USSDStringImpl(String ussdString, CBSDataCodingScheme dataCodingScheme, Charset gsm8Charset) throws MAPException {
+    	super(translate(ussdString, dataCodingScheme, gsm8Charset));
+    	
+    	if (dataCodingScheme == null) {
+            dataCodingScheme = new CBSDataCodingSchemeImpl(15);
+        }
+        this.dataCodingScheme = dataCodingScheme;        
+    }
+    
+    public static ByteBuf translate(String ussdString, CBSDataCodingScheme dataCodingScheme, Charset gsm8Charset) throws MAPException {
         if (ussdString == null) {
             ussdString = "";
         }
         if (dataCodingScheme == null) {
             dataCodingScheme = new CBSDataCodingSchemeImpl(15);
         }
-        this.dataCodingScheme = dataCodingScheme;
-
+        
         if (dataCodingScheme.getIsCompressed()) {
             // TODO: implement the case with compressed message
             throw new MAPException("Error encoding a text in USSDStringImpl: compressed message is not supported yet");
@@ -105,18 +106,14 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
                         // This can not occur
                     }
                     
-                    setValue(bb);
-                    break;
-
+                    return bb;                    
                 case GSM8:
                     if (gsm8Charset != null) {
-                    	setValue(Unpooled.wrappedBuffer(ussdString.getBytes(gsm8Charset)));                    	
+                    	return Unpooled.wrappedBuffer(ussdString.getBytes(gsm8Charset));                    	
                     } else {
                         throw new MAPException(
                                 "Error encoding a text in USSDStringImpl: gsm8Charset is not defined for GSM8 dataCodingScheme");
                     }
-                    break;
-
                 case UCS2:
                     if (dataCodingScheme.getDataCodingGroup() == CBSDataCodingGroup.GeneralWithLanguageIndication) {
                         if (ussdString.length() < 1)
@@ -146,24 +143,18 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
                         buf2.resetReaderIndex();
                         
                         if(buf1==null)
-                        	setValue(buf2);
+                        	return buf2;
                         else
-                        	setValue(Unpooled.wrappedBuffer(buf1,buf2));                        
+                        	return Unpooled.wrappedBuffer(buf1,buf2);                        
                     } else {
-                        setValue(Unpooled.wrappedBuffer(ussdString.getBytes(ucs2Charset)));
+                        return Unpooled.wrappedBuffer(ussdString.getBytes(ucs2Charset));
                     }
-                    break;
 				default:
 					break;
             }
         }
-    }
-
-    public byte[] getEncodedString() {
-    	ByteBuf buf=getValue();
-    	byte[] data=new byte[buf.readableBytes()];
-    	buf.readBytes(data);
-        return data;
+        
+        return null;
     }
 
     public void setDataCoding(CBSDataCodingSchemeImpl dataCodingScheme) {
@@ -178,8 +169,8 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
             dataCodingScheme = new CBSDataCodingSchemeImpl(15);
         }
         
-        byte[] data=getEncodedString();
-        if (data == null) {
+        ByteBuf value=getValue();
+        if (value == null) {
             throw new MAPException("Error decoding a text in USSDStringImpl: encoded data can not be null");
         }
 
@@ -197,10 +188,9 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
                     GSMCharsetDecoder decoder = (GSMCharsetDecoder) cSet.newDecoder();
                     decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(Gsm7EncodingStyle.bit7_ussd_style,
                             Integer.MAX_VALUE, 0));
-                    ByteBuf bb = Unpooled.wrappedBuffer(data);
                     String bf = null;
                     try {
-                        bf = decoder.decode(bb);
+                        bf = decoder.decode(value);
                     } catch (CharacterCodingException e) {
                         // This can not occur
                     }
@@ -209,42 +199,35 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
                     break;
 
                 case GSM8:
-                    if (gsm8Charset != null)
-                        res = new String(data,gsm8Charset);
+                    if (gsm8Charset != null)                    	
+                        res = value.toString(gsm8Charset);
                     break;
 
                 case UCS2:
                     String pref = "";
-                    byte[] buf = data;
                     if (dataCodingScheme.getDataCodingGroup() == CBSDataCodingGroup.GeneralWithLanguageIndication) {
                         cSet = gsm7Charset;
                         decoder = (GSMCharsetDecoder) cSet.newDecoder();
                         decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(Gsm7EncodingStyle.bit7_ussd_style,
                                 Integer.MAX_VALUE, 0));
-                        byte[] buf2 = new byte[3];
-                        if (data.length < 3)
-                            buf2 = new byte[data.length];
-                        System.arraycopy(data, 0, buf2, 0, buf2.length);
-                        bb = Unpooled.wrappedBuffer(buf2);
+                        ByteBuf buf2;
+                        if (value.readableBytes() < 3)
+                            buf2 = value;
+                        else
+                        	buf2 = value.readSlice(3);
+                        
                         bf = null;
                         try {
-                            bf = decoder.decode(bb);
+                            bf = decoder.decode(buf2);
                         } catch (CharacterCodingException e) {
                             // This can not occur
                         }
                         if (bf != null)
                             pref = bf;
 
-                        if (data.length <= 3) {
-                            buf = new byte[0];
-                        } else {
-                            buf = new byte[data.length - 3];
-                            System.arraycopy(data, 3, buf, 0, buf.length);
-                        }
-
-                        res = pref + new String(buf,ucs2Charset);
+                        res = pref + value.toString(ucs2Charset);                          		
                     } else {
-                    	res = new String(buf,ucs2Charset);
+                    	res = value.toString(ucs2Charset);                    			
                     }
                     break;
 				default:

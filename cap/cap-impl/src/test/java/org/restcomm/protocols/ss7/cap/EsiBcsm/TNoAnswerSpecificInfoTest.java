@@ -81,33 +81,4 @@ public class TNoAnswerSpecificInfoTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
-    public void testXMLSerializaion() throws Exception {
-        CalledPartyNumberImpl calledPartyNumber = new CalledPartyNumberImpl(0, "111222333", 1, 1);
-        CalledPartyNumberCapImpl forwardingDestinationNumber = new CalledPartyNumberCapImpl(calledPartyNumber);
-        TNoAnswerSpecificInfoImpl original = new TNoAnswerSpecificInfoImpl(true, forwardingDestinationNumber);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "tNoAnswerSpecificInfo", TNoAnswerSpecificInfoImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        TNoAnswerSpecificInfoImpl copy = reader.read("tNoAnswerSpecificInfo", TNoAnswerSpecificInfoImpl.class);
-
-        assertEquals(copy.getForwardingDestinationNumber().getCalledPartyNumber().getAddress(), original
-                .getForwardingDestinationNumber().getCalledPartyNumber().getAddress());
-        assertEquals(copy.getCallForwarded(), original.getCallForwarded());
-    }*/
 }

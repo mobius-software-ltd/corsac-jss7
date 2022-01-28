@@ -33,12 +33,7 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -47,6 +42,9 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Start time:09:16:42 2009-04-22<br>
@@ -166,7 +164,7 @@ public abstract class ParameterHarness {
     }
 
     @Test(groups = { "functional.encode", "functional.decode", "parameter" })
-    public void testDecodeEncode() throws IOException, ParameterException {
+    public void testDecodeEncode() throws ParameterException {
 
         for (int index = 0; index < this.goodBodies.size(); index++) {
         	ByteBuf goodBody = this.goodBodies.get(index);
@@ -236,12 +234,8 @@ public abstract class ParameterHarness {
 	            }
             }
         } catch (Exception e) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            PrintWriter pw = new PrintWriter(baos);
-            e.printStackTrace();
-            e.printStackTrace(pw);
             fail("Failed to check values on component: " + component.getClass().getName() + ", due to: "
-                    + new String(baos.toByteArray()));
+                    + e.getMessage());
         }
     }
 
@@ -274,12 +268,8 @@ public abstract class ParameterHarness {
             }
 
         } catch (Exception e) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            PrintWriter pw = new PrintWriter(baos);
-            e.printStackTrace();
-            e.printStackTrace(pw);
             fail("Failed to check values on component: " + component.getClass().getName() + ", due to: "
-                    + new String(baos.toByteArray()));
+                    + e.getMessage());
         }
     }
 

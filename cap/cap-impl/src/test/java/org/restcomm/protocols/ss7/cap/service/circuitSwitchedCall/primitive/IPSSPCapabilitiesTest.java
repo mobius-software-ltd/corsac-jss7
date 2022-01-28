@@ -35,6 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -87,7 +88,7 @@ public class IPSSPCapabilitiesTest {
         assertFalse(elem.getVoiceInformationSupportedViaSpeechRecognition());
         assertTrue(elem.getVoiceInformationSupportedViaVoiceRecognition());
         assertTrue(elem.getGenerationOfVoiceAnnouncementsFromTextSupported());
-        assertTrue(Arrays.equals(elem.getExtraData(), this.getIntData1()));
+        assertTrue(ByteBufUtil.equals(elem.getExtraData(),Unpooled.wrappedBuffer(this.getIntData1())));
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
@@ -105,7 +106,7 @@ public class IPSSPCapabilitiesTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        elem = new IPSSPCapabilitiesImpl(false, true, false, true, true, getIntData1());
+        elem = new IPSSPCapabilitiesImpl(false, true, false, true, true,Unpooled.wrappedBuffer(getIntData1()));
         // boolean IPRoutingAddressSupported, boolean VoiceBackSupported, boolean VoiceInformationSupportedViaSpeechRecognition,
         // boolean VoiceInformationSupportedViaVoiceRecognition, boolean GenerationOfVoiceAnnouncementsFromTextSupported, byte[]
         // extraData
@@ -115,51 +116,4 @@ public class IPSSPCapabilitiesTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
-    public void testXMLSerialize() throws Exception {
-
-        IPSSPCapabilitiesImpl original = new IPSSPCapabilitiesImpl(true, false, true, false, false, null);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "ipsspCapabilities", IPSSPCapabilitiesImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        IPSSPCapabilitiesImpl copy = reader.read("ipsspCapabilities", IPSSPCapabilitiesImpl.class);
-
-        assertEquals(copy.getData(), original.getData());
-
-        original = new IPSSPCapabilitiesImpl(true, true, true, true, true, getIntData1());
-
-        // Writes the area to a file.
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "ipsspCapabilities", IPSSPCapabilitiesImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-        copy = reader.read("ipsspCapabilities", IPSSPCapabilitiesImpl.class);
-
-        assertEquals(copy.getData(), original.getData());
-
-    }*/
 }

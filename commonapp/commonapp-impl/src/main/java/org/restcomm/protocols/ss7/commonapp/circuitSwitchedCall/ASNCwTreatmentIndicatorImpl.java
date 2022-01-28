@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CwTreatmentI
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNCwTreatmentIndicatorImpl extends ASNEnumerated {
-	public void setType(CwTreatmentIndicator t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNCwTreatmentIndicatorImpl() {
+		
+	}
+	
+	public ASNCwTreatmentIndicatorImpl(CwTreatmentIndicator t) {
+		super(t.getCode());
 	}
 	
 	public CwTreatmentIndicator getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return CwTreatmentIndicator.getInstance(getValue().intValue());
+		return CwTreatmentIndicator.getInstance(realValue);
 	}
 }

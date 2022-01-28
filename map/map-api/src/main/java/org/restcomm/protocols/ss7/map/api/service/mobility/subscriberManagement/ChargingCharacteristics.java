@@ -49,8 +49,6 @@ the P0 (H) flag indicates charging by hot billing.
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface ChargingCharacteristics {
 
-    byte[] getData();
-
     boolean isNormalCharging();
 
     boolean isPrepaidCharging();

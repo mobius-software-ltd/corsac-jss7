@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
@@ -51,6 +52,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -72,8 +74,8 @@ public class UpdateLocationRequestTest {
     }
 
     private byte[] getEncodedData3() {
-        return new byte[] { 48, 65, 4, 5, 17, 17, 33, 34, 51, -127, 4, -111, 34, 34, -8, 4, 4, -111, 34, 34, -7, -118, 4, 1, 3,
-                5, 8, -90, 4, -123, 2, 7, -128, -117, 0, -116, 0, -126, 6, 1, 1, 1, 1, 1, 1, -83, 10, -128, 8, 33, 67, 101,
+        return new byte[] { 48, 64, 4, 5, 17, 17, 33, 34, 51, -127, 4, -111, 34, 34, -8, 4, 4, -111, 34, 34, -7, -118, 4, 1, 3,
+                5, 8, -90, 4, -123, 2, 7, -128, -117, 0, -116, 0, -126, 5, 4, 1, 1, 1, 1, -83, 10, -128, 8, 33, 67, 101,
                 -121, 9, -112, 120, -10, -82, 4, -127, 2, 0, 123, -113, 0, -112, 0 };
     }
 
@@ -86,7 +88,7 @@ public class UpdateLocationRequestTest {
     }
 
     private byte[] getGSNAddressData() {
-        return new byte[] { 1, 1, 1, 1, 1, 1 };
+        return new byte[] { 1, 1, 1, 1 };
     }
 
     @Test(groups = { "functional.decode" })
@@ -150,7 +152,7 @@ public class UpdateLocationRequestTest {
         assertTrue(vlrCap.getSupportedLCSCapabilitySets().getCapabilitySetRelease98_99());
         assertFalse(vlrCap.getSupportedLCSCapabilitySets().getCapabilitySetRelease4());
 
-        assertTrue(Arrays.equals(asc.getLmsi().getData(), getLmsiData()));
+        assertTrue(ByteBufUtil.equals(asc.getLmsi().getValue(),Unpooled.wrappedBuffer(getLmsiData())));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(asc.getExtensionContainer()));
 
         assertTrue(asc.getInformPreviousNetworkEntity());
@@ -182,7 +184,7 @@ public class UpdateLocationRequestTest {
         assertTrue(vlrCap.getSupportedLCSCapabilitySets().getCapabilitySetRelease98_99());
         assertFalse(vlrCap.getSupportedLCSCapabilitySets().getCapabilitySetRelease4());
 
-        assertTrue(Arrays.equals(asc.getLmsi().getData(), getLmsiData()));
+        assertTrue(ByteBufUtil.equals(asc.getLmsi().getValue(),Unpooled.wrappedBuffer(getLmsiData())));
         assertNull(asc.getExtensionContainer());
 
         assertTrue(asc.getInformPreviousNetworkEntity());
@@ -190,7 +192,9 @@ public class UpdateLocationRequestTest {
         assertTrue(asc.getSkipSubscriberDataUpdate());
         assertTrue(asc.getRestorationIndicator());
 
-        assertTrue(Arrays.equals(asc.getVGmlcAddress().getData(), getGSNAddressData()));
+        assertEquals(asc.getVGmlcAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
+        assertTrue(ByteBufUtil.equals(asc.getVGmlcAddress().getGSNAddressData(),Unpooled.wrappedBuffer(getGSNAddressData())));
+        
         assertTrue(asc.getADDInfo().getImeisv().getIMEI().equals("123456789009876"));
         assertFalse(asc.getADDInfo().getSkipSubscriberDataUpdate());
         assertEquals(asc.getPagingArea().getLocationAreas().size(), 1);
@@ -254,7 +258,7 @@ public class UpdateLocationRequestTest {
         supportedLCSCapabilitySets = new SupportedLCSCapabilitySetsImpl(true, false, false, false, false);
         vlrCap = new VLRCapabilityImpl(null, null, false, null, null, false, supportedLCSCapabilitySets, null, null, false,
                 false);
-        LMSIImpl lmsi = new LMSIImpl(getLmsiData());
+        LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(getLmsiData()));
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         asc = new UpdateLocationRequestImpl(3, imsi, mscNumber, null, vlrNumber, lmsi, extensionContainer, vlrCap, true, true,
                 null, null, null, true, true);
@@ -265,7 +269,7 @@ public class UpdateLocationRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        GSNAddressImpl vGmlcAddress = new GSNAddressImpl(getGSNAddressData());
+        GSNAddressImpl vGmlcAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4,Unpooled.wrappedBuffer(getGSNAddressData()));
         IMEIImpl imeisv = new IMEIImpl("123456789009876");
         ADDInfoImpl addInfo = new ADDInfoImpl(imeisv, false);
         List<LocationArea> locationAreas = new ArrayList<LocationArea>();

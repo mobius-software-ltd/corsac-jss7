@@ -35,6 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -73,7 +74,7 @@ public class GSNAddressTest {
         GSNAddressImpl pi = (GSNAddressImpl)result.getResult();        
         
         assertEquals(pi.getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
-        assertEquals(pi.getGSNAddressData(), getData());
+        assertTrue(ByteBufUtil.equals(pi.getGSNAddressData(),Unpooled.wrappedBuffer(getData())));
 
         rawData = getEncodedData2();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
@@ -83,7 +84,7 @@ public class GSNAddressTest {
         pi = (GSNAddressImpl)result.getResult();        
         
         assertEquals(pi.getGSNAddressAddressType(), GSNAddressAddressType.IPv6);
-        assertEquals(pi.getGSNAddressData(), getData2());
+        assertTrue(ByteBufUtil.equals(pi.getGSNAddressData(),Unpooled.wrappedBuffer(getData2())));
     }
 
     @Test(groups = { "functional.encode", "primitives" })
@@ -91,7 +92,7 @@ public class GSNAddressTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GSNAddressImpl.class);
     	
-        GSNAddressImpl pi = new GSNAddressImpl(GSNAddressAddressType.IPv4, getData());
+        GSNAddressImpl pi = new GSNAddressImpl(GSNAddressAddressType.IPv4, Unpooled.wrappedBuffer(getData()));
         ByteBuf buffer = parser.encode(pi);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
@@ -99,7 +100,7 @@ public class GSNAddressTest {
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        pi = new GSNAddressImpl(GSNAddressAddressType.IPv6, getData2());
+        pi = new GSNAddressImpl(GSNAddressAddressType.IPv6, Unpooled.wrappedBuffer(getData2()));
         buffer = parser.encode(pi);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
@@ -108,31 +109,4 @@ public class GSNAddressTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "primitives" })
-    public void testXMLSerialize() throws Exception {
-
-        GSNAddressImpl original = new GSNAddressImpl(GSNAddressAddressType.IPv4, getData());
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "gsnAddress", GSNAddressImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        GSNAddressImpl copy = reader.read("gsnAddress", GSNAddressImpl.class);
-
-        assertEquals(copy.getGSNAddressData(), original.getGSNAddressData());
-        assertEquals(copy.getGSNAddressAddressType(), original.getGSNAddressAddressType());
-
-    }*/
 }

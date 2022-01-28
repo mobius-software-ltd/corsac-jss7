@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.callhandling.InterrogationType
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNInterrogationTypeImpl extends ASNEnumerated {
-	public void setType(InterrogationType t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNInterrogationTypeImpl() {
+		
+	}
+	
+	public ASNInterrogationTypeImpl(InterrogationType t) {
+		super(t.getCode());
 	}
 	
 	public InterrogationType getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return InterrogationType.getInterrogationType(getValue().intValue());
+		return InterrogationType.getInterrogationType(realValue);
 	}
 }

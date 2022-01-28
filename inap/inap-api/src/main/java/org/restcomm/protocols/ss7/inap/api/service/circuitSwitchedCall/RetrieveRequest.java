@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ApplicationID;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.DataItemID;
 
+import io.netty.buffer.ByteBuf;
+
 /**
 <code>
 Retrieve ::= OPERATION
@@ -55,7 +57,7 @@ RetrieveArg ::= SET {
  */
 public interface RetrieveRequest extends CircuitSwitchedCallMessage {
 
-    byte[] getOperationID();
+    ByteBuf getOperationID();
 
     ApplicationID getApplicationID();
 

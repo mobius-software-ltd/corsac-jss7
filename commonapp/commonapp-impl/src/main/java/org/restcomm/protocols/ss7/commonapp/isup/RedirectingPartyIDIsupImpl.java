@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectingNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectingNumber;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,38 +39,24 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class RedirectingPartyIDIsupImpl extends ASNOctetString implements RedirectingPartyIDIsup {
+public class RedirectingPartyIDIsupImpl extends ASNOctetString2 implements RedirectingPartyIDIsup {
 	public RedirectingPartyIDIsupImpl() {
     }
 
-    public RedirectingPartyIDIsupImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public RedirectingPartyIDIsupImpl(RedirectingNumber redirectingNumber) throws APPException {
-        setRedirectingNumber(redirectingNumber);
+        super(translate(redirectingNumber));
     }
 
-    public void setRedirectingNumber(RedirectingNumber redirectingNumber) throws APPException {
+    public static ByteBuf translate(RedirectingNumber redirectingNumber) throws APPException {
         if (redirectingNumber == null)
             throw new APPException("The redirectingNumber parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((RedirectingNumberImpl) redirectingNumber).encode(buffer);
-            setValue(buffer);
+            return buffer;
         } catch (ParameterException e) {
             throw new APPException("ParameterException when encoding redirectingNumber: " + e.getMessage(), e);
         }
-    }
-
-    public byte[] getData() {
-    	ByteBuf buffer=getValue();
-    	if(buffer==null)
-    		return null;
-    	
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
-        return data;
     }
 
     public RedirectingNumber getRedirectingNumber() throws APPException {
@@ -91,11 +77,7 @@ public class RedirectingPartyIDIsupImpl extends ASNOctetString implements Redire
         StringBuilder sb = new StringBuilder();
         sb.append("RedirectingPartyIDCap [");
 
-        byte[] data=this.getData();
-        if (data != null) {
-            sb.append("data=[");
-            sb.append(printDataArr(data));
-            sb.append("]");
+        if (getValue() != null) {
             try {
                 RedirectingNumber rn = this.getRedirectingNumber();
                 sb.append(", ");

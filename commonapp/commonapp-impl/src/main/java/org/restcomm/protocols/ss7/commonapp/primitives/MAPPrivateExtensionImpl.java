@@ -56,9 +56,7 @@ public class MAPPrivateExtensionImpl implements MAPPrivateExtension {
     }
 
     public MAPPrivateExtensionImpl(List<Long> oId, ByteBuf data) {
-        this.oId = new ASNObjectIdentifier();
-        this.oId.setValue(oId);
-        
+        this.oId = new ASNObjectIdentifier(oId);
         if(data!=null)
         	this.data=Unpooled.wrappedBuffer(data);        
     }
@@ -121,8 +119,7 @@ public class MAPPrivateExtensionImpl implements MAPPrivateExtension {
      * @see org.restcomm.protocols.ss7.map.api.dialog.MAPPrivateExtension#setOId (long[])
      */
     public void setOId(List<Long> oId) {
-        this.oId = new ASNObjectIdentifier();
-        this.oId.setValue(oId);
+        this.oId = new ASNObjectIdentifier(oId);        
     }
 
     /*
@@ -140,7 +137,7 @@ public class MAPPrivateExtensionImpl implements MAPPrivateExtension {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.map.api.dialog.MAPPrivateExtension#setData (byte[])
+     * @see org.restcomm.protocols.ss7.map.api.dialog.MAPPrivateExtension#setData (ByteBuf)
      */
     public void setData(ByteBuf data) {
     	if(data==null)
@@ -161,10 +158,7 @@ public class MAPPrivateExtensionImpl implements MAPPrivateExtension {
 
         if (this.data != null) {
             sb.append(", data=");
-            ByteBuf value=Unpooled.wrappedBuffer(getData());
-            byte[] data=new byte[value.readableBytes()];
-            value.readBytes(data);
-            sb.append(ASNOctetString.printDataArr(data));
+            sb.append(ASNOctetString.printDataArr(getData()));
         }
 
         sb.append("]");

@@ -73,40 +73,4 @@ public class HighLayerCompatibilityInapTest {
         byte[] encodedData=new byte[data.readableBytes()];
         data.readBytes(encodedData);        
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "isup" })
-    public void testXMLSerialize() throws Exception {
-
-        UserTeleserviceInformationImpl prim = new UserTeleserviceInformationImpl(
-                UserTeleserviceInformation._CODING_STANDARD_NATIONAL, UserTeleserviceInformation._INTERPRETATION_FHGCI,
-                UserTeleserviceInformation._PRESENTATION_METHOD_HLPP, UserTeleserviceInformation._HLCI_IVTI);
-        HighLayerCompatibilityInapImpl original = new HighLayerCompatibilityInapImpl(prim);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "highLayerCompatibilityInap", HighLayerCompatibilityInapImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        HighLayerCompatibilityInapImpl copy = reader.read("highLayerCompatibilityInap", HighLayerCompatibilityInapImpl.class);
-
-        assertEquals(copy.getHighLayerCompatibility().getCodingStandard(), original.getHighLayerCompatibility()
-                .getCodingStandard());
-        assertEquals(copy.getHighLayerCompatibility().getInterpretation(), original.getHighLayerCompatibility()
-                .getInterpretation());
-        assertEquals(copy.getHighLayerCompatibility().getPresentationMethod(), original.getHighLayerCompatibility()
-                .getPresentationMethod());
-        assertEquals(copy.getHighLayerCompatibility().getHighLayerCharIdentification(), original.getHighLayerCompatibility()
-                .getHighLayerCharIdentification());
-
-    }*/
 }

@@ -30,10 +30,10 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.BackwardCallIndicators;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:13:49:00 2009-03-30<br>
@@ -100,7 +100,7 @@ public class BackwardCallIndicatorsImpl extends AbstractISUPParameter implements
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() != 2) {
-            throw new ParameterException("byte[] must not be null or have different size than 2");
+            throw new ParameterException("buffer must not be null or have different size than 2");
         }
 
         int v = b.readByte();

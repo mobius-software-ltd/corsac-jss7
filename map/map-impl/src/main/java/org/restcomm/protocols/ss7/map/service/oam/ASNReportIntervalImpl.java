@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.oam.ReportInterval;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNReportIntervalImpl extends ASNEnumerated {
-	public void setType(ReportInterval t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNReportIntervalImpl() {
+		
+	}
+	
+	public ASNReportIntervalImpl(ReportInterval t) {
+		super(t.getCode());
 	}
 	
 	public ReportInterval getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return ReportInterval.getInstance(getValue().intValue());
+		return ReportInterval.getInstance(realValue);
 	}
 }

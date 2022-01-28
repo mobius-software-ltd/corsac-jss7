@@ -30,10 +30,10 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.HopCounter;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:14:58:14 2009-04-05<br>
@@ -61,7 +61,7 @@ public class HopCounterImpl extends AbstractISUPParameter implements HopCounter 
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() != 1) {
-            throw new ParameterException("byte[] must not be null and length must be 1");
+            throw new ParameterException("buffer must not be null and length must be 1");
         }
         this.hopCounter = b.readByte() & 0x1F;        
     }

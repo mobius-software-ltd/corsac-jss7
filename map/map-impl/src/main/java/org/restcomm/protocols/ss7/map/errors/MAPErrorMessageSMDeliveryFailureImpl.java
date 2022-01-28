@@ -35,7 +35,7 @@ import org.restcomm.protocols.ss7.map.smstpdu.SmsTpduImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -49,25 +49,22 @@ import io.netty.buffer.Unpooled;
 public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl implements MAPErrorMessageSMDeliveryFailure {
 	private long mapProtocolVersion = 3;
     private ASNSMEnumeratedDeliveryFailureCauseImpl sMEnumeratedDeliveryFailureCause;
-    private ASNOctetString signalInfo;
+    private ASNOctetString2 signalInfo;
    
     @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
     private MAPExtensionContainer extensionContainer;
 
     public MAPErrorMessageSMDeliveryFailureImpl(long mapProtocolVersion,
-            SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, byte[] signalInfo,
+            SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, ByteBuf signalInfo,
             MAPExtensionContainer extensionContainer) {
         super((long) MAPErrorCode.smDeliveryFailure);
 
         this.mapProtocolVersion = mapProtocolVersion;
-        if(smEnumeratedDeliveryFailureCause!=null) {
-        	this.sMEnumeratedDeliveryFailureCause = new ASNSMEnumeratedDeliveryFailureCauseImpl();
-        	this.sMEnumeratedDeliveryFailureCause.setType(smEnumeratedDeliveryFailureCause);
-        }
-        
+        if(smEnumeratedDeliveryFailureCause!=null)
+        	this.sMEnumeratedDeliveryFailureCause = new ASNSMEnumeratedDeliveryFailureCauseImpl(smEnumeratedDeliveryFailureCause);
+        	
         if(signalInfo!=null) {	
-        	this.signalInfo = new ASNOctetString();
-            this.signalInfo.setValue(Unpooled.wrappedBuffer(signalInfo));
+        	this.signalInfo = new ASNOctetString2(signalInfo);
         }
         
         this.extensionContainer = extensionContainer;
@@ -84,14 +81,11 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
         return this.sMEnumeratedDeliveryFailureCause.getType();
     }
 
-    public byte[] getSignalInfo() {
+    public ByteBuf getSignalInfo() {
     	if(this.signalInfo==null)
     		return null;
     	
-        ByteBuf buf=this.signalInfo.getValue();
-        byte[] output=new byte[buf.readableBytes()];
-        buf.readBytes(output);
-        return output;
+        return this.signalInfo.getValue();
     }
 
     public long getMapProtocolVersion() {
@@ -105,19 +99,15 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
     public void setSMEnumeratedDeliveryFailureCause(SMEnumeratedDeliveryFailureCause sMEnumeratedDeliveryFailureCause) {
     	if(sMEnumeratedDeliveryFailureCause==null)
     		this.sMEnumeratedDeliveryFailureCause=null;
-    	else {
-    		this.sMEnumeratedDeliveryFailureCause=new ASNSMEnumeratedDeliveryFailureCauseImpl();
-    		this.sMEnumeratedDeliveryFailureCause.setType(sMEnumeratedDeliveryFailureCause);
-    	}
+    	else
+    		this.sMEnumeratedDeliveryFailureCause=new ASNSMEnumeratedDeliveryFailureCauseImpl(sMEnumeratedDeliveryFailureCause);    		
     }
 
-    public void setSignalInfo(byte[] signalInfo) {
+    public void setSignalInfo(ByteBuf signalInfo) {
     	if(signalInfo==null)
     		this.signalInfo=null;
-    	else {
-    		this.signalInfo = new ASNOctetString();
-    		this.signalInfo.setValue(Unpooled.wrappedBuffer(signalInfo));
-    	}
+    	else
+    		this.signalInfo = new ASNOctetString2(signalInfo);    	
     }
 
     public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
@@ -150,11 +140,8 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
     public void setSmsDeliverReportTpdu(SmsDeliverReportTpdu tpdu) throws MAPException {
     	ByteBuf buf=Unpooled.buffer();
     	tpdu.encodeData(buf);
-    	byte[] data=new byte[buf.readableBytes()];
-    	buf.readBytes(data);
-        setSignalInfo(data);
+    	setSignalInfo(buf);
     }
-
 
     @Override
     public String toString() {
@@ -164,22 +151,10 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
         if (this.sMEnumeratedDeliveryFailureCause != null)
             sb.append("sMEnumeratedDeliveryFailureCause=" + this.sMEnumeratedDeliveryFailureCause.toString());
         if (this.signalInfo != null)
-            sb.append(", signalInfo=" + this.printDataArr(getSignalInfo()));
+            sb.append(", signalInfo=" + signalInfo.printDataArr());
         if (this.extensionContainer != null)
             sb.append(", extensionContainer=" + this.extensionContainer.toString());
         sb.append("]");
-
-        return sb.toString();
-    }
-
-    private String printDataArr(byte[] data) {
-        StringBuilder sb = new StringBuilder();
-        if (data != null) {
-            for (int b : data) {
-                sb.append(b);
-                sb.append(", ");
-            }
-        }
 
         return sb.toString();
     }

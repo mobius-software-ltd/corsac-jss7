@@ -29,9 +29,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
@@ -43,7 +43,7 @@ public class SuperChargerInfoImpl implements SuperChargerInfo {
     private ASNNull sendSubscriberData;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
-    private ASNOctetString subscriberDataStored;
+    private ASNOctetString2 subscriberDataStored;
 
     public SuperChargerInfoImpl() {
     	
@@ -60,9 +60,8 @@ public class SuperChargerInfoImpl implements SuperChargerInfo {
     /**
      * @param subscriberDataStored
      */
-    public SuperChargerInfoImpl(byte[] subscriberDataStored) {
-        this.subscriberDataStored = new ASNOctetString();
-        this.subscriberDataStored.setValue(Unpooled.wrappedBuffer(subscriberDataStored));
+    public SuperChargerInfoImpl(ByteBuf subscriberDataStored) {
+        this.subscriberDataStored = new ASNOctetString2(subscriberDataStored);
     }
 
     /*
@@ -79,17 +78,11 @@ public class SuperChargerInfoImpl implements SuperChargerInfo {
      *
      * @see org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement .SuperChargerInfo#getSubscriberDataStored()
      */
-    public byte[] getSubscriberDataStored() {
+    public ByteBuf getSubscriberDataStored() {
     	if(subscriberDataStored==null)
     		return null;
     	
-    	ByteBuf value=subscriberDataStored.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] subscriberDataStored=new byte[value.readableBytes()];
-    	value.readBytes(subscriberDataStored);
-        return subscriberDataStored;
+    	return subscriberDataStored.getValue();    	
     }
 
     @Override

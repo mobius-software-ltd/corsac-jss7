@@ -38,6 +38,8 @@ import org.restcomm.protocols.ss7.inap.api.errors.RequestedInfoErrorParameter;
 import org.restcomm.protocols.ss7.inap.api.errors.TaskRefusedParameter;
 import org.restcomm.protocols.ss7.inap.api.errors.UnavailableNetworkResource;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * The factory of INAP ReturnError messages
  *
@@ -129,7 +131,7 @@ public class INAPErrorMessageFactoryImpl implements INAPErrorMessageFactory {
     }
 
 	@Override
-	public INAPErrorMessageOctetString createINAPErrorMessageOctetString(Long errorCode, byte[] parameter) {
+	public INAPErrorMessageOctetString createINAPErrorMessageOctetString(Long errorCode, ByteBuf parameter) {
 		INAPErrorMessageOctetStringImpl result = new INAPErrorMessageOctetStringImpl(errorCode);
 		if(parameter!=null)
 			result.setValue(parameter);

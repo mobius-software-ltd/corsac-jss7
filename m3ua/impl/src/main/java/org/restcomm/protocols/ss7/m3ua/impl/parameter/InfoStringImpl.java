@@ -22,11 +22,13 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import java.nio.charset.Charset;
 
 import org.restcomm.protocols.ss7.m3ua.parameter.InfoString;
 import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -38,10 +40,7 @@ public class InfoStringImpl extends ParameterImpl implements InfoString {
     private String string;
 
     protected InfoStringImpl(ByteBuf value) {
-        this.tag = Parameter.INFO_String;
-        byte[] data=new byte[value.readableBytes()];
-        value.readBytes(data);
-        this.string = new String(data);
+        this.string = value.toString(Charset.forName("uS-ASCII"));
     }
 
     protected InfoStringImpl(String string) {

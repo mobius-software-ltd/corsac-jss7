@@ -24,29 +24,37 @@ package org.restcomm.protocols.ss7.commonapp.primitives;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.DiameterIdentity;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  * @author abhayani
  * @author sergey vetyutnev
  *
  */
-public class DiameterIdentityImpl extends ASNOctetString implements DiameterIdentity {
+public class DiameterIdentityImpl extends ASNOctetString2 implements DiameterIdentity {
 	public DiameterIdentityImpl() {
        
     }
 
-    public DiameterIdentityImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
+    public DiameterIdentityImpl(ByteBuf value) {
+    	super(value);
     }
+	
+    @Override
+    public String toString() {
+    	StringBuilder sb=new StringBuilder();
+        sb.append("DiameterIdentityImpl");
+        sb.append(" [");
 
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        if (getValue() != null) {
+            sb.append(", data=[");
+            sb.append(printDataArr());
+            sb.append("]");
+        }
+        
+        sb.append("]");
+        return sb.toString();
     }
 }

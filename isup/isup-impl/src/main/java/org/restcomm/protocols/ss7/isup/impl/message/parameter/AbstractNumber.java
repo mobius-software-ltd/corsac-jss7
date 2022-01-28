@@ -68,7 +68,7 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
 
     /**
      * Holds digits(in specs: "signal"). digits[0] holds most siginificant digit. Also length of this table contains information
-     * about Odd/even flag. However there is distinct flag used in process of decoding from byte[]. This is becuse in case of
+     * about Odd/even flag. However there is distinct flag used in process of decoding from buffer. This is becuse in case of
      * decoding we dont know if last digit is filler or digit.
      */
     protected String address;
@@ -131,7 +131,7 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
     }    
 
     /**
-     * This method is used in constructor that takes byte[] or ByteArrayInputStream as parameter. Decodes header part (its 1 or
+     * This method is used in constructor that takes ByteBuf as parameter. Decodes header part (its 1 or
      * 2 bytes usually.) Default implemetnation decodes header of one byte - where most significant bit is O/E indicator and
      * bits 7-1 are NAI. This method should be over
      *
@@ -148,7 +148,7 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
     }
 
     /**
-     * This method is used in constructor that takes byte[] or ByteArrayInputStream as parameter. Decodes body part (its 1 byte
+     * This method is used in constructor that takes ByteBuf as parameter. Decodes body part (its 1 byte
      * usually.) However in different "numbers" it has different meaning. Each subclass should provide implementation
      *
      * @param bis
@@ -158,7 +158,7 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
     public abstract void decodeBody(ByteBuf buffer) throws ParameterException;
 
     /**
-     * This method is used in constructor that takes byte[] or ByteArrayInputStream as parameter. Decodes digits part.
+     * This method is used in constructor that takes ByteBuf as parameter. Decodes digits part.
      *
      * @param bis
      * @return - number of bytes reads
@@ -202,7 +202,7 @@ public abstract class AbstractNumber extends AbstractISUPParameter implements Nu
      * Decodes digits part. It reads exactly octetsCount number of octets.
      *
      * @param bis
-     * @param octetsCount - number iof octets to read from stream
+     * @param octetsCount - number iof octets to read from ByteBuf
      * @return
      * @throws IllegalArgumentException
      */

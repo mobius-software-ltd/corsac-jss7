@@ -97,11 +97,9 @@ public class OriginationAttemptAuthorizedRequestImpl extends CircuitSwitchedCall
         if(callingFacilityGroup!=null)
         	this.callingFacilityGroup=new FacilityGroupWrapperImpl(callingFacilityGroup);
         
-        if(callingFacilityGroupMember!=null) {
-        	this.callingFacilityGroupMember=new ASNInteger();
-        	this.callingFacilityGroupMember.setValue(callingFacilityGroupMember.longValue());
-        }
-        
+        if(callingFacilityGroupMember!=null)
+        	this.callingFacilityGroupMember=new ASNInteger(callingFacilityGroupMember);
+        	
         this.travellingClassMark=travellingClassMark;
         this.extensions = extensions;
         this.carrier=carrier;
@@ -147,10 +145,10 @@ public class OriginationAttemptAuthorizedRequestImpl extends CircuitSwitchedCall
 
     @Override
     public Integer getCallingFacilityGroupMember() {
-    	if(callingFacilityGroupMember==null || callingFacilityGroupMember.getValue()==null)
+    	if(callingFacilityGroupMember==null)
     		return null;
     	
-		return callingFacilityGroupMember.getValue().intValue();
+		return callingFacilityGroupMember.getIntValue();
 	}
 
     @Override

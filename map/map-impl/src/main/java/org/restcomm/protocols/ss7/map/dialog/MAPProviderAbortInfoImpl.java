@@ -61,8 +61,7 @@ public class MAPProviderAbortInfoImpl {
     }
 
     public void setMAPProviderAbortReason(MAPProviderAbortReason mapProvAbrtReas) {
-        this.mapProviderAbortReason = new ASNMAPProviderAbortReason();
-        this.mapProviderAbortReason.setType(mapProvAbrtReas);
+        this.mapProviderAbortReason = new ASNMAPProviderAbortReason(mapProvAbrtReas);        
     }
 
     public void setExtensionContainer(MAPExtensionContainer extensionContainer) {

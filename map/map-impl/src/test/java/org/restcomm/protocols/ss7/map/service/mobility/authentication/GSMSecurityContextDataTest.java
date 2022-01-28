@@ -33,6 +33,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -61,7 +62,7 @@ public class GSMSecurityContextDataTest {
         assertTrue(result.getResult() instanceof GSMSecurityContextDataImpl);
         GSMSecurityContextDataImpl prim = (GSMSecurityContextDataImpl)result.getResult();
         
-        assertTrue(Arrays.equals(prim.getKc().getData(), getDataKc()));
+        assertTrue(ByteBufUtil.equals(prim.getKc().getValue(), Unpooled.wrappedBuffer(getDataKc())));
         assertEquals(prim.getCksn().getData(), 4);
     }
 
@@ -70,7 +71,7 @@ public class GSMSecurityContextDataTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(GSMSecurityContextDataImpl.class);
 
-        KcImpl kc = new KcImpl(getDataKc());
+        KcImpl kc = new KcImpl(Unpooled.wrappedBuffer(getDataKc()));
         CksnImpl cksn = new CksnImpl(4);
 
         GSMSecurityContextDataImpl prim = new GSMSecurityContextDataImpl(kc, cksn);

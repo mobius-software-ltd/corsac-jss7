@@ -24,6 +24,9 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 
 import org.restcomm.protocols.ss7.map.api.smstpdu.ConcatenatedShortMessagesIdentifier;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 /**
  *
  * @author sergey vetyutnev
@@ -61,22 +64,22 @@ public class ConcatenatedShortMessagesIdentifierImpl implements ConcatenatedShor
         this.mesageSegmentNumber = mesageSegmentNumber;
     }
 
-    public ConcatenatedShortMessagesIdentifierImpl(byte[] encodedInformationElementData) {
+    public ConcatenatedShortMessagesIdentifierImpl(ByteBuf encodedInformationElementData) {
 
-        if (encodedInformationElementData == null || encodedInformationElementData.length < 3
-                || encodedInformationElementData.length > 4)
+        if (encodedInformationElementData == null || encodedInformationElementData.readableBytes() < 3
+                || encodedInformationElementData.readableBytes() > 4)
             return;
 
-        if (encodedInformationElementData.length == 3) {
+        if (encodedInformationElementData.readableBytes() == 3) {
             this.referenceIs16bit = false;
-            this.reference = encodedInformationElementData[0] & 0xFF;
-            this.mesageSegmentCount = encodedInformationElementData[1] & 0xFF;
-            this.mesageSegmentNumber = encodedInformationElementData[2] & 0xFF;
+            this.reference = encodedInformationElementData.readByte() & 0xFF;
+            this.mesageSegmentCount = encodedInformationElementData.readByte() & 0xFF;
+            this.mesageSegmentNumber = encodedInformationElementData.readByte() & 0xFF;
         } else {
             this.referenceIs16bit = true;
-            this.reference = (encodedInformationElementData[0] & 0xFF) + ((encodedInformationElementData[1] & 0xFF) << 8);
-            this.mesageSegmentCount = encodedInformationElementData[2] & 0xFF;
-            this.mesageSegmentNumber = encodedInformationElementData[3] & 0xFF;
+            this.reference = (encodedInformationElementData.readByte() & 0xFF) + ((encodedInformationElementData.readByte() & 0xFF) << 8);
+            this.mesageSegmentCount = encodedInformationElementData.readByte() & 0xFF;
+            this.mesageSegmentNumber = encodedInformationElementData.readByte() & 0xFF;
         }
     }
 
@@ -103,19 +106,19 @@ public class ConcatenatedShortMessagesIdentifierImpl implements ConcatenatedShor
             return UserDataHeaderImpl._InformationElementIdentifier_ConcatenatedShortMessages8bit;
     }
 
-    public byte[] getEncodedInformationElementData() {
-        byte[] res;
+    public ByteBuf getEncodedInformationElementData() {
+    	ByteBuf res;
         if (this.referenceIs16bit) {
-            res = new byte[4];
-            res[0] = (byte) (this.reference & 0x00FF);
-            res[1] = (byte) ((this.reference & 0xFF00) >> 8);
-            res[2] = (byte) (this.mesageSegmentCount & 0xFF);
-            res[3] = (byte) (this.mesageSegmentNumber & 0xFF);
+            res = Unpooled.buffer(4);
+            res.writeByte((byte) (this.reference & 0x00FF));
+            res.writeByte((byte) ((this.reference & 0xFF00) >> 8));
+            res.writeByte((byte) (this.mesageSegmentCount & 0xFF));
+            res.writeByte((byte) (this.mesageSegmentNumber & 0xFF));
         } else {
-            res = new byte[3];
-            res[0] = (byte) (this.reference & 0x00FF);
-            res[1] = (byte) (this.mesageSegmentCount & 0xFF);
-            res[2] = (byte) (this.mesageSegmentNumber & 0xFF);
+        	res = Unpooled.buffer(3);
+        	res.writeByte((byte) (this.reference & 0x00FF));
+        	res.writeByte((byte) (this.mesageSegmentCount & 0xFF));
+        	res.writeByte((byte) (this.mesageSegmentNumber & 0xFF));
         }
         return res;
     }

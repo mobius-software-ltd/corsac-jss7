@@ -1,5 +1,7 @@
 package com.mobius.software.telco.protocols.ss7.asn.primitives;
 
+import java.nio.charset.Charset;
+
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
@@ -37,19 +39,25 @@ import io.netty.buffer.Unpooled;
 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=9,constructed=false,lengthIndefinite=false)
 public class ASNReal {
+	public static final Charset CHARSET=Charset.forName("US-ASCII");
+	
 	public static final int REAL_BB_BASE_MASK = 0x30;	
 	public static final int REAL_BB_SIGN_MASK = 0x40;
 	public static final int REAL_BB_SCALE_MASK = 0xC;
 	public static final int REAL_BB_EE_MASK = 0x3;
 	
 	private Double value;
+	
+	public ASNReal() {
+		
+	}
+	
+	public ASNReal(Double value) {
+		this.value=value;
+	}
 		
 	public Double getValue() {
 		return value;
-	}
-
-	public void setValue(Double value) {
-		this.value = value;
 	}
 
 	@ASNLength
@@ -90,19 +98,16 @@ public class ASNReal {
 
 		buffer.writeByte(info);
 
-		byte[] exp = new byte[2];
-		byte[] mantisa = new byte[7];
-
-		exp[0] = (byte) (((int) (bits >> 60)) & 0x07);
-		exp[1] = (byte) (bits >> 52);
-		for (int index = 0; index < 7; index++) {
-			mantisa[6 - index] = (byte) (bits >> (index * 8));
-		}
-
-		mantisa[0] &= 0x0F;
-
-		buffer.writeBytes(exp);
-		buffer.writeBytes(mantisa);
+		buffer.writeByte((byte) (((int) (bits >> 60)) & 0x07));
+		buffer.writeByte((byte) (bits >> 52));
+		
+		buffer.writeByte((byte)((bits >> 48) & 0x0F));
+		buffer.writeByte((byte)(bits >> 40));
+		buffer.writeByte((byte)(bits >> 32));
+		buffer.writeByte((byte)(bits >> 24));
+		buffer.writeByte((byte)(bits >> 16));
+		buffer.writeByte((byte)(bits >> 8));
+		buffer.writeByte((byte)bits);		
 	}
 	
 	@ASNDecode
@@ -125,10 +130,8 @@ public class ASNReal {
 		
 		int infoBits = buffer.readByte();
 		if ((infoBits & 0xC0) == 0) {
-			byte[] data=new byte[buffer.readableBytes()];
-			buffer.readBytes(data);
 			try {
-				String nrRep = new String(data, "US-ASCII");
+				String nrRep = buffer.toString(CHARSET);
 				value = Double.parseDouble(nrRep);
 			}
 			catch(Exception ex) {
@@ -178,18 +181,16 @@ public class ASNReal {
 			if (e > 0x7FF) 
 				return true;
 
-			byte[] doubleRep = new byte[8];
-			doubleRep[0] = (byte) (signBit);
-			doubleRep[0] |= ((e >> 4) & 0xFF);
-			doubleRep[1] = (byte) ((e & 0x0F) << 4);
-			doubleRep[7] = (byte) n;
-			doubleRep[6] = (byte) (n >> 8);
-			doubleRep[5] = (byte) (n >> 16);
-			doubleRep[4] = (byte) (n >> 24);
-			doubleRep[3] = (byte) (n >> 32);
-			doubleRep[2] = (byte) (n >> 40);
-			doubleRep[1] |= (byte) ((n >> 48) & 0x0F);
-			value=Unpooled.wrappedBuffer(doubleRep).readDouble();
+			ByteBuf doubleRep = Unpooled.buffer(8);
+			doubleRep.writeByte((byte)(signBit | ((e >> 4) & 0xFF)));
+			doubleRep.writeByte((byte)(((e & 0x0F) << 4) | ((n >> 48) & 0x0F)));
+			doubleRep.writeByte((byte) (n >> 40));
+			doubleRep.writeByte((byte) (n >> 32));
+			doubleRep.writeByte((byte) (n >> 24));
+			doubleRep.writeByte((byte) (n >> 16));
+			doubleRep.writeByte((byte) (n >> 8));
+			doubleRep.writeByte((byte) n);
+			value=doubleRep.readDouble();
 			return false;
 		} else 
 			return true;		

@@ -82,7 +82,7 @@ public class RedirectCapabilityImpl extends AbstractISUPParameter implements Red
 
     public void setCapabilities(ByteBuf capabilities) {
         if (capabilities == null || capabilities.readableBytes() == 0) {
-            throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
+            throw new IllegalArgumentException("buffer must not be null and length must be greater than 0");
         }
         this.capabilities = capabilities;
     }

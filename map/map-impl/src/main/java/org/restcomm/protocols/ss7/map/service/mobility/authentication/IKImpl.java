@@ -22,34 +22,37 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.IK;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  *
  * @author Lasith Waruna Perera
  *
  */
-public class IKImpl extends ASNOctetString implements IK {
-	public IKImpl(byte[] data) {
-		setValue(Unpooled.wrappedBuffer(data));  
+public class IKImpl extends ASNOctetString2 implements IK {
+	public IKImpl(ByteBuf value) {
+		super(value);  
     }
 
     public IKImpl() {
     }
 
-    public byte[] getData() {
-    	ByteBuf value=this.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
-    }
+    @Override
+    public String toString() {
 
+        StringBuilder sb = new StringBuilder();
+        sb.append("IKImpl");
+        sb.append(" [");
+        if (getValue()!=null) {
+            sb.append("data=");
+            sb.append(printDataArr());            
+        }
+        sb.append("]");
+
+        return sb.toString();
+    }
 }

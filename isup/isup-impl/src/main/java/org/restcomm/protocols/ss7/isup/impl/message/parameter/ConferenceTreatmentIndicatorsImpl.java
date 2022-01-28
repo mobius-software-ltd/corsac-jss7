@@ -56,7 +56,7 @@ public class ConferenceTreatmentIndicatorsImpl extends AbstractISUPParameter imp
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() == 0) {
-            throw new ParameterException("byte[] must not be null and length must be greater than 0");
+            throw new ParameterException("buffer must not be null and length must be greater than 0");
         }
         setConferenceAcceptance(b);        
     }

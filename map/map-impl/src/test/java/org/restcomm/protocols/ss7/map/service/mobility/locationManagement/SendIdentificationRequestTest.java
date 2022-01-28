@@ -43,6 +43,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -83,7 +84,7 @@ public class SendIdentificationRequestTest {
         assertTrue(result.getResult() instanceof SendIdentificationRequest);
         SendIdentificationRequest prim = (SendIdentificationRequest)result.getResult(); 
 
-        assertTrue(Arrays.equals(prim.getTmsi().getData(), getDataTmsi()));
+        assertTrue(ByteBufUtil.equals(prim.getTmsi().getValue(), Unpooled.wrappedBuffer(getDataTmsi())));
 
         // version 3
         data = this.getData2();
@@ -92,7 +93,7 @@ public class SendIdentificationRequestTest {
         assertTrue(result.getResult() instanceof SendIdentificationRequest);
         prim = (SendIdentificationRequest)result.getResult(); 
 
-        assertTrue(Arrays.equals(prim.getTmsi().getData(), getDataTmsi()));
+        assertTrue(ByteBufUtil.equals(prim.getTmsi().getValue(), Unpooled.wrappedBuffer(getDataTmsi())));
         assertTrue(prim.getNumberOfRequestedVectors().equals(2));
         assertTrue(prim.getSegmentationProhibited());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
@@ -113,7 +114,7 @@ public class SendIdentificationRequestTest {
         assertEquals(newVLRNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(newVLRNumber.getNumberingPlan(), NumberingPlan.ISDN);
 
-        assertTrue(Arrays.equals(prim.getNewLmsi().getData(), getDataLmsi()));
+        assertTrue(ByteBufUtil.equals(prim.getNewLmsi().getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getExtensionContainer()));
 
     }
@@ -125,7 +126,7 @@ public class SendIdentificationRequestTest {
     	parser.replaceClass(SendIdentificationRequestImplV3.class);
     	
     	// version 2
-        TMSIImpl tmsi = new TMSIImpl(getDataTmsi());
+        TMSIImpl tmsi = new TMSIImpl(Unpooled.wrappedBuffer(getDataTmsi()));
         SendIdentificationRequest prim = new SendIdentificationRequestImplV1(tmsi, 2);
         byte[] data=getData1();
         ByteBuf buffer=parser.encode(prim);
@@ -134,7 +135,7 @@ public class SendIdentificationRequestTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         // version 3
-        tmsi = new TMSIImpl(getDataTmsi());
+        tmsi = new TMSIImpl(Unpooled.wrappedBuffer(getDataTmsi()));
         Integer numberOfRequestedVectors = 2;
         boolean segmentationProhibited = true;
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
@@ -144,7 +145,7 @@ public class SendIdentificationRequestTest {
         Integer hopCounter = 4;
         boolean mtRoamingForwardingSupported = true;
         ISDNAddressStringImpl newVLRNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22235");
-        LMSIImpl lmsi = new LMSIImpl(getDataLmsi());
+        LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(getDataLmsi()));
         prim = new SendIdentificationRequestImplV3(tmsi, numberOfRequestedVectors, segmentationProhibited, extensionContainer, mscNumber, previousLAI, hopCounter, mtRoamingForwardingSupported, newVLRNumber, lmsi, 3);
         data=getData2();
         buffer=parser.encode(prim);

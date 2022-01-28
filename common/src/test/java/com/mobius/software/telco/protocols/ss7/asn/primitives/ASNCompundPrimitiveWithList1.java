@@ -60,8 +60,7 @@ public class ASNCompundPrimitiveWithList1 {
 	public void setField1(List<Long> field1) {
 		this.field1=new ArrayList<ASNInteger>();
 		for(Long currInteger:field1) {
-			ASNInteger currValue=new ASNInteger();
-			currValue.setValue(currInteger);
+			ASNInteger currValue=new ASNInteger(currInteger);
 			this.field1.add(currValue);
 		}
 	}

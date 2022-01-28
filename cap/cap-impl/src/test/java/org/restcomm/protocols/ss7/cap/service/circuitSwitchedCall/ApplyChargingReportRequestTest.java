@@ -93,39 +93,4 @@ public class ApplyChargingReportRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerializaion() throws Exception {
-
-        ReceivingSideIDImpl partyToCharge = new ReceivingSideIDImpl(LegType.leg1);
-        TimeInformationImpl timeInformation = new TimeInformationImpl(26);
-        TimeDurationChargingResultImpl timeDurationChargingResult = new TimeDurationChargingResultImpl(partyToCharge,
-                timeInformation, false, false, null, null);
-
-        ApplyChargingReportRequestImpl original = new ApplyChargingReportRequestImpl(timeDurationChargingResult);
-        original.setInvokeId(24);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "applyChargingReportRequest", ApplyChargingReportRequestImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        ApplyChargingReportRequestImpl copy = reader.read("applyChargingReportRequest", ApplyChargingReportRequestImpl.class);
-
-        assertEquals(copy.getInvokeId(), original.getInvokeId());
-        assertEquals(copy.getTimeDurationChargingResult().getPartyToCharge().getReceivingSideID(), original
-                .getTimeDurationChargingResult().getPartyToCharge().getReceivingSideID());
-
-    }*/
 }

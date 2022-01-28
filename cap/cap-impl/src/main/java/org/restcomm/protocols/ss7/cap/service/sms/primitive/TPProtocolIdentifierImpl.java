@@ -35,7 +35,7 @@ public class TPProtocolIdentifierImpl extends ASNSingleByte implements TPProtoco
     }
 
     public TPProtocolIdentifierImpl(int data) {
-    	setValue(data);
+    	super(data);
     }
 
     public int getData() {

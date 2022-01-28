@@ -133,9 +133,7 @@ public class SmsSubmitTpduImpl extends SmsTpduImpl implements SmsSubmitTpdu {
             	}
                 break;
             case fieldPresentEnhancedFormat:
-                byte[] buf = new byte[7];
-                stm.readBytes(buf);
-                ValidityEnhancedFormatDataImpl vef = new ValidityEnhancedFormatDataImpl(buf);
+                ValidityEnhancedFormatDataImpl vef = new ValidityEnhancedFormatDataImpl(stm.readSlice(7));
                 this.validityPeriod = new ValidityPeriodImpl(vef);
                 break;
 			default:
@@ -146,9 +144,7 @@ public class SmsSubmitTpduImpl extends SmsTpduImpl implements SmsSubmitTpdu {
         if (this.userDataLength == -1)
             throw new MAPException("Error creating a new SmsDeliverTpduImpl instance: userDataLength field has not been found");
 
-        byte[] buf = new byte[stm.readableBytes()];
-        stm.readBytes(buf);
-        userData = new UserDataImpl(buf, dataCodingScheme, userDataLength, userDataHeaderIndicator, gsm8Charset);
+        userData = new UserDataImpl(stm.readSlice(stm.readableBytes()), dataCodingScheme, userDataLength, userDataHeaderIndicator, gsm8Charset);
     }
 
     public boolean getRejectDuplicates() {
@@ -222,7 +218,7 @@ public class SmsSubmitTpduImpl extends SmsTpduImpl implements SmsSubmitTpdu {
         this.userDataLength = this.userData.getEncodedUserDataLength();
         this.dataCodingScheme = this.userData.getDataCodingScheme();
 
-        if (this.userData.getEncodedData().length > _UserDataLimit)
+        if (this.userData.getEncodedData().readableBytes() > _UserDataLimit)
             throw new MAPException("User data field length may not increase " + _UserDataLimit);
 
         // byte 0
@@ -248,7 +244,7 @@ public class SmsSubmitTpduImpl extends SmsTpduImpl implements SmsSubmitTpdu {
             	}
                 break;
             case fieldPresentEnhancedFormat:
-            	buf.writeBytes(this.validityPeriod.getEnhancedFormatValue().getData());
+            	buf.writeBytes(this.validityPeriod.getEnhancedFormatValue().getValue());
                 break;
 			default:
 				break;

@@ -26,6 +26,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
@@ -75,8 +76,8 @@ public class CorrelationIDTest {
         correlationId = (CorrelationIDImpl)result.getResult();
 
         assertTrue(correlationId.getHlrId().getData().equals("1111122222"));
-        assertEquals(new String (correlationId.getSipUriA().getData()), "sip:konstantin@telestax.com");
-        assertEquals(new String (correlationId.getSipUriB().getData()), "sip:nosach@telestax.com");
+        assertEquals(correlationId.getSipUriA().getValue().toString(Charset.forName("UTF-8")), "sip:konstantin@telestax.com");
+        assertEquals(correlationId.getSipUriB().getValue().toString(Charset.forName("UTF-8")), "sip:nosach@telestax.com");
     }
 
     @Test(groups = { "functional.encode", "service.sms" })
@@ -96,8 +97,8 @@ public class CorrelationIDTest {
         byte [] dataSipA = "sip:konstantin@telestax.com".getBytes();
         byte [] dataSipB = "sip:nosach@telestax.com".getBytes();
 
-        SipUriImpl sipA = new SipUriImpl(dataSipA);
-        SipUriImpl sipB = new SipUriImpl(dataSipB);
+        SipUriImpl sipA = new SipUriImpl(Unpooled.wrappedBuffer(dataSipA));
+        SipUriImpl sipB = new SipUriImpl(Unpooled.wrappedBuffer(dataSipB));
         
         cid = new CorrelationIDImpl(hlrId, sipA, sipB);
         buffer=parser.encode(cid);

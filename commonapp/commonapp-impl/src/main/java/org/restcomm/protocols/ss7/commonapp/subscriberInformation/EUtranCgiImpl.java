@@ -24,31 +24,36 @@ package org.restcomm.protocols.ss7.commonapp.subscriberInformation;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.EUtranCgi;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
  * @author sergey vetyutnev
  *
  */
-public class EUtranCgiImpl extends ASNOctetString implements EUtranCgi {
+public class EUtranCgiImpl extends ASNOctetString2 implements EUtranCgi {
 	public EUtranCgiImpl() {
     }
 
-    public EUtranCgiImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
+    public EUtranCgiImpl(ByteBuf value) {
+        super(value);
     }
+	
+    @Override
+    public String toString() {
+    	StringBuilder sb=new StringBuilder();
+        sb.append("EUtranCgiImpl");
+        sb.append(" [");
 
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        if (getValue() != null) {
+            sb.append(", data=[");
+            sb.append(printDataArr());
+            sb.append("]");
+        }
+        
+        sb.append("]");
+        return sb.toString();
     }
 }

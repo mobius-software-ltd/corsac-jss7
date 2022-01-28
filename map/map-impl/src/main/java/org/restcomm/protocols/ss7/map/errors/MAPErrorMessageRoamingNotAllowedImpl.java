@@ -52,11 +52,11 @@ public class MAPErrorMessageRoamingNotAllowedImpl extends MAPErrorMessageImpl im
     		MAPExtensionContainer extensionContainer, AdditionalRoamingNotAllowedCause additionalRoamingNotAllowedCause) {
         super((long) MAPErrorCode.roamingNotAllowed);
 
-        this.roamingNotAllowedCause =new ASNRoamingNotAllowedCauseImpl();
-        this.roamingNotAllowedCause.setType(roamingNotAllowedCause);
+        this.roamingNotAllowedCause =new ASNRoamingNotAllowedCauseImpl(roamingNotAllowedCause);
         this.extensionContainer = extensionContainer;
-        this.additionalRoamingNotAllowedCause =new ASNAdditionalRoamingNotAllowedCauseImpl();
-        this.additionalRoamingNotAllowedCause.setType(additionalRoamingNotAllowedCause);
+        
+        if(additionalRoamingNotAllowedCause!=null)
+        	this.additionalRoamingNotAllowedCause =new ASNAdditionalRoamingNotAllowedCauseImpl(additionalRoamingNotAllowedCause);        
     }
 
     public MAPErrorMessageRoamingNotAllowedImpl() {
@@ -96,10 +96,8 @@ public class MAPErrorMessageRoamingNotAllowedImpl extends MAPErrorMessageImpl im
     public void setRoamingNotAllowedCause(RoamingNotAllowedCause val) {
     	if(val==null)
     		roamingNotAllowedCause=null;
-    	else {
-    		roamingNotAllowedCause = new ASNRoamingNotAllowedCauseImpl();
-    		roamingNotAllowedCause.setType(val);
-    	}
+    	else
+    		roamingNotAllowedCause = new ASNRoamingNotAllowedCauseImpl(val);     	
     }
 
     @Override
@@ -111,10 +109,8 @@ public class MAPErrorMessageRoamingNotAllowedImpl extends MAPErrorMessageImpl im
     public void setAdditionalRoamingNotAllowedCause(AdditionalRoamingNotAllowedCause val) {
     	if(val==null)
     		additionalRoamingNotAllowedCause=null;
-    	else {
-    		additionalRoamingNotAllowedCause = new ASNAdditionalRoamingNotAllowedCauseImpl();
-    		additionalRoamingNotAllowedCause.setType(val);
-    	}
+    	else
+    		additionalRoamingNotAllowedCause = new ASNAdditionalRoamingNotAllowedCauseImpl(val);    		
     }
 
     @Override

@@ -59,14 +59,12 @@ public class CircuitIdentificationCodeTest extends ParameterHarness {
     }
 
     private ByteBuf getBody1() throws IOException {
-        //ByteArrayOutputStream bos = new ByteArrayOutputStream();
         // we will use odd number of digits, so we leave zero as MSB
 
         return Unpooled.wrappedBuffer(new byte[] { (byte) 0xFF, 0x0F });
     }
 
     private ByteBuf getBody2() throws IOException {
-        //ByteArrayOutputStream bos = new ByteArrayOutputStream();
         // we will use odd number of digits, so we leave zero as MSB
 
         return Unpooled.wrappedBuffer(new byte[] { (byte) 0xAB, 0x0C });

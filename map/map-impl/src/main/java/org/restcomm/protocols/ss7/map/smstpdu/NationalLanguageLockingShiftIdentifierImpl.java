@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 import org.restcomm.protocols.ss7.commonapp.api.datacoding.NationalLanguageIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NationalLanguageLockingShiftIdentifier;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author sergey vetyutnev
@@ -37,7 +39,7 @@ public class NationalLanguageLockingShiftIdentifierImpl extends Gsm7NationalLang
         super(nationalLanguageCode);
     }
 
-    public NationalLanguageLockingShiftIdentifierImpl(byte[] encodedInformationElementData) {
+    public NationalLanguageLockingShiftIdentifierImpl(ByteBuf encodedInformationElementData) {
         super(encodedInformationElementData);
     }
 

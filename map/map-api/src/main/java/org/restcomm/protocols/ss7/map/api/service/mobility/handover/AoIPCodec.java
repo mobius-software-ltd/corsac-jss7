@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
 import java.io.Serializable;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  AoIPCodec ::= OCTET STRING (SIZE (1..3))
@@ -38,6 +40,5 @@ import java.io.Serializable;
  */
 public interface AoIPCodec extends Serializable {
 
-    byte[] getData();
-
+	ByteBuf getValue();
 }

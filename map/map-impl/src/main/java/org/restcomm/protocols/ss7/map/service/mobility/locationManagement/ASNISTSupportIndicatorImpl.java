@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.IS
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNISTSupportIndicatorImpl extends ASNEnumerated {
-	public void setType(ISTSupportIndicator t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNISTSupportIndicatorImpl() {
+		
+	}
+	
+	public ASNISTSupportIndicatorImpl(ISTSupportIndicator t) {
+		super(t.getCode());
 	}
 	
 	public ISTSupportIndicator getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return ISTSupportIndicator.getInstance(getValue().intValue());
+		return ISTSupportIndicator.getInstance(realValue);
 	}
 }

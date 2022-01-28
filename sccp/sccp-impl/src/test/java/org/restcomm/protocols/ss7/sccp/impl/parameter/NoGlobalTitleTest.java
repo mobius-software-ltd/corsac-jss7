@@ -55,26 +55,4 @@ public class NoGlobalTitleTest {
     @AfterMethod
     public void tearDown() {
     }
-
-    /*@Test(groups = { "parameter", "functional.encode" })
-    public void testSerialization() throws Exception {
-        NoGlobalTitle gt = new NoGlobalTitle("9023629581");
-
-        // Writes
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(output);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-        // indentation).
-        writer.write(gt, "NoGlobalTitle", NoGlobalTitle.class);
-        writer.close();
-
-        System.out.println(output.toString());
-
-        ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
-        XMLObjectReader reader = XMLObjectReader.newInstance(input);
-        NoGlobalTitle aiOut = reader.read("NoGlobalTitle", NoGlobalTitle.class);
-
-        // check results
-        assertEquals(aiOut.getDigits(), "9023629581");
-    }*/
 }

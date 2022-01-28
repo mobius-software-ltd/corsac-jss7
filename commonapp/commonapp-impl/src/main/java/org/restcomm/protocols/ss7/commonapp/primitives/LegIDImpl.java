@@ -46,7 +46,7 @@ public class LegIDImpl implements LegID {
     		this.receivingLegID = new ReceivingLegIDImpl(receivingLegID);
     	
     	if(sendingLegID!=null)
-    	this.sendingLegID = new SendingLegIDImpl(sendingLegID);
+    		this.sendingLegID = new SendingLegIDImpl(sendingLegID);
     }
     
     public LegType getReceivingSideID() {

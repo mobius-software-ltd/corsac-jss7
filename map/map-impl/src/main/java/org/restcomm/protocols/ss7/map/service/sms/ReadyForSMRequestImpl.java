@@ -64,11 +64,9 @@ public class ReadyForSMRequestImpl extends SmsMessageImpl implements ReadyForSMR
             boolean additionalAlertReasonIndicator) {
         this.imsi = imsi;
         
-        if(alertReason!=null) {
-        	this.alertReason = new ASNAlertReason();
-        	this.alertReason.setType(alertReason);
-        }
-        
+        if(alertReason!=null)
+        	this.alertReason = new ASNAlertReason(alertReason);
+        	
         if(alertReasonIndicator)
         	this.alertReasonIndicator = new ASNNull();
         

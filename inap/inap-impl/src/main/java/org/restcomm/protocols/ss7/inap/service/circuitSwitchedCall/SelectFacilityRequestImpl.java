@@ -88,11 +88,9 @@ public class SelectFacilityRequestImpl extends CircuitSwitchedCallMessageImpl im
         if(calledFacilityGroup!=null)
         	this.calledFacilityGroup=new FacilityGroupWrapperImpl(calledFacilityGroup);
         
-        if(calledFacilityGroupMember!=null) {
-        	this.calledFacilityGroupMember=new ASNInteger();
-        	this.calledFacilityGroupMember.setValue(calledFacilityGroupMember.longValue());
-        }
-        
+        if(calledFacilityGroupMember!=null)
+        	this.calledFacilityGroupMember=new ASNInteger(calledFacilityGroupMember);
+        	
         this.originalCalledPartyID=originalCalledPartyID;
         this.extensions = extensions;        
     }
@@ -135,10 +133,10 @@ public class SelectFacilityRequestImpl extends CircuitSwitchedCallMessageImpl im
 
     @Override
     public Integer getCalledFacilityGroupMember() {
-    	if(calledFacilityGroupMember==null || calledFacilityGroupMember.getValue()==null)
+    	if(calledFacilityGroupMember==null)
     		return null;
     	
-		return calledFacilityGroupMember.getValue().intValue();
+		return calledFacilityGroupMember.getIntValue();
 	}
 
     @Override

@@ -176,11 +176,9 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
         this.msisdn = msisdn;
         this.gmscAddress = gmscAddress;
         
-        if(interrogationType!=null) {
-        	this.interrogationType = new ASNInterrogationTypeImpl();
-        	this.interrogationType.setType(interrogationType);
-        }
-        
+        if(interrogationType!=null)
+        	this.interrogationType = new ASNInterrogationTypeImpl(interrogationType);
+        	
         this.extensionContainer = extensionContainer;
         this.mapProtocolVersion = mapProtocolVersion;
     }
@@ -202,17 +200,13 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
         	if(orInterrogation)
         		this.orInterrogation = new ASNNull();
         	
-        	if(orCapability!=null) {
-        		this.orCapability = new ASNInteger();
-        		this.orCapability.setValue(orCapability.longValue());
-        	}
-        	
+        	if(orCapability!=null)
+        		this.orCapability = new ASNInteger(orCapability);
+        		
             this.callReferenceNumber = callReferenceNumber;
             
-            if(forwardingReason!=null) {
-            	this.forwardingReason = new ASNForwardingReasonImpl();
-            	this.forwardingReason.setType(forwardingReason);
-            }
+            if(forwardingReason!=null)
+            	this.forwardingReason = new ASNForwardingReasonImpl(forwardingReason);            	
             
             if(basicServiceGroup!=null)
             	this.basicServiceGroup = new ExtBasicServiceCodeWrapperImpl(basicServiceGroup);
@@ -227,18 +221,14 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
             if(ccbsCall)
             	this.ccbsCall = new ASNNull();
             
-            if(supportedCCBSPhase!=null) {
-            	this.supportedCCBSPhase = new ASNInteger();
-            	this.supportedCCBSPhase.setValue(supportedCCBSPhase.longValue());
-            }
-            
+            if(supportedCCBSPhase!=null)
+            	this.supportedCCBSPhase = new ASNInteger(supportedCCBSPhase);
+            	
             this.additionalSignalInfo = additionalSignalInfo;
             
-            if(istSupportIndicator!=null) {
-            	this.istSupportIndicator = new ASNISTSupportIndicatorImpl();
-            	this.istSupportIndicator.setType(istSupportIndicator);
-            }
-            
+            if(istSupportIndicator!=null)
+            	this.istSupportIndicator = new ASNISTSupportIndicatorImpl(istSupportIndicator);
+            	
             if(prePagingSupported)
             	this.prePagingSupported = new ASNNull();
             
@@ -265,16 +255,12 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
             if(mtRoamingRetrySupported)
             	this.mtRoamingRetrySupported = new ASNNull();
             
-            if(callPriority!=null) {
-            	this.callPriority = new ASNEMLPPPriorityImpl();
-            	this.callPriority.setType(callPriority);
-            }
-            
-            if(interrogationType!=null) {
-            	this.interrogationType = new ASNInterrogationTypeImpl();
-            	this.interrogationType.setType(interrogationType);
-            }
-            
+            if(callPriority!=null)
+            	this.callPriority = new ASNEMLPPPriorityImpl(callPriority);
+            	
+            if(interrogationType!=null)
+            	this.interrogationType = new ASNInterrogationTypeImpl(interrogationType);
+            	
             this.gmscAddress = gmscAddress;
             this.extensionContainer = extensionContainer;
         }
@@ -284,11 +270,9 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
         if(mapProtocolVersion>=2)
         	this.cugCheckInfo = cugCheckInfo;
         
-        if(numberOfForwarding!=null) {
-        	this.numberOfForwarding = new ASNInteger();
-        	this.numberOfForwarding.setValue(numberOfForwarding.longValue());
-        }
-        
+        if(numberOfForwarding!=null)
+        	this.numberOfForwarding = new ASNInteger(numberOfForwarding);
+        	
         this.networkSignalInfo = networkSignalInfo;
         this.mapProtocolVersion = mapProtocolVersion;
 
@@ -313,7 +297,7 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     	if(this.numberOfForwarding==null)
     		return null;
     	
-        return this.numberOfForwarding.getValue().intValue();
+        return this.numberOfForwarding.getIntValue();
     }
 
     @Override
@@ -334,7 +318,7 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     	if(this.orCapability==null)
     		return null;
     	
-        return this.orCapability.getValue().intValue();
+        return this.orCapability.getIntValue();
     }
 
     @Override
@@ -398,7 +382,7 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     	if(this.supportedCCBSPhase==null)
     		return null;
     	
-        return this.supportedCCBSPhase.getValue().intValue();
+        return this.supportedCCBSPhase.getIntValue();
     }
 
     @Override

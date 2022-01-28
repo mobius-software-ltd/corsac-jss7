@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.EventTypeSMS;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNEventTypeSMSImpl extends ASNEnumerated {
-	public void setType(EventTypeSMS t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNEventTypeSMSImpl() {
+		
+	}
+	
+	public ASNEventTypeSMSImpl(EventTypeSMS t) {
+		super(t.getCode());
 	}
 	
 	public EventTypeSMS getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return EventTypeSMS.getInstance(getValue().intValue());
+		return EventTypeSMS.getInstance(realValue);
 	}
 }

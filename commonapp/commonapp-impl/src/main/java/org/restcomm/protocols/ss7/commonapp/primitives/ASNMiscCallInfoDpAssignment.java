@@ -4,7 +4,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoDpAssignm
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 
 /*
@@ -32,17 +32,20 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 *
 */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=false,lengthIndefinite=false)
-public class ASNMiscCallInfoDpAssignment extends ASNInteger {
-	public void setType(MiscCallInfoDpAssignment t) {
-		if(t!=null)
-			setValue((long)t.getCode());
+public class ASNMiscCallInfoDpAssignment extends ASNEnumerated {
+	public ASNMiscCallInfoDpAssignment() {
+		
+	}
+	
+	public ASNMiscCallInfoDpAssignment(MiscCallInfoDpAssignment t) {
+		super(t.getCode());
 	}
 	
 	public MiscCallInfoDpAssignment getType() {
-		Long realValue=getValue();
+		Integer realValue=getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return MiscCallInfoDpAssignment.getInstance(realValue.intValue());
+		return MiscCallInfoDpAssignment.getInstance(realValue);
 	}
 }

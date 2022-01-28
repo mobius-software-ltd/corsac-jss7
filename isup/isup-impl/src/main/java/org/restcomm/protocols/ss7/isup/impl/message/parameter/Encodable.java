@@ -21,9 +21,11 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
+import java.io.IOException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * @author baranowb
@@ -31,7 +33,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
  */
 public interface Encodable {
     /**
-     * Decodes this element from passed byte[] array. This array must contain only element data. however in case of constructor
+     * Decodes this element from passed buffer array. This array must contain only element data. however in case of constructor
      * elements it may contain more information elements that consist of tag, length and contents elements, this has to be
      * handled by specific implementation of this method.
      *
@@ -41,10 +43,9 @@ public interface Encodable {
     void decode(ByteBuf b) throws ParameterException;
 
     /**
-     * Encodes elements as byte[].It contains body, tag and length should be added by enclosing element. ( See B.4/Q.763 - page
+     * Encodes elements into buffer.It contains body, tag and length should be added by enclosing element. ( See B.4/Q.763 - page
      * 119)
      *
-     * @return byte[] with encoded element.
      * @throws IOException
      */
     void encode(ByteBuf b) throws ParameterException;

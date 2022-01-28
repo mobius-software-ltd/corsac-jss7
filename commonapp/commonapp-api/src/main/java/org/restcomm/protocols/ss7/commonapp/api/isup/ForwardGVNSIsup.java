@@ -39,8 +39,6 @@ bound.&minForwardGVNSLength..bound.&maxForwardGVNSLength))
 */
 public interface ForwardGVNSIsup {
 
-    byte[] getData();
-
     ForwardGVNS getForwardGVNS() throws APPException;
 
     // TODO: Spec refers to "Q.735, 6", we refer to ISUP, what is correct ?

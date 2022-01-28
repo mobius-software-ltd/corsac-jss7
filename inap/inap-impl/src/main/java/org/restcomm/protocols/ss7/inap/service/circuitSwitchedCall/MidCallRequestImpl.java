@@ -90,11 +90,9 @@ public abstract class MidCallRequestImpl extends CircuitSwitchedCallMessageImpl 
         this.callingPartyBusinessGroupID = callingPartyBusinessGroupID;
         this.callingPartySubaddress=callingPartySubaddress;
         
-        if(featureRequestIndicator!=null) {
-        	this.featureRequestIndicator=new ASNFeatureRequestIndicator();
-        	this.featureRequestIndicator.setType(featureRequestIndicator);
-        }
-        
+        if(featureRequestIndicator!=null)
+        	this.featureRequestIndicator=new ASNFeatureRequestIndicator(featureRequestIndicator);
+        	
         this.extensions = extensions;
         this.carrier=carrier;
     }

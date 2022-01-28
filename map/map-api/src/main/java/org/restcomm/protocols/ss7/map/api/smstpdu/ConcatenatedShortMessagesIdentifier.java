@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api.smstpdu;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * User data header for concatenates SMS messages
  *
@@ -38,6 +40,6 @@ public interface ConcatenatedShortMessagesIdentifier extends UserDataHeaderEleme
 
     int getMesageSegmentNumber();
 
-    byte[] getEncodedInformationElementData();
+    ByteBuf getEncodedInformationElementData();
 
 }

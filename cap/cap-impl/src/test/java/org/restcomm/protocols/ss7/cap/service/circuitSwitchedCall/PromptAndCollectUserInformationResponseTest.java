@@ -92,39 +92,4 @@ public class PromptAndCollectUserInformationResponseTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        GenericNumber genericNumber = new GenericNumberImpl(1, "987", 0, 2, 3, true, 0);
-//        int natureOfAddresIndicator, String address, int numberQualifierIndicator,
-//        int numberingPlanIndicator, int addressRepresentationREstrictedIndicator, boolean numberIncomplete,
-//        int screeningIndicator
-        Digits digitsResponse = new DigitsImpl(genericNumber);
-        PromptAndCollectUserInformationResponseImpl original = new PromptAndCollectUserInformationResponseImpl(digitsResponse);
-        original.setInvokeId(21);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "promptAndCollectUserInformationResponse", PromptAndCollectUserInformationResponseImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        PromptAndCollectUserInformationResponseImpl copy = reader.read("promptAndCollectUserInformationResponse", PromptAndCollectUserInformationResponseImpl.class);
-
-        assertEquals(copy.getInvokeId(), original.getInvokeId());
-        assertEquals(copy.getDigitsResponse().getGenericNumber().getNatureOfAddressIndicator(), 1);
-        assertEquals(copy.getDigitsResponse().getGenericNumber().getAddress(), "987");
-        assertEquals(copy.getDigitsResponse().getGenericNumber().getNumberQualifierIndicator(), 0);
-        assertEquals(copy.getDigitsResponse().getGenericNumber().getNumberingPlanIndicator(), 2);
-    }*/
 }

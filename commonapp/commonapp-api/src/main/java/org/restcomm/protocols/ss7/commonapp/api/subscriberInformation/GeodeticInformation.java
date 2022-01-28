@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.commonapp.api.subscriberInformation;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -48,8 +50,8 @@ GeodeticInformation ::= OCTET STRING (SIZE (10))
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface GeodeticInformation {
 
-    byte[] getData();
-
+	ByteBuf getValue();
+	
     int getScreeningAndPresentationIndicators();
 
     TypeOfShape getTypeOfShape();

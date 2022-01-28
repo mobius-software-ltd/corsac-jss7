@@ -52,9 +52,9 @@ import io.netty.buffer.Unpooled;
 public class CSGSubscriptionDataTest {
 
 	public byte[] getData() {
-        return new byte[] { 48, 60, 3, 5, 5, -128, 0, 0, 32, 4, 4, 10, 22, 41, 34, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11,
+        return new byte[] { 48, 61, 3, 5, 5, -128, 0, 0, 32, 4, 4, 10, 22, 41, 34, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11,
                 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -96,
-                4, 4, 2, 6, 7 };
+                5, 4, 3, 2, 6, 7 };
     };
 
     public byte[] getTimeData() {
@@ -81,12 +81,18 @@ public class CSGSubscriptionDataTest {
         assertFalse(prim.getCsgId().isBitSet(25));
         assertTrue(prim.getCsgId().isBitSet(26));
 
-        assertTrue(Arrays.equals(prim.getExpirationDate().getData(), this.getTimeData()));
+        assertEquals(prim.getExpirationDate().getYear(), 2041);
+        assertEquals(prim.getExpirationDate().getMonth(), 6);
+        assertEquals(prim.getExpirationDate().getDay(), 18);
+        assertEquals(prim.getExpirationDate().getHour(), 21);
+        assertEquals(prim.getExpirationDate().getMinute(), 16);
+        assertEquals(prim.getExpirationDate().getSecond(), 18);
 
+        prim.getExpirationDate().getDay();
         List<APN> lipaAllowedAPNList = prim.getLipaAllowedAPNList();
         assertNotNull(lipaAllowedAPNList);
         assertEquals(lipaAllowedAPNList.size(), 1);
-        assertTrue(Arrays.equals(lipaAllowedAPNList.get(0).getData(), this.getAPNData()));
+        assertEquals(lipaAllowedAPNList.get(0).getApn(), new String(this.getAPNData()));
 
         MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
         assertNotNull(extensionContainer);
@@ -103,9 +109,9 @@ public class CSGSubscriptionDataTest {
         CSGIdImpl csgId = new CSGIdImpl();
         csgId.setBit(0);
         csgId.setBit(26);
-        TimeImpl expirationDate = new TimeImpl(this.getTimeData());
+        TimeImpl expirationDate = new TimeImpl(2041, 6, 18, 21, 16, 18);
         List<APN> lipaAllowedAPNList = new ArrayList<APN>();
-        APNImpl apn = new APNImpl(this.getAPNData());
+        APNImpl apn = new APNImpl(new String(this.getAPNData()));
         lipaAllowedAPNList.add(apn);
 
         CSGSubscriptionData prim = new CSGSubscriptionDataImpl(csgId, expirationDate, extensionContainer, lipaAllowedAPNList);

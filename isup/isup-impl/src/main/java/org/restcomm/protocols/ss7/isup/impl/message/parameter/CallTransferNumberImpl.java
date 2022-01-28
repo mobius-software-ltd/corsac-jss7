@@ -96,12 +96,12 @@ public class CallTransferNumberImpl extends AbstractNAINumber implements CallTra
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.isup.message.parameter.AbstractNumber#decodeBody(java.io.ByteArrayInputStream)
+     * @see org.restcomm.protocols.ss7.isup.message.parameter.AbstractNumber#decodeBody(io.netty.buffer.ByteBuf)
      */
 
     public void decodeBody(ByteBuf buffer) throws IllegalArgumentException, ParameterException {
     	if(buffer.readableBytes()==0) {
-            throw new ParameterException("byte[] must  not be null and length must  be greater than 0");
+            throw new ParameterException("buffer must  not be null and length must  be greater than 0");
         }
     		
         int b = buffer.readByte() & 0xff;
@@ -114,12 +114,12 @@ public class CallTransferNumberImpl extends AbstractNAINumber implements CallTra
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.isup.message.parameter.AbstractNumber#encodeBody(java.io.ByteArrayOutputStream)
+     * @see org.restcomm.protocols.ss7.isup.message.parameter.AbstractNumber#encodeBody(io.netty.buffer.ByteBuf)
      */
     /*
      * (non-Javadoc)
      *
-     * @seeorg.restcomm.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
+     * @seeorg.restcomm.isup.parameters.AbstractNumber#encodeBody(io.netty.buffer.ByteBuf)
      */
 
     public void encodeBody(ByteBuf buffer) {

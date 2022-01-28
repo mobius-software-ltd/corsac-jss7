@@ -46,27 +46,24 @@ public class ToneImpl implements Tone {
     }
 
     public ToneImpl(int toneID, Integer duration) {
-        this.toneID = new ASNInteger();
-        this.toneID.setValue(Long.valueOf(toneID));
+        this.toneID = new ASNInteger(toneID);
         
-        if(duration!=null) {
-        	this.duration = new ASNInteger();
-        	this.duration.setValue(duration.longValue());
-        }
+        if(duration!=null)
+        	this.duration = new ASNInteger(duration);        	
     }
 
     public int getToneID() {
     	if(toneID==null || toneID.getValue()==null)
     		return 0;
     	
-        return toneID.getValue().intValue();
+        return toneID.getIntValue();
     }
 
     public Integer getDuration() {
-    	if(duration==null || duration.getValue()==null)
+    	if(duration==null)
     		return null;
     	
-        return duration.getValue().intValue();
+        return duration.getIntValue();
     }
 
     @Override

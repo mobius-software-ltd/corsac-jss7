@@ -47,10 +47,8 @@ public class TransferredVolumeImpl implements TransferredVolume {
     }
 
     public TransferredVolumeImpl(Long volumeIfNoTariffSwitch) {
-    	if(volumeIfNoTariffSwitch!=null) {
-    		this.volumeIfNoTariffSwitch = new ASNInteger();
-    		this.volumeIfNoTariffSwitch.setValue(volumeIfNoTariffSwitch);
-    	}
+    	if(volumeIfNoTariffSwitch!=null)
+    		this.volumeIfNoTariffSwitch = new ASNInteger(volumeIfNoTariffSwitch);    		
     }
 
     public TransferredVolumeImpl(VolumeIfTariffSwitch volumeIfTariffSwitch) {

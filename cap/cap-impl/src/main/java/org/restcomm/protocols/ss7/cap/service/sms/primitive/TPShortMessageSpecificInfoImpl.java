@@ -35,7 +35,7 @@ public class TPShortMessageSpecificInfoImpl extends ASNSingleByte implements TPS
     }
 
     public TPShortMessageSpecificInfoImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public int getData() {

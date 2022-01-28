@@ -82,15 +82,11 @@ public class PromptAndCollectUserInformationRequestImpl extends CircuitSwitchedC
     	if(legID!=null) 
     		this.legID=new SendingLegIDWrapperImpl(new SendingLegIDImpl(legID));
     	
-    	if(requestAnnouncementStartedNotification!=null) {
-    		this.requestAnnouncementStartedNotification = new ASNBoolean();
-    		this.requestAnnouncementStartedNotification.setValue(requestAnnouncementStartedNotification);
-    	}
-    	
-    	if(requestAnnouncementCompleteNotification!=null) {
-    		this.requestAnnouncementCompleteNotification = new ASNBoolean();
-    		this.requestAnnouncementCompleteNotification.setValue(requestAnnouncementCompleteNotification);
-    	}
+    	if(requestAnnouncementStartedNotification!=null)
+    		this.requestAnnouncementStartedNotification = new ASNBoolean(requestAnnouncementStartedNotification);
+    		
+    	if(requestAnnouncementCompleteNotification!=null)
+    		this.requestAnnouncementCompleteNotification = new ASNBoolean(requestAnnouncementCompleteNotification);    		
     }
     
     public PromptAndCollectUserInformationRequestImpl(CollectedInfo collectedInfo, Boolean disconnectFromIPForbidden,
@@ -99,11 +95,9 @@ public class PromptAndCollectUserInformationRequestImpl extends CircuitSwitchedC
     	if(collectedInfo!=null)
     		this.collectedInfo = new CollectedInfoWrapperImpl(collectedInfo);
     	
-    	if(disconnectFromIPForbidden!=null) {
-    		this.disconnectFromIPForbidden = new ASNBoolean();
-    		this.disconnectFromIPForbidden.setValue(disconnectFromIPForbidden);
-    	}
-    	
+    	if(disconnectFromIPForbidden!=null)
+    		this.disconnectFromIPForbidden = new ASNBoolean(disconnectFromIPForbidden);
+    		
     	if(informationToSend!=null)
     		this.informationToSend = new InformationToSendWrapperImpl(informationToSend);
     	

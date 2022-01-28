@@ -161,9 +161,8 @@ public class PDPContextInfoImpl implements PDPContextInfo {
             Ext2QoSSubscribed qos2Requested, Ext2QoSSubscribed qos2Negotiated, Ext3QoSSubscribed qos3Subscribed,
             Ext3QoSSubscribed qos3Requested, Ext3QoSSubscribed qos3Negotiated, Ext4QoSSubscribed qos4Subscribed,
             Ext4QoSSubscribed qos4Requested, Ext4QoSSubscribed qos4Negotiated, ExtPDPType extPdpType, PDPAddress extPdpAddress) {
-        this.pdpContextIdentifier = new ASNInteger();
-        this.pdpContextIdentifier.setValue((long)pdpContextIdentifier);
-        
+        this.pdpContextIdentifier = new ASNInteger(pdpContextIdentifier);
+
         if(pdpContextActive)
         	this.pdpContextActive = new ASNNull();
         
@@ -172,11 +171,9 @@ public class PDPContextInfoImpl implements PDPContextInfo {
         this.apnSubscribed = apnSubscribed;
         this.apnInUse = apnInUse;
         
-        if(asapi!=null) {
-        	this.nsapi = new ASNInteger(); 
-        	this.nsapi.setValue(asapi.longValue());
-        }
-        
+        if(asapi!=null)
+        	this.nsapi = new ASNInteger(asapi); 
+        	
         this.transactionId = transactionId;
         this.teidForGnAndGp = teidForGnAndGp;
         this.teidForIu = teidForIu;
@@ -202,10 +199,10 @@ public class PDPContextInfoImpl implements PDPContextInfo {
     }
 
     public int getPdpContextIdentifier() {
-    	if(pdpContextIdentifier==null)
+    	if(pdpContextIdentifier==null || pdpContextIdentifier.getValue()==null)
     		return 0;
     	
-        return pdpContextIdentifier.getValue().intValue();
+        return pdpContextIdentifier.getIntValue();
     }
 
     public boolean getPdpContextActive() {
@@ -232,7 +229,7 @@ public class PDPContextInfoImpl implements PDPContextInfo {
     	if(nsapi==null)
     		return null;
     	
-        return nsapi.getValue().intValue();
+        return nsapi.getIntValue();
     }
 
     public TransactionId getTransactionId() {

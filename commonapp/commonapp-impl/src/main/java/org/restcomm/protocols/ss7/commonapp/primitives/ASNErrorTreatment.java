@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.ErrorTreatment;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNErrorTreatment extends ASNEnumerated {
-	public void setType(ErrorTreatment t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNErrorTreatment() {
+		
+	}
+	
+	public ASNErrorTreatment(ErrorTreatment t) {
+		super(t.getCode());
 	}
 	
 	public ErrorTreatment getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return ErrorTreatment.getInstance(getValue().intValue());
+		return ErrorTreatment.getInstance(realValue);
 	}
 }

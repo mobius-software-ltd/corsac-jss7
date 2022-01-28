@@ -69,7 +69,7 @@ public class NatureOfConnectionIndicatorsImpl extends AbstractISUPParameter impl
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() != 1) {
-            throw new ParameterException("byte[] must not be null and must have length of 1");
+            throw new ParameterException("buffer must not be null and must have length of 1");
         }
         
         byte curr=b.readByte();

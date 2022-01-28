@@ -33,8 +33,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x03,constructed=false,lengthIndefinite=false)
 public class ASNReturnErrorProblemType extends ASNEnumerated {
-	public void setType(ReturnErrorProblemType t) {
-		super.setValue(t.getType());
+	public ASNReturnErrorProblemType() {
+		
+	}
+	
+	public ASNReturnErrorProblemType(ReturnErrorProblemType t) {
+		super(t.getType());
 	}
 	
 	public ReturnErrorProblemType getType() throws ParameterException {
@@ -42,6 +46,6 @@ public class ASNReturnErrorProblemType extends ASNEnumerated {
 		if(realValue==null)
 			return null;
 		
-		return ReturnErrorProblemType.getFromInt(getValue());
+		return ReturnErrorProblemType.getFromInt(realValue);
 	}
 }

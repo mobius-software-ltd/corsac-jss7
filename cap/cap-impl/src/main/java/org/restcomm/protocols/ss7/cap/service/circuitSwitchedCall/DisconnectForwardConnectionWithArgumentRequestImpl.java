@@ -53,11 +53,9 @@ public class DisconnectForwardConnectionWithArgumentRequestImpl extends CircuitS
     }
 
     public DisconnectForwardConnectionWithArgumentRequestImpl(Integer callSegmentId, CAPINAPExtensions extensions) {
-    	if(callSegmentId!=null) {
-    		this.callSegmentID = new ASNInteger();
-    		this.callSegmentID.setValue(callSegmentId.longValue());
-    	}
-    	
+    	if(callSegmentId!=null)
+    		this.callSegmentID = new ASNInteger(callSegmentId);
+    		
         this.extensions = extensions;
     }
 
@@ -92,10 +90,10 @@ public class DisconnectForwardConnectionWithArgumentRequestImpl extends CircuitS
 
     @Override
     public Integer getCallSegmentID() {
-    	if(callSegmentID==null || callSegmentID.getValue()==null)
+    	if(callSegmentID==null)
     		return null;
     	
-        return callSegmentID.getValue().intValue();
+        return callSegmentID.getIntValue();
     }
 
     @Override

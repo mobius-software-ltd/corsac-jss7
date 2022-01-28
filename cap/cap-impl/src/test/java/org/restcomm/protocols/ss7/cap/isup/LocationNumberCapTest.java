@@ -67,7 +67,6 @@ public class LocationNumberCapTest {
         
         LocationNumberIsupImpl elem = (LocationNumberIsupImpl)result.getResult();         
         LocationNumber ln = elem.getLocationNumber();
-        assertTrue(Arrays.equals(elem.getData(), this.getIntData()));
         assertEquals(ln.getNatureOfAddressIndicator(), 4);
         assertTrue(ln.getAddress().equals("80207910020"));
         assertEquals(ln.getNumberingPlanIndicator(), 1);
@@ -81,18 +80,11 @@ public class LocationNumberCapTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(LocationNumberIsupImpl.class);
     	
-        LocationNumberIsupImpl elem = new LocationNumberIsupImpl(this.getIntData());
+        LocationNumber cpn = new LocationNumberImpl(4, "80207910020", 1, 1, 1, 3);
+        LocationNumberIsupImpl elem = new LocationNumberIsupImpl(cpn);
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
         byte[] encodedData = new byte[buffer.readableBytes()];
-        buffer.readBytes(encodedData);
-        assertTrue(Arrays.equals(rawData, encodedData));
-
-        LocationNumber cpn = new LocationNumberImpl(4, "80207910020", 1, 1, 1, 3);
-        elem = new LocationNumberIsupImpl(cpn);
-        rawData = this.getData();
-        buffer=parser.encode(elem);
-        encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
 
@@ -100,42 +92,4 @@ public class LocationNumberCapTest {
         // addressRepresentationREstrictedIndicator,
         // int screeningIndicator
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "isup" })
-    public void testXMLSerialize() throws Exception {
-
-        LocationNumberImpl ln = new LocationNumberImpl(LocationNumber._NAI_NATIONAL_SN, "12345", LocationNumber._NPI_TELEX,
-                LocationNumber._INN_ROUTING_NOT_ALLOWED, LocationNumber._APRI_ALLOWED,
-                LocationNumber._SI_USER_PROVIDED_VERIFIED_PASSED);
-        LocationNumberCapImpl original = new LocationNumberCapImpl(ln);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "locationNumberCap", LocationNumberCapImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        LocationNumberCapImpl copy = reader.read("locationNumberCap", LocationNumberCapImpl.class);
-
-        assertEquals(copy.getLocationNumber().getNatureOfAddressIndicator(), original.getLocationNumber()
-                .getNatureOfAddressIndicator());
-        assertEquals(copy.getLocationNumber().getAddress(), original.getLocationNumber().getAddress());
-        assertEquals(copy.getLocationNumber().getNumberingPlanIndicator(), original.getLocationNumber()
-                .getNumberingPlanIndicator());
-        assertEquals(copy.getLocationNumber().getInternalNetworkNumberIndicator(), original.getLocationNumber()
-                .getInternalNetworkNumberIndicator());
-        assertEquals(copy.getLocationNumber().getAddressRepresentationRestrictedIndicator(), original.getLocationNumber()
-                .getAddressRepresentationRestrictedIndicator());
-        assertEquals(copy.getLocationNumber().getScreeningIndicator(), original.getLocationNumber().getScreeningIndicator());
-        assertEquals(copy.getLocationNumber().isOddFlag(), original.getLocationNumber().isOddFlag());
-    }*/
 }

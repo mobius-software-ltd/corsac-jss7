@@ -118,45 +118,4 @@ public class SpecializedResourceReportRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));      
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        SpecializedResourceReportRequestImpl original = new SpecializedResourceReportRequestImpl(false, true, true);
-        original.setLinkedId(12L);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "specializedResourceReport", SpecializedResourceReportRequestImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-        System.out.flush();
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        SpecializedResourceReportRequestImpl copy = reader.read("specializedResourceReport",
-                SpecializedResourceReportRequestImpl.class);
-
-        assertEquals(original.getAllAnnouncementsComplete(), copy.getAllAnnouncementsComplete());
-        assertEquals(original.getFirstAnnouncementStarted(), copy.getFirstAnnouncementStarted());
-        assertTrue(isEqual(original, copy));
-    }
-
-    private boolean isEqual(SpecializedResourceReportRequestImpl o1, SpecializedResourceReportRequestImpl o2) {
-        if (o1 == o2)
-            return true;
-        if (o1 == null && o2 != null || o1 != null && o2 == null)
-            return false;
-        if (o1 == null && o2 == null)
-            return true;
-        if (!o1.toString().equals(o2.toString()))
-            return false;
-        return true;
-    }*/
 }

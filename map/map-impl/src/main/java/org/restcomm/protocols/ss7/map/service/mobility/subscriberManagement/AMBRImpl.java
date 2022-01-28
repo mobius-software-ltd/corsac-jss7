@@ -50,27 +50,23 @@ public class AMBRImpl implements AMBR {
     }
 
     public AMBRImpl(int maxRequestedBandwidthUL, int maxRequestedBandwidthDL, MAPExtensionContainer extensionContainer) {
-        this.maxRequestedBandwidthUL = new ASNInteger();
-        this.maxRequestedBandwidthUL.setValue((long)maxRequestedBandwidthUL & 0x0FFFFFFFFL);
-        
-        this.maxRequestedBandwidthDL = new ASNInteger();
-        this.maxRequestedBandwidthDL.setValue((long)maxRequestedBandwidthDL & 0x0FFFFFFFFL);
-        
+        this.maxRequestedBandwidthUL = new ASNInteger(maxRequestedBandwidthUL);
+        this.maxRequestedBandwidthDL = new ASNInteger(maxRequestedBandwidthDL);
         this.extensionContainer = extensionContainer;
     }
 
     public int getMaxRequestedBandwidthUL() {
-    	if(this.maxRequestedBandwidthUL==null)
+    	if(this.maxRequestedBandwidthUL==null || this.maxRequestedBandwidthUL.getValue()==null)
     		return 0;
     	
-        return this.maxRequestedBandwidthUL.getValue().intValue();
+        return this.maxRequestedBandwidthUL.getIntValue();
     }
 
     public int getMaxRequestedBandwidthDL() {
-    	if(this.maxRequestedBandwidthDL==null)
+    	if(this.maxRequestedBandwidthDL==null || this.maxRequestedBandwidthDL.getValue()==null)
     		return 0;
     	
-        return this.maxRequestedBandwidthDL.getValue().intValue();
+        return this.maxRequestedBandwidthDL.getIntValue();
     }
 
     public MAPExtensionContainer getExtensionContainer() {

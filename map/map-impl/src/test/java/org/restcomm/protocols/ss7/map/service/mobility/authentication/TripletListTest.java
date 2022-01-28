@@ -37,6 +37,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -79,9 +80,9 @@ public class TripletListTest {
         
         assertEquals(asc.getAuthenticationTriplets().size(), 1);
 
-        assertTrue(Arrays.equals(asc.getAuthenticationTriplets().get(0).getRand(), AuthenticationTripletTest.getRandData()));
-        assertTrue(Arrays.equals(asc.getAuthenticationTriplets().get(0).getSres(), AuthenticationTripletTest.getSresData()));
-        assertTrue(Arrays.equals(asc.getAuthenticationTriplets().get(0).getKc(), AuthenticationTripletTest.getKcData()));
+        assertTrue(ByteBufUtil.equals(asc.getAuthenticationTriplets().get(0).getRand(),Unpooled.wrappedBuffer(AuthenticationTripletTest.getRandData())));
+        assertTrue(ByteBufUtil.equals(asc.getAuthenticationTriplets().get(0).getSres(),Unpooled.wrappedBuffer(AuthenticationTripletTest.getSresData())));
+        assertTrue(ByteBufUtil.equals(asc.getAuthenticationTriplets().get(0).getKc(), Unpooled.wrappedBuffer(AuthenticationTripletTest.getKcData())));
 
         rawData = getEncodedData2();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
@@ -91,13 +92,13 @@ public class TripletListTest {
 
         assertEquals(asc.getAuthenticationTriplets().size(), 2);
 
-        assertTrue(Arrays.equals(asc.getAuthenticationTriplets().get(0).getRand(), AuthenticationTripletTest.getRandData()));
-        assertTrue(Arrays.equals(asc.getAuthenticationTriplets().get(0).getSres(), AuthenticationTripletTest.getSresData()));
-        assertTrue(Arrays.equals(asc.getAuthenticationTriplets().get(0).getKc(), AuthenticationTripletTest.getKcData()));
+        assertTrue(ByteBufUtil.equals(asc.getAuthenticationTriplets().get(0).getRand(),Unpooled.wrappedBuffer(AuthenticationTripletTest.getRandData())));
+        assertTrue(ByteBufUtil.equals(asc.getAuthenticationTriplets().get(0).getSres(),Unpooled.wrappedBuffer(AuthenticationTripletTest.getSresData())));
+        assertTrue(ByteBufUtil.equals(asc.getAuthenticationTriplets().get(0).getKc(),Unpooled.wrappedBuffer(AuthenticationTripletTest.getKcData())));
 
-        assertTrue(Arrays.equals(asc.getAuthenticationTriplets().get(1).getRand(), getRandData()));
-        assertTrue(Arrays.equals(asc.getAuthenticationTriplets().get(1).getSres(), getSresData()));
-        assertTrue(Arrays.equals(asc.getAuthenticationTriplets().get(1).getKc(), getKcData()));
+        assertTrue(ByteBufUtil.equals(asc.getAuthenticationTriplets().get(1).getRand(),Unpooled.wrappedBuffer(getRandData())));
+        assertTrue(ByteBufUtil.equals(asc.getAuthenticationTriplets().get(1).getSres(),Unpooled.wrappedBuffer(getSresData())));
+        assertTrue(ByteBufUtil.equals(asc.getAuthenticationTriplets().get(1).getKc(),Unpooled.wrappedBuffer(getKcData())));
 
     }
 
@@ -106,8 +107,8 @@ public class TripletListTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(TripletListImpl.class);
 
-        AuthenticationTripletImpl d1 = new AuthenticationTripletImpl(AuthenticationTripletTest.getRandData(),
-                AuthenticationTripletTest.getSresData(), AuthenticationTripletTest.getKcData());
+        AuthenticationTripletImpl d1 = new AuthenticationTripletImpl(Unpooled.wrappedBuffer(AuthenticationTripletTest.getRandData()),
+        		Unpooled.wrappedBuffer(AuthenticationTripletTest.getSresData()), Unpooled.wrappedBuffer(AuthenticationTripletTest.getKcData()));
         List<AuthenticationTriplet> arr = new ArrayList<AuthenticationTriplet>();
         arr.add(d1);
         TripletListImpl asc = new TripletListImpl(arr);
@@ -118,9 +119,9 @@ public class TripletListTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        d1 = new AuthenticationTripletImpl(AuthenticationTripletTest.getRandData(), AuthenticationTripletTest.getSresData(),
-                AuthenticationTripletTest.getKcData());
-        AuthenticationTripletImpl d2 = new AuthenticationTripletImpl(getRandData(), getSresData(), getKcData());
+        d1 = new AuthenticationTripletImpl(Unpooled.wrappedBuffer(AuthenticationTripletTest.getRandData()), Unpooled.wrappedBuffer(AuthenticationTripletTest.getSresData()),
+        		Unpooled.wrappedBuffer(AuthenticationTripletTest.getKcData()));
+        AuthenticationTripletImpl d2 = new AuthenticationTripletImpl(Unpooled.wrappedBuffer(getRandData()), Unpooled.wrappedBuffer(getSresData()), Unpooled.wrappedBuffer(getKcData()));
         arr = new ArrayList<AuthenticationTriplet>();
         arr.add(d1);
         arr.add(d2);

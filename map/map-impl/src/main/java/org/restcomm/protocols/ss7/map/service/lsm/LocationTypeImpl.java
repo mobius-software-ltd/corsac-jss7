@@ -52,11 +52,9 @@ public class LocationTypeImpl implements LocationType {
     public LocationTypeImpl(final LocationEstimateType locationEstimateType,
             final DeferredLocationEventType deferredLocationEventType) {
     	
-    	if(locationEstimateType!=null) {
-    		this.locationEstimateType = new ASNLocationEstimateType();
-    		this.locationEstimateType.setType(locationEstimateType);
-    	}
-    	
+    	if(locationEstimateType!=null)
+    		this.locationEstimateType = new ASNLocationEstimateType(locationEstimateType);
+    		
         this.deferredLocationEventType = deferredLocationEventType;
     }
 

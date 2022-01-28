@@ -30,8 +30,6 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.Map;
 import java.util.Set;
 
@@ -68,6 +66,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UIDActionIndicators;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserIndicators;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserToUserInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessTransport;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:14:30:39 2009-04-20<br>
@@ -360,7 +360,7 @@ class AddressCompleteMessageImpl extends ISUPMessageImpl implements AddressCompl
                 throw new ParameterException("Failed to parse BackwardCallIndicators due to: ", e);
             }
         } else {
-            throw new IllegalArgumentException("byte[] must have atleast five octets");
+            throw new IllegalArgumentException("buffer must have atleast five readable octets");
         }
     }
 

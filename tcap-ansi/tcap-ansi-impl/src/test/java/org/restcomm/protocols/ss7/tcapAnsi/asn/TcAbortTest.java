@@ -37,9 +37,10 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -71,7 +72,7 @@ public class TcAbortTest {
         assertTrue(result.getResult() instanceof TCAbortMessageImpl);
         TCAbortMessage tcm = (TCAbortMessageImpl)result.getResult();
 
-        assertEquals(tcm.getDestinationTransactionId(), trId);
+        assertTrue(ByteBufUtil.equals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(trId)));
         assertNull(tcm.getDialogPortion());
         assertNull(tcm.getUserAbortInformation());
         assertEquals(tcm.getPAbortCause(), PAbortCause.ResourceUnavailable);
@@ -81,7 +82,7 @@ public class TcAbortTest {
         assertTrue(result.getResult() instanceof TCAbortMessageImpl);
         tcm = (TCAbortMessageImpl)result.getResult();
 
-        assertEquals(tcm.getDestinationTransactionId(), trId);
+        assertTrue(ByteBufUtil.equals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(trId)));
         assertNull(tcm.getUserAbortInformation().getUserInformationElements());
         assertNull(tcm.getPAbortCause());
         DialogPortion dp = tcm.getDialogPortion();
@@ -92,7 +93,7 @@ public class TcAbortTest {
         assertTrue(result.getResult() instanceof TCAbortMessageImpl);
         tcm = (TCAbortMessageImpl)result.getResult();
 
-        assertEquals(tcm.getDestinationTransactionId(), trId);
+        assertTrue(ByteBufUtil.equals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(trId)));
         assertNull(tcm.getPAbortCause());
         assertNull(tcm.getDialogPortion());
 
@@ -108,7 +109,7 @@ public class TcAbortTest {
     	
         // 1
         TCAbortMessage tcm = TcapFactory.createTCAbortMessage();
-        tcm.setDestinationTransactionId(trId);
+        tcm.setDestinationTransactionId(Unpooled.wrappedBuffer(trId));
         tcm.setPAbortCause(PAbortCause.ResourceUnavailable);
 
         ByteBuf buffer=parser.encode(tcm);
@@ -117,7 +118,7 @@ public class TcAbortTest {
 
         // 2
         tcm = TcapFactory.createTCAbortMessage();
-        tcm.setDestinationTransactionId(trId);
+        tcm.setDestinationTransactionId(Unpooled.wrappedBuffer(trId));
         DialogPortion dp = TcapFactory.createDialogPortion();
         ApplicationContext ac = TcapFactory.createApplicationContext(111);
         dp.setApplicationContext(ac);
@@ -129,16 +130,12 @@ public class TcAbortTest {
 
         // 3
         tcm = TcapFactory.createTCAbortMessage();
-        tcm.setDestinationTransactionId(trId);
+        tcm.setDestinationTransactionId(Unpooled.wrappedBuffer(trId));
         UserInformationElementImpl uai = new UserInformationElementImpl();
         uai.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
-        ASNOctetString innerValue=new ASNOctetString();
-        innerValue.setValue(Unpooled.wrappedBuffer(dataValue));
-        
-        ASNUserInformationObjectImpl value=new ASNUserInformationObjectImpl();
-        value.setValue(innerValue);
-        uai.setChildAsObject(value);
+        ASNOctetString2 innerValue=new ASNOctetString2(Unpooled.wrappedBuffer(dataValue));
+        uai.setChildAsObject(new ASNUserInformationObjectImpl(innerValue));
         
         UserInformationImpl abortInfo=new UserInformationImpl();
         abortInfo.setUserInformationElements(Arrays.asList(new UserInformationElementImpl[] { uai }));

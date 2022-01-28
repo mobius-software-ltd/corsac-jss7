@@ -84,36 +84,4 @@ public class CollectedInfoSpecificInfoTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })
-    public void testXMLSerializaion() throws Exception {
-        CalledPartyNumber calledPartyNumber = new CalledPartyNumberImpl();
-        calledPartyNumber.setAddress("22222212345");
-        calledPartyNumber.setNatureOfAddresIndicator(CalledPartyNumberImpl._NAI_INTERNATIONAL_NUMBER);
-        calledPartyNumber.setNumberingPlanIndicator(CalledPartyNumberImpl._NPI_ISDN);
-        CalledPartyNumberCap calledPartyNumberCap = new CalledPartyNumberCapImpl(calledPartyNumber);
-        CollectedInfoSpecificInfoImpl original = new CollectedInfoSpecificInfoImpl(calledPartyNumberCap);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "collectedInfoSpecificInfo", CollectedInfoSpecificInfoImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        CollectedInfoSpecificInfoImpl copy = reader.read("collectedInfoSpecificInfo", CollectedInfoSpecificInfoImpl.class);
-
-        assertEquals(copy.getCalledPartyNumber().getCalledPartyNumber().getAddress(), original.getCalledPartyNumber().getCalledPartyNumber().getAddress());
-        assertEquals(copy.getCalledPartyNumber().getCalledPartyNumber().getNatureOfAddressIndicator(), original.getCalledPartyNumber().getCalledPartyNumber()
-                .getNatureOfAddressIndicator());
-        assertEquals(copy.getCalledPartyNumber().getCalledPartyNumber().getNumberingPlanIndicator(), original.getCalledPartyNumber().getCalledPartyNumber()
-                .getNumberingPlanIndicator());
-    }*/
 }

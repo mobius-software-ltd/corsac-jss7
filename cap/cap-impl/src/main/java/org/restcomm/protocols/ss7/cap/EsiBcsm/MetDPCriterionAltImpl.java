@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterionAlt;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 /**
 *
@@ -34,10 +34,10 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 *
 */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public class MetDPCriterionAltImpl extends ASNOctetString implements MetDPCriterionAlt {
+public class MetDPCriterionAltImpl extends ASNOctetString2 implements MetDPCriterionAlt {
 	public MetDPCriterionAltImpl() {        
     }
-
+	
     @Override
     public String toString() {
 

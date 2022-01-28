@@ -56,20 +56,14 @@ public class InbandInfoImpl implements InbandInfo {
     	if(messageID!=null)
     		this.messageID = new MessageIDWrapperImpl(messageID);
         
-        if(numberOfRepetitions!=null) {
-        	this.numberOfRepetitions = new ASNInteger();
-        	this.numberOfRepetitions.setValue(numberOfRepetitions.longValue());
-        }
+        if(numberOfRepetitions!=null)
+        	this.numberOfRepetitions = new ASNInteger(numberOfRepetitions);        	
         
-        if(duration!=null) {
-        	this.duration = new ASNInteger();
-        	this.duration.setValue(duration.longValue());
-        }
-        
-        if(interval!=null) {
-        	this.interval = new ASNInteger();
-        	this.interval.setValue(interval.longValue());
-        }
+        if(duration!=null)
+        	this.duration = new ASNInteger(duration);
+        	
+        if(interval!=null)
+        	this.interval = new ASNInteger(interval);        	
     }
 
     public MessageID getMessageID() {
@@ -80,24 +74,24 @@ public class InbandInfoImpl implements InbandInfo {
     }
 
     public Integer getNumberOfRepetitions() {
-    	if(numberOfRepetitions==null || numberOfRepetitions.getValue()==null)
+    	if(numberOfRepetitions==null)
     		return null;
     	
-        return numberOfRepetitions.getValue().intValue();           
+        return numberOfRepetitions.getIntValue();           
     }
 
     public Integer getDuration() {
-    	if(duration==null || duration.getValue()==null)
+    	if(duration==null)
     		return null;
     	
-        return duration.getValue().intValue();     
+        return duration.getIntValue();     
     }
 
     public Integer getInterval() {
-    	if(interval==null || interval.getValue()==null)
+    	if(interval==null)
     		return null;
     	
-        return interval.getValue().intValue();
+        return interval.getIntValue();
     }
 
     @Override

@@ -93,8 +93,7 @@ public class CellGlobalIdOrServiceAreaIdOrLAITest {
     	
         byte[] data = new byte[] { (byte) 0x80, 0x07, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b };
 
-        CellGlobalIdOrServiceAreaIdFixedLengthImpl par = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(new byte[] { 0x05, 0x06,
-                0x07, 0x08, 0x09, 0x0a, 0x0b });
+        CellGlobalIdOrServiceAreaIdFixedLengthImpl par = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(506,700,0x0809,0x0a0b);
         CellGlobalIdOrServiceAreaIdOrLAIImpl cellGlobalIdOrServiceAreaIdOrLAI = new CellGlobalIdOrServiceAreaIdOrLAIImpl(par);
         CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl wrapper=new CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl(cellGlobalIdOrServiceAreaIdOrLAI);
         ByteBuf buffer=parser.encode(wrapper);
@@ -104,61 +103,4 @@ public class CellGlobalIdOrServiceAreaIdOrLAITest {
         assertTrue(Arrays.equals(data, encodedData));
 
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "service.lsm" })
-    public void testSerialization() throws Exception {
-        CellGlobalIdOrServiceAreaIdFixedLength par = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(250, 1, 4444, 3333);
-        CellGlobalIdOrServiceAreaIdOrLAIImpl original = new CellGlobalIdOrServiceAreaIdOrLAIImpl(par);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "cellGlobalIdOrServiceAreaIdOrLAI", CellGlobalIdOrServiceAreaIdOrLAIImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        CellGlobalIdOrServiceAreaIdOrLAIImpl copy = reader.read("cellGlobalIdOrServiceAreaIdOrLAI",
-                CellGlobalIdOrServiceAreaIdOrLAIImpl.class);
-
-        assertEquals(copy.getCellGlobalIdOrServiceAreaIdFixedLength().getMCC(), original
-                .getCellGlobalIdOrServiceAreaIdFixedLength().getMCC());
-        assertEquals(copy.getCellGlobalIdOrServiceAreaIdFixedLength().getMNC(), original
-                .getCellGlobalIdOrServiceAreaIdFixedLength().getMNC());
-        assertEquals(copy.getCellGlobalIdOrServiceAreaIdFixedLength().getLac(), original
-                .getCellGlobalIdOrServiceAreaIdFixedLength().getLac());
-        assertEquals(copy.getCellGlobalIdOrServiceAreaIdFixedLength().getCellIdOrServiceAreaCode(), original
-                .getCellGlobalIdOrServiceAreaIdFixedLength().getCellIdOrServiceAreaCode());
-
-        LAIFixedLengthImpl par2 = new LAIFixedLengthImpl(250, 1, 4444);
-        original = new CellGlobalIdOrServiceAreaIdOrLAIImpl(par2);
-
-        // Writes the area to a file.
-        baos = new ByteArrayOutputStream();
-        writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "cellGlobalIdOrServiceAreaIdOrLAI", CellGlobalIdOrServiceAreaIdOrLAIImpl.class);
-        writer.close();
-
-        rawData = baos.toByteArray();
-        serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        bais = new ByteArrayInputStream(rawData);
-        reader = XMLObjectReader.newInstance(bais);
-        copy = reader.read("cellGlobalIdOrServiceAreaIdOrLAI", CellGlobalIdOrServiceAreaIdOrLAIImpl.class);
-
-        assertEquals(copy.getLAIFixedLength().getMCC(), original.getLAIFixedLength().getMCC());
-        assertEquals(copy.getLAIFixedLength().getMNC(), original.getLAIFixedLength().getMNC());
-        assertEquals(copy.getLAIFixedLength().getLac(), original.getLAIFixedLength().getLac());
-    }*/
 }

@@ -53,8 +53,7 @@ public class ErrorCodeImpl implements ErrorCode {
 
 	public void setNationalErrorCode(Long nationalErrorCode) {
 		this.privateErrorCode=null;
-		this.nationalErrorCode=new ASNInteger();
-		this.nationalErrorCode.setValue(nationalErrorCode);		
+		this.nationalErrorCode=new ASNInteger(nationalErrorCode);		
 	}
 
 	public Long getPrivateErrorCode() {
@@ -66,8 +65,7 @@ public class ErrorCodeImpl implements ErrorCode {
 
 	public void setPrivateErrorCode(Long privateErrorCode) {
 		this.nationalErrorCode=null;
-		this.privateErrorCode = new ASNInteger();
-		this.privateErrorCode.setValue(privateErrorCode);
+		this.privateErrorCode = new ASNInteger(privateErrorCode);		
 	}
 
 	public ErrorCodeType getErrorType() {

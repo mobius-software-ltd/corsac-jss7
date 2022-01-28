@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
 *
 <code>
@@ -50,7 +52,7 @@ bound.&minCarrierLength ..bound.&maxCarrierLength))
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface Carrier {
 
-    byte[] getData();
+    ByteBuf getValue();
 
     // TODO: internal structure is not covered
 

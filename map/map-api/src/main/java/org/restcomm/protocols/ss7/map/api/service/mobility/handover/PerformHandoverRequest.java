@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
 import org.restcomm.protocols.ss7.map.api.service.mobility.MobilityMessage;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  MAP V1: PerformHandover ::= OPERATION --Timer s ARGUMENT performHO-Arg PerformHO-Arg RESULT performHO-Res PerformHO-Res
@@ -52,6 +54,6 @@ public interface PerformHandoverRequest extends MobilityMessage {
 
     HandoverPriority getHandoverPriority();
 
-    byte[] getKc();
+    ByteBuf getKc();
 
 }

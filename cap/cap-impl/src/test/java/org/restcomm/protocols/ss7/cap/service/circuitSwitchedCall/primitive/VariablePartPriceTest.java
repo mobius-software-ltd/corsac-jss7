@@ -101,29 +101,4 @@ public class VariablePartPriceTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        VariablePartPriceImpl original = new VariablePartPriceImpl(345.2);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "variablePartPrice", VariablePartPriceImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        VariablePartPriceImpl copy = reader.read("variablePartPrice", VariablePartPriceImpl.class);
-
-        assertEquals(copy.getPriceIntegerPart(), original.getPriceIntegerPart());
-        assertEquals(copy.getPriceHundredthPart(), original.getPriceHundredthPart());
-    }*/
 }

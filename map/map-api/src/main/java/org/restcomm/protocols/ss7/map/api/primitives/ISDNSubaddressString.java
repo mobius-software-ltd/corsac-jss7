@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.map.api.primitives;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  ISDN-SubaddressString ::= OCTET STRING (SIZE (1..21)) -- This type is used to represent ISDN subaddresses. -- It is composed
@@ -57,6 +59,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface ISDNSubaddressString {
 
-    byte[] getData();
+	ByteBuf getValue();
 
 }

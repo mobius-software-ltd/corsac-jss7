@@ -43,8 +43,6 @@ BackwardCallIndicators ::= OCTET STRING (SIZE(2))
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface BackwardCallIndicatorsIsup {
 
-    byte[] getData();
-
     BackwardCallIndicators getBackwardCallIndicators() throws APPException;
 
 }

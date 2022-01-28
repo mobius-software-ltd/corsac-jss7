@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus;
 
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.PointCodeAndSSN;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,14 +35,17 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class PointCodeAndSSNImpl extends ASNOctetString implements PointCodeAndSSN {
+public class PointCodeAndSSNImpl extends ASNOctetString2 implements PointCodeAndSSN {
 	public PointCodeAndSSNImpl() {
     }
 
-    public PointCodeAndSSNImpl(Integer spc,Integer ssn) {
+	public PointCodeAndSSNImpl(Integer spc,Integer ssn) {
+		super(translate(spc, ssn));
+	}
+	
+    public static ByteBuf translate(Integer spc,Integer ssn) {
     	if(spc!=null || ssn!=null) {
-    		byte[] value=new byte[3];
-    		ByteBuf result=Unpooled.wrappedBuffer(value);
+    		ByteBuf result=Unpooled.buffer(3);
     		if(spc!=null)
     			result.writeShort(spc);
     		else
@@ -51,8 +54,10 @@ public class PointCodeAndSSNImpl extends ASNOctetString implements PointCodeAndS
     		if(ssn!=null)
     			result.writeByte(ssn);
     		
-    		setValue(Unpooled.wrappedBuffer(value));    	
+    		return result;    	
     	}
+    	
+    	return null;
     }
 
     public Integer getSPC() {

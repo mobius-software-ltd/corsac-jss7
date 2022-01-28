@@ -32,6 +32,7 @@ import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.CAPServiceBase;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CAPDialogCircuitSwitchedCall;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CancelRequest;
+import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.InitialDPRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.SpecializedResourceReportRequest;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.EventSpecificInformationBCSM;
@@ -158,7 +159,8 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         else
         	customTimeout = customInvokeTimeout;
         
-        InitialDPRequestImpl req = new InitialDPRequestImpl(serviceKey, calledPartyNumber, callingPartyNumber,
+        //doesnt really matter which one to create, both supported for encoding
+        InitialDPRequest req = new InitialDPRequestV3Impl(serviceKey, calledPartyNumber, callingPartyNumber,
                 callingPartysCategory, CGEncountered, IPSSPCapabilities, locationNumber, originalCalledPartyID, extensions,
                 highLayerCompatibility, additionalCallingPartyNumber, bearerCapability, eventTypeBCSM, redirectingPartyID,
                 redirectionInformation, cause, serviceInteractionIndicatorsTwo, carrier, cugIndex, cugInterlock,

@@ -30,10 +30,10 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.HTRInformation;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:08:17:06 2009-04-06<br>
@@ -61,12 +61,12 @@ public class HTRInformationImpl extends AbstractNAINumber implements HTRInformat
     /*
      * (non-Javadoc)
      *
-     * @seeorg.restcomm.isup.parameters.AbstractNumber#decodeBody(java.io. ByteArrayInputStream)
+     * @seeorg.restcomm.isup.parameters.AbstractNumber#decodeBody(io.netty.buffer.ByteBuf)
      */
 
     public void decodeBody(ByteBuf buffer) throws IllegalArgumentException, ParameterException {
     	if(buffer.readableBytes()==0) {
-    		throw new ParameterException("byte[] must  not be null and length must  be greater than 0");
+    		throw new ParameterException("buffer must  not be null and length must  be greater than 0");
     	}
     	
         int b = buffer.readByte() & 0xff;
@@ -76,7 +76,7 @@ public class HTRInformationImpl extends AbstractNAINumber implements HTRInformat
     /*
      * (non-Javadoc)
      *
-     * @seeorg.restcomm.isup.parameters.AbstractNumber#encodeBody(java.io. ByteArrayOutputStream)
+     * @seeorg.restcomm.isup.parameters.AbstractNumber#encodeBody(io.netty.buffer.ByteBuf)
      */
 
     public void encodeBody(ByteBuf buffer) {

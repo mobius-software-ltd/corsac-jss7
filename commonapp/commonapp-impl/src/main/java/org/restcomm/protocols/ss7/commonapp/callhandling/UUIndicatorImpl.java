@@ -36,7 +36,7 @@ public class UUIndicatorImpl extends ASNSingleByte implements UUIndicator {
     }
 
     public UUIndicatorImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public Integer getData() {

@@ -39,15 +39,15 @@ public class AlertingPatternImpl extends ASNSingleByte implements AlertingPatter
     }
 
     public AlertingPatternImpl(int data) {
-    	setValue(data);
+    	super(data);
     }
 
     public AlertingPatternImpl(AlertingLevel alertingLevel) {
-    	setValue(alertingLevel.getLevel());
+    	super(alertingLevel.getLevel());
     }
 
     public AlertingPatternImpl(AlertingCategory alertingCategory) {
-    	setValue(alertingCategory.getCategory());
+    	super(alertingCategory.getCategory());
     }
 
     public Integer getData() {

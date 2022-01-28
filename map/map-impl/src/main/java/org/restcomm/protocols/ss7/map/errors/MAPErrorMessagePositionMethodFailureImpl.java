@@ -50,8 +50,7 @@ public class MAPErrorMessagePositionMethodFailureImpl extends MAPErrorMessageImp
     		MAPExtensionContainer extensionContainer) {
         super((long) MAPErrorCode.positionMethodFailure);
 
-        this.positionMethodFailureDiagnostic = new ASNPositionMethodFailureDiagnosticImpl();
-        this.positionMethodFailureDiagnostic.setType(positionMethodFailureDiagnostic);
+        this.positionMethodFailureDiagnostic = new ASNPositionMethodFailureDiagnosticImpl(positionMethodFailureDiagnostic);
         this.extensionContainer = extensionContainer;
     }
 
@@ -81,10 +80,8 @@ public class MAPErrorMessagePositionMethodFailureImpl extends MAPErrorMessageImp
     public void setPositionMethodFailureDiagnostic(PositionMethodFailureDiagnostic positionMethodFailureDiagnostic) {
     	if(positionMethodFailureDiagnostic==null)
     		this.positionMethodFailureDiagnostic=null;
-    	else {
-    		this.positionMethodFailureDiagnostic = new ASNPositionMethodFailureDiagnosticImpl();
-    		this.positionMethodFailureDiagnostic.setType(positionMethodFailureDiagnostic);
-    	}
+    	else
+    		this.positionMethodFailureDiagnostic = new ASNPositionMethodFailureDiagnosticImpl(positionMethodFailureDiagnostic);    	
     }
 
     public void setExtensionContainer(MAPExtensionContainer extensionContainer) {

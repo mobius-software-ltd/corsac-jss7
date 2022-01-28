@@ -40,30 +40,19 @@ public class TraceTypeImpl extends ASNSingleByte implements TraceType {
     }
 
     public TraceTypeImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public TraceTypeImpl(BssRecordType bssRecordType, MscRecordType mscRecordType, TraceTypeInvokingEvent traceTypeInvokingEvent, boolean priorityIndication) {
-        int mscRecordTypeInt = 3;
-        if (mscRecordType != null)
-            mscRecordTypeInt = mscRecordType.getCode();
-        int bssRecordTypeInt = 3;
-        if (bssRecordType != null)
-            bssRecordTypeInt = bssRecordType.getCode();
-        int traceTypeInvokingEventInt = 0;
-        if (traceTypeInvokingEvent != null)
-            traceTypeInvokingEventInt = traceTypeInvokingEvent.getCode();
-        setValue(((bssRecordTypeInt << 4) | (mscRecordTypeInt << 2) | traceTypeInvokingEventInt | (priorityIndication ? 0x80 : 0x00)));
+        this(bssRecordType==null?3:bssRecordType.getCode(),mscRecordType==null?3:mscRecordType.getCode(),traceTypeInvokingEvent==null?0:traceTypeInvokingEvent.getCode(),priorityIndication);
     }
 
-    public TraceTypeImpl(HlrRecordType hlrRecordType, TraceTypeInvokingEvent traceTypeInvokingEvent, boolean priorityIndication) {
-        int hlrRecordTypeInt = 3;
-        if (hlrRecordType != null)
-            hlrRecordTypeInt = hlrRecordType.getCode();
-        int traceTypeInvokingEventInt = 0;
-        if (traceTypeInvokingEvent != null)
-            traceTypeInvokingEventInt = traceTypeInvokingEvent.getCode();
-        setValue(((hlrRecordTypeInt << 2) | traceTypeInvokingEventInt | (priorityIndication ? 0x80 : 0x00)));
+    public TraceTypeImpl(HlrRecordType hlrRecordType, TraceTypeInvokingEvent traceTypeInvokingEvent, boolean priorityIndication) {    	
+    	this(0,hlrRecordType==null?3:hlrRecordType.getCode(),traceTypeInvokingEvent==null?0:traceTypeInvokingEvent.getCode(),priorityIndication);    	
+    }
+    
+    private TraceTypeImpl(int bssrecordType,int mscRecordType,int traceType,boolean priorityIndication) {
+    	super(((bssrecordType << 4) | (mscRecordType << 2) | traceType | (priorityIndication ? 0x80 : 0x00)));
     }
 
 

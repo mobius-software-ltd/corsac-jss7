@@ -4,7 +4,7 @@ import org.restcomm.protocols.ss7.inap.api.charging.EventTypeCharging;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 
 /*
@@ -32,17 +32,20 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 *
 */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
-public class ASNEventTypeCharging extends ASNInteger {
-	public void setType(EventTypeCharging t) {
-		if(t!=null)
-			setValue((long)t.getCode());
+public class ASNEventTypeCharging extends ASNEnumerated {
+	public ASNEventTypeCharging() {
+		
+	}
+	
+	public ASNEventTypeCharging(EventTypeCharging t) {
+		super(t.getCode());
 	}
 	
 	public EventTypeCharging getType() {
-		Long realValue=getValue();
+		Integer realValue=getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return EventTypeCharging.getInstance(realValue.intValue());
+		return EventTypeCharging.getInstance(realValue);
 	}
 }

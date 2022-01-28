@@ -55,13 +55,10 @@ public class ResetTimerSMSRequestImpl extends SmsMessageImpl implements ResetTim
     public ResetTimerSMSRequestImpl(TimerID timerID, int timerValue, CAPINAPExtensions extensions) {
         super();
         
-        if(timerID!=null) {
-        	this.timerID = new ASNTimerID();
-        	this.timerID.setType(timerID);
-        }
-        
-        this.timerValue = new ASNInteger();
-        this.timerValue.setValue(Long.valueOf(timerValue));
+        if(timerID!=null)
+        	this.timerID = new ASNTimerID(timerID);
+        	
+        this.timerValue = new ASNInteger(timerValue);
         this.extensions = extensions;
     }
 
@@ -82,7 +79,7 @@ public class ResetTimerSMSRequestImpl extends SmsMessageImpl implements ResetTim
     	if(this.timerValue==null || this.timerValue.getValue()==null)
     		return 0;
     	
-        return this.timerValue.getValue().intValue();
+        return this.timerValue.getIntValue();
     }
 
     @Override

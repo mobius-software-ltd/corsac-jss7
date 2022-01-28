@@ -48,15 +48,13 @@ public class MAPErrorMessageSsErrorStatusImpl extends MAPErrorMessageImpl implem
     public MAPErrorMessageSsErrorStatusImpl(int data) {
         super((long) MAPErrorCode.ssErrorStatus);
 
-        this.data = new ASNSingleByte();
-        this.data.setValue(data);
+        this.data = new ASNSingleByte(data);        
     }
 
     public MAPErrorMessageSsErrorStatusImpl(boolean qBit, boolean pBit, boolean rBit, boolean aBit) {
         super((long) MAPErrorCode.ssErrorStatus);
 
-        this.data = new ASNSingleByte();
-        this.data.setValue((qBit ? _mask_QBit : 0) + (pBit ? _mask_PBit : 0) + (rBit ? _mask_RBit : 0) + (aBit ? _mask_ABit : 0));
+        this.data = new ASNSingleByte((qBit ? _mask_QBit : 0) + (pBit ? _mask_PBit : 0) + (rBit ? _mask_RBit : 0) + (aBit ? _mask_ABit : 0));        
     }
 
     public MAPErrorMessageSsErrorStatusImpl() {
@@ -102,7 +100,7 @@ public class MAPErrorMessageSsErrorStatusImpl extends MAPErrorMessageImpl implem
 
     @Override
     public void setData(int val) {
-    	this.data.setValue(val);
+    	this.data=new ASNSingleByte(val);
     }
 
     @Override

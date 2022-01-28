@@ -74,39 +74,4 @@ public class RedirectionInformationInapTest {
         data.readBytes(encodedData);        
         assertTrue(Arrays.equals(encodedData, this.getData()));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "isup" })
-    public void testXMLSerialize() throws Exception {
-
-        RedirectionInformationImpl prim = new RedirectionInformationImpl(RedirectionInformation._RI_CALL_D,
-                RedirectionInformation._ORR_NO_REPLY, 4, RedirectionInformation._RI_CALL_REROUTED);
-        RedirectionInformationInapImpl original = new RedirectionInformationInapImpl(prim);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "redirectionInformationInap", RedirectionInformationInapImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        RedirectionInformationInapImpl copy = reader.read("redirectionInformationInap", RedirectionInformationInapImpl.class);
-
-        assertEquals(copy.getRedirectionInformation().getRedirectingIndicator(), original.getRedirectionInformation()
-                .getRedirectingIndicator());
-        assertEquals(copy.getRedirectionInformation().getOriginalRedirectionReason(), original.getRedirectionInformation()
-                .getOriginalRedirectionReason());
-        assertEquals(copy.getRedirectionInformation().getRedirectionCounter(), original.getRedirectionInformation()
-                .getRedirectionCounter());
-        assertEquals(copy.getRedirectionInformation().getRedirectionReason(), original.getRedirectionInformation()
-                .getRedirectionReason());
-
-    }*/
 }

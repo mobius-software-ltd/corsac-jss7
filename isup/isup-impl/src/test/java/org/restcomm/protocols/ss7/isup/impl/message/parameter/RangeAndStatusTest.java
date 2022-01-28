@@ -32,15 +32,16 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 
 /**
  * Start time:14:11:03 2009-04-23<br>
@@ -64,7 +65,7 @@ public class RangeAndStatusTest extends ParameterHarness {
         RangeAndStatusImpl bci = new RangeAndStatusImpl(getBody((byte) 12, new byte[] { 0x0F, 0x04 }));
         // not a best here. ech.
         String[] methodNames = { "getRange", "getStatus", };
-        Object[] expectedValues = { (byte) 12, new byte[] { 0x0F, 0x04 } };
+        Object[] expectedValues = { (byte) 12, Unpooled.wrappedBuffer(new byte[] { 0x0F, 0x04 })};
         super.testValues(bci, methodNames, expectedValues);
     }
 
@@ -94,8 +95,8 @@ public class RangeAndStatusTest extends ParameterHarness {
         assertTrue(!bci.isAffected((byte) 10));
         assertTrue(bci.isAffected((byte) 9));
 
-        byte[] stat = bci.getStatus();
-        assertTrue(Arrays.equals(new byte[] { 0x0F, 0x02 }, stat));
+        ByteBuf stat = bci.getStatus();
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(new byte[] { 0x0F, 0x02 }), stat));
     }
 
     private ByteBuf getBody(byte rannge, byte[] enabled) throws IOException {

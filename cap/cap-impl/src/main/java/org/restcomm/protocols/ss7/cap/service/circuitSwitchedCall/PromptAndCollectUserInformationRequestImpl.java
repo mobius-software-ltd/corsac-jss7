@@ -76,25 +76,19 @@ public class PromptAndCollectUserInformationRequestImpl extends CircuitSwitchedC
     	if(collectedInfo!=null)
     		this.collectedInfo = new CollectedInfoWrapperImpl(collectedInfo);
     	
-    	if(disconnectFromIPForbidden!=null) {
-    		this.disconnectFromIPForbidden = new ASNBoolean();
-    		this.disconnectFromIPForbidden.setValue(disconnectFromIPForbidden);
-    	}
-    	
+    	if(disconnectFromIPForbidden!=null)
+    		this.disconnectFromIPForbidden = new ASNBoolean(disconnectFromIPForbidden);
+    		
     	if(informationToSend!=null)
     		this.informationToSend = new InformationToSendWrapperImpl(informationToSend);
     	
         this.extensions = extensions;
         
-        if(callSegmentID!=null) {
-        	this.callSegmentID = new ASNInteger();
-        	this.callSegmentID.setValue(callSegmentID.longValue());
-        }
-        
-        if(requestAnnouncementStartedNotification!=null) {
-        	this.requestAnnouncementStartedNotification = new ASNBoolean();
-        	this.requestAnnouncementStartedNotification.setValue(requestAnnouncementStartedNotification);
-        }
+        if(callSegmentID!=null)
+        	this.callSegmentID = new ASNInteger(callSegmentID);
+        	
+        if(requestAnnouncementStartedNotification!=null)
+        	this.requestAnnouncementStartedNotification = new ASNBoolean(requestAnnouncementStartedNotification);        	
     }
 
     @Override
@@ -138,10 +132,10 @@ public class PromptAndCollectUserInformationRequestImpl extends CircuitSwitchedC
 
     @Override
     public Integer getCallSegmentID() {
-    	if(callSegmentID==null || callSegmentID.getValue()==null)
+    	if(callSegmentID==null)
     		return null;
     	
-        return callSegmentID.getValue().intValue();
+        return callSegmentID.getIntValue();
     }
 
     @Override

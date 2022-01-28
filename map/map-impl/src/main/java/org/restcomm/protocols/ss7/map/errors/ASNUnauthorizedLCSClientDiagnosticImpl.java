@@ -8,15 +8,19 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,lengthIndefinite=false)
 public class ASNUnauthorizedLCSClientDiagnosticImpl extends ASNEnumerated {
-	public void setType(UnauthorizedLCSClientDiagnostic t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNUnauthorizedLCSClientDiagnosticImpl() {
+		
+	}
+	
+	public ASNUnauthorizedLCSClientDiagnosticImpl(UnauthorizedLCSClientDiagnostic t) {
+		super(t.getCode());
 	}
 	
 	public UnauthorizedLCSClientDiagnostic getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return UnauthorizedLCSClientDiagnostic.getInstance(getValue().intValue());
+		return UnauthorizedLCSClientDiagnostic.getInstance(realValue);
 	}
 }

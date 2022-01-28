@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
 import java.io.Serializable;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  Codec ::= OCTET STRING (SIZE (1..4))
@@ -37,6 +39,5 @@ import java.io.Serializable;
  */
 public interface Codec extends Serializable {
 
-    byte[] getData();
-
+	ByteBuf getValue();
 }

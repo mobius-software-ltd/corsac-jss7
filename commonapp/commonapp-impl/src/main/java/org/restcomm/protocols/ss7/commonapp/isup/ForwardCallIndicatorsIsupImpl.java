@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ForwardCallIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,38 +39,24 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class ForwardCallIndicatorsIsupImpl extends ASNOctetString implements ForwardCallIndicatorsIsup {
+public class ForwardCallIndicatorsIsupImpl extends ASNOctetString2 implements ForwardCallIndicatorsIsup {
 	public ForwardCallIndicatorsIsupImpl() {
     }
 
-    public ForwardCallIndicatorsIsupImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public ForwardCallIndicatorsIsupImpl(ForwardCallIndicators forwardCallIndicators) throws APPException {
-        setForwardCallIndicators(forwardCallIndicators);
+        super(translate(forwardCallIndicators));
     }
 
-    public void setForwardCallIndicators(ForwardCallIndicators forwardCallIndicators) throws APPException {
+    public static ByteBuf translate(ForwardCallIndicators forwardCallIndicators) throws APPException {
         if (forwardCallIndicators == null)
             throw new APPException("The forwardCallIndicators parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((ForwardCallIndicatorsImpl) forwardCallIndicators).encode(buffer);
-            setValue(buffer);
+        	return buffer;
         } catch (ParameterException e) {
             throw new APPException("ParameterException when encoding originalCalledNumber: " + e.getMessage(), e);
         }
-    }
-
-    public byte[] getData() {
-    	ByteBuf buffer=getValue();
-    	if(buffer==null)
-    		return null;
-    	
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
-        return data;
     }
 
     public ForwardCallIndicators getForwardCallIndicators() throws APPException {
@@ -91,10 +77,9 @@ public class ForwardCallIndicatorsIsupImpl extends ASNOctetString implements For
         StringBuilder sb = new StringBuilder();
         sb.append("ForwardCallIndicatorsIsup [");
 
-        byte[] data=this.getData();
-        if (data != null) {
+        if (getValue() != null) {
             sb.append("data=[");
-            sb.append(printDataArr(data));
+            sb.append(printDataArr());
             sb.append("]");
             try {
                 ForwardCallIndicators fci = this.getForwardCallIndicators();

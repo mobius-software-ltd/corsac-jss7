@@ -36,7 +36,7 @@ public class NAOliInfoImpl extends ASNSingleByte implements NAOliInfo {
     }
 
     public NAOliInfoImpl(int data) {
-    	setValue(data);
+    	super(data);
     }
 
     public int getData() {

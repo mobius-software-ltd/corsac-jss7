@@ -48,9 +48,10 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -96,7 +97,7 @@ public class TcQueryTest {
         TCQueryMessage tcm = (TCQueryMessage)result.getResult();
 
         assertTrue(tcm.getDialogTermitationPermission());
-        assertEquals(tcm.getOriginatingTransactionId(), trId);
+        assertTrue(ByteBufUtil.equals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(trId)));
         assertNull(tcm.getDialogPortion());
         assertEquals(tcm.getComponent().getComponents().size(), 1);
         WrappedComponent cmp = tcm.getComponent().getComponents().get(0);
@@ -106,8 +107,8 @@ public class TcQueryTest {
         assertEquals((long) inv.getInvokeId(), 0);
         assertNull(inv.getCorrelationId());
         assertEquals(inv.getOperationCode().getPrivateOperationCode(), new Long(2357L));
-        assertTrue(inv.getParameter() instanceof ASNOctetString);
-        UserInformationElementTest.byteBufEquals(((ASNOctetString)inv.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
+        assertTrue(inv.getParameter() instanceof ASNOctetString2);
+        UserInformationElementTest.byteBufEquals(((ASNOctetString2)inv.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
 
         // 2
         result=parser.decode(Unpooled.wrappedBuffer(this.data2));
@@ -115,7 +116,7 @@ public class TcQueryTest {
         tcm = (TCQueryMessage)result.getResult();
 
         assertFalse(tcm.getDialogTermitationPermission());
-        assertEquals(tcm.getOriginatingTransactionId(), trId2);
+        assertTrue(ByteBufUtil.equals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(trId2)));
         DialogPortion dp = tcm.getDialogPortion();
         ProtocolVersion pv = dp.getProtocolVersion();
         assertTrue(pv.isT1_114_1996Supported());
@@ -131,7 +132,7 @@ public class TcQueryTest {
         assertEquals(cmp.getType(), ComponentType.ReturnResultLast);
         Return rrl = cmp.getReturnResultLast();
         assertEquals((long)rrl.getCorrelationId(), 1);
-        ASNOctetString p = (ASNOctetString)rrl.getParameter();
+        ASNOctetString2 p = (ASNOctetString2)rrl.getParameter();
         UserInformationElementTest.byteBufEquals(p.getValue(), Unpooled.wrappedBuffer(parData2));
 
         cmp = tcm.getComponent().getComponents().get(1);
@@ -148,7 +149,7 @@ public class TcQueryTest {
         tcm = (TCQueryMessage)result.getResult();
 
         assertFalse(tcm.getDialogTermitationPermission());
-        assertEquals(tcm.getOriginatingTransactionId(), trId2);
+        assertTrue(ByteBufUtil.equals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(trId2)));
         dp = tcm.getDialogPortion();
         assertNull(dp.getProtocolVersion());
         ac = dp.getApplicationContext();        
@@ -175,12 +176,11 @@ public class TcQueryTest {
         inv.setInvokeId(0L);
         OperationCode oc = TcapFactory.createPrivateOperationCode(2357L);        
         inv.setOperationCode(oc);
-        ASNOctetString p=new ASNOctetString();
-        p.setValue(Unpooled.wrappedBuffer(parData));
+        ASNOctetString2 p=new ASNOctetString2(Unpooled.wrappedBuffer(parData));
         inv.setSetParameter(p);
 
         TCQueryMessage tcm = TcapFactory.createTCQueryMessage(true);
-        tcm.setOriginatingTransactionId(trId);
+        tcm.setOriginatingTransactionId(Unpooled.wrappedBuffer(trId));
         ComponentPortionImpl cp=new ComponentPortionImpl();
         cp.setComponents(cc);
         tcm.setComponent(cp);
@@ -196,8 +196,7 @@ public class TcQueryTest {
         component.setReturnResultLast(rr);
         cc.add(component);
         rr.setCorrelationId(1L);
-        p=new ASNOctetString();
-        p.setValue(Unpooled.wrappedBuffer(parData2));
+        p=new ASNOctetString2(Unpooled.wrappedBuffer(parData2));
         rr.setSetParameter(p);
         ReturnError re = TcapFactory.createComponentReturnError();
         component=new WrappedComponentImpl();
@@ -209,7 +208,7 @@ public class TcQueryTest {
         re.setSetParameter(null);
 
         tcm = TcapFactory.createTCQueryMessage(false);
-        tcm.setOriginatingTransactionId(trId2);
+        tcm.setOriginatingTransactionId(Unpooled.wrappedBuffer(trId2));
         cp=new ComponentPortionImpl();
         cp.setComponents(cc);
         tcm.setComponent(cp);
@@ -227,7 +226,7 @@ public class TcQueryTest {
 
         // 3
         tcm = TcapFactory.createTCQueryMessage(false);
-        tcm.setOriginatingTransactionId(trId2);
+        tcm.setOriginatingTransactionId(Unpooled.wrappedBuffer(trId2));
         
         dp = TcapFactory.createDialogPortion();
         ac = TcapFactory.createApplicationContext(66);

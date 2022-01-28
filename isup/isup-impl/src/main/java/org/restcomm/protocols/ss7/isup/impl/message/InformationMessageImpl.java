@@ -28,8 +28,6 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.Map;
 import java.util.Set;
 
@@ -47,6 +45,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.MessageName;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageType;
 import org.restcomm.protocols.ss7.isup.message.parameter.NetworkSpecificFacility;
 import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityInformation;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:23:59:59 2009-09-06<br>
@@ -140,7 +140,7 @@ public class InformationMessageImpl extends ISUPMessageImpl implements Informati
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryParameters (byte[], int)
+     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryParameters (ByteBuf, int)
      */
     protected void decodeMandatoryParameters(ISUPParameterFactory parameterFactory, ByteBuf b)
             throws ParameterException {
@@ -158,14 +158,14 @@ public class InformationMessageImpl extends ISUPMessageImpl implements Informati
                 throw new ParameterException("Failed to parse BackwardCallIndicators due to: ", e);
             }
         } else {
-            throw new IllegalArgumentException("byte[] must have atleast 2 octets");
+            throw new IllegalArgumentException("buffer must have atleast 2 readable octets");
         }
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryVariableBody (byte[], int)
+     * @see org.restcomm.protocols.ss7.isup.ISUPMessageImpl#decodeMandatoryVariableBody (ByteBuf, int)
      */
 
     protected void decodeMandatoryVariableBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, int parameterIndex)

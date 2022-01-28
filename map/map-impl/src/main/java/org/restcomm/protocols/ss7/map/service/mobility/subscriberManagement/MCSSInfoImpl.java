@@ -61,10 +61,8 @@ public class MCSSInfoImpl implements MCSSInfo {
     public MCSSInfoImpl(SSCode ssCode, ExtSSStatus ssStatus, int nbrSB, int nbrUser, MAPExtensionContainer extensionContainer) {
         this.ssCode = ssCode;
         this.ssStatus = ssStatus;
-        this.nbrSB = new ASNInteger();
-        this.nbrSB.setValue((long)nbrSB & 0x0FFFFFFFFL);
-        this.nbrUser = new ASNInteger();
-        this.nbrUser.setValue((long)nbrUser & 0x0FFFFFFFFL);
+        this.nbrSB = new ASNInteger(nbrSB);
+        this.nbrUser = new ASNInteger(nbrUser);
         this.extensionContainer = extensionContainer;
     }
 
@@ -77,17 +75,17 @@ public class MCSSInfoImpl implements MCSSInfo {
     }
 
     public int getNbrSB() {
-    	if(this.nbrSB==null)
+    	if(this.nbrSB==null || this.nbrSB.getValue()==null)
     		return 0;
     	
-        return this.nbrSB.getValue().intValue();
+        return this.nbrSB.getIntValue();
     }
 
     public int getNbrUser() {
-    	if(this.nbrUser==null)
+    	if(this.nbrUser==null || this.nbrUser.getValue()==null)
     		return 0;
     	
-        return this.nbrUser.getValue().intValue();
+        return this.nbrUser.getIntValue();
     }
 
     public MAPExtensionContainer getExtensionContainer() {

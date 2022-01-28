@@ -83,32 +83,4 @@ public class ForwardServiceInteractionIndTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
-    public void testXMLSerialize() throws Exception {
-
-        ForwardServiceInteractionIndImpl original = new ForwardServiceInteractionIndImpl(ConferenceTreatmentIndicator.rejectConferenceRequest,
-                CallDiversionTreatmentIndicator.callDiversionAllowed, CallingPartyRestrictionIndicator.presentationRestricted);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "forwardServiceInteractionInd", ForwardServiceInteractionIndImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        ForwardServiceInteractionIndImpl copy = reader.read("forwardServiceInteractionInd", ForwardServiceInteractionIndImpl.class);
-
-        assertEquals(original.getConferenceTreatmentIndicator(), copy.getConferenceTreatmentIndicator());
-        assertEquals(original.getCallDiversionTreatmentIndicator(), copy.getCallDiversionTreatmentIndicator());
-        assertEquals(original.getCallingPartyRestrictionIndicator(), copy.getCallingPartyRestrictionIndicator());
-    }*/
 }

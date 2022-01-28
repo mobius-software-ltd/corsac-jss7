@@ -53,8 +53,7 @@ public class ConfidentialityImpl implements Confidentiality {
     }
 
     public void setIntegerConfidentialityId(Long val) {
-        integerConfidentialityId = new ASNInteger();
-        integerConfidentialityId.setValue(val);
+        integerConfidentialityId = new ASNInteger(val);
         objectConfidentialityId = null;
     }
 
@@ -67,8 +66,7 @@ public class ConfidentialityImpl implements Confidentiality {
 
     public void setObjectConfidentialityId(List<Long> val) {
         integerConfidentialityId = null;
-        objectConfidentialityId = new ASNObjectIdentifier();
-        objectConfidentialityId.setValue(val);
+        objectConfidentialityId = new ASNObjectIdentifier(val);        
     }
 
     public String toString() {

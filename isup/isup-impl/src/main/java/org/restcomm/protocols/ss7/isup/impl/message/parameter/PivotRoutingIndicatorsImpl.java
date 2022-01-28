@@ -78,7 +78,7 @@ public class PivotRoutingIndicatorsImpl extends AbstractISUPParameter implements
 
     public void setPivotRoutingIndicators(ByteBuf pivotRoutingIndicators) {
         if (pivotRoutingIndicators == null || pivotRoutingIndicators.readableBytes() == 0) {
-            throw new IllegalArgumentException("byte[] must not be null and length must be greater than 0");
+            throw new IllegalArgumentException("buffer must not be null and length must be greater than 0");
         }
         this.pivotRoutingIndicators = pivotRoutingIndicators;
     }

@@ -42,6 +42,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -107,7 +108,7 @@ public class ServingNodeAddressTest {
         impl = (ServingNodeAddressImpl)result.getResult();
 
         DiameterIdentity di = impl.getMmeNumber();
-        assertTrue(Arrays.equals(di.getData(), getDataDiameterIdentity()));
+        assertTrue(ByteBufUtil.equals(di.getValue(),Unpooled.wrappedBuffer(getDataDiameterIdentity())));
         assertNull(impl.getMscNumber());
         assertNull(impl.getSgsnNumber());
     }
@@ -134,7 +135,7 @@ public class ServingNodeAddressTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        DiameterIdentityImpl di = new DiameterIdentityImpl(getDataDiameterIdentity());
+        DiameterIdentityImpl di = new DiameterIdentityImpl(Unpooled.wrappedBuffer(getDataDiameterIdentity()));
         data = getDataMme();
         impl = new ServingNodeAddressImpl(di);
         buffer=parser.encode(impl);

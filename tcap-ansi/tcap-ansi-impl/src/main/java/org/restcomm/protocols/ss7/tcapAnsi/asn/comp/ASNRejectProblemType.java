@@ -33,8 +33,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=21,constructed=false,lengthIndefinite=false)
 public class ASNRejectProblemType extends ASNEnumerated {
-	public void setType(RejectProblem t) {
-		super.setValue(t.getType());
+	public ASNRejectProblemType() {
+		
+	}
+	
+	public ASNRejectProblemType(RejectProblem t) {
+		super(t.getType());
 	}
 	
 	public RejectProblem getType() throws ParseException {

@@ -30,9 +30,9 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -42,16 +42,16 @@ import io.netty.buffer.Unpooled;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class EpcAvImpl implements EpcAv {
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-	private ASNOctetString rand;
+	private ASNOctetString2 rand;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
-	private ASNOctetString xres;
+	private ASNOctetString2 xres;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=2)
-	private ASNOctetString autn;
+	private ASNOctetString2 autn;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=3)
-	private ASNOctetString kasme;
+	private ASNOctetString2 kasme;
 	
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
 	private MAPExtensionContainer extensionContainer;
@@ -59,81 +59,49 @@ public class EpcAvImpl implements EpcAv {
     public EpcAvImpl() {
     }
 
-    public EpcAvImpl(byte[] rand, byte[] xres, byte[] autn, byte[] kasme, MAPExtensionContainer extensionContainer) {
+    public EpcAvImpl(ByteBuf rand, ByteBuf xres, ByteBuf autn, ByteBuf kasme, MAPExtensionContainer extensionContainer) {
 
-    	if(rand!=null) {
-    		this.rand = new ASNOctetString();
-    		this.rand.setValue(Unpooled.wrappedBuffer(rand));
-    	}
+    	if(rand!=null)
+    		this.rand = new ASNOctetString2(rand);
     	
-    	if(xres!=null) {
-    		this.xres = new ASNOctetString();
-    		this.xres.setValue(Unpooled.wrappedBuffer(xres));
-    	}
+    	if(xres!=null)
+    		this.xres = new ASNOctetString2(xres);
     	
-    	if(autn!=null) {
-    		this.autn = new ASNOctetString();
-    		this.autn.setValue(Unpooled.wrappedBuffer(autn));
-    	} 
+    	if(autn!=null)
+    		this.autn = new ASNOctetString2(autn);
     	
-    	if(kasme!=null) {
-    		this.kasme = new ASNOctetString();
-    		this.kasme.setValue(Unpooled.wrappedBuffer(kasme));
-    	}
+    	if(kasme!=null)
+    		this.kasme = new ASNOctetString2(kasme);
     	
         this.extensionContainer = extensionContainer;
     }
 
-    public byte[] getRand() {
+    public ByteBuf getRand() {
     	if(this.rand==null)
     		return null;
     	
-    	ByteBuf value=this.rand.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return this.rand.getValue();    	
     }
 
-    public byte[] getXres() {
+    public ByteBuf getXres() {
     	if(this.xres==null)
     		return null;
     	
-    	ByteBuf value=this.xres.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return this.xres.getValue();    	
     }
 
-    public byte[] getAutn() {
+    public ByteBuf getAutn() {
     	if(this.autn==null)
     		return null;
     	
-    	ByteBuf value=this.autn.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return this.autn.getValue();    	
     }
 
-    public byte[] getKasme() {
+    public ByteBuf getKasme() {
     	if(this.kasme==null)
     		return null;
     	
-    	ByteBuf value=this.kasme.getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return this.kasme.getValue();    	
     }
 
     public MAPExtensionContainer getExtensionContainer() {

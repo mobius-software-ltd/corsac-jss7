@@ -48,15 +48,11 @@ public class BackwardServiceInteractionIndImpl implements BackwardServiceInterac
 
     public BackwardServiceInteractionIndImpl(ConferenceTreatmentIndicator conferenceTreatmentIndicator,
             CallCompletionTreatmentIndicator callCompletionTreatmentIndicator) {
-    	if(conferenceTreatmentIndicator!=null) {
-    		this.conferenceTreatmentIndicator = new ASNConferenceTreatmentIndicatorImpl();
-    		this.conferenceTreatmentIndicator.setType(conferenceTreatmentIndicator);
-    	}
-    	
-    	if(callCompletionTreatmentIndicator!=null) {
-    		this.callCompletionTreatmentIndicator = new ASNCallCompletionTreatmentIndicatorImpl();
-    		this.callCompletionTreatmentIndicator.setType(callCompletionTreatmentIndicator);
-    	}
+    	if(conferenceTreatmentIndicator!=null)
+    		this.conferenceTreatmentIndicator = new ASNConferenceTreatmentIndicatorImpl(conferenceTreatmentIndicator);
+    		
+    	if(callCompletionTreatmentIndicator!=null)
+    		this.callCompletionTreatmentIndicator = new ASNCallCompletionTreatmentIndicatorImpl(callCompletionTreatmentIndicator);    		
     }
 
     public ConferenceTreatmentIndicator getConferenceTreatmentIndicator() {

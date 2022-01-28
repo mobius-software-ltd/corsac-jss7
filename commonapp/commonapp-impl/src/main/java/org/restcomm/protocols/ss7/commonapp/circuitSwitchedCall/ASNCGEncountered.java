@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CGEncountere
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNCGEncountered extends ASNEnumerated {
-	public void setType(CGEncountered t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNCGEncountered() {
+		
+	}
+	
+	public ASNCGEncountered(CGEncountered t) {
+		super(t.getCode());
 	}
 	
 	public CGEncountered getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return CGEncountered.getInstance(getValue().intValue());
+		return CGEncountered.getInstance(realValue);
 	}
 }

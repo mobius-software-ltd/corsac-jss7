@@ -21,6 +21,8 @@
  */
 package org.restcomm.protocols.ss7.inap.api.errors;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  Currently used solely for CS1+
@@ -57,5 +59,5 @@ package org.restcomm.protocols.ss7.inap.api.errors;
  *
  */
 public interface INAPErrorMessageOctetString extends INAPErrorMessage {
-   byte[] getData();
+   ByteBuf getValue();
 }

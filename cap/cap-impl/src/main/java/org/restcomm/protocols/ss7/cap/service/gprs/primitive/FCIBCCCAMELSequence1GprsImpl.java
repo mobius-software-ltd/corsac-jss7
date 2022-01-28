@@ -55,10 +55,8 @@ public class FCIBCCCAMELSequence1GprsImpl implements FCIBCCCAMELSequence1Gprs {
         this.freeFormatData = freeFormatData;
         this.pdpID = pdpID;
         
-        if(appendFreeFormatData!=null) {
-        	this.appendFreeFormatData = new ASNAppendFreeFormatData();
-        	this.appendFreeFormatData.setType(appendFreeFormatData);
-        }
+        if(appendFreeFormatData!=null)
+        	this.appendFreeFormatData = new ASNAppendFreeFormatData(appendFreeFormatData);        	
     }
 
     public FreeFormatDataGprs getFreeFormatData() {

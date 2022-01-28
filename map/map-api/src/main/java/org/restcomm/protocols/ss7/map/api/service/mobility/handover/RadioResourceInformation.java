@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.handover;
 
 import java.io.Serializable;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  RadioResourceInformation ::= OCTET STRING (SIZE (3..13)) -- Octets are coded according the Channel Type information element
@@ -35,6 +37,5 @@ import java.io.Serializable;
  */
 public interface RadioResourceInformation extends Serializable {
 
-    byte[] getData();
-
+	ByteBuf getValue();
 }

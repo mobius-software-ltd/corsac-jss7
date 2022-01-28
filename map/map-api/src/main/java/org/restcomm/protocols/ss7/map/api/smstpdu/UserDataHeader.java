@@ -41,13 +41,13 @@ public interface UserDataHeader {
 
     void getEncodedData(ByteBuf buf);
 
-    Map<Integer, byte[]> getAllData();
+    Map<Integer, ByteBuf> getAllData();
 
-    void addInformationElement(int informationElementIdentifier, byte[] encodedData);
+    void addInformationElement(int informationElementIdentifier, ByteBuf encodedData);
 
     void addInformationElement(UserDataHeaderElement informationElement);
 
-    byte[] getInformationElementData(int informationElementIdentifier);
+    ByteBuf getInformationElementData(int informationElementIdentifier);
 
     NationalLanguageLockingShiftIdentifier getNationalLanguageLockingShift();
 

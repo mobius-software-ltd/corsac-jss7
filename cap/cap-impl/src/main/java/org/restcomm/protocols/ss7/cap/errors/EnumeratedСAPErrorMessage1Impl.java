@@ -54,9 +54,7 @@ public abstract class EnumeratedСAPErrorMessage1Impl extends CAPErrorMessageImp
 
     protected void setValue(Long value) {
     	if(this.value==null)
-    		this.value=new ASNEnumerated();
-    	
-		this.value.setValue(value);
+    		this.value=new ASNEnumerated(value);    	
 	}
 	
     public Long getErrorCode() {

@@ -38,10 +38,13 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NAEACIC;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationPlanValue;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationTypeValue;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.LocationInformation;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.SubscriberState;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.SubscriberStateChoice;
+import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBasicServiceCode;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBearerServiceCode;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.SupportedCamelPhases;
@@ -92,6 +95,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /*
@@ -128,7 +132,7 @@ public class SendRoutingInformationResponseTest {
     }
 
     private byte[] getData3() {
-        return new byte[] { -93, -126, 1, 94, -119, 8, 16, 33, 2, 2, 16, -119, 34, -9, 48, 12, -123, 7, -111, -105, 114, 99, 80, 24, -7, -122, 1, 36, -93, 49, 4, 4, 1, 2, 3, 4, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -122, 0, -89, 50, -96, 44, 2, 1, 1, -128, 8, 16, 0, 0, 0, 0, 0, 0, 0, -127, 7, -111, -105, 114, 99, 80, 24, -7, -93, 9, -128, 7, 39, -12, 67, 121, -98, 41, -96, -122, 7, -111, -105, 114, 99, 80, 24, -7, -119, 0, -95, 2, -128, 0, -95, 3, 4, 1, 96, -91, 3, -126, 1, 22, -124, 0, -126, 7, -111, -105, 114, 99, 80, 24, -7, -96, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -86, 46, -128, 3, 15, 48, 5, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -85, 45, -128, 0, -127, 0, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -116, 7, -111, -105, 114, 99, 80, 24, -7, -115, 1, 5, -114, 1, 5, -113, 2, 5, -32, -112, 2, 1, -2, -79, 9, 4, 7, -111, -105, 114, 99, 80, 24, -7, -78, 3, 4, 1, 96, -77, 3, -126, 1, 22, -108, 2, 6, -64, -107, 1, 4, -106, 0, -73, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40 };
+        return new byte[] { -93, -126, 1, 94, -119, 8, 16, 33, 2, 2, 16, -119, 34, -9, 48, 12, -123, 7, -111, -105, 114, 99, 80, 24, -7, -122, 1, 36, -93, 49, 4, 4, 1, 2, 3, 4, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -122, 0, -89, 50, -96, 44, 2, 1, 1, -128, 8, 16, 0, 0, 0, 0, 0, 0, 0, -127, 7, -111, -105, 114, 99, 80, 24, -7, -93, 9, -128, 7, 39, -12, 67, 121, -98, 41, -96, -122, 7, -111, -105, 114, 99, 80, 24, -7, -119, 0, -95, 2, -128, 0, -95, 3, 4, 1, 96, -91, 3, -126, 1, 22, -124, 0, -126, 7, -111, -105, 114, 99, 80, 24, -7, -96, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -86, 46, -128, 3, 34, 33, 67, -95, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -85, 45, -128, 0, -127, 0, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -116, 7, -111, -105, 114, 99, 80, 24, -7, -115, 1, 5, -114, 1, 5, -113, 2, 5, -32, -112, 2, 1, -2, -79, 9, 4, 7, -111, -105, 114, 99, 80, 24, -7, -78, 3, 4, 1, 96, -77, 3, -126, 1, 22, -108, 2, 6, -64, -107, 1, 4, -106, 0, -73, 9, 10, 1, 2, 4, 4, 10, 20, 30, 40 };
     }
 
     byte[] dataGeographicalInformation = new byte[] { 16, 0, 0, 0, 0, 0, 0, 0 };
@@ -137,12 +141,8 @@ public class SendRoutingInformationResponseTest {
         return new byte[] { 1, 2, 3, 4 };
     }
 
-    private byte[] getExtBearerServiceData() {
-        return new byte[] { 22 };
-    }
-
     public byte[] getNAEACICIData() {
-        return new byte[] { 15, 48, 5 };
+        return new byte[] { 34, 33, 67 };
     };
 
     public byte[] getSignalInfoData() {
@@ -229,7 +229,7 @@ public class SendRoutingInformationResponseTest {
         assertTrue(forwardingOptions.getForwardingReason() == ForwardingReason.busy);
 
         // cugCheckInfo
-        assertTrue(Arrays.equals(prim.getCUGCheckInfo().getCUGInterlock().getData(), getGugData()));
+        assertTrue(ByteBufUtil.equals(prim.getCUGCheckInfo().getCUGInterlock().getValue(), Unpooled.wrappedBuffer(getGugData())));
         assertTrue(prim.getCUGCheckInfo().getCUGOutgoingAccess());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getCUGCheckInfo().getExtensionContainer()));
         // cugSubscriptionFlag
@@ -239,7 +239,7 @@ public class SendRoutingInformationResponseTest {
         LocationInformation locInfo = prim.getSubscriberInfo().getLocationInformation();
         assertNotNull(locInfo);
         assertEquals((int) locInfo.getAgeOfLocationInformation(), 1);
-        assertTrue(Arrays.equals(locInfo.getGeographicalInformation().getData(), dataGeographicalInformation));
+        assertTrue(ByteBufUtil.equals(locInfo.getGeographicalInformation().getValue(), Unpooled.wrappedBuffer(dataGeographicalInformation)));
         ISDNAddressString vlrN = locInfo.getVlrNumber();
         assertTrue(vlrN.getAddress().equals("79273605819"));
         assertEquals(vlrN.getAddressNature(), AddressNature.international_number);
@@ -264,7 +264,7 @@ public class SendRoutingInformationResponseTest {
                 SupplementaryCodeValue.allCommunityOfInterestSS);
 
         // basicService
-        assertTrue(Arrays.equals(prim.getBasicService().getExtBearerService().getData(), this.getExtBearerServiceData()));
+        assertEquals(prim.getBasicService().getExtBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.dataCDA_9600bps);
         assertNull(prim.getBasicService().getExtTeleservice());
         // forwardingInterrogationRequired
         assertTrue(prim.getForwardingInterrogationRequired());
@@ -274,7 +274,10 @@ public class SendRoutingInformationResponseTest {
         assertEquals(vmscAddress.getAddressNature(), AddressNature.international_number);
         assertEquals(vmscAddress.getNumberingPlan(), NumberingPlan.ISDN);
         // naeaPreferredCI
-        assertEquals(prim.getNaeaPreferredCI().getNaeaPreferredCIC().getData(), this.getNAEACICIData());
+        assertTrue(prim.getNaeaPreferredCI().getNaeaPreferredCIC().getCarrierCode().equals("1234"));
+        assertEquals(prim.getNaeaPreferredCI().getNaeaPreferredCIC().getNetworkIdentificationPlanValue(), NetworkIdentificationPlanValue.fourDigitCarrierIdentification);
+        assertEquals(prim.getNaeaPreferredCI().getNaeaPreferredCIC().getNetworkIdentificationTypeValue(), NetworkIdentificationTypeValue.nationalNetworkIdentification);
+
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(prim.getNaeaPreferredCI().getExtensionContainer()));
         // ccbsIndicators
         assertTrue(prim.getCCBSIndicators().getCCBSPossible());
@@ -315,7 +318,7 @@ public class SendRoutingInformationResponseTest {
         assertEquals(prim.getSSList2().get(0).getSupplementaryCodeValue(),
                 SupplementaryCodeValue.allCommunityOfInterestSS);
         // basicService2
-        assertTrue(Arrays.equals(prim.getBasicService2().getExtBearerService().getData(), this.getExtBearerServiceData()));
+        assertEquals(prim.getBasicService2().getExtBearerService().getBearerServiceCodeValue(), BearerServiceCodeValue.dataCDA_9600bps);
         assertNull(prim.getBasicService2().getExtTeleservice());
         // allowedServices
         AllowedServices allowedServices = prim.getAllowedServices();
@@ -327,8 +330,8 @@ public class SendRoutingInformationResponseTest {
         assertTrue(prim.getReleaseResourcesSupported());
         // gsmBearerCapability
         ProtocolId protocolId2 = prim.getGsmBearerCapability().getProtocolId();
-        byte[] signalInfo2 = prim.getGsmBearerCapability().getSignalInfo().getData();
-        assertTrue(Arrays.equals(getSignalInfoData(), signalInfo2));
+        ByteBuf signalInfo2 = prim.getGsmBearerCapability().getSignalInfo().getValue();
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(getSignalInfoData()), signalInfo2));
         assertNotNull(protocolId2);
         assertEquals(protocolId2, ProtocolId.gsm_0806);
         assertEquals(prim.getMapProtocolVersion(), 3);       
@@ -371,7 +374,7 @@ public class SendRoutingInformationResponseTest {
 
         // MAP V3 Parameter test
         // cugCheckInfo
-        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(getGugData());
+        CUGInterlockImpl cugInterlock = new CUGInterlockImpl(Unpooled.wrappedBuffer(getGugData()));
         CUGCheckInfoImpl cugCheckInfo = new CUGCheckInfoImpl(cugInterlock, true,
                 MAPExtensionContainerTest.GetTestExtensionContainer());
         // cugSubscriptionFlag
@@ -383,7 +386,10 @@ public class SendRoutingInformationResponseTest {
                 "79273605819");
         CellGlobalIdOrServiceAreaIdFixedLengthImpl c0 = new CellGlobalIdOrServiceAreaIdFixedLengthImpl(724, 34, 31134, 10656);
         CellGlobalIdOrServiceAreaIdOrLAIImpl c = new CellGlobalIdOrServiceAreaIdOrLAIImpl(c0);
-        GeographicalInformationImpl gi = new GeographicalInformationImpl(dataGeographicalInformation);
+
+        ByteBuf geoBuffer=Unpooled.wrappedBuffer(dataGeographicalInformation);
+        GeographicalInformationImpl gi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
+        
         LocationInformationImpl li = new LocationInformationImpl(1, gi, vlrN, null, c, null, null, mscN, null, false, true,
                 null, null);
         SubscriberStateImpl ss = new SubscriberStateImpl(SubscriberStateChoice.assumedIdle, null);
@@ -392,7 +398,7 @@ public class SendRoutingInformationResponseTest {
         List<SSCode> ssList = new ArrayList<SSCode>();
         ssList.add(new SSCodeImpl(SupplementaryCodeValue.allCommunityOfInterestSS));
         // basicService
-        ExtBearerServiceCode b = new ExtBearerServiceCodeImpl(this.getExtBearerServiceData());
+        ExtBearerServiceCode b = new ExtBearerServiceCodeImpl(BearerServiceCodeValue.dataCDA_9600bps);
         ExtBasicServiceCode basicService = new ExtBasicServiceCodeImpl(b);
         // forwardingInterrogationRequired
         boolean forwardingInterrogationRequired = true;
@@ -402,7 +408,7 @@ public class SendRoutingInformationResponseTest {
         // extensionContainer
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         // naeaPreferredCI
-        NAEACIC naeaPreferredCIC = new NAEACICImpl(this.getNAEACICIData());
+        NAEACIC naeaPreferredCIC = new NAEACICImpl("1234", NetworkIdentificationPlanValue.fourDigitCarrierIdentification, NetworkIdentificationTypeValue.nationalNetworkIdentification);
         NAEAPreferredCI naeaPreferredCI = new NAEAPreferredCIImpl(naeaPreferredCIC,
                 MAPExtensionContainerTest.GetTestExtensionContainer());
         // ccbsIndicators
@@ -435,7 +441,7 @@ public class SendRoutingInformationResponseTest {
         // releaseResourcesSupported
         boolean releaseResourcesSupported = true;
         // gsmBearerCapability
-        SignalInfo signalInfo = new SignalInfoImpl(getSignalInfoData());
+        SignalInfo signalInfo = new SignalInfoImpl(Unpooled.wrappedBuffer(getSignalInfoData()));
         ProtocolId protocolId = ProtocolId.gsm_0806;
         ExternalSignalInfo gsmBearerCapability = new ExternalSignalInfoImpl(signalInfo, protocolId, null);
         long mapProtocolVersion = 3;

@@ -61,11 +61,9 @@ public class AddressAndServiceImpl implements AddressAndService {
     	
     	this.calledAddressValue=calledAddressValue;
     	
-    	if(serviceKey!=null) {
-    		this.serviceKey=new ASNInteger();
-    		this.serviceKey.setValue(serviceKey.longValue());
-    	}
-    	
+    	if(serviceKey!=null)
+    		this.serviceKey=new ASNInteger(serviceKey);
+    		
     	this.callingAddressValue=callingAddressValue;
     	this.locationNumber=locationNumber;
     }
@@ -78,10 +76,10 @@ public class AddressAndServiceImpl implements AddressAndService {
     }
 
     public Integer getServiceKey() {
-    	if(serviceKey==null || serviceKey.getValue()==null)
+    	if(serviceKey==null)
     		return null;
     	
-    	return serviceKey.getValue().intValue();
+    	return serviceKey.getIntValue();
     }
 
     public DigitsIsup getCallingAddressValue() {

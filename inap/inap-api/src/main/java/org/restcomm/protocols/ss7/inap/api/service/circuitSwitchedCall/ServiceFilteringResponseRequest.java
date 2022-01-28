@@ -29,6 +29,8 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FilteringCriteria;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResponseCondition;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -79,5 +81,5 @@ public interface ServiceFilteringResponseRequest extends CircuitSwitchedCallMess
 	
 	ResponseCondition getResponseCondition();
 	
-	byte[] getSCFCorrelationInfo();
+	ByteBuf getSCFCorrelationInfo();
 }

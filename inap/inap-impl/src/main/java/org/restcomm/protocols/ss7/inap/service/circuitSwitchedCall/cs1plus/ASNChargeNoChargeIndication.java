@@ -4,7 +4,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.C
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 
 /*
@@ -32,17 +32,20 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 *
 */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
-public class ASNChargeNoChargeIndication extends ASNInteger {
-	public void setType(ChargeNoChargeIndication t) {
-		if(t!=null)
-			setValue((long)t.getCode());
+public class ASNChargeNoChargeIndication extends ASNEnumerated {
+	public ASNChargeNoChargeIndication() {
+		
+	}
+	
+	public ASNChargeNoChargeIndication(ChargeNoChargeIndication t) {
+		super(t.getCode());
 	}
 	
 	public ChargeNoChargeIndication getType() {
-		Long realValue=getValue();
+		Integer realValue=getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return ChargeNoChargeIndication.getInstance(realValue.intValue());
+		return ChargeNoChargeIndication.getInstance(realValue);
 	}
 }

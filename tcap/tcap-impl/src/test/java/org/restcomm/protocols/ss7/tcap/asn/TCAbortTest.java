@@ -98,8 +98,7 @@ public class TCAbortTest {
         
         userInformation.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
-        TCAbortTestASN innerASN=new TCAbortTestASN();
-        innerASN.setValue(Unpooled.wrappedBuffer(new byte[] { (byte) 0x0A, 0x01, 0x00 }));
+        TCAbortTestASN innerASN=new TCAbortTestASN(Unpooled.wrappedBuffer(new byte[] { (byte) 0x0A, 0x01, 0x00 }));
         
         userInformation.setChildAsObject(innerASN);
 

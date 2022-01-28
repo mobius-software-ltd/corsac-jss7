@@ -5,15 +5,19 @@ import org.restcomm.protocols.ss7.map.api.service.sms.SMDeliveryOutcome;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNSMDeliveryOutcome extends ASNEnumerated {
-	public void setType(SMDeliveryOutcome t) {
-		super.setValue(Long.valueOf(t.getCode()));
+	public ASNSMDeliveryOutcome() {
+		
+	}
+	
+	public ASNSMDeliveryOutcome(SMDeliveryOutcome t) {
+		super(t.getCode());
 	}
 	
 	public SMDeliveryOutcome getType() {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		
-		return SMDeliveryOutcome.getInstance(getValue().intValue());
+		return SMDeliveryOutcome.getInstance(realValue);
 	}
 }

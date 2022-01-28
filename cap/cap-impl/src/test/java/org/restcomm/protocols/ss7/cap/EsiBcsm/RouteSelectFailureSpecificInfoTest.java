@@ -28,12 +28,14 @@ import static org.testng.Assert.assertTrue;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
+import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -63,7 +65,7 @@ public class RouteSelectFailureSpecificInfoTest {
         assertTrue(result.getResult() instanceof RouteSelectFailureSpecificInfoImpl);
         
         RouteSelectFailureSpecificInfoImpl elem = (RouteSelectFailureSpecificInfoImpl)result.getResult();                
-        assertTrue(Arrays.equals(elem.getFailureCause().getData(), this.getIntData()));
+        assertTrue(ByteBufUtil.equals(CauseIsupImpl.translate(elem.getFailureCause().getCauseIndicators()),Unpooled.wrappedBuffer(this.getIntData())));
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
@@ -71,7 +73,9 @@ public class RouteSelectFailureSpecificInfoTest {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(RouteSelectFailureSpecificInfoImpl.class);
     	
-        CauseIsupImpl cause = new CauseIsupImpl(this.getIntData());
+    	CauseIndicatorsImpl ci=new CauseIndicatorsImpl();
+    	ci.decode(Unpooled.wrappedBuffer(this.getIntData()));
+        CauseIsupImpl cause = new CauseIsupImpl(ci);
         RouteSelectFailureSpecificInfoImpl elem = new RouteSelectFailureSpecificInfoImpl(cause);
         byte[] rawData = this.getData();
         ByteBuf buffer=parser.encode(elem);
@@ -80,37 +84,4 @@ public class RouteSelectFailureSpecificInfoTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall.primitive" })
-    public void testXMLSerializaion() throws Exception {
-
-        CauseCapImpl cause = new CauseCapImpl(this.getIntData());
-        RouteSelectFailureSpecificInfoImpl original = new RouteSelectFailureSpecificInfoImpl(cause);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "RouteSelectFailureSpecificInfoImpl", RouteSelectFailureSpecificInfoImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        RouteSelectFailureSpecificInfoImpl copy = reader.read("RouteSelectFailureSpecificInfoImpl",
-                RouteSelectFailureSpecificInfoImpl.class);
-
-        assertEquals(copy.getFailureCause().getCauseIndicators().getLocation(), original.getFailureCause().getCauseIndicators()
-                .getLocation());
-        assertEquals(copy.getFailureCause().getCauseIndicators().getCauseValue(), original.getFailureCause()
-                .getCauseIndicators().getCauseValue());
-        assertEquals(copy.getFailureCause().getCauseIndicators().getCodingStandard(), original.getFailureCause()
-                .getCauseIndicators().getCodingStandard());
-    }*/
 }

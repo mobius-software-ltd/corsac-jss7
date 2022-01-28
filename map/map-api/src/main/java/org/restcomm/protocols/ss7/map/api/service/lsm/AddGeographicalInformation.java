@@ -27,6 +27,8 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.TypeOfShap
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -58,7 +60,7 @@ maxAdd-GeographicalInformation INTEGER ::= 91
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface AddGeographicalInformation {
 
-    byte[] getData();
+	ByteBuf getValue();
 
     TypeOfShape getTypeOfShape();
 

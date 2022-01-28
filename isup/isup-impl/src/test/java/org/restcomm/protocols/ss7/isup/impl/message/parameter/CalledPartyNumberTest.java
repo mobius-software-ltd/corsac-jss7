@@ -98,36 +98,6 @@ public class CalledPartyNumberTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    /*@Test(groups = { "functional.xml.serialize", "parameter" })
-    public void testXMLSerialize() throws Exception {
-
-        CalledPartyNumberImpl original = new CalledPartyNumberImpl(CalledPartyNumber._NAI_INTERNATIONAL_NUMBER, "664422",
-                CalledPartyNumber._NPI_ISDN, CalledPartyNumber._NAI_NRNINNF);
-        // int natureOfAddresIndicator, String address, int numberingPlanIndicator, int internalNetworkNumberIndicator
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for indentation).
-        writer.write(original, "calledPartyNumber", CalledPartyNumberImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        CalledPartyNumberImpl copy = reader.read("calledPartyNumber", CalledPartyNumberImpl.class);
-
-        assertEquals(copy.getNatureOfAddressIndicator(), original.getNatureOfAddressIndicator());
-        assertEquals(copy.getAddress(), original.getAddress());
-        assertEquals(copy.getNumberingPlanIndicator(), original.getNumberingPlanIndicator());
-        assertEquals(copy.getInternalNetworkNumberIndicator(), original.getInternalNetworkNumberIndicator());
-    }*/
-
     /*
      * (non-Javadoc)
      *

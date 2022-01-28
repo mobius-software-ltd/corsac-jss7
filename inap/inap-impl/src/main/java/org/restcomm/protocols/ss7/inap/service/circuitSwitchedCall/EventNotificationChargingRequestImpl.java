@@ -35,10 +35,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.EventNoti
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -50,10 +49,10 @@ public class EventNotificationChargingRequestImpl extends CircuitSwitchedCallMes
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-    private ASNOctetString eventTypeCharging;
+    private ASNOctetString2 eventTypeCharging;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private ASNOctetString eventSpecificInformationCharging;
+    private ASNOctetString2 eventSpecificInformationCharging;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
     private LegIDWrapperImpl legID;
@@ -67,27 +66,22 @@ public class EventNotificationChargingRequestImpl extends CircuitSwitchedCallMes
 	public EventNotificationChargingRequestImpl() {
     }
 
-    public EventNotificationChargingRequestImpl(byte[] eventTypeCharging, byte[] eventSpecificInformationCharging, LegID legID, 
+    public EventNotificationChargingRequestImpl(ByteBuf eventTypeCharging, ByteBuf eventSpecificInformationCharging, LegID legID, 
     		CAPINAPExtensions extensions, MonitorMode monitorMode) {
     	    	
-    	if(eventTypeCharging!=null) {
-    		this.eventTypeCharging = new ASNOctetString();
-    		this.eventTypeCharging.setValue(Unpooled.wrappedBuffer(eventTypeCharging));
-    	}
+    	if(eventTypeCharging!=null)
+    		this.eventTypeCharging = new ASNOctetString2(eventTypeCharging);
     	
-    	if(eventSpecificInformationCharging!=null) {
-    		this.eventSpecificInformationCharging = new ASNOctetString();
-    		this.eventSpecificInformationCharging.setValue(Unpooled.wrappedBuffer(eventSpecificInformationCharging));
-    	}
-        if(legID!=null)
+    	if(eventSpecificInformationCharging!=null)
+    		this.eventSpecificInformationCharging = new ASNOctetString2(eventSpecificInformationCharging);
+    	
+    	if(legID!=null)
         	this.legID = new LegIDWrapperImpl(legID);
         
         this.extensions = extensions;
     	
-        if(monitorMode!=null) {
-        	this.monitorMode = new ASNMonitorMode();
-        	this.monitorMode.setType(monitorMode);
-        }
+        if(monitorMode!=null)
+        	this.monitorMode = new ASNMonitorMode(monitorMode);        	
     }
 
     @Override
@@ -101,25 +95,19 @@ public class EventNotificationChargingRequestImpl extends CircuitSwitchedCallMes
     }
 
     @Override
-    public byte[] getEventTypeCharging() {
-    	if(eventTypeCharging==null || eventTypeCharging.getValue()==null)
+    public ByteBuf getEventTypeCharging() {
+    	if(eventTypeCharging==null)
     		return null;
     	
-    	ByteBuf value=eventTypeCharging.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return eventTypeCharging.getValue();
     }
 
     @Override
-    public byte[] getEventSpecificInformationCharging() {
-    	if(eventSpecificInformationCharging==null || eventSpecificInformationCharging.getValue()==null)
+    public ByteBuf getEventSpecificInformationCharging() {
+    	if(eventSpecificInformationCharging==null)
     		return null;
     	
-    	ByteBuf value=eventSpecificInformationCharging.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return eventSpecificInformationCharging.getValue();
     }
 
 	@Override
@@ -152,11 +140,11 @@ public class EventNotificationChargingRequestImpl extends CircuitSwitchedCallMes
 
         if (this.eventTypeCharging != null && this.eventTypeCharging.getValue()!=null) {
             sb.append(", eventTypeCharging=");
-            sb.append(ASNOctetString.printDataArr(getEventTypeCharging()));
+            sb.append(eventTypeCharging.printDataArr());
         }
         if (this.eventSpecificInformationCharging != null && this.eventSpecificInformationCharging.getValue()!=null) {
             sb.append(", eventSpecificInformationCharging=");
-            sb.append(ASNOctetString.printDataArr(getEventSpecificInformationCharging()));
+            sb.append(eventSpecificInformationCharging.printDataArr());
         }
         if (this.legID != null && this.legID.getLegID()!=null) {
             sb.append(", legID=");

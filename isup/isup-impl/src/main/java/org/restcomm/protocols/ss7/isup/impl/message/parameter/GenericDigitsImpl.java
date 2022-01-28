@@ -22,15 +22,15 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 import org.restcomm.protocols.ss7.isup.util.BcdHelper;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 
 /**
  * Start time:12:24:47 2009-03-31<br>
@@ -41,8 +41,7 @@ import java.nio.charset.Charset;
  */
 public class GenericDigitsImpl extends AbstractISUPParameter implements GenericDigits {
 	private static final Charset asciiCharset = Charset.forName("ASCII");
-	private static final char[] hexCode = "0123456789ABCDEF".toCharArray();
-    
+	
     private int encodingScheme;
     private int typeOfDigits;
     private ByteBuf digits;
@@ -72,15 +71,13 @@ public class GenericDigitsImpl extends AbstractISUPParameter implements GenericD
 
     public String getDecodedDigits() throws UnsupportedEncodingException {
     	ByteBuf buffer=getEncodedDigits();
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
     	
         switch (encodingScheme) {
             case GenericDigits._ENCODING_SCHEME_BCD_EVEN:
             case GenericDigits._ENCODING_SCHEME_BCD_ODD:
-                return BcdHelper.bcdDecodeToHexString(encodingScheme, data);
+                return BcdHelper.bcdDecodeToHexString(encodingScheme, buffer);
             case GenericDigits._ENCODING_SCHEME_IA5:
-                return new String(data, asciiCharset);
+            	return buffer.toString(asciiCharset);
             default:
                 //TODO: add other encoding schemas support
                 throw new UnsupportedEncodingException("Specified GenericDigits encoding: " + encodingScheme + " is unsupported");
@@ -116,7 +113,7 @@ public class GenericDigitsImpl extends AbstractISUPParameter implements GenericD
 
     public void decode(ByteBuf buffer) throws ParameterException {
         if (buffer == null || buffer.readableBytes() < 2) {
-            throw new ParameterException("byte[] must not be null or has size less than 2");
+            throw new ParameterException("buffer must not be null or has size less than 2");
         }
         
         byte b=buffer.readByte();
@@ -175,15 +172,7 @@ public class GenericDigitsImpl extends AbstractISUPParameter implements GenericD
         sb.append(", typeOfDigits=");
         sb.append(typeOfDigits);
         if (digits != null) {
-        	ByteBuf buffer=getEncodedDigits();
-        	byte[] data=new byte[buffer.readableBytes()];
-        	buffer.readBytes(data);
-        	
-            sb.append(", encodedDigits=[");
-            sb.append(printHexBinary(data));
-            sb.append("]");
-
-            try {
+        	try {
                 String s = getDecodedDigits();
                 sb.append(", decodedDigits=[");
                 sb.append(s);
@@ -194,14 +183,5 @@ public class GenericDigitsImpl extends AbstractISUPParameter implements GenericD
         sb.append("]");
 
         return sb.toString();
-    }
-    
-    public String printHexBinary(byte[] data) {
-        StringBuilder r = new StringBuilder(data.length * 2);
-        for (byte b : data) {
-            r.append(hexCode[(b >> 4) & 0xF]);
-            r.append(hexCode[(b & 0xF)]);
-        }
-        return r.toString();
     }
 }

@@ -69,21 +69,17 @@ public class StatusReportRequestImpl extends CircuitSwitchedCallMessageImpl impl
 
     public StatusReportRequestImpl(ResourceStatus resourceStatus,DigitsIsup correlationID, ResourceID resourceID, 
     		CAPINAPExtensions extensions,ReportCondition reportCondition) {
-    	if(resourceStatus!=null) {
-    		this.resourceStatus=new ASNResourceStatus();
-    		this.resourceStatus.setType(resourceStatus);
-    	}
-    	
+    	if(resourceStatus!=null)
+    		this.resourceStatus=new ASNResourceStatus(resourceStatus);
+    		
         this.correlationID=correlationID;
         
         if(resourceID!=null)
     		this.resourceID=new ResourceIDWrapperImpl(resourceID);
     	
     	this.extensions=extensions;
-    	if(reportCondition!=null) {
-        	this.reportCondition=new ASNReportCondition();
-        	this.reportCondition.setType(reportCondition);
-        }                
+    	if(reportCondition!=null)
+        	this.reportCondition=new ASNReportCondition(reportCondition);        	            
     }
 
     public INAPMessageType getMessageType() {

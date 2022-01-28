@@ -53,7 +53,7 @@ public class ReturnToInvokingExchangeCallIdentifierImpl extends AbstractInformat
     }
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() != 5) {
-            throw new ParameterException("byte[] must not be null or have length of 5");
+            throw new ParameterException("buffer must not be null or have length of 5");
         }
 
         this.callIdentity = ((b.readByte() & 0xFF) << 16) | ((b.readByte() & 0xFF) << 8) | (b.readByte() & 0xFF);

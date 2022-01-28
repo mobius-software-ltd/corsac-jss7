@@ -27,6 +27,8 @@ import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -59,13 +61,13 @@ public interface HandOverInfo {
 
     SCPDialogueInfo getSendingSCPDialogueInfo();
 
-    byte[] getSendingSCPCorrelationInfo(); 
+    ByteBuf getSendingSCPCorrelationInfo(); 
     
     SCPAddress getReceivingSCPAddress();
 
     SCPDialogueInfo getReceivingSCPDialogueInfo();
 
-    byte[] getReceivingSCPCorrelationInfo(); 
+    ByteBuf getReceivingSCPCorrelationInfo(); 
     
     CalledPartyNumberIsup getHandoverNumber();
     

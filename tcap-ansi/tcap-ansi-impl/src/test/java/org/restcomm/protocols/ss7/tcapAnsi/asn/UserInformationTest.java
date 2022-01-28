@@ -25,8 +25,6 @@ package org.restcomm.protocols.ss7.tcapAnsi.asn;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
@@ -36,7 +34,10 @@ import org.testng.annotations.Test;
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -68,7 +69,7 @@ public class UserInformationTest {
         assertFalse(userInformationElement.isIDIndirect());
 
         assertTrue(userInformationElement.isValueObject());
-        UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(dataValue), ((ASNOctetString)userInformationElement.getChild()).getValue());
+        UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(dataValue), ((ASNOctetString2)userInformationElement.getChild()).getValue());
     }
 
     @Test(groups = { "functional.encode" })
@@ -79,8 +80,7 @@ public class UserInformationTest {
         UserInformationElementImpl userInformationElement = new UserInformationElementImpl();
         userInformationElement.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
-        ASNOctetString value=new ASNOctetString();
-        value.setValue(Unpooled.wrappedBuffer(dataValue));
+        ASNOctetString2 value=new ASNOctetString2(Unpooled.wrappedBuffer(dataValue));
         userInformationElement.setChildAsObject(value);
         
         UserInformationImpl userInformation = new UserInformationImpl();

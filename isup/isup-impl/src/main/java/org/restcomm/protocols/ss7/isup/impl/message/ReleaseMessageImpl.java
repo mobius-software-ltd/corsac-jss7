@@ -123,7 +123,7 @@ class ReleaseMessageImpl extends ISUPMessageImpl implements ReleaseMessage {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.isup.messages.ISUPMessage#decodeOptionalBody(byte[], byte)
+     * @see org.restcomm.isup.messages.ISUPMessage#decodeOptionalBody(ByteBuf, byte)
      */
 
     protected void decodeOptionalBody(ISUPParameterFactory parameterFactory, ByteBuf parameterBody, byte parameterCode)

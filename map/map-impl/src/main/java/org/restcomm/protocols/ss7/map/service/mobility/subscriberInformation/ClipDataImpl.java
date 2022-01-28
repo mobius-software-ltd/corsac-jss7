@@ -50,11 +50,9 @@ public class ClipDataImpl implements ClipData {
     public ClipDataImpl(ExtSSStatus ssStatus, OverrideCategory overrideCategory, boolean notificationToCSE) {
         this.ssStatus = ssStatus;
         
-        if(overrideCategory!=null) {
-        	this.overrideCategory = new ASNOverrideCategoryImpl();
-        	this.overrideCategory.setType(overrideCategory);
-        }
-        
+        if(overrideCategory!=null)
+        	this.overrideCategory = new ASNOverrideCategoryImpl(overrideCategory);
+        	
         if(notificationToCSE)
         	this.notificationToCSE = new ASNNull();
     }

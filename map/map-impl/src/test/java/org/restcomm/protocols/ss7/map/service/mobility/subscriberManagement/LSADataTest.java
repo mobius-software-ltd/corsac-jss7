@@ -37,6 +37,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -66,7 +67,7 @@ public class LSADataTest {
         assertTrue(result.getResult() instanceof LSADataImpl);
         LSADataImpl prim = (LSADataImpl)result.getResult();
         
-        assertTrue(Arrays.equals(prim.getLSAIdentity().getData(), this.getDataLSAIdentity()));
+        assertTrue(ByteBufUtil.equals(prim.getLSAIdentity().getValue(), Unpooled.wrappedBuffer(this.getDataLSAIdentity())));
         assertEquals(prim.getLSAAttributes().getData(), 5);
         assertTrue(prim.getLsaActiveModeIndicator());
         MAPExtensionContainer extensionContainer = prim.getExtensionContainer();
@@ -79,7 +80,7 @@ public class LSADataTest {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(LSADataImpl.class);
     	
-        LSAIdentityImpl lsaIdentity = new LSAIdentityImpl(this.getDataLSAIdentity());
+        LSAIdentityImpl lsaIdentity = new LSAIdentityImpl(Unpooled.wrappedBuffer(this.getDataLSAIdentity()));
         LSAAttributesImpl lsaAttributes = new LSAAttributesImpl(5);
         boolean lsaActiveModeIndicator = true;
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();

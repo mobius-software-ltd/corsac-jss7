@@ -54,11 +54,9 @@ public class AreaImpl implements Area {
      * @param areaIdentification
      */
     public AreaImpl(AreaType areaType, AreaIdentification areaIdentification) {
-        if(areaType!=null) {
-        	this.areaType = new ASNAreaType();
-        	this.areaType.setType(areaType);
-        }
-        
+        if(areaType!=null)
+        	this.areaType = new ASNAreaType(areaType);
+        	
         this.areaIdentification = areaIdentification;
     }
 

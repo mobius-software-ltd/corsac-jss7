@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.commonapp.primitives.TbcdStringImpl;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -38,22 +38,18 @@ import io.netty.buffer.Unpooled;
 * @author sergey vetyutnev
 *
 */
-public class GlobalCellIdImpl extends ASNOctetString implements GlobalCellId {
+public class GlobalCellIdImpl extends ASNOctetString2 implements GlobalCellId {
 	
 	public GlobalCellIdImpl() {
         super();
     }
 
-    public GlobalCellIdImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public GlobalCellIdImpl(int mcc, int mnc, int lac, int cellId)
             throws MAPException {
-        this.setData(mcc, mnc, lac, cellId);
+        super(translate(mcc, mnc, lac, cellId));
     }
 
-    public void setData(int mcc, int mnc, int lac, int cellId) throws MAPException {
+    public static ByteBuf translate(int mcc, int mnc, int lac, int cellId) throws MAPException {
         if (mcc < 1 || mcc > 999)
             throw new MAPException("Bad mcc value");
         if (mnc < 0 || mnc > 999)
@@ -90,26 +86,19 @@ public class GlobalCellIdImpl extends ASNOctetString implements GlobalCellId {
         result.writeByte((byte) (cellId / 256));
         result.writeByte((byte) (cellId % 256));
         
-        setValue(result);
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        return result;
     }
 
     public int getMcc() throws MAPException {
-    	byte[] data=getData();
-        if (data == null)
+    	ByteBuf value=getValue();
+        if (value == null)
             throw new MAPException("Data must not be empty");
-        if (data.length < 5 || data.length > 7)
+        if (value.readableBytes() < 5 || value.readableBytes() > 7)
             throw new MAPException("Data length must be between 5-7");
 
         String res = null;
         try {
-            res = TbcdStringImpl.decodeString(Unpooled.wrappedBuffer(data, 0, 3));
+            res = TbcdStringImpl.decodeString(value.readSlice(3));
         }catch (APPParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding GlobalCellId: " + e.getMessage(), e);
         }
@@ -123,15 +112,15 @@ public class GlobalCellIdImpl extends ASNOctetString implements GlobalCellId {
     }
 
     public int getMnc() throws MAPException {
-    	byte[] data=getData();
-        if (data == null)
+    	ByteBuf value=getValue();
+        if (value == null)
             throw new MAPException("Data must not be empty");
-        if (data.length < 5 || data.length > 7)
+        if (value.readableBytes() < 5 || value.readableBytes() > 7)
             throw new MAPException("Data length must be between 5-7");
 
         String res = null;
         try {
-            res = TbcdStringImpl.decodeString(Unpooled.wrappedBuffer(data, 0, 3));
+            res = TbcdStringImpl.decodeString(value.readSlice(3));
         } catch (APPParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding GlobalCellId: " + e.getMessage(), e);
         }
@@ -150,26 +139,30 @@ public class GlobalCellIdImpl extends ASNOctetString implements GlobalCellId {
     }
 
     public int getLac() throws MAPException {
-    	byte[] data=getData();
-        if (data == null)
+    	ByteBuf value=getValue();
+        if (value == null)
             throw new MAPException("Data must not be empty");
-        if (data.length < 5 || data.length > 7)
+        if (value.readableBytes() < 5 || value.readableBytes() > 7)
             throw new MAPException("Data length must be between 5-7");
 
-        int res = (data[3] & 0xFF) * 256 + (data[4] & 0xFF);
+        value.skipBytes(3);
+        int res = (value.readByte() & 0xFF) * 256 + (value.readByte() & 0xFF);
         return res;
     }
 
     public int getCellId() throws MAPException {
-    	byte[] data=getData();
-        if (data == null)
+    	ByteBuf value=getValue();
+        if (value == null)
             throw new MAPException("Data must not be empty");
-        if (data.length < 5 || data.length > 7)
+        if (value.readableBytes() < 5 || value.readableBytes() > 7)
             throw new MAPException("Data length must be between 5-7");
 
         int res = 0;
-        if (data.length == 7)
-            res = (data[5] & 0xFF) * 256 + (data[6] & 0xFF);
+        if (value.readableBytes() == 7) {
+        	value.skipBytes(5);
+            res = (value.readByte() & 0xFF) * 256 + (value.readByte() & 0xFF);
+        }
+        
         return res;
     }
 

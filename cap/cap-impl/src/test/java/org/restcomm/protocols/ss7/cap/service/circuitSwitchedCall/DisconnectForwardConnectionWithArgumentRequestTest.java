@@ -78,33 +78,4 @@ public class DisconnectForwardConnectionWithArgumentRequestTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        DisconnectForwardConnectionWithArgumentRequestImpl original = new DisconnectForwardConnectionWithArgumentRequestImpl(40,
-                CAPExtensionsTest.createTestCAPExtensions());
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "disconnectForwardConnectionWithArgumentRequest", DisconnectForwardConnectionWithArgumentRequestImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        DisconnectForwardConnectionWithArgumentRequestImpl copy = reader.read("disconnectForwardConnectionWithArgumentRequest", DisconnectForwardConnectionWithArgumentRequestImpl.class);
-
-        assertEquals((int) original.getCallSegmentID(), (int) copy.getCallSegmentID());
-        assertTrue(CAPExtensionsTest.checkTestCAPExtensions(original.getExtensions()));
-        assertTrue(CAPExtensionsTest.checkTestCAPExtensions(copy.getExtensions()));
-    }*/
 }

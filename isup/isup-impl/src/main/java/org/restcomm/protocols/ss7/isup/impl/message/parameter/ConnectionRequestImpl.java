@@ -69,7 +69,7 @@ public class ConnectionRequestImpl extends AbstractISUPParameter implements Conn
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null) {
-            throw new ParameterException("byte[] must not be null");
+            throw new ParameterException("buffer must not be null");
         }
 
         // if (_PROTOCOL_VERSION == 1 && b.length != 7) {
@@ -77,7 +77,7 @@ public class ConnectionRequestImpl extends AbstractISUPParameter implements Conn
         // }
 
         if (b.readableBytes() != 5 && b.readableBytes() != 7) {
-            throw new ParameterException("byte[] length must be 5 or 7");
+            throw new ParameterException("buffer length must be 5 or 7");
         }
 
         // FIXME: This is not mentioned, is it inverted as usually or not ?

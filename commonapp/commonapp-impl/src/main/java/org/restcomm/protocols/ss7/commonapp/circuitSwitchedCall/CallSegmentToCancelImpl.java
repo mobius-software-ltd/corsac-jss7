@@ -47,29 +47,25 @@ public class CallSegmentToCancelImpl implements CallSegmentToCancel {
     }
 
     public CallSegmentToCancelImpl(Integer invokeID, Integer callSegmentID) {
-    	if(invokeID!=null) {
-    		this.invokeID = new ASNInteger();
-    		this.invokeID.setValue(invokeID.longValue());
-    	}
-    	
-    	if(callSegmentID!=null) {
-    		this.callSegmentID = new ASNInteger();
-    		this.callSegmentID.setValue(callSegmentID.longValue());
-    	}
+    	if(invokeID!=null)
+    		this.invokeID = new ASNInteger(invokeID);
+    		
+    	if(callSegmentID!=null)
+    		this.callSegmentID = new ASNInteger(callSegmentID);    		
     }
 
     public Integer getInvokeID() {
-    	if(invokeID==null || invokeID.getValue()==null)
+    	if(invokeID==null)
     		return null;
     	
-        return invokeID.getValue().intValue();
+        return invokeID.getIntValue();
     }
 
     public Integer getCallSegmentID() {
-    	if(callSegmentID==null || callSegmentID.getValue()==null)
+    	if(callSegmentID==null)
     		return null;
     	
-        return callSegmentID.getValue().intValue();
+        return callSegmentID.getIntValue();
     }
 
     @Override

@@ -30,10 +30,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.C
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -45,16 +44,14 @@ public class ApplyChargingReportRequestImpl extends CircuitSwitchedCallMessageIm
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.UNIVERSAL,tag = 4,constructed = false,index = -1)
-    private ASNOctetString callResult;
+    private ASNOctetString2 callResult;
 
     public ApplyChargingReportRequestImpl() {
     }
 
-    public ApplyChargingReportRequestImpl(byte[] callResult) {
-        if(callResult!=null) {
-        	this.callResult=new ASNOctetString();
-        	this.callResult.setValue(Unpooled.wrappedBuffer(callResult));
-        }
+    public ApplyChargingReportRequestImpl(ByteBuf callResult) {
+        if(callResult!=null)
+        	this.callResult=new ASNOctetString2(callResult);        
     }
 
     @Override
@@ -68,14 +65,11 @@ public class ApplyChargingReportRequestImpl extends CircuitSwitchedCallMessageIm
     }
 
     @Override
-    public byte[] getCallResult() {
-    	if(callResult==null || callResult.getValue()==null)
+    public ByteBuf getCallResult() {
+    	if(callResult==null)
     		return null;
     	
-    	ByteBuf value=callResult.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    	return callResult.getValue();
     }
 
 	@Override
@@ -92,7 +86,7 @@ public class ApplyChargingReportRequestImpl extends CircuitSwitchedCallMessageIm
 
         if (this.callResult != null || this.callResult.getValue()!=null) {
             sb.append(", callResult=");
-            sb.append(ASNOctetString.printDataArr(getCallResult()));
+            sb.append(callResult.printDataArr());
         }
 
         sb.append("]");

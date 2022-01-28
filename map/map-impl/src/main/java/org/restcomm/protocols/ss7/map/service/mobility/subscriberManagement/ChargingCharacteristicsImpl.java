@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ChargingCharacteristics;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -34,7 +34,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class ChargingCharacteristicsImpl extends ASNOctetString implements ChargingCharacteristics {
+public class ChargingCharacteristicsImpl extends ASNOctetString2 implements ChargingCharacteristics {
 	public static final int _FLAG_NORMAL_CHARGING = 0x08;
     public static final int _FLAG_PREPAID_CHARGING = 0x04;
     public static final int _FLAG_FLAT_RATE_CHARGING_CHARGING = 0x02;
@@ -43,77 +43,66 @@ public class ChargingCharacteristicsImpl extends ASNOctetString implements Charg
     public ChargingCharacteristicsImpl() {        
     }
 
-    public ChargingCharacteristicsImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public ChargingCharacteristicsImpl(boolean isNormalCharging, boolean isPrepaidCharging, boolean isFlatRateChargingCharging,
             boolean isChargingByHotBillingCharging) {
-        this.setData(isNormalCharging, isPrepaidCharging, isFlatRateChargingCharging,
-                isChargingByHotBillingCharging);
+        super(translate(isNormalCharging, isPrepaidCharging, isFlatRateChargingCharging,
+                isChargingByHotBillingCharging));
     }
 
-    protected void setData(boolean isNormalCharging, boolean isPrepaidCharging, boolean isFlatRateChargingCharging,
+    private static ByteBuf translate(boolean isNormalCharging, boolean isPrepaidCharging, boolean isFlatRateChargingCharging,
             boolean isChargingByHotBillingCharging){
-        byte[] data = new byte[2];
-
-        if (isNormalCharging)
-            data[0] |= _FLAG_NORMAL_CHARGING;
-        if (isPrepaidCharging)
-            data[0] |= _FLAG_PREPAID_CHARGING;
-        if (isFlatRateChargingCharging)
-            data[0] |= _FLAG_FLAT_RATE_CHARGING_CHARGING;
-        if (isChargingByHotBillingCharging)
-            data[0] |= _FLAG_CHARGING_BY_HOT_BILLING_CHARGING;
+        ByteBuf buffer=Unpooled.buffer(2);
         
-        setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+        byte curr=0;
+        if (isNormalCharging)
+            curr |= _FLAG_NORMAL_CHARGING;
+        if (isPrepaidCharging)
+        	curr |= _FLAG_PREPAID_CHARGING;
+        if (isFlatRateChargingCharging)
+        	curr |= _FLAG_FLAT_RATE_CHARGING_CHARGING;
+        if (isChargingByHotBillingCharging)
+        	curr |= _FLAG_CHARGING_BY_HOT_BILLING_CHARGING;
+        
+        buffer.writeByte(curr);
+        buffer.writeByte(0);
+        return buffer;
     }
 
     private boolean isDataGoodFormed() {
-    	byte[] data=getData();
-        if (data != null && data.length == 2)
+    	ByteBuf buffer=getValue();
+        if (buffer != null && buffer.readableBytes() == 2)
             return true;
         else
             return false;
     }
 
     public boolean isNormalCharging() {
-    	byte[] data=getData();
-    	if (isDataGoodFormed() && (data[0] & _FLAG_NORMAL_CHARGING) != 0)
+    	ByteBuf buffer=getValue();
+        if (isDataGoodFormed() && (buffer.readByte() & _FLAG_NORMAL_CHARGING) != 0)
             return true;
         else
             return false;
     }
 
     public boolean isPrepaidCharging() {
-    	byte[] data=getData();
-    	if (isDataGoodFormed() && (data[0] & _FLAG_PREPAID_CHARGING) != 0)
+    	ByteBuf buffer=getValue();
+        if (isDataGoodFormed() && (buffer.readByte() & _FLAG_PREPAID_CHARGING) != 0)
             return true;
         else
             return false;
     }
 
     public boolean isFlatRateChargingCharging() {
-    	byte[] data=getData();
-    	if (isDataGoodFormed() && (data[0] & _FLAG_FLAT_RATE_CHARGING_CHARGING) != 0)
+    	ByteBuf buffer=getValue();
+        if (isDataGoodFormed() && (buffer.readByte() & _FLAG_FLAT_RATE_CHARGING_CHARGING) != 0)
             return true;
         else
             return false;
     }
 
     public boolean isChargingByHotBillingCharging() {
-    	byte[] data=getData();
-    	if (isDataGoodFormed() && (data[0] & _FLAG_CHARGING_BY_HOT_BILLING_CHARGING) != 0)
+    	ByteBuf buffer=getValue();
+        if (isDataGoodFormed() && (buffer.readByte() & _FLAG_CHARGING_BY_HOT_BILLING_CHARGING) != 0)
             return true;
         else
             return false;
@@ -129,8 +118,7 @@ public class ChargingCharacteristicsImpl extends ASNOctetString implements Charg
 
             StringBuilder sb = new StringBuilder();
             sb.append("ChargingCharacteristics [Data= ");
-            sb.append(printDataArr(getData()));
-
+            
             if (normalCharging) {
                 sb.append(", normalCharging");
             }

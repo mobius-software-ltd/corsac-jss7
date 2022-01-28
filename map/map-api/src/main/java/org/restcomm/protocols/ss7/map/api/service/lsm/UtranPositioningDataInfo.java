@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.map.api.service.lsm;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -41,6 +43,5 @@ UtranPositioningDataInfo ::= OCTET STRING (SIZE (3..11))
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface UtranPositioningDataInfo {
 
-    byte[] getData();
-
+	ByteBuf getValue();
 }

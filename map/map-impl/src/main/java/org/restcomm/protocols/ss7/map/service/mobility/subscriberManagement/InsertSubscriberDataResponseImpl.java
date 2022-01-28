@@ -112,10 +112,8 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
         
         this.odbGeneralData = odbGeneralData;
         
-        if(regionalSubscriptionResponse!=null) {
-        	this.regionalSubscriptionResponse = new ASNRegionalSubscriptionResponse();
-        	this.regionalSubscriptionResponse.setType(regionalSubscriptionResponse);
-        }
+        if(regionalSubscriptionResponse!=null)
+        	this.regionalSubscriptionResponse = new ASNRegionalSubscriptionResponse(regionalSubscriptionResponse);        	
     }
 
     // For outgoing messages - MAP V3
@@ -137,11 +135,9 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
         
         this.odbGeneralData = odbGeneralData;
         
-        if(regionalSubscriptionResponse!=null) {
-        	this.regionalSubscriptionResponse = new ASNRegionalSubscriptionResponse();
-        	this.regionalSubscriptionResponse.setType(regionalSubscriptionResponse);
-        }
-        
+        if(regionalSubscriptionResponse!=null)
+        	this.regionalSubscriptionResponse = new ASNRegionalSubscriptionResponse(regionalSubscriptionResponse);
+        	
         if (mapProtocolVersion >= 3) {
             this.supportedCamelPhases = supportedCamelPhases;
             this.extensionContainer = extensionContainer;

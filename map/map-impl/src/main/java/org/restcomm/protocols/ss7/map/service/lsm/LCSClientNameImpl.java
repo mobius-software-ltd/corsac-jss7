@@ -68,10 +68,8 @@ public class LCSClientNameImpl implements LCSClientName {
         
         this.nameString = nameString;
         
-        if(lcsFormatIndicator!=null) {
-        	this.lcsFormatIndicator = new ASNLCSFormatIndicator();
-        	this.lcsFormatIndicator.setType(lcsFormatIndicator);
-        }
+        if(lcsFormatIndicator!=null)
+        	this.lcsFormatIndicator = new ASNLCSFormatIndicator(lcsFormatIndicator);        	
     }
 
     /*

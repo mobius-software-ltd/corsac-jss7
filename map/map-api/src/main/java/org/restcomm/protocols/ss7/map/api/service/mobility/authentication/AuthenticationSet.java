@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.authentication;
 
 import java.io.Serializable;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  AuthenticationSet ::= SEQUENCE { rand RAND, sres SRES, kc Kc, ...}
@@ -36,10 +38,10 @@ import java.io.Serializable;
  */
 public interface AuthenticationSet extends Serializable {
 
-    byte[] getRand();
+    ByteBuf getRand();
 
-    byte[] getSres();
+    ByteBuf getSres();
 
-    byte[] getKc();
+    ByteBuf getKc();
 
 }

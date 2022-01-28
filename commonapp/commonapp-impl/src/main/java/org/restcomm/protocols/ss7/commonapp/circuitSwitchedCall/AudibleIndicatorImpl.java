@@ -48,10 +48,8 @@ public class AudibleIndicatorImpl implements AudibleIndicator {
     }
 
     public AudibleIndicatorImpl(Boolean tone) {
-    	if(tone!=null) {
-    		this.tone = new ASNBoolean();
-    		this.tone.setValue(tone);
-    	}
+    	if(tone!=null)
+    		this.tone = new ASNBoolean(tone);    		
     }
 
     public AudibleIndicatorImpl(BurstList burstList) {

@@ -27,9 +27,8 @@ package org.restcomm.protocols.ss7.tcapAnsi.asn.comp;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=16,constructed=true,lengthIndefinite=false)
-public class ASNEmptyParameterImpl extends ASNOctetString {
-	
+public class ASNEmptyParameterImpl extends ASNOctetString2 {	
 }

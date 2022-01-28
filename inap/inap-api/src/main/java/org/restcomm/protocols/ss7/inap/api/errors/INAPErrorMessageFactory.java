@@ -21,6 +21,8 @@
  */
 package org.restcomm.protocols.ss7.inap.api.errors;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  * The factory of INAP ReturnError messages
  *
@@ -51,5 +53,5 @@ public interface INAPErrorMessageFactory {
     
     INAPErrorMessageImproperCallerResponseCS1Plus createINAPErrorMessageImproperCallerResponseCS1Plus(ImproperCallerResponseParameter improperCallerResponseParameter);
     
-    INAPErrorMessageOctetString createINAPErrorMessageOctetString(Long errorCode,byte[] parameter);
+    INAPErrorMessageOctetString createINAPErrorMessageOctetString(Long errorCode,ByteBuf parameter);
 }

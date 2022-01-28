@@ -74,7 +74,7 @@ public abstract class UserServiceInformationBaseImpl extends AbstractISUPParamet
     public void decode(ByteBuf b) throws ParameterException {
 
         if (b == null || b.readableBytes() < 2 || b.readableBytes() > 13) {
-            throw new IllegalArgumentException("byte[] must not be null and should be between 2 and 13 bytes in length");
+            throw new IllegalArgumentException("buffer must not be null and should be between 2 and 13 bytes in length");
         }
 
         int v = 0;
@@ -93,7 +93,7 @@ public abstract class UserServiceInformationBaseImpl extends AbstractISUPParamet
 
         if (this.informationTransferRate == _ITR_MULTIRATE) {
             if (b.readableBytes() == 0)
-                throw new IllegalArgumentException("byte[] should be at least 3 bytes in length");
+                throw new IllegalArgumentException("buffer should be at least 3 bytes in length");
 
             v = b.readByte();
             this.customInformationTransferRate = v & 0x7F;

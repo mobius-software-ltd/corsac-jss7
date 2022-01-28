@@ -116,30 +116,4 @@ public class AddressIndicatorTest {
         i2 = (byte) (138);
         assertEquals(i1, i2);
     }
-
-    /*@Test(groups = { "functional.encode", "indicator" })
-    public void testSerialize() throws Exception {
-        AddressIndicator ai = new AddressIndicator(false, true, RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN,
-                GlobalTitleIndicator.NO_GLOBAL_TITLE_INCLUDED);
-
-        // Writes
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(output);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-        // indentation).
-        writer.write(ai, "AddressIndicator", AddressIndicator.class);
-        writer.close();
-
-        System.out.println(output.toString());
-
-        ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
-        XMLObjectReader reader = XMLObjectReader.newInstance(input);
-        AddressIndicator aiOut = reader.read("AddressIndicator", AddressIndicator.class);
-
-        assertFalse(aiOut.isPCPresent());
-        assertTrue(aiOut.isSSNPresent());
-        assertEquals(aiOut.getGlobalTitleIndicator(), GlobalTitleIndicator.NO_GLOBAL_TITLE_INCLUDED);
-        assertEquals(aiOut.getRoutingIndicator(), RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN);
-        assertFalse(aiOut.isReservedForNationalUseBit());
-    }*/
 }

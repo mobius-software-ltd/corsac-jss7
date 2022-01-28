@@ -47,11 +47,9 @@ public class MAPErrorMessageCUGRejectImpl extends MAPErrorMessageImpl implements
     public MAPErrorMessageCUGRejectImpl(CUGRejectCause cugRejectCause, MAPExtensionContainer extensionContainer) {
         super((long) MAPErrorCode.cugReject);
 
-        if(cugRejectCause!=null){
-        	this.cugRejectCause = new ASNCUGRejectCauseImpl();
-        	this.cugRejectCause.setType(cugRejectCause);
-        }
-        
+        if(cugRejectCause!=null)
+        	this.cugRejectCause = new ASNCUGRejectCauseImpl(cugRejectCause);
+        	
         this.extensionContainer = extensionContainer;
     }
 
@@ -84,10 +82,8 @@ public class MAPErrorMessageCUGRejectImpl extends MAPErrorMessageImpl implements
     public void setCUGRejectCause(CUGRejectCause val) {
     	if(val==null)
     		cugRejectCause=null;
-    	else {
-    		cugRejectCause = new ASNCUGRejectCauseImpl();
-    		cugRejectCause.setType(val);
-    	}
+    	else
+    		cugRejectCause = new ASNCUGRejectCauseImpl(val);    	
     }
 
     @Override

@@ -68,18 +68,18 @@ public class MessageCompatibilityInformationImpl extends AbstractISUPParameter i
     @Override
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() == 0) {
-            throw new ParameterException("byte[] must  not be null and length must  be greater than 0");
+            throw new ParameterException("buffer must  not be null and length must  be greater than 0");
         }
 
         while(b.readableBytes()>0){
             int v = b.readByte();
             if(b.readableBytes()==0){
                 if( (v & 0x7F) == 0){
-                    throw new ParameterException("Extension bit indicates more content, but byte[] is done...");
+                    throw new ParameterException("Extension bit indicates more content, but buffer is done...");
                 }
             } else {
                 if( (v & 0x7F) == 1){
-                    throw new ParameterException("Extension bit indicates end of content, but byte[] is not done...");
+                    throw new ParameterException("Extension bit indicates end of content, but buffer is not done...");
                 }
             }
             MessageCompatibilityInstructionIndicatorImpl instructions = new MessageCompatibilityInstructionIndicatorImpl();

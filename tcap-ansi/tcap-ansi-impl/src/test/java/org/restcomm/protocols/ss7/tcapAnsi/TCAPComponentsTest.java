@@ -835,8 +835,7 @@ public class TCAPComponentsTest extends SccpHarness {
 //            oc.setNationalOperationCode(10L);
             invoke.setOperationCode(oc);
 
-            ComponentTestASN p=new ComponentTestASN();
-            p.setValue(Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4, 5 }));
+            ComponentTestASN p=new ComponentTestASN(Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4, 5 }));
             invoke.setSetParameter(p);
             invoke.setTimeout(timout);
             
@@ -1048,7 +1047,7 @@ public class TCAPComponentsTest extends SccpHarness {
      */
     class BadComponentMistypedComponent extends InvokeLastImpl {
     	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=30,constructed=false,index=-1)
-    	private ASNInteger unexpectedParam=new ASNInteger();
+    	private ASNInteger unexpectedParam=new ASNInteger((Long)null);
 		public BadComponentMistypedComponent() {
             this.setInvokeId(1l);
             OperationCode oc=TcapFactory.createNationalOperationCode(20L);            

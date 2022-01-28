@@ -43,11 +43,11 @@ public class SSStatusImpl extends ASNSingleByte implements SSStatus {
     }
 
     public SSStatusImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public SSStatusImpl(boolean qBit, boolean pBit, boolean rBit, boolean aBit) {
-    	setValue((qBit ? _mask_QBit : 0) + (pBit ? _mask_PBit : 0) + (rBit ? _mask_RBit : 0) + (aBit ? _mask_ABit : 0));
+    	super((qBit ? _mask_QBit : 0) + (pBit ? _mask_PBit : 0) + (rBit ? _mask_RBit : 0) + (aBit ? _mask_ABit : 0));
     }
 
     public int getData() {

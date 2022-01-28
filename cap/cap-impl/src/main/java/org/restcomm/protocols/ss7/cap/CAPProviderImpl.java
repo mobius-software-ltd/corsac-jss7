@@ -83,7 +83,8 @@ import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.DisconnectLegR
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.EstablishTemporaryConnectionRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.EventReportBCSMRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.FurnishChargingInformationRequestImpl;
-import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.InitialDPRequestImpl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.InitialDPRequestV1Impl;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.InitialDPRequestV3Impl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.InitiateCallAttemptRequestImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.InitiateCallAttemptResponseImpl;
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.MoveLegRequestImpl;
@@ -129,6 +130,7 @@ import org.restcomm.protocols.ss7.cap.service.sms.ResetTimerSMSRequestImpl;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ISUPParameterFactoryImpl;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
+import org.restcomm.protocols.ss7.tcap.api.OperationCodeWithACN;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.TCListener;
@@ -294,9 +296,16 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)CAPOperationCode.furnishChargingInformation);
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, FurnishChargingInformationRequestImpl.class);
+        	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)CAPOperationCode.initialDP);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InitialDPRequestImpl.class);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InitialDPRequestV1Impl.class);
+        	
+        	OperationCodeWithACN operationWithACN=new OperationCodeWithACN(opCode, CAPApplicationContext.CapV3_gsmSSF_scfGeneric.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InitialDPRequestV3Impl.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, CAPApplicationContext.CapV4_gsmSSF_scfGeneric.getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InitialDPRequestV3Impl.class);
+        	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)CAPOperationCode.initiateCallAttempt);
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InitiateCallAttemptRequestImpl.class);
@@ -414,7 +423,8 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         	tcapProvider.getParser().registerAlternativeClassMapping(EstablishTemporaryConnectionRequestImpl.class, EstablishTemporaryConnectionRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(EventReportBCSMRequestImpl.class, EventReportBCSMRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(FurnishChargingInformationRequestImpl.class, FurnishChargingInformationRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(InitialDPRequestImpl.class, InitialDPRequestImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(InitialDPRequestV1Impl.class, InitialDPRequestV1Impl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(InitialDPRequestV3Impl.class, InitialDPRequestV3Impl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(InitiateCallAttemptRequestImpl.class, InitiateCallAttemptRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(MoveLegRequestImpl.class, MoveLegRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(PlayAnnouncementRequestImpl.class, PlayAnnouncementRequestImpl.class);

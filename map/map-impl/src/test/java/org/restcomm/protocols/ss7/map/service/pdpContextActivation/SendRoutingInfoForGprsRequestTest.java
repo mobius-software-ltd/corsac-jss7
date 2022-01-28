@@ -42,6 +42,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -91,7 +92,7 @@ public class SendRoutingInfoForGprsRequestTest {
 
         assertEquals(impl.getImsi().getData(), "1111122222333");
         assertEquals(impl.getGgsnAddress().getGSNAddressAddressType(), GSNAddressAddressType.IPv4);
-        assertEquals(impl.getGgsnAddress().getGSNAddressData(), getAddressData());
+        assertTrue(ByteBufUtil.equals(impl.getGgsnAddress().getGSNAddressData(), Unpooled.wrappedBuffer(getAddressData())));
         assertEquals(impl.getGgsnNumber().getAddress(), "88880000");
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(impl.getExtensionContainer()));
     }
@@ -111,7 +112,7 @@ public class SendRoutingInfoForGprsRequestTest {
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        GSNAddressImpl ggsnAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4, getAddressData());
+        GSNAddressImpl ggsnAddress = new GSNAddressImpl(GSNAddressAddressType.IPv4, Unpooled.wrappedBuffer(getAddressData()));
         impl = new SendRoutingInfoForGprsRequestImpl(imsi, ggsnAddress, ggsnNumber, MAPExtensionContainerTest.GetTestExtensionContainer());
 
         buffer=parser.encode(impl);

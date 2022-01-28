@@ -26,10 +26,9 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfo;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -37,21 +36,26 @@ import io.netty.buffer.Unpooled;
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
-public class UtranPositioningDataInfoImpl extends ASNOctetString implements UtranPositioningDataInfo {
+public class UtranPositioningDataInfoImpl extends ASNOctetString2 implements UtranPositioningDataInfo {
 	public UtranPositioningDataInfoImpl() {
     }
 
-    public UtranPositioningDataInfoImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));        
+    public UtranPositioningDataInfoImpl(ByteBuf value) {
+    	super(value);        
     }
 
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("UtranPositioningDataInfoImpl");
+        sb.append(" [");
+        if (getValue()!=null) {
+            sb.append("data=");
+            sb.append(printDataArr());            
+        }
+        sb.append("]");
+
+        return sb.toString();
     }
 }

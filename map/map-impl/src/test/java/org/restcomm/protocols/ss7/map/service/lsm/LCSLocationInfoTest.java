@@ -49,6 +49,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -113,7 +114,7 @@ public class LCSLocationInfoTest {
         assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlan.ISDN);
         assertTrue(networkNodeNumber.getAddress().equals("55619007"));
 
-        assertTrue(Arrays.equals(imp.getLMSI().getData(), getDataLmsi()));
+        assertTrue(ByteBufUtil.equals(imp.getLMSI().getValue(),Unpooled.wrappedBuffer(getDataLmsi())));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(imp.getExtensionContainer()));
         assertTrue(imp.getGprsNodeIndicator());
 
@@ -132,8 +133,8 @@ public class LCSLocationInfoTest {
         assertTrue(additionalLCSCapabilitySets.getCapabilitySetRelease5());
         assertFalse(additionalLCSCapabilitySets.getCapabilitySetRelease6());
 
-        assertTrue(Arrays.equals(imp.getMmeName().getData(), getDataMmeName()));
-        assertTrue(Arrays.equals(imp.getAaaServerName().getData(), getDataAaaServerName()));
+        assertTrue(ByteBufUtil.equals(imp.getMmeName().getValue(), Unpooled.wrappedBuffer(getDataMmeName())));
+        assertTrue(ByteBufUtil.equals(imp.getAaaServerName().getValue(), Unpooled.wrappedBuffer(getDataAaaServerName())));
     }
 
     @Test(groups = { "functional.encode", "service.lsm" })
@@ -145,7 +146,7 @@ public class LCSLocationInfoTest {
 
         ISDNAddressString networkNodeNumber = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "55619007");
-        LMSIImpl lmsi = new LMSIImpl(getDataLmsi());
+        LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(getDataLmsi()));
         ISDNAddressString mscNumber = MAPParameterFactory.createISDNAddressString(AddressNature.international_number,
                 NumberingPlan.ISDN, "2222112222");
         AdditionalNumberImpl additionalNumber = new AdditionalNumberImpl(mscNumber, null);
@@ -153,8 +154,8 @@ public class LCSLocationInfoTest {
                 false, false);
         SupportedLCSCapabilitySetsImpl additionalLCSCapabilitySets = new SupportedLCSCapabilitySetsImpl(true, true, true,
                 false, false);
-        DiameterIdentityImpl mmeName = new DiameterIdentityImpl(getDataMmeName());
-        DiameterIdentityImpl aaaServerName = new DiameterIdentityImpl(getDataAaaServerName());
+        DiameterIdentityImpl mmeName = new DiameterIdentityImpl(Unpooled.wrappedBuffer(getDataMmeName()));
+        DiameterIdentityImpl aaaServerName = new DiameterIdentityImpl(Unpooled.wrappedBuffer(getDataAaaServerName()));
 
         LCSLocationInfoImpl imp = new LCSLocationInfoImpl(networkNodeNumber, lmsi,
                 MAPExtensionContainerTest.GetTestExtensionContainer(), true, additionalNumber, supportedLCSCapabilitySets,

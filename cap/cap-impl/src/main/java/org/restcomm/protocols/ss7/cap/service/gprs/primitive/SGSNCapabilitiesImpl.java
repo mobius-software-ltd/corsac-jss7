@@ -35,11 +35,11 @@ public class SGSNCapabilitiesImpl extends ASNSingleByte implements SGSNCapabilit
     }
 
     public SGSNCapabilitiesImpl(int data) {
-        setValue(data);
+    	super(data);
     }
 
     public SGSNCapabilitiesImpl(boolean aoCSupportedBySGSN) {
-        setValue(aoCSupportedBySGSN ? 0x01 : 0x00);
+    	super(aoCSupportedBySGSN ? 0x01 : 0x00);
     }
 
     public int getData() {

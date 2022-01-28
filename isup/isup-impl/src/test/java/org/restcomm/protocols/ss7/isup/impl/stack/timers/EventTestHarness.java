@@ -149,15 +149,7 @@ public abstract class EventTestHarness /* extends TestCase */implements ISUPList
         int ni = 2;
         int sls = 3;
         // int ssi = ni << 2;
-
-        // ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        // // encoding routing label
-        // bout.write((byte) (((ssi & 0x0F) << 4) | (si & 0x0F)));
-        // bout.write((byte) dpc);
-        // bout.write((byte) (((dpc >> 8) & 0x3F) | ((opc & 0x03) << 6)));
-        // bout.write((byte) (opc >> 2));
-        // bout.write((byte) (((opc >> 10) & 0x0F) | ((sls & 0x0F) << 4)));
-
+       
         try {
         	ByteBuf message=Unpooled.buffer(255);
             ((AbstractISUPMessage) answer).encode(message);
@@ -329,124 +321,6 @@ public abstract class EventTestHarness /* extends TestCase */implements ISUPList
                 fail("Failed on message write: " + e);
             }
         }
-
-        // private ArrayList<byte[]> toRead = new ArrayList();
-        // // /* (non-Javadoc)
-        // // * @see org.restcomm.protocols.ss7.mtp.Mtp3UserPart#execute()
-        // // */
-        // // @Override
-        // // public void execute() throws IOException {
-        // //
-        // //
-        // // }
-        //
-        // /* (non-Javadoc)
-        // * @see org.restcomm.protocols.ss7.mtp.Mtp3UserPart#read(io.netty.buffer.ByteBuf)
-        // */
-        // @Override
-        // public int read(ByteBuffer arg0) throws IOException {
-        // if(toRead.size()>0)
-        // {
-        // byte[] data = toRead.remove(0);
-        // arg0.put(data);
-        // return data.length;
-        // }
-        // return 0;
-        // }
-        //
-        // /* (non-Javadoc)
-        // * @see org.restcomm.protocols.ss7.mtp.Mtp3UserPart#write(io.netty.buffer.ByteBuf)
-        // */
-        // @Override
-        // public int write(ByteBuffer arg0) throws IOException {
-        // // here we have to parse ISUPMsg and store in receivedRemote
-        // long tstamp = System.currentTimeMillis();
-        // byte[] msu = new byte[arg0.limit()];
-        // arg0.get(msu);
-        // //arg0.s
-        // // FIXME: change this, dont copy over and over.
-        // int commandCode = msu[7];// 3(RL) + 1(SI)+2(CIC) -
-        // // http://pt.com/page/tutorials/ss7-tutorial/mtp
-        // byte[] payload = new byte[msu.length - 5];
-        // System.arraycopy(msu, 5, payload, 0, payload.length);
-        // // for post processing
-        // AbstractISUPMessage msg = (AbstractISUPMessage) provider.getMessageFactory().createCommand(commandCode);
-        // try {
-        // msg.decode(payload, provider.getParameterFactory());
-        // MessageEventReceived event = new MessageEventReceived(tstamp, new ISUPEvent(provider, msg));
-        // remoteEventsReceived.add(event);
-        // return msu.length;
-        // } catch (ParameterException e) {
-        // e.printStackTrace();
-        // fail("Failed on message write: " + e);
-        // }
-        // return 0;
-        // }
-        //
-        // public void print(StringBuffer sb, int leftPad, int descPad) {
-        // // left pad
-        // FormatterHelp.createPad(sb, leftPad);
-        //
-        // // Add name
-        // sb.append(this.linksetName);
-        //
-        // // check if length is less than Link.NAME_SIZE, add padding
-        // if (this.linksetName.length() < Linkset.NAME_SIZE) {
-        // FormatterHelp.createPad(sb, Linkset.NAME_SIZE - this.linksetName.length());
-        // }
-        //
-        // // add desc padding
-        // FormatterHelp.createPad(sb, descPad);
-        //
-        // // type is dahdi
-        // sb.append("dahdi");
-        //
-        // // add desc padding
-        // FormatterHelp.createPad(sb, descPad);
-        //
-        // // add opc
-        // sb.append(LINKSET_OPC).append(FormatterHelp.EQUAL_SIGN).append(this.opc);
-        //
-        // // opc can be max 8 (ANSI is max 24bits) digits. Add padding if its not
-        // int length = (Integer.toString(this.opc).length());
-        // if (length < 8) {
-        // FormatterHelp.createPad(sb, 8 - length);
-        // }
-        //
-        // // add desc padding
-        // FormatterHelp.createPad(sb, descPad);
-        //
-        // // add apc
-        // sb.append(LINKSET_APC).append(FormatterHelp.EQUAL_SIGN).append(this.apc);
-        //
-        // // opc can be max 8 (ANSI is max 24bits) digits. Add padding if its not
-        // length = (Integer.toString(this.apc).length());
-        // if (length < 8) {
-        // FormatterHelp.createPad(sb, 8 - length);
-        // }
-        //
-        // // add desc padding
-        // FormatterHelp.createPad(sb, descPad);
-        //
-        // // add NI
-        // sb.append(LINKSET_NI).append(FormatterHelp.EQUAL_SIGN).append(this.ni);
-        //
-        // // add desc padding
-        // FormatterHelp.createPad(sb, descPad);
-        //
-        // // add state
-        // sb.append(LINKSET_STATE).append(FormatterHelp.EQUAL_SIGN).append(FormatterHelp.getLinksetState(this.state));
-        //
-        // sb.append(FormatterHelp.NEW_LINE);
-        //
-        // for (FastMap.Entry<String, Link> e = this.links.head(), end = this.links.tail(); (e = e.getNext()) != end;) {
-        // Link link = e.getValue();
-        // link.print(sb, 4, 2);
-        // sb.append(FormatterHelp.NEW_LINE);
-        // }
-        //
-        // }
-
     }
 
 }

@@ -101,11 +101,9 @@ public class TNoAnswerRequestImpl extends CircuitSwitchedCallMessageImpl impleme
         if(calledFacilityGroup!=null)
         	this.calledFacilityGroup=new FacilityGroupWrapperImpl(calledFacilityGroup);
         
-        if(calledFacilityGroupMember!=null) {
-        	this.calledFacilityGroupMember=new ASNInteger();
-        	this.calledFacilityGroupMember.setValue(calledFacilityGroupMember.longValue());
-        }
-        
+        if(calledFacilityGroupMember!=null)
+        	this.calledFacilityGroupMember=new ASNInteger(calledFacilityGroupMember);
+        	
         this.originalCalledPartyID=originalCalledPartyID;
         this.redirectingPartyID=redirectingPartyID;
         this.redirectionInformation=redirectionInformation;
@@ -148,10 +146,10 @@ public class TNoAnswerRequestImpl extends CircuitSwitchedCallMessageImpl impleme
 
     @Override
     public Integer getCalledFacilityGroupMember() {
-    	if(calledFacilityGroupMember==null || calledFacilityGroupMember.getValue()==null)
+    	if(calledFacilityGroupMember==null)
     		return null;
     	
-		return calledFacilityGroupMember.getValue().intValue();
+		return calledFacilityGroupMember.getIntValue();
 	}
 
     @Override

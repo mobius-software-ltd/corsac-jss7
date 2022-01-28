@@ -46,24 +46,22 @@ public class PeriodicLDRInfoImpl implements PeriodicLDRInfo {
     }
 
     public PeriodicLDRInfoImpl(int reportingAmount, int reportingInterval) {    	
-        this.reportingAmount = new ASNInteger();
-        this.reportingAmount.setValue((long)reportingAmount & 0x0FFFFFFFFL);        
-        this.reportingInterval = new ASNInteger();
-        this.reportingInterval.setValue((long)reportingInterval & 0x0FFFFFFFFL);
+        this.reportingAmount = new ASNInteger(reportingAmount);
+        this.reportingInterval = new ASNInteger(reportingInterval);        
     }
 
     public int getReportingAmount() {
     	if(reportingAmount==null)
     		return 0;
     	
-        return reportingAmount.getValue().intValue();
+        return reportingAmount.getIntValue();
     }
 
     public int getReportingInterval() {
     	if(reportingInterval==null)
     		return 0;
     	
-        return reportingInterval.getValue().intValue();
+        return reportingInterval.getIntValue();
     }
 
     @Override

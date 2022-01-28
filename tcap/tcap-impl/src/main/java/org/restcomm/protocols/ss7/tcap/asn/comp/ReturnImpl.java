@@ -87,9 +87,7 @@ public class ReturnImpl implements Return {
         if ((i == null) || (i < -128 || i > 127)) {
             throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
         }
-        this.invokeId = new ASNInteger();
-        this.invokeId.setValue(i);
-
+        this.invokeId = new ASNInteger(i);
     }
 
     /*

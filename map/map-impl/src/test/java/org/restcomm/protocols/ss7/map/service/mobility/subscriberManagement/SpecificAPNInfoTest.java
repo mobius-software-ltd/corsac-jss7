@@ -26,8 +26,6 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
-import java.util.Arrays;
-
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.FQDN;
@@ -39,6 +37,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -49,7 +48,7 @@ import io.netty.buffer.Unpooled;
 public class SpecificAPNInfoTest {
 
 	public byte[] getData() {
-        return new byte[] { 48, 110, -128, 2, 11, 12, -95, 63, -128, 3, 5, 6, 7, -127, 3, 5, 6, 7, -126, 10, 4, 1, 6, 8, 3, 2,
+        return new byte[] { 48, 111, -128, 3, 2, 11, 12, -95, 63, -128, 3, 5, 6, 7, -127, 3, 5, 6, 7, -126, 10, 4, 1, 6, 8, 3, 2,
                 5, 6, 1, 7, -93, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3,
                 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -94, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14,
                 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
@@ -81,13 +80,13 @@ public class SpecificAPNInfoTest {
         PDNGWIdentity pdnGWIdentity = prim.getPdnGwIdentity();
         PDPAddress pdnGwIpv4Address = pdnGWIdentity.getPdnGwIpv4Address();
         assertNotNull(pdnGwIpv4Address);
-        assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv4Address.getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(this.getPDPAddressData()), pdnGwIpv4Address.getValue()));
         PDPAddress pdnGwIpv6Address = pdnGWIdentity.getPdnGwIpv6Address();
         assertNotNull(pdnGwIpv6Address);
-        assertTrue(Arrays.equals(this.getPDPAddressData(), pdnGwIpv6Address.getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(this.getPDPAddressData()), pdnGwIpv6Address.getValue()));
         FQDN pdnGwName = pdnGWIdentity.getPdnGwName();
         assertNotNull(pdnGwName);
-        assertTrue(Arrays.equals(this.getFQDNData(), pdnGwName.getData()));
+        assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(this.getFQDNData()), pdnGwName.getValue()));
         assertNotNull(pdnGWIdentity.getExtensionContainer());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(pdnGWIdentity.getExtensionContainer()));
 
@@ -95,7 +94,7 @@ public class SpecificAPNInfoTest {
         assertNotNull(extensionContainer);
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
 
-        assertEquals(prim.getAPN().getData(), this.getDataAPN());
+        assertEquals(prim.getAPN().getApn(), new String(this.getDataAPN()));
 
     }
 
@@ -105,10 +104,10 @@ public class SpecificAPNInfoTest {
     	parser.replaceClass(SpecificAPNInfoImpl.class);
     	
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        APNImpl apn = new APNImpl(this.getDataAPN());
-        PDPAddressImpl pdnGwIpv4Address = new PDPAddressImpl(this.getPDPAddressData());
-        PDPAddressImpl pdnGwIpv6Address = new PDPAddressImpl(this.getPDPAddressData());
-        FQDNImpl pdnGwName = new FQDNImpl(this.getFQDNData());
+        APNImpl apn = new APNImpl(new String(this.getDataAPN()));
+        PDPAddressImpl pdnGwIpv4Address = new PDPAddressImpl(Unpooled.wrappedBuffer(this.getPDPAddressData()));
+        PDPAddressImpl pdnGwIpv6Address = new PDPAddressImpl(Unpooled.wrappedBuffer(this.getPDPAddressData()));
+        FQDNImpl pdnGwName = new FQDNImpl(Unpooled.wrappedBuffer(this.getFQDNData()));
         PDNGWIdentityImpl pdnGwIdentity = new PDNGWIdentityImpl(pdnGwIpv4Address, pdnGwIpv6Address, pdnGwName,
                 extensionContainer);
         SpecificAPNInfoImpl prim = new SpecificAPNInfoImpl(apn, pdnGwIdentity, extensionContainer);

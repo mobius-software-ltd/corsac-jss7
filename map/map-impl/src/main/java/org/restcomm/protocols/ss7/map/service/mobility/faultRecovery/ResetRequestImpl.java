@@ -66,11 +66,9 @@ public class ResetRequestImpl extends MobilityMessageImpl implements ResetReques
     }
 
     public ResetRequestImpl(NetworkResource networkResource, ISDNAddressString hlrNumber, List<IMSI> hlrList, long mapProtocolVersion) {
-        if(networkResource!=null) {
-        	this.networkResource = new ASNNetworkResourceImpl();
-        	this.networkResource.setType(networkResource);
-        }
-        
+        if(networkResource!=null)
+        	this.networkResource = new ASNNetworkResourceImpl(networkResource);
+        	
         this.hlrNumber = hlrNumber;
         
         if(hlrList!=null)

@@ -77,11 +77,9 @@ public class ForwardingFeatureImpl implements ForwardingFeature {
         this.forwardedToSubaddress = forwardedToSubaddress;
         this.forwardingOptions = forwardingOptions;
         
-        if(noReplyConditionTime!=null) {
-        	this.noReplyConditionTime = new ASNInteger();
-        	this.noReplyConditionTime.setValue(noReplyConditionTime.longValue());
-        }
-        
+        if(noReplyConditionTime!=null)
+        	this.noReplyConditionTime = new ASNInteger(noReplyConditionTime);
+        	
         this.longForwardedToNumber = longForwardedToNumber;
     }
 
@@ -109,7 +107,7 @@ public class ForwardingFeatureImpl implements ForwardingFeature {
     	if(noReplyConditionTime==null)
     		return null;
     	
-        return noReplyConditionTime.getValue().intValue();
+        return noReplyConditionTime.getIntValue();
     }
 
     public FTNAddressString getLongForwardedToNumber() {

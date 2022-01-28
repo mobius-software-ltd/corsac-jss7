@@ -78,7 +78,7 @@ public class NetworkSpecificFacilityImpl extends AbstractISUPParameter implement
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() < 1) {
-            throw new ParameterException("byte[] must nto be null or have length greater than 1");
+            throw new ParameterException("buffer must nto be null or have length greater than 1");
         }
         // try {
         this.lengthOfNetworkIdentification = b.readByte();

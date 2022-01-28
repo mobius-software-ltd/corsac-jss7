@@ -68,11 +68,9 @@ public class CheckImeiResponseImplV3 extends MobilityMessageImpl implements Chec
             MAPExtensionContainer extensionContainer) {
         this.mapProtocolVersion = mapProtocolVersion;
         
-        if(equipmentStatus!=null) {
-        	this.equipmentStatus = new ASNEquipmentStatusImpl();
-        	this.equipmentStatus.setType(equipmentStatus);
-        }
-        
+        if(equipmentStatus!=null)
+        	this.equipmentStatus = new ASNEquipmentStatusImpl(equipmentStatus);
+        	
         this.bmuef = bmuef;
         this.extensionContainer = extensionContainer;
     }

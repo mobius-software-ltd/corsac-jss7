@@ -89,11 +89,9 @@ public class ExtForwFeatureImpl implements ExtForwFeature {
         this.forwardedToSubaddress = forwardedToSubaddress;
         this.forwardingOptions = forwardingOptions;
         
-        if(noReplyConditionTime!=null) {
-        	this.noReplyConditionTime = new ASNInteger();
-        	this.noReplyConditionTime.setValue(noReplyConditionTime.longValue());
-        }
-        
+        if(noReplyConditionTime!=null)
+        	this.noReplyConditionTime = new ASNInteger(noReplyConditionTime);
+        	
         this.extensionContainer = extensionContainer;
         this.longForwardedToNumber = longForwardedToNumber;
     }
@@ -122,7 +120,7 @@ public class ExtForwFeatureImpl implements ExtForwFeature {
     	if(this.noReplyConditionTime==null)
     		return null;
     	
-        return this.noReplyConditionTime.getValue().intValue();
+        return this.noReplyConditionTime.getIntValue();
     }
 
     public MAPExtensionContainer getExtensionContainer() {

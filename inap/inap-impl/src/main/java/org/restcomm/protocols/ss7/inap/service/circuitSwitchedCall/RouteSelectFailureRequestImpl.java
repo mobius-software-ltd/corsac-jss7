@@ -128,11 +128,9 @@ public class RouteSelectFailureRequestImpl extends CircuitSwitchedCallMessageImp
         if(callingFacilityGroup!=null)
         	this.callingFacilityGroup=new FacilityGroupWrapperImpl(callingFacilityGroup);
         
-        if(callingFacilityGroupMember!=null) {
-        	this.callingFacilityGroupMember=new ASNInteger();
-        	this.callingFacilityGroupMember.setValue(callingFacilityGroupMember.longValue());
-        }
-        
+        if(callingFacilityGroupMember!=null)
+        	this.callingFacilityGroupMember=new ASNInteger(callingFacilityGroupMember);
+        	
         this.failureCause=failureCause;
         this.originalCalledPartyID=originalCalledPartyID;
         this.prefix=prefix;
@@ -184,10 +182,10 @@ public class RouteSelectFailureRequestImpl extends CircuitSwitchedCallMessageImp
 
     @Override
     public Integer getCallingFacilityGroupMember() {
-    	if(callingFacilityGroupMember==null || callingFacilityGroupMember.getValue()==null)
+    	if(callingFacilityGroupMember==null)
     		return null;
     	
-		return callingFacilityGroupMember.getValue().intValue();
+		return callingFacilityGroupMember.getIntValue();
 	}
 
     @Override

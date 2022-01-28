@@ -66,7 +66,7 @@ public class GT0010Test {
     public void testDecodeEven() throws Exception {
         // TODO: we are testing here BCD even. We will need to add national encoding when we add soem staff
 
-        // create GT object and read data from stream
+        // create GT object and read data from ByteBuf
         GlobalTitle0010Impl gt1 = new GlobalTitle0010Impl();
         gt1.decode(Unpooled.wrappedBuffer(data), factory, SccpProtocolVersion.ITU);
 
@@ -85,27 +85,4 @@ public class GT0010Test {
         gt.encode(bout, false, SccpProtocolVersion.ITU);
         MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(data), bout);
     }
-
-    /*@Test(groups = { "parameter", "functional.encode" })
-    public void testSerialization() throws Exception {
-        GlobalTitle0010Impl gt = new GlobalTitle0010Impl("9023629581",0);
-
-        // Writes
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(output);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-        // indentation).
-        writer.write(gt, "GT0010", GlobalTitle0010Impl.class);
-        writer.close();
-
-        System.out.println(output.toString());
-
-        ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
-        XMLObjectReader reader = XMLObjectReader.newInstance(input);
-        GlobalTitle0010Impl aiOut = reader.read("GT0010", GlobalTitle0010Impl.class);
-
-        // check results
-        assertEquals(aiOut.getTranslationType(), 0);
-        assertEquals(aiOut.getDigits(), "9023629581");
-    }*/
 }

@@ -60,11 +60,9 @@ public class LSAInformationImpl implements LSAInformation {
         if(completeDataListIncluded)
         	this.completeDataListIncluded = new ASNNull();
         
-        if(lsaOnlyAccessIndicator!=null) {
-        	this.lsaOnlyAccessIndicator = new ASNLSAOnlyAccessIndicator();
-        	this.lsaOnlyAccessIndicator.setType(lsaOnlyAccessIndicator);
-        }
-        
+        if(lsaOnlyAccessIndicator!=null)
+        	this.lsaOnlyAccessIndicator = new ASNLSAOnlyAccessIndicator(lsaOnlyAccessIndicator);
+        	
         if(lsaDataList!=null)
         	this.lsaDataList = new LSADataListWrapperImpl(lsaDataList);
         

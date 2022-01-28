@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -55,8 +57,8 @@ User Address IE. In this case the address is negotiated later as part of the PPP
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface PDPType {
 
-    byte[] getData();
-
-    PDPTypeValue getPDPTypeValue();
+	ByteBuf getValue();
+	
+	PDPTypeValue getPDPTypeValue();
 
 }

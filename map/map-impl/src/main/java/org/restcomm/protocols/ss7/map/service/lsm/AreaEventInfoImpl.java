@@ -61,15 +61,11 @@ public class AreaEventInfoImpl implements AreaEventInfo {
     public AreaEventInfoImpl(AreaDefinition areaDefinition, OccurrenceInfo occurrenceInfo, Integer intervalTime) {
         this.areaDefinition = areaDefinition;
         
-        if(occurrenceInfo!=null) {
-        	this.occurrenceInfo = new ASNOccurenceInfo();
-        	this.occurrenceInfo.setType(occurrenceInfo);
-        }
-        
-        if(intervalTime!=null) {
-        	this.intervalTime = new ASNInteger();
-        	this.intervalTime.setValue(intervalTime.longValue());
-        }
+        if(occurrenceInfo!=null)
+        	this.occurrenceInfo = new ASNOccurenceInfo(occurrenceInfo);
+        	
+        if(intervalTime!=null)
+        	this.intervalTime = new ASNInteger(intervalTime);        	
     }
 
     /*
@@ -102,7 +98,7 @@ public class AreaEventInfoImpl implements AreaEventInfo {
     	if(this.intervalTime==null)
     		return null;
     	
-        return this.intervalTime.getValue().intValue();
+        return this.intervalTime.getIntValue();
     }
 
     @Override

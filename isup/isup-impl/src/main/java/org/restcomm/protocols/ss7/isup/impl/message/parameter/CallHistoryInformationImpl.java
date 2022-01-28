@@ -30,10 +30,10 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallHistoryInformation;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:15:04:29 2009-03-30<br>
@@ -63,7 +63,7 @@ public class CallHistoryInformationImpl extends AbstractISUPParameter implements
     public void decode(ByteBuf b) throws ParameterException {
         // This one is other way around, as Eduardo might say.
         if (b == null || b.readableBytes() != 2) {
-            throw new IllegalArgumentException("byte[] must  not be null and length must be 2");
+            throw new IllegalArgumentException("buffer must  not be null and length must be 2");
         }
 
         // this.callHistory = b[0] << 8;

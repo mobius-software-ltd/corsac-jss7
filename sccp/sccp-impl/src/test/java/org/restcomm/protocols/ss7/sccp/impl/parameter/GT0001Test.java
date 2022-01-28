@@ -76,7 +76,7 @@ public class GT0001Test {
     @Test(groups = { "parameter", "functional.decode" })
     public void testDecodeEven() throws Exception {
     	
-    	// create GT object and read data from stream
+    	// create GT object and read data from ByteBuf
         GlobalTitle0001Impl gt1 = new GlobalTitle0001Impl();
         gt1.decode(Unpooled.wrappedBuffer(dataEven), factory, SccpProtocolVersion.ITU);
 
@@ -101,7 +101,7 @@ public class GT0001Test {
      */
     @Test(groups = { "parameter", "functional.decode" })
     public void testDecodeOdd() throws Exception {
-        // create GT object and read data from stream
+        // create GT object and read data from ByteBuf
         GlobalTitle0001Impl gt1 = new GlobalTitle0001Impl();
         gt1.decode(Unpooled.wrappedBuffer(dataOdd), factory, SccpProtocolVersion.ITU);
         // check results
@@ -119,27 +119,4 @@ public class GT0001Test {
         gt.encode(bout, false, SccpProtocolVersion.ITU);
         MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(dataOdd), bout);
     }
-
-    /*@Test(groups = { "parameter", "functional.encode" })
-    public void testSerialization() throws Exception {
-        GlobalTitle0001Impl gt = new GlobalTitle0001Impl("9023629581",NatureOfAddress.NATIONAL);
-
-        // Writes
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(output);
-        writer.setIndentation("\t"); // Optional (use tabulation for
-        // indentation).
-        writer.write(gt, "GT0001", GlobalTitle0001Impl.class);
-        writer.close();
-
-        System.out.println(output.toString());
-
-        ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
-        XMLObjectReader reader = XMLObjectReader.newInstance(input);
-        GlobalTitle0001Impl aiOut = reader.read("GT0001", GlobalTitle0001Impl.class);
-
-        // check results
-        assertEquals(aiOut.getNatureOfAddress(), NatureOfAddress.NATIONAL);
-        assertEquals(aiOut.getDigits(), "9023629581");
-    }*/
 }

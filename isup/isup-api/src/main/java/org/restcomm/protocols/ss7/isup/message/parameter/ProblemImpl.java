@@ -71,8 +71,7 @@ public class ProblemImpl {
      * @param generalProblemType the generalProblemType to set
      */
     public void setGeneralProblemType(GeneralProblemType generalProblemType) {
-        this.generalProblemType = new ASNGeneralProblemType();
-        this.generalProblemType.setType(generalProblemType);
+        this.generalProblemType = new ASNGeneralProblemType(generalProblemType);        
     }
 
     /**
@@ -90,8 +89,7 @@ public class ProblemImpl {
      * @param invokeProblemType the invokeProblemType to set
      */
     public void setInvokeProblemType(InvokeProblemType invokeProblemType) {
-        this.invokeProblemType = new ASNInvokeProblemType();
-        this.invokeProblemType.setType(invokeProblemType);
+        this.invokeProblemType = new ASNInvokeProblemType(invokeProblemType);        
     }
 
     /**
@@ -109,8 +107,7 @@ public class ProblemImpl {
      * @param returnErrorProblemType the returnErrorProblemType to set
      */
     public void setReturnErrorProblemType(ReturnErrorProblemType returnErrorProblemType) {
-        this.returnErrorProblemType = new ASNReturnErrorProblemType();
-        this.returnErrorProblemType.setType(returnErrorProblemType);
+        this.returnErrorProblemType = new ASNReturnErrorProblemType(returnErrorProblemType);        
     }
 
     /**
@@ -128,8 +125,7 @@ public class ProblemImpl {
      * @param returnResultProblemType the returnResultProblemType to set
      */
     public void setReturnResultProblemType(ReturnResultProblemType returnResultProblemType) {
-        this.returnResultProblemType = new ASNReturnResultProblemType();
-        this.returnResultProblemType.setType(returnResultProblemType);
+        this.returnResultProblemType = new ASNReturnResultProblemType(returnResultProblemType);        
     }
 
     public String getStringValue() {

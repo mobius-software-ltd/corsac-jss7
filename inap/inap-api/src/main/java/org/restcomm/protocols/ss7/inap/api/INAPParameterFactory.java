@@ -113,7 +113,6 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoDpAssignm
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.TimeAndTimezone;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeodeticInformation;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeographicalInformation;
@@ -257,6 +256,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle0100;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  * @author sergey vetyutnev
@@ -265,24 +266,14 @@ import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle0100;
  */
 public interface INAPParameterFactory {
 
-	CauseIsup createCause(byte[] data);
+	CauseIsup createCause(CauseIndicators causeIndicators) throws INAPException;
 
-    CauseIsup createCause(CauseIndicators causeIndicators) throws INAPException;
-
-    ForwardCallIndicatorsIsup createForwardCallIndicatorsIsup(byte[] data);
-
-    ForwardCallIndicatorsIsup createForwardCallIndicatorsIsup(ForwardCallIndicators forwardCallIndicators) throws INAPException;
+	ForwardCallIndicatorsIsup createForwardCallIndicatorsIsup(ForwardCallIndicators forwardCallIndicators) throws INAPException;
     
-    ForwardGVNSIsup createForwardGVNS(byte[] data);
-
     ForwardGVNSIsup createForwardGVNS(ForwardGVNS forwardGVNS) throws INAPException;
         
-    ISDNAccessRelatedInformationIsup createISDNAccessRelatedInformationIsup(byte[] data);
-
     ISDNAccessRelatedInformationIsup createISDNAccessRelatedInformationIsup(LocationNumber locationNumber) throws INAPException;
     
-    OriginalCalledPartyIDIsup createOriginalCalledPartyIDIsup(byte[] data);
-
     OriginalCalledPartyIDIsup createOriginalCalledPartyIDIsup(OriginalCalledNumber originalCalledNumber) throws INAPException;
     
     DpSpecificCriteria createDpSpecificCriteria(Integer applicationTimer);
@@ -297,53 +288,35 @@ public interface INAPParameterFactory {
     CalledPartyBCDNumber createCalledPartyBCDNumber(AddressNature addressNature, NumberingPlan numberingPlan,
             String address) throws INAPException;
 
-    ExtensionField createExtensionField(Integer localCode, CriticalityType criticalityType, byte[] data, boolean isConstructed);
+    ExtensionField createExtensionField(Integer localCode, CriticalityType criticalityType, ByteBuf data, boolean isConstructed);
 
-    ExtensionField createExtensionField(List<Long> globalCode, CriticalityType criticalityType, byte[] data, boolean isConstructed);
+    ExtensionField createExtensionField(List<Long> globalCode, CriticalityType criticalityType, ByteBuf data, boolean isConstructed);
 
     CAPINAPExtensions createINAPExtensions(List<ExtensionField> fieldsList);
 
-    AChBillingChargingCharacteristics createAChBillingChargingCharacteristics(byte[] data);
+    AChBillingChargingCharacteristics createAChBillingChargingCharacteristics(ByteBuf data);
 
     DateAndTime createDateAndTime(int year, int month, int day, int hour, int minute, int second);
 
     TimeAndTimezone createTimeAndTimezone(int year, int month, int day, int hour, int minute, int second, int timeZone);
 
-    BearerIsup createBearer(byte[] data);
-
     BearerIsup createBearer(UserServiceInformation userServiceInformation) throws INAPException;
 
     BearerCapability createBearerCapability(BearerIsup bearer);
-
-    DigitsIsup createDigits_GenericNumber(byte[] data);
-
-    DigitsIsup createDigits_GenericDigits(byte[] data);
 
     DigitsIsup createDigits_GenericNumber(GenericNumber genericNumber) throws INAPException;
 
     DigitsIsup createDigits_GenericDigits(GenericDigits genericDigits) throws INAPException;
 
-    CalledPartyNumberIsup createCalledPartyNumber(byte[] data);
-
     CalledPartyNumberIsup createCalledPartyNumber(CalledPartyNumber calledPartyNumber) throws INAPException;
-
-    CallingPartyNumberIsup createCallingPartyNumber(byte[] data);
 
     CallingPartyNumberIsup createCallingPartyNumber(CallingPartyNumber callingPartyNumber) throws INAPException;
 
-    GenericNumberIsup createGenericNumber(byte[] data);
-
     GenericNumberIsup createGenericNumber(GenericNumber genericNumber) throws INAPException;
-
-    LocationNumberIsup createLocationNumber(byte[] data);
 
     LocationNumberIsup createLocationNumber(LocationNumber locationNumber) throws INAPException;
 
-    OriginalCalledNumberIsup createOriginalCalledNumber(byte[] data);
-
     OriginalCalledNumberIsup createOriginalCalledNumber(OriginalCalledNumber originalCalledNumber) throws INAPException;
-
-    RedirectingPartyIDIsup createRedirectingPartyID(byte[] data);
 
     RedirectingPartyIDIsup createRedirectingPartyID(RedirectingNumber redirectingNumber) throws INAPException;
 
@@ -407,15 +380,11 @@ public interface INAPParameterFactory {
 
     IPSSPCapabilities createIPSSPCapabilities(boolean IPRoutingAddressSupported, boolean VoiceBackSupported,
             boolean VoiceInformationSupportedViaSpeechRecognition, boolean VoiceInformationSupportedViaVoiceRecognition,
-            boolean GenerationOfVoiceAnnouncementsFromTextSupported, byte[] extraData);
+            boolean GenerationOfVoiceAnnouncementsFromTextSupported, ByteBuf extraData);
 
     AlertingPatternWrapper createAlertingPattern(AlertingPattern alertingPattern);
 
-    AlertingPatternWrapper createAlertingPattern(byte[] data);
-
     NAOliInfo createNAOliInfo(int value);
-
-    ScfID createScfID(byte[] data);
 
     ServiceInteractionIndicatorsTwo createServiceInteractionIndicatorsTwo(
             ForwardServiceInteractionInd forwardServiceInteractionInd,
@@ -429,19 +398,13 @@ public interface INAPParameterFactory {
 
     CAI_GSM0224 createCAI_GSM0224(Integer e1, Integer e2, Integer e3, Integer e4, Integer e5, Integer e6, Integer e7);
 
-    SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(byte[] data);
-
-    VariablePartPrice createVariablePartPrice(byte[] data);
+    SCIBillingChargingCharacteristics createSCIBillingChargingCharacteristics(ByteBuf value);
 
     VariablePartPrice createVariablePartPrice(double price);
 
     VariablePartPrice createVariablePartPrice(int integerPart, int hundredthPart);
 
-    VariablePartDate createVariablePartDate(byte[] data);
-
     VariablePartDate createVariablePartDate(int year, int month, int day);
-
-    VariablePartTime createVariablePartTime(byte[] data);
 
     VariablePartTime createVariablePartTime(int hour, int minute);
 
@@ -455,7 +418,7 @@ public interface INAPParameterFactory {
 
     VariablePart createVariablePart(VariablePartPrice price);
 
-    MessageIDText createMessageIDText(String messageContent, byte[] attributes);
+    MessageIDText createMessageIDText(String messageContent, ByteBuf attributes);
 
     VariableMessage createVariableMessage(int elementaryMessageID, List<VariablePart> variableParts);
 
@@ -475,15 +438,15 @@ public interface INAPParameterFactory {
 
     InformationToSend createInformationToSend(Tone tone);
 
-    CollectedDigits createCollectedDigits(Integer minimumNbOfDigits, int maximumNbOfDigits, byte[] endOfReplyDigit,
-            byte[] cancelDigit, byte[] startDigit, Integer firstDigitTimeOut, Integer interDigitTimeOut,
+    CollectedDigits createCollectedDigits(Integer minimumNbOfDigits, int maximumNbOfDigits, ByteBuf endOfReplyDigit,
+    		ByteBuf cancelDigit, ByteBuf startDigit, Integer firstDigitTimeOut, Integer interDigitTimeOut,
             ErrorTreatment errorTreatment, Boolean interruptableAnnInd, Boolean voiceInformation, Boolean voiceBack);
 
     CollectedInfo createCollectedInfo(CollectedDigits collectedDigits);
 
     CallSegmentToCancel createCallSegmentToCancel(Integer invokeID, Integer callSegmentID);
 
-    FreeFormatData createFreeFormatData(byte[] data);
+    FreeFormatData createFreeFormatData(ByteBuf data);
 
     LegOrCallSegment createLegOrCallSegment(Integer callSegmentID);
 
@@ -492,12 +455,12 @@ public interface INAPParameterFactory {
     BackwardServiceInteractionInd createBackwardServiceInteractionInd(ConferenceTreatmentIndicator conferenceTreatmentIndicator,
             CallCompletionTreatmentIndicator callCompletionTreatmentIndicator);
 
-    Carrier createCarrier(byte[] data);
+    Carrier createCarrier(ByteBuf data);
 
     ForwardServiceInteractionInd createForwardServiceInteractionInd(ConferenceTreatmentIndicator conferenceTreatmentIndicator,
             CallDiversionTreatmentIndicator callDiversionTreatmentIndicator, CallingPartyRestrictionIndicator callingPartyRestrictionIndicator);
 
-    LowLayerCompatibility createLowLayerCompatibility(byte[] data);
+    LowLayerCompatibility createLowLayerCompatibility(ByteBuf data);
 
     MidCallEvents createMidCallEvents_Flash();
 
@@ -645,25 +608,25 @@ public interface INAPParameterFactory {
     
     CUGCallIndicator getCUGCallIndicator(CUGCall cugCall);
     
-    CUGInterLockCode getCUGInterLockCode(byte data[]);
+    CUGInterLockCode getCUGInterLockCode(ByteBuf value);
     
-    DataItemID getDataItemID(byte[] attribute0,	byte[] attribute1, byte[] attribute2,    
-    	byte[] attribute3,byte[] attribute4, byte[] attribute5, byte[] attribute6,    
-    	byte[] attribute7, byte[] attribute8, byte[] attribute9, byte[] attribute10,    
-    	byte[] attribute11, byte[] attribute12, byte[] attribute13, byte[] attribute14,    
-    	byte[] attribute15, byte[] attribute16, byte[] attribute17, byte[] attribute18,
-    	byte[] attribute19, byte[] attribute20, byte[] attribute21, byte[] attribute22,
-    	byte[] attribute23, byte[] attribute24, byte[] attribute25, byte[] attribute26,
-    	byte[] attribute27, byte[] attribute28, byte[] attribute29, byte[] attribute30);
+    DataItemID getDataItemID(ByteBuf attribute0,	ByteBuf attribute1, ByteBuf attribute2,    
+    	ByteBuf attribute3,ByteBuf attribute4, ByteBuf attribute5, ByteBuf attribute6,    
+    	ByteBuf attribute7, ByteBuf attribute8, ByteBuf attribute9, ByteBuf attribute10,    
+    	ByteBuf attribute11, ByteBuf attribute12, ByteBuf attribute13, ByteBuf attribute14,    
+    	ByteBuf attribute15, ByteBuf attribute16, ByteBuf attribute17, ByteBuf attribute18,
+    	ByteBuf attribute19, ByteBuf attribute20, ByteBuf attribute21, ByteBuf attribute22,
+    	ByteBuf attribute23, ByteBuf attribute24, ByteBuf attribute25, ByteBuf attribute26,
+    	ByteBuf attribute27, ByteBuf attribute28, ByteBuf attribute29, ByteBuf attribute30);
     
-    DataItemInformation getDataItemInformation(byte[] attribute0,	byte[] attribute1, byte[] attribute2,    
-        	byte[] attribute3,byte[] attribute4, byte[] attribute5, byte[] attribute6,    
-        	byte[] attribute7, byte[] attribute8, byte[] attribute9, byte[] attribute10,    
-        	byte[] attribute11, byte[] attribute12, byte[] attribute13, byte[] attribute14,    
-        	byte[] attribute15, byte[] attribute16, byte[] attribute17, byte[] attribute18,
-        	byte[] attribute19, byte[] attribute20, byte[] attribute21, byte[] attribute22,
-        	byte[] attribute23, byte[] attribute24, byte[] attribute25, byte[] attribute26,
-        	byte[] attribute27, byte[] attribute28, byte[] attribute29, byte[] attribute30);
+    DataItemInformation getDataItemInformation(ByteBuf attribute0,	ByteBuf attribute1, ByteBuf attribute2,    
+        	ByteBuf attribute3,ByteBuf attribute4, ByteBuf attribute5, ByteBuf attribute6,    
+        	ByteBuf attribute7, ByteBuf attribute8, ByteBuf attribute9, ByteBuf attribute10,    
+        	ByteBuf attribute11, ByteBuf attribute12, ByteBuf attribute13, ByteBuf attribute14,    
+        	ByteBuf attribute15, ByteBuf attribute16, ByteBuf attribute17, ByteBuf attribute18,
+        	ByteBuf attribute19, ByteBuf attribute20, ByteBuf attribute21, ByteBuf attribute22,
+        	ByteBuf attribute23, ByteBuf attribute24, ByteBuf attribute25, ByteBuf attribute26,
+        	ByteBuf attribute27, ByteBuf attribute28, ByteBuf attribute29, ByteBuf attribute30);
     
     DialogueUserInformation getDialogueUserInformation(SendingFunctionsActive sendingFunctionsActive,
     		ReceivingFunctionsRequested receivingFunctionsRequested,Integer trafficSimulationSessionID);
@@ -675,7 +638,7 @@ public interface INAPParameterFactory {
     
     GenericDigitsSet getGenericDigitsSet(List<DigitsIsup> genericDigits);
     
-    GenericName getGenericName(byte[] data);
+    GenericName getGenericName(ByteBuf value);
     
     GenericNumbersSet getGenericNumbersSet(List<DigitsIsup> geneicNumbers);
     
@@ -684,9 +647,9 @@ public interface INAPParameterFactory {
     GlobalTitleAndSSN getGlobalTitleAndSSN(GlobalTitle0100 title, Integer ssn) throws INAPException;
     
     HandOverInfo getHandOverInfo(Integer handoverCounter, SCPAddress sendingSCPAddress,
-    		SCPDialogueInfo sendingSCPDialogueInfo, byte[] sendingSCPCorrelationInfo,
+    		SCPDialogueInfo sendingSCPDialogueInfo, ByteBuf sendingSCPCorrelationInfo,
     		SCPAddress receivingSCPAddress, SCPDialogueInfo receivingSCPDialogueInfo,
-    		byte[] receivingSCPCorrelationInfo, CalledPartyNumberIsup handoverNumber,Integer handoverData);
+    		ByteBuf receivingSCPCorrelationInfo, CalledPartyNumberIsup handoverNumber,Integer handoverData);
     
     LegIDs getLegIDs(List<ExistingLegs> existingLegs);
     
@@ -698,7 +661,7 @@ public interface INAPParameterFactory {
     
     ProtocolIndicator getProtocolIndicator(ProtocolIdentifier protocolIdentifier,TCAPDialogueLevel tcapDialogueLevel);
     
-    RouteOrigin getRouteOrigin(byte[] data);
+    RouteOrigin getRouteOrigin(ByteBuf value);
     
     SCPAddress getSCPAddress(boolean colocated);
     
@@ -716,13 +679,13 @@ public interface INAPParameterFactory {
     AddressAndService getAddressAndService(DigitsIsup calledAddressValue,Integer serviceKey,
     		DigitsIsup callingAddressValue,LocationNumberIsup locationNumber);
     
-    CalledPartyBusinessGroupID getCalledPartyBusinessGroupID(byte[] data);
+    CalledPartyBusinessGroupID getCalledPartyBusinessGroupID(ByteBuf data);
     
-    CalledPartySubaddress getCalledPartySubaddress(byte[] data);
+    CalledPartySubaddress getCalledPartySubaddress(ByteBuf data);
     
-    CallingPartyBusinessGroupID getCallingPartyBusinessGroupID(byte[] data);
+    CallingPartyBusinessGroupID getCallingPartyBusinessGroupID(ByteBuf data);
     
-    CallingPartySubaddress getCallingPartySubaddress(byte[] data);
+    CallingPartySubaddress getCallingPartySubaddress(ByteBuf data);
     
     ChargingEvent getChargingEvent(EventTypeCharging eventTypeCharging,MonitorMode monitorMode,LegID legID);
     
@@ -744,9 +707,9 @@ public interface INAPParameterFactory {
     
     FacilityGroup getFacilityGroup(Integer value,boolean isTrunkGroup);
     
-    FacilityGroup getFacilityGroup(byte[] value,boolean isHuntGroup);
+    FacilityGroup getFacilityGroup(ByteBuf value,boolean isHuntGroup);
     
-    FilteredCallTreatment getFilteredCallTreatment(byte[] sfBillingChargingCharacteristics,
+    FilteredCallTreatment getFilteredCallTreatment(ByteBuf sfBillingChargingCharacteristics,
     		InformationToSend informationToSend,Integer maximumNumberOfCounters,CauseIsup cause);
     
     FilteringCharacteristics getFilteringCharacteristics(Integer value,Boolean isInterval);
@@ -761,13 +724,13 @@ public interface INAPParameterFactory {
     
     GenericNumbers getGenericNumbers(List<GenericNumberIsup> genericNumbers);
     
-    HoldCause getHoldCause(byte[] data);
+    HoldCause getHoldCause(ByteBuf value);
     
     INServiceCompatibilityIndication getINServiceCompatibilityIndication(List<Entry> entries);
     
-    IPAvailable getIPAvailable(byte[] data);
+    IPAvailable getIPAvailable(ByteBuf value);
     
-    ISDNAccessRelatedInformation getISDNAccessRelatedInformation(byte[] data);
+    ISDNAccessRelatedInformation getISDNAccessRelatedInformation(ByteBuf value);
     
     MidCallControlInfoINAP getMidCallControlInfo(List<MidCallControlInfoItem> midCallControlInfoItems);
     
@@ -787,30 +750,30 @@ public interface INAPParameterFactory {
     
     ResourceID getResourceID(Integer value,boolean isTrunkGroupID);
     
-    RouteList getRouteList(List<byte[]> data);
+    RouteList getRouteList(List<ByteBuf> data);
     
     ServiceAddressInformation getServiceAddressInformation(Integer serviceKey,MiscCallInfo miscCallInfo,TriggerType triggerType);
     
-    ServiceInteractionIndicators getServiceInteractionIndicators(byte[] data);
+    ServiceInteractionIndicators getServiceInteractionIndicators(ByteBuf value);
     
-    ServiceProfileIdentifier getServiceProfileIdentifier(byte[] data);
+    ServiceProfileIdentifier getServiceProfileIdentifier(ByteBuf value);
     
     Tariff getTariff(ChargingTariffInformation chargingTariffInformation);
     
     Tariff getTariff(AddOnChargingInformation addOnChargingInformation);
     
-    USIInformation getUSIInformation(byte[] data);
+    USIInformation getUSIInformation(ByteBuf value);
     
     USIServiceIndicator getUSIServiceIndicator(List<Long> global);
     
-    USIServiceIndicator getUSIServiceIndicator(byte[] local);
+    USIServiceIndicator getUSIServiceIndicator(ByteBuf local);
     
     TariffInformation getTariffInformation(Integer numberOfStartPulses,Integer startInterval,IntervalAccuracy startIntervalAccuracy,
     		Integer numberOfPeriodicPulses,Integer periodicInterval,IntervalAccuracy periodicIntervalAccuracy,DateAndTime activationTime);
     
     EventSpecificInfoCharging getEventSpecificInfoCharging(TariffInformation tariffInformation);
     
-    EventSpecificInfoCharging getEventSpecificInfoCharging(byte[] tariffIndicator);
+    EventSpecificInfoCharging getEventSpecificInfoCharging(ByteBuf tariffIndicator);
     
     EventSpecificInfoCharging getEventSpecificInfoCharging(ChargeNoChargeIndication chargeNoChargeIndication);
     
@@ -819,7 +782,7 @@ public interface INAPParameterFactory {
     ChargingInformation getChargingInformation(boolean orderStartOfCharging,ChargeMessage chargeMessage,
     		Integer pulseBurst,boolean createDefaultBillingRecord);
     
-    ChargingAnalysisInputData getChargingAnalysisInputData(byte[] chargingOrigin, byte[] tariffActivityCode, Integer chargingCode);
+    ChargingAnalysisInputData getChargingAnalysisInputData(ByteBuf chargingOrigin, ByteBuf tariffActivityCode, Integer chargingCode);
     
     SCIBillingChargingCharacteristicsCS1 getSCIBillingChargingCharacteristicsCS1(ChargingInformation chargingInformation);
     

@@ -44,17 +44,15 @@ public class LimitIndicatorsImpl implements LimitIndicators {
     }
 
     public LimitIndicatorsImpl(Integer duration) {
-    	if(duration!=null) {
-    		this.duration=new ASNInteger();
-    		this.duration.setValue(duration.longValue());
-    	}    	
+    	if(duration!=null)
+    		this.duration=new ASNInteger(duration);    		 
     }
 
     public Integer getDuration() {
-    	if(duration==null || duration.getValue()==null)
+    	if(duration==null)
     		return null;
     	
-        return duration.getValue().intValue();
+        return duration.getIntValue();
     }
 
     @Override

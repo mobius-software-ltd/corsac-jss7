@@ -24,10 +24,9 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives;
 
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -35,24 +34,12 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class ServiceInteractionIndicatorsImpl extends ASNOctetString implements ServiceInteractionIndicators {
+public class ServiceInteractionIndicatorsImpl extends ASNOctetString2 implements ServiceInteractionIndicators {
 	public ServiceInteractionIndicatorsImpl() {
     }
 
-    public ServiceInteractionIndicatorsImpl(byte[] data) {
-    	if(data!=null) {
-    		setValue(Unpooled.wrappedBuffer(data));
-    	}
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-        if (value == null)
-            return null;
-
-        byte[] data=new byte[value.readableBytes()];
-        value.readBytes(data);
-        return data;
+    public ServiceInteractionIndicatorsImpl(ByteBuf value) {
+    	super(value);
     }
 
     @Override
@@ -60,10 +47,9 @@ public class ServiceInteractionIndicatorsImpl extends ASNOctetString implements 
 
         StringBuilder sb = new StringBuilder();
         sb.append("ServiceInteractionIndicators [");
-        byte[] data=getData();
-        if (data != null) {
+        if (getValue() != null) {
             sb.append("data=");
-            sb.append(ASNOctetString.printDataArr(data));            
+            sb.append(printDataArr());            
         }
         sb.append("]");
 

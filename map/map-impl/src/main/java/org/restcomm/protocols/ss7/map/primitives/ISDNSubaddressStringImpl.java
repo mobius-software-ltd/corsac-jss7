@@ -24,10 +24,9 @@ package org.restcomm.protocols.ss7.map.primitives;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNSubaddressString;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 
 /**
@@ -35,7 +34,7 @@ import io.netty.buffer.Unpooled;
  * @author daniel bichara
  *
  */
-public class ISDNSubaddressStringImpl extends ASNOctetString implements ISDNSubaddressString {
+public class ISDNSubaddressStringImpl extends ASNOctetString2 implements ISDNSubaddressString {
 	// TODO: implement SubAddress octets and check address format
     /*
      * -- It is composed of -- a) one octet for type of subaddress and odd/even indicator. -- b) 20 octets for subaddress
@@ -63,14 +62,22 @@ public class ISDNSubaddressStringImpl extends ASNOctetString implements ISDNSuba
     public ISDNSubaddressStringImpl() {
     }
 
-    public ISDNSubaddressStringImpl(byte[] data) {
-        setValue(Unpooled.wrappedBuffer(data));
+    public ISDNSubaddressStringImpl(ByteBuf value) {
+        super(value);
     }
 
-    public byte[] getData() {
-    	ByteBuf buf=getValue();
-    	byte[] data=new byte[buf.readableBytes()];
-    	buf.readBytes(data);
-        return data;
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("ISDNSubaddressStringImpl");
+        sb.append(" [");
+        if (getValue()!=null) {
+            sb.append("data=");
+            sb.append(printDataArr());            
+        }
+        sb.append("]");
+
+        return sb.toString();
     }
 }

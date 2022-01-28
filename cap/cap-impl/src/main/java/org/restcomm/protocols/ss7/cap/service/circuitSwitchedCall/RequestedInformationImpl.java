@@ -49,25 +49,21 @@ public class RequestedInformationImpl implements RequestedInformation {
     }
 
     public RequestedInformationImpl(RequestedInformationType requestedInformationType, int intValue) {
-        if (requestedInformationType == RequestedInformationType.callAttemptElapsedTime) {
-            this.requestedInformationType = new ASNRequestedInformationTypeImpl();
-            this.requestedInformationType.setType(RequestedInformationType.callAttemptElapsedTime);
-        } else {
-        	this.requestedInformationType = new ASNRequestedInformationTypeImpl();
-        	this.requestedInformationType.setType(RequestedInformationType.callConnectedElapsedTime);
-        }
+        if (requestedInformationType == RequestedInformationType.callAttemptElapsedTime)
+            this.requestedInformationType = new ASNRequestedInformationTypeImpl(RequestedInformationType.callAttemptElapsedTime);
+        else
+        	this.requestedInformationType = new ASNRequestedInformationTypeImpl(RequestedInformationType.callConnectedElapsedTime);
+        	
         this.requestedInformationValue = new RequestedInformationValueWrapperImpl(new RequestedInformationValueImpl(requestedInformationType, intValue));
     }
 
     public RequestedInformationImpl(DateAndTime callStopTimeValue) {
-    	this.requestedInformationType = new ASNRequestedInformationTypeImpl();
-        this.requestedInformationType.setType(RequestedInformationType.callStopTime);
+    	this.requestedInformationType = new ASNRequestedInformationTypeImpl(RequestedInformationType.callStopTime);
         this.requestedInformationValue = new RequestedInformationValueWrapperImpl(new RequestedInformationValueImpl(callStopTimeValue));
     }
 
     public RequestedInformationImpl(CauseIsup releaseCauseValue) {
-    	this.requestedInformationType = new ASNRequestedInformationTypeImpl();
-        this.requestedInformationType.setType(RequestedInformationType.releaseCause);
+    	this.requestedInformationType = new ASNRequestedInformationTypeImpl(RequestedInformationType.releaseCause);
         this.requestedInformationValue = new RequestedInformationValueWrapperImpl(new RequestedInformationValueImpl(releaseCauseValue));        
     }
 

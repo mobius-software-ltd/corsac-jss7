@@ -68,8 +68,7 @@ public class SccpStackImplProxy extends SccpStackImpl {
 
         this.sccpRoutingControl.start();
         this.sccpManagement.start();
-        // layer3exec.execute(new MtpStreamHandler());
-
+        
         this.msgDeliveryExecutors = Executors.newScheduledThreadPool(1);
 
         Iterator<Mtp3UserPart> iterator=this.mtp3UserParts.values().iterator();

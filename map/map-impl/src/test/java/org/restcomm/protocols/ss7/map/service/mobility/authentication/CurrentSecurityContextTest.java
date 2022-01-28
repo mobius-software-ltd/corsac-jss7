@@ -36,6 +36,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -81,7 +82,7 @@ public class CurrentSecurityContextTest {
         GSMSecurityContextData gsm = prim.getGSMSecurityContextData();
         UMTSSecurityContextData umts = prim.getUMTSSecurityContextData();
         assertNull(umts);
-        assertTrue(Arrays.equals(gsm.getKc().getData(), getDataKc()));
+        assertTrue(ByteBufUtil.equals(gsm.getKc().getValue(), Unpooled.wrappedBuffer(getDataKc())));
         assertEquals(gsm.getCksn().getData(), 4);
 
         // option 2
@@ -95,8 +96,8 @@ public class CurrentSecurityContextTest {
         umts = prim.getUMTSSecurityContextData();
         assertNull(gsm);
 
-        assertTrue(Arrays.equals(umts.getCK().getData(), getDataCk()));
-        assertTrue(Arrays.equals(umts.getIK().getData(), getDataIk()));
+        assertTrue(ByteBufUtil.equals(umts.getCK().getValue(), Unpooled.wrappedBuffer(getDataCk())));
+        assertTrue(ByteBufUtil.equals(umts.getIK().getValue(), Unpooled.wrappedBuffer(getDataIk())));
         assertEquals(umts.getKSI().getData(), 2);
     }
 
@@ -106,7 +107,7 @@ public class CurrentSecurityContextTest {
     	parser.replaceClass(CurrentSecurityContextImpl.class);
 
         // option 1
-        KcImpl kc = new KcImpl(getDataKc());
+        KcImpl kc = new KcImpl(Unpooled.wrappedBuffer(getDataKc()));
         CksnImpl cksn = new CksnImpl(4);
 
         GSMSecurityContextDataImpl gsm = new GSMSecurityContextDataImpl(kc, cksn);
@@ -119,8 +120,8 @@ public class CurrentSecurityContextTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         // option 2
-        CKImpl ck = new CKImpl(getDataCk());
-        IKImpl ik = new IKImpl(getDataIk());
+        CKImpl ck = new CKImpl(Unpooled.wrappedBuffer(getDataCk()));
+        IKImpl ik = new IKImpl(Unpooled.wrappedBuffer(getDataIk()));
         KSIImpl ksi = new KSIImpl(2);
         UMTSSecurityContextDataImpl umts = new UMTSSecurityContextDataImpl(ck, ik, ksi);
         prim = new CurrentSecurityContextImpl(umts);

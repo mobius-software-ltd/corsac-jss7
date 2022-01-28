@@ -36,6 +36,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -82,7 +83,7 @@ public class UUDataTest {
         elem = (UUDataImpl)result.getResult();
 
         assertEquals(elem.getUUIndicator().getData(), new Integer(140));
-        assertEquals(elem.getUUI().getData(), getUUIData());
+        assertTrue(ByteBufUtil.equals(elem.getUUI().getValue(), Unpooled.wrappedBuffer(getUUIData())));
         assertTrue(elem.getUusCFInteraction());
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(elem.getExtensionContainer()));
     }
@@ -101,7 +102,7 @@ public class UUDataTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        UUIImpl uuI = new UUIImpl(getUUIData());
+        UUIImpl uuI = new UUIImpl(Unpooled.wrappedBuffer(getUUIData()));
         elem = new UUDataImpl(uuIndicator, uuI, true, MAPExtensionContainerTest.GetTestExtensionContainer());
 
         data=getData2();

@@ -60,20 +60,14 @@ public class ResetTimerRequestImpl extends CircuitSwitchedCallMessageImpl implem
     }
 
     public ResetTimerRequestImpl(TimerID timerID, int timerValue, CAPINAPExtensions extensions, Integer callSegmentID) {
-    	if(timerID!=null) {
-    		this.timerID = new ASNTimerID();
-    		this.timerID.setType(timerID);
-    	}
-    	    
-        this.timerValue = new ASNInteger();
-        this.timerValue.setValue(Long.valueOf(timerValue));
-        
+    	if(timerID!=null)
+    		this.timerID = new ASNTimerID(timerID);
+    		   
+        this.timerValue = new ASNInteger(timerValue);
         this.extensions = extensions;
         
-        if(callSegmentID!=null) {
-        	this.callSegmentID = new ASNInteger();
-        	this.callSegmentID.setValue(callSegmentID.longValue());
-        }
+        if(callSegmentID!=null)
+        	this.callSegmentID = new ASNInteger(callSegmentID);        	
     }
 
     @Override
@@ -99,7 +93,7 @@ public class ResetTimerRequestImpl extends CircuitSwitchedCallMessageImpl implem
     	if(timerID==null || timerID.getValue()==null)
     		return 0;
     	
-        return timerValue.getValue().intValue();
+        return timerValue.getIntValue();
     }
 
     @Override
@@ -109,10 +103,10 @@ public class ResetTimerRequestImpl extends CircuitSwitchedCallMessageImpl implem
 
     @Override
     public Integer getCallSegmentID() {
-    	if(callSegmentID==null || callSegmentID.getValue()==null)
+    	if(callSegmentID==null)
     		return null;
     	
-        return callSegmentID.getValue().intValue();
+        return callSegmentID.getIntValue();
     }
 
     @Override

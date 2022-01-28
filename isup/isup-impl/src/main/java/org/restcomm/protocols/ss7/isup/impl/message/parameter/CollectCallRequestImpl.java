@@ -64,7 +64,7 @@ public class CollectCallRequestImpl extends AbstractISUPParameter implements Col
 
     public void decode(ByteBuf b) throws ParameterException {
         if (b == null || b.readableBytes() != 1) {
-            throw new ParameterException("byte[] must not be null and length must be 1");
+            throw new ParameterException("buffer must not be null and length must be 1");
         }
         this.collectCallRequested = (b.readByte() & 0x01) == _TURN_ON;
     }

@@ -345,7 +345,7 @@ public class SccpRoutingControl {
 //                    mup.sendMessage(msg);
 //                } else {
 //                    // segmented data
-//                    for (byte[] bf : erd.getSegementedData()) {
+//                    for (ByteBuf bf : erd.getSegementedData()) {
 //                        Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(Mtp3._SI_SERVICE_SCCP, sap.getNi(), 0,
 //                                sap.getOpc(), dpc, sls, bf);
 //                        mup.sendMessage(msg);
@@ -1060,7 +1060,7 @@ public class SccpRoutingControl {
 //
 //                        if (err.getErrorCause().getValue() != null && err.getErrorCause().getValue() == SERVICE_CLASS_MISMATCH) {
 //                            listener.onDisconnectIndication(conn, err.getErrorCause());
-//                            conn.disconnect(new ReleaseCauseImpl(SCCP_FAILURE), new byte[] {});
+//                            conn.disconnect(new ReleaseCauseImpl(SCCP_FAILURE), Unpooled.buffer());
 //                        } else {
 //                            listener.onDisconnectIndication(conn, err.getErrorCause());
 //                            sccpStackImpl.removeConnection(ref);

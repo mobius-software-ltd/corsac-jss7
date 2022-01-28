@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ForwardGVNSImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.ForwardGVNS;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,38 +39,24 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class ForwardGVNSIsupImpl extends ASNOctetString implements ForwardGVNSIsup {
+public class ForwardGVNSIsupImpl extends ASNOctetString2 implements ForwardGVNSIsup {
 	public ForwardGVNSIsupImpl() {
     }
 
-    public ForwardGVNSIsupImpl(byte[] data) {
-    	setValue(Unpooled.wrappedBuffer(data));
-    }
-
     public ForwardGVNSIsupImpl(ForwardGVNS forwardGVNS) throws APPException {
-        setForwardGVNS(forwardGVNS);
+        super(translate(forwardGVNS));
     }
 
-    public void setForwardGVNS(ForwardGVNS forwardGVNS) throws APPException {
+    public static ByteBuf translate(ForwardGVNS forwardGVNS) throws APPException {
         if (forwardGVNS == null)
             throw new APPException("The forwardGVNS parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((ForwardGVNSImpl) forwardGVNS).encode(buffer);
-            setValue(buffer);
+            return buffer;
         } catch (ParameterException e) {
             throw new APPException("ParameterException when encoding originalCalledNumber: " + e.getMessage(), e);
         }
-    }
-
-    public byte[] getData() {
-    	ByteBuf buffer=getValue();
-    	if(buffer==null)
-    		return null;
-    	
-    	byte[] data=new byte[buffer.readableBytes()];
-    	buffer.readBytes(data);
-        return data;
     }
 
     public ForwardGVNS getForwardGVNS() throws APPException {
@@ -91,10 +77,9 @@ public class ForwardGVNSIsupImpl extends ASNOctetString implements ForwardGVNSIs
         StringBuilder sb = new StringBuilder();
         sb.append("ForwardGVNSIsup [");
 
-        byte[] data=this.getData();
-        if (data != null) {
+        if (getValue() != null) {
             sb.append("data=[");
-            sb.append(printDataArr(data));
+            sb.append(printDataArr());
             sb.append("]");
             try {
                 ForwardGVNS fg = this.getForwardGVNS();

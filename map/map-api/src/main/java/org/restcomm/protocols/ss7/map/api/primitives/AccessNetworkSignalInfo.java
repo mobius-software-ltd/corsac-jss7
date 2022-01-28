@@ -26,6 +26,8 @@ import java.io.Serializable;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  AccessNetworkSignalInfo ::= SEQUENCE { accessNetworkProtocolId AccessNetworkProtocolId, signalInfo LongSignalInfo, --
@@ -49,7 +51,7 @@ public interface AccessNetworkSignalInfo extends Serializable {
 
     AccessNetworkProtocolId getAccessNetworkProtocolId();
 
-    byte[] getSignalInfo();
+    ByteBuf getSignalInfo();
 
     MAPExtensionContainer getExtensionContainer();
 }

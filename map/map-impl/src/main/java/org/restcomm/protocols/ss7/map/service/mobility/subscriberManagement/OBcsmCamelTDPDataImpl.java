@@ -59,21 +59,15 @@ public class OBcsmCamelTDPDataImpl implements OBcsmCamelTDPData {
 
     public OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint, long serviceKey,
     		ISDNAddressString gsmSCFAddress, DefaultCallHandling defaultCallHandling, MAPExtensionContainer extensionContainer) {
-        if(oBcsmTriggerDetectionPoint!=null) {
-        	this.oBcsmTriggerDetectionPoint = new ASNOBcsmTriggerDetectionPoint();
-        	this.oBcsmTriggerDetectionPoint.setType(oBcsmTriggerDetectionPoint);
-        }
-        		
-        this.serviceKey = new ASNInteger();
-    	this.serviceKey.setValue(serviceKey);
+        if(oBcsmTriggerDetectionPoint!=null)
+        	this.oBcsmTriggerDetectionPoint = new ASNOBcsmTriggerDetectionPoint(oBcsmTriggerDetectionPoint);
+        			
+        this.serviceKey = new ASNInteger(serviceKey);
+    	this.gsmSCFAddress = gsmSCFAddress;
         
-        this.gsmSCFAddress = gsmSCFAddress;
-        
-        if(defaultCallHandling!=null) {
-        	this.defaultCallHandling = new ASNDefaultCallHandling();
-        	this.defaultCallHandling.setType(defaultCallHandling);
-        }
-        
+        if(defaultCallHandling!=null)
+        	this.defaultCallHandling = new ASNDefaultCallHandling(defaultCallHandling);
+        	
         this.extensionContainer = extensionContainer;
     }
 

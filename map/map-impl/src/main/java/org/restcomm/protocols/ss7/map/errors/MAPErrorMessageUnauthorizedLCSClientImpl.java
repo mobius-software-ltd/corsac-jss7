@@ -49,8 +49,7 @@ public class MAPErrorMessageUnauthorizedLCSClientImpl extends MAPErrorMessageImp
     		MAPExtensionContainer extensionContainer) {
         super((long) MAPErrorCode.unauthorizedLCSClient);
 
-        this.unauthorizedLCSClientDiagnostic = new ASNUnauthorizedLCSClientDiagnosticImpl();
-        this.unauthorizedLCSClientDiagnostic.setType(unauthorizedLCSClientDiagnostic);
+        this.unauthorizedLCSClientDiagnostic = new ASNUnauthorizedLCSClientDiagnosticImpl(unauthorizedLCSClientDiagnostic);
         this.extensionContainer = extensionContainer;
     }
 
@@ -78,8 +77,7 @@ public class MAPErrorMessageUnauthorizedLCSClientImpl extends MAPErrorMessageImp
     }
 
     public void setUnauthorizedLCSClientDiagnostic(UnauthorizedLCSClientDiagnostic unauthorizedLCSClientDiagnostic) {
-        this.unauthorizedLCSClientDiagnostic = new ASNUnauthorizedLCSClientDiagnosticImpl();
-        this.unauthorizedLCSClientDiagnostic.setType(unauthorizedLCSClientDiagnostic);
+        this.unauthorizedLCSClientDiagnostic = new ASNUnauthorizedLCSClientDiagnosticImpl(unauthorizedLCSClientDiagnostic);        
     }
 
     public void setExtensionContainer(MAPExtensionContainer extensionContainer) {

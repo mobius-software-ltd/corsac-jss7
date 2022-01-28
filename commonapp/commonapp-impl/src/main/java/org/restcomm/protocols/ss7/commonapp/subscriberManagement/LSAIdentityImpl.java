@@ -24,40 +24,47 @@ package org.restcomm.protocols.ss7.commonapp.subscriberManagement;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.LSAIdentity;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
  * @author sergey vetyutnev
  *
  */
-public class LSAIdentityImpl extends ASNOctetString implements LSAIdentity {
+public class LSAIdentityImpl extends ASNOctetString2 implements LSAIdentity {
 	public LSAIdentityImpl() {
     }
 
-    public LSAIdentityImpl(byte[] data) {
-    	if(data!=null)
-    		setValue(Unpooled.wrappedBuffer(data));
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-    	if(value==null)
-    		return null;
-    	
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-        return data;
+    public LSAIdentityImpl(ByteBuf value) {
+    	super(value);
     }
 
     public boolean isPlmnSignificantLSA() {
-    	byte[] data=getData();
-    	if(data==null)
+    	ByteBuf buf=getValue();
+    	if(buf==null || buf.readableBytes()<3)
     		return false;
     	
-        return ((data[2] & 0x01) == 0x01);
+    	buf.skipBytes(2);
+        return ((buf.readByte() & 0x01) == 0x01);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("LSAIdentity [");
+
+        sb.append("PLMN Significant LSA=");
+        sb.append(this.isPlmnSignificantLSA());
+
+        if(getValue()!=null) {
+        	sb.append(", data=");
+        	sb.append(printDataArr());
+        }
+        
+        sb.append("]");
+
+        return sb.toString();
     }
 }

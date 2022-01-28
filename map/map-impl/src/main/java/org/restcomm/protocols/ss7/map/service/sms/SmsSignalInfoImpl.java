@@ -31,7 +31,7 @@ import org.restcomm.protocols.ss7.map.smstpdu.SmsTpduImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -42,28 +42,28 @@ import io.netty.buffer.Unpooled;
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
-public class SmsSignalInfoImpl extends ASNOctetString implements SmsSignalInfo {
+public class SmsSignalInfoImpl extends ASNOctetString2 implements SmsSignalInfo {
 	private Charset gsm8Charset;
 
     public SmsSignalInfoImpl() {
     }
 
-    public SmsSignalInfoImpl(byte[] data, Charset gsm8Charset) {
-    	if(data!=null) {
-    		setValue(Unpooled.wrappedBuffer(data));
-    	}
-    	
-        this.setGsm8Charset(gsm8Charset);
+    public SmsSignalInfoImpl(ByteBuf buffer) {
+    	super(buffer);
     }
-
+    
     public SmsSignalInfoImpl(SmsTpdu tpdu, Charset gsm8Charset) throws MAPException {
+    	super(translate(tpdu, gsm8Charset));
+    	this.setGsm8Charset(gsm8Charset);        
+    }
+    
+    public static ByteBuf translate(SmsTpdu tpdu, Charset gsm8Charset) throws MAPException {
         if (tpdu == null)
             throw new MAPException("SmsTpdu must not be null");
 
-        this.setGsm8Charset(gsm8Charset);
         ByteBuf value=Unpooled.buffer();
         tpdu.encodeData(value);
-        setValue(value);
+        return value;
     }
 
     public Charset getGsm8Charset() {

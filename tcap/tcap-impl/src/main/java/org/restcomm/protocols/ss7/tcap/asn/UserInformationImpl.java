@@ -107,8 +107,7 @@ public class UserInformationImpl implements UserInformation {
 		if(ext==null)
 			ext=new UserInformationExternalImpl();
 		
-		ASNUserInformationObjectImpl realValue=new ASNUserInformationObjectImpl();
-		realValue.setValue(value);
+		ASNUserInformationObjectImpl realValue=new ASNUserInformationObjectImpl(value);
 		ext.setChildAsObject(realValue);		
 	}
 	

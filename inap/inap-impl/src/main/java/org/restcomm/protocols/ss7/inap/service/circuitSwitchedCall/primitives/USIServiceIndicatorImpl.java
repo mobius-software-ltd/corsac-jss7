@@ -30,10 +30,9 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNObjectIdentifier;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -47,23 +46,19 @@ public class USIServiceIndicatorImpl implements USIServiceIndicator {
     private ASNObjectIdentifier global;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false, index=-1)
-    private ASNOctetString local;
+    private ASNOctetString2 local;
 
     public USIServiceIndicatorImpl() {
     }
 
     public USIServiceIndicatorImpl(List<Long> global) {
-    	if(global!=null) {
-    		this.global=new ASNObjectIdentifier();
-    		this.global.setValue(global);
-    	}
+    	if(global!=null)
+    		this.global=new ASNObjectIdentifier(global);    	
     }
 
-    public USIServiceIndicatorImpl(byte[] local) {
-    	if(local!=null) {
-    		this.local=new ASNOctetString();
-    		this.local.setValue(Unpooled.wrappedBuffer(local));
-    	}
+    public USIServiceIndicatorImpl(ByteBuf local) {
+    	if(local!=null)
+    		this.local=new ASNOctetString2(local);    	
     }
 
     public List<Long> getGlobal() {
@@ -73,14 +68,11 @@ public class USIServiceIndicatorImpl implements USIServiceIndicator {
         return global.getValue();
     }
 
-    public byte[] getLocal() {
-    	if(local==null || local.getValue()==null)
+    public ByteBuf getLocal() {
+    	if(local==null)
     		return null;
     	
-    	ByteBuf value=local.getValue();
-    	byte[] data=new byte[value.readableBytes()];
-    	value.readBytes(data);
-    	return data;
+    	return local.getValue();    	
     }
 
     @Override
@@ -96,7 +88,7 @@ public class USIServiceIndicatorImpl implements USIServiceIndicator {
         
         if (this.local != null && this.local.getValue()!=null) {
             sb.append(", local=");
-            sb.append(ASNOctetString.printDataArr(getLocal()));
+            sb.append(local.printDataArr());
         }
 
         sb.append("]");

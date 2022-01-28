@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.map.primitives;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -68,9 +67,6 @@ public class GlobalCellIdTest {
         assertTrue(result.getResult() instanceof GlobalCellIdImpl);
         GlobalCellIdImpl prim = (GlobalCellIdImpl)result.getResult();        
         
-        assertNotNull(prim.getData());
-        assertTrue(Arrays.equals(getDataVal(), prim.getData()));
-
         assertEquals(prim.getMcc(), 250);
         assertEquals(prim.getMnc(), 1);
         assertEquals(prim.getLac(), 4444);
@@ -83,8 +79,6 @@ public class GlobalCellIdTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof GlobalCellIdImpl);
         prim = (GlobalCellIdImpl)result.getResult();     
-
-        assertNotNull(prim.getData());
 
         assertEquals(prim.getMcc(), 250);
         assertEquals(prim.getMnc(), 1);
@@ -104,34 +98,4 @@ public class GlobalCellIdTest {
         
         assertTrue(Arrays.equals(data, this.getData()));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "primitives" })
-    public void testXMLSerialize() throws Exception {
-
-        GlobalCellIdImpl original = new GlobalCellIdImpl(250, 1, 4444, 3333);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        // writer.setBinding(binding); // Optional.
-        writer.setIndentation("\t"); // Optional (use tabulation for
-                                     // indentation).
-        writer.write(original, "globalCellId", GlobalCellIdImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        GlobalCellIdImpl copy = reader.read("globalCellId", GlobalCellIdImpl.class);
-
-        assertEquals(copy.getMcc(), original.getMcc());
-        assertEquals(copy.getMnc(), original.getMnc());
-        assertEquals(copy.getLac(), original.getLac());
-        assertEquals(copy.getCellId(), original.getCellId());
-
-    }*/
 }

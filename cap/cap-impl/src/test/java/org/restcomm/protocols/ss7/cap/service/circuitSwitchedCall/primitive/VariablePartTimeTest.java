@@ -76,29 +76,4 @@ public class VariablePartTimeTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "circuitSwitchedCall" })
-    public void testXMLSerialize() throws Exception {
-
-        VariablePartTimeImpl original = new VariablePartTimeImpl(11, 12);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "variablePartTime", VariablePartTimeImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        VariablePartTimeImpl copy = reader.read("variablePartTime", VariablePartTimeImpl.class);
-
-        assertEquals(copy.getHour(), original.getHour());
-        assertEquals(copy.getMinute(), original.getMinute());
-    }*/
 }

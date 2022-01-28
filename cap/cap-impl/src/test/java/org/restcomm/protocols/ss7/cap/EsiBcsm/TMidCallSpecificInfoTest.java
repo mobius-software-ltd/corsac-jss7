@@ -93,34 +93,4 @@ public class TMidCallSpecificInfoTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
     }
-
-    /*@Test(groups = { "functional.xml.serialize", "EsiBcsm" })
-    public void testXMLSerializaion() throws Exception {
-        GenericDigits genericDigits = new GenericDigitsImpl(GenericDigits._ENCODING_SCHEME_BINARY, GenericDigits._TOD_BGCI, getDigitsData());
-        Digits dtmfDigits = new DigitsImpl(genericDigits);
-        MidCallEvents midCallEvents = new MidCallEventsImpl(dtmfDigits, true);
-        TMidCallSpecificInfoImpl original = new TMidCallSpecificInfoImpl(midCallEvents);
-
-        // Writes the area to a file.
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        XMLObjectWriter writer = XMLObjectWriter.newInstance(baos);
-        writer.setIndentation("\t");
-        writer.write(original, "tMidCallSpecificInfo", TMidCallSpecificInfoImpl.class);
-        writer.close();
-
-        byte[] rawData = baos.toByteArray();
-        String serializedEvent = new String(rawData);
-
-        System.out.println(serializedEvent);
-
-        ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
-        XMLObjectReader reader = XMLObjectReader.newInstance(bais);
-        OMidCallSpecificInfoImpl copy = reader.read("tMidCallSpecificInfo", OMidCallSpecificInfoImpl.class);
-
-        assertEquals(copy.getMidCallEvents().getDTMFDigitsCompleted().getGenericDigits().getEncodingScheme(), original.getMidCallEvents()
-                .getDTMFDigitsCompleted().getGenericDigits().getEncodingScheme());
-        assertEquals(copy.getMidCallEvents().getDTMFDigitsCompleted().getGenericDigits().getEncodedDigits(), original.getMidCallEvents()
-                .getDTMFDigitsCompleted().getGenericDigits().getEncodedDigits());
-        assertNull(copy.getMidCallEvents().getDTMFDigitsTimeOut());
-    }*/
 }

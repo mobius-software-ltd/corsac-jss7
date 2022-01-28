@@ -31,7 +31,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNIA5String;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNObjectIdentifier;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNUTF8String;
 
 /*
@@ -108,7 +108,7 @@ public class ASNParser
 		this.loadClass(ASNInteger.class);
 		this.loadClass(ASNNull.class);
 		this.loadClass(ASNObjectIdentifier.class);
-		this.loadClass(ASNOctetString.class);
+		this.loadClass(ASNOctetString2.class);
 		this.loadClass(ASNUTF8String.class);	
 	}
 	
@@ -241,7 +241,6 @@ public class ASNParser
 			return decode(null, buffer,skipErrors, null, null, rootClassMapping,cachedElements,null,new ConcurrentHashMap<Integer,Object>());
 		}
 		catch(Exception ex) {
-			ex.printStackTrace();
 			throw new ASNException(ex.getMessage());
 		}
 	}
@@ -513,6 +512,7 @@ public class ASNParser
 			return buffer;
 		}
 		catch(Exception ex) {
+			ex.printStackTrace();
 			throw new ASNException(ex.getMessage());
 		}
 	}

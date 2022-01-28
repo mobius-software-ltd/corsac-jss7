@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.map.api.service.mobility.authentication;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
  SentParameter ::= CHOICE { imsi [0] IMSI, authenticationSet [1] AuthenticationSet, subscriberData [2] SubscriberData, ki [4]
@@ -43,6 +45,6 @@ public interface SentParameter {
 
     SubscriberData getSubscriberData();
 
-    byte[] getKi();
+    ByteBuf getKi();
 
 }

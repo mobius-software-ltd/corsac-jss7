@@ -47,13 +47,19 @@ public class CallingAddressAndServiceImpl implements CallingAddressAndService {
 
     public CallingAddressAndServiceImpl(DigitsIsup callingAddressValue, int serviceKey) {
         this.callingAddressValue = callingAddressValue;
-        this.serviceKey = new ASNInteger();
-        this.serviceKey.setValue(Long.valueOf(serviceKey));
+        this.serviceKey = new ASNInteger(serviceKey);        
     }
 
-    public DigitsIsup getCallingAddressValue() {
+    public DigitsIsup getCallingAddressNumber() {
     	if(callingAddressValue!=null)
     		callingAddressValue.setIsGenericNumber();
+    	
+        return callingAddressValue;
+    }
+
+    public DigitsIsup getCallingAddressDigits() {
+    	if(callingAddressValue!=null)
+    		callingAddressValue.setIsGenericDigits();
     	
         return callingAddressValue;
     }
@@ -62,7 +68,7 @@ public class CallingAddressAndServiceImpl implements CallingAddressAndService {
     	if(serviceKey==null || serviceKey.getValue()==null)
     		return 0;
     	
-        return serviceKey.getValue().intValue();
+        return serviceKey.getIntValue();
     }
 
     @Override

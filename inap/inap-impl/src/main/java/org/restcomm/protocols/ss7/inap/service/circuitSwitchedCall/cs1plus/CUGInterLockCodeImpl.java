@@ -24,10 +24,9 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus;
 
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.CUGInterLockCode;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -35,24 +34,12 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class CUGInterLockCodeImpl extends ASNOctetString implements CUGInterLockCode {
+public class CUGInterLockCodeImpl extends ASNOctetString2 implements CUGInterLockCode {
 	public CUGInterLockCodeImpl() {
     }
 
-    public CUGInterLockCodeImpl(byte[] data) {
-    	if(data!=null) {
-    		setValue(Unpooled.wrappedBuffer(data));
-    	}
-    }
-
-    public byte[] getData() {
-    	ByteBuf value=getValue();
-        if (value == null || value.readableBytes() != 4)
-            return null;
-
-        byte[] data=new byte[value.readableBytes()];
-        value.readBytes(data);
-        return data;
+    public CUGInterLockCodeImpl(ByteBuf value) {
+    	super(value);
     }
 
     @Override
@@ -60,10 +47,9 @@ public class CUGInterLockCodeImpl extends ASNOctetString implements CUGInterLock
 
         StringBuilder sb = new StringBuilder();
         sb.append("CUGInterLockCode [");
-        byte[] data=getData();
-        if (data != null) {
+        if (getValue() != null) {
             sb.append("data=");
-            sb.append(ASNOctetString.printDataArr(data));            
+            sb.append(printDataArr());            
         }
         sb.append("]");
 

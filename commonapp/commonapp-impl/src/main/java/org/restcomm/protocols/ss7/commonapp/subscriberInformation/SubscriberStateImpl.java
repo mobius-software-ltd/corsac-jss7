@@ -65,10 +65,8 @@ public class SubscriberStateImpl implements SubscriberState {
 				this.camelBusy=new ASNNull();
 				break;
 			case netDetNotReachable:
-				if(notReachableReason!=null) {
-					this.notReachableReason = new ASNNotReachableReasonImpl();
-					this.notReachableReason.setType(notReachableReason);
-				}
+				if(notReachableReason!=null)
+					this.notReachableReason = new ASNNotReachableReasonImpl(notReachableReason);					
 				break;
 			case notProvidedFromVLR:
 				this.notProvisionedFromVLR=new ASNNull();

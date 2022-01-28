@@ -99,9 +99,7 @@ public class UserInformationElementImpl implements UserInformationElement {
 		if(ext==null)
 			ext=new UserInformationExternalImpl();
 		
-		ASNUserInformationObjectImpl realValue=new ASNUserInformationObjectImpl();
-		realValue.setValue(value);
-		ext.setChildAsObject(realValue);		
+		ext.setChildAsObject(new ASNUserInformationObjectImpl(value));		
 	}
 	
 	public Boolean isIDIndirect() {

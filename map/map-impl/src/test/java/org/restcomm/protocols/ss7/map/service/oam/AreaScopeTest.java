@@ -49,6 +49,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 /**
@@ -115,10 +116,10 @@ public class AreaScopeTest {
         assertEquals(asc.getCgiList().get(0).getCellId(), 22444);
 
         assertEquals(asc.getEUutranCgiList().size(), 1);
-        assertEquals(asc.getEUutranCgiList().get(0).getData(), getEUtranCgiData());
+        assertTrue(ByteBufUtil.equals(asc.getEUutranCgiList().get(0).getValue(),Unpooled.wrappedBuffer(getEUtranCgiData())));
 
         assertEquals(asc.getRoutingAreaIdList().size(), 1);
-        assertEquals(asc.getRoutingAreaIdList().get(0).getData(), getRAIdentity());
+        assertTrue(ByteBufUtil.equals(asc.getRoutingAreaIdList().get(0).getValue(), Unpooled.wrappedBuffer(getRAIdentity())));
 
         assertEquals(asc.getLocationAreaIdList().size(), 1);
         assertEquals(asc.getLocationAreaIdList().get(0).getMCC(), 150);
@@ -126,7 +127,7 @@ public class AreaScopeTest {
         assertEquals(asc.getLocationAreaIdList().get(0).getLac(), 3333);
 
         assertEquals(asc.getTrackingAreaIdList().size(), 1);
-        assertEquals(asc.getTrackingAreaIdList().get(0).getData(), getTAId());
+        assertTrue(ByteBufUtil.equals(asc.getTrackingAreaIdList().get(0).getValue(), Unpooled.wrappedBuffer(getTAId())));
 
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(asc.getExtensionContainer()));
 
@@ -149,16 +150,16 @@ public class AreaScopeTest {
         assertTrue(Arrays.equals(rawData, encodedData));
 
         List<EUtranCgi> eUtranCgiList = new ArrayList<EUtranCgi>();
-        EUtranCgiImpl eUtranCgi = new EUtranCgiImpl(getEUtranCgiData());
+        EUtranCgiImpl eUtranCgi = new EUtranCgiImpl(Unpooled.wrappedBuffer(getEUtranCgiData()));
         eUtranCgiList.add(eUtranCgi);
         List<RAIdentity> routingAreaIdList = new ArrayList<RAIdentity>();
-        RAIdentityImpl raIdentity = new RAIdentityImpl(getRAIdentity());
+        RAIdentityImpl raIdentity = new RAIdentityImpl(Unpooled.wrappedBuffer(getRAIdentity()));
         routingAreaIdList.add(raIdentity);
         List<LAIFixedLength> locationAreaIdList = new ArrayList<LAIFixedLength>();
         LAIFixedLengthImpl laiFixedLength = new LAIFixedLengthImpl(150, 11, 3333); // int mcc, int mnc, int lac
         locationAreaIdList.add(laiFixedLength);
         List<TAId> trackingAreaIdList = new ArrayList<TAId>();
-        TAIdImpl taId = new TAIdImpl(getTAId());
+        TAIdImpl taId = new TAIdImpl(Unpooled.wrappedBuffer(getTAId()));
         trackingAreaIdList.add(taId);
         asc = new AreaScopeImpl(cgiList, eUtranCgiList, routingAreaIdList, locationAreaIdList, trackingAreaIdList,
                 MAPExtensionContainerTest.GetTestExtensionContainer());

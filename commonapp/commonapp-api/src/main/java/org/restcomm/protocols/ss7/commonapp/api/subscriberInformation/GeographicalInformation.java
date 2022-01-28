@@ -25,6 +25,8 @@ package org.restcomm.protocols.ss7.commonapp.api.subscriberInformation;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
+import io.netty.buffer.ByteBuf;
+
 /**
  *
 <code>
@@ -50,8 +52,8 @@ The relation between the coded number N and the range of longitude X it encodes 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface GeographicalInformation {
 
-    byte[] getData();
-
+	ByteBuf getValue();
+	
     TypeOfShape getTypeOfShape();
 
     /**
