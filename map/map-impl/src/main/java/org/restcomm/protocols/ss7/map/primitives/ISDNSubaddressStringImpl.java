@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.primitives;
 
 import org.restcomm.protocols.ss7.map.api.primitives.ISDNSubaddressString;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -34,7 +34,7 @@ import io.netty.buffer.ByteBuf;
  * @author daniel bichara
  *
  */
-public class ISDNSubaddressStringImpl extends ASNOctetString2 implements ISDNSubaddressString {
+public class ISDNSubaddressStringImpl extends ASNOctetString implements ISDNSubaddressString {
 	// TODO: implement SubAddress octets and check address format
     /*
      * -- It is composed of -- a) one octet for type of subaddress and odd/even indicator. -- b) 20 octets for subaddress

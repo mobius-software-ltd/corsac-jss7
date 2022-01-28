@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.OriginalCalledNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,7 +39,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class OriginalCalledNumberIsupImpl extends ASNOctetString2 implements OriginalCalledNumberIsup {
+public class OriginalCalledNumberIsupImpl extends ASNOctetString implements OriginalCalledNumberIsup {
 	public OriginalCalledNumberIsupImpl() {
     }
 

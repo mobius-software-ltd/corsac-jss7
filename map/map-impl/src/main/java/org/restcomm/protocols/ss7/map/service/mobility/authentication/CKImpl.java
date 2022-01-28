@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CK;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -33,7 +33,7 @@ import io.netty.buffer.ByteBuf;
  * @author Lasith Waruna Perera
  *
  */
-public class CKImpl extends ASNOctetString2 implements CK {
+public class CKImpl extends ASNOctetString implements CK {
 	public CKImpl(ByteBuf value) {
 		super(value);     
     }

@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.T
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -45,7 +45,7 @@ public class EventSpecificInfoChargingImpl implements EventSpecificInfoCharging 
     private TariffInformation tariffInformation;
 
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false, index=-1)
-    private ASNOctetString2 tariffIndicator;
+    private ASNOctetString tariffIndicator;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false, index=-1)
     private ASNChargeNoChargeIndication chargeNoChargeIndication;
@@ -59,7 +59,7 @@ public class EventSpecificInfoChargingImpl implements EventSpecificInfoCharging 
     
     public EventSpecificInfoChargingImpl(ByteBuf tariffIndicator) {
     	if(tariffIndicator!=null)
-    		this.tariffIndicator=new ASNOctetString2(tariffIndicator);    	
+    		this.tariffIndicator=new ASNOctetString(tariffIndicator);    	
     }
     
     public EventSpecificInfoChargingImpl(ChargeNoChargeIndication chargeNoChargeIndication) {

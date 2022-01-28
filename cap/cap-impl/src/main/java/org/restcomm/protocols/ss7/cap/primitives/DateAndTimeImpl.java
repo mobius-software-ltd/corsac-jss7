@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.cap.primitives;
 
 import org.restcomm.protocols.ss7.cap.api.primitives.DateAndTime;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,7 +35,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class DateAndTimeImpl extends ASNOctetString2 implements DateAndTime {
+public class DateAndTimeImpl extends ASNOctetString implements DateAndTime {
 	public DateAndTimeImpl() {
     }
 

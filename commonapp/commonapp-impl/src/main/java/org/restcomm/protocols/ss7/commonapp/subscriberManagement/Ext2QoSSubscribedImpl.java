@@ -27,7 +27,7 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.Ext2QoSSubs
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.Ext2QoSSubscribed_SourceStatisticsDescriptor;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_BitRateExtended;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -37,7 +37,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class Ext2QoSSubscribedImpl extends ASNOctetString2 implements Ext2QoSSubscribed {
+public class Ext2QoSSubscribedImpl extends ASNOctetString implements Ext2QoSSubscribed {
 	public Ext2QoSSubscribedImpl() {
     }
 

@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePartPrice;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -34,7 +34,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class VariablePartPriceImpl extends ASNOctetString2 implements VariablePartPrice {
+public class VariablePartPriceImpl extends ASNOctetString implements VariablePartPrice {
 	public VariablePartPriceImpl() {
     }
 

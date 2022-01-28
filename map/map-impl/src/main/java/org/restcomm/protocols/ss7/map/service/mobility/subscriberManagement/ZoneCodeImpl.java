@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ZoneCode;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -34,7 +34,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class ZoneCodeImpl extends ASNOctetString2 implements ZoneCode {
+public class ZoneCodeImpl extends ASNOctetString implements ZoneCode {
 	public ZoneCodeImpl() {
     }
 

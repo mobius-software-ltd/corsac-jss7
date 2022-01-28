@@ -29,7 +29,7 @@ import java.util.List;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APN;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,7 +39,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class APNImpl extends ASNOctetString2 implements APN {
+public class APNImpl extends ASNOctetString implements APN {
 	private static Charset ascii = Charset.forName("US-ASCII");
 
     public APNImpl() {

@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.P
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ProtocolIndicator;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.TCAPDialogueLevel;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -37,7 +37,7 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class ProtocolIndicatorImpl extends ASNOctetString2 implements ProtocolIndicator {
+public class ProtocolIndicatorImpl extends ASNOctetString implements ProtocolIndicator {
 	public ProtocolIndicatorImpl() {
     }
 

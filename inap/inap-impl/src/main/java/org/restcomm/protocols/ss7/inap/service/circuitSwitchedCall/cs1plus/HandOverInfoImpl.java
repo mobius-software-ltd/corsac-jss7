@@ -32,7 +32,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -54,7 +54,7 @@ public class HandOverInfoImpl implements HandOverInfo {
     private SCPDialogueInfo sendingSCPDialogueInfo;
 
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false, index=-1)
-    private ASNOctetString2 sendingSCPCorrelationInfo;
+    private ASNOctetString sendingSCPCorrelationInfo;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = true, index=-1)
     private SCPAddressWrapperImpl receivingSCPAddress;
@@ -63,7 +63,7 @@ public class HandOverInfoImpl implements HandOverInfo {
     private SCPDialogueInfo receivingSCPDialogueInfo;
 
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = false, index=-1)
-    private ASNOctetString2 receivingSCPCorrelationInfo;
+    private ASNOctetString receivingSCPCorrelationInfo;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = false, index=-1, defaultImplementation = CalledPartyNumberIsupImpl.class)
     private CalledPartyNumberIsup handoverNumber;
@@ -84,16 +84,16 @@ public class HandOverInfoImpl implements HandOverInfo {
     		this.sendingSCPAddress=new SCPAddressWrapperImpl(sendingSCPAddress);
     	
     	this.sendingSCPDialogueInfo=sendingSCPDialogueInfo;
-    	if(sendingSCPCorrelationInfo!=null) {
-    		this.sendingSCPCorrelationInfo=new ASNOctetString2(sendingSCPCorrelationInfo);    		
-    	}
+    	
+    	if(sendingSCPCorrelationInfo!=null)
+    		this.sendingSCPCorrelationInfo=new ASNOctetString(sendingSCPCorrelationInfo);    		
     	
     	if(receivingSCPAddress!=null)
     		this.receivingSCPAddress=new SCPAddressWrapperImpl(receivingSCPAddress);
     	
     	this.receivingSCPDialogueInfo=receivingSCPDialogueInfo;
     	if(receivingSCPCorrelationInfo!=null)
-    		this.receivingSCPCorrelationInfo=new ASNOctetString2(receivingSCPCorrelationInfo);
+    		this.receivingSCPCorrelationInfo=new ASNOctetString(receivingSCPCorrelationInfo);
     		
     	this.handoverNumber=handoverNumber;
     	if(handoverData!=null)

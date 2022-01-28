@@ -214,7 +214,7 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
             this.camelInfo = camelInfo;
             
             if(suppressionOfAnnouncement)
-            this.suppressionOfAnnouncement = new ASNNull();
+            	this.suppressionOfAnnouncement = new ASNNull();
             
             this.alertingPattern = alertingPattern;
             

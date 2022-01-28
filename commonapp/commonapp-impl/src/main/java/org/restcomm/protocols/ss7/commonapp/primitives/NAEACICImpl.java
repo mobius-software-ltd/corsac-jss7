@@ -27,7 +27,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.NAEACIC;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationPlanValue;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationTypeValue;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -45,7 +45,7 @@ import io.netty.buffer.Unpooled;
  * @author Lasith Waruna Perera
  *
  */
-public class NAEACICImpl extends ASNOctetString2 implements NAEACIC {
+public class NAEACICImpl extends ASNOctetString implements NAEACIC {
 	protected static final int NETWORK_IND_PLAN_MASK = 0x0F;
     protected static final int NETWORK_IND_TYPE_MASK = 0x70;
     protected static final int THREE_OCTET_CARRIER_CODE_MASK = 0x0F;

@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeographicalInformation;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.TypeOfShape;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -37,7 +37,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class GeographicalInformationImpl extends ASNOctetString2 implements GeographicalInformation {
+public class GeographicalInformationImpl extends ASNOctetString implements GeographicalInformation {
 	private static double koef23 = Math.pow(2.0, 23) / 90;
     private static double koef24 = Math.pow(2.0, 24) / 360;
     private static double[] uncertaintyTable = initUncertaintyTable();

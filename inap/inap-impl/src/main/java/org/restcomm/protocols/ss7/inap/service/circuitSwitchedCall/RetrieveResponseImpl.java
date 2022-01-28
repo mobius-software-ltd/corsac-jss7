@@ -31,7 +31,7 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.DataI
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -45,7 +45,7 @@ public class RetrieveResponseImpl extends CircuitSwitchedCallMessageImpl impleme
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private ASNOctetString2 operationReturnID;
+    private ASNOctetString operationReturnID;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1,defaultImplementation = DataItemInformationImpl.class)
     private DataItemInformation dataItemInformation;
@@ -55,7 +55,7 @@ public class RetrieveResponseImpl extends CircuitSwitchedCallMessageImpl impleme
 
     public RetrieveResponseImpl(ByteBuf operationReturnID,DataItemInformation dataItemInformation) {
     	if(operationReturnID!=null)
-    		this.operationReturnID=new ASNOctetString2(operationReturnID);    	
+    		this.operationReturnID=new ASNOctetString(operationReturnID);    	
     	
     	this.dataItemInformation=dataItemInformation;
     }

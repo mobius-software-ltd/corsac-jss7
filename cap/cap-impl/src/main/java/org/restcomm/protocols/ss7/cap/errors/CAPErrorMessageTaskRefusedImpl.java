@@ -32,9 +32,7 @@ import org.restcomm.protocols.ss7.cap.api.errors.TaskRefusedParameter;
  *
  */
 public class CAPErrorMessageTaskRefusedImpl extends EnumeratedСAPErrorMessage1Impl implements CAPErrorMessageTaskRefused {
-	public static final String _PrimitiveName = "CAPErrorMessageTaskRefused";
-
-    protected CAPErrorMessageTaskRefusedImpl(TaskRefusedParameter taskRefusedParameter) {
+	protected CAPErrorMessageTaskRefusedImpl(TaskRefusedParameter taskRefusedParameter) {
         super((long) CAPErrorCode.taskRefused);
 
         if(taskRefusedParameter!=null)

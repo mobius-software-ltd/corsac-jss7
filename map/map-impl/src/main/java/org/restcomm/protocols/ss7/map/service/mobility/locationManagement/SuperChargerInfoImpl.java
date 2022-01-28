@@ -29,7 +29,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 
@@ -43,7 +42,7 @@ public class SuperChargerInfoImpl implements SuperChargerInfo {
     private ASNNull sendSubscriberData;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
-    private ASNOctetString2 subscriberDataStored;
+    private ASNOctetString subscriberDataStored;
 
     public SuperChargerInfoImpl() {
     	
@@ -61,7 +60,7 @@ public class SuperChargerInfoImpl implements SuperChargerInfo {
      * @param subscriberDataStored
      */
     public SuperChargerInfoImpl(ByteBuf subscriberDataStored) {
-        this.subscriberDataStored = new ASNOctetString2(subscriberDataStored);
+        this.subscriberDataStored = new ASNOctetString(subscriberDataStored);
     }
 
     /*
@@ -94,7 +93,7 @@ public class SuperChargerInfoImpl implements SuperChargerInfo {
             sb.append("sendSubscriberData, ");
         if (subscriberDataStored != null && subscriberDataStored.getValue()!=null) {
             sb.append("subscriberDataStored=[");
-            sb.append(ASNOctetString.printDataArr(getSubscriberDataStored()));
+            sb.append(subscriberDataStored.printDataArr());
             sb.append("], ");
         }
 

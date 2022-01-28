@@ -65,9 +65,8 @@ public class ConnectToResourceRequestImpl extends CircuitSwitchedCallMessageImpl
     public ConnectToResourceRequestImpl(CalledPartyNumberIsup resourceAddress_IPRoutingAddress, boolean resourceAddress_Null,
             CAPINAPExtensions extensions, ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Integer callSegmentID) {
     	
-    	if(resourceAddress_IPRoutingAddress!=null) {
+    	if(resourceAddress_IPRoutingAddress!=null)
     		this.resourceAddress = new ResourceAddressImpl(resourceAddress_IPRoutingAddress);	
-    	}
     	else
     		this.resourceAddress = new ResourceAddressImpl(resourceAddress_Null);
         

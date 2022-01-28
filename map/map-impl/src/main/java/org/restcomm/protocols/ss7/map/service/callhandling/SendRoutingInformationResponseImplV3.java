@@ -146,12 +146,6 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     
     private long mapProtocolVersion;
 
-    
-
-    // private static final int TAG_camelRoutingInfo = 8;
-
-    private static final String _PrimitiveName = "SendRoutingInformationResponse";
-
     public SendRoutingInformationResponseImplV3() {
         this(3);
     }
@@ -383,8 +377,7 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("SendRoutingInformationResponse [");
 
         sb.append("mapProtocolVersion=");
         sb.append(mapProtocolVersion);

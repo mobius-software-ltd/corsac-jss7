@@ -23,7 +23,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.FQDN;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -32,7 +32,7 @@ import io.netty.buffer.ByteBuf;
  * @author Lasith Waruna Perera
  *
  */
-public class FQDNImpl extends ASNOctetString2 implements FQDN {
+public class FQDNImpl extends ASNOctetString implements FQDN {
 	public FQDNImpl() {
     }
 

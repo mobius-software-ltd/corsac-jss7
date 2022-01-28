@@ -40,12 +40,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class CCBSFeatureImpl implements CCBSFeature {
-	public static final int _TAG_ccbsIndex = 0;
-    public static final int _TAG_bSubscriberNumber = 1;
-    public static final int _TAG_bSubscriberSubaddress = 2;
-    public static final int _TAG_basicServiceGroup = 3;
-
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private ASNInteger ccbsIndex;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)

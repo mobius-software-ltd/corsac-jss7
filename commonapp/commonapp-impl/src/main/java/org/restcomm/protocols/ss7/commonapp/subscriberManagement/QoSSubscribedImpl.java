@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscrib
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_PrecedenceClass;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_ReliabilityClass;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -40,7 +40,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class QoSSubscribedImpl extends ASNOctetString2 implements QoSSubscribed {
+public class QoSSubscribedImpl extends ASNOctetString implements QoSSubscribed {
 	public QoSSubscribedImpl() {
     }
 

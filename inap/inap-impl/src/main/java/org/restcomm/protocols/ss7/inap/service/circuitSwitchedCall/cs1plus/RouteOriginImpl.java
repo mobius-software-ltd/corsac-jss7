@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus;
 
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.RouteOrigin;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -34,7 +34,7 @@ import io.netty.buffer.ByteBuf;
  * @author yulian.oifa
  *
  */
-public class RouteOriginImpl extends ASNOctetString2 implements RouteOrigin {
+public class RouteOriginImpl extends ASNOctetString implements RouteOrigin {
 	public RouteOriginImpl() {
     }
 

@@ -29,7 +29,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 
@@ -48,10 +47,10 @@ public class FacilityGroupImpl implements FacilityGroup {
     private ASNInteger privateFacilityID;
 
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false, index=-1)
-    private ASNOctetString2 huntGroup;
+    private ASNOctetString huntGroup;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false, index=-1)
-    private ASNOctetString2 routeIndex;
+    private ASNOctetString routeIndex;
 
     public FacilityGroupImpl() {
     }
@@ -68,9 +67,9 @@ public class FacilityGroupImpl implements FacilityGroup {
     public FacilityGroupImpl(ByteBuf value,Boolean isHuntGroup) {
     	if(value!=null) {
     		if(isHuntGroup)
-    			this.huntGroup = new ASNOctetString2(value);
+    			this.huntGroup = new ASNOctetString(value);
     		else
-    			this.routeIndex = new ASNOctetString2(value);    		
+    			this.routeIndex = new ASNOctetString(value);    		
     	}
     }
 
@@ -120,12 +119,12 @@ public class FacilityGroupImpl implements FacilityGroup {
         
         if (this.huntGroup != null && this.huntGroup.getValue()!=null) {
             sb.append(", huntGroup=");
-            sb.append(ASNOctetString.printDataArr(getHuntGroup()));
+            sb.append(huntGroup.printDataArr());
         }
         
         if (this.routeIndex != null && this.routeIndex.getValue()!=null) {
             sb.append(", routeIndex=");
-            sb.append(ASNOctetString.printDataArr(getRouteIndex()));
+            sb.append(routeIndex.printDataArr());
         }
 
         sb.append("]");

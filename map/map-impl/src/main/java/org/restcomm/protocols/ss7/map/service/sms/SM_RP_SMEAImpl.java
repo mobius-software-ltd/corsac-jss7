@@ -27,7 +27,7 @@ import org.restcomm.protocols.ss7.map.api.service.sms.SM_RP_SMEA;
 import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
 import org.restcomm.protocols.ss7.map.smstpdu.AddressFieldImpl;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -37,7 +37,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class SM_RP_SMEAImpl extends ASNOctetString2 implements SM_RP_SMEA {
+public class SM_RP_SMEAImpl extends ASNOctetString implements SM_RP_SMEA {
 	public SM_RP_SMEAImpl() {
     }
 

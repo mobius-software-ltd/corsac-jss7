@@ -39,7 +39,7 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -99,11 +99,11 @@ public class InvokeTest {
 
         InvokeTestASN invokeParameter=new InvokeTestASN();
         
-        ASNOctetString2 o1=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { 0x0F }));
-        ASNOctetString2 o2=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
+        ASNOctetString o1=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 0x0F }));
+        ASNOctetString o2=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
                 0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }));
         
-        invokeParameter.setO1(Arrays.asList(new ASNOctetString2[] { o1 }));
+        invokeParameter.setO1(Arrays.asList(new ASNOctetString[] { o1 }));
         invokeParameter.setO2(o2);
         invoke.setParameter(invokeParameter);
 
@@ -120,7 +120,7 @@ public class InvokeTest {
         invoke.setLinkedId(2L);
         invoke.setOperationCode(Arrays.asList(new Long[] { 1L, 0L, 0L, 1L }));
 
-        ASNOctetString2 pm=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }));
+        ASNOctetString pm=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }));
         invoke.setParameter(pm);
         
         comp=new ComponentImpl();
@@ -166,8 +166,8 @@ public class InvokeTest {
         assertEquals(OperationCodeType.Global, oc.getOperationType());
         assertEquals(Arrays.asList(new Long[] { 1L, 0L, 0L, 1L }), oc.getGlobalOperationCode());
 
-        assertTrue(invokeComp.getInvoke().getParameter() instanceof ASNOctetString2);
-        assertTrue(byteBufEquals(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }), ((ASNOctetString2)invokeComp.getInvoke().getParameter()).getValue()));
+        assertTrue(invokeComp.getInvoke().getParameter() instanceof ASNOctetString);
+        assertTrue(byteBufEquals(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }), ((ASNOctetString)invokeComp.getInvoke().getParameter()).getValue()));
     }
 
     public static Boolean byteBufEquals(ByteBuf value1,ByteBuf value2) {

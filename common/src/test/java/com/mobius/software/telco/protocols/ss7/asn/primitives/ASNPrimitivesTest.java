@@ -359,8 +359,8 @@ public class ASNPrimitivesTest
 		encodedLongOctetString.writeBytes(longLengthBytes);
 		encodedLongOctetString.writeBytes(Unpooled.wrappedBuffer(plainLongBytes));
 		
-		ASNOctetString2 value=new ASNOctetString2(Unpooled.wrappedBuffer(plainBytes));		
-		ASNOctetString2 longValue=new ASNOctetString2(Unpooled.wrappedBuffer(plainLongBytes));		
+		ASNOctetString value=new ASNOctetString(Unpooled.wrappedBuffer(plainBytes));		
+		ASNOctetString longValue=new ASNOctetString(Unpooled.wrappedBuffer(plainLongBytes));		
 		
 		try
 		{
@@ -372,13 +372,13 @@ public class ASNPrimitivesTest
 			
 			ByteBuf bufferToDecode=Unpooled.wrappedBuffer(encodedOctetString);
 			Object decodedValue=parser.decode(bufferToDecode).getResult();
-			assertTrue(decodedValue instanceof ASNOctetString2);
-			assertTrue(byteBufEquals(((ASNOctetString2)decodedValue).getValue(),Unpooled.wrappedBuffer(plainBytes)));
+			assertTrue(decodedValue instanceof ASNOctetString);
+			assertTrue(byteBufEquals(((ASNOctetString)decodedValue).getValue(),Unpooled.wrappedBuffer(plainBytes)));
 			
 			bufferToDecode=Unpooled.wrappedBuffer(encodedLongOctetString);
 			decodedValue=parser.decode(bufferToDecode).getResult();
-			assertTrue(decodedValue instanceof ASNOctetString2);
-			assertTrue(byteBufEquals(((ASNOctetString2)decodedValue).getValue(),plainLongBytes));
+			assertTrue(decodedValue instanceof ASNOctetString);
+			assertTrue(byteBufEquals(((ASNOctetString)decodedValue).getValue(),plainLongBytes));
 		}
 		catch(Exception ex)
 		{

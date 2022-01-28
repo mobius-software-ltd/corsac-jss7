@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.primitives;
 
 import org.restcomm.protocols.ss7.map.api.primitives.SignalInfo;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -34,7 +34,7 @@ import io.netty.buffer.ByteBuf;
  * @author sergey vetyutnev
  *
  */
-public class SignalInfoImpl extends ASNOctetString2 implements SignalInfo {
+public class SignalInfoImpl extends ASNOctetString implements SignalInfo {
 	public SignalInfoImpl() {
     }
 

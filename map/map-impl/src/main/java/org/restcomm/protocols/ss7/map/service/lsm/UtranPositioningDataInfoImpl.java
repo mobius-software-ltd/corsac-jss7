@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.UtranPositioningDataInfo;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -36,7 +36,7 @@ import io.netty.buffer.ByteBuf;
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
-public class UtranPositioningDataInfoImpl extends ASNOctetString2 implements UtranPositioningDataInfo {
+public class UtranPositioningDataInfoImpl extends ASNOctetString implements UtranPositioningDataInfo {
 	public UtranPositioningDataInfoImpl() {
     }
 

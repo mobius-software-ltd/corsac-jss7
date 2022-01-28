@@ -28,7 +28,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -41,10 +41,10 @@ import io.netty.buffer.ByteBuf;
 public class ChargingAnalysisInputDataImpl implements ChargingAnalysisInputData {
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false, index=-1)
-	private ASNOctetString2 chargingOrigin;
+	private ASNOctetString chargingOrigin;
 	    
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true, index=-1)
-    private ASNOctetString2 tariffActivityCode;
+    private ASNOctetString tariffActivityCode;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false, index=-1)
     private ASNInteger chargingCode;
@@ -54,10 +54,10 @@ public class ChargingAnalysisInputDataImpl implements ChargingAnalysisInputData 
 
     public ChargingAnalysisInputDataImpl(ByteBuf chargingOrigin, ByteBuf tariffActivityCode, Integer chargingCode) {
     	if(chargingOrigin!=null)
-    		this.chargingOrigin=new ASNOctetString2(chargingOrigin);    	
+    		this.chargingOrigin=new ASNOctetString(chargingOrigin);    	
     	
     	if(tariffActivityCode!=null)
-    		this.tariffActivityCode=new ASNOctetString2(tariffActivityCode);    	
+    		this.tariffActivityCode=new ASNOctetString(tariffActivityCode);    	
     	
     	if(chargingCode!=null)
     		this.chargingCode=new ASNInteger(chargingCode);    		

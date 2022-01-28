@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
  *
@@ -34,7 +34,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
  *
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public class CAMELSCIBillingChargingCharacteristicsAltImpl extends ASNOctetString2 implements CAMELSCIBillingChargingCharacteristicsAlt {
+public class CAMELSCIBillingChargingCharacteristicsAltImpl extends ASNOctetString implements CAMELSCIBillingChargingCharacteristicsAlt {
 	public CAMELSCIBillingChargingCharacteristicsAltImpl() {
     }
 

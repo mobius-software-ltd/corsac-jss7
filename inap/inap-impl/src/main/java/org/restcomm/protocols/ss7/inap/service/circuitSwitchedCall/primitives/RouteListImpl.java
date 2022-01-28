@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -43,16 +43,16 @@ import io.netty.buffer.ByteBuf;
 public class RouteListImpl implements RouteList {
 	
 	@ASNProperty(asnClass = ASNClass.UNIVERSAL,tag = 4,constructed = false,index = -1)
-	private List<ASNOctetString2> dataList;
+	private List<ASNOctetString> dataList;
 
     public RouteListImpl() {
     }
 
     public RouteListImpl(List<ByteBuf> dataList) {
     	if(dataList!=null) {
-    		this.dataList=new ArrayList<ASNOctetString2>();
+    		this.dataList=new ArrayList<ASNOctetString>();
     		for(ByteBuf curr:dataList) {
-    			ASNOctetString2 currStr=new ASNOctetString2(curr);
+    			ASNOctetString currStr=new ASNOctetString(curr);
     			this.dataList.add(currStr);
     		}
     	}    	  	
@@ -63,7 +63,7 @@ public class RouteListImpl implements RouteList {
     		return null;
     	
     	List<ByteBuf> result=new ArrayList<ByteBuf>();
-    	for(ASNOctetString2 curr:dataList) {
+    	for(ASNOctetString curr:dataList) {
     		ByteBuf value=curr.getValue();
     		if(value!=null)
     			result.add(value);    		
@@ -80,7 +80,7 @@ public class RouteListImpl implements RouteList {
         if (dataList != null && dataList.size()!=0) {
             sb.append("dataList=");
             boolean isFirst=false;
-            for(ASNOctetString2 curr:dataList) {
+            for(ASNOctetString curr:dataList) {
             	if(!isFirst)
             		sb.append(",");
             	

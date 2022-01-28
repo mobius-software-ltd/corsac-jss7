@@ -23,7 +23,7 @@ package org.restcomm.protocols.ss7.cap.service.sms.primitive;
 
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FreeFormatDataSMS;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -33,7 +33,7 @@ import io.netty.buffer.ByteBuf;
  * @author alerant appngin
  *
  */
-public class FreeFormatDataSMSImpl extends ASNOctetString2 implements FreeFormatDataSMS {
+public class FreeFormatDataSMSImpl extends ASNOctetString implements FreeFormatDataSMS {
 	public FreeFormatDataSMSImpl() {
     }
 

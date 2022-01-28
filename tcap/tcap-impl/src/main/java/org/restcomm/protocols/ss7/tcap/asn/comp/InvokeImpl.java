@@ -98,7 +98,7 @@ public class InvokeImpl implements Invoke {
         } else {
             this.invokeClass = invokeClass;
         }
-    }   
+    }
 
     @ASNGenericMapping
     public Class<?> getMapping(ASNParser parser) {

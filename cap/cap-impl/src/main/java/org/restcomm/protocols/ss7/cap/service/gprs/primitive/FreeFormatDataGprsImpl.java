@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.cap.service.gprs.primitive;
 
 import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FreeFormatDataGprs;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -33,7 +33,7 @@ import io.netty.buffer.ByteBuf;
  * @author Lasith Waruna Perera
  *
  */
-public class FreeFormatDataGprsImpl extends ASNOctetString2 implements FreeFormatDataGprs {
+public class FreeFormatDataGprsImpl extends ASNOctetString implements FreeFormatDataGprs {
 	public FreeFormatDataGprsImpl() {
     }
 

@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.commonapp.primitives;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ScfID;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -33,7 +33,7 @@ import io.netty.buffer.ByteBuf;
  * @author sergey vetyutnev
  *
  */
-public class ScfIDImpl extends ASNOctetString2 implements ScfID {
+public class ScfIDImpl extends ASNOctetString implements ScfID {
 	public ScfIDImpl() {
     }
 

@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.commonapp.subscriberInformation;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.MSNetworkCapability;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -33,7 +33,7 @@ import io.netty.buffer.ByteBuf;
  * @author sergey vetyutnev
  *
  */
-public class MSNetworkCapabilityImpl extends ASNOctetString2 implements MSNetworkCapability {
+public class MSNetworkCapabilityImpl extends ASNOctetString implements MSNetworkCapability {
 	public MSNetworkCapabilityImpl() {
     }
 

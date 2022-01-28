@@ -27,7 +27,7 @@ import java.util.TimeZone;
 
 import org.restcomm.protocols.ss7.map.api.primitives.Time;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -37,7 +37,7 @@ import io.netty.buffer.Unpooled;
  * @author Lasith Waruna Perera
  *
  */
-public class TimeImpl extends ASNOctetString2 implements Time {
+public class TimeImpl extends ASNOctetString implements Time {
 	private static final long msbZero = 2085978496000L;
 
     private static final long msbOne = -2208988800000L;

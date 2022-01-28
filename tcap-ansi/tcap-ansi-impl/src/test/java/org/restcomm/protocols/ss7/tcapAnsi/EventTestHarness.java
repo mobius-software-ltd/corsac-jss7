@@ -66,7 +66,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.OperationCodeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.Unpooled;
 
@@ -161,7 +161,7 @@ public abstract class EventTestHarness implements TCListener {
             inv.setInvokeId(this.dialog.getNewInvokeId());
             OperationCode oc = TcapFactory.createNationalOperationCode(10L);            
             inv.setOperationCode(oc);
-            ASNOctetString2 innerString=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { 3, 4, 5 }));
+            ASNOctetString innerString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 3, 4, 5 }));
             inv.setSeqParameter(innerString);
             
             WrappedComponentImpl component=new WrappedComponentImpl();
@@ -194,7 +194,7 @@ public abstract class EventTestHarness implements TCListener {
             inv.setInvokeId(this.dialog.getNewInvokeId());
             OperationCode oc = new OperationCodeImpl();
             inv.setOperationCode(oc);
-            ASNOctetString2 innerString=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { 3, 4, 5 }));
+            ASNOctetString innerString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 3, 4, 5 }));
             inv.setSeqParameter(innerString);
             
             WrappedComponentImpl component=new WrappedComponentImpl();

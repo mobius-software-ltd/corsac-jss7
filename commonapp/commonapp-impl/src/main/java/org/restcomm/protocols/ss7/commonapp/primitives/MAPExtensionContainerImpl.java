@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPPrivateExtension;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -45,7 +45,7 @@ public class MAPExtensionContainerImpl implements MAPExtensionContainer {
     private MAPPrivateExtensionsListWrapperImpl privateExtensionList;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
-    private ASNOctetString2 pcsExtensions;
+    private ASNOctetString pcsExtensions;
 
     public MAPExtensionContainerImpl() {
     }
@@ -54,7 +54,7 @@ public class MAPExtensionContainerImpl implements MAPExtensionContainer {
         this.privateExtensionList = new MAPPrivateExtensionsListWrapperImpl(privateExtensionList);
         
         if(pcsExtensions!=null)
-        	this.pcsExtensions = new ASNOctetString2(pcsExtensions);        	
+        	this.pcsExtensions = new ASNOctetString(pcsExtensions);        	
     }
     
     public List<MAPPrivateExtension> getPrivateExtensionList() {
@@ -76,7 +76,7 @@ public class MAPExtensionContainerImpl implements MAPExtensionContainer {
     }
 
     public void setPcsExtensions(ByteBuf pcsExtensions) {    	
-    	this.pcsExtensions=new ASNOctetString2(pcsExtensions);    	
+    	this.pcsExtensions=new ASNOctetString(pcsExtensions);    	
     }
 
     @Override

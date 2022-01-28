@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentification;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,7 +39,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class AreaIdentificationImpl extends ASNOctetString2 implements AreaIdentification {
+public class AreaIdentificationImpl extends ASNOctetString implements AreaIdentification {
 	
 	public AreaIdentificationImpl() {
     }

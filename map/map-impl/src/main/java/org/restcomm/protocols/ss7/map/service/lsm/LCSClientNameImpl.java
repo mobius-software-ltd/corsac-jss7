@@ -62,7 +62,6 @@ public class LCSClientNameImpl implements LCSClientName {
      * @param lcsFormatIndicator
      */
     public LCSClientNameImpl(CBSDataCodingScheme dataCodingScheme, USSDString nameString, LCSFormatIndicator lcsFormatIndicator) {
-        super();
         if(dataCodingScheme!=null)
         	this.dataCodingScheme = new ASNCBSDataCodingSchemeImpl(dataCodingScheme);
         

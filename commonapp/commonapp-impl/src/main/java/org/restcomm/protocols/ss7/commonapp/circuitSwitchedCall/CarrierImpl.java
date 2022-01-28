@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.Carrier;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -33,7 +33,7 @@ import io.netty.buffer.ByteBuf;
 * @author sergey vetyutnev
 *
 */
-public class CarrierImpl extends ASNOctetString2 implements Carrier {
+public class CarrierImpl extends ASNOctetString implements Carrier {
 	public CarrierImpl() {
     }
 

@@ -38,7 +38,7 @@ import org.restcomm.protocols.ss7.map.api.datacoding.CBSNationalLanguage;
 import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -49,7 +49,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class USSDStringImpl extends ASNOctetString2 implements USSDString {
+public class USSDStringImpl extends ASNOctetString implements USSDString {
 	private CBSDataCodingScheme dataCodingScheme;
 
     private static GSMCharset gsm7Charset = new GSMCharset();
@@ -63,9 +63,9 @@ public class USSDStringImpl extends ASNOctetString2 implements USSDString {
 
     public USSDStringImpl(ByteBuf data, CBSDataCodingScheme dataCodingScheme) {
     	super(data);
-        if (dataCodingScheme == null) {
+        if (dataCodingScheme == null)
             dataCodingScheme = new CBSDataCodingSchemeImpl(15);
-        }
+
         this.dataCodingScheme = dataCodingScheme;
     }
 

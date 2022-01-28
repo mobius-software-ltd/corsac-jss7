@@ -43,7 +43,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.Unpooled;
 
@@ -114,12 +114,12 @@ public class Client extends EventTestHarness {
 
         invoke.setOperationCode(59L);
 
-        ASNOctetString2 p1=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { 0x0F }));                
-        ASNOctetString2 p2=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
+        ASNOctetString p1=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 0x0F }));                
+        ASNOctetString p2=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
                 0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }));
 
         CompoundParameter c1=new CompoundParameter();
-        c1.setO1(Arrays.asList(new ASNOctetString2[] { p1,p2}));
+        c1.setO1(Arrays.asList(new ASNOctetString[] { p1,p2}));
         invoke.setParameter(c1);
 
         return invoke;
@@ -127,14 +127,14 @@ public class Client extends EventTestHarness {
     
     @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x10,constructed=true,lengthIndefinite=false)
     private class CompoundParameter {
-    	List<ASNOctetString2> o1;
+    	List<ASNOctetString> o1;
     	
-    	public void setO1(List<ASNOctetString2> o1) {
+    	public void setO1(List<ASNOctetString> o1) {
     		this.o1=o1;
     	}
     	
     	@SuppressWarnings("unused")
-		public List<ASNOctetString2> getO1() {
+		public List<ASNOctetString> getO1() {
     		return this.o1;
     	}
     }

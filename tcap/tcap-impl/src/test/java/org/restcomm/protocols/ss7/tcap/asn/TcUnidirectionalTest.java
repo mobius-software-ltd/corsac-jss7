@@ -38,7 +38,7 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -89,7 +89,7 @@ public class TcUnidirectionalTest {
         Invoke invComp = TcapFactory.createComponentInvoke();
         invComp.setInvokeId(-128l);
         invComp.setOperationCode(591L);
-        ASNOctetString2 p=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { 1, 2, 3 }));
+        ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 2, 3 }));
         invComp.setParameter(p);
         
         List<BaseComponent> components=Arrays.asList(new BaseComponent[] { invComp });

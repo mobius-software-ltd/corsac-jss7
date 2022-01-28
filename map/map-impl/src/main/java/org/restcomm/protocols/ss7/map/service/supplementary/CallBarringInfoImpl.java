@@ -50,9 +50,8 @@ public class CallBarringInfoImpl implements CallBarringInfo {
 
     public CallBarringInfoImpl(SSCode ssCode, List<CallBarringFeature> callBarringFeatureList) {        
         this.ssCode = ssCode;        
-        if(callBarringFeatureList!=null) {
-        	this.callBarringFeatureList = new CallBarringFeatureListWrapperImpl(callBarringFeatureList);
-        }
+        if(callBarringFeatureList!=null)
+        	this.callBarringFeatureList = new CallBarringFeatureListWrapperImpl(callBarringFeatureList);        
     }
 
     public SSCode getSsCode() {

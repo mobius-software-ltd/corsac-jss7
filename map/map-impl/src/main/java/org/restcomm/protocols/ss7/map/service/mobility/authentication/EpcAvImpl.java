@@ -30,7 +30,6 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 
@@ -42,16 +41,16 @@ import io.netty.buffer.ByteBuf;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class EpcAvImpl implements EpcAv {
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-	private ASNOctetString2 rand;
+	private ASNOctetString rand;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
-	private ASNOctetString2 xres;
+	private ASNOctetString xres;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=2)
-	private ASNOctetString2 autn;
+	private ASNOctetString autn;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=3)
-	private ASNOctetString2 kasme;
+	private ASNOctetString kasme;
 	
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
 	private MAPExtensionContainer extensionContainer;
@@ -62,16 +61,16 @@ public class EpcAvImpl implements EpcAv {
     public EpcAvImpl(ByteBuf rand, ByteBuf xres, ByteBuf autn, ByteBuf kasme, MAPExtensionContainer extensionContainer) {
 
     	if(rand!=null)
-    		this.rand = new ASNOctetString2(rand);
+    		this.rand = new ASNOctetString(rand);
     	
     	if(xres!=null)
-    		this.xres = new ASNOctetString2(xres);
+    		this.xres = new ASNOctetString(xres);
     	
     	if(autn!=null)
-    		this.autn = new ASNOctetString2(autn);
+    		this.autn = new ASNOctetString(autn);
     	
     	if(kasme!=null)
-    		this.kasme = new ASNOctetString2(kasme);
+    		this.kasme = new ASNOctetString(kasme);
     	
         this.extensionContainer = extensionContainer;
     }
@@ -115,22 +114,22 @@ public class EpcAvImpl implements EpcAv {
 
         if (this.rand != null) {
             sb.append("rand=[");
-            sb.append(ASNOctetString.printDataArr(getRand()));
+            sb.append(rand.printDataArr());
             sb.append("], ");
         }
         if (this.xres != null) {
             sb.append("xres=[");
-            sb.append(ASNOctetString.printDataArr(getXres()));
+            sb.append(xres.printDataArr());
             sb.append("], ");
         }
         if (this.autn != null) {
             sb.append("autn=[");
-            sb.append(ASNOctetString.printDataArr(getAutn()));
+            sb.append(autn.printDataArr());
             sb.append("]");
         }
         if (this.kasme != null) {
             sb.append("kasme=[");
-            sb.append(ASNOctetString.printDataArr(getKasme()));
+            sb.append(kasme.printDataArr());
             sb.append("]");
         }
         if (this.extensionContainer != null) {

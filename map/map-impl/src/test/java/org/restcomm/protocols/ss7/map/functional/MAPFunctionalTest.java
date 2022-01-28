@@ -287,7 +287,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -2515,10 +2515,10 @@ public class MAPFunctionalTest extends SccpHarness {
             public void onDialogDelimiter(MAPDialog mapDialog) {
                 super.onDialogDelimiter(mapDialog);
                 try {
-                    ASNOctetString2 octetString=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }));
+                    ASNOctetString octetString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }));
                     ((MAPDialogImpl)mapDialog).getTcapDialog().sendData(invokeId1, null, null, null, TcapFactory.createLocalOperationCode((long) MAPOperationCode.processUnstructuredSS_Request), octetString, false, true);
 
-                    octetString=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }));
+                    octetString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }));
                     ((MAPDialogImpl) mapDialog).getTcapDialog().sendError(invokeId2,TcapFactory.createLocalErrorCode((long) MAPErrorCode.systemFailure),octetString);
 
                     ((MAPDialogImpl) mapDialog).getTcapDialog().sendError(invokeId3,TcapFactory.createLocalErrorCode(1000L),null);

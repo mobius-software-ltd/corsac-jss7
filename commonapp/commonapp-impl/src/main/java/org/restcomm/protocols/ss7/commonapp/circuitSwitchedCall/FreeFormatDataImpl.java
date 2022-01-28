@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
 
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.FreeFormatData;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -34,7 +34,7 @@ import io.netty.buffer.ByteBuf;
 * @author sergey vetyutnev
 *
 */
-public class FreeFormatDataImpl extends ASNOctetString2 implements FreeFormatData {
+public class FreeFormatDataImpl extends ASNOctetString implements FreeFormatData {
 	public FreeFormatDataImpl() {
     }
 

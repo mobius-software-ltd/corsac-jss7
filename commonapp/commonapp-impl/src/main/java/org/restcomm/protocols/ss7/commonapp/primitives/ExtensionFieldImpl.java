@@ -32,7 +32,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNObjectIdentifier;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -53,10 +53,10 @@ public class ExtensionFieldImpl implements ExtensionField {
 	private ASNCriticalityType criticalityType;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    public ASNOctetString2 data;
+    public ASNOctetString data;
 
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true,index = -1)
-    public ASNOctetString2 data1;
+    public ASNOctetString data1;
     
     public ExtensionFieldImpl() {
     }
@@ -70,9 +70,9 @@ public class ExtensionFieldImpl implements ExtensionField {
         	       
         if(data!=null) {
         	if(!isConstructred)
-        		this.data = new ASNOctetString2(data);        		
+        		this.data = new ASNOctetString(data);        		
         	else if(isConstructred)
-        		this.data1 = new ASNOctetString2(data);        		
+        		this.data1 = new ASNOctetString(data);        		
         }
     }
 
@@ -85,9 +85,9 @@ public class ExtensionFieldImpl implements ExtensionField {
         	
         if(data!=null) {
         	if(!isConstructred)
-        		this.data = new ASNOctetString2(data);        	
+        		this.data = new ASNOctetString(data);        	
         	else if(isConstructred)
-        		this.data1 = new ASNOctetString2(data);        	
+        		this.data1 = new ASNOctetString(data);        	
         }
     }
 

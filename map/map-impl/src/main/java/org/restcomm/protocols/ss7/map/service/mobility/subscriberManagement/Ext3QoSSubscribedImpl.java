@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_BitRateExtended;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.Ext3QoSSubscribed;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,7 +35,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class Ext3QoSSubscribedImpl extends ASNOctetString2 implements Ext3QoSSubscribed {
+public class Ext3QoSSubscribedImpl extends ASNOctetString implements Ext3QoSSubscribed {
 	public Ext3QoSSubscribedImpl() {
     }
 

@@ -52,8 +52,6 @@ public class MAPErrorMessageSsIncompatibilityImpl extends MAPErrorMessageImpl im
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1, defaultImplementation = SSStatusImpl.class)
     private SSStatus ssStatus;
 
-    protected String _PrimitiveName = "MAPErrorMessageSsIncompatibility";
-
     public MAPErrorMessageSsIncompatibilityImpl(SSCode ssCode, BasicServiceCode basicService, SSStatus ssStatus) {
         super((long) MAPErrorCode.ssIncompatibility);
 

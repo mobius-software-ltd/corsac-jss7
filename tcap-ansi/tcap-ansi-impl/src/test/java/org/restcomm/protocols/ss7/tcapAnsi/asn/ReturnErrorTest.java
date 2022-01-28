@@ -32,7 +32,7 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -61,8 +61,8 @@ public class ReturnErrorTest {
         
         assertEquals((long) re.getCorrelationId(), 5);
         assertEquals(re.getErrorCode().getPrivateErrorCode(), new Long(14L));
-        assertTrue(re.getParameter() instanceof ASNOctetString2);
-        assertEquals(((ASNOctetString2)re.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
+        assertTrue(re.getParameter() instanceof ASNOctetString);
+        assertEquals(((ASNOctetString)re.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
     }
 
     @Test(groups = { "functional.encode" })
@@ -75,7 +75,7 @@ public class ReturnErrorTest {
         re.setCorrelationId(5L);
         ErrorCode ec = TcapFactory.createPrivateErrorCode(14L);
         re.setErrorCode(ec);
-        ASNOctetString2 p=new ASNOctetString2(Unpooled.wrappedBuffer(parData));
+        ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(parData));
         re.setSetParameter(p);
               
         ByteBuf encodedData=parser.encode(re);

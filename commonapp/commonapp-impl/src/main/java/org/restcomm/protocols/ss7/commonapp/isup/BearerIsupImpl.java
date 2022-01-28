@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserServiceInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,7 +39,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class BearerIsupImpl extends ASNOctetString2 implements BearerIsup {
+public class BearerIsupImpl extends ASNOctetString implements BearerIsup {
 	public BearerIsupImpl() {
     }
 

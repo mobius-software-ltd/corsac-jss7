@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityPeriod;
 import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
 import org.restcomm.protocols.ss7.commonapp.smstpu.ValidityPeriodImpl;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -40,7 +40,7 @@ import io.netty.buffer.Unpooled;
  * @author Lasith Waruna Perera
  *
  */
-public class TPValidityPeriodImpl extends ASNOctetString2 implements TPValidityPeriod {
+public class TPValidityPeriodImpl extends ASNOctetString implements TPValidityPeriod {
 	public TPValidityPeriodImpl() {
     }
 

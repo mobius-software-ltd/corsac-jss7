@@ -27,7 +27,7 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.ReSync
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -39,20 +39,20 @@ import io.netty.buffer.ByteBuf;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class ReSynchronisationInfoImpl implements ReSynchronisationInfo {
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-	private ASNOctetString2 rand;
+	private ASNOctetString rand;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
-	private ASNOctetString2 auts;
+	private ASNOctetString auts;
     
     public ReSynchronisationInfoImpl() {
     }
 
     public ReSynchronisationInfoImpl(ByteBuf rand, ByteBuf auts) {
     	if(rand!=null)
-    		this.rand = new ASNOctetString2(rand);
+    		this.rand = new ASNOctetString(rand);
     	
     	if(auts!=null)
-    		this.auts = new ASNOctetString2(auts);    	
+    		this.auts = new ASNOctetString(auts);    	
     }
 
     public ByteBuf getRand() {

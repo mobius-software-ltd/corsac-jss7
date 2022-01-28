@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -38,7 +38,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class LocationNumberMapImpl extends ASNOctetString2 implements LocationNumberMap {
+public class LocationNumberMapImpl extends ASNOctetString implements LocationNumberMap {
 	public LocationNumberMapImpl() {        
     }
 

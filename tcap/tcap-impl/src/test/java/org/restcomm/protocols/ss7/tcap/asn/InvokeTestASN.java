@@ -30,30 +30,30 @@ import java.util.List;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
-public class InvokeTestASN extends ASNOctetString2 {
+public class InvokeTestASN extends ASNOctetString {
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=0x04,constructed=false,index=0)
-	private List<ASNOctetString2> o1;
+	private List<ASNOctetString> o1;
 	
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=0x04,constructed=false,index=1)
-	private ASNOctetString2 o2;
+	private ASNOctetString o2;
 	
 	public InvokeTestASN() {
 		
 	}
 	
-	public List<ASNOctetString2> getO1() {
+	public List<ASNOctetString> getO1() {
 		return o1;
 	}
-	public void setO1(List<ASNOctetString2> o1) {
+	public void setO1(List<ASNOctetString> o1) {
 		this.o1 = o1;
 	}
-	public ASNOctetString2 getO2() {
+	public ASNOctetString getO2() {
 		return o2;
 	}
-	public void setO2(ASNOctetString2 o2) {
+	public void setO2(ASNOctetString o2) {
 		this.o2 = o2;
 	} 
 }

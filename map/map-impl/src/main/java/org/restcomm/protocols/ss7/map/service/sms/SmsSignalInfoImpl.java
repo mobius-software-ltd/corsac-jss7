@@ -31,7 +31,7 @@ import org.restcomm.protocols.ss7.map.smstpdu.SmsTpduImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -42,7 +42,7 @@ import io.netty.buffer.Unpooled;
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
-public class SmsSignalInfoImpl extends ASNOctetString2 implements SmsSignalInfo {
+public class SmsSignalInfoImpl extends ASNOctetString implements SmsSignalInfo {
 	private Charset gsm8Charset;
 
     public SmsSignalInfoImpl() {

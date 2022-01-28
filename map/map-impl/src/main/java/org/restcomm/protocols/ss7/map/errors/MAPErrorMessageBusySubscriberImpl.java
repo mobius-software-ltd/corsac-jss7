@@ -114,8 +114,7 @@ public class MAPErrorMessageBusySubscriberImpl extends MAPErrorMessageImpl imple
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("MAPErrorMessageBusySubscriber [");
 
         if (this.extensionContainer != null)
             sb.append("extensionContainer=" + this.extensionContainer.toString());

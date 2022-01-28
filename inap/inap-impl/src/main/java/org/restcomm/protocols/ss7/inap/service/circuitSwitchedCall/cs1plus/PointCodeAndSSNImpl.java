@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus;
 
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.PointCodeAndSSN;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,7 +35,7 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class PointCodeAndSSNImpl extends ASNOctetString2 implements PointCodeAndSSN {
+public class PointCodeAndSSNImpl extends ASNOctetString implements PointCodeAndSSN {
 	public PointCodeAndSSNImpl() {
     }
 

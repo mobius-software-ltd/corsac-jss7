@@ -30,29 +30,29 @@ import java.util.List;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x04,constructed=true,lengthIndefinite=false)
 public class TCBeginTestASN1 {
-	private List<ASNOctetString2> o1;
+	private List<ASNOctetString> o1;
 	
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,index=-1)
-	private ASNOctetString2 o2;
+	private ASNOctetString o2;
 	
 	public TCBeginTestASN1() {
 		
 	}
 	
-	public List<ASNOctetString2> getO1() {
+	public List<ASNOctetString> getO1() {
 		return o1;
 	}
-	public void setO1(List<ASNOctetString2> o1) {
+	public void setO1(List<ASNOctetString> o1) {
 		this.o1 = o1;
 	}
-	public ASNOctetString2 getO2() {
+	public ASNOctetString getO2() {
 		return o2;
 	}
-	public void setO2(ASNOctetString2 o2) {
+	public void setO2(ASNOctetString o2) {
 		this.o2 = o2;
 	} 
 }

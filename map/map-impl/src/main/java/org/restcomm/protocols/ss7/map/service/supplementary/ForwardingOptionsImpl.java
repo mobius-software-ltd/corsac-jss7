@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.map.service.supplementary;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingOptions;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,7 +35,7 @@ import io.netty.buffer.Unpooled;
  * @author cristian veliscu
  *
  */
-public class ForwardingOptionsImpl extends ASNOctetString2 implements ForwardingOptions {
+public class ForwardingOptionsImpl extends ASNOctetString implements ForwardingOptions {
 	private static final int MASK_notificationForwarding = 0x80;
     private static final int MASK_redirectingPresentation = 0x40;
     private static final int MASK_notificationCalling = 0x20;

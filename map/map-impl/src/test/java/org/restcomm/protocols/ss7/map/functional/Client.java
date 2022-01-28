@@ -179,7 +179,7 @@ import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.Unpooled;
 
@@ -1981,7 +1981,7 @@ public class Client extends EventTestHarness {
                 this.remoteAddress, destReference);
         clientDialog.setExtentionContainer(MAPExtensionContainerTest.GetTestExtensionContainer());
 
-        ASNOctetString2 octetString=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }));
+        ASNOctetString octetString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }));
         try {
         	((MAPDialogImpl)clientDialog).getTcapDialog().sendData(10L, null, null, null, TcapFactory.createLocalOperationCode((long) MAPOperationCode.processUnstructuredSS_Request), octetString, true, false);
         }

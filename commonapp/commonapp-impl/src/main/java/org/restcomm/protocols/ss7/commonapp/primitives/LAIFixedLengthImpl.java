@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.LAIFixedLength;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -40,7 +40,7 @@ import io.netty.buffer.Unpooled;
  *
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=false,lengthIndefinite=false)
-public class LAIFixedLengthImpl extends ASNOctetString2 implements LAIFixedLength {
+public class LAIFixedLengthImpl extends ASNOctetString implements LAIFixedLength {
 	
 	public LAIFixedLengthImpl() {
     }

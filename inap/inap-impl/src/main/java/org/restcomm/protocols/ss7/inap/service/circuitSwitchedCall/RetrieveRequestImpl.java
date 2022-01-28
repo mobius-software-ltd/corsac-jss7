@@ -34,7 +34,6 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 
@@ -48,7 +47,7 @@ public class RetrieveRequestImpl extends CircuitSwitchedCallMessageImpl implemen
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private ASNOctetString2 operationID;
+    private ASNOctetString operationID;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1,defaultImplementation = ApplicationIDImpl.class)
     private ApplicationID applicationID;
@@ -61,7 +60,7 @@ public class RetrieveRequestImpl extends CircuitSwitchedCallMessageImpl implemen
 
     public RetrieveRequestImpl(ByteBuf operationID,ApplicationID applicationID,DataItemID dataItemID) {
     	if(operationID!=null)
-    		this.operationID=new ASNOctetString2(operationID);    	
+    		this.operationID=new ASNOctetString(operationID);    	
     	
     	this.applicationID=applicationID;
     	this.dataItemID=dataItemID;
@@ -103,9 +102,9 @@ public class RetrieveRequestImpl extends CircuitSwitchedCallMessageImpl implemen
         sb.append("RetrieveRequestIndication [");
         this.addInvokeIdInfo(sb);
 
-        if (this.operationID != null && this.operationID.getValue()!=null) {
+        if (this.operationID != null) {
             sb.append(", operationID=");
-            sb.append(ASNOctetString.printDataArr(getOperationID()));
+            sb.append(operationID.printDataArr());
         }
         if (this.applicationID != null) {
             sb.append(", applicationID=");

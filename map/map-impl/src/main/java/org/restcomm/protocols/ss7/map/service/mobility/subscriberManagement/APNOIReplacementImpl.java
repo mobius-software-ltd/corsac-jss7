@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.APNOIReplacement;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -33,7 +33,7 @@ import io.netty.buffer.ByteBuf;
  * @author daniel bichara
  *
  */
-public class APNOIReplacementImpl extends ASNOctetString2 implements APNOIReplacement {
+public class APNOIReplacementImpl extends ASNOctetString implements APNOIReplacement {
 	public APNOIReplacementImpl() {
     }
 

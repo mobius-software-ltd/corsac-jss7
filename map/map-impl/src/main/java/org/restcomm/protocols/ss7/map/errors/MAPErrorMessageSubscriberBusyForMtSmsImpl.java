@@ -51,7 +51,7 @@ public class MAPErrorMessageSubscriberBusyForMtSmsImpl extends MAPErrorMessageIm
 
         this.extensionContainer = extensionContainer;
         if(gprsConnectionSuspended!=null && gprsConnectionSuspended)
-        this.gprsConnectionSuspended = new ASNNull();
+        	this.gprsConnectionSuspended = new ASNNull();
     }
 
     public MAPErrorMessageSubscriberBusyForMtSmsImpl() {

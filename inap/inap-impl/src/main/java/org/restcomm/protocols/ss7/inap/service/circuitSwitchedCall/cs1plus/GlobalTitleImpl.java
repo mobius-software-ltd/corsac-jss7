@@ -39,7 +39,7 @@ import org.restcomm.protocols.ss7.sccp.impl.parameter.GlobalTitle0100Impl;
 import org.restcomm.protocols.ss7.sccp.parameter.EncodingScheme;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle0100;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -50,7 +50,7 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class GlobalTitleImpl extends ASNOctetString2 implements GlobalTitle {
+public class GlobalTitleImpl extends ASNOctetString implements GlobalTitle {
 	public GlobalTitleImpl() {
     }
 

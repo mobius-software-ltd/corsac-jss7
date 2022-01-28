@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.service.oam;
 
 import org.restcomm.protocols.ss7.map.api.service.oam.TraceReference2;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -33,7 +33,7 @@ import io.netty.buffer.ByteBuf;
 * @author sergey vetyutnev
 *
 */
-public class TraceReference2Impl extends ASNOctetString2 implements TraceReference2 {
+public class TraceReference2Impl extends ASNOctetString implements TraceReference2 {
 	public TraceReference2Impl() {        
     }
 

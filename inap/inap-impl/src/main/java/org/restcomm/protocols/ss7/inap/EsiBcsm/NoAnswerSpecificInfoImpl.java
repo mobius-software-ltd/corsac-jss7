@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.inap.api.EsiBcsm.NoAnswerSpecificInfo;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
  *
@@ -34,7 +34,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
  *
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
-public class NoAnswerSpecificInfoImpl extends ASNOctetString2 implements NoAnswerSpecificInfo {
+public class NoAnswerSpecificInfoImpl extends ASNOctetString implements NoAnswerSpecificInfo {
 	public NoAnswerSpecificInfoImpl() {
     }
 

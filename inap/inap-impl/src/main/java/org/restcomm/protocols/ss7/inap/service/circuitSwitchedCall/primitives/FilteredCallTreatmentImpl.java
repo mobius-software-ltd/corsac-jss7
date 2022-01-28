@@ -33,7 +33,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 
@@ -46,7 +45,7 @@ import io.netty.buffer.ByteBuf;
 public class FilteredCallTreatmentImpl implements FilteredCallTreatment {
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false, index=-1)
-    private ASNOctetString2 sfBillingChargingCharacteristics;
+    private ASNOctetString sfBillingChargingCharacteristics;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = true, index=-1, defaultImplementation = InformationToSendImpl.class)
     private InformationToSend informationToSend;
@@ -63,7 +62,7 @@ public class FilteredCallTreatmentImpl implements FilteredCallTreatment {
     public FilteredCallTreatmentImpl(ByteBuf sfBillingChargingCharacteristics,InformationToSend informationToSend,
     		Integer maximumNumberOfCounters,CauseIsup cause) {
     	if(sfBillingChargingCharacteristics!=null)
-    		this.sfBillingChargingCharacteristics=new ASNOctetString2(sfBillingChargingCharacteristics);
+    		this.sfBillingChargingCharacteristics=new ASNOctetString(sfBillingChargingCharacteristics);
     	
     	this.informationToSend=informationToSend;
     	
@@ -103,7 +102,7 @@ public class FilteredCallTreatmentImpl implements FilteredCallTreatment {
 
         if (this.sfBillingChargingCharacteristics != null && this.sfBillingChargingCharacteristics.getValue()!=null) {
             sb.append(", sfBillingChargingCharacteristics=");
-            sb.append(ASNOctetString.printDataArr(getSFBillingChargingCharacteristics()));
+            sb.append(sfBillingChargingCharacteristics.printDataArr());
         }
 
         if (this.informationToSend != null) {

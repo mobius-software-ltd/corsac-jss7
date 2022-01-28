@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.primitives;
 
 import org.restcomm.protocols.ss7.map.api.primitives.TMSI;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -33,7 +33,7 @@ import io.netty.buffer.ByteBuf;
  * @author Lasith Waruna Perera
  *
  */
-public class TMSIImpl extends ASNOctetString2 implements TMSI {
+public class TMSIImpl extends ASNOctetString implements TMSI {
 	public TMSIImpl(ByteBuf value) {
 		super(value);
     }

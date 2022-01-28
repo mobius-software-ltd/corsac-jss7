@@ -28,7 +28,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNIA5String;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -43,7 +43,7 @@ public class MessageIDTextImpl implements MessageIDText {
     private ASNIA5String messageContent;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private ASNOctetString2 attributes;
+    private ASNOctetString attributes;
 
     public MessageIDTextImpl() {
     }
@@ -53,7 +53,7 @@ public class MessageIDTextImpl implements MessageIDText {
         	this.messageContent = new ASNIA5String(messageContent);
         	
         if(attributes!=null)
-        	this.attributes = new ASNOctetString2(attributes);        
+        	this.attributes = new ASNOctetString(attributes);        
     }
 
     public String getMessageContent() {

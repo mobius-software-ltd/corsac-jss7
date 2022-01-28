@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.primitives;
 
 import org.restcomm.protocols.ss7.map.api.primitives.PlmnId;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,7 +35,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class PlmnIdImpl extends ASNOctetString2 implements PlmnId {
+public class PlmnIdImpl extends ASNOctetString implements PlmnId {
 	
 	public PlmnIdImpl() {
     }

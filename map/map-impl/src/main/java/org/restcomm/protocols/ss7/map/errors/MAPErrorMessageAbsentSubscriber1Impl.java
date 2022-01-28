@@ -34,9 +34,7 @@ import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageAbsentSubscriber
  */
 public class MAPErrorMessageAbsentSubscriber1Impl extends BooleanMAPErrorMessage1Impl implements
 MAPErrorMessageAbsentSubscriber {
-	protected String _PrimitiveName = "MAPErrorMessageAbsentSubscriber";
-
-    /**
+	/**
      * For MAP V1
      *
      * @param mwdSet
@@ -72,8 +70,7 @@ MAPErrorMessageAbsentSubscriber {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("MAPErrorMessageAbsentSubscriber [");
 
         if (this.getValue() != null)
             sb.append("mwdSet=" + this.getValue().toString());

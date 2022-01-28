@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.commonapp.primitives;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.DiameterIdentity;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -33,7 +33,7 @@ import io.netty.buffer.ByteBuf;
  * @author sergey vetyutnev
  *
  */
-public class DiameterIdentityImpl extends ASNOctetString2 implements DiameterIdentity {
+public class DiameterIdentityImpl extends ASNOctetString implements DiameterIdentity {
 	public DiameterIdentityImpl() {
        
     }

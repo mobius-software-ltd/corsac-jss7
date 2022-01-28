@@ -31,7 +31,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNIA5String;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNObjectIdentifier;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNUTF8String;
 
 /*
@@ -108,7 +108,7 @@ public class ASNParser
 		this.loadClass(ASNInteger.class);
 		this.loadClass(ASNNull.class);
 		this.loadClass(ASNObjectIdentifier.class);
-		this.loadClass(ASNOctetString2.class);
+		this.loadClass(ASNOctetString.class);
 		this.loadClass(ASNUTF8String.class);	
 	}
 	

@@ -27,9 +27,9 @@ package org.restcomm.protocols.ss7.tcap.asn;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,lengthIndefinite=false)
-public class DialogResponseAPDUASN extends ASNOctetString2 {
+public class DialogResponseAPDUASN extends ASNOctetString {
 
 }

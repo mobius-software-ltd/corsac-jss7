@@ -46,7 +46,7 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -126,13 +126,13 @@ public class TcBeginTest {
         invComp.setOperationCode(591L);
 
         // Sequence of Parameter
-        ASNOctetString2 p1=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { 0x0f }));
-        ASNOctetString2 p2=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
+        ASNOctetString p1=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 0x0f }));
+        ASNOctetString p2=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
                 0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }));
-        ASNOctetString2 p3=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { (byte) 0x91, 0x13, 0x26, (byte) 0x88, (byte) 0x83, 0x00, (byte) 0xf2 }));
+        ASNOctetString p3=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { (byte) 0x91, 0x13, 0x26, (byte) 0x88, (byte) 0x83, 0x00, (byte) 0xf2 }));
 
         TCBeginTestASN1 p = new TCBeginTestASN1();
-        p.setO1(Arrays.asList(new ASNOctetString2[] {p1, p2}));
+        p.setO1(Arrays.asList(new ASNOctetString[] {p1, p2}));
         p.setO2(p3);
 
         invComp.setParameter(p);
@@ -692,14 +692,14 @@ public class TcBeginTest {
         invComp.setOperationCode(591L);
 
         TCBeginTestASN2 parameter=new TCBeginTestASN2();
-        ASNOctetString2 o1=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { 0x0f }));
+        ASNOctetString o1=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 0x0f }));
         parameter.setO1(o1);
         
-        ASNOctetString2 o2=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
+        ASNOctetString o2=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
                 0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }));
         parameter.setO2(o2);
         
-        ASNOctetString2 o3=new ASNOctetString2(Unpooled.wrappedBuffer(new byte[] { (byte) 0x91, 0x13, 0x26, (byte) 0x88, (byte) 0x83, 0x00, (byte) 0xf2 }));
+        ASNOctetString o3=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { (byte) 0x91, 0x13, 0x26, (byte) 0x88, (byte) 0x83, 0x00, (byte) 0xf2 }));
         parameter.setO2(o3);
         
         invComp.setParameter(parameter);

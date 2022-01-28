@@ -67,6 +67,7 @@ public class LCSRequestorIDImpl  implements LCSRequestorID {
         
         if(dataCodingScheme!=null)
         	this.dataCodingScheme = new ASNCBSDataCodingSchemeImpl(dataCodingScheme);
+        
         this.requestorIDString = requestorIDString;
         
         if(lcsFormatIndicator!=null)

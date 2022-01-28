@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -41,7 +41,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class DigitsIsupImpl extends ASNOctetString2 implements DigitsIsup {
+public class DigitsIsupImpl extends ASNOctetString implements DigitsIsup {
 	private boolean isGenericDigits;
     private boolean isGenericNumber;
 

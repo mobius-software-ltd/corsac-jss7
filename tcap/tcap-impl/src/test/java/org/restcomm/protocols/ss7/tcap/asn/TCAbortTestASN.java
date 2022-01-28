@@ -27,12 +27,12 @@ package org.restcomm.protocols.ss7.tcap.asn;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x03,constructed=true,lengthIndefinite=false)
-public class TCAbortTestASN extends ASNOctetString2 {
+public class TCAbortTestASN extends ASNOctetString {
 	public TCAbortTestASN() {
 		
 	}

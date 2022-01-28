@@ -10,7 +10,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGraphicString;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNObjectIdentifier;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -49,7 +49,7 @@ public abstract class ExternalImpl<T extends ASNGeneric>
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=true,index=1)
 	private T child;
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=false,index=1)	
-	private ASNOctetString2 childString;
+	private ASNOctetString childString;
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x02,constructed=false,index=1)
 	private ASNBitString bitString;
 	
@@ -72,7 +72,7 @@ public abstract class ExternalImpl<T extends ASNGeneric>
 	}
 	
 	public void setChild(ByteBuf value) {
-		this.childString=new ASNOctetString2(value);
+		this.childString=new ASNOctetString(value);
 		this.child=null;
 		this.bitString=null;
 	}

@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.F
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.ForwardSuppressionIndicators;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.InstructionIndicator;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -37,7 +37,7 @@ import io.netty.buffer.Unpooled;
  * @author yulian.oifa
  *
  */
-public class ForwardSuppressionIndicatorsmpl extends ASNOctetString2 implements ForwardSuppressionIndicators {
+public class ForwardSuppressionIndicatorsmpl extends ASNOctetString implements ForwardSuppressionIndicators {
 	public ForwardSuppressionIndicatorsmpl() {
     }
 

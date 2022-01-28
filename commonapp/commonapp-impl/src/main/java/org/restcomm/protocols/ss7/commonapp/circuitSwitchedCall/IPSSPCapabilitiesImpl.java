@@ -25,7 +25,6 @@ package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.IPSSPCapabilities;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,7 +34,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class IPSSPCapabilitiesImpl extends ASNOctetString2 implements IPSSPCapabilities {
+public class IPSSPCapabilitiesImpl extends ASNOctetString implements IPSSPCapabilities {
 	public static int _Mask_IPRoutingAddress = 0x01;
     public static int _Mask_VoiceBack = 0x02;
     public static int _Mask_VoiceInformation_SpeechRecognition = 0x04;

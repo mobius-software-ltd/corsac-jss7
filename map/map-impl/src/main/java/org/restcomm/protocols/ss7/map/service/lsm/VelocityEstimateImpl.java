@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityEstimate;
 import org.restcomm.protocols.ss7.map.api.service.lsm.VelocityType;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -36,7 +36,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class VelocityEstimateImpl extends ASNOctetString2 implements VelocityEstimate {
+public class VelocityEstimateImpl extends ASNOctetString implements VelocityEstimate {
 	public VelocityEstimateImpl() {
     }
 

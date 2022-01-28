@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LAC;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -37,7 +37,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class LACImpl extends ASNOctetString2 implements LAC {
+public class LACImpl extends ASNOctetString implements LAC {
 	public LACImpl() {
     }
 

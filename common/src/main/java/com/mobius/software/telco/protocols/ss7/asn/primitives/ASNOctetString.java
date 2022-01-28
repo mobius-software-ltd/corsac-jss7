@@ -39,6 +39,10 @@ import io.netty.buffer.Unpooled;
 public class ASNOctetString {
 	private ByteBuf value;
 	
+	public ASNOctetString() {
+		
+	}
+	
 	public ASNOctetString(ByteBuf value) {
 		if(value!=null)
 			this.value = Unpooled.wrappedBuffer(value);
@@ -60,7 +64,8 @@ public class ASNOctetString {
 	
 	@ASNEncode
 	public void encode(ASNParser parser,ByteBuf buffer) {
-		buffer.writeBytes(getValue());
+		if(value!=null)
+			buffer.writeBytes(getValue());
 	}
 	
 	@ASNDecode
@@ -75,6 +80,9 @@ public class ASNOctetString {
 	
 	public static int getLength(ByteBuf value)
 	{		
+		if(value==null)
+			return 0;
+		
 		return value.readableBytes();
 	}
 	

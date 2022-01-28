@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,7 +39,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class CalledPartyNumberIsupImpl extends ASNOctetString2 implements CalledPartyNumberIsup {
+public class CalledPartyNumberIsupImpl extends ASNOctetString implements CalledPartyNumberIsup {
 	public CalledPartyNumberIsupImpl() {
     }
 

@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ChargingCharacteristics;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -34,7 +34,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class ChargingCharacteristicsImpl extends ASNOctetString2 implements ChargingCharacteristics {
+public class ChargingCharacteristicsImpl extends ASNOctetString implements ChargingCharacteristics {
 	public static final int _FLAG_NORMAL_CHARGING = 0x08;
     public static final int _FLAG_PREPAID_CHARGING = 0x04;
     public static final int _FLAG_FLAT_RATE_CHARGING_CHARGING = 0x02;

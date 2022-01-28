@@ -35,7 +35,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.EventNoti
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -49,10 +49,10 @@ public class EventNotificationChargingRequestImpl extends CircuitSwitchedCallMes
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false,index = -1)
-    private ASNOctetString2 eventTypeCharging;
+    private ASNOctetString eventTypeCharging;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
-    private ASNOctetString2 eventSpecificInformationCharging;
+    private ASNOctetString eventSpecificInformationCharging;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1)
     private LegIDWrapperImpl legID;
@@ -70,10 +70,10 @@ public class EventNotificationChargingRequestImpl extends CircuitSwitchedCallMes
     		CAPINAPExtensions extensions, MonitorMode monitorMode) {
     	    	
     	if(eventTypeCharging!=null)
-    		this.eventTypeCharging = new ASNOctetString2(eventTypeCharging);
+    		this.eventTypeCharging = new ASNOctetString(eventTypeCharging);
     	
     	if(eventSpecificInformationCharging!=null)
-    		this.eventSpecificInformationCharging = new ASNOctetString2(eventSpecificInformationCharging);
+    		this.eventSpecificInformationCharging = new ASNOctetString(eventSpecificInformationCharging);
     	
     	if(legID!=null)
         	this.legID = new LegIDWrapperImpl(legID);

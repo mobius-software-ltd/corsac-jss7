@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorCode;
 import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessageOctetString;
 
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -40,7 +40,7 @@ import io.netty.buffer.ByteBuf;
 public class INAPErrorMessageOctetStringImpl extends INAPErrorMessageImpl implements INAPErrorMessageOctetString {
 	protected Long errorCode;
 
-	private ASNOctetString2 value;
+	private ASNOctetString value;
 	
     protected INAPErrorMessageOctetStringImpl(Long errorCode) {
         this.errorCode = errorCode;
@@ -51,7 +51,7 @@ public class INAPErrorMessageOctetStringImpl extends INAPErrorMessageImpl implem
 
     protected void setValue(ByteBuf value) {
     	if(value!=null)
-    		this.value=new ASNOctetString2(value);
+    		this.value=new ASNOctetString(value);
     	else
     		this.value=null;
 	}

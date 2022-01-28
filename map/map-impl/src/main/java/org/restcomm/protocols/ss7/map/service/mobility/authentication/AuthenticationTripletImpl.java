@@ -28,7 +28,6 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 
@@ -41,13 +40,13 @@ import io.netty.buffer.ByteBuf;
 public class AuthenticationTripletImpl implements AuthenticationTriplet {
 	
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-	private ASNOctetString2 rand;
+	private ASNOctetString rand;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
-	private ASNOctetString2 sres;
+	private ASNOctetString sres;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=2)
-	private ASNOctetString2 kc;
+	private ASNOctetString kc;
 
     public AuthenticationTripletImpl() {
     }
@@ -55,13 +54,13 @@ public class AuthenticationTripletImpl implements AuthenticationTriplet {
     public AuthenticationTripletImpl(ByteBuf rand, ByteBuf sres, ByteBuf kc) {
 
     	if(rand!=null)
-    		this.rand = new ASNOctetString2(rand);
+    		this.rand = new ASNOctetString(rand);
     	
     	if(sres!=null)
-    		this.sres = new ASNOctetString2(sres);
+    		this.sres = new ASNOctetString(sres);
     	
     	if(kc!=null)
-    		this.kc = new ASNOctetString2(kc);
+    		this.kc = new ASNOctetString(kc);
     }
 
     public ByteBuf getRand() {
@@ -92,17 +91,17 @@ public class AuthenticationTripletImpl implements AuthenticationTriplet {
 
         if (this.rand != null) {
             sb.append("rand=[");
-            sb.append(ASNOctetString.printDataArr(getRand()));
+            sb.append(rand.printDataArr());
             sb.append("], ");
         }
         if (this.sres != null) {
             sb.append("sres=[");
-            sb.append(ASNOctetString.printDataArr(getSres()));
+            sb.append(sres.printDataArr());
             sb.append("], ");
         }
         if (this.kc != null) {
             sb.append("kc=[");
-            sb.append(ASNOctetString.printDataArr(getKc()));
+            sb.append(kc.printDataArr());
             sb.append("]");
         }
 

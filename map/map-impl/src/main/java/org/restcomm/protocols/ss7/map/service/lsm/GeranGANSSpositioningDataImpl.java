@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.service.lsm;
 
 import org.restcomm.protocols.ss7.map.api.service.lsm.GeranGANSSpositioningData;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -33,7 +33,7 @@ import io.netty.buffer.ByteBuf;
  * @author sergey vetyutnev
  *
  */
-public class GeranGANSSpositioningDataImpl extends ASNOctetString2 implements GeranGANSSpositioningData {
+public class GeranGANSSpositioningDataImpl extends ASNOctetString implements GeranGANSSpositioningData {
 	public GeranGANSSpositioningDataImpl() {
     }
 

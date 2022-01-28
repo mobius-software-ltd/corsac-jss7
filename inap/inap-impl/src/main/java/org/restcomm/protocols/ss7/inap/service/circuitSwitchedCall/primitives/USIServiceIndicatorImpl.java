@@ -30,7 +30,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNObjectIdentifier;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -46,7 +46,7 @@ public class USIServiceIndicatorImpl implements USIServiceIndicator {
     private ASNObjectIdentifier global;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false, index=-1)
-    private ASNOctetString2 local;
+    private ASNOctetString local;
 
     public USIServiceIndicatorImpl() {
     }
@@ -58,7 +58,7 @@ public class USIServiceIndicatorImpl implements USIServiceIndicator {
 
     public USIServiceIndicatorImpl(ByteBuf local) {
     	if(local!=null)
-    		this.local=new ASNOctetString2(local);    	
+    		this.local=new ASNOctetString(local);    	
     }
 
     public List<Long> getGlobal() {

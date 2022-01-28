@@ -43,7 +43,7 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -85,8 +85,8 @@ public class TcConversationTest {
         assertEquals((long) inv.getInvokeId(), 0);
         assertNull(inv.getCorrelationId());
         assertEquals(inv.getOperationCode().getPrivateOperationCode(), new Long(2357L));
-        assertTrue(inv.getParameter() instanceof ASNOctetString2); 
-        ByteBuf realData=((ASNOctetString2)inv.getParameter()).getValue();
+        assertTrue(inv.getParameter() instanceof ASNOctetString); 
+        ByteBuf realData=((ASNOctetString)inv.getParameter()).getValue();
         UserInformationElementTest.byteBufEquals(realData, Unpooled.wrappedBuffer(parData));
 
         // 2
@@ -126,7 +126,7 @@ public class TcConversationTest {
         inv.setInvokeId(0L);
         OperationCode oc = TcapFactory.createPrivateOperationCode(2357L);
         inv.setOperationCode(oc);
-        ASNOctetString2 innerValue=new ASNOctetString2(Unpooled.wrappedBuffer(parData));        
+        ASNOctetString innerValue=new ASNOctetString(Unpooled.wrappedBuffer(parData));        
         inv.setSetParameter(innerValue);
 
         TCConversationMessage tcm = TcapFactory.createTCConversationMessage(true);

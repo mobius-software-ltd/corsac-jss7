@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.FurnishCh
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -44,14 +44,14 @@ public class FurnishChargingInformationRequestImpl extends CircuitSwitchedCallMe
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.UNIVERSAL,tag = 4,constructed = false,index = -1)
-    private ASNOctetString2 fciBillingChargingCharacteristics;
+    private ASNOctetString fciBillingChargingCharacteristics;
 
     public FurnishChargingInformationRequestImpl() {
     }
 
     public FurnishChargingInformationRequestImpl(ByteBuf fciBillingChargingCharacteristics) {
     	if(fciBillingChargingCharacteristics!=null)
-    		this.fciBillingChargingCharacteristics = new ASNOctetString2(fciBillingChargingCharacteristics);    
+    		this.fciBillingChargingCharacteristics = new ASNOctetString(fciBillingChargingCharacteristics);    
     }
 
     @Override

@@ -39,7 +39,7 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.Fi
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -65,7 +65,7 @@ public class ServiceFilteringResponseRequestImpl extends CircuitSwitchedCallMess
 	private ASNResponseCondition responseCondition;
 	
 	@ASNProperty(asnClass = ASNClass.PRIVATE,tag = 1,constructed = false,index = -1)
-	private ASNOctetString2 scfCorrelationInfo;
+	private ASNOctetString scfCorrelationInfo;
     
     public ServiceFilteringResponseRequestImpl() {
     }
@@ -76,7 +76,7 @@ public class ServiceFilteringResponseRequestImpl extends CircuitSwitchedCallMess
     	this(counterAndValue,filteringCriteria, null, responseCondition);
     	
     	if(scfCorrelationInfo!=null) {
-    		this.scfCorrelationInfo=new ASNOctetString2(scfCorrelationInfo);
+    		this.scfCorrelationInfo=new ASNOctetString(scfCorrelationInfo);
     	}
     }
     

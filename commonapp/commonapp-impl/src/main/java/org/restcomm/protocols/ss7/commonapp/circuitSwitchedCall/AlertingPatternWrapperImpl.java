@@ -28,7 +28,7 @@ import org.restcomm.protocols.ss7.commonapp.primitives.AlertingPatternImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -39,7 +39,7 @@ import io.netty.buffer.Unpooled;
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
-public class AlertingPatternWrapperImpl extends ASNOctetString2 implements AlertingPatternWrapper {
+public class AlertingPatternWrapperImpl extends ASNOctetString implements AlertingPatternWrapper {
 	public AlertingPatternWrapperImpl() {
     }
 

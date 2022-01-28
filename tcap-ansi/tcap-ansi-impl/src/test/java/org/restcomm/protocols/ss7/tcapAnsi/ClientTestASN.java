@@ -29,16 +29,16 @@ import java.util.List;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x04,constructed=false,lengthIndefinite=false)
 public class ClientTestASN {
-	private List<ASNOctetString2> o1;
+	private List<ASNOctetString> o1;
 
-	public List<ASNOctetString2> getO1() {
+	public List<ASNOctetString> getO1() {
 		return o1;
 	}
-	public void setO1(List<ASNOctetString2> o1) {
+	public void setO1(List<ASNOctetString> o1) {
 		this.o1 = o1;
 	}
 }

@@ -25,7 +25,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.PDPTypeValue;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,7 +35,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class PDPTypeImpl extends ASNOctetString2 implements PDPType {
+public class PDPTypeImpl extends ASNOctetString implements PDPType {
 	public static final int _VALUE_ETSI = 0xF0 + 0; // PPP
     public static final int _VALUE_IETF = 0xF0 + 1; // IPv4, IPv6
 

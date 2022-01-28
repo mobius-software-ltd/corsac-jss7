@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.C
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -44,14 +44,14 @@ public class ApplyChargingReportRequestImpl extends CircuitSwitchedCallMessageIm
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.UNIVERSAL,tag = 4,constructed = false,index = -1)
-    private ASNOctetString2 callResult;
+    private ASNOctetString callResult;
 
     public ApplyChargingReportRequestImpl() {
     }
 
     public ApplyChargingReportRequestImpl(ByteBuf callResult) {
         if(callResult!=null)
-        	this.callResult=new ASNOctetString2(callResult);        
+        	this.callResult=new ASNOctetString(callResult);        
     }
 
     @Override

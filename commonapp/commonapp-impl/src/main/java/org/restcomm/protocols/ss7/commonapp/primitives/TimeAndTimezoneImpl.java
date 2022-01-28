@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.commonapp.primitives;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.TimeAndTimezone;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -34,7 +34,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class TimeAndTimezoneImpl extends ASNOctetString2 implements TimeAndTimezone {
+public class TimeAndTimezoneImpl extends ASNOctetString implements TimeAndTimezone {
 	public TimeAndTimezoneImpl() {
     }
 

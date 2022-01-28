@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives;
 
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -34,7 +34,7 @@ import io.netty.buffer.ByteBuf;
  * @author yulian.oifa
  *
  */
-public class ISDNAccessRelatedInformationImpl extends ASNOctetString2 implements ISDNAccessRelatedInformation {
+public class ISDNAccessRelatedInformationImpl extends ASNOctetString implements ISDNAccessRelatedInformation {
 	public ISDNAccessRelatedInformationImpl() {
     }
 

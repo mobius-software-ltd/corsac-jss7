@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.map.primitives;
 
 import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -34,7 +34,7 @@ import io.netty.buffer.ByteBufUtil;
  * @author sergey vetyutnev
  *
  */
-public class LMSIImpl extends ASNOctetString2 implements LMSI {
+public class LMSIImpl extends ASNOctetString implements LMSI {
 	public LMSIImpl() {
     }
 

@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.commonapp.subscriberInformation;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.MSClassmark2;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -33,7 +33,7 @@ import io.netty.buffer.ByteBuf;
  * @author sergey vetyutnev
  *
  */
-public class MSClassmark2Impl extends ASNOctetString2 implements MSClassmark2 {
+public class MSClassmark2Impl extends ASNOctetString implements MSClassmark2 {
 	public MSClassmark2Impl() {
     }
 

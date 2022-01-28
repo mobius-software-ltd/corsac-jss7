@@ -47,8 +47,6 @@ public class ExternalSignalInfoImpl implements ExternalSignalInfo {
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
 	private MAPExtensionContainer extensionContainer = null;
 
-    private static final String _PrimitiveName = "ExternalSignalInfo";
-
     public ExternalSignalInfoImpl() {
     }
 
@@ -77,8 +75,7 @@ public class ExternalSignalInfoImpl implements ExternalSignalInfo {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(_PrimitiveName);
-        sb.append(" [");
+        sb.append("ExternalSignalInfo [");
 
         if (this.signalInfo != null) {
             sb.append("signalInfo=[");

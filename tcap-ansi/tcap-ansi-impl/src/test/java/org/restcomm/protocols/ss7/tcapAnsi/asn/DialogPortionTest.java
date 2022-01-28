@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -74,7 +74,7 @@ public class DialogPortionTest {
         assertTrue(dp.getProtocolVersion().isT1_114_2000Supported());
         UserInformation ui = dp.getUserInformation();
         assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), ui.getUserInformationElements().get(0).getObjectIdentifier());
-        UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(dataValue), ((ASNOctetString2)ui.getUserInformationElements().get(0).getChild()).getValue());
+        UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(dataValue), ((ASNOctetString)ui.getUserInformationElements().get(0).getChild()).getValue());
 
         SecurityContext sc = dp.getSecurityContext();
         assertEquals(sc.getInt(), new Long(10L));
@@ -109,7 +109,7 @@ public class DialogPortionTest {
         UserInformationElementImpl currElement=new UserInformationElementImpl();
         currElement.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
         
-        ASNOctetString2 innerValue=new ASNOctetString2(Unpooled.wrappedBuffer(dataValue));        
+        ASNOctetString innerValue=new ASNOctetString(Unpooled.wrappedBuffer(dataValue));        
         currElement.setChildAsObject(new ASNUserInformationObjectImpl(innerValue));
         uie.add(currElement);
         ui.setUserInformationElements(uie);

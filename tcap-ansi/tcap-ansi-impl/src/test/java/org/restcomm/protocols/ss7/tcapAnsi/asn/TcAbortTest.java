@@ -37,7 +37,7 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -134,7 +134,7 @@ public class TcAbortTest {
         UserInformationElementImpl uai = new UserInformationElementImpl();
         uai.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
-        ASNOctetString2 innerValue=new ASNOctetString2(Unpooled.wrappedBuffer(dataValue));
+        ASNOctetString innerValue=new ASNOctetString(Unpooled.wrappedBuffer(dataValue));
         uai.setChildAsObject(new ASNUserInformationObjectImpl(innerValue));
         
         UserInformationImpl abortInfo=new UserInformationImpl();

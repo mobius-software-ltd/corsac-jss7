@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddress;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -36,7 +36,7 @@ import io.netty.buffer.Unpooled;
  * @author sergey vetyutnev
  *
  */
-public class GSNAddressImpl extends ASNOctetString2 implements GSNAddress {
+public class GSNAddressImpl extends ASNOctetString implements GSNAddress {
 	public GSNAddressImpl() {        
     }
 

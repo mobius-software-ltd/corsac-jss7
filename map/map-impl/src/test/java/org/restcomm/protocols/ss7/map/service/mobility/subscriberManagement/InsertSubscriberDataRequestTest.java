@@ -186,7 +186,6 @@ import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -2103,7 +2102,6 @@ public class InsertSubscriberDataRequestTest {
                 vplmnLIPAAllowed, mdtUserConsent, subscribedPeriodicLAUtimer);
 
         ByteBuf buffer=parser.encode(prim);
-        System.out.println(ASNOctetString.printDataArr(Unpooled.wrappedBuffer(buffer)));
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         byte[] rawData=this.getData(); 

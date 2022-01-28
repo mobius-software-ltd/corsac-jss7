@@ -28,7 +28,6 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 
@@ -41,19 +40,19 @@ import io.netty.buffer.ByteBuf;
 public class AuthenticationQuintupletImpl implements AuthenticationQuintuplet {
 	
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=0)
-	private ASNOctetString2 rand;
+	private ASNOctetString rand;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1)
-	private ASNOctetString2 xres;
+	private ASNOctetString xres;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=2)
-	private ASNOctetString2 ck;
+	private ASNOctetString ck;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=3)
-	private ASNOctetString2 ik;
+	private ASNOctetString ik;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=4)
-	private ASNOctetString2 autn;
+	private ASNOctetString autn;
 
     public AuthenticationQuintupletImpl() {
     }
@@ -61,19 +60,19 @@ public class AuthenticationQuintupletImpl implements AuthenticationQuintuplet {
     public AuthenticationQuintupletImpl(ByteBuf rand, ByteBuf xres, ByteBuf ck, ByteBuf ik, ByteBuf autn) {
     	
     	if(rand!=null)
-    		this.rand = new ASNOctetString2(rand);
+    		this.rand = new ASNOctetString(rand);
     	
     	if(xres!=null)
-    		this.xres = new ASNOctetString2(xres);
+    		this.xres = new ASNOctetString(xres);
     	
     	if(ck!=null)
-    		this.ck = new ASNOctetString2(ck);
+    		this.ck = new ASNOctetString(ck);
     	
     	if(ik!=null)
-    		this.ik = new ASNOctetString2(ik);
+    		this.ik = new ASNOctetString(ik);
     	
     	if(autn!=null)
-    		this.autn = new ASNOctetString2(autn);    	
+    		this.autn = new ASNOctetString(autn);    	
     }
 
     public ByteBuf getRand() {
@@ -118,27 +117,27 @@ public class AuthenticationQuintupletImpl implements AuthenticationQuintuplet {
 
         if (this.rand != null) {
             sb.append("rand=[");
-            sb.append(ASNOctetString.printDataArr(getRand()));
+            sb.append(rand.printDataArr());
             sb.append("], ");
         }
         if (this.xres != null) {
             sb.append("xres=[");
-            sb.append(ASNOctetString.printDataArr(getXres()));
+            sb.append(xres.printDataArr());
             sb.append("], ");
         }
         if (this.ck != null) {
             sb.append("ck=[");
-            sb.append(ASNOctetString.printDataArr(getCk()));
+            sb.append(ck.printDataArr());
             sb.append("], ");
         }
         if (this.ik != null) {
             sb.append("ik=[");
-            sb.append(ASNOctetString.printDataArr(getIk()));
+            sb.append(ik.printDataArr());
             sb.append("], ");
         }
         if (this.autn != null) {
             sb.append("autn=[");
-            sb.append(ASNOctetString.printDataArr(getAutn()));
+            sb.append(autn.printDataArr());
             sb.append("]");
         }
 

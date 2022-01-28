@@ -40,7 +40,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
 
 import io.netty.buffer.ByteBuf;
 
@@ -64,7 +63,7 @@ public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl 
     
     private ASNBoolean reAttempt;
     private ASNAccessType accessType;
-    private ASNOctetString2 rand;
+    private ASNOctetString rand;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
     private ISDNAddressString vlrNumber;
@@ -91,7 +90,7 @@ public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl 
         	this.accessType = new ASNAccessType(accessType);
         
         if(rand!=null)
-        	this.rand = new ASNOctetString2(rand);
+        	this.rand = new ASNOctetString(rand);
         
         this.vlrNumber = vlrNumber;
         this.sgsnNumber = sgsnNumber;
@@ -191,7 +190,7 @@ public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl 
         }
         if (this.rand != null) {
             sb.append("rand=[");
-            sb.append(ASNOctetString.printDataArr(getRand()));
+            sb.append(rand.printDataArr());
             sb.append("], ");
         }
         if (this.vlrNumber != null) {

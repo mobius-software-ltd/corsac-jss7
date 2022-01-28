@@ -27,7 +27,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.D
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -40,97 +40,97 @@ import io.netty.buffer.ByteBuf;
 public class DataItemInformationImpl implements DataItemInformation {
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = false, index=-1)
-    private ASNOctetString2 attribute0;
+    private ASNOctetString attribute0;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false, index=-1)
-    private ASNOctetString2 attribute1;
+    private ASNOctetString attribute1;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false, index=-1)
-    private ASNOctetString2 attribute2;
+    private ASNOctetString attribute2;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false, index=-1)
-    private ASNOctetString2 attribute3;
+    private ASNOctetString attribute3;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = false, index=-1)
-    private ASNOctetString2 attribute4;
+    private ASNOctetString attribute4;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = false, index=-1)
-    private ASNOctetString2 attribute5;
+    private ASNOctetString attribute5;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 6,constructed = false, index=-1)
-    private ASNOctetString2 attribute6;
+    private ASNOctetString attribute6;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 7,constructed = false, index=-1)
-    private ASNOctetString2 attribute7;
+    private ASNOctetString attribute7;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 8,constructed = false, index=-1)
-    private ASNOctetString2 attribute8;
+    private ASNOctetString attribute8;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 9,constructed = false, index=-1)
-    private ASNOctetString2 attribute9;
+    private ASNOctetString attribute9;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 10,constructed = false, index=-1)
-    private ASNOctetString2 attribute10;
+    private ASNOctetString attribute10;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 11,constructed = false, index=-1)
-    private ASNOctetString2 attribute11;
+    private ASNOctetString attribute11;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 12,constructed = false, index=-1)
-    private ASNOctetString2 attribute12;
+    private ASNOctetString attribute12;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 13,constructed = false, index=-1)
-    private ASNOctetString2 attribute13;
+    private ASNOctetString attribute13;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 14,constructed = false, index=-1)
-    private ASNOctetString2 attribute14;
+    private ASNOctetString attribute14;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 15,constructed = false, index=-1)
-    private ASNOctetString2 attribute15;
+    private ASNOctetString attribute15;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 16,constructed = false, index=-1)
-    private ASNOctetString2 attribute16;
+    private ASNOctetString attribute16;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 17,constructed = false, index=-1)
-    private ASNOctetString2 attribute17;
+    private ASNOctetString attribute17;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 18,constructed = false, index=-1)
-    private ASNOctetString2 attribute18;
+    private ASNOctetString attribute18;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 19,constructed = false, index=-1)
-    private ASNOctetString2 attribute19;
+    private ASNOctetString attribute19;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 20,constructed = false, index=-1)
-    private ASNOctetString2 attribute20;
+    private ASNOctetString attribute20;
 	
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 21,constructed = false, index=-1)
-    private ASNOctetString2 attribute21;
+    private ASNOctetString attribute21;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 22,constructed = false, index=-1)
-    private ASNOctetString2 attribute22;
+    private ASNOctetString attribute22;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 23,constructed = false, index=-1)
-    private ASNOctetString2 attribute23;
+    private ASNOctetString attribute23;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 24,constructed = false, index=-1)
-    private ASNOctetString2 attribute24;
+    private ASNOctetString attribute24;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 25,constructed = false, index=-1)
-    private ASNOctetString2 attribute25;
+    private ASNOctetString attribute25;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 26,constructed = false, index=-1)
-    private ASNOctetString2 attribute26;
+    private ASNOctetString attribute26;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 27,constructed = false, index=-1)
-    private ASNOctetString2 attribute27;
+    private ASNOctetString attribute27;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 28,constructed = false, index=-1)
-    private ASNOctetString2 attribute28;
+    private ASNOctetString attribute28;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 29,constructed = false, index=-1)
-    private ASNOctetString2 attribute29;
+    private ASNOctetString attribute29;
     
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 30,constructed = false, index=-1)
-    private ASNOctetString2 attribute30;
+    private ASNOctetString attribute30;
 	
 	public DataItemInformationImpl() {
     }
@@ -144,97 +144,97 @@ public class DataItemInformationImpl implements DataItemInformation {
     		ByteBuf attribute29,ByteBuf attribute30) {
     	
     	if(attribute0!=null)
-    		this.attribute0=new ASNOctetString2(attribute0);    		
+    		this.attribute0=new ASNOctetString(attribute0);    		
     	
     	if(attribute1!=null)
-    		this.attribute1=new ASNOctetString2(attribute1);    		
+    		this.attribute1=new ASNOctetString(attribute1);    		
     	
     	if(attribute2!=null)
-    		this.attribute2=new ASNOctetString2(attribute2);    		
+    		this.attribute2=new ASNOctetString(attribute2);    		
     	
     	if(attribute3!=null)
-    		this.attribute3=new ASNOctetString2(attribute3);    		
+    		this.attribute3=new ASNOctetString(attribute3);    		
     	
     	if(attribute4!=null)
-    		this.attribute4=new ASNOctetString2(attribute4);    		
+    		this.attribute4=new ASNOctetString(attribute4);    		
     	
     	if(attribute5!=null)
-    		this.attribute5=new ASNOctetString2(attribute5);    		
+    		this.attribute5=new ASNOctetString(attribute5);    		
     	
     	if(attribute6!=null)
-    		this.attribute6=new ASNOctetString2(attribute6);    		
+    		this.attribute6=new ASNOctetString(attribute6);    		
     	
     	if(attribute7!=null)
-    		this.attribute7=new ASNOctetString2(attribute7);    		
+    		this.attribute7=new ASNOctetString(attribute7);    		
     	
     	if(attribute8!=null)
-    		this.attribute8=new ASNOctetString2(attribute8);    		
+    		this.attribute8=new ASNOctetString(attribute8);    		
     	
     	if(attribute9!=null)
-    		this.attribute9=new ASNOctetString2(attribute9);    		
+    		this.attribute9=new ASNOctetString(attribute9);    		
     	
     	if(attribute10!=null)
-    		this.attribute10=new ASNOctetString2(attribute10);    		
+    		this.attribute10=new ASNOctetString(attribute10);    		
     	
     	if(attribute11!=null)
-    		this.attribute11=new ASNOctetString2(attribute11);    		
+    		this.attribute11=new ASNOctetString(attribute11);    		
     	
     	if(attribute12!=null)
-    		this.attribute12=new ASNOctetString2(attribute12);    		
+    		this.attribute12=new ASNOctetString(attribute12);    		
     	
     	if(attribute13!=null)
-    		this.attribute13=new ASNOctetString2(attribute13);    		
+    		this.attribute13=new ASNOctetString(attribute13);    		
     	
     	if(attribute14!=null)
-    		this.attribute14=new ASNOctetString2(attribute14);    		
+    		this.attribute14=new ASNOctetString(attribute14);    		
     	
     	if(attribute15!=null)
-    		this.attribute15=new ASNOctetString2(attribute15);    		
+    		this.attribute15=new ASNOctetString(attribute15);    		
     	
     	if(attribute16!=null)
-    		this.attribute16=new ASNOctetString2(attribute16);    		
+    		this.attribute16=new ASNOctetString(attribute16);    		
     	
     	if(attribute17!=null)
-    		this.attribute17=new ASNOctetString2(attribute17);    		
+    		this.attribute17=new ASNOctetString(attribute17);    		
     	
     	if(attribute18!=null)
-    		this.attribute18=new ASNOctetString2(attribute18);    		
+    		this.attribute18=new ASNOctetString(attribute18);    		
     	
     	if(attribute19!=null)
-    		this.attribute19=new ASNOctetString2(attribute19);    		
+    		this.attribute19=new ASNOctetString(attribute19);    		
     	
     	if(attribute20!=null)
-    		this.attribute20=new ASNOctetString2(attribute20);    		
+    		this.attribute20=new ASNOctetString(attribute20);    		
     	
     	if(attribute21!=null)
-    		this.attribute21=new ASNOctetString2(attribute21);    		
+    		this.attribute21=new ASNOctetString(attribute21);    		
     	
     	if(attribute22!=null)
-    		this.attribute22=new ASNOctetString2(attribute22);    		
+    		this.attribute22=new ASNOctetString(attribute22);    		
     	
     	if(attribute23!=null)
-    		this.attribute23=new ASNOctetString2(attribute23);    		
+    		this.attribute23=new ASNOctetString(attribute23);    		
     	
     	if(attribute24!=null)
-    		this.attribute24=new ASNOctetString2(attribute24);    		
+    		this.attribute24=new ASNOctetString(attribute24);    		
     	
     	if(attribute25!=null)
-    		this.attribute25=new ASNOctetString2(attribute25);    		
+    		this.attribute25=new ASNOctetString(attribute25);    		
     	
     	if(attribute26!=null)
-    		this.attribute26=new ASNOctetString2(attribute26);    		
+    		this.attribute26=new ASNOctetString(attribute26);    		
     	
     	if(attribute27!=null)
-    		this.attribute27=new ASNOctetString2(attribute27);    		
+    		this.attribute27=new ASNOctetString(attribute27);    		
     	
     	if(attribute28!=null)
-    		this.attribute28=new ASNOctetString2(attribute28);    		
+    		this.attribute28=new ASNOctetString(attribute28);    		
     	
     	if(attribute29!=null)
-    		this.attribute29=new ASNOctetString2(attribute29);    		
+    		this.attribute29=new ASNOctetString(attribute29);    		
     	
     	if(attribute30!=null)
-    		this.attribute30=new ASNOctetString2(attribute30);    	
+    		this.attribute30=new ASNOctetString(attribute30);    	
     }
 
     public ByteBuf getAttribute0() {

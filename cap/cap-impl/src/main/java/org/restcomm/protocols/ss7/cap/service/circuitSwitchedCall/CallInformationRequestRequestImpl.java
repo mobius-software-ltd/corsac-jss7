@@ -48,9 +48,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class CallInformationRequestRequestImpl extends CircuitSwitchedCallMessageImpl implements CallInformationRequestRequest {
 	private static final long serialVersionUID = 1L;
 
-	public static final String _PrimitiveName = "CallInformationRequestRequestIndication";
-
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
     private RequestedInformationTypeWrapperImpl requestedInformationTypeList;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = true,index = -1,defaultImplementation = CAPINAPExtensionsImpl.class)

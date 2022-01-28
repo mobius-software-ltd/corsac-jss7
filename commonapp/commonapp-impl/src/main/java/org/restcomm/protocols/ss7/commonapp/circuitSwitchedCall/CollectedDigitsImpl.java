@@ -31,7 +31,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -49,13 +49,13 @@ public class CollectedDigitsImpl implements CollectedDigits {
     private ASNInteger maximumNbOfDigits;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1)
-    private ASNOctetString2 endOfReplyDigit;
+    private ASNOctetString endOfReplyDigit;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 3,constructed = false,index = -1)
-    private ASNOctetString2 cancelDigit;
+    private ASNOctetString cancelDigit;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 4,constructed = false,index = -1)
-    private ASNOctetString2 startDigit;
+    private ASNOctetString startDigit;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 5,constructed = false,index = -1)
     private ASNInteger firstDigitTimeOut;
@@ -87,13 +87,13 @@ public class CollectedDigitsImpl implements CollectedDigits {
         this.maximumNbOfDigits = new ASNInteger(maximumNbOfDigits);
         
         if(endOfReplyDigit!=null)
-        	this.endOfReplyDigit = new ASNOctetString2(endOfReplyDigit);        
+        	this.endOfReplyDigit = new ASNOctetString(endOfReplyDigit);        
         
         if(cancelDigit!=null)
-        	this.cancelDigit = new ASNOctetString2(cancelDigit);        
+        	this.cancelDigit = new ASNOctetString(cancelDigit);        
         
         if(startDigit!=null)
-        	this.startDigit = new ASNOctetString2(startDigit);        
+        	this.startDigit = new ASNOctetString(startDigit);        
         
         if(firstDigitTimeOut!=null)
         	this.firstDigitTimeOut = new ASNInteger(firstDigitTimeOut);

@@ -2,7 +2,7 @@ package org.restcomm.protocols.ss7.map.service.sms;
 
 import org.restcomm.protocols.ss7.map.api.service.sms.SipUri;
 
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString2;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -12,7 +12,7 @@ import io.netty.buffer.ByteBuf;
 *
 */
 
-public class SipUriImpl extends ASNOctetString2 implements SipUri {
+public class SipUriImpl extends ASNOctetString implements SipUri {
 	
 	public SipUriImpl() {
     }
