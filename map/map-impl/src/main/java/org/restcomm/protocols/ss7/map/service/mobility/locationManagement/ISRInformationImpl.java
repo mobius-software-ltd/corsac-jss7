@@ -37,6 +37,7 @@ public class ISRInformationImpl extends ASNBitString implements ISRInformation {
     private static final int _INDEX_initialAttachIndicator = 2;
 
     public ISRInformationImpl(boolean updateMME, boolean cancelSGSN, boolean initialAttachIndicator) {
+    	super(2);
         if (updateMME)
             this.setBit(_INDEX_updateMME);
         if (cancelSGSN)
@@ -46,6 +47,7 @@ public class ISRInformationImpl extends ASNBitString implements ISRInformation {
     }
 
     public ISRInformationImpl() {
+    	super(2);        
     }
 
     public boolean getUpdateMME() {

@@ -43,13 +43,25 @@ public class ASNBitString
 	private static final int masks[] = {128, 64, 32, 16, 8, 4, 2, 1};
 	private ConcurrentHashMap<Integer,AtomicInteger> value=new ConcurrentHashMap<Integer,AtomicInteger>();
 	private Integer maxByteUsed=0;
+	private Integer minBytesIndex;
+	private Integer minBitsIndex;
 	
-	public ASNBitString() {		
+	public ASNBitString() {
+		
+	}
+	
+	public ASNBitString(Integer minBitsIndex) {
+		this.minBitsIndex=minBitsIndex;
+		if(minBitsIndex!=null)
+			this.minBytesIndex=minBitsIndex/8;
 	}
 	
 	@ASNLength
-	public Integer getLength(ASNParser parser) {		
-		return maxByteUsed+2;
+	public Integer getLength(ASNParser parser) {
+		if(minBytesIndex==null || minBytesIndex<maxByteUsed)
+			return maxByteUsed+2;
+		
+		return minBytesIndex+2;
 	}
 	
 	public void setBit(int index) {
@@ -82,15 +94,23 @@ public class ASNBitString
 	@ASNEncode
 	public void encode(ASNParser parser,ByteBuf buffer) {
 		Integer lastByte=0;
-		AtomicInteger lastValue=value.get(maxByteUsed);
+		Integer lastByteIndex=maxByteUsed;
+		if(minBytesIndex!=null && minBytesIndex>maxByteUsed)
+			lastByteIndex=minBytesIndex;
+		
+		AtomicInteger lastValue=value.get(lastByteIndex);
 		if(lastValue!=null)
 			lastByte=lastValue.get();
 		Integer remainingBits=0;
-		for(int i=masks.length-1;i>=0;i--) {
-			if((lastByte & masks[i])!=0)
-				break;
-			else
-				remainingBits++;
+		if(minBitsIndex!=null)
+			remainingBits=8-((minBitsIndex+1)%8);
+		else {
+			for(int i=masks.length-1;i>=0;i--) {
+				if((lastByte & masks[i])!=0)
+					break;
+				else
+					remainingBits++;
+			}
 		}
 		
 		if(remainingBits==8)
@@ -98,7 +118,7 @@ public class ASNBitString
 		else
 			buffer.writeByte(remainingBits);
 			
-		for(int i=0;i<=maxByteUsed;i++) {
+		for(int i=0;i<=lastByteIndex;i++) {
 			AtomicInteger current=value.get(i);
 			if(current==null)
 				buffer.writeByte(0);

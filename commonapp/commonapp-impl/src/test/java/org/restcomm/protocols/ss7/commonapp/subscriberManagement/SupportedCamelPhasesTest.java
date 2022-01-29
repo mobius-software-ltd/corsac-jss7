@@ -42,7 +42,7 @@ import io.netty.buffer.Unpooled;
 public class SupportedCamelPhasesTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 3, 2, 5, (byte) 160 };
+        return new byte[] { 3, 2, 4, (byte) 160 };
     }
 
     @Test(groups = { "functional.decode", "mobility.subscriberManagement" })

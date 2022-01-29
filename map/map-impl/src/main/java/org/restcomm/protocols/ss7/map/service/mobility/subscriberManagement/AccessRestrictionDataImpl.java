@@ -39,10 +39,12 @@ public class AccessRestrictionDataImpl extends ASNBitString implements AccessRes
     private static final int _INDEX_HoToNon3GPPAccessNotAllowed = 5;
 
     public AccessRestrictionDataImpl() {
+    	super(5);
     }
 
     public AccessRestrictionDataImpl(boolean utranNotAllowed, boolean geranNotAllowed, boolean ganNotAllowed,
             boolean iHspaEvolutionNotAllowed, boolean eUtranNotAllowed, boolean hoToNon3GPPAccessNotAllowed) {
+    	super(5);
         if (utranNotAllowed)
             this.setBit(_INDEX_UtranNotAllowed);
         if (geranNotAllowed)

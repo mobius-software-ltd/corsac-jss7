@@ -37,10 +37,12 @@ public class SupportedCamelPhasesImpl extends ASNBitString implements SupportedC
     private static final int _INDEX_Phase3 = 2;
     private static final int _INDEX_Phase4 = 3;
 
-    public SupportedCamelPhasesImpl() {        
+    public SupportedCamelPhasesImpl() {      
+    	super(3);
     }
 
     public SupportedCamelPhasesImpl(boolean phase1, boolean phase2, boolean phase3, boolean phase4) {
+    	super(3);
         this.setData(phase1, phase2, phase3, phase4);
     }
 

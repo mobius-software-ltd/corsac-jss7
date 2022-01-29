@@ -43,7 +43,7 @@ import io.netty.buffer.Unpooled;
 public class DeferredLocationEventTypeTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 3, 2, 5, -96 };
+        return new byte[] { 3, 2, 4, -96 };
     }
 
     @Test(groups = { "functional.decode", "service.lsm" })

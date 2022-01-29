@@ -35,10 +35,12 @@ public class AdditionalSubscriptionsImpl extends ASNBitString implements Additio
     private static final int _INDEX_EmergencyUplinkRequest = 1;
     private static final int _INDEX_EmergencyReset = 2;
 
-    public AdditionalSubscriptionsImpl() {        
+    public AdditionalSubscriptionsImpl() { 
+    	super(2);
     }
 
     public AdditionalSubscriptionsImpl(boolean privilegedUplinkRequest, boolean emergencyUplinkRequest, boolean emergencyReset) {
+    	super(2);
         if (privilegedUplinkRequest)
             this.setBit(_INDEX_PrivilegedUplinkRequest);
         if (emergencyUplinkRequest)

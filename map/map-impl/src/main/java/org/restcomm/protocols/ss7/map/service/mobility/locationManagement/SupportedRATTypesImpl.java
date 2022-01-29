@@ -42,9 +42,11 @@ public class SupportedRATTypesImpl extends ASNBitString implements SupportedRATT
     public static final String _PrimitiveName = "SupportedRATTypes";
 
     public SupportedRATTypesImpl() {
+    	super(4);
     }
 
     public SupportedRATTypesImpl(boolean utran, boolean geran, boolean gan, boolean i_hspa_evolution, boolean e_utran) {
+    	super(4);
         if (utran)
             this.setBit(_INDEX_utran);
         if (geran)

@@ -47,11 +47,13 @@ public class SpecificCSIWithdrawImpl extends ASNBitString implements SpecificCSI
     private static final int _INDEX_d_IM_CSI = 12;
     private static final int _INDEX_vt_IM_CSI = 13;
 
-    public SpecificCSIWithdrawImpl() {        
+    public SpecificCSIWithdrawImpl() {  
+    	super(13);
     }
 
     public SpecificCSIWithdrawImpl(boolean OCsi, boolean SsCsi, boolean TifCsi, boolean DCsi, boolean VtCsi, boolean MoSmsCsi, boolean MCsi, boolean GprsCsi,
             boolean TCsi, boolean MtSmsCsi, boolean MgCsi, boolean OImCsi, boolean DImCsi, boolean VtImCsi) {
+    	super(13);
         if (OCsi)
             this.setBit(_INDEX_o_csi);
         if (SsCsi)

@@ -36,11 +36,13 @@ public class ENBInterfaceListImpl extends ASNBitString implements ENBInterfaceLi
     static final int _ID_x2 = 1;
     static final int _ID_uu = 2;
 
-    public ENBInterfaceListImpl() {        
+    public ENBInterfaceListImpl() {
+    	super(2);
     }
 
     public ENBInterfaceListImpl(boolean s1Mme, boolean x2, boolean uu) {
-        if (s1Mme)
+    	super(2);
+    	if (s1Mme)
             this.setBit(_ID_s1Mme);
         if (x2)
             this.setBit(_ID_x2);

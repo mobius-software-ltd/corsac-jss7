@@ -43,12 +43,14 @@ public class MSCSInterfaceListImpl extends ASNBitString implements MSCSInterface
     static final int _ID_mapD = 8;
     static final int _ID_mapC = 9;
 
-    public MSCSInterfaceListImpl() {        
+    public MSCSInterfaceListImpl() {    
+    	super(9);
     }
 
     public MSCSInterfaceListImpl(boolean a, boolean iu, boolean mc, boolean mapG, boolean mapB, boolean mapE, boolean mapF, boolean cap, boolean mapD,
             boolean mapC) {
-        if (a)
+    	super(9);
+    	if (a)
             this.setBit(_ID_a);
         if (iu)
             this.setBit(_ID_iu);

@@ -62,7 +62,7 @@ public class ODBGeneralDataImpl extends ASNBitString implements ODBGeneralData {
     private static final int _INDEX_registrationInternationalCFBarred = 28;
 
     public ODBGeneralDataImpl() {
-
+    	super(28);
         // we make here 8 minimum bit size instead of 15
         // because of some trace data contains 1-byte length primitive
     }
@@ -80,6 +80,7 @@ public class ODBGeneralDataImpl extends ASNBitString implements ODBGeneralData {
             boolean roamingOutsidePLMNCountryBarred, boolean registrationAllCFBarred, boolean registrationCFNotToHPLMNBarred,
             boolean registrationInterzonalCFBarred, boolean registrationInterzonalCFNotToHPLMNBarred,
             boolean registrationInternationalCFBarred) {
+    	super(28);
         if (allOGCallsBarred)
             this.setBit(_INDEX_allOGCallsBarred);
         if (internationalOGCallsBarred)

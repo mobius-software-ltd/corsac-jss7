@@ -55,12 +55,12 @@ public class CheckImeiRequestTest {
 
     private byte[] getEncodedDataV3() {
         // TODO this is self generated trace. We need trace from operator
-        return new byte[] { 48, 14, 4, 8, 83, 8, 25, 16, -122, 53, 85, -16, 3, 2, 7, -128 };
+        return new byte[] { 48, 14, 4, 8, 83, 8, 25, 16, -122, 53, 85, -16, 3, 2, 6, -128 };
     }
 
     private byte[] getEncodedDataV3Full() {
         // TODO this is self generated trace. We need trace from operator
-        return new byte[] { 48, 55, 4, 8, 83, 8, 25, 16, -122, 53, 85, -16, 3, 2, 7, -128, 48, 39, -96, 32, 48, 10, 6, 3, 42,
+        return new byte[] { 48, 55, 4, 8, 83, 8, 25, 16, -122, 53, 85, -16, 3, 2, 6, -128, 48, 39, -96, 32, 48, 10, 6, 3, 42,
                 3, 4, 11, 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31,
                 32, 33 };
     }

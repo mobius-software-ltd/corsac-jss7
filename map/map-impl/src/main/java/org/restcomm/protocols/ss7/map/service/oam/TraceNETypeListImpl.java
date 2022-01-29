@@ -43,12 +43,14 @@ public class TraceNETypeListImpl extends ASNBitString implements TraceNETypeList
     static final int _ID_pgw = 8;
     static final int _ID_eNB = 9;
 
-    public TraceNETypeListImpl() {       
+    public TraceNETypeListImpl() {   
+    	super(9);
     }
 
     public TraceNETypeListImpl(boolean mscS, boolean mgw, boolean sgsn, boolean ggsn, boolean rnc, boolean bmSc, boolean mme, boolean sgw, boolean pgw,
             boolean enb) {
-        if (mscS)
+    	super(9);
+    	if (mscS)
             this.setBit(_ID_mscS);
         if (mgw)
             this.setBit(_ID_mgw);

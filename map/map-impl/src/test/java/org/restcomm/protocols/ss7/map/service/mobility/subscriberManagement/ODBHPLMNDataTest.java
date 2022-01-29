@@ -46,7 +46,7 @@ public class ODBHPLMNDataTest {
     }
 
     private byte[] getEncodedData1() {
-        return new byte[] { 3, 2, 5, -96 };
+        return new byte[] { 3, 2, 4, -96 };
     }
 
     @Test(groups = { "functional.decode", "service.lsm" })

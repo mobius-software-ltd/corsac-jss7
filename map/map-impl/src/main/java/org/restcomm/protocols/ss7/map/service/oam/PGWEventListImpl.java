@@ -36,11 +36,13 @@ public class PGWEventListImpl extends ASNBitString implements PGWEventList {
     static final int _ID_connectionTermination = 1;
     static final int _ID_bearerActivationModificationDeletion = 2;
     
-    public PGWEventListImpl() {        
+    public PGWEventListImpl() { 
+    	super(2);
     }
 
     public PGWEventListImpl(boolean connectionCreation, boolean connectionTermination, boolean bearerActivationModificationDeletion) {
-        if (connectionCreation)
+    	super(2);
+    	if (connectionCreation)
             this.setBit(_ID_connectionCreation);
         if (connectionTermination)
             this.setBit(_ID_connectionTermination);

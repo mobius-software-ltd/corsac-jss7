@@ -54,6 +54,7 @@ public class OfferedCamel4FunctionalitiesImpl extends ASNBitString implements Of
     private static final int _ID_collectInformation = 19;
 
     public OfferedCamel4FunctionalitiesImpl() {
+    	super(19);
     }
 
     public OfferedCamel4FunctionalitiesImpl(boolean initiateCallAttempt,
@@ -66,6 +67,7 @@ public class OfferedCamel4FunctionalitiesImpl extends ASNBitString implements Of
             boolean servingNetworkEnhancedDialledServices,
             boolean criteriaForChangeOfPositionDP, boolean serviceChangeDP,
             boolean collectInformation) {
+    	super(19);
         if (initiateCallAttempt)
             this.setBit(_ID_initiateCallAttempt);
         if (splitLeg)

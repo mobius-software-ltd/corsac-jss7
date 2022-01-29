@@ -34,10 +34,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
 public class BMSCInterfaceListImpl extends ASNBitString implements BMSCInterfaceList {
 	static final int _ID_gmb = 0;
 
-    public BMSCInterfaceListImpl() {        
+    public BMSCInterfaceListImpl() { 
+    	super(0);
     }
 
     public BMSCInterfaceListImpl(boolean gmb) {
+    	super(0);
     	if (gmb)
             this.setBit(_ID_gmb);
     }

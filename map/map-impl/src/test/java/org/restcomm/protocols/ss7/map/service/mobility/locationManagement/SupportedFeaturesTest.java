@@ -47,7 +47,7 @@ public class SupportedFeaturesTest {
     };
 
     public byte[] getData1() {
-        return new byte[] { 3, 5, 7, -86, -86, -86, -128 };
+        return new byte[] { 3, 5, 6, -86, -86, -86, -128 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })

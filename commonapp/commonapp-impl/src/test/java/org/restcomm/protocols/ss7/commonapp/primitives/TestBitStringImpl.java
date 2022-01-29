@@ -30,10 +30,12 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class TestBitStringImpl extends ASNBitString {
-	public TestBitStringImpl() {            
+	public TestBitStringImpl() { 
+		super(null);
     }
     
 	public TestBitStringImpl(byte[] data) {
+		super(null);
         decode(null, null, Unpooled.wrappedBuffer(data), null);
     }
 }

@@ -46,7 +46,7 @@ public class ISRInformationTest {
     };
 
     public byte[] getData2() {
-        return new byte[] { 3, 2, 0, 0 };
+        return new byte[] { 3, 2, 5, 0 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })

@@ -71,11 +71,11 @@ public class CamelInfoTest {
     }
 
     public static byte[] getData() {
-        return new byte[] { (byte) 171, 4, 3, 2, 5, (byte) 224 };
+        return new byte[] { (byte) 171, 4, 3, 2, 4, (byte) 224 };
     }
 
     public static byte[] getDataFull() {
-        return new byte[] { -85, 51, 3, 2, 6, -64, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6,
+        return new byte[] { -85, 51, 3, 2, 4, -64, 5, 0, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6,
                 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -128, 2, 1, -86 };
     }
 

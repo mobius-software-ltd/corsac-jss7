@@ -38,10 +38,12 @@ public class RNCInterfaceListImpl extends ASNBitString implements RNCInterfaceLi
     static final int _ID_uu = 3;
 
     public RNCInterfaceListImpl() {
+    	super(3);
     }
 
     public RNCInterfaceListImpl(boolean iu, boolean iur, boolean iub, boolean uu) {
-        if (iu)
+    	super(3);
+    	if (iu)
             this.setBit(_ID_iu);
         if (iur)
             this.setBit(_ID_iur);

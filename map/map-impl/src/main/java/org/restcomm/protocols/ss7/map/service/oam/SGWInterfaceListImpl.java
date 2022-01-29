@@ -39,10 +39,12 @@ public class SGWInterfaceListImpl extends ASNBitString implements SGWInterfaceLi
     static final int _ID_gxc = 4;
 
     public SGWInterfaceListImpl() {
+    	super(4);
     }
 
     public SGWInterfaceListImpl(boolean s4, boolean s5, boolean s8b, boolean s11, boolean gxc) {
-        if (s4)
+    	super(4);
+    	if (s4)
             this.setBit(_ID_s4);
         if (s5)
             this.setBit(_ID_s5);

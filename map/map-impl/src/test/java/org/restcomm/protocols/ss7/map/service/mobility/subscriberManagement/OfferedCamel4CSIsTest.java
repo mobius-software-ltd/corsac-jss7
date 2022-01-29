@@ -38,7 +38,7 @@ import io.netty.buffer.Unpooled;
 public class OfferedCamel4CSIsTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 3, 2, 2, (byte) 148 };
+        return new byte[] { 3, 2, 1, (byte) 148 };
     }
 
     @Test(groups = { "functional.decode", "service.mobility.subscriberManagement" })

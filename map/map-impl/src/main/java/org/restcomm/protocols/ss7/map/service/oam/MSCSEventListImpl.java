@@ -38,11 +38,13 @@ public class MSCSEventListImpl extends ASNBitString implements MSCSEventList {
     static final int _ID_handovers = 3;
     static final int _ID_ss = 4;
 
-    public MSCSEventListImpl() {        
+    public MSCSEventListImpl() {    
+    	super(4);
     }
 
     public MSCSEventListImpl(boolean moMtCall, boolean moMtSms, boolean luImsiAttachImsiDetach, boolean handovers, boolean ss) {
-        if (moMtCall)
+    	super(4);
+    	if (moMtCall)
             this.setBit(_ID_moMtCall);
         if (moMtSms)
             this.setBit(_ID_moMtSms);

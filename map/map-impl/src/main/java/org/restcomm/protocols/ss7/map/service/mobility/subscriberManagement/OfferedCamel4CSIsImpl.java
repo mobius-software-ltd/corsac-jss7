@@ -40,12 +40,13 @@ public class OfferedCamel4CSIsImpl extends ASNBitString implements OfferedCamel4
     private static final int _ID_mg_csi = 5;
     private static final int _ID_psi_enhancements = 6;
 
-    public OfferedCamel4CSIsImpl() {        
+    public OfferedCamel4CSIsImpl() {    
+    	super(6);
     }
 
     public OfferedCamel4CSIsImpl(boolean oCsi, boolean dCsi, boolean vtCsi, boolean tCsi, boolean mtSMSCsi, boolean mgCsi,
             boolean psiEnhancements) {
-        
+    	super(6);
         if (oCsi)
             this.setBit(_ID_o_csi);
         if (dCsi)

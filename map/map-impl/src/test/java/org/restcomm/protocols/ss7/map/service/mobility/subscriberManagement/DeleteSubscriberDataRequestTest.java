@@ -68,7 +68,7 @@ public class DeleteSubscriberDataRequestTest {
 
 
     private byte[] getEncodedData3() {
-        return new byte[] { 48, 41, -128, 6, 17, 33, 34, 51, 67, 68, -86, 2, 5, 0, -117, 0, -84, 2, 5, 0, -115, 0, -114, 0, -113, 2, 4, -112, -112, 0, -111, 0, -78, 5, 48, 3, 2, 1, 15, -109, 0, -108, 0 };
+        return new byte[] { 48, 42, -128, 6, 17, 33, 34, 51, 67, 68, -86, 2, 5, 0, -117, 0, -84, 2, 5, 0, -115, 0, -114, 0, -113, 3, 2, -112, 0, -112, 0, -111, 0, -78, 5, 48, 3, 2, 1, 15, -109, 0, -108, 0 };
     }
 
     @Test(groups = { "functional.decode", "service.mobility.subscriberManagement" })

@@ -38,9 +38,11 @@ public class AllowedServicesImpl extends ASNBitString implements AllowedServices
      *
      */
     public AllowedServicesImpl() {
+    	super(1);
     }
 
-    public AllowedServicesImpl(boolean suppressCUG, boolean suppressCCBS) {    	
+    public AllowedServicesImpl(boolean suppressCUG, boolean suppressCCBS) {
+    	super(1);
         if (suppressCUG)
         	super.setBit(0);            
         if (suppressCCBS)

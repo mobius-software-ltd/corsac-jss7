@@ -38,5 +38,5 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
  */
 
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,lengthIndefinite=false)
-public class UESBIIuAImpl extends ASNBitString implements UESBIIuA {
+public class UESBIIuAImpl extends ASNBitString implements UESBIIuA {	
 }

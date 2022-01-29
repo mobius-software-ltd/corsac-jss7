@@ -424,6 +424,43 @@ public class ASNPrimitivesTest
 	}
 	
 	@Test
+	public void testBitStringWithMin() {	
+		byte[] encodedBitString = new byte[] { (byte)0x03, 0x05, 0x04, (byte) 0x23,  (byte)0x88, (byte)0x04, 0x00};
+		
+		ASNBitString value1=new ASNBitString(27);
+		value1.setBit(2);
+		value1.setBit(6);
+		value1.setBit(7);
+		value1.setBit(8);
+		value1.setBit(12);
+		value1.setBit(21);
+		
+		try
+		{
+			ByteBuf encoded=parser.encode(value1);
+			byte[] encodedRealData=new byte[encoded.readableBytes()];
+			encoded.readBytes(encodedRealData);
+			assertTrue(Arrays.equals(encodedBitString, encodedRealData));
+			
+			ByteBuf bufferToDecode=Unpooled.wrappedBuffer(encodedBitString);
+			Object decodedValue=parser.decode(bufferToDecode).getResult();
+			assertTrue(decodedValue instanceof ASNBitString);
+			
+			for(int i=0;i<32;i++) {
+				if(i!=2 && i!=6 && i!=7 && i!=8 && i!=12 && i!=21)
+					assertFalse(((ASNBitString)decodedValue).isBitSet(i));
+				else
+					assertTrue(((ASNBitString)decodedValue).isBitSet(i));
+			}
+		}
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+			assertEquals(1, 2);
+		}
+	}
+	
+	@Test
 	public void testObjectIdentifier() {	
 		byte[] encodedOids1 = new byte[] { 0x06, 0x4, 0x28, (byte) 0xC2, (byte) 0x7B, 0x02 };
 		byte[] encodedOids2 = new byte[] { 0x06, 0x2, (byte)180, 1 };

@@ -52,11 +52,11 @@ import io.netty.buffer.Unpooled;
 public class InformServiceCentreRequestTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 4, 3, 2, 6, 64 };
+        return new byte[] { 48, 4, 3, 2, 2, 64 };
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { 48, 61, 4, 6, -111, 17, 33, 34, 51, -13, 3, 2, 4, 80, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11,
+        return new byte[] { 48, 61, 4, 6, -111, 17, 33, 34, 51, -13, 3, 2, 2, 80, 48, 39, -96, 32, 48, 10, 6, 3, 42, 3, 4, 11,
                 12, 13, 14, 15, 48, 5, 6, 3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 2,
                 2, 2, 43, -128, 2, 1, -68 };
     }

@@ -44,7 +44,7 @@ public class RequestedEquipmentInfoTest {
 
     private byte[] getEncodedData() {
         // TODO this is self generated trace. We need trace from operator
-        return new byte[] { 3, 2, 7, -128 };
+        return new byte[] { 3, 2, 6, -128 };
     }
 
     @Test(groups = { "functional.decode", "imei" })

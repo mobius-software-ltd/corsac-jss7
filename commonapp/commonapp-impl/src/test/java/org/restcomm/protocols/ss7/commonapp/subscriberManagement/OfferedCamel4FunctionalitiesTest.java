@@ -43,7 +43,7 @@ import io.netty.buffer.Unpooled;
 public class OfferedCamel4FunctionalitiesTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 3, 4, 6, (byte) 170, 85, (byte) 192 };        
+        return new byte[] { 3, 4, 4, (byte) 170, 85, (byte) 192 };        
     }
 
     @Test(groups = { "functional.decode", "service.mobility.subscriberManagement" })

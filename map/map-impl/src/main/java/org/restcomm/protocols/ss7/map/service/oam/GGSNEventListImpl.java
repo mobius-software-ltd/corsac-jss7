@@ -36,10 +36,12 @@ public class GGSNEventListImpl extends ASNBitString implements GGSNEventList {
     static final int _ID_mbmsContext = 1;
 
     public GGSNEventListImpl() {
+    	super(1);
     }
 
     public GGSNEventListImpl(boolean pdpContext, boolean mbmsContext) {
-        if (pdpContext)
+    	super(1);
+    	if (pdpContext)
             this.setBit(_ID_pdpContext);
         if (mbmsContext)
             this.setBit(_ID_mbmsContext);

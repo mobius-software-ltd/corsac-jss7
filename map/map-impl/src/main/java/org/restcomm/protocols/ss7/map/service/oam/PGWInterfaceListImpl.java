@@ -41,11 +41,13 @@ public class PGWInterfaceListImpl extends ASNBitString implements PGWInterfaceLi
     static final int _ID_s8b = 6;
     static final int _ID_sgi = 7;
 
-    public PGWInterfaceListImpl() {        
+    public PGWInterfaceListImpl() { 
+    	super(7);
     }
 
     public PGWInterfaceListImpl(boolean s2a, boolean s2b, boolean s2c, boolean s5, boolean s6b, boolean gx, boolean s8b, boolean sgi) {
-        if (s2a)
+    	super(7);
+    	if (s2a)
             this.setBit(_ID_s2a);
         if (s2b)
             this.setBit(_ID_s2b);

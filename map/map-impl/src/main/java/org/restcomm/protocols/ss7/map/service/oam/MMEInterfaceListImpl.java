@@ -39,10 +39,12 @@ public class MMEInterfaceListImpl extends ASNBitString implements MMEInterfaceLi
     static final int _ID_s11 = 4;
 
     public MMEInterfaceListImpl() {
+    	super(4);
     }
 
     public MMEInterfaceListImpl(boolean s1Mme, boolean s3, boolean s6a, boolean s10, boolean s11) {
-        if (s1Mme)
+    	super(4);
+    	if (s1Mme)
             this.setBit(_ID_s1Mme);
         if (s3)
             this.setBit(_ID_s3);

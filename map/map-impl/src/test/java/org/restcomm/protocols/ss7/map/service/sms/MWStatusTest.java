@@ -44,7 +44,7 @@ import io.netty.buffer.Unpooled;
 public class MWStatusTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 3, 2, 6, 64 };
+        return new byte[] { 3, 2, 2, 64 };
     }
 
     @Test(groups = { "functional.decode", "service.sms" })

@@ -35,9 +35,11 @@ public class BMSCEventListImpl extends ASNBitString implements BMSCEventList {
 	static final int _ID_mbmsMulticastServiceActivation = 0;
 
     public BMSCEventListImpl() {
+    	super(0);
     }
 
     public BMSCEventListImpl(boolean mbmsMulticastServiceActivation) {
+    	super(0);
         if (mbmsMulticastServiceActivation)
             this.setBit(_ID_mbmsMulticastServiceActivation);
     }

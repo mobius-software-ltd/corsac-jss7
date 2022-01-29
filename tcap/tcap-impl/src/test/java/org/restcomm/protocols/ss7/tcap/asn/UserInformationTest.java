@@ -131,7 +131,7 @@ public class UserInformationTest {
     	byte[] encoded = new byte[] { -66, 15, 40, 13, 6, 7, 4, 0, 0, 1, 0, 19, 2, -126, 2, 4, -112 };
 
         UserInformationImpl _ui = new UserInformationImpl();
-        ASNBitString bitString=new ASNBitString();
+        ASNBitString bitString=new ASNBitString(null);
         bitString.setBit(0);
         bitString.setBit(3);
         _ui.setChild(bitString);
