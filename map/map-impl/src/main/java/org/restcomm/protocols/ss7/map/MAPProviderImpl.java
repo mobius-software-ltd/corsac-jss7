@@ -493,11 +493,10 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)MAPOperationCode.sendRoutingInfo);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendRoutingInformationRequestImplV3.class);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendRoutingInformationRequestImplV1.class);
         	
-        	OperationCodeWithACN operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.locationInfoRetrievalContext, MAPApplicationContextVersion.version1).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendRoutingInformationRequestImplV1.class);
-        	
+        	OperationCodeWithACN operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.locationInfoRetrievalContext, MAPApplicationContextVersion.version3).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendRoutingInformationRequestImplV3.class);
         	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.locationInfoRetrievalContext, MAPApplicationContextVersion.version2).getOID());			
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendRoutingInformationRequestImplV2.class);
         	
@@ -555,16 +554,14 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)MAPOperationCode.insertSubscriberData);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InsertSubscriberDataRequestImplV3.class);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InsertSubscriberDataRequestImplV1.class);
         	
-        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext, MAPApplicationContextVersion.version1).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InsertSubscriberDataRequestImplV1.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext, MAPApplicationContextVersion.version2).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InsertSubscriberDataRequestImplV1.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.networkLocUpContext, MAPApplicationContextVersion.version1).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InsertSubscriberDataRequestImplV1.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.networkLocUpContext, MAPApplicationContextVersion.version2).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InsertSubscriberDataRequestImplV1.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext, MAPApplicationContextVersion.version3).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InsertSubscriberDataRequestImplV3.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.networkLocUpContext, MAPApplicationContextVersion.version3).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InsertSubscriberDataRequestImplV3.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.gprsLocationUpdateContext, MAPApplicationContextVersion.version3).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InsertSubscriberDataRequestImplV3.class);
         	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)MAPOperationCode.activateTraceMode);
@@ -759,16 +756,14 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)MAPOperationCode.insertSubscriberData);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, InsertSubscriberDataResponseImplV3.class);
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, InsertSubscriberDataResponseImplV1.class);
         	
-        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext, MAPApplicationContextVersion.version1).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN, InsertSubscriberDataResponseImplV1.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext, MAPApplicationContextVersion.version2).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN, InsertSubscriberDataResponseImplV1.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.networkLocUpContext, MAPApplicationContextVersion.version1).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN, InsertSubscriberDataResponseImplV1.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.networkLocUpContext, MAPApplicationContextVersion.version2).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN, InsertSubscriberDataResponseImplV1.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext, MAPApplicationContextVersion.version3).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN, InsertSubscriberDataResponseImplV3.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.networkLocUpContext, MAPApplicationContextVersion.version3).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN, InsertSubscriberDataResponseImplV3.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.gprsLocationUpdateContext, MAPApplicationContextVersion.version3).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN, InsertSubscriberDataResponseImplV3.class);
         	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)MAPOperationCode.activateTraceMode);
