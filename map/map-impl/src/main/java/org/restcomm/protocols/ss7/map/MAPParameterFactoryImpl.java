@@ -378,7 +378,8 @@ import org.restcomm.protocols.ss7.map.service.lsm.UtranGANSSpositioningDataImpl;
 import org.restcomm.protocols.ss7.map.service.lsm.UtranPositioningDataInfoImpl;
 import org.restcomm.protocols.ss7.map.service.lsm.VelocityEstimateImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationQuintupletImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListV1Impl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListV3Impl;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationTripletImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.CKImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.CksnImpl;
@@ -877,12 +878,16 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         return new QuintupletListImpl(quintupletList);
     }
 
-    public AuthenticationSetList createAuthenticationSetList(TripletList tripletList,long mapVersion) {
-        return new AuthenticationSetListImpl(tripletList,mapVersion);
+    public AuthenticationSetList createAuthenticationSetList(TripletList tripletList) {
+        return new AuthenticationSetListV1Impl(tripletList);
+    }
+    
+    public AuthenticationSetList createAuthenticationSetListV3(TripletList tripletList) {
+        return new AuthenticationSetListV3Impl(tripletList);
     }
 
-    public AuthenticationSetList createAuthenticationSetList(QuintupletList quintupletList) {
-        return new AuthenticationSetListImpl(quintupletList);
+    public AuthenticationSetList createAuthenticationSetListV3(QuintupletList quintupletList) {
+        return new AuthenticationSetListV3Impl(quintupletList);
     }
 
     public PlmnId createPlmnId(int mcc, int mnc) {

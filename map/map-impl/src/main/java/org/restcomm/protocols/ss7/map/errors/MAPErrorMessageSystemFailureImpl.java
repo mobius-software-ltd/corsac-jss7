@@ -41,8 +41,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageSystemFailureImpl extends MAPErrorMessageImpl implements MAPErrorMessageSystemFailure {
-	private long mapProtocolVersion=3;
-    
 	private ASNNetworkResourceImpl networkResource;
 	
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
@@ -51,10 +49,9 @@ public class MAPErrorMessageSystemFailureImpl extends MAPErrorMessageImpl implem
     @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
     private MAPExtensionContainer extensionContainer;
 
-    public MAPErrorMessageSystemFailureImpl(long mapProtocolVersion, NetworkResource networkResource, AdditionalNetworkResource additionalNetworkResource, MAPExtensionContainer extensionContainer) {
+    public MAPErrorMessageSystemFailureImpl(NetworkResource networkResource, AdditionalNetworkResource additionalNetworkResource, MAPExtensionContainer extensionContainer) {
         super((long) MAPErrorCode.systemFailure);
 
-        this.mapProtocolVersion = mapProtocolVersion;
         if(networkResource!=null)
         	this.networkResource=new ASNNetworkResourceImpl(networkResource);
         	
@@ -87,10 +84,6 @@ public class MAPErrorMessageSystemFailureImpl extends MAPErrorMessageImpl implem
         return this.extensionContainer;
     }
 
-    public long getMapProtocolVersion() {
-        return this.mapProtocolVersion;
-    }
-
     public void setAdditionalNetworkResource(AdditionalNetworkResource additionalNetworkResource) {
     	if(additionalNetworkResource==null)
     		this.additionalNetworkResource=null;
@@ -116,10 +109,6 @@ public class MAPErrorMessageSystemFailureImpl extends MAPErrorMessageImpl implem
 
     public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
-    }
-
-    public void setMapProtocolVersion(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
     @Override

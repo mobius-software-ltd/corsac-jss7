@@ -148,7 +148,7 @@ public class SendAuthenticationInfoRequestTest {
 
         IMSIImpl imsi = new IMSIImpl("111222333444");
         PlmnIdImpl plmnId = new PlmnIdImpl(405,391);
-        SendAuthenticationInfoRequest asc = new SendAuthenticationInfoRequestImplV3(3, imsi, 4, false, false, null, null, RequestingNodeType.vlr, plmnId, null, true);
+        SendAuthenticationInfoRequest asc = new SendAuthenticationInfoRequestImplV3(imsi, 4, false, false, null, null, RequestingNodeType.vlr, plmnId, null, true);
 
         byte[] data=getEncodedData();
         ByteBuf buffer=parser.encode(asc);
@@ -158,7 +158,7 @@ public class SendAuthenticationInfoRequestTest {
 
         imsi = new IMSIImpl("33333444444");
         ReSynchronisationInfoImpl rsi = new ReSynchronisationInfoImpl(Unpooled.wrappedBuffer(ReSynchronisationInfoTest.getRandData()), Unpooled.wrappedBuffer(ReSynchronisationInfoTest.getAutsData()));
-        asc = new SendAuthenticationInfoRequestImplV3(3, imsi, 5, true, true, rsi, null, RequestingNodeType.sgsn, null, 6, false);
+        asc = new SendAuthenticationInfoRequestImplV3(imsi, 5, true, true, rsi, null, RequestingNodeType.sgsn, null, 6, false);
 
         data=getEncodedData2();
         buffer=parser.encode(asc);
@@ -167,7 +167,7 @@ public class SendAuthenticationInfoRequestTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         imsi = new IMSIImpl("250070222032767");
-        asc = new SendAuthenticationInfoRequestImplV1(2, imsi);
+        asc = new SendAuthenticationInfoRequestImplV1(imsi);
 
         data=getEncodedData_V2();
         buffer=parser.encode(asc);

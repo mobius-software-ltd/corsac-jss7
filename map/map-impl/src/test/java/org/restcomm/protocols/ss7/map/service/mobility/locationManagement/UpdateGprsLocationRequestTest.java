@@ -138,7 +138,7 @@ public class UpdateGprsLocationRequestTest {
         UpdateGprsLocationRequestImpl prim = new UpdateGprsLocationRequestImpl(imsi, sgsnNumber, sgsnAddress,
                 extensionContainer, sgsnCapability, informPreviousNetworkEntity, psLCSNotSupportedByUE, vGmlcAddress, addInfo,
                 epsInfo, servingNodeTypeIndicator, skipSubscriberDataUpdate, usedRATType, gprsSubscriptionDataNotNeeded,
-                nodeTypeIndicator, areaRestricted, ueReachableIndicator, epsSubscriptionDataNotNeeded, uesrvccCapability, 3);
+                nodeTypeIndicator, areaRestricted, ueReachableIndicator, epsSubscriptionDataNotNeeded, uesrvccCapability);
 
         byte[] data=getData();
         ByteBuf buffer=parser.encode(prim);

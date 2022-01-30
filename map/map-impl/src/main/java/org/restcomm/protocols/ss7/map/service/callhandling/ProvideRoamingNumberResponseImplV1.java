@@ -45,20 +45,12 @@ public class ProvideRoamingNumberResponseImplV1 extends CallHandlingMessageImpl 
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = ISDNAddressStringImpl.class)
 	public ISDNAddressString roamingNumber;    
     
-	private long mapProtocolVersion;
-    
-    public ProvideRoamingNumberResponseImplV1() {
-    	this.mapProtocolVersion=2;
+	public ProvideRoamingNumberResponseImplV1() {    	
     }
     
-    public ProvideRoamingNumberResponseImplV1(ISDNAddressString roamingNumber, long mapProtocolVersion) {
+    public ProvideRoamingNumberResponseImplV1(ISDNAddressString roamingNumber) {
         super();
         this.roamingNumber = roamingNumber;
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    public ProvideRoamingNumberResponseImplV1(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
     @Override
@@ -92,11 +84,6 @@ public class ProvideRoamingNumberResponseImplV1 extends CallHandlingMessageImpl 
     }
 
     @Override
-    public long getMapProtocolVersion() {
-        return this.mapProtocolVersion;
-    }
-
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ProvideRoamingNumberResponse [");
@@ -106,9 +93,6 @@ public class ProvideRoamingNumberResponseImplV1 extends CallHandlingMessageImpl 
             sb.append(roamingNumber.toString());
             sb.append(", ");
         }
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         sb.append("]");
 

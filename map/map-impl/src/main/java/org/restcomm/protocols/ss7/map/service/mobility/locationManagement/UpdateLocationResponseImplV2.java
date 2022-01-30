@@ -55,19 +55,12 @@ public class UpdateLocationResponseImplV2 extends MobilityMessageImpl implements
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1)
     private ASNNull pagingAreaCapability;
-    private long mapProtocolVersion;
 
     public UpdateLocationResponseImplV2() {
-    	this.mapProtocolVersion = 2;
-    }
-    
-    public UpdateLocationResponseImplV2(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public UpdateLocationResponseImplV2(long mapProtocolVersion, ISDNAddressString hlrNumber,
+    public UpdateLocationResponseImplV2(ISDNAddressString hlrNumber,
     		MAPExtensionContainer extensionContainer, boolean addCapability, boolean pagingAreaCapability) {
-        this.mapProtocolVersion = mapProtocolVersion;
         this.hlrNumber = hlrNumber;
         this.extensionContainer = extensionContainer;
         
@@ -102,10 +95,6 @@ public class UpdateLocationResponseImplV2 extends MobilityMessageImpl implements
         return pagingAreaCapability!=null;
     }
 
-    public long getMapProtocolVersion() {
-        return mapProtocolVersion;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -127,8 +116,6 @@ public class UpdateLocationResponseImplV2 extends MobilityMessageImpl implements
         if (this.pagingAreaCapability!=null) {
             sb.append("pagingAreaCapability, ");
         }
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         sb.append("]");
 

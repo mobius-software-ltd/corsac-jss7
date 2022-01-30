@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.commonapp.isup;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
 import org.restcomm.protocols.ss7.isup.ParameterException;
@@ -75,7 +77,7 @@ public class RedirectionInformationIsupImpl implements RedirectionInformationIsu
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) {
 		try {
 			this.redirectionInformation=new RedirectionInformationImpl(buffer);
 		} catch (ParameterException e) {

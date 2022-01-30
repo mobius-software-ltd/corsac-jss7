@@ -144,17 +144,10 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=23,constructed=true,index=-1, defaultImplementation = ExternalSignalInfoImpl.class)
 	private ExternalSignalInfo gsmBearerCapability;
     
-    private long mapProtocolVersion;
-
-    public SendRoutingInformationResponseImplV3() {
-        this(3);
+    public SendRoutingInformationResponseImplV3() {       
     }
 
-    public SendRoutingInformationResponseImplV3(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    public SendRoutingInformationResponseImplV3(long mapProtocolVersion, IMSI imsi, ExtendedRoutingInfo extRoutingInfo,
+    public SendRoutingInformationResponseImplV3(IMSI imsi, ExtendedRoutingInfo extRoutingInfo,
     		CUGCheckInfo cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfo subscriberInfo, List<SSCode> ssList,
     		ExtBasicServiceCode basicService, boolean forwardingInterrogationRequired, ISDNAddressString vmscAddress,
             MAPExtensionContainer extensionContainer, NAEAPreferredCI naeaPreferredCI, CCBSIndicators ccbsIndicators,
@@ -214,11 +207,6 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
         	this.releaseResourcesSupported = new ASNNull();
         
         this.gsmBearerCapability = gsmBearerCapability;
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    public long getMapProtocolVersion() {
-        return mapProtocolVersion;
     }
 
     @Override
@@ -378,9 +366,6 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("SendRoutingInformationResponse [");
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         if (this.imsi != null) {
             sb.append(", imsi=");

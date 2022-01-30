@@ -35,9 +35,7 @@ import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
  */
 public class MAPErrorMessageSytemFailure1Impl extends EnumeratedMAPErrorMessage1Impl implements
 MAPErrorMessageSystemFailure {
-	private static final long mapProtocolVersion = 2;
-    
-    public MAPErrorMessageSytemFailure1Impl(NetworkResource networkResource) {
+	public MAPErrorMessageSytemFailure1Impl(NetworkResource networkResource) {
         super((long) MAPErrorCode.systemFailure);
 
         if(networkResource!=null)
@@ -96,11 +94,6 @@ MAPErrorMessageSystemFailure {
 	@Override
 	public MAPExtensionContainer getExtensionContainer() {
 		return null;
-	}
-
-	@Override
-	public long getMapProtocolVersion() {
-		return mapProtocolVersion;
 	}
 
 	@Override

@@ -124,6 +124,7 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSCamelTDPData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSSubscriptionData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.GPRSTriggerDetectionPoint;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.InsertSubscriberDataRequest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LCSInformation;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LCSPrivacyClass;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAData;
@@ -277,14 +278,14 @@ public class InsertSubscriberDataRequestTest {
     @Test(groups = { "functional.decode", "service.mobility.subscriberManagement" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
-    	parser.replaceClass(InsertSubscriberDataRequestImpl.class);
+    	parser.replaceClass(InsertSubscriberDataRequestImplV3.class);
     	                
         // MAP Protocol Version 3 message Testing
         byte[] data = this.getData();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof InsertSubscriberDataRequestImpl);
-        InsertSubscriberDataRequestImpl prim = (InsertSubscriberDataRequestImpl)result.getResult(); 
+        assertTrue(result.getResult() instanceof InsertSubscriberDataRequestImplV3);
+        InsertSubscriberDataRequest prim = (InsertSubscriberDataRequestImplV3)result.getResult(); 
         
         // imsi
         IMSI imsi = prim.getImsi();
@@ -1287,12 +1288,14 @@ public class InsertSubscriberDataRequestTest {
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
         // End ISD MAP Protocol Version 3 message Testing
 
+        parser.replaceClass(InsertSubscriberDataRequestImplV1.class);
+    	
         // Start MAP Protocol Version 2 message Testing
         data = this.getData1();
         result=parser.decode(Unpooled.wrappedBuffer(data));
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof InsertSubscriberDataRequestImpl);
-        prim = (InsertSubscriberDataRequestImpl)result.getResult(); 
+        assertTrue(result.getResult() instanceof InsertSubscriberDataRequestImplV1);
+        prim = (InsertSubscriberDataRequestImplV1)result.getResult(); 
         
         // imsi
         imsi = prim.getImsi();
@@ -1690,7 +1693,7 @@ public class InsertSubscriberDataRequestTest {
     @Test(groups = { "functional.encode", "service.mobility.subscriberManagement" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
-    	parser.replaceClass(InsertSubscriberDataRequestImpl.class);
+    	parser.replaceClass(InsertSubscriberDataRequestImplV3.class);
     	
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
@@ -2092,7 +2095,7 @@ public class InsertSubscriberDataRequestTest {
         // subscribedPeriodicLAUtimer
         Long subscribedPeriodicLAUtimer = 2L;
 
-        InsertSubscriberDataRequestImpl prim = new InsertSubscriberDataRequestImpl(3, imsi, msisdn, category, subscriberStatus, bearerServiceList,
+        InsertSubscriberDataRequest prim = new InsertSubscriberDataRequestImplV3(imsi, msisdn, category, subscriberStatus, bearerServiceList,
                 teleserviceList, provisionedSS, odbData, roamingRestrictionDueToUnsupportedFeature, regionalSubscriptionData, vbsSubscriptionData,
                 vgcsSubscriptionData, vlrCamelSubscriptionInfo, extensionContainer, naeaPreferredCI, gprsSubscriptionData,
                 roamingRestrictedInSgsnDueToUnsupportedFeature, networkAccessMode, lsaInformation, lmuIndicator, lcsInformation, istAlertTimer,
@@ -2106,7 +2109,7 @@ public class InsertSubscriberDataRequestTest {
         byte[] rawData=this.getData(); 
         assertTrue(Arrays.equals(encodedData, rawData));
 
-        prim = new InsertSubscriberDataRequestImpl(2, imsi, msisdn, category, subscriberStatus, bearerServiceList, teleserviceList, provisionedSS, odbData,
+        prim = new InsertSubscriberDataRequestImplV1(imsi, msisdn, category, subscriberStatus, bearerServiceList, teleserviceList, provisionedSS, odbData,
                 roamingRestrictionDueToUnsupportedFeature, regionalSubscriptionData, vbsSubscriptionData, vgcsSubscriptionData, vlrCamelSubscriptionInfo);
         buffer=parser.encode(prim);
         encodedData = new byte[buffer.readableBytes()];

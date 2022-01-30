@@ -233,12 +233,12 @@ public class ASNParser
 	}
 	
 	public ASNDecodeResult decode(ByteBuf buffer)  throws ASNException {
-		return decode(buffer,skipErrors);
+		return decode(buffer,new ConcurrentHashMap<Integer,Object>(),skipErrors);
 	}
 	
-	public ASNDecodeResult decode(ByteBuf buffer, Boolean skipErrors) throws ASNException {
+	public ASNDecodeResult decode(ByteBuf buffer, ConcurrentHashMap<Integer,Object> mappedData, Boolean skipErrors) throws ASNException {
 		try {
-			return decode(null, buffer,skipErrors, null, null, rootClassMapping,cachedElements,null,new ConcurrentHashMap<Integer,Object>());
+			return decode(null, buffer,skipErrors, null, null, rootClassMapping,cachedElements,null,mappedData);
 		}
 		catch(Exception ex) {
 			throw new ASNException(ex.getMessage());
@@ -347,7 +347,7 @@ public class ASNParser
 						currObject=wildcardField.get(parent);
 					}
 					
-					hadErrors|=(Boolean)method.invoke(currObject,new Object[] { this, parent, buffer.slice(buffer.readerIndex(), header.getLength()), skipErrors });
+					hadErrors|=(Boolean)method.invoke(currObject,new Object[] { this, parent, buffer.slice(buffer.readerIndex(), header.getLength()), mappedData, skipErrors });
 					buffer.skipBytes(header.getLength());
 					break;
 				}

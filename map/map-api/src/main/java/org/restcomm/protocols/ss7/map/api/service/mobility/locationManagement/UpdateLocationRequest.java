@@ -89,6 +89,4 @@ public interface UpdateLocationRequest extends MobilityMessage {
 
     boolean getRestorationIndicator();
 
-    long getMapProtocolVersion();
-
 }

@@ -69,30 +69,14 @@ public class SendRoutingInformationResponseImplV1 extends CallHandlingMessageImp
     @ASNChoise(defaultImplementation = RoutingInfoImpl.class)
     private RoutingInfo routingInfo;
     
-	private long mapProtocolVersion;
-
-    public SendRoutingInformationResponseImplV1() {
-        this(1);
+	public SendRoutingInformationResponseImplV1() {
     }
 
-    public SendRoutingInformationResponseImplV1(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    public SendRoutingInformationResponseImplV1(IMSI imsi, RoutingInfo routingInfo, CUGCheckInfo cugCheckInfo) {
-        this(1, imsi, routingInfo, cugCheckInfo);
-    }
-
-    public SendRoutingInformationResponseImplV1(long mapProtocolVersion, IMSI imsi, RoutingInfo routingInfo,
+    public SendRoutingInformationResponseImplV1(IMSI imsi, RoutingInfo routingInfo,
     		CUGCheckInfo cugCheckInfo) {
         this.imsi = imsi;        
         this.routingInfo=routingInfo;
         this.cugCheckInfo = cugCheckInfo;
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    public long getMapProtocolVersion() {
-        return mapProtocolVersion;
     }
 
     @Override
@@ -228,9 +212,6 @@ public class SendRoutingInformationResponseImplV1 extends CallHandlingMessageImp
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("SendRoutingInformationResponse [");
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         if (this.imsi != null) {
             sb.append(", imsi=");

@@ -156,7 +156,6 @@ public class ProvideRoamingNumberRequestTest {
         assertTrue(result.getResult() instanceof ProvideRoamingNumberRequestImpl);
         ProvideRoamingNumberRequestImpl prn = (ProvideRoamingNumberRequestImpl)result.getResult();
         
-        assertEquals(prn.getMapProtocolVersion(), 3);
         IMSI imsi = prn.getImsi();
         ISDNAddressString mscNumber = prn.getMscNumber();
         ISDNAddressString msisdn = prn.getMsisdn();
@@ -182,8 +181,7 @@ public class ProvideRoamingNumberRequestTest {
         EMLPPPriority callPriority = prn.getCallPriority();
         boolean mtrfIndicator = prn.getMtrfIndicator();
         ISDNAddressString oldMSCNumber = prn.getOldMSCNumber();
-        long mapProtocolVersion = prn.getMapProtocolVersion();
-
+        
         assertNotNull(imsi);
         assertEquals(imsi.getData(), "011220200198227");
         assertNotNull(mscNumber);
@@ -224,7 +222,6 @@ public class ProvideRoamingNumberRequestTest {
         assertEquals(oldMSCNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(oldMSCNumber.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(oldMSCNumber.getAddress(), "22225");
-        assertEquals(mapProtocolVersion, 3);
 
         // 2
         data=getEncodedData1();
@@ -258,8 +255,7 @@ public class ProvideRoamingNumberRequestTest {
         callPriority = prn.getCallPriority();
         mtrfIndicator = prn.getMtrfIndicator();
         oldMSCNumber = prn.getOldMSCNumber();
-        mapProtocolVersion = prn.getMapProtocolVersion();
-
+        
         assertNotNull(imsi);
         assertEquals(imsi.getData(), "011220200198227");
         assertNotNull(mscNumber);
@@ -327,7 +323,6 @@ public class ProvideRoamingNumberRequestTest {
         callPriority = prn.getCallPriority();
         mtrfIndicator = prn.getMtrfIndicator();
         oldMSCNumber = prn.getOldMSCNumber();
-        mapProtocolVersion = prn.getMapProtocolVersion();
 
         assertNotNull(imsi);
         assertEquals(imsi.getData(), "011220200198227");
@@ -369,8 +364,6 @@ public class ProvideRoamingNumberRequestTest {
         assertEquals(oldMSCNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(oldMSCNumber.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(oldMSCNumber.getAddress(), "22225");
-        assertEquals(mapProtocolVersion, 3);
-
     }
 
     @Test(groups = { "functional.encode", "service.callhandling" })
@@ -420,14 +413,12 @@ public class ProvideRoamingNumberRequestTest {
         boolean mtrfIndicator = false;
         ISDNAddressStringImpl oldMSCNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22225");
-        long mapProtocolVersion = 3;
-
         ProvideRoamingNumberRequestImpl prn = new ProvideRoamingNumberRequestImpl(imsi, mscNumber, msisdn, lmsi,
                 gsmBearerCapability, networkSignalInfo, suppressionOfAnnouncement, gmscAddress, callReferenceNumber,
                 orInterrogation, extensionContainer, alertingPattern, ccbsCall, supportedCamelPhasesInInterrogatingNode,
                 additionalSignalInfo, orNotSupportedInGMSC, prePagingSupported, longFTNSupported, suppressVtCsi,
                 offeredCamel4CSIsInInterrogatingNode, mtRoamingRetrySupported, pagingArea, callPriority, mtrfIndicator,
-                oldMSCNumber, mapProtocolVersion);
+                oldMSCNumber);
 
         byte[] data=getEncodedData();
         ByteBuf buffer=parser.encode(prn);
@@ -445,13 +436,12 @@ public class ProvideRoamingNumberRequestTest {
         suppressVtCsi = true;
         mtRoamingRetrySupported = true;
         mtrfIndicator = true;
-        mapProtocolVersion = 3;
-
+        
         prn = new ProvideRoamingNumberRequestImpl(imsi, mscNumber, msisdn, lmsi, gsmBearerCapability, networkSignalInfo,
                 suppressionOfAnnouncement, gmscAddress, callReferenceNumber, orInterrogation, extensionContainer,
                 alertingPattern, ccbsCall, supportedCamelPhasesInInterrogatingNode, additionalSignalInfo, orNotSupportedInGMSC,
                 prePagingSupported, longFTNSupported, suppressVtCsi, offeredCamel4CSIsInInterrogatingNode,
-                mtRoamingRetrySupported, pagingArea, callPriority, mtrfIndicator, oldMSCNumber, mapProtocolVersion);
+                mtRoamingRetrySupported, pagingArea, callPriority, mtrfIndicator, oldMSCNumber);
 
         data=getEncodedDataFull();
         buffer=parser.encode(prn);
@@ -460,10 +450,9 @@ public class ProvideRoamingNumberRequestTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         // 2
-        mapProtocolVersion = 2;
         prn = new ProvideRoamingNumberRequestImpl(imsi, mscNumber, msisdn, lmsi, gsmBearerCapability, networkSignalInfo, false,
                 null, null, false, null, null, false, null, null, false, false, false, false, null, false, null, null, false,
-                null, mapProtocolVersion);
+                null);
 
         data=getEncodedData1();
         buffer=parser.encode(prn);

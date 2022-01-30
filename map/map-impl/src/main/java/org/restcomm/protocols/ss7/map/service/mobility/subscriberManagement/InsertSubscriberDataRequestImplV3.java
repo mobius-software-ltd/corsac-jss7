@@ -77,7 +77,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
-public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl implements InsertSubscriberDataRequest {
+public class InsertSubscriberDataRequestImplV3 extends MobilityMessageImpl implements InsertSubscriberDataRequest {
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = IMSIImpl.class)
@@ -194,60 +194,11 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=39,constructed=false,index=-1)
     private ASNInteger subscribedPeriodicLAUtimer = null;
 
-    private long mapProtocolVersion;
-
-    public InsertSubscriberDataRequestImpl() {
-    	this.mapProtocolVersion=3;
-    }
-    
-    // For incoming messages
-    public InsertSubscriberDataRequestImpl(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    // For outgoing messages - MAP V2
-    public InsertSubscriberDataRequestImpl(long mapProtocolVersion, IMSI imsi, ISDNAddressString msisdn, Category category,
-            SubscriberStatus subscriberStatus, List<ExtBearerServiceCode> bearerServiceList,
-            List<ExtTeleserviceCode> teleserviceList, List<ExtSSInfo> provisionedSS, ODBData odbData,
-            boolean roamingRestrictionDueToUnsupportedFeature, List<ZoneCode> regionalSubscriptionData,
-            List<VoiceBroadcastData> vbsSubscriptionData, List<VoiceGroupCallData> vgcsSubscriptionData,
-            VlrCamelSubscriptionInfo vlrCamelSubscriptionInfo) {
-        this.mapProtocolVersion = mapProtocolVersion;
-        this.imsi = imsi;
-        this.msisdn = msisdn;
-        this.category = category;
-        
-        if(subscriberStatus!=null)
-        	this.subscriberStatus = new ASNSubscriberStatus(subscriberStatus);
-        	
-        if(bearerServiceList!=null)
-        	this.bearerServiceList = new ExtBearerServiceCodeListWrapperImpl(bearerServiceList);
-        
-        if(teleserviceList!=null)
-        	this.teleserviceList = new ExtTeleserviceCodeListWrapperImpl(teleserviceList);
-        
-        if(provisionedSS!=null)
-        	this.provisionedSS = new ExtSSInfoListWrapperImpl(provisionedSS);
-        
-        this.odbData = odbData;
-        
-        if(roamingRestrictionDueToUnsupportedFeature)
-        	this.roamingRestrictionDueToUnsupportedFeature = new ASNNull();
-        
-        if(regionalSubscriptionData!=null)
-        	this.regionalSubscriptionData = new ZoneCodeListWrapperImpl(regionalSubscriptionData);
-        
-        if(vbsSubscriptionData!=null)
-        	this.vbsSubscriptionData = new VoiceBroadcastDataListWrapperImpl(vbsSubscriptionData);
-        
-        if(vgcsSubscriptionData!=null)
-        	this.vgcsSubscriptionData = new VoiceGroupCallDataListWrapperImpl(vgcsSubscriptionData);
-        
-        this.vlrCamelSubscriptionInfo = vlrCamelSubscriptionInfo;
+    public InsertSubscriberDataRequestImplV3() {    	
     }
 
     // For outgoing messages - MAP V3
-    public InsertSubscriberDataRequestImpl(long mapProtocolVersion, IMSI imsi, ISDNAddressString msisdn, Category category,
+    public InsertSubscriberDataRequestImplV3(IMSI imsi, ISDNAddressString msisdn, Category category,
             SubscriberStatus subscriberStatus, List<ExtBearerServiceCode> bearerServiceList,
             List<ExtTeleserviceCode> teleserviceList, List<ExtSSInfo> provisionedSS, ODBData odbData,
             boolean roamingRestrictionDueToUnsupportedFeature, List<ZoneCode> regionalSubscriptionData,
@@ -264,7 +215,6 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
             Long subscribedPeriodicRAUTAUtimer, boolean vplmnLIPAAllowed, Boolean mdtUserConsent,
             Long subscribedPeriodicLAUtimer) {
 
-        this.mapProtocolVersion = mapProtocolVersion;
         this.imsi = imsi;
         this.msisdn = msisdn;
         this.category = category;
@@ -297,64 +247,58 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
         
         this.vlrCamelSubscriptionInfo = vlrCamelSubscriptionInfo;
 
-        if (mapProtocolVersion >= 3) {
-            this.extensionContainer = extensionContainer;
-            this.naeaPreferredCI = naeaPreferredCI;
-            this.gprsSubscriptionData = gprsSubscriptionData;
-            
-            if(roamingRestrictedInSgsnDueToUnsupportedFeature)
-            	this.roamingRestrictedInSgsnDueToUnsupportedFeature = new ASNNull();
-            
-            if(networkAccessMode!=null)
-            	this.networkAccessMode = new ASNNetworkAccessMode(networkAccessMode);
-            	
-            this.lsaInformation = lsaInformation;
-            
-            if(lmuIndicator)
-            	this.lmuIndicator = new ASNNull();
-            
-            this.lcsInformation = lcsInformation;
-            
-            if(istAlertTimer!=null)
-            	this.istAlertTimer = new ASNInteger(istAlertTimer);
-            	
-            this.superChargerSupportedInHLR = superChargerSupportedInHLR;
-            this.mcSsInfo = mcSsInfo;
-            this.csAllocationRetentionPriority = csAllocationRetentionPriority;
-            this.sgsnCamelSubscriptionInfo = sgsnCamelSubscriptionInfo;
-            this.chargingCharacteristics = chargingCharacteristics;
-            this.accessRestrictionData = accessRestrictionData;
-            
-            if(icsIndicator!=null)
-            	this.icsIndicator = new ASNBoolean(icsIndicator);
-            	
-            this.epsSubscriptionData = epsSubscriptionData;
-            
-            if(csgSubscriptionDataList!=null)
-            	this.csgSubscriptionDataList = new CSGSubscriptionDataListWrapperImpl(csgSubscriptionDataList);
-            
-            if(ueReachabilityRequestIndicator)
-            	this.ueReachabilityRequestIndicator = new ASNNull();
-            
-            this.sgsnNumber = sgsnNumber;
-            this.mmeName = mmeName;
-            
-            if(subscribedPeriodicRAUTAUtimer!=null)
-            	this.subscribedPeriodicRAUTAUtimer = new ASNInteger(subscribedPeriodicRAUTAUtimer);
-            	
-            if(vplmnLIPAAllowed)
-            	this.vplmnLIPAAllowed = new ASNNull();
-            
-            if(mdtUserConsent!=null)
-            	this.mdtUserConsent = new ASNBoolean(mdtUserConsent);
-            	
-            if(subscribedPeriodicLAUtimer!=null)
-            	this.subscribedPeriodicLAUtimer = new ASNInteger(subscribedPeriodicLAUtimer);            	
-        }
-    }
-
-    public long getMapProtocolVersion() {
-        return this.mapProtocolVersion;
+        this.extensionContainer = extensionContainer;
+        this.naeaPreferredCI = naeaPreferredCI;
+        this.gprsSubscriptionData = gprsSubscriptionData;
+        
+        if(roamingRestrictedInSgsnDueToUnsupportedFeature)
+        	this.roamingRestrictedInSgsnDueToUnsupportedFeature = new ASNNull();
+        
+        if(networkAccessMode!=null)
+        	this.networkAccessMode = new ASNNetworkAccessMode(networkAccessMode);
+        	
+        this.lsaInformation = lsaInformation;
+        
+        if(lmuIndicator)
+        	this.lmuIndicator = new ASNNull();
+        
+        this.lcsInformation = lcsInformation;
+        
+        if(istAlertTimer!=null)
+        	this.istAlertTimer = new ASNInteger(istAlertTimer);
+        	
+        this.superChargerSupportedInHLR = superChargerSupportedInHLR;
+        this.mcSsInfo = mcSsInfo;
+        this.csAllocationRetentionPriority = csAllocationRetentionPriority;
+        this.sgsnCamelSubscriptionInfo = sgsnCamelSubscriptionInfo;
+        this.chargingCharacteristics = chargingCharacteristics;
+        this.accessRestrictionData = accessRestrictionData;
+        
+        if(icsIndicator!=null)
+        	this.icsIndicator = new ASNBoolean(icsIndicator);
+        	
+        this.epsSubscriptionData = epsSubscriptionData;
+        
+        if(csgSubscriptionDataList!=null)
+        	this.csgSubscriptionDataList = new CSGSubscriptionDataListWrapperImpl(csgSubscriptionDataList);
+        
+        if(ueReachabilityRequestIndicator)
+        	this.ueReachabilityRequestIndicator = new ASNNull();
+        
+        this.sgsnNumber = sgsnNumber;
+        this.mmeName = mmeName;
+        
+        if(subscribedPeriodicRAUTAUtimer!=null)
+        	this.subscribedPeriodicRAUTAUtimer = new ASNInteger(subscribedPeriodicRAUTAUtimer);
+        	
+        if(vplmnLIPAAllowed)
+        	this.vplmnLIPAAllowed = new ASNNull();
+        
+        if(mdtUserConsent!=null)
+        	this.mdtUserConsent = new ASNBoolean(mdtUserConsent);
+        	
+        if(subscribedPeriodicLAUtimer!=null)
+        	this.subscribedPeriodicLAUtimer = new ASNInteger(subscribedPeriodicLAUtimer);
     }
 
     @Override
@@ -876,9 +820,6 @@ public class InsertSubscriberDataRequestImpl extends MobilityMessageImpl impleme
             sb.append(this.subscribedPeriodicLAUtimer.getValue());
             sb.append(", ");
         }
-
-        sb.append("mapProtocolVersion=");
-        sb.append(this.mapProtocolVersion);
 
         sb.append("]");
 

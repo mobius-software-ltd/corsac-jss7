@@ -256,7 +256,6 @@ public class MAPErrorMessageTest {
         assertNull(emSMDeliveryFailure.getSignalInfo());
         assertNull(emSMDeliveryFailure.getSmsDeliverReportTpdu());
         assertNull(emSMDeliveryFailure.getExtensionContainer());
-        assertEquals(emSMDeliveryFailure.getMapProtocolVersion(), 3);
         
         //SM FAILURE FULL
         result=parser.decode(Unpooled.wrappedBuffer(dataSMDeliveryFailureFull));
@@ -294,7 +293,6 @@ public class MAPErrorMessageTest {
         assertEquals(tpdu.getDataCodingScheme().getCode(), 246);
         assertTrue(ByteBufUtil.equals(tpdu.getUserData().getEncodedData(), Unpooled.wrappedBuffer(uData)));
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(emSMDeliveryFailure.getExtensionContainer()));
-        assertEquals(emSMDeliveryFailure.getMapProtocolVersion(), 3);
         
         //SM FAILURE V1
         result=parser.decode(Unpooled.wrappedBuffer(dataSMDeliveryFailureV1));
@@ -313,7 +311,6 @@ public class MAPErrorMessageTest {
         assertEquals(emSMDeliveryFailure.getSMEnumeratedDeliveryFailureCause(),SMEnumeratedDeliveryFailureCause.equipmentProtocolError);
         assertNull(emSMDeliveryFailure.getSignalInfo());
         assertNull(emSMDeliveryFailure.getExtensionContainer());
-        assertEquals(emSMDeliveryFailure.getMapProtocolVersion(), 1);
         
         //Absent Subscriber SM
         result=parser.decode(Unpooled.wrappedBuffer(dataAbsentSubscriberSM));
@@ -375,7 +372,6 @@ public class MAPErrorMessageTest {
         assertTrue(re.getParameter() instanceof MAPErrorMessage);
         assertTrue(re.getParameter() instanceof MAPErrorMessageSystemFailure);
         MAPErrorMessageSystemFailure emSystemFailure=(MAPErrorMessageSystemFailure)re.getParameter();
-        assertEquals(emSystemFailure.getMapProtocolVersion(), 2);
         assertEquals(emSystemFailure.getNetworkResource(), NetworkResource.plmn);
         assertNull(emSystemFailure.getAdditionalNetworkResource());
         assertNull(emSystemFailure.getExtensionContainer());
@@ -406,7 +402,6 @@ public class MAPErrorMessageTest {
         
         assertNotNull(innerContainer.getPcsExtensions()); 
         
-        assertEquals(emSystemFailure.getMapProtocolVersion(), 3);
         assertEquals(emSystemFailure.getNetworkResource(), NetworkResource.vlr);
         assertEquals(emSystemFailure.getAdditionalNetworkResource(), AdditionalNetworkResource.gsmSCF);
         
@@ -424,7 +419,6 @@ public class MAPErrorMessageTest {
         assertTrue(re.getParameter() instanceof MAPErrorMessage);
         assertTrue(re.getParameter() instanceof MAPErrorMessageCallBarred);
         MAPErrorMessageCallBarred emCallBarred=(MAPErrorMessageCallBarred)re.getParameter();
-        assertEquals(emCallBarred.getMapProtocolVersion(), 3);
         assertEquals(emCallBarred.getCallBarringCause(), CallBarringCause.operatorBarring);
         assertEquals((boolean) emCallBarred.getUnauthorisedMessageOriginator(), false);
         assertNull(emCallBarred.getExtensionContainer());      
@@ -455,7 +449,6 @@ public class MAPErrorMessageTest {
         
         assertNotNull(innerContainer.getPcsExtensions()); 
         
-        assertEquals(emCallBarred.getMapProtocolVersion(), 3);
         assertEquals(emCallBarred.getCallBarringCause(), CallBarringCause.operatorBarring);
         assertEquals((boolean) emCallBarred.getUnauthorisedMessageOriginator(), true);   
         
@@ -900,7 +893,7 @@ public class MAPErrorMessageTest {
         assertTrue(Arrays.equals(data, dataExtContainerFull));
         
         //SM FAILURE
-        em = fact.createMAPErrorMessageSMDeliveryFailure((long)MAPErrorCode.smDeliveryFailure,SMEnumeratedDeliveryFailureCause.invalidSMEAddress, null, null);
+        em = fact.createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause.invalidSMEAddress,null,null);
         re=new ReturnErrorImpl();
         re.setParameter(em);
         re.setInvokeId(1L);
@@ -912,7 +905,7 @@ public class MAPErrorMessageTest {
         assertTrue(Arrays.equals(data, dataSMDeliveryFailure));  
         
         //SM FAILURE FULL
-        em = fact.createMAPErrorMessageSMDeliveryFailure(3,SMEnumeratedDeliveryFailureCause.scCongestion, null, MAPExtensionContainerTest.GetTestExtensionContainer());
+        em = fact.createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause.scCongestion, null, MAPExtensionContainerTest.GetTestExtensionContainer());
         FailureCauseImpl failureCause = new FailureCauseImpl(213);
         ProtocolIdentifierImpl protocolIdentifier = new ProtocolIdentifierImpl(127);
         DataCodingSchemeImpl dataCodingScheme = new DataCodingSchemeImpl(246);
@@ -930,7 +923,7 @@ public class MAPErrorMessageTest {
         assertTrue(Arrays.equals(data, dataSMDeliveryFailureFull)); 
         
         //SM FAILURE V1
-        em = fact.createMAPErrorMessageSMDeliveryFailure(1,SMEnumeratedDeliveryFailureCause.equipmentProtocolError, null, null);
+        em = fact.createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause.equipmentProtocolError);
         re=new ReturnErrorImpl();
         re.setParameter(em);
         re.setInvokeId(1L);
@@ -966,7 +959,7 @@ public class MAPErrorMessageTest {
         assertTrue(Arrays.equals(data, dataAbsentSubscriberSMFull)); 
         
         //System Failure
-        em = fact.createMAPErrorMessageSystemFailure(2, NetworkResource.plmn, null, null);
+        em = fact.createMAPErrorMessageSystemFailure(NetworkResource.plmn);
         re=new ReturnErrorImpl();
         re.setParameter(em);
         re.setInvokeId(1L);
@@ -978,7 +971,7 @@ public class MAPErrorMessageTest {
         assertTrue(Arrays.equals(data, dataSystemFailure));
         
         //System Failure Full
-        em = fact.createMAPErrorMessageSystemFailure(3, NetworkResource.vlr,AdditionalNetworkResource.gsmSCF, MAPExtensionContainerTest.GetTestExtensionContainer());
+        em = fact.createMAPErrorMessageSystemFailure(NetworkResource.vlr,AdditionalNetworkResource.gsmSCF, MAPExtensionContainerTest.GetTestExtensionContainer());
         re=new ReturnErrorImpl();
         re.setParameter(em);
         re.setInvokeId(1L);
@@ -990,7 +983,8 @@ public class MAPErrorMessageTest {
         assertTrue(Arrays.equals(data, dataSystemFailureFull)); 
         
         //Call Barred
-        em = fact.createMAPErrorMessageCallBarred(3L, CallBarringCause.operatorBarring, null, null);re=new ReturnErrorImpl();
+        em = fact.createMAPErrorMessageCallBarred(CallBarringCause.operatorBarring, null, null);
+        re=new ReturnErrorImpl();
         re.setParameter(em);
         re.setInvokeId(1L);
         
@@ -1001,7 +995,7 @@ public class MAPErrorMessageTest {
         assertTrue(Arrays.equals(data, dataCallBarred));  
         
         //Call Barred Full
-        em = fact.createMAPErrorMessageCallBarred(3L, CallBarringCause.operatorBarring, MAPExtensionContainerTest.GetTestExtensionContainer(), true);
+        em = fact.createMAPErrorMessageCallBarred(CallBarringCause.operatorBarring, MAPExtensionContainerTest.GetTestExtensionContainer(), true);
         re=new ReturnErrorImpl();
         re.setParameter(em);
         re.setInvokeId(1L);

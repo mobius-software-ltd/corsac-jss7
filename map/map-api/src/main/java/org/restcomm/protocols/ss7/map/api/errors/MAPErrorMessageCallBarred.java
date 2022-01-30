@@ -42,14 +42,9 @@ public interface MAPErrorMessageCallBarred extends MAPErrorMessage {
 
     Boolean getUnauthorisedMessageOriginator();
 
-    long getMapProtocolVersion();
-
     void setCallBarringCause(CallBarringCause callBarringCause);
 
     void setExtensionContainer(MAPExtensionContainer extensionContainer);
 
     void setUnauthorisedMessageOriginator(Boolean unauthorisedMessageOriginator);
-
-    void setMapProtocolVersion(long mapProtocolVersion);
-
 }

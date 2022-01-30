@@ -52,31 +52,17 @@ public class CheckImeiResponseImplV3 extends MobilityMessageImpl implements Chec
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
     private MAPExtensionContainer extensionContainer;
 
-    private long mapProtocolVersion;
-
     public CheckImeiResponseImplV3() {
-    	this.mapProtocolVersion = 3;
-    }
-    
-    // For incoming messages
-    public CheckImeiResponseImplV3(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
     // for outgoing messages
-    public CheckImeiResponseImplV3(long mapProtocolVersion, EquipmentStatus equipmentStatus, UESBIIu bmuef,
+    public CheckImeiResponseImplV3(EquipmentStatus equipmentStatus, UESBIIu bmuef,
             MAPExtensionContainer extensionContainer) {
-        this.mapProtocolVersion = mapProtocolVersion;
-        
         if(equipmentStatus!=null)
         	this.equipmentStatus = new ASNEquipmentStatusImpl(equipmentStatus);
         	
         this.bmuef = bmuef;
         this.extensionContainer = extensionContainer;
-    }
-
-    public long getMapProtocolVersion() {
-        return this.mapProtocolVersion;
     }
 
     @Override
@@ -129,9 +115,6 @@ public class CheckImeiResponseImplV3 extends MobilityMessageImpl implements Chec
             sb.append(extensionContainer.toString());
             sb.append(", ");
         }
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         sb.append("]");
 

@@ -71,7 +71,6 @@ public class ResetRequestTest {
         assertTrue(result.getResult() instanceof ResetRequestImpl);
         ResetRequestImpl prim = (ResetRequestImpl)result.getResult();
         
-        assertEquals(prim.getMapProtocolVersion(), 3);
         assertEquals(prim.getNetworkResource(), NetworkResource.hlr);
         assertEquals(prim.getHlrNumber().getAddress(), "12345");
         assertNull(prim.getHlrList());
@@ -82,7 +81,6 @@ public class ResetRequestTest {
         assertTrue(result.getResult() instanceof ResetRequestImpl);
         prim = (ResetRequestImpl)result.getResult();
 
-        assertEquals(prim.getMapProtocolVersion(), 3);
         assertNull(prim.getNetworkResource());
         assertEquals(prim.getHlrNumber().getAddress(), "12345");
         assertEquals(prim.getHlrList().size(), 1);
@@ -95,7 +93,7 @@ public class ResetRequestTest {
     	parser.replaceClass(ResetRequestImpl.class);
     	
         ISDNAddressStringImpl hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "12345");
-        ResetRequestImpl prim = new ResetRequestImpl(NetworkResource.hlr, hlrNumber, null, 1);
+        ResetRequestImpl prim = new ResetRequestImpl(NetworkResource.hlr, hlrNumber, null);
 
         byte[] data=this.getEncodedData();
     	ByteBuf buffer=parser.encode(prim);
@@ -106,7 +104,7 @@ public class ResetRequestTest {
         List<IMSI> hlrList = new ArrayList<IMSI>();
         IMSIImpl imsi = new IMSIImpl("1234001");
         hlrList.add(imsi);
-        prim = new ResetRequestImpl(null, hlrNumber, hlrList, 2);
+        prim = new ResetRequestImpl(null, hlrNumber, hlrList);
 
         data=this.getEncodedData2();
     	buffer=parser.encode(prim);

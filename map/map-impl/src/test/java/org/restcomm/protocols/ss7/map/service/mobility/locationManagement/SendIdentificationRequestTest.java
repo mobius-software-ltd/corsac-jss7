@@ -127,7 +127,7 @@ public class SendIdentificationRequestTest {
     	
     	// version 2
         TMSIImpl tmsi = new TMSIImpl(Unpooled.wrappedBuffer(getDataTmsi()));
-        SendIdentificationRequest prim = new SendIdentificationRequestImplV1(tmsi, 2);
+        SendIdentificationRequest prim = new SendIdentificationRequestImplV1(tmsi);
         byte[] data=getData1();
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -146,7 +146,7 @@ public class SendIdentificationRequestTest {
         boolean mtRoamingForwardingSupported = true;
         ISDNAddressStringImpl newVLRNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22235");
         LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(getDataLmsi()));
-        prim = new SendIdentificationRequestImplV3(tmsi, numberOfRequestedVectors, segmentationProhibited, extensionContainer, mscNumber, previousLAI, hopCounter, mtRoamingForwardingSupported, newVLRNumber, lmsi, 3);
+        prim = new SendIdentificationRequestImplV3(tmsi, numberOfRequestedVectors, segmentationProhibited, extensionContainer, mscNumber, previousLAI, hopCounter, mtRoamingForwardingSupported, newVLRNumber, lmsi);
         data=getData2();
         buffer=parser.encode(prim);
         encodedData = new byte[buffer.readableBytes()];

@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
@@ -88,7 +90,7 @@ public class TransactionID {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser, Object parent,ByteBuf buffer,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser, Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) {
 		if(buffer.readableBytes()>=4)
 			firstElem=buffer.readSlice(4);
 					

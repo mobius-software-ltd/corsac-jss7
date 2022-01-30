@@ -27,6 +27,7 @@ package com.mobius.software.telco.protocols.ss7.asn.primitives;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import io.netty.buffer.ByteBuf;
 
@@ -80,7 +81,7 @@ public class ASNObjectIdentifier {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) {
 		int b = 0x00FF & buffer.readByte();
 
 		long currValue = b / 40;

@@ -133,8 +133,8 @@ public class SendAuthenticationInfoResponseTest {
         		Unpooled.wrappedBuffer(AuthenticationTripletTest.getSresData()), Unpooled.wrappedBuffer(AuthenticationTripletTest.getKcData()));
         ats.add(at);
         TripletList tl = new TripletListImpl(ats);
-        AuthenticationSetListImpl asl = new AuthenticationSetListImpl(tl,3);
-        SendAuthenticationInfoResponse asc = new SendAuthenticationInfoResponseImplV3(3, asl, null, null);
+        AuthenticationSetList asl = new AuthenticationSetListV3Impl(tl);
+        SendAuthenticationInfoResponse asc = new SendAuthenticationInfoResponseImplV3(asl, null, null);
         
         byte[] data=getEncodedData_V3_tripl();
         ByteBuf buffer=parser.encode(asc);
@@ -147,7 +147,7 @@ public class SendAuthenticationInfoResponseTest {
         List<EpcAv> epcAvs = new ArrayList<EpcAv>();
         epcAvs.add(d1);
         EpsAuthenticationSetList easl = new EpsAuthenticationSetListImpl(epcAvs);
-        asc = new SendAuthenticationInfoResponseImplV3(3, null, null, easl);
+        asc = new SendAuthenticationInfoResponseImplV3(null, null, easl);
 
         data=getEncodedData_V3_Eps();
         buffer=parser.encode(asc);
@@ -160,8 +160,8 @@ public class SendAuthenticationInfoResponseTest {
         		Unpooled.wrappedBuffer(TripletListTest.getKcData()));
         ats.add(at);
         tl = new TripletListImpl(ats);
-        asl = new AuthenticationSetListImpl(tl,2);        
-        asc = new SendAuthenticationInfoResponseImplV1(2, asl);
+        asl = new AuthenticationSetListV1Impl(tl);        
+        asc = new SendAuthenticationInfoResponseImplV1(asl);
 
         data=getEncodedData_V2_tripl();
         buffer=parser.encode(asc);

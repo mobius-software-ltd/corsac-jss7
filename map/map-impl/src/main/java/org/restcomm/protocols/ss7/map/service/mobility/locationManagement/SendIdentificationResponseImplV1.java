@@ -31,7 +31,7 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Authen
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContext;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationResponse;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListV1Impl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -50,25 +50,16 @@ public class SendIdentificationResponseImplV1 extends MobilityMessageImpl implem
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index = -1, defaultImplementation = IMSIImpl.class)
 	private IMSI imsi;
     
-    @ASNChoise(defaultImplementation = AuthenticationSetListImpl.class)
+    @ASNChoise(defaultImplementation = AuthenticationSetListV1Impl.class)
     private AuthenticationSetList authenticationSetList;
     
-    private long mapProtocolVersion;
-
     public SendIdentificationResponseImplV1() {
-    	this.mapProtocolVersion = 2;
     }
     
-    public SendIdentificationResponseImplV1(long mapProtocolVersion) {
-        super();
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    public SendIdentificationResponseImplV1(IMSI imsi, AuthenticationSetList authenticationSetList, long mapProtocolVersion) {
+    public SendIdentificationResponseImplV1(IMSI imsi, AuthenticationSetList authenticationSetList) {
         super();
         this.imsi = imsi;
         this.authenticationSetList=authenticationSetList;
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
     @Override
@@ -101,10 +92,6 @@ public class SendIdentificationResponseImplV1 extends MobilityMessageImpl implem
         return null;
     }
 
-    public long getMapProtocolVersion() {
-        return mapProtocolVersion;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -121,9 +108,6 @@ public class SendIdentificationResponseImplV1 extends MobilityMessageImpl implem
             sb.append(this.authenticationSetList.toString());
             sb.append(", ");
         }
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         sb.append("]");
 

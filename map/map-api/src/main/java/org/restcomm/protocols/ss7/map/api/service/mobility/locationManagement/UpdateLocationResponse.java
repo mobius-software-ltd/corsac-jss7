@@ -49,6 +49,4 @@ public interface UpdateLocationResponse extends MobilityMessage {
 
     boolean getPagingAreaCapability();
 
-    long getMapProtocolVersion();
-
 }

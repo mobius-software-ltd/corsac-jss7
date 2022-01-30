@@ -102,7 +102,7 @@ public class SpecializedResourceReportRequestTest {
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
-        // boolean isAllAnnouncementsComplete, boolean isFirstAnnouncementStarted, boolean isCAPVersion4orLater
+        // boolean isAllAnnouncementsComplete, boolean isFirstAnnouncementStarted
 
         elem = new SpecializedResourceReportRequestImpl(false, true);
         rawData = this.getData2();

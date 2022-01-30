@@ -115,7 +115,7 @@ public class CheckImeiResponseTest {
         UESBIIuBImpl impUESBIIuB = new UESBIIuBImpl();
 
         UESBIIuImpl bmuef = new UESBIIuImpl(impUESBIIuA, impUESBIIuB);
-        CheckImeiResponse checkImei = new CheckImeiResponseImplV3(3, EquipmentStatus.whiteListed, bmuef, null);
+        CheckImeiResponse checkImei = new CheckImeiResponseImplV3(EquipmentStatus.whiteListed, bmuef, null);
         byte[] data=getEncodedDataV3();
         ByteBuf buffer=parser.encode(checkImei);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -132,7 +132,7 @@ public class CheckImeiResponseTest {
 
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
-        checkImei = new CheckImeiResponseImplV3(3, EquipmentStatus.whiteListed, bmuef, extensionContainer);
+        checkImei = new CheckImeiResponseImplV3(EquipmentStatus.whiteListed, bmuef, extensionContainer);
         data=getEncodedDataV3Full();
         buffer=parser.encode(checkImei);
         encodedData = new byte[buffer.readableBytes()];
@@ -140,7 +140,7 @@ public class CheckImeiResponseTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         // Testing version 1 and 2
-        checkImei = new CheckImeiResponseImplV1(2, EquipmentStatus.whiteListed);
+        checkImei = new CheckImeiResponseImplV1(EquipmentStatus.whiteListed);
         data=getEncodedDataV2();
         buffer=parser.encode(checkImei);
         encodedData = new byte[buffer.readableBytes()];

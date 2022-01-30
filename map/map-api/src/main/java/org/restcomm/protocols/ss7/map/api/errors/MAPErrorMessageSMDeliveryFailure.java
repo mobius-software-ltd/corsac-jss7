@@ -61,15 +61,11 @@ public interface MAPErrorMessageSMDeliveryFailure extends MAPErrorMessage {
 
     MAPExtensionContainer getExtensionContainer();
 
-    long getMapProtocolVersion();
-
     void setSMEnumeratedDeliveryFailureCause(SMEnumeratedDeliveryFailureCause sMEnumeratedDeliveryFailureCause);
 
     void setSignalInfo(ByteBuf signalInfo);
 
     void setExtensionContainer(MAPExtensionContainer extensionContainer);
-
-    void setMapProtocolVersion(long mapProtocolVersion);
 
     SmsDeliverReportTpdu getSmsDeliverReportTpdu() throws MAPException;
 

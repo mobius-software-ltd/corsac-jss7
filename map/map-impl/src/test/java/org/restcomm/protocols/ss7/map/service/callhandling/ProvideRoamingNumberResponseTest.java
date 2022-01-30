@@ -106,8 +106,7 @@ public class ProvideRoamingNumberResponseTest {
         MAPExtensionContainer extensionContainer = prn.getExtensionContainer();
         boolean releaseResourcesSupported = prn.getReleaseResourcesSupported();
         ISDNAddressString vmscAddress = prn.getVmscAddress();
-        long mapProtocolVersion = prn.getMapProtocolVersion();
-
+        
         assertNotNull(roamingNumber);
         assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
@@ -119,8 +118,7 @@ public class ProvideRoamingNumberResponseTest {
         assertEquals(vmscAddress.getAddressNature(), AddressNature.international_number);
         assertEquals(vmscAddress.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(vmscAddress.getAddress(), "29113123311");
-        assertEquals(mapProtocolVersion, 3);
-
+        
         data=this.getEncodedDataFull();
     	result=parser.decode(Unpooled.wrappedBuffer(data));
         assertFalse(result.getHadErrors());
@@ -131,8 +129,7 @@ public class ProvideRoamingNumberResponseTest {
         extensionContainer = prn.getExtensionContainer();
         releaseResourcesSupported = prn.getReleaseResourcesSupported();
         vmscAddress = prn.getVmscAddress();
-        mapProtocolVersion = prn.getMapProtocolVersion();
-
+        
         assertNotNull(roamingNumber);
         assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
@@ -144,8 +141,7 @@ public class ProvideRoamingNumberResponseTest {
         assertEquals(vmscAddress.getAddressNature(), AddressNature.international_number);
         assertEquals(vmscAddress.getNumberingPlan(), NumberingPlan.ISDN);
         assertEquals(vmscAddress.getAddress(), "29113123311");
-        assertEquals(mapProtocolVersion, 3);
-
+        
         data=this.getEncodedData1();
     	result=parser.decode(Unpooled.wrappedBuffer(data));
         assertFalse(result.getHadErrors());
@@ -156,8 +152,7 @@ public class ProvideRoamingNumberResponseTest {
         extensionContainer = prn.getExtensionContainer();
         releaseResourcesSupported = prn.getReleaseResourcesSupported();
         vmscAddress = prn.getVmscAddress();
-        mapProtocolVersion = prn.getMapProtocolVersion();
-
+        
         assertNotNull(roamingNumber);
         assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
         assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
@@ -182,10 +177,9 @@ public class ProvideRoamingNumberResponseTest {
         boolean releaseResourcesSupported = false;
         ISDNAddressStringImpl vmscAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "29113123311");
-        long mapProtocolVersion = 3;
-
+       
         ProvideRoamingNumberResponse prn = new ProvideRoamingNumberResponseImplV3(roamingNumber, extensionContainer,
-                releaseResourcesSupported, vmscAddress, mapProtocolVersion);
+                releaseResourcesSupported, vmscAddress);
 
         byte[] data=getEncodedData();
         ByteBuf buffer=parser.encode(prn);
@@ -194,8 +188,7 @@ public class ProvideRoamingNumberResponseTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         releaseResourcesSupported = true;
-        prn = new ProvideRoamingNumberResponseImplV3(roamingNumber, extensionContainer, releaseResourcesSupported, vmscAddress,
-                mapProtocolVersion);
+        prn = new ProvideRoamingNumberResponseImplV3(roamingNumber, extensionContainer, releaseResourcesSupported, vmscAddress);
 
         data=getEncodedDataFull();
         buffer=parser.encode(prn);
@@ -204,8 +197,7 @@ public class ProvideRoamingNumberResponseTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         // 2
-        mapProtocolVersion = 2;
-        prn = new ProvideRoamingNumberResponseImplV1(roamingNumber, mapProtocolVersion);
+        prn = new ProvideRoamingNumberResponseImplV1(roamingNumber);
 
         data=getEncodedData1();
         buffer=parser.encode(prn);

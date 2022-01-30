@@ -25,6 +25,7 @@ package com.mobius.software.telco.protocols.ss7.asn.primitives;
 *
 */
 import java.lang.reflect.Method;
+import java.util.concurrent.ConcurrentHashMap;
 
 import io.netty.buffer.ByteBuf;
 
@@ -67,7 +68,7 @@ public abstract class ASNGeneric {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) throws ASNException {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws ASNException {
 		if(buffer.readableBytes()==0)
 		{
 			this.value=null;
@@ -98,12 +99,12 @@ public abstract class ASNGeneric {
 		
 		ASNDecodeResult result;
 		if(this.value!=null) {
-			result=parser.getParser(clazz).decode(buffer,skipErrors);
+			result=parser.getParser(clazz).decode(buffer,mappedData,skipErrors);
 			if(!result.getHadErrors() && result.getResult()!=null)
 				parser.getParser(clazz).merge(this.value, result.getResult());							
 		}
 		else {
-			result=parser.getParser(clazz).decode(buffer,skipErrors);
+			result=parser.getParser(clazz).decode(buffer,mappedData,skipErrors);
 			this.value=result.getResult();
 		} 
 			

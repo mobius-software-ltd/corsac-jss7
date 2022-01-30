@@ -46,18 +46,10 @@ public class UpdateLocationResponseImplV1 extends MobilityMessageImpl implements
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = ISDNAddressStringImpl.class)
 	private ISDNAddressString hlrNumber;
     
-	private long mapProtocolVersion;
-
 	public UpdateLocationResponseImplV1() {
-		this.mapProtocolVersion = 1;
 	}
-	
-    public UpdateLocationResponseImplV1(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
 
-    public UpdateLocationResponseImplV1(long mapProtocolVersion, ISDNAddressString hlrNumber) {
-        this.mapProtocolVersion = mapProtocolVersion;
+    public UpdateLocationResponseImplV1(ISDNAddressString hlrNumber) {
         this.hlrNumber = hlrNumber;
     }
 
@@ -85,10 +77,6 @@ public class UpdateLocationResponseImplV1 extends MobilityMessageImpl implements
         return false;
     }
 
-    public long getMapProtocolVersion() {
-        return mapProtocolVersion;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -99,9 +87,7 @@ public class UpdateLocationResponseImplV1 extends MobilityMessageImpl implements
             sb.append(hlrNumber.toString());
             sb.append(", ");
         }
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
-
+        
         sb.append("]");
 
         return sb.toString();

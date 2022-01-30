@@ -248,7 +248,6 @@ public class InitialDPArgExtensionTest {
         // BearerCapability bearerCapability2,
         // ExtBasicServiceCode extBasicServiceCode2, HighLayerCompatibilityInap highLayerCompatibility2, LowLayerCompatibility
         // lowLayerCompatibility,
-        // LowLayerCompatibility lowLayerCompatibility2, boolean enhancedDialledServicesAllowed, UUData uuData, boolean
-        // isCAPVersion3orLater
+        // LowLayerCompatibility lowLayerCompatibility2, boolean enhancedDialledServicesAllowed, UUData uuData, boolean        
     }
 }

@@ -128,7 +128,6 @@ public class ApplyChargingRequestTest {
         // long maxCallPeriodDuration, boolean releaseIfdurationExceeded, Long
         // tariffSwitchInterval,
         // AudibleIndicator audibleIndicator, CAPExtensions extensions, boolean
-        // isCAPVersion3orLater
         ApplyChargingRequestImpl elem = new ApplyChargingRequestImpl(aChBillingChargingCharacteristics, LegType.leg1, null,
                 null);
         byte[] rawData = this.getData1();

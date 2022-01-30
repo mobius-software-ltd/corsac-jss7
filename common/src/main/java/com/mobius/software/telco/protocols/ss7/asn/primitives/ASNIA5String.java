@@ -27,6 +27,7 @@ package com.mobius.software.telco.protocols.ss7.asn.primitives;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -65,7 +66,7 @@ public class ASNIA5String {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) throws UnsupportedEncodingException {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws UnsupportedEncodingException {
 		value=buffer.toString(ENCODING);
 		return false;
 	}

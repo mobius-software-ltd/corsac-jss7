@@ -33,12 +33,14 @@ import java.util.List;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetList;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTriplet;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.GSMSecurityContextData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletList;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSecurityContextData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationResponse;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListV1Impl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListV3Impl;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationTripletImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.CksnImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.CurrentSecurityContextImpl;
@@ -141,11 +143,11 @@ public class SendIdentificationResponseTest {
         		Unpooled.wrappedBuffer(SendIdentificationResponseTest.getSresData()), Unpooled.wrappedBuffer(SendIdentificationResponseTest.getKcData()));
         ats.add(at);
         TripletList tl = new TripletListImpl(ats);
-        AuthenticationSetListImpl authenticationSetList = new AuthenticationSetListImpl(tl,2);
+        AuthenticationSetList authenticationSetList = new AuthenticationSetListV1Impl(tl);
         
         CurrentSecurityContextImpl currentSecurityContext = null;
         MAPExtensionContainer extensionContainer = null;
-        SendIdentificationResponse prim = new SendIdentificationResponseImplV1(imsi, authenticationSetList, 2);
+        SendIdentificationResponse prim = new SendIdentificationResponseImplV1(imsi, authenticationSetList);
         byte[] data=getData1();
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -160,7 +162,7 @@ public class SendIdentificationResponseTest {
         		Unpooled.wrappedBuffer(SendIdentificationResponseTest.getSresData()), Unpooled.wrappedBuffer(SendIdentificationResponseTest.getKcData()));
         ats.add(at);
         tl = new TripletListImpl(ats);
-        authenticationSetList = new AuthenticationSetListImpl(tl,3);
+        authenticationSetList = new AuthenticationSetListV3Impl(tl);
         
         KcImpl kc = new KcImpl(Unpooled.wrappedBuffer(SendIdentificationResponseTest.getKcData()));
         CksnImpl cksn = new CksnImpl(4);
@@ -168,7 +170,7 @@ public class SendIdentificationResponseTest {
         currentSecurityContext = new CurrentSecurityContextImpl(gsm);
 
         extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        prim = new SendIdentificationResponseImplV3(imsi, authenticationSetList, currentSecurityContext, extensionContainer, 3);
+        prim = new SendIdentificationResponseImplV3(imsi, authenticationSetList, currentSecurityContext, extensionContainer);
         data=getData2();
         buffer=parser.encode(prim);
         encodedData = new byte[buffer.readableBytes()];

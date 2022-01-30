@@ -45,18 +45,10 @@ public class ReportSMDeliveryStatusResponseImplV1 extends SmsMessageImpl impleme
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = ISDNAddressStringImpl.class)
 	private ISDNAddressString storedMSISDN;
     
-    private long mapProtocolVersion;
-
     public ReportSMDeliveryStatusResponseImplV1() {
-    	this.mapProtocolVersion=1;
-    }
-    
-    public ReportSMDeliveryStatusResponseImplV1(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public ReportSMDeliveryStatusResponseImplV1(long mapProtocolVersion, ISDNAddressString storedMSISDN) {
-        this.mapProtocolVersion = mapProtocolVersion;
+    public ReportSMDeliveryStatusResponseImplV1(ISDNAddressString storedMSISDN) {
         this.storedMSISDN = storedMSISDN;
     }
 
@@ -76,10 +68,6 @@ public class ReportSMDeliveryStatusResponseImplV1 extends SmsMessageImpl impleme
         return null;
     }
 
-    public long getMapProtocolVersion() {
-        return this.mapProtocolVersion;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -94,9 +82,6 @@ public class ReportSMDeliveryStatusResponseImplV1 extends SmsMessageImpl impleme
             sb.append(this.storedMSISDN.toString());
         }
      
-        sb.append(", mapProtocolVersion=");
-        sb.append(this.mapProtocolVersion);
-
         sb.append("]");
 
         return sb.toString();

@@ -47,8 +47,6 @@ public interface MAPErrorMessageSystemFailure extends MAPErrorMessage {
 
     MAPExtensionContainer getExtensionContainer();
 
-    long getMapProtocolVersion();
-
     void setNetworkResource(NetworkResource networkResource);
 
     void setAdditionalNetworkResource(AdditionalNetworkResource additionalNetworkResource);

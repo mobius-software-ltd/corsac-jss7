@@ -57,25 +57,16 @@ public class PurgeMSRequestImplV3 extends MobilityMessageImpl implements PurgeMS
     @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
     private MAPExtensionContainer extensionContainer;
     
-    private long mapProtocolVersion;
-
     public PurgeMSRequestImplV3() {
-    	this.mapProtocolVersion=3;
     }
     
-    public PurgeMSRequestImplV3(long mapProtocolVersion) {
-        super();
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
     public PurgeMSRequestImplV3(IMSI imsi, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber,
-    		MAPExtensionContainer extensionContainer, long mapProtocolVersion) {
+    		MAPExtensionContainer extensionContainer) {
         super();
         this.imsi = imsi;
         this.vlrNumber = vlrNumber;
         this.sgsnNumber = sgsnNumber;
         this.extensionContainer = extensionContainer;
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
     @Override
@@ -136,9 +127,6 @@ public class PurgeMSRequestImplV3 extends MobilityMessageImpl implements PurgeMS
             sb.append(extensionContainer.toString());
             sb.append(", ");
         }
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         sb.append("]");
 

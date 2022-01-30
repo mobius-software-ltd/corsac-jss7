@@ -53,6 +53,7 @@ import org.restcomm.protocols.ss7.map.api.primitives.ProtocolId;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CUGCheckInfo;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.CallDiversionTreatmentIndicatorValue;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.InterrogationType;
+import org.restcomm.protocols.ss7.map.api.service.callhandling.SendRoutingInformationRequest;
 import org.restcomm.protocols.ss7.map.api.service.callhandling.SuppressMTSS;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.ISTSupportIndicator;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
@@ -135,15 +136,15 @@ public class SendRoutingInformationRequestTest {
     @Test(groups = { "functional.decode", "service.callhandling" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
-    	parser.replaceClass(SendRoutingInformationRequestImpl.class);
+    	parser.replaceClass(SendRoutingInformationRequestImplV3.class);
 
         // Test MAP V3 Params
         byte[] data = getData1();
 
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof SendRoutingInformationRequestImpl);
-        SendRoutingInformationRequestImpl prim = (SendRoutingInformationRequestImpl)result.getResult();
+        assertTrue(result.getResult() instanceof SendRoutingInformationRequestImplV3);
+        SendRoutingInformationRequest prim = (SendRoutingInformationRequestImplV3)result.getResult();
         
         ISDNAddressString msisdn = prim.getMsisdn();
         InterrogationType type = prim.getInterogationType();
@@ -263,14 +264,14 @@ public class SendRoutingInformationRequestTest {
 
         // callPriority
         assertEquals(prim.getCallPriority(), EMLPPPriority.priorityLevel1);
-        assertEquals(prim.getMapProtocolVersion(), 3);
-
+        
+        parser.replaceClass(SendRoutingInformationRequestImplV2.class);
         // Test MAP V 2 message paramenters
         data = getData2();
         result=parser.decode(Unpooled.wrappedBuffer(data));
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof SendRoutingInformationRequestImpl);
-        prim = (SendRoutingInformationRequestImpl)result.getResult();
+        assertTrue(result.getResult() instanceof SendRoutingInformationRequestImplV2);
+        prim = (SendRoutingInformationRequestImplV2)result.getResult();
 
         msisdn = prim.getMsisdn();
         assertNull(prim.getInterogationType());
@@ -337,12 +338,13 @@ public class SendRoutingInformationRequestTest {
         // callPriority
         assertNull(prim.getCallPriority());
 
+        parser.replaceClass(SendRoutingInformationRequestImplV1.class);
         // Test MAP V 1 message paramenters
         data = getData3();
         result=parser.decode(Unpooled.wrappedBuffer(data));
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof SendRoutingInformationRequestImpl);
-        prim = (SendRoutingInformationRequestImpl)result.getResult();
+        assertTrue(result.getResult() instanceof SendRoutingInformationRequestImplV1);
+        prim = (SendRoutingInformationRequestImplV1)result.getResult();
 
         msisdn = prim.getMsisdn();
         assertNull(prim.getInterogationType());
@@ -410,7 +412,7 @@ public class SendRoutingInformationRequestTest {
     @Test(groups = { "functional.encode", "service.callhandling" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
-    	parser.replaceClass(SendRoutingInformationRequestImpl.class);
+    	parser.replaceClass(SendRoutingInformationRequestImplV3.class);
 
         // MAP V 3 Message Testing Starts
         // msisdn
@@ -501,9 +503,8 @@ public class SendRoutingInformationRequestTest {
         boolean mtRoamingRetrySupported = true;
 
         EMLPPPriority callPriority = EMLPPPriority.priorityLevel1;
-        long mapProtocolVersion = 3L;
-
-        SendRoutingInformationRequestImpl prim = new SendRoutingInformationRequestImpl(mapProtocolVersion, msisdn,
+        
+        SendRoutingInformationRequest prim = new SendRoutingInformationRequestImplV3(msisdn,
                 cugCheckInfo, numberOfForwarding, interrogationType, orInterrogation, orCapability, gmscAddress,
                 callReferenceNumber, forwardingReason, basicServiceGroup, networkSignalInfo, camelInfo,
                 suppressionOfAnnouncement, extensionContainer, alertingPattern, ccbsCall, supportedCCBSPhase,
@@ -518,14 +519,7 @@ public class SendRoutingInformationRequestTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         // MAP V2 message starts
-        mapProtocolVersion = 2L;
-        prim = new SendRoutingInformationRequestImpl(mapProtocolVersion, msisdn, cugCheckInfo, numberOfForwarding,
-                interrogationType, orInterrogation, orCapability, gmscAddress, callReferenceNumber, forwardingReason,
-                basicServiceGroup, networkSignalInfo, camelInfo, suppressionOfAnnouncement, extensionContainer,
-                alertingPattern, ccbsCall, supportedCCBSPhase, additionalSignalInfo, istSupportIndicator, prePagingSupported,
-                callDiversionTreatmentIndicator, longFTNSupported, suppressVtCSI, suppressIncomingCallBarring,
-                gsmSCFInitiatedCall, basicServiceGroup2, networkSignalInfo2, suppressMTSS, mtRoamingRetrySupported,
-                callPriority);
+        prim = new SendRoutingInformationRequestImplV2(msisdn, cugCheckInfo, numberOfForwarding,networkSignalInfo);
 
         data=getData2();
         buffer=parser.encode(prim);
@@ -534,14 +528,7 @@ public class SendRoutingInformationRequestTest {
         assertTrue(Arrays.equals(data, encodedData));
 
         // MAP V1 message starts
-        mapProtocolVersion = 1L;
-        prim = new SendRoutingInformationRequestImpl(mapProtocolVersion, msisdn, cugCheckInfo, numberOfForwarding,
-                interrogationType, orInterrogation, orCapability, gmscAddress, callReferenceNumber, forwardingReason,
-                basicServiceGroup, networkSignalInfo, camelInfo, suppressionOfAnnouncement, extensionContainer,
-                alertingPattern, ccbsCall, supportedCCBSPhase, additionalSignalInfo, istSupportIndicator, prePagingSupported,
-                callDiversionTreatmentIndicator, longFTNSupported, suppressVtCSI, suppressIncomingCallBarring,
-                gsmSCFInitiatedCall, basicServiceGroup2, networkSignalInfo2, suppressMTSS, mtRoamingRetrySupported,
-                callPriority);
+        prim = new SendRoutingInformationRequestImplV1(msisdn, numberOfForwarding,networkSignalInfo);
 
         data=getData3();
         buffer=parser.encode(prim);

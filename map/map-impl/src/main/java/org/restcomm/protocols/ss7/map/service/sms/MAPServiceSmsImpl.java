@@ -394,7 +394,7 @@ public class MAPServiceSmsImpl extends MAPServiceBaseImpl implements MAPServiceS
                         	ind = (ReportSMDeliveryStatusResponse)parameter;
                      	 }
                      	 else {
-                     		ind = new ReportSMDeliveryStatusResponseImplV1(vers);
+                     		ind = new ReportSMDeliveryStatusResponseImplV1();
                      		ind.setInvokeId(invokeId);
                      		ind.setMAPDialog(mapDialog);
                      		ind.setReturnResultNotLast(compType == ComponentType.ReturnResult);

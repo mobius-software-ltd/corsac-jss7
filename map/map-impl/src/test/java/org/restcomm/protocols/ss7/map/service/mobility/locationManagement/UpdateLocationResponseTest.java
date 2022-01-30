@@ -118,7 +118,7 @@ public class UpdateLocationResponseTest {
     	
         ISDNAddressStringImpl hlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "09876");
-        UpdateLocationResponse asc = new UpdateLocationResponseImplV2(3, hlrNumber, null, false, false);
+        UpdateLocationResponse asc = new UpdateLocationResponseImplV2(hlrNumber, null, false, false);
         
         byte[] data=getEncodedData();
         ByteBuf buffer=parser.encode(asc);
@@ -126,7 +126,7 @@ public class UpdateLocationResponseTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        asc = new UpdateLocationResponseImplV2(3, hlrNumber, MAPExtensionContainerTest.GetTestExtensionContainer(), true, true);
+        asc = new UpdateLocationResponseImplV2(hlrNumber, MAPExtensionContainerTest.GetTestExtensionContainer(), true, true);
 
         data=getEncodedData2();
         buffer=parser.encode(asc);
@@ -134,7 +134,7 @@ public class UpdateLocationResponseTest {
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(data, encodedData));
 
-        asc = new UpdateLocationResponseImplV1(1, hlrNumber);
+        asc = new UpdateLocationResponseImplV1(hlrNumber);
 
         data=getEncodedData_V1();
         buffer=parser.encode(asc);

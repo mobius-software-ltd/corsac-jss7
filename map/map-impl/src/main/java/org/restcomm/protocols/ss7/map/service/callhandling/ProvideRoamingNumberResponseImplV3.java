@@ -55,10 +55,8 @@ public class ProvideRoamingNumberResponseImplV3 extends CallHandlingMessageImpl 
     @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = ISDNAddressStringImpl.class)
 	public ISDNAddressString vmscAddress;
     
-    private long mapProtocolVersion;
-    
     public ProvideRoamingNumberResponseImplV3(ISDNAddressString roamingNumber, MAPExtensionContainer extensionContainer,
-            boolean releaseResourcesSupported, ISDNAddressString vmscAddress, long mapProtocolVersion) {
+            boolean releaseResourcesSupported, ISDNAddressString vmscAddress) {
         super();
         this.roamingNumber = roamingNumber;
         this.extensionContainer = extensionContainer;
@@ -67,15 +65,9 @@ public class ProvideRoamingNumberResponseImplV3 extends CallHandlingMessageImpl 
         	this.releaseResourcesSupported = new ASNNull();
         
         this.vmscAddress = vmscAddress;
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public ProvideRoamingNumberResponseImplV3(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    public ProvideRoamingNumberResponseImplV3() {
-    	this.mapProtocolVersion=3;
+    public ProvideRoamingNumberResponseImplV3() {    	
     }
     
     @Override
@@ -109,11 +101,6 @@ public class ProvideRoamingNumberResponseImplV3 extends CallHandlingMessageImpl 
     }
 
     @Override
-    public long getMapProtocolVersion() {
-        return this.mapProtocolVersion;
-    }
-
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ProvideRoamingNumberResponse [");
@@ -136,9 +123,6 @@ public class ProvideRoamingNumberResponseImplV3 extends CallHandlingMessageImpl 
             sb.append(vmscAddress.toString());
             sb.append(", ");
         }
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         sb.append("]");
 

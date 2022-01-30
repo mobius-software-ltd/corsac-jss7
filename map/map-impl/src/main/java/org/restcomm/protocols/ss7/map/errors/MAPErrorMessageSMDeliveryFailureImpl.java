@@ -47,19 +47,16 @@ import io.netty.buffer.Unpooled;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl implements MAPErrorMessageSMDeliveryFailure {
-	private long mapProtocolVersion = 3;
-    private ASNSMEnumeratedDeliveryFailureCauseImpl sMEnumeratedDeliveryFailureCause;
+	private ASNSMEnumeratedDeliveryFailureCauseImpl sMEnumeratedDeliveryFailureCause;
     private ASNOctetString signalInfo;
    
     @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
     private MAPExtensionContainer extensionContainer;
 
-    public MAPErrorMessageSMDeliveryFailureImpl(long mapProtocolVersion,
-            SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, ByteBuf signalInfo,
+    public MAPErrorMessageSMDeliveryFailureImpl(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, ByteBuf signalInfo,
             MAPExtensionContainer extensionContainer) {
         super((long) MAPErrorCode.smDeliveryFailure);
 
-        this.mapProtocolVersion = mapProtocolVersion;
         if(smEnumeratedDeliveryFailureCause!=null)
         	this.sMEnumeratedDeliveryFailureCause = new ASNSMEnumeratedDeliveryFailureCauseImpl(smEnumeratedDeliveryFailureCause);
         	
@@ -88,10 +85,6 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
         return this.signalInfo.getValue();
     }
 
-    public long getMapProtocolVersion() {
-        return this.mapProtocolVersion;
-    }
-
     public MAPExtensionContainer getExtensionContainer() {
         return this.extensionContainer;
     }
@@ -112,10 +105,6 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
 
     public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
-    }
-
-    public void setMapProtocolVersion(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
     public boolean isEmSMDeliveryFailure() {

@@ -99,7 +99,8 @@ import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendId
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateLocationResponseImplV1;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateLocationResponseImplV2;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.DeleteSubscriberDataResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataResponseImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataResponseImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataResponseImplV3;
 import org.restcomm.protocols.ss7.map.service.oam.ActivateTraceModeResponseImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
@@ -573,7 +574,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
                 						 "Error while decoding sendAuthenticationInfoRequest V2: Parameter is mandatory but not found",
                 						 MAPParsingComponentExceptionReason.MistypedParameter);
                 			else
-                				ind=new SendAuthenticationInfoRequestImplV3(vers);
+                				ind=new SendAuthenticationInfoRequestImplV3();
                 			
                 			ind.setInvokeId(invokeId);
                 			ind.setMAPDialog(mapDialog);
@@ -602,9 +603,9 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
                 		}
                 		else {
                 			if(vers<3)
-                				ind=new SendAuthenticationInfoResponseImplV1(vers);
+                				ind=new SendAuthenticationInfoResponseImplV1();
                 			else
-                				ind=new SendAuthenticationInfoResponseImplV3(vers);
+                				ind=new SendAuthenticationInfoResponseImplV3();
                 			
                 			ind.setInvokeId(invokeId);
                             ind.setMAPDialog(mapDialog);
@@ -885,7 +886,11 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
                 		if(parameter!=null)
                 			ind=(InsertSubscriberDataResponse)parameter;
                 		else {
-                			ind=new InsertSubscriberDataResponseImpl(vers);
+                			if(vers<3)
+                				ind=new InsertSubscriberDataResponseImplV1();
+                			else
+                				ind=new InsertSubscriberDataResponseImplV3();
+                			
                 			ind.setInvokeId(invokeId);
                             ind.setMAPDialog(mapDialog);
                             ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);

@@ -243,7 +243,7 @@ public class UpdateLocationRequestTest {
                 false);
         VLRCapabilityImpl vlrCap = new VLRCapabilityImpl(null, null, false, null, null, false, supportedLCSCapabilitySets, null,
                 null, false, false);
-        UpdateLocationRequestImpl asc = new UpdateLocationRequestImpl(3, imsi, mscNumber, null, vlrNumber, null, null, vlrCap,
+        UpdateLocationRequestImpl asc = new UpdateLocationRequestImpl(imsi, mscNumber, null, vlrNumber, null, null, vlrCap,
                 false, false, null, null, null, false, false);
         
         byte[] data=getEncodedData();
@@ -260,7 +260,7 @@ public class UpdateLocationRequestTest {
                 false);
         LMSIImpl lmsi = new LMSIImpl(Unpooled.wrappedBuffer(getLmsiData()));
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        asc = new UpdateLocationRequestImpl(3, imsi, mscNumber, null, vlrNumber, lmsi, extensionContainer, vlrCap, true, true,
+        asc = new UpdateLocationRequestImpl(imsi, mscNumber, null, vlrNumber, lmsi, extensionContainer, vlrCap, true, true,
                 null, null, null, true, true);
 
         data=getEncodedData2();
@@ -277,7 +277,7 @@ public class UpdateLocationRequestTest {
         LocationAreaImpl la = new LocationAreaImpl(lac);
         locationAreas.add(la);
         PagingArea pagingArea = new PagingAreaImpl(locationAreas);
-        asc = new UpdateLocationRequestImpl(3, imsi, mscNumber, null, vlrNumber, lmsi, null, vlrCap, true, true, vGmlcAddress,
+        asc = new UpdateLocationRequestImpl(imsi, mscNumber, null, vlrNumber, lmsi, null, vlrCap, true, true, vGmlcAddress,
                 addInfo, pagingArea, true, true);
 
         data=getEncodedData3();
@@ -290,7 +290,7 @@ public class UpdateLocationRequestTest {
         ISDNAddressStringImpl roamingNumberNumber = new ISDNAddressStringImpl(AddressNature.international_number,
                 NumberingPlan.ISDN, "22220");
         vlrNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22221");
-        asc = new UpdateLocationRequestImpl(1, imsi, null, roamingNumberNumber, vlrNumber, null, null, null, false, false,
+        asc = new UpdateLocationRequestImpl(imsi, null, roamingNumberNumber, vlrNumber, null, null, null, false, false,
                 null, null, null, false, false);
 
         data=getEncodedData_V1();

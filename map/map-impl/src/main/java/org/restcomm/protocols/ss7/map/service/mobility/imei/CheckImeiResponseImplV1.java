@@ -43,27 +43,13 @@ public class CheckImeiResponseImplV1 extends MobilityMessageImpl implements Chec
 
 	private ASNEquipmentStatusImpl equipmentStatus;
     
-    private long mapProtocolVersion;
-
     public CheckImeiResponseImplV1() {
-    	this.mapProtocolVersion = 1;
-    }
-    
-    // For incoming messages
-    public CheckImeiResponseImplV1(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
     // for outgoing messages
-    public CheckImeiResponseImplV1(long mapProtocolVersion, EquipmentStatus equipmentStatus) {
-        this.mapProtocolVersion = mapProtocolVersion;
-        
+    public CheckImeiResponseImplV1(EquipmentStatus equipmentStatus) {
         if(equipmentStatus!=null)
         	this.equipmentStatus = new ASNEquipmentStatusImpl(equipmentStatus);        	
-    }
-
-    public long getMapProtocolVersion() {
-        return this.mapProtocolVersion;
     }
 
     @Override
@@ -104,9 +90,6 @@ public class CheckImeiResponseImplV1 extends MobilityMessageImpl implements Chec
             sb.append(this.equipmentStatus.toString());
             sb.append(", ");
         }
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         sb.append("]");
 

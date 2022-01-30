@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationQuintuplet;
+import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationSetList;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTriplet;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.QuintupletList;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletList;
@@ -51,11 +52,11 @@ import io.netty.buffer.Unpooled;
 public class AuthenticationSetListTest {
 
     private byte[] getEncodedData_V3_tripl() {
-        return new byte[] { 48, 38, -96, 36, 48, 34, 4, 16, 15, -2, 18, -92, -49, 43, -35, -71, -78, -98, 109, 83, -76, -87, 77, -128, 4, 4, -32, 82, -17, -14, 4, 8, 31, 72, -93, 97, 78, -17, -52, 0 };
+        return new byte[] { -80, 38, -96, 36, 48, 34, 4, 16, 15, -2, 18, -92, -49, 43, -35, -71, -78, -98, 109, 83, -76, -87, 77, -128, 4, 4, -32, 82, -17, -14, 4, 8, 31, 72, -93, 97, 78, -17, -52, 0 };
     }
 
     private byte[] getEncodedData_V3_q() {
-        return new byte[] { 48, 82, -95, 80, 48, 78, 4, 16, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 2, 2, 2, 2, 4, 16, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 16, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 16, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
+        return new byte[] { -80, 82, -95, 80, 48, 78, 4, 16, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 4, 2, 2, 2, 2, 4, 16, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 16, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 16, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
     }
 
     private byte[] getEncodedData_V2_tripl() {
@@ -65,13 +66,14 @@ public class AuthenticationSetListTest {
     @Test(groups = { "functional.decode" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
-    	parser.replaceClass(AuthenticationSetListImpl.class);
+    	parser.replaceClass(AuthenticationSetListV1Impl.class);
+    	parser.replaceClass(AuthenticationSetListV3Impl.class);
 
     	byte[] rawData = getEncodedData_V3_tripl();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(rawData));
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof AuthenticationSetListImpl);
-        AuthenticationSetListImpl asc = (AuthenticationSetListImpl)result.getResult();
+        assertTrue(result.getResult() instanceof AuthenticationSetListV3Impl);
+        AuthenticationSetList asc = (AuthenticationSetListV3Impl)result.getResult();
         
         assertEquals(asc.getTripletList().getAuthenticationTriplets().size(), 1);
         assertNull(asc.getQuintupletList());
@@ -79,8 +81,8 @@ public class AuthenticationSetListTest {
         rawData = getEncodedData_V2_tripl();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof AuthenticationSetListImpl);
-        asc = (AuthenticationSetListImpl)result.getResult();
+        assertTrue(result.getResult() instanceof AuthenticationSetListV1Impl);
+        asc = (AuthenticationSetListV1Impl)result.getResult();
         
         assertEquals(asc.getTripletList().getAuthenticationTriplets().size(), 1);
         assertNull(asc.getQuintupletList());
@@ -88,8 +90,8 @@ public class AuthenticationSetListTest {
         rawData = getEncodedData_V3_q();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof AuthenticationSetListImpl);
-        asc = (AuthenticationSetListImpl)result.getResult();
+        assertTrue(result.getResult() instanceof AuthenticationSetListV3Impl);
+        asc = (AuthenticationSetListV3Impl)result.getResult();
 
         assertNull(asc.getTripletList());
         assertEquals(asc.getQuintupletList().getAuthenticationQuintuplets().size(), 1);
@@ -98,14 +100,15 @@ public class AuthenticationSetListTest {
     @Test(groups = { "functional.encode" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
-    	parser.replaceClass(AuthenticationSetListImpl.class);
+    	parser.replaceClass(AuthenticationSetListV1Impl.class);
+    	parser.replaceClass(AuthenticationSetListV3Impl.class);
 
         List<AuthenticationTriplet> ats = new ArrayList<AuthenticationTriplet>();
         AuthenticationTripletImpl at = new AuthenticationTripletImpl(Unpooled.wrappedBuffer(AuthenticationTripletTest.getRandData()),
         		Unpooled.wrappedBuffer(AuthenticationTripletTest.getSresData()), Unpooled.wrappedBuffer(AuthenticationTripletTest.getKcData()));
         ats.add(at);
         TripletList tl = new TripletListImpl(ats);
-        AuthenticationSetListImpl asc = new AuthenticationSetListImpl(tl,3);        
+        AuthenticationSetList asc = new AuthenticationSetListV3Impl(tl);        
 
         byte[] data=getEncodedData_V3_tripl();
         ByteBuf buffer=parser.encode(asc);
@@ -118,7 +121,7 @@ public class AuthenticationSetListTest {
         		Unpooled.wrappedBuffer(AuthenticationTripletTest.getKcData()));
         ats.add(at);
         tl = new TripletListImpl(ats);
-        asc = new AuthenticationSetListImpl(tl,2);
+        asc = new AuthenticationSetListV1Impl(tl);
         
         data=getEncodedData_V2_tripl();
         buffer=parser.encode(asc);
@@ -132,7 +135,7 @@ public class AuthenticationSetListTest {
         		Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getIkData()), Unpooled.wrappedBuffer(AuthenticationQuintupletTest.getAutnData()));
         qts.add(qt);
         QuintupletList ql = new QuintupletListImpl(qts);
-        asc = new AuthenticationSetListImpl(ql);
+        asc = new AuthenticationSetListV3Impl(ql);
 
         data=getEncodedData_V3_q();
         buffer=parser.encode(asc);

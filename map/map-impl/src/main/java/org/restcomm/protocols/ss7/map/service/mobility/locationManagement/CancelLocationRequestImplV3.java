@@ -80,20 +80,14 @@ public class CancelLocationRequestImplV3 extends MobilityMessageImpl implements 
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1, defaultImplementation = LMSIImpl.class)
     private LMSI newLmsi;
-    private long mapProtocolVersion;
-
-    public CancelLocationRequestImplV3() {
-    	this.mapProtocolVersion=3;
-    }
     
-    public CancelLocationRequestImplV3(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
+    public CancelLocationRequestImplV3() {    
     }
 
     public CancelLocationRequestImplV3(IMSI imsi, IMSIWithLMSI imsiWithLmsi, CancellationType cancellationType,
     		MAPExtensionContainer extensionContainer, TypeOfUpdate typeOfUpdate, boolean mtrfSupportedAndAuthorized,
             boolean mtrfSupportedAndNotAuthorized, ISDNAddressString newMSCNumber, ISDNAddressString newVLRNumber,
-            LMSI newLmsi, long mapProtocolVersion) {
+            LMSI newLmsi) {
         super();
         if(imsi!=null)
         	this.imsi = imsi;
@@ -117,7 +111,6 @@ public class CancelLocationRequestImplV3 extends MobilityMessageImpl implements 
         this.newMSCNumber = newMSCNumber;
         this.newVLRNumber = newVLRNumber;
         this.newLmsi = newLmsi;
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
     @Override
@@ -187,11 +180,6 @@ public class CancelLocationRequestImplV3 extends MobilityMessageImpl implements 
     }
 
     @Override
-    public long getMapProtocolVersion() {
-        return this.mapProtocolVersion;
-    }
-
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("CancelLocationRequest [");
@@ -242,9 +230,6 @@ public class CancelLocationRequestImplV3 extends MobilityMessageImpl implements 
             sb.append(newLmsi.toString());
             sb.append(", ");
         }
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         sb.append("]");
 

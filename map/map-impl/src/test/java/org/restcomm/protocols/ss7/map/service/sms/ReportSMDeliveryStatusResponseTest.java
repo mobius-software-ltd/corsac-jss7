@@ -97,7 +97,7 @@ public class ReportSMDeliveryStatusResponseTest {
         ISDNAddressStringImpl storedMSISDN = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "888777666");
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
-        ReportSMDeliveryStatusResponse ind = new ReportSMDeliveryStatusResponseImplV3(3, storedMSISDN, extensionContainer);
+        ReportSMDeliveryStatusResponse ind = new ReportSMDeliveryStatusResponseImplV3(storedMSISDN, extensionContainer);
 
         ByteBuf buffer=parser.encode(ind);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -106,7 +106,7 @@ public class ReportSMDeliveryStatusResponseTest {
         byte[] rawData = getEncodedData();
         assertTrue(Arrays.equals(rawData, encodedData));
 
-        ind = new ReportSMDeliveryStatusResponseImplV1(2, storedMSISDN);
+        ind = new ReportSMDeliveryStatusResponseImplV1(storedMSISDN);
         buffer=parser.encode(ind);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);

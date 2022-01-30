@@ -121,6 +121,4 @@ public interface ProvideRoamingNumberRequest extends CallHandlingMessage {
 
      ISDNAddressString getOldMSCNumber();
 
-     long getMapProtocolVersion();
-
 }

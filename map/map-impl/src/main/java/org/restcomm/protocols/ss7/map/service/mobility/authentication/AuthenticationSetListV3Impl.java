@@ -35,36 +35,27 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
-public class AuthenticationSetListImpl implements AuthenticationSetList {
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=true,lengthIndefinite=false)
+public class AuthenticationSetListV3Impl implements AuthenticationSetList {
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,index=-1, defaultImplementation = TripletListImpl.class)
     private TripletList tripletList;
     
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = TripletListImpl.class)
-	private TripletList tripletList2;
-    
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1, defaultImplementation = QuintupletListImpl.class)
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1, defaultImplementation = QuintupletListImpl.class)
     private QuintupletList quintupletList;
     
-    public AuthenticationSetListImpl() {
+    public AuthenticationSetListV3Impl() {
     }
 
-    public AuthenticationSetListImpl(TripletList tripletList,long mapVersion) {
-    	if(mapVersion>=3)
-    		this.tripletList = tripletList;
-    	else
-    		this.tripletList2 = tripletList;
+    public AuthenticationSetListV3Impl(TripletList tripletList) {
+    	this.tripletList = tripletList;    	
     }
 
-    public AuthenticationSetListImpl(QuintupletList quintupletList) {
+    public AuthenticationSetListV3Impl(QuintupletList quintupletList) {
         this.quintupletList = quintupletList;
     }
 
     public TripletList getTripletList() {
-    	if(tripletList==null)
-    		return tripletList2;
-    	
-        return tripletList;
+    	return tripletList;
     }
 
     public QuintupletList getQuintupletList() {
@@ -78,9 +69,6 @@ public class AuthenticationSetListImpl implements AuthenticationSetList {
 
         if (this.tripletList != null) {
             sb.append(this.tripletList.toString());
-            sb.append(", ");
-        } else if (this.tripletList2 != null) {
-            sb.append(this.tripletList2.toString());
             sb.append(", ");
         }
 

@@ -49,19 +49,11 @@ public class ReportSMDeliveryStatusResponseImplV3 extends SmsMessageImpl impleme
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
 	private MAPExtensionContainer extensionContainer;
 
-    private long mapProtocolVersion;
-
-    public ReportSMDeliveryStatusResponseImplV3() {
-    	this.mapProtocolVersion=3;
-    }
-    
-    public ReportSMDeliveryStatusResponseImplV3(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
+    public ReportSMDeliveryStatusResponseImplV3() {    	
     }
 
-    public ReportSMDeliveryStatusResponseImplV3(long mapProtocolVersion, ISDNAddressString storedMSISDN,
+    public ReportSMDeliveryStatusResponseImplV3(ISDNAddressString storedMSISDN,
             MAPExtensionContainer extensionContainer) {
-        this.mapProtocolVersion = mapProtocolVersion;
         this.storedMSISDN = storedMSISDN;
         this.extensionContainer = extensionContainer;
     }
@@ -82,10 +74,6 @@ public class ReportSMDeliveryStatusResponseImplV3 extends SmsMessageImpl impleme
         return this.extensionContainer;
     }
 
-    public long getMapProtocolVersion() {
-        return this.mapProtocolVersion;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -103,9 +91,6 @@ public class ReportSMDeliveryStatusResponseImplV3 extends SmsMessageImpl impleme
             sb.append(", extensionContainer=");
             sb.append(this.extensionContainer.toString());
         }
-
-        sb.append(", mapProtocolVersion=");
-        sb.append(this.mapProtocolVersion);
 
         sb.append("]");
 

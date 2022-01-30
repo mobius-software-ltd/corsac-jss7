@@ -52,14 +52,17 @@ public interface MAPErrorMessageFactory {
     MAPErrorMessageExtensionContainer createMAPErrorMessageExtensionContainer(Long errorCode,
     		MAPExtensionContainer extensionContainer);
 
-    MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(long mapProtocolVersion,
-            SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, ByteBuf signalInfo,
+    MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause);
+
+    MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, ByteBuf signalInfo,
             MAPExtensionContainer extensionContainer);
 
     MAPErrorMessageFacilityNotSup createMAPErrorMessageFacilityNotSup(MAPExtensionContainer extensionContainer,
             Boolean shapeOfLocationEstimateNotSupported, Boolean neededLcsCapabilityNotSupportedInServingNode);
 
-    MAPErrorMessageSystemFailure createMAPErrorMessageSystemFailure(long mapVersion, NetworkResource networkResource,
+    MAPErrorMessageSystemFailure createMAPErrorMessageSystemFailure(NetworkResource networkResource);
+
+    MAPErrorMessageSystemFailure createMAPErrorMessageSystemFailure(NetworkResource networkResource,
             AdditionalNetworkResource additionalNetworkResource, MAPExtensionContainer extensionContainer);
 
     MAPErrorMessageUnknownSubscriber createMAPErrorMessageUnknownSubscriber(MAPExtensionContainer extensionContainer,
@@ -74,7 +77,9 @@ public interface MAPErrorMessageFactory {
     MAPErrorMessageSubscriberBusyForMtSms createMAPErrorMessageSubscriberBusyForMtSms(
     		MAPExtensionContainer extensionContainer, Boolean gprsConnectionSuspended);
 
-    MAPErrorMessageCallBarred createMAPErrorMessageCallBarred(Long mapVersion, CallBarringCause callBarringCause,
+    MAPErrorMessageCallBarred createMAPErrorMessageCallBarred(CallBarringCause callBarringCause);
+
+    MAPErrorMessageCallBarred createMAPErrorMessageCallBarred(CallBarringCause callBarringCause,
     		MAPExtensionContainer extensionContainer, Boolean unauthorisedMessageOriginator);
 
     MAPErrorMessageAbsentSubscriber createMAPErrorMessageAbsentSubscriber(MAPExtensionContainer extensionContainer,

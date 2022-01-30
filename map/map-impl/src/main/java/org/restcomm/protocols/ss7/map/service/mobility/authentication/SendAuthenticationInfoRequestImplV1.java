@@ -49,18 +49,11 @@ public class SendAuthenticationInfoRequestImplV1 extends MobilityMessageImpl imp
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = IMSIImpl.class)
 	private IMSI imsi;
     
-    private long mapProtocolVersion=1;
-
     public SendAuthenticationInfoRequestImplV1() {
     	
     }
-    
-    public SendAuthenticationInfoRequestImplV1(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
 
-    public SendAuthenticationInfoRequestImplV1(long mapProtocolVersion, IMSI imsi) {
-        this.mapProtocolVersion = mapProtocolVersion;
+    public SendAuthenticationInfoRequestImplV1(IMSI imsi) {
         this.imsi = imsi;
     }
 
@@ -112,10 +105,6 @@ public class SendAuthenticationInfoRequestImplV1 extends MobilityMessageImpl imp
         return false;
     }
 
-    public long getMapProtocolVersion() {
-        return mapProtocolVersion;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -127,9 +116,6 @@ public class SendAuthenticationInfoRequestImplV1 extends MobilityMessageImpl imp
             sb.append(", ");
         }
         
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
-
         sb.append("]");
 
         return sb.toString();

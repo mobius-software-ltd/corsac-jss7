@@ -48,20 +48,12 @@ public class SendIdentificationRequestImplV1 extends MobilityMessageImpl impleme
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = TMSIImpl.class)
 	private TMSI tmsi;
     
-	private long mapProtocolVersion;
-
 	public SendIdentificationRequestImplV1() {
-		this.mapProtocolVersion = 2;
 	}
 	
-    public SendIdentificationRequestImplV1(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    public SendIdentificationRequestImplV1(TMSI tmsi, long mapProtocolVersion) {
+    public SendIdentificationRequestImplV1(TMSI tmsi) {
         super();
         this.tmsi = tmsi;
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
     @Override
@@ -124,10 +116,6 @@ public class SendIdentificationRequestImplV1 extends MobilityMessageImpl impleme
         return null;
     }
 
-    public long getMapProtocolVersion() {
-        return mapProtocolVersion;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -138,9 +126,6 @@ public class SendIdentificationRequestImplV1 extends MobilityMessageImpl impleme
             sb.append(tmsi.toString());
             sb.append(", ");
         }
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         sb.append("]");
 

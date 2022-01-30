@@ -529,9 +529,11 @@ public interface MAPParameterFactory {
 
     QuintupletList createQuintupletList(List<AuthenticationQuintuplet> quintupletList);
 
-    AuthenticationSetList createAuthenticationSetList(TripletList tripletList,long mapVersion);
+    AuthenticationSetList createAuthenticationSetList(TripletList tripletList);
 
-    AuthenticationSetList createAuthenticationSetList(QuintupletList quintupletList);
+    AuthenticationSetList createAuthenticationSetListV3(TripletList tripletList);
+    
+    AuthenticationSetList createAuthenticationSetListV3(QuintupletList quintupletList);
 
     ReSynchronisationInfo createReSynchronisationInfo(ByteBuf rand, ByteBuf auts);
 

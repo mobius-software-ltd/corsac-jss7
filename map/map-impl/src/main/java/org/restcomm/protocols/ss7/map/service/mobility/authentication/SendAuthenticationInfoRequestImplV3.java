@@ -79,21 +79,13 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1)
     private ASNNull additionalVectorsAreForEPS;
     
-    private long mapProtocolVersion;
-
     public SendAuthenticationInfoRequestImplV3() {
-    	this.mapProtocolVersion=3;
     }
     
-    public SendAuthenticationInfoRequestImplV3(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    public SendAuthenticationInfoRequestImplV3(long mapProtocolVersion, IMSI imsi, int numberOfRequestedVectors,
+    public SendAuthenticationInfoRequestImplV3(IMSI imsi, int numberOfRequestedVectors,
             boolean segmentationProhibited, boolean immediateResponsePreferred, ReSynchronisationInfo reSynchronisationInfo,
             MAPExtensionContainer extensionContainer, RequestingNodeType requestingNodeType, PlmnId requestingPlmnId,
             Integer numberOfRequestedAdditionalVectors, boolean additionalVectorsAreForEPS) {
-        this.mapProtocolVersion = mapProtocolVersion;
         this.imsi = imsi;
                 
         this.numberOfRequestedVectors = new ASNInteger(numberOfRequestedVectors);
@@ -176,10 +168,6 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
         return additionalVectorsAreForEPS!=null;
     }
 
-    public long getMapProtocolVersion() {
-        return mapProtocolVersion;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -231,9 +219,7 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
         if (this.additionalVectorsAreForEPS!=null) {
             sb.append("additionalVectorsAreForEPS, ");
         }
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
-
+        
         sb.append("]");
 
         return sb.toString();

@@ -422,7 +422,7 @@ public class Client extends EventTestHarness {
         // boolean cugOutgoingAccess, IMSI imsi, SubscriberState subscriberState, LocationInformation locationInformation,
         // ExtBasicServiceCode extBasicServiceCode, CallReferenceNumber callReferenceNumber, ISDNAddressString mscAddress,
         // CalledPartyBCDNumber calledPartyBCDNumber, TimeAndTimezone timeAndTimezone, boolean callForwardingSSPending,
-        // InitialDPArgExtension initialDPArgExtension, boolean isCAPVersion3orLater
+        // InitialDPArgExtension initialDPArgExtension
     }
 
     public void checkRequestReportBCSMEventRequest(RequestReportBCSMEventRequest ind) {

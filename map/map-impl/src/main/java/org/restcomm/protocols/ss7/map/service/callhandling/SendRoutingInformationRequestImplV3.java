@@ -63,7 +63,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
-public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl implements SendRoutingInformationRequest {
+public class SendRoutingInformationRequestImplV3 extends CallHandlingMessageImpl implements SendRoutingInformationRequest {
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1,defaultImplementation = ISDNAddressStringImpl.class)
@@ -156,34 +156,10 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=29,constructed=false,index=-1)    
     private ASNEMLPPPriorityImpl callPriority;
     
-    private long mapProtocolVersion;
-
-    public SendRoutingInformationRequestImpl() {
-        this(3);
+    public SendRoutingInformationRequestImplV3() {        
     }
 
-    public SendRoutingInformationRequestImpl(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    public SendRoutingInformationRequestImpl(ISDNAddressString msisdn, ISDNAddressString gmscAddress,
-            InterrogationType interrogationType, MAPExtensionContainer extensionContainer) {
-        this(3, msisdn, gmscAddress, interrogationType, extensionContainer);
-    }
-
-    public SendRoutingInformationRequestImpl(long mapProtocolVersion, ISDNAddressString msisdn, ISDNAddressString gmscAddress,
-            InterrogationType interrogationType, MAPExtensionContainer extensionContainer) {
-        this.msisdn = msisdn;
-        this.gmscAddress = gmscAddress;
-        
-        if(interrogationType!=null)
-        	this.interrogationType = new ASNInterrogationTypeImpl(interrogationType);
-        	
-        this.extensionContainer = extensionContainer;
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    public SendRoutingInformationRequestImpl(long mapProtocolVersion, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
+    public SendRoutingInformationRequestImplV3(ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
             Integer numberOfForwarding, InterrogationType interrogationType, boolean orInterrogation, Integer orCapability,
             ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber, ForwardingReason forwardingReason,
             ExtBasicServiceCode basicServiceGroup, ExternalSignalInfo networkSignalInfo, CamelInfo camelInfo,
@@ -195,91 +171,81 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
             ExternalSignalInfo networkSignalInfo2, SuppressMTSS suppressMTSS, boolean mtRoamingRetrySupported,
             EMLPPPriority callPriority) {
 
-        if (mapProtocolVersion >= 3) {
-
-        	if(orInterrogation)
-        		this.orInterrogation = new ASNNull();
+    	if(orInterrogation)
+    		this.orInterrogation = new ASNNull();
+    	
+    	if(orCapability!=null)
+    		this.orCapability = new ASNInteger(orCapability);
+    		
+        this.callReferenceNumber = callReferenceNumber;
+        
+        if(forwardingReason!=null)
+        	this.forwardingReason = new ASNForwardingReasonImpl(forwardingReason);            	
+        
+        if(basicServiceGroup!=null)
+        	this.basicServiceGroup = new ExtBasicServiceCodeWrapperImpl(basicServiceGroup);
+        
+        this.camelInfo = camelInfo;
+        
+        if(suppressionOfAnnouncement)
+        	this.suppressionOfAnnouncement = new ASNNull();
+        
+        this.alertingPattern = alertingPattern;
+        
+        if(ccbsCall)
+        	this.ccbsCall = new ASNNull();
+        
+        if(supportedCCBSPhase!=null)
+        	this.supportedCCBSPhase = new ASNInteger(supportedCCBSPhase);
         	
-        	if(orCapability!=null)
-        		this.orCapability = new ASNInteger(orCapability);
-        		
-            this.callReferenceNumber = callReferenceNumber;
-            
-            if(forwardingReason!=null)
-            	this.forwardingReason = new ASNForwardingReasonImpl(forwardingReason);            	
-            
-            if(basicServiceGroup!=null)
-            	this.basicServiceGroup = new ExtBasicServiceCodeWrapperImpl(basicServiceGroup);
-            
-            this.camelInfo = camelInfo;
-            
-            if(suppressionOfAnnouncement)
-            	this.suppressionOfAnnouncement = new ASNNull();
-            
-            this.alertingPattern = alertingPattern;
-            
-            if(ccbsCall)
-            	this.ccbsCall = new ASNNull();
-            
-            if(supportedCCBSPhase!=null)
-            	this.supportedCCBSPhase = new ASNInteger(supportedCCBSPhase);
-            	
-            this.additionalSignalInfo = additionalSignalInfo;
-            
-            if(istSupportIndicator!=null)
-            	this.istSupportIndicator = new ASNISTSupportIndicatorImpl(istSupportIndicator);
-            	
-            if(prePagingSupported)
-            	this.prePagingSupported = new ASNNull();
-            
-            this.callDiversionTreatmentIndicator = callDiversionTreatmentIndicator;
-            
-            if(longFTNSupported)
-            	this.longFTNSupported = new ASNNull();
-            
-            if(suppressVtCSI)
-            	this.suppressVtCSI = new ASNNull();
-            
-            if(suppressIncomingCallBarring)
-            	this.suppressIncomingCallBarring = new ASNNull();
-            
-            if(gsmSCFInitiatedCall)
-            	this.gsmSCFInitiatedCall = new ASNNull();
-            
-            if(basicServiceGroup2!=null)
-            	this.basicServiceGroup2 = new ExtBasicServiceCodeWrapperImpl(basicServiceGroup2);
-            
-            this.networkSignalInfo2 = networkSignalInfo2;
-            this.suppressMTSS = suppressMTSS;
-            
-            if(mtRoamingRetrySupported)
-            	this.mtRoamingRetrySupported = new ASNNull();
-            
-            if(callPriority!=null)
-            	this.callPriority = new ASNEMLPPPriorityImpl(callPriority);
-            	
-            if(interrogationType!=null)
-            	this.interrogationType = new ASNInterrogationTypeImpl(interrogationType);
-            	
-            this.gmscAddress = gmscAddress;
-            this.extensionContainer = extensionContainer;
-        }
+        this.additionalSignalInfo = additionalSignalInfo;
+        
+        if(istSupportIndicator!=null)
+        	this.istSupportIndicator = new ASNISTSupportIndicatorImpl(istSupportIndicator);
+        	
+        if(prePagingSupported)
+        	this.prePagingSupported = new ASNNull();
+        
+        this.callDiversionTreatmentIndicator = callDiversionTreatmentIndicator;
+        
+        if(longFTNSupported)
+        	this.longFTNSupported = new ASNNull();
+        
+        if(suppressVtCSI)
+        	this.suppressVtCSI = new ASNNull();
+        
+        if(suppressIncomingCallBarring)
+        	this.suppressIncomingCallBarring = new ASNNull();
+        
+        if(gsmSCFInitiatedCall)
+        	this.gsmSCFInitiatedCall = new ASNNull();
+        
+        if(basicServiceGroup2!=null)
+        	this.basicServiceGroup2 = new ExtBasicServiceCodeWrapperImpl(basicServiceGroup2);
+        
+        this.networkSignalInfo2 = networkSignalInfo2;
+        this.suppressMTSS = suppressMTSS;
+        
+        if(mtRoamingRetrySupported)
+        	this.mtRoamingRetrySupported = new ASNNull();
+        
+        if(callPriority!=null)
+        	this.callPriority = new ASNEMLPPPriorityImpl(callPriority);
+        	
+        if(interrogationType!=null)
+        	this.interrogationType = new ASNInterrogationTypeImpl(interrogationType);
+        	
+        this.gmscAddress = gmscAddress;
+        this.extensionContainer = extensionContainer;
 
         this.msisdn = msisdn;
         
-        if(mapProtocolVersion>=2)
-        	this.cugCheckInfo = cugCheckInfo;
+        this.cugCheckInfo = cugCheckInfo;
         
         if(numberOfForwarding!=null)
         	this.numberOfForwarding = new ASNInteger(numberOfForwarding);
         	
         this.networkSignalInfo = networkSignalInfo;
-        this.mapProtocolVersion = mapProtocolVersion;
-
-    }
-
-    public long getMapProtocolVersion() {
-        return mapProtocolVersion;
     }
 
     @Override
@@ -472,9 +438,6 @@ public class SendRoutingInformationRequestImpl extends CallHandlingMessageImpl i
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("SendRoutingInformationRequest [");
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         if (this.msisdn != null) {
             sb.append(", msisdn=");

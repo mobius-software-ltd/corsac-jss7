@@ -23,6 +23,7 @@
 package org.restcomm.protocols.ss7.commonapp.primitives;
 
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPPrivateExtension;
 
@@ -88,7 +89,7 @@ public class MAPPrivateExtensionImpl implements MAPPrivateExtension {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) throws ASNException {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws ASNException {
 		ASNDecodeResult oidResult=parser.decode(buffer);
 		if(!oidResult.getHadErrors() && (oidResult.getResult() instanceof ASNObjectIdentifier))
 			this.oId=(ASNObjectIdentifier)oidResult.getResult();

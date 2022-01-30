@@ -101,7 +101,9 @@ import org.restcomm.protocols.ss7.map.service.callhandling.MAPServiceCallHandlin
 import org.restcomm.protocols.ss7.map.service.callhandling.ProvideRoamingNumberRequestImpl;
 import org.restcomm.protocols.ss7.map.service.callhandling.ProvideRoamingNumberResponseImplV1;
 import org.restcomm.protocols.ss7.map.service.callhandling.ProvideRoamingNumberResponseImplV3;
-import org.restcomm.protocols.ss7.map.service.callhandling.SendRoutingInformationRequestImpl;
+import org.restcomm.protocols.ss7.map.service.callhandling.SendRoutingInformationRequestImplV1;
+import org.restcomm.protocols.ss7.map.service.callhandling.SendRoutingInformationRequestImplV2;
+import org.restcomm.protocols.ss7.map.service.callhandling.SendRoutingInformationRequestImplV3;
 import org.restcomm.protocols.ss7.map.service.callhandling.SendRoutingInformationResponseImplV1;
 import org.restcomm.protocols.ss7.map.service.callhandling.SendRoutingInformationResponseImplV3;
 import org.restcomm.protocols.ss7.map.service.lsm.MAPServiceLsmImpl;
@@ -148,8 +150,10 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.Pro
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.ProvideSubscriberInfoResponseImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.DeleteSubscriberDataRequestImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.DeleteSubscriberDataResponseImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataResponseImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataRequestImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataRequestImplV3;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataResponseImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataResponseImplV3;
 import org.restcomm.protocols.ss7.map.service.oam.ActivateTraceModeRequestImpl;
 import org.restcomm.protocols.ss7.map.service.oam.ActivateTraceModeResponseImpl;
 import org.restcomm.protocols.ss7.map.service.oam.MAPServiceOamImpl;
@@ -196,6 +200,7 @@ import org.restcomm.protocols.ss7.map.service.supplementary.UnstructuredSSNotify
 import org.restcomm.protocols.ss7.map.service.supplementary.UnstructuredSSRequestImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.UnstructuredSSResponseImpl;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
+import org.restcomm.protocols.ss7.tcap.api.OperationCodeWithACN;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.TCListener;
@@ -485,9 +490,17 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)MAPOperationCode.provideRoamingNumber);
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ProvideRoamingNumberRequestImpl.class);
+        	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)MAPOperationCode.sendRoutingInfo);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendRoutingInformationRequestImpl.class);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendRoutingInformationRequestImplV3.class);
+        	
+        	OperationCodeWithACN operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.locationInfoRetrievalContext, MAPApplicationContextVersion.version1).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendRoutingInformationRequestImplV1.class);
+        	
+        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.locationInfoRetrievalContext, MAPApplicationContextVersion.version2).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendRoutingInformationRequestImplV2.class);
+        	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)MAPOperationCode.provideSubscriberLocation);
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ProvideSubscriberLocationRequestImpl.class);
@@ -539,9 +552,20 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)MAPOperationCode.deleteSubscriberData);
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, DeleteSubscriberDataRequestImpl.class);
+        	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)MAPOperationCode.insertSubscriberData);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InsertSubscriberDataRequestImpl.class);
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InsertSubscriberDataRequestImplV3.class);
+        	
+        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext, MAPApplicationContextVersion.version1).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InsertSubscriberDataRequestImplV1.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext, MAPApplicationContextVersion.version2).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InsertSubscriberDataRequestImplV1.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.networkLocUpContext, MAPApplicationContextVersion.version1).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InsertSubscriberDataRequestImplV1.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.networkLocUpContext, MAPApplicationContextVersion.version2).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InsertSubscriberDataRequestImplV1.class);
+        	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)MAPOperationCode.activateTraceMode);
         	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ActivateTraceModeRequestImpl.class);
@@ -612,7 +636,10 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         	//registering request options
         	tcapProvider.getParser().registerAlternativeClassMapping(IstCommandRequestImpl.class, IstCommandRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(ProvideRoamingNumberRequestImpl.class, ProvideRoamingNumberRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInformationRequestImpl.class, SendRoutingInformationRequestImpl.class);
+        	
+        	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInformationRequestImplV1.class, SendRoutingInformationRequestImplV1.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInformationRequestImplV2.class, SendRoutingInformationRequestImplV2.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInformationRequestImplV3.class, SendRoutingInformationRequestImplV3.class);
 
         	tcapProvider.getParser().registerAlternativeClassMapping(ProvideSubscriberLocationRequestImpl.class, ProvideSubscriberLocationRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInfoForLCSRequestImpl.class, SendRoutingInfoForLCSRequestImpl.class);
@@ -642,7 +669,9 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         	tcapProvider.getParser().registerAlternativeClassMapping(ProvideSubscriberInfoRequestImpl.class, ProvideSubscriberInfoRequestImpl.class);
 
         	tcapProvider.getParser().registerAlternativeClassMapping(DeleteSubscriberDataRequestImpl.class, DeleteSubscriberDataRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(InsertSubscriberDataRequestImpl.class, InsertSubscriberDataRequestImpl.class);
+        	
+        	tcapProvider.getParser().registerAlternativeClassMapping(InsertSubscriberDataRequestImplV1.class, InsertSubscriberDataRequestImplV1.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(InsertSubscriberDataRequestImplV3.class, InsertSubscriberDataRequestImplV3.class);
 
         	tcapProvider.getParser().registerAlternativeClassMapping(ActivateTraceModeRequestImpl.class, ActivateTraceModeRequestImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(SendImsiRequestImpl.class, SendImsiRequestImpl.class);
@@ -727,9 +756,20 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)MAPOperationCode.deleteSubscriberData);
         	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, DeleteSubscriberDataResponseImpl.class);
+        	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)MAPOperationCode.insertSubscriberData);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, InsertSubscriberDataResponseImpl.class);
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, InsertSubscriberDataResponseImplV3.class);
+        	
+        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext, MAPApplicationContextVersion.version1).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN, InsertSubscriberDataResponseImplV1.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext, MAPApplicationContextVersion.version2).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN, InsertSubscriberDataResponseImplV1.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.networkLocUpContext, MAPApplicationContextVersion.version1).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN, InsertSubscriberDataResponseImplV1.class);
+        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.networkLocUpContext, MAPApplicationContextVersion.version2).getOID());			
+        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN, InsertSubscriberDataResponseImplV1.class);
+        	
         	opCode=new OperationCodeImpl();
         	opCode.setLocalOperationCode((long)MAPOperationCode.activateTraceMode);
         	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, ActivateTraceModeResponseImpl.class);
@@ -821,7 +861,9 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         	tcapProvider.getParser().registerAlternativeClassMapping(ProvideSubscriberInfoResponseImpl.class, ProvideSubscriberInfoResponseImpl.class);
 
         	tcapProvider.getParser().registerAlternativeClassMapping(DeleteSubscriberDataResponseImpl.class, DeleteSubscriberDataResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(InsertSubscriberDataResponseImpl.class, InsertSubscriberDataResponseImpl.class);
+        	
+        	tcapProvider.getParser().registerAlternativeClassMapping(InsertSubscriberDataResponseImplV1.class, InsertSubscriberDataResponseImplV1.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(InsertSubscriberDataResponseImplV3.class, InsertSubscriberDataResponseImplV3.class);
 
         	tcapProvider.getParser().registerAlternativeClassMapping(ActivateTraceModeResponseImpl.class, ActivateTraceModeResponseImpl.class);
         	tcapProvider.getParser().registerAlternativeClassMapping(SendImsiResponseImpl.class, SendImsiResponseImpl.class);

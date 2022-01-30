@@ -181,6 +181,4 @@ public interface SendRoutingInformationRequest extends CallHandlingMessage {
     boolean getMTRoamingRetrySupported(); // NULL
 
     EMLPPPriority getCallPriority(); // INTEGER
-
-    long getMapProtocolVersion();
 }

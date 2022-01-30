@@ -147,7 +147,7 @@ public class CheckImeiRequestTest {
         IMEIImpl imei = new IMEIImpl("358091016853550");
         RequestedEquipmentInfoImpl requestedEquipmentInfo = new RequestedEquipmentInfoImpl(true, false);
 
-        CheckImeiRequest checkImei = new CheckImeiRequestImplV3(3, imei, requestedEquipmentInfo, null);
+        CheckImeiRequest checkImei = new CheckImeiRequestImplV3(imei, requestedEquipmentInfo, null);
         byte[] data=getEncodedDataV3();
         ByteBuf buffer=parser.encode(checkImei);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -159,7 +159,7 @@ public class CheckImeiRequestTest {
         requestedEquipmentInfo = new RequestedEquipmentInfoImpl(true, false);
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
 
-        checkImei = new CheckImeiRequestImplV3(3, imei, requestedEquipmentInfo, extensionContainer);
+        checkImei = new CheckImeiRequestImplV3(imei, requestedEquipmentInfo, extensionContainer);
         data=getEncodedDataV3Full();
         buffer=parser.encode(checkImei);
         encodedData = new byte[buffer.readableBytes()];
@@ -168,7 +168,7 @@ public class CheckImeiRequestTest {
 
         // Testing version 1 and 2
         imei = new IMEIImpl("358091016853550");
-        checkImei = new CheckImeiRequestImplV1(2, imei, null);
+        checkImei = new CheckImeiRequestImplV1(imei, null);
         data=getEncodedDataV2();
         buffer=parser.encode(checkImei);
         encodedData = new byte[buffer.readableBytes()];
@@ -178,7 +178,7 @@ public class CheckImeiRequestTest {
         // Testing version 1 and 2 with Huawei trace
         imei = new IMEIImpl("356467044989910");
         IMSIImpl imsi = new IMSIImpl("724340300385763");
-        checkImei = new CheckImeiRequestImplV1(2, imei, imsi);
+        checkImei = new CheckImeiRequestImplV1(imei, imsi);
         data=getEncodedDataV2_Huawei();
         buffer=parser.encode(checkImei);
         encodedData = new byte[buffer.readableBytes()];
@@ -188,7 +188,7 @@ public class CheckImeiRequestTest {
 
         // Testing IMEI length != 15
         imei = new IMEIImpl("1");
-        checkImei = new CheckImeiRequestImplV1(2, imei, null);
+        checkImei = new CheckImeiRequestImplV1(imei, null);
         data=getEncodedDataImeiLengthLessThan15();
         buffer=parser.encode(checkImei);
         encodedData = new byte[buffer.readableBytes()];

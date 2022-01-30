@@ -40,8 +40,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageCallBarredImpl extends MAPErrorMessageImpl implements MAPErrorMessageCallBarred {
-	private long mapProtocolVersion=3;
-    private ASNCallBaringCauseImpl callBarringCause;
+	private ASNCallBaringCauseImpl callBarringCause;
     
     @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
     private MAPExtensionContainer extensionContainer;
@@ -49,11 +48,10 @@ public class MAPErrorMessageCallBarredImpl extends MAPErrorMessageImpl implement
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
     private ASNNull unauthorisedMessageOriginator;
 
-    public MAPErrorMessageCallBarredImpl(long mapProtocolVersion, CallBarringCause callBarringCause,
+    public MAPErrorMessageCallBarredImpl(CallBarringCause callBarringCause,
     		MAPExtensionContainer extensionContainer, Boolean unauthorisedMessageOriginator) {
         super((long) MAPErrorCode.callBarred);
 
-        this.mapProtocolVersion = mapProtocolVersion;
         if(callBarringCause!=null)
         	this.callBarringCause = new ASNCallBaringCauseImpl(callBarringCause);
         	
@@ -89,10 +87,6 @@ public class MAPErrorMessageCallBarredImpl extends MAPErrorMessageImpl implement
         return this.unauthorisedMessageOriginator!=null;
     }
 
-    public long getMapProtocolVersion() {
-        return this.mapProtocolVersion;
-    }
-
     public void setCallBarringCause(CallBarringCause callBarringCause) {
     	if(callBarringCause==null)
     		this.callBarringCause=null;
@@ -109,10 +103,6 @@ public class MAPErrorMessageCallBarredImpl extends MAPErrorMessageImpl implement
     		this.unauthorisedMessageOriginator = new ASNNull();
     	else
     		this.unauthorisedMessageOriginator=null;
-    }
-
-    public void setMapProtocolVersion(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
     @Override

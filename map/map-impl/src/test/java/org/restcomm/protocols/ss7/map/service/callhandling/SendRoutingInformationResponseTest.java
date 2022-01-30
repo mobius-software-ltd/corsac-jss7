@@ -333,8 +333,7 @@ public class SendRoutingInformationResponseTest {
         ByteBuf signalInfo2 = prim.getGsmBearerCapability().getSignalInfo().getValue();
         assertTrue(ByteBufUtil.equals(Unpooled.wrappedBuffer(getSignalInfoData()), signalInfo2));
         assertNotNull(protocolId2);
-        assertEquals(protocolId2, ProtocolId.gsm_0806);
-        assertEquals(prim.getMapProtocolVersion(), 3);       
+        assertEquals(protocolId2, ProtocolId.gsm_0806);      
     }
 
     @Test(groups = { "functional.encode", "service.callhandling" })
@@ -444,9 +443,8 @@ public class SendRoutingInformationResponseTest {
         SignalInfo signalInfo = new SignalInfoImpl(Unpooled.wrappedBuffer(getSignalInfoData()));
         ProtocolId protocolId = ProtocolId.gsm_0806;
         ExternalSignalInfo gsmBearerCapability = new ExternalSignalInfoImpl(signalInfo, protocolId, null);
-        long mapProtocolVersion = 3;
-
-        SendRoutingInformationResponseImplV3 prim = new SendRoutingInformationResponseImplV3(mapProtocolVersion, imsi_,
+        
+        SendRoutingInformationResponseImplV3 prim = new SendRoutingInformationResponseImplV3(imsi_,
                 extRoutingInfo_, cugCheckInfo, cugSubscriptionFlag, subscriberInfo, ssList, basicService,
                 forwardingInterrogationRequired, vmscAddress, extensionContainer, naeaPreferredCI, ccbsIndicators, msisdn,
                 nrPortabilityStatus, istAlertTimer, supportedCamelPhases, offeredCamel4CSIs, routingInfo2, ssList2,

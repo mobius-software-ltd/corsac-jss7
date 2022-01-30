@@ -184,13 +184,13 @@ public class MAPErrorMessageFactoryImpl implements MAPErrorMessageFactory {
         return new MAPErrorMessageExtensionContainerImpl(errorCode, extensionContainer);
     }
 
-    public MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(long mapProtocolVersion,
-            SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, ByteBuf signalInfo,
+    public MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause) {
+    	return new MAPErrorMessageSMDeliveryFailure1Impl(smEnumeratedDeliveryFailureCause);    	
+    }
+
+    public MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, ByteBuf signalInfo,
             MAPExtensionContainer extensionContainer) {
-    	if(mapProtocolVersion<3)
-    		return new MAPErrorMessageSMDeliveryFailure1Impl(smEnumeratedDeliveryFailureCause);
-    	else
-    		return new MAPErrorMessageSMDeliveryFailureImpl(mapProtocolVersion, smEnumeratedDeliveryFailureCause, signalInfo, extensionContainer);
+    	return new MAPErrorMessageSMDeliveryFailureImpl(smEnumeratedDeliveryFailureCause, signalInfo, extensionContainer);
     }
 
     public MAPErrorMessageFacilityNotSup createMAPErrorMessageFacilityNotSup(MAPExtensionContainer extensionContainer,
@@ -199,12 +199,13 @@ public class MAPErrorMessageFactoryImpl implements MAPErrorMessageFactory {
                 neededLcsCapabilityNotSupportedInServingNode);
     }
 
-    public MAPErrorMessageSystemFailure createMAPErrorMessageSystemFailure(long mapVersion, NetworkResource networkResource,
+    public MAPErrorMessageSystemFailure createMAPErrorMessageSystemFailure(NetworkResource networkResource) {
+    	return new MAPErrorMessageSytemFailure1Impl(networkResource);    	
+    }
+
+    public MAPErrorMessageSystemFailure createMAPErrorMessageSystemFailure(NetworkResource networkResource,
             AdditionalNetworkResource additionalNetworkResource, MAPExtensionContainer extensionContainer) {
-    	if(mapVersion<3)
-    		return new MAPErrorMessageSytemFailure1Impl(networkResource);
-    	else
-    		return new MAPErrorMessageSystemFailureImpl(mapVersion, networkResource, additionalNetworkResource, extensionContainer);
+    	return new MAPErrorMessageSystemFailureImpl(networkResource, additionalNetworkResource, extensionContainer);
     }
 
     public MAPErrorMessageUnknownSubscriber createMAPErrorMessageUnknownSubscriber(MAPExtensionContainer extensionContainer,
@@ -224,12 +225,13 @@ public class MAPErrorMessageFactoryImpl implements MAPErrorMessageFactory {
         return new MAPErrorMessageSubscriberBusyForMtSmsImpl(extensionContainer, gprsConnectionSuspended);
     }
 
-    public MAPErrorMessageCallBarred createMAPErrorMessageCallBarred(Long mapVersion, CallBarringCause callBarringCause,
+    public MAPErrorMessageCallBarred createMAPErrorMessageCallBarred(CallBarringCause callBarringCause) {
+    	return new MAPErrorMessageCallBarred1Impl(callBarringCause);    	
+    }
+
+    public MAPErrorMessageCallBarred createMAPErrorMessageCallBarred(CallBarringCause callBarringCause,
     		MAPExtensionContainer extensionContainer, Boolean unauthorisedMessageOriginator) {
-    	if(mapVersion<3)
-    		return new MAPErrorMessageCallBarred1Impl(callBarringCause);
-    	else
-    		return new MAPErrorMessageCallBarredImpl(mapVersion, callBarringCause, extensionContainer,
+    	return new MAPErrorMessageCallBarredImpl(callBarringCause, extensionContainer,
                 unauthorisedMessageOriginator);
     }
 

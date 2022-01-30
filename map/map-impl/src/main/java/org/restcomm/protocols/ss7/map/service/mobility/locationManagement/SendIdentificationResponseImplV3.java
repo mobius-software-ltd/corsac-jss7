@@ -32,7 +32,7 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Authen
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.CurrentSecurityContext;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SendIdentificationResponse;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.AuthenticationSetListV3Impl;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.CurrentSecurityContextWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -52,7 +52,7 @@ public class SendIdentificationResponseImplV3 extends MobilityMessageImpl implem
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = IMSIImpl.class)
 	private IMSI imsi;
     
-    @ASNChoise(defaultImplementation = AuthenticationSetListImpl.class)
+    @ASNChoise(defaultImplementation = AuthenticationSetListV3Impl.class)
     private AuthenticationSetList authenticationSetList;
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1)
@@ -61,19 +61,11 @@ public class SendIdentificationResponseImplV3 extends MobilityMessageImpl implem
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
     private MAPExtensionContainer extensionContainer;
     
-    private long mapProtocolVersion;
-
     public SendIdentificationResponseImplV3() {
-    	this.mapProtocolVersion = 3;
-    }
-    
-    public SendIdentificationResponseImplV3(long mapProtocolVersion) {
-        super();
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
     public SendIdentificationResponseImplV3(IMSI imsi, AuthenticationSetList authenticationSetList,
-            CurrentSecurityContext currentSecurityContext, MAPExtensionContainer extensionContainer, long mapProtocolVersion) {
+            CurrentSecurityContext currentSecurityContext, MAPExtensionContainer extensionContainer) {
         super();
         this.imsi = imsi;
         this.authenticationSetList=authenticationSetList;
@@ -82,7 +74,6 @@ public class SendIdentificationResponseImplV3 extends MobilityMessageImpl implem
         	this.currentSecurityContext = new CurrentSecurityContextWrapperImpl(currentSecurityContext);
         
         this.extensionContainer = extensionContainer;
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
     @Override
@@ -118,10 +109,6 @@ public class SendIdentificationResponseImplV3 extends MobilityMessageImpl implem
         return this.extensionContainer;
     }
 
-    public long getMapProtocolVersion() {
-        return mapProtocolVersion;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -149,10 +136,7 @@ public class SendIdentificationResponseImplV3 extends MobilityMessageImpl implem
             sb.append(this.extensionContainer.toString());
             sb.append(", ");
         }
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
-
+        
         sb.append("]");
 
         return sb.toString();

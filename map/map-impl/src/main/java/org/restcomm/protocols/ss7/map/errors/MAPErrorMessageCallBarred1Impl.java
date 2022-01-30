@@ -32,11 +32,8 @@ import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageCallBarred;
  * @author sergey vetyutnev
  * @author amit bhayani
  */
-public class MAPErrorMessageCallBarred1Impl extends EnumeratedMAPErrorMessage1Impl implements
-MAPErrorMessageCallBarred {
-	private long mapProtocolVersion = 2;
-    
-    public MAPErrorMessageCallBarred1Impl(CallBarringCause callBarringCause) {
+public class MAPErrorMessageCallBarred1Impl extends EnumeratedMAPErrorMessage1Impl implements MAPErrorMessageCallBarred {
+	public MAPErrorMessageCallBarred1Impl(CallBarringCause callBarringCause) {
         super((long) MAPErrorCode.callBarred);
 
         if(callBarringCause!=null)
@@ -86,11 +83,6 @@ MAPErrorMessageCallBarred {
     }
 
 	@Override
-	public long getMapProtocolVersion() {
-		return mapProtocolVersion;
-	}
-
-	@Override
 	public MAPExtensionContainer getExtensionContainer() {
 		return null;
 	}
@@ -106,10 +98,5 @@ MAPErrorMessageCallBarred {
 
 	@Override
 	public void setUnauthorisedMessageOriginator(Boolean unauthorisedMessageOriginator) {		
-	}
-
-	@Override
-	public void setMapProtocolVersion(long mapProtocolVersion) {
-		this.mapProtocolVersion=mapProtocolVersion;
 	}
 }

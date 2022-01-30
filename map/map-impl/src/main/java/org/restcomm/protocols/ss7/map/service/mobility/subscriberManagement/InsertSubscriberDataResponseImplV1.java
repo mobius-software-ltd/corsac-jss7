@@ -28,10 +28,8 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtBearerServiceCode;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtTeleserviceCode;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.SupportedCamelPhases;
-import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtBearerServiceCodeListWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtTeleserviceCodeListWrapperImpl;
-import org.restcomm.protocols.ss7.commonapp.subscriberManagement.SupportedCamelPhasesImpl;
 import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeatures;
@@ -41,7 +39,6 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.RegionalSubscriptionResponse;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SupportedFeaturesImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeListWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -54,7 +51,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  *
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
-public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implements InsertSubscriberDataResponse {
+public class InsertSubscriberDataResponseImplV1 extends MobilityMessageImpl implements InsertSubscriberDataResponse {
 	private static final long serialVersionUID = 1L;
 
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,index=-1)
@@ -71,41 +68,19 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=5,constructed=false,index=-1)
     private ASNRegionalSubscriptionResponse regionalSubscriptionResponse = null;
-    
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=6,constructed=false,index=-1, defaultImplementation = SupportedCamelPhasesImpl.class)
-    private SupportedCamelPhases supportedCamelPhases = null;
-    
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=7,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
-    private MAPExtensionContainer extensionContainer = null;
-    
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=8,constructed=false,index=-1, defaultImplementation = OfferedCamel4CSIsImpl.class)
-    private OfferedCamel4CSIs offeredCamel4CSIs = null;
-    
-    @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=9,constructed=false,index=-1, defaultImplementation = SupportedFeaturesImpl.class)
-    private SupportedFeatures supportedFeatures = null;
 
-    private long mapProtocolVersion;
-
-    public InsertSubscriberDataResponseImpl() {
-    	this.mapProtocolVersion=3;
-    }
-    
-    // For incoming messages
-    public InsertSubscriberDataResponseImpl(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
+    public InsertSubscriberDataResponseImplV1() {    	
     }
 
     // For outgoing messages - MAP V2
-    public InsertSubscriberDataResponseImpl(long mapProtocolVersion, List<ExtTeleserviceCode> teleserviceList,
+    public InsertSubscriberDataResponseImplV1(List<ExtTeleserviceCode> teleserviceList,
             List<ExtBearerServiceCode> bearerServiceList, List<SSCode> ssList, ODBGeneralData odbGeneralData,
             RegionalSubscriptionResponse regionalSubscriptionResponse) {
-        this.mapProtocolVersion = mapProtocolVersion;
-        
         if(teleserviceList!=null)
         	this.teleserviceList = new ExtTeleserviceCodeListWrapperImpl(teleserviceList);
         
         if(bearerServiceList!=null)
-        this.bearerServiceList = new ExtBearerServiceCodeListWrapperImpl(bearerServiceList);
+        	this.bearerServiceList = new ExtBearerServiceCodeListWrapperImpl(bearerServiceList);
         
         if(ssList!=null)
         	this.ssList = new SSCodeListWrapperImpl(ssList);
@@ -114,36 +89,6 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
         
         if(regionalSubscriptionResponse!=null)
         	this.regionalSubscriptionResponse = new ASNRegionalSubscriptionResponse(regionalSubscriptionResponse);        	
-    }
-
-    // For outgoing messages - MAP V3
-    public InsertSubscriberDataResponseImpl(long mapProtocolVersion, List<ExtTeleserviceCode> teleserviceList,
-            List<ExtBearerServiceCode> bearerServiceList, List<SSCode> ssList, ODBGeneralData odbGeneralData,
-            RegionalSubscriptionResponse regionalSubscriptionResponse, SupportedCamelPhases supportedCamelPhases,
-            MAPExtensionContainer extensionContainer, OfferedCamel4CSIs offeredCamel4CSIs, SupportedFeatures supportedFeatures) {
-
-        this.mapProtocolVersion = mapProtocolVersion;
-        
-        if(teleserviceList!=null)
-        	this.teleserviceList = new ExtTeleserviceCodeListWrapperImpl(teleserviceList);
-        
-        if(bearerServiceList!=null)
-        this.bearerServiceList = new ExtBearerServiceCodeListWrapperImpl(bearerServiceList);
-        
-        if(ssList!=null)
-        	this.ssList = new SSCodeListWrapperImpl(ssList);
-        
-        this.odbGeneralData = odbGeneralData;
-        
-        if(regionalSubscriptionResponse!=null)
-        	this.regionalSubscriptionResponse = new ASNRegionalSubscriptionResponse(regionalSubscriptionResponse);
-        	
-        if (mapProtocolVersion >= 3) {
-            this.supportedCamelPhases = supportedCamelPhases;
-            this.extensionContainer = extensionContainer;
-            this.offeredCamel4CSIs = offeredCamel4CSIs;
-            this.supportedFeatures = supportedFeatures;
-        }
     }
 
     @Override
@@ -195,26 +140,22 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
 
     @Override
     public SupportedCamelPhases getSupportedCamelPhases() {
-        return this.supportedCamelPhases;
+        return null;
     }
 
     @Override
     public MAPExtensionContainer getExtensionContainer() {
-        return this.extensionContainer;
+        return null;
     }
 
     @Override
     public OfferedCamel4CSIs getOfferedCamel4CSIs() {
-        return this.offeredCamel4CSIs;
+        return null;
     }
 
     @Override
     public SupportedFeatures getSupportedFeatures() {
-        return this.supportedFeatures;
-    }
-
-    public long getMapProtocolVersion() {
-        return this.mapProtocolVersion;
+        return null;
     }
 
     @Override
@@ -272,33 +213,6 @@ public class InsertSubscriberDataResponseImpl extends MobilityMessageImpl implem
             sb.append(regionalSubscriptionResponse.getType());
             sb.append(", ");
         }
-
-        if (this.supportedCamelPhases != null) {
-            sb.append("supportedCamelPhases=");
-            sb.append(supportedCamelPhases.toString());
-            sb.append(", ");
-        }
-
-        if (this.extensionContainer != null) {
-            sb.append("extensionContainer=");
-            sb.append(extensionContainer.toString());
-            sb.append(", ");
-        }
-
-        if (this.offeredCamel4CSIs != null) {
-            sb.append("offeredCamel4CSIs=");
-            sb.append(offeredCamel4CSIs.toString());
-            sb.append(", ");
-        }
-
-        if (this.supportedFeatures != null) {
-            sb.append("supportedFeatures=");
-            sb.append(supportedFeatures.toString());
-            sb.append(", ");
-        }
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         sb.append("]");
 

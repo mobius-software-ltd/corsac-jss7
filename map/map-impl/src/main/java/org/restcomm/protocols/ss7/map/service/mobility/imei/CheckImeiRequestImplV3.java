@@ -54,28 +54,15 @@ public class CheckImeiRequestImplV3 extends MobilityMessageImpl implements Check
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1, defaultImplementation = MAPExtensionContainerImpl.class)
 	private MAPExtensionContainer extensionContainer = null;
 
-    private long mapProtocolVersion;
-
     public CheckImeiRequestImplV3() {
-    	this.mapProtocolVersion = 3;
-    }
-    
-    // For incoming messages
-    public CheckImeiRequestImplV3(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
     // For outgoing messages
-    public CheckImeiRequestImplV3(long mapProtocolVersion, IMEI imei, RequestedEquipmentInfo requestedEquipmentInfo,
+    public CheckImeiRequestImplV3(IMEI imei, RequestedEquipmentInfo requestedEquipmentInfo,
             MAPExtensionContainer extensionContainer) {
-        this.mapProtocolVersion = mapProtocolVersion;
         this.imei = imei;
         this.requestedEquipmentInfo = requestedEquipmentInfo;
         this.extensionContainer = extensionContainer;
-    }
-
-    public long getMapProtocolVersion() {
-        return this.mapProtocolVersion;
     }
 
     public IMSI getIMSI() {
@@ -129,9 +116,6 @@ public class CheckImeiRequestImplV3 extends MobilityMessageImpl implements Check
             sb.append(extensionContainer.toString());
             sb.append(", ");
         }
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         sb.append("]");
 

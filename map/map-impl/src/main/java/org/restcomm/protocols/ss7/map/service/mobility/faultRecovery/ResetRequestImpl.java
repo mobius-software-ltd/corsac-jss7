@@ -55,17 +55,10 @@ public class ResetRequestImpl extends MobilityMessageImpl implements ResetReques
     
 	private IMSIListWrapperImpl hlrList;
 
-    private long mapProtocolVersion;
-
     public ResetRequestImpl() {
-    	this.mapProtocolVersion = 3;
-    }
-    
-    public ResetRequestImpl(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
-    public ResetRequestImpl(NetworkResource networkResource, ISDNAddressString hlrNumber, List<IMSI> hlrList, long mapProtocolVersion) {
+    public ResetRequestImpl(NetworkResource networkResource, ISDNAddressString hlrNumber, List<IMSI> hlrList) {
         if(networkResource!=null)
         	this.networkResource = new ASNNetworkResourceImpl(networkResource);
         	
@@ -73,12 +66,6 @@ public class ResetRequestImpl extends MobilityMessageImpl implements ResetReques
         
         if(hlrList!=null)
         	this.hlrList = new IMSIListWrapperImpl(hlrList);
-
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    public long getMapProtocolVersion() {
-        return this.mapProtocolVersion;
     }
 
     @Override
@@ -141,10 +128,7 @@ public class ResetRequestImpl extends MobilityMessageImpl implements ResetReques
             }
             sb.append("], ");
         }
-
-        sb.append("mapProtocolVersion=");
-        sb.append(this.mapProtocolVersion);
-
+        
         sb.append("]");
 
         return sb.toString();

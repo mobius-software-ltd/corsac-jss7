@@ -622,7 +622,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 				acn=((DialogResponseAPDU)dialogAPDU).getApplicationContextName();
 			
 			if(acn!=null)
-				data.put(TCAP_ACN, acn);				
+				data.put(TCAP_ACN, acn);			
     	}
     }
     

@@ -243,7 +243,8 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.dialog.MAPUserAbortChoiseImpl;
 import org.restcomm.protocols.ss7.map.service.callhandling.RoutingInfoImpl;
-import org.restcomm.protocols.ss7.map.service.callhandling.SendRoutingInformationRequestImpl;
+import org.restcomm.protocols.ss7.map.service.callhandling.SendRoutingInformationRequestImplV2;
+import org.restcomm.protocols.ss7.map.service.callhandling.SendRoutingInformationRequestImplV3;
 import org.restcomm.protocols.ss7.map.service.callhandling.SendRoutingInformationResponseImplV3;
 import org.restcomm.protocols.ss7.map.service.mobility.authentication.TripletListTest;
 import org.restcomm.protocols.ss7.map.service.mobility.faultRecovery.RestoreDataRequestImpl;
@@ -252,12 +253,12 @@ import org.restcomm.protocols.ss7.map.service.mobility.imei.UESBIIuAImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.imei.UESBIIuBImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PurgeMSRequestImplV1;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PurgeMSRequestImplV3;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationRequestImplV1;
-import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SendIdentificationRequestImplV3;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.UpdateGprsLocationRequestImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.CAMELSubscriptionInfoImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataRequestImpl;
-import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataResponseImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataRequestImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataRequestImplV3;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataResponseImplV1;
+import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.InsertSubscriberDataResponseImplV3;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OBcsmCamelTDPDataImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OCSIImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ODBGeneralDataImpl;
@@ -1293,7 +1294,7 @@ public class MAPFunctionalTest extends SccpHarness {
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
                     MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
-                    MAPErrorMessage msg = this.mapErrorMessageFactory.createMAPErrorMessageSystemFailure(2, null, null, null);
+                    MAPErrorMessage msg = this.mapErrorMessageFactory.createMAPErrorMessageSystemFailure(null);
                     mapDialog.sendErrorComponent(procUnstrReqInd.getInvokeId(), msg);
                 } catch (MAPException e) {
                     this.error("Error while trying to add Error Component", e);
@@ -1392,8 +1393,7 @@ public class MAPFunctionalTest extends SccpHarness {
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
                     MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
-                    MAPErrorMessage msg = this.mapErrorMessageFactory.createMAPErrorMessageSMDeliveryFailure(3,
-                            SMEnumeratedDeliveryFailureCause.scCongestion, null, null);
+                    MAPErrorMessage msg = this.mapErrorMessageFactory.createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause.scCongestion, null, null);
                     mapDialog.sendErrorComponent(procUnstrReqInd.getInvokeId(), msg);
                 } catch (MAPException e) {
                     this.error("Error while trying to add Error Component", e);
@@ -1765,8 +1765,7 @@ public class MAPFunctionalTest extends SccpHarness {
                     this.debug("Received ProcessUnstructuredSSRequest " + ussdString);
                     assertEquals(MAPFunctionalTest.USSD_STRING, ussdString);
                     MAPDialogSupplementary mapDialog = procUnstrReqInd.getMAPDialog();
-                    MAPErrorMessage msg = this.mapErrorMessageFactory.createMAPErrorMessageSMDeliveryFailure(3,
-                            SMEnumeratedDeliveryFailureCause.scCongestion, null, null);
+                    MAPErrorMessage msg = this.mapErrorMessageFactory.createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause.scCongestion, null, null);
 
                     mapDialog.sendErrorComponent(procUnstrReqInd.getInvokeId(), msg);
                 } catch (MAPException e) {
@@ -2289,8 +2288,7 @@ public class MAPFunctionalTest extends SccpHarness {
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendRoutingInfoForSMRespIndication,
                                     null, sequence++));
 
-                            MAPErrorMessage mapErrorMessage = this.mapErrorMessageFactory.createMAPErrorMessageSystemFailure(3,
-                                    NetworkResource.hlr, null, null);
+                            MAPErrorMessage mapErrorMessage = this.mapErrorMessageFactory.createMAPErrorMessageSystemFailure(NetworkResource.hlr, null, null);
                             clientDialogSms.sendErrorComponent(invokeId1, mapErrorMessage);
 
                             this.observerdEvents.add(TestEvent.createSentEvent(EventType.ErrorComponent, null, sequence++));
@@ -4409,7 +4407,6 @@ public class MAPFunctionalTest extends SccpHarness {
                 AuthenticationSetList asl = ind.getAuthenticationSetList();
                 AuthenticationTriplet at = asl.getTripletList().getAuthenticationTriplets().get(0);
 
-                Assert.assertEquals(ind.getMapProtocolVersion(), 3);
                 Assert.assertEquals(asl.getTripletList().getAuthenticationTriplets().size(), 1);
                 Assert.assertTrue(ByteBufUtil.equals(at.getRand(),Unpooled.wrappedBuffer(TripletListTest.getRandData())));
                 Assert.assertTrue(ByteBufUtil.equals(at.getSres(), Unpooled.wrappedBuffer(TripletListTest.getSresData())));
@@ -4430,7 +4427,6 @@ public class MAPFunctionalTest extends SccpHarness {
 
                 IMSI imsi = ind.getImsi();
 
-                Assert.assertEquals(ind.getMapProtocolVersion(), 3);
                 Assert.assertTrue(imsi.getData().equals("4567890"));
                 Assert.assertEquals(ind.getNumberOfRequestedVectors(), 3);
                 Assert.assertTrue(ind.getSegmentationProhibited());
@@ -4447,7 +4443,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 		Unpooled.wrappedBuffer(TripletListTest.getSresData()), Unpooled.wrappedBuffer(TripletListTest.getKcData()));
                 authenticationTriplets.add(at);
                 TripletList tripletList = this.mapParameterFactory.createTripletList(authenticationTriplets);
-                AuthenticationSetList asl = this.mapParameterFactory.createAuthenticationSetList(tripletList,3L);
+                AuthenticationSetList asl = this.mapParameterFactory.createAuthenticationSetListV3(tripletList);
 
                 try {
                     d.addSendAuthenticationInfoResponse(ind.getInvokeId(), asl, null, null);
@@ -4531,7 +4527,6 @@ public class MAPFunctionalTest extends SccpHarness {
                 AuthenticationSetList asl = ind.getAuthenticationSetList();
                 AuthenticationTriplet at = asl.getTripletList().getAuthenticationTriplets().get(0);
 
-                Assert.assertEquals(ind.getMapProtocolVersion(), 2);
                 Assert.assertEquals(asl.getTripletList().getAuthenticationTriplets().size(), 1);
                 Assert.assertTrue(ByteBufUtil.equals(at.getRand(),Unpooled.wrappedBuffer(TripletListTest.getRandData())));
                 Assert.assertTrue(ByteBufUtil.equals(at.getSres(), Unpooled.wrappedBuffer(TripletListTest.getSresData())));
@@ -4552,7 +4547,6 @@ public class MAPFunctionalTest extends SccpHarness {
 
                 IMSI imsi = ind.getImsi();
 
-                Assert.assertEquals(ind.getMapProtocolVersion(), 1);
                 Assert.assertTrue(imsi.getData().equals("456789000"));
                 Assert.assertEquals(ind.getNumberOfRequestedVectors(), 0);
                 Assert.assertFalse(ind.getSegmentationProhibited());
@@ -4569,7 +4563,7 @@ public class MAPFunctionalTest extends SccpHarness {
                 		Unpooled.wrappedBuffer(TripletListTest.getSresData()), Unpooled.wrappedBuffer(TripletListTest.getKcData()));
                 authenticationTriplets.add(at);
                 TripletList tripletList = this.mapParameterFactory.createTripletList(authenticationTriplets);
-                AuthenticationSetList asl = this.mapParameterFactory.createAuthenticationSetList(tripletList,2L);
+                AuthenticationSetList asl = this.mapParameterFactory.createAuthenticationSetList(tripletList);
 
                 try {
                 	d.addSendAuthenticationInfoResponse(ind.getInvokeId(), asl);
@@ -4675,7 +4669,6 @@ public class MAPFunctionalTest extends SccpHarness {
                 LMSI lmsi = ind.getLmsi();
                 ADDInfo addInfo = ind.getADDInfo();
 
-                Assert.assertEquals(ind.getMapProtocolVersion(), 3);
                 Assert.assertTrue(imsi.getData().equals("45670000"));
                 Assert.assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
                 Assert.assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
@@ -6065,8 +6058,7 @@ TC-END + provideSubscriberInfoResponse
                 ISDNAddressString newMSCNumber = ind.getNewMSCNumber();
                 ISDNAddressString newVLRNumber = ind.getNewVLRNumber();
                 LMSI newLmsi = ind.getNewLmsi();
-                long mapProtocolVersion = ind.getMapProtocolVersion();
-
+                
                 assertTrue(imsi.getData().equals("1111122222"));
                 assertNull(imsiWithLmsi);
                 assertEquals(cancellationType.getCode(), 1);
@@ -6082,8 +6074,7 @@ TC-END + provideSubscriberInfoResponse
                 assertEquals(newVLRNumber.getAddressNature(), AddressNature.international_number);
                 assertEquals(newVLRNumber.getNumberingPlan(), NumberingPlan.ISDN);
                 assertTrue(ByteBufUtil.equals(newLmsi.getValue(),Unpooled.wrappedBuffer(new byte[] { 0, 3, 98, 39 })));
-                assertEquals(mapProtocolVersion, 3);
-
+                
                 try {
                     d.addCancelLocationResponse(ind.getInvokeId(), extensionContainer);
                 } catch (MAPException e) {
@@ -6180,8 +6171,7 @@ TC-END + provideSubscriberInfoResponse
                 ISDNAddressString newMSCNumber = ind.getNewMSCNumber();
                 ISDNAddressString newVLRNumber = ind.getNewVLRNumber();
                 LMSI newLmsi = ind.getNewLmsi();
-                long mapProtocolVersion = ind.getMapProtocolVersion();
-
+                
                 assertTrue(imsi.getData().equals("1111122222"));
                 assertNull(imsiWithLmsi);
                 assertNull(cancellationType);
@@ -6192,8 +6182,7 @@ TC-END + provideSubscriberInfoResponse
                 assertNull(newMSCNumber);
                 assertNull(newVLRNumber);
                 assertNull(newLmsi);
-                assertEquals(mapProtocolVersion, 2);
-
+                
                 try {
                     d.addCancelLocationResponse(ind.getInvokeId(), null);
                 } catch (MAPException e) {
@@ -6274,13 +6263,11 @@ TC-END + provideSubscriberInfoResponse
                 MAPExtensionContainer extensionContainer = ind.getExtensionContainer();
                 //boolean releaseResourcesSupported = ind.getReleaseResourcesSupported();
                 //ISDNAddressString vmscAddress = ind.getVmscAddress();
-                long mapProtocolVersion = ind.getMapProtocolVersion();
-
+                
                 assertNotNull(roamingNumber);
                 assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
                 assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
                 assertEquals(roamingNumber.getAddress(), "49883700292");
-                assertEquals(mapProtocolVersion, 3);
                 MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer);
 
             }
@@ -6319,7 +6306,6 @@ TC-END + provideSubscriberInfoResponse
                 //EMLPPPriority callPriority = ind.getCallPriority();
                 //boolean mtrfIndicator = ind.getMtrfIndicator();
                 //ISDNAddressString oldMSCNumber = ind.getOldMSCNumber();
-                //long mapProtocolVersion = ind.getMapProtocolVersion();
 
                 assertNotNull(imsi);
                 assertEquals(imsi.getData(), "011220200198227");
@@ -6431,8 +6417,7 @@ TC-END + provideSubscriberInfoResponse
                 MAPExtensionContainer extensionContainer = ind.getExtensionContainer();
                 boolean releaseResourcesSupported = ind.getReleaseResourcesSupported();
                 ISDNAddressString vmscAddress = ind.getVmscAddress();
-                long mapProtocolVersion = ind.getMapProtocolVersion();
-
+                
                 assertNotNull(roamingNumber);
                 assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
                 assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
@@ -6440,7 +6425,6 @@ TC-END + provideSubscriberInfoResponse
                 assertFalse(releaseResourcesSupported);
                 assertNull(extensionContainer);
                 assertNull(vmscAddress);
-                assertEquals(mapProtocolVersion, 2);
 
             }
 
@@ -6478,8 +6462,7 @@ TC-END + provideSubscriberInfoResponse
                 //EMLPPPriority callPriority = ind.getCallPriority();
                 //boolean mtrfIndicator = ind.getMtrfIndicator();
                 //ISDNAddressString oldMSCNumber = ind.getOldMSCNumber();
-                long mapProtocolVersion = ind.getMapProtocolVersion();
-
+                
                 assertNotNull(imsi);
                 assertEquals(imsi.getData(), "011220200198227");
                 assertNotNull(mscNumber);
@@ -6491,8 +6474,7 @@ TC-END + provideSubscriberInfoResponse
                 assertFalse(suppressionOfAnnouncement);
                 assertNull(gmscAddress);
                 assertNull(extensionContainer);
-                assertEquals(mapProtocolVersion, 3);
-
+                
                 ISDNAddressString roamingNumber = new ISDNAddressStringImpl(AddressNature.international_number,
                         NumberingPlan.ISDN, "49883700292");
 
@@ -6679,7 +6661,7 @@ TC-END + InsertSubscriberDataRequestResponse
             public void onInsertSubscriberDataResponse(InsertSubscriberDataResponse request) {
                 super.onInsertSubscriberDataResponse(request);
 
-                InsertSubscriberDataResponseImpl ind = (InsertSubscriberDataResponseImpl) request;
+                InsertSubscriberDataResponseImplV3 ind = (InsertSubscriberDataResponseImplV3) request;
                 List<ExtTeleserviceCode> teleserviceList = ind.getTeleserviceList();
                 assertNotNull(teleserviceList);
                 assertEquals(teleserviceList.size(), 1);
@@ -6691,9 +6673,6 @@ TC-END + InsertSubscriberDataRequestResponse
                 ExtBearerServiceCode extBearerServiceCode = bearerServiceList.get(0);
                 assertEquals(extBearerServiceCode.getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_9600bps);
 //                MAPExtensionContainerTest.CheckTestExtensionContainer(request.getExtensionContainer());
-
-                long mapProtocolVersion = ind.getMapProtocolVersion();
-                assertEquals(mapProtocolVersion, 3);
             }
 
         };
@@ -6704,9 +6683,8 @@ TC-END + InsertSubscriberDataRequestResponse
                 super.onInsertSubscriberDataRequest(request);
 
                 MAPDialogMobility d = request.getMAPDialog();
-                InsertSubscriberDataRequestImpl ind = (InsertSubscriberDataRequestImpl) request;
+                InsertSubscriberDataRequest ind = (InsertSubscriberDataRequestImplV3) request;
 
-                long mapProtocolVersion = ind.getMapProtocolVersion();
                 assertNull(ind.getProvisionedSS());
                 assertNull(ind.getODBData());
                 assertTrue(ind.getRoamingRestrictionDueToUnsupportedFeature());
@@ -6738,7 +6716,6 @@ TC-END + InsertSubscriberDataRequestResponse
                 assertTrue(ind.getVplmnLIPAAllowed());
                 assertNull(ind.getMdtUserConsent());
                 assertNull(ind.getSubscribedPeriodicLAUtimer());
-                assertEquals(mapProtocolVersion, 3);
 
                 IMSI imsi = ind.getImsi();
                 assertTrue(imsi.getData().equals("1111122222"));
@@ -6863,7 +6840,7 @@ TC-END + InsertSubscriberDataRequestResponse
             public void onInsertSubscriberDataResponse(InsertSubscriberDataResponse request) {
                 super.onInsertSubscriberDataResponse(request);
 
-                InsertSubscriberDataResponseImpl ind = (InsertSubscriberDataResponseImpl) request;
+                InsertSubscriberDataResponseImplV1 ind = (InsertSubscriberDataResponseImplV1) request;
 
                 List<ExtTeleserviceCode> teleserviceList = ind.getTeleserviceList();
                 assertNotNull(teleserviceList);
@@ -6877,9 +6854,6 @@ TC-END + InsertSubscriberDataRequestResponse
                 ExtBearerServiceCode extBearerServiceCode = bearerServiceList.get(0);
                 assertEquals(extBearerServiceCode.getBearerServiceCodeValue(), BearerServiceCodeValue.padAccessCA_9600bps);
                 MAPExtensionContainerTest.CheckTestExtensionContainer(request.getExtensionContainer());
-
-                long mapProtocolVersion = ind.getMapProtocolVersion();
-                assertEquals(mapProtocolVersion, 3);
             }
 
         };
@@ -6890,9 +6864,8 @@ TC-END + InsertSubscriberDataRequestResponse
                 super.onInsertSubscriberDataRequest(request);
 
                 MAPDialogMobility d = request.getMAPDialog();
-                InsertSubscriberDataRequestImpl ind = (InsertSubscriberDataRequestImpl) request;
+                InsertSubscriberDataRequest ind = (InsertSubscriberDataRequestImplV1) request;
 
-                long mapProtocolVersion = ind.getMapProtocolVersion();
                 assertNull(ind.getProvisionedSS());
                 assertNull(ind.getODBData());
                 assertTrue(ind.getRoamingRestrictionDueToUnsupportedFeature());
@@ -6924,7 +6897,6 @@ TC-END + InsertSubscriberDataRequestResponse
                 assertFalse(ind.getVplmnLIPAAllowed());
                 assertNull(ind.getMdtUserConsent());
                 assertNull(ind.getSubscribedPeriodicLAUtimer());
-                assertEquals(mapProtocolVersion, 3);
 
                 IMSI imsi = ind.getImsi();
                 assertTrue(imsi.getData().equals("1111122222"));
@@ -7262,9 +7234,6 @@ TC-END + SendRoutingInformationResponse
                 assertEquals(roamingNumber.getAddressNature(), AddressNature.international_number);
                 assertEquals(roamingNumber.getNumberingPlan(), NumberingPlan.ISDN);
                 assertEquals(roamingNumber.getAddress(), "79273605819");
-
-                long mapProtocolVersion = ind.getMapProtocolVersion();
-                assertEquals(mapProtocolVersion, 3);
             }
 
         };
@@ -7275,14 +7244,12 @@ TC-END + SendRoutingInformationResponse
                 super.onSendRoutingInformationRequest(request);
 
                 MAPDialogCallHandling d = request.getMAPDialog();
-                SendRoutingInformationRequestImpl ind = (SendRoutingInformationRequestImpl) request;
+                SendRoutingInformationRequestImplV3 ind = (SendRoutingInformationRequestImplV3) request;
 
-                long mapProtocolVersion = ind.getMapProtocolVersion();
                 ISDNAddressString msisdn = ind.getMsisdn();
                 InterrogationType type = ind.getInterogationType();
                 ISDNAddressString gmsc = ind.getGmscOrGsmSCFAddress();
 
-                assertEquals(mapProtocolVersion, 3);
                 assertNotNull(msisdn);
                 assertNotNull(type);
                 assertNotNull(gmsc);
@@ -7440,8 +7407,6 @@ TC-CONTINUE
 
                     assertNull(ind.getVmscAddress());
 
-                    long mapProtocolVersion = ind.getMapProtocolVersion();
-                    assertEquals(mapProtocolVersion, 3);
                     assertTrue(ind.isReturnResultNotLast());
 
                     dialogStep++;
@@ -7454,8 +7419,6 @@ TC-CONTINUE
 
                     assertNull(ind.getIMSI());
 
-                    long mapProtocolVersion = ind.getMapProtocolVersion();
-                    assertEquals(mapProtocolVersion, 3);
                     assertFalse(ind.isReturnResultNotLast());
 
                     dialogStep++;
@@ -7488,15 +7451,13 @@ TC-CONTINUE
                 super.onSendRoutingInformationRequest(request);
 
                 //MAPDialogCallHandling d = request.getMAPDialog();
-                SendRoutingInformationRequestImpl ind = (SendRoutingInformationRequestImpl) request;
+                SendRoutingInformationRequestImplV3 ind = (SendRoutingInformationRequestImplV3) request;
                 invokeId = ind.getInvokeId();
 
-                long mapProtocolVersion = ind.getMapProtocolVersion();
                 ISDNAddressString msisdn = ind.getMsisdn();
                 InterrogationType type = ind.getInterogationType();
                 ISDNAddressString gmsc = ind.getGmscOrGsmSCFAddress();
 
-                assertEquals(mapProtocolVersion, 3);
                 assertNotNull(msisdn);
                 assertNotNull(type);
                 assertNotNull(gmsc);
@@ -7667,9 +7628,6 @@ TC-END + SendRoutingInformationResponse
 
                 assertNotNull(imsi);
                 assertEquals(imsi.getData(), "011220200198227");
-
-                long mapProtocolVersion = response.getMapProtocolVersion();
-                assertEquals(mapProtocolVersion, 1);
             }
 
         };
@@ -7680,12 +7638,10 @@ TC-END + SendRoutingInformationResponse
                 super.onSendRoutingInformationRequest(request);
 
                 MAPDialogCallHandling d = request.getMAPDialog();
-                SendRoutingInformationRequestImpl ind = (SendRoutingInformationRequestImpl) request;
+                SendRoutingInformationRequestImplV2 ind = (SendRoutingInformationRequestImplV2) request;
 
-                long mapProtocolVersion = ind.getMapProtocolVersion();
                 ISDNAddressString msisdn = ind.getMsisdn();
 
-                assertEquals(mapProtocolVersion, 3);
                 assertNotNull(msisdn);
                 assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
                 assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
@@ -7787,10 +7743,7 @@ TC-END + SendRoutingInformationResponse
                 MAPDialogMobility d = ind.getMAPDialog();
 
                 assertTrue(ByteBufUtil.equals(ind.getTmsi().getValue(),Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 })));
-                long mapProtocolVersion = ((SendIdentificationRequestImplV1) ind).getMapProtocolVersion();
-
-                assertEquals(mapProtocolVersion, 2);
-
+                
                 IMSIImpl imsi = new IMSIImpl("011220200198227");
 
                 try {
@@ -7883,9 +7836,6 @@ TC-END + SendRoutingInformationResponse
                 MAPDialogMobility d = ind.getMAPDialog();
 
                 assertTrue(ByteBufUtil.equals(ind.getTmsi().getValue(), Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 })));
-                long mapProtocolVersion = ((SendIdentificationRequestImplV3) ind).getMapProtocolVersion();
-                assertEquals(mapProtocolVersion, 3);
-
                 IMSIImpl imsi = new IMSIImpl("011220200198227");
 
                 try {

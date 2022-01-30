@@ -65,12 +65,6 @@ public interface MAPDialogCallHandling extends MAPDialog {
             ExternalSignalInfo networkSignalInfo2, SuppressMTSS supressMTSS, boolean mtRoamingRetrySupported,
             EMLPPPriority callPriority) throws MAPException;
 
-     Long addSendRoutingInformationRequest(ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
-            Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException;
-
-     Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
-            Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException;
-
      Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
             Integer numberOfForwarding, InterrogationType interrogationType, boolean orInterrogation, Integer orCapability,
             ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber, ForwardingReason forwardingReason,
@@ -82,6 +76,18 @@ public interface MAPDialogCallHandling extends MAPDialog {
             boolean suppressIncomingCallBarring, boolean gsmSCFInitiatedCall, ExtBasicServiceCode basicServiceGroup2,
             ExternalSignalInfo networkSignalInfo2, SuppressMTSS supressMTSS, boolean mtRoamingRetrySupported,
             EMLPPPriority callPriority) throws MAPException;
+
+     Long addSendRoutingInformationRequest(ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
+             Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException;
+
+     Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
+             Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException;
+
+     Long addSendRoutingInformationRequest(ISDNAddressString msisdn,
+             Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException;
+
+     Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn,
+             Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException;
 
      void addSendRoutingInformationResponse(long invokeId, IMSI imsi, CUGCheckInfo cugCheckInfo, RoutingInfo routingInfo2)
              throws MAPException;

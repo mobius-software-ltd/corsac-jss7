@@ -278,7 +278,7 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
 
         ReportSMDeliveryStatusResponse resp=null;
         if(storedMSISDN != null)
-            resp = new ReportSMDeliveryStatusResponseImplV1(vers.getVersion(), storedMSISDN);
+            resp = new ReportSMDeliveryStatusResponseImplV1(storedMSISDN);
             
         this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.reportSM_DeliveryStatus, resp, false, true);
     }
@@ -294,7 +294,7 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
 
         ReportSMDeliveryStatusResponse resp=null;
         if (storedMSISDN != null || extensionContainer != null)
-            resp = new ReportSMDeliveryStatusResponseImplV3(vers.getVersion(), storedMSISDN,extensionContainer);
+            resp = new ReportSMDeliveryStatusResponseImplV3(storedMSISDN,extensionContainer);
             
         this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.reportSM_DeliveryStatus, resp, false, true);
     }

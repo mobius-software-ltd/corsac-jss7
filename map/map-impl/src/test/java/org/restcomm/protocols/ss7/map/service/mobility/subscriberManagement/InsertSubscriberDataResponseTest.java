@@ -40,6 +40,7 @@ import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtBearerServic
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtTeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.SupportedCamelPhasesImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedFeatures;
+import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.InsertSubscriberDataResponse;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ODBGeneralData;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.RegionalSubscriptionResponse;
@@ -73,14 +74,14 @@ public class InsertSubscriberDataResponseTest {
     @Test(groups = { "functional.decode", "primitives" })
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
-    	parser.replaceClass(InsertSubscriberDataResponseImpl.class);
+    	parser.replaceClass(InsertSubscriberDataResponseImplV3.class);
     	
     	// ISD Response V3 Test
         byte[] data = this.getData();
         ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof InsertSubscriberDataResponseImpl);
-        InsertSubscriberDataResponseImpl prim = (InsertSubscriberDataResponseImpl)result.getResult();
+        assertTrue(result.getResult() instanceof InsertSubscriberDataResponseImplV3);
+        InsertSubscriberDataResponse prim = (InsertSubscriberDataResponseImplV3)result.getResult();
         
         // teleserviceList
         List<ExtTeleserviceCode> teleserviceList = prim.getTeleserviceList();
@@ -182,12 +183,13 @@ public class InsertSubscriberDataResponseTest {
         assertTrue(!supportedFeatures.getBoic());
         assertTrue(supportedFeatures.getBoicExHC());
 
-        // IST Response V2 Test
-        data = this.getData();
+        parser.replaceClass(InsertSubscriberDataResponseImplV1.class);
+    	// IST Response V2 Test
+        data = this.getData1();
         result=parser.decode(Unpooled.wrappedBuffer(data));
         assertFalse(result.getHadErrors());
-        assertTrue(result.getResult() instanceof InsertSubscriberDataResponseImpl);
-        prim = (InsertSubscriberDataResponseImpl)result.getResult();
+        assertTrue(result.getResult() instanceof InsertSubscriberDataResponseImplV1);
+        prim = (InsertSubscriberDataResponseImplV1)result.getResult();
         
         // teleserviceList
         teleserviceList = prim.getTeleserviceList();
@@ -248,7 +250,7 @@ public class InsertSubscriberDataResponseTest {
     @Test(groups = { "functional.encode", "primitives" })
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
-    	parser.replaceClass(InsertSubscriberDataResponseImpl.class);
+    	parser.replaceClass(InsertSubscriberDataResponseImplV1.class);
     	
     	// Start ISD Response Vesrion 3 Test
 
@@ -283,7 +285,7 @@ public class InsertSubscriberDataResponseTest {
                 false, true, false, true, false, true, false, true, false, true, false, true, false, true, false, true, false,
                 true);
 
-        InsertSubscriberDataResponseImpl prim = new InsertSubscriberDataResponseImpl(3, teleserviceList, bearerServiceList,
+        InsertSubscriberDataResponse prim = new InsertSubscriberDataResponseImplV3(teleserviceList, bearerServiceList,
                 ssList, odbGeneralData, regionalSubscriptionResponse, supportedCamelPhases, extensionContainer,
                 offeredCamel4CSIs, supportedFeatures);
         ByteBuf buffer=parser.encode(prim);
@@ -293,7 +295,7 @@ public class InsertSubscriberDataResponseTest {
         assertEquals(encodedData, rawData);
 
         // Start ISD Response Vesrion 2 Test
-        prim = new InsertSubscriberDataResponseImpl(2, teleserviceList, bearerServiceList, ssList, odbGeneralData,
+        prim = new InsertSubscriberDataResponseImplV1(teleserviceList, bearerServiceList, ssList, odbGeneralData,
                 regionalSubscriptionResponse);
 
         buffer=parser.encode(prim);

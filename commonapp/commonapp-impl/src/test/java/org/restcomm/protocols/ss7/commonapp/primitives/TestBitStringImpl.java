@@ -36,6 +36,6 @@ public class TestBitStringImpl extends ASNBitString {
     
 	public TestBitStringImpl(byte[] data) {
 		super(null);
-        decode(null, null, Unpooled.wrappedBuffer(data), null);
+        decode(null, null, Unpooled.wrappedBuffer(data), null, null);
     }
 }

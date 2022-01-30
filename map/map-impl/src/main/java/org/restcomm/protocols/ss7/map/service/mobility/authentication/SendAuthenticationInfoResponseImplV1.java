@@ -42,21 +42,13 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class SendAuthenticationInfoResponseImplV1 extends MobilityMessageImpl implements SendAuthenticationInfoResponse {
 	private static final long serialVersionUID = 1L;
 
-	@ASNChoise(defaultImplementation = AuthenticationSetListImpl.class)
+	@ASNChoise(defaultImplementation = AuthenticationSetListV1Impl.class)
 	private AuthenticationSetList authenticationSetList;
     
-    private long mapProtocolVersion;
-
     public SendAuthenticationInfoResponseImplV1() {
-    	this.mapProtocolVersion=2;
     }
     
-    public SendAuthenticationInfoResponseImplV1(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    public SendAuthenticationInfoResponseImplV1(long mapProtocolVersion, AuthenticationSetList authenticationSetList) {
-        this.mapProtocolVersion = mapProtocolVersion;
+    public SendAuthenticationInfoResponseImplV1(AuthenticationSetList authenticationSetList) {
         this.authenticationSetList=authenticationSetList;        
     }
 
@@ -78,10 +70,6 @@ public class SendAuthenticationInfoResponseImplV1 extends MobilityMessageImpl im
 
     public EpsAuthenticationSetList getEpsAuthenticationSetList() {
         return null;
-    }
-
-    public long getMapProtocolVersion() {
-        return mapProtocolVersion;
     }
 
     @Override

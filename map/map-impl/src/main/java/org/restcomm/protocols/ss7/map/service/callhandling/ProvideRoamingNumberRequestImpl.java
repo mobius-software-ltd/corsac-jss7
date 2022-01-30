@@ -139,10 +139,7 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=25,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
     private ISDNAddressString oldMSCNumber;
     
-    private long mapProtocolVersion;
-
-    public ProvideRoamingNumberRequestImpl() {
-    	this.mapProtocolVersion=3;
+    public ProvideRoamingNumberRequestImpl() {    	
     }
     
     public ProvideRoamingNumberRequestImpl(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString msisdn, LMSI lmsi,
@@ -152,7 +149,7 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
             SupportedCamelPhases supportedCamelPhasesInInterrogatingNode, ExtExternalSignalInfo additionalSignalInfo,
             boolean orNotSupportedInGMSC, boolean prePagingSupported, boolean longFTNSupported, boolean suppressVtCsi,
             OfferedCamel4CSIs offeredCamel4CSIsInInterrogatingNode, boolean mtRoamingRetrySupported, PagingArea pagingArea,
-            EMLPPPriority callPriority, boolean mtrfIndicator, ISDNAddressString oldMSCNumber, long mapProtocolVersion) {
+            EMLPPPriority callPriority, boolean mtrfIndicator, ISDNAddressString oldMSCNumber) {
         super();
         this.imsi = imsi;
         this.mscNumber = mscNumber;
@@ -205,11 +202,6 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
         	this.mtrfIndicator = new ASNNull();
         
         this.oldMSCNumber = oldMSCNumber;
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    public ProvideRoamingNumberRequestImpl(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
     @Override
@@ -351,11 +343,6 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
     }
 
     @Override
-    public long getMapProtocolVersion() {
-        return this.mapProtocolVersion;
-    }
-
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("ProvideRoamingNumberRequest [");
@@ -467,9 +454,6 @@ public class ProvideRoamingNumberRequestImpl extends CallHandlingMessageImpl imp
             sb.append(oldMSCNumber.toString());
             sb.append(", ");
         }
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         sb.append("]");
 

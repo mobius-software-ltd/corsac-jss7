@@ -46,6 +46,4 @@ public interface ProvideRoamingNumberResponse extends CallHandlingMessage {
 
      ISDNAddressString getVmscAddress();
 
-     long getMapProtocolVersion();
-
 }

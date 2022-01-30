@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.commonapp.primitives;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
 import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentExceptionReason;
@@ -73,7 +75,7 @@ public class SingleTbcdStringImpl {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) throws APPParsingComponentException {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws APPParsingComponentException {
 		data = decodeString(buffer);
 		return false;
 	}

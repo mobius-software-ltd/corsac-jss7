@@ -39,9 +39,7 @@ import io.netty.buffer.ByteBuf;
  */
 public class MAPErrorMessageSMDeliveryFailure1Impl extends EnumeratedMAPErrorMessage1Impl implements
 MAPErrorMessageSMDeliveryFailure {	
-	private long mapProtocolVersion = 1;
-    
-    public MAPErrorMessageSMDeliveryFailure1Impl(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause) {
+	public MAPErrorMessageSMDeliveryFailure1Impl(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause) {
         super((long) MAPErrorCode.smDeliveryFailure);
 
         if(smEnumeratedDeliveryFailureCause!=null)
@@ -98,11 +96,6 @@ MAPErrorMessageSMDeliveryFailure {
 	}
 
 	@Override
-	public long getMapProtocolVersion() {
-		return mapProtocolVersion;
-	}
-
-	@Override
 	public ByteBuf getSignalInfo() {
 		return null;
 	}
@@ -113,11 +106,6 @@ MAPErrorMessageSMDeliveryFailure {
 
 	@Override
 	public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
-	}
-
-	@Override
-	public void setMapProtocolVersion(long mapProtocolVersion) {
-		this.mapProtocolVersion=mapProtocolVersion;				
 	}
 
 	@Override

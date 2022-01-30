@@ -114,7 +114,7 @@ public class PurgeMSRequestTest {
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         IMSIImpl imsi = new IMSIImpl("1111122222");
 
-        PurgeMSRequest prim = new PurgeMSRequestImplV1(imsi, vlrNumber, 2);
+        PurgeMSRequest prim = new PurgeMSRequestImplV1(imsi, vlrNumber);
         byte[] data=getData1();
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];
@@ -123,7 +123,7 @@ public class PurgeMSRequestTest {
 
         // version 3
         ISDNAddressStringImpl sgsnNumber = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22235");
-        prim = new PurgeMSRequestImplV3(imsi, vlrNumber, sgsnNumber, extensionContainer, 3);
+        prim = new PurgeMSRequestImplV3(imsi, vlrNumber, sgsnNumber, extensionContainer);
         data=getData2();
         buffer=parser.encode(prim);
         encodedData = new byte[buffer.readableBytes()];

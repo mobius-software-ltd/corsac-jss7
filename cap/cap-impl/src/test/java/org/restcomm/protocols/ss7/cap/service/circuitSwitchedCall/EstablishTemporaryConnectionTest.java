@@ -224,8 +224,7 @@ public class EstablishTemporaryConnectionTest {
         // naOliInfo,
         // LocationNumberCap chargeNumber, OriginalCalledNumberCap originalCalledPartyID, CallingPartyNumberCap
         // callingPartyNumber,
-        // boolean isCAPVersion3orLater
-
+        
         elem = new EstablishTemporaryConnectionRequestImpl(assistingSSPIPRoutingAddress, correlationID, scfID,
                 CAPExtensionsTest.createTestCAPExtensions(), null, serviceInteractionIndicatorsTwo, 8, naOliInfo, null, null,
                 null);

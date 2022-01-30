@@ -48,6 +48,4 @@ public interface SendAuthenticationInfoResponse extends MobilityMessage {
 
     EpsAuthenticationSetList getEpsAuthenticationSetList();
 
-    long getMapProtocolVersion();
-
 }

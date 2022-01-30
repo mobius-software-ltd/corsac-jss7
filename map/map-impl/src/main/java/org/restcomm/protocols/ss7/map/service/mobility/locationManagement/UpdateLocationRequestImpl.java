@@ -95,23 +95,15 @@ public class UpdateLocationRequestImpl extends MobilityMessageImpl implements Up
     
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=16,constructed=false,index=-1)
     private ASNNull restorationIndicator;
-    
-    private long mapProtocolVersion;
 
     public UpdateLocationRequestImpl() {
-    	this.mapProtocolVersion = 3;
     }
     
-    public UpdateLocationRequestImpl(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
-    public UpdateLocationRequestImpl(long mapProtocolVersion, IMSI imsi, ISDNAddressString mscNumber,
+    public UpdateLocationRequestImpl(IMSI imsi, ISDNAddressString mscNumber,
     		ISDNAddressString roamingNumber, ISDNAddressString vlrNumber, LMSI lmsi, MAPExtensionContainer extensionContainer,
     		VLRCapability vlrCapability, boolean informPreviousNetworkEntity, boolean csLCSNotSupportedByUE,
             GSNAddress vGmlcAddress, ADDInfo addInfo, PagingArea pagingArea, boolean skipSubscriberDataUpdate,
             boolean restorationIndicator) {
-        this.mapProtocolVersion = mapProtocolVersion;
         this.imsi = imsi;
         this.mscNumber = mscNumber;
         this.roamingNumber = roamingNumber;
@@ -201,10 +193,6 @@ public class UpdateLocationRequestImpl extends MobilityMessageImpl implements Up
         return restorationIndicator!=null;
     }
 
-    public long getMapProtocolVersion() {
-        return mapProtocolVersion;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -272,8 +260,6 @@ public class UpdateLocationRequestImpl extends MobilityMessageImpl implements Up
         if (this.restorationIndicator!=null) {
             sb.append("restorationIndicator, ");
         }
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         sb.append("]");
 

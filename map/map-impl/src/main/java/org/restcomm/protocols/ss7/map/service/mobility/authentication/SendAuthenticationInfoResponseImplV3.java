@@ -45,7 +45,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class SendAuthenticationInfoResponseImplV3 extends MobilityMessageImpl implements SendAuthenticationInfoResponse {
 	private static final long serialVersionUID = 1L;
 
-	@ASNChoise(defaultImplementation = AuthenticationSetListImpl.class)
+	@ASNChoise(defaultImplementation = AuthenticationSetListV3Impl.class)
     private AuthenticationSetList authenticationSetList;
     
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
@@ -54,20 +54,11 @@ public class SendAuthenticationInfoResponseImplV3 extends MobilityMessageImpl im
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1, defaultImplementation = EpsAuthenticationSetListImpl.class)    
     private EpsAuthenticationSetList epsAuthenticationSetList;
     
-    private long mapProtocolVersion;
-
-    public SendAuthenticationInfoResponseImplV3() {
-    	this.mapProtocolVersion=3;
-    }
-    
-    public SendAuthenticationInfoResponseImplV3(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
+    public SendAuthenticationInfoResponseImplV3() {    	
     }
 
-    public SendAuthenticationInfoResponseImplV3(long mapProtocolVersion, AuthenticationSetList authenticationSetList,
+    public SendAuthenticationInfoResponseImplV3(AuthenticationSetList authenticationSetList,
     		MAPExtensionContainer extensionContainer, EpsAuthenticationSetList epsAuthenticationSetList) {
-        this.mapProtocolVersion = mapProtocolVersion;
-
         this.authenticationSetList=authenticationSetList;
         this.extensionContainer = extensionContainer;
         this.epsAuthenticationSetList = epsAuthenticationSetList;
@@ -91,10 +82,6 @@ public class SendAuthenticationInfoResponseImplV3 extends MobilityMessageImpl im
 
     public EpsAuthenticationSetList getEpsAuthenticationSetList() {
         return epsAuthenticationSetList;
-    }
-
-    public long getMapProtocolVersion() {
-        return mapProtocolVersion;
     }
 
     @Override

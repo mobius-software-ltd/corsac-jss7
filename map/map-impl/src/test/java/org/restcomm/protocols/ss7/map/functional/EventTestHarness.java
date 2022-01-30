@@ -111,6 +111,8 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNo
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSNotifyResponse;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.UnstructuredSSResponse;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoRequestImplV3;
+import org.restcomm.protocols.ss7.map.service.mobility.authentication.SendAuthenticationInfoResponseImplV3;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
@@ -405,7 +407,7 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
 
     public void onSendAuthenticationInfoRequest(SendAuthenticationInfoRequest ind) {
         TestEvent te;
-        if (ind.getMapProtocolVersion() >= 3) {
+        if (ind instanceof SendAuthenticationInfoRequestImplV3) {
             this.logger.debug("onSendAuthenticationInfoRequest_V3");
             te = TestEvent.createReceivedEvent(EventType.SendAuthenticationInfo_V3, ind, sequence++);
         } else {
@@ -417,7 +419,7 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
 
     public void onSendAuthenticationInfoResponse(SendAuthenticationInfoResponse ind) {
         TestEvent te;
-        if (ind.getMapProtocolVersion() >= 3) {
+        if (ind instanceof SendAuthenticationInfoResponseImplV3) {
             this.logger.debug("onSendAuthenticationInfoResp_V3");
             te = TestEvent.createReceivedEvent(EventType.SendAuthenticationInfoResp_V3, ind, sequence++);
         } else {

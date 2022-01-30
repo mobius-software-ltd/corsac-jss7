@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.commonapp.primitives;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -80,15 +82,15 @@ public class CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) {
 		if(buffer.readableBytes()>0) {
 			if(buffer.readableBytes()==5) {
 				LAIFixedLengthImpl lai=new LAIFixedLengthImpl();
-				lai.decode(parser, parent, buffer, skipErrors);
+				lai.decode(parser, parent, buffer, mappedData,skipErrors);
 				cellGlobalIdOrServiceAreaIdOrLAI=new CellGlobalIdOrServiceAreaIdOrLAIImpl(lai);
 			} else if(buffer.readableBytes()==7) {
 				CellGlobalIdOrServiceAreaIdFixedLengthImpl cgi=new CellGlobalIdOrServiceAreaIdFixedLengthImpl();
-				cgi.decode(parser, parent, buffer, skipErrors);
+				cgi.decode(parser, parent, buffer, mappedData,skipErrors);
 				cellGlobalIdOrServiceAreaIdOrLAI=new CellGlobalIdOrServiceAreaIdOrLAIImpl(cgi);
 			}
 		}			

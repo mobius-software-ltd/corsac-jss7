@@ -87,20 +87,51 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
         super(appCntx, tcapDialog, mapProviderImpl, mapService, origReference, destReference);
     }
 
+    public Long addSendRoutingInformationRequest(ISDNAddressString msisdn,Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException {
+        return this.addSendRoutingInformationRequest(_Timer_Default, msisdn, numberOfForwarding, networkSignalInfo);
+    }
+
+    public Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn,
+            Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException {
+
+    	 MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
+         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.locationInfoRetrievalContext)
+                 || (vers != MAPApplicationContextVersion.version1))
+             throw new MAPException(
+                     "Bad application context name for addSendRoutingInformationRequest: must be locationInfoRetrievalContext_V1");
+
+         Integer timeout=null;
+         if (customInvokeTimeout == _Timer_Default)
+         	timeout=getMediumTimer();
+         else
+         	timeout=customInvokeTimeout;
+
+         SendRoutingInformationRequestImplV1 req = new SendRoutingInformationRequestImplV1(msisdn, numberOfForwarding, networkSignalInfo);
+         return this.sendDataComponent(null, null, null, timeout.longValue(), (long)MAPOperationCode.sendRoutingInfo,req, true, false);
+    }
+    
     public Long addSendRoutingInformationRequest(ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
             Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException {
-        return this.addSendRoutingInformationRequest(_Timer_Default, msisdn, cugCheckInfo, numberOfForwarding, null, false,
-                null, null, null, null, null, networkSignalInfo, null, false, null, null, false, null, null, null, false, null,
-                false, false, false, false, null, null, null, false, null);
+        return this.addSendRoutingInformationRequest(_Timer_Default, msisdn, cugCheckInfo, numberOfForwarding, networkSignalInfo);
     }
 
     public Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
             Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException {
 
-        return this.addSendRoutingInformationRequest(customInvokeTimeout, msisdn, cugCheckInfo, numberOfForwarding, null,
-                false, null, null, null, null, null, networkSignalInfo, null, false, null, null, false, null, null, null,
-                false, null, false, false, false, false, null, null, null, false, null);
+    	 MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
+         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.locationInfoRetrievalContext)
+                 || (vers != MAPApplicationContextVersion.version2))
+             throw new MAPException(
+                     "Bad application context name for addSendRoutingInformationRequest: must be locationInfoRetrievalContext_V2");
 
+         Integer timeout=null;
+         if (customInvokeTimeout == _Timer_Default)
+         	timeout=getMediumTimer();
+         else
+         	timeout=customInvokeTimeout;
+
+         SendRoutingInformationRequestImplV2 req = new SendRoutingInformationRequestImplV2(msisdn, cugCheckInfo, numberOfForwarding, networkSignalInfo);
+         return this.sendDataComponent(null, null, null, timeout.longValue(), (long)MAPOperationCode.sendRoutingInfo,req, true, false);
     }
 
     @Override
@@ -141,9 +172,9 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
 
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.locationInfoRetrievalContext)
-                || (vers != MAPApplicationContextVersion.version1 && vers != MAPApplicationContextVersion.version2 && vers != MAPApplicationContextVersion.version3))
+                || (vers != MAPApplicationContextVersion.version3))
             throw new MAPException(
-                    "Bad application context name for addSendRoutingInformationRequest: must be locationInfoRetrievalContext_V1, V2 or V3");
+                    "Bad application context name for addSendRoutingInformationRequest: must be locationInfoRetrievalContext_V3");
 
         Integer timeout=null;
         if (customInvokeTimeout == _Timer_Default)
@@ -151,11 +182,10 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
         else
         	timeout=customInvokeTimeout;
 
-        SendRoutingInformationRequestImpl req = new SendRoutingInformationRequestImpl(this.appCntx
-                .getApplicationContextVersion().getVersion(), msisdn, cugCheckInfo, numberOfForwarding, interrogationType,
-                orInterrogation, orCapability, gmscAddress, callReferenceNumber, forwardingReason, basicServiceGroup,
-                networkSignalInfo, camelInfo, suppressionOfAnnouncement, extensionContainer, alertingPattern, ccbsCall,
-                supportedCCBSPhase, additionalSignalInfo, istSupportIndicator, prePagingSupported,
+        SendRoutingInformationRequestImplV3 req = new SendRoutingInformationRequestImplV3(msisdn, cugCheckInfo, numberOfForwarding, 
+        		interrogationType, orInterrogation, orCapability, gmscAddress, callReferenceNumber, forwardingReason, 
+        		basicServiceGroup, networkSignalInfo, camelInfo, suppressionOfAnnouncement, extensionContainer, alertingPattern, 
+        		ccbsCall, supportedCCBSPhase, additionalSignalInfo, istSupportIndicator, prePagingSupported,
                 callDiversionTreatmentIndicator, longFTNSupported, suppressVtCSI, suppressIncomingCallBarring,
                 gsmSCFInitiatedCall, basicServiceGroup2, networkSignalInfo2, supressMTSS, mtRoamingRetrySupported,
                 callPriority);
@@ -177,7 +207,7 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
                     "Bad application context name for addSendRoutingInformationResponse: must be locationInfoRetrievalContext_V1 or V2");
         
         SendRoutingInformationResponse res;
-        res = new SendRoutingInformationResponseImplV1(this.appCntx.getApplicationContextVersion().getVersion(),imsi,routingInfo2,cugCheckInfo);
+        res = new SendRoutingInformationResponseImplV1(imsi,routingInfo2,cugCheckInfo);
         
         this.sendDataComponent(invokeId, null, null, null, (long)MAPOperationCode.sendRoutingInfo, res, false, true);        
     }
@@ -233,8 +263,7 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
                     "Bad application context name for addSendRoutingInformationResponse: must be locationInfoRetrievalContext_V3");
         
         SendRoutingInformationResponse res;
-        res = new SendRoutingInformationResponseImplV3(this.appCntx
-                .getApplicationContextVersion().getVersion(), imsi, extRoutingInfo, cugCheckInfo, cugSubscriptionFlag,
+        res = new SendRoutingInformationResponseImplV3(imsi, extRoutingInfo, cugCheckInfo, cugSubscriptionFlag,
                 subscriberInfo, ssList, basicService, forwardingInterrogationRequired, vmscAddress, extensionContainer,
                 naeaPreferredCI, ccbsIndicators, msisdn, nrPortabilityStatus, istAlertTimer, supportedCamelPhases,
                 offeredCamel4CSIs, routingInfo2, ssList2, basicService2, allowedServices, unavailabilityCause,
@@ -289,7 +318,7 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
                 orInterrogation, extensionContainer, alertingPattern, ccbsCall, supportedCamelPhasesInInterrogatingNode,
                 additionalSignalInfo, orNotSupportedInGMSC, prePagingSupported, longFTNSupported, suppressVtCsi,
                 offeredCamel4CSIsInInterrogatingNode, mtRoamingRetrySupported, pagingArea, callPriority, mtrfIndicator,
-                oldMSCNumber, this.appCntx.getApplicationContextVersion().getVersion());
+                oldMSCNumber);
         
         return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long)MAPOperationCode.provideRoamingNumber, req, true, false);
     }
@@ -304,7 +333,7 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
             throw new MAPException(
                     "Bad application context name for addProvideRoamingNumberResponse: must be roamingNumberEnquiryContext_V1 or V2");
 
-        ProvideRoamingNumberResponseImplV1 res = new ProvideRoamingNumberResponseImplV1(roamingNumber, this.appCntx.getApplicationContextVersion().getVersion());
+        ProvideRoamingNumberResponseImplV1 res = new ProvideRoamingNumberResponseImplV1(roamingNumber);
         this.sendDataComponent(invokeId, null, null, null, (long)MAPOperationCode.provideRoamingNumber, res, false, true);
     }
     
@@ -320,7 +349,7 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
                     "Bad application context name for addProvideRoamingNumberResponse: must be roamingNumberEnquiryContext_V3");
 
         ProvideRoamingNumberResponseImplV3 res = new ProvideRoamingNumberResponseImplV3(roamingNumber, extensionContainer,
-                releaseResourcesSupported, vmscAddress, this.appCntx.getApplicationContextVersion().getVersion());
+                releaseResourcesSupported, vmscAddress);
         this.sendDataComponent(invokeId, null, null, null, (long)MAPOperationCode.provideRoamingNumber, res, false, true);
     }
 

@@ -1,5 +1,7 @@
 package com.mobius.software.telco.protocols.ss7.asn.primitives;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
@@ -67,7 +69,7 @@ public class ASNSingleByte {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) {
 		if(buffer.readableBytes()==0)
 			return false;
 		

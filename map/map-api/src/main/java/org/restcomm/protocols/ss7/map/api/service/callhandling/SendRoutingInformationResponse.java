@@ -135,6 +135,4 @@ public interface SendRoutingInformationResponse extends CallHandlingMessage {
     boolean getReleaseResourcesSupported(); // NULL
 
     ExternalSignalInfo getGsmBearerCapability(); // SEQUENCE
-
-    long getMapProtocolVersion();
 }

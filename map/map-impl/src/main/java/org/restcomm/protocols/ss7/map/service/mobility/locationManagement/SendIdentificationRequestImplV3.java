@@ -78,20 +78,12 @@ public class SendIdentificationRequestImplV3 extends MobilityMessageImpl impleme
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=false,index=-1, defaultImplementation = LMSIImpl.class)
     private LMSI newLmsi;
     
-    private long mapProtocolVersion;
-
     public SendIdentificationRequestImplV3() {
-    	this.mapProtocolVersion = 3;
     }
     
-    public SendIdentificationRequestImplV3(long mapProtocolVersion) {
-        this.mapProtocolVersion = mapProtocolVersion;
-    }
-
     public SendIdentificationRequestImplV3(TMSI tmsi, Integer numberOfRequestedVectors, boolean segmentationProhibited,
     		MAPExtensionContainer extensionContainer, ISDNAddressString mscNumber, LAIFixedLength previousLAI,
-            Integer hopCounter, boolean mtRoamingForwardingSupported, ISDNAddressString newVLRNumber, LMSI newLmsi,
-            long mapProtocolVersion) {
+            Integer hopCounter, boolean mtRoamingForwardingSupported, ISDNAddressString newVLRNumber, LMSI newLmsi) {
         super();
         this.tmsi = tmsi;
         
@@ -113,7 +105,6 @@ public class SendIdentificationRequestImplV3 extends MobilityMessageImpl impleme
         
         this.newVLRNumber = newVLRNumber;
         this.newLmsi = newLmsi;
-        this.mapProtocolVersion = mapProtocolVersion;
     }
 
     @Override
@@ -182,10 +173,6 @@ public class SendIdentificationRequestImplV3 extends MobilityMessageImpl impleme
         return this.newLmsi;
     }
 
-    public long getMapProtocolVersion() {
-        return mapProtocolVersion;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -243,9 +230,6 @@ public class SendIdentificationRequestImplV3 extends MobilityMessageImpl impleme
             sb.append(newLmsi.toString());
             sb.append(", ");
         }
-
-        sb.append("mapProtocolVersion=");
-        sb.append(mapProtocolVersion);
 
         sb.append("]");
 
