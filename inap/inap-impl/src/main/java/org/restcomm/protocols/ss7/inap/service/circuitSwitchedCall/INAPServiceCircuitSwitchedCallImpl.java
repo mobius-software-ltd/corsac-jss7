@@ -1554,21 +1554,21 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B) {
-				if (parameter == null) {
-					processed = true;
-					SpecializedResourceReportRequest ind = new SpecializedResourceReportRequestImpl();
-					ind.setInvokeId(invokeId);
-					ind.setINAPDialog(capDialog);
+				
+				processed = true;
+				SpecializedResourceReportRequest ind = new SpecializedResourceReportRequestImpl();
+				ind.setInvokeId(invokeId);
+				ind.setINAPDialog(capDialog);
 
-					for (INAPServiceListener serLis : this.serviceListeners) {
-						try {
-							serLis.onINAPMessage(ind);
-							((INAPServiceCircuitSwitchedCallListener) serLis).onSpecializedResourceReportRequest(ind);
-						} catch (Exception e) {
-							loger.error("Error processing specializedResourceReportRequest: " + e.getMessage(), e);
-						}
+				for (INAPServiceListener serLis : this.serviceListeners) {
+					try {
+						serLis.onINAPMessage(ind);
+						((INAPServiceCircuitSwitchedCallListener) serLis).onSpecializedResourceReportRequest(ind);
+					} catch (Exception e) {
+						loger.error("Error processing specializedResourceReportRequest: " + e.getMessage(), e);
 					}
 				}
+				
 			} else if (acn == INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_IP_to_SCP_AC
