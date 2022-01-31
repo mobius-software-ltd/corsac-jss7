@@ -22,7 +22,6 @@
 
 package org.restcomm.protocols.ss7.commonapp.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.isup.DigitsIsup;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
@@ -30,6 +29,7 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -48,69 +48,69 @@ public class DigitsIsupImpl extends ASNOctetString implements DigitsIsup {
     public DigitsIsupImpl() {
     }
 
-    public DigitsIsupImpl(GenericDigits genericDigits) throws APPException {
+    public DigitsIsupImpl(GenericDigits genericDigits) throws ASNParsingException {
     	super(translate(genericDigits));
     	setIsGenericDigits();
     }
 
-    public DigitsIsupImpl(GenericNumber genericNumber) throws APPException {
+    public DigitsIsupImpl(GenericNumber genericNumber) throws ASNParsingException {
         super(translate(genericNumber));
         setIsGenericNumber();
     }
 
-    public GenericDigits getGenericDigits() throws APPException {
+    public GenericDigits getGenericDigits() throws ASNParsingException {
         if (this.getValue() == null)
-            throw new APPException("The data has not been filled");
+            throw new ASNParsingException("The data has not been filled");
         if (!this.isGenericDigits)
-            throw new APPException("Primitive is not marked as GenericDigits (use setGenericDigits() before)");
+            throw new ASNParsingException("Primitive is not marked as GenericDigits (use setGenericDigits() before)");
 
         try {
             GenericDigitsImpl ocn = new GenericDigitsImpl();
             ocn.decode(this.getValue());
             return ocn;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when decoding GenericDigits: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when decoding GenericDigits: " + e.getMessage(), e);
         }
     }
 
-    public GenericNumber getGenericNumber() throws APPException {
+    public GenericNumber getGenericNumber() throws ASNParsingException {
         if (this.getValue() == null)
-            throw new APPException("The data has not been filled");
+            throw new ASNParsingException("The data has not been filled");
         if (!this.isGenericNumber)
-            throw new APPException("Primitive is not marked as GenericNumber (use setGenericNumber() before)");
+            throw new ASNParsingException("Primitive is not marked as GenericNumber (use setGenericNumber() before)");
 
         try {
             GenericNumberImpl ocn = new GenericNumberImpl();
             ocn.decode(this.getValue());
             return ocn;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when decoding GenericNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when decoding GenericNumber: " + e.getMessage(), e);
         }
     }
 
-    public static ByteBuf translate(GenericDigits genericDigits) throws APPException {
+    public static ByteBuf translate(GenericDigits genericDigits) throws ASNParsingException {
 
         if (genericDigits == null)
-            throw new APPException("The genericDigits parameter must not be null");
+            throw new ASNParsingException("The genericDigits parameter must not be null");
         try {
         	ByteBuf value=Unpooled.buffer();
         	((GenericDigitsImpl) genericDigits).encode(value);
         	return value;            
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when encoding genericDigits: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when encoding genericDigits: " + e.getMessage(), e);
         }
     }
 
-    public static ByteBuf translate(GenericNumber genericNumber) throws APPException {
+    public static ByteBuf translate(GenericNumber genericNumber) throws ASNParsingException {
 
         if (genericNumber == null)
-            throw new APPException("The genericNumber parameter must not be null");
+            throw new ASNParsingException("The genericNumber parameter must not be null");
         try {
         	ByteBuf value=Unpooled.buffer();
         	((GenericNumberImpl) genericNumber).encode(value);
         	return value;            
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when encoding genericNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when encoding genericNumber: " + e.getMessage(), e);
         }
     }
 
@@ -150,7 +150,7 @@ public class DigitsIsupImpl extends ASNOctetString implements DigitsIsup {
                     sb.append(", genericDigits");
                     sb.append(gd.toString());
                 }
-            } catch (APPException e) {
+            } catch (ASNParsingException e) {
             }
         }
 

@@ -22,8 +22,9 @@
 
 package org.restcomm.protocols.ss7.commonapp.smstpu;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.smstpdu.AbsoluteTimeStamp;
+
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 import io.netty.buffer.ByteBuf;
 
@@ -54,13 +55,13 @@ public class AbsoluteTimeStampImpl implements AbsoluteTimeStamp {
         this.timeZone = timeZone;
     }
 
-    public static AbsoluteTimeStampImpl createMessage(ByteBuf data) throws APPException {
+    public static AbsoluteTimeStampImpl createMessage(ByteBuf data) throws ASNParsingException {
 
         if (data == null)
-            throw new APPException("Error creating ServiceCentreTimeStamp: buffer must not be null");
+            throw new ASNParsingException("Error creating ServiceCentreTimeStamp: buffer must not be null");
 
         if (data.readableBytes() < 7)
-            throw new APPException("Error creating ServiceCentreTimeStamp: not enouph data in the buffer");
+            throw new ASNParsingException("Error creating ServiceCentreTimeStamp: not enouph data in the buffer");
 
         
         AbsoluteTimeStampImpl res = new AbsoluteTimeStampImpl();
@@ -117,7 +118,7 @@ public class AbsoluteTimeStampImpl implements AbsoluteTimeStamp {
         return (i1 << 4) | i2;
     }
 
-    public void encodeData(ByteBuf stm) throws APPException {
+    public void encodeData(ByteBuf stm) throws ASNParsingException {
     	stm.writeByte(constractEncodesVal(this.year));
         stm.writeByte(constractEncodesVal(this.month));
         stm.writeByte(constractEncodesVal(this.day));

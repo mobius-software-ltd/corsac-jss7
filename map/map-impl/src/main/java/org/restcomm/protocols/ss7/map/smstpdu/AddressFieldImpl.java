@@ -24,8 +24,6 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 
 import java.io.IOException;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
 import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharset;
 import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecoder;
 import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecodingData;
@@ -36,6 +34,9 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
+
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 
 import io.netty.buffer.ByteBuf;
 
@@ -106,7 +107,7 @@ public class AddressFieldImpl implements AddressField {
 
         } catch (IOException e) {
             throw new MAPException("IOException when creating AddressField: " + e.getMessage(), e);
-        } catch (APPParsingComponentException e) {
+        } catch (ASNParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when creating AddressField: " + e.getMessage(), e);
         }
 
@@ -163,7 +164,7 @@ public class AddressFieldImpl implements AddressField {
                 try {
                 	TbcdStringImpl.encodeString(buf, addressValue);
                 }
-                catch(APPException ex) {
+                catch(ASNParsingException ex) {
                 	throw new MAPException(ex.getMessage(), ex.getCause());
                 }
             }

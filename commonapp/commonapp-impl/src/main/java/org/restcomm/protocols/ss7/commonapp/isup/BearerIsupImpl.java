@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.isup.BearerIsup;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserServiceInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -43,32 +43,32 @@ public class BearerIsupImpl extends ASNOctetString implements BearerIsup {
 	public BearerIsupImpl() {
     }
 
-    public BearerIsupImpl(UserServiceInformation userServiceInformation) throws APPException {
+    public BearerIsupImpl(UserServiceInformation userServiceInformation) throws ASNParsingException {
         super(translate(userServiceInformation));
     }
 
-    public static ByteBuf translate(UserServiceInformation userServiceInformation) throws APPException {
+    public static ByteBuf translate(UserServiceInformation userServiceInformation) throws ASNParsingException {
         if (userServiceInformation == null)
-            throw new APPException("The userServiceInformation parameter must not be null");
+            throw new ASNParsingException("The userServiceInformation parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((UserServiceInformationImpl) userServiceInformation).encode(buffer);
             return buffer;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when encoding userServiceInformation: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when encoding userServiceInformation: " + e.getMessage(), e);
         }
     }
 
-    public UserServiceInformation getUserServiceInformation() throws APPException {
+    public UserServiceInformation getUserServiceInformation() throws ASNParsingException {
         if (this.getValue() == null)
-            throw new APPException("The data has not been filled");
+            throw new ASNParsingException("The data has not been filled");
 
         try {
             UserServiceInformationImpl ln = new UserServiceInformationImpl();
             ln.decode(this.getValue());
             return ln;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when decoding UserServiceInformation: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when decoding UserServiceInformation: " + e.getMessage(), e);
         }
     }
 
@@ -82,7 +82,7 @@ public class BearerIsupImpl extends ASNOctetString implements BearerIsup {
                 UserServiceInformation usi = this.getUserServiceInformation();
                 sb.append(", ");
                 sb.append(usi.toString());
-            } catch (APPException e) {
+            } catch (ASNParsingException e) {
             }
         }
 

@@ -21,12 +21,12 @@
  */
 package org.restcomm.protocols.ss7.commonapp.primitives;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NAEACIC;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationPlanValue;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NetworkIdentificationTypeValue;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -54,7 +54,7 @@ public class NAEACICImpl extends ASNOctetString implements NAEACIC {
     }
 
     public NAEACICImpl(String carrierCode, NetworkIdentificationPlanValue networkIdentificationPlanValue,
-            NetworkIdentificationTypeValue networkIdentificationTypeValue) throws APPException {
+            NetworkIdentificationTypeValue networkIdentificationTypeValue) throws ASNParsingException {
         super(translate(carrierCode, networkIdentificationPlanValue, networkIdentificationTypeValue));
     }
 
@@ -72,7 +72,7 @@ public class NAEACICImpl extends ASNOctetString implements NAEACIC {
                 return address.substring(0, 3);
             }
             return address;
-        } catch (APPParsingComponentException e) {
+        } catch (ASNParsingComponentException e) {
             return null;
         }
     }
@@ -97,13 +97,13 @@ public class NAEACICImpl extends ASNOctetString implements NAEACIC {
     }
 
     private static ByteBuf translate(String carrierCode, NetworkIdentificationPlanValue networkIdentificationPlanValue,
-            NetworkIdentificationTypeValue networkIdentificationTypeValue) throws APPException {
+            NetworkIdentificationTypeValue networkIdentificationTypeValue) throws ASNParsingException {
 
         if (carrierCode == null || networkIdentificationPlanValue == null || networkIdentificationTypeValue == null)
-            throw new APPException("Error when encoding NAEACIC: carrierCode, networkIdentificationPlanValue or networkIdentificationTypeValue is empty");
+            throw new ASNParsingException("Error when encoding NAEACIC: carrierCode, networkIdentificationPlanValue or networkIdentificationTypeValue is empty");
 
         if (!(carrierCode.length() == 3 || carrierCode.length() == 4))
-            throw new APPException("Error when encoding NAEACIC: carrierCode lenght should be 3 or 4");
+            throw new ASNParsingException("Error when encoding NAEACIC: carrierCode lenght should be 3 or 4");
 
         ByteBuf value=Unpooled.buffer();
 
@@ -115,8 +115,8 @@ public class NAEACICImpl extends ASNOctetString implements NAEACIC {
 
         try {
             TbcdStringImpl.encodeString(value, carrierCode);
-        } catch (APPException e) {
-            throw new APPException(e);
+        } catch (ASNParsingException e) {
+            throw new ASNParsingException(e);
         }
 
         if (carrierCode.length() == 3) {

@@ -23,7 +23,7 @@
 package org.restcomm.protocols.ss7.commonapp.api.smstpdu;
 
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 import io.netty.buffer.ByteBuf;
 
@@ -59,6 +59,6 @@ public interface AbsoluteTimeStamp {
      */
     int getTimeZone();
 
-    void encodeData(ByteBuf buffer) throws APPException;
+    void encodeData(ByteBuf buffer) throws ASNParsingException;
 
 }

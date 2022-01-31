@@ -1,9 +1,5 @@
-package org.restcomm.protocols.ss7.tcap.asn.comp;
-
-import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
-
 /*
- * Mobius Software LTD
+ * Mobius Software LTD, Open Source Cloud Communications
  * Copyright 2019, Mobius Software LTD and individual contributors
  * by the @authors tag.
  *
@@ -21,26 +17,29 @@ import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
+package com.mobius.software.telco.protocols.ss7.asn.exceptions;
+
 /**
-*
-* @author yulian oifa
-*
-*/
+ *
+ * @author yulian.oifa
+ *
+ */
+public class ASNParsingException extends Exception {
+	private static final long serialVersionUID = 1L;
 
-import io.netty.buffer.ByteBuf;
+	public ASNParsingException() {        
+    }
 
+    public ASNParsingException(String message) {
+        super(message);
+    }
 
-public interface TCUnifiedMessage {
-	// mandatory
-	ByteBuf getOriginatingTransactionId();
+    public ASNParsingException(Throwable cause) {
+        super(cause);
+    }
 
-    void setOriginatingTransactionId(ByteBuf t);
+    public ASNParsingException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    ByteBuf getDestinationTransactionId();
-
-    void setDestinationTransactionId(ByteBuf t);
-
-    DialogPortion getDialogPortion();
-
-    void setDialogPortion(DialogPortion dp);
 }

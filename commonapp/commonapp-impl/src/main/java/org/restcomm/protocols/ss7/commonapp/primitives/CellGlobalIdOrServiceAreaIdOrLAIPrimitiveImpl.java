@@ -25,13 +25,13 @@ package org.restcomm.protocols.ss7.commonapp.primitives;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNExclude;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
 
 import io.netty.buffer.ByteBuf;
 

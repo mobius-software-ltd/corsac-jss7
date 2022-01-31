@@ -23,7 +23,6 @@ package org.restcomm.protocols.ss7.inap.api;
 
 import java.io.Serializable;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.inap.api.dialog.INAPDialogState;
 import org.restcomm.protocols.ss7.inap.api.dialog.INAPUserAbortReason;
 import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessage;
@@ -32,6 +31,8 @@ import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 /**
  * @author yulian.oifa
  *
@@ -196,7 +197,7 @@ public interface INAPDialog extends Serializable {
     *
     * @param invokeId This parameter is optional and may be the null
     * @param problem
-    * @throws APPException
+    * @throws ASNParsingException
     */
    public void sendRejectComponent(Long invokeId, Problem problem) throws INAPException;
 

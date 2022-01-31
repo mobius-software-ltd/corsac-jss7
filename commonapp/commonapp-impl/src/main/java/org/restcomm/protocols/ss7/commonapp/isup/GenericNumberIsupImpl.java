@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.isup.GenericNumberIsup;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -43,32 +43,32 @@ public class GenericNumberIsupImpl extends ASNOctetString implements GenericNumb
 	public GenericNumberIsupImpl() {
     }
 
-    public GenericNumberIsupImpl(GenericNumber genericNumber) throws APPException {
+    public GenericNumberIsupImpl(GenericNumber genericNumber) throws ASNParsingException {
         super(translate(genericNumber));
     }
 
-    public static ByteBuf translate(GenericNumber genericNumber) throws APPException {
+    public static ByteBuf translate(GenericNumber genericNumber) throws ASNParsingException {
         if (genericNumber == null)
-            throw new APPException("The genericNumber parameter must not be null");
+            throw new ASNParsingException("The genericNumber parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((GenericNumberImpl) genericNumber).encode(buffer);
             return buffer;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when encoding genericNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when encoding genericNumber: " + e.getMessage(), e);
         }
     }
 
-    public GenericNumber getGenericNumber() throws APPException {
+    public GenericNumber getGenericNumber() throws ASNParsingException {
         if (this.getValue() == null)
-            throw new APPException("The data has not been filled");
+            throw new ASNParsingException("The data has not been filled");
 
         try {
             GenericNumberImpl ocn = new GenericNumberImpl();
             ocn.decode(this.getValue());
             return ocn;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when decoding GenericNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when decoding GenericNumber: " + e.getMessage(), e);
         }
     }
 
@@ -82,7 +82,7 @@ public class GenericNumberIsupImpl extends ASNOctetString implements GenericNumb
                 GenericNumber gn = this.getGenericNumber();
                 sb.append(", ");
                 sb.append(gn.toString());
-            } catch (APPException e) {
+            } catch (ASNParsingException e) {
             }
         }
 

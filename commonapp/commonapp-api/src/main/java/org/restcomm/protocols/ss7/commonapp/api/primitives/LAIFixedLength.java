@@ -22,10 +22,9 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.primitives;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
-
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 import io.netty.buffer.ByteBuf;
 
@@ -54,9 +53,9 @@ public interface LAIFixedLength {
 
 	ByteBuf getValue();
 	
-    int getMCC() throws APPException;
+    int getMCC() throws ASNParsingException;
 
-    int getMNC() throws APPException;
+    int getMNC() throws ASNParsingException;
 
-    int getLac() throws APPException;
+    int getLac() throws ASNParsingException;
 }

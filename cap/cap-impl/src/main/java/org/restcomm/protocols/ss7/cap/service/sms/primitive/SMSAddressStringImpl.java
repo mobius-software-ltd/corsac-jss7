@@ -25,9 +25,6 @@ package org.restcomm.protocols.ss7.cap.service.sms.primitive;
 import java.nio.charset.CharacterCodingException;
 
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.SMSAddressString;
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharset;
@@ -36,6 +33,10 @@ import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetDecodingData;
 import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetEncoder;
 import org.restcomm.protocols.ss7.commonapp.datacoding.Gsm7EncodingStyle;
 import org.restcomm.protocols.ss7.commonapp.primitives.AddressStringImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 import io.netty.buffer.ByteBuf;
 
@@ -66,7 +67,7 @@ public class SMSAddressStringImpl extends AddressStringImpl implements SMSAddres
 	}
     
     @Override
-	public void decode(ByteBuf buffer) throws APPParsingComponentException {
+	public void decode(ByteBuf buffer) throws ASNParsingComponentException {
         buffer.markReaderIndex();
         int nature = buffer.readByte();        
         AddressNature an = AddressNature.getInstance((nature & NATURE_OF_ADD_IND_MASK) >> 4);
@@ -86,7 +87,7 @@ public class SMSAddressStringImpl extends AddressStringImpl implements SMSAddres
 	            this.address = decoder.decode(buffer);   
             }
             catch(CharacterCodingException ex) {
-            	throw new APPParsingComponentException(ex,APPParsingComponentExceptionReason.MistypedParameter);
+            	throw new ASNParsingComponentException(ex,ASNParsingComponentExceptionReason.MistypedParameter);
             }
         } else {
         	buffer.resetReaderIndex();
@@ -95,7 +96,7 @@ public class SMSAddressStringImpl extends AddressStringImpl implements SMSAddres
     }
 
     @Override
-	public void encode(ByteBuf buffer) throws APPException {
+	public void encode(ByteBuf buffer) throws ASNParsingException {
         if (this.addressNature == AddressNature.reserved) {
             int tpOfAddr = 0x80 + (this.addressNature.getIndicator() << 4) + this.numberingPlan.getIndicator();
             buffer.writeByte(tpOfAddr);
@@ -105,7 +106,7 @@ public class SMSAddressStringImpl extends AddressStringImpl implements SMSAddres
             try {
                 encoder.encode(address,buffer);                
             } catch (CharacterCodingException e) {
-                throw new APPException(e);
+                throw new ASNParsingException(e);
             }
         } else {
             super.encode(buffer);

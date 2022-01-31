@@ -24,12 +24,12 @@ package org.restcomm.protocols.ss7.cap.service.sms.primitive;
 
 import org.restcomm.protocols.ss7.cap.api.CAPException;
 import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.TPValidityPeriod;
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.smstpdu.AbsoluteTimeStamp;
 import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityPeriod;
 import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
 import org.restcomm.protocols.ss7.commonapp.smstpu.ValidityPeriodImpl;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -62,7 +62,7 @@ public class TPValidityPeriodImpl extends ASNOctetString implements TPValidityPe
         ByteBuf buffer=Unpooled.buffer(7);
         try {
             absoluteFormatValue.encodeData(buffer);
-        } catch (APPException e) {
+        } catch (ASNParsingException e) {
             // This can not occur
         }
         return buffer;
@@ -84,7 +84,7 @@ public class TPValidityPeriodImpl extends ASNOctetString implements TPValidityPe
             AbsoluteTimeStampImpl absoluteFormatValue;
             try {
                 absoluteFormatValue = AbsoluteTimeStampImpl.createMessage(value);
-            } catch (APPException e) {
+            } catch (ASNParsingException e) {
                 throw new CAPException("MAPException when AbsoluteTimeStampImpl creating: " + e.getMessage(), e);
             }
             vp = new ValidityPeriodImpl(absoluteFormatValue);

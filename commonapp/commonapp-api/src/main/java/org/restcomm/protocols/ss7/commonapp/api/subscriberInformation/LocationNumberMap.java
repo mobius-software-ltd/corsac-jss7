@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.subscriberInformation;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 /**
  *
@@ -42,6 +42,6 @@ LocationNumber ::= OCTET STRING (SIZE (2..10))
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface LocationNumberMap {
 
-    LocationNumber getLocationNumber() throws APPException;
+    LocationNumber getLocationNumber() throws ASNParsingException;
 
 }

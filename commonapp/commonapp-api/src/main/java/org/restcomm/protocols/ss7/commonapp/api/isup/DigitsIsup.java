@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 /**
  *
@@ -68,9 +68,9 @@ SIZE: 2..16
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface DigitsIsup {
 
-    GenericDigits getGenericDigits() throws APPException;
+    GenericDigits getGenericDigits() throws ASNParsingException;
 
-    GenericNumber getGenericNumber() throws APPException;
+    GenericNumber getGenericNumber() throws ASNParsingException;
 
     boolean getIsGenericDigits();
 

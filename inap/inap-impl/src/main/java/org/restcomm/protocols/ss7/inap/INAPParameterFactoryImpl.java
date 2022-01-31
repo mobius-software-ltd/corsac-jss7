@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.inap;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AudibleIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BackwardServiceInteractionInd;
@@ -428,6 +427,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle0100;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
+
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -445,7 +446,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	public CauseIsup createCause(CauseIndicators causeIndicators) throws INAPException {
 		try {
 			return new CauseIsupImpl(causeIndicators);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -455,7 +456,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 			throws INAPException {
 		try {
 			return new ForwardCallIndicatorsIsupImpl(forwardCallIndicators);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -464,7 +465,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	public ForwardGVNSIsup createForwardGVNS(ForwardGVNS forwardGVNS) throws INAPException {
 		try {
 			return new ForwardGVNSIsupImpl(forwardGVNS);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -474,7 +475,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 			throws INAPException {
 		try {
 			return new ISDNAccessRelatedInformationIsupImpl(locationNumber);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -484,7 +485,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 			throws INAPException {
 		try {
 			return new OriginalCalledPartyIDIsupImpl(originalCalledNumber);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -515,7 +516,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 			String address) throws INAPException {
 		try {
 			return new CalledPartyBCDNumberImpl(addressNature, numberingPlan, address);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -557,7 +558,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	public BearerIsup createBearer(UserServiceInformation userServiceInformation) throws INAPException {
 		try {
 			return new BearerIsupImpl(userServiceInformation);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -571,7 +572,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	public DigitsIsup createDigits_GenericNumber(GenericNumber genericNumber) throws INAPException {
 		try {
 			return new DigitsIsupImpl(genericNumber);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -580,7 +581,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	public DigitsIsup createDigits_GenericDigits(GenericDigits genericDigits) throws INAPException {
 		try {
 			return new DigitsIsupImpl(genericDigits);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -589,7 +590,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	public CalledPartyNumberIsup createCalledPartyNumber(CalledPartyNumber calledPartyNumber) throws INAPException {
 		try {
 			return new CalledPartyNumberIsupImpl(calledPartyNumber);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -598,7 +599,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	public CallingPartyNumberIsup createCallingPartyNumber(CallingPartyNumber callingPartyNumber) throws INAPException {
 		try {
 			return new CallingPartyNumberIsupImpl(callingPartyNumber);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -607,7 +608,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	public GenericNumberIsup createGenericNumber(GenericNumber genericNumber) throws INAPException {
 		try {
 			return new GenericNumberIsupImpl(genericNumber);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -616,7 +617,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	public LocationNumberIsup createLocationNumber(LocationNumber locationNumber) throws INAPException {
 		try {
 			return new LocationNumberIsupImpl(locationNumber);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -626,7 +627,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 			throws INAPException {
 		try {
 			return new OriginalCalledNumberIsupImpl(originalCalledNumber);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -635,7 +636,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	public RedirectingPartyIDIsup createRedirectingPartyID(RedirectingNumber redirectingNumber) throws INAPException {
 		try {
 			return new RedirectingPartyIDIsupImpl(redirectingNumber);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -1117,7 +1118,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 			throws INAPException {
 		try {
 			return new CallingPartysCategoryIsupImpl(callingPartyCategory);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -1127,7 +1128,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 			UserTeleserviceInformation highLayerCompatibility) throws INAPException {
 		try {
 			return new HighLayerCompatibilityIsupImpl(highLayerCompatibility);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}
@@ -1137,7 +1138,7 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 			throws INAPException {
 		try {
 			return new RedirectionInformationIsupImpl(redirectionInformation);
-		} catch (APPException ex) {
+		} catch (ASNParsingException ex) {
 			throw new INAPException(ex.getMessage(), ex.getCause());
 		}
 	}

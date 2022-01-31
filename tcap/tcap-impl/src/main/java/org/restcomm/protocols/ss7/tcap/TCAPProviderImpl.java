@@ -108,8 +108,9 @@ import org.restcomm.protocols.ss7.tcap.tc.dialog.events.DraftParsedMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeHandler;
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
-import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -667,7 +668,21 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
             
             if(output.getResult() instanceof TCUnifiedMessage) {
             	TCUnifiedMessage realMessage=(TCUnifiedMessage)output.getResult();
-            	if(!output.getHadErrors() && realMessage.validate()) {
+            	Boolean shouldProceed=!output.getHadErrors();
+            	if(shouldProceed) {
+            		if(shouldProceed) {
+                		try {
+                			ASNParsingComponentException exception=messageParser.validateObject(realMessage); 
+                			if(exception!=null)
+                				shouldProceed=false;
+                		}
+                		catch(ASNException ex) {
+                			shouldProceed=false;
+                		}
+                	}
+            	}
+            	
+            	if(shouldProceed) {
 	            	if(realMessage instanceof TCContinueMessage) {
 	            		TCContinueMessage tcm=(TCContinueMessage)realMessage;
 	            		long dialogId = Utils.decodeTransactionId(tcm.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());

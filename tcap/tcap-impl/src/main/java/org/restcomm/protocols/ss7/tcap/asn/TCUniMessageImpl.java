@@ -36,7 +36,10 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * @author baranowb
@@ -95,9 +98,10 @@ public class TCUniMessageImpl extends TCUnifiedMessageImpl implements TCUniMessa
     		this.component.setComponents(compList);
     	}
     }
-
-	@Override
-	public boolean validate() {
-		return getOriginatingTransactionId()==null && getDestinationTransactionId()==null && component!=null;
+    
+    @ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+    	if(getOriginatingTransactionId()!=null || getDestinationTransactionId()!=null || component==null)
+    		throw new ASNParsingComponentException("Originating and destination transaction IDs should be null,components should not be null", ASNParsingComponentExceptionReason.MistypedParameter); 
 	}
 }

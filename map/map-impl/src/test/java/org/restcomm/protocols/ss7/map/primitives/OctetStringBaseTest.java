@@ -33,8 +33,8 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtP
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
-import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;

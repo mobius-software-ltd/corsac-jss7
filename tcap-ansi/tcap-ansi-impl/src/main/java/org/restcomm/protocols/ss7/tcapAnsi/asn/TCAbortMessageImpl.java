@@ -29,8 +29,11 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCAbortMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ASNPAbortCauseType;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -118,8 +121,9 @@ public class TCAbortMessageImpl extends TCUnifiedMessageImpl implements TCAbortM
 		super.setOriginatingTransactionId(txID);
 	}
 	
-    @Override
-	public boolean validate() {
-		return getOriginatingTransactionId()==null;
+    @ASNValidate
+	public void validateElement() throws ASNParsingComponentException { 
+		if(getOriginatingTransactionId()!=null)
+			throw new ASNParsingComponentException("originating transaction ID should be null",ASNParsingComponentExceptionReason.MistypedParameter);
 	}
 }

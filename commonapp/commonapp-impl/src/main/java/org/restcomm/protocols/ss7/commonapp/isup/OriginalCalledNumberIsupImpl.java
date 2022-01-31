@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.isup.OriginalCalledNumberIsup;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.OriginalCalledNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -43,32 +43,32 @@ public class OriginalCalledNumberIsupImpl extends ASNOctetString implements Orig
 	public OriginalCalledNumberIsupImpl() {
     }
 
-    public OriginalCalledNumberIsupImpl(OriginalCalledNumber originalCalledNumber) throws APPException {
+    public OriginalCalledNumberIsupImpl(OriginalCalledNumber originalCalledNumber) throws ASNParsingException {
         super(translate(originalCalledNumber));
     }
 
-    public static ByteBuf translate(OriginalCalledNumber originalCalledNumber) throws APPException {
+    public static ByteBuf translate(OriginalCalledNumber originalCalledNumber) throws ASNParsingException {
         if (originalCalledNumber == null)
-            throw new APPException("The originalCalledNumber parameter must not be null");
+            throw new ASNParsingException("The originalCalledNumber parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((OriginalCalledNumberImpl) originalCalledNumber).encode(buffer);
             return buffer;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when encoding originalCalledNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when encoding originalCalledNumber: " + e.getMessage(), e);
         }
     }
 
-    public OriginalCalledNumber getOriginalCalledNumber() throws APPException {
+    public OriginalCalledNumber getOriginalCalledNumber() throws ASNParsingException {
         if (this.getValue() == null)
-            throw new APPException("The data has not been filled");
+            throw new ASNParsingException("The data has not been filled");
 
         try {
             OriginalCalledNumberImpl ocn = new OriginalCalledNumberImpl();
             ocn.decode(this.getValue());
             return ocn;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when decoding OriginalCalledNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when decoding OriginalCalledNumber: " + e.getMessage(), e);
         }
     }
 
@@ -82,7 +82,7 @@ public class OriginalCalledNumberIsupImpl extends ASNOctetString implements Orig
                 OriginalCalledNumber ocn = this.getOriginalCalledNumber();
                 sb.append(", ");
                 sb.append(ocn.toString());
-            } catch (APPException e) {
+            } catch (ASNParsingException e) {
             }
         }
 

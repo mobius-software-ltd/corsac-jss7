@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.commonapp.isup;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartysCategoryIsup;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
@@ -36,6 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 import io.netty.buffer.ByteBuf;
 
@@ -55,13 +55,13 @@ public class CallingPartysCategoryIsupImpl implements CallingPartysCategoryIsup 
         this.category = category;
     }
 
-    public CallingPartysCategoryIsupImpl(CallingPartyCategory callingPartyCategory) throws APPException {
+    public CallingPartysCategoryIsupImpl(CallingPartyCategory callingPartyCategory) throws ASNParsingException {
         setCallingPartysCategory(callingPartyCategory);
     }
 
-    public void setCallingPartysCategory(CallingPartyCategory callingPartyCategory) throws APPException {
+    public void setCallingPartysCategory(CallingPartyCategory callingPartyCategory) throws ASNParsingException {
         if (callingPartyCategory == null)
-            throw new APPException("The callingPartyCategory parameter must not be null");
+            throw new ASNParsingException("The callingPartyCategory parameter must not be null");
         
         this.category = (CallingPartyCategoryImpl) callingPartyCategory;
     }

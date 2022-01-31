@@ -22,8 +22,9 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
+
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 /**
 *
@@ -42,5 +43,5 @@ maxOriginalCalledPartyIDLength=5
 */
 public interface OriginalCalledPartyIDIsup {
 
-    OriginalCalledNumber getOriginalCalledNumber() throws APPException;
+    OriginalCalledNumber getOriginalCalledNumber() throws ASNParsingException;
 }

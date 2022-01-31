@@ -33,8 +33,8 @@ import java.util.List;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
 
 import io.netty.buffer.ByteBuf;

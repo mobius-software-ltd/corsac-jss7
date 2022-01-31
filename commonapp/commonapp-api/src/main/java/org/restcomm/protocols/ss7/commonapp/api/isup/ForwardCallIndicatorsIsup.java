@@ -22,8 +22,9 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
+
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 /**
 *
@@ -39,6 +40,6 @@ ForwardCallIndicators ::= OCTET STRING (SIZE(2))
 */
 public interface ForwardCallIndicatorsIsup {
 
-    ForwardCallIndicators getForwardCallIndicators() throws APPException;
+    ForwardCallIndicators getForwardCallIndicators() throws ASNParsingException;
 
 }

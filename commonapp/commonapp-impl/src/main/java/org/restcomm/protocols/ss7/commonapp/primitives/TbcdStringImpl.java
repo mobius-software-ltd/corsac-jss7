@@ -24,16 +24,15 @@ package org.restcomm.protocols.ss7.commonapp.primitives;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentExceptionReason;
-
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 import io.netty.buffer.ByteBuf;
 
@@ -84,7 +83,7 @@ public abstract class TbcdStringImpl {
     }
     
 	@ASNEncode
-	public void encode(ASNParser parser,ByteBuf buffer) throws APPException {
+	public void encode(ASNParser parser,ByteBuf buffer) throws ASNParsingException {
 		encodeString(buffer, data);
 		if(hasFiller) {
         	for (int i = data.length() + 1; i < this.maxLength * 2; i = i + 2) {
@@ -94,12 +93,12 @@ public abstract class TbcdStringImpl {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws APPParsingComponentException {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws ASNParsingComponentException {
 		data = decodeString(buffer);
 		return false;
 	}
 
-    public static String decodeString(ByteBuf buffer) throws APPParsingComponentException {
+    public static String decodeString(ByteBuf buffer) throws ASNParsingComponentException {
         StringBuilder s = new StringBuilder();
         while (buffer.readableBytes()>0) {
             int b = buffer.readByte();
@@ -122,7 +121,7 @@ public abstract class TbcdStringImpl {
         return s.toString();
     }
 
-    public static void encodeString(ByteBuf buffer, String data) throws APPException {
+    public static void encodeString(ByteBuf buffer, String data) throws ASNParsingException {
         char[] chars = data.toCharArray();
         for (int i = 0; i < chars.length; i = i + 2) {
             char a = chars[i];
@@ -142,7 +141,7 @@ public abstract class TbcdStringImpl {
         }
     }
 
-    protected static int encodeNumber(char c) throws APPException {
+    protected static int encodeNumber(char c) throws ASNParsingException {
         switch (c) {
             case '0':
                 return 0;
@@ -178,13 +177,13 @@ public abstract class TbcdStringImpl {
             case 'C':
                 return 14;
             default:
-                throw new APPException(
+                throw new ASNParsingException(
                         "char should be between 0 - 9, *, #, a, b, c for Telephony Binary Coded Decimal String. Received " + c);
 
         }
     }
 
-    protected static char decodeNumber(int i) throws APPParsingComponentException {
+    protected static char decodeNumber(int i) throws ASNParsingComponentException {
         switch (i) {
             case 0:
                 return '0';
@@ -219,9 +218,9 @@ public abstract class TbcdStringImpl {
                 // case 15:
                 // return 'd';
             default:
-                throw new APPParsingComponentException(
+                throw new ASNParsingComponentException(
                         "Integer should be between 0 - 15 for Telephony Binary Coded Decimal String. Received " + i,
-                        APPParsingComponentExceptionReason.MistypedParameter);
+                        ASNParsingComponentExceptionReason.MistypedParameter);
 
         }
     }
@@ -238,7 +237,7 @@ public abstract class TbcdStringImpl {
         result = prime * result + ((data == null) ? 0 : data.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

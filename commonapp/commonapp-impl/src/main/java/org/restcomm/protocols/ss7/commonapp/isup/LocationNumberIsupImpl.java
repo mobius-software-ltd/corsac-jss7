@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.isup.LocationNumberIsup;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -43,32 +43,32 @@ public class LocationNumberIsupImpl extends ASNOctetString implements LocationNu
 	public LocationNumberIsupImpl() {
     }
 
-    public LocationNumberIsupImpl(LocationNumber locationNumber) throws APPException {
+    public LocationNumberIsupImpl(LocationNumber locationNumber) throws ASNParsingException {
         super(translate(locationNumber));
     }
 
-    public static ByteBuf translate(LocationNumber locationNumber) throws APPException {
+    public static ByteBuf translate(LocationNumber locationNumber) throws ASNParsingException {
         if (locationNumber == null)
-            throw new APPException("The locationNumber parameter must not be null");
+            throw new ASNParsingException("The locationNumber parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((LocationNumberImpl) locationNumber).encode(buffer);
             return buffer;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when encoding locationNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when encoding locationNumber: " + e.getMessage(), e);
         }
     }
 
-    public LocationNumber getLocationNumber() throws APPException {
+    public LocationNumber getLocationNumber() throws ASNParsingException {
         if (this.getValue() == null)
-            throw new APPException("The data has not been filled");
+            throw new ASNParsingException("The data has not been filled");
 
         try {
             LocationNumberImpl ln = new LocationNumberImpl();
             ln.decode(this.getValue());
             return ln;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when decoding LocationNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when decoding LocationNumber: " + e.getMessage(), e);
         }
     }
 
@@ -82,7 +82,7 @@ public class LocationNumberIsupImpl extends ASNOctetString implements LocationNu
                 LocationNumber ln = this.getLocationNumber();
                 sb.append(", ");
                 sb.append(ln.toString());
-            } catch (APPException e) {
+            } catch (ASNParsingException e) {
             }
         }
 

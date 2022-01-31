@@ -135,7 +135,6 @@ import org.restcomm.protocols.ss7.cap.service.gprs.primitive.FCIBCCCAMELSequence
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.FreeFormatDataGprsImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventSpecificInformationImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CAI_GSM0224;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CalledPartyBCDNumber;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedDigits;
@@ -202,6 +201,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -454,7 +455,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                     assertEquals(calledPartyNumber.getNatureOfAddressIndicator(), NAINumber._NAI_INTERNATIONAL_NUMBER);
                     assertEquals(calledPartyNumber.getNumberingPlanIndicator(), CalledPartyNumber._NPI_ISDN);
                     assertEquals(calledPartyNumber.getInternalNetworkNumberIndicator(), CalledPartyNumber._INN_ROUTING_ALLOWED);
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                     e.printStackTrace();
                     fail("Exception while checking ConnectRequest imdication", e);
                 }
@@ -592,7 +593,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                         assertEquals(ind.getMiscCallInfo().getMessageType(), MiscCallInfoMessageType.notification);
                         assertNull(ind.getMiscCallInfo().getDpAssignment());
                         assertNull(ind.getExtensions());
-                    } catch (APPException e) {
+                    } catch (ASNParsingException e) {
                         this.error("Exception while checking EventReportBCSMRequest - the second message", e);
                     }
 
@@ -928,7 +929,7 @@ TC-CONTINUE + SpecializedResourceReportRequest
                     assertEquals(cpn.getInternalNetworkNumberIndicator(), CalledPartyNumber._INN_ROUTING_NOT_ALLOWED);
                     assertEquals(cpn.getNatureOfAddressIndicator(), NAINumber._NAI_INTERNATIONAL_NUMBER);
                     assertEquals(cpn.getNumberingPlanIndicator(), CalledPartyNumber._NPI_ISDN);
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                     this.error("Error while checking ConnectToResourceRequest", e);
                 }
                 assertFalse(ind.getResourceAddress_Null());
@@ -972,7 +973,7 @@ TC-CONTINUE + SpecializedResourceReportRequest
                     assertEquals(ci.getCodingStandard(), CauseIndicators._CODING_STANDARD_ITUT);
                     assertNull(ci.getDiagnostics());
                     assertEquals(ci.getLocation(), CauseIndicators._LOCATION_INTERNATIONAL_NETWORK);
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                     this.error("Error while checking ReleaseCallRequest", e);
                 }
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
@@ -1338,7 +1339,7 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
                     assertNull(ipc.getExtraData());
 
                     assertNull(ind.getExtensions());
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                     this.error("Error while checking AssistRequestInstructionsRequest", e);
                 }
 
@@ -1359,7 +1360,7 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
                     assertEquals(gn.getNumberingPlanIndicator(), GenericNumber._NPI_DATA);
                     assertEquals(gn.getNumberQualifierIndicator(), GenericNumber._NQIA_CALLING_PARTY_NUMBER);
                     assertEquals(gn.getScreeningIndicator(), GenericNumber._SI_USER_PROVIDED_VERIFIED_FAILED);
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                     this.error("Error while checking PromptAndCollectUserInformationResponse", e);
                 }
 
@@ -1582,7 +1583,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     assertNull(ind.getOriginalCalledPartyID());
                     assertNull(ind.getScfID());
                     assertNull(ind.getServiceInteractionIndicatorsTwo());
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                     this.error("Error while trying checking EstablishTemporaryConnectionRequest", e);
                 }
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
@@ -3341,7 +3342,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             LAIFixedLengthImpl lai;
                             try {
                                 lai = new LAIFixedLengthImpl(250, 1, 4444);
-                            } catch (APPException e) {
+                            } catch (ASNParsingException e) {
                                 throw new CAPException(e.getMessage(), e);
                             }
                             CellGlobalIdOrServiceAreaIdOrLAIImpl cgi = new CellGlobalIdOrServiceAreaIdOrLAIImpl(lai);
@@ -3351,7 +3352,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             try {                                
                             	ByteBuf geoBuffer=Unpooled.wrappedBuffer(new byte[] { 31, 32, 33, 34, 35, 36, 37, 38 });
                             	ggi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
-                            } catch (APPException e) {
+                            } catch (ASNParsingException e) {
                                 throw new CAPException(e.getMessage(), e);
                             }
                             
@@ -3363,7 +3364,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             try {
                             	ByteBuf geodeticBuffer=Unpooled.wrappedBuffer(new byte[] { 1, 16, 3, 4, 5, 6, 7, 8, 9, 10 });
                             	gdi = new GeodeticInformationImpl(geodeticBuffer.readByte() & 0x0FF, GeographicalInformationImpl.decodeTypeOfShape(geodeticBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geodeticBuffer), GeographicalInformationImpl.decodeLongitude(geodeticBuffer), GeographicalInformationImpl.decodeUncertainty(geodeticBuffer.readByte() & 0x0FF),geodeticBuffer.readByte() & 0x0FF);
-                            } catch (APPException e) {
+                            } catch (ASNParsingException e) {
                                 throw new CAPException(e.getMessage(), e);
                             }
                             
@@ -3795,7 +3796,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             LAIFixedLengthImpl lai;
                             try {
                                 lai = new LAIFixedLengthImpl(250, 1, 4444);
-                            } catch (APPException e) {
+                            } catch (ASNParsingException e) {
                                 throw new CAPException(e.getMessage(), e);
                             }
                             CellGlobalIdOrServiceAreaIdOrLAIImpl cgi = new CellGlobalIdOrServiceAreaIdOrLAIImpl(lai);
@@ -3805,7 +3806,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             try {                                
                             	ByteBuf geoBuffer=Unpooled.wrappedBuffer(new byte[] { 31, 32, 33, 34, 35, 36, 37, 38 });
                             	ggi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
-                            } catch (APPException e) {
+                            } catch (ASNParsingException e) {
                                 throw new CAPException(e.getMessage(), e);
                             }
                             
@@ -3817,7 +3818,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             try {
                             	ByteBuf geodeticBuffer=Unpooled.wrappedBuffer(new byte[] { 1, 16, 3, 4, 5, 6, 7, 8, 9, 10 });
                             	gdi = new GeodeticInformationImpl(geodeticBuffer.readByte() & 0x0FF, GeographicalInformationImpl.decodeTypeOfShape(geodeticBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geodeticBuffer), GeographicalInformationImpl.decodeLongitude(geodeticBuffer), GeographicalInformationImpl.decodeUncertainty(geodeticBuffer.readByte() & 0x0FF),geodeticBuffer.readByte() & 0x0FF);
-                            } catch (APPException e) {
+                            } catch (ASNParsingException e) {
                                 throw new CAPException(e.getMessage(), e);
                             }
                             
@@ -4806,7 +4807,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 try {
                     assertEquals(ind.getDestinationRoutingAddress().getCalledPartyNumber().size(), 1);
                     assertEquals(ind.getDestinationRoutingAddress().getCalledPartyNumber().get(0).getCalledPartyNumber().getAddress(), "1113330");
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -4842,7 +4843,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     invokeIdDisconnectLeg = ind.getInvokeId();
                     assertEquals(ind.getLegToBeReleased().getReceivingSideID(), LegType.leg2);
                     assertEquals(ind.getReleaseCause().getCauseIndicators().getCauseValue(), 3);
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
@@ -5165,7 +5166,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 try {
                     assertEquals(ind.getGapCriteria().getBasicGapCriteria().getCalledAddressAndService()
                             .getCalledAddressNumber().getGenericNumber().getAddress(), "501090500");
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                 	fail("CAPException in onCallGapRequest: " + e);
                 }
                 assertEquals(ind.getGapCriteria().getBasicGapCriteria().getCalledAddressAndService().getServiceKey(), 100);

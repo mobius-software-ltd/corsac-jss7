@@ -40,8 +40,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.TCContinueMessage;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

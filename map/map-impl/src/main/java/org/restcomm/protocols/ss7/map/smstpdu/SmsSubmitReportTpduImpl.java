@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 
 import java.nio.charset.Charset;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.smstpdu.AbsoluteTimeStamp;
 import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
 import org.restcomm.protocols.ss7.map.api.MAPException;
@@ -35,6 +34,8 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsSubmitReportTpdu;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpduType;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
+
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 import io.netty.buffer.ByteBuf;
 
@@ -99,7 +100,7 @@ public class SmsSubmitReportTpduImpl extends SmsTpduImpl implements SmsSubmitRep
         try {
         	this.serviceCentreTimeStamp = AbsoluteTimeStampImpl.createMessage(stm);
         }
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new MAPException(ex.getMessage(),ex.getCause());
     	}
         
@@ -189,7 +190,7 @@ public class SmsSubmitReportTpduImpl extends SmsTpduImpl implements SmsSubmitRep
         try {
         	this.serviceCentreTimeStamp.encodeData(buf);
         }
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new MAPException(ex.getMessage(),ex.getCause());
     	}
         

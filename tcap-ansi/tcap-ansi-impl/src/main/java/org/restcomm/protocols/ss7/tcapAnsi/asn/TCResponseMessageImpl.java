@@ -28,8 +28,11 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ComponentPortionImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -116,8 +119,9 @@ public class TCResponseMessageImpl extends TCUnifiedMessageImpl implements TCRes
 		super.setOriginatingTransactionId(txID);
 	}
 	
-	@Override
-	public boolean validate() {
-		return getOriginatingTransactionId()==null && getDestinationTransactionId()!=null;
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException { 
+		if(getOriginatingTransactionId()!=null || getDestinationTransactionId()==null)
+			throw new ASNParsingComponentException("destination transaction ID should not be null and originating transaction ID should be null",ASNParsingComponentExceptionReason.MistypedParameter);
 	}
 }

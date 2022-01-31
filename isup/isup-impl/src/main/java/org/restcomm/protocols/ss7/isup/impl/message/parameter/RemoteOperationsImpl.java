@@ -40,8 +40,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RemoteOperationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.RemoteOperations;
 import org.restcomm.protocols.ss7.isup.message.parameter.RemoteOperationsPortionImpl;
 
-import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
 
 /**
  * Start time:17:24:08 2009-04-02<br>

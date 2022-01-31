@@ -22,8 +22,9 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.isup.message.parameter.ForwardGVNS;
+
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 /**
 *
@@ -39,7 +40,7 @@ bound.&minForwardGVNSLength..bound.&maxForwardGVNSLength))
 */
 public interface ForwardGVNSIsup {
 
-    ForwardGVNS getForwardGVNS() throws APPException;
+    ForwardGVNS getForwardGVNS() throws ASNParsingException;
 
     // TODO: Spec refers to "Q.735, 6", we refer to ISUP, what is correct ?
 }

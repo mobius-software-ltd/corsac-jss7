@@ -44,5 +44,4 @@ IMEI ::= TBCD-STRING (SIZE (8))
 public interface IMEI {
 
     String getIMEI();
-
 }

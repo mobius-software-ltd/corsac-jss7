@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 /**
  *
@@ -46,6 +46,6 @@ maxCallingPartyNumberLength ::= 10
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface CallingPartyNumberIsup {
 
-    CallingPartyNumber getCallingPartyNumber() throws APPException;
+    CallingPartyNumber getCallingPartyNumber() throws ASNParsingException;
 
 }

@@ -36,7 +36,10 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCContinueMessage;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * @author baranowb
@@ -96,9 +99,10 @@ public class TCContinueMessageImpl extends TCUnifiedMessageImpl implements TCCon
     		this.component.setComponents(compList);
     	}
     }
-
-	@Override
-	public boolean validate() {
-		return getOriginatingTransactionId()!=null && getDestinationTransactionId()!=null;
+    
+    @ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+    	if(getOriginatingTransactionId()==null || getDestinationTransactionId()==null)
+    		throw new ASNParsingComponentException("Originating and destination transaction IDs should not be null", ASNParsingComponentExceptionReason.MistypedParameter); 
 	}
 }

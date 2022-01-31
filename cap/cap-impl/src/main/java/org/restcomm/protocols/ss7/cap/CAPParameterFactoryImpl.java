@@ -202,7 +202,6 @@ import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPDataCodingSchemeIm
 import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPProtocolIdentifierImpl;
 import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPShortMessageSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.service.sms.primitive.TPValidityPeriodImpl;
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.callhandling.UUData;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AlertingPatternWrapper;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AudibleIndicator;
@@ -385,6 +384,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserServiceInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
+
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -408,7 +409,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     	try {
     		return new CauseIsupImpl(causeIndicators);
     	}
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new CAPException(ex.getMessage(), ex.getCause());
     	}
     }
@@ -440,7 +441,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     	try {
     		return new CalledPartyBCDNumberImpl(addressNature, numberingPlan, address);
     	}
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new CAPException(ex.getMessage(), ex.getCause());
     	}
     }
@@ -495,7 +496,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     	try {
         	return new BearerIsupImpl(userServiceInformation);
 	    }
-		catch(APPException ex) {
+		catch(ASNParsingException ex) {
 			throw new CAPException(ex.getMessage(), ex.getCause());
 		}
     }
@@ -510,7 +511,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     	try {
     		return new DigitsIsupImpl(genericNumber);
     	}
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new CAPException(ex.getMessage(), ex.getCause());
     	}
     }
@@ -520,7 +521,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
         try {
         	return new DigitsIsupImpl(genericDigits);
         }
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new CAPException(ex.getMessage(), ex.getCause());
     	}
     }
@@ -530,7 +531,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     	try {
     		return new CalledPartyNumberIsupImpl(calledPartyNumber);
     	}
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new CAPException(ex.getMessage(), ex.getCause());
     	}
     }
@@ -540,7 +541,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
         try {
         	return new CallingPartyNumberIsupImpl(callingPartyNumber);
         }
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new CAPException(ex.getMessage(), ex.getCause());
     	}
     }
@@ -550,7 +551,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     	try {
     		return new GenericNumberIsupImpl(genericNumber);
     	}
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new CAPException(ex.getMessage(), ex.getCause());
     	}
     }
@@ -560,7 +561,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     	try {
     		return new LocationNumberIsupImpl(locationNumber);
     	}
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new CAPException(ex.getMessage(), ex.getCause());
     	}
     }
@@ -570,7 +571,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     	try {
     		return new OriginalCalledNumberIsupImpl(originalCalledNumber);
 	    }
-		catch(APPException ex) {
+		catch(ASNParsingException ex) {
 			throw new CAPException(ex.getMessage(), ex.getCause());
 		}
     }
@@ -580,7 +581,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     	try {
     		return new RedirectingPartyIDIsupImpl(redirectingNumber);
     	}
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new CAPException(ex.getMessage(), ex.getCause());
     	}
     }
@@ -1624,7 +1625,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     	try {
     		return new CallingPartysCategoryIsupImpl(callingPartyCategory);
     	}
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new CAPException(ex.getMessage(),ex.getCause());
     	}    	
     }
@@ -1635,7 +1636,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     	try {
     		return new HighLayerCompatibilityIsupImpl(highLayerCompatibility);
     	}
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new CAPException(ex.getMessage(),ex.getCause());
     	} 
     }
@@ -1646,7 +1647,7 @@ public class CAPParameterFactoryImpl implements CAPParameterFactory {
     	try {
     		return new RedirectionInformationIsupImpl(redirectionInformation);
     	}
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new CAPException(ex.getMessage(),ex.getCause());
     	} 
     }

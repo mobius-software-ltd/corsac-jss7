@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectingNumber;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 /**
  *
@@ -45,6 +45,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface RedirectingPartyIDIsup {
 
-    RedirectingNumber getRedirectingNumber() throws APPException;
+    RedirectingNumber getRedirectingNumber() throws ASNParsingException;
 
 }

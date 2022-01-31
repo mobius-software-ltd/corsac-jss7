@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedDigits;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedInfo;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
@@ -73,6 +72,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
+
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 /**
  *
@@ -284,7 +285,7 @@ public class Client extends EventTestHarness {
 
             return true;
 
-        } catch (APPException e) {
+        } catch (ASNParsingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return false;
@@ -307,7 +308,7 @@ public class Client extends EventTestHarness {
                     null, null, null, null);
 
             return res;
-        } catch (APPException | INAPException e) {
+        } catch (ASNParsingException | INAPException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return null;

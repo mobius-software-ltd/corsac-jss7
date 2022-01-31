@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.isup.BackwardCallIndicatorsIsup;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.BackwardCallIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.BackwardCallIndicators;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -43,32 +43,32 @@ public class BackwardCallIndicatorsIsupImpl extends ASNOctetString implements Ba
 	public BackwardCallIndicatorsIsupImpl() {
     }
 
-    public BackwardCallIndicatorsIsupImpl(BackwardCallIndicators BackwardCallIndicators) throws APPException {
+    public BackwardCallIndicatorsIsupImpl(BackwardCallIndicators BackwardCallIndicators) throws ASNParsingException {
         super(translate(BackwardCallIndicators));
     }
 
-    private static ByteBuf translate(BackwardCallIndicators BackwardCallIndicators) throws APPException {
+    private static ByteBuf translate(BackwardCallIndicators BackwardCallIndicators) throws ASNParsingException {
         if (BackwardCallIndicators == null)
-            throw new APPException("The BackwardCallIndicators parameter must not be null");
+            throw new ASNParsingException("The BackwardCallIndicators parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((BackwardCallIndicatorsImpl) BackwardCallIndicators).encode(buffer);
         	return buffer;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when encoding originalCalledNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when encoding originalCalledNumber: " + e.getMessage(), e);
         }
     }
 
-    public BackwardCallIndicators getBackwardCallIndicators() throws APPException {
+    public BackwardCallIndicators getBackwardCallIndicators() throws ASNParsingException {
         if (this.getValue() == null)
-            throw new APPException("The data has not been filled");
+            throw new ASNParsingException("The data has not been filled");
 
         try {
         	BackwardCallIndicatorsImpl ocn = new BackwardCallIndicatorsImpl();
             ocn.decode(this.getValue());
             return ocn;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when decoding OriginalCalledNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when decoding OriginalCalledNumber: " + e.getMessage(), e);
         }
     }
 
@@ -82,7 +82,7 @@ public class BackwardCallIndicatorsIsupImpl extends ASNOctetString implements Ba
                 BackwardCallIndicators fci = this.getBackwardCallIndicators();
                 sb.append(", ");
                 sb.append(fci.toString());
-            } catch (APPException e) {
+            } catch (ASNParsingException e) {
             }
         }
 

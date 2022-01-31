@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.isup.message.parameter.OriginalCalledNumber;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 /**
  *
@@ -44,6 +44,6 @@ maxOriginalCalledPartyIDLength ::= 10
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface OriginalCalledNumberIsup {
 
-    OriginalCalledNumber getOriginalCalledNumber() throws APPException;
+    OriginalCalledNumber getOriginalCalledNumber() throws ASNParsingException;
 
 }

@@ -1,9 +1,5 @@
-package org.restcomm.protocols.ss7.tcap.asn.comp;
-
-import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
-
 /*
- * Mobius Software LTD
+ * Mobius Software LTD, Open Source Cloud Communications
  * Copyright 2019, Mobius Software LTD and individual contributors
  * by the @authors tag.
  *
@@ -21,26 +17,13 @@ import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
+package com.mobius.software.telco.protocols.ss7.asn.exceptions;
+
 /**
-*
-* @author yulian oifa
-*
-*/
-
-import io.netty.buffer.ByteBuf;
-
-
-public interface TCUnifiedMessage {
-	// mandatory
-	ByteBuf getOriginatingTransactionId();
-
-    void setOriginatingTransactionId(ByteBuf t);
-
-    ByteBuf getDestinationTransactionId();
-
-    void setDestinationTransactionId(ByteBuf t);
-
-    DialogPortion getDialogPortion();
-
-    void setDialogPortion(DialogPortion dp);
+ *
+ * @author yulian.oifa
+ *
+ */
+public enum ASNParsingComponentExceptionReason {
+    MistypedRootParameter, MistypedParameter;
 }

@@ -49,6 +49,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNGenericMapping;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 
 @SupportedAnnotationTypes( { "com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag", "com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag" } )
@@ -99,6 +100,7 @@ public class ASNTagAnnotationProcessor extends AbstractProcessor {
 				}
 				
 				Boolean hasSubTag=false;
+				Integer validateTags=0;
 				Integer lengthTags=0;
 				Integer encodeTags=0;
 				Integer decodeTags=0;
@@ -128,6 +130,13 @@ public class ASNTagAnnotationProcessor extends AbstractProcessor {
 				
 				for(ExecutableElement method:methods) {
 					List<? extends VariableElement> params=method.getParameters();
+					ASNValidate validate=method.getAnnotation(ASNValidate.class);
+					if(validate!=null) {
+						validateTags+=1;					
+						if(params.size()!=0)
+							processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNValidate should not have any parameters", className, method.getSimpleName()));						
+					}
+					
 					ASNLength length=method.getAnnotation(ASNLength.class);
 					if(length!=null) {
 						lengthTags+=1;					
@@ -185,6 +194,9 @@ public class ASNTagAnnotationProcessor extends AbstractProcessor {
 							processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNGenericMapping should have two parameter", className, method.getSimpleName()));
 					}
 				}
+				
+				if(validateTags>1)
+					processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Class '%s' is annotated as @ASNTag, however has multiple methods found with ASNValidate annotation", className));
 				
 				if(lengthTags>1)
 					processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Class '%s' is annotated as @ASNTag, however has multiple methods found with ASNLength annotation", className));

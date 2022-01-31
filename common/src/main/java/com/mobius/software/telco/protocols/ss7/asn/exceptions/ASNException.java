@@ -1,6 +1,4 @@
-package org.restcomm.protocols.ss7.tcap.asn.comp;
-
-import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
+package com.mobius.software.telco.protocols.ss7.asn.exceptions;
 
 /*
  * Mobius Software LTD
@@ -27,20 +25,11 @@ import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
 *
 */
 
-import io.netty.buffer.ByteBuf;
+public class ASNException extends Exception
+{
+	private static final long serialVersionUID = 1L;
 
-
-public interface TCUnifiedMessage {
-	// mandatory
-	ByteBuf getOriginatingTransactionId();
-
-    void setOriginatingTransactionId(ByteBuf t);
-
-    ByteBuf getDestinationTransactionId();
-
-    void setDestinationTransactionId(ByteBuf t);
-
-    DialogPortion getDialogPortion();
-
-    void setDialogPortion(DialogPortion dp);
+	public ASNException(String s) {
+		super(s);		
+	}
 }

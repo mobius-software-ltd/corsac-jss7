@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.commonapp.subscriberInformation;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.GeodeticInformation;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.TypeOfShape;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -42,15 +42,15 @@ public class GeodeticInformationImpl extends ASNOctetString implements GeodeticI
     }
 
     public GeodeticInformationImpl(int screeningAndPresentationIndicators, TypeOfShape typeOfShape, double latitude,
-            double longitude, double uncertainty, int confidence) throws APPException {
+            double longitude, double uncertainty, int confidence) throws ASNParsingException {
         super(translate(screeningAndPresentationIndicators, typeOfShape, latitude, longitude, uncertainty, confidence));
     }
 
     public static ByteBuf translate(int screeningAndPresentationIndicators, TypeOfShape typeOfShape, double latitude, double longitude,
-            double uncertainty, int confidence) throws APPException {
+            double uncertainty, int confidence) throws ASNParsingException {
 
         if (typeOfShape != TypeOfShape.EllipsoidPointWithUncertaintyCircle) {
-            throw new APPException(
+            throw new ASNParsingException(
                     "typeOfShape parameter for GeographicalInformation can be only \" ellipsoid point with uncertainty circle\"");
         }
 

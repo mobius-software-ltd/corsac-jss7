@@ -57,7 +57,6 @@ import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ElapsedTimeImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSCauseImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventSpecificInformationImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CalledPartyBCDNumber;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedDigits;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedInfo;
@@ -101,6 +100,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
+
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -381,7 +382,7 @@ public class Client extends EventTestHarness {
 
             return true;
 
-        } catch (APPException e) {
+        } catch (ASNParsingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return false;
@@ -404,7 +405,7 @@ public class Client extends EventTestHarness {
                     null, null, null, null, false, null);
 
             return res;
-        } catch (APPException | CAPException e) {
+        } catch (ASNParsingException | CAPException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
@@ -753,7 +754,7 @@ public class Client extends EventTestHarness {
         LAIFixedLengthImpl lai;
         try {
             lai = new LAIFixedLengthImpl(250, 1, 4444);
-        } catch (APPException e) {
+        } catch (ASNParsingException e) {
             throw new CAPException(e.getMessage(), e);
         }
         CellGlobalIdOrServiceAreaIdOrLAIImpl cgi = new CellGlobalIdOrServiceAreaIdOrLAIImpl(lai);
@@ -762,7 +763,7 @@ public class Client extends EventTestHarness {
         try {                                
         	ByteBuf geoBuffer=Unpooled.wrappedBuffer(new byte[] { 16, 32, 33, 34, 35, 36, 37, 38 });
         	ggi = new GeographicalInformationImpl(GeographicalInformationImpl.decodeTypeOfShape(geoBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geoBuffer), GeographicalInformationImpl.decodeLongitude(geoBuffer), GeographicalInformationImpl.decodeUncertainty(geoBuffer.readByte() & 0x0FF));
-        } catch (APPException e) {
+        } catch (ASNParsingException e) {
             throw new CAPException(e.getMessage(), e);
         }
         
@@ -773,7 +774,7 @@ public class Client extends EventTestHarness {
         try {
         	ByteBuf geodeticBuffer=Unpooled.wrappedBuffer(new byte[] { 1, 16, 3, 4, 5, 6, 7, 8, 9, 10 });
         	gdi = new GeodeticInformationImpl(geodeticBuffer.readByte() & 0x0FF, GeographicalInformationImpl.decodeTypeOfShape(geodeticBuffer.readByte() & 0x0FF), GeographicalInformationImpl.decodeLatitude(geodeticBuffer), GeographicalInformationImpl.decodeLongitude(geodeticBuffer), GeographicalInformationImpl.decodeUncertainty(geodeticBuffer.readByte() & 0x0FF),geodeticBuffer.readByte() & 0x0FF);
-        } catch (APPException e) {
+        } catch (ASNParsingException e) {
             throw new CAPException(e.getMessage(), e);
         }
         

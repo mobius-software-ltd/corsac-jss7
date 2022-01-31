@@ -22,11 +22,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CalledPartyBCDNumber;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.commonapp.primitives.AddressStringImpl;
+
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 /**
  *
@@ -43,7 +44,7 @@ public class CalledPartyBCDNumberImpl extends AddressStringImpl implements Calle
     }
 
     public CalledPartyBCDNumberImpl(AddressNature addressNature, NumberingPlan numberingPlan, String address)
-            throws APPException {
+            throws ASNParsingException {
         super(41, addressNature, numberingPlan, address);
     }
 }

@@ -22,13 +22,13 @@
 
 package org.restcomm.protocols.ss7.map.service.lsm;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
 import org.restcomm.protocols.ss7.commonapp.primitives.TbcdStringImpl;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaIdentification;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -105,7 +105,7 @@ public class AreaIdentificationImpl extends ASNOctetString implements AreaIdenti
 	        	TbcdStringImpl.encodeString(result, sb2.toString());            
 	        }
         }
-        catch(APPException ex) {
+        catch(ASNParsingException ex) {
         	throw new MAPException(ex.getMessage(), ex.getCause());
         }
 
@@ -143,7 +143,7 @@ public class AreaIdentificationImpl extends ASNOctetString implements AreaIdenti
         String res;
         try {
             res = TbcdStringImpl.decodeString(buffer.readSlice(2));
-        } catch (APPParsingComponentException e) {
+        } catch (ASNParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding TbcdString: " + e.getMessage(), e);
         }
 
@@ -165,7 +165,7 @@ public class AreaIdentificationImpl extends ASNOctetString implements AreaIdenti
         String res = null;
         try {        	
             res = TbcdStringImpl.decodeString(buffer.readSlice(3));
-        } catch (APPParsingComponentException e) {
+        } catch (ASNParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding TbcdString: " + e.getMessage(), e);
         }
 

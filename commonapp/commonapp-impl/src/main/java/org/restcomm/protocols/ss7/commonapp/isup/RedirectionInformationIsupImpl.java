@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.commonapp.isup;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectionInformationIsup;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectionInformationImpl;
@@ -36,6 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 import io.netty.buffer.ByteBuf;
 
@@ -51,18 +51,18 @@ public class RedirectionInformationIsupImpl implements RedirectionInformationIsu
     public RedirectionInformationIsupImpl() {
     }
 
-    public RedirectionInformationIsupImpl(RedirectionInformation redirectionInformation) throws APPException {
+    public RedirectionInformationIsupImpl(RedirectionInformation redirectionInformation) throws ASNParsingException {
         setRedirectionInformation(redirectionInformation);
     }
 
-    public void setRedirectionInformation(RedirectionInformation redirectionInformation) throws APPException {
+    public void setRedirectionInformation(RedirectionInformation redirectionInformation) throws ASNParsingException {
         if (redirectionInformation == null)
-            throw new APPException("The redirectionInformation parameter must not be null");
+            throw new ASNParsingException("The redirectionInformation parameter must not be null");
         
         this.redirectionInformation = (RedirectionInformationImpl) redirectionInformation;
     }
 
-    public RedirectionInformation getRedirectionInformation() throws APPException {
+    public RedirectionInformation getRedirectionInformation() throws ASNParsingException {
         return redirectionInformation;
     }
     
@@ -96,7 +96,7 @@ public class RedirectionInformationIsupImpl implements RedirectionInformationIsu
             RedirectionInformation ri = this.getRedirectionInformation();
             sb.append(", ");
             sb.append(ri.toString());
-        } catch (APPException e) {
+        } catch (ASNParsingException e) {
         }
 
         sb.append("]");

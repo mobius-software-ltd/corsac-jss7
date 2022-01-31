@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.map.primitives;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
 import org.restcomm.protocols.ss7.commonapp.primitives.TbcdStringImpl;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.primitives.GlobalCellId;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -77,7 +77,7 @@ public class GlobalCellIdImpl extends ASNOctetString implements GlobalCellId {
         	TbcdStringImpl.encodeString(result, sb.toString());
         	TbcdStringImpl.encodeString(result, sb2.toString());
         }
-        catch(APPException ex) {
+        catch(ASNParsingException ex) {
         	throw new MAPException(ex.getMessage(), ex.getCause());
         }
         
@@ -99,7 +99,7 @@ public class GlobalCellIdImpl extends ASNOctetString implements GlobalCellId {
         String res = null;
         try {
             res = TbcdStringImpl.decodeString(value.readSlice(3));
-        }catch (APPParsingComponentException e) {
+        }catch (ASNParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding GlobalCellId: " + e.getMessage(), e);
         }
 
@@ -121,7 +121,7 @@ public class GlobalCellIdImpl extends ASNOctetString implements GlobalCellId {
         String res = null;
         try {
             res = TbcdStringImpl.decodeString(value.readSlice(3));
-        } catch (APPParsingComponentException e) {
+        } catch (ASNParsingComponentException e) {
             throw new MAPException("MAPParsingComponentException when decoding GlobalCellId: " + e.getMessage(), e);
         }
 

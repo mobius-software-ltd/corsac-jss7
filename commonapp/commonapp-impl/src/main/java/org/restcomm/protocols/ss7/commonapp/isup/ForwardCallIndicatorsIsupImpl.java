@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardCallIndicatorsIsup;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ForwardCallIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -43,32 +43,32 @@ public class ForwardCallIndicatorsIsupImpl extends ASNOctetString implements For
 	public ForwardCallIndicatorsIsupImpl() {
     }
 
-    public ForwardCallIndicatorsIsupImpl(ForwardCallIndicators forwardCallIndicators) throws APPException {
+    public ForwardCallIndicatorsIsupImpl(ForwardCallIndicators forwardCallIndicators) throws ASNParsingException {
         super(translate(forwardCallIndicators));
     }
 
-    public static ByteBuf translate(ForwardCallIndicators forwardCallIndicators) throws APPException {
+    public static ByteBuf translate(ForwardCallIndicators forwardCallIndicators) throws ASNParsingException {
         if (forwardCallIndicators == null)
-            throw new APPException("The forwardCallIndicators parameter must not be null");
+            throw new ASNParsingException("The forwardCallIndicators parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((ForwardCallIndicatorsImpl) forwardCallIndicators).encode(buffer);
         	return buffer;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when encoding originalCalledNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when encoding originalCalledNumber: " + e.getMessage(), e);
         }
     }
 
-    public ForwardCallIndicators getForwardCallIndicators() throws APPException {
+    public ForwardCallIndicators getForwardCallIndicators() throws ASNParsingException {
         if (this.getValue() == null)
-            throw new APPException("The data has not been filled");
+            throw new ASNParsingException("The data has not been filled");
 
         try {
         	ForwardCallIndicatorsImpl ocn = new ForwardCallIndicatorsImpl();
             ocn.decode(this.getValue());
             return ocn;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when decoding OriginalCalledNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when decoding OriginalCalledNumber: " + e.getMessage(), e);
         }
     }
 
@@ -85,7 +85,7 @@ public class ForwardCallIndicatorsIsupImpl extends ASNOctetString implements For
                 ForwardCallIndicators fci = this.getForwardCallIndicators();
                 sb.append(", ");
                 sb.append(fci.toString());
-            } catch (APPException e) {
+            } catch (ASNParsingException e) {
             }
         }
 

@@ -25,9 +25,6 @@ package org.restcomm.protocols.ss7.commonapp.primitives;
 import java.nio.charset.CharacterCodingException;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
@@ -43,6 +40,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 import io.netty.buffer.ByteBuf;
 
@@ -137,13 +137,13 @@ public class AddressStringImpl implements AddressString  {
 	}
     
     @ASNEncode
-	public void encode(ASNParser parser,ByteBuf buffer) throws APPException {
+	public void encode(ASNParser parser,ByteBuf buffer) throws ASNParsingException {
     	encode(buffer);
     }
     
-    public void encode(ByteBuf buffer) throws APPException {
+    public void encode(ByteBuf buffer) throws ASNParsingException {
     	if (this.address.length() > maxLength*2)
-            throw new APPException("Error when encoding AddressString: address length must not exceed 38 digits");
+            throw new ASNParsingException("Error when encoding AddressString: address length must not exceed 38 digits");
     	
     	int nature = 0x080;
 
@@ -168,22 +168,22 @@ public class AddressStringImpl implements AddressString  {
             try {
                 encoder.encode(address,buffer);                
             } catch (CharacterCodingException e) {
-                throw new APPException(e);
+                throw new ASNParsingException(e);
             }
         } else
         	TbcdStringImpl.encodeString(buffer, address);		
 	}
     
     @ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws APPParsingComponentException {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws ASNParsingComponentException {
     	decode(buffer);
     	return false;
     }
     
-    public void decode(ByteBuf buffer) throws APPParsingComponentException {
+    public void decode(ByteBuf buffer) throws ASNParsingComponentException {
     	if (buffer.readableBytes() > maxLength+1)
-            throw new APPParsingComponentException("Error when decoding AddressString: mesage length must not exceed 20",
-                    APPParsingComponentExceptionReason.MistypedParameter);
+            throw new ASNParsingComponentException("Error when decoding AddressString: mesage length must not exceed 20",
+                    ASNParsingComponentExceptionReason.MistypedParameter);
     	
     	int nature = buffer.readByte();
 
@@ -219,7 +219,7 @@ public class AddressStringImpl implements AddressString  {
 	            	this.address=decoder.decode(buffer);
 	            }
 	            catch(CharacterCodingException ex) {
-	            	throw new APPParsingComponentException(ex,APPParsingComponentExceptionReason.MistypedParameter);
+	            	throw new ASNParsingComponentException(ex,ASNParsingComponentExceptionReason.MistypedParameter);
 	            }
             }
         } else

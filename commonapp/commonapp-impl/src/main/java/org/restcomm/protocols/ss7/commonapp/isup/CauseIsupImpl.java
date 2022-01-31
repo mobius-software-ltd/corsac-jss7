@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -43,32 +43,32 @@ public class CauseIsupImpl extends ASNOctetString implements CauseIsup {
 	public CauseIsupImpl() {
     }
 
-    public CauseIsupImpl(CauseIndicators causeIndicators) throws APPException {
+    public CauseIsupImpl(CauseIndicators causeIndicators) throws ASNParsingException {
         super(translate(causeIndicators));
     }
 
-    public static ByteBuf translate(CauseIndicators causeIndicators) throws APPException {
+    public static ByteBuf translate(CauseIndicators causeIndicators) throws ASNParsingException {
         if (causeIndicators == null)
-            throw new APPException("The causeIndicators parameter must not be null");
+            throw new ASNParsingException("The causeIndicators parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((CauseIndicatorsImpl) causeIndicators).encode(buffer);
             return buffer;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when encoding causeIndicators: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when encoding causeIndicators: " + e.getMessage(), e);
         }
     }
 
-    public CauseIndicators getCauseIndicators() throws APPException {
+    public CauseIndicators getCauseIndicators() throws ASNParsingException {
         if (this.getValue() == null)
-            throw new APPException("The data has not been filled");
+            throw new ASNParsingException("The data has not been filled");
 
         try {
             CauseIndicatorsImpl ln = new CauseIndicatorsImpl();
             ln.decode(this.getValue());
             return ln;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when decoding locationNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when decoding locationNumber: " + e.getMessage(), e);
         }
     }
 
@@ -82,7 +82,7 @@ public class CauseIsupImpl extends ASNOctetString implements CauseIsup {
                 CauseIndicators ci = this.getCauseIndicators();
                 sb.append(", ");
                 sb.append(ci.toString());
-            } catch (APPException e) {
+            } catch (ASNParsingException e) {
             }
         }
 

@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 /**
  *
@@ -46,7 +46,7 @@ CallingPartysCategory::= OCTET STRING (SIZE (1))
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x05,constructed=false,lengthIndefinite=false)
 public interface CallingPartysCategoryIsup {
 
-	void setCallingPartysCategory(CallingPartyCategory callingPartyCategory) throws APPException;
+	void setCallingPartysCategory(CallingPartyCategory callingPartyCategory) throws ASNParsingException;
 
-    CallingPartyCategory getCallingPartyCategory() throws APPException;
+    CallingPartyCategory getCallingPartyCategory() throws ASNParsingException;
 }

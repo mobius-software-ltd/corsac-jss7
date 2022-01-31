@@ -25,7 +25,6 @@ package org.restcomm.protocols.ss7.map;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.callhandling.CallReferenceNumber;
 import org.restcomm.protocols.ss7.commonapp.api.callhandling.UUData;
 import org.restcomm.protocols.ss7.commonapp.api.callhandling.UUI;
@@ -580,6 +579,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
+
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -787,7 +788,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     	try {
     		return new CellGlobalIdOrServiceAreaIdFixedLengthImpl(mcc, mnc, lac, cellIdOrServiceAreaCode);
     	}
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new MAPException(ex.getMessage(), ex.getCause());
     	}
     }
@@ -796,7 +797,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     	try {
     		return new LAIFixedLengthImpl(mcc, mnc, lac);
     	}
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new MAPException(ex.getMessage(), ex.getCause());
     	}
     }
@@ -820,7 +821,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     	try {
     		return new LocationNumberMapImpl(locationNumber);
     	}
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new MAPException(ex.getMessage(),ex.getCause());
     	}
     }
@@ -898,7 +899,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         try {
         	return new GSNAddressImpl(addressType, addressData);
         }
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new MAPException(ex.getMessage(),ex.getCause());
     	}
     }
@@ -1433,7 +1434,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     		return new GeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle, latitude, longitude,
                 uncertainty);
     	}
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new MAPException(ex.getMessage(),ex.getCause());
     	}
     }
@@ -1445,7 +1446,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         	return new GeodeticInformationImpl(screeningAndPresentationIndicators, TypeOfShape.EllipsoidPointWithUncertaintyCircle,
                 latitude, longitude, uncertainty, confidence);
         }
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new MAPException(ex.getMessage(),ex.getCause());
     	}
     }
@@ -2049,7 +2050,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
         try {
         	return new NAEACICImpl(carrierCode, networkIdentificationPlanValue, networkIdentificationTypeValue);
         }
-    	catch(APPException ex) {
+    	catch(ASNParsingException ex) {
     		throw new MAPException(ex.getMessage(),ex.getCause());
     	}
     }

@@ -1,6 +1,4 @@
-package org.restcomm.protocols.ss7.tcap.asn.comp;
-
-import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
+package com.mobius.software.telco.protocols.ss7.asn.annotations;
 
 /*
  * Mobius Software LTD
@@ -27,20 +25,16 @@ import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
 *
 */
 
-import io.netty.buffer.ByteBuf;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@Inherited
+public @interface ASNValidate 
+{
 
-public interface TCUnifiedMessage {
-	// mandatory
-	ByteBuf getOriginatingTransactionId();
-
-    void setOriginatingTransactionId(ByteBuf t);
-
-    ByteBuf getDestinationTransactionId();
-
-    void setDestinationTransactionId(ByteBuf t);
-
-    DialogPortion getDialogPortion();
-
-    void setDialogPortion(DialogPortion dp);
 }

@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.isup.ForwardGVNSIsup;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ForwardGVNSImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.ForwardGVNS;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -43,32 +43,32 @@ public class ForwardGVNSIsupImpl extends ASNOctetString implements ForwardGVNSIs
 	public ForwardGVNSIsupImpl() {
     }
 
-    public ForwardGVNSIsupImpl(ForwardGVNS forwardGVNS) throws APPException {
+    public ForwardGVNSIsupImpl(ForwardGVNS forwardGVNS) throws ASNParsingException {
         super(translate(forwardGVNS));
     }
 
-    public static ByteBuf translate(ForwardGVNS forwardGVNS) throws APPException {
+    public static ByteBuf translate(ForwardGVNS forwardGVNS) throws ASNParsingException {
         if (forwardGVNS == null)
-            throw new APPException("The forwardGVNS parameter must not be null");
+            throw new ASNParsingException("The forwardGVNS parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((ForwardGVNSImpl) forwardGVNS).encode(buffer);
             return buffer;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when encoding originalCalledNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when encoding originalCalledNumber: " + e.getMessage(), e);
         }
     }
 
-    public ForwardGVNS getForwardGVNS() throws APPException {
+    public ForwardGVNS getForwardGVNS() throws ASNParsingException {
         if (this.getValue() == null)
-            throw new APPException("The data has not been filled");
+            throw new ASNParsingException("The data has not been filled");
 
         try {
         	ForwardGVNSImpl ocn = new ForwardGVNSImpl();
             ocn.decode(this.getValue());
             return ocn;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when decoding OriginalCalledNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when decoding OriginalCalledNumber: " + e.getMessage(), e);
         }
     }
 
@@ -85,7 +85,7 @@ public class ForwardGVNSIsupImpl extends ASNOctetString implements ForwardGVNSIs
                 ForwardGVNS fg = this.getForwardGVNS();
                 sb.append(", ");
                 sb.append(fg.toString());
-            } catch (APPException e) {
+            } catch (ASNParsingException e) {
             }
         }
 

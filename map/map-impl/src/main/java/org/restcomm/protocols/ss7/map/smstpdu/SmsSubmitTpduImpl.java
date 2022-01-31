@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.map.smstpdu;
 
 import java.nio.charset.Charset;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityPeriod;
 import org.restcomm.protocols.ss7.commonapp.api.smstpdu.ValidityPeriodFormat;
 import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
@@ -37,6 +36,8 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.ProtocolIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsSubmitTpdu;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpduType;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
+
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 import io.netty.buffer.ByteBuf;
 
@@ -128,7 +129,7 @@ public class SmsSubmitTpduImpl extends SmsTpduImpl implements SmsSubmitTpdu {
             		AbsoluteTimeStampImpl ats = AbsoluteTimeStampImpl.createMessage(stm);
             		this.validityPeriod = new ValidityPeriodImpl(ats);                    
             	}
-            	catch(APPException ex) {
+            	catch(ASNParsingException ex) {
             		throw new MAPException(ex.getMessage(),ex.getCause());
             	}
                 break;
@@ -239,7 +240,7 @@ public class SmsSubmitTpduImpl extends SmsTpduImpl implements SmsSubmitTpdu {
             	try {
             		this.validityPeriod.getAbsoluteFormatValue().encodeData(buf);
             	}
-            	catch(APPException ex) {
+            	catch(ASNParsingException ex) {
             		throw new MAPException(ex.getMessage(),ex.getCause());
             	}
                 break;

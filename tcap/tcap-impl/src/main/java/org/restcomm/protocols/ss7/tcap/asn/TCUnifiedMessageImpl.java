@@ -35,7 +35,7 @@ import io.netty.buffer.ByteBuf;
  * @author amit bhayani
  *
  */
-public class TCUnifiedMessageImpl implements TCUnifiedMessage {
+public abstract class TCUnifiedMessageImpl implements TCUnifiedMessage {
 	// mandatory
     @ASNProperty(asnClass=ASNClass.APPLICATION,tag=0x08,constructed=false,index=-1)
     private OriginatingTransactionID originatingTransactionId;
@@ -89,10 +89,5 @@ public class TCUnifiedMessageImpl implements TCUnifiedMessage {
 	@Override
 	public void setDialogPortion(DialogPortion dp) {
 		this.dialogPortion=dp;
-	}
-
-	@Override
-	public boolean validate() {
-		return false;
 	}
 }

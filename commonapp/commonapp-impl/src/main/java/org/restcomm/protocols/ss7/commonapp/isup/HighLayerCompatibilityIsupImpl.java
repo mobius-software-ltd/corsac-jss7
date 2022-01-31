@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.commonapp.isup;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.isup.HighLayerCompatibilityIsup;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserTeleserviceInformationImpl;
@@ -36,6 +35,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 import io.netty.buffer.ByteBuf;
 
@@ -52,18 +52,18 @@ public class HighLayerCompatibilityIsupImpl implements HighLayerCompatibilityIsu
     public HighLayerCompatibilityIsupImpl() {
     }
 
-    public HighLayerCompatibilityIsupImpl(UserTeleserviceInformation highLayerCompatibility) throws APPException {
+    public HighLayerCompatibilityIsupImpl(UserTeleserviceInformation highLayerCompatibility) throws ASNParsingException {
         setHighLayerCompatibility(highLayerCompatibility);
     }
 
-    public void setHighLayerCompatibility(UserTeleserviceInformation highLayerCompatibility) throws APPException {
+    public void setHighLayerCompatibility(UserTeleserviceInformation highLayerCompatibility) throws ASNParsingException {
         if (highLayerCompatibility == null)
-            throw new APPException("The callingPartyCategory parameter must not be null");
+            throw new ASNParsingException("The callingPartyCategory parameter must not be null");
         
         this.teleserviceInformation = (UserTeleserviceInformationImpl) highLayerCompatibility;
     }
 
-    public UserTeleserviceInformation getHighLayerCompatibility() throws APPException {
+    public UserTeleserviceInformation getHighLayerCompatibility() throws ASNParsingException {
         return teleserviceInformation;
     }
     
@@ -97,7 +97,7 @@ public class HighLayerCompatibilityIsupImpl implements HighLayerCompatibilityIsu
             UserTeleserviceInformation cpc = this.getHighLayerCompatibility();
             sb.append(", ");
             sb.append(cpc.toString());
-        } catch (APPException e) {
+        } catch (ASNParsingException e) {
         }
 
         sb.append("]");

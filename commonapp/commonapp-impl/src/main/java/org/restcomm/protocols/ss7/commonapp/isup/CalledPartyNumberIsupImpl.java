@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -43,32 +43,32 @@ public class CalledPartyNumberIsupImpl extends ASNOctetString implements CalledP
 	public CalledPartyNumberIsupImpl() {
     }
 
-    public CalledPartyNumberIsupImpl(CalledPartyNumber calledPartyNumber) throws APPException {
+    public CalledPartyNumberIsupImpl(CalledPartyNumber calledPartyNumber) throws ASNParsingException {
         super(translate(calledPartyNumber));
     }
 
-    public static ByteBuf translate(CalledPartyNumber calledPartyNumber) throws APPException {
+    public static ByteBuf translate(CalledPartyNumber calledPartyNumber) throws ASNParsingException {
         if (calledPartyNumber == null)
-            throw new APPException("The calledPartyNumber parameter must not be null");
+            throw new ASNParsingException("The calledPartyNumber parameter must not be null");
         try {
         	ByteBuf buf=Unpooled.buffer();
         	((CalledPartyNumberImpl) calledPartyNumber).encode(buf);
         	return buf;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when encoding calledPartyNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when encoding calledPartyNumber: " + e.getMessage(), e);
         }
     }
 
-    public CalledPartyNumber getCalledPartyNumber() throws APPException {
+    public CalledPartyNumber getCalledPartyNumber() throws ASNParsingException {
         if (this.getValue() == null)
-            throw new APPException("The data has not been filled");
+            throw new ASNParsingException("The data has not been filled");
 
         try {
             CalledPartyNumberImpl ln = new CalledPartyNumberImpl();
             ln.decode(this.getValue());
             return ln;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when decoding CalledPartyNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when decoding CalledPartyNumber: " + e.getMessage(), e);
         }
     }
 
@@ -82,7 +82,7 @@ public class CalledPartyNumberIsupImpl extends ASNOctetString implements CalledP
                 CalledPartyNumber cpn = this.getCalledPartyNumber();
                 sb.append(", ");
                 sb.append(cpn.toString());
-            } catch (APPException e) {
+            } catch (ASNParsingException e) {
             }
         }
 

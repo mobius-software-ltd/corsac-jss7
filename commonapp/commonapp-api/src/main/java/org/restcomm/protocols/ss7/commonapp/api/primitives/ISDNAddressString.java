@@ -38,5 +38,4 @@ ISDN-AddressString ::= AddressString (SIZE (1..maxISDN-AddressLength))
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public interface ISDNAddressString extends AddressString {
-
 }

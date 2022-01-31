@@ -21,8 +21,11 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPostprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPreprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWildcard;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
@@ -292,7 +295,7 @@ public class ASNParser
 						else
 							buffer.skipBytes(buffer.readableBytes());
 						
-						return new DecodeResult(null,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(),true);
+						return new DecodeResult(null,parent,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(),true);
 					}
 					else
 						throw new ASNException("no class found for matching tag:" + currHeader.getAsnClass() + "," + currHeader.getAsnTag() + "," + currHeader.getIsConstructed() + "," + currHeader.getIndefiniteLength());					
@@ -419,7 +422,7 @@ public class ASNParser
 			}			
 		}
 		
-		return new DecodeResult(currObject,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(), hadErrors);
+		return new DecodeResult(currObject,parent,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(), hadErrors);
 	}
 	
 	private ASNHeaderWithLength readHeader(ByteBuf buffer) throws ASNException {
@@ -487,6 +490,80 @@ public class ASNParser
 		}				
 		
 		return new ASNHeaderWithLength(asnClass, constructed, asnTag, indefiniteLength, null,length);
+	}
+	
+	public ASNParsingComponentException validateObject(Object value) throws ASNException {
+		ASNTag tag=value.getClass().getAnnotation(ASNTag.class);
+		ASNWrappedTag wrappedTag=value.getClass().getAnnotation(ASNWrappedTag.class);
+		if(tag==null && wrappedTag==null)
+			throw new ASNException("only entities annotated with ASNTag or ASNWrappedTag annotation are supported");
+
+		try
+		{
+			ParserClassData cachedData=cachedElements.get(value.getClass().getCanonicalName());
+			if(cachedData==null) {
+				cachedData=processField(value.getClass(),cachedElements);			
+			}
+			
+			return validateObject(value,cachedElements);			
+		}
+		catch(Exception ex) {			
+			throw new ASNException(ex.getMessage());
+		}
+	}
+	
+	@SuppressWarnings("rawtypes")
+	private ASNParsingComponentException validateObject(Object value,ConcurrentHashMap<String,ParserClassData> cachedElements) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, ASNException {
+		ASNParsingComponentException result=null;
+		
+		ParserClassData cachedData=cachedElements.get(value.getClass().getCanonicalName());
+		if(cachedData==null) {
+			cachedData=processField(value.getClass(),cachedElements);			
+		}
+
+		Method[] methods=value.getClass().getMethods();
+		for(Method method:methods) {
+			ASNValidate asnValidate=method.getAnnotation(ASNValidate.class);
+			if(asnValidate!=null) {
+				try {
+					method.invoke(value,new Object[] { });
+				}
+				catch(InvocationTargetException ex) {
+					if(ex.getTargetException()!=null) {
+						if(ex.getTargetException() instanceof ASNParsingComponentException)
+							return (ASNParsingComponentException)ex.getTargetException();
+						
+						throw new ASNException(ex.getTargetException().getMessage());
+					}
+					else
+						throw new ASNException("An error occured while validating the ASN.1 Object format");
+				}
+				break;
+			}
+		}
+		
+		for(int i=0;i<cachedData.getFields().size();i++) {
+			cachedData.getFields().get(i).getField().setAccessible(true);
+			if(cachedData.getFields().get(i).getField().getType().isAssignableFrom(List.class) && !cachedData.getFields().get(i).getField().getType().equals(Object.class)) {
+				List innerList=(List)cachedData.getFields().get(i).getField().get(value);
+				for(Object innerObject:innerList) {
+					result=validateObject(innerObject,cachedElements);
+					if(result!=null)
+						return result;
+				}
+			}
+			else {
+				Object innerValue=cachedData.getFields().get(i).getField().get(value);
+				if(innerValue!=null) {
+					result=validateObject(innerValue,cachedElements);
+					if(result!=null) {
+						
+					}
+				}
+			}			
+		}
+		
+		return result;	
 	}
 	
 	public ByteBuf encode(Object value) throws ASNException {
@@ -1098,8 +1175,8 @@ public class ASNParser
 		private ASNClass realClass;
 		private Boolean realConstructed;
 		
-		private DecodeResult(Object result,ASNClass realClass,Integer realTag,Boolean realConstructed,Boolean hadErrors) {
-			super(result,hadErrors);
+		private DecodeResult(Object result,Object parent,ASNClass realClass,Integer realTag,Boolean realConstructed,Boolean hadErrors) {
+			super(result,parent,hadErrors);
 			this.realClass=realClass;
 			this.realTag=realTag;
 			this.realConstructed=realConstructed;

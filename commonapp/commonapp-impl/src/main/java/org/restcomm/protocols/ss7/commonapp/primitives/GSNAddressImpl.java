@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.commonapp.primitives;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddress;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -40,24 +40,24 @@ public class GSNAddressImpl extends ASNOctetString implements GSNAddress {
 	public GSNAddressImpl() {        
     }
 
-    public GSNAddressImpl(GSNAddressAddressType addressType, ByteBuf addressData) throws APPException {
+    public GSNAddressImpl(GSNAddressAddressType addressType, ByteBuf addressData) throws ASNParsingException {
     	super(translate(addressType, addressData));
     }
 
-    private static ByteBuf translate(GSNAddressAddressType addressType, ByteBuf addressData) throws APPException {
+    private static ByteBuf translate(GSNAddressAddressType addressType, ByteBuf addressData) throws ASNParsingException {
     	if (addressType == null)
-            throw new APPException("addressType argument must not be null");
+            throw new ASNParsingException("addressType argument must not be null");
         if (addressData == null)
-            throw new APPException("addressData argument must not be null");
+            throw new ASNParsingException("addressData argument must not be null");
 
         switch (addressType) {
         	case IPv4:
         		if (addressData.readableBytes() != 4)
-        			throw new APPException("addressData argument must have length=4 for IPv4");
+        			throw new ASNParsingException("addressData argument must have length=4 for IPv4");
         		break;
         	case IPv6:
         		if (addressData.readableBytes() != 16)
-        			throw new APPException("addressData argument must have length=4 for IPv6");
+        			throw new ASNParsingException("addressData argument must have length=4 for IPv6");
         		break;
         }
 

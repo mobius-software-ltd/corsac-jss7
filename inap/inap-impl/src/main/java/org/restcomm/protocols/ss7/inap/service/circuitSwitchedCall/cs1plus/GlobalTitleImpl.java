@@ -22,9 +22,6 @@
 
 package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentExceptionReason;
 import org.restcomm.protocols.ss7.commonapp.primitives.TbcdStringImpl;
 import org.restcomm.protocols.ss7.inap.api.INAPException;
 import org.restcomm.protocols.ss7.inap.api.INAPParsingComponentException;
@@ -39,6 +36,9 @@ import org.restcomm.protocols.ss7.sccp.impl.parameter.GlobalTitle0100Impl;
 import org.restcomm.protocols.ss7.sccp.parameter.EncodingScheme;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle0100;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -85,7 +85,7 @@ public class GlobalTitleImpl extends ASNOctetString implements GlobalTitle {
     			try {
     				TbcdStringImpl.encodeString(result, globalTitle.getDigits());
     			}
-    			catch(APPException ex) {
+    			catch(ASNParsingException ex) {
     				throw new INAPException(ex.getMessage(), ex.getCause());
     			}
     		}
@@ -112,10 +112,10 @@ public class GlobalTitleImpl extends ASNOctetString implements GlobalTitle {
         try {
         	digits = TbcdStringImpl.decodeString(data);
         }
-        catch(APPParsingComponentException ex) {
+        catch(ASNParsingComponentException ex) {
         	INAPParsingComponentExceptionReason reason=null;
         	if(ex.getReason()!=null) {
-        		if(ex.getReason()==APPParsingComponentExceptionReason.MistypedParameter)
+        		if(ex.getReason()==ASNParsingComponentExceptionReason.MistypedParameter)
         			reason=INAPParsingComponentExceptionReason.MistypedParameter;
         		else
         			reason=INAPParsingComponentExceptionReason.UnrecognizedOperation;

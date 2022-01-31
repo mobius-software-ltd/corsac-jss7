@@ -22,11 +22,11 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 /**
  *
@@ -44,8 +44,8 @@ highLayerCompatibilityLength ::= 2
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x17,constructed=false,lengthIndefinite=false)
 public interface HighLayerCompatibilityIsup {
 
-	void setHighLayerCompatibility(UserTeleserviceInformation highLayerCompatibility) throws APPException;
+	void setHighLayerCompatibility(UserTeleserviceInformation highLayerCompatibility) throws ASNParsingException;
 
-    UserTeleserviceInformation getHighLayerCompatibility() throws APPException;
+    UserTeleserviceInformation getHighLayerCompatibility() throws ASNParsingException;
 
 }

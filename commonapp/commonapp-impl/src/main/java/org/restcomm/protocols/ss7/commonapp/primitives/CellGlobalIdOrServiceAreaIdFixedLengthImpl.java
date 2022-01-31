@@ -22,10 +22,10 @@
 
 package org.restcomm.protocols.ss7.commonapp.primitives;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
-import org.restcomm.protocols.ss7.commonapp.api.APPParsingComponentException;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -42,15 +42,15 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthImpl extends ASNOctetString i
     }
 
     public CellGlobalIdOrServiceAreaIdFixedLengthImpl(int mcc, int mnc, int lac, int cellIdOrServiceAreaCode)
-            throws APPException {
+            throws ASNParsingException {
         super(translate(mcc, mnc, lac, cellIdOrServiceAreaCode));
     }
 
-    public static ByteBuf translate(int mcc, int mnc, int lac, int cellIdOrServiceAreaCode) throws APPException {
+    public static ByteBuf translate(int mcc, int mnc, int lac, int cellIdOrServiceAreaCode) throws ASNParsingException {
         if (mcc < 1 || mcc > 999)
-            throw new APPException("Bad mcc value");
+            throw new ASNParsingException("Bad mcc value");
         if (mnc < 0 || mnc > 999)
-            throw new APPException("Bad mnc value");
+            throw new ASNParsingException("Bad mnc value");
 
         ByteBuf data=Unpooled.buffer(7);        
         
@@ -78,45 +78,45 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthImpl extends ASNOctetString i
         return data;
     }
 
-    public int getMCC() throws APPException {
+    public int getMCC() throws ASNParsingException {
     	ByteBuf data=getValue();
         if (data == null)
-            throw new APPException("Data must not be empty");
+            throw new ASNParsingException("Data must not be empty");
         if (data.readableBytes() != 7)
-            throw new APPException("Data length must be equal 7");
+            throw new ASNParsingException("Data length must be equal 7");
 
         String res = null;
         try {
             res = TbcdStringImpl.decodeString(data.slice(0, 3));
-        } catch (APPParsingComponentException e) {
-            throw new APPException("APPParsingComponentException when decoding CellGlobalIdOrServiceAreaIdFixedLength: " + e.getMessage(), e);
+        } catch (ASNParsingComponentException e) {
+            throw new ASNParsingException("APPParsingComponentException when decoding CellGlobalIdOrServiceAreaIdFixedLength: " + e.getMessage(), e);
         }
 
         if (res.length() < 5 || res.length() > 6)
-            throw new APPException("Decoded TbcdString must be equal 5 or 6");
+            throw new ASNParsingException("Decoded TbcdString must be equal 5 or 6");
 
         String sMcc = res.substring(0, 3);
 
         return Integer.parseInt(sMcc);
     }
 
-    public int getMNC() throws APPException {
+    public int getMNC() throws ASNParsingException {
 
     	ByteBuf data=getValue();
         if (data == null)
-            throw new APPException("Data must not be empty");
+            throw new ASNParsingException("Data must not be empty");
         if (data.readableBytes() != 7)
-            throw new APPException("Data length must be equal 7");
+            throw new ASNParsingException("Data length must be equal 7");
 
         String res = null;
         try {
             res = TbcdStringImpl.decodeString(data.slice(0, 3));
-        } catch (APPParsingComponentException e) {
-            throw new APPException("APPParsingComponentException when decoding CellGlobalIdOrServiceAreaIdFixedLength: " + e.getMessage(), e);
+        } catch (ASNParsingComponentException e) {
+            throw new ASNParsingException("APPParsingComponentException when decoding CellGlobalIdOrServiceAreaIdFixedLength: " + e.getMessage(), e);
         }
 
         if (res.length() < 5 || res.length() > 6)
-            throw new APPException("Decoded TbcdString must be equal 5 or 6");
+            throw new ASNParsingException("Decoded TbcdString must be equal 5 or 6");
 
         String sMnc;
         if (res.length() == 5) {
@@ -128,24 +128,24 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthImpl extends ASNOctetString i
         return Integer.parseInt(sMnc);
     }
 
-    public int getLac() throws APPException {
+    public int getLac() throws ASNParsingException {
     	ByteBuf data=getValue();
         if (data == null)
-            throw new APPException("Data must not be empty");
+            throw new ASNParsingException("Data must not be empty");
         if (data.readableBytes() != 7)
-            throw new APPException("Data length must be equal 7");
+            throw new ASNParsingException("Data length must be equal 7");
 
         data.skipBytes(3);
         int res = data.readUnsignedShort();
         return res;
     }
 
-    public int getCellIdOrServiceAreaCode() throws APPException {
+    public int getCellIdOrServiceAreaCode() throws ASNParsingException {
     	ByteBuf data=getValue();
         if (data == null)
-            throw new APPException("Data must not be empty");
+            throw new ASNParsingException("Data must not be empty");
         if (data.readableBytes() != 7)
-            throw new APPException("Data length must be equal 7");
+            throw new ASNParsingException("Data length must be equal 7");
 
         data.skipBytes(5);
         int res = data.readUnsignedShort();
@@ -167,7 +167,7 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthImpl extends ASNOctetString i
             lac = this.getLac();
             cellId = this.getCellIdOrServiceAreaCode();
             goodData = true;
-        } catch (APPException e) {
+        } catch (ASNParsingException e) {
         }
 
         StringBuilder sb = new StringBuilder();

@@ -32,7 +32,6 @@ import static org.testng.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedDigits;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedInfo;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
@@ -121,6 +120,8 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -367,7 +368,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                     assertEquals(calledPartyNumber.getNatureOfAddressIndicator(), NAINumber._NAI_INTERNATIONAL_NUMBER);
                     assertEquals(calledPartyNumber.getNumberingPlanIndicator(), CalledPartyNumber._NPI_ISDN);
                     assertEquals(calledPartyNumber.getInternalNetworkNumberIndicator(), CalledPartyNumber._INN_ROUTING_ALLOWED);
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                     e.printStackTrace();
                     fail("Exception while checking ConnectRequest imdication", e);
                 }
@@ -497,7 +498,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                         assertEquals(ind.getMiscCallInfo().getMessageType(), MiscCallInfoMessageType.notification);
                         assertNull(ind.getMiscCallInfo().getDpAssignment());
                         assertNull(ind.getExtensions());
-                    } catch (APPException e) {
+                    } catch (ASNParsingException e) {
                         this.error("Exception while checking EventReportBCSMRequest - the second message", e);
                     }
 
@@ -818,7 +819,7 @@ TC-CONTINUE + SpecializedResourceReportRequest
                     assertEquals(cpn.getInternalNetworkNumberIndicator(), CalledPartyNumber._INN_ROUTING_NOT_ALLOWED);
                     assertEquals(cpn.getNatureOfAddressIndicator(), NAINumber._NAI_INTERNATIONAL_NUMBER);
                     assertEquals(cpn.getNumberingPlanIndicator(), CalledPartyNumber._NPI_ISDN);
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                     this.error("Error while checking ConnectToResourceRequest", e);
                 }
                 assertFalse(ind.getResourceAddressNull());
@@ -859,7 +860,7 @@ TC-CONTINUE + SpecializedResourceReportRequest
                     assertEquals(ci.getCodingStandard(), CauseIndicators._CODING_STANDARD_ITUT);
                     assertNull(ci.getDiagnostics());
                     assertEquals(ci.getLocation(), CauseIndicators._LOCATION_INTERNATIONAL_NETWORK);
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                     this.error("Error while checking ReleaseCallRequest", e);
                 }
                 ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
@@ -1217,7 +1218,7 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
                     assertNull(ipc.getExtraData());
 
                     assertNull(ind.getExtensions());
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                     this.error("Error while checking AssistRequestInstructionsRequest", e);
                 }
 
@@ -1238,7 +1239,7 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
                     assertEquals(gn.getNumberingPlanIndicator(), GenericNumber._NPI_DATA);
                     assertEquals(gn.getNumberQualifierIndicator(), GenericNumber._NQIA_CALLING_PARTY_NUMBER);
                     assertEquals(gn.getScreeningIndicator(), GenericNumber._SI_USER_PROVIDED_VERIFIED_FAILED);
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                     this.error("Error while checking PromptAndCollectUserInformationResponse", e);
                 }
 
@@ -1451,7 +1452,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     assertNull(ind.getCorrelationID());
                     assertNull(ind.getExtensions());
                     assertNull(ind.getScfID());                    
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                     this.error("Error while trying checking EstablishTemporaryConnectionRequest", e);
                 }
                 ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
@@ -3141,7 +3142,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 try {
                     assertEquals(ind.getGapCriteria().getBasicGapCriteria().getCalledAddressAndService()
                             .getCalledAddressNumber().getGenericNumber().getAddress(), "501090500");
-                } catch (APPException e) {
+                } catch (ASNParsingException e) {
                 	fail("INAPException in onCallGapRequest: " + e);
                 }
                 assertEquals(ind.getGapCriteria().getBasicGapCriteria().getCalledAddressAndService().getServiceKey(), 100);

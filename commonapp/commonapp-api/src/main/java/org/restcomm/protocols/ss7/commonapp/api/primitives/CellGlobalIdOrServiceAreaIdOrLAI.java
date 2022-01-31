@@ -61,5 +61,4 @@ public interface CellGlobalIdOrServiceAreaIdOrLAI {
      * @return
      */
     LAIFixedLength getLAIFixedLength();
-
 }

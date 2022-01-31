@@ -31,8 +31,8 @@ import java.util.Arrays;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
-import com.mobius.software.telco.protocols.ss7.asn.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;

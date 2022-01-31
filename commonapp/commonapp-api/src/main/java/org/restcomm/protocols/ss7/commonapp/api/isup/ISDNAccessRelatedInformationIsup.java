@@ -22,8 +22,9 @@
 
 package org.restcomm.protocols.ss7.commonapp.api.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.isup.message.parameter.accessTransport.AccessTransport;
+
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 /**
 *
@@ -42,6 +43,6 @@ bound.&maxISDNAccessRelatedInformationLength))
 */
 public interface ISDNAccessRelatedInformationIsup {
 
-    AccessTransport getAccessTransport() throws APPException;
+    AccessTransport getAccessTransport() throws ASNParsingException;
 
 }

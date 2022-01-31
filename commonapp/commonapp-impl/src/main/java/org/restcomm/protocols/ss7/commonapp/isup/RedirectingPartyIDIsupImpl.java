@@ -22,12 +22,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.isup;
 
-import org.restcomm.protocols.ss7.commonapp.api.APPException;
 import org.restcomm.protocols.ss7.commonapp.api.isup.RedirectingPartyIDIsup;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectingNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectingNumber;
 
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -43,32 +43,32 @@ public class RedirectingPartyIDIsupImpl extends ASNOctetString implements Redire
 	public RedirectingPartyIDIsupImpl() {
     }
 
-    public RedirectingPartyIDIsupImpl(RedirectingNumber redirectingNumber) throws APPException {
+    public RedirectingPartyIDIsupImpl(RedirectingNumber redirectingNumber) throws ASNParsingException {
         super(translate(redirectingNumber));
     }
 
-    public static ByteBuf translate(RedirectingNumber redirectingNumber) throws APPException {
+    public static ByteBuf translate(RedirectingNumber redirectingNumber) throws ASNParsingException {
         if (redirectingNumber == null)
-            throw new APPException("The redirectingNumber parameter must not be null");
+            throw new ASNParsingException("The redirectingNumber parameter must not be null");
         try {
         	ByteBuf buffer=Unpooled.buffer();
         	((RedirectingNumberImpl) redirectingNumber).encode(buffer);
             return buffer;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when encoding redirectingNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when encoding redirectingNumber: " + e.getMessage(), e);
         }
     }
 
-    public RedirectingNumber getRedirectingNumber() throws APPException {
+    public RedirectingNumber getRedirectingNumber() throws ASNParsingException {
         if (this.getValue() == null)
-            throw new APPException("The data has not been filled");
+            throw new ASNParsingException("The data has not been filled");
 
         try {
             RedirectingNumberImpl ocn = new RedirectingNumberImpl();
             ocn.decode(this.getValue());
             return ocn;
         } catch (ParameterException e) {
-            throw new APPException("ParameterException when decoding RedirectingNumber: " + e.getMessage(), e);
+            throw new ASNParsingException("ParameterException when decoding RedirectingNumber: " + e.getMessage(), e);
         }
     }
 
@@ -82,7 +82,7 @@ public class RedirectingPartyIDIsupImpl extends ASNOctetString implements Redire
                 RedirectingNumber rn = this.getRedirectingNumber();
                 sb.append(", ");
                 sb.append(rn.toString());
-            } catch (APPException e) {
+            } catch (ASNParsingException e) {
             }
         }
 

@@ -1549,11 +1549,7 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					|| acn == INAPApplicationContext.Core_INAP_CS1_SSP_to_SCP_AC
 					|| acn == INAPApplicationContext.Core_INAP_CS1_assist_handoff_SSP_to_SCP_AC
 					|| acn == INAPApplicationContext.Core_INAP_CS1_IP_to_SCP_AC
-					|| acn == INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC
-					|| acn == INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
-					|| acn == INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
-					|| acn == INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B
-					|| acn == INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B) {
+					|| acn == INAPApplicationContext.Core_INAP_CS1_SCP_to_SSP_AC) {
 				if (parameter == null) {
 					processed = true;
 					SpecializedResourceReportRequest ind = new SpecializedResourceReportRequestImpl();
