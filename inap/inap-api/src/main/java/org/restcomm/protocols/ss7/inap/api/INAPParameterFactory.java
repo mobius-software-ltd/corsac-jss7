@@ -224,6 +224,8 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.INServiceCompatibilityIndication;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.IPAvailable;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.LegInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.LegStatus;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallControlInfoINAP;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallControlInfoItem;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallInfoType;
@@ -794,5 +796,7 @@ public interface INAPParameterFactory {
     
     RequestedReportInfo getRequestedReportInfo(boolean accumulatedCharge,boolean actualTariff,boolean chargeableDuration,boolean timeOfAnswer);
     
-    AchBillingChargingCharacteristicsCS1 getAchBillingChargingCharacteristicsCS1(ReportCondition reportCondition,RequestedReportInfo requestedReportInfo);    
+    AchBillingChargingCharacteristicsCS1 getAchBillingChargingCharacteristicsCS1(ReportCondition reportCondition,RequestedReportInfo requestedReportInfo);
+    
+    LegInformation getLegInformation(LegType legType,LegStatus legStatus);
 }

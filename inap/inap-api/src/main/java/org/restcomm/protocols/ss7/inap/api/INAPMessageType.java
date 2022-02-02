@@ -97,6 +97,7 @@ public enum INAPMessageType {
    requestEveryStatusChangeReport_Request,
    requestFirstStatusMatchReport_Request,
    releaseCallPartyConnection_Request,
+   releaseCallPartyConnection_Response,
    statusReport_Request,
    selectFacility_Request,
    selectRoute_Request,

@@ -34,6 +34,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ReleaseCa
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
  *
@@ -47,15 +48,21 @@ public class ReleaseCallPartyConnectionRequestImpl extends CircuitSwitchedCallMe
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1)
     private SendingLegIDWrapperImpl legToBeReleased;
     
-	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1,defaultImplementation = CauseIsupImpl.class)
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 1,constructed = false,index = -1)
+    private ASNInteger callID;
+    
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 2,constructed = false,index = -1,defaultImplementation = CauseIsupImpl.class)
     private CauseIsup releaseCause;
     
     public ReleaseCallPartyConnectionRequestImpl() {
     }
 
-    public ReleaseCallPartyConnectionRequestImpl(LegType legToBeReleased,CauseIsup releaseCause) {
+    public ReleaseCallPartyConnectionRequestImpl(LegType legToBeReleased,Integer callID,CauseIsup releaseCause) {
         if(legToBeReleased!=null)
         	this.legToBeReleased=new SendingLegIDWrapperImpl(new SendingLegIDImpl(legToBeReleased));
+        
+        if(callID!=null)
+        	this.callID=new ASNInteger(callID);
         
         this.releaseCause=releaseCause;
     }
@@ -78,6 +85,15 @@ public class ReleaseCallPartyConnectionRequestImpl extends CircuitSwitchedCallMe
 	}
 
     @Override
+    public Integer getCallID() 
+    {
+    	if(callID==null)
+    		return null;
+    	
+		return callID.getIntValue();
+	}
+    
+    @Override
     public CauseIsup getReleaseCause() 
 	{
 		return releaseCause;
@@ -92,6 +108,10 @@ public class ReleaseCallPartyConnectionRequestImpl extends CircuitSwitchedCallMe
         if (legToBeReleased != null && legToBeReleased.getSendingLegID()!=null && legToBeReleased.getSendingLegID().getSendingSideID()!=null) {
             sb.append(", legToBeReleased=");
             sb.append(legToBeReleased.getSendingLegID().getSendingSideID());
+        }
+        if (callID != null && callID.getValue()!=null) {
+            sb.append(", callID=");
+            sb.append(callID.getValue());
         }
         if (releaseCause != null) {
             sb.append(", releaseCause=");

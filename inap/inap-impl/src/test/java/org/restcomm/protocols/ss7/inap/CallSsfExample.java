@@ -69,6 +69,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.PromptAnd
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.PromptAndCollectUserInformationResponse;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ReconnectRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ReleaseCallPartyConnectionRequest;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ReleaseCallPartyConnectionResponse;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ReleaseCallRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.RequestCurrentStatusReportRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.RequestCurrentStatusReportResponse;
@@ -681,6 +682,12 @@ public class CallSsfExample implements INAPDialogListener, INAPServiceCircuitSwi
 
 	@Override
 	public void onCallLimitRequest(CallLimitRequest ind) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onReleaseCallPartyConnectionResponse(ReleaseCallPartyConnectionResponse ind) {
 		// TODO Auto-generated method stub
 		
 	}

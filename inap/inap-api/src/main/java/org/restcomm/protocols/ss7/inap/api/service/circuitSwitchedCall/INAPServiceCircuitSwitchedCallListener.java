@@ -155,6 +155,8 @@ public interface INAPServiceCircuitSwitchedCallListener extends INAPServiceListe
     
     void onReleaseCallPartyConnectionRequest(ReleaseCallPartyConnectionRequest ind);
     
+    void onReleaseCallPartyConnectionResponse(ReleaseCallPartyConnectionResponse ind);
+    
     void onReconnectRequest(ReconnectRequest ind);
     
     void onHoldCallPartyConnectionRequest(HoldCallPartyConnectionRequest ind);  

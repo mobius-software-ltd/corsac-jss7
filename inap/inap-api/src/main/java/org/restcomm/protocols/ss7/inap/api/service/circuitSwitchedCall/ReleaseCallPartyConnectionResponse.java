@@ -22,11 +22,14 @@
 
 package org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall;
 
-import org.restcomm.protocols.ss7.commonapp.api.isup.CauseIsup;
-import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import java.util.List;
+
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.LegInformation;
 
 /**
  *
+<code>
+<p>
  ReleaseCallPartyConnection ::= OPERATION
 ARGUMENT ReleaseCallPartyConnectionArg
 RESULT
@@ -75,15 +78,11 @@ CallID ::= INTEGER
 -- 4.2.2.1/Q.1214 for a description of Call Segment.
 
 CallPartyHandlingResultsArg ::= SEQUENCE OF LegInformation
+</code>
  *
  * @author yulian.oifa
  *
  */
-public interface ReleaseCallPartyConnectionRequest extends CircuitSwitchedCallMessage {
-
-	LegType getLegToBeReleased();
-	
-	Integer getCallID();
-	
-    CauseIsup getReleaseCause();
+public interface ReleaseCallPartyConnectionResponse extends CircuitSwitchedCallMessage {
+	List<LegInformation> getLegInformation();						       
 }

@@ -103,6 +103,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.HoldCause;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.IPAvailable;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.LegInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ReportCondition;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceAddress;
@@ -799,9 +800,13 @@ public interface INAPDialogCircuitSwitchedCall extends INAPDialog {
     		CalledPartyNumberIsup connectedNumber,ForwardSuppressionIndicators forwardSuppressionIndicators,
     		BackwardGVNS backwardGVNS,CAPINAPExtensions extensions) throws INAPException;
     
-    Long addReleaseCallPartyConnectionRequest(LegType legToBeReleased,CauseIsup releaseCause) throws INAPException;
+    Long addReleaseCallPartyConnectionRequest(LegType legToBeReleased,Integer callID,CauseIsup releaseCause) throws INAPException;
 
-    Long addReleaseCallPartyConnectionRequest(int customInvokeTimeout,LegType legToBeReleased,CauseIsup releaseCause) throws INAPException;        
+    Long addReleaseCallPartyConnectionRequest(int customInvokeTimeout,LegType legToBeReleased,Integer callID,CauseIsup releaseCause) throws INAPException;        
+    
+    void addReleaseCallPartyConnectionResponse(long invokeId, List<LegInformation> legInformation) throws INAPException;
+    
+    void addReleaseCallPartyConnectionResponse(long invokeId) throws INAPException;
     
     Long addReconnectRequest(LegType legID) throws INAPException;
 

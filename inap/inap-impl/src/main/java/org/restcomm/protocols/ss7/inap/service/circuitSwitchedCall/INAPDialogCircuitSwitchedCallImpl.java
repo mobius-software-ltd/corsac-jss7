@@ -108,6 +108,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.HoldCause;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.IPAvailable;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.LegInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ReportCondition;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.RequestedInformation;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ResourceAddress;
@@ -3103,14 +3104,14 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addReleaseCallPartyConnectionRequest(LegType legToBeReleased, CauseIsup releaseCause)
+	public Long addReleaseCallPartyConnectionRequest(LegType legToBeReleased,Integer callID, CauseIsup releaseCause)
 			throws INAPException {
-		return addReleaseCallPartyConnectionRequest(_Timer_Default, legToBeReleased, releaseCause);
+		return addReleaseCallPartyConnectionRequest(_Timer_Default, legToBeReleased,callID,releaseCause);
 	}
 
 	@Override
 	public Long addReleaseCallPartyConnectionRequest(int customInvokeTimeout, LegType legToBeReleased,
-			CauseIsup releaseCause) throws INAPException {
+			Integer callID,CauseIsup releaseCause) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
@@ -3125,11 +3126,37 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 			customTimeout = customInvokeTimeout;
 
 		ReleaseCallPartyConnectionRequestImpl req = new ReleaseCallPartyConnectionRequestImpl(legToBeReleased,
-				releaseCause);
-		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
+				callID,releaseCause);
+		return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(),
 				(long) INAPOperationCode.releaseCallPartyConnection, req, true, false);
 	}
+	
+	@Override
+	public void addReleaseCallPartyConnectionResponse(long invokeId, List<LegInformation> legInformation) throws INAPException {
+		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B)
+			throw new INAPException(
+					"Bad application context name for addReleaseCallPartyConnectionResponse: must be Ericcson_cs1plus_SSP_TO_SCP_AC or Ericcson_cs1plus_SCP_to_SSP_AC");
 
+		ReleaseCallPartyConnectionResponseImpl res = new ReleaseCallPartyConnectionResponseImpl(legInformation);
+		this.sendDataComponent(invokeId, null, null, null, (long) INAPOperationCode.releaseCallPartyConnection, res, false, true);
+	}
+	
+	@Override
+	public void addReleaseCallPartyConnectionResponse(long invokeId) throws INAPException {
+		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
+				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B)
+			throw new INAPException(
+					"Bad application context name for addReleaseCallPartyConnectionResponse: must be Ericcson_cs1plus_SSP_TO_SCP_AC or Ericcson_cs1plus_SCP_to_SSP_AC");
+
+		ReleaseCallPartyConnectionParameterlessResponseImpl res = new ReleaseCallPartyConnectionParameterlessResponseImpl();
+		this.sendDataComponent(invokeId, null, null, null, (long) INAPOperationCode.releaseCallPartyConnection, res, false, true);
+	}
+	
 	@Override
 	public Long addReconnectRequest(LegType legID) throws INAPException {
 		return addReconnectRequest(_Timer_Default, legID);

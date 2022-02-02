@@ -71,7 +71,7 @@ public class ReleaseCallPartyConnectionTest
 		CauseIndicatorsImpl ci=new CauseIndicatorsImpl();
 		ci.decode(Unpooled.wrappedBuffer(causeData1));
 		CauseIsup causeIsup=new CauseIsupImpl(ci);
-		ReleaseCallPartyConnectionRequestImpl elem = new ReleaseCallPartyConnectionRequestImpl(LegType.leg1,causeIsup);
+		ReleaseCallPartyConnectionRequestImpl elem = new ReleaseCallPartyConnectionRequestImpl(LegType.leg1,null,causeIsup);
 	    byte[] rawData = this.message1;
 	    ByteBuf buffer=parser.encode(elem);
 	    byte[] encodedData = new byte[buffer.readableBytes()];

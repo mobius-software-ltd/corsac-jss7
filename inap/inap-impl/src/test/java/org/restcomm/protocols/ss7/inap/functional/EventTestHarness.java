@@ -79,6 +79,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.PromptAnd
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.PromptAndCollectUserInformationResponse;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ReconnectRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ReleaseCallPartyConnectionRequest;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ReleaseCallPartyConnectionResponse;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ReleaseCallRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.RequestCurrentStatusReportRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.RequestCurrentStatusReportResponse;
@@ -725,6 +726,13 @@ public class EventTestHarness implements INAPDialogListener, INAPServiceCircuitS
 	public void onCallLimitRequest(CallLimitRequest ind) {
 		this.logger.debug("CallLimitRequest");
         TestEvent te = TestEvent.createReceivedEvent(EventType.CallLimitRequest, ind, sequence++);
+        this.observerdEvents.add(te);
+	}
+
+	@Override
+	public void onReleaseCallPartyConnectionResponse(ReleaseCallPartyConnectionResponse ind) {
+		this.logger.debug("ReleaseCallPartyConnectionResponse");
+        TestEvent te = TestEvent.createReceivedEvent(EventType.ReleaseCallPartyConnectionResponse, ind, sequence++);
         this.observerdEvents.add(te);
 	}
 }

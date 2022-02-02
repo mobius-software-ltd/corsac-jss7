@@ -83,6 +83,7 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.PromptAnd
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.PromptAndCollectUserInformationResponse;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ReconnectRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ReleaseCallPartyConnectionRequest;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ReleaseCallPartyConnectionResponse;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.ReleaseCallRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.RequestCurrentStatusReportRequest;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.RequestCurrentStatusReportResponse;
@@ -1839,18 +1840,45 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B) {
-				if (parameter instanceof ReleaseCallPartyConnectionRequest) {
-					processed = true;
-					ReleaseCallPartyConnectionRequest ind = (ReleaseCallPartyConnectionRequest) parameter;
-					for (INAPServiceListener serLis : this.serviceListeners) {
-						try {
-							serLis.onINAPMessage(ind);
-							((INAPServiceCircuitSwitchedCallListener) serLis).onReleaseCallPartyConnectionRequest(ind);
-						} catch (Exception e) {
-							loger.error("Error processing releaseCallPartyConnectionRequest: " + e.getMessage(), e);
+				if (compType == ComponentType.Invoke && parameter == null) {
+					if (parameter instanceof ReleaseCallPartyConnectionRequest) {
+						processed = true;
+						ReleaseCallPartyConnectionRequest ind = (ReleaseCallPartyConnectionRequest) parameter;
+						for (INAPServiceListener serLis : this.serviceListeners) {
+							try {
+								serLis.onINAPMessage(ind);
+								((INAPServiceCircuitSwitchedCallListener) serLis).onReleaseCallPartyConnectionRequest(ind);
+							} catch (Exception e) {
+								loger.error("Error processing releaseCallPartyConnectionRequest: " + e.getMessage(), e);
+							}
 						}
 					}
-				}
+				} else if (compType == ComponentType.ReturnResultLast) {
+					if(parameter==null) {
+						processed = true;
+						ReleaseCallPartyConnectionResponse ind = new ReleaseCallPartyConnectionParameterlessResponseImpl();
+						for (INAPServiceListener serLis : this.serviceListeners) {
+							try {
+								serLis.onINAPMessage(ind);
+								((INAPServiceCircuitSwitchedCallListener) serLis).onReleaseCallPartyConnectionResponse(ind);
+							} catch (Exception e) {
+								loger.error("Error processing ReleaseCallPartyConnectionResponse: " + e.getMessage(), e);
+							}
+						}
+					}
+					else if (parameter instanceof ReleaseCallPartyConnectionResponse) {
+						processed = true;
+						ReleaseCallPartyConnectionResponse ind = (ReleaseCallPartyConnectionResponse) parameter;
+						for (INAPServiceListener serLis : this.serviceListeners) {
+							try {
+								serLis.onINAPMessage(ind);
+								((INAPServiceCircuitSwitchedCallListener) serLis).onReleaseCallPartyConnectionResponse(ind);
+							} catch (Exception e) {
+								loger.error("Error processing ReleaseCallPartyConnectionResponse: " + e.getMessage(), e);
+							}
+						}
+					}
+				}								
 			}
 			break;
 		case INAPOperationCode.signallingInformation:

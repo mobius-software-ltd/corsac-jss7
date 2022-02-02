@@ -304,6 +304,8 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.INServiceCompatibilityIndication;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.IPAvailable;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ISDNAccessRelatedInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.LegInformation;
+import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.LegStatus;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallControlInfoINAP;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallControlInfoItem;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.MidCallInfoType;
@@ -397,6 +399,7 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.Ho
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.INServiceCompatibilityIndicationImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.IPAvailableImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ISDNAccessRelatedInformationImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.LegInformationImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.MidCallControlInfoINAPImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.MidCallControlInfoItemImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.MidCallInfoTypeImpl;
@@ -1803,5 +1806,10 @@ public class INAPParameterFactoryImpl implements INAPParameterFactory {
 	public AchBillingChargingCharacteristicsCS1 getAchBillingChargingCharacteristicsCS1(ReportCondition reportCondition,
 			RequestedReportInfo requestedReportInfo) {
 		return new AchBillingChargingCharacteristicsCS1Impl(reportCondition, requestedReportInfo);
+	}
+
+	@Override
+	public LegInformation getLegInformation(LegType legType, LegStatus legStatus) {
+		return new LegInformationImpl(legType, legStatus);
 	}
 }
