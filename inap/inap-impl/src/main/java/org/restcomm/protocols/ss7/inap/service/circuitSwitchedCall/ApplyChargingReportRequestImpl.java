@@ -51,7 +51,7 @@ public class ApplyChargingReportRequestImpl extends CircuitSwitchedCallMessageIm
 
     public ApplyChargingReportRequestImpl(ByteBuf callResult) {
         if(callResult!=null)
-        	this.callResult=new ASNOctetString(callResult);        
+        	this.callResult=new ASNOctetString(callResult,"ApplyChargingReportRequest",null,null,true);       
     }
 
     @Override

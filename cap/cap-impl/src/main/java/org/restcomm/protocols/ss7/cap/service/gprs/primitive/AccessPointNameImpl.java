@@ -34,9 +34,10 @@ import io.netty.buffer.ByteBuf;
  */
 public class AccessPointNameImpl extends ASNOctetString implements AccessPointName {
 	public AccessPointNameImpl() {
+		super("AccessPointName",3,102,false);
     }
 
     public AccessPointNameImpl(ByteBuf value) {
-        super(value);
+        super(value,"AccessPointName",3,102,false);
     }
 }

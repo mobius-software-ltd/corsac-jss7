@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class PositioningDataInformationImpl extends ASNOctetString implements PositioningDataInformation {
 	public PositioningDataInformationImpl() {
+		super("PositioningDataInformation",2,10,false);
     }
 
     public PositioningDataInformationImpl(ByteBuf value) {
-    	super(value);        
+    	super(value,"PositioningDataInformation",2,10,false);        
     }
 
     @Override

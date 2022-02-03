@@ -36,10 +36,11 @@ import io.netty.buffer.Unpooled;
  */
 public class TimeAndTimezoneImpl extends ASNOctetString implements TimeAndTimezone {
 	public TimeAndTimezoneImpl() {
+		super("TimeAndTimezone",8,8,false);
     }
 
 	public TimeAndTimezoneImpl(int year, int month, int day, int hour, int minute, int second, int timeZone) {
-		super(translate(year, month, day, hour, minute, second, timeZone));
+		super(translate(year, month, day, hour, minute, second, timeZone),"TimeAndTimezone",8,8,false);
 	}
     
 	private static ByteBuf translate(int year, int month, int day, int hour, int minute, int second, int timeZone) {

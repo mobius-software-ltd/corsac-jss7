@@ -36,10 +36,11 @@ import io.netty.buffer.Unpooled;
  */
 public class VariablePartDateImpl extends ASNOctetString implements VariablePartDate {
 	public VariablePartDateImpl() {
+		super("VariablePartDate",4,4,false);
     }
 
     public VariablePartDateImpl(int year, int month, int day) {
-    	super(translate(year, month, day));
+    	super(translate(year, month, day),"VariablePartDate",4,4,false);
     }
     
     private static ByteBuf translate(int year, int month, int day) {

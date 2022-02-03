@@ -39,11 +39,12 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class LocationNumberMapImpl extends ASNOctetString implements LocationNumberMap {
-	public LocationNumberMapImpl() {        
+	public LocationNumberMapImpl() {   
+		super("LocationNumberMap",2,10,false);
     }
 
     public LocationNumberMapImpl(LocationNumber locationNumber) throws ASNParsingException {
-        super(translate(locationNumber));
+        super(translate(locationNumber),"LocationNumberMap",2,10,false);
     }
 
     public static ByteBuf translate(LocationNumber locationNumber) throws ASNParsingException {

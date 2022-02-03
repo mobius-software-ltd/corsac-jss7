@@ -38,10 +38,11 @@ import io.netty.buffer.ByteBuf;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public class UtranPositioningDataInfoImpl extends ASNOctetString implements UtranPositioningDataInfo {
 	public UtranPositioningDataInfoImpl() {
+		super("UtranPositioningDataInfo",3,11,false);
     }
 
     public UtranPositioningDataInfoImpl(ByteBuf value) {
-    	super(value);        
+    	super(value,"UtranPositioningDataInfo",3,11,false);
     }
 
     @Override

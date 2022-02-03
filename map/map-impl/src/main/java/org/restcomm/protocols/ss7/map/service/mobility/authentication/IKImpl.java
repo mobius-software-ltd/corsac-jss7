@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class IKImpl extends ASNOctetString implements IK {
 	public IKImpl(ByteBuf value) {
-		super(value);  
+		super(value,"IK",16,16,false);  
     }
 
     public IKImpl() {
+    	super("IK",16,16,false);
     }
 
     @Override

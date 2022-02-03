@@ -41,10 +41,11 @@ import io.netty.buffer.Unpooled;
  */
 public class GenericNumberIsupImpl extends ASNOctetString implements GenericNumberIsup {
 	public GenericNumberIsupImpl() {
+		super("GenericNumberIsup",3,11,false);
     }
 
     public GenericNumberIsupImpl(GenericNumber genericNumber) throws ASNParsingException {
-        super(translate(genericNumber));
+        super(translate(genericNumber),"GenericNumberIsup",3,11,false);
     }
 
     public static ByteBuf translate(GenericNumber genericNumber) throws ASNParsingException {

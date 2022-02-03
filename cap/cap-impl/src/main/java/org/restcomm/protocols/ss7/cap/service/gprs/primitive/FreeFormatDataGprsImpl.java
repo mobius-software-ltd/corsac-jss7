@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class FreeFormatDataGprsImpl extends ASNOctetString implements FreeFormatDataGprs {
 	public FreeFormatDataGprsImpl() {
+		super("FreeFormatDataGprs",1,160,false);
     }
 
     public FreeFormatDataGprsImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"FreeFormatDataGprs",1,160,false);
     }
 
     @Override

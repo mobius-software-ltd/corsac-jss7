@@ -38,10 +38,11 @@ import io.netty.buffer.Unpooled;
 public class PlmnIdImpl extends ASNOctetString implements PlmnId {
 	
 	public PlmnIdImpl() {
+		super("PlmnId",3,3,false);
     }
 
 	public PlmnIdImpl(int mcc, int mnc) {
-		super(translate(mcc, mnc));
+		super(translate(mcc, mnc),"PlmnId",3,3,false);
 	}
 	
     public static ByteBuf translate(int mcc, int mnc) {

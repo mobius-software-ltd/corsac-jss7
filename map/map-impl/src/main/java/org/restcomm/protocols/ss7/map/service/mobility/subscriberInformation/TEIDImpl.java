@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class TEIDImpl extends ASNOctetString implements TEID {
 	public TEIDImpl() {
+		super("TEID",4,4,false);
     }
 
     public TEIDImpl(ByteBuf value) {
-        super(value);
+        super(value,"TEID",4,4,false);
     }
 
     @Override

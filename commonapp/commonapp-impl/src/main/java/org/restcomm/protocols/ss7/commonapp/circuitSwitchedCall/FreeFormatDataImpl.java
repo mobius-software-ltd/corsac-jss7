@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBuf;
 */
 public class FreeFormatDataImpl extends ASNOctetString implements FreeFormatData {
 	public FreeFormatDataImpl() {
+		super("FreeFormatData",1,160,false);
     }
 
     public FreeFormatDataImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"FreeFormatData",1,160,false);
     }
 
     @Override

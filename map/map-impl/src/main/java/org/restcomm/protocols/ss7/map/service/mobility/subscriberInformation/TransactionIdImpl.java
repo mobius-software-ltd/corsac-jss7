@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class TransactionIdImpl extends ASNOctetString implements TransactionId {
 	public TransactionIdImpl() {
+		super("TransactionId",1,2,false);
     }
 
     public TransactionIdImpl(ByteBuf value) {
-        super(value);
+        super(value,"TransactionId",1,2,false);
     }
 
     @Override

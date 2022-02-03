@@ -40,13 +40,14 @@ public class ChargingCharacteristicsImpl extends ASNOctetString implements Charg
     public static final int _FLAG_FLAT_RATE_CHARGING_CHARGING = 0x02;
     public static final int _FLAG_CHARGING_BY_HOT_BILLING_CHARGING = 0x01;
 
-    public ChargingCharacteristicsImpl() {        
+    public ChargingCharacteristicsImpl() {   
+    	super("ChargingCharacteristics",2,2,false);
     }
 
     public ChargingCharacteristicsImpl(boolean isNormalCharging, boolean isPrepaidCharging, boolean isFlatRateChargingCharging,
             boolean isChargingByHotBillingCharging) {
         super(translate(isNormalCharging, isPrepaidCharging, isFlatRateChargingCharging,
-                isChargingByHotBillingCharging));
+                isChargingByHotBillingCharging),"ChargingCharacteristics",2,2,false);
     }
 
     private static ByteBuf translate(boolean isNormalCharging, boolean isPrepaidCharging, boolean isFlatRateChargingCharging,

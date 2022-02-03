@@ -41,10 +41,11 @@ import io.netty.buffer.Unpooled;
  */
 public class BearerIsupImpl extends ASNOctetString implements BearerIsup {
 	public BearerIsupImpl() {
+		super("BearerIsup",2,11,false);
     }
 
     public BearerIsupImpl(UserServiceInformation userServiceInformation) throws ASNParsingException {
-        super(translate(userServiceInformation));
+        super(translate(userServiceInformation),"BearerIsup",2,11,false);
     }
 
     public static ByteBuf translate(UserServiceInformation userServiceInformation) throws ASNParsingException {

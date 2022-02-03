@@ -144,97 +144,97 @@ public class DataItemInformationImpl implements DataItemInformation {
     		ByteBuf attribute29,ByteBuf attribute30) {
     	
     	if(attribute0!=null)
-    		this.attribute0=new ASNOctetString(attribute0);    		
+    		this.attribute0=new ASNOctetString(attribute0,"Attribute0",null,null,false);    		
     	
     	if(attribute1!=null)
-    		this.attribute1=new ASNOctetString(attribute1);    		
+    		this.attribute1=new ASNOctetString(attribute1,"Attribute1",null,null,false);    		
     	
     	if(attribute2!=null)
-    		this.attribute2=new ASNOctetString(attribute2);    		
+    		this.attribute2=new ASNOctetString(attribute2,"Attribute2",null,null,false);    		
     	
     	if(attribute3!=null)
-    		this.attribute3=new ASNOctetString(attribute3);    		
+    		this.attribute3=new ASNOctetString(attribute3,"Attribute3",null,null,false);    		
     	
     	if(attribute4!=null)
-    		this.attribute4=new ASNOctetString(attribute4);    		
+    		this.attribute4=new ASNOctetString(attribute4,"Attribute4",null,null,false);    		
     	
     	if(attribute5!=null)
-    		this.attribute5=new ASNOctetString(attribute5);    		
+    		this.attribute5=new ASNOctetString(attribute5,"Attribute5",null,null,false);    		
     	
     	if(attribute6!=null)
-    		this.attribute6=new ASNOctetString(attribute6);    		
+    		this.attribute6=new ASNOctetString(attribute6,"Attribute6",null,null,false);    		
     	
     	if(attribute7!=null)
-    		this.attribute7=new ASNOctetString(attribute7);    		
+    		this.attribute7=new ASNOctetString(attribute7,"Attribute7",null,null,false);    		
     	
     	if(attribute8!=null)
-    		this.attribute8=new ASNOctetString(attribute8);    		
+    		this.attribute8=new ASNOctetString(attribute8,"Attribute8",null,null,false);    		
     	
     	if(attribute9!=null)
-    		this.attribute9=new ASNOctetString(attribute9);    		
+    		this.attribute9=new ASNOctetString(attribute9,"Attribute9",null,null,false);    		
     	
     	if(attribute10!=null)
-    		this.attribute10=new ASNOctetString(attribute10);    		
+    		this.attribute10=new ASNOctetString(attribute10,"Attribute10",null,null,false);    		
     	
     	if(attribute11!=null)
-    		this.attribute11=new ASNOctetString(attribute11);    		
+    		this.attribute11=new ASNOctetString(attribute11,"Attribute11",null,null,false);    		
     	
     	if(attribute12!=null)
-    		this.attribute12=new ASNOctetString(attribute12);    		
+    		this.attribute12=new ASNOctetString(attribute12,"Attribute12",null,null,false);    		
     	
     	if(attribute13!=null)
-    		this.attribute13=new ASNOctetString(attribute13);    		
+    		this.attribute13=new ASNOctetString(attribute13,"Attribute13",null,null,false);    		
     	
     	if(attribute14!=null)
-    		this.attribute14=new ASNOctetString(attribute14);    		
+    		this.attribute14=new ASNOctetString(attribute14,"Attribute14",null,null,false);    		
     	
     	if(attribute15!=null)
-    		this.attribute15=new ASNOctetString(attribute15);    		
+    		this.attribute15=new ASNOctetString(attribute15,"Attribute15",null,null,false);    		
     	
     	if(attribute16!=null)
-    		this.attribute16=new ASNOctetString(attribute16);    		
+    		this.attribute16=new ASNOctetString(attribute16,"Attribute16",null,null,false);    		
     	
     	if(attribute17!=null)
-    		this.attribute17=new ASNOctetString(attribute17);    		
+    		this.attribute17=new ASNOctetString(attribute17,"Attribute17",null,null,false);    		
     	
     	if(attribute18!=null)
-    		this.attribute18=new ASNOctetString(attribute18);    		
+    		this.attribute18=new ASNOctetString(attribute18,"Attribute18",null,null,false);    		
     	
     	if(attribute19!=null)
-    		this.attribute19=new ASNOctetString(attribute19);    		
+    		this.attribute19=new ASNOctetString(attribute19,"Attribute19",null,null,false);    		
     	
     	if(attribute20!=null)
-    		this.attribute20=new ASNOctetString(attribute20);    		
+    		this.attribute20=new ASNOctetString(attribute20,"Attribute20",null,null,false);    		
     	
     	if(attribute21!=null)
-    		this.attribute21=new ASNOctetString(attribute21);    		
+    		this.attribute21=new ASNOctetString(attribute21,"Attribute21",null,null,false);    		
     	
     	if(attribute22!=null)
-    		this.attribute22=new ASNOctetString(attribute22);    		
+    		this.attribute22=new ASNOctetString(attribute22,"Attribute22",null,null,false);    		
     	
     	if(attribute23!=null)
-    		this.attribute23=new ASNOctetString(attribute23);    		
+    		this.attribute23=new ASNOctetString(attribute23,"Attribute23",null,null,false);    		
     	
     	if(attribute24!=null)
-    		this.attribute24=new ASNOctetString(attribute24);    		
+    		this.attribute24=new ASNOctetString(attribute24,"Attribute24",null,null,false);    		
     	
     	if(attribute25!=null)
-    		this.attribute25=new ASNOctetString(attribute25);    		
+    		this.attribute25=new ASNOctetString(attribute25,"Attribute25",null,null,false);    		
     	
     	if(attribute26!=null)
-    		this.attribute26=new ASNOctetString(attribute26);    		
+    		this.attribute26=new ASNOctetString(attribute26,"Attribute26",null,null,false);    		
     	
     	if(attribute27!=null)
-    		this.attribute27=new ASNOctetString(attribute27);    		
+    		this.attribute27=new ASNOctetString(attribute27,"Attribute27",null,null,false);    		
     	
     	if(attribute28!=null)
-    		this.attribute28=new ASNOctetString(attribute28);    		
+    		this.attribute28=new ASNOctetString(attribute28,"Attribute28",null,null,false);    		
     	
     	if(attribute29!=null)
-    		this.attribute29=new ASNOctetString(attribute29);    		
+    		this.attribute29=new ASNOctetString(attribute29,"Attribute29",null,null,false);    		
     	
     	if(attribute30!=null)
-    		this.attribute30=new ASNOctetString(attribute30);    	
+    		this.attribute30=new ASNOctetString(attribute30,"Attribute30",null,null,false);    	
     }
 
     public ByteBuf getAttribute0() {

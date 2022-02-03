@@ -39,11 +39,12 @@ import io.netty.buffer.Unpooled;
  */
 public class Ext2QoSSubscribedImpl extends ASNOctetString implements Ext2QoSSubscribed {
 	public Ext2QoSSubscribedImpl() {
+		super("Ext2QoSSubscribed",1,3,false);
     }
 
     public Ext2QoSSubscribedImpl(Ext2QoSSubscribed_SourceStatisticsDescriptor sourceStatisticsDescriptor, boolean optimisedForSignallingTraffic,
             ExtQoSSubscribed_BitRateExtended maximumBitRateForDownlinkExtended, ExtQoSSubscribed_BitRateExtended guaranteedBitRateForDownlinkExtended) {
-        super(translate(sourceStatisticsDescriptor, optimisedForSignallingTraffic, maximumBitRateForDownlinkExtended, guaranteedBitRateForDownlinkExtended));
+        super(translate(sourceStatisticsDescriptor, optimisedForSignallingTraffic, maximumBitRateForDownlinkExtended, guaranteedBitRateForDownlinkExtended),"Ext2QoSSubscribed",1,3,false);
     }
 
     protected static ByteBuf translate(Ext2QoSSubscribed_SourceStatisticsDescriptor sourceStatisticsDescriptor, boolean optimisedForSignallingTraffic,

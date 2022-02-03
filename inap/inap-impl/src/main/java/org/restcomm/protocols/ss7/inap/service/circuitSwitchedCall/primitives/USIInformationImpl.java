@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class USIInformationImpl extends ASNOctetString implements USIInformation {
 	public USIInformationImpl() {
-    }
+		super("USIInformation",null,null,false);
+    }	
 
     public USIInformationImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"USIInformation",null,null,false);
     }
 
     @Override

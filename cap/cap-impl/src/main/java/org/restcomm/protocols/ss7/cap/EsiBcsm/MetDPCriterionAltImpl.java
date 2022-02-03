@@ -35,7 +35,8 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class MetDPCriterionAltImpl extends ASNOctetString implements MetDPCriterionAlt {
-	public MetDPCriterionAltImpl() {        
+	public MetDPCriterionAltImpl() {
+		super("MetDPCriterionAlt",null,null,false);
     }
 	
     @Override

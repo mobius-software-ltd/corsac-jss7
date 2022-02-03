@@ -46,14 +46,15 @@ public class SmsSignalInfoImpl extends ASNOctetString implements SmsSignalInfo {
 	private Charset gsm8Charset;
 
     public SmsSignalInfoImpl() {
+    	super("SmsSignalInfo",1,200,false);
     }
 
     public SmsSignalInfoImpl(ByteBuf buffer) {
-    	super(buffer);
+    	super(buffer,"SmsSignalInfo",1,200,false);
     }
     
     public SmsSignalInfoImpl(SmsTpdu tpdu, Charset gsm8Charset) throws MAPException {
-    	super(translate(tpdu, gsm8Charset));
+    	super(translate(tpdu, gsm8Charset),"SmsSignalInfo",1,200,false);
     	this.setGsm8Charset(gsm8Charset);        
     }
     

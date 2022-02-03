@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class IPAvailableImpl extends ASNOctetString implements IPAvailable {
 	public IPAvailableImpl() {
+		super("IPAvailable",null,null,false);
     }
 
     public IPAvailableImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"IPAvailable",null,null,false);
     }
 
     @Override

@@ -34,11 +34,12 @@ import io.netty.buffer.ByteBuf;
  *
  */
 public class GPRSChargingIDImpl extends ASNOctetString implements GPRSChargingID {
-	public GPRSChargingIDImpl() {       
+	public GPRSChargingIDImpl() {
+		super("GPRSChargingID",4,4,false);
     }
 
     public GPRSChargingIDImpl(ByteBuf value) {
-        super(value);
+        super(value,"GPRSChargingID",4,4,false);
     }
 
     @Override

@@ -80,7 +80,7 @@ public class UserInformationTest {
         UserInformationElementImpl userInformationElement = new UserInformationElementImpl();
         userInformationElement.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
 
-        ASNOctetString value=new ASNOctetString(Unpooled.wrappedBuffer(dataValue));
+        ASNOctetString value=new ASNOctetString(Unpooled.wrappedBuffer(dataValue),null,null,null,false);
         userInformationElement.setChildAsObject(value);
         
         UserInformationImpl userInformation = new UserInformationImpl();

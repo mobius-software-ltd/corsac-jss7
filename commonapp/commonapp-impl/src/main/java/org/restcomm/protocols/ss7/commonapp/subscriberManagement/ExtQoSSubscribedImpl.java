@@ -45,6 +45,7 @@ import io.netty.buffer.Unpooled;
  */
 public class ExtQoSSubscribedImpl extends ASNOctetString implements ExtQoSSubscribed {
 	public ExtQoSSubscribedImpl() {
+		super("ExtQoSSubscribed",1,8,false);
     }
 
     public ExtQoSSubscribedImpl(int allocationRetentionPriority, ExtQoSSubscribed_DeliveryOfErroneousSdus deliveryOfErroneousSdus,
@@ -55,7 +56,7 @@ public class ExtQoSSubscribedImpl extends ASNOctetString implements ExtQoSSubscr
             ExtQoSSubscribed_BitRate guaranteedBitRateForDownlink) {
         super(translate(allocationRetentionPriority, deliveryOfErroneousSdus, deliveryOrder, trafficClass, maximumSduSize, maximumBitRateForUplink,
                 maximumBitRateForDownlink, residualBER, sduErrorRatio, trafficHandlingPriority, transferDelay, guaranteedBitRateForUplink,
-                guaranteedBitRateForDownlink));
+                guaranteedBitRateForDownlink),"ExtQoSSubscribed",1,8,false);
     }
 
     protected static ByteBuf translate(int allocationRetentionPriority, ExtQoSSubscribed_DeliveryOfErroneousSdus deliveryOfErroneousSdus,

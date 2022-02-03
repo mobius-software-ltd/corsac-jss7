@@ -65,7 +65,7 @@ public class UpdateRequestImpl extends CircuitSwitchedCallMessageImpl implements
 
     public UpdateRequestImpl(ByteBuf operationID,ApplicationID applicationID,DataItemID dataItemID,DataItemInformation dataItemInformation) {
     	if(operationID!=null)
-    		this.operationID=new ASNOctetString(operationID);    	
+    		this.operationID=new ASNOctetString(operationID,"OperationID",null,null,false);    	
     	
     	this.applicationID=applicationID;
     	this.dataItemID=dataItemID;

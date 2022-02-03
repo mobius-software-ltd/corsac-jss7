@@ -67,9 +67,9 @@ public class FacilityGroupImpl implements FacilityGroup {
     public FacilityGroupImpl(ByteBuf value,Boolean isHuntGroup) {
     	if(value!=null) {
     		if(isHuntGroup)
-    			this.huntGroup = new ASNOctetString(value);
+    			this.huntGroup = new ASNOctetString(value,"HuntGroup",null,null,false);
     		else
-    			this.routeIndex = new ASNOctetString(value);    		
+    			this.routeIndex = new ASNOctetString(value,"RouteIndex",null,null,false);    		
     	}
     }
 

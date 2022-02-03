@@ -41,10 +41,11 @@ import io.netty.buffer.Unpooled;
  */
 public class RedirectingPartyIDIsupImpl extends ASNOctetString implements RedirectingPartyIDIsup {
 	public RedirectingPartyIDIsupImpl() {
+		super("RedirectingPartyIDIsup",2,10,false);
     }
 
     public RedirectingPartyIDIsupImpl(RedirectingNumber redirectingNumber) throws ASNParsingException {
-        super(translate(redirectingNumber));
+        super(translate(redirectingNumber),"RedirectingPartyIDIsup",2,10,false);
     }
 
     public static ByteBuf translate(RedirectingNumber redirectingNumber) throws ASNParsingException {

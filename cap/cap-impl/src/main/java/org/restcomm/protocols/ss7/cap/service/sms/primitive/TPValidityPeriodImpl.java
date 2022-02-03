@@ -42,10 +42,11 @@ import io.netty.buffer.Unpooled;
  */
 public class TPValidityPeriodImpl extends ASNOctetString implements TPValidityPeriod {
 	public TPValidityPeriodImpl() {
+		super("TPValidityPeriod",1,7,false);
     }
 
     public TPValidityPeriodImpl(int relativeFormat) {
-    	super(translate(relativeFormat));
+    	super(translate(relativeFormat),"TPValidityPeriod",1,7,false);
     }
     
     private static ByteBuf translate(int relativeFormat) {
@@ -55,7 +56,7 @@ public class TPValidityPeriodImpl extends ASNOctetString implements TPValidityPe
     }
 
     public TPValidityPeriodImpl(AbsoluteTimeStamp absoluteFormatValue) {
-    	super(translate(absoluteFormatValue));
+    	super(translate(absoluteFormatValue),"TPValidityPeriod",1,7,false);
     }
     
     private static ByteBuf translate(AbsoluteTimeStamp absoluteFormatValue) {    	

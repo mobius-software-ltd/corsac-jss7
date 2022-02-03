@@ -41,10 +41,11 @@ import io.netty.buffer.Unpooled;
  */
 public class BackwardCallIndicatorsIsupImpl extends ASNOctetString implements BackwardCallIndicatorsIsup {
 	public BackwardCallIndicatorsIsupImpl() {
+		super("BackwardCallIndicatorsIsup",2,2,false);
     }
 
     public BackwardCallIndicatorsIsupImpl(BackwardCallIndicators BackwardCallIndicators) throws ASNParsingException {
-        super(translate(BackwardCallIndicators));
+        super(translate(BackwardCallIndicators),"BackwardCallIndicatorsIsup",2,2,false);
     }
 
     private static ByteBuf translate(BackwardCallIndicators BackwardCallIndicators) throws ASNParsingException {

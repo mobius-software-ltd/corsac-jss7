@@ -37,10 +37,11 @@ import io.netty.buffer.Unpooled;
  */
 public class DateAndTimeImpl extends ASNOctetString implements DateAndTime {
 	public DateAndTimeImpl() {
+		super("DateAndTime",7,7,false);
     }
 
 	public DateAndTimeImpl(int year, int month, int day, int hour, int minute, int second) {
-		super(translate(year, month, day, hour, minute, second));
+		super(translate(year, month, day, hour, minute, second),"DateAndTime",7,7,false);
 	}
 	
     public static ByteBuf translate(int year, int month, int day, int hour, int minute, int second) {

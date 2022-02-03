@@ -38,9 +38,10 @@ import io.netty.buffer.Unpooled;
 public class ExtTeleserviceCodeImpl extends ASNOctetString implements ExtTeleserviceCode {
 	
 	public ExtTeleserviceCodeImpl() {
+		super("ExtTeleserviceCode",1,5,false);
     }
     public ExtTeleserviceCodeImpl(TeleserviceCodeValue value) {
-        super(translate(value));
+        super(translate(value),"ExtTeleserviceCode",1,5,false);
     }
 
     private static ByteBuf translate(TeleserviceCodeValue value) {

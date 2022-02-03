@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class CallingPartyBusinessGroupIDImpl extends ASNOctetString implements CallingPartyBusinessGroupID {
 	public CallingPartyBusinessGroupIDImpl() {
+		super("CallingPartyBusinessGroupID",1,5,false);
     }
 
     public CallingPartyBusinessGroupIDImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"CallingPartyBusinessGroupID",1,5,false);
     }
 
     @Override

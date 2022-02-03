@@ -54,7 +54,7 @@ public class MAPExtensionContainerImpl implements MAPExtensionContainer {
         this.privateExtensionList = new MAPPrivateExtensionsListWrapperImpl(privateExtensionList);
         
         if(pcsExtensions!=null)
-        	this.pcsExtensions = new ASNOctetString(pcsExtensions);        	
+        	this.pcsExtensions = new ASNOctetString(pcsExtensions,"PCSExtensions",null,null,false);        	
     }
     
     public List<MAPPrivateExtension> getPrivateExtensionList() {
@@ -75,8 +75,11 @@ public class MAPExtensionContainerImpl implements MAPExtensionContainer {
         return this.pcsExtensions.getValue();
     }
 
-    public void setPcsExtensions(ByteBuf pcsExtensions) {    	
-    	this.pcsExtensions=new ASNOctetString(pcsExtensions);    	
+    public void setPcsExtensions(ByteBuf pcsExtensions) {   
+    	if(pcsExtensions!=null)
+    		this.pcsExtensions=new ASNOctetString(pcsExtensions,"PCSExtensions",null,null,false);
+    	else
+    		this.pcsExtensions=null;
     }
 
     @Override

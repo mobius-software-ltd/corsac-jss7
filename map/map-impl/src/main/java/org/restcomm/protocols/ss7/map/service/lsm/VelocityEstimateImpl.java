@@ -38,11 +38,12 @@ import io.netty.buffer.Unpooled;
  */
 public class VelocityEstimateImpl extends ASNOctetString implements VelocityEstimate {
 	public VelocityEstimateImpl() {
+		super("VelocityEstimate",4,7,false);
     }
 
 	public VelocityEstimateImpl(VelocityType velocityType, int horizontalSpeed, int bearing, int verticalSpeed,
             int uncertaintyHorizontalSpeed, int uncertaintyVerticalSpeed) throws MAPException {
-		super(translate(velocityType, horizontalSpeed, bearing, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed));
+		super(translate(velocityType, horizontalSpeed, bearing, verticalSpeed, uncertaintyHorizontalSpeed, uncertaintyVerticalSpeed),"VelocityEstimate",4,7,false);
 	}
 	
     public static ByteBuf translate(VelocityType velocityType, int horizontalSpeed, int bearing, int verticalSpeed,

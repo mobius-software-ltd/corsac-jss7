@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
 */
 public class LowLayerCompatibilityImpl extends ASNOctetString implements LowLayerCompatibility {
 	public LowLayerCompatibilityImpl() {
+		super("LowLayerCompatibility",1,16,false);
     }
 
     public LowLayerCompatibilityImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"LowLayerCompatibility",1,16,false);
     }
 	
     @Override

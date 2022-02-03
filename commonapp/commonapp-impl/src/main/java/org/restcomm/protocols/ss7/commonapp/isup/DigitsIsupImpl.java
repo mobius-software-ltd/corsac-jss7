@@ -46,15 +46,16 @@ public class DigitsIsupImpl extends ASNOctetString implements DigitsIsup {
     private boolean isGenericNumber;
 
     public DigitsIsupImpl() {
+    	super("DigitsIsup",2,16,false);
     }
 
     public DigitsIsupImpl(GenericDigits genericDigits) throws ASNParsingException {
-    	super(translate(genericDigits));
+    	super(translate(genericDigits),"DigitsIsup",2,16,false);
     	setIsGenericDigits();
     }
 
     public DigitsIsupImpl(GenericNumber genericNumber) throws ASNParsingException {
-        super(translate(genericNumber));
+        super(translate(genericNumber),"DigitsIsup",2,16,false);
         setIsGenericNumber();
     }
 

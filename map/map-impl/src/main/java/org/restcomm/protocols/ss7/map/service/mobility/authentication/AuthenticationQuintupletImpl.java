@@ -60,19 +60,19 @@ public class AuthenticationQuintupletImpl implements AuthenticationQuintuplet {
     public AuthenticationQuintupletImpl(ByteBuf rand, ByteBuf xres, ByteBuf ck, ByteBuf ik, ByteBuf autn) {
     	
     	if(rand!=null)
-    		this.rand = new ASNOctetString(rand);
+    		this.rand = new ASNOctetString(rand,"RAND",16,16,false);
     	
     	if(xres!=null)
-    		this.xres = new ASNOctetString(xres);
+    		this.xres = new ASNOctetString(xres,"XRES",4,16,false);
     	
     	if(ck!=null)
-    		this.ck = new ASNOctetString(ck);
+    		this.ck = new ASNOctetString(ck,"CK",16,16,false);
     	
     	if(ik!=null)
-    		this.ik = new ASNOctetString(ik);
+    		this.ik = new ASNOctetString(ik,"IK",16,16,false);
     	
     	if(autn!=null)
-    		this.autn = new ASNOctetString(autn);    	
+    		this.autn = new ASNOctetString(autn,"AUTN",16,16,false);    	
     }
 
     public ByteBuf getRand() {

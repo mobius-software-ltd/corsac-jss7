@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class RAIdentityImpl extends ASNOctetString implements RAIdentity {
 	public RAIdentityImpl() {
+		super("RAIdentity",6,6,false);
     }
 
     public RAIdentityImpl(ByteBuf value) {
-    	super(value);        
+    	super(value,"RAIdentity",6,6,false);        
     }
 
     @Override

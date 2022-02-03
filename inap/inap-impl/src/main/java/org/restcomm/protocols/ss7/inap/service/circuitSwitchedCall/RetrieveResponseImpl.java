@@ -55,7 +55,7 @@ public class RetrieveResponseImpl extends CircuitSwitchedCallMessageImpl impleme
 
     public RetrieveResponseImpl(ByteBuf operationReturnID,DataItemInformation dataItemInformation) {
     	if(operationReturnID!=null)
-    		this.operationReturnID=new ASNOctetString(operationReturnID);    	
+    		this.operationReturnID=new ASNOctetString(operationReturnID,"OperationID",null,null,false);    	
     	
     	this.dataItemInformation=dataItemInformation;
     }

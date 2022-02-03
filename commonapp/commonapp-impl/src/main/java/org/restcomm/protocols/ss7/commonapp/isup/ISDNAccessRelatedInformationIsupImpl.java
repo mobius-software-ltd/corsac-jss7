@@ -43,10 +43,11 @@ import io.netty.buffer.Unpooled;
  */
 public class ISDNAccessRelatedInformationIsupImpl extends ASNOctetString implements ISDNAccessRelatedInformationIsup {
 	public ISDNAccessRelatedInformationIsupImpl() {
+		super("ISDNAccessRelatedInformationIsup",null,null,false);
     }
 
     public ISDNAccessRelatedInformationIsupImpl(LocationNumber locationNumber) throws ASNParsingException {
-        super(translate(locationNumber));
+        super(translate(locationNumber),"ISDNAccessRelatedInformationIsup",3,11,false);
     }
 
     public static ByteBuf translate(LocationNumber locationNumber) throws ASNParsingException {

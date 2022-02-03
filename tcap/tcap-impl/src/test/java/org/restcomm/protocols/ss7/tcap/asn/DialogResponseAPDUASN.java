@@ -31,5 +31,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,lengthIndefinite=false)
 public class DialogResponseAPDUASN extends ASNOctetString {
-
+	public DialogResponseAPDUASN() {
+		super(null,null,null,false);
+	}
 }

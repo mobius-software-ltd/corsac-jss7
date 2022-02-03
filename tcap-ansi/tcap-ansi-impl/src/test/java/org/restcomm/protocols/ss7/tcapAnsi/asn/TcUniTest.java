@@ -123,7 +123,7 @@ public class TcUniTest {
         inv.setInvokeId(0L);
         OperationCode oc = TcapFactory.createPrivateOperationCode(2357L);        
         inv.setOperationCode(oc);
-        ASNOctetString p = new ASNOctetString(Unpooled.wrappedBuffer(parData));
+        ASNOctetString p = new ASNOctetString(Unpooled.wrappedBuffer(parData),null,null,null,false);
         inv.setSetParameter(p);
 
         TCUniMessage tcm = TcapFactory.createTCUniMessage();

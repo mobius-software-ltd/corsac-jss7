@@ -35,9 +35,10 @@ import io.netty.buffer.ByteBuf;
  */
 public class AgeIndicatorImpl extends ASNOctetString implements AgeIndicator {
 	public AgeIndicatorImpl() {
+		super("AgeIndicator",1,6,false);
     }
 
     public AgeIndicatorImpl(ByteBuf value) {
-        super(value);
+        super(value,"AgeIndicator",1,6,false);
     }
 }

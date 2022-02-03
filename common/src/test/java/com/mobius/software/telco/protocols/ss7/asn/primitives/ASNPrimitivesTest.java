@@ -359,8 +359,8 @@ public class ASNPrimitivesTest
 		encodedLongOctetString.writeBytes(longLengthBytes);
 		encodedLongOctetString.writeBytes(Unpooled.wrappedBuffer(plainLongBytes));
 		
-		ASNOctetString value=new ASNOctetString(Unpooled.wrappedBuffer(plainBytes));		
-		ASNOctetString longValue=new ASNOctetString(Unpooled.wrappedBuffer(plainLongBytes));		
+		ASNOctetString value=new ASNOctetString(Unpooled.wrappedBuffer(plainBytes),null,null,null,false);		
+		ASNOctetString longValue=new ASNOctetString(Unpooled.wrappedBuffer(plainLongBytes),null,null,null,false);		
 		
 		try
 		{

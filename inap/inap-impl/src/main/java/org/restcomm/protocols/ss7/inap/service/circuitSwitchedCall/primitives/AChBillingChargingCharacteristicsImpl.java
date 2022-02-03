@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class AChBillingChargingCharacteristicsImpl extends ASNOctetString implements AChBillingChargingCharacteristics {
 	public AChBillingChargingCharacteristicsImpl() {
+		super("AChBillingChargingCharacteristics",null,null,false);
     }
 
     public AChBillingChargingCharacteristicsImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"AChBillingChargingCharacteristics",null,null,false);
     }
 
     @Override

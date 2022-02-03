@@ -76,7 +76,7 @@ public class ServiceFilteringResponseRequestImpl extends CircuitSwitchedCallMess
     	this(counterAndValue,filteringCriteria, null, responseCondition);
     	
     	if(scfCorrelationInfo!=null) {
-    		this.scfCorrelationInfo=new ASNOctetString(scfCorrelationInfo);
+    		this.scfCorrelationInfo=new ASNOctetString(scfCorrelationInfo,"SCFCorrelationInfo",16,16,false);
     	}
     }
     

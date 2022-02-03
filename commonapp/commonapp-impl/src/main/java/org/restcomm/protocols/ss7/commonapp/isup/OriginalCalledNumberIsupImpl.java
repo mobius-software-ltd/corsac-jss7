@@ -41,10 +41,11 @@ import io.netty.buffer.Unpooled;
  */
 public class OriginalCalledNumberIsupImpl extends ASNOctetString implements OriginalCalledNumberIsup {
 	public OriginalCalledNumberIsupImpl() {
+		super("OriginalCalledNumberIsup",2,10,false);
     }
 
     public OriginalCalledNumberIsupImpl(OriginalCalledNumber originalCalledNumber) throws ASNParsingException {
-        super(translate(originalCalledNumber));
+        super(translate(originalCalledNumber),"OriginalCalledNumberIsup",2,10,false);
     }
 
     public static ByteBuf translate(OriginalCalledNumber originalCalledNumber) throws ASNParsingException {

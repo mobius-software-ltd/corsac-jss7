@@ -51,11 +51,12 @@ public class NAEACICImpl extends ASNOctetString implements NAEACIC {
     protected static final int THREE_OCTET_CARRIER_CODE_MASK = 0x0F;
 
     public NAEACICImpl() {
+    	super("NAEACIC",3,3,false);
     }
 
     public NAEACICImpl(String carrierCode, NetworkIdentificationPlanValue networkIdentificationPlanValue,
             NetworkIdentificationTypeValue networkIdentificationTypeValue) throws ASNParsingException {
-        super(translate(carrierCode, networkIdentificationPlanValue, networkIdentificationTypeValue));
+        super(translate(carrierCode, networkIdentificationPlanValue, networkIdentificationTypeValue),"NAEACIC",3,3,false);
     }
 
     public String getCarrierCode() {

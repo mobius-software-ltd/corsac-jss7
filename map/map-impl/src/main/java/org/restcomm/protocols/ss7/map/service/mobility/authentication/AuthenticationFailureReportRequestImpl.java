@@ -90,7 +90,7 @@ public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl 
         	this.accessType = new ASNAccessType(accessType);
         
         if(rand!=null)
-        	this.rand = new ASNOctetString(rand);
+        	this.rand = new ASNOctetString(rand,"RAND",16,16,false);
         
         this.vlrNumber = vlrNumber;
         this.sgsnNumber = sgsnNumber;

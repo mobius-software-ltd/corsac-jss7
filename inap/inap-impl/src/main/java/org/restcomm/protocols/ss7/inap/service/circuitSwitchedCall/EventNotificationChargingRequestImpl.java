@@ -70,10 +70,10 @@ public class EventNotificationChargingRequestImpl extends CircuitSwitchedCallMes
     		CAPINAPExtensions extensions, MonitorMode monitorMode) {
     	    	
     	if(eventTypeCharging!=null)
-    		this.eventTypeCharging = new ASNOctetString(eventTypeCharging);
+    		this.eventTypeCharging = new ASNOctetString(eventTypeCharging,"EventTypeCharging",null,null,false);
     	
     	if(eventSpecificInformationCharging!=null)
-    		this.eventSpecificInformationCharging = new ASNOctetString(eventSpecificInformationCharging);
+    		this.eventSpecificInformationCharging = new ASNOctetString(eventSpecificInformationCharging,"EventSpecificInformationCharging",null,null,false);
     	
     	if(legID!=null)
         	this.legID = new LegIDWrapperImpl(legID);

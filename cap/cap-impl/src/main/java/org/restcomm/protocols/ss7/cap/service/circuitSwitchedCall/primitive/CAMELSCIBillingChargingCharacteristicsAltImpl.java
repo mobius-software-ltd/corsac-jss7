@@ -36,6 +36,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class CAMELSCIBillingChargingCharacteristicsAltImpl extends ASNOctetString implements CAMELSCIBillingChargingCharacteristicsAlt {
 	public CAMELSCIBillingChargingCharacteristicsAltImpl() {
+		super("CAMELSCIBillingChargingCharacteristicsAlt",null,null,false);
     }
 
     @Override

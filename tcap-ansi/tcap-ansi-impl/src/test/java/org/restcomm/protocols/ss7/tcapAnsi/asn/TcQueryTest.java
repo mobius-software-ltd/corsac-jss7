@@ -176,7 +176,7 @@ public class TcQueryTest {
         inv.setInvokeId(0L);
         OperationCode oc = TcapFactory.createPrivateOperationCode(2357L);        
         inv.setOperationCode(oc);
-        ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(parData));
+        ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(parData),null,null,null,false);
         inv.setSetParameter(p);
 
         TCQueryMessage tcm = TcapFactory.createTCQueryMessage(true);
@@ -196,7 +196,7 @@ public class TcQueryTest {
         component.setReturnResultLast(rr);
         cc.add(component);
         rr.setCorrelationId(1L);
-        p=new ASNOctetString(Unpooled.wrappedBuffer(parData2));
+        p=new ASNOctetString(Unpooled.wrappedBuffer(parData2),null,null,null,false);
         rr.setSetParameter(p);
         ReturnError re = TcapFactory.createComponentReturnError();
         component=new WrappedComponentImpl();

@@ -37,10 +37,11 @@ import io.netty.buffer.Unpooled;
  */
 public class PointCodeAndSSNANSIImpl extends ASNOctetString implements PointCodeAndSSNANSI {
 	public PointCodeAndSSNANSIImpl() {
+		super("PointCodeAndSSNANSI",4,4,false);
     }
 
 	public PointCodeAndSSNANSIImpl(Integer network,Integer cluster,Integer member,Integer ssn) {
-		super(translate(network, cluster, member, ssn));
+		super(translate(network, cluster, member, ssn),"PointCodeAndSSNANSI",4,4,false);
 	}
 	
     public static ByteBuf translate(Integer network,Integer cluster,Integer member,Integer ssn) {

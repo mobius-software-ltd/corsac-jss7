@@ -37,10 +37,11 @@ import io.netty.buffer.Unpooled;
  */
 public class ChargeUnitTimeIntervalImpl extends ASNOctetString implements ChargeUnitTimeInterval {
 	public ChargeUnitTimeIntervalImpl() {
+		super("ChargeUnitTimeInterval",2,2,false);
     }
 
 	public ChargeUnitTimeIntervalImpl(Integer value) {
-		super(translate(value));
+		super(translate(value),"ChargeUnitTimeInterval",2,2,false);
 	}
 	
     public static ByteBuf translate(Integer value) {

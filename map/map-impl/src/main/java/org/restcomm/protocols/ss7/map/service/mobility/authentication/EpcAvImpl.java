@@ -61,16 +61,16 @@ public class EpcAvImpl implements EpcAv {
     public EpcAvImpl(ByteBuf rand, ByteBuf xres, ByteBuf autn, ByteBuf kasme, MAPExtensionContainer extensionContainer) {
 
     	if(rand!=null)
-    		this.rand = new ASNOctetString(rand);
+    		this.rand = new ASNOctetString(rand,"RAND",16,16,false);
     	
     	if(xres!=null)
-    		this.xres = new ASNOctetString(xres);
+    		this.xres = new ASNOctetString(xres,"XRES",4,16,false);
     	
     	if(autn!=null)
-    		this.autn = new ASNOctetString(autn);
+    		this.autn = new ASNOctetString(autn,"AUTN",16,16,false);
     	
     	if(kasme!=null)
-    		this.kasme = new ASNOctetString(kasme);
+    		this.kasme = new ASNOctetString(kasme,"KASME",32,32,false);
     	
         this.extensionContainer = extensionContainer;
     }

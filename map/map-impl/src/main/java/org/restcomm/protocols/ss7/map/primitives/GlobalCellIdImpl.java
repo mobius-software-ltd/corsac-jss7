@@ -41,12 +41,12 @@ import io.netty.buffer.Unpooled;
 public class GlobalCellIdImpl extends ASNOctetString implements GlobalCellId {
 	
 	public GlobalCellIdImpl() {
-        super();
+        super("GlobalCellId",5,7,false);
     }
 
     public GlobalCellIdImpl(int mcc, int mnc, int lac, int cellId)
             throws MAPException {
-        super(translate(mcc, mnc, lac, cellId));
+        super(translate(mcc, mnc, lac, cellId),"GlobalCellId",5,7,false);
     }
 
     public static ByteBuf translate(int mcc, int mnc, int lac, int cellId) throws MAPException {

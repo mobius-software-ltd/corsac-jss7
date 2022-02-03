@@ -34,9 +34,9 @@ import io.netty.buffer.ByteBuf;
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=true,lengthIndefinite=false)
 public class UserInformationTestASN2 extends ASNOctetString {
 	public UserInformationTestASN2() {
-		
+		super(null,null,null,false);
 	}
 	public UserInformationTestASN2(ByteBuf value) {
-		super(value);
+		super(value,null,null,null,false);
 	}
 }

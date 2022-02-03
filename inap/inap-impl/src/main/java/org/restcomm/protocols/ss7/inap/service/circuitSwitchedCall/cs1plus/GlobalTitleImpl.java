@@ -52,10 +52,11 @@ import io.netty.buffer.Unpooled;
  */
 public class GlobalTitleImpl extends ASNOctetString implements GlobalTitle {
 	public GlobalTitleImpl() {
+		super("GlobalTitle",4,12,false);
     }
 
 	public GlobalTitleImpl(GlobalTitle0100 globalTitle) throws INAPException {
-		super(translate(globalTitle));
+		super(translate(globalTitle),"GlobalTitle",4,12,false);
 	}
 	
     public static ByteBuf translate(GlobalTitle0100 globalTitle) throws INAPException {

@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class EUtranCgiImpl extends ASNOctetString implements EUtranCgi {
 	public EUtranCgiImpl() {
+		super("EUtranCgi",7,7,false);
     }
 
     public EUtranCgiImpl(ByteBuf value) {
-        super(value);
+        super(value,"EUtranCgi",7,7,false);
     }
 	
     @Override

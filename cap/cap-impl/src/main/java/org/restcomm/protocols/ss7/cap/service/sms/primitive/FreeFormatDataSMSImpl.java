@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class FreeFormatDataSMSImpl extends ASNOctetString implements FreeFormatDataSMS {
 	public FreeFormatDataSMSImpl() {
+		super("FreeFormatDataSMS",1,160,false);
     }
 
     public FreeFormatDataSMSImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"FreeFormatDataSMS",1,160,false);
     }
 
     @Override

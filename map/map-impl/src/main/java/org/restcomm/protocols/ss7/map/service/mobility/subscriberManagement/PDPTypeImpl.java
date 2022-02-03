@@ -44,10 +44,11 @@ public class PDPTypeImpl extends ASNOctetString implements PDPType {
     public static final int _VALUE_IPv6 = 87;
 
     public PDPTypeImpl() {
+    	super("PDPType",2,2,false);
     }
 
     public PDPTypeImpl(PDPTypeValue value) {
-        super(translate(value));
+        super(translate(value),"PDPType",2,2,false);
     }
 
     protected static ByteBuf translate(PDPTypeValue value) {

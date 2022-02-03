@@ -99,9 +99,9 @@ public class InvokeTest {
 
         InvokeTestASN invokeParameter=new InvokeTestASN();
         
-        ASNOctetString o1=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 0x0F }));
+        ASNOctetString o1=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 0x0F }),null,null,null,false);
         ASNOctetString o2=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
-                0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }));
+                0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }),null,null,null,false);
         
         invokeParameter.setO1(Arrays.asList(new ASNOctetString[] { o1 }));
         invokeParameter.setO2(o2);
@@ -120,7 +120,7 @@ public class InvokeTest {
         invoke.setLinkedId(2L);
         invoke.setOperationCode(Arrays.asList(new Long[] { 1L, 0L, 0L, 1L }));
 
-        ASNOctetString pm=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }));
+        ASNOctetString pm=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }),null,null,null,false);
         invoke.setParameter(pm);
         
         comp=new ComponentImpl();

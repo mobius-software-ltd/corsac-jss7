@@ -36,10 +36,11 @@ import io.netty.buffer.Unpooled;
  */
 public class VariablePartPriceImpl extends ASNOctetString implements VariablePartPrice {
 	public VariablePartPriceImpl() {
+		super("VariablePartPrice",4,4,false);
     }
 
     public VariablePartPriceImpl(double price) {
-        super(translate(price));
+        super(translate(price),"VariablePartPrice",4,4,false);
     }
 
     protected static ByteBuf translate(double price) {
@@ -55,7 +56,7 @@ public class VariablePartPriceImpl extends ASNOctetString implements VariablePar
     }
 
     public VariablePartPriceImpl(int integerPart, int hundredthPart) {
-        super(translate(integerPart, hundredthPart));
+        super(translate(integerPart, hundredthPart),"VariablePartPrice",4,4,false);
     }
 
     protected static ByteBuf translate(int integerPart, int hundredthPart) {

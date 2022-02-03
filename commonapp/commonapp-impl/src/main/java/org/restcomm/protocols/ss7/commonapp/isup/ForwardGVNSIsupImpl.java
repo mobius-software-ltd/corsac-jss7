@@ -41,10 +41,11 @@ import io.netty.buffer.Unpooled;
  */
 public class ForwardGVNSIsupImpl extends ASNOctetString implements ForwardGVNSIsup {
 	public ForwardGVNSIsupImpl() {
+		super("ForwardGVNSIsup",null,null,false);
     }
 
     public ForwardGVNSIsupImpl(ForwardGVNS forwardGVNS) throws ASNParsingException {
-        super(translate(forwardGVNS));
+        super(translate(forwardGVNS),"ForwardGVNSIsup",null,null,false);
     }
 
     public static ByteBuf translate(ForwardGVNS forwardGVNS) throws ASNParsingException {

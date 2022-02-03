@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class ScfIDImpl extends ASNOctetString implements ScfID {
 	public ScfIDImpl() {
+		super("ScfID",2,10,false);
     }
 
     public ScfIDImpl(ByteBuf value) {
-        super(value);
+        super(value,"ScfID",2,10,false);
     }
 
     @Override

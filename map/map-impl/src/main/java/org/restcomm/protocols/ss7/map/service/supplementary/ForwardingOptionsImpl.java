@@ -43,11 +43,12 @@ public class ForwardingOptionsImpl extends ASNOctetString implements ForwardingO
     private static final int MASK_forwardingOptions = 0xEC;
 
     public ForwardingOptionsImpl() {
+    	super("ForwardingOptions",1,1,false);
     }
 
     public ForwardingOptionsImpl(boolean notificationToForwardingParty, boolean redirectingPresentation,
             boolean notificationToCallingParty, ForwardingReason forwardingReason) {
-    	super(translate(notificationToForwardingParty, redirectingPresentation, notificationToCallingParty, forwardingReason));
+    	super(translate(notificationToForwardingParty, redirectingPresentation, notificationToCallingParty, forwardingReason),"ForwardingOptions",1,1,false);
     }
     
     public static ByteBuf translate(boolean notificationToForwardingParty, boolean redirectingPresentation,

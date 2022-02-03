@@ -39,11 +39,12 @@ import io.netty.buffer.Unpooled;
 public class CellGlobalIdOrServiceAreaIdFixedLengthImpl extends ASNOctetString implements CellGlobalIdOrServiceAreaIdFixedLength {
 	
 	public CellGlobalIdOrServiceAreaIdFixedLengthImpl() {
+		super("CellGlobalIdOrServiceAreaIdFixedLength",7,7,false);
     }
 
     public CellGlobalIdOrServiceAreaIdFixedLengthImpl(int mcc, int mnc, int lac, int cellIdOrServiceAreaCode)
             throws ASNParsingException {
-        super(translate(mcc, mnc, lac, cellIdOrServiceAreaCode));
+        super(translate(mcc, mnc, lac, cellIdOrServiceAreaCode),"CellGlobalIdOrServiceAreaIdFixedLength",7,7,false);
     }
 
     public static ByteBuf translate(int mcc, int mnc, int lac, int cellIdOrServiceAreaCode) throws ASNParsingException {

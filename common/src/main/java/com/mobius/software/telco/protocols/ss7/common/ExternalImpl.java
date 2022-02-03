@@ -72,7 +72,7 @@ public abstract class ExternalImpl<T extends ASNGeneric>
 	}
 	
 	public void setChild(ByteBuf value) {
-		this.childString=new ASNOctetString(value);
+		this.childString=new ASNOctetString(value,null,null,null,false);
 		this.child=null;
 		this.bitString=null;
 	}

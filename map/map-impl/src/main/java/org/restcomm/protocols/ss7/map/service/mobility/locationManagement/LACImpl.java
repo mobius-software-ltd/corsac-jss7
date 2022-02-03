@@ -39,10 +39,11 @@ import io.netty.buffer.Unpooled;
  */
 public class LACImpl extends ASNOctetString implements LAC {
 	public LACImpl() {
+		super("LAC",2,2,false);
     }
 
 	public LACImpl(int lac) throws MAPException {
-		super(translate(lac));
+		super(translate(lac),"LAC",2,2,false);
 	}
 	
     public static ByteBuf translate(int lac) throws MAPException {

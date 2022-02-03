@@ -51,7 +51,7 @@ public class FurnishChargingInformationRequestImpl extends CircuitSwitchedCallMe
 
     public FurnishChargingInformationRequestImpl(ByteBuf fciBillingChargingCharacteristics) {
     	if(fciBillingChargingCharacteristics!=null)
-    		this.fciBillingChargingCharacteristics = new ASNOctetString(fciBillingChargingCharacteristics);    
+    		this.fciBillingChargingCharacteristics = new ASNOctetString(fciBillingChargingCharacteristics,"FurnishChargingInformationRequest",null,null,true);    
     }
 
     @Override

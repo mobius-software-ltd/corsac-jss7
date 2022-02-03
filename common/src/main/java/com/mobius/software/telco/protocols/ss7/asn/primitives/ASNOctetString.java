@@ -8,6 +8,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /*
  * Mobius Software LTD
@@ -22,7 +25,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * G-NU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
@@ -40,16 +43,33 @@ import io.netty.buffer.Unpooled;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public class ASNOctetString {
 	private ByteBuf value;
+	private String name;
+	private Integer minLength;
+	private Integer maxLength;
+	private Boolean isRoot;
 	
+	//required for parser
 	public ASNOctetString() {
 		
 	}
 	
-	public ASNOctetString(ByteBuf value) {
+	public ASNOctetString(String name,Integer minLength,Integer maxLength,Boolean isRoot) {
+		this.name = name;
+		this.minLength = minLength;
+		this.maxLength = maxLength;
+		this.isRoot = isRoot;
+	}
+	
+	public ASNOctetString(ByteBuf value,String name,Integer minLength,Integer maxLength,Boolean isRoot) {		
 		if(value!=null)
 			this.value = Unpooled.wrappedBuffer(value);
 		else
 			this.value = null;
+		
+		this.name = name;
+		this.minLength = minLength;
+		this.maxLength = maxLength;
+		this.isRoot = isRoot;
 	}
 	
 	public ByteBuf getValue() {
@@ -78,6 +98,27 @@ public class ASNOctetString {
 			value=Unpooled.EMPTY_BUFFER;
 		
 		return false;
+	}
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(minLength!=null && value==null) {
+			if(isRoot==null || !isRoot)
+				throw new ASNParsingComponentException(name + " is required",ASNParsingComponentExceptionReason.MistypedParameter);
+			else
+				throw new ASNParsingComponentException(name + " is required",ASNParsingComponentExceptionReason.MistypedRootParameter);
+		} else if(minLength!=null && value!=null && value.readableBytes()<minLength){
+			if(isRoot==null || !isRoot)
+				throw new ASNParsingComponentException(name + " length should be at least " + minLength,ASNParsingComponentExceptionReason.MistypedParameter);
+			else
+				throw new ASNParsingComponentException(name + " length should be at least " + minLength,ASNParsingComponentExceptionReason.MistypedRootParameter);
+		} else if(maxLength!=null && value!=null && value.readableBytes()>maxLength){
+			if(isRoot==null || !isRoot)
+				throw new ASNParsingComponentException(name + " length should be at most " + maxLength,ASNParsingComponentExceptionReason.MistypedParameter);
+			else
+				throw new ASNParsingComponentException(name + " length should be at most " + maxLength,ASNParsingComponentExceptionReason.MistypedRootParameter);
+		} 
+			
 	}
 	
 	public static int getLength(ByteBuf value)

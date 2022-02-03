@@ -76,7 +76,7 @@ public class UserInformationElementTest {
 
         userInformationElement.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
                 
-        ASNOctetString octetString=new ASNOctetString(Unpooled.wrappedBuffer(dataValue));
+        ASNOctetString octetString=new ASNOctetString(Unpooled.wrappedBuffer(dataValue),null,null,null,false);
         userInformationElement.setChildAsObject(octetString);        
         
         ByteBuf userInfData=parser.encode(userInformationElement);

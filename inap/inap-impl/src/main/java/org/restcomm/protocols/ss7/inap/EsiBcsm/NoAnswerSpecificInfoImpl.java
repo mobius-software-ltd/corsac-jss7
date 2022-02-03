@@ -36,6 +36,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class NoAnswerSpecificInfoImpl extends ASNOctetString implements NoAnswerSpecificInfo {
 	public NoAnswerSpecificInfoImpl() {
+		super("NoAnswerSpecificInfo",null,null,false);
     }
 
     @Override

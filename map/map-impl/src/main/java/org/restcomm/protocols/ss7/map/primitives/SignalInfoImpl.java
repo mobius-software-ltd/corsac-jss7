@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class SignalInfoImpl extends ASNOctetString implements SignalInfo {
 	public SignalInfoImpl() {
+		super("SignalInfo",1,200,false);
     }
 
     public SignalInfoImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"SignalInfo",1,200,false);
     }
 
     @Override

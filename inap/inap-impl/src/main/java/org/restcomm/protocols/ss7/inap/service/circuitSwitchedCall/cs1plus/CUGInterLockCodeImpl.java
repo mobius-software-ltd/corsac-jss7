@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class CUGInterLockCodeImpl extends ASNOctetString implements CUGInterLockCode {
 	public CUGInterLockCodeImpl() {
+		super("CUGInterLockCode",4,4,false);
     }
 
     public CUGInterLockCodeImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"CUGInterLockCode",4,4,false);
     }
 
     @Override

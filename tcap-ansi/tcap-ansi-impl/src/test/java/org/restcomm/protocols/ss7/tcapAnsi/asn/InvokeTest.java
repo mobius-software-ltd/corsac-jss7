@@ -111,7 +111,7 @@ public class InvokeTest {
         inv.setInvokeId(0L);
         OperationCode oc = TcapFactory.createPrivateOperationCode(2357L);
         inv.setOperationCode(oc);
-        ASNOctetString innerValue=new ASNOctetString(Unpooled.wrappedBuffer(parData));
+        ASNOctetString innerValue=new ASNOctetString(Unpooled.wrappedBuffer(parData),null,null,null,false);
         ASNInvokeSetParameterImpl p=new ASNInvokeSetParameterImpl(innerValue);
         inv.setSetParameter(p);
 

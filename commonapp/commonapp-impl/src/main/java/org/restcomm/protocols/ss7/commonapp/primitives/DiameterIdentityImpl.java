@@ -35,11 +35,12 @@ import io.netty.buffer.ByteBuf;
  */
 public class DiameterIdentityImpl extends ASNOctetString implements DiameterIdentity {
 	public DiameterIdentityImpl() {
+		super("DiameterIdentity",9,55,false);
        
     }
 
     public DiameterIdentityImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"DiameterIdentity",9,55,false);
     }
 	
     @Override

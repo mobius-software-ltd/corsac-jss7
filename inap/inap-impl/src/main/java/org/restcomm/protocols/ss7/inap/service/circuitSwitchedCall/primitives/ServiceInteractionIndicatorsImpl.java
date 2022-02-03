@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class ServiceInteractionIndicatorsImpl extends ASNOctetString implements ServiceInteractionIndicators {
 	public ServiceInteractionIndicatorsImpl() {
+		super("ServiceInteractionIndicators",null,null,false);
     }
 
     public ServiceInteractionIndicatorsImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"ServiceInteractionIndicators",null,null,false);
     }
 
     @Override

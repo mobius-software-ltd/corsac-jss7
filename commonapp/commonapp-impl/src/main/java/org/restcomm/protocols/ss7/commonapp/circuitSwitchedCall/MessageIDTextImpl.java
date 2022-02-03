@@ -53,7 +53,7 @@ public class MessageIDTextImpl implements MessageIDText {
         	this.messageContent = new ASNIA5String(messageContent);
         	
         if(attributes!=null)
-        	this.attributes = new ASNOctetString(attributes);        
+        	this.attributes = new ASNOctetString(attributes,"Attributes",2,10,false);        
     }
 
     public String getMessageContent() {

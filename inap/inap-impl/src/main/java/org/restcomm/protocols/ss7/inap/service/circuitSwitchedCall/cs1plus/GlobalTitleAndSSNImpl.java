@@ -49,10 +49,11 @@ import io.netty.buffer.Unpooled;
  */
 public class GlobalTitleAndSSNImpl extends ASNOctetString implements GlobalTitleAndSSN {
 	public GlobalTitleAndSSNImpl() {
+		super("GlobalTitleAndSSN",4,12,false);
     }
 
 	public GlobalTitleAndSSNImpl(GlobalTitle0100 globalTitle,Integer ssn) throws INAPException {
-		super(translate(globalTitle, ssn));
+		super(translate(globalTitle, ssn),"GlobalTitleAndSSN",4,12,false);
 	}
 	
     public static ByteBuf translate(GlobalTitle0100 globalTitle,Integer ssn) throws INAPException {

@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class UtranGANSSpositioningDataImpl extends ASNOctetString implements UtranGANSSpositioningData {
 	public UtranGANSSpositioningDataImpl() {
+		super("UtranGANSSpositioningData",1,9,false);
     }
 
     public UtranGANSSpositioningDataImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"UtranGANSSpositioningData",1,9,false);
     }
 
     @Override

@@ -34,10 +34,10 @@ import io.netty.buffer.ByteBuf;
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=16,constructed=true,lengthIndefinite=false)
 public class ComponentTestASN extends ASNOctetString {
 	public ComponentTestASN() {
-		
+		super(null,null,null,false);
 	}
 	
 	public ComponentTestASN(ByteBuf value) {
-		super(value);
+		super(value,null,null,null,false);
 	}
 }

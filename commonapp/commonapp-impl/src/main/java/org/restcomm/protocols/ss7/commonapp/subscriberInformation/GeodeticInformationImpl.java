@@ -39,11 +39,12 @@ import io.netty.buffer.Unpooled;
 public class GeodeticInformationImpl extends ASNOctetString implements GeodeticInformation {
 	
 	public GeodeticInformationImpl() {
+		super("GeodeticInformation",10,10,false);
     }
 
     public GeodeticInformationImpl(int screeningAndPresentationIndicators, TypeOfShape typeOfShape, double latitude,
             double longitude, double uncertainty, int confidence) throws ASNParsingException {
-        super(translate(screeningAndPresentationIndicators, typeOfShape, latitude, longitude, uncertainty, confidence));
+        super(translate(screeningAndPresentationIndicators, typeOfShape, latitude, longitude, uncertainty, confidence),"GeodeticInformation",10,10,false);
     }
 
     public static ByteBuf translate(int screeningAndPresentationIndicators, TypeOfShape typeOfShape, double latitude, double longitude,

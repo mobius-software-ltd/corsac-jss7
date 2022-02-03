@@ -49,10 +49,10 @@ public class ReSynchronisationInfoImpl implements ReSynchronisationInfo {
 
     public ReSynchronisationInfoImpl(ByteBuf rand, ByteBuf auts) {
     	if(rand!=null)
-    		this.rand = new ASNOctetString(rand);
+    		this.rand = new ASNOctetString(rand,"RAND",16,16,false);
     	
     	if(auts!=null)
-    		this.auts = new ASNOctetString(auts);    	
+    		this.auts = new ASNOctetString(auts,"AUTS",14,14,false);    	
     }
 
     public ByteBuf getRand() {

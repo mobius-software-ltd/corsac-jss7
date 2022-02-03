@@ -126,7 +126,7 @@ public class TcConversationTest {
         inv.setInvokeId(0L);
         OperationCode oc = TcapFactory.createPrivateOperationCode(2357L);
         inv.setOperationCode(oc);
-        ASNOctetString innerValue=new ASNOctetString(Unpooled.wrappedBuffer(parData));        
+        ASNOctetString innerValue=new ASNOctetString(Unpooled.wrappedBuffer(parData),null,null,null,false);        
         inv.setSetParameter(innerValue);
 
         TCConversationMessage tcm = TcapFactory.createTCConversationMessage(true);

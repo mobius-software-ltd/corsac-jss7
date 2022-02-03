@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class MSClassmark2Impl extends ASNOctetString implements MSClassmark2 {
 	public MSClassmark2Impl() {
+		super("MSClassmark2",3,3,false);
     }
 
     public MSClassmark2Impl(ByteBuf value) {
-    	super(value);
+    	super(value,"MSClassmark2",3,3,false);
     }
 	
     @Override

@@ -52,7 +52,7 @@ public class RouteListImpl implements RouteList {
     	if(dataList!=null) {
     		this.dataList=new ArrayList<ASNOctetString>();
     		for(ByteBuf curr:dataList) {
-    			ASNOctetString currStr=new ASNOctetString(curr);
+    			ASNOctetString currStr=new ASNOctetString(curr,"Route",null,null,false);
     			this.dataList.add(currStr);
     		}
     	}    	  	

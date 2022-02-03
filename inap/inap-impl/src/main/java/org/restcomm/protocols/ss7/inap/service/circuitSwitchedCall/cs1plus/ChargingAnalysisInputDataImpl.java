@@ -54,10 +54,10 @@ public class ChargingAnalysisInputDataImpl implements ChargingAnalysisInputData 
 
     public ChargingAnalysisInputDataImpl(ByteBuf chargingOrigin, ByteBuf tariffActivityCode, Integer chargingCode) {
     	if(chargingOrigin!=null)
-    		this.chargingOrigin=new ASNOctetString(chargingOrigin);    	
+    		this.chargingOrigin=new ASNOctetString(chargingOrigin,"ChargingOrigin",1,1,false);    	
     	
     	if(tariffActivityCode!=null)
-    		this.tariffActivityCode=new ASNOctetString(tariffActivityCode);    	
+    		this.tariffActivityCode=new ASNOctetString(tariffActivityCode,"ChargingOrigin",4,4,false);
     	
     	if(chargingCode!=null)
     		this.chargingCode=new ASNInteger(chargingCode);    		

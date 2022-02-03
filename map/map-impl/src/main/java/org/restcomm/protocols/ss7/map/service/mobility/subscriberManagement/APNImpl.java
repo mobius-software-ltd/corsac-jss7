@@ -43,10 +43,11 @@ public class APNImpl extends ASNOctetString implements APN {
 	private static Charset ascii = Charset.forName("US-ASCII");
 
     public APNImpl() {
+    	super("APN",2,63,false);
     }
 
     public APNImpl(String apn) throws MAPException {
-    	super(setApnString(apn));        
+    	super(setApnString(apn),"APN",2,63,false);        
     }
 
     private static ByteBuf setApnString(String apn) throws MAPException {

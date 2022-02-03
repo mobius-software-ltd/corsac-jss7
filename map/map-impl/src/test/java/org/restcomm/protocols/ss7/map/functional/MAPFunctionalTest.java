@@ -2513,10 +2513,10 @@ public class MAPFunctionalTest extends SccpHarness {
             public void onDialogDelimiter(MAPDialog mapDialog) {
                 super.onDialogDelimiter(mapDialog);
                 try {
-                    ASNOctetString octetString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }));
+                    ASNOctetString octetString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }),null,null,null,false);
                     ((MAPDialogImpl)mapDialog).getTcapDialog().sendData(invokeId1, null, null, null, TcapFactory.createLocalOperationCode((long) MAPOperationCode.processUnstructuredSS_Request), octetString, false, true);
 
-                    octetString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }));
+                    octetString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }),null,null,null,false);
                     ((MAPDialogImpl) mapDialog).getTcapDialog().sendError(invokeId2,TcapFactory.createLocalErrorCode((long) MAPErrorCode.systemFailure),octetString);
 
                     ((MAPDialogImpl) mapDialog).getTcapDialog().sendError(invokeId3,TcapFactory.createLocalErrorCode(1000L),null);

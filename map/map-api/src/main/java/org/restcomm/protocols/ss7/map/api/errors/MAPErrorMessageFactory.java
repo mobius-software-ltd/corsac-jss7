@@ -24,11 +24,10 @@ package org.restcomm.protocols.ss7.map.api.errors;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
+import org.restcomm.protocols.ss7.map.api.primitives.SignalInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
-
-import io.netty.buffer.ByteBuf;
 
 /**
  * The factory of MAP ReturnError messages
@@ -54,7 +53,7 @@ public interface MAPErrorMessageFactory {
 
     MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause);
 
-    MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, ByteBuf signalInfo,
+    MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, SignalInfo signalInfo,
             MAPExtensionContainer extensionContainer);
 
     MAPErrorMessageFacilityNotSup createMAPErrorMessageFacilityNotSup(MAPExtensionContainer extensionContainer,

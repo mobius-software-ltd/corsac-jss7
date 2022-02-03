@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
 */
 public class ListOfMeasurementsImpl extends ASNOctetString implements ListOfMeasurements {
 	public ListOfMeasurementsImpl() {
+		super("ListOfMeasurements",4,4,false);
     }
 
     public ListOfMeasurementsImpl(ByteBuf value) {
-        super(value);
+        super(value,"ListOfMeasurements",4,4,false);
     }
 
     @Override

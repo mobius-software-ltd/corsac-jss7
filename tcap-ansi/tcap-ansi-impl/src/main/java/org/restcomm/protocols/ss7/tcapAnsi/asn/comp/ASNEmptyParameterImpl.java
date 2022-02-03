@@ -31,4 +31,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=16,constructed=true,lengthIndefinite=false)
 public class ASNEmptyParameterImpl extends ASNOctetString {	
+	public ASNEmptyParameterImpl() {
+		super("ASNEmptyParameterImpl",null,null,false);
+	}
 }

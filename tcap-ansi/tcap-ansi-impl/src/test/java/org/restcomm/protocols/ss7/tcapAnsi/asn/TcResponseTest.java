@@ -110,7 +110,7 @@ public class TcResponseTest {
         component.setReturnResultLast(rrl);
         cc.add(component);
         rrl.setCorrelationId(1L);
-        ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(parData));
+        ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(parData),null,null,null,false);
         rrl.setSetParameter(p);
 
         TCResponseMessage tcm = TcapFactory.createTCResponseMessage();

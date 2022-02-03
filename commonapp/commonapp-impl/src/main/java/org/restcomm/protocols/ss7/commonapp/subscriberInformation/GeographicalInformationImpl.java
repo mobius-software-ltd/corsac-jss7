@@ -54,12 +54,13 @@ public class GeographicalInformationImpl extends ASNOctetString implements Geogr
         return res;
     }
 
-    public GeographicalInformationImpl() {       
+    public GeographicalInformationImpl() {   
+    	super("GeographicalInformation",8,8,false);
     }
 
     public GeographicalInformationImpl(TypeOfShape typeOfShape, double latitude, double longitude, double uncertainty)
             throws ASNParsingException {
-        super(translate(typeOfShape, latitude, longitude, uncertainty));
+        super(translate(typeOfShape, latitude, longitude, uncertainty),"GeographicalInformation",8,8,false);
     }
 
     public static ByteBuf translate(TypeOfShape typeOfShape, double latitude, double longitude, double uncertainty) throws ASNParsingException {

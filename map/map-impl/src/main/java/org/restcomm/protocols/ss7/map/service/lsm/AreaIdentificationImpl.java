@@ -42,10 +42,11 @@ import io.netty.buffer.Unpooled;
 public class AreaIdentificationImpl extends ASNOctetString implements AreaIdentification {
 	
 	public AreaIdentificationImpl() {
+		super("AreaIdentification",2,7,false);
     }
 
     public AreaIdentificationImpl(AreaType type, int mcc, int mnc, int lac, int Rac_CellId_UtranCellId) throws MAPException {
-    	super(translate(type, mcc, mnc, lac, Rac_CellId_UtranCellId));
+    	super(translate(type, mcc, mnc, lac, Rac_CellId_UtranCellId),"AreaIdentification",2,7,false);
     }
     
     private static ByteBuf translate(AreaType type, int mcc, int mnc, int lac, int Rac_CellId_UtranCellId) throws MAPException {

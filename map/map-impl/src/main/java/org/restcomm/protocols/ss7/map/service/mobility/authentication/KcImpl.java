@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class KcImpl extends ASNOctetString implements Kc {
 	public KcImpl(ByteBuf value) {
-		super(value);  
+		super(value,"KC",8,8,false);  
     }
 
     public KcImpl() {
+    	super("KC",8,8,false);
     }
 
     @Override

@@ -39,10 +39,11 @@ import io.netty.buffer.Unpooled;
  */
 public class SM_RP_SMEAImpl extends ASNOctetString implements SM_RP_SMEA {
 	public SM_RP_SMEAImpl() {
+		super("SM_RP_SMEA",1,12,false);
     }
 
 	public SM_RP_SMEAImpl(AddressField addressField) throws MAPException {
-		super(translate(addressField));
+		super(translate(addressField),"SM_RP_SMEA",1,12,false);
 	}
 	
     public static ByteBuf translate(AddressField addressField) throws MAPException {

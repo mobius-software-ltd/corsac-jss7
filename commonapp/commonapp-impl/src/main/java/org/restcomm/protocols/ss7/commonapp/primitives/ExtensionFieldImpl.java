@@ -70,9 +70,9 @@ public class ExtensionFieldImpl implements ExtensionField {
         	       
         if(data!=null) {
         	if(!isConstructred)
-        		this.data = new ASNOctetString(data);        		
+        		this.data = new ASNOctetString(data,"Data",null,null,false);        		
         	else if(isConstructred)
-        		this.data1 = new ASNOctetString(data);        		
+        		this.data1 = new ASNOctetString(data,"Data",null,null,false);        		
         }
     }
 
@@ -85,9 +85,9 @@ public class ExtensionFieldImpl implements ExtensionField {
         	
         if(data!=null) {
         	if(!isConstructred)
-        		this.data = new ASNOctetString(data);        	
+        		this.data = new ASNOctetString(data,"Data",null,null,false);        	
         	else if(isConstructred)
-        		this.data1 = new ASNOctetString(data);        	
+        		this.data1 = new ASNOctetString(data,"Data",null,null,false);        	
         }
     }
 

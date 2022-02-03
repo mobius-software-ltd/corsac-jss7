@@ -41,10 +41,11 @@ import io.netty.buffer.Unpooled;
  */
 public class CalledPartyNumberIsupImpl extends ASNOctetString implements CalledPartyNumberIsup {
 	public CalledPartyNumberIsupImpl() {
+		super("CalledPartyNumberIsup",2,18,false);
     }
 
     public CalledPartyNumberIsupImpl(CalledPartyNumber calledPartyNumber) throws ASNParsingException {
-        super(translate(calledPartyNumber));
+        super(translate(calledPartyNumber),"CalledPartyNumberIsup",2,18,false);
     }
 
     public static ByteBuf translate(CalledPartyNumber calledPartyNumber) throws ASNParsingException {

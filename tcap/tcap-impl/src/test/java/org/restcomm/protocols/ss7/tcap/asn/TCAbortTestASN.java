@@ -34,10 +34,10 @@ import io.netty.buffer.ByteBuf;
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x03,constructed=true,lengthIndefinite=false)
 public class TCAbortTestASN extends ASNOctetString {
 	public TCAbortTestASN() {
-		
+		super(null,null,null,false);
 	}
 	
 	public TCAbortTestASN(ByteBuf value) {
-		super(value);
+		super(value,null,null,null,false);
 	}
 }

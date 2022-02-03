@@ -126,9 +126,9 @@ public class Client extends EventTestHarness {
         OperationCode oc = TcapFactory.createPrivateOperationCode(59L);
         invoke.setOperationCode(oc);
 
-        ASNOctetString p1=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 0x0F }));        
+        ASNOctetString p1=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 0x0F }),null,null,null,false);        
         ASNOctetString p2=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,
-                0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }));
+                0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }),null,null,null,false);
 
         ClientTestASN pm = new ClientTestASN();
         pm.setO1(Arrays.asList(new ASNOctetString[] { p1, p2 }));

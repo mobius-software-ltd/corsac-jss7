@@ -41,10 +41,11 @@ import io.netty.buffer.Unpooled;
  */
 public class ForwardCallIndicatorsIsupImpl extends ASNOctetString implements ForwardCallIndicatorsIsup {
 	public ForwardCallIndicatorsIsupImpl() {
+		super("ForwardCallIndicatorsIsup",2,2,false);
     }
 
     public ForwardCallIndicatorsIsupImpl(ForwardCallIndicators forwardCallIndicators) throws ASNParsingException {
-        super(translate(forwardCallIndicators));
+        super(translate(forwardCallIndicators),"ForwardCallIndicatorsIsup",2,2,false);
     }
 
     public static ByteBuf translate(ForwardCallIndicators forwardCallIndicators) throws ASNParsingException {

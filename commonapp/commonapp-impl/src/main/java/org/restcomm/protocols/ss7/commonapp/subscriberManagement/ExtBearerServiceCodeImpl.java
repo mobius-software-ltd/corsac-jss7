@@ -37,10 +37,11 @@ import io.netty.buffer.Unpooled;
  */
 public class ExtBearerServiceCodeImpl extends ASNOctetString implements ExtBearerServiceCode {
 	public ExtBearerServiceCodeImpl() {  
+		super("ExtBearerServiceCode",1,5,false);
     }
 
     public ExtBearerServiceCodeImpl(BearerServiceCodeValue value) {
-        super(translate(value));
+        super(translate(value),"ExtBearerServiceCode",1,5,false);
     }
 
     private static ByteBuf translate(BearerServiceCodeValue value) {

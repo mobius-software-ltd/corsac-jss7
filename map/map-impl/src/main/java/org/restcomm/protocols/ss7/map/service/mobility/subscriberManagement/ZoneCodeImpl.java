@@ -36,10 +36,11 @@ import io.netty.buffer.Unpooled;
  */
 public class ZoneCodeImpl extends ASNOctetString implements ZoneCode {
 	public ZoneCodeImpl() {
+		super("ZoneCode",2,2,false);
     }
 
 	public ZoneCodeImpl(int value) {
-		super(translate(value));
+		super(translate(value),"ZoneCode",2,2,false);
 	}
 	
     public static ByteBuf translate(int value) {

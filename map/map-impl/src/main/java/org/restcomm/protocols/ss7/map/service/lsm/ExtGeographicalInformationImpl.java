@@ -42,6 +42,7 @@ import io.netty.buffer.Unpooled;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public class ExtGeographicalInformationImpl extends ASNOctetString implements ExtGeographicalInformation {
 	public ExtGeographicalInformationImpl() {
+		super("ExtGeographicalInformation",1,20,false);
     }
 
 	public ExtGeographicalInformationImpl(TypeOfShape typeOfShape, double latitude, double longitude, double uncertainty,
@@ -50,7 +51,7 @@ public class ExtGeographicalInformationImpl extends ASNOctetString implements Ex
             double includedAngle) throws MAPException {     
 	    super(initData(typeOfShape, latitude, longitude, uncertainty, uncertaintySemiMajorAxis, uncertaintySemiMinorAxis,
                 angleOfMajorAxis, confidence, altitude, uncertaintyAltitude, innerRadius, uncertaintyRadius, offsetAngle,
-                includedAngle));
+                includedAngle),"ExtGeographicalInformation",1,20,false);
     }
 
     protected static ByteBuf initData(TypeOfShape typeOfShape, double latitude, double longitude, double uncertainty,

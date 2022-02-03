@@ -42,11 +42,12 @@ import io.netty.buffer.Unpooled;
  */
 public class QoSSubscribedImpl extends ASNOctetString implements QoSSubscribed {
 	public QoSSubscribedImpl() {
+		super("QoSSubscribed",3,3,false);
     }
 
     public QoSSubscribedImpl(QoSSubscribed_ReliabilityClass reliabilityClass, QoSSubscribed_DelayClass delayClass,
             QoSSubscribed_PrecedenceClass precedenceClass, QoSSubscribed_PeakThroughput peakThroughput, QoSSubscribed_MeanThroughput meanThroughput) {
-    	super(translate(reliabilityClass, delayClass, precedenceClass, peakThroughput, meanThroughput));
+    	super(translate(reliabilityClass, delayClass, precedenceClass, peakThroughput, meanThroughput),"QoSSubscribed",3,3,false);
     }
 
     public static ByteBuf translate(QoSSubscribed_ReliabilityClass reliabilityClass, QoSSubscribed_DelayClass delayClass,

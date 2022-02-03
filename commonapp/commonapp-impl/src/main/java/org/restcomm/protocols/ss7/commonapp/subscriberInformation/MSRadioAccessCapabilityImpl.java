@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class MSRadioAccessCapabilityImpl extends ASNOctetString implements MSRadioAccessCapability {
 	public MSRadioAccessCapabilityImpl() {
+		super("MSNetworkCapability",1,50,false);
     }
 
     public MSRadioAccessCapabilityImpl(ByteBuf value) {
-        super(value);
+        super(value,"MSNetworkCapability",1,50,false);
     }
 	
     @Override

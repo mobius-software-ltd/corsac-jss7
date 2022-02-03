@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class MSNetworkCapabilityImpl extends ASNOctetString implements MSNetworkCapability {
 	public MSNetworkCapabilityImpl() {
+		super("MSNetworkCapability",1,8,false);
     }
 
 	public MSNetworkCapabilityImpl(ByteBuf value) {
-		super(value);
+		super(value,"MSNetworkCapability",1,8,false);
 	}
 	
     @Override

@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class SCIBillingChargingCharacteristicsImpl extends ASNOctetString implements SCIBillingChargingCharacteristics {
 	public SCIBillingChargingCharacteristicsImpl() {
+		super("SCIBillingChargingCharacteristics",null,null,false);
     }
 
     public SCIBillingChargingCharacteristicsImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"SCIBillingChargingCharacteristics",null,null,false);
     }
 
     @Override

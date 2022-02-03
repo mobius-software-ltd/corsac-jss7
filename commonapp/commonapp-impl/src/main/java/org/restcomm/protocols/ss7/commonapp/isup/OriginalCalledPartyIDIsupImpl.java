@@ -41,10 +41,11 @@ import io.netty.buffer.Unpooled;
  */
 public class OriginalCalledPartyIDIsupImpl extends ASNOctetString implements OriginalCalledPartyIDIsup {
 	public OriginalCalledPartyIDIsupImpl() {
+		super("OriginalCalledPartyIDIsup",1,5,false);
     }
 
     public OriginalCalledPartyIDIsupImpl(OriginalCalledNumber originalCalledNumber) throws ASNParsingException {
-    	super(translate(originalCalledNumber));
+    	super(translate(originalCalledNumber),"OriginalCalledPartyIDIsup",1,5,false);
     }
 
     public static ByteBuf translate(OriginalCalledNumber originalCalledNumber) throws ASNParsingException {

@@ -34,10 +34,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class FQDNImpl extends ASNOctetString implements FQDN {
 	public FQDNImpl() {
+		super("FQDN",9,255,false);
     }
 
     public FQDNImpl(ByteBuf value) {
-    	super(value);        
+    	super(value,"FQDN",9,255,false);
     }
 
     @Override

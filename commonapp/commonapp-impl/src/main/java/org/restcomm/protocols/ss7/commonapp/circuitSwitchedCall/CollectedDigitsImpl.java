@@ -87,13 +87,13 @@ public class CollectedDigitsImpl implements CollectedDigits {
         this.maximumNbOfDigits = new ASNInteger(maximumNbOfDigits);
         
         if(endOfReplyDigit!=null)
-        	this.endOfReplyDigit = new ASNOctetString(endOfReplyDigit);        
+        	this.endOfReplyDigit = new ASNOctetString(endOfReplyDigit,"EndOfReplyDigit",1,2,false);        
         
         if(cancelDigit!=null)
-        	this.cancelDigit = new ASNOctetString(cancelDigit);        
+        	this.cancelDigit = new ASNOctetString(cancelDigit,"EndOfReplyDigit",1,2,false);        
         
         if(startDigit!=null)
-        	this.startDigit = new ASNOctetString(startDigit);        
+        	this.startDigit = new ASNOctetString(startDigit,"EndOfReplyDigit",1,2,false);        
         
         if(firstDigitTimeOut!=null)
         	this.firstDigitTimeOut = new ASNInteger(firstDigitTimeOut);

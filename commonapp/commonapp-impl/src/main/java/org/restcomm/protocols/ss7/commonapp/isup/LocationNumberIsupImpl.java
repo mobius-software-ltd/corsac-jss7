@@ -41,10 +41,11 @@ import io.netty.buffer.Unpooled;
  */
 public class LocationNumberIsupImpl extends ASNOctetString implements LocationNumberIsup {
 	public LocationNumberIsupImpl() {
+		super("LocationNumberIsup",2,10,false);
     }
 
     public LocationNumberIsupImpl(LocationNumber locationNumber) throws ASNParsingException {
-        super(translate(locationNumber));
+        super(translate(locationNumber),"LocationNumberIsup",2,10,false);
     }
 
     public static ByteBuf translate(LocationNumber locationNumber) throws ASNParsingException {

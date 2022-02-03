@@ -35,5 +35,6 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
 public class TSmsDeliverySpecificInfoImpl extends ASNOctetString implements TSmsDeliverySpecificInfo {
 	public TSmsDeliverySpecificInfoImpl() {
+		super("TSmsDeliverySpecificInfo",null,null,false);
     }
 }

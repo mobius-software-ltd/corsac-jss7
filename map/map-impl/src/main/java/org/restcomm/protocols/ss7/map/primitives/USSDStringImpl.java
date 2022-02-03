@@ -58,11 +58,12 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
     private static Charset ucs2Charset = Charset.forName("UTF-16BE");
 
     public USSDStringImpl() {
+    	super("USSDString",1,160,false);
     	
     }
 
     public USSDStringImpl(ByteBuf data, CBSDataCodingScheme dataCodingScheme) {
-    	super(data);
+    	super(data,"USSDString",1,160,false);
         if (dataCodingScheme == null)
             dataCodingScheme = new CBSDataCodingSchemeImpl(15);
 
@@ -70,7 +71,7 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
     }
 
     public USSDStringImpl(String ussdString, CBSDataCodingScheme dataCodingScheme, Charset gsm8Charset) throws MAPException {
-    	super(translate(ussdString, dataCodingScheme, gsm8Charset));
+    	super(translate(ussdString, dataCodingScheme, gsm8Charset),"USSDString",1,160,false);
     	
     	if (dataCodingScheme == null) {
             dataCodingScheme = new CBSDataCodingSchemeImpl(15);

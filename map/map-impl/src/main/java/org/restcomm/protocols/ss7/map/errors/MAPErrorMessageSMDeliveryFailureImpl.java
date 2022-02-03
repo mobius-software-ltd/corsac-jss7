@@ -27,15 +27,16 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSMDeliveryFailure;
 import org.restcomm.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
+import org.restcomm.protocols.ss7.map.api.primitives.SignalInfo;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpdu;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsTpduType;
+import org.restcomm.protocols.ss7.map.primitives.SignalInfoImpl;
 import org.restcomm.protocols.ss7.map.smstpdu.SmsDeliverReportTpduImpl;
 import org.restcomm.protocols.ss7.map.smstpdu.SmsTpduImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -48,22 +49,22 @@ import io.netty.buffer.Unpooled;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl implements MAPErrorMessageSMDeliveryFailure {
 	private ASNSMEnumeratedDeliveryFailureCauseImpl sMEnumeratedDeliveryFailureCause;
-    private ASNOctetString signalInfo;
+    
+	
+	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = SignalInfoImpl.class)
+    private SignalInfo signalInfo;
    
     @ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1,defaultImplementation = MAPExtensionContainerImpl.class)
     private MAPExtensionContainer extensionContainer;
 
-    public MAPErrorMessageSMDeliveryFailureImpl(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, ByteBuf signalInfo,
+    public MAPErrorMessageSMDeliveryFailureImpl(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, SignalInfo signalInfo,
             MAPExtensionContainer extensionContainer) {
         super((long) MAPErrorCode.smDeliveryFailure);
 
         if(smEnumeratedDeliveryFailureCause!=null)
         	this.sMEnumeratedDeliveryFailureCause = new ASNSMEnumeratedDeliveryFailureCauseImpl(smEnumeratedDeliveryFailureCause);
         	
-        if(signalInfo!=null) {	
-        	this.signalInfo = new ASNOctetString(signalInfo);
-        }
-        
+        this.signalInfo = signalInfo;
         this.extensionContainer = extensionContainer;
     }
 
@@ -78,11 +79,8 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
         return this.sMEnumeratedDeliveryFailureCause.getType();
     }
 
-    public ByteBuf getSignalInfo() {
-    	if(this.signalInfo==null)
-    		return null;
-    	
-        return this.signalInfo.getValue();
+    public SignalInfo getSignalInfo() {
+    	return this.signalInfo;
     }
 
     public MAPExtensionContainer getExtensionContainer() {
@@ -96,11 +94,8 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
     		this.sMEnumeratedDeliveryFailureCause=new ASNSMEnumeratedDeliveryFailureCauseImpl(sMEnumeratedDeliveryFailureCause);    		
     }
 
-    public void setSignalInfo(ByteBuf signalInfo) {
-    	if(signalInfo==null)
-    		this.signalInfo=null;
-    	else
-    		this.signalInfo = new ASNOctetString(signalInfo);    	
+    public void setSignalInfo(SignalInfo signalInfo) {
+    	this.signalInfo=signalInfo;    	
     }
 
     public void setExtensionContainer(MAPExtensionContainer extensionContainer) {
@@ -129,7 +124,7 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
     public void setSmsDeliverReportTpdu(SmsDeliverReportTpdu tpdu) throws MAPException {
     	ByteBuf buf=Unpooled.buffer();
     	tpdu.encodeData(buf);
-    	setSignalInfo(buf);
+    	setSignalInfo(new SignalInfoImpl(buf));
     }
 
     @Override
@@ -140,7 +135,7 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
         if (this.sMEnumeratedDeliveryFailureCause != null)
             sb.append("sMEnumeratedDeliveryFailureCause=" + this.sMEnumeratedDeliveryFailureCause.toString());
         if (this.signalInfo != null)
-            sb.append(", signalInfo=" + signalInfo.printDataArr());
+            sb.append(", signalInfo=" + this.signalInfo.toString());
         if (this.extensionContainer != null)
             sb.append(", extensionContainer=" + this.extensionContainer.toString());
         sb.append("]");

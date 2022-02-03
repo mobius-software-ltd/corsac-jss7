@@ -59,7 +59,7 @@ public class EventSpecificInfoChargingImpl implements EventSpecificInfoCharging 
     
     public EventSpecificInfoChargingImpl(ByteBuf tariffIndicator) {
     	if(tariffIndicator!=null)
-    		this.tariffIndicator=new ASNOctetString(tariffIndicator);    	
+    		this.tariffIndicator=new ASNOctetString(tariffIndicator,"TariffIndicator",2,2,false);    	
     }
     
     public EventSpecificInfoChargingImpl(ChargeNoChargeIndication chargeNoChargeIndication) {

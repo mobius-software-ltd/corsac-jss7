@@ -41,7 +41,7 @@ public class InvokeTestASN extends ASNOctetString {
 	private ASNOctetString o2;
 	
 	public InvokeTestASN() {
-		
+		super(null,null,null,false);		
 	}
 	
 	public List<ASNOctetString> getO1() {

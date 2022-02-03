@@ -9,10 +9,10 @@ import io.netty.buffer.ByteBuf;
 public  class TestOctetStringImpl extends ASNOctetString {
 	
 	public TestOctetStringImpl(ByteBuf value) {
-		super(value);
+		super(value,null,null,null,false);
     }
 
 	public TestOctetStringImpl() {
-		
+		super(null,null,null,false);
 	}
 }

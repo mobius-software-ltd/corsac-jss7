@@ -36,10 +36,11 @@ import io.netty.buffer.Unpooled;
  */
 public class VariablePartTimeImpl extends ASNOctetString implements VariablePartTime {
 	public VariablePartTimeImpl() {
+		super("VariablePartTime",2,2,false);
     }
 
     public VariablePartTimeImpl(int hour, int minute) {
-        super(translate(hour, minute));
+        super(translate(hour, minute),"VariablePartTime",2,2,false);
     }
 
     protected static ByteBuf translate(int hour, int minute) {

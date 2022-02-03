@@ -1981,7 +1981,7 @@ public class Client extends EventTestHarness {
                 this.remoteAddress, destReference);
         clientDialog.setExtentionContainer(MAPExtensionContainerTest.GetTestExtensionContainer());
 
-        ASNOctetString octetString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }));
+        ASNOctetString octetString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }),null,null,null,false);
         try {
         	((MAPDialogImpl)clientDialog).getTcapDialog().sendData(10L, null, null, null, TcapFactory.createLocalOperationCode((long) MAPOperationCode.processUnstructuredSS_Request), octetString, true, false);
         }

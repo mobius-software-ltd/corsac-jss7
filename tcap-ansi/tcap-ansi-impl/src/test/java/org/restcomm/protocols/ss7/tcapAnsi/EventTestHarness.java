@@ -161,7 +161,7 @@ public abstract class EventTestHarness implements TCListener {
             inv.setInvokeId(this.dialog.getNewInvokeId());
             OperationCode oc = TcapFactory.createNationalOperationCode(10L);            
             inv.setOperationCode(oc);
-            ASNOctetString innerString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 3, 4, 5 }));
+            ASNOctetString innerString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 3, 4, 5 }),null,null,null,false);
             inv.setSeqParameter(innerString);
             
             WrappedComponentImpl component=new WrappedComponentImpl();
@@ -194,7 +194,7 @@ public abstract class EventTestHarness implements TCListener {
             inv.setInvokeId(this.dialog.getNewInvokeId());
             OperationCode oc = new OperationCodeImpl();
             inv.setOperationCode(oc);
-            ASNOctetString innerString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 3, 4, 5 }));
+            ASNOctetString innerString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 3, 4, 5 }),null,null,null,false);
             inv.setSeqParameter(innerString);
             
             WrappedComponentImpl component=new WrappedComponentImpl();

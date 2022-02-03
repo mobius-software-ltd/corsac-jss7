@@ -89,7 +89,7 @@ public class ReturnResultTest {
         // 1
         Return rrl = TcapFactory.createComponentReturnResultLast();
         rrl.setCorrelationId(0L);
-        ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(parData));
+        ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(parData),null,null,null,false);
         rrl.setSetParameter(p);        
 
         ByteBuf encodedData=parser.encode(rrl);

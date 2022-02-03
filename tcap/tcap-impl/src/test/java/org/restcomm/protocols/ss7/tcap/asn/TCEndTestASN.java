@@ -34,10 +34,11 @@ import io.netty.buffer.ByteBuf;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class TCEndTestASN extends ASNOctetString {
 	public TCEndTestASN() {
+		super(null,null,null,false);
 		
 	}
 	
 	public TCEndTestASN(ByteBuf buffer) {
-		super(buffer);
+		super(buffer,null,null,null,false);
 	}
 }

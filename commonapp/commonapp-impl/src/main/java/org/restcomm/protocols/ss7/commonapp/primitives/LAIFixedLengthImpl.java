@@ -43,10 +43,11 @@ import io.netty.buffer.Unpooled;
 public class LAIFixedLengthImpl extends ASNOctetString implements LAIFixedLength {
 	
 	public LAIFixedLengthImpl() {
+		super("LAIFixedLength",5,5,false);
     }
 
     public LAIFixedLengthImpl(int mcc, int mnc, int lac) throws ASNParsingException {
-        super(translate(mcc, mnc, lac));
+        super(translate(mcc, mnc, lac),"LAIFixedLength",5,5,false);
     }
 
     private static ByteBuf translate(int mcc, int mnc, int lac) throws ASNParsingException {

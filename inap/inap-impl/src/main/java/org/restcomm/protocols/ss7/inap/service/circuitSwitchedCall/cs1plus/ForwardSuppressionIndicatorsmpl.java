@@ -39,10 +39,11 @@ import io.netty.buffer.Unpooled;
  */
 public class ForwardSuppressionIndicatorsmpl extends ASNOctetString implements ForwardSuppressionIndicators {
 	public ForwardSuppressionIndicatorsmpl() {
+		super("ForwardSuppressionIndicators",1,10,false);
     }
 
 	public ForwardSuppressionIndicatorsmpl(ForwardSuppression forwardSuppression,InstructionIndicator instructionIndicator) {
-		super(translate(forwardSuppression, instructionIndicator));
+		super(translate(forwardSuppression, instructionIndicator),"ForwardSuppressionIndicators",1,10,false);
 	}
 	
     public static ByteBuf translate(ForwardSuppression forwardSuppression,InstructionIndicator instructionIndicator) {

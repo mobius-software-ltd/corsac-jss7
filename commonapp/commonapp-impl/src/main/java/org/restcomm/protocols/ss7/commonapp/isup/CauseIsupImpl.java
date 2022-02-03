@@ -41,10 +41,11 @@ import io.netty.buffer.Unpooled;
  */
 public class CauseIsupImpl extends ASNOctetString implements CauseIsup {
 	public CauseIsupImpl() {
+		super("CauseIsup",2,32,false);
     }
 
     public CauseIsupImpl(CauseIndicators causeIndicators) throws ASNParsingException {
-        super(translate(causeIndicators));
+        super(translate(causeIndicators),"CauseIsup",2,32,false);
     }
 
     public static ByteBuf translate(CauseIndicators causeIndicators) throws ASNParsingException {

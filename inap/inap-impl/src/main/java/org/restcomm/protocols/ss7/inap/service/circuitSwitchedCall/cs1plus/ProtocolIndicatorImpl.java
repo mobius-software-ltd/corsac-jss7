@@ -39,10 +39,11 @@ import io.netty.buffer.Unpooled;
  */
 public class ProtocolIndicatorImpl extends ASNOctetString implements ProtocolIndicator {
 	public ProtocolIndicatorImpl() {
+		super("ProtocolIndicator",2,2,false);
     }
 
 	public ProtocolIndicatorImpl(ProtocolIdentifier protocolIdentifier,TCAPDialogueLevel tcapDialogueLevel) {
-		super(translate(protocolIdentifier, tcapDialogueLevel));
+		super(translate(protocolIdentifier, tcapDialogueLevel),"ProtocolIndicator",2,2,false);
 	}
 	
     public static ByteBuf translate(ProtocolIdentifier protocolIdentifier,TCAPDialogueLevel tcapDialogueLevel) {

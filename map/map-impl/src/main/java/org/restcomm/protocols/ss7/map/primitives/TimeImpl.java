@@ -43,10 +43,11 @@ public class TimeImpl extends ASNOctetString implements Time {
     private static final long msbOne = -2208988800000L;
 
     public TimeImpl() {
+    	super("Time",4,4,false);
     }
 
     public TimeImpl(int year, int month, int day, int hour, int minute, int second) {
-    	super(translate(year, month, day, hour, minute, second));
+    	super(translate(year, month, day, hour, minute, second),"Time",4,4,false);
     }
     
     public static ByteBuf translate(int year, int month, int day, int hour, int minute, int second) {

@@ -44,7 +44,7 @@ public class UpdateResultChoiseImpl {
 
     public UpdateResultChoiseImpl(ByteBuf operationReturnID) {
     	if(operationReturnID!=null)
-    		this.operationReturnID=new ASNOctetString(operationReturnID);    	
+    		this.operationReturnID=new ASNOctetString(operationReturnID,"OperationReturnID",null,null,false);    	
     }
 
     public ByteBuf getOperationReturnID() {

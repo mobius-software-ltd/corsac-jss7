@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class ExtPDPTypeImpl extends ASNOctetString implements ExtPDPType {
 	public ExtPDPTypeImpl() {
+		super("ExtPDPType",2,2,false);
     }
 
     public ExtPDPTypeImpl(ByteBuf value) {
-        super(value);
+        super(value,"ExtPDPType",2,2,false);
     }
 
     @Override

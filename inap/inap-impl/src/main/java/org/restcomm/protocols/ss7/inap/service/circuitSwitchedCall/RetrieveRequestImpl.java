@@ -60,7 +60,7 @@ public class RetrieveRequestImpl extends CircuitSwitchedCallMessageImpl implemen
 
     public RetrieveRequestImpl(ByteBuf operationID,ApplicationID applicationID,DataItemID dataItemID) {
     	if(operationID!=null)
-    		this.operationID=new ASNOctetString(operationID);    	
+    		this.operationID=new ASNOctetString(operationID,"OperationID",null,null,false);    	
     	
     	this.applicationID=applicationID;
     	this.dataItemID=dataItemID;

@@ -11,10 +11,10 @@ import io.netty.buffer.ByteBuf;
 @ASNPostprocess
 public class DestinationTransactionID extends ASNOctetString {
 	public DestinationTransactionID() {
-		
+		super("DestinationTransactionID",1,4,false);
 	}
 	
 	public DestinationTransactionID(ByteBuf value) {
-		super(value);
+		super(value,"DestinationTransactionID",1,4,false);
 	}
 }

@@ -62,7 +62,7 @@ public class FilteredCallTreatmentImpl implements FilteredCallTreatment {
     public FilteredCallTreatmentImpl(ByteBuf sfBillingChargingCharacteristics,InformationToSend informationToSend,
     		Integer maximumNumberOfCounters,CauseIsup cause) {
     	if(sfBillingChargingCharacteristics!=null)
-    		this.sfBillingChargingCharacteristics=new ASNOctetString(sfBillingChargingCharacteristics);
+    		this.sfBillingChargingCharacteristics=new ASNOctetString(sfBillingChargingCharacteristics,"SFBillingChargingCharacteristics",null,null,false);
     	
     	this.informationToSend=informationToSend;
     	

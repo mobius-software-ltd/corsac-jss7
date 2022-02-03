@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class ServiceProfileIdentifierImpl extends ASNOctetString implements ServiceProfileIdentifier {
 	public ServiceProfileIdentifierImpl() {
+		super("ServiceProfileIdentifier",null,null,false);
     }
 
     public ServiceProfileIdentifierImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"ServiceProfileIdentifier",null,null,false);
     }
 
     @Override

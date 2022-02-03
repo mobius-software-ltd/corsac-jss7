@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class HoldCauseImpl extends ASNOctetString implements HoldCause {
 	public HoldCauseImpl() {
+		super("HoldCause",null,null,false);
     }
 
     public HoldCauseImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"HoldCause",null,null,false);
     }
 
     @Override

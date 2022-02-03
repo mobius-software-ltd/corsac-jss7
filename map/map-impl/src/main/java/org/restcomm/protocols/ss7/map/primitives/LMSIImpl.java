@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBufUtil;
  */
 public class LMSIImpl extends ASNOctetString implements LMSI {
 	public LMSIImpl() {
+		super("LMSI",4,4,false);
     }
 
     public LMSIImpl(ByteBuf value) {
-        super(value);
+        super(value,"LMSI",4,4,false);
     }
 
     @Override

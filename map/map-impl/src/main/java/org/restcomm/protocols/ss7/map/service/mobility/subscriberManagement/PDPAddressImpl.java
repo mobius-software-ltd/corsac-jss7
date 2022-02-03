@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class PDPAddressImpl extends ASNOctetString implements PDPAddress {
 	public PDPAddressImpl() {
+		super("PDPAddress",1,16,false);
     }
 
     public PDPAddressImpl(ByteBuf value) {
-        super(value);
+        super(value,"PDPAddress",1,16,false);
     }
 
     @Override

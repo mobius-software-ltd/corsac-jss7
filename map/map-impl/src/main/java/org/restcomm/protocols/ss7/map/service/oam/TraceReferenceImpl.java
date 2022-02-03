@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class TraceReferenceImpl extends ASNOctetString implements TraceReference {
 	public TraceReferenceImpl() {
+		super("TraceReference",1,2,false);
     }
 
     public TraceReferenceImpl(ByteBuf value) {
-        super(value);
+        super(value,"TraceReference",1,2,false);
     }
 
     @Override

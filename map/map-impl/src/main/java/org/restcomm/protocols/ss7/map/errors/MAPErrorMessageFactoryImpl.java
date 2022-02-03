@@ -57,11 +57,10 @@ import org.restcomm.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCaus
 import org.restcomm.protocols.ss7.map.api.errors.UnauthorizedLCSClientDiagnostic;
 import org.restcomm.protocols.ss7.map.api.errors.UnknownSubscriberDiagnostic;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
+import org.restcomm.protocols.ss7.map.api.primitives.SignalInfo;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.BasicServiceCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
-
-import io.netty.buffer.ByteBuf;
 
 /**
  * The factory of MAP ReturnError messages
@@ -188,7 +187,7 @@ public class MAPErrorMessageFactoryImpl implements MAPErrorMessageFactory {
     	return new MAPErrorMessageSMDeliveryFailure1Impl(smEnumeratedDeliveryFailureCause);    	
     }
 
-    public MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, ByteBuf signalInfo,
+    public MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, SignalInfo signalInfo,
             MAPExtensionContainer extensionContainer) {
     	return new MAPErrorMessageSMDeliveryFailureImpl(smEnumeratedDeliveryFailureCause, signalInfo, extensionContainer);
     }

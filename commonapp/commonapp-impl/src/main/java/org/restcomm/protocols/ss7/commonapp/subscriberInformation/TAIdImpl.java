@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class TAIdImpl extends ASNOctetString implements TAId {
 	public TAIdImpl() {
+		super("TAId",5,5,false);
     }
 
     public TAIdImpl(ByteBuf value) {
-        super(value);
+        super(value,"TAId",5,5,false);
     }
 	
     @Override

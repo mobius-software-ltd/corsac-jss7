@@ -58,7 +58,7 @@ public class USIServiceIndicatorImpl implements USIServiceIndicator {
 
     public USIServiceIndicatorImpl(ByteBuf local) {
     	if(local!=null)
-    		this.local=new ASNOctetString(local);    	
+    		this.local=new ASNOctetString(local,"Local",null,null,false);    	
     }
 
     public List<Long> getGlobal() {

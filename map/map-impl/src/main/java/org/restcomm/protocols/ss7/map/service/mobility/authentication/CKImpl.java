@@ -35,9 +35,10 @@ import io.netty.buffer.ByteBuf;
  */
 public class CKImpl extends ASNOctetString implements CK {
 	public CKImpl(ByteBuf value) {
-		super(value);     
+		super(value,"CK",16,16,false);     
     }
 
     public CKImpl() {
+    	super("CK",16,16,false);
     }
 }

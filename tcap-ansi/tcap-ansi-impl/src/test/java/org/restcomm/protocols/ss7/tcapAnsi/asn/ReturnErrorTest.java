@@ -75,7 +75,7 @@ public class ReturnErrorTest {
         re.setCorrelationId(5L);
         ErrorCode ec = TcapFactory.createPrivateErrorCode(14L);
         re.setErrorCode(ec);
-        ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(parData));
+        ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(parData),null,null,null,false);
         re.setSetParameter(p);
               
         ByteBuf encodedData=parser.encode(re);

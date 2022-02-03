@@ -60,10 +60,11 @@ public class ISDNSubaddressStringImpl extends ASNOctetString implements ISDNSuba
      * length of 20 -- octets. When interworking with X.25 networks BCD coding should -- be applied.
      */
     public ISDNSubaddressStringImpl() {
+    	super("ISDNSubaddressString",1,21,false);
     }
 
     public ISDNSubaddressStringImpl(ByteBuf value) {
-        super(value);
+        super(value,"ISDNSubaddressString",1,21,false);
     }
 
     @Override

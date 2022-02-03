@@ -27,10 +27,9 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageSMDeliveryFailure;
 import org.restcomm.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
+import org.restcomm.protocols.ss7.map.api.primitives.SignalInfo;
 import org.restcomm.protocols.ss7.map.api.smstpdu.SmsDeliverReportTpdu;
 import org.restcomm.protocols.ss7.map.smstpdu.SmsDeliverReportTpduImpl;
-
-import io.netty.buffer.ByteBuf;
 
 /**
  *
@@ -96,12 +95,12 @@ MAPErrorMessageSMDeliveryFailure {
 	}
 
 	@Override
-	public ByteBuf getSignalInfo() {
+	public SignalInfo getSignalInfo() {
 		return null;
 	}
 
 	@Override
-	public void setSignalInfo(ByteBuf signalInfo) {		
+	public void setSignalInfo(SignalInfo signalInfo) {		
 	}
 
 	@Override

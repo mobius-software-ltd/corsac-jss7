@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class ISDNAccessRelatedInformationImpl extends ASNOctetString implements ISDNAccessRelatedInformation {
 	public ISDNAccessRelatedInformationImpl() {
+		super("ISDNAccessRelatedInformation",null,null,false);
     }
 
     public ISDNAccessRelatedInformationImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"ISDNAccessRelatedInformation",null,null,false);
     }
 
     @Override

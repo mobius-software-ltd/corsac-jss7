@@ -51,7 +51,7 @@ public class INAPErrorMessageOctetStringImpl extends INAPErrorMessageImpl implem
 
     protected void setValue(ByteBuf value) {
     	if(value!=null)
-    		this.value=new ASNOctetString(value);
+    		this.value=new ASNOctetString(value,"Error",null,null,false);
     	else
     		this.value=null;
 	}

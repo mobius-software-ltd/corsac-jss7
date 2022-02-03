@@ -41,14 +41,15 @@ import io.netty.buffer.Unpooled;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public class AlertingPatternWrapperImpl extends ASNOctetString implements AlertingPatternWrapper {
 	public AlertingPatternWrapperImpl() {
+		super("AlertingPatternWrapper",3,3,false);
     }
 
     public AlertingPatternWrapperImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"AlertingPatternWrapper",3,3,false);
     }
 
     public AlertingPatternWrapperImpl(AlertingPattern alertingPattern) {
-        super(translateAlertingPattern(alertingPattern));
+        super(translateAlertingPattern(alertingPattern),"AlertingPatternWrapper",3,3,false);
     }
 
     public static ByteBuf translateAlertingPattern(AlertingPattern alertingPattern) {

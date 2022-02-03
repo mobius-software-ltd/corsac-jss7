@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class CalledPartySubaddressImpl extends ASNOctetString implements CalledPartySubaddress {
 	public CalledPartySubaddressImpl() {
+		super("CalledPartySubaddress",null,null,false);
     }
 
     public CalledPartySubaddressImpl(ByteBuf value) {
-    	super(value);    	
+    	super(value,"CalledPartySubaddress",null,null,false);    	
     }
 
     @Override

@@ -54,13 +54,13 @@ public class AuthenticationTripletImpl implements AuthenticationTriplet {
     public AuthenticationTripletImpl(ByteBuf rand, ByteBuf sres, ByteBuf kc) {
 
     	if(rand!=null)
-    		this.rand = new ASNOctetString(rand);
+    		this.rand = new ASNOctetString(rand,"RAND",16,16,false);
     	
     	if(sres!=null)
-    		this.sres = new ASNOctetString(sres);
+    		this.sres = new ASNOctetString(sres,"SRES",4,4,false);
     	
     	if(kc!=null)
-    		this.kc = new ASNOctetString(kc);
+    		this.kc = new ASNOctetString(kc,"KC",16,16,false);
     }
 
     public ByteBuf getRand() {

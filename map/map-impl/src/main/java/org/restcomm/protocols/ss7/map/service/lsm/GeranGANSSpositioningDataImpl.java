@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class GeranGANSSpositioningDataImpl extends ASNOctetString implements GeranGANSSpositioningData {
 	public GeranGANSSpositioningDataImpl() {
+		super("GeranGANSSpositioningData",2,10,false);
     }
 
     public GeranGANSSpositioningDataImpl(ByteBuf value) {
-        super(value);
+        super(value,"GeranGANSSpositioningData",2,10,false);
     }
 
     @Override

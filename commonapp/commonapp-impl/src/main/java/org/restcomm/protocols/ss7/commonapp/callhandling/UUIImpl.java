@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
 */
 public class UUIImpl extends ASNOctetString implements UUI {
 	public UUIImpl() {
+		super("UUI",1,131,false); 
     }
 
     public UUIImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"UUI",1,131,false);
     }
     
     public String toString() {

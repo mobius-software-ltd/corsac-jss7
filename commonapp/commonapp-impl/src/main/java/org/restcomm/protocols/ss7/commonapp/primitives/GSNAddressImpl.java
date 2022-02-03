@@ -37,11 +37,12 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class GSNAddressImpl extends ASNOctetString implements GSNAddress {
-	public GSNAddressImpl() {        
+	public GSNAddressImpl() { 
+		super("GSNAddress",5,17,false);
     }
 
     public GSNAddressImpl(GSNAddressAddressType addressType, ByteBuf addressData) throws ASNParsingException {
-    	super(translate(addressType, addressData));
+    	super(translate(addressType, addressData),"GSNAddress",5,17,false);
     }
 
     private static ByteBuf translate(GSNAddressAddressType addressType, ByteBuf addressData) throws ASNParsingException {

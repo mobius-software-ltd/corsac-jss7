@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class GenericNameImpl extends ASNOctetString implements GenericName {
 	public GenericNameImpl() {
+		super("GenericName",1,52,false);
     }
 
     public GenericNameImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"GenericName",1,52,false);
     }
 
     @Override

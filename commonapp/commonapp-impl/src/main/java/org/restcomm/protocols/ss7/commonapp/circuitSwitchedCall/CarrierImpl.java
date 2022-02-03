@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
 */
 public class CarrierImpl extends ASNOctetString implements Carrier {
 	public CarrierImpl() {
+		super("Carrier",4,4,false);
     }
 
     public CarrierImpl(ByteBuf value) {
-    	super(value); 
+    	super(value,"Carrier",4,4,false); 
     }
 
     @Override

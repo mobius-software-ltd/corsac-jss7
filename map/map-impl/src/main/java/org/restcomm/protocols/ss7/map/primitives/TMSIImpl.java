@@ -35,11 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class TMSIImpl extends ASNOctetString implements TMSI {
 	public TMSIImpl(ByteBuf value) {
-		super(value);
+		super(value,"TMSI",1,4,false);
     }
 
     public TMSIImpl() {
-        super();
+        super("TMSI",1,4,false);
     }
 
     @Override

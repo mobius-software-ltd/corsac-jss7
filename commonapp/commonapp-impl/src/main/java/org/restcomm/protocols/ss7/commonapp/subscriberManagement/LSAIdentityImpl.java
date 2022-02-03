@@ -35,10 +35,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class LSAIdentityImpl extends ASNOctetString implements LSAIdentity {
 	public LSAIdentityImpl() {
+		super("LSAIdentity",3,3,false);
     }
 
     public LSAIdentityImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"LSAIdentity",3,3,false);
     }
 
     public boolean isPlmnSignificantLSA() {

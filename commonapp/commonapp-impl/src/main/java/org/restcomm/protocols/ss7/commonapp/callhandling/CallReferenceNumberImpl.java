@@ -34,11 +34,12 @@ import io.netty.buffer.ByteBuf;
  *
  */
 public class CallReferenceNumberImpl extends ASNOctetString implements CallReferenceNumber {
-	public CallReferenceNumberImpl() {        
+	public CallReferenceNumberImpl() {
+		super("CallReferenceNumber",1,8,false);        
     }
 
     public CallReferenceNumberImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"CallReferenceNumber",1,8,false);
     }
 
     public String toString() {

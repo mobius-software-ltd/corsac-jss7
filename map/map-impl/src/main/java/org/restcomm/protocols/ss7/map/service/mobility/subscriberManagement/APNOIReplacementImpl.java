@@ -35,9 +35,10 @@ import io.netty.buffer.ByteBuf;
  */
 public class APNOIReplacementImpl extends ASNOctetString implements APNOIReplacement {
 	public APNOIReplacementImpl() {
+		super("APNOIReplacement",9,100,false);
     }
 
     public APNOIReplacementImpl(ByteBuf value) {
-        super(value);
+        super(value,"APNOIReplacement",9,100,false);
     }
 }

@@ -15,10 +15,11 @@ import io.netty.buffer.ByteBuf;
 public class SipUriImpl extends ASNOctetString implements SipUri {
 	
 	public SipUriImpl() {
+		super("SipUri",null,null,false);
     }
 
     public SipUriImpl(ByteBuf value) {
-        super(value);
+        super(value,"SipUri",null,null,false);
     }
 
     @Override

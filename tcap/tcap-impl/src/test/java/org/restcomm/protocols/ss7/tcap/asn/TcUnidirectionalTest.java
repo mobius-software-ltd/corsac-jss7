@@ -89,7 +89,7 @@ public class TcUnidirectionalTest {
         Invoke invComp = TcapFactory.createComponentInvoke();
         invComp.setInvokeId(-128l);
         invComp.setOperationCode(591L);
-        ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 2, 3 }));
+        ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 2, 3 }),null,null,null,false);
         invComp.setParameter(p);
         
         List<BaseComponent> components=Arrays.asList(new BaseComponent[] { invComp });

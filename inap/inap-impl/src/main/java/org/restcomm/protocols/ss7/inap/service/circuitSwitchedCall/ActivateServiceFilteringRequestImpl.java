@@ -83,7 +83,7 @@ public class ActivateServiceFilteringRequestImpl extends CircuitSwitchedCallMess
     	this(filteredCallTreatment, filteringCharacteristics, filteringTimeOut, filteringCriteria, startTime, extensions);
     	
     	if(scfCorrelationInfo!=null)
-    		this.scfCorrelationInfo=new ASNOctetString(scfCorrelationInfo);    		    
+    		this.scfCorrelationInfo=new ASNOctetString(scfCorrelationInfo,"SCFCorrelationInfo",16,16,false);    		    
     }
     
     public ActivateServiceFilteringRequestImpl(FilteredCallTreatment filteredCallTreatment,FilteringCharacteristics filteringCharacteristics,

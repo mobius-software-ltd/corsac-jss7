@@ -36,10 +36,11 @@ import io.netty.buffer.ByteBuf;
  */
 public class RouteOriginImpl extends ASNOctetString implements RouteOrigin {
 	public RouteOriginImpl() {
+		super("RouteOrigin",2,2,false);
     }
 
     public RouteOriginImpl(ByteBuf value) {
-    	super(value);
+    	super(value,"RouteOrigin",2,2,false);
     }
 
     @Override

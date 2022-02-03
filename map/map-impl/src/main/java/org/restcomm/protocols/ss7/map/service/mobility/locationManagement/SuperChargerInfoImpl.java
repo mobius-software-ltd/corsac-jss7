@@ -60,7 +60,7 @@ public class SuperChargerInfoImpl implements SuperChargerInfo {
      * @param subscriberDataStored
      */
     public SuperChargerInfoImpl(ByteBuf subscriberDataStored) {
-        this.subscriberDataStored = new ASNOctetString(subscriberDataStored);
+        this.subscriberDataStored = new ASNOctetString(subscriberDataStored,"SubscriberDataStored",1,6,false);
     }
 
     /*

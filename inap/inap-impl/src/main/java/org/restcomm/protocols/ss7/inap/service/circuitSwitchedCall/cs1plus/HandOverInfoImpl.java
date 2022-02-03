@@ -86,14 +86,14 @@ public class HandOverInfoImpl implements HandOverInfo {
     	this.sendingSCPDialogueInfo=sendingSCPDialogueInfo;
     	
     	if(sendingSCPCorrelationInfo!=null)
-    		this.sendingSCPCorrelationInfo=new ASNOctetString(sendingSCPCorrelationInfo);    		
+    		this.sendingSCPCorrelationInfo=new ASNOctetString(sendingSCPCorrelationInfo,"SendingSCPCorrelationInfo",16,16,false);    		
     	
     	if(receivingSCPAddress!=null)
     		this.receivingSCPAddress=new SCPAddressWrapperImpl(receivingSCPAddress);
     	
     	this.receivingSCPDialogueInfo=receivingSCPDialogueInfo;
     	if(receivingSCPCorrelationInfo!=null)
-    		this.receivingSCPCorrelationInfo=new ASNOctetString(receivingSCPCorrelationInfo);
+    		this.receivingSCPCorrelationInfo=new ASNOctetString(receivingSCPCorrelationInfo,"SendingSCPCorrelationInfo",16,16,false);
     		
     	this.handoverNumber=handoverNumber;
     	if(handoverData!=null)

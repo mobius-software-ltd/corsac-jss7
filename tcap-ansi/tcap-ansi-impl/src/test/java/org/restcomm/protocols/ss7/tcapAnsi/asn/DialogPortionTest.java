@@ -109,7 +109,7 @@ public class DialogPortionTest {
         UserInformationElementImpl currElement=new UserInformationElementImpl();
         currElement.setIdentifier(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }));
         
-        ASNOctetString innerValue=new ASNOctetString(Unpooled.wrappedBuffer(dataValue));        
+        ASNOctetString innerValue=new ASNOctetString(Unpooled.wrappedBuffer(dataValue),null,null,null,false);        
         currElement.setChildAsObject(new ASNUserInformationObjectImpl(innerValue));
         uie.add(currElement);
         ui.setUserInformationElements(uie);

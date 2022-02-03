@@ -41,16 +41,16 @@ public class IPSSPCapabilitiesImpl extends ASNOctetString implements IPSSPCapabi
     public static int _Mask_VoiceInformation_VoiceRecognition = 0x08;
     public static int _Mask_GenerationOfVoiceAnnouncementsFromTextSupported = 0x10;
 
-    public static final String _PrimitiveName = "IPSSPCapabilities";
-
     public IPSSPCapabilitiesImpl() {
+    	super("IPSSPCapabilities",1,4,false);
     }
 
     public IPSSPCapabilitiesImpl(boolean IPRoutingAddressSupported, boolean VoiceBackSupported,
             boolean VoiceInformationSupportedViaSpeechRecognition, boolean VoiceInformationSupportedViaVoiceRecognition,
             boolean GenerationOfVoiceAnnouncementsFromTextSupported, ByteBuf extraData) {
         super(translate(IPRoutingAddressSupported, VoiceBackSupported, VoiceInformationSupportedViaSpeechRecognition,
-                VoiceInformationSupportedViaVoiceRecognition, GenerationOfVoiceAnnouncementsFromTextSupported, extraData));
+                VoiceInformationSupportedViaVoiceRecognition, GenerationOfVoiceAnnouncementsFromTextSupported, extraData),
+        		"IPSSPCapabilities",1,4,false);
     }
 
     public static ByteBuf translate(boolean IPRoutingAddressSupported, boolean VoiceBackSupported,
