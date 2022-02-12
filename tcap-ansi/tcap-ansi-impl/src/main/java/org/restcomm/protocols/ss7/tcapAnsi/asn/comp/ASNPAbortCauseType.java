@@ -34,11 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=23,constructed=false,lengthIndefinite=false)
 public class ASNPAbortCauseType extends ASNEnumerated {
 	public ASNPAbortCauseType() {
-		
+		super("PAbortCause",1,10,false);
 	}
 	
 	public ASNPAbortCauseType(PAbortCause t) {
-		super(t.getType());
+		super(t.getType(),"PAbortCause",1,10,false);
 	}
 	
 	public PAbortCause getCause() throws ParseException {

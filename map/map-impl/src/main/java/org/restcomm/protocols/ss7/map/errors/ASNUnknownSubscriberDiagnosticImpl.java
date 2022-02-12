@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNUnknownSubscriberDiagnosticImpl extends ASNEnumerated {
 	public ASNUnknownSubscriberDiagnosticImpl() {
-		
+		super("UnauthorizedLCSClientDiagnostic",0,2,false);
 	}
 	
 	public ASNUnknownSubscriberDiagnosticImpl(UnknownSubscriberDiagnostic t) {
-		super(Long.valueOf(t.getCode()));
+		super(t.getCode(),"UnauthorizedLCSClientDiagnostic",0,2,false);
 	}
 	
 	public UnknownSubscriberDiagnostic getType() {

@@ -34,10 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
  */
 public class TariffDurationImpl extends ASNInteger implements TariffDuration {
 	public TariffDurationImpl() {
+		super("TariffDuration",0L,36000L,false);
     }
 
     public TariffDurationImpl(Integer value) {
-    	super(value);   	
+    	super(value,"TariffDuration",0,36000,false);   	
     }
 
     public Integer getData() {

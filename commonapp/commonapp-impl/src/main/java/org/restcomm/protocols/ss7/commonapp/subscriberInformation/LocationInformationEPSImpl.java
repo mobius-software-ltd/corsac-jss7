@@ -99,7 +99,7 @@ public class LocationInformationEPSImpl implements LocationInformationEPS {
         	this.currentLocationRetrieved = new ASNNull();
         
         if(ageOfLocationInformation!=null)
-        	this.ageOfLocationInformation = new ASNInteger(ageOfLocationInformation);
+        	this.ageOfLocationInformation = new ASNInteger(ageOfLocationInformation,"AgeOfLocationInformation",0,Integer.MAX_VALUE,false);
         	
         this.mmeName = mmeName;
     }

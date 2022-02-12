@@ -38,10 +38,11 @@ public class CAPUserAbortPrimitiveImpl extends ASNEnumerated {
 	public static final List<Long> CAP_AbortReason_OId = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 2L, 2L });
 
     public CAPUserAbortPrimitiveImpl() {
+    	super("CAPUserAbortPrimitive",1,8,false);
     }
 
     public CAPUserAbortPrimitiveImpl(CAPUserAbortReason reason) {
-        super(reason.getCode());
+        super(reason.getCode(),"CAPUserAbortPrimitive",1,8,false);
     }
 
     public CAPUserAbortReason getCAPUserAbortReason() {

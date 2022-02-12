@@ -40,12 +40,12 @@ public class MMEEventListImpl extends ASNBitString implements MMEEventList {
     static final int _ID_handover = 5;
 
     public MMEEventListImpl() {
-    	super(5);
+    	super("MMEEventList",5,7,false);
     }
 
     public MMEEventListImpl(boolean ueInitiatedPDNconectivityRequest, boolean serviceRequestts, boolean initialAttachTrackingAreaUpdateDetach,
             boolean ueInitiatedPDNdisconnection, boolean bearerActivationModificationDeletion, boolean handover) {
-    	super(5);
+    	super("MMEEventList",5,7,false);
     	if (ueInitiatedPDNconectivityRequest)
             this.setBit(_ID_ueInitiatedPDNconectivityRequest);
         if (serviceRequestts)

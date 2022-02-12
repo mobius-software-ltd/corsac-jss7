@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNDefaultGPRSHandling extends ASNEnumerated {
 	public ASNDefaultGPRSHandling() {
-		
+		super("DefaultGPRSHandling",0,1,false);
 	}
 	
 	public ASNDefaultGPRSHandling(DefaultGPRSHandling t) {
-		super(t.getCode());
+		super(t.getCode(),"DefaultGPRSHandling",0,1,false);
 	}
 	
 	public DefaultGPRSHandling getType() {

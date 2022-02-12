@@ -66,11 +66,11 @@ public class MidCallControlInfoTest {
         
         MidCallControlInfoImpl elem = (MidCallControlInfoImpl)result.getResult();                
         assertEquals((int) elem.getMinimumNumberOfDigits(), 3);
-        assertNull(elem.getMaximumNumberOfDigits());
+        assertEquals((int) elem.getMaximumNumberOfDigits(), 30);
         assertNull(elem.getEndOfReplyDigit());
         assertNull(elem.getCancelDigit());
         assertNull(elem.getStartDigit());
-        assertNull(elem.getInterDigitTimeout());
+        assertEquals((int) elem.getInterDigitTimeout(),10);
 
         rawData = this.getData2();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));

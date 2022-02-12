@@ -45,13 +45,13 @@ public class ASNWrappedPrimitive1 {
 	
 	public ASNWrappedPrimitive1(Long field1,Long field2,Boolean field3) {
 		if(field1!=null)
-			this.field1=new ASNInteger(field1);
+			this.field1=new ASNInteger(field1,null,null,null,false);
 			
 		if(field2!=null)
-			this.field2=new ASNInteger(field2);
+			this.field2=new ASNInteger(field2,null,null,null,false);
 			
 		if(field3!=null)
-			this.field3=new ASNBoolean(field3);		
+			this.field3=new ASNBoolean(field3,null,false,false);		
 			
 	}
 
@@ -68,7 +68,7 @@ public class ASNWrappedPrimitive1 {
 			return;
 		}
 		
-		this.field1=new ASNInteger(field1);		
+		this.field1=new ASNInteger(field1,null,null,null,false);		
 	}
 
 	public Long getField2() {
@@ -84,7 +84,7 @@ public class ASNWrappedPrimitive1 {
 			return;
 		}
 		
-		this.field2=new ASNInteger(field2);		
+		this.field2=new ASNInteger(field2,null,null,null,false);		
 	}
 
 	public Boolean getField3() {
@@ -101,6 +101,6 @@ public class ASNWrappedPrimitive1 {
 		}
 		
 		if(this.field3==null)
-			this.field3=new ASNBoolean(field3);		
+			this.field3=new ASNBoolean(field3,null,false,false);		
 	}
 }

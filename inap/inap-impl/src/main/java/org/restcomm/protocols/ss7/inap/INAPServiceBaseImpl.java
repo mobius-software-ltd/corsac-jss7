@@ -89,7 +89,7 @@ public abstract class INAPServiceBaseImpl implements INAPServiceBase {
     }
 
     public abstract void processComponent(ComponentType compType, OperationCode oc, INAPMessage parameter, INAPDialog inapDialog,
-            Long invokeId, Long linkedId) throws INAPParsingComponentException;
+    		Integer invokeId, Integer linkedId) throws INAPParsingComponentException;
 
     /**
      * Returns a list of linked operations for operCode operation
@@ -154,13 +154,13 @@ public abstract class INAPServiceBaseImpl implements INAPServiceBase {
         // TODO: abort all active dialogs ?
     }
 
-    protected void deliverErrorComponent(INAPDialog inapDialog, Long invokeId, INAPErrorMessage inapErrorMessage) {
+    protected void deliverErrorComponent(INAPDialog inapDialog, Integer invokeId, INAPErrorMessage inapErrorMessage) {
         for (INAPServiceListener serLis : this.serviceListeners) {
             serLis.onErrorComponent(inapDialog, invokeId, inapErrorMessage);
         }
     }
 
-    protected void deliverRejectComponent(INAPDialog inapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    protected void deliverRejectComponent(INAPDialog inapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
         for (INAPServiceListener serLis : this.serviceListeners) {
             serLis.onRejectComponent(inapDialog, invokeId, problem, isLocalOriginated);
         }

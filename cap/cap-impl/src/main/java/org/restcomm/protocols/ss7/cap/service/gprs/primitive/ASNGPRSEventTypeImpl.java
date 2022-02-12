@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNGPRSEventTypeImpl extends ASNEnumerated {
 	public ASNGPRSEventTypeImpl() {
-		
+		super("GPRSEventType",1,14,false);
 	}
 	
 	public ASNGPRSEventTypeImpl(GPRSEventType t) {
-		super(t.getCode());
+		super(t.getCode(),"GPRSEventType",1,14,false);
 	}
 	
 	public GPRSEventType getType() {

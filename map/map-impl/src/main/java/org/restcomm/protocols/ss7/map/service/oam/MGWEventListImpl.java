@@ -35,7 +35,7 @@ public class MGWEventListImpl extends ASNBitString implements MGWEventList {
 	static final int _ID_context = 0;
 
     public MGWEventListImpl() {
-    	super(0);
+    	super("MGWEventList",0,7,false);
     }
 
     public MGWEventListImpl(boolean context) {

@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNAppendFreeFormatData extends ASNEnumerated {
 	public ASNAppendFreeFormatData() {
-		
+		super("AppendFreeFormatData",0,1,false);
 	}
 	
 	public ASNAppendFreeFormatData(AppendFreeFormatData t) {
-		super(t.getCode());
+		super(t.getCode(),"AppendFreeFormatData",0,1,false);
 	}
 	
 	public AppendFreeFormatData getType() {

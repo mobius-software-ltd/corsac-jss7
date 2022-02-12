@@ -35,9 +35,9 @@ import io.netty.buffer.ByteBuf;
  */
 public interface MAPMessage extends Serializable {
 
-    long getInvokeId();
+    int getInvokeId();
 
-    void setInvokeId(long invokeId);
+    void setInvokeId(int invokeId);
 
     MAPDialog getMAPDialog();
 

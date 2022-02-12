@@ -63,11 +63,11 @@ public class ResetTimerRequestImpl extends CircuitSwitchedCallMessageImpl implem
     	if(timerID!=null)
     		this.timerID = new ASNTimerID(timerID);
     		   
-        this.timerValue = new ASNInteger(timerValue);
+        this.timerValue = new ASNInteger(timerValue,"TimerValue",0,Integer.MAX_VALUE,false);
         this.extensions = extensions;
         
         if(callSegmentID!=null)
-        	this.callSegmentID = new ASNInteger(callSegmentID);        	
+        	this.callSegmentID = new ASNInteger(callSegmentID,"CallSegmentID",0,127,false);        	
     }
 
     @Override

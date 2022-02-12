@@ -45,7 +45,7 @@ public class LimitIndicatorsImpl implements LimitIndicators {
 
     public LimitIndicatorsImpl(Integer duration) {
     	if(duration!=null)
-    		this.duration=new ASNInteger(duration);    		 
+    		this.duration=new ASNInteger(duration,"Duration",-1,86400,false);    		 
     }
 
     public Integer getDuration() {

@@ -54,7 +54,7 @@ public class ServiceAddressInformationImpl implements ServiceAddressInformation 
 
     public ServiceAddressInformationImpl(Integer serviceKey,MiscCallInfo miscCallInfo,TriggerType triggerType) {
     	if(serviceKey!=null)
-    		this.serviceKey=new ASNInteger(serviceKey);
+    		this.serviceKey=new ASNInteger(serviceKey,"ServiceKey",0,Integer.MAX_VALUE,false);
     		
     	this.miscCallInfo=miscCallInfo;
     	

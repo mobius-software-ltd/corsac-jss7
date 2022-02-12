@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNCancellationTypeImpl extends ASNEnumerated {
 	public ASNCancellationTypeImpl() {
-		
+		super("CancellationType",0,2,false);
 	}
 	
 	public ASNCancellationTypeImpl(CancellationType t) {
-		super(t.getCode());
+		super(t.getCode(),"CancellationType",0,2,false);
 	}
 	
 	public CancellationType getType() {

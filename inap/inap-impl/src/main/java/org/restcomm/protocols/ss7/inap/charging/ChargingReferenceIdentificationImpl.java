@@ -51,10 +51,10 @@ public class ChargingReferenceIdentificationImpl implements ChargingReferenceIde
 
     public ChargingReferenceIdentificationImpl(List<Long> networkIdentification,Long referenceID) {
     	if(networkIdentification!=null)
-    		this.networkIdentification = new ASNObjectIdentifier(networkIdentification);
+    		this.networkIdentification = new ASNObjectIdentifier(networkIdentification,"NetworkIdentification",true,false);
     		
     	if(referenceID!=null)
-    		this.referenceID = new ASNInteger(referenceID);    		
+    		this.referenceID = new ASNInteger(referenceID,"ReferenceID",0L,4294967295L,false);    		
     }
 
     public List<Long> getNetworkIdentification() {

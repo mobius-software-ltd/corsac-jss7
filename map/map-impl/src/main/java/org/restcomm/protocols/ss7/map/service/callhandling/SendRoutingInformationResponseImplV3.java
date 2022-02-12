@@ -184,7 +184,7 @@ public class SendRoutingInformationResponseImplV3 extends CallHandlingMessageImp
         	this.nrPortabilityStatus = new ASNNumberPortabilityStatusImpl(nrPortabilityStatus);
         	
         if(istAlertTimer!=null)
-        	this.istAlertTimer = new ASNInteger(istAlertTimer);
+        	this.istAlertTimer = new ASNInteger(istAlertTimer,"ISTAlertTimer",15,255,false);
         	
         this.supportedCamelPhases = supportedCamelPhases;
         this.offeredCamel4CSIs = offeredCamel4CSIs;

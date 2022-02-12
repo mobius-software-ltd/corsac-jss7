@@ -174,9 +174,9 @@ public class MAPServiceSupplementaryImpl extends MAPServiceBaseImpl implements M
 
     @Override
     public void processComponent(ComponentType compType, OperationCode oc, MAPMessage parameter, MAPDialog mapDialog,
-            Long invokeId, Long linkedId) throws MAPParsingComponentException {
+    		Integer invokeId, Integer linkedId) throws MAPParsingComponentException {
 
-    	Long ocValue = oc.getLocalOperationCode();
+    	Integer ocValue = oc.getLocalOperationCode();
         if (ocValue == null)
             new MAPParsingComponentException("", MAPParsingComponentExceptionReason.UnrecognizedOperation);
 

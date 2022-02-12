@@ -100,7 +100,7 @@ public class MCSITest {
     	parser.replaceClass(MCSIImpl.class);
     	
         List<MMCode> mobilityTriggers = new ArrayList<MMCode>();
-        Long serviceKey = 3L;
+        Integer serviceKey = 3;
         ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN, "22235");
         MAPExtensionContainer extensionContainer = MAPExtensionContainerTest.GetTestExtensionContainer();
         boolean notificationToCSE = false;

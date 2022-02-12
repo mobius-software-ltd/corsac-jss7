@@ -68,7 +68,7 @@ public class CUGSubscriptionImpl implements CUGSubscription {
      */
     public CUGSubscriptionImpl(int cugIndex, CUGInterlock cugInterlock, IntraCUGOptions intraCugOptions,
             List<ExtBasicServiceCode> basicService, MAPExtensionContainer extensionContainer) {
-        this.cugIndex = new ASNInteger(cugIndex);
+        this.cugIndex = new ASNInteger(cugIndex,"CUGIndex",0,32767,false);
         this.cugInterlock = cugInterlock;
         
         if(intraCugOptions!=null)

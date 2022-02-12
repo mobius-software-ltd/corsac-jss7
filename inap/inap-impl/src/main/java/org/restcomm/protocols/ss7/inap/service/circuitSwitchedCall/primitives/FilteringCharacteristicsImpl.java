@@ -49,9 +49,9 @@ public class FilteringCharacteristicsImpl implements FilteringCharacteristics {
     public FilteringCharacteristicsImpl(Integer value,Boolean isInterval) {
     	if(value!=null) {
     		if(isInterval)
-    			this.interval = new ASNInteger(value);    			
+    			this.interval = new ASNInteger(value,"Interval",-1,32000,false);    			
     		else
-    			this.numberOfCalls = new ASNInteger(value);    			
+    			this.numberOfCalls = new ASNInteger(value,"NumberOfCalls",0,255,false);    			
     	}
     }
 

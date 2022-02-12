@@ -57,7 +57,7 @@ public class CCBSFeatureImpl implements CCBSFeature {
 
     public CCBSFeatureImpl(Integer ccbsIndex, ISDNAddressString bSubscriberNumber, ISDNAddressString bSubscriberSubaddress, BasicServiceCode basicServiceCode) {
         if(ccbsIndex!=null)
-        	this.ccbsIndex = new ASNInteger(ccbsIndex);
+        	this.ccbsIndex = new ASNInteger(ccbsIndex,"CCBSIndex",1,5,false);
         	
         this.bSubscriberNumber = bSubscriberNumber;
         this.bSubscriberSubaddress = bSubscriberSubaddress;

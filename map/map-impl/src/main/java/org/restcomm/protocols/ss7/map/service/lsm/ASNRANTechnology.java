@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNRANTechnology extends ASNEnumerated {
 	public ASNRANTechnology() {
-		
+		super("RANTechnology",0,1,false);
 	}
 	
 	public ASNRANTechnology(RANTechnology t) {
-		super(t.getCode());
+		super(t.getCode(),"RANTechnology",0,1,false);
 	}
 	
 	public RANTechnology getType() {

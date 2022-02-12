@@ -33,14 +33,14 @@ import org.restcomm.protocols.ss7.inap.api.errors.RequestedInfoErrorParameter;
  */
 public class INAPErrorMessageRequestedInfoErrorImpl extends EnumeratedINAPErrorMessage1Impl implements INAPErrorMessageRequestedInfoError {
 	protected INAPErrorMessageRequestedInfoErrorImpl(RequestedInfoErrorParameter requestedInfoErrorParameter) {
-        super((long) INAPErrorCode.requestedInfoError);
+        super(INAPErrorCode.requestedInfoError,"RequestedInfoError",1,2);
 
         if(requestedInfoErrorParameter!=null)
-        	setValue(Long.valueOf(requestedInfoErrorParameter.getCode()));        
+        	setValue(requestedInfoErrorParameter.getCode());        
     }
 
     public INAPErrorMessageRequestedInfoErrorImpl() {
-        super((long) INAPErrorCode.requestedInfoError);
+        super(INAPErrorCode.requestedInfoError,"RequestedInfoError",1,2);
     }
 
     public boolean isEmRequestedInfoError() {
@@ -52,11 +52,11 @@ public class INAPErrorMessageRequestedInfoErrorImpl extends EnumeratedINAPErrorM
     }
 
     public RequestedInfoErrorParameter getRequestedInfoErrorParameter() {
-    	Long value=getValue();
+    	Integer value=getValue();
     	if(value==null)
     		return null;
     	
-    	return RequestedInfoErrorParameter.getInstance(value.intValue());
+    	return RequestedInfoErrorParameter.getInstance(value);
     }
 
     @Override

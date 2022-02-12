@@ -106,7 +106,7 @@ public class TcQueryTest {
         assertFalse(inv.isNotLast());
         assertEquals((long) inv.getInvokeId(), 0);
         assertNull(inv.getCorrelationId());
-        assertEquals(inv.getOperationCode().getPrivateOperationCode(), new Long(2357L));
+        assertEquals(inv.getOperationCode().getPrivateOperationCode(), new Integer(2357));
         assertTrue(inv.getParameter() instanceof ASNOctetString);
         UserInformationElementTest.byteBufEquals(((ASNOctetString)inv.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
 
@@ -140,7 +140,7 @@ public class TcQueryTest {
         ReturnError re = cmp.getReturnError();
         assertEquals((long) re.getCorrelationId(), 1);
         ErrorCode ec = re.getErrorCode();
-        assertEquals(ec.getPrivateErrorCode(), new Long(200L));
+        assertEquals(ec.getPrivateErrorCode(), new Integer(200));
         assertNull(re.getParameter());
         
         // 3
@@ -153,7 +153,7 @@ public class TcQueryTest {
         dp = tcm.getDialogPortion();
         assertNull(dp.getProtocolVersion());
         ac = dp.getApplicationContext();        
-        assertEquals(ac.getInt(), new Long(66L));
+        assertEquals(ac.getInt(), new Integer(66));
         assertNull(dp.getConfidentiality());
         assertNull(dp.getSecurityContext());
         assertNull(dp.getUserInformation());
@@ -174,7 +174,7 @@ public class TcQueryTest {
         component.setInvoke(inv);
         cc.add(component);
         inv.setInvokeId(0L);
-        OperationCode oc = TcapFactory.createPrivateOperationCode(2357L);        
+        OperationCode oc = TcapFactory.createPrivateOperationCode(2357);        
         inv.setOperationCode(oc);
         ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(parData),null,null,null,false);
         inv.setSetParameter(p);
@@ -203,7 +203,7 @@ public class TcQueryTest {
         component.setReturnError(re);
         cc.add(component);
         re.setCorrelationId(1L);
-        ErrorCode ec = TcapFactory.createPrivateErrorCode(200L);
+        ErrorCode ec = TcapFactory.createPrivateErrorCode(200);
         re.setErrorCode(ec);
         re.setSetParameter(null);
 

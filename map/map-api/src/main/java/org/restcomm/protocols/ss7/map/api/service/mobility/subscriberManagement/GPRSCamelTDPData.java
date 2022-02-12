@@ -52,7 +52,7 @@ public interface GPRSCamelTDPData {
 
     GPRSTriggerDetectionPoint getGPRSTriggerDetectionPoint();
 
-    long getServiceKey();
+    int getServiceKey();
 
     ISDNAddressString getGsmSCFAddress();
 

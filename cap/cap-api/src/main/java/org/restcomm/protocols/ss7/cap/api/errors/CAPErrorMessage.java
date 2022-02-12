@@ -30,7 +30,7 @@ package org.restcomm.protocols.ss7.cap.api.errors;
  */
 public interface CAPErrorMessage {
 
-    Long getErrorCode();
+    Integer getErrorCode();
 
     boolean isEmParameterless();
 

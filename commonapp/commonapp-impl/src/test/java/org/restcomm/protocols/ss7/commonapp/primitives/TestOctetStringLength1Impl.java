@@ -6,10 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class TestOctetStringLength1Impl extends ASNSingleByte {
 	public TestOctetStringLength1Impl(int data) {
-		super(data);
+		super(data,null,null,null,false);
     }
 
-    public TestOctetStringLength1Impl() {            
+    public TestOctetStringLength1Impl() {
+    	super(null,null,null,false);
     }
 
     public int getData() {

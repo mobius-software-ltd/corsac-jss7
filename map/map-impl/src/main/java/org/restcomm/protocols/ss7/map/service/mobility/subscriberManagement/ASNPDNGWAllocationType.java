@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNPDNGWAllocationType extends ASNEnumerated {
 	public ASNPDNGWAllocationType() {
-		
+		super("PDNGWAllocationType",0,1,false);
 	}
 	
 	public ASNPDNGWAllocationType(PDNGWAllocationType t) {
-		super(t.getCode());
+		super(t.getCode(),"PDNGWAllocationType",0,1,false);
 	}
 	
 	public PDNGWAllocationType getType() {

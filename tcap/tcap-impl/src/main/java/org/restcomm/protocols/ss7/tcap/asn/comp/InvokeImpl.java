@@ -129,11 +129,11 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getInvokeId()
      */
-    public Long getInvokeId() {
+    public Integer getInvokeId() {
     	if(this.invokeId==null)
     		return null;
     	
-        return this.invokeId.getValue();
+        return this.invokeId.getIntValue();
     }
 
     /*
@@ -141,11 +141,11 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getLinkedId()
      */
-    public Long getLinkedId() {
+    public Integer getLinkedId() {
     	if(this.linkedId==null)
     		return null;
     	
-        return this.linkedId.getValue();
+        return this.linkedId.getIntValue();
     }
 
     /*
@@ -183,11 +183,11 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setInvokeId(java.lang .Integer)
      */
-    public void setInvokeId(Long i) {
+    public void setInvokeId(Integer i) {
         if ((i == null) || (i < -128 || i > 127)) {
             throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
         }
-        this.invokeId = new ASNInteger(i);        
+        this.invokeId = new ASNInteger(i,"InvokeID",-128,127,false);        
     }
 
     /*
@@ -195,11 +195,11 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setLinkedId(java.lang .Integer)
      */
-    public void setLinkedId(Long i) {
+    public void setLinkedId(Integer i) {
         if ((i == null) || (i < -128 || i > 127)) {
             throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
         }
-        this.linkedId = new ASNInteger(i);
+        this.linkedId = new ASNInteger(i,"InvokeID",-128,127,false);
     }
 
     public void setLinkedInvoke(Invoke val) {
@@ -211,7 +211,7 @@ public class InvokeImpl implements Invoke {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(Long)
      */
-    public void setOperationCode(Long i) {    
+    public void setOperationCode(Integer i) {    
     	if(i==null)
     		this.operationCode=null;
     	else {

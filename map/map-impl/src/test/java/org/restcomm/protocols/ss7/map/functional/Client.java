@@ -425,7 +425,7 @@ public class Client extends EventTestHarness {
                 NumberingPlan.national, "0011");
         AlertServiceCentreRequestImpl req = new AlertServiceCentreRequestImpl(msisdn, serviceCentreAddress);
         
-        clientDialogSms.sendDataComponent(null, null, null, null, 999L, req, true, false);
+        clientDialogSms.sendDataComponent(null, null, null, null, 999, req, true, false);
         clientDialogSms.send();
     }
 
@@ -1705,7 +1705,7 @@ public class Client extends EventTestHarness {
                 this.remoteAddress, destReference);
         clientDialog.setExtentionContainer(MAPExtensionContainerTest.GetTestExtensionContainer());
 
-        clientDialog.sendDataComponent(10L, null, null, null, 1000L, null, true, false);
+        clientDialog.sendDataComponent(10, null, null, null, 1000, null, true, false);
         
         USSDString ussdString = this.mapParameterFactory.createUSSDString(MAPFunctionalTest.USSD_STRING);
 
@@ -1983,7 +1983,7 @@ public class Client extends EventTestHarness {
 
         ASNOctetString octetString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }),null,null,null,false);
         try {
-        	((MAPDialogImpl)clientDialog).getTcapDialog().sendData(10L, null, null, null, TcapFactory.createLocalOperationCode((long) MAPOperationCode.processUnstructuredSS_Request), octetString, true, false);
+        	((MAPDialogImpl)clientDialog).getTcapDialog().sendData(10, null, null, null, TcapFactory.createLocalOperationCode(MAPOperationCode.processUnstructuredSS_Request), octetString, true, false);
         }
         catch(TCAPException | TCAPSendException ex) {
         	throw new MAPException(ex);

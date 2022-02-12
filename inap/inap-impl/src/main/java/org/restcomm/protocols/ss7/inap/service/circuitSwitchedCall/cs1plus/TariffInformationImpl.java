@@ -67,19 +67,19 @@ public class TariffInformationImpl implements TariffInformation {
     public TariffInformationImpl(Integer numberOfStartPulses,Integer startInterval,IntervalAccuracy startIntervalAccuracy,
     		Integer numberOfPeriodicPulses,Integer periodicInterval,IntervalAccuracy periodicIntervalAccuracy,DateAndTime activationTime) {
     	if(numberOfStartPulses!=null)
-    		this.numberOfStartPulses=new ASNInteger(numberOfStartPulses);
+    		this.numberOfStartPulses=new ASNInteger(numberOfStartPulses,"NumberOfStartPulses",0,255,false);
     		
     	if(startInterval!=null)
-    		this.startInterval=new ASNInteger(startInterval);
+    		this.startInterval=new ASNInteger(startInterval,"StartInterval",0,3276,false);
     		
     	if(startIntervalAccuracy!=null)
     		this.startIntervalAccuracy=new ASNIntervalAccuracy(startIntervalAccuracy);
     		
     	if(numberOfPeriodicPulses!=null)
-    		this.numberOfPeriodicPulses=new ASNInteger(numberOfPeriodicPulses);
+    		this.numberOfPeriodicPulses=new ASNInteger(numberOfPeriodicPulses,"NumberOfPeriodicPulses",0,255,false);
     		
     	if(periodicInterval!=null)
-    		this.periodicInterval=new ASNInteger(periodicInterval);
+    		this.periodicInterval=new ASNInteger(periodicInterval,"PeriodicInterval",0,3276,false);
     		
     	if(periodicIntervalAccuracy!=null)
     		this.periodicIntervalAccuracy=new ASNIntervalAccuracy(periodicIntervalAccuracy);

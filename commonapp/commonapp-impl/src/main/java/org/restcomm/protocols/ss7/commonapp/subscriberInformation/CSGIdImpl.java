@@ -39,6 +39,6 @@ CSG-Id ::= BIT STRING (SIZE (27))
  */
 public class CSGIdImpl extends ASNBitString implements CSGId {
 	public CSGIdImpl() {
-		super(26);
+		super("CSGId",26,26,false);
 	}
 }

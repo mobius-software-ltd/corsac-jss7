@@ -261,7 +261,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
             DigitsIsup additionalCallingPartyNumber,ForwardCallIndicators forwardCallIndicators,BearerCapability bearerCapability, 
             EventTypeBCSM eventTypeBCSM, RedirectingPartyIDIsup redirectingPartyID,RedirectionInformationIsup redirectionInformation) {
         
-    	this.serviceKey = new ASNInteger(serviceKey);
+    	this.serviceKey = new ASNInteger(serviceKey,"ServiceKey",0,Integer.MAX_VALUE,false);
     	
     	this.dialedDigits=dialedDigits;
         this.calledPartyNumber = calledPartyNumber;

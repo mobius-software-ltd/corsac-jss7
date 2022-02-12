@@ -47,11 +47,11 @@ public class ReturnImpl implements Return {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getInvokeId()
      */
-    public Long getInvokeId() {
+    public Integer getInvokeId() {
     	if(this.invokeId==null)
     		return null;
     	
-        return this.invokeId.getValue();
+        return this.invokeId.getIntValue();
     }
 
     /*
@@ -83,11 +83,11 @@ public class ReturnImpl implements Return {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setInvokeId(java.lang .Integer)
      */
-    public void setInvokeId(Long i) {
+    public void setInvokeId(Integer i) {
         if ((i == null) || (i < -128 || i > 127)) {
             throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
         }
-        this.invokeId = new ASNInteger(i);
+        this.invokeId = new ASNInteger(i,"InvokeID",-128,127,false);
     }
 
     /*
@@ -95,7 +95,7 @@ public class ReturnImpl implements Return {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(Long)
      */
-    public void setOperationCode(Long i) {
+    public void setOperationCode(Integer i) {
     	if(inner==null)
     		inner=new ReturnResultInnerImpl();
     	

@@ -76,7 +76,7 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
     		this.legID=new SendingLegIDWrapperImpl(new SendingLegIDImpl(legID));
     	
     	if(requestAnnouncementStarted!=null)
-    		this.requestAnnouncementStarted = new ASNBoolean(requestAnnouncementStarted);    		
+    		this.requestAnnouncementStarted = new ASNBoolean(requestAnnouncementStarted,"RequestAnnouncementStarted",true,false);    		
     }
     
     public PlayAnnouncementRequestImpl(InformationToSend informationToSend, Boolean disconnectFromIPForbidden,
@@ -86,10 +86,10 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
     		this.informationToSend = new InformationToSendWrapperImpl(informationToSend);
     	
     	if(disconnectFromIPForbidden!=null)
-    		this.disconnectFromIPForbidden = new ASNBoolean(disconnectFromIPForbidden);
+    		this.disconnectFromIPForbidden = new ASNBoolean(disconnectFromIPForbidden,"DisconnectFromIPForbidden",true,false);
     		
     	if(requestAnnouncementCompleteNotification!=null)
-    		this.requestAnnouncementCompleteNotification = new ASNBoolean(requestAnnouncementCompleteNotification);
+    		this.requestAnnouncementCompleteNotification = new ASNBoolean(requestAnnouncementCompleteNotification,"RequestAnnouncementCompleteNotification",true,false);
     		
         this.extensions = extensions;        
     }
@@ -114,8 +114,8 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
 
     @Override
     public Boolean getRequestAnnouncementStarted() {
-    	if(requestAnnouncementStarted==null)
-    		return null;
+    	if(requestAnnouncementStarted==null || requestAnnouncementStarted.getValue()==null)
+    		return false;
     	
         return requestAnnouncementStarted.getValue();
     }
@@ -130,16 +130,16 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
 
     @Override
     public Boolean getDisconnectFromIPForbidden() {
-    	if(disconnectFromIPForbidden==null)
-    		return null;
+    	if(disconnectFromIPForbidden==null || disconnectFromIPForbidden.getValue()==null)
+    		return true;
     	
         return disconnectFromIPForbidden.getValue();
     }
 
     @Override
     public Boolean getRequestAnnouncementCompleteNotification() {
-    	if(requestAnnouncementCompleteNotification==null)
-    		return null;
+    	if(requestAnnouncementCompleteNotification==null || requestAnnouncementCompleteNotification.getValue()==null)
+    		return true;
     	
         return requestAnnouncementCompleteNotification.getValue();
     }

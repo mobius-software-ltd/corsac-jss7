@@ -76,9 +76,9 @@ public class PromptAndCollectUserInformationRequestTest {
         assertNull(elem.getCollectedInfo().getCollectedDigits().getFirstDigitTimeOut());
         assertNull(elem.getCollectedInfo().getCollectedDigits().getInterDigitTimeOut());
         assertNull(elem.getCollectedInfo().getCollectedDigits().getErrorTreatment());
-        assertNull(elem.getCollectedInfo().getCollectedDigits().getInterruptableAnnInd());
-        assertNull(elem.getCollectedInfo().getCollectedDigits().getVoiceInformation());
-        assertNull(elem.getCollectedInfo().getCollectedDigits().getVoiceBack());
+        assertTrue(elem.getCollectedInfo().getCollectedDigits().getInterruptableAnnInd());
+        assertFalse(elem.getCollectedInfo().getCollectedDigits().getVoiceInformation());
+        assertFalse(elem.getCollectedInfo().getCollectedDigits().getVoiceBack());
         assertFalse(elem.getDisconnectFromIPForbidden());
         assertEquals(elem.getInformationToSend().getTone().getToneID(), 10);
         assertEquals((int) elem.getInformationToSend().getTone().getDuration(), 100);

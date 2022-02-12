@@ -52,7 +52,7 @@ public class AOCSubsequentImpl implements AOCSubsequent {
         this.cai_GSM0224 = cai_GSM0224;
         
         if(tariffSwitchInterval!=null)
-        	this.tariffSwitchInterval = new ASNInteger(tariffSwitchInterval);        	    
+        	this.tariffSwitchInterval = new ASNInteger(tariffSwitchInterval,"TariffSwitchInterval",0,86400,false);        	    
     }
 
     public CAI_GSM0224 getCAI_GSM0224() {

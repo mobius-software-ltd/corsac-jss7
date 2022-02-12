@@ -51,7 +51,7 @@ public class MAPErrorMessageFacilityNotSupImpl extends MAPErrorMessageImpl imple
 
     public MAPErrorMessageFacilityNotSupImpl(MAPExtensionContainer extensionContainer,
             Boolean shapeOfLocationEstimateNotSupported, Boolean neededLcsCapabilityNotSupportedInServingNode) {
-        super((long) MAPErrorCode.facilityNotSupported);
+        super(MAPErrorCode.facilityNotSupported);
 
         this.extensionContainer = extensionContainer;
         if(shapeOfLocationEstimateNotSupported==null || !shapeOfLocationEstimateNotSupported)
@@ -66,7 +66,7 @@ public class MAPErrorMessageFacilityNotSupImpl extends MAPErrorMessageImpl imple
     }
 
     public MAPErrorMessageFacilityNotSupImpl() {
-        super((long) MAPErrorCode.facilityNotSupported);
+        super(MAPErrorCode.facilityNotSupported);
     }
 
     public boolean isEmFacilityNotSup() {

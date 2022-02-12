@@ -46,7 +46,7 @@ public interface SMSCAMELTDPData {
 
     SMSTriggerDetectionPoint getSMSTriggerDetectionPoint();
 
-    long getServiceKey();
+    int getServiceKey();
 
     ISDNAddressString getGsmSCFAddress();
 

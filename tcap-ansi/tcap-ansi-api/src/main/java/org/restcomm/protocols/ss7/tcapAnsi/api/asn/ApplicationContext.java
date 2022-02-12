@@ -47,8 +47,8 @@ public interface ApplicationContext {
 
     void setObj(List<Long> value);
 
-    Long getInt();
+    Integer getInt();
 
-    void setInt(long val);
+    void setInt(int val);
 
 }

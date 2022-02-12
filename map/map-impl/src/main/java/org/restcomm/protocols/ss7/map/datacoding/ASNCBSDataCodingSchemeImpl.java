@@ -34,15 +34,15 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 public class ASNCBSDataCodingSchemeImpl extends ASNSingleByte {
 	
 	public ASNCBSDataCodingSchemeImpl() {
-        super();
+        super("CBSDataCodingScheme",0,255,false);
     }
 
     public ASNCBSDataCodingSchemeImpl(Integer data) {
-    	super(data);
+    	super(data,"CBSDataCodingScheme",0,255,false);
     }
 
     public ASNCBSDataCodingSchemeImpl(CBSDataCodingScheme scheme) {
-    	super(scheme.getCode());
+    	super(scheme.getCode(),"CBSDataCodingScheme",0,255,false);
     }
 
     public CBSDataCodingScheme getDataCoding() {

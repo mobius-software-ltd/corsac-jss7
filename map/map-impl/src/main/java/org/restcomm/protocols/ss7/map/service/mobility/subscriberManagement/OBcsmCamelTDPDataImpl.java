@@ -57,12 +57,12 @@ public class OBcsmCamelTDPDataImpl implements OBcsmCamelTDPData {
     public OBcsmCamelTDPDataImpl() {
     }
 
-    public OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint, long serviceKey,
+    public OBcsmCamelTDPDataImpl(OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint, int serviceKey,
     		ISDNAddressString gsmSCFAddress, DefaultCallHandling defaultCallHandling, MAPExtensionContainer extensionContainer) {
         if(oBcsmTriggerDetectionPoint!=null)
         	this.oBcsmTriggerDetectionPoint = new ASNOBcsmTriggerDetectionPoint(oBcsmTriggerDetectionPoint);
         			
-        this.serviceKey = new ASNInteger(serviceKey);
+        this.serviceKey = new ASNInteger(serviceKey,"ServiceKey",0,Integer.MAX_VALUE,false);
     	this.gsmSCFAddress = gsmSCFAddress;
         
         if(defaultCallHandling!=null)
@@ -78,8 +78,8 @@ public class OBcsmCamelTDPDataImpl implements OBcsmCamelTDPData {
         return oBcsmTriggerDetectionPoint.getType();
     }
 
-    public long getServiceKey() {    	
-        return serviceKey.getValue();
+    public int getServiceKey() {    	
+        return serviceKey.getIntValue();
     }
 
     public ISDNAddressString getGsmSCFAddress() {

@@ -47,7 +47,7 @@ public class ElapsedTimeRollOverImpl implements ElapsedTimeRollOver {
 
     public ElapsedTimeRollOverImpl(Integer roTimeGPRSIfNoTariffSwitch) {
     	if(roTimeGPRSIfNoTariffSwitch!=null)
-    		this.roTimeGPRSIfNoTariffSwitch = new ASNInteger(roTimeGPRSIfNoTariffSwitch);    		
+    		this.roTimeGPRSIfNoTariffSwitch = new ASNInteger(roTimeGPRSIfNoTariffSwitch,"ROTimeGPRSIfNoTariffSwitch",0,255,false);    		
     }
 
     public ElapsedTimeRollOverImpl(ROTimeGPRSIfTariffSwitch roTimeGPRSIfTariffSwitch) {

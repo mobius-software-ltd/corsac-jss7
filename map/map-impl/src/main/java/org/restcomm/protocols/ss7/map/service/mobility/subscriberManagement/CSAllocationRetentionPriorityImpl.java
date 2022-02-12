@@ -32,11 +32,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  *
  */
 public class CSAllocationRetentionPriorityImpl extends ASNSingleByte implements CSAllocationRetentionPriority {
-	public CSAllocationRetentionPriorityImpl() {        
+	public CSAllocationRetentionPriorityImpl() {    
+		super("CSAllocationRetentionPriority",0,255,false);
     }
 
     public CSAllocationRetentionPriorityImpl(int data) {
-    	super(data);
+    	super(data,"CSAllocationRetentionPriority",0,255,false);
     }
 
     public int getData() {

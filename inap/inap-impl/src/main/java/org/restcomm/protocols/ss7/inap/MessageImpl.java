@@ -36,11 +36,11 @@ import io.netty.util.ReferenceCountUtil;
 public abstract class MessageImpl implements INAPMessage {
 	private static final long serialVersionUID = 1L;
 
-	private long invokeId;
+	private int invokeId;
     private INAPDialog inapDialog;
     private ByteBuf originalBuffer;
 
-    public long getInvokeId() {
+    public int getInvokeId() {
         return this.invokeId;
     }
 
@@ -48,7 +48,7 @@ public abstract class MessageImpl implements INAPMessage {
         return this.inapDialog;
     }
 
-    public void setInvokeId(long invokeId) {
+    public void setInvokeId(int invokeId) {
         this.invokeId = invokeId;
     }
 

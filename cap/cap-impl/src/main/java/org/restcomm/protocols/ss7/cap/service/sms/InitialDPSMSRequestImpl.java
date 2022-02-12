@@ -150,7 +150,7 @@ public class InitialDPSMSRequestImpl extends SmsMessageImpl implements InitialDP
             CallReferenceNumber smsReferenceNumber, ISDNAddressString mscAddress, ISDNAddressString sgsnNumber,
             MSClassmark2 mSClassmark2, GPRSMSClass gprsMSClass, IMEI imei, ISDNAddressString calledPartyNumber) {
         super();
-        this.serviceKey = new ASNInteger(serviceKey);
+        this.serviceKey = new ASNInteger(serviceKey,"ServiceKey",0,Integer.MAX_VALUE,false);
         this.destinationSubscriberNumber = destinationSubscriberNumber;
         this.callingPartyNumber = callingPartyNumber;
         

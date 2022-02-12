@@ -36,13 +36,13 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
  */
 public interface MAPDialogPdpContextActivation extends MAPDialog {
 
-    Long addSendRoutingInfoForGprsRequest(IMSI imsi, GSNAddress ggsnAddress, ISDNAddressString ggsnNumber, MAPExtensionContainer extensionContainer)
+    Integer addSendRoutingInfoForGprsRequest(IMSI imsi, GSNAddress ggsnAddress, ISDNAddressString ggsnNumber, MAPExtensionContainer extensionContainer)
             throws MAPException;
 
-    Long addSendRoutingInfoForGprsRequest(int customInvokeTimeout, IMSI imsi, GSNAddress ggsnAddress, ISDNAddressString ggsnNumber,
+    Integer addSendRoutingInfoForGprsRequest(int customInvokeTimeout, IMSI imsi, GSNAddress ggsnAddress, ISDNAddressString ggsnNumber,
     		MAPExtensionContainer extensionContainer) throws MAPException;
 
-    void addSendRoutingInfoForGprsResponse(long invokeId, GSNAddress sgsnAddress, GSNAddress ggsnAddress, Integer mobileNotReachableReason,
+    void addSendRoutingInfoForGprsResponse(int invokeId, GSNAddress sgsnAddress, GSNAddress ggsnAddress, Integer mobileNotReachableReason,
     		MAPExtensionContainer extensionContainer) throws MAPException;
 
 }

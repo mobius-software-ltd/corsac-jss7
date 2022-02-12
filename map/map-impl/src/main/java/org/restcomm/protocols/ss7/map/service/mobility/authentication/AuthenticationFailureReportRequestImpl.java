@@ -84,7 +84,7 @@ public class AuthenticationFailureReportRequestImpl extends MobilityMessageImpl 
         this.extensionContainer = extensionContainer;
         
         if(reAttempt!=null)
-        	this.reAttempt = new ASNBoolean(reAttempt);        	
+        	this.reAttempt = new ASNBoolean(reAttempt,"ReAttempt",false,false);        	
         
         if(accessType!=null)
         	this.accessType = new ASNAccessType(accessType);

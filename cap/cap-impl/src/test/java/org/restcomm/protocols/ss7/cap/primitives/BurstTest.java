@@ -24,7 +24,6 @@ package org.restcomm.protocols.ss7.cap.primitives;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -65,11 +64,11 @@ public class BurstTest {
         assertTrue(result.getResult() instanceof BurstImpl);
         
         BurstImpl elem = (BurstImpl)result.getResult();
-        assertNull(elem.getNumberOfBursts());
+        assertEquals((int) elem.getNumberOfBursts(),1);
         assertEquals((int) elem.getBurstInterval(), 10);
-        assertNull(elem.getNumberOfTonesInBurst());
-        assertNull(elem.getToneDuration());
-        assertNull(elem.getToneInterval());
+        assertEquals((int) elem.getNumberOfTonesInBurst(),3);
+        assertEquals((int) elem.getToneDuration(),2);
+        assertEquals((int) elem.getToneInterval(),2);
 
         rawData = this.getData2();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));

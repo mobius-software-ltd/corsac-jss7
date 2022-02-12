@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNCGEncountered extends ASNEnumerated {
 	public ASNCGEncountered() {
-		
+		super("CGEncountered",0,2,false);
 	}
 	
 	public ASNCGEncountered(CGEncountered t) {
-		super(t.getCode());
+		super(t.getCode(),"CGEncountered",0,2,false);
 	}
 	
 	public CGEncountered getType() {

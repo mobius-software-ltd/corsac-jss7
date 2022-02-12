@@ -38,11 +38,11 @@ public class SGSNEventListImpl extends ASNBitString implements SGSNEventList {
     static final int _ID_mbmsContext = 3;
 
     public SGSNEventListImpl() {
-    	super(3);
+    	super("SGSNEventList",3,15,false);
     }
 
     public SGSNEventListImpl(boolean pdpContext, boolean moMtSms, boolean rauGprsAttachGprsDetach, boolean mbmsContext) {
-    	super(3);
+    	super("SGSNEventList",3,15,false);
     	if (pdpContext)
             this.setBit(_ID_pdpContext);
         if (moMtSms)

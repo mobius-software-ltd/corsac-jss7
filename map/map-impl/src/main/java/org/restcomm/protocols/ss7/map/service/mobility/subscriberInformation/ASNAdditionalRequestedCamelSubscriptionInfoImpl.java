@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNAdditionalRequestedCamelSubscriptionInfoImpl extends ASNEnumerated {
 	public ASNAdditionalRequestedCamelSubscriptionInfoImpl() {
-		
+		super("AdditionalRequestedCAMELSubscriptionInfo",0,4,false);
 	}
 	
 	public ASNAdditionalRequestedCamelSubscriptionInfoImpl(AdditionalRequestedCAMELSubscriptionInfo t) {
-		super(t.getCode());
+		super(t.getCode(),"AdditionalRequestedCAMELSubscriptionInfo",0,4,false);
 	}
 	
 	public AdditionalRequestedCAMELSubscriptionInfo getType() {

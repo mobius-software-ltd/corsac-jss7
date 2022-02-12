@@ -50,16 +50,16 @@ import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageUnknownSubscribe
  *
  */
 public abstract class MAPErrorMessageImpl implements MAPErrorMessage {
-	protected Long errorCode;
+	protected Integer errorCode;
 
-    protected MAPErrorMessageImpl(Long errorCode) {
+    protected MAPErrorMessageImpl(Integer errorCode) {
         this.errorCode=errorCode;
     }
 
     public MAPErrorMessageImpl() {
     }
     
-    public Long getErrorCode() {
+    public Integer getErrorCode() {
         return errorCode;
     }
 

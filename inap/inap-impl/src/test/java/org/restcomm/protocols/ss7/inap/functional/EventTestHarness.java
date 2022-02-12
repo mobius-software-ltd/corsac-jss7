@@ -226,21 +226,21 @@ public class EventTestHarness implements INAPDialogListener, INAPServiceCircuitS
     }
 
     @Override
-    public void onErrorComponent(INAPDialog inapDialog, Long invokeId, INAPErrorMessage inapErrorMessage) {
+    public void onErrorComponent(INAPDialog inapDialog, Integer invokeId, INAPErrorMessage inapErrorMessage) {
         this.logger.debug("onErrorComponent");
         TestEvent te = TestEvent.createReceivedEvent(EventType.ErrorComponent, inapDialog, sequence++);
         this.observerdEvents.add(te);
     }
 
     @Override
-    public void onRejectComponent(INAPDialog inapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    public void onRejectComponent(INAPDialog inapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
         this.logger.debug("onRejectComponent");
         TestEvent te = TestEvent.createReceivedEvent(EventType.RejectComponent, inapDialog, sequence++);
         this.observerdEvents.add(te);
     }
 
     @Override
-    public void onInvokeTimeout(INAPDialog inapDialog, Long invokeId) {
+    public void onInvokeTimeout(INAPDialog inapDialog, Integer invokeId) {
         this.logger.debug("onInvokeTimeout");
         if (!invokeTimeoutSuppressed) {
             TestEvent te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, inapDialog, sequence++);

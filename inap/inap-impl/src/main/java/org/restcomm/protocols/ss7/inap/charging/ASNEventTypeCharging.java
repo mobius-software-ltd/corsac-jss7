@@ -34,11 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
 public class ASNEventTypeCharging extends ASNEnumerated {
 	public ASNEventTypeCharging() {
-		
+		super("EventTypeCharging",1,3,false);		
 	}
 	
 	public ASNEventTypeCharging(EventTypeCharging t) {
-		super(t.getCode());
+		super(t.getCode(),"EventTypeCharging",1,3,false);
 	}
 	
 	public EventTypeCharging getType() {

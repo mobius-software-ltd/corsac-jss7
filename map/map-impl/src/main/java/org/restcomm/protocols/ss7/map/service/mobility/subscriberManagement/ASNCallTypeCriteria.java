@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNCallTypeCriteria extends ASNEnumerated {
 	public ASNCallTypeCriteria() {
-		
+		super("CallTypeCriteria",0,1,false);
 	}
 	
 	public ASNCallTypeCriteria(CallTypeCriteria t) {
-		super(t.getCode());
+		super(t.getCode(),"CallTypeCriteria",0,1,false);
 	}
 	
 	public CallTypeCriteria getType() {

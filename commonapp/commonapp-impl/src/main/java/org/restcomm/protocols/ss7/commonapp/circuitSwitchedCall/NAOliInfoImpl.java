@@ -33,10 +33,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class NAOliInfoImpl extends ASNSingleByte implements NAOliInfo {
 	public NAOliInfoImpl() {
+		super("NAOliInfo",0,63,false);
     }
 
     public NAOliInfoImpl(int data) {
-    	super(data);
+    	super(data,"NAOliInfo",0,63,false);
     }
 
     public int getData() {

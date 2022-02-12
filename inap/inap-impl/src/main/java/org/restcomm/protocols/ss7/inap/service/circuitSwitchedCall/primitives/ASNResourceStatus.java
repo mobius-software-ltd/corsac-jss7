@@ -34,11 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
 public class ASNResourceStatus extends ASNEnumerated {
 	public ASNResourceStatus() {
-		
+		super("ResourceStatus",0,1,false);
 	}
 	
 	public ASNResourceStatus(ResourceStatus t) {
-		super(t.getCode());
+		super(t.getCode(),"ResourceStatus",0,1,false);
 	}
 	
 	public ResourceStatus getType() {

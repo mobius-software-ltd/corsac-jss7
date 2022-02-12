@@ -82,7 +82,7 @@ public class Server extends EventTestHarness {
 
         // lets kill this Invoke - sending Invoke with linkedId
         invoke = (Invoke)c;
-        OperationCode oc = TcapFactory.createLocalOperationCode(14L);
+        OperationCode oc = TcapFactory.createLocalOperationCode(14);
         // no parameter        
         this.dialog.sendData(null, invoke.getInvokeId(), InvokeClass.Class1, null, oc, null, true, false);
 

@@ -8,6 +8,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /*
  * Mobius Software LTD
@@ -39,13 +42,29 @@ import io.netty.buffer.ByteBuf;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,lengthIndefinite=false)
 public class ASNSingleByte {
 	private Integer value;
+	private String name;
+	private Integer minValue;
+	private Integer maxValue;
+	private Boolean isRoot;
 	
+	//required for parser
 	public ASNSingleByte() {
 		
 	}
 	
-	public ASNSingleByte(Integer value) {
+	public ASNSingleByte(String name,Integer minValue,Integer maxValue,Boolean isRoot) {
+		this.name = name;
+		this.minValue = minValue;
+		this.maxValue = maxValue;
+		this.isRoot = isRoot;
+	}
+	
+	public ASNSingleByte(Integer value,String name,Integer minValue,Integer maxValue,Boolean isRoot) {
 		this.value=value;
+		this.name = name;
+		this.minValue = minValue;
+		this.maxValue = maxValue;
+		this.isRoot = isRoot;
 	}
 	
 	public Integer getValue() {
@@ -75,5 +94,26 @@ public class ASNSingleByte {
 		
 		value=buffer.readByte() & 0x0FF;
 		return false;
+	}
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if((minValue!=null || maxValue!=null) && value==null) {
+			if(isRoot==null || !isRoot)
+				throw new ASNParsingComponentException(name + " is required",ASNParsingComponentExceptionReason.MistypedParameter);
+			else
+				throw new ASNParsingComponentException(name + " is required",ASNParsingComponentExceptionReason.MistypedRootParameter);
+		} else if(minValue!=null && value!=null && value<minValue){
+			if(isRoot==null || !isRoot)
+				throw new ASNParsingComponentException(name + " should be at least " + minValue,ASNParsingComponentExceptionReason.MistypedParameter);
+			else
+				throw new ASNParsingComponentException(name + " should be at least " + minValue,ASNParsingComponentExceptionReason.MistypedRootParameter);
+		} else if(maxValue!=null && value!=null && value>maxValue){
+			if(isRoot==null || !isRoot)
+				throw new ASNParsingComponentException(name + " should be at most " + maxValue,ASNParsingComponentExceptionReason.MistypedParameter);
+			else
+				throw new ASNParsingComponentException(name + " should be at most " + maxValue,ASNParsingComponentExceptionReason.MistypedRootParameter);
+		} 
+			
 	}
 }

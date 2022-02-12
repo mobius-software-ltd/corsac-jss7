@@ -32,15 +32,16 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  *
  */
 public class CauseValueImpl extends ASNSingleByte implements CauseValue {
-	public CauseValueImpl() {        
+	public CauseValueImpl() { 
+		super("Category",0,127,false);
     }
 
     public CauseValueImpl(int data) {
-    	super(data);
+    	super(data,"Category",0,127,false);
     }
 
     public CauseValueImpl(CauseValueCodeValue value) {
-    	super(value != null ? value.getCode() : 0);
+    	super(value != null ? value.getCode() : 0,"Category",0,127,false);
     }
 
     public CauseValueCodeValue getCauseValueCodeValue() {

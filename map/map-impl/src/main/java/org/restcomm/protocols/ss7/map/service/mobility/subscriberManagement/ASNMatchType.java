@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNMatchType extends ASNEnumerated {
 	public ASNMatchType() {
-		
+		super("MatchType",0,1,false);
 	}
 	
 	public ASNMatchType(MatchType t) {
-		super(t.getCode());
+		super(t.getCode(),"MatchType",0,1,false);
 	}
 	
 	public MatchType getType() {

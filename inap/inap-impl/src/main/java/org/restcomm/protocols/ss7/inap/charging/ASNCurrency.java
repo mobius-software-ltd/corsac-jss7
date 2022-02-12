@@ -34,11 +34,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
 public class ASNCurrency extends ASNEnumerated {
 	public ASNCurrency() {
+		super("Currency",0,27,false);
 		
 	}
 	
 	public ASNCurrency(Currency t) {
-		super(t.getCode());
+		super(t.getCode(),"Currency",0,27,false);
 	}
 	
 	public Currency getType() {

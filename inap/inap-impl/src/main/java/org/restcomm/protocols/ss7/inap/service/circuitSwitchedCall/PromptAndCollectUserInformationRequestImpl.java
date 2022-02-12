@@ -83,10 +83,10 @@ public class PromptAndCollectUserInformationRequestImpl extends CircuitSwitchedC
     		this.legID=new SendingLegIDWrapperImpl(new SendingLegIDImpl(legID));
     	
     	if(requestAnnouncementStartedNotification!=null)
-    		this.requestAnnouncementStartedNotification = new ASNBoolean(requestAnnouncementStartedNotification);
+    		this.requestAnnouncementStartedNotification = new ASNBoolean(requestAnnouncementStartedNotification,"RequestAnnouncementStartedNotification",true,false);
     		
     	if(requestAnnouncementCompleteNotification!=null)
-    		this.requestAnnouncementCompleteNotification = new ASNBoolean(requestAnnouncementCompleteNotification);    		
+    		this.requestAnnouncementCompleteNotification = new ASNBoolean(requestAnnouncementCompleteNotification,"RequestAnnouncementCompleteNotification",true,false);    		
     }
     
     public PromptAndCollectUserInformationRequestImpl(CollectedInfo collectedInfo, Boolean disconnectFromIPForbidden,
@@ -96,7 +96,7 @@ public class PromptAndCollectUserInformationRequestImpl extends CircuitSwitchedC
     		this.collectedInfo = new CollectedInfoWrapperImpl(collectedInfo);
     	
     	if(disconnectFromIPForbidden!=null)
-    		this.disconnectFromIPForbidden = new ASNBoolean(disconnectFromIPForbidden);
+    		this.disconnectFromIPForbidden = new ASNBoolean(disconnectFromIPForbidden,"DisconnectFromIPForbidden",true,false);
     		
     	if(informationToSend!=null)
     		this.informationToSend = new InformationToSendWrapperImpl(informationToSend);
@@ -124,16 +124,16 @@ public class PromptAndCollectUserInformationRequestImpl extends CircuitSwitchedC
 
     @Override
     public Boolean getRequestAnnouncementStartedNotification() {
-    	if(requestAnnouncementStartedNotification==null)
-    		return null;
+    	if(requestAnnouncementStartedNotification==null || requestAnnouncementStartedNotification.getValue()==null)
+    		return false;
     	
         return requestAnnouncementStartedNotification.getValue();
     }
 
     @Override
     public Boolean getRequestAnnouncementCompleteNotification() {
-    	if(requestAnnouncementCompleteNotification==null)
-    		return null;
+    	if(requestAnnouncementCompleteNotification==null || requestAnnouncementCompleteNotification.getValue()==null)
+    		return false;
     	
         return requestAnnouncementCompleteNotification.getValue();
     }
@@ -148,8 +148,8 @@ public class PromptAndCollectUserInformationRequestImpl extends CircuitSwitchedC
 
     @Override
     public Boolean getDisconnectFromIPForbidden() {
-    	if(disconnectFromIPForbidden==null)
-    		return null;
+    	if(disconnectFromIPForbidden==null || disconnectFromIPForbidden.getValue()==null)
+    		return true;
     	
         return disconnectFromIPForbidden.getValue();
     }

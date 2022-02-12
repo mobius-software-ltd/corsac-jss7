@@ -42,56 +42,56 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
  */
 public interface MAPDialogSupplementary extends MAPDialog {
 
-    Long addRegisterSSRequest(SSCode ssCode, BasicServiceCode basicService, AddressString forwardedToNumber, ISDNAddressString forwardedToSubaddress,
+    Integer addRegisterSSRequest(SSCode ssCode, BasicServiceCode basicService, AddressString forwardedToNumber, ISDNAddressString forwardedToSubaddress,
             Integer noReplyConditionTime, EMLPPPriority defaultPriority, Integer nbrUser, ISDNAddressString longFTNSupported) throws MAPException;
 
-    Long addRegisterSSRequest(int customInvokeTimeout, SSCode ssCode, BasicServiceCode basicService, AddressString forwardedToNumber,
+    Integer addRegisterSSRequest(int customInvokeTimeout, SSCode ssCode, BasicServiceCode basicService, AddressString forwardedToNumber,
             ISDNAddressString forwardedToSubaddress, Integer noReplyConditionTime, EMLPPPriority defaultPriority, Integer nbrUser,
             ISDNAddressString longFTNSupported) throws MAPException;
 
-    void addRegisterSSResponse(long invokeId, SSInfo ssInfo) throws MAPException;
+    void addRegisterSSResponse(int invokeId, SSInfo ssInfo) throws MAPException;
 
-    Long addEraseSSRequest(SSForBSCode ssForBSCode) throws MAPException;
+    Integer addEraseSSRequest(SSForBSCode ssForBSCode) throws MAPException;
 
-    Long addEraseSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException;
+    Integer addEraseSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException;
 
-    void addEraseSSResponse(long invokeId, SSInfo ssInfo) throws MAPException;
+    void addEraseSSResponse(int invokeId, SSInfo ssInfo) throws MAPException;
 
-    Long addActivateSSRequest(SSForBSCode ssForBSCode) throws MAPException;
+    Integer addActivateSSRequest(SSForBSCode ssForBSCode) throws MAPException;
 
-    Long addActivateSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException;
+    Integer addActivateSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException;
 
-    void addActivateSSResponse(long invokeId, SSInfo ssInfo) throws MAPException;
+    void addActivateSSResponse(int invokeId, SSInfo ssInfo) throws MAPException;
 
-    Long addDeactivateSSRequest(SSForBSCode ssForBSCode) throws MAPException;
+    Integer addDeactivateSSRequest(SSForBSCode ssForBSCode) throws MAPException;
 
-    Long addDeactivateSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException;
+    Integer addDeactivateSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException;
 
-    void addDeactivateSSResponse(long invokeId, SSInfo ssInfo) throws MAPException;
+    void addDeactivateSSResponse(int invokeId, SSInfo ssInfo) throws MAPException;
 
-    Long addInterrogateSSRequest(SSForBSCode ssForBSCode) throws MAPException;
+    Integer addInterrogateSSRequest(SSForBSCode ssForBSCode) throws MAPException;
 
-    Long addInterrogateSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException;
+    Integer addInterrogateSSRequest(int customInvokeTimeout, SSForBSCode ssForBSCode) throws MAPException;
 
-    void addInterrogateSSResponse_SSStatus(long invokeId, SSStatus ssStatus) throws MAPException;
+    void addInterrogateSSResponse_SSStatus(int invokeId, SSStatus ssStatus) throws MAPException;
 
-    void addInterrogateSSResponse_BasicServiceGroupList(long invokeId, List<BasicServiceCode> basicServiceGroupList) throws MAPException;
+    void addInterrogateSSResponse_BasicServiceGroupList(int invokeId, List<BasicServiceCode> basicServiceGroupList) throws MAPException;
 
-    void addInterrogateSSResponse_ForwardingFeatureList(long invokeId, List<ForwardingFeature> forwardingFeatureList) throws MAPException;
+    void addInterrogateSSResponse_ForwardingFeatureList(int invokeId, List<ForwardingFeature> forwardingFeatureList) throws MAPException;
 
-    void addInterrogateSSResponse_GenericServiceInfo(long invokeId, GenericServiceInfo genericServiceInfo) throws MAPException;
+    void addInterrogateSSResponse_GenericServiceInfo(int invokeId, GenericServiceInfo genericServiceInfo) throws MAPException;
 
-    Long addGetPasswordRequest(Long linkedId, GuidanceInfo guidanceInfo) throws MAPException;
+    Integer addGetPasswordRequest(Integer linkedId, GuidanceInfo guidanceInfo) throws MAPException;
 
-    Long addGetPasswordRequest(int customInvokeTimeout, Long linkedId, GuidanceInfo guidanceInfo) throws MAPException;
+    Integer addGetPasswordRequest(int customInvokeTimeout, Integer linkedId, GuidanceInfo guidanceInfo) throws MAPException;
 
-    void addGetPasswordResponse(long invokeId, Password password) throws MAPException;
+    void addGetPasswordResponse(int invokeId, Password password) throws MAPException;
 
-    Long addRegisterPasswordRequest(SSCode ssCode) throws MAPException;
+    Integer addRegisterPasswordRequest(SSCode ssCode) throws MAPException;
 
-    Long addRegisterPasswordRequest(int customInvokeTimeout, SSCode ssCode) throws MAPException;
+    Integer addRegisterPasswordRequest(int customInvokeTimeout, SSCode ssCode) throws MAPException;
 
-    void addRegisterPasswordResponse(long invokeId, Password password) throws MAPException;
+    void addRegisterPasswordResponse(int invokeId, Password password) throws MAPException;
 
 
     /**
@@ -104,10 +104,10 @@ public interface MAPDialogSupplementary extends MAPDialog {
      * @return invokeId
      * @throws MAPException
      */
-    Long addProcessUnstructuredSSRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString,
+    Integer addProcessUnstructuredSSRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString,
             AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException;
 
-    Long addProcessUnstructuredSSRequest(int customInvokeTimeout, CBSDataCodingScheme ussdDataCodingScheme,
+    Integer addProcessUnstructuredSSRequest(int customInvokeTimeout, CBSDataCodingScheme ussdDataCodingScheme,
     		USSDString ussdString, AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException;
 
     /**
@@ -118,7 +118,7 @@ public interface MAPDialogSupplementary extends MAPDialog {
      * @param ussdString Ussd String {@link USSDString}
      * @throws MAPException
      */
-    void addProcessUnstructuredSSResponse(long invokeId, CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString)
+    void addProcessUnstructuredSSResponse(int invokeId, CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString)
             throws MAPException;
 
     /**
@@ -131,10 +131,10 @@ public interface MAPDialogSupplementary extends MAPDialog {
      * @return invokeId
      * @throws MAPException
      */
-    Long addUnstructuredSSRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString,
+    Integer addUnstructuredSSRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString,
             AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException;
 
-    Long addUnstructuredSSRequest(int customInvokeTimeout, CBSDataCodingScheme ussdDataCodingScheme,
+    Integer addUnstructuredSSRequest(int customInvokeTimeout, CBSDataCodingScheme ussdDataCodingScheme,
     		USSDString ussdString, AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException;
 
     /**
@@ -145,7 +145,7 @@ public interface MAPDialogSupplementary extends MAPDialog {
      * @param ussdString Ussd String {@link USSDString}
      * @throws MAPException
      */
-    void addUnstructuredSSResponse(long invokeId, CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString)
+    void addUnstructuredSSResponse(int invokeId, CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString)
             throws MAPException;
 
     /**
@@ -158,12 +158,12 @@ public interface MAPDialogSupplementary extends MAPDialog {
      * @return invokeId
      * @throws MAPException
      */
-    Long addUnstructuredSSNotifyRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString,
+    Integer addUnstructuredSSNotifyRequest(CBSDataCodingScheme ussdDataCodingScheme, USSDString ussdString,
             AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException;
 
-    Long addUnstructuredSSNotifyRequest(int customInvokeTimeout, CBSDataCodingScheme ussdDataCodingScheme,
+    Integer addUnstructuredSSNotifyRequest(int customInvokeTimeout, CBSDataCodingScheme ussdDataCodingScheme,
     		USSDString ussdString, AlertingPattern alertingPatter, ISDNAddressString msisdn) throws MAPException;
 
-    void addUnstructuredSSNotifyResponse(long invokeId) throws MAPException;
+    void addUnstructuredSSNotifyResponse(int invokeId) throws MAPException;
 
 }

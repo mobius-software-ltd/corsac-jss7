@@ -40,12 +40,12 @@ MAPErrorMessageAbsentSubscriber {
      * @param mwdSet
      */
     public MAPErrorMessageAbsentSubscriber1Impl(Boolean mwdSet) {
-        super((long) MAPErrorCode.absentSubscriber);
+        super(MAPErrorCode.absentSubscriber);
         setValue(mwdSet);
     }
 
     public MAPErrorMessageAbsentSubscriber1Impl() {
-        super((long) MAPErrorCode.absentSubscriber);
+        super(MAPErrorCode.absentSubscriber);
     }
 
     public boolean isEmAbsentSubscriber() {

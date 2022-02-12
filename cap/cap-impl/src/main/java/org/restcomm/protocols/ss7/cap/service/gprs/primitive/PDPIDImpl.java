@@ -32,10 +32,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class PDPIDImpl extends ASNSingleByte implements PDPID {
 	public PDPIDImpl() {
+		super("PDPID",0,255,false);
     }
 
     public PDPIDImpl(int data) {
-    	super(data);
+    	super(data,"PDPID",0,255,false);
     }
 
     public int getId() {

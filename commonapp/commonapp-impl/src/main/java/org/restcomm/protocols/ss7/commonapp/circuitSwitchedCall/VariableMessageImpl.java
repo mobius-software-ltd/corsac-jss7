@@ -49,7 +49,7 @@ public class VariableMessageImpl implements VariableMessage {
     }
 
     public VariableMessageImpl(int elementaryMessageID, List<VariablePart> variableParts) {
-        this.elementaryMessageID = new ASNInteger(elementaryMessageID);
+        this.elementaryMessageID = new ASNInteger(elementaryMessageID,"ElementaryMessageID",0,255,false);
 
         if(variableParts!=null) {
         	this.variableParts = new VariablePartWrapperImpl(variableParts);

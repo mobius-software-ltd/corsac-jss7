@@ -78,7 +78,7 @@ public class ForwardingFeatureImpl implements ForwardingFeature {
         this.forwardingOptions = forwardingOptions;
         
         if(noReplyConditionTime!=null)
-        	this.noReplyConditionTime = new ASNInteger(noReplyConditionTime);
+        	this.noReplyConditionTime = new ASNInteger(noReplyConditionTime,"NoReplyConditionTime",5,30,false);
         	
         this.longForwardedToNumber = longForwardedToNumber;
     }

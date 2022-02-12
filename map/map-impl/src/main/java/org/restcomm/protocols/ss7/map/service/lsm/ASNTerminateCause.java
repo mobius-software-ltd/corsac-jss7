@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNTerminateCause extends ASNEnumerated {
 	public ASNTerminateCause() {
-		
+		super("TerminationCause",0,5,false);
 	}
 	
 	public ASNTerminateCause(TerminationCause t) {
-		super(t.getCause());
+		super(t.getCause(),"TerminationCause",0,5,false);
 	}
 	
 	public TerminationCause getType() {

@@ -48,7 +48,7 @@ public class MidCallSpecificInfoImpl implements MidCallSpecificInfo {
 
     public MidCallSpecificInfoImpl(Integer connectTime) {
         if(connectTime!=null)
-        	this.connectTime = new ASNInteger(connectTime);        	
+        	this.connectTime = new ASNInteger(connectTime,"ConnectTime",0,255,false);        	
     }
 
     public MidCallSpecificInfoImpl(MidCallEvents midCallEvents) {

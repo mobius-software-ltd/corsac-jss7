@@ -69,18 +69,18 @@ public class ApplicationContextImpl implements ApplicationContext {
 
 	public void setObj(List<Long> value) {
 		this.intApplicationContext=null;
-		this.objApplicationContext=new ASNObjectIdentifier(value);		
+		this.objApplicationContext=new ASNObjectIdentifier(value,"AppCtx",true,false);		
 	}
 
-	public Long getInt() {
+	public Integer getInt() {
 		if(intApplicationContext==null)
 			return null;
 		
-		return intApplicationContext.getValue();
+		return intApplicationContext.getIntValue();
 	}
 
-	public void setInt(long value) {
+	public void setInt(int value) {
 		this.objApplicationContext=null;
-		this.intApplicationContext = new ASNInteger(value);		
+		this.intApplicationContext = new ASNInteger(value,"AppCtx",Integer.MIN_VALUE,Integer.MAX_VALUE,false);		
 	}
 }

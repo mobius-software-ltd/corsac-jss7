@@ -58,16 +58,16 @@ public interface Invoke extends BaseComponent {
     // void setInvokeTimeout(long invokeTimeout);
 
     // optional
-    void setLinkedId(Long i);
+    void setLinkedId(Integer i);
 
-    Long getLinkedId();
+    Integer getLinkedId();
 
     Invoke getLinkedInvoke();
 
     void setLinkedInvoke(Invoke val);
 
     // mandatory
-    void setOperationCode(Long i);
+    void setOperationCode(Integer i);
 
     void setOperationCode(List<Long> i);
     

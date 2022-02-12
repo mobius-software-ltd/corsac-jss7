@@ -44,7 +44,7 @@ public class ASNCompundPrimitiveWithInterface {
 	public ASNCompundPrimitiveWithInterface(ASNCompundPrimitiveInterface field1,String field2) {
 		this.field1=field1;				
 		if(field2!=null)
-			this.field2=new ASNUTF8String(field2);
+			this.field2=new ASNUTF8String(field2,null,null,null,false);
 	}
 
 	public ASNCompundPrimitiveInterface getField1() {
@@ -68,6 +68,6 @@ public class ASNCompundPrimitiveWithInterface {
 			return;
 		}
 		
-		this.field2=new ASNUTF8String(field2);		
+		this.field2=new ASNUTF8String(field2,null,null,null,false);	
 	}
 }

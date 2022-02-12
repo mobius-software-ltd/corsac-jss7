@@ -82,9 +82,9 @@ public class CollectedDigitsImpl implements CollectedDigits {
     		ByteBuf startDigit, Integer firstDigitTimeOut, Integer interDigitTimeOut, ErrorTreatment errorTreatment,
             Boolean interruptableAnnInd, Boolean voiceInformation, Boolean voiceBack) {
         if(minimumNbOfDigits!=null)
-        	this.minimumNbOfDigits = new ASNInteger(minimumNbOfDigits);
+        	this.minimumNbOfDigits = new ASNInteger(minimumNbOfDigits,"MinimumNbOfDigits",1,30,false);
         	
-        this.maximumNbOfDigits = new ASNInteger(maximumNbOfDigits);
+        this.maximumNbOfDigits = new ASNInteger(maximumNbOfDigits,"MaximumNbOfDigits",1,30,false);
         
         if(endOfReplyDigit!=null)
         	this.endOfReplyDigit = new ASNOctetString(endOfReplyDigit,"EndOfReplyDigit",1,2,false);        
@@ -96,22 +96,22 @@ public class CollectedDigitsImpl implements CollectedDigits {
         	this.startDigit = new ASNOctetString(startDigit,"EndOfReplyDigit",1,2,false);        
         
         if(firstDigitTimeOut!=null)
-        	this.firstDigitTimeOut = new ASNInteger(firstDigitTimeOut);
+        	this.firstDigitTimeOut = new ASNInteger(firstDigitTimeOut,"FirstDigitTimeOut",1,127,false);
         	
         if(interDigitTimeOut!=null)
-        	this.interDigitTimeOut = new ASNInteger(interDigitTimeOut);
+        	this.interDigitTimeOut = new ASNInteger(interDigitTimeOut,"InterDigitTimeOut",1,127,false);
         	
         if(errorTreatment!=null)
         	this.errorTreatment = new ASNErrorTreatment(errorTreatment);
         	
         if(interruptableAnnInd!=null)
-        	this.interruptableAnnInd = new ASNBoolean(interruptableAnnInd);        	
+        	this.interruptableAnnInd = new ASNBoolean(interruptableAnnInd,"InterruptableAnnInd",true,false);        	
         
         if(voiceInformation!=null)
-        	this.voiceInformation = new ASNBoolean(voiceInformation);        	
+        	this.voiceInformation = new ASNBoolean(voiceInformation,"VoiceInformation",true,false);        	
         
         if(voiceBack!=null)
-        	this.voiceBack = new ASNBoolean(voiceBack);        	
+        	this.voiceBack = new ASNBoolean(voiceBack,"VoiceBack",true,false);        	
     }
 
     public Integer getMinimumNbOfDigits() {
@@ -171,22 +171,22 @@ public class CollectedDigitsImpl implements CollectedDigits {
     }
 
     public Boolean getInterruptableAnnInd() {
-    	if(interruptableAnnInd==null)
-    		return null;
+    	if(interruptableAnnInd==null || interruptableAnnInd.getValue()==null)
+    		return true;
     	
         return interruptableAnnInd.getValue();
     }
 
     public Boolean getVoiceInformation() {
-    	if(voiceInformation==null)
-    		return null;
+    	if(voiceInformation==null || voiceInformation.getValue()==null)
+    		return false;
     	
         return voiceInformation.getValue();
     }
 
     public Boolean getVoiceBack() {
-    	if(voiceBack==null)
-    		return null;
+    	if(voiceBack==null || voiceBack.getValue()==null)
+    		return false;
     	
         return voiceBack.getValue();
     }

@@ -33,15 +33,15 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x02,constructed=false,lengthIndefinite=false)
 public class ASNReturnResultProblemType extends ASNEnumerated {
 	public ASNReturnResultProblemType() {
-		
+		super("ReturnResultProblem",0,2,false);
 	}
 	
 	public ASNReturnResultProblemType(ReturnResultProblemType t) {
-		super(t.getType());
+		super(t.getType(),"ReturnResultProblem",0,2,false);
 	}
 	
 	public ReturnResultProblemType getType() throws ParseException {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		

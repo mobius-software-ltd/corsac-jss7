@@ -223,7 +223,7 @@ public class ISUPParameterFactoryImpl implements ISUPParameterFactory {
         return new EchoControlInformationImpl();
     }
 
-    public OperationCodeImpl createLocalOperationCode(Long value) {
+    public OperationCodeImpl createLocalOperationCode(Integer value) {
         OperationCodeImpl oc=new OperationCodeImpl();
         oc.setLocalOperationCode(value);
         return oc;
@@ -235,7 +235,7 @@ public class ISUPParameterFactoryImpl implements ISUPParameterFactory {
     	return oc;
     }
 
-    public ErrorCodeImpl createLocalErrorCode(Long value) {
+    public ErrorCodeImpl createLocalErrorCode(Integer value) {
         ErrorCodeImpl ec = new ErrorCodeImpl();
         ec.setLocalErrorCode(value);
         return ec;

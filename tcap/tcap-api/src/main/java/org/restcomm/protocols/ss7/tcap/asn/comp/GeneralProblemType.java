@@ -49,20 +49,20 @@ public enum GeneralProblemType {
      */
     BadlyStructuredComponent(2);
 
-    private long type = -1;
+    private int type = -1;
 
-    GeneralProblemType(long l) {
+    GeneralProblemType(int l) {
         this.type = l;
     }
 
     /**
      * @return the type
      */
-    public long getType() {
+    public int getType() {
         return type;
     }
 
-    public static GeneralProblemType getFromInt(long t) throws ParseException {
+    public static GeneralProblemType getFromInt(int t) throws ParseException {
         if (t == 0) {
             return UnrecognizedComponent;
         } else if (t == 1) {

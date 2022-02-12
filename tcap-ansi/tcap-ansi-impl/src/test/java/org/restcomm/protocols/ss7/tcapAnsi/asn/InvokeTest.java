@@ -75,7 +75,7 @@ public class InvokeTest {
         assertFalse(inv.isNotLast());
         assertEquals((long) inv.getInvokeId(), 0);
         assertNull(inv.getCorrelationId());
-        assertEquals(inv.getOperationCode().getPrivateOperationCode(), new Long(2357L));
+        assertEquals(inv.getOperationCode().getPrivateOperationCode(), new Integer(2357));
         assertTrue(inv.getParameter() instanceof ASNOctetString);
         UserInformationElementTest.byteBufEquals(((ASNOctetString)inv.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
 
@@ -86,7 +86,7 @@ public class InvokeTest {
         assertTrue(inv.isNotLast());
         assertEquals((long) inv.getInvokeId(), 20);
         assertEquals((long) inv.getCorrelationId(), 10);
-        assertEquals(inv.getOperationCode().getNationalOperationCode(), new Long(-13));
+        assertEquals(inv.getOperationCode().getNationalOperationCode(), new Integer(-13));
         assertNull(inv.getParameter());        
 
         // 3
@@ -97,7 +97,7 @@ public class InvokeTest {
         assertTrue(inv.isNotLast());
         assertNull(inv.getInvokeId());
         assertNull(inv.getCorrelationId());
-        assertEquals(inv.getOperationCode().getNationalOperationCode(), new Long(-13L));
+        assertEquals(inv.getOperationCode().getNationalOperationCode(), new Integer(-13));
         assertNull(inv.getParameter());
     }
 
@@ -109,7 +109,7 @@ public class InvokeTest {
         // 1
         Invoke inv = TcapFactory.createComponentInvokeLast();
         inv.setInvokeId(0L);
-        OperationCode oc = TcapFactory.createPrivateOperationCode(2357L);
+        OperationCode oc = TcapFactory.createPrivateOperationCode(2357);
         inv.setOperationCode(oc);
         ASNOctetString innerValue=new ASNOctetString(Unpooled.wrappedBuffer(parData),null,null,null,false);
         ASNInvokeSetParameterImpl p=new ASNInvokeSetParameterImpl(innerValue);
@@ -123,7 +123,7 @@ public class InvokeTest {
         inv = TcapFactory.createComponentInvokeNotLast();
         inv.setInvokeId(20L);
         inv.setCorrelationId(10L);
-        OperationCode noc = TcapFactory.createNationalOperationCode(-13L);
+        OperationCode noc = TcapFactory.createNationalOperationCode(-13);
         inv.setOperationCode(noc);
         p=new ASNInvokeSetParameterImpl();
         inv.setSetParameter(p);
@@ -134,7 +134,7 @@ public class InvokeTest {
 
         // 3
         inv = TcapFactory.createComponentInvokeNotLast();
-        noc = TcapFactory.createNationalOperationCode(-13L);
+        noc = TcapFactory.createNationalOperationCode(-13);
         inv.setOperationCode(noc);
         p=new ASNInvokeSetParameterImpl();
         inv.setSetParameter(p);

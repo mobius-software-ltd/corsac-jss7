@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNTimerID extends ASNEnumerated {
 	public ASNTimerID() {
-		
+		super("TimerID",0,0,false);
 	}
 	
 	public ASNTimerID(TimerID t) {
-		super(t.getCode());
+		super(t.getCode(),"TimerID",0,0,false);
 	}
 	
 	public TimerID getType() {

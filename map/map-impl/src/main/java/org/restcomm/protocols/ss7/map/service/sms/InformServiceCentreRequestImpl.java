@@ -70,10 +70,10 @@ public class InformServiceCentreRequestImpl extends SmsMessageImpl implements In
         this.extensionContainer = extensionContainer;
         
         if(absentSubscriberDiagnosticSM!=null)
-        	this.absentSubscriberDiagnosticSM = new ASNInteger(absentSubscriberDiagnosticSM);
+        	this.absentSubscriberDiagnosticSM = new ASNInteger(absentSubscriberDiagnosticSM,"AbsentSubscriberDiagnosticSM",0,12,false);
         	
         if(additionalAbsentSubscriberDiagnosticSM!=null)
-        	this.additionalAbsentSubscriberDiagnosticSM = new ASNInteger(additionalAbsentSubscriberDiagnosticSM);        	
+        	this.additionalAbsentSubscriberDiagnosticSM = new ASNInteger(additionalAbsentSubscriberDiagnosticSM,"AdditionalAbsentSubscriberDiagnosticSM",0,12,false);
     }
 
     public MAPMessageType getMessageType() {

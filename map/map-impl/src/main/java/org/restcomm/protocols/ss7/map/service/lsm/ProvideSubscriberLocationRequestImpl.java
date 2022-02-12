@@ -181,10 +181,10 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
         this.supportedGADShapes = supportedGADShapes;
         
         if(lcsReferenceNumber!=null)
-        	this.lcsReferenceNumber = new ASNSingleByte(lcsReferenceNumber);
+        	this.lcsReferenceNumber = new ASNSingleByte(lcsReferenceNumber,"LCSReferenceNumber",0,255,false);
         	
         if(lcsServiceTypeID!=null)
-        	this.lcsServiceTypeID = new ASNInteger(lcsServiceTypeID);
+        	this.lcsServiceTypeID = new ASNInteger(lcsServiceTypeID,"LCSServiceTypeID",1,127,false);
         	
         this.lcsCodeword = lcsCodeword;
         this.lcsPrivacyCheck = lcsPrivacyCheck;

@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNResponseTimeCategory extends ASNEnumerated {
 	public ASNResponseTimeCategory() {
-		
+		super("ResponseTimeCategory",0,1,false);
 	}
 	
 	public ASNResponseTimeCategory(ResponseTimeCategory t) {
-		super(t.getCategory());
+		super(t.getCategory(),"ResponseTimeCategory",0,1,false);
 	}
 	
 	public ResponseTimeCategory getType() {

@@ -34,11 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,lengthIndefinite=false)
 public class ASNBothwayThroughConnectionInd extends ASNEnumerated {
 	public ASNBothwayThroughConnectionInd() {
-		
+		super("BothwayThroughConnectionInd",0,1,false);
 	}
 	
 	public ASNBothwayThroughConnectionInd(BothwayThroughConnectionInd t) {
-		super(t.getCode());
+		super(t.getCode(),"BothwayThroughConnectionInd",0,1,false);
 	}
 	
 	public BothwayThroughConnectionInd getType() {

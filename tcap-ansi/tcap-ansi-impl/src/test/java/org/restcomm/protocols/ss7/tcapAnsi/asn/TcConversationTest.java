@@ -84,7 +84,7 @@ public class TcConversationTest {
         assertFalse(inv.isNotLast());
         assertEquals((long) inv.getInvokeId(), 0);
         assertNull(inv.getCorrelationId());
-        assertEquals(inv.getOperationCode().getPrivateOperationCode(), new Long(2357L));
+        assertEquals(inv.getOperationCode().getPrivateOperationCode(), new Integer(2357));
         assertTrue(inv.getParameter() instanceof ASNOctetString); 
         ByteBuf realData=((ASNOctetString)inv.getParameter()).getValue();
         UserInformationElementTest.byteBufEquals(realData, Unpooled.wrappedBuffer(parData));
@@ -101,7 +101,7 @@ public class TcConversationTest {
         DialogPortion dp = tcm.getDialogPortion();
         assertNull(dp.getProtocolVersion());
         ApplicationContext ac = dp.getApplicationContext();
-        assertEquals(ac.getInt(), new Long(66l));
+        assertEquals(ac.getInt(), new Integer(66));
         assertNull(dp.getConfidentiality());
         assertNull(dp.getSecurityContext());
         assertNull(dp.getUserInformation());
@@ -124,7 +124,7 @@ public class TcConversationTest {
         component.setInvokeLast(inv);
         cc.add(component);
         inv.setInvokeId(0L);
-        OperationCode oc = TcapFactory.createPrivateOperationCode(2357L);
+        OperationCode oc = TcapFactory.createPrivateOperationCode(2357);
         inv.setOperationCode(oc);
         ASNOctetString innerValue=new ASNOctetString(Unpooled.wrappedBuffer(parData),null,null,null,false);        
         inv.setSetParameter(innerValue);

@@ -37,11 +37,11 @@ public class MGWInterfaceListImpl extends ASNBitString implements MGWInterfaceLi
     static final int _ID_iuUp = 2;
 
     public MGWInterfaceListImpl() {
-    	super(2);
+    	super("MGWInterfaceList",2,7,false);
     }
 
     public MGWInterfaceListImpl(boolean mc, boolean nbUp, boolean iuUp) {
-    	super(2);
+    	super("MGWInterfaceList",2,7,false);
     	if (mc)
             this.setBit(_ID_mc);
         if (nbUp)

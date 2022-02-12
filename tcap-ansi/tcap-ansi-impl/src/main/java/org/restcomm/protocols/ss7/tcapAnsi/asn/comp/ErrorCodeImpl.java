@@ -44,28 +44,28 @@ public class ErrorCodeImpl implements ErrorCode {
 	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=19,constructed=false,index=-1)
 	private ASNInteger nationalErrorCode;
     
-    public Long getNationalErrorCode() {
+    public Integer getNationalErrorCode() {
 		if(nationalErrorCode==null)
 			return null;
 		
-		return nationalErrorCode.getValue();
+		return nationalErrorCode.getIntValue();
 	}
 
-	public void setNationalErrorCode(Long nationalErrorCode) {
+	public void setNationalErrorCode(Integer nationalErrorCode) {
 		this.privateErrorCode=null;
-		this.nationalErrorCode=new ASNInteger(nationalErrorCode);		
+		this.nationalErrorCode=new ASNInteger(nationalErrorCode,"ErrorCode",-128,127,false);		
 	}
 
-	public Long getPrivateErrorCode() {
+	public Integer getPrivateErrorCode() {
 		if(privateErrorCode==null)
 			return null;
 		
-		return privateErrorCode.getValue();
+		return privateErrorCode.getIntValue();
 	}
 
-	public void setPrivateErrorCode(Long privateErrorCode) {
+	public void setPrivateErrorCode(Integer privateErrorCode) {
 		this.nationalErrorCode=null;
-		this.privateErrorCode = new ASNInteger(privateErrorCode);		
+		this.privateErrorCode = new ASNInteger(privateErrorCode,"ErrorCode",Integer.MIN_VALUE,Integer.MAX_VALUE,false);		
 	}
 
 	public ErrorCodeType getErrorType() {

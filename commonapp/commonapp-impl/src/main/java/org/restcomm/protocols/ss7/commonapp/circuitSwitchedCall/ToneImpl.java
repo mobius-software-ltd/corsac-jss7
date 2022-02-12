@@ -46,10 +46,10 @@ public class ToneImpl implements Tone {
     }
 
     public ToneImpl(int toneID, Integer duration) {
-        this.toneID = new ASNInteger(toneID);
+        this.toneID = new ASNInteger(toneID,"ToneID",0,255,false);
         
         if(duration!=null)
-        	this.duration = new ASNInteger(duration);        	
+        	this.duration = new ASNInteger(duration,"Duration",0,255,false);        	
     }
 
     public int getToneID() {

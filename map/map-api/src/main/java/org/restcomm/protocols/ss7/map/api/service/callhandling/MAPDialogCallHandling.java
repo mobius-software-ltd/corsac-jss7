@@ -53,7 +53,7 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
  *
  */
 public interface MAPDialogCallHandling extends MAPDialog {
-     Long addSendRoutingInformationRequest(ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
+     Integer addSendRoutingInformationRequest(ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
             Integer numberOfForwarding, InterrogationType interrogationType, boolean orInterrogation, Integer orCapability,
             ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber, ForwardingReason forwardingReason,
             ExtBasicServiceCode basicServiceGroup, ExternalSignalInfo networkSignalInfo, CamelInfo camelInfo,
@@ -65,7 +65,7 @@ public interface MAPDialogCallHandling extends MAPDialog {
             ExternalSignalInfo networkSignalInfo2, SuppressMTSS supressMTSS, boolean mtRoamingRetrySupported,
             EMLPPPriority callPriority) throws MAPException;
 
-     Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
+     Integer addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
             Integer numberOfForwarding, InterrogationType interrogationType, boolean orInterrogation, Integer orCapability,
             ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber, ForwardingReason forwardingReason,
             ExtBasicServiceCode basicServiceGroup, ExternalSignalInfo networkSignalInfo, CamelInfo camelInfo,
@@ -77,22 +77,22 @@ public interface MAPDialogCallHandling extends MAPDialog {
             ExternalSignalInfo networkSignalInfo2, SuppressMTSS supressMTSS, boolean mtRoamingRetrySupported,
             EMLPPPriority callPriority) throws MAPException;
 
-     Long addSendRoutingInformationRequest(ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
+     Integer addSendRoutingInformationRequest(ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
              Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException;
 
-     Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
+     Integer addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
              Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException;
 
-     Long addSendRoutingInformationRequest(ISDNAddressString msisdn,
+     Integer addSendRoutingInformationRequest(ISDNAddressString msisdn,
              Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException;
 
-     Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn,
+     Integer addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn,
              Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException;
 
-     void addSendRoutingInformationResponse(long invokeId, IMSI imsi, CUGCheckInfo cugCheckInfo, RoutingInfo routingInfo2)
+     void addSendRoutingInformationResponse(int invokeId, IMSI imsi, CUGCheckInfo cugCheckInfo, RoutingInfo routingInfo2)
              throws MAPException;
 
-     void addSendRoutingInformationResponse(long invokeId, IMSI imsi, ExtendedRoutingInfo extRoutingInfo,
+     void addSendRoutingInformationResponse(int invokeId, IMSI imsi, ExtendedRoutingInfo extRoutingInfo,
     		 CUGCheckInfo cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfo subscriberInfo, List<SSCode> ssList,
             ExtBasicServiceCode basicService, boolean forwardingInterrogationRequired, ISDNAddressString vmscAddress,
             MAPExtensionContainer extensionContainer, NAEAPreferredCI naeaPreferredCI, CCBSIndicators ccbsIndicators,
@@ -102,7 +102,7 @@ public interface MAPDialogCallHandling extends MAPDialog {
             UnavailabilityCause unavailabilityCause, boolean releaseResourcesSupported, ExternalSignalInfo gsmBearerCapability)
             throws MAPException;
 
-     void addSendRoutingInformationResponse_NonLast(long invokeId, IMSI imsi, ExtendedRoutingInfo extRoutingInfo,
+     void addSendRoutingInformationResponse_NonLast(int invokeId, IMSI imsi, ExtendedRoutingInfo extRoutingInfo,
     		 CUGCheckInfo cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfo subscriberInfo, List<SSCode> ssList,
             ExtBasicServiceCode basicService, boolean forwardingInterrogationRequired, ISDNAddressString vmscAddress,
             MAPExtensionContainer extensionContainer, NAEAPreferredCI naeaPreferredCI, CCBSIndicators ccbsIndicators,
@@ -112,7 +112,7 @@ public interface MAPDialogCallHandling extends MAPDialog {
             UnavailabilityCause unavailabilityCause, boolean releaseResourcesSupported, ExternalSignalInfo gsmBearerCapability)
             throws MAPException;
 
-     Long addProvideRoamingNumberRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString msisdn, LMSI lmsi,
+     Integer addProvideRoamingNumberRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString msisdn, LMSI lmsi,
             ExternalSignalInfo gsmBearerCapability, ExternalSignalInfo networkSignalInfo, boolean suppressionOfAnnouncement,
             ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber, boolean orInterrogation,
             MAPExtensionContainer extensionContainer, AlertingPattern alertingPattern, boolean ccbsCall,
@@ -121,7 +121,7 @@ public interface MAPDialogCallHandling extends MAPDialog {
             OfferedCamel4CSIs offeredCamel4CSIsInInterrogatingNode, boolean mtRoamingRetrySupported, PagingArea pagingArea,
             EMLPPPriority callPriority, boolean mtrfIndicator, ISDNAddressString oldMSCNumber) throws MAPException;
 
-     Long addProvideRoamingNumberRequest(int customInvokeTimeout, IMSI imsi, ISDNAddressString mscNumber,
+     Integer addProvideRoamingNumberRequest(int customInvokeTimeout, IMSI imsi, ISDNAddressString mscNumber,
             ISDNAddressString msisdn, LMSI lmsi, ExternalSignalInfo gsmBearerCapability, ExternalSignalInfo networkSignalInfo,
             boolean suppressionOfAnnouncement, ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber,
             boolean orInterrogation, MAPExtensionContainer extensionContainer, AlertingPattern alertingPattern,
@@ -131,16 +131,16 @@ public interface MAPDialogCallHandling extends MAPDialog {
             boolean mtRoamingRetrySupported, PagingArea pagingArea, EMLPPPriority callPriority, boolean mtrfIndicator,
             ISDNAddressString oldMSCNumber) throws MAPException;
 
-     void addProvideRoamingNumberResponse(long invokeId, ISDNAddressString roamingNumber)
+     void addProvideRoamingNumberResponse(int invokeId, ISDNAddressString roamingNumber)
             throws MAPException;
      
-     void addProvideRoamingNumberResponse(long invokeId, ISDNAddressString roamingNumber,
+     void addProvideRoamingNumberResponse(int invokeId, ISDNAddressString roamingNumber,
     		 MAPExtensionContainer extensionContainer, boolean releaseResourcesSupported, ISDNAddressString vmscAddress)
             throws MAPException;
 
-     Long addIstCommandRequest(IMSI imsi, MAPExtensionContainer extensionContainer) throws MAPException;
+     Integer addIstCommandRequest(IMSI imsi, MAPExtensionContainer extensionContainer) throws MAPException;
 
-     Long addIstCommandRequest(int customInvokeTimeout, IMSI imsi, MAPExtensionContainer extensionContainer) throws MAPException;
+     Integer addIstCommandRequest(int customInvokeTimeout, IMSI imsi, MAPExtensionContainer extensionContainer) throws MAPException;
 
-     void addIstCommandResponse(long invokeId, MAPExtensionContainer extensionContainer) throws MAPException;
+     void addIstCommandResponse(int invokeId, MAPExtensionContainer extensionContainer) throws MAPException;
 }

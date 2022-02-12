@@ -67,7 +67,7 @@ public class RequestEveryStatusChangeReportRequestImpl extends CircuitSwitchedCa
     	
         this.correlationID=correlationID;
         if(duration!=null)
-        	this.duration=new ASNInteger(duration);
+        	this.duration=new ASNInteger(duration,"Duration",-2,86400,false);
         	
         this.extensions=extensions;
     }

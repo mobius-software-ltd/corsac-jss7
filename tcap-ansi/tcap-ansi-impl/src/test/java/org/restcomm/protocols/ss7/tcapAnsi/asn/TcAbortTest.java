@@ -86,7 +86,7 @@ public class TcAbortTest {
         assertNull(tcm.getUserAbortInformation().getUserInformationElements());
         assertNull(tcm.getPAbortCause());
         DialogPortion dp = tcm.getDialogPortion();
-        assertEquals(dp.getApplicationContext().getInt(), new Long(111L));
+        assertEquals(dp.getApplicationContext().getInt(), new Integer(111));
 
         // 3
         result=parser.decode(Unpooled.wrappedBuffer(this.data3));

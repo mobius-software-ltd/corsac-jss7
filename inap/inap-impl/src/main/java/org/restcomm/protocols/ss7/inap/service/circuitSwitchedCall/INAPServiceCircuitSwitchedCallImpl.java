@@ -227,9 +227,9 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 
 	@Override
 	public void processComponent(ComponentType compType, OperationCode oc, INAPMessage parameter, INAPDialog capDialog,
-			Long invokeId, Long linkedId) throws INAPParsingComponentException {
+			Integer invokeId, Integer linkedId) throws INAPParsingComponentException {
 
-		Long ocValue = oc.getLocalOperationCode();
+		Integer ocValue = oc.getLocalOperationCode();
 		if (ocValue == null)
 			new INAPParsingComponentException("", INAPParsingComponentExceptionReason.UnrecognizedOperation);
 		INAPApplicationContext acn = capDialog.getApplicationContext();

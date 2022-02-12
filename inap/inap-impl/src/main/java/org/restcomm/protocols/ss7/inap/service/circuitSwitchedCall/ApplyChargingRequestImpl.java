@@ -66,7 +66,7 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
         this.aChBillingChargingCharacteristics = aChBillingChargingCharacteristics;
         
         if(sendCalculationToSCPIndication!=null)
-        	this.sendCalculationToSCPIndication=new ASNBoolean(sendCalculationToSCPIndication);
+        	this.sendCalculationToSCPIndication=new ASNBoolean(sendCalculationToSCPIndication,"SendCalculationToSCPIndication",true,false);
         	
         
         if(partyToCharge!=null)
@@ -92,8 +92,8 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
 
     @Override
     public Boolean getSendCalculationToSCPIndication() {
-    	if(sendCalculationToSCPIndication==null)
-    		return null;
+    	if(sendCalculationToSCPIndication==null || sendCalculationToSCPIndication.getValue()==null)
+    		return false;
     	
         return sendCalculationToSCPIndication.getValue();
     }

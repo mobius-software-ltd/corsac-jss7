@@ -50,8 +50,8 @@ public class AMBRImpl implements AMBR {
     }
 
     public AMBRImpl(int maxRequestedBandwidthUL, int maxRequestedBandwidthDL, MAPExtensionContainer extensionContainer) {
-        this.maxRequestedBandwidthUL = new ASNInteger(maxRequestedBandwidthUL);
-        this.maxRequestedBandwidthDL = new ASNInteger(maxRequestedBandwidthDL);
+        this.maxRequestedBandwidthUL = new ASNInteger(maxRequestedBandwidthUL,"MaxRequestedBandwidthUL",Integer.MIN_VALUE,Integer.MAX_VALUE,false);
+        this.maxRequestedBandwidthDL = new ASNInteger(maxRequestedBandwidthDL,"MaxRequestedBandwidthDL",Integer.MIN_VALUE,Integer.MAX_VALUE,false);
         this.extensionContainer = extensionContainer;
     }
 

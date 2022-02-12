@@ -89,13 +89,13 @@ public class TDisconnectRequestImpl extends CircuitSwitchedCallMessageImpl imple
         	this.calledFacilityGroup=new FacilityGroupWrapperImpl(calledFacilityGroup);
         
         if(calledFacilityGroupMember!=null)
-        	this.calledFacilityGroupMember=new ASNInteger(calledFacilityGroupMember);
+        	this.calledFacilityGroupMember=new ASNInteger(calledFacilityGroupMember,"CalledFacilityGroupMember",0,Integer.MAX_VALUE,false);
         	
         this.releaseCause=releaseCause;
         this.extensions = extensions;
         
         if(connectTime!=null)
-        	this.connectTime=new ASNInteger(connectTime);        	
+        	this.connectTime=new ASNInteger(connectTime,"ConnectTime",0,255,false);        	
     }
 
     @Override

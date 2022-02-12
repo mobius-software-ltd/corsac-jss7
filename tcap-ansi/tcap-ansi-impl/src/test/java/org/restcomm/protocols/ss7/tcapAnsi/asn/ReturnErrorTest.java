@@ -60,7 +60,7 @@ public class ReturnErrorTest {
     	ReturnErrorImpl re = (ReturnErrorImpl)result.getResult();
         
         assertEquals((long) re.getCorrelationId(), 5);
-        assertEquals(re.getErrorCode().getPrivateErrorCode(), new Long(14L));
+        assertEquals(re.getErrorCode().getPrivateErrorCode(), new Integer(14));
         assertTrue(re.getParameter() instanceof ASNOctetString);
         assertEquals(((ASNOctetString)re.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
     }
@@ -73,7 +73,7 @@ public class ReturnErrorTest {
         // 1
         ReturnError re = TcapFactory.createComponentReturnError();
         re.setCorrelationId(5L);
-        ErrorCode ec = TcapFactory.createPrivateErrorCode(14L);
+        ErrorCode ec = TcapFactory.createPrivateErrorCode(14);
         re.setErrorCode(ec);
         ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(parData),null,null,null,false);
         re.setSetParameter(p);

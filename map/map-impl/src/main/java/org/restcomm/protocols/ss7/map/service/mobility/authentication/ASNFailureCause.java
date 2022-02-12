@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNFailureCause extends ASNEnumerated {
 	public ASNFailureCause() {
-		
+		super("FailureCause",0,1,false);
 	}
 	
 	public ASNFailureCause(FailureCause t) {
-		super(t.getCode());
+		super(t.getCode(),"FailureCause",0,1,false);
 	}
 	
 	public FailureCause getType() {

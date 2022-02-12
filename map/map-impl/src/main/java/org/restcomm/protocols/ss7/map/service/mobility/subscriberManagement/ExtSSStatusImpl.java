@@ -42,10 +42,11 @@ public class ExtSSStatusImpl extends ASNSingleByte implements ExtSSStatus {
     public static final byte sssBitA = 1; // bit 1
 
     public ExtSSStatusImpl() {
+    	super("ExtSSStatus",0,15,false);
     }
 
     public ExtSSStatusImpl(boolean bitQ, boolean bitP, boolean bitR, boolean bitA) {
-    	super(translate(bitQ, bitP, bitR, bitA));
+    	super(translate(bitQ, bitP, bitR, bitA),"ExtSSStatus",0,15,false);
     }
     
     public static Integer translate(boolean bitQ, boolean bitP, boolean bitR, boolean bitA) {

@@ -46,11 +46,11 @@ public class MAPErrorMessageExtensionContainerImpl extends MAPErrorMessageImpl i
     public MAPErrorMessageExtensionContainerImpl() {
     }
 
-    protected MAPErrorMessageExtensionContainerImpl(Long errorCode) {
+    protected MAPErrorMessageExtensionContainerImpl(Integer errorCode) {
         super(errorCode);
     }
 
-    public MAPErrorMessageExtensionContainerImpl(Long errorCode, MAPExtensionContainer extensionContainer) {
+    public MAPErrorMessageExtensionContainerImpl(Integer errorCode, MAPExtensionContainer extensionContainer) {
         super(errorCode);
 
         this.extensionContainer = extensionContainer;

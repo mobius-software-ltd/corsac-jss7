@@ -62,7 +62,7 @@ public class ChargingInformationImpl implements ChargingInformation {
     	this.chargeMessage=chargeMessage;
     	
     	if(pulseBurst!=null)
-    		this.pulseBurst=new ASNInteger(pulseBurst);    		
+    		this.pulseBurst=new ASNInteger(pulseBurst,"PulseBurst",1,255,false);    		
     	
     	if(createDefaultBillingRecord)
     		this.createDefaultBillingRecord=new ASNNull();

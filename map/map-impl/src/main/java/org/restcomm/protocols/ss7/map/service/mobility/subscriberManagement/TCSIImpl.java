@@ -66,7 +66,7 @@ public class TCSIImpl implements TCSI {
         this.extensionContainer = extensionContainer;
         
         if(camelCapabilityHandling!=null)
-        	this.camelCapabilityHandling = new ASNInteger(camelCapabilityHandling);
+        	this.camelCapabilityHandling = new ASNInteger(camelCapabilityHandling,"CamelCapabilityHandling",1,16,false);
         	
         if(notificationToCSE)
         	this.notificationToCSE = new ASNNull();

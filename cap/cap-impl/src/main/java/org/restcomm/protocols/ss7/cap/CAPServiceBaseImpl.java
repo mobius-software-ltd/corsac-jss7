@@ -89,7 +89,7 @@ public abstract class CAPServiceBaseImpl implements CAPServiceBase {
     }
 
     public abstract void processComponent(ComponentType compType, OperationCode oc, CAPMessage parameter, CAPDialog capDialog,
-            Long invokeId, Long linkedId) throws CAPParsingComponentException;
+    		Integer invokeId, Integer linkedId) throws CAPParsingComponentException;
 
     /**
      * Returns a list of linked operations for operCode operation
@@ -154,13 +154,13 @@ public abstract class CAPServiceBaseImpl implements CAPServiceBase {
         // TODO: abort all active dialogs ?
     }
 
-    protected void deliverErrorComponent(CAPDialog capDialog, Long invokeId, CAPErrorMessage capErrorMessage) {
+    protected void deliverErrorComponent(CAPDialog capDialog, Integer invokeId, CAPErrorMessage capErrorMessage) {
         for (CAPServiceListener serLis : this.serviceListeners) {
             serLis.onErrorComponent(capDialog, invokeId, capErrorMessage);
         }
     }
 
-    protected void deliverRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    protected void deliverRejectComponent(CAPDialog capDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
         for (CAPServiceListener serLis : this.serviceListeners) {
             serLis.onRejectComponent(capDialog, invokeId, problem, isLocalOriginated);
         }

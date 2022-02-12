@@ -90,7 +90,7 @@ public class TcResponseTest {
         DialogPortion dp = tcm.getDialogPortion();
         assertNull(dp.getProtocolVersion());
         ApplicationContext ac = dp.getApplicationContext();
-        assertEquals(ac.getInt(), new Long(66L));
+        assertEquals(ac.getInt(), new Integer(66));
         assertNull(dp.getConfidentiality());
         assertNull(dp.getSecurityContext());
         assertNull(dp.getUserInformation());

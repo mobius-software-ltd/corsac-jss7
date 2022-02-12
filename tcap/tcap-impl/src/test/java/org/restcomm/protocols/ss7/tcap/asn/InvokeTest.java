@@ -93,9 +93,9 @@ public class InvokeTest {
     	byte[] expected = this.getData();
 
         Invoke invoke = TcapFactory.createComponentInvoke();
-        invoke.setInvokeId(12l);
+        invoke.setInvokeId(12);
 
-        invoke.setOperationCode(59L);
+        invoke.setOperationCode(59);
 
         InvokeTestASN invokeParameter=new InvokeTestASN();
         
@@ -116,8 +116,8 @@ public class InvokeTest {
         expected = this.getDataFull();
 
         invoke = TcapFactory.createComponentInvoke();
-        invoke.setInvokeId(-5L);
-        invoke.setLinkedId(2L);
+        invoke.setInvokeId(-5);
+        invoke.setLinkedId(2);
         invoke.setOperationCode(Arrays.asList(new Long[] { 1L, 0L, 0L, 1L }));
 
         ASNOctetString pm=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }),null,null,null,false);

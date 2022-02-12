@@ -32,11 +32,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  *
  */
 public class Ext4QoSSubscribedImpl extends ASNSingleByte implements Ext4QoSSubscribed {
-	public Ext4QoSSubscribedImpl() {        
+	public Ext4QoSSubscribedImpl() { 
+		super("Ext4QoSSubscribed",0,255,false);
     }
 
     public Ext4QoSSubscribedImpl(int data) {
-    	super(data);
+    	super(data,"Ext4QoSSubscribed",0,255,false);
     }
 
     public Integer getData() {

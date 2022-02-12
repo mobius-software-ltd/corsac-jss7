@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNIntraCUGOptions extends ASNEnumerated {
 	public ASNIntraCUGOptions() {
-		
+		super("IntraCUGOptions",0,2,false);
 	}
 	
 	public ASNIntraCUGOptions(IntraCUGOptions t) {
-		super(t.getCode());
+		super(t.getCode(),"IntraCUGOptions",0,2,false);
 	}
 	
 	public IntraCUGOptions getType() {

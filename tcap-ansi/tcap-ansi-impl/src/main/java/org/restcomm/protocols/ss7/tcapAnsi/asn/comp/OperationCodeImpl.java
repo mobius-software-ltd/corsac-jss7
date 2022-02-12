@@ -45,28 +45,28 @@ public class OperationCodeImpl implements OperationCode {
 	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=17,constructed=false,index=-1)
 	private ASNInteger privateOperationCode;
     
-    public Long getNationalOperationCode() {
+    public Integer getNationalOperationCode() {
 		if(nationalOperationCode==null)
 			return null;
 		
-		return nationalOperationCode.getValue();
+		return nationalOperationCode.getIntValue();
 	}
 
-	public void setNationalOperationCode(Long nationalOperationCode) {
+	public void setNationalOperationCode(Integer nationalOperationCode) {
 		this.privateOperationCode=null;
-		this.nationalOperationCode=new ASNInteger(nationalOperationCode);		
+		this.nationalOperationCode=new ASNInteger(nationalOperationCode,"OperationCode",-32768,32767,false);		
 	}
 
-	public Long getPrivateOperationCode() {
+	public Integer getPrivateOperationCode() {
 		if(privateOperationCode==null)
 			return null;
 		
-		return privateOperationCode.getValue();
+		return privateOperationCode.getIntValue();
 	}
 
-	public void setPrivateOperationCode(Long privateOperationCode) {
+	public void setPrivateOperationCode(Integer privateOperationCode) {
 		this.nationalOperationCode=null;
-		this.privateOperationCode = new ASNInteger(privateOperationCode);		
+		this.privateOperationCode = new ASNInteger(privateOperationCode,"OperationCode",Integer.MIN_VALUE,Integer.MAX_VALUE,false);		
 	}
 
 	public OperationCodeType getOperationType() {

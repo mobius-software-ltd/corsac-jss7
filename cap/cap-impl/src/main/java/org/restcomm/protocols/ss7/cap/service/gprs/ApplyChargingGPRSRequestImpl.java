@@ -61,7 +61,7 @@ public class ApplyChargingGPRSRequestImpl extends GprsMessageImpl implements App
         this.chargingCharacteristics = chargingCharacteristics;
         
         if(tariffSwitchInterval!=null)
-        	this.tariffSwitchInterval = new ASNInteger(tariffSwitchInterval);
+        	this.tariffSwitchInterval = new ASNInteger(tariffSwitchInterval,"TariffSwitchInterval",0,86400,false);
         	
         this.pdpID = pdpID;
     }

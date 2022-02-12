@@ -71,7 +71,7 @@ public class SendRoutingInfoForSMResponseImpl extends SmsMessageImpl implements 
         this.extensionContainer = extensionContainer;
         
         if(mwdSet!=null)
-        	this.mwdSet = new ASNBoolean(mwdSet);        	
+        	this.mwdSet = new ASNBoolean(mwdSet,"MWDSet",false,false);        	
         
         this.ipSmGwGuidance = ipSmGwGuidance;
     }

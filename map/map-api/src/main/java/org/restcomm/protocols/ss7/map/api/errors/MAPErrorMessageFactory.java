@@ -44,11 +44,11 @@ public interface MAPErrorMessageFactory {
      * @param mapVersion
      * @return
      */
-    MAPErrorMessage createMessageFromErrorCode(Long errorCode,Long mapVersion);
+    MAPErrorMessage createMessageFromErrorCode(Integer errorCode,Long mapVersion);
 
-    MAPErrorMessageParameterless createMAPErrorMessageParameterless(Long errorCode);
+    MAPErrorMessageParameterless createMAPErrorMessageParameterless(Integer errorCode);
 
-    MAPErrorMessageExtensionContainer createMAPErrorMessageExtensionContainer(Long errorCode,
+    MAPErrorMessageExtensionContainer createMAPErrorMessageExtensionContainer(Integer errorCode,
     		MAPExtensionContainer extensionContainer);
 
     MAPErrorMessageSMDeliveryFailure createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause);
@@ -110,5 +110,4 @@ public interface MAPErrorMessageFactory {
 
     MAPErrorMessagePwRegistrationFailure createMAPErrorMessagePwRegistrationFailure(
             PWRegistrationFailureCause pwRegistrationFailureCause);
-
 }

@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNMessageType extends ASNEnumerated {
 	public ASNMessageType() {
-		
+		super("MessageType",0x61,0x67,false);
 	}
 	
 	public ASNMessageType(MessageType t) {
-		super(t.getValue());
+		super(t.getValue(),"MessageType",0x61,0x67,false);
 	}
 	
 	public MessageType getType() {

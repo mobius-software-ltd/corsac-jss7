@@ -38,10 +38,11 @@ public class INAPUserAbortPrimitiveImpl extends ASNEnumerated {
 	public static final List<Long> INAP_AbortReason_OId = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 2L, 2L });
 
     public INAPUserAbortPrimitiveImpl() {
+    	super("INAPUserAbortPrimitive",1,8,false);
     }
 
     public INAPUserAbortPrimitiveImpl(INAPUserAbortReason reason) {
-        super(reason.getCode());
+        super(reason.getCode(),"INAPUserAbortPrimitive",1,8,false);
     }
 
     public INAPUserAbortReason getINAPUserAbortReason() {

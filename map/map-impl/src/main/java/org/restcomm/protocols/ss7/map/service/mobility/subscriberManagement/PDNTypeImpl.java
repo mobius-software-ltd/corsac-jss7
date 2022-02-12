@@ -32,15 +32,16 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  *
  */
 public class PDNTypeImpl extends ASNSingleByte implements PDNType {
-	public PDNTypeImpl() {        
+	public PDNTypeImpl() {   
+		super("PDNType",0,3,false);
     }
 
     public PDNTypeImpl(int data) {
-    	super(data);
+    	super(data,"PDNType",0,3,false);
     }
 
     public PDNTypeImpl(PDNTypeValue value) {
-    	super(value != null ? value.getCode() : 0);
+    	super(value != null ? value.getCode() : 0,"PDNType",0,3,false);
     }
 
     public int getData() {

@@ -52,7 +52,7 @@ public class PromptAndCollectUserInformationResponeChoiseImpl {
 
     public PromptAndCollectUserInformationResponeChoiseImpl(String ia5Response) {
     	if(ia5Response!=null)
-    		this.ia5Response=new ASNIA5String(ia5Response);    		
+    		this.ia5Response=new ASNIA5String(ia5Response,"IA5Response",null,null,false);    		
     }
 
     public DigitsIsup getDigitsResponse() {

@@ -204,7 +204,7 @@ public abstract class InitialDPRequestBaseImpl extends CircuitSwitchedCallMessag
             CallReferenceNumber callReferenceNumber, ISDNAddressString mscAddress, CalledPartyBCDNumber calledPartyBCDNumber,
             TimeAndTimezone timeAndTimezone, boolean callForwardingSSPending) {
         
-    	this.serviceKey = new ASNInteger(serviceKey);
+    	this.serviceKey = new ASNInteger(serviceKey,"ServiceKey",0,Integer.MAX_VALUE,false);
     	this.calledPartyNumber = calledPartyNumber;
         this.callingPartyNumber = callingPartyNumber;
         this.callingPartysCategory = callingPartysCategory;

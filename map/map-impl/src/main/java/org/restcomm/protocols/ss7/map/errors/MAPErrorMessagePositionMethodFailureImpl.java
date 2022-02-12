@@ -48,14 +48,14 @@ public class MAPErrorMessagePositionMethodFailureImpl extends MAPErrorMessageImp
 
     public MAPErrorMessagePositionMethodFailureImpl(PositionMethodFailureDiagnostic positionMethodFailureDiagnostic,
     		MAPExtensionContainer extensionContainer) {
-        super((long) MAPErrorCode.positionMethodFailure);
+        super(MAPErrorCode.positionMethodFailure);
 
         this.positionMethodFailureDiagnostic = new ASNPositionMethodFailureDiagnosticImpl(positionMethodFailureDiagnostic);
         this.extensionContainer = extensionContainer;
     }
 
     public MAPErrorMessagePositionMethodFailureImpl() {
-        super((long) MAPErrorCode.positionMethodFailure);
+        super(MAPErrorCode.positionMethodFailure);
     }
 
     public boolean isEmPositionMethodFailure() {

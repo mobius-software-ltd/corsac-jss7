@@ -133,7 +133,7 @@ public class ReturnErrorTest {
 
         assertEquals(ComponentType.ReturnError, comp.getType(), "Wrong component Type");
         ReturnError re = comp.getReturnError();
-        assertEquals(new Long(5), re.getInvokeId(), "Wrong invoke ID");
+        assertEquals(new Integer(5), re.getInvokeId(), "Wrong invoke ID");
         assertNotNull(re.getErrorCode(), "No error code.");
         ErrorCode ec = re.getErrorCode();
         assertEquals(ErrorCodeType.Local, ec.getErrorType(), "Wrong error code type.");
@@ -148,7 +148,7 @@ public class ReturnErrorTest {
 
         assertEquals(ComponentType.ReturnError, comp.getType(), "Wrong component Type");
         re = comp.getReturnError();
-        assertEquals(new Long(5), re.getInvokeId(), "Wrong invoke ID");
+        assertEquals(new Integer(5), re.getInvokeId(), "Wrong invoke ID");
         assertNotNull(re.getErrorCode(), "No error code.");
         ec = re.getErrorCode();
         assertEquals(ErrorCodeType.Local, ec.getErrorType(), "Wrong error code type.");
@@ -167,7 +167,7 @@ public class ReturnErrorTest {
 
         assertEquals(ComponentType.ReturnError, comp.getType(), "Wrong component Type");
         re = comp.getReturnError();
-        assertEquals(new Long(-1L), re.getInvokeId(), "Wrong invoke ID");
+        assertEquals(new Integer(-1), re.getInvokeId(), "Wrong invoke ID");
         assertNotNull(re.getErrorCode(), "No error code.");
         ec = re.getErrorCode();
         assertEquals(ErrorCodeType.Global, ec.getErrorType(), "Wrong error code type.");
@@ -180,8 +180,8 @@ public class ReturnErrorTest {
     public void testEncode() throws ASNException {
     	byte[] expected = this.getDataWithoutParameter();
         ReturnError re = TcapFactory.createComponentReturnError();
-        re.setInvokeId(5l);
-        re.setErrorCode(15L);
+        re.setInvokeId(5);
+        re.setErrorCode(15);
         ComponentImpl comp=new ComponentImpl();
         comp.setReturnError(re);
         
@@ -191,8 +191,8 @@ public class ReturnErrorTest {
 
         expected = this.getDataWithParameter();
         re = TcapFactory.createComponentReturnError();
-        re.setInvokeId(5l);
-        re.setErrorCode(15L);
+        re.setInvokeId(5);
+        re.setErrorCode(15);
         
         TCBeginTestASN3 pm=new TCBeginTestASN3(Unpooled.wrappedBuffer(getParameterData()));
         re.setParameter(pm);
@@ -205,7 +205,7 @@ public class ReturnErrorTest {
 
         expected = this.getDataLongErrorCode();
         re = TcapFactory.createComponentReturnError();
-        re.setInvokeId(-1L);
+        re.setInvokeId(-1);
         re.setErrorCode(Arrays.asList(new Long[] { 1L, 0L, 22L, 33L }));
         comp=new ComponentImpl();
         comp.setReturnError(re);

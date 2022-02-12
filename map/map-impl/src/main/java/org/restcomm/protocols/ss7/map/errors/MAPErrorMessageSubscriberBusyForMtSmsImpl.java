@@ -47,7 +47,7 @@ public class MAPErrorMessageSubscriberBusyForMtSmsImpl extends MAPErrorMessageIm
 	private ASNNull gprsConnectionSuspended;
 
     public MAPErrorMessageSubscriberBusyForMtSmsImpl(MAPExtensionContainer extensionContainer, Boolean gprsConnectionSuspended) {
-        super((long) MAPErrorCode.subscriberBusyForMTSMS);
+        super(MAPErrorCode.subscriberBusyForMTSMS);
 
         this.extensionContainer = extensionContainer;
         if(gprsConnectionSuspended!=null && gprsConnectionSuspended)
@@ -55,7 +55,7 @@ public class MAPErrorMessageSubscriberBusyForMtSmsImpl extends MAPErrorMessageIm
     }
 
     public MAPErrorMessageSubscriberBusyForMtSmsImpl() {
-        super((long) MAPErrorCode.subscriberBusyForMTSMS);
+        super(MAPErrorCode.subscriberBusyForMTSMS);
     }
 
     public boolean isEmSubscriberBusyForMtSms() {

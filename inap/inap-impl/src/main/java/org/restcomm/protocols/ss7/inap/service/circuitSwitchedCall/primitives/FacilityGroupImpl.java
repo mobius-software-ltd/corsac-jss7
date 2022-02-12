@@ -58,9 +58,9 @@ public class FacilityGroupImpl implements FacilityGroup {
     public FacilityGroupImpl(Integer value,Boolean isTrunkGroupID) {
     	if(value!=null) {
     		if(isTrunkGroupID)
-    			this.trunkGroupID = new ASNInteger(value);    			
+    			this.trunkGroupID = new ASNInteger(value,"TrunkGroupID",Integer.MIN_VALUE,Integer.MAX_VALUE,false);    			
     		else
-    			this.privateFacilityID = new ASNInteger(value);    			
+    			this.privateFacilityID = new ASNInteger(value,"PrivateFacilityID",Integer.MIN_VALUE,Integer.MAX_VALUE,false);
     	}
     }
 

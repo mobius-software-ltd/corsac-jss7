@@ -53,11 +53,11 @@ import io.netty.buffer.Unpooled;
 public class VLRCapabilityTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 11, -128, 2, 4, -64, -127, 1, 1, -123, 2, 3, -16 };
+        return new byte[] { 48, 11, -128, 2, 6, -64, -127, 1, 1, -123, 2, 4, -16 };
     }
 
     private byte[] getEncodedDataEC() {
-        return new byte[] { 48, 26, -128, 2, 4, -32, 48, 20, -96, 18, 48, 16, 6, 8, 42, -122, 8, 8, 8, 8, 8, 1, 48, 4, -123, 2, 3, 64 };
+        return new byte[] { 48, 26, -128, 2, 5, -32, 48, 20, -96, 18, 48, 16, 6, 8, 42, -122, 8, 8, 8, 8, 8, 1, 48, 4, -123, 2, 6, 64 };
     }
 
     private Long[] getECOid() {
@@ -69,7 +69,7 @@ public class VLRCapabilityTest {
     }
 
     private byte[] getEncodedDataFull() {
-        return new byte[] { 48, 16, -126, 0, -124, 0, -122, 2, 1, 14, -121, 2, 3, 80, -120, 0, -119, 0 };
+        return new byte[] { 48, 16, -126, 0, -124, 0, -122, 2, 1, 14, -121, 2, 4, 80, -120, 0, -119, 0 };
     }
 
     @Test(groups = { "functional.decode" })

@@ -42,7 +42,7 @@ import io.netty.buffer.Unpooled;
 public class ODBGeneralDataTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 3, 5, 3, 74, -43, 85, 80 };
+        return new byte[] { 3, 5, 4, 74, -43, 85, 80 };
     }
 
     private byte[] getEncodedData1() {

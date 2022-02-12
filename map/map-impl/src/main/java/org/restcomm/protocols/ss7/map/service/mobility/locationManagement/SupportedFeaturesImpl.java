@@ -68,7 +68,7 @@ public class SupportedFeaturesImpl extends ASNBitString implements SupportedFeat
             boolean lcsCallSessionUnrelated, boolean lcsPLMNOperator, boolean lcsServiceType, boolean lcsAllMOLRSS,
             boolean lcsBasicSelfLocation, boolean lcsAutonomousSelfLocation, boolean lcsTransferToThirdParty, boolean smMoPp,
             boolean barringOutgoingCalls, boolean baoc, boolean boic, boolean boicExHC) {
-    	super(25);
+    	super("SupportedFeatures",25,39,false);
         if (odbAllApn)
             this.setBit(_INDEX_odbAllApn);
         if (odbHPLMNApn)

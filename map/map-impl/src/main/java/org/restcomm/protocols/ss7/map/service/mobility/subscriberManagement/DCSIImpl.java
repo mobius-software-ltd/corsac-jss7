@@ -66,7 +66,7 @@ public class DCSIImpl implements DCSI {
     		this.dpAnalysedInfoCriteriaList = new DPAnalyzedInfoCriteriaListWrapperImpl(dpAnalysedInfoCriteriaList);
     	
     	if(camelCapabilityHandling!=null)
-    		this.camelCapabilityHandling = new ASNInteger(camelCapabilityHandling);
+    		this.camelCapabilityHandling = new ASNInteger(camelCapabilityHandling,"CamelCapabilityHandling",1,16,false);
     		
         this.extensionContainer = extensionContainer;
         

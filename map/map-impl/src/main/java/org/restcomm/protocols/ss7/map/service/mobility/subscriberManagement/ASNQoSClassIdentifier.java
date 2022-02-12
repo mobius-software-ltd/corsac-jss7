@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNQoSClassIdentifier extends ASNEnumerated {
 	public ASNQoSClassIdentifier() {
-		
+		super("QoSClassIdentifier",1,9,false);
 	}
 	
 	public ASNQoSClassIdentifier(QoSClassIdentifier t) {
-		super(t.getCode());
+		super(t.getCode(),"QoSClassIdentifier",1,9,false);
 	}
 	
 	public QoSClassIdentifier getType() {

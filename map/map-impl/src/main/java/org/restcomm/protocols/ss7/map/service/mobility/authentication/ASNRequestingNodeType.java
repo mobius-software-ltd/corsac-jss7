@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNRequestingNodeType extends ASNEnumerated {
 	public ASNRequestingNodeType() {
-		
+		super("RequestingNodeType",0,17,false);
 	}
 	
 	public ASNRequestingNodeType(RequestingNodeType t) {
-		super(t.getCode());
+		super(t.getCode(),"RequestingNodeType",0,17,false);
 	}
 	
 	public RequestingNodeType getType() {

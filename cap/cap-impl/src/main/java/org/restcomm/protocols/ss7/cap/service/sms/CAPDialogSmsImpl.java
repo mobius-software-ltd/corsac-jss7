@@ -71,7 +71,7 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
     }
 
     @Override
-    public Long addConnectSMSRequest(SMSAddressString callingPartysNumber,
+    public Integer addConnectSMSRequest(SMSAddressString callingPartysNumber,
             CalledPartyBCDNumber destinationSubscriberNumber, ISDNAddressString smscAddress, CAPINAPExtensions extensions)
             throws CAPException {
         return addConnectSMSRequest(_Timer_Default, callingPartysNumber, destinationSubscriberNumber, smscAddress,
@@ -80,7 +80,7 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
     }
 
     @Override
-    public Long addConnectSMSRequest(int customInvokeTimeout, SMSAddressString callingPartysNumber,
+    public Integer addConnectSMSRequest(int customInvokeTimeout, SMSAddressString callingPartysNumber,
             CalledPartyBCDNumber destinationSubscriberNumber, ISDNAddressString smscAddress, CAPINAPExtensions extensions)
             throws CAPException {
 
@@ -96,11 +96,11 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
         ConnectSMSRequestImpl req = new ConnectSMSRequestImpl(callingPartysNumber, destinationSubscriberNumber,
                 smscAddress, extensions);
 
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.connectSMS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.connectSMS, req, true, false);        
     }
 
     @Override
-    public Long addEventReportSMSRequest(EventTypeSMS eventTypeSMS,
+    public Integer addEventReportSMSRequest(EventTypeSMS eventTypeSMS,
             EventSpecificInformationSMS eventSpecificInformationSMS, MiscCallInfo miscCallInfo, CAPINAPExtensions extensions)
             throws CAPException {
         return this.addEventReportSMSRequest(_Timer_Default, eventTypeSMS, eventSpecificInformationSMS, miscCallInfo,
@@ -108,7 +108,7 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
     }
 
     @Override
-    public Long addEventReportSMSRequest(int customInvokeTimeout, EventTypeSMS eventTypeSMS,
+    public Integer addEventReportSMSRequest(int customInvokeTimeout, EventTypeSMS eventTypeSMS,
             EventSpecificInformationSMS eventSpecificInformationSMS, MiscCallInfo miscCallInfo, CAPINAPExtensions extensions)
             throws CAPException {
 
@@ -123,16 +123,16 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
         
         EventReportSMSRequestImpl req = new EventReportSMSRequestImpl(eventTypeSMS, eventSpecificInformationSMS,
                 miscCallInfo, extensions);
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.eventReportSMS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.eventReportSMS, req, true, false);        
     }
 
     @Override
-    public Long addFurnishChargingInformationSMSRequest(FCIBCCCAMELSequence1SMS fciBCCCAMELsequence1) throws CAPException {
+    public Integer addFurnishChargingInformationSMSRequest(FCIBCCCAMELSequence1SMS fciBCCCAMELsequence1) throws CAPException {
         return this.addFurnishChargingInformationSMSRequest(_Timer_Default, fciBCCCAMELsequence1);
     }
 
     @Override
-    public Long addFurnishChargingInformationSMSRequest(int customInvokeTimeout, FCIBCCCAMELSequence1SMS fciBCCCAMELsequence1) throws CAPException {
+    public Integer addFurnishChargingInformationSMSRequest(int customInvokeTimeout, FCIBCCCAMELSequence1SMS fciBCCCAMELsequence1) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_cap3_sms && this.appCntx != CAPApplicationContext.CapV4_cap4_sms)
             throw new CAPException("Bad application context name for ConnectSMSRequest: must be CapV3_cap3_sms or CapV4_cap4_sms");
@@ -144,11 +144,11 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
         	customTimeout = customInvokeTimeout;
         
         FurnishChargingInformationSMSRequestImpl req = new FurnishChargingInformationSMSRequestImpl(fciBCCCAMELsequence1);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.furnishChargingInformationSMS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.furnishChargingInformationSMS, req, true, false);        
     }
 
     @Override
-    public Long addInitialDPSMSRequest(int serviceKey, CalledPartyBCDNumber destinationSubscriberNumber,
+    public Integer addInitialDPSMSRequest(int serviceKey, CalledPartyBCDNumber destinationSubscriberNumber,
             SMSAddressString callingPartyNumber, EventTypeSMS eventTypeSMS, IMSI imsi,
             LocationInformation locationInformationMSC, LocationInformationGPRS locationInformationGPRS,
             ISDNAddressString smscCAddress, TimeAndTimezone timeAndTimezone,
@@ -164,7 +164,7 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
     }
 
     @Override
-    public Long addInitialDPSMSRequest(int customInvokeTimeout, int serviceKey,
+    public Integer addInitialDPSMSRequest(int customInvokeTimeout, int serviceKey,
             CalledPartyBCDNumber destinationSubscriberNumber, SMSAddressString callingPartyNumber,
             EventTypeSMS eventTypeSMS, IMSI imsi, LocationInformation locationInformationMSC,
             LocationInformationGPRS locationInformationGPRS, ISDNAddressString smscCAddress,
@@ -188,16 +188,16 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
                 timeAndTimezone, tPShortMessageSpecificInfo, tPProtocolIdentifier, tPDataCodingScheme,
                 tPValidityPeriod, extensions, smsReferenceNumber, mscAddress, sgsnNumber, mSClassmark2, gprsMSClass,
                 imei, calledPartyNumber);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.initialDPSMS, req, true, false);
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.initialDPSMS, req, true, false);
     }
 
     @Override
-    public Long addReleaseSMSRequest(RPCause rpCause) throws CAPException {
+    public Integer addReleaseSMSRequest(RPCause rpCause) throws CAPException {
         return this.addReleaseSMSRequest(_Timer_Default, rpCause);
     }
 
     @Override
-    public Long addReleaseSMSRequest(int customInvokeTimeout, RPCause rpCause) throws CAPException {
+    public Integer addReleaseSMSRequest(int customInvokeTimeout, RPCause rpCause) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_cap3_sms && this.appCntx != CAPApplicationContext.CapV4_cap4_sms)
             throw new CAPException("Bad application context name for ConnectSMSRequest: must be CapV3_cap3_sms or CapV4_cap4_sms");
@@ -209,17 +209,17 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
         	customTimeout = customInvokeTimeout;
         
         ReleaseSMSRequestImpl req = new ReleaseSMSRequestImpl(rpCause);
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.releaseSMS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.releaseSMS, req, true, false);        
     }
 
     @Override
-    public Long addRequestReportSMSEventRequest(List<SMSEvent> smsEvents, CAPINAPExtensions extensions)
+    public Integer addRequestReportSMSEventRequest(List<SMSEvent> smsEvents, CAPINAPExtensions extensions)
             throws CAPException {
         return this.addRequestReportSMSEventRequest(_Timer_Default, smsEvents, extensions);
     }
 
     @Override
-    public Long addRequestReportSMSEventRequest(int customInvokeTimeout, List<SMSEvent> smsEvents,
+    public Integer addRequestReportSMSEventRequest(int customInvokeTimeout, List<SMSEvent> smsEvents,
             CAPINAPExtensions extensions) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_cap3_sms && this.appCntx != CAPApplicationContext.CapV4_cap4_sms)
@@ -232,16 +232,16 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
         	customTimeout = customInvokeTimeout;
         
         RequestReportSMSEventRequestImpl req = new RequestReportSMSEventRequestImpl(smsEvents, extensions);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.requestReportSMSEvent, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.requestReportSMSEvent, req, true, false);        
     }
 
     @Override
-    public Long addResetTimerSMSRequest(TimerID timerID, int timerValue, CAPINAPExtensions extensions) throws CAPException {
+    public Integer addResetTimerSMSRequest(TimerID timerID, int timerValue, CAPINAPExtensions extensions) throws CAPException {
         return this.addResetTimerSMSRequest(_Timer_Default, timerID, timerValue, extensions);
     }
 
     @Override
-    public Long addResetTimerSMSRequest(int customInvokeTimeout, TimerID timerID, int timerValue,
+    public Integer addResetTimerSMSRequest(int customInvokeTimeout, TimerID timerID, int timerValue,
             CAPINAPExtensions extensions) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_cap3_sms && this.appCntx != CAPApplicationContext.CapV4_cap4_sms)
@@ -254,17 +254,17 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
         	customTimeout = customInvokeTimeout;
         
         ResetTimerSMSRequestImpl req = new ResetTimerSMSRequestImpl(timerID, timerValue, extensions);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.resetTimerSMS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.resetTimerSMS, req, true, false);        
     }
 
     @Override
-    public Long addContinueSMSRequest() throws CAPException {
+    public Integer addContinueSMSRequest() throws CAPException {
 
         return addContinueSMSRequest(_Timer_Default);
     }
 
     @Override
-    public Long addContinueSMSRequest(int customInvokeTimeout) throws CAPException {
+    public Integer addContinueSMSRequest(int customInvokeTimeout) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_cap3_sms && this.appCntx != CAPApplicationContext.CapV4_cap4_sms)
             throw new CAPException("Bad application context name for ConnectSMSRequest: must be CapV3_cap3_sms or CapV4_cap4_sms");
@@ -275,7 +275,7 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
         else
         	customTimeout = customInvokeTimeout;
         
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.continueSMS, null, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.continueSMS, null, true, false);        
     }
 
 }

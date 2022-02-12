@@ -66,12 +66,12 @@ public class Client extends EventTestHarness {
     @Override
     public void sendBegin() throws TCAPException, TCAPSendException {
         // create some INVOKE
-        OperationCode oc = TcapFactory.createLocalOperationCode(12L);
+        OperationCode oc = TcapFactory.createLocalOperationCode(12);
         // no parameter
         this.dialog.sendData(null, null, InvokeClass.Class1, null, oc, null, true, false);
 
         // create a second INVOKE for which we will test linkedId
-        oc = TcapFactory.createLocalOperationCode(13L);
+        oc = TcapFactory.createLocalOperationCode(13);
         // no parameter
         this.dialog.sendData(null, null, InvokeClass.Class1, null, oc, null, true, false);
 
@@ -110,9 +110,9 @@ public class Client extends EventTestHarness {
     public Invoke createNewInvoke() {
 
         Invoke invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequest();
-        invoke.setInvokeId(12l);
+        invoke.setInvokeId(12);
 
-        invoke.setOperationCode(59L);
+        invoke.setOperationCode(59);
 
         ASNOctetString p1=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 0x0F }),null,null,null,false);                
         ASNOctetString p2=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6, 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19, 0x0e,

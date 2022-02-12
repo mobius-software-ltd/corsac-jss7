@@ -111,7 +111,7 @@ public class APNConfigurationImpl implements APNConfiguration {
             List<SpecificAPNInfo> specificAPNInfoList, MAPExtensionContainer extensionContainer,
             PDPAddress servedPartyIPIPv6Address, APNOIReplacement apnOiReplacement, SIPTOPermission siptoPermission,
             LIPAPermission lipaPermission) {
-        this.contextId = new ASNInteger(contextId);
+        this.contextId = new ASNInteger(contextId,"ContextId",1,50,false);
         this.pDNType = pDNType;
         this.servedPartyIPIPv4Address = servedPartyIPIPv4Address;
         this.apn = apn;

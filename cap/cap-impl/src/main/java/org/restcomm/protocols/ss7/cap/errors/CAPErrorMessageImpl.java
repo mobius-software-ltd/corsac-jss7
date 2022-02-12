@@ -36,9 +36,9 @@ import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessageTaskRefused;
  *
  */
 public abstract class CAPErrorMessageImpl implements CAPErrorMessage {
-    protected Long errorCode;
+    protected Integer errorCode;
 
-    protected CAPErrorMessageImpl(Long errorCode) {
+    protected CAPErrorMessageImpl(Integer errorCode) {
         this.errorCode = errorCode;
     }
 
@@ -46,7 +46,7 @@ public abstract class CAPErrorMessageImpl implements CAPErrorMessage {
     }
 
     @Override
-    public Long getErrorCode() {
+    public Integer getErrorCode() {
         return errorCode;
     }
 

@@ -86,7 +86,7 @@ public class ClientTest implements TCListener {
         // create some INVOKE
         Invoke invoke = cpFactory.createTCInvokeRequestNotLast();
         invoke.setInvokeId(this.clientDialog.getNewInvokeId());
-        OperationCode oc = TcapFactory.createNationalOperationCode(12L);
+        OperationCode oc = TcapFactory.createNationalOperationCode(12);
         invoke.setOperationCode(oc);
         // no parameter
         

@@ -32,17 +32,15 @@ import org.restcomm.protocols.ss7.inap.api.errors.TaskRefusedParameter;
  *
  */
 public class INAPErrorMessageTaskRefusedImpl extends EnumeratedINAPErrorMessage1Impl implements INAPErrorMessageTaskRefused {
-	public static final String _PrimitiveName = "INAPErrorMessageTaskRefused";
-
-    protected INAPErrorMessageTaskRefusedImpl(TaskRefusedParameter taskRefusedParameter) {
-        super((long) INAPErrorCode.taskRefused);
+	protected INAPErrorMessageTaskRefusedImpl(TaskRefusedParameter taskRefusedParameter) {
+        super(INAPErrorCode.taskRefused,"TaskRefused",0,2);
 
         if(taskRefusedParameter!=null)
-        	setValue(Long.valueOf(taskRefusedParameter.getCode()));
+        	setValue(taskRefusedParameter.getCode());
     }
 
     public INAPErrorMessageTaskRefusedImpl() {
-        super((long) INAPErrorCode.taskRefused);
+        super(INAPErrorCode.taskRefused,"TaskRefused",0,2);
     }
 
     public boolean isEmTaskRefused() {
@@ -54,11 +52,11 @@ public class INAPErrorMessageTaskRefusedImpl extends EnumeratedINAPErrorMessage1
     }
 
     public TaskRefusedParameter getTaskRefusedParameter() {
-    	Long value=getValue();
+    	Integer value=getValue();
     	if(value==null)
     		return null;
     	
-    	return TaskRefusedParameter.getInstance(value.intValue());
+    	return TaskRefusedParameter.getInstance(value);
     }
 
     @Override

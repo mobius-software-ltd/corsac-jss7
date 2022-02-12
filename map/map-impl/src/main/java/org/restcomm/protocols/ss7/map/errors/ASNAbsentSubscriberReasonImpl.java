@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNAbsentSubscriberReasonImpl extends ASNEnumerated {
 	public ASNAbsentSubscriberReasonImpl() {
-		
+		super("AbsentSubscriberReason",0,3,false);
 	}
 	
 	public ASNAbsentSubscriberReasonImpl(AbsentSubscriberReason t) {
-		super(t.getCode());
+		super(t.getCode(),"AbsentSubscriberReason",0,3,false);
 	}
 	
 	public AbsentSubscriberReason getType() {

@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNForwardingReasonImpl extends ASNEnumerated {
 	public ASNForwardingReasonImpl() {
-		
+		super("ForwardingReason",0,3,false);
 	}
 	
 	public ASNForwardingReasonImpl(ForwardingReason t) {
-		super(t.getCode());
+		super(t.getCode(),"ForwardingReason",0,3,false);
 	}
 	
 	public ForwardingReason getType() {

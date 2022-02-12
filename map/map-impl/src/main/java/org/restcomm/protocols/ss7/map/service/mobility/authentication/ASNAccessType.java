@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNAccessType extends ASNEnumerated {
 	public ASNAccessType() {
-		
+		super("AccessType",0,10,false);
 	}
 	
 	public ASNAccessType(AccessType t) {
-		super(t.getCode());
+		super(t.getCode(),"AccessType",0,10,false);
 	}
 	
 	public AccessType getType() {

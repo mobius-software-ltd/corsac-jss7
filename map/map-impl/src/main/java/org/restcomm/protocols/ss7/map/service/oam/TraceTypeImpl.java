@@ -36,11 +36,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 *
 */
 public class TraceTypeImpl extends ASNSingleByte implements TraceType {
-	public TraceTypeImpl() {       
+	public TraceTypeImpl() {  
+		super("TraceType",0,255,false);
     }
 
     public TraceTypeImpl(int data) {
-    	super(data);
+    	super(data,"TraceType",0,255,false);
     }
 
     public TraceTypeImpl(BssRecordType bssRecordType, MscRecordType mscRecordType, TraceTypeInvokingEvent traceTypeInvokingEvent, boolean priorityIndication) {
@@ -52,7 +53,7 @@ public class TraceTypeImpl extends ASNSingleByte implements TraceType {
     }
     
     private TraceTypeImpl(int bssrecordType,int mscRecordType,int traceType,boolean priorityIndication) {
-    	super(((bssrecordType << 4) | (mscRecordType << 2) | traceType | (priorityIndication ? 0x80 : 0x00)));
+    	super(((bssrecordType << 4) | (mscRecordType << 2) | traceType | (priorityIndication ? 0x80 : 0x00)),"TraceType",0,255,false);
     }
 
 

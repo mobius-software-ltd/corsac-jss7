@@ -65,7 +65,7 @@ public class CUGFeatureImpl implements CUGFeature {
     	this.basicService = basicService;
     		
         if(preferentialCugIndicator!=null)
-        	this.preferentialCugIndicator = new ASNInteger(preferentialCugIndicator);
+        	this.preferentialCugIndicator = new ASNInteger(preferentialCugIndicator,"PreferentialCugIndicator",0,32767,false);
         	
         this.interCugRestrictions = interCugRestrictions;
         this.extensionContainer = extensionContainer;

@@ -35,6 +35,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 import io.netty.buffer.ByteBuf;
 
@@ -42,13 +45,29 @@ import io.netty.buffer.ByteBuf;
 public class ASNUTF8String {
 	public static final Charset ENCODING=Charset.forName("UTF-8");
 	private String value;
+	private String name;
+	private Integer minLength;
+	private Integer maxLength;
+	private Boolean isRoot;
 	
+	//required for parser
 	public ASNUTF8String() {
-		
+				
+	}
+			
+	public ASNUTF8String(String name,Integer minLength,Integer maxLength,Boolean isRoot) {
+		this.name = name;
+		this.minLength = minLength;
+		this.maxLength = maxLength;
+		this.isRoot = isRoot;
 	}
 	
-	public ASNUTF8String(String value) {
+	public ASNUTF8String(String value,String name,Integer minLength,Integer maxLength,Boolean isRoot) {
 		this.value=value;
+		this.name = name;
+		this.minLength = minLength;
+		this.maxLength = maxLength;
+		this.isRoot = isRoot;
 	}
 	
 	public String getValue() {
@@ -69,6 +88,27 @@ public class ASNUTF8String {
 	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws UnsupportedEncodingException {
 		value=buffer.toString(ENCODING);
 		return false;
+	}
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(minLength!=null && value==null) {
+			if(isRoot==null || !isRoot)
+				throw new ASNParsingComponentException(name + " is required",ASNParsingComponentExceptionReason.MistypedParameter);
+			else
+				throw new ASNParsingComponentException(name + " is required",ASNParsingComponentExceptionReason.MistypedRootParameter);
+		} else if(minLength!=null && value!=null && value.length()<minLength){
+			if(isRoot==null || !isRoot)
+				throw new ASNParsingComponentException(name + " length should be at least " + minLength,ASNParsingComponentExceptionReason.MistypedParameter);
+			else
+				throw new ASNParsingComponentException(name + " length should be at least " + minLength,ASNParsingComponentExceptionReason.MistypedRootParameter);
+		} else if(maxLength!=null && value!=null && value.length()>maxLength){
+			if(isRoot==null || !isRoot)
+				throw new ASNParsingComponentException(name + " length should be at most " + maxLength,ASNParsingComponentExceptionReason.MistypedParameter);
+			else
+				throw new ASNParsingComponentException(name + " length should be at most " + maxLength,ASNParsingComponentExceptionReason.MistypedRootParameter);
+		} 
+			
 	}
 	
 	public static int getLength(String value) throws UnsupportedEncodingException

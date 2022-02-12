@@ -36,11 +36,11 @@ public class SuppressMTSSImpl extends ASNBitString implements SuppressMTSS {
      *
      */
     public SuppressMTSSImpl() {
-    	super(2);
+    	super("SuppressMTSS",1,15,false);
     }
 
     public SuppressMTSSImpl(boolean suppressCUG, boolean suppressCCBS) {
-    	super(2);
+    	super("SuppressMTSS",1,15,false);
         if (suppressCUG)
             this.setBit(0);
         

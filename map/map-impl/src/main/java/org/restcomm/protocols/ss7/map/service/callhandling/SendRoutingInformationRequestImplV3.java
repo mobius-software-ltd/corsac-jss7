@@ -175,7 +175,7 @@ public class SendRoutingInformationRequestImplV3 extends CallHandlingMessageImpl
     		this.orInterrogation = new ASNNull();
     	
     	if(orCapability!=null)
-    		this.orCapability = new ASNInteger(orCapability);
+    		this.orCapability = new ASNInteger(orCapability,"ORCapability",1,127,false);
     		
         this.callReferenceNumber = callReferenceNumber;
         
@@ -196,7 +196,7 @@ public class SendRoutingInformationRequestImplV3 extends CallHandlingMessageImpl
         	this.ccbsCall = new ASNNull();
         
         if(supportedCCBSPhase!=null)
-        	this.supportedCCBSPhase = new ASNInteger(supportedCCBSPhase);
+        	this.supportedCCBSPhase = new ASNInteger(supportedCCBSPhase,"SupportedCCBSPhase",1,127,false);
         	
         this.additionalSignalInfo = additionalSignalInfo;
         
@@ -243,7 +243,7 @@ public class SendRoutingInformationRequestImplV3 extends CallHandlingMessageImpl
         this.cugCheckInfo = cugCheckInfo;
         
         if(numberOfForwarding!=null)
-        	this.numberOfForwarding = new ASNInteger(numberOfForwarding);
+        	this.numberOfForwarding = new ASNInteger(numberOfForwarding,"NumberOfForwarding",1,5,false);
         	
         this.networkSignalInfo = networkSignalInfo;
     }

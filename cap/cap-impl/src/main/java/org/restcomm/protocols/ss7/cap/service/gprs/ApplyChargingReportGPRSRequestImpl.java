@@ -73,7 +73,7 @@ public class ApplyChargingReportGPRSRequestImpl extends GprsMessageImpl implemen
         	this.chargingResult = new ChargingResultWrapperImpl(chargingResult);
         
         this.qualityOfService = qualityOfService;
-        this.active = new ASNBoolean(active);
+        this.active = new ASNBoolean(active,"Active",true,false);
         this.pdpID = pdpID;
         
         if(chargingRollOver!=null)

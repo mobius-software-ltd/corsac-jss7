@@ -35,11 +35,11 @@ public class RequestedEquipmentInfoImpl extends ASNBitString implements Requeste
     private static final int _INDEX_BMUEF = 1;
 
     public RequestedEquipmentInfoImpl() {  
-    	super(1);
+    	super("RequestedEquipmentInfo",1,7,false);
     }
 
     public RequestedEquipmentInfoImpl(boolean equipmentStatus, boolean bmuef) {
-    	super(1);
+    	super("RequestedEquipmentInfo",1,7,false);
         if (equipmentStatus)
             this.setBit(_INDEX_EQUIPMENT_STATUS);
 

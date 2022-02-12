@@ -39,12 +39,12 @@ public interface ErrorCode {
 
     ErrorCodeType getErrorType();
 
-    void setNationalErrorCode(Long nationalErrorCode);
+    void setNationalErrorCode(Integer nationalErrorCode);
 
-    void setPrivateErrorCode(Long privateErrorCode);
+    void setPrivateErrorCode(Integer privateErrorCode);
 
-    Long getNationalErrorCode();
+    Integer getNationalErrorCode();
 
-    Long getPrivateErrorCode();
+    Integer getPrivateErrorCode();
 
 }

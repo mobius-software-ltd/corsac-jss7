@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNInitiatingEntityImpl extends ASNEnumerated {
 	public ASNInitiatingEntityImpl() {
-		
+		super("InitiatingEntity",0,3,false);
 	}
 	
 	public ASNInitiatingEntityImpl(InitiatingEntity t) {
-		super(t.getCode());
+		super(t.getCode(),"InitiatingEntity",0,3,false);
 	}
 	
 	public InitiatingEntity getType() {

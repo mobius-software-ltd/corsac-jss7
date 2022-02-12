@@ -34,7 +34,7 @@ public class MAPErrorMessageParameterlessImpl extends MAPErrorMessageImpl implem
 	public MAPErrorMessageParameterlessImpl() {
     }
 
-    public MAPErrorMessageParameterlessImpl(Long errorCode) {
+    public MAPErrorMessageParameterlessImpl(Integer errorCode) {
         super(errorCode);
     }
 

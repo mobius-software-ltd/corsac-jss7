@@ -78,11 +78,11 @@ public class ReturnErrorImpl implements RemoteOperation {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#getInvokeId()
      */
-    public Long getInvokeId() {
+    public Integer getInvokeId() {
     	if(this.invokeId==null)
     		return null;
     	
-        return this.invokeId.getValue();
+        return this.invokeId.getIntValue();
     }
 
     /*
@@ -112,8 +112,8 @@ public class ReturnErrorImpl implements RemoteOperation {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError#setInvokeId(java .lang.Long)
      */
-    public void setInvokeId(Long i) {    	
-        this.invokeId = new ASNInteger(i);        
+    public void setInvokeId(Integer i) {    	
+        this.invokeId = new ASNInteger(i,"InvokeID",-128,127,false);        
 
     }
 

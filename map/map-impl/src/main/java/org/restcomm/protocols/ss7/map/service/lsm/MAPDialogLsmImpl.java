@@ -100,7 +100,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * org.restcomm.protocols.ss7.map.api.service.lsm.LCSPrivacyCheck,
      * org.restcomm.protocols.ss7.map.api.service.lsm.AreaEventInfo, ByteBuf)
      */
-    public Long addProvideSubscriberLocationRequest(LocationType locationType, ISDNAddressString mlcNumber,
+    public Integer addProvideSubscriberLocationRequest(LocationType locationType, ISDNAddressString mlcNumber,
             LCSClientID lcsClientID, boolean privacyOverride, IMSI imsi, ISDNAddressString msisdn, LMSI lmsi, IMEI imei,
             LCSPriority lcsPriority, LCSQoS lcsQoS, MAPExtensionContainer extensionContainer,
             SupportedGADShapes supportedGADShapes, Integer lcsReferenceNumber, Integer lcsServiceTypeID,
@@ -113,7 +113,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
                 periodicLDRInfo, reportingPLMNList);
     }
 
-    public Long addProvideSubscriberLocationRequest(int customInvokeTimeout, LocationType locationType,
+    public Integer addProvideSubscriberLocationRequest(int customInvokeTimeout, LocationType locationType,
             ISDNAddressString mlcNumber, LCSClientID lcsClientID, boolean privacyOverride, IMSI imsi, ISDNAddressString msisdn,
             LMSI lmsi, IMEI imei, LCSPriority lcsPriority, LCSQoS lcsQoS, MAPExtensionContainer extensionContainer,
             SupportedGADShapes supportedGADShapes, Integer lcsReferenceNumber, Integer lcsServiceTypeID,
@@ -142,7 +142,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
                 supportedGADShapes, lcsReferenceNumber, lcsServiceTypeID, lcsCodeword, lcsPrivacyCheck, areaEventInfo,
                 hgmlcAddress, moLrShortCircuitIndicator, periodicLDRInfo, reportingPLMNList);
 
-        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long)MAPOperationCode.provideSubscriberLocation, req, true, false);
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.provideSubscriberLocation, req, true, false);
     }
 
     /*
@@ -153,7 +153,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * java.lang.Boolean, org.restcomm.protocols.ss7.map.api.service.lsm. CellGlobalIdOrServiceAreaIdOrLAI, java.lang.Boolean,
      * org.restcomm.protocols .ss7.map.api.service.lsm.AccuracyFulfilmentIndicator)
      */
-    public void addProvideSubscriberLocationResponse(long invokeId, ExtGeographicalInformation locationEstimate,
+    public void addProvideSubscriberLocationResponse(int invokeId, ExtGeographicalInformation locationEstimate,
             PositioningDataInformation geranPositioningData, UtranPositioningDataInfo utranPositioningData,
             Integer ageOfLocationEstimate, AddGeographicalInformation additionalLocationEstimate,
             MAPExtensionContainer extensionContainer, boolean deferredMTLRResponseIndicator,
@@ -177,7 +177,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
                 extensionContainer, deferredMTLRResponseIndicator, cellGlobalIdOrServiceAreaIdOrLAI, saiPresent,
                 accuracyFulfilmentIndicator, velocityEstimate, moLrShortCircuitIndicator, geranGANSSpositioningData,
                 utranGANSSpositioningData, targetServingNodeForHandover);
-        this.sendDataComponent(invokeId, null, null, null, (long)MAPOperationCode.provideSubscriberLocation, resInd, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.provideSubscriberLocation, resInd, false, true);
     }
 
     /*
@@ -192,7 +192,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * java.lang.String, org.restcomm.protocols.ss7.map.api.service.lsm. CellGlobalIdOrServiceAreaIdOrLAI, java.lang.String,
      * int, boolean, org.restcomm .protocols.ss7.map.api.service.lsm.AccuracyFulfilmentIndicator)
      */
-    public Long addSubscriberLocationReportRequest(LCSEvent lcsEvent, LCSClientID lcsClientID, LCSLocationInfo lcsLocationInfo,
+    public Integer addSubscriberLocationReportRequest(LCSEvent lcsEvent, LCSClientID lcsClientID, LCSLocationInfo lcsLocationInfo,
     		ISDNAddressString msisdn, IMSI imsi, IMEI imei, ISDNAddressString naEsrd, ISDNAddressString naEsrk,
             ExtGeographicalInformation locationEstimate, Integer ageOfLocationEstimate,
             SLRArgExtensionContainer slrArgExtensionContainer, AddGeographicalInformation addLocationEstimate,
@@ -211,7 +211,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
                 utranGANSSpositioningData, targetServingNodeForHandover);
     }
 
-    public Long addSubscriberLocationReportRequest(int customInvokeTimeout, LCSEvent lcsEvent, LCSClientID lcsClientID,
+    public Integer addSubscriberLocationReportRequest(int customInvokeTimeout, LCSEvent lcsEvent, LCSClientID lcsClientID,
             LCSLocationInfo lcsLocationInfo, ISDNAddressString msisdn, IMSI imsi, IMEI imei, ISDNAddressString naEsrd,
             ISDNAddressString naEsrk, ExtGeographicalInformation locationEstimate, Integer ageOfLocationEstimate,
             SLRArgExtensionContainer slrArgExtensionContainer, AddGeographicalInformation addLocationEstimate,
@@ -243,7 +243,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
                 utranPositioningData, cellIdOrSai, hgmlcAddress, lcsServiceTypeID, saiPresent, pseudonymIndicator,
                 accuracyFulfilmentIndicator, velocityEstimate, sequenceNumber, periodicLDRInfo, moLrShortCircuitIndicator,
                 geranGANSSpositioningData, utranGANSSpositioningData, targetServingNodeForHandover);
-        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long)MAPOperationCode.subscriberLocationReport, req, true, false);
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.subscriberLocationReport, req, true, false);
     }
 
     /*
@@ -253,7 +253,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * org.restcomm.protocols.ss7.map.api.dialog.MAPExtensionContainer,
      * org.restcomm.protocols.ss7.map.api.dialog.AddressString, org.restcomm.protocols.ss7.map.api.dialog.AddressString)
      */
-    public void addSubscriberLocationReportResponse(long invokeId, ISDNAddressString naEsrd, ISDNAddressString naEsrk,
+    public void addSubscriberLocationReportResponse(int invokeId, ISDNAddressString naEsrd, ISDNAddressString naEsrk,
     		MAPExtensionContainer extensionContainer) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.locationSvcEnquiryContext)
@@ -263,7 +263,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
 
         SubscriberLocationReportResponseImpl resInd = new SubscriberLocationReportResponseImpl(naEsrd, naEsrk,
                 extensionContainer);
-        this.sendDataComponent(invokeId, null, null, null, (long)MAPOperationCode.subscriberLocationReport, resInd, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.subscriberLocationReport, resInd, false, true);
     }
 
     /*
@@ -274,12 +274,12 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * org.restcomm.protocols.ss7.map.api.service.lsm.SubscriberIdentity,
      * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer)
      */
-    public Long addSendRoutingInfoForLCSRequest(ISDNAddressString mlcNumber, SubscriberIdentity targetMS,
+    public Integer addSendRoutingInfoForLCSRequest(ISDNAddressString mlcNumber, SubscriberIdentity targetMS,
     		MAPExtensionContainer extensionContainer) throws MAPException {
         return this.addSendRoutingInfoForLCSRequest(_Timer_Default, mlcNumber, targetMS, extensionContainer);
     }
 
-    public Long addSendRoutingInfoForLCSRequest(int customInvokeTimeout, ISDNAddressString mlcNumber,
+    public Integer addSendRoutingInfoForLCSRequest(int customInvokeTimeout, ISDNAddressString mlcNumber,
             SubscriberIdentity targetMS, MAPExtensionContainer extensionContainer) throws MAPException {
 
         if (mlcNumber == null || targetMS == null) {
@@ -297,7 +297,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
         	customTimeout=customInvokeTimeout;
 
         SendRoutingInfoForLCSRequestImpl req = new SendRoutingInfoForLCSRequestImpl(mlcNumber, targetMS, extensionContainer);
-        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long)MAPOperationCode.sendRoutingInfoForLCS, req, true, false); 
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.sendRoutingInfoForLCS, req, true, false); 
     }
 
     /*
@@ -308,7 +308,7 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
      * org.restcomm.protocols.ss7.map.api.service.lsm.LCSLocationInfo,
      * org.restcomm.protocols.ss7.map.api.primitives.MAPExtensionContainer, ByteBuf, ByteBuf, ByteBuf, ByteBuf)
      */
-    public void addSendRoutingInfoForLCSResponse(long invokeId, SubscriberIdentity targetMS, LCSLocationInfo lcsLocationInfo,
+    public void addSendRoutingInfoForLCSResponse(int invokeId, SubscriberIdentity targetMS, LCSLocationInfo lcsLocationInfo,
     		MAPExtensionContainer extensionContainer, GSNAddress vgmlcAddress, GSNAddress hGmlcAddress, GSNAddress pprAddress,
             GSNAddress additionalVGmlcAddress) throws MAPException {
 
@@ -322,6 +322,6 @@ public class MAPDialogLsmImpl extends MAPDialogImpl implements MAPDialogLsm {
 
         SendRoutingInfoForLCSResponseImpl resInd = new SendRoutingInfoForLCSResponseImpl(targetMS, lcsLocationInfo,
                 extensionContainer, vgmlcAddress, hGmlcAddress, pprAddress, additionalVGmlcAddress);
-        this.sendDataComponent(invokeId, null, null, null, (long)MAPOperationCode.sendRoutingInfoForLCS, resInd, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.sendRoutingInfoForLCS, resInd, false, true);
     }
 }

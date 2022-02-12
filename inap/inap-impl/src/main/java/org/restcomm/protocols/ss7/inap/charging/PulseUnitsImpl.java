@@ -34,10 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class PulseUnitsImpl extends ASNSingleByte implements PulseUnits {
 	public PulseUnitsImpl() {
+		super("PulseUnits",0,255,false);
     }
 
     public PulseUnitsImpl(Integer value) {
-    	super(value);    	
+    	super(value,"PulseUnits",0,255,false);    	
     }
 
     public Integer getData() {

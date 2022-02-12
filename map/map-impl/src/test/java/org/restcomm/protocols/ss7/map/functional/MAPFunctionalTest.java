@@ -399,7 +399,7 @@ public class MAPFunctionalTest extends SccpHarness {
                     assertEquals(MAPFunctionalTest.USSD_MENU, ussdString);
 
                     MAPDialogSupplementary mapDialog = unstrReqInd.getMAPDialog();
-                    Long invokeId = unstrReqInd.getInvokeId();
+                    Integer invokeId = unstrReqInd.getInvokeId();
 
                     USSDString ussdStringObj = this.mapParameterFactory.createUSSDString(MAPFunctionalTest.USSD_RESPONSE);
                     mapDialog.addUnstructuredSSResponse(invokeId, new CBSDataCodingSchemeImpl(0x0f), ussdStringObj);
@@ -435,7 +435,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
         Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
             private int dialogStep;
-            private long processUnstructuredSSRequestInvokeId = 0l;
+            private int processUnstructuredSSRequestInvokeId = 0;
 
             @Override
             public void onProcessUnstructuredSSRequest(ProcessUnstructuredSSRequest procUnstrReqInd) {
@@ -589,7 +589,7 @@ public class MAPFunctionalTest extends SccpHarness {
                     assertEquals(MAPFunctionalTest.USSD_MENU, ussdString);
 
                     MAPDialogSupplementary mapDialog = unstrReqInd.getMAPDialog();
-                    Long invokeId = unstrReqInd.getInvokeId();
+                    Integer invokeId = unstrReqInd.getInvokeId();
 
                     USSDString ussdStringObj = this.mapParameterFactory.createUSSDString(MAPFunctionalTest.USSD_RESPONSE);
                     mapDialog.addUnstructuredSSResponse(invokeId, new CBSDataCodingSchemeImpl(0x0f), ussdStringObj);
@@ -625,7 +625,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
         Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
             private int dialogStep;
-            private long processUnstructuredSSRequestInvokeId = 0l;
+            private int processUnstructuredSSRequestInvokeId = 0;
 
             @Override
             public void onProcessUnstructuredSSRequest(ProcessUnstructuredSSRequest procUnstrReqInd) {
@@ -1273,7 +1273,7 @@ public class MAPFunctionalTest extends SccpHarness {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
 
             @Override
-            public void onErrorComponent(MAPDialog mapDialog, Long invokeId, MAPErrorMessage mapErrorMessage) {
+            public void onErrorComponent(MAPDialog mapDialog, Integer invokeId, MAPErrorMessage mapErrorMessage) {
                 super.onErrorComponent(mapDialog, invokeId, mapErrorMessage);
                 assertTrue(mapErrorMessage.isEmSystemFailure());
                 MAPErrorMessageSystemFailure mes = mapErrorMessage.getEmSystemFailure();
@@ -1372,7 +1372,7 @@ public class MAPFunctionalTest extends SccpHarness {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
 
             @Override
-            public void onErrorComponent(MAPDialog mapDialog, Long invokeId, MAPErrorMessage mapErrorMessage) {
+            public void onErrorComponent(MAPDialog mapDialog, Integer invokeId, MAPErrorMessage mapErrorMessage) {
                 super.onErrorComponent(mapDialog, invokeId, mapErrorMessage);
                 assertTrue(mapErrorMessage.isEmSMDeliveryFailure());
                 MAPErrorMessageSMDeliveryFailure mes = mapErrorMessage.getEmSMDeliveryFailure();
@@ -1506,7 +1506,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
         Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
 
-            private long processUnstructuredSSRequestInvokeId = 0l;
+            private int processUnstructuredSSRequestInvokeId = 0;
             private int dialogStep;
 
             @Override
@@ -1531,7 +1531,7 @@ public class MAPFunctionalTest extends SccpHarness {
                             ussdDataCodingScheme, null);
                     
                     ProcessUnstructuredSSResponseImpl req = new ProcessUnstructuredSSResponseImpl(ussdDataCodingScheme, ussdStrObj);
-                    mapDialog.sendDataComponent(processUnstructuredSSRequestInvokeId, null, null, null, (long) MAPOperationCode.processUnstructuredSS_Request, req, false, false);                    
+                    mapDialog.sendDataComponent(processUnstructuredSSRequestInvokeId, null, null, null, MAPOperationCode.processUnstructuredSS_Request, req, false, false);                    
                 } catch (MAPException e) {
                     this.error("Error while trying to send ProcessUnstructuredSSResponse", e);
                     fail("Error while trying to send ProcessUnstructuredSSResponse");
@@ -1632,7 +1632,7 @@ public class MAPFunctionalTest extends SccpHarness {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
 
             @Override
-            public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(mapDialog, invokeId, problem, isLocalOriginated);
                 try {
 	                InvokeProblemType invokeProblemType = problem.getInvokeProblemType();
@@ -1744,7 +1744,7 @@ public class MAPFunctionalTest extends SccpHarness {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
 
             @Override
-            public void onErrorComponent(MAPDialog mapDialog, Long invokeId, MAPErrorMessage mapErrorMessage) {
+            public void onErrorComponent(MAPDialog mapDialog, Integer invokeId, MAPErrorMessage mapErrorMessage) {
                 super.onErrorComponent(mapDialog, invokeId, mapErrorMessage);
                 assertTrue(mapErrorMessage.isEmSMDeliveryFailure());
                 MAPErrorMessageSMDeliveryFailure mes = mapErrorMessage.getEmSMDeliveryFailure();
@@ -1844,7 +1844,7 @@ public class MAPFunctionalTest extends SccpHarness {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
 
             @Override
-            public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(mapDialog, invokeId, problem, isLocalOriginated);
                 try {
 	                InvokeProblemType invokeProblemType = problem.getInvokeProblemType();
@@ -1954,7 +1954,7 @@ public class MAPFunctionalTest extends SccpHarness {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
 
             @Override
-            public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(mapDialog, invokeId, problem, isLocalOriginated);
                 try {
 	                InvokeProblemType invokeProblemType = problem.getInvokeProblemType();
@@ -1987,7 +1987,7 @@ public class MAPFunctionalTest extends SccpHarness {
             }
 
             @Override
-            public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(mapDialog, invokeId, problem, isLocalOriginated);
                 try {
 	                InvokeProblemType invokeProblemType = problem.getInvokeProblemType();
@@ -2069,7 +2069,7 @@ public class MAPFunctionalTest extends SccpHarness {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
 
             @Override
-            public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(mapDialog, invokeId, problem, isLocalOriginated);
                 try {
 	                InvokeProblemType invokeProblemType = problem.getInvokeProblemType();
@@ -2102,7 +2102,7 @@ public class MAPFunctionalTest extends SccpHarness {
             }
 
             @Override
-            public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(mapDialog, invokeId, problem, isLocalOriginated);
                 try {
                 	InvokeProblemType invokeProblemType = problem.getInvokeProblemType();
@@ -2186,7 +2186,7 @@ public class MAPFunctionalTest extends SccpHarness {
             private int stepRej = 0;
 
             @Override
-            public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(mapDialog, invokeId, problem, isLocalOriginated);
 
                 stepRej++;
@@ -2223,7 +2223,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
             private int step = 0;
             private int stepRej = 0;
-            private long invokeId1;
+            private int invokeId1;
             
             @Override
             public void onSendRoutingInfoForSMRequest(SendRoutingInfoForSMRequest ind) {
@@ -2237,7 +2237,7 @@ public class MAPFunctionalTest extends SccpHarness {
             }
 
             @Override
-            public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(mapDialog, invokeId, problem, isLocalOriginated);
 
                 stepRej++;
@@ -2399,7 +2399,7 @@ public class MAPFunctionalTest extends SccpHarness {
             private int rejectStep;
 
             @Override
-            public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(mapDialog, invokeId, problem, isLocalOriginated);
 
                 rejectStep++;
@@ -2445,9 +2445,9 @@ public class MAPFunctionalTest extends SccpHarness {
         Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
 
             private int step;
-            private long invokeId1;
-            private long invokeId2;
-            private long invokeId3;
+            private int invokeId1;
+            private int invokeId2;
+            private int invokeId3;
             private int rejectStep;
 
             @Override
@@ -2480,7 +2480,7 @@ public class MAPFunctionalTest extends SccpHarness {
             }
 
             @Override
-            public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(mapDialog, invokeId, problem, isLocalOriginated);
 
                 rejectStep++;
@@ -2514,12 +2514,12 @@ public class MAPFunctionalTest extends SccpHarness {
                 super.onDialogDelimiter(mapDialog);
                 try {
                     ASNOctetString octetString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }),null,null,null,false);
-                    ((MAPDialogImpl)mapDialog).getTcapDialog().sendData(invokeId1, null, null, null, TcapFactory.createLocalOperationCode((long) MAPOperationCode.processUnstructuredSS_Request), octetString, false, true);
+                    ((MAPDialogImpl)mapDialog).getTcapDialog().sendData(invokeId1, null, null, null, TcapFactory.createLocalOperationCode(MAPOperationCode.processUnstructuredSS_Request), octetString, false, true);
 
                     octetString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 1, 1, 1, 1 }),null,null,null,false);
-                    ((MAPDialogImpl) mapDialog).getTcapDialog().sendError(invokeId2,TcapFactory.createLocalErrorCode((long) MAPErrorCode.systemFailure),octetString);
+                    ((MAPDialogImpl) mapDialog).getTcapDialog().sendError(invokeId2,TcapFactory.createLocalErrorCode(MAPErrorCode.systemFailure),octetString);
 
-                    ((MAPDialogImpl) mapDialog).getTcapDialog().sendError(invokeId3,TcapFactory.createLocalErrorCode(1000L),null);
+                    ((MAPDialogImpl) mapDialog).getTcapDialog().sendError(invokeId3,TcapFactory.createLocalErrorCode(1000),null);
 
                     this.observerdEvents.add(TestEvent.createSentEvent(EventType.ErrorComponent, null, sequence++));
                     this.observerdEvents.add(TestEvent.createSentEvent(EventType.ErrorComponent, null, sequence++));
@@ -2623,7 +2623,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
         Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
 
-            private long invokeId;
+            private int invokeId;
 
             @Override
             public void onDialogProviderAbort(MAPDialog mapDialog, MAPAbortProviderReason abortProviderReason,
@@ -4274,7 +4274,7 @@ public class MAPFunctionalTest extends SccpHarness {
             SM_RP_OA sm_RP_OA = this.mapParameterFactory.createSM_RP_OA_Msisdn(msisdn1);
             IMSI imsi2 = this.mapParameterFactory.createIMSI("25007123456789");
 
-            Long invokeId = dlg.addMoForwardShortMessageRequest(sm_RP_DA, sm_RP_OA, sm_RP_UI, null, imsi2);
+            Integer invokeId = dlg.addMoForwardShortMessageRequest(sm_RP_DA, sm_RP_OA, sm_RP_UI, null, imsi2);
 
             int maxMsgLen = dlg.getMaxUserDataLength();
             int curMsgLen = dlg.getMessageUserDataLengthOnSend();
@@ -7444,7 +7444,7 @@ TC-CONTINUE
 
         Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
             private int dialogStep;
-            private long invokeId;
+            private int invokeId;
 
             @Override
             public void onSendRoutingInformationRequest(SendRoutingInformationRequest request) {
@@ -9549,7 +9549,7 @@ TC-END + SendRoutingInformationResponse
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
 
             private int dialogStep = 0;
-            private long getPasswordInvokeId;
+            private int getPasswordInvokeId;
 
             @Override
             public void onGetPasswordRequest(GetPasswordRequest ind) {
@@ -9591,7 +9591,7 @@ TC-END + SendRoutingInformationResponse
         Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
 
             private int dialogStep = 0;
-            private long registerPasswordInvokeId;
+            private int registerPasswordInvokeId;
 
             @Override
             public void onRegisterPasswordRequest(RegisterPasswordRequest request) {

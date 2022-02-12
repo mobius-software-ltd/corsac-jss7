@@ -34,11 +34,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
 public class ASNFeatureRequestIndicator extends ASNEnumerated {
 	public ASNFeatureRequestIndicator() {
+		super("FeatureRequestIndicator",0,127,false);
 		
 	}
 	
 	public ASNFeatureRequestIndicator(FeatureRequestIndicator t) {
-		super(t.getCode());
+		super(t.getCode(),"FeatureRequestIndicator",0,127,false);
 	}
 	
 	public FeatureRequestIndicator getType() {

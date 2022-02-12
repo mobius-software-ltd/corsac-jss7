@@ -50,7 +50,7 @@ public class MessageIDTextImpl implements MessageIDText {
 
     public MessageIDTextImpl(String messageContent, ByteBuf attributes) {
         if(messageContent!=null)
-        	this.messageContent = new ASNIA5String(messageContent);
+        	this.messageContent = new ASNIA5String(messageContent,"MessageContent",1,127,false);
         	
         if(attributes!=null)
         	this.attributes = new ASNOctetString(attributes,"Attributes",2,10,false);        

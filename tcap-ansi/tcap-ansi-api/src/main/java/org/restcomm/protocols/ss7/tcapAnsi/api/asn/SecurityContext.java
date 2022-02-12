@@ -41,9 +41,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public interface SecurityContext {
 	SecurityContextType getType();
 	
-    Long getInt();
+    Integer getInt();
 
-    void setInt(Long val);
+    void setInt(Integer val);
 
     List<Long> getObj();
 

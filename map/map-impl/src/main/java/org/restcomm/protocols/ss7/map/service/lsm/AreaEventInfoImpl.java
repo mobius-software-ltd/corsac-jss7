@@ -65,7 +65,7 @@ public class AreaEventInfoImpl implements AreaEventInfo {
         	this.occurrenceInfo = new ASNOccurenceInfo(occurrenceInfo);
         	
         if(intervalTime!=null)
-        	this.intervalTime = new ASNInteger(intervalTime);        	
+        	this.intervalTime = new ASNInteger(intervalTime,"IntervalTime",1,32767,false);        	
     }
 
     /*

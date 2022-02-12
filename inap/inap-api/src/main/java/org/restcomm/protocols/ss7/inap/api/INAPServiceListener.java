@@ -36,7 +36,7 @@ public interface INAPServiceListener {
      * @param invokeId
      * @param inapErrorMessage
      */
-    void onErrorComponent(INAPDialog inapDialog, Long invokeId, INAPErrorMessage inapErrorMessage);
+    void onErrorComponent(INAPDialog inapDialog, Integer invokeId, INAPErrorMessage inapErrorMessage);
 
     /**
      * Invoked when TC-U-REJECT primitive is received from the other peer
@@ -47,7 +47,7 @@ public interface INAPServiceListener {
      * @param isLocalOriginated true: local originated Reject (rejecting a bad incoming primitive by a local side) false: remote
      *        originated Reject (rejecting a bad outgoing primitive by a peer)
      */
-    void onRejectComponent(INAPDialog inapDialog, Long invokeId, Problem problem, boolean isLocalOriginated);
+    void onRejectComponent(INAPDialog inapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated);
 
     /**
      * Invoked when no answer from the other peer for a long time - for sending the a reject for the Invoke
@@ -55,7 +55,7 @@ public interface INAPServiceListener {
      * @param inapDialog
      * @param invokeId
      */
-    void onInvokeTimeout(INAPDialog inapDialog, Long invokeId);
+    void onInvokeTimeout(INAPDialog inapDialog, Integer invokeId);
 
     /**
      * Called when any INAPMessage received (Invoke, ReturnResult, ReturnResultLast components) This component will be invoked

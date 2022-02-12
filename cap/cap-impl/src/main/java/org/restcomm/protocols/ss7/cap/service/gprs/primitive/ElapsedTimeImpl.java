@@ -48,7 +48,7 @@ public class ElapsedTimeImpl implements ElapsedTime {
 
     public ElapsedTimeImpl(Integer timeGPRSIfNoTariffSwitch) {
     	if(timeGPRSIfNoTariffSwitch!=null)
-    		this.timeGPRSIfNoTariffSwitch = new ASNInteger(timeGPRSIfNoTariffSwitch);    		
+    		this.timeGPRSIfNoTariffSwitch = new ASNInteger(timeGPRSIfNoTariffSwitch,"TimeGPRSIfNoTariffSwitch",0,86400,false);    		
     }
 
     public ElapsedTimeImpl(TimeGPRSIfTariffSwitch timeGPRSIfTariffSwitch) {

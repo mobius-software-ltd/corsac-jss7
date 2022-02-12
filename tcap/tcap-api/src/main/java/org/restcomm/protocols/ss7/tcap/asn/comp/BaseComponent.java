@@ -26,7 +26,7 @@ package org.restcomm.protocols.ss7.tcap.asn.comp;
 */
 
 public interface BaseComponent {
-    void setInvokeId(Long i);
+    void setInvokeId(Integer i);
     
-    Long getInvokeId();
+    Integer getInvokeId();
 }

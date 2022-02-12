@@ -208,7 +208,7 @@ public class DialogPrimitiveFactoryImpl implements DialogPrimitiveFactory {
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.DialogPrimitiveFactory #createApplicationContextName()
      */
-    public ApplicationContext createApplicationContext(long val) {
+    public ApplicationContext createApplicationContext(int val) {
         return TcapFactory.createApplicationContext(val);
     }
 

@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNCriticalityType extends ASNEnumerated {
 	public ASNCriticalityType() {
-		
+		super("CriticalityType",0,1,false);
 	}
 	
 	public ASNCriticalityType(CriticalityType t) {
-		super(t.getCode());
+		super(t.getCode(),"CriticalityType",0,1,false);
 	}
 	
 	public CriticalityType getType() {

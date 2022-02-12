@@ -425,7 +425,7 @@ public class VlrCamelSubscriptionInfoTest {
         boolean tifCsi = false;
 
         List<MMCode> mobilityTriggers = new ArrayList<MMCode>();
-        Long serviceKey = 3L;
+        Integer serviceKey = 3;
         ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22235");
         ;

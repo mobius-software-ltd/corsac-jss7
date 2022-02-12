@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNSM_RP_MTI extends ASNEnumerated {
 	public ASNSM_RP_MTI() {
-		
+		super("SM_RP_MTI",0,1,false);
 	}
 	
 	public ASNSM_RP_MTI(SM_RP_MTI t) {
-		super(t.getCode());
+		super(t.getCode(),"SM_RP_MTI",0,1,false);
 	}
 	
 	public SM_RP_MTI getType() {

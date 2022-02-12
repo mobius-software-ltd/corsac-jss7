@@ -215,7 +215,7 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
         this.correlationID=correlationID;
         
         if(cutAndPaste!=null)
-        	this.cutAndPaste=new ASNInteger(cutAndPaste);
+        	this.cutAndPaste=new ASNInteger(cutAndPaste,"CutAndPaste",0,22,false);
         	
         if(forwardingCondition!=null)
         	this.forwardingCondition=new ASNForwardingCondition(forwardingCondition);

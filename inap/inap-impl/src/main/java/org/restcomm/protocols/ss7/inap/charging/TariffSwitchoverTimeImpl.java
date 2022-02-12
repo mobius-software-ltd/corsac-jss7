@@ -34,10 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class TariffSwitchoverTimeImpl extends ASNSingleByte implements TariffSwitchoverTime {
 	public TariffSwitchoverTimeImpl() {
+		super("TariffSwitchoverTime",1,96,false);
     }
 
     public TariffSwitchoverTimeImpl(Integer value) {
-    	super(value);    	
+    	super(value,"TariffSwitchoverTime",1,96,false);    	
     }
 
     public Integer getData() {

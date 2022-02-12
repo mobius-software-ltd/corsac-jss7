@@ -34,11 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
 public class ASNChargeNoChargeIndication extends ASNEnumerated {
 	public ASNChargeNoChargeIndication() {
-		
+		super("ChargeNoChargeIndication",1,2,false);
 	}
 	
 	public ASNChargeNoChargeIndication(ChargeNoChargeIndication t) {
-		super(t.getCode());
+		super(t.getCode(),"ChargeNoChargeIndication",1,2,false);
 	}
 	
 	public ChargeNoChargeIndication getType() {

@@ -76,7 +76,7 @@ public class TimeDurationChargingResultImpl implements TimeDurationChargingResul
         	this.timeInformation = new TimeInformationWrapperImpl(timeInformation);
         
         if(!legActive)
-        	this.legActive = new ASNBoolean(legActive);
+        	this.legActive = new ASNBoolean(legActive,"LegActive",true,false);
         	
         if(callLegReleasedAtTcpExpiry)
         	this.callLegReleasedAtTcpExpiry = new ASNNull();

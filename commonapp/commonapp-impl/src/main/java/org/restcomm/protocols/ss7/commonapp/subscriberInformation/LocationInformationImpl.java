@@ -102,7 +102,7 @@ public class LocationInformationImpl implements LocationInformation {
             boolean currentLocationRetrieved, boolean saiPresent, LocationInformationEPS locationInformationEPS,
             UserCSGInformation userCSGInformation) {
         if(ageOfLocationInformation!=null)
-        	this.ageOfLocationInformation = new ASNInteger(ageOfLocationInformation);
+        	this.ageOfLocationInformation = new ASNInteger(ageOfLocationInformation,"AgeOfLocationInformation",0,Integer.MAX_VALUE,false);
         	
         this.geographicalInformation = geographicalInformation;
         this.vlrNumber = vlrNumber;

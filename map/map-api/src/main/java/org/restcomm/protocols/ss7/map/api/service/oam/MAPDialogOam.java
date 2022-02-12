@@ -37,22 +37,22 @@ import org.restcomm.protocols.ss7.map.api.MAPException;
  */
 public interface MAPDialogOam extends MAPDialog {
 
-    Long addActivateTraceModeRequest(IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
+    Integer addActivateTraceModeRequest(IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
     		MAPExtensionContainer extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList,
             TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration)
             throws MAPException;
 
-    Long addActivateTraceModeRequest(int customInvokeTimeout, IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
+    Integer addActivateTraceModeRequest(int customInvokeTimeout, IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
     		MAPExtensionContainer extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList,
             TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration)
             throws MAPException;
 
-    void addActivateTraceModeResponse(long invokeId, MAPExtensionContainer extensionContainer, boolean traceSupportIndicator) throws MAPException;
+    void addActivateTraceModeResponse(int invokeId, MAPExtensionContainer extensionContainer, boolean traceSupportIndicator) throws MAPException;
 
-    Long addSendImsiRequest(ISDNAddressString msisdn) throws MAPException;
+    Integer addSendImsiRequest(ISDNAddressString msisdn) throws MAPException;
 
-    Long addSendImsiRequest(int customInvokeTimeout, ISDNAddressString msisdn) throws MAPException;
+    Integer addSendImsiRequest(int customInvokeTimeout, ISDNAddressString msisdn) throws MAPException;
 
-    void addSendImsiResponse(long invokeId, IMSI imsi) throws MAPException;
+    void addSendImsiResponse(int invokeId, IMSI imsi) throws MAPException;
 
 }

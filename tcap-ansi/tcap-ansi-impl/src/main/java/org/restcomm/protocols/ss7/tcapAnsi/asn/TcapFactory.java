@@ -79,7 +79,7 @@ public final class TcapFactory {
         return acn;
     }
 
-    public static ApplicationContext createApplicationContext(long val) {
+    public static ApplicationContext createApplicationContext(int val) {
         ApplicationContextImpl acn = new ApplicationContextImpl();
         acn.setInt(val);
         return acn;
@@ -91,7 +91,7 @@ public final class TcapFactory {
         return acn;
     }
 
-    public static SecurityContext createSecurityContext(long val) {
+    public static SecurityContext createSecurityContext(int val) {
     	SecurityContextImpl acn = new SecurityContextImpl();
         acn.setInt(val);
         return acn;
@@ -148,13 +148,13 @@ public final class TcapFactory {
         return new TCNoticeIndicationImpl();
     }
 
-    public static OperationCode createPrivateOperationCode(Long value) {
+    public static OperationCode createPrivateOperationCode(Integer value) {
     	OperationCodeImpl oc = new OperationCodeImpl();
     	oc.setPrivateOperationCode(value);
         return oc;
     }
 
-    public static OperationCode createNationalOperationCode(Long value) {
+    public static OperationCode createNationalOperationCode(Integer value) {
     	OperationCodeImpl oc = new OperationCodeImpl();
     	oc.setNationalOperationCode(value);
         return oc;
@@ -205,13 +205,13 @@ public final class TcapFactory {
         return new ReturnErrorImpl();
     }
 
-    public static ErrorCode createPrivateErrorCode(Long value) {
+    public static ErrorCode createPrivateErrorCode(Integer value) {
     	ErrorCodeImpl ec = new ErrorCodeImpl();
     	ec.setPrivateErrorCode(value);
     	return ec;
     }
 
-    public static ErrorCode createNationalErrorCode(Long value) {
+    public static ErrorCode createNationalErrorCode(Integer value) {
     	ErrorCodeImpl ec = new ErrorCodeImpl();
     	ec.setNationalErrorCode(value);
     	return ec;

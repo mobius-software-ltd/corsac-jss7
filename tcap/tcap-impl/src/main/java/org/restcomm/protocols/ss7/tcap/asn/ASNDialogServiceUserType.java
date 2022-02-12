@@ -34,14 +34,14 @@ public class ASNDialogServiceUserType {
 	private ASNInteger innerValue;
 	
 	public void setType(DialogServiceUserType t) {
-		innerValue=new ASNInteger(t.getType());		
+		innerValue=new ASNInteger(t.getType(),"DialogServiceUser",0,2,false);		
 	}
 	
 	public DialogServiceUserType getType() throws ParseException {
 		if(innerValue==null)
 			return null;
 		
-		Long realValue=innerValue.getValue();
+		Integer realValue=innerValue.getIntValue();
 		if(realValue==null)
 			return null;
 		

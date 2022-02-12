@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNSMSTriggerDetectionPoint extends ASNEnumerated {
 	public ASNSMSTriggerDetectionPoint() {
-		
+		super("SMSTriggerDetectionPoint",1,2,false);
 	}
 	
 	public ASNSMSTriggerDetectionPoint(SMSTriggerDetectionPoint t) {
-		super(t.getCode());
+		super(t.getCode(),"SMSTriggerDetectionPoint",1,2,false);
 	}
 	
 	public SMSTriggerDetectionPoint getType() {

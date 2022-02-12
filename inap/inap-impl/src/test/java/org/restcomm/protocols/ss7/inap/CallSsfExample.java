@@ -234,19 +234,19 @@ public class CallSsfExample implements INAPDialogListener, INAPServiceCircuitSwi
     }
 
     @Override
-    public void onErrorComponent(INAPDialog inapDialog, Long invokeId, INAPErrorMessage inapErrorMessage) {
+    public void onErrorComponent(INAPDialog inapDialog, Integer invokeId, INAPErrorMessage inapErrorMessage) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void onRejectComponent(INAPDialog inapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    public void onRejectComponent(INAPDialog inapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void onInvokeTimeout(INAPDialog inapDialog, Long invokeId) {
+    public void onInvokeTimeout(INAPDialog inapDialog, Integer invokeId) {
         // TODO Auto-generated method stub
 
     }
@@ -425,7 +425,7 @@ public class CallSsfExample implements INAPDialogListener, INAPServiceCircuitSwi
 
     private class CallContent {
         public Step step;
-        public Long activityTestInvokeId;
+        public Integer activityTestInvokeId;
     }
 
     @Override

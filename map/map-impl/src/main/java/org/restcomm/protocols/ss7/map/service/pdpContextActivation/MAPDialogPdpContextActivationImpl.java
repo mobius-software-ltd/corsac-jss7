@@ -54,13 +54,13 @@ public class MAPDialogPdpContextActivationImpl extends MAPDialogImpl implements 
 
 
     @Override
-    public Long addSendRoutingInfoForGprsRequest(IMSI imsi, GSNAddress ggsnAddress, ISDNAddressString ggsnNumber, MAPExtensionContainer extensionContainer)
+    public Integer addSendRoutingInfoForGprsRequest(IMSI imsi, GSNAddress ggsnAddress, ISDNAddressString ggsnNumber, MAPExtensionContainer extensionContainer)
             throws MAPException {
         return addSendRoutingInfoForGprsRequest(_Timer_Default, imsi, ggsnAddress, ggsnNumber, extensionContainer);
     }
 
     @Override
-    public Long addSendRoutingInfoForGprsRequest(int customInvokeTimeout, IMSI imsi, GSNAddress ggsnAddress, ISDNAddressString ggsnNumber,
+    public Integer addSendRoutingInfoForGprsRequest(int customInvokeTimeout, IMSI imsi, GSNAddress ggsnAddress, ISDNAddressString ggsnNumber,
             MAPExtensionContainer extensionContainer) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.gprsLocationInfoRetrievalContext)
@@ -74,11 +74,11 @@ public class MAPDialogPdpContextActivationImpl extends MAPDialogImpl implements 
         	customTimeout=customInvokeTimeout;
 
         SendRoutingInfoForGprsRequestImpl req = new SendRoutingInfoForGprsRequestImpl(imsi, ggsnAddress, ggsnNumber, extensionContainer);
-        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.sendRoutingInfoForGprs, req, true, false);
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.sendRoutingInfoForGprs, req, true, false);
     }
 
     @Override
-    public void addSendRoutingInfoForGprsResponse(long invokeId, GSNAddress sgsnAddress, GSNAddress ggsnAddress, Integer mobileNotReachableReason,
+    public void addSendRoutingInfoForGprsResponse(int invokeId, GSNAddress sgsnAddress, GSNAddress ggsnAddress, Integer mobileNotReachableReason,
             MAPExtensionContainer extensionContainer) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.gprsLocationInfoRetrievalContext)
@@ -86,6 +86,6 @@ public class MAPDialogPdpContextActivationImpl extends MAPDialogImpl implements 
             throw new MAPException("Bad application context name for addSendRoutingInfoForGprsResponse: must be gprsLocationInfoRetrievalContext_V3 or V4");
 
         SendRoutingInfoForGprsResponseImpl resp = new SendRoutingInfoForGprsResponseImpl(sgsnAddress, ggsnAddress, mobileNotReachableReason, extensionContainer);
-        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.sendRoutingInfoForGprs, resp, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.sendRoutingInfoForGprs, resp, false, true);
     }
 }

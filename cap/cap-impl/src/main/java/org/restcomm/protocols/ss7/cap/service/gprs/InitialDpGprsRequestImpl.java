@@ -137,7 +137,7 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
             PDPInitiationType pdpInitiationType, CAPINAPExtensions extensions, GSNAddress gsnAddress, boolean secondaryPDPContext,
             IMEI imei) {
         super();
-        this.serviceKey = new ASNInteger(serviceKey);
+        this.serviceKey = new ASNInteger(serviceKey,"ServiceKey",0,Integer.MAX_VALUE,false);
         
         if(gprsEventType!=null)
         	this.gprsEventType = new ASNGPRSEventTypeImpl(gprsEventType);

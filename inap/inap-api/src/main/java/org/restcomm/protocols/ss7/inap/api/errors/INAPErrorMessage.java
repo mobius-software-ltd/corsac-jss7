@@ -28,7 +28,7 @@ package org.restcomm.protocols.ss7.inap.api.errors;
  *
  */
 public interface INAPErrorMessage {
-   Long getErrorCode();
+   Integer getErrorCode();
 
    boolean isEmParameterless();
 

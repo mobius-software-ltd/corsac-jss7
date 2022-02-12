@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNEquipmentStatusImpl extends ASNEnumerated {
 	public ASNEquipmentStatusImpl() {
-		
+		super("EquipmentStatus",0,2,false);
 	}
 	
 	public ASNEquipmentStatusImpl(EquipmentStatus t) {
-		super(t.getCode());
+		super(t.getCode(),"EquipmentStatus",0,2,false);
 	}
 	
 	public EquipmentStatus getType() {

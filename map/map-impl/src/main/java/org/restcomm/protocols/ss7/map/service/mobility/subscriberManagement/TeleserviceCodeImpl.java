@@ -34,15 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  *
  */
 public class TeleserviceCodeImpl extends ASNSingleByte implements TeleserviceCode {
-	public TeleserviceCodeImpl() {       
+	public TeleserviceCodeImpl() {  
+		super("TeleserviceCode",0,255,false);
     }
 
     public TeleserviceCodeImpl(int data) {
-    	super(data);
+    	super(data,"TeleserviceCode",0,255,false);
     }
 
     public TeleserviceCodeImpl(TeleserviceCodeValue value) {
-    	super(value != null ? value.getCode() : 0);
+    	super(value != null ? value.getCode() : 0,"TeleserviceCode",0,255,false);
     }
 
     public int getData() {

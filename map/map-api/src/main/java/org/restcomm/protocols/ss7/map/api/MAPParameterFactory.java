@@ -847,10 +847,10 @@ public interface MAPParameterFactory {
     OCSI createOCSI(List<OBcsmCamelTDPData> oBcsmCamelTDPDataList, MAPExtensionContainer extensionContainer,
             Integer camelCapabilityHandling, boolean notificationToCSE, boolean csiActive);
 
-    TBcsmCamelTDPData createTBcsmCamelTDPData(TBcsmTriggerDetectionPoint tBcsmTriggerDetectionPoint, long serviceKey,
+    TBcsmCamelTDPData createTBcsmCamelTDPData(TBcsmTriggerDetectionPoint tBcsmTriggerDetectionPoint, int serviceKey,
             ISDNAddressString gsmSCFAddress, DefaultCallHandling defaultCallHandling, MAPExtensionContainer extensionContainer);
 
-    OBcsmCamelTDPData createOBcsmCamelTDPData(OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint, long serviceKey,
+    OBcsmCamelTDPData createOBcsmCamelTDPData(OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint, int serviceKey,
             ISDNAddressString gsmSCFAddress, DefaultCallHandling defaultCallHandling, MAPExtensionContainer extensionContainer);
 
     CamelInfo createCamelInfo(SupportedCamelPhases supportedCamelPhases, boolean suppressTCSI,
@@ -978,7 +978,7 @@ public interface MAPParameterFactory {
     DestinationNumberCriteria createDestinationNumberCriteria(MatchType matchType,
             List<ISDNAddressString> destinationNumberList, List<Integer> destinationNumberLengthList);
 
-    DPAnalysedInfoCriterium createDPAnalysedInfoCriterium(ISDNAddressString dialledNumber, long serviceKey,
+    DPAnalysedInfoCriterium createDPAnalysedInfoCriterium(ISDNAddressString dialledNumber, int serviceKey,
             ISDNAddressString gsmSCFAddress, DefaultCallHandling defaultCallHandling, MAPExtensionContainer extensionContainer);
 
     EPSQoSSubscribed createEPSQoSSubscribed(QoSClassIdentifier qoSClassIdentifier,
@@ -993,7 +993,7 @@ public interface MAPParameterFactory {
 
     FQDN createFQDN(ByteBuf value);
 
-    GPRSCamelTDPData createGPRSCamelTDPData(GPRSTriggerDetectionPoint gprsTriggerDetectionPoint, long serviceKey,
+    GPRSCamelTDPData createGPRSCamelTDPData(GPRSTriggerDetectionPoint gprsTriggerDetectionPoint, int serviceKey,
             ISDNAddressString gsmSCFAddress, DefaultGPRSHandling defaultSessionHandling,
             MAPExtensionContainer extensionContainer);
 
@@ -1015,13 +1015,13 @@ public interface MAPParameterFactory {
     LSAInformation createLSAInformation(boolean completeDataListIncluded, LSAOnlyAccessIndicator lsaOnlyAccessIndicator,
             List<LSAData> lsaDataList, MAPExtensionContainer extensionContainer);
 
-    MCSI createMCSI(List<MMCode> mobilityTriggers, long serviceKey, ISDNAddressString gsmSCFAddress,
+    MCSI createMCSI(List<MMCode> mobilityTriggers, int serviceKey, ISDNAddressString gsmSCFAddress,
     		MAPExtensionContainer extensionContainer, boolean notificationToCSE, boolean csiActive);
 
     MCSSInfo createMCSSInfo(SSCode ssCode, ExtSSStatus ssStatus, int nbrSB, int nbrUser,
     		MAPExtensionContainer extensionContainer);
 
-    MGCSI createMGCSI(List<MMCode> mobilityTriggers, long serviceKey, ISDNAddressString gsmSCFAddress,
+    MGCSI createMGCSI(List<MMCode> mobilityTriggers, int serviceKey, ISDNAddressString gsmSCFAddress,
     		MAPExtensionContainer extensionContainer, boolean notificationToCSE, boolean csiActive);
 
     MMCode createMMCode(MMCodeValue value);
@@ -1070,7 +1070,7 @@ public interface MAPParameterFactory {
     		MAPExtensionContainer extensionContainer, SMSCSI mtSmsCsi,
             List<MTsmsCAMELTDPCriteria> mtSmsCamelTdpCriteriaList, MGCSI mgCsi);
 
-    SMSCAMELTDPData createSMSCAMELTDPData(SMSTriggerDetectionPoint smsTriggerDetectionPoint, long serviceKey,
+    SMSCAMELTDPData createSMSCAMELTDPData(SMSTriggerDetectionPoint smsTriggerDetectionPoint, int serviceKey,
             ISDNAddressString gsmSCFAddress, DefaultSMSHandling defaultSMSHandling, MAPExtensionContainer extensionContainer);
 
     SMSCSI createSMSCSI(List<SMSCAMELTDPData> smsCamelTdpDataList, Integer camelCapabilityHandling,

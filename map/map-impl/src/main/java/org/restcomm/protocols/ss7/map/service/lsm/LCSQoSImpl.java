@@ -75,10 +75,10 @@ public class LCSQoSImpl implements LCSQoS {
         super();
         
         if(horizontalAccuracy!=null)
-        	this.horizontalAccuracy = new ASNSingleByte(horizontalAccuracy);
+        	this.horizontalAccuracy = new ASNSingleByte(horizontalAccuracy,"HorizontalAccuracy",0,127,false);
         	
         if(verticalAccuracy!=null)
-        	this.verticalAccuracy = new ASNSingleByte(verticalAccuracy);
+        	this.verticalAccuracy = new ASNSingleByte(verticalAccuracy,"VerticalAccuracy",0,127,false);
         	
         if(verticalCoordinateRequest)
         	this.verticalCoordinateRequest = new ASNNull();

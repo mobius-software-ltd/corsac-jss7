@@ -46,10 +46,10 @@ public class ROTimeGPRSIfTariffSwitchImpl implements ROTimeGPRSIfTariffSwitch {
 
     public ROTimeGPRSIfTariffSwitchImpl(Integer roTimeGPRSSinceLastTariffSwitch, Integer roTimeGPRSTariffSwitchInterval) {
     	if(roTimeGPRSSinceLastTariffSwitch!=null)
-    		this.roTimeGPRSSinceLastTariffSwitch = new ASNInteger(roTimeGPRSSinceLastTariffSwitch);
+    		this.roTimeGPRSSinceLastTariffSwitch = new ASNInteger(roTimeGPRSSinceLastTariffSwitch,"ROTimeGPRSSinceLastTariffSwitch",0,255,false);
     		
     	if(roTimeGPRSTariffSwitchInterval!=null)
-    		this.roTimeGPRSTariffSwitchInterval = new ASNInteger(roTimeGPRSTariffSwitchInterval);
+    		this.roTimeGPRSTariffSwitchInterval = new ASNInteger(roTimeGPRSTariffSwitchInterval,"ROTimeGPRSTariffSwitchInterval",0,255,false);
     }
 
     public Integer getROTimeGPRSSinceLastTariffSwitch() {

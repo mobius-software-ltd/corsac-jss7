@@ -33,14 +33,14 @@ import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessageCancelFailed;
  */
 public class INAPErrorMessageCancelFailedImpl extends EnumeratedINAPErrorMessage1Impl implements INAPErrorMessageCancelFailed {
 	protected INAPErrorMessageCancelFailedImpl(CancelProblem cancelProblem) {
-        super((long) INAPErrorCode.cancelFailed);
+        super(INAPErrorCode.cancelFailed,"CancelFailed",0,2);
         
         if(cancelProblem!=null)
-        	setValue(Long.valueOf(cancelProblem.getCode()));        
+        	setValue(cancelProblem.getCode());        
     }
 
     public INAPErrorMessageCancelFailedImpl() {
-        super((long) INAPErrorCode.cancelFailed);
+        super(INAPErrorCode.cancelFailed,"CancelFailed",0,2);
     }
 
     @Override
@@ -55,16 +55,16 @@ public class INAPErrorMessageCancelFailedImpl extends EnumeratedINAPErrorMessage
 
     @Override
     public CancelProblem getCancelProblem() {
-    	Long value=getValue();
+    	Integer value=getValue();
     	if(value==null)
     		return null;
     	
-    	return CancelProblem.getInstance(value.intValue());
+    	return CancelProblem.getInstance(value);
     }
 
     public void setCancelProblem(CancelProblem cancelProblem) {
     	if(cancelProblem!=null)
-        	setValue(Long.valueOf(cancelProblem.getCode()));     
+        	setValue(cancelProblem.getCode());     
     	else
     		setValue(null);
     }

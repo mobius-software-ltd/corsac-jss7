@@ -50,7 +50,7 @@ public class MAPErrorMessageSystemFailureImpl extends MAPErrorMessageImpl implem
     private MAPExtensionContainer extensionContainer;
 
     public MAPErrorMessageSystemFailureImpl(NetworkResource networkResource, AdditionalNetworkResource additionalNetworkResource, MAPExtensionContainer extensionContainer) {
-        super((long) MAPErrorCode.systemFailure);
+        super(MAPErrorCode.systemFailure);
 
         if(networkResource!=null)
         	this.networkResource=new ASNNetworkResourceImpl(networkResource);
@@ -62,7 +62,7 @@ public class MAPErrorMessageSystemFailureImpl extends MAPErrorMessageImpl implem
     }
 
     public MAPErrorMessageSystemFailureImpl() {
-        super((long) MAPErrorCode.systemFailure);
+        super(MAPErrorCode.systemFailure);
     }
 
     public boolean isEmSystemFailure() {

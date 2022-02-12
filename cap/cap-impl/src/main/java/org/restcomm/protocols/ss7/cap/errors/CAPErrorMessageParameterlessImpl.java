@@ -32,12 +32,12 @@ import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessageParameterless;
  *
  */
 public class CAPErrorMessageParameterlessImpl extends CAPErrorMessageImpl implements CAPErrorMessageParameterless {
-	public CAPErrorMessageParameterlessImpl(Long errorCode) {
+	public CAPErrorMessageParameterlessImpl(Integer errorCode) {
         super(errorCode);
     }
 
     public CAPErrorMessageParameterlessImpl() {
-        super(0L);
+        super(0);
     }
 
     @Override

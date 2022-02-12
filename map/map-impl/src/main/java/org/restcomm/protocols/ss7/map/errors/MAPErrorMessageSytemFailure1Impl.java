@@ -36,14 +36,14 @@ import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
 public class MAPErrorMessageSytemFailure1Impl extends EnumeratedMAPErrorMessage1Impl implements
 MAPErrorMessageSystemFailure {
 	public MAPErrorMessageSytemFailure1Impl(NetworkResource networkResource) {
-        super((long) MAPErrorCode.systemFailure);
+        super(MAPErrorCode.systemFailure,"SystemFailure",0,7);
 
         if(networkResource!=null)
-        	setValue(Long.valueOf(networkResource.getCode()));
+        	setValue(networkResource.getCode());
     }
 
     public MAPErrorMessageSytemFailure1Impl() {
-        super((long) MAPErrorCode.systemFailure);
+        super(MAPErrorCode.systemFailure,"SystemFailure",0,7);
     }
 
     public boolean isEmSystemFailure() {
@@ -56,7 +56,7 @@ MAPErrorMessageSystemFailure {
 
     @Override
     public NetworkResource getNetworkResource() {
-    	Long value=getValue();
+    	Integer value=getValue();
     	if(value==null)
     		return null;
     	
@@ -66,7 +66,7 @@ MAPErrorMessageSystemFailure {
     @Override
     public void setNetworkResource(NetworkResource val) {
     	if(val!=null)
-    		setValue(Long.valueOf(val.getCode()));
+    		setValue(val.getCode());
     	else
     		setValue(null);
     }

@@ -105,14 +105,14 @@ public class TcContinueTest {
         BaseComponent c = tcm.getComponents().get(0);
         assertTrue(c instanceof Invoke, "Wrong component type");
         Invoke i = (Invoke)c;
-        assertEquals(new Long(1), i.getInvokeId(), "Wrong invoke ID");
+        assertEquals(new Integer(1), i.getInvokeId(), "Wrong invoke ID");
         assertNull(i.getLinkedId(), "Linked ID is not null");
 
         assertNotNull(i.getOperationCode(), "Operation code is null");
         assertNull(i.getParameter(), "Parameter not null");
         OperationCode oc = i.getOperationCode();
         assertEquals(OperationCodeType.Local, oc.getOperationType(), "Wrong operation type");
-        assertEquals(new Long(0x37), oc.getLocalOperationCode(), "Wrong operation code");
+        assertEquals(new Integer(0x37), oc.getLocalOperationCode(), "Wrong operation code");
         
         ByteBuf buffer=parser.encode(tcm);
         byte[] encoded = buffer.array();
@@ -181,14 +181,14 @@ public class TcContinueTest {
         BaseComponent c = tcm.getComponents().get(0);
         assertTrue(c instanceof Invoke, "Wrong component type");
         Invoke i = (Invoke)c;
-        assertEquals(new Long(2), i.getInvokeId(), "Wrong invoke ID");
+        assertEquals(new Integer(2), i.getInvokeId(), "Wrong invoke ID");
         assertNull(i.getLinkedId(), "Linked ID is not null");
 
         assertNotNull(i.getOperationCode(), "Operation code is null");
         assertNotNull(i.getParameter(), "Parameter null");
         OperationCode oc = i.getOperationCode();
         assertEquals(OperationCodeType.Local, oc.getOperationType(), "Wrong operation type");
-        assertEquals(new Long(42), oc.getLocalOperationCode(), "Wrong operation code");
+        assertEquals(new Integer(42), oc.getLocalOperationCode(), "Wrong operation code");
 
         ByteBuf buffer=parser.encode(tcm);
         byte[] encoded = buffer.array();
@@ -266,19 +266,19 @@ public class TcContinueTest {
         BaseComponent c = tcm.getComponents().get(0);
         assertTrue(c instanceof Invoke, "Wrong component type");
         Invoke i = (Invoke)c;
-        assertEquals(new Long(1), i.getInvokeId(), "Wrong invoke ID");
+        assertEquals(new Integer(1), i.getInvokeId(), "Wrong invoke ID");
         assertNull(i.getLinkedId(), "Linked ID is not null");
 
         c = tcm.getComponents().get(1);
         assertTrue(c instanceof ReturnResultLast, "Wrong component type");
         ReturnResultLast rrl = (ReturnResultLast)c;
-        assertEquals(new Long(2), rrl.getInvokeId(), "Wrong invoke ID");
+        assertEquals(new Integer(2), rrl.getInvokeId(), "Wrong invoke ID");
         assertNotNull(rrl.getOperationCode(), "Operation code should not be null");
 
         OperationCode ocs = rrl.getOperationCode();
 
         assertEquals(OperationCodeType.Local, ocs.getOperationType(), "Wrong Operation Code type");
-        assertEquals(new Long(0x00FF), ocs.getLocalOperationCode(), "Wrong Operation Code");
+        assertEquals(new Integer(0x00FF), ocs.getLocalOperationCode(), "Wrong Operation Code");
 
         assertNotNull(rrl.getParameter(), "Parameter should not be null");
 
@@ -517,19 +517,19 @@ public class TcContinueTest {
         BaseComponent c = tcm.getComponents().get(0);
         assertTrue(c instanceof Invoke, "Wrong component type");
         Invoke i = (Invoke)c;
-        assertEquals(new Long(1), i.getInvokeId(), "Wrong invoke ID");
+        assertEquals(new Integer(1), i.getInvokeId(), "Wrong invoke ID");
         assertNull(i.getLinkedId(), "Linked ID is not null");
 
         c = tcm.getComponents().get(1);
         assertTrue(c instanceof ReturnResultLast, "Wrong component type");
         ReturnResultLast rrl = (ReturnResultLast)c;
-        assertEquals(new Long(2), rrl.getInvokeId(), "Wrong invoke ID");
+        assertEquals(new Integer(2), rrl.getInvokeId(), "Wrong invoke ID");
         assertNotNull(rrl.getOperationCode(), "Operation code should not be null");
 
         OperationCode ocs = rrl.getOperationCode();
 
         assertEquals(OperationCodeType.Local, ocs.getOperationType(), "Wrong Operation Code type");
-        assertEquals(new Long(1), ocs.getLocalOperationCode(), "Wrong Operation Code");
+        assertEquals(new Integer(1), ocs.getLocalOperationCode(), "Wrong Operation Code");
 
         assertNotNull(rrl.getParameter(), "Parameter should not be null");
 

@@ -164,7 +164,7 @@ public class TCAPComponentsTest extends SccpHarness {
                                     ReturnResultProblemType.UnrecognizedInvokeID);
                             assertTrue(r.isLocalOriginated());
 
-                            this.addNewInvoke(1L, MINI_WAIT_TIME/2);
+                            this.addNewInvoke(1, MINI_WAIT_TIME/2);
                             this.sendContinue();
                             break;
 
@@ -177,7 +177,7 @@ public class TCAPComponentsTest extends SccpHarness {
                             assertEquals(r.getProblem().getInvokeProblemType(), InvokeProblemType.DuplicateInvokeID);
                             assertFalse(r.isLocalOriginated());
 
-                            this.addNewInvoke(2L, MINI_WAIT_TIME/2);
+                            this.addNewInvoke(2, MINI_WAIT_TIME/2);
                             this.sendContinue();
                             break;
 
@@ -199,14 +199,14 @@ public class TCAPComponentsTest extends SccpHarness {
                                     ReturnErrorProblemType.UnrecognizedInvokeID);
                             assertTrue(r.isLocalOriginated());
 
-                            this.addNewInvoke(1L, MINI_WAIT_TIME/2);
-                            this.addNewInvoke(2L, MINI_WAIT_TIME/2);
+                            this.addNewInvoke(1, MINI_WAIT_TIME/2);
+                            this.addNewInvoke(2, MINI_WAIT_TIME/2);
                             this.sendContinue();
                             break;
 
                         case 4:
-                            this.addNewInvoke(1L, 10000L);
-                            this.addNewInvoke(2L, 10000L);
+                            this.addNewInvoke(1, 10000L);
+                            this.addNewInvoke(2, 10000L);
                             this.sendContinue();
                             break;
                     }
@@ -246,7 +246,7 @@ public class TCAPComponentsTest extends SccpHarness {
                 
                 try {
 
-                    this.addNewReturnResult(1L);
+                    this.addNewReturnResult(1);
                     this.sendContinue();
                 } catch (Exception e) {
                     fail("Exception when sendComponent / send message 1", e);
@@ -287,13 +287,13 @@ public class TCAPComponentsTest extends SccpHarness {
                             break;
 
                         case 2:
-                            this.addNewReturnResultLast(1L);
-                            this.addNewReturnError(2L);
+                            this.addNewReturnResultLast(1);
+                            this.addNewReturnError(2);
                             this.sendContinue();
                             break;
 
                         case 3:
-                            this.dialog.processInvokeWithoutAnswer(1L);
+                            this.dialog.processInvokeWithoutAnswer(1);
 
                             this.sendContinue();
                             break;
@@ -431,7 +431,7 @@ public class TCAPComponentsTest extends SccpHarness {
         serverExpectedEvents.add(te);
 
         client.startClientDialog();
-        client.addNewInvoke(1L, MINI_WAIT_TIME/2);
+        client.addNewInvoke(1, MINI_WAIT_TIME/2);
         client.sendBegin();
 
         EventTestHarness.waitFor(WAIT_TIME * 2);
@@ -493,8 +493,8 @@ public class TCAPComponentsTest extends SccpHarness {
             }
         }
 
-        public void addNewInvoke(Long invokeId, Long timout) throws Exception {
-            OperationCode oc = TcapFactory.createLocalOperationCode(10L);
+        public void addNewInvoke(Integer invokeId, Long timout) throws Exception {
+            OperationCode oc = TcapFactory.createLocalOperationCode(10);
             
             // Parameter p1 = TcapFactory.createParameter();
             // p1.setTagClass(Tag.CLASS_UNIVERSAL);
@@ -535,9 +535,9 @@ public class TCAPComponentsTest extends SccpHarness {
             // TODO Auto-generated constructor stub
         }
 
-        public void addNewReturnResult(Long invokeId) throws Exception {
+        public void addNewReturnResult(Integer invokeId) throws Exception {
 
-            OperationCode oc = TcapFactory.createLocalOperationCode(10L);
+            OperationCode oc = TcapFactory.createLocalOperationCode(10);
             
             TestEvent te = TestEvent.createSentEvent(EventType.ReturnResult, null, sequence++);
             this.observerdEvents.add(te);
@@ -545,9 +545,9 @@ public class TCAPComponentsTest extends SccpHarness {
             this.dialog.sendData(invokeId, null, null, null, oc, null, false, false);
         }
 
-        public void addNewReturnResultLast(Long invokeId) throws Exception {
+        public void addNewReturnResultLast(Integer invokeId) throws Exception {
 
-            OperationCode oc = TcapFactory.createLocalOperationCode(10L);
+            OperationCode oc = TcapFactory.createLocalOperationCode(10);
             
             TestEvent te = TestEvent.createSentEvent(EventType.ReturnResultLast, null, sequence++);
             this.observerdEvents.add(te);
@@ -555,9 +555,9 @@ public class TCAPComponentsTest extends SccpHarness {
             this.dialog.sendData(invokeId, null, null, null, oc, null, false, true);
         }
 
-        public void addNewReturnError(Long invokeId) throws Exception {
+        public void addNewReturnError(Integer invokeId) throws Exception {
 
-            ErrorCode ec = TcapFactory.createLocalErrorCode(10L);
+            ErrorCode ec = TcapFactory.createLocalErrorCode(10);
             
             TestEvent te = TestEvent.createSentEvent(EventType.ReturnError, null, sequence++);
             this.observerdEvents.add(te);

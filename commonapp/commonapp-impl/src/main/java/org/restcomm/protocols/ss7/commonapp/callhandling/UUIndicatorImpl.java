@@ -32,11 +32,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 *
 */
 public class UUIndicatorImpl extends ASNSingleByte implements UUIndicator {
-	public UUIndicatorImpl() {        
+	public UUIndicatorImpl() {   
+		super("UUIndicator",1,255,false);
     }
 
     public UUIndicatorImpl(int data) {
-    	super(data);
+    	super(data,"UUIndicator",1,255,false);
     }
 
     public Integer getData() {

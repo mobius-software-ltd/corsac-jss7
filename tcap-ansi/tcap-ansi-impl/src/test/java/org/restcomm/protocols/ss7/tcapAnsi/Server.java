@@ -95,7 +95,7 @@ public class Server extends EventTestHarness {
         Invoke invoke2 = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast(InvokeClass.Class1);
         invoke2.setInvokeId(this.dialog.getNewInvokeId());
         invoke2.setCorrelationId(invokeLast.getInvokeId());
-        OperationCode oc = TcapFactory.createPrivateOperationCode(14L);
+        OperationCode oc = TcapFactory.createPrivateOperationCode(14);
         invoke2.setOperationCode(oc);
         // no parameter
         component=new WrappedComponentImpl();

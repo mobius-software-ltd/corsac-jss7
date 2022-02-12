@@ -55,11 +55,11 @@ public class RejectImpl implements Reject {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#getInvokeId()
      */
-    public Long getInvokeId() {
+    public Integer getInvokeId() {
     	if(this.invokeId==null)
     		return null;
     	
-        return this.invokeId.getValue();
+        return this.invokeId.getIntValue();
     }
 
     /*
@@ -77,7 +77,7 @@ public class RejectImpl implements Reject {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Reject#setInvokeId(java.lang .Long)
      */
-    public void setInvokeId(Long i) {
+    public void setInvokeId(Integer i) {
         if (i != null && (i < -128 || i > 127)) {
             throw new IllegalArgumentException("Invoke ID our of range: <-128,127>: " + i);
         }
@@ -86,7 +86,7 @@ public class RejectImpl implements Reject {
         	this.invokeId=null;
         	this.nullInvokeId=new ASNNull();
         } else {
-	        this.invokeId = new ASNInteger(i);
+	        this.invokeId = new ASNInteger(i,"InvokeID",-128,127,false);
 	        this.nullInvokeId=null;
         }
     }

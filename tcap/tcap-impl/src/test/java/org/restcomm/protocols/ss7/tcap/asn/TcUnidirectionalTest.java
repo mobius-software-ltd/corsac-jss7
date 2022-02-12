@@ -87,8 +87,8 @@ public class TcUnidirectionalTest {
         tcUniMessage.setDialogPortion(dp);
 
         Invoke invComp = TcapFactory.createComponentInvoke();
-        invComp.setInvokeId(-128l);
-        invComp.setOperationCode(591L);
+        invComp.setInvokeId(-128);
+        invComp.setOperationCode(591);
         ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 1, 2, 3 }),null,null,null,false);
         invComp.setParameter(p);
         

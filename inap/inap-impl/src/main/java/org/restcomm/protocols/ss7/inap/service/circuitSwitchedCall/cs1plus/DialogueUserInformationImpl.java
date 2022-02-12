@@ -60,7 +60,7 @@ public class DialogueUserInformationImpl implements DialogueUserInformation {
     		this.receivingFunctionsRequested=new ASNReceivingFunctionsRequested(receivingFunctionsRequested);
     		
     	if(trafficSimulationSessionID!=null)
-    		this.trafficSimulationSessionID=new ASNInteger(trafficSimulationSessionID);    		
+    		this.trafficSimulationSessionID=new ASNInteger(trafficSimulationSessionID,"TrafficSimulationSessionID",0,65535,false);    		
     }
 
     public SendingFunctionsActive getSendingFunctionsActive() {

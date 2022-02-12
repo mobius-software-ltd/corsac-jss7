@@ -179,20 +179,20 @@ public enum RejectProblem {
      */
     transactionResourceUnavailable(1286);
 
-    private long type;
+    private int type;
 
-    RejectProblem(long l) {
+    RejectProblem(int l) {
         this.type = l;
     }
 
     /**
      * @return the type
      */
-    public long getType() {
+    public int getType() {
         return type;
     }
 
-    public static RejectProblem getFromInt(long t) throws ParseException {
+    public static RejectProblem getFromInt(int t) throws ParseException {
         if (t == 257) {
             return generalUnrecognisedComponentType;
         } else if (t == 258) {

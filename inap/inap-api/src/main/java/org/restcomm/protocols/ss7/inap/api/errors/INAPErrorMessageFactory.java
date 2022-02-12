@@ -38,9 +38,9 @@ public interface INAPErrorMessageFactory {
      * @param errorCode
      * @return
      */
-    INAPErrorMessage createMessageFromErrorCode(Long errorCode,Boolean isCS1Plus);
+    INAPErrorMessage createMessageFromErrorCode(Integer errorCode,Boolean isCS1Plus);
 
-    INAPErrorMessageParameterless createINAPErrorMessageParameterless(Long errorCode);
+    INAPErrorMessageParameterless createINAPErrorMessageParameterless(Integer errorCode);
 
     INAPErrorMessageCancelFailed createINAPErrorMessageCancelFailed(CancelProblem cancelProblem);
 
@@ -53,5 +53,5 @@ public interface INAPErrorMessageFactory {
     
     INAPErrorMessageImproperCallerResponseCS1Plus createINAPErrorMessageImproperCallerResponseCS1Plus(ImproperCallerResponseParameter improperCallerResponseParameter);
     
-    INAPErrorMessageOctetString createINAPErrorMessageOctetString(Long errorCode,ByteBuf parameter);
+    INAPErrorMessageOctetString createINAPErrorMessageOctetString(Integer errorCode,ByteBuf parameter);
 }

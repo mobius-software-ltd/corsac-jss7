@@ -36,6 +36,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=3,constructed=false,lengthIndefinite=false)
 public class ASNBitString 
@@ -43,17 +46,25 @@ public class ASNBitString
 	private static final int masks[] = {128, 64, 32, 16, 8, 4, 2, 1};
 	private ConcurrentHashMap<Integer,AtomicInteger> value=new ConcurrentHashMap<Integer,AtomicInteger>();
 	private Integer maxByteUsed=0;
+	private Integer maxBitUsed=0;
+	private Boolean isRoot;
+	private String name;
 	private Integer minBytesIndex;
 	private Integer minBitsIndex;
+	private Integer maxBitsIndex;
 	
 	public ASNBitString() {
 		
 	}
 	
-	public ASNBitString(Integer minBitsIndex) {
+	public ASNBitString(String name,Integer minBitsIndex,Integer maxBitsIndex,Boolean isRoot) {
+		this.name=name;
 		this.minBitsIndex=minBitsIndex;
 		if(minBitsIndex!=null)
 			this.minBytesIndex=minBitsIndex/8;
+		
+		this.maxBitsIndex=maxBitsIndex;
+		this.isRoot=isRoot;
 	}
 	
 	@ASNLength
@@ -65,6 +76,9 @@ public class ASNBitString
 	}
 	
 	public void setBit(int index) {
+		if(maxBitUsed!=null && maxBitUsed<index)
+			maxBitUsed=index;
+		
 		int byteIndex=index/8;
 		int bitIndex=index%8;
 		if(maxByteUsed<byteIndex)
@@ -102,7 +116,7 @@ public class ASNBitString
 		if(lastValue!=null)
 			lastByte=lastValue.get();
 		Integer remainingBits=0;
-		if(minBitsIndex!=null)
+		if(minBitsIndex!=null && minBitsIndex>maxBitUsed)
 			remainingBits=8-((minBitsIndex+1)%8);
 		else {
 			for(int i=masks.length-1;i>=0;i--) {
@@ -125,6 +139,16 @@ public class ASNBitString
 			else
 				buffer.writeByte(current.get());
 		}
+	}
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(maxBitsIndex!=null && maxBitUsed!=null && maxBitUsed>maxBitsIndex) {
+			if(isRoot==null || !isRoot)
+				throw new ASNParsingComponentException(name + " max bit allowed is " + maxBitsIndex + ",while max bit set is " + maxBitUsed,ASNParsingComponentExceptionReason.MistypedParameter);
+			else
+				throw new ASNParsingComponentException(name + " max bit allowed is " + maxBitsIndex + ",while max bit set is " + maxBitUsed,ASNParsingComponentExceptionReason.MistypedRootParameter);
+		}	
 	}
 	
 	@ASNDecode

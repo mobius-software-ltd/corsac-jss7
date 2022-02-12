@@ -32,11 +32,11 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 public class ASNCustomEnumerated extends ASNEnumerated
 {
 	public ASNCustomEnumerated() {
-		
+		super(null,null,null,false);
 	}
 	
 	public ASNCustomEnumerated(TestEnum value) {
-		super(value.getValue());
+		super(value.getValue(),null,null,null,false);
 	}
 	
 	public TestEnum getEnumValue() {

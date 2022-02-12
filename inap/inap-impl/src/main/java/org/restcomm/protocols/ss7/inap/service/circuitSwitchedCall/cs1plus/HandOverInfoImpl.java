@@ -78,7 +78,7 @@ public class HandOverInfoImpl implements HandOverInfo {
     		ByteBuf sendingSCPCorrelationInfo, SCPAddress receivingSCPAddress, SCPDialogueInfo receivingSCPDialogueInfo,
     		ByteBuf receivingSCPCorrelationInfo,CalledPartyNumberIsup handoverNumber,Integer handoverData) {
     	if(handoverCounter!=null)
-    		this.handoverCounter=new ASNInteger(handoverCounter);
+    		this.handoverCounter=new ASNInteger(handoverCounter,"HandoverCounter",1,127,false);
     		
     	if(sendingSCPAddress!=null)
     		this.sendingSCPAddress=new SCPAddressWrapperImpl(sendingSCPAddress);
@@ -97,7 +97,7 @@ public class HandOverInfoImpl implements HandOverInfo {
     		
     	this.handoverNumber=handoverNumber;
     	if(handoverData!=null)
-    		this.handoverData=new ASNInteger(handoverData);    		
+    		this.handoverData=new ASNInteger(handoverData,"HandoverData",0,65535,false);    		
     }       
 
     public Integer getHandoverCounter() {

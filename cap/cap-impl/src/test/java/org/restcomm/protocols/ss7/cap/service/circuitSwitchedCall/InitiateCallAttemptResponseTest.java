@@ -46,8 +46,8 @@ import io.netty.buffer.Unpooled;
 public class InitiateCallAttemptResponseTest {
 
     public byte[] getData1() {
-        return new byte[] { 48, 32, (byte) 128, 2, 4, (byte) 224, (byte) 162, 18, 48, 5, 2, 1, 2, (byte) 129, 0, 48, 9, 2, 1, 3, 10, 1, 1, (byte) 129, 1,
-                (byte) 255, (byte) 129, 4, 4, (byte) 128, 0, 0, (byte) 131, 0 };
+        return new byte[] { 48, 31, (byte) 128, 2, 5, (byte) 224, (byte) 162, 18, 48, 5, 2, 1, 2, (byte) 129, 0, 48, 9, 2, 1, 3, 10, 1, 1, (byte) 129, 1,
+                (byte) 255, (byte) 129, 3, 1, (byte) 128, 0, (byte) 131, 0 };
     }
 
     @Test(groups = { "functional.decode", "circuitSwitchedCall" })

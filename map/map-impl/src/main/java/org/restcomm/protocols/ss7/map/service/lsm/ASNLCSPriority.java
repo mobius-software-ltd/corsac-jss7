@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNLCSPriority extends ASNEnumerated {
 	public ASNLCSPriority() {
-		
+		super("LCSPriority",0,1,false);
 	}
 	
 	public ASNLCSPriority(LCSPriority t) {
-		super(t.getCode());
+		super(t.getCode(),"LCSPriority",0,1,false);
 	}
 	
 	public LCSPriority getType() {

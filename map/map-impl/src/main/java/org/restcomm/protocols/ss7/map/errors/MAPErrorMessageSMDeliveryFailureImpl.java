@@ -59,7 +59,7 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
 
     public MAPErrorMessageSMDeliveryFailureImpl(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause, SignalInfo signalInfo,
             MAPExtensionContainer extensionContainer) {
-        super((long) MAPErrorCode.smDeliveryFailure);
+        super(MAPErrorCode.smDeliveryFailure);
 
         if(smEnumeratedDeliveryFailureCause!=null)
         	this.sMEnumeratedDeliveryFailureCause = new ASNSMEnumeratedDeliveryFailureCauseImpl(smEnumeratedDeliveryFailureCause);
@@ -69,7 +69,7 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
     }
 
     public MAPErrorMessageSMDeliveryFailureImpl() {
-        super((long) MAPErrorCode.smDeliveryFailure);
+        super(MAPErrorCode.smDeliveryFailure);
     }
 
     public SMEnumeratedDeliveryFailureCause getSMEnumeratedDeliveryFailureCause() {

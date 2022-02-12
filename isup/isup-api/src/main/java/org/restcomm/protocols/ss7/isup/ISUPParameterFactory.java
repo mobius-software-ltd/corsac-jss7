@@ -123,7 +123,7 @@ public interface ISUPParameterFactory {
 
     EchoControlInformation createEchoControlInformation();
 
-    ErrorCodeImpl createLocalErrorCode(Long value);
+    ErrorCodeImpl createLocalErrorCode(Integer value);
 
     ErrorCodeImpl createGlobalErrorCode(List<Long> value);
 
@@ -181,7 +181,7 @@ public interface ISUPParameterFactory {
 
     NetworkSpecificFacility createNetworkSpecificFacility();
 
-    OperationCodeImpl createLocalOperationCode(Long value);
+    OperationCodeImpl createLocalOperationCode(Integer value);
 
     OperationCodeImpl createGlobalOperationCode(List<Long> value);
 

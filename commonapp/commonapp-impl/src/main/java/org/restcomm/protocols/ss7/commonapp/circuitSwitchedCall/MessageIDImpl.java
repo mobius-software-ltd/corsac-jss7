@@ -59,7 +59,7 @@ public class MessageIDImpl implements MessageID {
 
     public MessageIDImpl(Integer elementaryMessageID) {
     	if(elementaryMessageID!=null)
-    		this.elementaryMessageID = new ASNInteger(elementaryMessageID);    		
+    		this.elementaryMessageID = new ASNInteger(elementaryMessageID,"ElementaryMessageID",0,255,false);    		
     }
 
     public MessageIDImpl(MessageIDText text) {
@@ -70,7 +70,7 @@ public class MessageIDImpl implements MessageID {
     	if(elementaryMessageIDs!=null) {
     		List<ASNInteger> wrappedList=new ArrayList<ASNInteger>();
     		for(Integer curr:elementaryMessageIDs) {
-    			ASNInteger currValue=new ASNInteger(curr);
+    			ASNInteger currValue=new ASNInteger(curr,"ElementaryMessageID",0,255,false);
     			wrappedList.add(currValue);
     		}
     		

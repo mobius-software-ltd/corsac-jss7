@@ -61,12 +61,12 @@ public class MGCSIImpl implements MGCSI {
     public MGCSIImpl() {        
     }
 
-    public MGCSIImpl(List<MMCode> mobilityTriggers, long serviceKey, ISDNAddressString gsmSCFAddress,
+    public MGCSIImpl(List<MMCode> mobilityTriggers, int serviceKey, ISDNAddressString gsmSCFAddress,
             MAPExtensionContainer extensionContainer, boolean notificationToCSE, boolean csiActive) {
         if(mobilityTriggers!=null)
         	this.mobilityTriggers = new MMCodeListWrapperImpl(mobilityTriggers);
         
-        this.serviceKey = new ASNInteger(serviceKey);
+        this.serviceKey = new ASNInteger(serviceKey,"ServiceKey",0,Integer.MAX_VALUE,false);
         this.gsmSCFAddress = gsmSCFAddress;
         this.extensionContainer = extensionContainer;
         
@@ -84,11 +84,11 @@ public class MGCSIImpl implements MGCSI {
         return this.mobilityTriggers.getMMCode();
     }
 
-    public long getServiceKey() {
+    public int getServiceKey() {
     	if(this.serviceKey==null)
     		return 0;
     	
-        return this.serviceKey.getValue();
+        return this.serviceKey.getIntValue();
     }
 
     public ISDNAddressString getGsmSCFAddress() {

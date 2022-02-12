@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNMOSMSCauseImpl extends ASNEnumerated {
 	public ASNMOSMSCauseImpl() {
-		
+		super("MOSMSCause",0,4,false);
 	}
 	
 	public ASNMOSMSCauseImpl(MOSMSCause t) {
-		super(t.getCode());
+		super(t.getCode(),"MOSMSCause",0,4,false);
 	}
 	
 	public MOSMSCause getType() {

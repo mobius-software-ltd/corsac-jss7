@@ -34,11 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
 public class ASNLegStatus extends ASNEnumerated {
 	public ASNLegStatus() {
-		
+		super("LegStatus",0,3,false);	
 	}
 	
 	public ASNLegStatus(LegStatus t) {
-		super(t.getCode());
+		super(t.getCode(),"LegStatus",0,3,false);
 	}
 	
 	public LegStatus getType() {

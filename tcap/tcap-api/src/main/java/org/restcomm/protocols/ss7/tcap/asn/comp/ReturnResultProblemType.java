@@ -47,20 +47,20 @@ public enum ReturnResultProblemType {
      */
     MistypedParameter(2);
 
-    ReturnResultProblemType(long l) {
+    ReturnResultProblemType(int l) {
         this.type = l;
     }
 
-    private long type;
+    private int type;
 
     /**
      * @return the type
      */
-    public long getType() {
+    public int getType() {
         return type;
     }
 
-    public static ReturnResultProblemType getFromInt(long t) throws ParseException {
+    public static ReturnResultProblemType getFromInt(int t) throws ParseException {
         if (t == 0) {
             return UnrecognizedInvokeID;
         } else if (t == 1) {

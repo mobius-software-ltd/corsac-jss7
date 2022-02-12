@@ -88,7 +88,7 @@ public class SendIdentificationRequestImplV3 extends MobilityMessageImpl impleme
         this.tmsi = tmsi;
         
         if(numberOfRequestedVectors!=null)
-        	this.numberOfRequestedVectors = new ASNInteger(numberOfRequestedVectors);
+        	this.numberOfRequestedVectors = new ASNInteger(numberOfRequestedVectors,"NumberOfRequestedVectors",1,5,false);
         	
         if(segmentationProhibited)
         	this.segmentationProhibited = new ASNNull();
@@ -98,7 +98,7 @@ public class SendIdentificationRequestImplV3 extends MobilityMessageImpl impleme
         this.previousLAI = previousLAI;
         
         if(hopCounter!=null)
-        	this.hopCounter = new ASNInteger(hopCounter);
+        	this.hopCounter = new ASNInteger(hopCounter,"HopCounter",0,3,false);
         	
         if(mtRoamingForwardingSupported)
         	this.mtRoamingForwardingSupported = new ASNNull();

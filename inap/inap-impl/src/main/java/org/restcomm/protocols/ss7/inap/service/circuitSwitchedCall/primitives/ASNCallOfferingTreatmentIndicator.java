@@ -34,11 +34,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
 public class ASNCallOfferingTreatmentIndicator extends ASNEnumerated {
 	public ASNCallOfferingTreatmentIndicator() {
+		super("CallOfferingTreatmentIndicator",1,2,false);
 		
 	}
 	
 	public ASNCallOfferingTreatmentIndicator(CallOfferingTreatmentIndicator t) {
-		super(t.getCode());
+		super(t.getCode(),"CallOfferingTreatmentIndicator",1,2,false);
 	}
 	
 	public CallOfferingTreatmentIndicator getType() {

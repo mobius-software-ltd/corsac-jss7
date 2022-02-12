@@ -38,9 +38,9 @@ import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessageTaskRefused;
  *
  */
 public abstract class INAPErrorMessageImpl implements INAPErrorMessage {
-    protected Long errorCode;
+    protected Integer errorCode;
 
-    protected INAPErrorMessageImpl(Long errorCode) {
+    protected INAPErrorMessageImpl(Integer errorCode) {
         this.errorCode = errorCode;
     }
 
@@ -48,7 +48,7 @@ public abstract class INAPErrorMessageImpl implements INAPErrorMessage {
     }
 
     @Override
-    public Long getErrorCode() {
+    public Integer getErrorCode() {
         return errorCode;
     }
 

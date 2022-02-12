@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNCliRestrictionOptionImpl extends ASNEnumerated {
 	public ASNCliRestrictionOptionImpl() {
-		
+		super("CliRestrictionOption",0,2,false);
 	}
 	
 	public ASNCliRestrictionOptionImpl(CliRestrictionOption t) {
-		super(t.getCode());
+		super(t.getCode(),"CliRestrictionOption",0,2,false);
 	}
 	
 	public CliRestrictionOption getType() {

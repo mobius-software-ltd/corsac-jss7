@@ -118,7 +118,7 @@ public class PDPContextImpl implements PDPContext {
             ChargingCharacteristics chargingCharacteristics, Ext2QoSSubscribed ext2QoSSubscribed,
             Ext3QoSSubscribed ext3QoSSubscribed, Ext4QoSSubscribed ext4QoSSubscribed, APNOIReplacement apnoiReplacement,
             ExtPDPType extpdpType, PDPAddress extpdpAddress, SIPTOPermission sipToPermission, LIPAPermission lipaPermission) {
-        this.pdpContextId = new ASNInteger(pdpContextId);
+        this.pdpContextId = new ASNInteger(pdpContextId,"PDPContextID",1,50,false);
         this.pdpType = pdpType;
         this.pdpAddress = pdpAddress;
         this.qosSubscribed = qosSubscribed;
@@ -145,7 +145,7 @@ public class PDPContextImpl implements PDPContext {
     }
 
     public PDPContextImpl(int pdpContextId) {
-        this.pdpContextId = new ASNInteger(pdpContextId);        
+        this.pdpContextId = new ASNInteger(pdpContextId,"PDPContextID",1,50,false);        
     }
 
     public PDPContextImpl() {

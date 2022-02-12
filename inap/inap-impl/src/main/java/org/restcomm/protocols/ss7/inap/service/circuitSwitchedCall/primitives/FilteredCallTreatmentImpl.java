@@ -67,7 +67,7 @@ public class FilteredCallTreatmentImpl implements FilteredCallTreatment {
     	this.informationToSend=informationToSend;
     	
     	if(maximumNumberOfCounters!=null)
-    		this.maximumNumberOfCounters=new ASNInteger(maximumNumberOfCounters);
+    		this.maximumNumberOfCounters=new ASNInteger(maximumNumberOfCounters,"MaximumNumberOfCounters",1,100,false);
     		
     	this.cause=cause;
     }
@@ -85,7 +85,7 @@ public class FilteredCallTreatmentImpl implements FilteredCallTreatment {
 
     public Integer getMaximumNumberOfCounters() {
     	if(maximumNumberOfCounters==null)
-    		return null;
+    		return 1;
     	
     	return maximumNumberOfCounters.getIntValue();
     }

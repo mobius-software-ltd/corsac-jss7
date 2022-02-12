@@ -201,19 +201,19 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
     }
 
     @Override
-    public void onErrorComponent(CAPDialog capDialog, Long invokeId, CAPErrorMessage capErrorMessage) {
+    public void onErrorComponent(CAPDialog capDialog, Integer invokeId, CAPErrorMessage capErrorMessage) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    public void onRejectComponent(CAPDialog capDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void onInvokeTimeout(CAPDialog capDialog, Long invokeId) {
+    public void onInvokeTimeout(CAPDialog capDialog, Integer invokeId) {
         // TODO Auto-generated method stub
 
     }
@@ -392,7 +392,7 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
 
     private class CallContent {
         public Step step;
-        public Long activityTestInvokeId;
+        public Integer activityTestInvokeId;
     }
 
     @Override

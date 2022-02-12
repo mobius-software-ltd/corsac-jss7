@@ -403,11 +403,11 @@ public abstract class MAPDialogImpl implements MAPDialog {
         this.state = newState;        
     }
 
-    public void processInvokeWithoutAnswer(Long invokeId) {
+    public void processInvokeWithoutAnswer(Integer invokeId) {
         this.tcapDialog.processInvokeWithoutAnswer(invokeId);
     }
 
-    public Long sendDataComponent(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,Long operationCode,MAPMessage param,Boolean isRequest,Boolean isLastResponse) throws MAPException {
+    public Integer sendDataComponent(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,Integer operationCode,MAPMessage param,Boolean isRequest,Boolean isLastResponse) throws MAPException {
         try {
         	if(operationCode!=null)
         		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
@@ -418,7 +418,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
         }
     }
 
-    public void sendErrorComponent(Long invokeId, MAPErrorMessage mem) throws MAPException {
+    public void sendErrorComponent(Integer invokeId, MAPErrorMessage mem) throws MAPException {
         try {
         	if(mem instanceof MAPErrorMessageParameterless)
         		this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), null);
@@ -430,7 +430,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
         }
     }
 
-    public void sendRejectComponent(Long invokeId, Problem problem) throws MAPException {
+    public void sendRejectComponent(Integer invokeId, Problem problem) throws MAPException {
         try {
             this.tcapDialog.sendReject(invokeId, problem);
 
@@ -439,7 +439,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
         }
     }
 
-    public void resetInvokeTimer(Long invokeId) throws MAPException {
+    public void resetInvokeTimer(Integer invokeId) throws MAPException {
 
         try {
             this.getTcapDialog().resetTimer(invokeId);
@@ -448,7 +448,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
         }
     }
 
-    public boolean cancelInvocation(Long invokeId) throws MAPException {
+    public boolean cancelInvocation(Integer invokeId) throws MAPException {
 
         try {
             return this.getTcapDialog().cancelInvocation(invokeId);

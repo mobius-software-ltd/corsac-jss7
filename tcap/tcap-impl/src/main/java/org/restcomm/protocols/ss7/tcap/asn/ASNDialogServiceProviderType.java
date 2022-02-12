@@ -34,14 +34,14 @@ public class ASNDialogServiceProviderType {
 	private ASNInteger innerValue;
 	
 	public void setType(DialogServiceProviderType t) {
-		innerValue=new ASNInteger(t.getType());		
+		innerValue=new ASNInteger(t.getType(),"DialogServiceProvider",0,2,false);		
 	}
 	
 	public DialogServiceProviderType getType() throws ParseException {
 		if(innerValue==null)
 			return null;
 		
-		Long realValue=innerValue.getValue();
+		Integer realValue=innerValue.getIntValue();
 		if(realValue==null)
 			return null;
 		

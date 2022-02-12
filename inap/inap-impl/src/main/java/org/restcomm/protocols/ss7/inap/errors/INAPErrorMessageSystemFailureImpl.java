@@ -33,14 +33,14 @@ import org.restcomm.protocols.ss7.inap.api.errors.UnavailableNetworkResource;
  */
 public class INAPErrorMessageSystemFailureImpl extends EnumeratedINAPErrorMessage1Impl implements INAPErrorMessageSystemFailure {
 	protected INAPErrorMessageSystemFailureImpl(UnavailableNetworkResource unavailableNetworkResource) {
-        super((long) INAPErrorCode.systemFailure);
+        super(INAPErrorCode.systemFailure,"SystemFailure",0,4);
 
         if(unavailableNetworkResource!=null)
-        	setValue(Long.valueOf(unavailableNetworkResource.getCode()));        
+        	setValue(unavailableNetworkResource.getCode());        
     }
 
     public INAPErrorMessageSystemFailureImpl() {
-        super((long) INAPErrorCode.systemFailure);
+        super(INAPErrorCode.systemFailure,"SystemFailure",0,4);
     }
 
     public boolean isEmSystemFailure() {
@@ -53,11 +53,11 @@ public class INAPErrorMessageSystemFailureImpl extends EnumeratedINAPErrorMessag
 
     @Override
     public UnavailableNetworkResource getUnavailableNetworkResource() {
-    	Long value=getValue();
+    	Integer value=getValue();
     	if(value==null)
     		return null;
     	
-    	return UnavailableNetworkResource.getInstance(value.intValue());
+    	return UnavailableNetworkResource.getInstance(value);
     }
 
     @Override

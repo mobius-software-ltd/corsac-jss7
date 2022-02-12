@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNLCSEvent extends ASNEnumerated {
 	public ASNLCSEvent() {
-		
+		super("LCSEvent",0,3,false);
 	}
 	
 	public ASNLCSEvent(LCSEvent t) {
-		super(t.getEvent());
+		super(t.getEvent(),"LCSEvent",0,3,false);
 	}
 	
 	public LCSEvent getType() {

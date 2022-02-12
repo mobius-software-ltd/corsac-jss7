@@ -9,11 +9,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,lengthIndefinite=false)
 public class ASNAdditionalRoamingNotAllowedCauseImpl extends ASNEnumerated {
 	public ASNAdditionalRoamingNotAllowedCauseImpl() {
-		
+		super("AdditionalRoamingNotAllowedCause",0,0,false);
 	}
 	
 	public ASNAdditionalRoamingNotAllowedCauseImpl(AdditionalRoamingNotAllowedCause t) {
-		super(t.getCode());
+		super(t.getCode(),"AdditionalRoamingNotAllowedCause",0,0,false);
 	}
 	
 	public AdditionalRoamingNotAllowedCause getType() {

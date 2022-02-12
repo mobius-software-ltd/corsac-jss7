@@ -34,10 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNIA5String;
  */
 public class DisplayInformationImpl extends ASNIA5String implements DisplayInformation {
 	public DisplayInformationImpl() {
+		super("DisplayInformation",null,null,false);
     }
 
     public DisplayInformationImpl(String value) {
-    	super(value);
+    	super(value,"DisplayInformation",null,null,false);
     }
 
     public String getString() {

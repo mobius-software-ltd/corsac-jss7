@@ -34,15 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  *
  */
 public class CategoryImpl extends ASNSingleByte implements Category {
-	public CategoryImpl() {        
+	public CategoryImpl() { 
+		super("Category",0,15,false);
     }
 
     public CategoryImpl(int data) {
-    	super(data);
+    	super(data,"Category",0,15,false);
     }
 
     public CategoryImpl(CategoryValue value) {
-    	super(value != null ? value.getCode() : 0);
+    	super(value != null ? value.getCode() : 0,"Category",0,15,false);
     }
 
     public int getData() {

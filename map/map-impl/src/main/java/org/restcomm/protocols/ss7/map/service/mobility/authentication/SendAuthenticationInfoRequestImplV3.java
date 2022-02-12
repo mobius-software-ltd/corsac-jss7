@@ -88,7 +88,7 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
             Integer numberOfRequestedAdditionalVectors, boolean additionalVectorsAreForEPS) {
         this.imsi = imsi;
                 
-        this.numberOfRequestedVectors = new ASNInteger(numberOfRequestedVectors);
+        this.numberOfRequestedVectors = new ASNInteger(numberOfRequestedVectors,"NumberOfRequestedVectors",1,5,false);
         
         if(segmentationProhibited)
         	this.segmentationProhibited = new ASNNull();
@@ -105,7 +105,7 @@ public class SendAuthenticationInfoRequestImplV3 extends MobilityMessageImpl imp
         this.requestingPlmnId = requestingPlmnId;
         
         if(numberOfRequestedAdditionalVectors!=null)
-        	this.numberOfRequestedAdditionalVectors = new ASNInteger(numberOfRequestedAdditionalVectors);
+        	this.numberOfRequestedAdditionalVectors = new ASNInteger(numberOfRequestedAdditionalVectors,"NumberOfRequestedAdditionalVectors",1,5,false);
         	
         if(additionalVectorsAreForEPS)
         	this.additionalVectorsAreForEPS = new ASNNull();

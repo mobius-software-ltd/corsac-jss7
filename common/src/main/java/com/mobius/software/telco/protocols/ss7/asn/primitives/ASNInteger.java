@@ -35,24 +35,53 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=2,constructed=false,lengthIndefinite=false)
 public class ASNInteger {
 	private static Long[] shifts= {0x00FFFFFFFFFFFFFFL, 0x00FFFFFFFFFFFFL, 0x00FFFFFFFFFFL, 0x00FFFFFFFFL, 0x00FFFFFFL, 0x00FFFFL, 0x00FFL, 0x00L};
 	
 	private Long value;
+	private String name;
+	private Long minValue;
+	private Long maxValue;
+	private Boolean isRoot;
 	
+	//required for parser
 	public ASNInteger() {
 		
 	}
 	
-	public ASNInteger(Long value) {
-		this.value=value;
+	public ASNInteger(String name,Long minValue,Long maxValue,Boolean isRoot) {
+		this.name = name;
+		this.minValue = minValue;
+		this.maxValue = maxValue;
+		this.isRoot = isRoot;
 	}
 	
-	public ASNInteger(Integer value) {
+	public ASNInteger(Long value,String name,Long minValue,Long maxValue,Boolean isRoot) {
+		this.value=value;
+		this.name = name;
+		this.minValue = minValue;
+		this.maxValue = maxValue;
+		this.isRoot = isRoot;
+	}
+	
+	public ASNInteger(Integer value,String name,Integer minValue,Integer maxValue,Boolean isRoot) {
 		if(value!=null)
 			this.value=value.longValue();
+		
+		this.name = name;
+		
+		if(minValue!=null)
+			this.minValue = minValue.longValue();
+		
+		if(maxValue!=null)
+			this.maxValue = maxValue.longValue();
+		
+		this.isRoot = isRoot;
 	}
 	
 	public Long getValue() {
@@ -99,6 +128,27 @@ public class ASNInteger {
 			value=(value<<8) | (buffer.readByte()&0x0FF);
 		
 		return false;
+	}
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if((minValue!=null || maxValue!=null) && value==null) {
+			if(isRoot==null || !isRoot)
+				throw new ASNParsingComponentException(name + " is required",ASNParsingComponentExceptionReason.MistypedParameter);
+			else
+				throw new ASNParsingComponentException(name + " is required",ASNParsingComponentExceptionReason.MistypedRootParameter);
+		} else if(minValue!=null && value!=null && value<minValue){
+			if(isRoot==null || !isRoot)
+				throw new ASNParsingComponentException(name + " should be at least " + minValue,ASNParsingComponentExceptionReason.MistypedParameter);
+			else
+				throw new ASNParsingComponentException(name + " should be at least " + minValue,ASNParsingComponentExceptionReason.MistypedRootParameter);
+		} else if(maxValue!=null && value!=null && value>maxValue){
+			if(isRoot==null || !isRoot)
+				throw new ASNParsingComponentException(name + " should be at most " + maxValue,ASNParsingComponentExceptionReason.MistypedParameter);
+			else
+				throw new ASNParsingComponentException(name + " should be at most " + maxValue,ASNParsingComponentExceptionReason.MistypedRootParameter);
+		} 
+			
 	}
 	
 	public static int getLength(Long value)

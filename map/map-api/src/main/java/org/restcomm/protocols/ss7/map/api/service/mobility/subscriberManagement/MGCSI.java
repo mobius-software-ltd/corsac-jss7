@@ -58,7 +58,7 @@ public interface MGCSI {
 
     List<MMCode> getMobilityTriggers();
 
-    long getServiceKey();
+    int getServiceKey();
 
     ISDNAddressString getGsmSCFAddress();
 

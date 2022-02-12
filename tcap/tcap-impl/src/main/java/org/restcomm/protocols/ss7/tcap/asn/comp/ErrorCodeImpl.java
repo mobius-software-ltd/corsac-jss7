@@ -48,19 +48,19 @@ public class ErrorCodeImpl implements ErrorCode {
 
 	public void setGlobalErrorCode(List<Long> globalErrorCode) {
 		this.localErrorCode=null;
-		this.globalErrorCode=new ASNObjectIdentifier(globalErrorCode);		
+		this.globalErrorCode=new ASNObjectIdentifier(globalErrorCode,"GlobalErrorCode",true,false);		
 	}
 
-	public Long getLocalErrorCode() {
+	public Integer getLocalErrorCode() {
 		if(localErrorCode==null)
 			return null;
 		
-		return localErrorCode.getValue();
+		return localErrorCode.getIntValue();
 	}
 
-	public void setLocalErrorCode(Long localErrorCode) {
+	public void setLocalErrorCode(Integer localErrorCode) {
 		this.globalErrorCode=null;
-		this.localErrorCode = new ASNInteger(localErrorCode);
+		this.localErrorCode = new ASNInteger(localErrorCode,"LocalErrorCode",Integer.MIN_VALUE,Integer.MAX_VALUE,false);
 	}
 
 	public ErrorCodeType getErrorType() {

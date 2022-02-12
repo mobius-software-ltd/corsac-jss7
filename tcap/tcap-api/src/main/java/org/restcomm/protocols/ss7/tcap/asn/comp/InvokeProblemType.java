@@ -79,20 +79,20 @@ public enum InvokeProblemType {
      */
     UnexpectedLinkedOperation(7);
 
-    private long type;
+    private int type;
 
-    InvokeProblemType(long l) {
+    InvokeProblemType(int l) {
         this.type = l;
     }
 
     /**
      * @return the type
      */
-    public long getType() {
+    public int getType() {
         return type;
     }
 
-    public static InvokeProblemType getFromInt(long t) throws ParseException {
+    public static InvokeProblemType getFromInt(int t) throws ParseException {
         if (t == 0) {
             return DuplicateInvokeID;
         } else if (t == 1) {

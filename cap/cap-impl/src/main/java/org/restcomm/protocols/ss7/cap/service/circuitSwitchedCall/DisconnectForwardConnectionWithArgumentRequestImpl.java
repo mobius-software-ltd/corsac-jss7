@@ -54,7 +54,7 @@ public class DisconnectForwardConnectionWithArgumentRequestImpl extends CircuitS
 
     public DisconnectForwardConnectionWithArgumentRequestImpl(Integer callSegmentId, CAPINAPExtensions extensions) {
     	if(callSegmentId!=null)
-    		this.callSegmentID = new ASNInteger(callSegmentId);
+    		this.callSegmentID = new ASNInteger(callSegmentId,"CallSegmentID",0,127,false);
     		
         this.extensions = extensions;
     }

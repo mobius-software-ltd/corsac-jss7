@@ -142,7 +142,7 @@ public class ReturnResultLastTest {
     public void testEncode() throws ASNException {
     	byte[] expected = this.getLDataEmpty();
         ReturnResultLast rrl = TcapFactory.createComponentReturnResultLast();
-        rrl.setInvokeId(0l);
+        rrl.setInvokeId(0);
 
         ComponentImpl comp=new ComponentImpl();
         comp.setReturnResultLast(rrl);
@@ -152,7 +152,7 @@ public class ReturnResultLastTest {
 
         expected = this.getNLDataEmpty();
         ReturnResult rr = TcapFactory.createComponentReturnResult();
-        rr.setInvokeId(0l);
+        rr.setInvokeId(0);
         comp=new ComponentImpl();
         comp.setReturnResult(rr);
         
@@ -162,8 +162,8 @@ public class ReturnResultLastTest {
 
         expected = this.getLDataCommon();
         rrl = TcapFactory.createComponentReturnResultLast();
-        rrl.setInvokeId(1l);
-        rrl.setOperationCode(45L);
+        rrl.setInvokeId(1);
+        rrl.setOperationCode(45);
         TCEndTestASN parameter=new TCEndTestASN(Unpooled.wrappedBuffer(getParameterData()));
         rrl.setParameter(parameter);
         comp=new ComponentImpl();
@@ -175,8 +175,8 @@ public class ReturnResultLastTest {
 
         expected = this.getNLDataCommon();
         rr = TcapFactory.createComponentReturnResult();
-        rr.setInvokeId(1l);
-        rr.setOperationCode(45L);
+        rr.setInvokeId(1);
+        rr.setOperationCode(45);
         parameter=new TCEndTestASN(Unpooled.wrappedBuffer(getParameterData()));
         rr.setParameter(parameter);
         comp=new ComponentImpl();

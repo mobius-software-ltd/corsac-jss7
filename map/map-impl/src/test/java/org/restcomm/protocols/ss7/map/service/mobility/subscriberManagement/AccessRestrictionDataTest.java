@@ -46,7 +46,7 @@ public class AccessRestrictionDataTest {
     };
 
     public byte[] getData1() {
-        return new byte[] { 3, 2, 2, -88 };
+        return new byte[] { 3, 2, 3, -88 };
     };
 
     @Test(groups = { "functional.decode", "primitives" })

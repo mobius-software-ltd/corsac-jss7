@@ -62,25 +62,25 @@ public class CAI_GSM0224Impl implements CAI_GSM0224 {
 
     public CAI_GSM0224Impl(Integer e1, Integer e2, Integer e3, Integer e4, Integer e5, Integer e6, Integer e7) {
     	if(e1!=null)
-    		this.e1 = new ASNInteger(e1);
+    		this.e1 = new ASNInteger(e1,"E1",0,8191,false);
     		
     	if(e2!=null)
-    		this.e2 = new ASNInteger(e2);
+    		this.e2 = new ASNInteger(e2,"E2",0,8191,false);
     		
     	if(e3!=null)
-    		this.e3 = new ASNInteger(e3);
+    		this.e3 = new ASNInteger(e3,"E3",0,8191,false);
     		
     	if(e4!=null)
-    		this.e4 = new ASNInteger(e4);
+    		this.e4 = new ASNInteger(e4,"E4",0,8191,false);
     		
     	if(e5!=null)
-    		this.e5 = new ASNInteger(e5);
+    		this.e5 = new ASNInteger(e5,"E5",0,8191,false);
     		
     	if(e6!=null)
-    		this.e6 = new ASNInteger(e6);
+    		this.e6 = new ASNInteger(e6,"E6",0,8191,false);
     		
     	if(e7!=null)
-    		this.e7 = new ASNInteger(e7);    		
+    		this.e7 = new ASNInteger(e7,"E7",0,8191,false);    		
     }
 
     public Integer getE1() {

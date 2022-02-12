@@ -60,7 +60,7 @@ public class ChargingAnalysisInputDataImpl implements ChargingAnalysisInputData 
     		this.tariffActivityCode=new ASNOctetString(tariffActivityCode,"ChargingOrigin",4,4,false);
     	
     	if(chargingCode!=null)
-    		this.chargingCode=new ASNInteger(chargingCode);    		
+    		this.chargingCode=new ASNInteger(chargingCode,"ChargingCode",0,4095,false);    		
     }
 
     public ByteBuf getChargingOrigin() {

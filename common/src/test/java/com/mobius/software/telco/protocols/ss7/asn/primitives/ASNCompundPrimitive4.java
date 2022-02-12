@@ -44,9 +44,9 @@ public class ASNCompundPrimitive4 {
 	}
 	
 	public ASNCompundPrimitive4(Long field1,Long field2,Boolean field3) {
-		this.field1=new ASNInteger(field1);
-		this.field2=new ASNInteger(field2);
-		this.field3=new ASNBoolean(field3);
+		this.field1=new ASNInteger(field1,null,null,null,false);
+		this.field2=new ASNInteger(field2,null,null,null,false);
+		this.field3=new ASNBoolean(field3,null,false,false);
 	}
 
 	public Long getField1() {
@@ -62,7 +62,7 @@ public class ASNCompundPrimitive4 {
 			return;
 		}
 		
-		this.field1=new ASNInteger(field1);		
+		this.field1=new ASNInteger(field1,null,null,null,false);		
 	}
 
 	public Long getField2() {
@@ -78,7 +78,7 @@ public class ASNCompundPrimitive4 {
 			return;
 		}
 		
-		this.field2=new ASNInteger(field2);		
+		this.field2=new ASNInteger(field2,null,null,null,false);		
 	}
 
 	public Boolean getField3() {
@@ -94,6 +94,6 @@ public class ASNCompundPrimitive4 {
 			return;
 		}
 		
-		this.field3=new ASNBoolean(field3);		
+		this.field3=new ASNBoolean(field3,null,false,false);		
 	}
 }

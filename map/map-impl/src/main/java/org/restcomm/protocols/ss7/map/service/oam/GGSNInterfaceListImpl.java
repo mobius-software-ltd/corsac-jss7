@@ -37,11 +37,11 @@ public class GGSNInterfaceListImpl extends ASNBitString implements GGSNInterface
     static final int _ID_gmb = 2;
 
     public GGSNInterfaceListImpl() {
-    	super(2);
+    	super("GGSNInterfaceList",2,7,false);
     }
 
     public GGSNInterfaceListImpl(boolean gn, boolean gi, boolean gmb) {
-    	super(2);
+    	super("GGSNInterfaceList",2,7,false);
     	if (gn)
             this.setBit(_ID_gn);
         if (gi)

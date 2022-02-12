@@ -46,10 +46,10 @@ public class ROVolumeIfTariffSwitchImpl implements ROVolumeIfTariffSwitch {
 
     public ROVolumeIfTariffSwitchImpl(Integer roVolumeSinceLastTariffSwitch, Integer roVolumeTariffSwitchInterval) {
     	if(roVolumeSinceLastTariffSwitch!=null)
-    		this.roVolumeSinceLastTariffSwitch = new ASNInteger(roVolumeSinceLastTariffSwitch);
+    		this.roVolumeSinceLastTariffSwitch = new ASNInteger(roVolumeSinceLastTariffSwitch,"ROVolumeSinceLastTariffSwitch",0,255,false);
     		
     	if(roVolumeTariffSwitchInterval!=null)
-    		this.roVolumeTariffSwitchInterval = new ASNInteger(roVolumeTariffSwitchInterval);    		
+    		this.roVolumeTariffSwitchInterval = new ASNInteger(roVolumeTariffSwitchInterval,"ROVolumeTariffSwitchInterval",0,255,false);    		
     }
 
     public Integer getROVolumeSinceLastTariffSwitch() {

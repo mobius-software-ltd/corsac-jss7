@@ -40,13 +40,13 @@ public class SupportedGADShapesImpl extends ASNBitString implements SupportedGAD
     private static final int _INDEX_ELLIPSOID_ARC = 6;
 
     public SupportedGADShapesImpl() {
-    	super(6);
+    	super("SupportedGADShapes",6,15,false);
     }
 
     public SupportedGADShapesImpl(boolean ellipsoidPoint, boolean ellipsoidPointWithUncertaintyCircle,
             boolean ellipsoidPointWithUncertaintyEllipse, boolean polygon, boolean ellipsoidPointWithAltitude,
             boolean ellipsoidPointWithAltitudeAndUncertaintyElipsoid, boolean ellipsoidArc) {
-    	super(6);
+    	super("SupportedGADShapes",6,15,false);
     	if (ellipsoidPoint)
             this.setBit(_INDEX_ELLIPSOID_POINT);
         if (ellipsoidPointWithUncertaintyCircle)

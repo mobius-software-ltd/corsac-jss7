@@ -30,11 +30,16 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=25,constructed=false,lengthIndefinite=false)
 public class ASNGraphicString extends ASNIA5String {
+	//required for parser
 	public ASNGraphicString() {
-		
+					
+	}
+				
+	public ASNGraphicString(String name,Integer minLength,Integer maxLength,Boolean isRoot) {
+		super(name,minLength,maxLength,isRoot);
 	}
 	
-	public ASNGraphicString(String value) {
-		super(value);
+	public ASNGraphicString(String value,String name,Integer minLength,Integer maxLength,Boolean isRoot) {
+		super(value,name,minLength,maxLength,isRoot);
 	}
 }

@@ -33,10 +33,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 */
 public class CUGIndexImpl extends ASNInteger implements CUGIndex {
 	public CUGIndexImpl() {
+		super("CUGIndex",0L,32767L,false);
     }
 
     public CUGIndexImpl(int data) {
-        super(data);
+        super(data,"CUGIndex",0,32767,false);
     }
 
     public int getData() {

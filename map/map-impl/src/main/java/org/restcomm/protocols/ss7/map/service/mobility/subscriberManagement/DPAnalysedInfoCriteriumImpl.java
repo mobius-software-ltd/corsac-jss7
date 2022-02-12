@@ -58,10 +58,10 @@ public class DPAnalysedInfoCriteriumImpl implements DPAnalysedInfoCriterium {
     public DPAnalysedInfoCriteriumImpl() {
     }
 
-    public DPAnalysedInfoCriteriumImpl(ISDNAddressString dialledNumber, long serviceKey, ISDNAddressString gsmSCFAddress,
+    public DPAnalysedInfoCriteriumImpl(ISDNAddressString dialledNumber, int serviceKey, ISDNAddressString gsmSCFAddress,
             DefaultCallHandling defaultCallHandling, MAPExtensionContainer extensionContainer) {
         this.dialledNumber = dialledNumber;
-        this.serviceKey = new ASNInteger(serviceKey);
+        this.serviceKey = new ASNInteger(serviceKey,"ServiceKey",0,Integer.MAX_VALUE,false);
         this.gsmSCFAddress = gsmSCFAddress;
         
         if(defaultCallHandling!=null)
@@ -74,11 +74,11 @@ public class DPAnalysedInfoCriteriumImpl implements DPAnalysedInfoCriterium {
         return this.dialledNumber;
     }
 
-    public long getServiceKey() {
+    public int getServiceKey() {
     	if(this.serviceKey==null)
     		return 0;
     	
-        return this.serviceKey.getValue();
+        return this.serviceKey.getIntValue();
     }
 
     public ISDNAddressString getGsmSCFAddress() {

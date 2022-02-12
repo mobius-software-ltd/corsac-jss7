@@ -47,14 +47,14 @@ public class MAPErrorMessageUnauthorizedLCSClientImpl extends MAPErrorMessageImp
 
     public MAPErrorMessageUnauthorizedLCSClientImpl(UnauthorizedLCSClientDiagnostic unauthorizedLCSClientDiagnostic,
     		MAPExtensionContainer extensionContainer) {
-        super((long) MAPErrorCode.unauthorizedLCSClient);
+        super(MAPErrorCode.unauthorizedLCSClient);
 
         this.unauthorizedLCSClientDiagnostic = new ASNUnauthorizedLCSClientDiagnosticImpl(unauthorizedLCSClientDiagnostic);
         this.extensionContainer = extensionContainer;
     }
 
     public MAPErrorMessageUnauthorizedLCSClientImpl() {
-        super((long) MAPErrorCode.unauthorizedLCSClient);
+        super(MAPErrorCode.unauthorizedLCSClient);
     }
 
     public boolean isEmUnauthorizedLCSClient() {

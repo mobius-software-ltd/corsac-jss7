@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNOccurenceInfo extends ASNEnumerated {
 	public ASNOccurenceInfo() {
-		
+		super("OccurrenceInfo",0,1,false);
 	}
 	
 	public ASNOccurenceInfo(OccurrenceInfo t) {
-		super(t.getInfo());
+		super(t.getInfo(),"OccurrenceInfo",0,1,false);
 	}
 	
 	public OccurrenceInfo getType() {

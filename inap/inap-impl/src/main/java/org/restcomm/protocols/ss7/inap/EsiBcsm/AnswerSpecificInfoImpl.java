@@ -54,7 +54,7 @@ public class AnswerSpecificInfoImpl implements AnswerSpecificInfo {
 
     public AnswerSpecificInfoImpl(Integer timeToAnswer,BackwardCallIndicatorsIsup backwardCallIndicators,BackwardGVNSIndicator backwardGVNSIndicator) {
     	if(timeToAnswer!=null)
-        	this.timeToAnswer = new ASNInteger(timeToAnswer);
+        	this.timeToAnswer = new ASNInteger(timeToAnswer,"TimeToAnswer",0,2047,false);
         	
         this.backwardCallIndicators=backwardCallIndicators;
         this.backwardGVNSIndicator=backwardGVNSIndicator;        

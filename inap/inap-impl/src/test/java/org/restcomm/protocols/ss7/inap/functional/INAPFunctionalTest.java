@@ -221,7 +221,7 @@ public class INAPFunctionalTest extends SccpHarness {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
             
             @Override
-            public void onErrorComponent(INAPDialog inapDialog, Long invokeId, INAPErrorMessage capErrorMessage) {
+            public void onErrorComponent(INAPDialog inapDialog, Integer invokeId, INAPErrorMessage capErrorMessage) {
                 super.onErrorComponent(inapDialog, invokeId, capErrorMessage);
 
                 assertTrue(capErrorMessage.isEmSystemFailure());
@@ -828,7 +828,7 @@ TC-CONTINUE + SpecializedResourceReportRequest
                 ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
             }
 
-            private long playAnnounsmentInvokeId;
+            private int playAnnounsmentInvokeId;
 
             public void onPlayAnnouncementRequest(PlayAnnouncementRequest ind) {
                 super.onPlayAnnouncementRequest(ind);
@@ -1103,7 +1103,7 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
             private int dialogStep;
-            private long promptAndCollectUserInformationInvokeId;
+            private int promptAndCollectUserInformationInvokeId;
 
             public void onResetTimerRequest(ResetTimerRequest ind) {
                 super.onResetTimerRequest(ind);
@@ -1129,7 +1129,7 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
                 assertTrue(ind.getDisconnectFromIPForbidden());
                 assertNull(ind.getInformationToSend());
                 assertNull(ind.getExtensions());
-                assertNull(ind.getRequestAnnouncementStartedNotification());
+                assertFalse(ind.getRequestAnnouncementStartedNotification());
 
                 dialogStep = 1;
             }
@@ -1575,13 +1575,13 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             private int dialogStep;
             private long resetTimerRequestInvokeId;
 
-            public void onInvokeTimeout(INAPDialog inapDialog, Long invokeId) {
+            public void onInvokeTimeout(INAPDialog inapDialog, Integer invokeId) {
                 super.onInvokeTimeout(inapDialog, invokeId);
 
                 INAPDialogCircuitSwitchedCall dlg = (INAPDialogCircuitSwitchedCall) inapDialog;
 
                 try {
-                    long invId = dlg.addCancelRequest();
+                    int invId = dlg.addCancelRequest();
                     this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelRequest, null, sequence++));
                     dlg.cancelInvocation(invId);
                     dlg.send();
@@ -1594,7 +1594,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 }
             }
 
-            public void onRejectComponent(INAPDialog inapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(INAPDialog inapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(inapDialog, invokeId, problem, isLocalOriginated);
 
                 assertEquals(resetTimerRequestInvokeId, (long) invokeId);
@@ -1656,7 +1656,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 super.onDialogRelease(inapDialog);
             }
 
-            long resetTimerRequestInvokeId;
+            int resetTimerRequestInvokeId;
 
             public void onResetTimerRequest(ResetTimerRequest ind) {
                 super.onResetTimerRequest(ind);
@@ -2415,7 +2415,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             int dialogStep = 0;
 
             @Override
-            public void onRejectComponent(INAPDialog inapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(INAPDialog inapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(inapDialog, invokeId, problem, isLocalOriginated);
 
                 dialogStep++;
@@ -2456,11 +2456,11 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
         };
 
         Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
-            long invokeId1;
-            long invokeId2;
-            long outInvokeId1;
-            long outInvokeId2;
-            long outInvokeId3;
+            int invokeId1;
+            int invokeId2;
+            int outInvokeId1;
+            int outInvokeId2;
+            int outInvokeId3;
 
             public void onInitialDPRequest(InitialDPRequest ind) {
                 super.onInitialDPRequest(ind);
@@ -2476,7 +2476,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
             }
 
-            public void onRejectComponent(INAPDialog inapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(INAPDialog inapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(inapDialog, invokeId, problem, isLocalOriginated);
 
                 try {
@@ -2507,8 +2507,8 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
 
                 try {
                     outInvokeId1 = dlg.addSpecializedResourceReportRequest(invokeId1);
-                    outInvokeId2 = dlg.addSpecializedResourceReportRequest((long) 50);
-                    outInvokeId3 = dlg.sendDataComponent(null,invokeId2,null,2000L,(long) INAPOperationCode.continueCode,null,true,false);
+                    outInvokeId2 = dlg.addSpecializedResourceReportRequest(50);
+                    outInvokeId3 = dlg.sendDataComponent(null,invokeId2,null,2000L,INAPOperationCode.continueCode,null,true,false);
 
                     dlg.addSpecializedResourceReportRequest(invokeId2);
                     this.observerdEvents.add(TestEvent.createSentEvent(EventType.SpecializedResourceReportRequest, null,
@@ -2627,7 +2627,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
             int rejectStep = 0;
 
             @Override
-            public void onRejectComponent(INAPDialog inapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(INAPDialog inapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(inapDialog, invokeId, problem, isLocalOriginated);
 
                 rejectStep++;
@@ -2674,13 +2674,13 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
         Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
             int dialogStep = 0;
             int rejectStep = 0;
-            long invokeId1;
-            long invokeId2;
-            long invokeId3;
-            long invokeId4;
-            long invokeId6;
-            long invokeId7;
-            long invokeId8;
+            int invokeId1;
+            int invokeId2;
+            int invokeId3;
+            int invokeId4;
+            int invokeId6;
+            int invokeId7;
+            int invokeId8;
 
             public void onInitialDPRequest(InitialDPRequest ind) {
                 super.onInitialDPRequest(ind);
@@ -2741,7 +2741,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 }
             }
 
-            public void onRejectComponent(INAPDialog inapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+            public void onRejectComponent(INAPDialog inapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
                 super.onRejectComponent(inapDialog, invokeId, problem, isLocalOriginated);
 
                 rejectStep++;
@@ -2782,7 +2782,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 INAPDialogCircuitSwitchedCallImpl dlg = (INAPDialogCircuitSwitchedCallImpl) inapDialog;
 
                 try {
-                    dlg.sendDataComponent(invokeId1, null, null, null, (long) INAPOperationCode.initialDP, null, false, true);
+                    dlg.sendDataComponent(invokeId1, null, null, null, INAPOperationCode.initialDP, null, false, true);
                     
                     INAPErrorMessage mem = this.inapErrorMessageFactory
                             .createINAPErrorMessageSystemFailure(UnavailableNetworkResource.endUserFailure);
@@ -2811,7 +2811,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     dlg.sendErrorComponent(invokeId6, mem);
                     this.observerdEvents.add(TestEvent.createSentEvent(EventType.ErrorComponent, null, sequence++));
 
-                    dlg.sendDataComponent(invokeId7, null, null, null, (long) INAPOperationCode.releaseCall, null, false, true);
+                    dlg.sendDataComponent(invokeId7, null, null, null, INAPOperationCode.releaseCall, null, false, true);
                     
                     mem = this.inapErrorMessageFactory
                             .createINAPErrorMessageSystemFailure(UnavailableNetworkResource.resourceStatusFailure);

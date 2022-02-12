@@ -45,7 +45,7 @@ public class MAPErrorMessageCUGRejectImpl extends MAPErrorMessageImpl implements
 	private MAPExtensionContainer extensionContainer;
 
     public MAPErrorMessageCUGRejectImpl(CUGRejectCause cugRejectCause, MAPExtensionContainer extensionContainer) {
-        super((long) MAPErrorCode.cugReject);
+        super(MAPErrorCode.cugReject);
 
         if(cugRejectCause!=null)
         	this.cugRejectCause = new ASNCUGRejectCauseImpl(cugRejectCause);
@@ -54,7 +54,7 @@ public class MAPErrorMessageCUGRejectImpl extends MAPErrorMessageImpl implements
     }
 
     public MAPErrorMessageCUGRejectImpl() {
-        super((long) MAPErrorCode.cugReject);
+        super(MAPErrorCode.cugReject);
     }
 
     public boolean isEmCUGReject() {

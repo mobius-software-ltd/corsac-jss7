@@ -48,14 +48,14 @@ public class BurstListImpl implements BurstList {
 
     public BurstListImpl(Integer warningPeriod, Burst burst) {
     	if(warningPeriod!=null)
-    		this.warningPeriod = new ASNInteger(warningPeriod);
+    		this.warningPeriod = new ASNInteger(warningPeriod,"WarningPeriod",1,1200,false);
     		
         this.bursts = burst;
     }
 
     public Integer getWarningPeriod() {
     	if(warningPeriod==null)
-    		return null;
+    		return 30;
     	
         return warningPeriod.getIntValue();
     }

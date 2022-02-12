@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNLoggingIntervalImpl extends ASNEnumerated {
 	public ASNLoggingIntervalImpl() {
-		
+		super("LoggingInterval",0,7,false);
 	}
 	
 	public ASNLoggingIntervalImpl(LoggingInterval t) {
-		super(t.getCode());
+		super(t.getCode(),"LoggingInterval",0,7,false);
 	}
 	
 	public LoggingInterval getType() {

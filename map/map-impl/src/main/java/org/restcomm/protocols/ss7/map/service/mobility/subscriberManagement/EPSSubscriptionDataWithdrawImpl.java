@@ -55,7 +55,7 @@ public class EPSSubscriptionDataWithdrawImpl implements EPSSubscriptionDataWithd
     	if(contextIdList!=null) {
     		List<ASNInteger> data=new ArrayList<ASNInteger>();
     		for(Integer curr:contextIdList) {
-    			ASNInteger currData=new ASNInteger(curr);
+    			ASNInteger currData=new ASNInteger(curr,"ContextId",1,50,false);
     			data.add(currData);
     		}
     		

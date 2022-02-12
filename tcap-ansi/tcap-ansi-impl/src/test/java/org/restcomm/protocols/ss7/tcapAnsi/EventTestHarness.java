@@ -159,7 +159,7 @@ public abstract class EventTestHarness implements TCListener {
             // no dialog patch - we are adding Invoke primitive
             Invoke inv = TcapFactory.createComponentInvokeNotLast();
             inv.setInvokeId(this.dialog.getNewInvokeId());
-            OperationCode oc = TcapFactory.createNationalOperationCode(10L);            
+            OperationCode oc = TcapFactory.createNationalOperationCode(10);            
             inv.setOperationCode(oc);
             ASNOctetString innerString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 3, 4, 5 }),null,null,null,false);
             inv.setSeqParameter(innerString);
@@ -229,7 +229,7 @@ public abstract class EventTestHarness implements TCListener {
         // create some INVOKE
         Invoke invoke = cpFactory.createTCInvokeRequestNotLast(InvokeClass.Class4);
         invoke.setInvokeId(this.dialog.getNewInvokeId());
-        OperationCode oc = TcapFactory.createNationalOperationCode(12L);
+        OperationCode oc = TcapFactory.createNationalOperationCode(12);
         invoke.setOperationCode(oc);
         // no parameter
         WrappedComponentImpl component=new WrappedComponentImpl();

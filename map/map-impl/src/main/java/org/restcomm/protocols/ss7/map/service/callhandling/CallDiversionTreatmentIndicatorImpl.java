@@ -33,15 +33,15 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class CallDiversionTreatmentIndicatorImpl extends ASNSingleByte implements CallDiversionTreatmentIndicator {
 	public CallDiversionTreatmentIndicatorImpl() {
-        super();
+        super("CallDiversionTreatmentIndicator",1,2,false);
     }
 
     public CallDiversionTreatmentIndicatorImpl(int data) {
-    	super(data);
+    	super(data,"CallDiversionTreatmentIndicator",1,2,false);
     }
 
     public CallDiversionTreatmentIndicatorImpl(CallDiversionTreatmentIndicatorValue value) {
-    	super(value != null ? value.getCode() : 0);
+    	super(value != null ? value.getCode() : 0,"CallDiversionTreatmentIndicator",1,2,false);
     }
 
     public Integer getData() {

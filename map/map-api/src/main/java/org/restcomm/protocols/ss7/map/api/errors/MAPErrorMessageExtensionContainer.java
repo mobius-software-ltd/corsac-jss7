@@ -32,7 +32,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer
  */
 public interface MAPErrorMessageExtensionContainer extends MAPErrorMessage {
 
-    Long getErrorCode();
+    Integer getErrorCode();
 
     MAPExtensionContainer getExtensionContainer();
 

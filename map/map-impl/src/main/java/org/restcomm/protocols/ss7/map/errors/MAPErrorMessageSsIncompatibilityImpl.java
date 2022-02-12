@@ -53,7 +53,7 @@ public class MAPErrorMessageSsIncompatibilityImpl extends MAPErrorMessageImpl im
     private SSStatus ssStatus;
 
     public MAPErrorMessageSsIncompatibilityImpl(SSCode ssCode, BasicServiceCode basicService, SSStatus ssStatus) {
-        super((long) MAPErrorCode.ssIncompatibility);
+        super(MAPErrorCode.ssIncompatibility);
 
         this.ssCode = ssCode;
         this.basicService=basicService;
@@ -61,7 +61,7 @@ public class MAPErrorMessageSsIncompatibilityImpl extends MAPErrorMessageImpl im
     }
 
     public MAPErrorMessageSsIncompatibilityImpl() {
-        super((long) MAPErrorCode.ssIncompatibility);
+        super(MAPErrorCode.ssIncompatibility);
     }
 
     public boolean isEmSsIncompatibility() {

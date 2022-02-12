@@ -102,7 +102,7 @@ public class TNoAnswerRequestImpl extends CircuitSwitchedCallMessageImpl impleme
         	this.calledFacilityGroup=new FacilityGroupWrapperImpl(calledFacilityGroup);
         
         if(calledFacilityGroupMember!=null)
-        	this.calledFacilityGroupMember=new ASNInteger(calledFacilityGroupMember);
+        	this.calledFacilityGroupMember=new ASNInteger(calledFacilityGroupMember,"CalledFacilityGroupMember",0,Integer.MAX_VALUE,false);
         	
         this.originalCalledPartyID=originalCalledPartyID;
         this.redirectingPartyID=redirectingPartyID;

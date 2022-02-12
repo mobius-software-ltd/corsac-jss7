@@ -49,10 +49,8 @@ public class MAPErrorMessageBusySubscriberImpl extends MAPErrorMessageImpl imple
     @ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=false,index=-1)
     private ASNNull ccbsBusy;
 
-    protected String _PrimitiveName = "MAPErrorMessageBusySubscriber";
-
     public MAPErrorMessageBusySubscriberImpl(MAPExtensionContainer extensionContainer, boolean ccbsPossible, boolean ccbsBusy) {
-        super((long) MAPErrorCode.busySubscriber);
+        super(MAPErrorCode.busySubscriber);
 
         this.extensionContainer = extensionContainer;
         if(ccbsPossible)
@@ -63,7 +61,7 @@ public class MAPErrorMessageBusySubscriberImpl extends MAPErrorMessageImpl imple
     }
 
     public MAPErrorMessageBusySubscriberImpl() {
-        super((long) MAPErrorCode.busySubscriber);
+        super(MAPErrorCode.busySubscriber);
     }
 
     public boolean isEmBusySubscriber() {

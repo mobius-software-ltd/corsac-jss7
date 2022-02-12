@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNUESRVCCCapabilityImpl extends ASNEnumerated {
 	public ASNUESRVCCCapabilityImpl() {
-		
+		super("UESRVCCCapability",0,1,false);
 	}
 	
 	public ASNUESRVCCCapabilityImpl(UESRVCCCapability t) {
-		super(t.getCode());
+		super(t.getCode(),"UESRVCCCapability",0,1,false);
 	}
 	
 	public UESRVCCCapability getType() {

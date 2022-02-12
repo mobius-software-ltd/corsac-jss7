@@ -6,10 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNReportAmountImpl extends ASNEnumerated {
 	public ASNReportAmountImpl() {
+		super("ReportAmount",0,7,false);
 	}
 	
 	public ASNReportAmountImpl(ReportAmount t) {
-		super(t.getCode());
+		super(t.getCode(),"ReportAmount",0,7,false);
 	}
 	
 	public ReportAmount getType() {

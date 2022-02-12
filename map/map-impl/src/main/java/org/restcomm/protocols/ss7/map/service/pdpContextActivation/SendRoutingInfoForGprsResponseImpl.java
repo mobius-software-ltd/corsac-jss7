@@ -65,7 +65,7 @@ public class SendRoutingInfoForGprsResponseImpl extends PdpContextActivationMess
         this.ggsnAddress = ggsnAddress;
         
         if(mobileNotReachableReason!=null)
-        	this.mobileNotReachableReason = new ASNInteger(mobileNotReachableReason);
+        	this.mobileNotReachableReason = new ASNInteger(mobileNotReachableReason,"MobileNotReachableReason",0,255,false);
         	
         this.extensionContainer = extensionContainer;
     }

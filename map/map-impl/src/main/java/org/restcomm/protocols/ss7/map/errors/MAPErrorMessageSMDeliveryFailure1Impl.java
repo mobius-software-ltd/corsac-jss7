@@ -39,14 +39,14 @@ import org.restcomm.protocols.ss7.map.smstpdu.SmsDeliverReportTpduImpl;
 public class MAPErrorMessageSMDeliveryFailure1Impl extends EnumeratedMAPErrorMessage1Impl implements
 MAPErrorMessageSMDeliveryFailure {	
 	public MAPErrorMessageSMDeliveryFailure1Impl(SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause) {
-        super((long) MAPErrorCode.smDeliveryFailure);
+        super(MAPErrorCode.smDeliveryFailure,"SMDeliveryFailure",0,6);
 
         if(smEnumeratedDeliveryFailureCause!=null)
-        	setValue(Long.valueOf(smEnumeratedDeliveryFailureCause.getCode()));
+        	setValue(smEnumeratedDeliveryFailureCause.getCode());
     }
 
     public MAPErrorMessageSMDeliveryFailure1Impl() {
-        super((long) MAPErrorCode.smDeliveryFailure);
+        super(MAPErrorCode.smDeliveryFailure,"SMDeliveryFailure",0,6);
     }
 
     public boolean isEmSMDeliveryFailure() {
@@ -59,7 +59,7 @@ MAPErrorMessageSMDeliveryFailure {
 
     @Override
     public SMEnumeratedDeliveryFailureCause getSMEnumeratedDeliveryFailureCause() {
-    	Long result=getValue();
+    	Integer result=getValue();
     	if(result==null)
     		return null;
     	
@@ -69,7 +69,7 @@ MAPErrorMessageSMDeliveryFailure {
     @Override
     public void setSMEnumeratedDeliveryFailureCause(SMEnumeratedDeliveryFailureCause val) {
     	if(val!=null)
-    		setValue(Long.valueOf(val.getCode()));
+    		setValue(val.getCode());
     	else
     		setValue(null);
     }

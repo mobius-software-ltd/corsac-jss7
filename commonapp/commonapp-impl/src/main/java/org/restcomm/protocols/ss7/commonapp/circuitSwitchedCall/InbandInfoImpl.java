@@ -57,13 +57,13 @@ public class InbandInfoImpl implements InbandInfo {
     		this.messageID = new MessageIDWrapperImpl(messageID);
         
         if(numberOfRepetitions!=null)
-        	this.numberOfRepetitions = new ASNInteger(numberOfRepetitions);        	
+        	this.numberOfRepetitions = new ASNInteger(numberOfRepetitions,"NumberOfRepetitions",1,127,false);        	
         
         if(duration!=null)
-        	this.duration = new ASNInteger(duration);
+        	this.duration = new ASNInteger(duration,"Duration",0,32767,false);
         	
         if(interval!=null)
-        	this.interval = new ASNInteger(interval);        	
+        	this.interval = new ASNInteger(interval,"Interval",0,32767,false);        	
     }
 
     public MessageID getMessageID() {

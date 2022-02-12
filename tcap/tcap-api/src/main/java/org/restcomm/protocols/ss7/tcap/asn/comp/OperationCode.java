@@ -42,11 +42,11 @@ public interface OperationCode {
     // void setOperationType(OperationCodeType t);
     OperationCodeType getOperationType();
 
-    void setLocalOperationCode(Long localOperationCode);
+    void setLocalOperationCode(Integer localOperationCode);
 
     void setGlobalOperationCode(List<Long> globalOperationCode);
 
-    Long getLocalOperationCode();
+    Integer getLocalOperationCode();
 
     List<Long> getGlobalOperationCode();
 }

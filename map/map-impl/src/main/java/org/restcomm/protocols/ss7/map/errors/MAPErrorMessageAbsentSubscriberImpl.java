@@ -54,7 +54,7 @@ public class MAPErrorMessageAbsentSubscriberImpl extends MAPErrorMessageImpl imp
      */
     public MAPErrorMessageAbsentSubscriberImpl(MAPExtensionContainer extensionContainer,
             AbsentSubscriberReason absentSubscriberReason) {
-        super((long) MAPErrorCode.absentSubscriber);
+        super(MAPErrorCode.absentSubscriber);
 
         this.extensionContainer = extensionContainer;
         if(absentSubscriberReason!=null)
@@ -62,7 +62,7 @@ public class MAPErrorMessageAbsentSubscriberImpl extends MAPErrorMessageImpl imp
     }
 
     public MAPErrorMessageAbsentSubscriberImpl() {
-        super((long) MAPErrorCode.absentSubscriber);
+        super(MAPErrorCode.absentSubscriber);
     }
 
     public boolean isEmAbsentSubscriber() {

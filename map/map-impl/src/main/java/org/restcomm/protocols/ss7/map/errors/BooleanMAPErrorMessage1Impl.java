@@ -53,11 +53,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
  */
 @ASNWrappedTag
 public abstract class BooleanMAPErrorMessage1Impl extends MAPErrorMessageImpl {
-	protected Long errorCode;
+	protected Integer errorCode;
 
 	private ASNBoolean value;
 		
-    protected BooleanMAPErrorMessage1Impl(Long errorCode) {
+    protected BooleanMAPErrorMessage1Impl(Integer errorCode) {
         this.errorCode = errorCode;
     }
 
@@ -68,7 +68,7 @@ public abstract class BooleanMAPErrorMessage1Impl extends MAPErrorMessageImpl {
     	if(value==null)
     		this.value=null;
     	else
-    		this.value=new ASNBoolean(value);    	
+    		this.value=new ASNBoolean(value,"Error",true,false);    	
     }
     
     protected Boolean getValue() {
@@ -78,7 +78,7 @@ public abstract class BooleanMAPErrorMessage1Impl extends MAPErrorMessageImpl {
     	return value.getValue();
     }
     
-    public Long getErrorCode() {
+    public Integer getErrorCode() {
         return errorCode;
     }
 

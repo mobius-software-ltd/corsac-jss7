@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNControlTypeImpl extends ASNEnumerated {
 	public ASNControlTypeImpl() {
-		
+		super("ControlType",0,1,false);
 	}
 	
 	public ASNControlTypeImpl(ControlType t) {
-		super(t.getCode());
+		super(t.getCode(),"ControlType",0,1,false);
 	}
 	
 	public ControlType getType() {

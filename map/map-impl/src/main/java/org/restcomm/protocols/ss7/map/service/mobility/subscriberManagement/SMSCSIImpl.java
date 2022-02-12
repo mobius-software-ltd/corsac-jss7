@@ -66,7 +66,7 @@ public class SMSCSIImpl implements SMSCSI {
     		this.smsCamelTdpDataList =new SMSCamelTDPDataListWrapperImpl(smsCamelTdpDataList);    	
     	
         if(camelCapabilityHandling!=null)
-        	this.camelCapabilityHandling = new ASNInteger(camelCapabilityHandling);
+        	this.camelCapabilityHandling = new ASNInteger(camelCapabilityHandling,"CamelCapabilityHandling",1,16,false);
         	
         this.extensionContainer = extensionContainer;
         

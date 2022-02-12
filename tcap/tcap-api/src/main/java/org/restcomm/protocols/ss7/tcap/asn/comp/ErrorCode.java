@@ -37,11 +37,11 @@ public interface ErrorCode {
 
     ErrorCodeType getErrorType();
 
-    void setLocalErrorCode(Long localErrorCode);
+    void setLocalErrorCode(Integer localErrorCode);
 
     void setGlobalErrorCode(List<Long> globalErrorCode);
 
-    Long getLocalErrorCode();
+    Integer getLocalErrorCode();
 
     List<Long> getGlobalErrorCode();
 

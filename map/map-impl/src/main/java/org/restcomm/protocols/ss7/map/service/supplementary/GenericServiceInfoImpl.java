@@ -87,13 +87,13 @@ public class GenericServiceInfoImpl implements GenericServiceInfo {
         	this.ccbsFeatureList = new CCBSFeatureListWrapperImpl(ccbsFeatureList);
         
         if(nbrSB!=null)
-        	this.nbrSB = new ASNInteger(nbrSB);
+        	this.nbrSB = new ASNInteger(nbrSB,"NBRSB",2,7,false);
         	
         if(nbrUser!=null)
-        	this.nbrUser = new ASNInteger(nbrUser);
+        	this.nbrUser = new ASNInteger(nbrUser,"NBRUser",1,7,false);
         	
         if(nbrSN!=null)
-        	this.nbrSN = new ASNInteger(nbrSN);        	
+        	this.nbrSN = new ASNInteger(nbrSN,"NBRSN",1,7,false);        	
     }
 
     public SSStatus getSsStatus() {

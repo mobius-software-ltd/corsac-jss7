@@ -29,9 +29,9 @@ import io.netty.buffer.ByteBuf;
  *
  */
 public interface INAPMessage extends Serializable {
-   long getInvokeId();
+   int getInvokeId();
 
-   void setInvokeId(long invokeId);
+   void setInvokeId(int invokeId);
 
    INAPDialog getINAPDialog();
 

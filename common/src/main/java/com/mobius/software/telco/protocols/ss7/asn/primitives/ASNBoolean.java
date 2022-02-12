@@ -35,17 +35,35 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=1,constructed=false,lengthIndefinite=false)
 public class ASNBoolean 
 {	
 	private Boolean value;
 	
-	public ASNBoolean() {		
+	private String name;
+	private Boolean required;
+	private Boolean isRoot;
+	
+	//required for parser
+	public ASNBoolean() {
+		
 	}
 	
-	public ASNBoolean(Boolean value) {		
+	public ASNBoolean(String name,Boolean required,Boolean isRoot) {
+		this.name=name;
+		this.required=required;
+		this.isRoot=isRoot;
+	}
+	
+	public ASNBoolean(Boolean value,String name,Boolean required,Boolean isRoot) {		
 		this.value=value;
+		this.name=name;
+		this.required=required;
+		this.isRoot=isRoot;
 	}
 	
 	public Boolean getValue() {
@@ -63,6 +81,16 @@ public class ASNBoolean
 			buffer.writeByte(0xFF);
 		else
 			buffer.writeByte(0);
+	}
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(required!=null && required && value==null) {
+			if(isRoot==null || !isRoot)
+				throw new ASNParsingComponentException(name + " is required",ASNParsingComponentExceptionReason.MistypedParameter);
+			else
+				throw new ASNParsingComponentException(name + " is required",ASNParsingComponentExceptionReason.MistypedRootParameter);
+		}	
 	}
 	
 	@ASNDecode

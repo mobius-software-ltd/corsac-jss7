@@ -34,11 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
 public class ASNMidCallReportType extends ASNEnumerated {
 	public ASNMidCallReportType() {
-		
+		super("MidCallReportType",0,1,false);
 	}
 	
 	public ASNMidCallReportType(MidCallReportType t) {
-		super(t.getCode());
+		super(t.getCode(),"MidCallReportType",0,1,false);
 	}
 	
 	public MidCallReportType getType() {

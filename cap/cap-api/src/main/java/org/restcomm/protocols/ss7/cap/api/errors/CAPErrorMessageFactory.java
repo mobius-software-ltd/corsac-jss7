@@ -36,9 +36,9 @@ public interface CAPErrorMessageFactory {
      * @param errorCode
      * @return
      */
-    CAPErrorMessage createMessageFromErrorCode(Long errorCode);
+    CAPErrorMessage createMessageFromErrorCode(Integer errorCode);
 
-    CAPErrorMessageParameterless createCAPErrorMessageParameterless(Long errorCode);
+    CAPErrorMessageParameterless createCAPErrorMessageParameterless(Integer errorCode);
 
     CAPErrorMessageCancelFailed createCAPErrorMessageCancelFailed(CancelProblem cancelProblem);
 

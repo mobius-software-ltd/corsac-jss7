@@ -45,12 +45,12 @@ public class SGSNInterfaceListImpl extends ASNBitString implements SGSNInterface
     static final int _ID_s6d = 10;
 
     public SGSNInterfaceListImpl() {
-    	super(10);
+    	super("SGSNInterfaceList",7,15,false);
     }
 
     public SGSNInterfaceListImpl(boolean gb, boolean iu, boolean gn, boolean mapGr, boolean mapGd, boolean mapGf, boolean gs, boolean ge, boolean s3,
             boolean s4, boolean s6d) {
-    	super(10);
+    	super("SGSNInterfaceList",7,15,false);
     	if (gb)
             this.setBit(_ID_gb);
         if (iu)

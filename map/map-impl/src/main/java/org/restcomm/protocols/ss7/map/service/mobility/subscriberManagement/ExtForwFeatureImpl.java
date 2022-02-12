@@ -90,7 +90,7 @@ public class ExtForwFeatureImpl implements ExtForwFeature {
         this.forwardingOptions = forwardingOptions;
         
         if(noReplyConditionTime!=null)
-        	this.noReplyConditionTime = new ASNInteger(noReplyConditionTime);
+        	this.noReplyConditionTime = new ASNInteger(noReplyConditionTime,"NoReplyConditionTime",1,100,false);
         	
         this.extensionContainer = extensionContainer;
         this.longForwardedToNumber = longForwardedToNumber;

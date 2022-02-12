@@ -61,10 +61,10 @@ public class MidCallControlInfoImpl implements MidCallControlInfo {
     public MidCallControlInfoImpl(Integer minimumNumberOfDigits, Integer maximumNumberOfDigits, String endOfReplyDigit, String cancelDigit, String startDigit,
             Integer interDigitTimeout) {
         if(minimumNumberOfDigits!=null)
-        	this.minimumNumberOfDigits = new ASNInteger(minimumNumberOfDigits);
+        	this.minimumNumberOfDigits = new ASNInteger(minimumNumberOfDigits,"MinimumNumberOfDigits",1,30,false);
         	
         if(maximumNumberOfDigits!=null)
-        	this.maximumNumberOfDigits = new ASNInteger(maximumNumberOfDigits);
+        	this.maximumNumberOfDigits = new ASNInteger(maximumNumberOfDigits,"MaximumNumberOfDigits",1,30,false);
         	
         if(endOfReplyDigit!=null)
         	this.endOfReplyDigit = new SingleTbcdStringImpl("endOfReplyDigit",endOfReplyDigit);
@@ -76,19 +76,19 @@ public class MidCallControlInfoImpl implements MidCallControlInfo {
         	this.startDigit = new SingleTbcdStringImpl("startDigit",startDigit);
         
         if(interDigitTimeout!=null)
-            this.interDigitTimeout = new ASNInteger(interDigitTimeout);            
+            this.interDigitTimeout = new ASNInteger(interDigitTimeout,"InterDigitTimeout",1,127,false);            
     }
 
     public Integer getMinimumNumberOfDigits() {
     	if(this.minimumNumberOfDigits==null)
-    		return null;
+    		return 1;
     	
         return minimumNumberOfDigits.getIntValue();
     }
 
     public Integer getMaximumNumberOfDigits() {
     	if(this.maximumNumberOfDigits==null)
-    		return null;
+    		return 30;
     	
         return maximumNumberOfDigits.getIntValue();
     }
@@ -116,7 +116,7 @@ public class MidCallControlInfoImpl implements MidCallControlInfo {
 
     public Integer getInterDigitTimeout() {
     	if(interDigitTimeout==null)
-    		return null;
+    		return 10;
     	
         return interDigitTimeout.getIntValue();
     }

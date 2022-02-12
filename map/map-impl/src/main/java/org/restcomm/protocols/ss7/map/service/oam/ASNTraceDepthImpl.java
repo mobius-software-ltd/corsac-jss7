@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNTraceDepthImpl extends ASNEnumerated {
 	public ASNTraceDepthImpl() {
-		
+		super("TraceDepth",0,2,false);
 	}
 	
 	public ASNTraceDepthImpl(TraceDepth t) {
-		super(t.getCode());
+		super(t.getCode(),"TraceDepth",0,2,false);
 	}
 	
 	public TraceDepth getType() {

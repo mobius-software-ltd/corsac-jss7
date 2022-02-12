@@ -50,7 +50,7 @@ public class MAPErrorMessageRoamingNotAllowedImpl extends MAPErrorMessageImpl im
 
     public MAPErrorMessageRoamingNotAllowedImpl(RoamingNotAllowedCause roamingNotAllowedCause,
     		MAPExtensionContainer extensionContainer, AdditionalRoamingNotAllowedCause additionalRoamingNotAllowedCause) {
-        super((long) MAPErrorCode.roamingNotAllowed);
+        super(MAPErrorCode.roamingNotAllowed);
 
         this.roamingNotAllowedCause =new ASNRoamingNotAllowedCauseImpl(roamingNotAllowedCause);
         this.extensionContainer = extensionContainer;
@@ -60,7 +60,7 @@ public class MAPErrorMessageRoamingNotAllowedImpl extends MAPErrorMessageImpl im
     }
 
     public MAPErrorMessageRoamingNotAllowedImpl() {
-        super((long) MAPErrorCode.roamingNotAllowed);
+        super(MAPErrorCode.roamingNotAllowed);
     }
 
     public boolean isEmRoamingNotAllowed() {

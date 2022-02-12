@@ -72,9 +72,9 @@ public class ASNPrimitivesTest
 		byte[] encodedTrue = new byte[] { 0x01, 0x01, (byte) 0xFF };
 		byte[] encodedFalse = new byte[] { 0x01, 0x01, (byte) 0x00 };
 		
-		ASNBoolean trueValue=new ASNBoolean(true);
+		ASNBoolean trueValue=new ASNBoolean(true,null,false,false);
 		
-		ASNBoolean falseValue=new ASNBoolean(false);
+		ASNBoolean falseValue=new ASNBoolean(false,null,false,false);
 		
 		try
 		{
@@ -131,8 +131,8 @@ public class ASNPrimitivesTest
 		System.arraycopy(longLengthBytes, 0, encodedLongString, 1, longLengthBytes.length);
 		System.arraycopy(plainLongBytes, 0, encodedLongString, 1+longLengthBytes.length, plainLongBytes.length);
 		
-		ASNUTF8String value=new ASNUTF8String(testString);
-		ASNUTF8String longValue=new ASNUTF8String(longTestString);
+		ASNUTF8String value=new ASNUTF8String(testString,null,null,null,false);
+		ASNUTF8String longValue=new ASNUTF8String(longTestString,null,null,null,false);
 		
 		try
 		{
@@ -189,8 +189,8 @@ public class ASNPrimitivesTest
 		System.arraycopy(longLengthBytes, 0, encodedLongString, 1, longLengthBytes.length);
 		System.arraycopy(plainLongBytes, 0, encodedLongString, 1+longLengthBytes.length, plainLongBytes.length);
 		
-		ASNIA5String value=new ASNIA5String(testString);
-		ASNIA5String longValue=new ASNIA5String(longTestString);
+		ASNIA5String value=new ASNIA5String(testString,null,null,null,false);
+		ASNIA5String longValue=new ASNIA5String(longTestString,null,null,null,false);
 		
 		try
 		{
@@ -229,12 +229,12 @@ public class ASNPrimitivesTest
 		byte[] encodedInteger5 = new byte[] { 0x02, 0x02, (byte) 0x80 , 0x00};
 		byte[] encodedInteger6 = new byte[] { 0x02, 0x03, 0x00, (byte) 0x80, 0x00 };
 		
-		ASNInteger value1=new ASNInteger(35L);
-		ASNInteger value2=new ASNInteger(127L);
-		ASNInteger value3=new ASNInteger(-128L);
-		ASNInteger value4=new ASNInteger(128L);
-		ASNInteger value5=new ASNInteger(-32768L);
-		ASNInteger value6=new ASNInteger(32768L);
+		ASNInteger value1=new ASNInteger(35L,null,null,null,false);
+		ASNInteger value2=new ASNInteger(127L,null,null,null,false);
+		ASNInteger value3=new ASNInteger(-128L,null,null,null,false);
+		ASNInteger value4=new ASNInteger(128L,null,null,null,false);
+		ASNInteger value5=new ASNInteger(-32768L,null,null,null,false);
+		ASNInteger value6=new ASNInteger(32768L,null,null,null,false);
 		
 		try
 		{
@@ -427,7 +427,7 @@ public class ASNPrimitivesTest
 	public void testBitStringWithMin() {	
 		byte[] encodedBitString = new byte[] { (byte)0x03, 0x05, 0x04, (byte) 0x23,  (byte)0x88, (byte)0x04, 0x00};
 		
-		ASNBitString value1=new ASNBitString(27);
+		ASNBitString value1=new ASNBitString(null,27,27,false);
 		value1.setBit(2);
 		value1.setBit(6);
 		value1.setBit(7);
@@ -465,13 +465,13 @@ public class ASNPrimitivesTest
 		byte[] encodedOids1 = new byte[] { 0x06, 0x4, 0x28, (byte) 0xC2, (byte) 0x7B, 0x02 };
 		byte[] encodedOids2 = new byte[] { 0x06, 0x2, (byte)180, 1 };
 
-		ASNObjectIdentifier value1=new ASNObjectIdentifier(new ArrayList<Long>());
+		ASNObjectIdentifier value1=new ASNObjectIdentifier(new ArrayList<Long>(),null,false,false);
 		value1.addOid(1L);
 		value1.addOid(0L);
 		value1.addOid(8571L);
 		value1.addOid(2L);
 		
-		ASNObjectIdentifier value2=new ASNObjectIdentifier(new ArrayList<Long>());
+		ASNObjectIdentifier value2=new ASNObjectIdentifier(new ArrayList<Long>(),null,false,false);
 		value2.addOid(2L);
 		value2.addOid(100L);
 		value2.addOid(1L);

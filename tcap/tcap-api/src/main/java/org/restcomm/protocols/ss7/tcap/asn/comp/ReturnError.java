@@ -43,7 +43,7 @@ public interface ReturnError extends BaseComponent {
 
     // mandatory
     // that damn error code
-    void setErrorCode(Long ec);
+    void setErrorCode(Integer ec);
 
     void setErrorCode(List<Long> ec);
     

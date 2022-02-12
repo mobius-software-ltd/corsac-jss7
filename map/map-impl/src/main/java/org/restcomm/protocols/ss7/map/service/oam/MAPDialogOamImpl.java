@@ -61,7 +61,7 @@ public class MAPDialogOamImpl extends MAPDialogImpl implements MAPDialogOam {
 
 
     @Override
-    public Long addActivateTraceModeRequest(IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
+    public Integer addActivateTraceModeRequest(IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
             MAPExtensionContainer extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList,
             TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration)
             throws MAPException {
@@ -70,7 +70,7 @@ public class MAPDialogOamImpl extends MAPDialogImpl implements MAPDialogOam {
     }
 
     @Override
-    public Long addActivateTraceModeRequest(int customInvokeTimeout, IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
+    public Integer addActivateTraceModeRequest(int customInvokeTimeout, IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId,
             MAPExtensionContainer extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList,
             TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration)
             throws MAPException {
@@ -102,11 +102,11 @@ public class MAPDialogOamImpl extends MAPDialogImpl implements MAPDialogOam {
 
         ActivateTraceModeRequestImpl req = new ActivateTraceModeRequestImpl(imsi, traceReference, traceType, omcId, extensionContainer, traceReference2,
                 traceDepthList, traceNeTypeList, traceInterfaceList, traceEventList, traceCollectionEntity, mdtConfiguration);
-        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.activateTraceMode, req, true, false);
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.activateTraceMode, req, true, false);
     }
 
     @Override
-    public void addActivateTraceModeResponse(long invokeId, MAPExtensionContainer extensionContainer, boolean traceSupportIndicator) throws MAPException {
+    public void addActivateTraceModeResponse(int invokeId, MAPExtensionContainer extensionContainer, boolean traceSupportIndicator) throws MAPException {
         boolean isTracingContext = false;
         boolean isNetworkLocUpContext = false;
         boolean isGprsLocationUpdateContext = false;
@@ -130,16 +130,16 @@ public class MAPDialogOamImpl extends MAPDialogImpl implements MAPDialogOam {
         if ((traceSupportIndicator || extensionContainer != null) && this.appCntx.getApplicationContextVersion().getVersion() >= 3)
         	req = new ActivateTraceModeResponseImpl(extensionContainer, traceSupportIndicator);
        
-        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.activateTraceMode, req, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.activateTraceMode, req, false, true);
     }
 
     @Override
-    public Long addSendImsiRequest(ISDNAddressString msisdn) throws MAPException {
+    public Integer addSendImsiRequest(ISDNAddressString msisdn) throws MAPException {
         return this.addSendImsiRequest(_Timer_Default, msisdn);
     }
 
     @Override
-    public Long addSendImsiRequest(int customInvokeTimeout, ISDNAddressString msisdn) throws MAPException {
+    public Integer addSendImsiRequest(int customInvokeTimeout, ISDNAddressString msisdn) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.imsiRetrievalContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2))
             throw new MAPException("Bad application context name for sendImsiRequest: must be imsiRetrievalContext_V2");
@@ -151,17 +151,17 @@ public class MAPDialogOamImpl extends MAPDialogImpl implements MAPDialogOam {
         	customTimeout=customInvokeTimeout;
 
         SendImsiRequestImpl req = new SendImsiRequestImpl(msisdn);
-        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.sendIMSI, req, true, false);
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.sendIMSI, req, true, false);
     }
 
     @Override
-    public void addSendImsiResponse(long invokeId, IMSI imsi) throws MAPException {
+    public void addSendImsiResponse(int invokeId, IMSI imsi) throws MAPException {
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.imsiRetrievalContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2))
             throw new MAPException("Bad application context name for addSendImsiResponse: must be imsiRetrievalContext_V2");
 
         SendImsiResponseImpl req = new SendImsiResponseImpl(imsi);
-        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.sendIMSI, req, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.sendIMSI, req, false, true);
     }
 
 }

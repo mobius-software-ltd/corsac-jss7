@@ -360,12 +360,12 @@ public abstract class CAPDialogImpl implements CAPDialog {
     }
 
     @Override
-    public void processInvokeWithoutAnswer(Long invokeId) {
+    public void processInvokeWithoutAnswer(Integer invokeId) {
         this.tcapDialog.processInvokeWithoutAnswer(invokeId);
     }
 
     @Override
-    public Long sendDataComponent(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,Long operationCode,CAPMessage param,Boolean isRequest,Boolean isLastResponse) throws CAPException {
+    public Integer sendDataComponent(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,Integer operationCode,CAPMessage param,Boolean isRequest,Boolean isLastResponse) throws CAPException {
         try {
         	if(operationCode!=null)
         		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
@@ -377,7 +377,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
     }
 
     @Override
-    public void sendErrorComponent(Long invokeId, CAPErrorMessage mem) throws CAPException {
+    public void sendErrorComponent(Integer invokeId, CAPErrorMessage mem) throws CAPException {
     	try {
         	if(mem instanceof CAPErrorMessageParameterless)
         		this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), null);
@@ -389,7 +389,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
         }
     }
 
-    public void sendRejectComponent(Long invokeId, Problem problem) throws CAPException {
+    public void sendRejectComponent(Integer invokeId, Problem problem) throws CAPException {
         try {
             this.tcapDialog.sendReject(invokeId, problem);
 
@@ -399,7 +399,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
     }
 
     @Override
-    public void resetInvokeTimer(Long invokeId) throws CAPException {
+    public void resetInvokeTimer(Integer invokeId) throws CAPException {
 
         try {
             this.getTcapDialog().resetTimer(invokeId);
@@ -409,7 +409,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
     }
 
     @Override
-    public boolean cancelInvocation(Long invokeId) throws CAPException {
+    public boolean cancelInvocation(Integer invokeId) throws CAPException {
         try {
             return this.getTcapDialog().cancelInvocation(invokeId);
         } catch (TCAPException e) {

@@ -64,7 +64,7 @@ public class DestinationNumberCriteriaImpl implements DestinationNumberCriteria 
     	if(destinationNumberLengthList!=null) {
     		List<ASNInteger> realList=new ArrayList<ASNInteger>();
     		for(Integer curr:destinationNumberLengthList) {
-    			ASNInteger wrappedCurr=new ASNInteger(curr);
+    			ASNInteger wrappedCurr=new ASNInteger(curr,"DestinationNumberLength",1,15,false);
     			realList.add(wrappedCurr);
     		}
     		this.destinationNumberLengthList = new DestinationNumberLengthListWrapperImpl(realList);

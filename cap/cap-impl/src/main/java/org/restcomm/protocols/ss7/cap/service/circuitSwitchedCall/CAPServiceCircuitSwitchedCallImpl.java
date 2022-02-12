@@ -163,9 +163,9 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
 
     @Override
     public void processComponent(ComponentType compType, OperationCode oc, CAPMessage parameter, CAPDialog capDialog,
-            Long invokeId, Long linkedId) throws CAPParsingComponentException {
+    		Integer invokeId, Integer linkedId) throws CAPParsingComponentException {
 
-    	Long ocValue = oc.getLocalOperationCode();
+    	Integer ocValue = oc.getLocalOperationCode();
         if (ocValue == null)
             new CAPParsingComponentException("", CAPParsingComponentExceptionReason.UnrecognizedOperation);
         CAPApplicationContext acn = capDialog.getApplicationContext();

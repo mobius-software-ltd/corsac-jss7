@@ -46,7 +46,7 @@ public class CancelRequestChoisempl {
 
     public CancelRequestChoisempl(Integer invokeID) {
     	if(invokeID!=null)
-    		this.invokeID = new ASNInteger(invokeID);    		
+    		this.invokeID = new ASNInteger(invokeID,"InvokeID",-128,127,false);    		
     }
 
     public CancelRequestChoisempl(boolean allRequests) {

@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNCwTreatmentIndicatorImpl extends ASNEnumerated {
 	public ASNCwTreatmentIndicatorImpl() {
-		
+		super("CwTreatmentIndicator",1,2,false);
 	}
 	
 	public ASNCwTreatmentIndicatorImpl(CwTreatmentIndicator t) {
-		super(t.getCode());
+		super(t.getCode(),"CwTreatmentIndicator",1,2,false);
 	}
 	
 	public CwTreatmentIndicator getType() {

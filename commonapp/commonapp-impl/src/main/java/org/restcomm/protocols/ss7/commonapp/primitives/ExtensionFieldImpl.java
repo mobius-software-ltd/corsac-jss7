@@ -63,7 +63,7 @@ public class ExtensionFieldImpl implements ExtensionField {
 
     public ExtensionFieldImpl(Integer localCode, CriticalityType criticalityType, ByteBuf data, boolean isConstructred) {
     	if(localCode!=null)
-    		this.localCode = new ASNInteger(localCode);
+    		this.localCode = new ASNInteger(localCode,"LocalCode",null,null,false);
     		
         if(criticalityType!=null && criticalityType!=CriticalityType.typeIgnore)
         	this.criticalityType = new ASNCriticalityType(criticalityType);
@@ -78,7 +78,7 @@ public class ExtensionFieldImpl implements ExtensionField {
 
     public ExtensionFieldImpl(List<Long> globalCode, CriticalityType criticalityType, ByteBuf data, boolean isConstructred) {
     	if(globalCode!=null)
-    		this.globalCode = new ASNObjectIdentifier(globalCode);
+    		this.globalCode = new ASNObjectIdentifier(globalCode,"GlobalCode",true,false);
     		
         if(criticalityType!=null)
         	this.criticalityType = new ASNCriticalityType(criticalityType);

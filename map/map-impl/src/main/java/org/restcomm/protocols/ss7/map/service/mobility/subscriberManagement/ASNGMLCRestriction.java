@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNGMLCRestriction extends ASNEnumerated {
 	public ASNGMLCRestriction() {
-		
+		super("GMLCRestriction",0,1,false);
 	}
 	
 	public ASNGMLCRestriction(GMLCRestriction t) {
-		super(t.getCode());
+		super(t.getCode(),"GMLCRestriction",0,1,false);
 	}
 	
 	public GMLCRestriction getType() {

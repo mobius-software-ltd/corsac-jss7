@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNExtProtocolIDImpl extends ASNEnumerated {
 	public ASNExtProtocolIDImpl() {
-		
+		super("ExtProtocolId",1,1,false);
 	}
 	
 	public ASNExtProtocolIDImpl(ExtProtocolId t) {
-		super(t.getCode());
+		super(t.getCode(),"ExtProtocolId",1,1,false);
 	}
 	
 	public ExtProtocolId getType() {

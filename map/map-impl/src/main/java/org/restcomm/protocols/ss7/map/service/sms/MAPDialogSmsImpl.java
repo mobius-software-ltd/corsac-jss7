@@ -65,12 +65,12 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         super(appCntx, tcapDialog, mapProviderImpl, mapService, origReference, destReference);
     }
 
-    public Long addForwardShortMessageRequest(SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI,
+    public Integer addForwardShortMessageRequest(SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI,
             boolean moreMessagesToSend) throws MAPException {
         return addForwardShortMessageRequest(_Timer_Default, sm_RP_DA, sm_RP_OA, sm_RP_UI, moreMessagesToSend);
     }
 
-    public Long addForwardShortMessageRequest(int customInvokeTimeout, SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA,
+    public Integer addForwardShortMessageRequest(int customInvokeTimeout, SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA,
             SmsSignalInfo sm_RP_UI, boolean moreMessagesToSend) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.shortMsgMORelayContext && this.appCntx
@@ -91,10 +91,10 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
 
         MoForwardShortMessageRequestImpl req = new MoForwardShortMessageRequestImpl(sm_RP_DA, sm_RP_OA, sm_RP_UI,
                 moreMessagesToSend);
-        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.mo_forwardSM, req, true, false);
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.mo_forwardSM, req, true, false);
     }
 
-    public void addForwardShortMessageResponse(long invokeId) throws MAPException {
+    public void addForwardShortMessageResponse(int invokeId) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.shortMsgMORelayContext && this.appCntx
                 .getApplicationContextName() != MAPApplicationContextName.shortMsgMTRelayContext)
@@ -103,15 +103,15 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
             throw new MAPException(
                     "Bad application context name for addForwardShortMessageResponse: must be shortMsgMORelayContext_V1 or V2 or shortMsgMTRelayContext_V1 or V2");
 
-        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.mo_forwardSM, null, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.mo_forwardSM, null, false, true);
     }
 
-    public Long addMoForwardShortMessageRequest(SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI,
+    public Integer addMoForwardShortMessageRequest(SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI,
             MAPExtensionContainer extensionContainer, IMSI imsi) throws MAPException {
         return addMoForwardShortMessageRequest(_Timer_Default, sm_RP_DA, sm_RP_OA, sm_RP_UI, extensionContainer, imsi);
     }
 
-    public Long addMoForwardShortMessageRequest(int customInvokeTimeout, SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA,
+    public Integer addMoForwardShortMessageRequest(int customInvokeTimeout, SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA,
             SmsSignalInfo sm_RP_UI, MAPExtensionContainer extensionContainer, IMSI imsi) throws MAPException {
 
         if (this.appCntx.getApplicationContextName() != MAPApplicationContextName.shortMsgMORelayContext
@@ -127,10 +127,10 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
 
         MoForwardShortMessageRequestImpl req = new MoForwardShortMessageRequestImpl(sm_RP_DA, sm_RP_OA, sm_RP_UI,
                 extensionContainer, imsi);
-        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.mo_forwardSM, req, true, false);
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.mo_forwardSM, req, true, false);
     }
 
-    public void addMoForwardShortMessageResponse(long invokeId, SmsSignalInfo sm_RP_UI, MAPExtensionContainer extensionContainer)
+    public void addMoForwardShortMessageResponse(int invokeId, SmsSignalInfo sm_RP_UI, MAPExtensionContainer extensionContainer)
             throws MAPException {
 
         if (this.appCntx.getApplicationContextName() != MAPApplicationContextName.shortMsgMORelayContext
@@ -142,16 +142,16 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         if (sm_RP_UI != null || extensionContainer != null)
             req = new MoForwardShortMessageResponseImpl(sm_RP_UI, extensionContainer);
 
-        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.mo_forwardSM, req, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.mo_forwardSM, req, false, true);
     }
 
-    public Long addMtForwardShortMessageRequest(SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI,
+    public Integer addMtForwardShortMessageRequest(SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI,
             boolean moreMessagesToSend, MAPExtensionContainer extensionContainer) throws MAPException {
         return this.addMtForwardShortMessageRequest(_Timer_Default, sm_RP_DA, sm_RP_OA, sm_RP_UI, moreMessagesToSend,
                 extensionContainer);
     }
 
-    public Long addMtForwardShortMessageRequest(int customInvokeTimeout, SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA,
+    public Integer addMtForwardShortMessageRequest(int customInvokeTimeout, SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA,
             SmsSignalInfo sm_RP_UI, boolean moreMessagesToSend, MAPExtensionContainer extensionContainer) throws MAPException {
 
         if (this.appCntx.getApplicationContextName() != MAPApplicationContextName.shortMsgMTRelayContext
@@ -167,10 +167,10 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
 
         MtForwardShortMessageRequestImpl req = new MtForwardShortMessageRequestImpl(sm_RP_DA, sm_RP_OA, sm_RP_UI,
                 moreMessagesToSend, extensionContainer);
-        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.mt_forwardSM, req, true, false);
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.mt_forwardSM, req, true, false);
     }
 
-    public void addMtForwardShortMessageResponse(long invokeId, SmsSignalInfo sm_RP_UI, MAPExtensionContainer extensionContainer)
+    public void addMtForwardShortMessageResponse(int invokeId, SmsSignalInfo sm_RP_UI, MAPExtensionContainer extensionContainer)
             throws MAPException {
 
         if (this.appCntx.getApplicationContextName() != MAPApplicationContextName.shortMsgMTRelayContext
@@ -182,10 +182,10 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         if (sm_RP_UI != null || extensionContainer != null)
             resp = new MtForwardShortMessageResponseImpl(sm_RP_UI, extensionContainer);
         
-        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.mt_forwardSM, resp, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.mt_forwardSM, resp, false, true);
     }
 
-    public Long addSendRoutingInfoForSMRequest(ISDNAddressString msisdn, boolean sm_RP_PRI, AddressString serviceCentreAddress,
+    public Integer addSendRoutingInfoForSMRequest(ISDNAddressString msisdn, boolean sm_RP_PRI, AddressString serviceCentreAddress,
             MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator, SM_RP_MTI sM_RP_MTI, SM_RP_SMEA sM_RP_SMEA,
             SMDeliveryNotIntended smDeliveryNotIntended, boolean ipSmGwGuidanceIndicator, IMSI imsi, boolean t4TriggerIndicator,
             boolean singleAttemptDelivery, TeleserviceCode teleservice, CorrelationID correlationId) throws MAPException {
@@ -194,7 +194,7 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
                 t4TriggerIndicator, singleAttemptDelivery, teleservice, correlationId);
     }
 
-    public Long addSendRoutingInfoForSMRequest(int customInvokeTimeout, ISDNAddressString msisdn, boolean sm_RP_PRI,
+    public Integer addSendRoutingInfoForSMRequest(int customInvokeTimeout, ISDNAddressString msisdn, boolean sm_RP_PRI,
     		AddressString serviceCentreAddress, MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator,
             SM_RP_MTI sM_RP_MTI, SM_RP_SMEA sM_RP_SMEA, SMDeliveryNotIntended smDeliveryNotIntended,
             boolean ipSmGwGuidanceIndicator, IMSI imsi, boolean t4TriggerIndicator, boolean singleAttemptDelivery,
@@ -215,10 +215,10 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         SendRoutingInfoForSMRequestImpl req = new SendRoutingInfoForSMRequestImpl(msisdn, sm_RP_PRI, serviceCentreAddress,
                 extensionContainer, gprsSupportIndicator, sM_RP_MTI, sM_RP_SMEA, smDeliveryNotIntended,
                 ipSmGwGuidanceIndicator, imsi, t4TriggerIndicator, singleAttemptDelivery, teleservice, correlationId);
-        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.sendRoutingInfoForSM, req, true, false);
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.sendRoutingInfoForSM, req, true, false);
     }
 
-    public void addSendRoutingInfoForSMResponse(long invokeId, IMSI imsi, LocationInfoWithLMSI locationInfoWithLMSI,
+    public void addSendRoutingInfoForSMResponse(int invokeId, IMSI imsi, LocationInfoWithLMSI locationInfoWithLMSI,
             MAPExtensionContainer extensionContainer, Boolean mwdSet, IpSmGwGuidance ipSmGwGuidance) throws MAPException {
 
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
@@ -229,10 +229,10 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
 
         SendRoutingInfoForSMResponseImpl resp = new SendRoutingInfoForSMResponseImpl(imsi, locationInfoWithLMSI,
                 extensionContainer, mwdSet, ipSmGwGuidance);
-        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.sendRoutingInfoForSM, resp, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.sendRoutingInfoForSM, resp, false, true);
     }
 
-    public Long addReportSMDeliveryStatusRequest(ISDNAddressString msisdn, AddressString serviceCentreAddress,
+    public Integer addReportSMDeliveryStatusRequest(ISDNAddressString msisdn, AddressString serviceCentreAddress,
             SMDeliveryOutcome sMDeliveryOutcome, Integer absentSubscriberDiagnosticSM,
             MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator, boolean deliveryOutcomeIndicator,
             SMDeliveryOutcome additionalSMDeliveryOutcome, Integer additionalAbsentSubscriberDiagnosticSM) throws MAPException {
@@ -241,7 +241,7 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
                 additionalSMDeliveryOutcome, additionalAbsentSubscriberDiagnosticSM);
     }
 
-    public Long addReportSMDeliveryStatusRequest(int customInvokeTimeout, ISDNAddressString msisdn,
+    public Integer addReportSMDeliveryStatusRequest(int customInvokeTimeout, ISDNAddressString msisdn,
     		AddressString serviceCentreAddress, SMDeliveryOutcome sMDeliveryOutcome, Integer absentSubscriberDiagnosticSM,
             MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator, boolean deliveryOutcomeIndicator,
             SMDeliveryOutcome additionalSMDeliveryOutcome, Integer additionalAbsentSubscriberDiagnosticSM) throws MAPException {
@@ -265,10 +265,10 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         ReportSMDeliveryStatusRequestImpl req = new ReportSMDeliveryStatusRequestImpl(msisdn, serviceCentreAddress, sMDeliveryOutcome,
                 absentSubscriberDiagnosticSM, extensionContainer, gprsSupportIndicator, deliveryOutcomeIndicator,
                 additionalSMDeliveryOutcome, additionalAbsentSubscriberDiagnosticSM);
-        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.reportSM_DeliveryStatus, req, true, false);            
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.reportSM_DeliveryStatus, req, true, false);            
     }
 
-    public void addReportSMDeliveryStatusResponse(long invokeId, ISDNAddressString storedMSISDN) throws MAPException {
+    public void addReportSMDeliveryStatusResponse(int invokeId, ISDNAddressString storedMSISDN) throws MAPException {
 
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
         if (this.appCntx.getApplicationContextName() != MAPApplicationContextName.shortMsgGatewayContext
@@ -280,10 +280,10 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         if(storedMSISDN != null)
             resp = new ReportSMDeliveryStatusResponseImplV1(storedMSISDN);
             
-        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.reportSM_DeliveryStatus, resp, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.reportSM_DeliveryStatus, resp, false, true);
     }
 
-    public void addReportSMDeliveryStatusResponse(long invokeId, ISDNAddressString storedMSISDN,
+    public void addReportSMDeliveryStatusResponse(int invokeId, ISDNAddressString storedMSISDN,
             MAPExtensionContainer extensionContainer) throws MAPException {
 
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
@@ -296,17 +296,17 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         if (storedMSISDN != null || extensionContainer != null)
             resp = new ReportSMDeliveryStatusResponseImplV3(storedMSISDN,extensionContainer);
             
-        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.reportSM_DeliveryStatus, resp, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.reportSM_DeliveryStatus, resp, false, true);
     }
 
-    public Long addInformServiceCentreRequest(ISDNAddressString storedMSISDN, MWStatus mwStatus,
+    public Integer addInformServiceCentreRequest(ISDNAddressString storedMSISDN, MWStatus mwStatus,
             MAPExtensionContainer extensionContainer, Integer absentSubscriberDiagnosticSM,
             Integer additionalAbsentSubscriberDiagnosticSM) throws MAPException {
         return this.addInformServiceCentreRequest(_Timer_Default, storedMSISDN, mwStatus, extensionContainer,
                 absentSubscriberDiagnosticSM, additionalAbsentSubscriberDiagnosticSM);
     }
 
-    public Long addInformServiceCentreRequest(int customInvokeTimeout, ISDNAddressString storedMSISDN, MWStatus mwStatus,
+    public Integer addInformServiceCentreRequest(int customInvokeTimeout, ISDNAddressString storedMSISDN, MWStatus mwStatus,
             MAPExtensionContainer extensionContainer, Integer absentSubscriberDiagnosticSM,
             Integer additionalAbsentSubscriberDiagnosticSM) throws MAPException {
 
@@ -324,14 +324,14 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
 
         InformServiceCentreRequestImpl req = new InformServiceCentreRequestImpl(storedMSISDN, mwStatus, extensionContainer,
                 absentSubscriberDiagnosticSM, additionalAbsentSubscriberDiagnosticSM);
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) MAPOperationCode.informServiceCentre, req, true, false);
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), MAPOperationCode.informServiceCentre, req, true, false);
     }
 
-    public Long addAlertServiceCentreRequest(ISDNAddressString msisdn, AddressString serviceCentreAddress) throws MAPException {
+    public Integer addAlertServiceCentreRequest(ISDNAddressString msisdn, AddressString serviceCentreAddress) throws MAPException {
         return this.addAlertServiceCentreRequest(_Timer_Default, msisdn, serviceCentreAddress);
     }
 
-    public Long addAlertServiceCentreRequest(int customInvokeTimeout, ISDNAddressString msisdn,
+    public Integer addAlertServiceCentreRequest(int customInvokeTimeout, ISDNAddressString msisdn,
     		AddressString serviceCentreAddress) throws MAPException {
 
         if (this.appCntx.getApplicationContextName() != MAPApplicationContextName.shortMsgAlertContext
@@ -350,34 +350,34 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         else
         	customTimeout=customInvokeTimeout;
 
-        Long oc = null;
+        Integer oc = null;
         if (this.appCntx.getApplicationContextVersion() == MAPApplicationContextVersion.version1)
-        	oc=(long) MAPOperationCode.alertServiceCentreWithoutResult;
+        	oc=MAPOperationCode.alertServiceCentreWithoutResult;
         else
-        	oc=(long) MAPOperationCode.alertServiceCentre;
+        	oc=MAPOperationCode.alertServiceCentre;
         
         AlertServiceCentreRequestImpl req = new AlertServiceCentreRequestImpl(msisdn, serviceCentreAddress);
         return this.sendDataComponent(null, null, invokeClass, customTimeout.longValue(), oc, req, true, false);
     }
 
-    public void addAlertServiceCentreResponse(long invokeId) throws MAPException {
+    public void addAlertServiceCentreResponse(int invokeId) throws MAPException {
 
         if (this.appCntx.getApplicationContextName() != MAPApplicationContextName.shortMsgAlertContext
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2))
             throw new MAPException(
                     "Bad application context name for addAlertServiceCentreResponse: must be shortMsgAlertContext_V2");
 
-        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.alertServiceCentre, null, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.alertServiceCentre, null, false, true);
     }
 
     @Override
-    public Long addReadyForSMRequest(IMSI imsi, AlertReason alertReason, boolean alertReasonIndicator, MAPExtensionContainer extensionContainer,
+    public Integer addReadyForSMRequest(IMSI imsi, AlertReason alertReason, boolean alertReasonIndicator, MAPExtensionContainer extensionContainer,
             boolean additionalAlertReasonIndicator) throws MAPException {
         return addReadyForSMRequest(_Timer_Default, imsi, alertReason, alertReasonIndicator, extensionContainer, additionalAlertReasonIndicator);
     }
 
     @Override
-    public Long addReadyForSMRequest(int customInvokeTimeout, IMSI imsi, AlertReason alertReason, boolean alertReasonIndicator,
+    public Integer addReadyForSMRequest(int customInvokeTimeout, IMSI imsi, AlertReason alertReason, boolean alertReasonIndicator,
             MAPExtensionContainer extensionContainer, boolean additionalAlertReasonIndicator) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.mwdMngtContext)
@@ -391,11 +391,11 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         	customTimeout=customInvokeTimeout;
 
         ReadyForSMRequestImpl req = new ReadyForSMRequestImpl(imsi, alertReason, alertReasonIndicator, extensionContainer, additionalAlertReasonIndicator);
-        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long) MAPOperationCode.readyForSM, req, true, false);      
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.readyForSM, req, true, false);      
     }
 
     @Override
-    public void addReadyForSMResponse(long invokeId, MAPExtensionContainer extensionContainer) throws MAPException {
+    public void addReadyForSMResponse(int invokeId, MAPExtensionContainer extensionContainer) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.mwdMngtContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version2 && this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version3))
@@ -405,16 +405,16 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         if (this.appCntx.getApplicationContextVersion().getVersion() >= 3 || extensionContainer != null)
             req = new ReadyForSMResponseImpl(extensionContainer);
 
-        this.sendDataComponent(invokeId, null, null, null, (long) MAPOperationCode.readyForSM, req, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.readyForSM, req, false, true);
     }
 
     @Override
-    public Long addNoteSubscriberPresentRequest(IMSI imsi) throws MAPException {
+    public Integer addNoteSubscriberPresentRequest(IMSI imsi) throws MAPException {
         return addNoteSubscriberPresentRequest(_Timer_Default, imsi);
     }
 
     @Override
-    public Long addNoteSubscriberPresentRequest(int customInvokeTimeout, IMSI imsi) throws MAPException {
+    public Integer addNoteSubscriberPresentRequest(int customInvokeTimeout, IMSI imsi) throws MAPException {
 
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.mwdMngtContext)
                 || (this.appCntx.getApplicationContextVersion() != MAPApplicationContextVersion.version1))
@@ -427,6 +427,6 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         	customTimeout = customInvokeTimeout;
 
         NoteSubscriberPresentRequestImpl req = new NoteSubscriberPresentRequestImpl(imsi);
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) MAPOperationCode.noteSubscriberPresent, req, true, false);
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), MAPOperationCode.noteSubscriberPresent, req, true, false);
     }
 }

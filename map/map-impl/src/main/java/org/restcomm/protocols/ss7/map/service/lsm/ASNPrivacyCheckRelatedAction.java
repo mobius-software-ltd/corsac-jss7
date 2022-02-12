@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNPrivacyCheckRelatedAction extends ASNEnumerated {
 	public ASNPrivacyCheckRelatedAction() {
-		
+		super("PrivacyCheckRelatedAction",0,4,false);
 	}
 	
 	public ASNPrivacyCheckRelatedAction(PrivacyCheckRelatedAction t) {
-		super(t.getAction());
+		super(t.getAction(),"PrivacyCheckRelatedAction",0,4,false);
 	}
 	
 	public PrivacyCheckRelatedAction getType() {

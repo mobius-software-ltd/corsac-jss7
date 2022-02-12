@@ -33,14 +33,15 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class PDPTypeNumberImpl extends ASNSingleByte implements PDPTypeNumber {
 	public PDPTypeNumberImpl() {
+		super("PDPTypeNumber",0,0x57,false);
     }
 
     public PDPTypeNumberImpl(int data) {
-    	super(data);
+    	super(data,"PDPTypeNumber",0,0x57,false);
     }
 
     public PDPTypeNumberImpl(PDPTypeNumberValue value) {
-    	super(value==null?0:value.getCode());    	
+    	super(value==null?0:value.getCode(),"PDPTypeNumber",0,0x57,false);    	
     }
 
     public PDPTypeNumberValue getPDPTypeNumberValue() {

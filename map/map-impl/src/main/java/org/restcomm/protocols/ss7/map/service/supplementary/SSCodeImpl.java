@@ -36,14 +36,15 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 public class SSCodeImpl extends ASNSingleByte implements SSCode {
 	
 	public SSCodeImpl() {
+		super("SSCode",0,255,false);
     }
 
     public SSCodeImpl(int data) {        
-    	super(data);        
+    	super(data,"SSCode",0,255,false);        
     }
 
     public SSCodeImpl(SupplementaryCodeValue value) {
-    	super(value.getCode());
+    	super(value.getCode(),"SSCode",0,255,false);
     }
 
     public Integer getData() {

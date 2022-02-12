@@ -34,15 +34,15 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 */
 public class ChargeIndicatorImpl extends ASNSingleByte implements ChargeIndicator {
 	public ChargeIndicatorImpl() {
-		
+		super("ChargeIndicator",0,255,false);
 	}
 	
 	public ChargeIndicatorImpl(int data) {
-		super(data);
+		super(data,"ChargeIndicator",0,255,false);
     }
 
     public ChargeIndicatorImpl(ChargeIndicatorValue value) {
-    	super(value.getCode());
+    	super(value.getCode(),"ChargeIndicator",0,255,false);
     }
 
     public int getData() {

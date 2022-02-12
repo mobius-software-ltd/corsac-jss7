@@ -140,7 +140,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addInitialDPRequest(int serviceKey, CallingPartyNumberIsup dialledDigits,
+	public Integer addInitialDPRequest(int serviceKey, CallingPartyNumberIsup dialledDigits,
 			CalledPartyNumberIsup calledPartyNumber, CallingPartyNumberIsup callingPartyNumber,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartysCategoryIsup callingPartysCategory,
 			CallingPartySubaddress callingPartySubaddress, CGEncountered cgEncountered,
@@ -161,7 +161,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addInitialDPRequest(int customInvokeTimeout, int serviceKey, CallingPartyNumberIsup dialledDigits,
+	public Integer addInitialDPRequest(int customInvokeTimeout, int serviceKey, CallingPartyNumberIsup dialledDigits,
 			CalledPartyNumberIsup calledPartyNumber, CallingPartyNumberIsup callingPartyNumber,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartysCategoryIsup callingPartysCategory,
 			CallingPartySubaddress callingPartySubaddress, CGEncountered cgEncountered,
@@ -193,11 +193,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				eventTypeBCSM, redirectingPartyID, redirectionInformation);
 
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.initialDP, req, true, false);
+				INAPOperationCode.initialDP, req, true, false);
 	}
 
 	@Override
-	public Long addInitialDPRequest(int serviceKey, CalledPartyNumberIsup calledPartyNumber,
+	public Integer addInitialDPRequest(int serviceKey, CalledPartyNumberIsup calledPartyNumber,
 			CallingPartyNumberIsup callingPartyNumber, CallingPartysCategoryIsup callingPartysCategory,
 			CGEncountered cgEncountered, IPSSPCapabilities ipsspCapabilities, LocationNumberIsup locationNumber,
 			OriginalCalledNumberIsup originalCalledPartyID, CAPINAPExtensions extensions, TriggerType triggerType,
@@ -218,7 +218,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addInitialDPRequest(int customInvokeTimeout, int serviceKey, CalledPartyNumberIsup calledPartyNumber,
+	public Integer addInitialDPRequest(int customInvokeTimeout, int serviceKey, CalledPartyNumberIsup calledPartyNumber,
 			CallingPartyNumberIsup callingPartyNumber, CallingPartysCategoryIsup callingPartysCategory,
 			CGEncountered cgEncountered, IPSSPCapabilities ipsspCapabilities, LocationNumberIsup locationNumber,
 			OriginalCalledNumberIsup originalCalledPartyID, CAPINAPExtensions extensions, TriggerType triggerType,
@@ -251,16 +251,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				backwardGVNSIndicator);
 
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.initialDP, req, true, false);
+				INAPOperationCode.initialDP, req, true, false);
 	}
 
 	@Override
-	public Long addApplyChargingReportRequest(ByteBuf callResult) throws INAPException {
+	public Integer addApplyChargingReportRequest(ByteBuf callResult) throws INAPException {
 		return addApplyChargingReportRequest(_Timer_Default, callResult);
 	}
 
 	@Override
-	public Long addApplyChargingReportRequest(int customInvokeTimeout, ByteBuf callResult) throws INAPException {
+	public Integer addApplyChargingReportRequest(int customInvokeTimeout, ByteBuf callResult) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_assist_handoff_SSF_to_SCF_AC
@@ -282,16 +282,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		ApplyChargingReportRequestImpl req = new ApplyChargingReportRequestImpl(callResult);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.applyChargingReport, req, true, false);
+				INAPOperationCode.applyChargingReport, req, true, false);
 	}
 
 	@Override
-	public Long addApplyChargingReportRequest(CallResultCS1 callResult) throws INAPException {
+	public Integer addApplyChargingReportRequest(CallResultCS1 callResult) throws INAPException {
 		return addApplyChargingReportRequest(_Timer_Default, callResult);
 	}
 
 	@Override
-	public Long addApplyChargingReportRequest(int customInvokeTimeout, CallResultCS1 callResult) throws INAPException {
+	public Integer addApplyChargingReportRequest(int customInvokeTimeout, CallResultCS1 callResult) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC
@@ -310,11 +310,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		ApplyChargingReportRequestCS1Impl req = new ApplyChargingReportRequestCS1Impl(callResult);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.applyChargingReport, req, true, false);
+				INAPOperationCode.applyChargingReport, req, true, false);
 	}
 	
 	@Override
-	public Long addApplyChargingRequest(AChBillingChargingCharacteristics aChBillingChargingCharacteristics,
+	public Integer addApplyChargingRequest(AChBillingChargingCharacteristics aChBillingChargingCharacteristics,
 			Boolean sendCalculationToSCPIndication, LegID partyToCharge, CAPINAPExtensions extensions)
 			throws INAPException {
 		return addApplyChargingRequest(_Timer_Default, aChBillingChargingCharacteristics,
@@ -322,7 +322,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addApplyChargingRequest(int customInvokeTimeout,
+	public Integer addApplyChargingRequest(int customInvokeTimeout,
 			AChBillingChargingCharacteristics aChBillingChargingCharacteristics, Boolean sendCalculationToSCPIndication,
 			LegID partyToCharge, CAPINAPExtensions extensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
@@ -347,11 +347,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		ApplyChargingRequestImpl req = new ApplyChargingRequestImpl(aChBillingChargingCharacteristics,
 				sendCalculationToSCPIndication, partyToCharge, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.applyCharging, req, true, false);
+				INAPOperationCode.applyCharging, req, true, false);
 	}
 
 	@Override
-	public Long addApplyChargingRequest(AchBillingChargingCharacteristicsCS1 aChBillingChargingCharacteristics,
+	public Integer addApplyChargingRequest(AchBillingChargingCharacteristicsCS1 aChBillingChargingCharacteristics,
 			Boolean sendCalculationToSCPIndication, LegID partyToCharge, CAPINAPExtensions extensions)
 			throws INAPException {
 		return addApplyChargingRequest(_Timer_Default, aChBillingChargingCharacteristics,
@@ -359,7 +359,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addApplyChargingRequest(int customInvokeTimeout,
+	public Integer addApplyChargingRequest(int customInvokeTimeout,
 			AchBillingChargingCharacteristicsCS1 aChBillingChargingCharacteristics, Boolean sendCalculationToSCPIndication,
 			LegID partyToCharge, CAPINAPExtensions extensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
@@ -381,17 +381,17 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		ApplyChargingRequestCS1Impl req = new ApplyChargingRequestCS1Impl(aChBillingChargingCharacteristics,
 				sendCalculationToSCPIndication, partyToCharge, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.applyCharging, req, true, false);
+				INAPOperationCode.applyCharging, req, true, false);
 	}
 
 	@Override
-	public Long addCallInformationReportRequest(List<RequestedInformation> requestedInformationList,
+	public Integer addCallInformationReportRequest(List<RequestedInformation> requestedInformationList,
 			DigitsIsup correlationID, CAPINAPExtensions extensions) throws INAPException {
 		return addCallInformationReportRequest(_Timer_Default, requestedInformationList, correlationID, extensions);
 	}
 
 	@Override
-	public Long addCallInformationReportRequest(int customInvokeTimeout,
+	public Integer addCallInformationReportRequest(int customInvokeTimeout,
 			List<RequestedInformation> requestedInformationList, DigitsIsup correlationID, CAPINAPExtensions extensions)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
@@ -413,17 +413,17 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		CallInformationReportRequestImpl req = new CallInformationReportRequestImpl(requestedInformationList,
 				correlationID, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.callInformationReport, req, true, false);
+				INAPOperationCode.callInformationReport, req, true, false);
 	}
 
 	@Override
-	public Long addCallInformationReportRequest(LegType legID, List<RequestedInformation> requestedInformationList,
+	public Integer addCallInformationReportRequest(LegType legID, List<RequestedInformation> requestedInformationList,
 			CAPINAPExtensions extensions) throws INAPException {
 		return addCallInformationReportRequest(_Timer_Default, legID, requestedInformationList, extensions);
 	}
 
 	@Override
-	public Long addCallInformationReportRequest(int customInvokeTimeout, LegType legID,
+	public Integer addCallInformationReportRequest(int customInvokeTimeout, LegType legID,
 			List<RequestedInformation> requestedInformationList, CAPINAPExtensions extensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
@@ -441,17 +441,17 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		CallInformationReportRequestImpl req = new CallInformationReportRequestImpl(legID, requestedInformationList,
 				extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.callInformationReport, req, true, false);
+				INAPOperationCode.callInformationReport, req, true, false);
 	}
 
 	@Override
-	public Long addCallInformationRequest(List<RequestedInformationType> requestedInformationTypeList,
+	public Integer addCallInformationRequest(List<RequestedInformationType> requestedInformationTypeList,
 			DigitsIsup correlationID, CAPINAPExtensions extensions) throws INAPException {
 		return addCallInformationRequest(_Timer_Default, requestedInformationTypeList, correlationID, extensions);
 	}
 
 	@Override
-	public Long addCallInformationRequest(int customInvokeTimeout,
+	public Integer addCallInformationRequest(int customInvokeTimeout,
 			List<RequestedInformationType> requestedInformationTypeList, DigitsIsup correlationID,
 			CAPINAPExtensions extensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
@@ -473,17 +473,17 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		CallInformationRequestImpl req = new CallInformationRequestImpl(requestedInformationTypeList, correlationID,
 				extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.callInformationRequest, req, true, false);
+				INAPOperationCode.callInformationRequest, req, true, false);
 	}
 
 	@Override
-	public Long addCallInformationRequest(LegType legID, List<RequestedInformationType> requestedInformationTypeList,
+	public Integer addCallInformationRequest(LegType legID, List<RequestedInformationType> requestedInformationTypeList,
 			CAPINAPExtensions extensions) throws INAPException {
 		return addCallInformationRequest(_Timer_Default, legID, requestedInformationTypeList, extensions);
 	}
 
 	@Override
-	public Long addCallInformationRequest(int customInvokeTimeout, LegType legID,
+	public Integer addCallInformationRequest(int customInvokeTimeout, LegType legID,
 			List<RequestedInformationType> requestedInformationTypeList, CAPINAPExtensions extensions)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
@@ -502,11 +502,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		CallInformationRequestImpl req = new CallInformationRequestImpl(legID, requestedInformationTypeList,
 				extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.callInformationRequest, req, true, false);
+				INAPOperationCode.callInformationRequest, req, true, false);
 	}
 
 	@Override
-	public Long addConnectRequest(DestinationRoutingAddress destinationRoutingAddress, AlertingPattern alertingPattern,
+	public Integer addConnectRequest(DestinationRoutingAddress destinationRoutingAddress, AlertingPattern alertingPattern,
 			DigitsIsup correlationID, Integer cutAndPaste, ForwardingCondition forwardingCondition,
 			ISDNAccessRelatedInformation isdnAccessRelatedInformation, OriginalCalledNumberIsup originalCalledPartyID,
 			RouteList routeList, ScfID scfID, LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions,
@@ -521,7 +521,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addConnectRequest(int customInvokeTimeout, DestinationRoutingAddress destinationRoutingAddress,
+	public Integer addConnectRequest(int customInvokeTimeout, DestinationRoutingAddress destinationRoutingAddress,
 			AlertingPattern alertingPattern, DigitsIsup correlationID, Integer cutAndPaste,
 			ForwardingCondition forwardingCondition, ISDNAccessRelatedInformation isdnAccessRelatedInformation,
 			OriginalCalledNumberIsup originalCalledPartyID, RouteList routeList, ScfID scfID,
@@ -555,11 +555,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				travellingClassMark, extensions, carrier, serviceInteractionIndicators, callingPartyNumber,
 				callingPartysCategory, redirectingPartyID, redirectionInformation);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.connect, req, true, false);
+				INAPOperationCode.connect, req, true, false);
 	}
 
 	@Override
-	public Long addConnectRequest(LegType legToBeCreated, BearerCapability bearerCapabilities,
+	public Integer addConnectRequest(LegType legToBeCreated, BearerCapability bearerCapabilities,
 			CUGCallIndicator cugCallIndicator, CUGInterLockCode cugInterLockCode,
 			ForwardCallIndicatorsIsup forwardCallIndicators, GenericDigitsSet genericDigitsSet,
 			GenericNumbersSet genericNumberSet, HighLayerCompatibilityIsup highLayerCompatibility,
@@ -578,7 +578,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addConnectRequest(int customInvokeTimeout, LegType legToBeCreated, BearerCapability bearerCapabilities,
+	public Integer addConnectRequest(int customInvokeTimeout, LegType legToBeCreated, BearerCapability bearerCapabilities,
 			CUGCallIndicator cugCallIndicator, CUGInterLockCode cugInterLockCode,
 			ForwardCallIndicatorsIsup forwardCallIndicators, GenericDigitsSet genericDigitsSet,
 			GenericNumbersSet genericNumberSet, HighLayerCompatibilityIsup highLayerCompatibility,
@@ -608,16 +608,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				originalCalledPartyID, routeList, scfID, extensions, carrier, serviceInteractionIndicators,
 				callingPartyNumber, callingPartysCategory, redirectingPartyID, redirectionInformation);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.connect, req, true, false);
+				INAPOperationCode.connect, req, true, false);
 	}
 
 	@Override
-	public Long addContinueRequest() throws INAPException {
+	public Integer addContinueRequest() throws INAPException {
 		return addContinueRequest(_Timer_Default);
 	}
 
 	@Override
-	public Long addContinueRequest(int customInvokeTimeout) throws INAPException {
+	public Integer addContinueRequest(int customInvokeTimeout) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_generic_SCF_to_SSF_AC
@@ -641,16 +641,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		ContinueRequestImpl req = new ContinueRequestImpl();
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.continueCode, req, true, false);
+				INAPOperationCode.continueCode, req, true, false);
 	}
 
 	@Override
-	public Long addContinueRequest(LegType legID) throws INAPException {
+	public Integer addContinueRequest(LegType legID) throws INAPException {
 		return addContinueRequest(_Timer_Default, legID);
 	}
 
 	@Override
-	public Long addContinueRequest(int customInvokeTimeout, LegType legID) throws INAPException {
+	public Integer addContinueRequest(int customInvokeTimeout, LegType legID) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
@@ -666,11 +666,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		ContinueCS1PlusRequestImpl req = new ContinueCS1PlusRequestImpl(legID);
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.continueCode, req, true, false);
+				INAPOperationCode.continueCode, req, true, false);
 	}
 
 	@Override
-	public Long addEventReportBCSMRequest(EventTypeBCSM eventTypeBCSM, DigitsIsup bcsmEventCorrelationID,
+	public Integer addEventReportBCSMRequest(EventTypeBCSM eventTypeBCSM, DigitsIsup bcsmEventCorrelationID,
 			EventSpecificInformationBCSM eventSpecificInformationBCSM, LegID legID, MiscCallInfo miscCallInfo,
 			CAPINAPExtensions extensions) throws INAPException {
 		return addEventReportBCSMRequest(_Timer_Default, eventTypeBCSM, bcsmEventCorrelationID,
@@ -678,7 +678,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addEventReportBCSMRequest(int customInvokeTimeout, EventTypeBCSM eventTypeBCSM,
+	public Integer addEventReportBCSMRequest(int customInvokeTimeout, EventTypeBCSM eventTypeBCSM,
 			DigitsIsup bcsmEventCorrelationID, EventSpecificInformationBCSM eventSpecificInformationBCSM, LegID legID,
 			MiscCallInfo miscCallInfo, CAPINAPExtensions extensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
@@ -702,17 +702,17 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		EventReportBCSMRequestImpl req = new EventReportBCSMRequestImpl(eventTypeBCSM, bcsmEventCorrelationID,
 				eventSpecificInformationBCSM, legID, miscCallInfo, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.eventReportBCSM, req, true, false);
+				INAPOperationCode.eventReportBCSM, req, true, false);
 	}
 
 	@Override
-	public Long addRequestReportBCSMEventRequest(List<BCSMEvent> bcsmEventList, DigitsIsup bcsmEventCorrelationID,
+	public Integer addRequestReportBCSMEventRequest(List<BCSMEvent> bcsmEventList, DigitsIsup bcsmEventCorrelationID,
 			CAPINAPExtensions extensions) throws INAPException {
 		return addRequestReportBCSMEventRequest(_Timer_Default, bcsmEventList, bcsmEventCorrelationID, extensions);
 	}
 
 	@Override
-	public Long addRequestReportBCSMEventRequest(int customInvokeTimeout, List<BCSMEvent> bcsmEventList,
+	public Integer addRequestReportBCSMEventRequest(int customInvokeTimeout, List<BCSMEvent> bcsmEventList,
 			DigitsIsup bcsmEventCorrelationID, CAPINAPExtensions extensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
@@ -738,16 +738,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		RequestReportBCSMEventRequestImpl req = new RequestReportBCSMEventRequestImpl(bcsmEventList,
 				bcsmEventCorrelationID, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.requestReportBCSMEvent, req, true, false);
+				INAPOperationCode.requestReportBCSMEvent, req, true, false);
 	}
 
 	@Override
-	public Long addReleaseCallRequest(CauseIsup cause) throws INAPException {
+	public Integer addReleaseCallRequest(CauseIsup cause) throws INAPException {
 		return addReleaseCallRequest(_Timer_Default, cause);
 	}
 
 	@Override
-	public Long addReleaseCallRequest(int customInvokeTimeout, CauseIsup cause) throws INAPException {
+	public Integer addReleaseCallRequest(int customInvokeTimeout, CauseIsup cause) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_assist_handoff_SSF_to_SCF_AC
@@ -776,16 +776,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		ReleaseCallRequestImpl req = new ReleaseCallRequestImpl(cause);
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.releaseCall, req, true, false);
+				INAPOperationCode.releaseCall, req, true, false);
 	}
 
 	@Override
-	public Long addActivityTestRequest() throws INAPException {
+	public Integer addActivityTestRequest() throws INAPException {
 		return addActivityTestRequest(_Timer_Default);
 	}
 
 	@Override
-	public Long addActivityTestRequest(int customInvokeTimeout) throws INAPException {
+	public Integer addActivityTestRequest(int customInvokeTimeout) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_assist_handoff_SSF_to_SCF_AC
@@ -816,11 +816,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 			customTimeout = customInvokeTimeout;
 
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.activityTest, null, true, false);
+				INAPOperationCode.activityTest, null, true, false);
 	}
 
 	@Override
-	public void addActivityTestResponse(long invokeId) throws INAPException {
+	public void addActivityTestResponse(int invokeId) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_assist_handoff_SSF_to_SCF_AC
@@ -847,14 +847,14 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addAssistRequestInstructionsRequest(DigitsIsup correlationID, IPAvailable ipAvailable,
+	public Integer addAssistRequestInstructionsRequest(DigitsIsup correlationID, IPAvailable ipAvailable,
 			IPSSPCapabilities ipSSPCapabilities, CAPINAPExtensions extensions) throws INAPException {
 		return addAssistRequestInstructionsRequest(_Timer_Default, correlationID, ipAvailable, ipSSPCapabilities,
 				extensions);
 	}
 
 	@Override
-	public Long addAssistRequestInstructionsRequest(int customInvokeTimeout, DigitsIsup correlationID,
+	public Integer addAssistRequestInstructionsRequest(int customInvokeTimeout, DigitsIsup correlationID,
 			IPAvailable ipAvailable, IPSSPCapabilities ipSSPCapabilities, CAPINAPExtensions extensions)
 			throws INAPException {		
 		if (this.appCntx != INAPApplicationContext.Q1218_assist_handoff_SSF_to_SCF_AC
@@ -881,11 +881,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		AssistRequestInstructionsRequestImpl req = new AssistRequestInstructionsRequestImpl(correlationID, ipAvailable,
 				ipSSPCapabilities, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.assistRequestInstructions, req, true, false);
+				INAPOperationCode.assistRequestInstructions, req, true, false);
 	}
 
 	@Override
-	public Long addEstablishTemporaryConnectionRequest(DigitsIsup assistingSSPIPRoutingAddress,
+	public Integer addEstablishTemporaryConnectionRequest(DigitsIsup assistingSSPIPRoutingAddress,
 			DigitsIsup correlationID, LegID legID, ScfID scfID, CAPINAPExtensions extensions, Carrier carrier,
 			ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException {
 		return addEstablishTemporaryConnectionRequest(_Timer_Default, assistingSSPIPRoutingAddress, correlationID,
@@ -893,7 +893,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addEstablishTemporaryConnectionRequest(int customInvokeTimeout, DigitsIsup assistingSSPIPRoutingAddress,
+	public Integer addEstablishTemporaryConnectionRequest(int customInvokeTimeout, DigitsIsup assistingSSPIPRoutingAddress,
 			DigitsIsup correlationID, LegID legID, ScfID scfID, CAPINAPExtensions extensions, Carrier carrier,
 			ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
@@ -916,11 +916,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				assistingSSPIPRoutingAddress, correlationID, legID, scfID, extensions, carrier,
 				serviceInteractionIndicators);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.establishTemporaryConnection, req, true, false);
+				INAPOperationCode.establishTemporaryConnection, req, true, false);
 	}
 
 	@Override
-	public Long addEstablishTemporaryConnectionRequest(LegType LegID, DigitsIsup assistingSSPIPRoutingAddress,
+	public Integer addEstablishTemporaryConnectionRequest(LegType LegID, DigitsIsup assistingSSPIPRoutingAddress,
 			DigitsIsup correlationID, ScfID scfID, CAPINAPExtensions extensions, Carrier carrier,
 			ServiceInteractionIndicators serviceInteractionIndicators, RouteList routeList) throws INAPException {
 		return addEstablishTemporaryConnectionRequest(_Timer_Default, LegID, assistingSSPIPRoutingAddress,
@@ -928,7 +928,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addEstablishTemporaryConnectionRequest(int customInvokeTimeout, LegType LegID,
+	public Integer addEstablishTemporaryConnectionRequest(int customInvokeTimeout, LegType LegID,
 			DigitsIsup assistingSSPIPRoutingAddress, DigitsIsup correlationID, ScfID scfID,
 			CAPINAPExtensions extensions, Carrier carrier, ServiceInteractionIndicators serviceInteractionIndicators,
 			RouteList routeList) throws INAPException {
@@ -949,16 +949,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				assistingSSPIPRoutingAddress, correlationID, scfID, extensions, carrier, serviceInteractionIndicators,
 				routeList);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.establishTemporaryConnection, req, true, false);
+				INAPOperationCode.establishTemporaryConnection, req, true, false);
 	}
 
 	@Override
-	public Long addDisconnectForwardConnectionRequest() throws INAPException {
+	public Integer addDisconnectForwardConnectionRequest() throws INAPException {
 		return addDisconnectForwardConnectionRequest(_Timer_Default);
 	}
 
 	@Override
-	public Long addDisconnectForwardConnectionRequest(int customInvokeTimeout) throws INAPException {
+	public Integer addDisconnectForwardConnectionRequest(int customInvokeTimeout) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_assist_handoff_SSF_to_SCF_AC
@@ -980,16 +980,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		DisconnectForwardConnectionRequestImpl req = new DisconnectForwardConnectionRequestImpl();
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.disconnectForwardConnection, req, true, false);
+				INAPOperationCode.disconnectForwardConnection, req, true, false);
 	}
 
 	@Override
-	public Long addDisconnectForwardConnectionRequest(LegType legID) throws INAPException {
+	public Integer addDisconnectForwardConnectionRequest(LegType legID) throws INAPException {
 		return addDisconnectForwardConnectionRequest(_Timer_Default, legID);
 	}
 
 	@Override
-	public Long addDisconnectForwardConnectionRequest(int customInvokeTimeout, LegType legID) throws INAPException {
+	public Integer addDisconnectForwardConnectionRequest(int customInvokeTimeout, LegType legID) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC
@@ -1008,35 +1008,35 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		DisconnectForwardConnectionCS1PlusRequestImpl req = new DisconnectForwardConnectionCS1PlusRequestImpl(legID);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.disconnectForwardConnection, req, true, false);
+				INAPOperationCode.disconnectForwardConnection, req, true, false);
 	}
 
 	@Override
-	public Long addConnectToResourceRequest(CalledPartyNumberIsup ipRoutingAddress, CAPINAPExtensions extensions,
+	public Integer addConnectToResourceRequest(CalledPartyNumberIsup ipRoutingAddress, CAPINAPExtensions extensions,
 			ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException {
 		return addConnectToResourceRequest(_Timer_Default, ipRoutingAddress, extensions, serviceInteractionIndicators);
 	}
 
 	@Override
-	public Long addConnectToResourceRequest(LegType legID, CAPINAPExtensions extensions,
+	public Integer addConnectToResourceRequest(LegType legID, CAPINAPExtensions extensions,
 			ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException {
 		return addConnectToResourceRequest(_Timer_Default, legID, extensions, serviceInteractionIndicators);
 	}
 
 	@Override
-	public Long addConnectToResourceRequest(ResourceAddress resourceAddress, CAPINAPExtensions extensions,
+	public Integer addConnectToResourceRequest(ResourceAddress resourceAddress, CAPINAPExtensions extensions,
 			ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException {
 		return addConnectToResourceRequest(_Timer_Default, resourceAddress, extensions, serviceInteractionIndicators);
 	}
 
 	@Override
-	public Long addConnectToResourceRequest(boolean none, CAPINAPExtensions extensions,
+	public Integer addConnectToResourceRequest(boolean none, CAPINAPExtensions extensions,
 			ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException {
 		return addConnectToResourceRequest(_Timer_Default, none, extensions, serviceInteractionIndicators);
 	}
 
 	@Override
-	public Long addConnectToResourceRequest(int customInvokeTimeout, CalledPartyNumberIsup ipRoutingAddress,
+	public Integer addConnectToResourceRequest(int customInvokeTimeout, CalledPartyNumberIsup ipRoutingAddress,
 			CAPINAPExtensions extensions, ServiceInteractionIndicators serviceInteractionIndicators)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
@@ -1068,11 +1068,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		ConnectToResourceRequestImpl req = new ConnectToResourceRequestImpl(ipRoutingAddress, extensions,
 				serviceInteractionIndicators);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.connectToResource, req, true, false);
+				INAPOperationCode.connectToResource, req, true, false);
 	}
 
 	@Override
-	public Long addConnectToResourceRequest(int customInvokeTimeout, LegType legID, CAPINAPExtensions extensions,
+	public Integer addConnectToResourceRequest(int customInvokeTimeout, LegType legID, CAPINAPExtensions extensions,
 			ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
@@ -1103,11 +1103,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		ConnectToResourceRequestImpl req = new ConnectToResourceRequestImpl(legID, extensions,
 				serviceInteractionIndicators);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.connectToResource, req, true, false);
+				INAPOperationCode.connectToResource, req, true, false);
 	}
 
 	@Override
-	public Long addConnectToResourceRequest(int customInvokeTimeout, ResourceAddress resourceAddress,
+	public Integer addConnectToResourceRequest(int customInvokeTimeout, ResourceAddress resourceAddress,
 			CAPINAPExtensions extensions, ServiceInteractionIndicators serviceInteractionIndicators)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
@@ -1139,11 +1139,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		ConnectToResourceRequestImpl req = new ConnectToResourceRequestImpl(resourceAddress, extensions,
 				serviceInteractionIndicators);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.connectToResource, req, true, false);
+				INAPOperationCode.connectToResource, req, true, false);
 	}
 
 	@Override
-	public Long addConnectToResourceRequest(int customInvokeTimeout, boolean none, CAPINAPExtensions extensions,
+	public Integer addConnectToResourceRequest(int customInvokeTimeout, boolean none, CAPINAPExtensions extensions,
 			ServiceInteractionIndicators serviceInteractionIndicators) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
@@ -1174,16 +1174,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		ConnectToResourceRequestImpl req = new ConnectToResourceRequestImpl(none, extensions,
 				serviceInteractionIndicators);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.connectToResource, req, true, false);
+				INAPOperationCode.connectToResource, req, true, false);
 	}
 
 	@Override
-	public Long addFurnishChargingInformationRequest(ByteBuf FCIBCCCAMELsequence1) throws INAPException {
+	public Integer addFurnishChargingInformationRequest(ByteBuf FCIBCCCAMELsequence1) throws INAPException {
 		return addFurnishChargingInformationRequest(_Timer_Default, FCIBCCCAMELsequence1);
 	}
 
 	@Override
-	public Long addFurnishChargingInformationRequest(int customInvokeTimeout, ByteBuf FCIBCCCAMELsequence1)
+	public Integer addFurnishChargingInformationRequest(int customInvokeTimeout, ByteBuf FCIBCCCAMELsequence1)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
@@ -1213,19 +1213,19 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		FurnishChargingInformationRequestImpl req = new FurnishChargingInformationRequestImpl(FCIBCCCAMELsequence1);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.furnishChargingInformation, req, true, false);
+				INAPOperationCode.furnishChargingInformation, req, true, false);
 	}
 
 	//cs1 flavour
 	@Override
-	public Long addSendChargingInformationRequest(SCIBillingChargingCharacteristics sciBillingChargingCharacteristics,
+	public Integer addSendChargingInformationRequest(SCIBillingChargingCharacteristics sciBillingChargingCharacteristics,
 			LegType partyToCharge, CAPINAPExtensions extensions) throws INAPException {
 		return addSendChargingInformationRequest(_Timer_Default, sciBillingChargingCharacteristics, partyToCharge,
 				extensions);
 	}
 
 	@Override
-	public Long addSendChargingInformationRequest(int customInvokeTimeout,
+	public Integer addSendChargingInformationRequest(int customInvokeTimeout,
 			SCIBillingChargingCharacteristics sciBillingChargingCharacteristics, LegType partyToCharge,
 			CAPINAPExtensions extensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
@@ -1247,19 +1247,19 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		SendChargingInformationRequestImpl req = new SendChargingInformationRequestImpl(
 				sciBillingChargingCharacteristics, partyToCharge, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.sendChargingInformation, req, true, false);
+				INAPOperationCode.sendChargingInformation, req, true, false);
 	}
 	
 	//cs1+ flavour
 	@Override
-	public Long addSendChargingInformationRequest(SCIBillingChargingCharacteristicsCS1 sciBillingChargingCharacteristics,
+	public Integer addSendChargingInformationRequest(SCIBillingChargingCharacteristicsCS1 sciBillingChargingCharacteristics,
 			LegType partyToCharge, CAPINAPExtensions extensions) throws INAPException {
 		return addSendChargingInformationRequest(_Timer_Default, sciBillingChargingCharacteristics, partyToCharge,
 				extensions);
 	}
 
 	@Override
-	public Long addSendChargingInformationRequest(int customInvokeTimeout,
+	public Integer addSendChargingInformationRequest(int customInvokeTimeout,
 			SCIBillingChargingCharacteristicsCS1 sciBillingChargingCharacteristics, LegType partyToCharge,
 			CAPINAPExtensions extensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
@@ -1281,16 +1281,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		SendChargingInformationCS1RequestImpl req = new SendChargingInformationCS1RequestImpl(
 				sciBillingChargingCharacteristics, partyToCharge, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.sendChargingInformation, req, true, false);
+				INAPOperationCode.sendChargingInformation, req, true, false);
 	}
 	
 	@Override
-	public Long addSpecializedResourceReportRequest(Long linkedId) throws INAPException {
+	public Integer addSpecializedResourceReportRequest(Integer linkedId) throws INAPException {
 		return addSpecializedResourceReportRequest(_Timer_Default, linkedId);
 	}
 
 	@Override
-	public Long addSpecializedResourceReportRequest(int customInvokeTimeout, Long linkedId) throws INAPException {
+	public Integer addSpecializedResourceReportRequest(int customInvokeTimeout, Integer linkedId) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_assist_handoff_SSF_to_SCF_AC
@@ -1318,17 +1318,17 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 			customTimeout = customInvokeTimeout;
 
 		return this.sendDataComponent(null, linkedId, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.specializedResourceReport, null, true, false);
+				INAPOperationCode.specializedResourceReport, null, true, false);
 	}
 
 	@Override
-	public Long addSpecializedResourceReportRequest(Long linkedId, boolean value, boolean isStarted)
+	public Integer addSpecializedResourceReportRequest(Integer linkedId, boolean value, boolean isStarted)
 			throws INAPException {
 		return addSpecializedResourceReportRequest(_Timer_Default, linkedId, value, isStarted);
 	}
 
 	@Override
-	public Long addSpecializedResourceReportRequest(int customInvokeTimeout, Long linkedId, boolean value,
+	public Integer addSpecializedResourceReportRequest(int customInvokeTimeout, Integer linkedId, boolean value,
 			boolean isStarted) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
@@ -1351,18 +1351,18 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		SpecializedResourceReportCS1PlusRequestImpl req = new SpecializedResourceReportCS1PlusRequestImpl(value,
 				isStarted);
 		return this.sendDataComponent(null, linkedId, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.specializedResourceReport, req, true, false);
+				INAPOperationCode.specializedResourceReport, req, true, false);
 	}
 
 	@Override
-	public Long addPlayAnnouncementRequest(InformationToSend informationToSend, Boolean disconnectFromIPForbidden,
+	public Integer addPlayAnnouncementRequest(InformationToSend informationToSend, Boolean disconnectFromIPForbidden,
 			Boolean requestAnnouncementCompleteNotification, CAPINAPExtensions extensions) throws INAPException {
 		return addPlayAnnouncementRequest(_Timer_Default, informationToSend, disconnectFromIPForbidden,
 				requestAnnouncementCompleteNotification, extensions);
 	}
 
 	@Override
-	public Long addPlayAnnouncementRequest(int customInvokeTimeout, InformationToSend informationToSend,
+	public Integer addPlayAnnouncementRequest(int customInvokeTimeout, InformationToSend informationToSend,
 			Boolean disconnectFromIPForbidden, Boolean requestAnnouncementCompleteNotification,
 			CAPINAPExtensions extensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
@@ -1399,11 +1399,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		PlayAnnouncementRequestImpl req = new PlayAnnouncementRequestImpl(informationToSend, disconnectFromIPForbidden,
 				requestAnnouncementCompleteNotification, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.playAnnouncement, req, true, false);
+				INAPOperationCode.playAnnouncement, req, true, false);
 	}
 
 	@Override
-	public Long addPlayAnnouncementRequest(LegType legID, Boolean requestAnnouncementStarted,
+	public Integer addPlayAnnouncementRequest(LegType legID, Boolean requestAnnouncementStarted,
 			InformationToSend informationToSend, Boolean disconnectFromIPForbidden,
 			Boolean requestAnnouncementCompleteNotification, CAPINAPExtensions extensions) throws INAPException {
 		return addPlayAnnouncementRequest(_Timer_Default, legID, requestAnnouncementStarted, informationToSend,
@@ -1411,7 +1411,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addPlayAnnouncementRequest(int customInvokeTimeout, LegType legID, Boolean requestAnnouncementStarted,
+	public Integer addPlayAnnouncementRequest(int customInvokeTimeout, LegType legID, Boolean requestAnnouncementStarted,
 			InformationToSend informationToSend, Boolean disconnectFromIPForbidden,
 			Boolean requestAnnouncementCompleteNotification, CAPINAPExtensions extensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
@@ -1435,11 +1435,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		PlayAnnouncementRequestImpl req = new PlayAnnouncementRequestImpl(legID, requestAnnouncementStarted,
 				informationToSend, disconnectFromIPForbidden, requestAnnouncementCompleteNotification, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.playAnnouncement, req, true, false);
+				INAPOperationCode.playAnnouncement, req, true, false);
 	}
 
 	@Override
-	public Long addPromptAndCollectUserInformationRequest(CollectedInfo collectedInfo,
+	public Integer addPromptAndCollectUserInformationRequest(CollectedInfo collectedInfo,
 			Boolean disconnectFromIPForbidden, InformationToSend informationToSend, CAPINAPExtensions extensions)
 			throws INAPException {
 		return addPromptAndCollectUserInformationRequest(_Timer_Default, collectedInfo, disconnectFromIPForbidden,
@@ -1447,7 +1447,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addPromptAndCollectUserInformationRequest(int customInvokeTimeout, CollectedInfo collectedInfo,
+	public Integer addPromptAndCollectUserInformationRequest(int customInvokeTimeout, CollectedInfo collectedInfo,
 			Boolean disconnectFromIPForbidden, InformationToSend informationToSend, CAPINAPExtensions extensions)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
@@ -1482,11 +1482,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		PromptAndCollectUserInformationRequestImpl req = new PromptAndCollectUserInformationRequestImpl(collectedInfo,
 				disconnectFromIPForbidden, informationToSend, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(),
-				(long) INAPOperationCode.promptAndCollectUserInformation, req, true, false);
+				INAPOperationCode.promptAndCollectUserInformation, req, true, false);
 	}
 
 	@Override
-	public Long addPromptAndCollectUserInformationRequest(LegType legID, Boolean requestAnnouncementStarted,
+	public Integer addPromptAndCollectUserInformationRequest(LegType legID, Boolean requestAnnouncementStarted,
 			Boolean requestAnnouncementComplete, CollectedInfo collectedInfo, Boolean disconnectFromIPForbidden,
 			InformationToSend informationToSend, CAPINAPExtensions extensions) throws INAPException {
 		return addPromptAndCollectUserInformationRequest(_Timer_Default, legID, requestAnnouncementStarted,
@@ -1494,7 +1494,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addPromptAndCollectUserInformationRequest(int customInvokeTimeout, LegType legID,
+	public Integer addPromptAndCollectUserInformationRequest(int customInvokeTimeout, LegType legID,
 			Boolean requestAnnouncementStarted, Boolean requestAnnouncementComplete, CollectedInfo collectedInfo,
 			Boolean disconnectFromIPForbidden, InformationToSend informationToSend, CAPINAPExtensions extensions)
 			throws INAPException {
@@ -1520,11 +1520,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				requestAnnouncementStarted, requestAnnouncementComplete, collectedInfo, disconnectFromIPForbidden,
 				informationToSend, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(),
-				(long) INAPOperationCode.promptAndCollectUserInformation, req, true, false);
+				INAPOperationCode.promptAndCollectUserInformation, req, true, false);
 	}
 
 	@Override
-	public void addPromptAndCollectUserInformationResponse(long invokeId, DigitsIsup digitsResponse)
+	public void addPromptAndCollectUserInformationResponse(int invokeId, DigitsIsup digitsResponse)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
@@ -1553,12 +1553,12 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		PromptAndCollectUserInformationResponseImpl res = new PromptAndCollectUserInformationResponseImpl(
 				digitsResponse);
-		this.sendDataComponent(invokeId, null, null, null, (long) INAPOperationCode.promptAndCollectUserInformation,
+		this.sendDataComponent(invokeId, null, null, null, INAPOperationCode.promptAndCollectUserInformation,
 				res, false, true);
 	}
 
 	@Override
-	public void addPromptAndCollectUserInformationResponse(long invokeId, String ia5Response) throws INAPException {
+	public void addPromptAndCollectUserInformationResponse(int invokeId, String ia5Response) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_assist_handoff_SSF_to_SCF_AC
@@ -1585,22 +1585,22 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 							+ "Ericcson_cs1plus_IP_to_SCP_AC or Ericcson_cs1plus_SCP_to_SSP_AC");
 
 		PromptAndCollectUserInformationResponseImpl res = new PromptAndCollectUserInformationResponseImpl(ia5Response);
-		this.sendDataComponent(invokeId, null, null, null, (long) INAPOperationCode.promptAndCollectUserInformation,
+		this.sendDataComponent(invokeId, null, null, null, INAPOperationCode.promptAndCollectUserInformation,
 				res, false, true);
 	}
 
 	@Override
-	public Long addCancelRequest(Integer invokeID) throws INAPException {
+	public Integer addCancelRequest(Integer invokeID) throws INAPException {
 		return addCancelRequest(_Timer_Default, invokeID);
 	}
 
 	@Override
-	public Long addCancelRequest() throws INAPException {
+	public Integer addCancelRequest() throws INAPException {
 		return addCancelRequest(_Timer_Default);
 	}
 
 	@Override
-	public Long addCancelRequest(int customInvokeTimeout, Integer invokeID) throws INAPException {
+	public Integer addCancelRequest(int customInvokeTimeout, Integer invokeID) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_assist_handoff_SSF_to_SCF_AC
@@ -1635,11 +1635,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		CancelRequestImpl req = new CancelRequestImpl(invokeID);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.cancelCode, req, true, false);
+				INAPOperationCode.cancelCode, req, true, false);
 	}
 
 	@Override
-	public Long addCancelRequest(int customInvokeTimeout) throws INAPException {
+	public Integer addCancelRequest(int customInvokeTimeout) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_assist_handoff_SSF_to_SCF_AC
@@ -1674,11 +1674,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		CancelRequestImpl req = new CancelRequestImpl(true);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.cancelCode, req, true, false);
+				INAPOperationCode.cancelCode, req, true, false);
 	}
 
 	@Override
-	public Long addInitiateCallAttemptRequest(DestinationRoutingAddress destinationRoutingAddress,
+	public Integer addInitiateCallAttemptRequest(DestinationRoutingAddress destinationRoutingAddress,
 			AlertingPattern alertingPattern, ISDNAccessRelatedInformation isdnAccessRelatedInformation,
 			LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions,
 			ServiceInteractionIndicators serviceInteractionIndicators, CallingPartyNumberIsup callingPartyNumber)
@@ -1689,7 +1689,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addInitiateCallAttemptRequest(int customInvokeTimeout,
+	public Integer addInitiateCallAttemptRequest(int customInvokeTimeout,
 			DestinationRoutingAddress destinationRoutingAddress, AlertingPattern alertingPattern,
 			ISDNAccessRelatedInformation isdnAccessRelatedInformation, LocationNumberIsup travellingClassMark,
 			CAPINAPExtensions extensions, ServiceInteractionIndicators serviceInteractionIndicators,
@@ -1711,11 +1711,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				alertingPattern, isdnAccessRelatedInformation, travellingClassMark, extensions,
 				serviceInteractionIndicators, callingPartyNumber);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.initiateCallAttempt, req, true, false);
+				INAPOperationCode.initiateCallAttempt, req, true, false);
 	}
 
 	@Override
-	public Long addInitiateCallAttemptRequest(OriginalCalledNumberIsup originalCalledPartyID, LegType legToBeCreated,
+	public Integer addInitiateCallAttemptRequest(OriginalCalledNumberIsup originalCalledPartyID, LegType legToBeCreated,
 			CallingPartysCategoryIsup callingPartysCategory, RedirectingPartyIDIsup redirectingPartyID,
 			RedirectionInformationIsup redirectionInformation, BearerCapability nearerCapability,
 			CUGCallIndicator cugCallIndicator, CUGInterLockCode cugInterLockCode,
@@ -1733,7 +1733,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addInitiateCallAttemptRequest(int customInvokeTimeout, OriginalCalledNumberIsup originalCalledPartyID,
+	public Integer addInitiateCallAttemptRequest(int customInvokeTimeout, OriginalCalledNumberIsup originalCalledPartyID,
 			LegType legToBeCreated, CallingPartysCategoryIsup callingPartysCategory,
 			RedirectingPartyIDIsup redirectingPartyID, RedirectionInformationIsup redirectionInformation,
 			BearerCapability nearerCapability, CUGCallIndicator cugCallIndicator, CUGInterLockCode cugInterLockCode,
@@ -1762,11 +1762,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				forwardGVNSIndicator, destinationRoutingAddress, alertingPattern, extensions,
 				serviceInteractionIndicators, callingPartyNumber, routeList);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.initiateCallAttempt, req, true, false);
+				INAPOperationCode.initiateCallAttempt, req, true, false);
 	}
 
 	@Override
-	public Long addCollectInformationRequest(AlertingPattern alertingPattern, NumberingPlan numberingPlan,
+	public Integer addCollectInformationRequest(AlertingPattern alertingPattern, NumberingPlan numberingPlan,
 			OriginalCalledPartyIDIsup originalCalledPartyID, LocationNumberIsup travellingClassMark,
 			CAPINAPExtensions extensions, CallingPartyNumberIsup сallingPartyNumber,
 			CalledPartyNumberIsup dialledDigits) throws INAPException {
@@ -1775,7 +1775,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addCollectInformationRequest(int customInvokeTimeout, AlertingPattern alertingPattern,
+	public Integer addCollectInformationRequest(int customInvokeTimeout, AlertingPattern alertingPattern,
 			NumberingPlan numberingPlan, OriginalCalledPartyIDIsup originalCalledPartyID,
 			LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions,
 			CallingPartyNumberIsup сallingPartyNumber, CalledPartyNumberIsup dialledDigits) throws INAPException {
@@ -1803,17 +1803,17 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		CollectInformationRequestImpl req = new CollectInformationRequestImpl(alertingPattern, numberingPlan,
 				originalCalledPartyID, travellingClassMark, extensions, сallingPartyNumber, dialledDigits);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.collectInformation, req, true, false);
+				INAPOperationCode.collectInformation, req, true, false);
 	}
 
 	@Override
-	public Long addCallGapRequest(GapCriteria gapCriteria, GapIndicators gapIndicators, ControlType controlType,
+	public Integer addCallGapRequest(GapCriteria gapCriteria, GapIndicators gapIndicators, ControlType controlType,
 			GapTreatment gapTreatment, CAPINAPExtensions capExtensions) throws INAPException {
 		return addCallGapRequest(_Timer_Default, gapCriteria, gapIndicators, controlType, gapTreatment, capExtensions);
 	}
 
 	@Override
-	public Long addCallGapRequest(int customInvokeTimeout, GapCriteria gapCriteria, GapIndicators gapIndicators,
+	public Integer addCallGapRequest(int customInvokeTimeout, GapCriteria gapCriteria, GapIndicators gapIndicators,
 			ControlType controlType, GapTreatment gapTreatment, CAPINAPExtensions capExtensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
@@ -1840,18 +1840,18 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		CallGapRequestImpl req = new CallGapRequestImpl(gapCriteria, gapIndicators, controlType, gapTreatment,
 				capExtensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.callGap, req, true, false);
+				INAPOperationCode.callGap, req, true, false);
 	}
 
 	@Override
-	public Long addCallGapRequest(DateAndTime startTime, GapCriteria gapCriteria, GapIndicators gapIndicators,
+	public Integer addCallGapRequest(DateAndTime startTime, GapCriteria gapCriteria, GapIndicators gapIndicators,
 			ControlType controlType, GapTreatment gapTreatment, CAPINAPExtensions capExtensions) throws INAPException {
 		return addCallGapRequest(_Timer_Default, startTime, gapCriteria, gapIndicators, controlType, gapTreatment,
 				capExtensions);
 	}
 
 	@Override
-	public Long addCallGapRequest(int customInvokeTimeout, DateAndTime startTime, GapCriteria gapCriteria,
+	public Integer addCallGapRequest(int customInvokeTimeout, DateAndTime startTime, GapCriteria gapCriteria,
 			GapIndicators gapIndicators, ControlType controlType, GapTreatment gapTreatment,
 			CAPINAPExtensions capExtensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
@@ -1873,11 +1873,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		CallGapRequestImpl req = new CallGapRequestImpl(startTime, gapCriteria, gapIndicators, controlType,
 				gapTreatment, capExtensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.callGap, req, true, false);
+				INAPOperationCode.callGap, req, true, false);
 	}
 
 	@Override
-	public Long addActivateServiceFilteringRequest(FilteredCallTreatment filteredCallTreatment,
+	public Integer addActivateServiceFilteringRequest(FilteredCallTreatment filteredCallTreatment,
 			FilteringCharacteristics filteringCharacteristics, FilteringTimeOut filteringTimeOut,
 			FilteringCriteria filteringCriteria, DateAndTime startTime, CAPINAPExtensions extensions)
 			throws INAPException {
@@ -1886,7 +1886,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addActivateServiceFilteringRequest(int customInvokeTimeout, FilteredCallTreatment filteredCallTreatment,
+	public Integer addActivateServiceFilteringRequest(int customInvokeTimeout, FilteredCallTreatment filteredCallTreatment,
 			FilteringCharacteristics filteringCharacteristics, FilteringTimeOut filteringTimeOut,
 			FilteringCriteria filteringCriteria, DateAndTime startTime, CAPINAPExtensions extensions)
 			throws INAPException {
@@ -1907,11 +1907,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		ActivateServiceFilteringRequestImpl req = new ActivateServiceFilteringRequestImpl(filteredCallTreatment,
 				filteringCharacteristics, filteringTimeOut, filteringCriteria, startTime, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.activateServiceFiltering, req, true, false);
+				INAPOperationCode.activateServiceFiltering, req, true, false);
 	}
 
 	@Override
-	public Long addActivateServiceFilteringRequest(FilteredCallTreatment filteredCallTreatment,
+	public Integer addActivateServiceFilteringRequest(FilteredCallTreatment filteredCallTreatment,
 			FilteringCharacteristics filteringCharacteristics, FilteringTimeOut filteringTimeOut,
 			FilteringCriteria filteringCriteria, DateAndTime startTime, CAPINAPExtensions extensions,
 			ByteBuf scfCorrelationInfo) throws INAPException {
@@ -1920,7 +1920,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addActivateServiceFilteringRequest(int customInvokeTimeout, FilteredCallTreatment filteredCallTreatment,
+	public Integer addActivateServiceFilteringRequest(int customInvokeTimeout, FilteredCallTreatment filteredCallTreatment,
 			FilteringCharacteristics filteringCharacteristics, FilteringTimeOut filteringTimeOut,
 			FilteringCriteria filteringCriteria, DateAndTime startTime, CAPINAPExtensions extensions,
 			ByteBuf scfCorrelationInfo) throws INAPException {
@@ -1944,18 +1944,18 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				filteringCharacteristics, filteringTimeOut, filteringCriteria, startTime, extensions,
 				scfCorrelationInfo);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.activateServiceFiltering, req, true, false);
+				INAPOperationCode.activateServiceFiltering, req, true, false);
 	}
 
 	@Override
-	public Long addEventNotificationCharging(ByteBuf eventTypeCharging, ByteBuf eventSpecificInformationCharging,
+	public Integer addEventNotificationCharging(ByteBuf eventTypeCharging, ByteBuf eventSpecificInformationCharging,
 			LegID legID, CAPINAPExtensions extensions, MonitorMode monitorMode) throws INAPException {
 		return addEventNotificationCharging(_Timer_Default, eventTypeCharging, eventSpecificInformationCharging, legID,
 				extensions, monitorMode);
 	}
 
 	@Override
-	public Long addEventNotificationCharging(int customInvokeTimeout, ByteBuf eventTypeCharging,
+	public Integer addEventNotificationCharging(int customInvokeTimeout, ByteBuf eventTypeCharging,
 			ByteBuf eventSpecificInformationCharging, LegID legID, CAPINAPExtensions extensions, MonitorMode monitorMode)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
@@ -1982,16 +1982,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		EventNotificationChargingRequestImpl req = new EventNotificationChargingRequestImpl(eventTypeCharging,
 				eventSpecificInformationCharging, legID, extensions, monitorMode);
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.eventNotificationCharging, req, true, false);
+				INAPOperationCode.eventNotificationCharging, req, true, false);
 	}
 
 	@Override
-	public Long addRequestNotificationChargingEvent(List<ChargingEvent> chargingEventList) throws INAPException {
+	public Integer addRequestNotificationChargingEvent(List<ChargingEvent> chargingEventList) throws INAPException {
 		return addRequestNotificationChargingEvent(_Timer_Default, chargingEventList);
 	}
 
 	@Override
-	public Long addRequestNotificationChargingEvent(int customInvokeTimeout, List<ChargingEvent> chargingEventList)
+	public Integer addRequestNotificationChargingEvent(int customInvokeTimeout, List<ChargingEvent> chargingEventList)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
@@ -2017,11 +2017,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		RequestNotificationChargingEventRequestImpl req = new RequestNotificationChargingEventRequestImpl(
 				chargingEventList);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.requestNotificationChargingEvent, req, true, false);
+				INAPOperationCode.requestNotificationChargingEvent, req, true, false);
 	}
 
 	@Override
-	public Long addServiceFilteringResponseRequest(List<CounterAndValue> counterAndValue,
+	public Integer addServiceFilteringResponseRequest(List<CounterAndValue> counterAndValue,
 			FilteringCriteria filteringCriteria, CAPINAPExtensions extensions, ResponseCondition responseCondition)
 			throws INAPException {
 		return addServiceFilteringResponseRequest(_Timer_Default, counterAndValue, filteringCriteria, extensions,
@@ -2029,7 +2029,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addServiceFilteringResponseRequest(int customInvokeTimeout, List<CounterAndValue> counterAndValue,
+	public Integer addServiceFilteringResponseRequest(int customInvokeTimeout, List<CounterAndValue> counterAndValue,
 			FilteringCriteria filteringCriteria, CAPINAPExtensions extensions, ResponseCondition responseCondition)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_SCF_to_SSF_service_management_AC
@@ -2049,11 +2049,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		ServiceFilteringResponseRequestImpl req = new ServiceFilteringResponseRequestImpl(counterAndValue,
 				filteringCriteria, extensions, responseCondition);
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.serviceFilteringResponse, req, true, false);
+				INAPOperationCode.serviceFilteringResponse, req, true, false);
 	}
 
 	@Override
-	public Long addServiceFilteringResponseRequest(List<CounterAndValue> counterAndValue,
+	public Integer addServiceFilteringResponseRequest(List<CounterAndValue> counterAndValue,
 			FilteringCriteria filteringCriteria, ResponseCondition responseCondition, ByteBuf scfCorrelationInfo)
 			throws INAPException {
 		return addServiceFilteringResponseRequest(_Timer_Default, counterAndValue, filteringCriteria, responseCondition,
@@ -2061,7 +2061,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addServiceFilteringResponseRequest(int customInvokeTimeout, List<CounterAndValue> counterAndValue,
+	public Integer addServiceFilteringResponseRequest(int customInvokeTimeout, List<CounterAndValue> counterAndValue,
 			FilteringCriteria filteringCriteria, ResponseCondition responseCondition, ByteBuf scfCorrelationInfo)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
@@ -2083,11 +2083,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		ServiceFilteringResponseRequestImpl req = new ServiceFilteringResponseRequestImpl(counterAndValue,
 				filteringCriteria, responseCondition, scfCorrelationInfo);
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.serviceFilteringResponse, req, true, false);
+				INAPOperationCode.serviceFilteringResponse, req, true, false);
 	}
 
 	@Override
-	public Long addAnalysedInformationRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addAnalysedInformationRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyNumberIsup dialedDigits, CallingPartyBusinessGroupID callingPartyBusinessGroupID,
 			CallingPartySubaddress callingPartySubaddress, FacilityGroup callingFacilityGroup,
 			Integer callingFacilityGroupMember, OriginalCalledNumberIsup originalCalledPartyID, DigitsIsup prefix,
@@ -2101,7 +2101,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addAnalysedInformationRequest(int customInvokeTimeout,
+	public Integer addAnalysedInformationRequest(int customInvokeTimeout,
 			DpSpecificCommonParameters dpSpecificCommonParameters, CalledPartyNumberIsup dialedDigits,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FacilityGroup callingFacilityGroup, Integer callingFacilityGroupMember,
@@ -2125,11 +2125,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				callingFacilityGroupMember, originalCalledPartyID, prefix, redirectingPartyID, redirectionInformation,
 				routeList, travellingClassMark, extensions, featureCode, accessCode, carrier);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.analysedInformation, req, true, false);
+				INAPOperationCode.analysedInformation, req, true, false);
 	}
 
 	@Override
-	public Long addAnalyseInformationRequest(DestinationRoutingAddress destinationRoutingAddress,
+	public Integer addAnalyseInformationRequest(DestinationRoutingAddress destinationRoutingAddress,
 			AlertingPattern alertingPattern, ISDNAccessRelatedInformation isdnAccessRelatedInformation,
 			OriginalCalledNumberIsup originalCalledPartyID, CAPINAPExtensions extensions,
 			CallingPartyNumberIsup callingPartyNumber, CallingPartysCategoryIsup callingPartysCategory,
@@ -2141,7 +2141,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addAnalyseInformationRequest(int customInvokeTimeout,
+	public Integer addAnalyseInformationRequest(int customInvokeTimeout,
 			DestinationRoutingAddress destinationRoutingAddress, AlertingPattern alertingPattern,
 			ISDNAccessRelatedInformation isdnAccessRelatedInformation, OriginalCalledNumberIsup originalCalledPartyID,
 			CAPINAPExtensions extensions, CallingPartyNumberIsup callingPartyNumber,
@@ -2166,11 +2166,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				alertingPattern, isdnAccessRelatedInformation, originalCalledPartyID, extensions, callingPartyNumber,
 				callingPartysCategory, calledPartyNumber, chargeNumber, travellingClassMark, carrier);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.analyseInformation, req, true, false);
+				INAPOperationCode.analyseInformation, req, true, false);
 	}
 
 	@Override
-	public Long addCollectedInformationRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addCollectedInformationRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyNumberIsup dialedDigits, CallingPartyBusinessGroupID callingPartyBusinessGroupID,
 			CallingPartySubaddress callingPartySubaddress, FacilityGroup callingFacilityGroup,
 			Integer callingFacilityGroupMember, OriginalCalledNumberIsup originalCalledPartyID, DigitsIsup prefix,
@@ -2184,7 +2184,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addCollectedInformationRequest(int customInvokeTimeout,
+	public Integer addCollectedInformationRequest(int customInvokeTimeout,
 			DpSpecificCommonParameters dpSpecificCommonParameters, CalledPartyNumberIsup dialedDigits,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FacilityGroup callingFacilityGroup, Integer callingFacilityGroupMember,
@@ -2208,16 +2208,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				callingFacilityGroupMember, originalCalledPartyID, prefix, redirectingPartyID, redirectionInformation,
 				travellingClassMark, extensions, featureCode, accessCode, carrier);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.collectedInformation, req, true, false);
+				INAPOperationCode.collectedInformation, req, true, false);
 	}
 
 	@Override
-	public Long addHoldCallInNetworkRequest(HoldCause holdCause) throws INAPException {
+	public Integer addHoldCallInNetworkRequest(HoldCause holdCause) throws INAPException {
 		return addHoldCallInNetworkRequest(_Timer_Default, holdCause);
 	}
 
 	@Override
-	public Long addHoldCallInNetworkRequest(int customInvokeTimeout, HoldCause holdCause) throws INAPException {
+	public Integer addHoldCallInNetworkRequest(int customInvokeTimeout, HoldCause holdCause) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_assist_handoff_SSF_to_SCF_AC
@@ -2235,16 +2235,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		HoldCallInNetworkRequestImpl req = new HoldCallInNetworkRequestImpl(holdCause);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.holdCallInNetwork, req, true, false);
+				INAPOperationCode.holdCallInNetwork, req, true, false);
 	}
 
 	@Override
-	public Long addHoldCallInNetworkRequest() throws INAPException {
+	public Integer addHoldCallInNetworkRequest() throws INAPException {
 		return addHoldCallInNetworkRequest(_Timer_Default);
 	}
 
 	@Override
-	public Long addHoldCallInNetworkRequest(int customInvokeTimeout) throws INAPException {
+	public Integer addHoldCallInNetworkRequest(int customInvokeTimeout) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_assist_handoff_SSF_to_SCF_AC
@@ -2262,11 +2262,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		HoldCallInNetworkRequestImpl req = new HoldCallInNetworkRequestImpl(true);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.holdCallInNetwork, req, true, false);
+				INAPOperationCode.holdCallInNetwork, req, true, false);
 	}
 
 	@Override
-	public Long addOMidCallRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addOMidCallRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyBusinessGroupID calledPartyBusinessGroupID, CalledPartySubaddress calledPartySubaddress,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FeatureRequestIndicator featureRequestIndicator, CAPINAPExtensions extensions, Carrier carrier)
@@ -2277,7 +2277,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addOMidCallRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addOMidCallRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyBusinessGroupID calledPartyBusinessGroupID, CalledPartySubaddress calledPartySubaddress,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FeatureRequestIndicator featureRequestIndicator, CAPINAPExtensions extensions, Carrier carrier)
@@ -2297,11 +2297,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				calledPartySubaddress, callingPartyBusinessGroupID, callingPartySubaddress, featureRequestIndicator,
 				extensions, carrier);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.oMidCall, req, true, false);
+				INAPOperationCode.oMidCall, req, true, false);
 	}
 
 	@Override
-	public Long addTMidCallRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addTMidCallRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyBusinessGroupID calledPartyBusinessGroupID, CalledPartySubaddress calledPartySubaddress,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FeatureRequestIndicator featureRequestIndicator, CAPINAPExtensions extensions, Carrier carrier)
@@ -2312,7 +2312,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addTMidCallRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addTMidCallRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyBusinessGroupID calledPartyBusinessGroupID, CalledPartySubaddress calledPartySubaddress,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FeatureRequestIndicator featureRequestIndicator, CAPINAPExtensions extensions, Carrier carrier)
@@ -2332,11 +2332,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				calledPartySubaddress, callingPartyBusinessGroupID, callingPartySubaddress, featureRequestIndicator,
 				extensions, carrier);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.tMidCall, req, true, false);
+				INAPOperationCode.tMidCall, req, true, false);
 	}
 
 	@Override
-	public Long addOAnswerRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addOAnswerRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FacilityGroup callingFacilityGroup, Integer callingFacilityGroupMember,
 			OriginalCalledNumberIsup originalCalledPartyID, RedirectingPartyIDIsup redirectingPartyID,
@@ -2348,7 +2348,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addOAnswerRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addOAnswerRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FacilityGroup callingFacilityGroup, Integer callingFacilityGroupMember,
 			OriginalCalledNumberIsup originalCalledPartyID, RedirectingPartyIDIsup redirectingPartyID,
@@ -2369,11 +2369,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				callingPartySubaddress, callingFacilityGroup, callingFacilityGroupMember, originalCalledPartyID,
 				redirectingPartyID, redirectionInformation, routeList, travellingClassMark, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.oAnswer, req, true, false);
+				INAPOperationCode.oAnswer, req, true, false);
 	}
 
 	@Override
-	public Long addOriginationAttemptAuthorizedRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addOriginationAttemptAuthorizedRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyNumberIsup dialedDigits, CallingPartyBusinessGroupID callingPartyBusinessGroupID,
 			CallingPartySubaddress callingPartySubaddress, FacilityGroup callingFacilityGroup,
 			Integer callingFacilityGroupMember, LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions,
@@ -2384,7 +2384,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addOriginationAttemptAuthorizedRequest(int customInvokeTimeout,
+	public Integer addOriginationAttemptAuthorizedRequest(int customInvokeTimeout,
 			DpSpecificCommonParameters dpSpecificCommonParameters, CalledPartyNumberIsup dialedDigits,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FacilityGroup callingFacilityGroup, Integer callingFacilityGroupMember,
@@ -2405,11 +2405,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				dpSpecificCommonParameters, dialedDigits, callingPartyBusinessGroupID, callingPartySubaddress,
 				callingFacilityGroup, callingFacilityGroupMember, travellingClassMark, extensions, carrier);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.originationAttemptAuthorized, req, true, false);
+				INAPOperationCode.originationAttemptAuthorized, req, true, false);
 	}
 
 	@Override
-	public Long addRouteSelectFailureRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addRouteSelectFailureRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyNumberIsup dialedDigits, CallingPartyBusinessGroupID callingPartyBusinessGroupID,
 			CallingPartySubaddress callingPartySubaddress, FacilityGroup callingFacilityGroup,
 			Integer callingFacilityGroupMember, CauseIsup failureCause, OriginalCalledNumberIsup originalCalledPartyID,
@@ -2424,7 +2424,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addRouteSelectFailureRequest(int customInvokeTimeout,
+	public Integer addRouteSelectFailureRequest(int customInvokeTimeout,
 			DpSpecificCommonParameters dpSpecificCommonParameters, CalledPartyNumberIsup dialedDigits,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FacilityGroup callingFacilityGroup, Integer callingFacilityGroupMember, CauseIsup getFailureCause,
@@ -2448,11 +2448,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				getFailureCause, originalCalledPartyID, prefix, redirectingPartyID, redirectionInformation, routeList,
 				travellingClassMark, extensions, carrier);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.routeSelectFailure, req, true, false);
+				INAPOperationCode.routeSelectFailure, req, true, false);
 	}
 
 	@Override
-	public Long addOCalledPartyBusyRequest(DpSpecificCommonParameters dpSpecificCommonParameters, CauseIsup busyCause,
+	public Integer addOCalledPartyBusyRequest(DpSpecificCommonParameters dpSpecificCommonParameters, CauseIsup busyCause,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FacilityGroup callingFacilityGroup, Integer callingFacilityGroupMember,
 			OriginalCalledNumberIsup originalCalledPartyID, DigitsIsup prefix,
@@ -2466,7 +2466,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addOCalledPartyBusyRequest(int customInvokeTimeout,
+	public Integer addOCalledPartyBusyRequest(int customInvokeTimeout,
 			DpSpecificCommonParameters dpSpecificCommonParameters, CauseIsup busyCause,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FacilityGroup callingFacilityGroup, Integer callingFacilityGroupMember,
@@ -2490,11 +2490,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				originalCalledPartyID, prefix, redirectingPartyID, redirectionInformation, routeList,
 				travellingClassMark, extensions, carrier);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.oCalledPartyBusy, req, true, false);
+				INAPOperationCode.oCalledPartyBusy, req, true, false);
 	}
 
 	@Override
-	public Long addONoAnswerRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addONoAnswerRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FacilityGroup callingFacilityGroup, Integer callingFacilityGroupMember,
 			OriginalCalledNumberIsup originalCalledPartyID, DigitsIsup prefix,
@@ -2507,7 +2507,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addONoAnswerRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addONoAnswerRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FacilityGroup callingFacilityGroup, Integer callingFacilityGroupMember,
 			OriginalCalledNumberIsup originalCalledPartyID, DigitsIsup prefix,
@@ -2529,11 +2529,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				callingPartySubaddress, callingFacilityGroup, callingFacilityGroupMember, originalCalledPartyID, prefix,
 				redirectingPartyID, redirectionInformation, routeList, travellingClassMark, extensions, carrier);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.oNoAnswer, req, true, false);
+				INAPOperationCode.oNoAnswer, req, true, false);
 	}
 
 	@Override
-	public Long addODisconnectRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addODisconnectRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FacilityGroup callingFacilityGroup, Integer callingFacilityGroupMember, CauseIsup releaseCause,
 			RouteList routeList, CAPINAPExtensions extensions, Carrier carrier, Integer connectTime)
@@ -2544,7 +2544,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addODisconnectRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addODisconnectRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, CallingPartySubaddress callingPartySubaddress,
 			FacilityGroup callingFacilityGroup, Integer callingFacilityGroupMember, CauseIsup releaseCause,
 			RouteList routeList, CAPINAPExtensions extensions, Carrier carrier, Integer connectTime)
@@ -2564,11 +2564,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				callingPartySubaddress, callingFacilityGroup, callingFacilityGroupMember, releaseCause, routeList,
 				extensions, carrier, connectTime);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.oDisconnect, req, true, false);
+				INAPOperationCode.oDisconnect, req, true, false);
 	}
 
 	@Override
-	public Long addTermAttemptAuthorizedRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addTermAttemptAuthorizedRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyBusinessGroupID calledPartyBusinessGroupID, CalledPartySubaddress calledPartySubaddress,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, OriginalCalledNumberIsup originalCalledPartyID,
 			RedirectingPartyIDIsup redirectingPartyID, RedirectionInformationIsup redirectionInformation,
@@ -2580,7 +2580,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addTermAttemptAuthorizedRequest(int customInvokeTimeout,
+	public Integer addTermAttemptAuthorizedRequest(int customInvokeTimeout,
 			DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyBusinessGroupID calledPartyBusinessGroupID, CalledPartySubaddress calledPartySubaddress,
 			CallingPartyBusinessGroupID callingPartyBusinessGroupID, OriginalCalledNumberIsup originalCalledPartyID,
@@ -2602,11 +2602,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				calledPartyBusinessGroupID, calledPartySubaddress, callingPartyBusinessGroupID, originalCalledPartyID,
 				redirectingPartyID, redirectionInformation, routeList, travellingClassMark, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.termAttemptAuthorized, req, true, false);
+				INAPOperationCode.termAttemptAuthorized, req, true, false);
 	}
 
 	@Override
-	public Long addTBusyRequest(DpSpecificCommonParameters dpSpecificCommonParameters, CauseIsup busyCause,
+	public Integer addTBusyRequest(DpSpecificCommonParameters dpSpecificCommonParameters, CauseIsup busyCause,
 			CalledPartyBusinessGroupID calledPartyBusinessGroupID, CalledPartySubaddress calledPartySubaddress,
 			OriginalCalledNumberIsup originalCalledPartyID, RedirectingPartyIDIsup redirectingPartyID,
 			RedirectionInformationIsup redirectionInformation, RouteList routeList,
@@ -2617,7 +2617,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addTBusyRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addTBusyRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
 			CauseIsup busyCause, CalledPartyBusinessGroupID calledPartyBusinessGroupID,
 			CalledPartySubaddress calledPartySubaddress, OriginalCalledNumberIsup originalCalledPartyID,
 			RedirectingPartyIDIsup redirectingPartyID, RedirectionInformationIsup redirectionInformation,
@@ -2638,11 +2638,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				calledPartySubaddress, originalCalledPartyID, redirectingPartyID, redirectionInformation, routeList,
 				travellingClassMark, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.tBusy, req, true, false);
+				INAPOperationCode.tBusy, req, true, false);
 	}
 
 	@Override
-	public Long addTNoAnswerRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addTNoAnswerRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyBusinessGroupID calledPartyBusinessGroupID, CalledPartySubaddress calledPartySubaddress,
 			FacilityGroup calledFacilityGroup, Integer calledFacilityGroupMember,
 			OriginalCalledNumberIsup originalCalledPartyID, RedirectingPartyIDIsup redirectingPartyID,
@@ -2654,7 +2654,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addTNoAnswerRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addTNoAnswerRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyBusinessGroupID calledPartyBusinessGroupID, CalledPartySubaddress calledPartySubaddress,
 			FacilityGroup calledFacilityGroup, Integer calledFacilityGroupMember,
 			OriginalCalledNumberIsup originalCalledPartyID, RedirectingPartyIDIsup redirectingPartyID,
@@ -2675,11 +2675,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				calledPartySubaddress, calledFacilityGroup, calledFacilityGroupMember, originalCalledPartyID,
 				redirectingPartyID, redirectionInformation, travellingClassMark, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.tNoAnswer, req, true, false);
+				INAPOperationCode.tNoAnswer, req, true, false);
 	}
 
 	@Override
-	public Long addTAnswerRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addTAnswerRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyBusinessGroupID calledPartyBusinessGroupID, CalledPartySubaddress calledPartySubaddress,
 			FacilityGroup calledFacilityGroup, Integer calledFacilityGroupMember, CAPINAPExtensions extensions)
 			throws INAPException {
@@ -2688,7 +2688,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addTAnswerRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addTAnswerRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyBusinessGroupID calledPartyBusinessGroupID, CalledPartySubaddress calledPartySubaddress,
 			FacilityGroup calledFacilityGroup, Integer calledFacilityGroupMember, CAPINAPExtensions extensions)
 			throws INAPException {
@@ -2706,11 +2706,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		TAnswerRequestImpl req = new TAnswerRequestImpl(dpSpecificCommonParameters, calledPartyBusinessGroupID,
 				calledPartySubaddress, calledFacilityGroup, calledFacilityGroupMember, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.tAnswer, req, true, false);
+				INAPOperationCode.tAnswer, req, true, false);
 	}
 
 	@Override
-	public Long addTDisconnectRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addTDisconnectRequest(DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyBusinessGroupID calledPartyBusinessGroupID, CalledPartySubaddress calledPartySubaddress,
 			FacilityGroup calledFacilityGroup, Integer calledFacilityGroupMember, CauseIsup releaseCause,
 			CAPINAPExtensions extensions, Integer connectTime) throws INAPException {
@@ -2720,7 +2720,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addTDisconnectRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
+	public Integer addTDisconnectRequest(int customInvokeTimeout, DpSpecificCommonParameters dpSpecificCommonParameters,
 			CalledPartyBusinessGroupID calledPartyBusinessGroupID, CalledPartySubaddress calledPartySubaddress,
 			FacilityGroup calledFacilityGroup, Integer calledFacilityGroupMember, CauseIsup releaseCause,
 			CAPINAPExtensions extensions, Integer connectTime) throws INAPException {
@@ -2739,11 +2739,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				calledPartySubaddress, calledFacilityGroup, calledFacilityGroupMember, releaseCause, extensions,
 				connectTime);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.tDisconnect, req, true, false);
+				INAPOperationCode.tDisconnect, req, true, false);
 	}
 
 	@Override
-	public Long addSelectRouteRequest(CalledPartyNumberIsup destinationNumberRoutingAddress,
+	public Integer addSelectRouteRequest(CalledPartyNumberIsup destinationNumberRoutingAddress,
 			AlertingPattern alertingPattern, DigitsIsup correlationID,
 			ISDNAccessRelatedInformation isdnAccessRelatedInformation, OriginalCalledNumberIsup originalCalledPartyID,
 			RouteList routeList, ScfID scfID, LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions,
@@ -2754,7 +2754,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addSelectRouteRequest(int customInvokeTimeout, CalledPartyNumberIsup destinationNumberRoutingAddress,
+	public Integer addSelectRouteRequest(int customInvokeTimeout, CalledPartyNumberIsup destinationNumberRoutingAddress,
 			AlertingPattern alertingPattern, DigitsIsup correlationID,
 			ISDNAccessRelatedInformation isdnAccessRelatedInformation, OriginalCalledNumberIsup originalCalledPartyID,
 			RouteList routeList, ScfID scfID, LocationNumberIsup travellingClassMark, CAPINAPExtensions extensions,
@@ -2777,11 +2777,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				correlationID, isdnAccessRelatedInformation, originalCalledPartyID, routeList, scfID,
 				travellingClassMark, extensions, carrier);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.selectRoute, req, true, false);
+				INAPOperationCode.selectRoute, req, true, false);
 	}
 
 	@Override
-	public Long addSelectFacilityRequest(AlertingPattern alertingPattern,
+	public Integer addSelectFacilityRequest(AlertingPattern alertingPattern,
 			CalledPartyNumberIsup destinationNumberRoutingAddress,
 			ISDNAccessRelatedInformation isdnAccessRelatedInformation, FacilityGroup calledFacilityGroup,
 			Integer calledFacilityGroupMember, OriginalCalledNumberIsup originalCalledPartyID,
@@ -2792,7 +2792,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addSelectFacilityRequest(int customInvokeTimeout, AlertingPattern alertingPattern,
+	public Integer addSelectFacilityRequest(int customInvokeTimeout, AlertingPattern alertingPattern,
 			CalledPartyNumberIsup destinationNumberRoutingAddress,
 			ISDNAccessRelatedInformation isdnAccessRelatedInformation, FacilityGroup calledFacilityGroup,
 			Integer calledFacilityGroupMember, OriginalCalledNumberIsup originalCalledPartyID,
@@ -2815,16 +2815,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				isdnAccessRelatedInformation, calledFacilityGroup, calledFacilityGroupMember, originalCalledPartyID,
 				extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.selectFacility, req, true, false);
+				INAPOperationCode.selectFacility, req, true, false);
 	}
 
 	@Override
-	public Long addRequestCurrentStatusReportRequest(ResourceID resourceID) throws INAPException {
+	public Integer addRequestCurrentStatusReportRequest(ResourceID resourceID) throws INAPException {
 		return addRequestCurrentStatusReportRequest(_Timer_Default, resourceID);
 	}
 
 	@Override
-	public Long addRequestCurrentStatusReportRequest(int customInvokeTimeout, ResourceID resourceID)
+	public Integer addRequestCurrentStatusReportRequest(int customInvokeTimeout, ResourceID resourceID)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
@@ -2844,11 +2844,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		RequestCurrentStatusReportRequestImpl req = new RequestCurrentStatusReportRequestImpl(resourceID);
 		return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(),
-				(long) INAPOperationCode.requestCurrentStatusReport, req, true, false);
+				INAPOperationCode.requestCurrentStatusReport, req, true, false);
 	}
 
 	@Override
-	public void addRequestCurrentStatusReportResponse(long invokeId, ResourceStatus resourceStatus,
+	public void addRequestCurrentStatusReportResponse(int invokeId, ResourceStatus resourceStatus,
 			ResourceID resourceID, CAPINAPExtensions extensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
@@ -2862,17 +2862,17 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		RequestCurrentStatusReportResponseImpl res = new RequestCurrentStatusReportResponseImpl(resourceStatus,
 				resourceID, extensions);
-		this.sendDataComponent(invokeId, null, null, null, (long) INAPOperationCode.requestCurrentStatusReport, res,
+		this.sendDataComponent(invokeId, null, null, null, INAPOperationCode.requestCurrentStatusReport, res,
 				false, true);
 	}
 
 	@Override
-	public Long addCancelStatusReportRequest(ResourceID resourceID, CAPINAPExtensions extensions) throws INAPException {
+	public Integer addCancelStatusReportRequest(ResourceID resourceID, CAPINAPExtensions extensions) throws INAPException {
 		return addCancelStatusReportRequest(_Timer_Default, resourceID, extensions);
 	}
 
 	@Override
-	public Long addCancelStatusReportRequest(int customInvokeTimeout, ResourceID resourceID,
+	public Integer addCancelStatusReportRequest(int customInvokeTimeout, ResourceID resourceID,
 			CAPINAPExtensions extensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
@@ -2894,18 +2894,18 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		CancelStatusReportRequestImpl req = new CancelStatusReportRequestImpl(resourceID, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.cancelStatusReportRequest, req, true, false);
+				INAPOperationCode.cancelStatusReportRequest, req, true, false);
 	}
 
 	@Override
-	public Long addRequestEveryStatusChangeReportRequest(ResourceID resourceID, DigitsIsup correlationID,
+	public Integer addRequestEveryStatusChangeReportRequest(ResourceID resourceID, DigitsIsup correlationID,
 			Integer duration, CAPINAPExtensions extensions) throws INAPException {
 		return addRequestEveryStatusChangeReportRequest(_Timer_Default, resourceID, correlationID, duration,
 				extensions);
 	}
 
 	@Override
-	public Long addRequestEveryStatusChangeReportRequest(int customInvokeTimeout, ResourceID resourceID,
+	public Integer addRequestEveryStatusChangeReportRequest(int customInvokeTimeout, ResourceID resourceID,
 			DigitsIsup correlationID, Integer duration, CAPINAPExtensions extensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
@@ -2926,11 +2926,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		RequestEveryStatusChangeReportRequestImpl req = new RequestEveryStatusChangeReportRequestImpl(resourceID,
 				correlationID, duration, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.requestEveryStatusChangeReport, req, true, false);
+				INAPOperationCode.requestEveryStatusChangeReport, req, true, false);
 	}
 
 	@Override
-	public Long addRequestFirstStatusMatchReportRequest(ResourceID resourceID, ResourceStatus resourceStatus,
+	public Integer addRequestFirstStatusMatchReportRequest(ResourceID resourceID, ResourceStatus resourceStatus,
 			DigitsIsup correlationID, Integer duration, CAPINAPExtensions extensions, BearerCapability bearerCapability)
 			throws INAPException {
 		return addRequestFirstStatusMatchReportRequest(_Timer_Default, resourceID, resourceStatus, correlationID,
@@ -2938,7 +2938,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addRequestFirstStatusMatchReportRequest(int customInvokeTimeout, ResourceID resourceID,
+	public Integer addRequestFirstStatusMatchReportRequest(int customInvokeTimeout, ResourceID resourceID,
 			ResourceStatus resourceStatus, DigitsIsup correlationID, Integer duration, CAPINAPExtensions extensions,
 			BearerCapability bearerCapability) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
@@ -2960,18 +2960,18 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		RequestFirstStatusMatchReportRequestImpl req = new RequestFirstStatusMatchReportRequestImpl(resourceID,
 				resourceStatus, correlationID, duration, extensions, bearerCapability);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.requestFirstStatusMatchReport, req, true, false);
+				INAPOperationCode.requestFirstStatusMatchReport, req, true, false);
 	}
 
 	@Override
-	public Long addStatusReportRequest(ResourceStatus resourceStatus, DigitsIsup correlationID, ResourceID resourceID,
+	public Integer addStatusReportRequest(ResourceStatus resourceStatus, DigitsIsup correlationID, ResourceID resourceID,
 			CAPINAPExtensions extensions, ReportCondition reportCondition) throws INAPException {
 		return addStatusReportRequest(_Timer_Default, resourceStatus, correlationID, resourceID, extensions,
 				reportCondition);
 	}
 
 	@Override
-	public Long addStatusReportRequest(int customInvokeTimeout, ResourceStatus resourceStatus, DigitsIsup correlationID,
+	public Integer addStatusReportRequest(int customInvokeTimeout, ResourceStatus resourceStatus, DigitsIsup correlationID,
 			ResourceID resourceID, CAPINAPExtensions extensions, ReportCondition reportCondition) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
@@ -2992,17 +2992,17 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		StatusReportRequestImpl req = new StatusReportRequestImpl(resourceStatus, correlationID, resourceID, extensions,
 				reportCondition);
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.statusReport, req, true, false);
+				INAPOperationCode.statusReport, req, true, false);
 	}
 
 	@Override
-	public Long addUpdateRequest(ByteBuf operationID, ApplicationID applicationID, DataItemID dataItemID,
+	public Integer addUpdateRequest(ByteBuf operationID, ApplicationID applicationID, DataItemID dataItemID,
 			DataItemInformation dataItemInformation) throws INAPException {
 		return addUpdateRequest(_Timer_Default, operationID, applicationID, dataItemID, dataItemInformation);
 	}
 
 	@Override
-	public Long addUpdateRequest(int customInvokeTimeout, ByteBuf operationID, ApplicationID applicationID,
+	public Integer addUpdateRequest(int customInvokeTimeout, ByteBuf operationID, ApplicationID applicationID,
 			DataItemID dataItemID, DataItemInformation dataItemInformation) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC_REV_B)
@@ -3017,28 +3017,28 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		UpdateRequestImpl req = new UpdateRequestImpl(operationID, applicationID, dataItemID, dataItemInformation);
 		return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(),
-				(long) INAPOperationCode.update, req, true, false);
+				INAPOperationCode.update, req, true, false);
 	}
 
 	@Override
-	public void addUpdateResponse(long invokeId, ByteBuf operationReturnID) throws INAPException {
+	public void addUpdateResponse(int invokeId, ByteBuf operationReturnID) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC_REV_B)
 			throw new INAPException(
 					"Bad application context name for addUpdateResponse: must be Ericcson_cs1plus_data_management_AC");
 
 		UpdateResponseImpl res = new UpdateResponseImpl(operationReturnID);
-		this.sendDataComponent(invokeId, null, null, null, (long) INAPOperationCode.update, res, false, true);
+		this.sendDataComponent(invokeId, null, null, null, INAPOperationCode.update, res, false, true);
 	}
 
 	@Override
-	public Long addRetrieveRequest(ByteBuf operationID, ApplicationID applicationID, DataItemID dataItemID)
+	public Integer addRetrieveRequest(ByteBuf operationID, ApplicationID applicationID, DataItemID dataItemID)
 			throws INAPException {
 		return addRetrieveRequest(_Timer_Default, operationID, applicationID, dataItemID);
 	}
 
 	@Override
-	public Long addRetrieveRequest(int customInvokeTimeout, ByteBuf operationID, ApplicationID applicationID,
+	public Integer addRetrieveRequest(int customInvokeTimeout, ByteBuf operationID, ApplicationID applicationID,
 			DataItemID dataItemID) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC_REV_B)
@@ -3053,11 +3053,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		RetrieveRequestImpl req = new RetrieveRequestImpl(operationID, applicationID, dataItemID);
 		return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(),
-				(long) INAPOperationCode.retrieve, req, true, false);
+				INAPOperationCode.retrieve, req, true, false);
 	}
 
 	@Override
-	public void addRetrieveResponse(long invokeId, ByteBuf operationReturnID, DataItemInformation dataItemInformation)
+	public void addRetrieveResponse(int invokeId, ByteBuf operationReturnID, DataItemInformation dataItemInformation)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_data_management_AC_REV_B)
@@ -3065,11 +3065,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 					"Bad application context name for addUpdateResponse: must be Ericcson_cs1plus_data_management_AC");
 
 		RetrieveResponseImpl res = new RetrieveResponseImpl(operationReturnID, dataItemInformation);
-		this.sendDataComponent(invokeId, null, null, null, (long) INAPOperationCode.retrieve, res, false, true);
+		this.sendDataComponent(invokeId, null, null, null, INAPOperationCode.retrieve, res, false, true);
 	}
 
 	@Override
-	public Long addSignallingInformationRequest(BackwardSuppressionIndicators backwardSuppressionIndicators,
+	public Integer addSignallingInformationRequest(BackwardSuppressionIndicators backwardSuppressionIndicators,
 			CalledPartyNumberIsup connectedNumber, ForwardSuppressionIndicators forwardSuppressionIndicators,
 			BackwardGVNS backwardGVNS, CAPINAPExtensions extensions) throws INAPException {
 		return addSignallingInformationRequest(_Timer_Default, backwardSuppressionIndicators, connectedNumber,
@@ -3077,7 +3077,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addSignallingInformationRequest(int customInvokeTimeout,
+	public Integer addSignallingInformationRequest(int customInvokeTimeout,
 			BackwardSuppressionIndicators backwardSuppressionIndicators, CalledPartyNumberIsup connectedNumber,
 			ForwardSuppressionIndicators forwardSuppressionIndicators, BackwardGVNS backwardGVNS,
 			CAPINAPExtensions extensions) throws INAPException {
@@ -3100,17 +3100,17 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		SignallingInformationRequestImpl req = new SignallingInformationRequestImpl(backwardSuppressionIndicators,
 				connectedNumber, forwardSuppressionIndicators, backwardGVNS, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.signallingInformation, req, true, false);
+				INAPOperationCode.signallingInformation, req, true, false);
 	}
 
 	@Override
-	public Long addReleaseCallPartyConnectionRequest(LegType legToBeReleased,Integer callID, CauseIsup releaseCause)
+	public Integer addReleaseCallPartyConnectionRequest(LegType legToBeReleased,Integer callID, CauseIsup releaseCause)
 			throws INAPException {
 		return addReleaseCallPartyConnectionRequest(_Timer_Default, legToBeReleased,callID,releaseCause);
 	}
 
 	@Override
-	public Long addReleaseCallPartyConnectionRequest(int customInvokeTimeout, LegType legToBeReleased,
+	public Integer addReleaseCallPartyConnectionRequest(int customInvokeTimeout, LegType legToBeReleased,
 			Integer callID,CauseIsup releaseCause) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
@@ -3128,11 +3128,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		ReleaseCallPartyConnectionRequestImpl req = new ReleaseCallPartyConnectionRequestImpl(legToBeReleased,
 				callID,releaseCause);
 		return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(),
-				(long) INAPOperationCode.releaseCallPartyConnection, req, true, false);
+				INAPOperationCode.releaseCallPartyConnection, req, true, false);
 	}
 	
 	@Override
-	public void addReleaseCallPartyConnectionResponse(long invokeId, List<LegInformation> legInformation) throws INAPException {
+	public void addReleaseCallPartyConnectionResponse(int invokeId, List<LegInformation> legInformation) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
@@ -3141,11 +3141,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 					"Bad application context name for addReleaseCallPartyConnectionResponse: must be Ericcson_cs1plus_SSP_TO_SCP_AC or Ericcson_cs1plus_SCP_to_SSP_AC");
 
 		ReleaseCallPartyConnectionResponseImpl res = new ReleaseCallPartyConnectionResponseImpl(legInformation);
-		this.sendDataComponent(invokeId, null, null, null, (long) INAPOperationCode.releaseCallPartyConnection, res, false, true);
+		this.sendDataComponent(invokeId, null, null, null, INAPOperationCode.releaseCallPartyConnection, res, false, true);
 	}
 	
 	@Override
-	public void addReleaseCallPartyConnectionResponse(long invokeId) throws INAPException {
+	public void addReleaseCallPartyConnectionResponse(int invokeId) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
@@ -3154,16 +3154,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 					"Bad application context name for addReleaseCallPartyConnectionResponse: must be Ericcson_cs1plus_SSP_TO_SCP_AC or Ericcson_cs1plus_SCP_to_SSP_AC");
 
 		ReleaseCallPartyConnectionParameterlessResponseImpl res = new ReleaseCallPartyConnectionParameterlessResponseImpl();
-		this.sendDataComponent(invokeId, null, null, null, (long) INAPOperationCode.releaseCallPartyConnection, res, false, true);
+		this.sendDataComponent(invokeId, null, null, null, INAPOperationCode.releaseCallPartyConnection, res, false, true);
 	}
 	
 	@Override
-	public Long addReconnectRequest(LegType legID) throws INAPException {
+	public Integer addReconnectRequest(LegType legID) throws INAPException {
 		return addReconnectRequest(_Timer_Default, legID);
 	}
 
 	@Override
-	public Long addReconnectRequest(int customInvokeTimeout, LegType legID) throws INAPException {
+	public Integer addReconnectRequest(int customInvokeTimeout, LegType legID) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
@@ -3179,16 +3179,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		ReconnectRequestImpl req = new ReconnectRequestImpl(legID);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.reconnect, req, true, false);
+				INAPOperationCode.reconnect, req, true, false);
 	}
 
 	@Override
-	public Long addHoldCallPartyConnectionRequest(LegType legID) throws INAPException {
+	public Integer addHoldCallPartyConnectionRequest(LegType legID) throws INAPException {
 		return addHoldCallPartyConnectionRequest(_Timer_Default, legID);
 	}
 
 	@Override
-	public Long addHoldCallPartyConnectionRequest(int customInvokeTimeout, LegType legID) throws INAPException {
+	public Integer addHoldCallPartyConnectionRequest(int customInvokeTimeout, LegType legID) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC
@@ -3204,11 +3204,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		HoldCallPartyConnectionRequestImpl req = new HoldCallPartyConnectionRequestImpl(legID);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.holdCallPartyConnection, req, true, false);
+				INAPOperationCode.holdCallPartyConnection, req, true, false);
 	}
 
 	@Override
-	public Long addHandoverRequest(int serviceKey, CalledPartyNumberIsup calledPartyNumber,
+	public Integer addHandoverRequest(int serviceKey, CalledPartyNumberIsup calledPartyNumber,
 			CallingPartyNumberIsup callingPartyNumber, CallingPartysCategoryIsup callingPartysCategory,
 			CGEncountered cgEncountered, IPSSPCapabilities ipsspCapabilities, LocationNumberIsup locationNumber,
 			OriginalCalledNumberIsup originalCalledPartyID, CAPINAPExtensions extensions, TriggerType triggerType,
@@ -3229,7 +3229,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addHandoverRequest(int customInvokeTimeout, int serviceKey, CalledPartyNumberIsup calledPartyNumber,
+	public Integer addHandoverRequest(int customInvokeTimeout, int serviceKey, CalledPartyNumberIsup calledPartyNumber,
 			CallingPartyNumberIsup callingPartyNumber, CallingPartysCategoryIsup callingPartysCategory,
 			CGEncountered cgEncountered, IPSSPCapabilities ipsspCapabilities, LocationNumberIsup locationNumber,
 			OriginalCalledNumberIsup originalCalledPartyID, CAPINAPExtensions extensions, TriggerType triggerType,
@@ -3263,11 +3263,11 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 				backwardGVNSIndicator);
 
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.handOver, req, true, false);
+				INAPOperationCode.handOver, req, true, false);
 	}
 
 	@Override
-	public Long addDialogueUserInformationRequest(SendingFunctionsActive sendingFunctionsActive,
+	public Integer addDialogueUserInformationRequest(SendingFunctionsActive sendingFunctionsActive,
 			ReceivingFunctionsRequested receivingFunctionsRequested, Integer trafficSimulationSessionID)
 			throws INAPException {
 		return addDialogueUserInformationRequest(_Timer_Default, sendingFunctionsActive, receivingFunctionsRequested,
@@ -3275,7 +3275,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 	}
 
 	@Override
-	public Long addDialogueUserInformationRequest(int customInvokeTimeout,
+	public Integer addDialogueUserInformationRequest(int customInvokeTimeout,
 			SendingFunctionsActive sendingFunctionsActive, ReceivingFunctionsRequested receivingFunctionsRequested,
 			Integer trafficSimulationSessionID) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
@@ -3310,17 +3310,17 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		DialogueUserInformationRequestImpl req = new DialogueUserInformationRequestImpl(sendingFunctionsActive,
 				receivingFunctionsRequested, trafficSimulationSessionID);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.dialogueUserInformation, req, true, false);
+				INAPOperationCode.dialogueUserInformation, req, true, false);
 	}
 
 	@Override
-	public Long addCallLimitRequest(DateAndTime startTime, GapCriteria limitCriteria, LimitIndicators limitIndicators,
+	public Integer addCallLimitRequest(DateAndTime startTime, GapCriteria limitCriteria, LimitIndicators limitIndicators,
 			GapTreatment limitTreatment) throws INAPException {
 		return addCallLimitRequest(_Timer_Default, startTime, limitCriteria, limitIndicators, limitTreatment);
 	}
 
 	@Override
-	public Long addCallLimitRequest(int customInvokeTimeout, DateAndTime startTime, GapCriteria limitCriteria,
+	public Integer addCallLimitRequest(int customInvokeTimeout, DateAndTime startTime, GapCriteria limitCriteria,
 			LimitIndicators limitIndicators, GapTreatment limitTreatment) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
@@ -3337,16 +3337,16 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		CallLimitRequestImpl req = new CallLimitRequestImpl(startTime, limitCriteria, limitIndicators, limitTreatment);
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
-				(long) INAPOperationCode.callLimit, req, true, false);
+				INAPOperationCode.callLimit, req, true, false);
 	}
 
 	@Override
-	public Long addContinueWithArgumentRequest(LegType legID, GenericName genericName) throws INAPException {
+	public Integer addContinueWithArgumentRequest(LegType legID, GenericName genericName) throws INAPException {
 		return addContinueWithArgumentRequest(_Timer_Default, legID, genericName);
 	}
 
 	@Override
-	public Long addContinueWithArgumentRequest(int customInvokeTimeout, LegType legID, GenericName genericName)
+	public Integer addContinueWithArgumentRequest(int customInvokeTimeout, LegType legID, GenericName genericName)
 			throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC
 				&& this.appCntx != INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
@@ -3363,17 +3363,17 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		ContinueWithArgumentRequestImpl req = new ContinueWithArgumentRequestImpl(legID, genericName);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.continueWithArgument, req, true, false);
+				INAPOperationCode.continueWithArgument, req, true, false);
 	}
 
 	@Override
-	public Long addResetTimerRequest(TimerID timerID, int timerValue, CAPINAPExtensions extensions)
+	public Integer addResetTimerRequest(TimerID timerID, int timerValue, CAPINAPExtensions extensions)
 			throws INAPException {
 		return addResetTimerRequest(_Timer_Default, timerID, timerValue, extensions);
 	}
 
 	@Override
-	public Long addResetTimerRequest(int customInvokeTimeout, TimerID timerID, int timerValue,
+	public Integer addResetTimerRequest(int customInvokeTimeout, TimerID timerID, int timerValue,
 			CAPINAPExtensions extensions) throws INAPException {
 		if (this.appCntx != INAPApplicationContext.Q1218_generic_SSF_to_SCF_AC
 				&& this.appCntx != INAPApplicationContext.Q1218_DP_specific_SSF_to_SCF_AC
@@ -3407,6 +3407,6 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 
 		ResetTimerRequestImpl req = new ResetTimerRequestImpl(timerID, timerValue, extensions);
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				(long) INAPOperationCode.resetTimer, req, true, false);
+				INAPOperationCode.resetTimer, req, true, false);
 	}
 }

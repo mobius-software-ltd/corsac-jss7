@@ -62,7 +62,7 @@ public class ReleaseCallPartyConnectionRequestImpl extends CircuitSwitchedCallMe
         	this.legToBeReleased=new SendingLegIDWrapperImpl(new SendingLegIDImpl(legToBeReleased));
         
         if(callID!=null)
-        	this.callID=new ASNInteger(callID);
+        	this.callID=new ASNInteger(callID,"CallID",0,Integer.MAX_VALUE,false);
         
         this.releaseCause=releaseCause;
     }

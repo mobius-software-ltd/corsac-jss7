@@ -89,7 +89,7 @@ public class ReportSMDeliveryStatusRequestImpl extends SmsMessageImpl implements
         	this.sMDeliveryOutcome = new ASNSMDeliveryOutcome(sMDeliveryOutcome);
         	
         if(absentSubscriberDiagnosticSM!=null)
-        	this.absentSubscriberDiagnosticSM = new ASNInteger(absentSubscriberDiagnosticSM);
+        	this.absentSubscriberDiagnosticSM = new ASNInteger(absentSubscriberDiagnosticSM,"AbsentSubscriberDiagnosticSM",0,12,false);
         	
         this.extensionContainer = extensionContainer;
         
@@ -103,7 +103,7 @@ public class ReportSMDeliveryStatusRequestImpl extends SmsMessageImpl implements
         	this.additionalSMDeliveryOutcome = new ASNSMDeliveryOutcome(additionalSMDeliveryOutcome);
         	
         if(additionalAbsentSubscriberDiagnosticSM!=null)
-        	this.additionalAbsentSubscriberDiagnosticSM = new ASNInteger(additionalAbsentSubscriberDiagnosticSM);        	
+        	this.additionalAbsentSubscriberDiagnosticSM = new ASNInteger(additionalAbsentSubscriberDiagnosticSM,"AdditionalAbsentSubscriberDiagnosticSM",0,12,false);
     }
 
     public MAPMessageType getMessageType() {

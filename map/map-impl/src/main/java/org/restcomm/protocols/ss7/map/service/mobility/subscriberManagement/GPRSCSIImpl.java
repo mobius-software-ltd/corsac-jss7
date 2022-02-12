@@ -65,7 +65,7 @@ public class GPRSCSIImpl implements GPRSCSI {
         	this.gprsCamelTDPDataList = new GPRSCamelTDPDataListWrapperImpl(gprsCamelTDPDataList);
         
         if(camelCapabilityHandling!=null)
-        	this.camelCapabilityHandling = new ASNInteger(camelCapabilityHandling);
+        	this.camelCapabilityHandling = new ASNInteger(camelCapabilityHandling,"CamelCapabilityHandling",1,16,false);
         	
         this.extensionContainer = extensionContainer;
         

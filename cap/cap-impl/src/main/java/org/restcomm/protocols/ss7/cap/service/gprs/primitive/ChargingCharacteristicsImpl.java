@@ -45,11 +45,11 @@ public class ChargingCharacteristicsImpl implements ChargingCharacteristics {
     }
 
     public ChargingCharacteristicsImpl(long maxTransferredVolume) {
-		this.maxTransferredVolume = new ASNInteger(maxTransferredVolume);		
+		this.maxTransferredVolume = new ASNInteger(maxTransferredVolume,"MaxTransferredVolume",0L,4294967295L,false);		
     }
 
     public ChargingCharacteristicsImpl(int maxElapsedTime) {
-        this.maxElapsedTime = new ASNInteger(maxElapsedTime);
+        this.maxElapsedTime = new ASNInteger(maxElapsedTime,"MaxElapsedTime",0,86400,false);
     }
 
     public long getMaxTransferredVolume() {

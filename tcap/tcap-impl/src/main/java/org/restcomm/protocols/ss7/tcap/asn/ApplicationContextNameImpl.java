@@ -51,7 +51,7 @@ public class ApplicationContextNameImpl implements ApplicationContextName {
     }
     
     public void setOid(List<Long> value) {
-    	realValue=new ASNObjectIdentifier(value);
+    	realValue=new ASNObjectIdentifier(value,"AppNameCtx",true,false);
     }
     
     public String toString() {

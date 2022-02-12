@@ -61,7 +61,7 @@ public class VariablePartImpl implements VariablePart {
 
     public VariablePartImpl(Integer integer) {
     	if(integer!=null)
-    		this.integer = new ASNInteger(integer);    		
+    		this.integer = new ASNInteger(integer,"Integer",0,255,false);    		
     }
 
     public VariablePartImpl(DigitsIsup number) {

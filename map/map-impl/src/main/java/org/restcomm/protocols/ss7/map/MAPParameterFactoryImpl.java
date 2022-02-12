@@ -1350,14 +1350,14 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public TBcsmCamelTDPData createTBcsmCamelTDPData(TBcsmTriggerDetectionPoint tBcsmTriggerDetectionPoint, long serviceKey,
+    public TBcsmCamelTDPData createTBcsmCamelTDPData(TBcsmTriggerDetectionPoint tBcsmTriggerDetectionPoint, int serviceKey,
     		ISDNAddressString gsmSCFAddress, DefaultCallHandling defaultCallHandling, MAPExtensionContainer extensionContainer) {
         return new TBcsmCamelTDPDataImpl(tBcsmTriggerDetectionPoint, serviceKey, gsmSCFAddress, defaultCallHandling,
                 extensionContainer);
     }
 
     @Override
-    public OBcsmCamelTDPData createOBcsmCamelTDPData(OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint, long serviceKey,
+    public OBcsmCamelTDPData createOBcsmCamelTDPData(OBcsmTriggerDetectionPoint oBcsmTriggerDetectionPoint, int serviceKey,
     		ISDNAddressString gsmSCFAddress, DefaultCallHandling defaultCallHandling, MAPExtensionContainer extensionContainer) {
         return new OBcsmCamelTDPDataImpl(oBcsmTriggerDetectionPoint, serviceKey, gsmSCFAddress, defaultCallHandling,
                 extensionContainer);
@@ -1761,7 +1761,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public DPAnalysedInfoCriterium createDPAnalysedInfoCriterium(ISDNAddressString dialledNumber, long serviceKey,
+    public DPAnalysedInfoCriterium createDPAnalysedInfoCriterium(ISDNAddressString dialledNumber, int serviceKey,
     		ISDNAddressString gsmSCFAddress, DefaultCallHandling defaultCallHandling, MAPExtensionContainer extensionContainer) {
         return new DPAnalysedInfoCriteriumImpl(dialledNumber, serviceKey, gsmSCFAddress, defaultCallHandling,
                 extensionContainer);
@@ -1793,7 +1793,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public GPRSCamelTDPData createGPRSCamelTDPData(GPRSTriggerDetectionPoint gprsTriggerDetectionPoint, long serviceKey,
+    public GPRSCamelTDPData createGPRSCamelTDPData(GPRSTriggerDetectionPoint gprsTriggerDetectionPoint, int serviceKey,
     		ISDNAddressString gsmSCFAddress, DefaultGPRSHandling defaultSessionHandling,
             MAPExtensionContainer extensionContainer) {
         return new GPRSCamelTDPDataImpl(gprsTriggerDetectionPoint, serviceKey, gsmSCFAddress, defaultSessionHandling,
@@ -1835,7 +1835,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public MCSI createMCSI(List<MMCode> mobilityTriggers, long serviceKey, ISDNAddressString gsmSCFAddress,
+    public MCSI createMCSI(List<MMCode> mobilityTriggers, int serviceKey, ISDNAddressString gsmSCFAddress,
             MAPExtensionContainer extensionContainer, boolean notificationToCSE, boolean csiActive) {
         return new MCSIImpl(mobilityTriggers, serviceKey, gsmSCFAddress, extensionContainer, notificationToCSE, csiActive);
     }
@@ -1847,7 +1847,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public MGCSI createMGCSI(List<MMCode> mobilityTriggers, long serviceKey, ISDNAddressString gsmSCFAddress,
+    public MGCSI createMGCSI(List<MMCode> mobilityTriggers, int serviceKey, ISDNAddressString gsmSCFAddress,
             MAPExtensionContainer extensionContainer, boolean notificationToCSE, boolean csiActive) {
         return new MGCSIImpl(mobilityTriggers, serviceKey, gsmSCFAddress, extensionContainer, notificationToCSE, csiActive);
     }
@@ -1947,7 +1947,7 @@ public class MAPParameterFactoryImpl implements MAPParameterFactory {
     }
 
     @Override
-    public SMSCAMELTDPData createSMSCAMELTDPData(SMSTriggerDetectionPoint smsTriggerDetectionPoint, long serviceKey,
+    public SMSCAMELTDPData createSMSCAMELTDPData(SMSTriggerDetectionPoint smsTriggerDetectionPoint, int serviceKey,
     		ISDNAddressString gsmSCFAddress, DefaultSMSHandling defaultSMSHandling, MAPExtensionContainer extensionContainer) {
         return new SMSCAMELTDPDataImpl(smsTriggerDetectionPoint, serviceKey, gsmSCFAddress, defaultSMSHandling,
                 extensionContainer);

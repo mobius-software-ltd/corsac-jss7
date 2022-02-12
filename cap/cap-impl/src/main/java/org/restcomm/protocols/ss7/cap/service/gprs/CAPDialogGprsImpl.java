@@ -75,7 +75,7 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addInitialDpGprsRequest(int serviceKey, GPRSEventType gprsEventType, ISDNAddressString msisdn, IMSI imsi,
+    public Integer addInitialDpGprsRequest(int serviceKey, GPRSEventType gprsEventType, ISDNAddressString msisdn, IMSI imsi,
             TimeAndTimezone timeAndTimezone, GPRSMSClass gprsMSClass, EndUserAddress endUserAddress,
             QualityOfService qualityOfService, AccessPointName accessPointName, RAIdentity routeingAreaIdentity,
             GPRSChargingID chargingID, SGSNCapabilities sgsnCapabilities, LocationInformationGPRS locationInformationGPRS,
@@ -87,7 +87,7 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addInitialDpGprsRequest(int customInvokeTimeout, int serviceKey, GPRSEventType gprsEventType,
+    public Integer addInitialDpGprsRequest(int customInvokeTimeout, int serviceKey, GPRSEventType gprsEventType,
             ISDNAddressString msisdn, IMSI imsi, TimeAndTimezone timeAndTimezone, GPRSMSClass gprsMSClass,
             EndUserAddress endUserAddress, QualityOfService qualityOfService, AccessPointName accessPointName,
             RAIdentity routeingAreaIdentity, GPRSChargingID chargingID, SGSNCapabilities sgsnCapabilities,
@@ -106,16 +106,16 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
         InitialDpGprsRequestImpl req = new InitialDpGprsRequestImpl(serviceKey, gprsEventType, msisdn, imsi, timeAndTimezone,
                 gprsMSClass, endUserAddress, qualityOfService, accessPointName, routeingAreaIdentity, chargingID,
                 sgsnCapabilities, locationInformationGPRS, pdpInitiationType, extensions, gsnAddress, secondaryPDPContext, imei);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.initialDPGPRS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.initialDPGPRS, req, true, false);        
     }
 
     @Override
-    public Long addRequestReportGPRSEventRequest(List<GPRSEvent> gprsEvent, PDPID pdpID) throws CAPException {
+    public Integer addRequestReportGPRSEventRequest(List<GPRSEvent> gprsEvent, PDPID pdpID) throws CAPException {
         return addRequestReportGPRSEventRequest(_Timer_Default, gprsEvent, pdpID);
     }
 
     @Override
-    public Long addRequestReportGPRSEventRequest(int customInvokeTimeout, List<GPRSEvent> gprsEvent, PDPID pdpID)
+    public Integer addRequestReportGPRSEventRequest(int customInvokeTimeout, List<GPRSEvent> gprsEvent, PDPID pdpID)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
@@ -130,18 +130,18 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
         	customTimeout = customInvokeTimeout;
         
         RequestReportGPRSEventRequestImpl req = new RequestReportGPRSEventRequestImpl(gprsEvent, pdpID);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.requestReportGPRSEvent, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.requestReportGPRSEvent, req, true, false);        
     }
 
     @Override
-    public Long addApplyChargingGPRSRequest(ChargingCharacteristics chargingCharacteristics, Integer tariffSwitchInterval,
+    public Integer addApplyChargingGPRSRequest(ChargingCharacteristics chargingCharacteristics, Integer tariffSwitchInterval,
             PDPID pdpID) throws CAPException {
 
         return addApplyChargingGPRSRequest(_Timer_Default, chargingCharacteristics, tariffSwitchInterval, pdpID);
     }
 
     @Override
-    public Long addApplyChargingGPRSRequest(int customInvokeTimeout, ChargingCharacteristics chargingCharacteristics,
+    public Integer addApplyChargingGPRSRequest(int customInvokeTimeout, ChargingCharacteristics chargingCharacteristics,
             Integer tariffSwitchInterval, PDPID pdpID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
@@ -157,17 +157,17 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
         
         ApplyChargingGPRSRequestImpl req = new ApplyChargingGPRSRequestImpl(chargingCharacteristics, tariffSwitchInterval,
                 pdpID);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.applyChargingGPRS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.applyChargingGPRS, req, true, false);        
     }
 
     @Override
-    public Long addEntityReleasedGPRSRequest(GPRSCause gprsCause, PDPID pdpID) throws CAPException {
+    public Integer addEntityReleasedGPRSRequest(GPRSCause gprsCause, PDPID pdpID) throws CAPException {
 
         return addEntityReleasedGPRSRequest(_Timer_Default, gprsCause, pdpID);
     }
 
     @Override
-    public Long addEntityReleasedGPRSRequest(int customInvokeTimeout, GPRSCause gprsCause, PDPID pdpID) throws CAPException {
+    public Integer addEntityReleasedGPRSRequest(int customInvokeTimeout, GPRSCause gprsCause, PDPID pdpID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -181,11 +181,11 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
         	customTimeout = customInvokeTimeout;
         
         EntityReleasedGPRSRequestImpl req = new EntityReleasedGPRSRequestImpl(gprsCause, pdpID);
-        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), (long) CAPOperationCode.entityReleasedGPRS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), CAPOperationCode.entityReleasedGPRS, req, true, false);        
     }
 
     @Override
-    public void addEntityReleasedGPRSResponse(long invokeId) throws CAPException {
+    public void addEntityReleasedGPRSResponse(int invokeId) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -196,13 +196,13 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addConnectGPRSRequest(AccessPointName accessPointName, PDPID pdpID) throws CAPException {
+    public Integer addConnectGPRSRequest(AccessPointName accessPointName, PDPID pdpID) throws CAPException {
 
         return addConnectGPRSRequest(_Timer_Default, accessPointName, pdpID);
     }
 
     @Override
-    public Long addConnectGPRSRequest(int customInvokeTimeout, AccessPointName accessPointName, PDPID pdpID)
+    public Integer addConnectGPRSRequest(int customInvokeTimeout, AccessPointName accessPointName, PDPID pdpID)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
@@ -217,17 +217,17 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
         	customTimeout = customInvokeTimeout;
         
         ConnectGPRSRequestImpl req = new ConnectGPRSRequestImpl(accessPointName, pdpID);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.connectGPRS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.connectGPRS, req, true, false);        
     }
 
     @Override
-    public Long addContinueGPRSRequest(PDPID pdpID) throws CAPException {
+    public Integer addContinueGPRSRequest(PDPID pdpID) throws CAPException {
 
         return addContinueGPRSRequest(_Timer_Default, pdpID);
     }
 
     @Override
-    public Long addContinueGPRSRequest(int customInvokeTimeout, PDPID pdpID) throws CAPException {
+    public Integer addContinueGPRSRequest(int customInvokeTimeout, PDPID pdpID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -241,17 +241,17 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
         	customTimeout = customInvokeTimeout;
         
         ContinueGPRSRequestImpl req = new ContinueGPRSRequestImpl(pdpID);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.continueGPRS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.continueGPRS, req, true, false);        
     }
 
     @Override
-    public Long addReleaseGPRSRequest(GPRSCause gprsCause, PDPID pdpID) throws CAPException {
+    public Integer addReleaseGPRSRequest(GPRSCause gprsCause, PDPID pdpID) throws CAPException {
 
         return addReleaseGPRSRequest(_Timer_Default, gprsCause, pdpID);
     }
 
     @Override
-    public Long addReleaseGPRSRequest(int customInvokeTimeout, GPRSCause gprsCause, PDPID pdpID) throws CAPException {
+    public Integer addReleaseGPRSRequest(int customInvokeTimeout, GPRSCause gprsCause, PDPID pdpID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -265,17 +265,17 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
         	customTimeout = customInvokeTimeout;
         
         ReleaseGPRSRequestImpl req = new ReleaseGPRSRequestImpl(gprsCause, pdpID);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.releaseGPRS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.releaseGPRS, req, true, false);        
     }
 
     @Override
-    public Long addResetTimerGPRSRequest(TimerID timerID, int timerValue) throws CAPException {
+    public Integer addResetTimerGPRSRequest(TimerID timerID, int timerValue) throws CAPException {
 
         return addResetTimerGPRSRequest(_Timer_Default, timerID, timerValue);
     }
 
     @Override
-    public Long addResetTimerGPRSRequest(int customInvokeTimeout, TimerID timerID, int timerValue) throws CAPException {
+    public Integer addResetTimerGPRSRequest(int customInvokeTimeout, TimerID timerID, int timerValue) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -289,18 +289,18 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
         	customTimeout = customInvokeTimeout;
         
         ResetTimerGPRSRequestImpl req = new ResetTimerGPRSRequestImpl(timerID, timerValue);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.resetTimerGPRS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.resetTimerGPRS, req, true, false);        
     }
 
     @Override
-    public Long addFurnishChargingInformationGPRSRequest(
+    public Integer addFurnishChargingInformationGPRSRequest(
             CAMELFCIGPRSBillingChargingCharacteristics fciGPRSBillingChargingCharacteristics) throws CAPException {
 
         return addFurnishChargingInformationGPRSRequest(_Timer_Default, fciGPRSBillingChargingCharacteristics);
     }
 
     @Override
-    public Long addFurnishChargingInformationGPRSRequest(int customInvokeTimeout,
+    public Integer addFurnishChargingInformationGPRSRequest(int customInvokeTimeout,
             CAMELFCIGPRSBillingChargingCharacteristics fciGPRSBillingChargingCharacteristics) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
@@ -316,17 +316,17 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
         
         FurnishChargingInformationGPRSRequestImpl req = new FurnishChargingInformationGPRSRequestImpl(
                 fciGPRSBillingChargingCharacteristics);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.furnishChargingInformationGPRS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.furnishChargingInformationGPRS, req, true, false);        
     }
 
     @Override
-    public Long addCancelGPRSRequest(PDPID pdpID) throws CAPException {
+    public Integer addCancelGPRSRequest(PDPID pdpID) throws CAPException {
 
         return addCancelGPRSRequest(_Timer_Default, pdpID);
     }
 
     @Override
-    public Long addCancelGPRSRequest(int customInvokeTimeout, PDPID pdpID) throws CAPException {
+    public Integer addCancelGPRSRequest(int customInvokeTimeout, PDPID pdpID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -340,18 +340,18 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
         	customTimeout = customInvokeTimeout;
         
         CancelGPRSRequestImpl req = new CancelGPRSRequestImpl(pdpID);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.cancelGPRS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.cancelGPRS, req, true, false);        
     }
 
     @Override
-    public Long addSendChargingInformationGPRSRequest(
+    public Integer addSendChargingInformationGPRSRequest(
             CAMELSCIGPRSBillingChargingCharacteristics sciGPRSBillingChargingCharacteristics) throws CAPException {
 
         return addSendChargingInformationGPRSRequest(_Timer_Default, sciGPRSBillingChargingCharacteristics);
     }
 
     @Override
-    public Long addSendChargingInformationGPRSRequest(int customInvokeTimeout,
+    public Integer addSendChargingInformationGPRSRequest(int customInvokeTimeout,
             CAMELSCIGPRSBillingChargingCharacteristics sciGPRSBillingChargingCharacteristics) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
@@ -367,11 +367,11 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
         
         SendChargingInformationGPRSRequestImpl req = new SendChargingInformationGPRSRequestImpl(
                 sciGPRSBillingChargingCharacteristics);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.sendChargingInformationGPRS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.sendChargingInformationGPRS, req, true, false);        
     }
 
     @Override
-    public Long addApplyChargingReportGPRSRequest(ChargingResult chargingResult, QualityOfService qualityOfService,
+    public Integer addApplyChargingReportGPRSRequest(ChargingResult chargingResult, QualityOfService qualityOfService,
             boolean active, PDPID pdpID, ChargingRollOver chargingRollOver) throws CAPException {
 
         return addApplyChargingReportGPRSRequest(_Timer_Default, chargingResult, qualityOfService, active, pdpID,
@@ -379,7 +379,7 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addApplyChargingReportGPRSRequest(int customInvokeTimeout, ChargingResult chargingResult,
+    public Integer addApplyChargingReportGPRSRequest(int customInvokeTimeout, ChargingResult chargingResult,
             QualityOfService qualityOfService, boolean active, PDPID pdpID, ChargingRollOver chargingRollOver)
             throws CAPException {
 
@@ -396,11 +396,11 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
         
         ApplyChargingReportGPRSRequestImpl req = new ApplyChargingReportGPRSRequestImpl(chargingResult, qualityOfService,
                 active, pdpID, chargingRollOver);
-        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), (long) CAPOperationCode.applyChargingReportGPRS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), CAPOperationCode.applyChargingReportGPRS, req, true, false);        
     }
 
     @Override
-    public void addApplyChargingReportGPRSResponse(long invokeId) throws CAPException {
+    public void addApplyChargingReportGPRSResponse(int invokeId) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -411,14 +411,14 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addEventReportGPRSRequest(GPRSEventType gprsEventType, MiscCallInfo miscGPRSInfo,
+    public Integer addEventReportGPRSRequest(GPRSEventType gprsEventType, MiscCallInfo miscGPRSInfo,
             GPRSEventSpecificInformation gprsEventSpecificInformation, PDPID pdpID) throws CAPException {
 
         return addEventReportGPRSRequest(_Timer_Default, gprsEventType, miscGPRSInfo, gprsEventSpecificInformation, pdpID);
     }
 
     @Override
-    public Long addEventReportGPRSRequest(int customInvokeTimeout, GPRSEventType gprsEventType, MiscCallInfo miscGPRSInfo,
+    public Integer addEventReportGPRSRequest(int customInvokeTimeout, GPRSEventType gprsEventType, MiscCallInfo miscGPRSInfo,
             GPRSEventSpecificInformation gprsEventSpecificInformation, PDPID pdpID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
@@ -434,11 +434,11 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
         
         EventReportGPRSRequestImpl req = new EventReportGPRSRequestImpl(gprsEventType, miscGPRSInfo,
                 gprsEventSpecificInformation, pdpID);
-        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), (long) CAPOperationCode.eventReportGPRS, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), CAPOperationCode.eventReportGPRS, req, true, false);        
     }
 
     @Override
-    public void addEventReportGPRSResponse(long invokeId) throws CAPException {
+    public void addEventReportGPRSResponse(int invokeId) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -449,12 +449,12 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
     }
 
     @Override
-    public Long addActivityTestGPRSRequest() throws CAPException {
+    public Integer addActivityTestGPRSRequest() throws CAPException {
         return addActivityTestGPRSRequest(_Timer_Default);
     }
 
     @Override
-    public Long addActivityTestGPRSRequest(int customInvokeTimeout) throws CAPException {
+    public Integer addActivityTestGPRSRequest(int customInvokeTimeout) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -467,11 +467,11 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
         else
         	customTimeout = customInvokeTimeout;
         
-        return this.sendDataComponent(null, null, InvokeClass.Class3, customTimeout.longValue(), (long) CAPOperationCode.activityTestGPRS, null, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class3, customTimeout.longValue(), CAPOperationCode.activityTestGPRS, null, true, false);        
     }
 
     @Override
-    public void addActivityTestGPRSResponse(long invokeId) throws CAPException {
+    public void addActivityTestGPRSResponse(int invokeId) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gprsSSF_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSCF_gprsSSF)
@@ -480,5 +480,4 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
 
         this.sendDataComponent(invokeId, null, null, null, null, null, false, true);        
     }
-
 }

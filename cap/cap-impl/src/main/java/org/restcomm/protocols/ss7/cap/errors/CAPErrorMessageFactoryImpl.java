@@ -44,7 +44,7 @@ import org.restcomm.protocols.ss7.cap.api.errors.UnavailableNetworkResource;
 public class CAPErrorMessageFactoryImpl implements CAPErrorMessageFactory {
 
     @Override
-    public CAPErrorMessage createMessageFromErrorCode(Long errorCode) {
+    public CAPErrorMessage createMessageFromErrorCode(Integer errorCode) {
         int ec = (int) (long) errorCode;
         switch (ec) {
             case CAPErrorCode.cancelFailed:
@@ -65,7 +65,7 @@ public class CAPErrorMessageFactoryImpl implements CAPErrorMessageFactory {
     }
 
     @Override
-    public CAPErrorMessageParameterless createCAPErrorMessageParameterless(Long errorCode) {
+    public CAPErrorMessageParameterless createCAPErrorMessageParameterless(Integer errorCode) {
         return new CAPErrorMessageParameterlessImpl(errorCode);
     }
 

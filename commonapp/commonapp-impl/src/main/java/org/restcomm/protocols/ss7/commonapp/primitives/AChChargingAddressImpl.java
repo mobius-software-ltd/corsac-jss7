@@ -52,7 +52,7 @@ public class AChChargingAddressImpl implements AChChargingAddress {
     }
 
     public AChChargingAddressImpl(int srfConnection) {
-        this.srfConnection = new ASNInteger(srfConnection);        
+        this.srfConnection = new ASNInteger(srfConnection,"SRFConnection",1,127,false);        
     }
 
     public LegID getLegID() {

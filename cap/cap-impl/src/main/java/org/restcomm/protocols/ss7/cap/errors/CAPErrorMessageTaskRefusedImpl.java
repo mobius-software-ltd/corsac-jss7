@@ -33,14 +33,14 @@ import org.restcomm.protocols.ss7.cap.api.errors.TaskRefusedParameter;
  */
 public class CAPErrorMessageTaskRefusedImpl extends EnumeratedСAPErrorMessage1Impl implements CAPErrorMessageTaskRefused {
 	protected CAPErrorMessageTaskRefusedImpl(TaskRefusedParameter taskRefusedParameter) {
-        super((long) CAPErrorCode.taskRefused);
+        super(CAPErrorCode.taskRefused,"CAPErrorMessageTaskRefused",0,2);
 
         if(taskRefusedParameter!=null)
-        	setValue(Long.valueOf(taskRefusedParameter.getCode()));
+        	setValue(taskRefusedParameter.getCode());
     }
 
     public CAPErrorMessageTaskRefusedImpl() {
-        super((long) CAPErrorCode.taskRefused);
+        super(CAPErrorCode.taskRefused,"CAPErrorMessageTaskRefused",0,2);
     }
 
     public boolean isEmTaskRefused() {
@@ -52,11 +52,11 @@ public class CAPErrorMessageTaskRefusedImpl extends EnumeratedСAPErrorMessage1I
     }
 
     public TaskRefusedParameter getTaskRefusedParameter() {
-    	Long value=getValue();
+    	Integer value=getValue();
     	if(value==null)
     		return null;
     	
-    	return TaskRefusedParameter.getInstance(value.intValue());
+    	return TaskRefusedParameter.getInstance(value);
     }
 
     @Override

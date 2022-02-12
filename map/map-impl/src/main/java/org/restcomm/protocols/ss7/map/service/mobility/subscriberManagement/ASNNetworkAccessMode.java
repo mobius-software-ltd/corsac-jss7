@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNNetworkAccessMode extends ASNEnumerated {
 	public ASNNetworkAccessMode() {
-		
+		super("NetworkAccessMode",0,2,false);
 	}
 	
 	public ASNNetworkAccessMode(NetworkAccessMode t) {
-		super(t.getCode());
+		super(t.getCode(),"NetworkAccessMode",0,2,false);
 	}
 	
 	public NetworkAccessMode getType() {

@@ -173,7 +173,7 @@ public interface INAPDialog extends Serializable {
    *
    * @param invokeId
    */
-   void processInvokeWithoutAnswer(Long invokeId);
+   void processInvokeWithoutAnswer(Integer invokeId);
 
    /**
     * Sends the TC-INVOKE,TC-RESULT or TC-RESULT-L component
@@ -181,7 +181,7 @@ public interface INAPDialog extends Serializable {
     * @param invoke
     * @throws INAPException
     */
-   public Long sendDataComponent(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,Long operationCode,INAPMessage param,Boolean isRequest,Boolean isLastResponse) throws INAPException;
+   public Integer sendDataComponent(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,Integer operationCode,INAPMessage param,Boolean isRequest,Boolean isLastResponse) throws INAPException;
 
    /**
     * Sends the TC-U-ERROR component
@@ -190,7 +190,7 @@ public interface INAPDialog extends Serializable {
     * @param mapErrorMessage
     * @throws INAPException
     */
-   public void sendErrorComponent(Long invokeId, INAPErrorMessage mem) throws INAPException;
+   public void sendErrorComponent(Integer invokeId, INAPErrorMessage mem) throws INAPException;
 
    /**
     * Sends the TC-U-REJECT component
@@ -199,7 +199,7 @@ public interface INAPDialog extends Serializable {
     * @param problem
     * @throws ASNParsingException
     */
-   public void sendRejectComponent(Long invokeId, Problem problem) throws INAPException;
+   public void sendRejectComponent(Integer invokeId, Problem problem) throws INAPException;
 
    /**
     * Reset the Invoke Timeout timer for the Invoke. (TC-TIMER-RESET)
@@ -207,7 +207,7 @@ public interface INAPDialog extends Serializable {
     * @param invokeId
     * @throws INAPException
     */
-   void resetInvokeTimer(Long invokeId) throws INAPException;
+   void resetInvokeTimer(Integer invokeId) throws INAPException;
 
    /**
     * Causes local termination of an operation invocation (TC-U-CANCEL)
@@ -216,7 +216,7 @@ public interface INAPDialog extends Serializable {
     * @return true:OK, false: Invoke not found
     * @throws INAPException
     */
-   boolean cancelInvocation(Long invokeId) throws INAPException;
+   boolean cancelInvocation(Integer invokeId) throws INAPException;
 
    /**
     * Getting from the INAPDialog a user-defined object to save relating to the Dialog information

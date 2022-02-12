@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNSMEnumeratedDeliveryFailureCauseImpl extends ASNEnumerated {
 	public ASNSMEnumeratedDeliveryFailureCauseImpl() {
-		
+		super("SMEnumeratedDeliveryFailureCause",0,6,false);
 	}
 	
 	public ASNSMEnumeratedDeliveryFailureCauseImpl(SMEnumeratedDeliveryFailureCause t) {
-		super(t.getCode());
+		super(t.getCode(),"SMEnumeratedDeliveryFailureCause",0,6,false);
 	}
 	
 	public SMEnumeratedDeliveryFailureCause getType() {

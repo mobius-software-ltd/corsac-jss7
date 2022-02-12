@@ -32,11 +32,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,lengthIndefinite=false)
 public class ASNAbortSource extends ASNEnumerated {
 	public ASNAbortSource() {
-		
+		super("AbortSource",0,1,false);
 	}
 	
 	public ASNAbortSource(AbortSourceType t) {
-		super(t.getType());
+		super(t.getType(),"AbortSource",0,1,false);
 	}
 	
 	public AbortSourceType getAbortSourceType() throws ParseException {

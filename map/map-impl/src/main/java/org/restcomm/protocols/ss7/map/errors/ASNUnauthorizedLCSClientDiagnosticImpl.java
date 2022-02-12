@@ -9,11 +9,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,lengthIndefinite=false)
 public class ASNUnauthorizedLCSClientDiagnosticImpl extends ASNEnumerated {
 	public ASNUnauthorizedLCSClientDiagnosticImpl() {
-		
+		super("UnauthorizedLCSClientDiagnostic",0,7,false);
 	}
 	
 	public ASNUnauthorizedLCSClientDiagnosticImpl(UnauthorizedLCSClientDiagnostic t) {
-		super(t.getCode());
+		super(t.getCode(),"UnauthorizedLCSClientDiagnostic",0,7,false);
 	}
 	
 	public UnauthorizedLCSClientDiagnostic getType() {

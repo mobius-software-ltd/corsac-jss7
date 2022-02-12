@@ -219,14 +219,14 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         this.locationEstimate = locationEstimate;
         
         if(ageOfLocationEstimate!=null)
-        	this.ageOfLocationEstimate = new ASNInteger(ageOfLocationEstimate);
+        	this.ageOfLocationEstimate = new ASNInteger(ageOfLocationEstimate,"AgeOfLocationEstimate",0,32767,false);
         	
         this.slrArgExtensionContainer = slrArgExtensionContainer;
         this.addLocationEstimate = addLocationEstimate;
         this.deferredmtlrData = deferredmtlrData;
         
         if(lcsReferenceNumber!=null)
-        	this.lcsReferenceNumber = new ASNSingleByte(lcsReferenceNumber);
+        	this.lcsReferenceNumber = new ASNSingleByte(lcsReferenceNumber,"LCSReferenceNumber",0,255,false);
         	
         this.geranPositioningData = geranPositioningData;
         this.utranPositioningData = utranPositioningData;
@@ -237,7 +237,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         this.hgmlcAddress = hgmlcAddress;
         
         if(lcsServiceTypeID!=null)
-        	this.lcsServiceTypeID = new ASNInteger(lcsServiceTypeID);
+        	this.lcsServiceTypeID = new ASNInteger(lcsServiceTypeID,"LCSServiceTypeID",0,127,false);
         	
         if(saiPresent)
         	this.saiPresent = new ASNNull();
@@ -251,7 +251,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         this.velocityEstimate = velocityEstimate;
         
         if(sequenceNumber!=null)
-        	this.sequenceNumber = new ASNInteger(sequenceNumber);
+        	this.sequenceNumber = new ASNInteger(sequenceNumber,"SequenceNumber",1,8639999,false);
         	
         this.periodicLDRInfo = periodicLDRInfo;
         
@@ -316,14 +316,14 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         this.locationEstimate = locationEstimate;
         
         if(ageOfLocationEstimate!=null)
-        	this.ageOfLocationEstimate = new ASNInteger(ageOfLocationEstimate);
+        	this.ageOfLocationEstimate = new ASNInteger(ageOfLocationEstimate,"AgeOfLocationEstimate",0,32767,false);
         	
         this.slrArgExtensionContainer = slrArgExtensionContainer;
         this.addLocationEstimate = addLocationEstimate;
         this.deferredmtlrData = deferredmtlrData;
         
         if(lcsReferenceNumber!=null)
-        	this.lcsReferenceNumber = new ASNSingleByte(lcsReferenceNumber);
+        	this.lcsReferenceNumber = new ASNSingleByte(lcsReferenceNumber,"LCSReferenceNumber",0,255,false);
         	
         this.geranPositioningData = geranPositioningData;
         this.utranPositioningData = utranPositioningData;
@@ -334,7 +334,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         this.hgmlcAddress = hgmlcAddress;
         
         if(lcsServiceTypeID!=null)
-        	this.lcsServiceTypeID = new ASNInteger(lcsServiceTypeID);
+        	this.lcsServiceTypeID = new ASNInteger(lcsServiceTypeID,"LCSServiceTypeID",0,127,false);
         	
         if(saiPresent)
         	this.saiPresent = new ASNNull();
@@ -348,7 +348,7 @@ public class SubscriberLocationReportRequestImpl extends LsmMessageImpl implemen
         this.velocityEstimate = velocityEstimate;
 
         if(sequenceNumber!=null)
-        	this.sequenceNumber = new ASNInteger(sequenceNumber);
+        	this.sequenceNumber = new ASNInteger(sequenceNumber,"SequenceNumber",1,8639999,false);
         	
         this.periodicLDRInfo = periodicLDRInfo;
         

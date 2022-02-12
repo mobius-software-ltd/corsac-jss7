@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNLCSClientInternalID extends ASNEnumerated {
 	public ASNLCSClientInternalID() {
-		
+		super("LCSClientInternalID",0,4,false);
 	}
 	
 	public ASNLCSClientInternalID(LCSClientInternalID t) {
-		super(t.getId());
+		super(t.getId(),"LCSClientInternalID",0,4,false);
 	}
 	
 	public LCSClientInternalID getType() {

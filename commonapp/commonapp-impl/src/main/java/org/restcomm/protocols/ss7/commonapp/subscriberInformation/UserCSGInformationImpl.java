@@ -59,10 +59,10 @@ public class UserCSGInformationImpl implements UserCSGInformation {
         this.extensionContainer = extensionContainer;
         
         if(accessMode!=null)
-        	this.accessMode = new ASNSingleByte(accessMode);
+        	this.accessMode = new ASNSingleByte(accessMode,"AccessMode",0,255,false);
         	
         if(cmi!=null)
-        	this.cmi = new ASNSingleByte(cmi);        	
+        	this.cmi = new ASNSingleByte(cmi,"CMI",0,255,false);        	
     }
 
     /*

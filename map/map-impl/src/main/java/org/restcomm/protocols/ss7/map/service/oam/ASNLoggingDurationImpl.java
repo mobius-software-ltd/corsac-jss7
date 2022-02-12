@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNLoggingDurationImpl extends ASNEnumerated {
 	public ASNLoggingDurationImpl() {
-		
+		super("LoggingDuration",0,5,false);
 	}
 	
 	public ASNLoggingDurationImpl(LoggingDuration t) {
-		super(t.getCode());
+		super(t.getCode(),"LoggingDuration",0,5,false);
 	}
 	
 	public LoggingDuration getType() {

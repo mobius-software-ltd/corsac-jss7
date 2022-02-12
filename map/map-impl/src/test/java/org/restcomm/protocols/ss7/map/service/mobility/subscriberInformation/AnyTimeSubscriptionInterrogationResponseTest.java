@@ -58,12 +58,12 @@ import io.netty.buffer.Unpooled;
  * @author vadim subbotin
  */
 public class AnyTimeSubscriptionInterrogationResponseTest {
-    private byte[] data = { 48, (byte) 129, (byte) 219, (byte) 161, 13, 48, 11, 48, 9, (byte) 130, 1, 0, (byte) 132, 1, 15,
+    private byte[] data = { 48, (byte) 129, (byte) 217, (byte) 161, 13, 48, 11, 48, 9, (byte) 130, 1, 0, (byte) 132, 1, 15,
             (byte) 135, 1, 10, (byte) 162, 21, 48, 8, 48, 6, (byte) 130, 1, 96, (byte) 132, 1, 8, 18, 4, 48, 48, 48, 48, 2, 1,
-            3, 5, 0, (byte) 163, 15, 48, 11, 3, 5, 3, (byte) 255, (byte) 252, 0, 0, 3, 2, 4, (byte) 240, 5, 0, (byte) 164, 32,
+            3, 5, 0, (byte) 163, 13, 48, 9, 3, 3, 0, (byte) 255, (byte) 252, 3, 2, 4, (byte) 240, 5, 0, (byte) 164, 32,
             (byte) 160, 26, 48, 19, 48, 17, 10, 1, 2, 2, 1, 20, (byte) 128, 6, (byte) 145, 33, 67, 101, (byte) 135, 9,
             (byte) 129, 1, 0, (byte) 128, 1, 5, (byte) 130, 0, (byte) 135, 0, (byte) 136, 0, (byte) 133, 2, 4, (byte) 240,
-            (byte) 134, 2, 4, (byte) 192, (byte) 167, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6,
+            (byte) 134, 2, 6, (byte) 192, (byte) 167, 39, (byte) 160, 32, 48, 10, 6, 3, 42, 3, 4, 11, 12, 13, 14, 15, 48, 5, 6,
             3, 42, 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33, (byte) 136, 2, 1,
             (byte) 254, (byte) 137, 2, 1, (byte) 240, (byte) 170, 16, 48, 14, 4, 7, (byte) 145, (byte) 151, 97, 33, 67, 101,
             (byte) 247, (byte) 160, 3, (byte) 131, 1, 0, (byte) 171, 9, 48, 7, 3, 5, 5, 0, 0, 0, 0, (byte) 172, 12, (byte) 161,

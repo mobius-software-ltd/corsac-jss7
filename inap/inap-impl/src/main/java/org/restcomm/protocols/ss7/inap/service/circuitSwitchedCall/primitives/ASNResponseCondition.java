@@ -34,11 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
 public class ASNResponseCondition extends ASNEnumerated {
 	public ASNResponseCondition() {
-		
+		super("ResponseCondition",0,1,false);
 	}
 	
 	public ASNResponseCondition(ResponseCondition t) {
-		super(t.getCode());
+		super(t.getCode(),"ResponseCondition",0,1,false);
 	}
 	
 	public ResponseCondition getType() {

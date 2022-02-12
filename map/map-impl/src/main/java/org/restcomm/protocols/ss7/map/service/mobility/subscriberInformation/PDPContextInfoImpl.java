@@ -161,7 +161,7 @@ public class PDPContextInfoImpl implements PDPContextInfo {
             Ext2QoSSubscribed qos2Requested, Ext2QoSSubscribed qos2Negotiated, Ext3QoSSubscribed qos3Subscribed,
             Ext3QoSSubscribed qos3Requested, Ext3QoSSubscribed qos3Negotiated, Ext4QoSSubscribed qos4Subscribed,
             Ext4QoSSubscribed qos4Requested, Ext4QoSSubscribed qos4Negotiated, ExtPDPType extPdpType, PDPAddress extPdpAddress) {
-        this.pdpContextIdentifier = new ASNInteger(pdpContextIdentifier);
+        this.pdpContextIdentifier = new ASNInteger(pdpContextIdentifier,"PDPContextID",1,50,false);
 
         if(pdpContextActive)
         	this.pdpContextActive = new ASNNull();
@@ -172,7 +172,7 @@ public class PDPContextInfoImpl implements PDPContextInfo {
         this.apnInUse = apnInUse;
         
         if(asapi!=null)
-        	this.nsapi = new ASNInteger(asapi); 
+        	this.nsapi = new ASNInteger(asapi,"PDPContextID",0,15,false); 
         	
         this.transactionId = transactionId;
         this.teidForGnAndGp = teidForGnAndGp;

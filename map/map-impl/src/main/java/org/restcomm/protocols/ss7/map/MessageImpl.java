@@ -37,12 +37,12 @@ import io.netty.util.ReferenceCountUtil;
 public abstract class MessageImpl implements MAPMessage {
 	private static final long serialVersionUID = 1L;
 
-    private long invokeId;
+    private int invokeId;
     private MAPDialog mapDialog;
     private boolean returnResultNotLast = false;
     private ByteBuf originalBuffer;
     
-    public long getInvokeId() {
+    public int getInvokeId() {
         return this.invokeId;
     }
 
@@ -50,7 +50,7 @@ public abstract class MessageImpl implements MAPMessage {
         return this.mapDialog;
     }
 
-    public void setInvokeId(long invokeId) {
+    public void setInvokeId(int invokeId) {
         this.invokeId = invokeId;
     }
 

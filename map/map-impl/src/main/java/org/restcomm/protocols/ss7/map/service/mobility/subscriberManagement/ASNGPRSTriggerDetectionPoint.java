@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNGPRSTriggerDetectionPoint extends ASNEnumerated {
 	public ASNGPRSTriggerDetectionPoint() {
-		
+		super("GPRSTriggerDetectionPoint",1,14,false);
 	}
 	
 	public ASNGPRSTriggerDetectionPoint(GPRSTriggerDetectionPoint t) {
-		super(t.getCode());
+		super(t.getCode(),"GPRSTriggerDetectionPoint",1,14,false);
 	}
 	
 	public GPRSTriggerDetectionPoint getType() {

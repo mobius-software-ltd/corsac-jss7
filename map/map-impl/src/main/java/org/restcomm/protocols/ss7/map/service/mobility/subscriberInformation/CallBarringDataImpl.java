@@ -63,7 +63,7 @@ public class CallBarringDataImpl implements CallBarringData {
         this.password = password;
         
         if(wrongPasswordAttemptsCounter!=null)
-        	this.wrongPasswordAttemptsCounter = new ASNInteger(wrongPasswordAttemptsCounter);
+        	this.wrongPasswordAttemptsCounter = new ASNInteger(wrongPasswordAttemptsCounter,"WrongPasswordAttemptsCounter",0,4,false);
         	
         if(notificationToCSE)
         	this.notificationToCSE = new ASNNull();

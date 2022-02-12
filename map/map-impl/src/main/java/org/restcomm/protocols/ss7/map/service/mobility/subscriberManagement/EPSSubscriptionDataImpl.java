@@ -76,7 +76,7 @@ public class EPSSubscriptionDataImpl implements EPSSubscriptionData {
         this.apnOiReplacement = apnOiReplacement;
         
         if(rfspId!=null)
-        	this.rfspId = new ASNInteger(rfspId);
+        	this.rfspId = new ASNInteger(rfspId,"RFSPId",1,256,false);
         	
         this.ambr = ambr;
         this.apnConfigurationProfile = apnConfigurationProfile;

@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNNotReachableReasonImpl extends ASNEnumerated {
 	public ASNNotReachableReasonImpl() {
-		
+		super("NotReachableReason",0,3,false);		
 	}
 	
 	public ASNNotReachableReasonImpl(NotReachableReason t) {
-		super(t.getCode());
+		super(t.getCode(),"NotReachableReason",0,3,false);
 	}
 	
 	public NotReachableReason getType() {

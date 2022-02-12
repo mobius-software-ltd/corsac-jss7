@@ -79,7 +79,7 @@ public class SSDataImpl implements SSData {
         	this.defaultPriority = new ASNEMLPPPriorityImpl(defaultPriority);
         	
         if(nbrUser!=null)
-        	this.nbrUser = new ASNInteger(nbrUser);        	
+        	this.nbrUser = new ASNInteger(nbrUser,"NBRUser",1,7,false);        	
     }
 
     public SSCode getSsCode() {

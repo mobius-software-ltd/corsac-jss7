@@ -196,19 +196,19 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
         this.observerdEvents.add(te);
     }
 
-    public void onErrorComponent(MAPDialog mapDialog, Long invokeId, MAPErrorMessage mapErrorMessage) {
+    public void onErrorComponent(MAPDialog mapDialog, Integer invokeId, MAPErrorMessage mapErrorMessage) {
         this.logger.debug("onErrorComponent");
         TestEvent te = TestEvent.createReceivedEvent(EventType.ErrorComponent, mapDialog, sequence++);
         this.observerdEvents.add(te);
     }
 
-    public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
         this.logger.debug("onRejectComponent");
         TestEvent te = TestEvent.createReceivedEvent(EventType.RejectComponent, mapDialog, sequence++);
         this.observerdEvents.add(te);
     }
 
-    public void onInvokeTimeout(MAPDialog mapDialog, Long invokeId) {
+    public void onInvokeTimeout(MAPDialog mapDialog, Integer invokeId) {
         this.logger.debug("onInvokeTimeout");
         TestEvent te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, mapDialog, sequence++);
         this.observerdEvents.add(te);

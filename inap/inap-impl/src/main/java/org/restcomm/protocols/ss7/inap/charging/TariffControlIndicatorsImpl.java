@@ -37,12 +37,12 @@ public class TariffControlIndicatorsImpl extends ASNBitString implements TariffC
 	private static final int _ID_noncyclicTariff = 0;
     
     public TariffControlIndicatorsImpl() {
-    	super(1);
+    	super("TariffControlIndicators",0,7,false);
     	
     }
     
     public TariffControlIndicatorsImpl(boolean noncyclicTariff) {
-    	super(1);
+    	super("TariffControlIndicators",0,7,false);
         if (noncyclicTariff)
             this.setBit(_ID_noncyclicTariff);
     }

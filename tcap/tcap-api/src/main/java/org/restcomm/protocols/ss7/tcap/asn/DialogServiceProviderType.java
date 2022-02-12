@@ -28,20 +28,20 @@ public enum DialogServiceProviderType {
 
     Null(0), NoReasonGiven(1), NoCommonDialogPortion(2);
 
-    private long type = -1;
+    private int type = -1;
 
-    DialogServiceProviderType(long t) {
+    DialogServiceProviderType(int t) {
         this.type = t;
     }
 
     /**
      * @return the type
      */
-    public long getType() {
+    public int getType() {
         return type;
     }
 
-    public static DialogServiceProviderType getFromInt(long t) throws ParseException {
+    public static DialogServiceProviderType getFromInt(int t) throws ParseException {
         if (t == 0) {
             return Null;
         } else if (t == 1) {

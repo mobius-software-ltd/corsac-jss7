@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNTypeOfUpdateImpl extends ASNEnumerated {
 	public ASNTypeOfUpdateImpl() {
-		
+		super("TypeOfUpdate",0,1,false);
 	}
 	
 	public ASNTypeOfUpdateImpl(TypeOfUpdate t) {
-		super(t.getCode());
+		super(t.getCode(),"TypeOfUpdate",0,1,false);
 	}
 	
 	public TypeOfUpdate getType() {

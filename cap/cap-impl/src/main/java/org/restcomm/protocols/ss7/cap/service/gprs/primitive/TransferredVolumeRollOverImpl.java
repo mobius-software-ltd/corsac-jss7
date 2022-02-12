@@ -47,7 +47,7 @@ public class TransferredVolumeRollOverImpl implements TransferredVolumeRollOver 
 
     public TransferredVolumeRollOverImpl(Integer roVolumeIfNoTariffSwitch) {
     	if(roVolumeIfNoTariffSwitch!=null)
-    		this.roVolumeIfNoTariffSwitch = new ASNInteger(roVolumeIfNoTariffSwitch);    		
+    		this.roVolumeIfNoTariffSwitch = new ASNInteger(roVolumeIfNoTariffSwitch,"ROVolumeIfNoTariffSwitch",0,255,false);    		
     }
 
     public TransferredVolumeRollOverImpl(ROVolumeIfTariffSwitch roVolumeIfTariffSwitch) {

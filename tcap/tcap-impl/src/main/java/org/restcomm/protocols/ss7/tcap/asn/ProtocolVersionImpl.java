@@ -36,6 +36,7 @@ public class ProtocolVersionImpl extends ASNBitString implements ProtocolVersion
 	private boolean supportedVersion = true;
 
 	public ProtocolVersionImpl() {
+		super("ProtocolVersion", null, 1, false);
 		this.setBit(0);
 	}
 	

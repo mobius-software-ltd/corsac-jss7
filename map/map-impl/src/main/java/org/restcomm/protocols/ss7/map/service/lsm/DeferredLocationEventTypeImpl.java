@@ -38,12 +38,12 @@ public class DeferredLocationEventTypeImpl extends ASNBitString implements Defer
     private static final int _INDEX_BEING_INSIDE_AREA = 3;
 
     public DeferredLocationEventTypeImpl() {
-    	super(3);
+    	super("DeferredLocationEventType",0,15,false);
     }
 
     public DeferredLocationEventTypeImpl(boolean msAvailable, boolean enteringIntoArea, boolean leavingFromArea,
             boolean beingInsideArea) {        
-    	super(3);
+    	super("DeferredLocationEventType",0,15,false);
         if (msAvailable)
             this.setBit(_INDEX_MS_AVAILABLE);
         if (enteringIntoArea)

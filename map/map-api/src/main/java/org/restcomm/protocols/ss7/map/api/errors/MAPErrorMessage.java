@@ -30,7 +30,7 @@ package org.restcomm.protocols.ss7.map.api.errors;
  */
 public interface MAPErrorMessage {
 
-    Long getErrorCode();
+    Integer getErrorCode();
 
     boolean isEmParameterless();
 

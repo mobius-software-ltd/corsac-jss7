@@ -48,10 +48,10 @@ public class CurrencyFactorScaleImpl implements CurrencyFactorScale {
 
     public CurrencyFactorScaleImpl(Integer currencyFactor,Integer currencyScale) {
     	if(currencyFactor!=null)
-    		this.currencyFactor = new ASNInteger(currencyFactor);    		
+    		this.currencyFactor = new ASNInteger(currencyFactor,"CurrencyFactor",0,999999,false);    		
     	
     	if(currencyScale!=null)
-    		this.currencyScale = new ASNInteger(currencyScale);    		
+    		this.currencyScale = new ASNInteger(currencyScale,"CurrencyScale",-7,3,false);    		
     }
 
     public Integer getCurrencyFactor() {

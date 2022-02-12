@@ -34,11 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
 public class ASNTerminalType extends ASNEnumerated {
 	public ASNTerminalType() {
-		
+		super("TerminalType",0,16,false);		
 	}
 	
 	public ASNTerminalType(TerminalType t) {
-		super(t.getCode());
+		super(t.getCode(),"TerminalType",0,16,false);
 	}
 	
 	public TerminalType getType() {

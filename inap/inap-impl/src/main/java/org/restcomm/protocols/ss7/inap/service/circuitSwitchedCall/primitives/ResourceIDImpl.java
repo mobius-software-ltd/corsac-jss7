@@ -58,9 +58,9 @@ public class ResourceIDImpl implements ResourceID {
     public ResourceIDImpl(Integer value,Boolean isTrunkGroupID) {
     	if(value!=null) {
     		if(isTrunkGroupID)
-    			this.trunkGroupID = new ASNInteger(value);    			
+    			this.trunkGroupID = new ASNInteger(value,"TrunkGroupID",Integer.MIN_VALUE,Integer.MAX_VALUE,false);    			
     		else
-    			this.facilityGroupMemberID = new ASNInteger(value);    			
+    			this.facilityGroupMemberID = new ASNInteger(value,"FacilityGroupMemberID",Integer.MIN_VALUE,Integer.MAX_VALUE,false);
     	}
     }
 

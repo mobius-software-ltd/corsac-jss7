@@ -75,18 +75,18 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
     		this.informationToSend = new InformationToSendWrapperImpl(informationToSend);
     	
     	if(disconnectFromIPForbidden!=null)
-    		this.disconnectFromIPForbidden = new ASNBoolean(disconnectFromIPForbidden);
+    		this.disconnectFromIPForbidden = new ASNBoolean(disconnectFromIPForbidden,"DisconnectFromIPForbidden",true,false);
 
     	if(requestAnnouncementCompleteNotification!=null)
-    		this.requestAnnouncementCompleteNotification = new ASNBoolean(requestAnnouncementCompleteNotification);
+    		this.requestAnnouncementCompleteNotification = new ASNBoolean(requestAnnouncementCompleteNotification,"RequestAnnouncementCompleteNotification",true,false);
     		
         this.extensions = extensions;
         
         if(callSegmentID!=null)
-        	this.callSegmentID = new ASNInteger(callSegmentID);
+        	this.callSegmentID = new ASNInteger(callSegmentID,"CallSegmentID",0,127,false);
         
         if(requestAnnouncementStartedNotification!=null)
-        	this.requestAnnouncementStartedNotification = new ASNBoolean(requestAnnouncementStartedNotification);        	
+        	this.requestAnnouncementStartedNotification = new ASNBoolean(requestAnnouncementStartedNotification,"RequestAnnouncementStartedNotification",true,false);        	
     }
 
     @Override
@@ -109,16 +109,16 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
 
     @Override
     public Boolean getDisconnectFromIPForbidden() {
-    	if(disconnectFromIPForbidden==null)
-    		return null;
+    	if(disconnectFromIPForbidden==null || disconnectFromIPForbidden.getValue()==null)
+    		return true;
     	
         return disconnectFromIPForbidden.getValue();
     }
 
     @Override
     public Boolean getRequestAnnouncementCompleteNotification() {
-    	if(requestAnnouncementCompleteNotification==null)
-    		return null;
+    	if(requestAnnouncementCompleteNotification==null || requestAnnouncementCompleteNotification.getValue()==null)
+    		return true;
     	
         return requestAnnouncementCompleteNotification.getValue();
     }
@@ -138,8 +138,8 @@ public class PlayAnnouncementRequestImpl extends CircuitSwitchedCallMessageImpl 
 
     @Override
     public Boolean getRequestAnnouncementStartedNotification() {
-    	if(requestAnnouncementStartedNotification==null)
-    		return null;
+    	if(requestAnnouncementStartedNotification==null || requestAnnouncementStartedNotification.getValue()==null)
+    		return false;
     	
         return requestAnnouncementStartedNotification.getValue();
     }

@@ -42,11 +42,11 @@ public class ProtocolVersionImpl extends ASNSingleByte implements ProtocolVersio
      * Creating ProtocolVersion that support both T1_114_1996Supported and T1_114_2000Supported
      */
     public ProtocolVersionImpl() {
-    	super(_TAG_T1_114_1996 + _TAG_T1_114_2000);        
+    	super(_TAG_T1_114_1996 + _TAG_T1_114_2000,"ProtocolVersion",0,3,false);        
     }
 
     public ProtocolVersionImpl(boolean isT1_114_1996Supported,boolean isT1_114_2000Supported) {
-    	super(translate(isT1_114_1996Supported, isT1_114_2000Supported));    	
+    	super(translate(isT1_114_1996Supported, isT1_114_2000Supported),"ProtocolVersion",0,3,false);    	
     }
     
     private static Integer translate(boolean isT1_114_1996Supported,boolean isT1_114_2000Supported) {

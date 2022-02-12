@@ -36,9 +36,9 @@ import io.netty.buffer.ByteBuf;
  */
 public interface CAPMessage extends Serializable {
 
-     long getInvokeId();
+     int getInvokeId();
 
-     void setInvokeId(long invokeId);
+     void setInvokeId(int invokeId);
 
      CAPDialog getCAPDialog();
 

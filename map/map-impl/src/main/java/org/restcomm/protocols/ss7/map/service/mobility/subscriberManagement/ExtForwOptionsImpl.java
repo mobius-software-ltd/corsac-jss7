@@ -40,11 +40,12 @@ public class ExtForwOptionsImpl extends ASNSingleByte implements ExtForwOptions 
     private static int _MASK_ForwardingReason = 0x0C;
 
     public ExtForwOptionsImpl() {
+    	super("ExtForwOptions",0,255,false);
     }
 
     public ExtForwOptionsImpl(boolean notificationToForwardingParty, boolean redirectingPresentation,
             boolean notificationToCallingParty, ExtForwOptionsForwardingReason extForwOptionsForwardingReason) {
-    	super(translate(notificationToForwardingParty, redirectingPresentation, notificationToCallingParty, extForwOptionsForwardingReason));
+    	super(translate(notificationToForwardingParty, redirectingPresentation, notificationToCallingParty, extForwOptionsForwardingReason),"ExtForwOptions",0,255,false);
     }
     
     public static Integer translate(boolean notificationToForwardingParty, boolean redirectingPresentation,

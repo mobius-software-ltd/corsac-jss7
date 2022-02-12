@@ -34,10 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=false,lengthIndefinite=false)
 public class ReceivingLegIDImpl extends ASNEnumerated {
     public ReceivingLegIDImpl() {
+    	super("ReceivingLegID",1,9,false);
     }
 
     public ReceivingLegIDImpl(LegType legID) {
-    	super(legID.getCode());
+    	super(legID.getCode(),"ReceivingLegID",1,9,false);
     }
 
     public LegType getReceivingSideID() {

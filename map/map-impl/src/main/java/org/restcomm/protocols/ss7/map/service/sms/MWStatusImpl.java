@@ -38,11 +38,11 @@ public class MWStatusImpl extends ASNBitString implements MWStatus {
     private static final int _INDEX_MnrgSet = 3;
 
     public MWStatusImpl() {
-    	super(5);
+    	super("MWStatus",5,15,false);
     }
 
     public MWStatusImpl(boolean scAddressNotIncluded, boolean mnrfSet, boolean mcefSet, boolean mnrgSet) {
-    	super(5);
+    	super("MWStatus",5,15,false);
     	if (scAddressNotIncluded)
             this.setBit(_INDEX_ScAddressNotIncluded);
         if (mnrfSet)

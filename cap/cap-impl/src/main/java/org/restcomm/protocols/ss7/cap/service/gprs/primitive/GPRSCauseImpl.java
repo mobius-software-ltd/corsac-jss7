@@ -32,10 +32,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class GPRSCauseImpl extends ASNSingleByte implements GPRSCause {
 	public GPRSCauseImpl() {
+		super("GPRSCause",0,255,false);
     }
 
     public GPRSCauseImpl(int data) {
-    	super(data);
+    	super(data,"GPRSCause",0,255,false);
     }
 
     public int getData() {

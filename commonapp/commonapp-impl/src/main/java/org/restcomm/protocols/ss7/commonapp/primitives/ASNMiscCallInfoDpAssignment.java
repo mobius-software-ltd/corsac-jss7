@@ -34,11 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=false,lengthIndefinite=false)
 public class ASNMiscCallInfoDpAssignment extends ASNEnumerated {
 	public ASNMiscCallInfoDpAssignment() {
-		
+		super("MiscCallInfoDpAssignment",0,2,false);
 	}
 	
 	public ASNMiscCallInfoDpAssignment(MiscCallInfoDpAssignment t) {
-		super(t.getCode());
+		super(t.getCode(),"MiscCallInfoDpAssignment",0,2,false);
 	}
 	
 	public MiscCallInfoDpAssignment getType() {

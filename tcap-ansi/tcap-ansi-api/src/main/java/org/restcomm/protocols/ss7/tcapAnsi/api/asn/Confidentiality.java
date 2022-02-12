@@ -45,9 +45,9 @@ Confidentiality ::= SEQUENCE {
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,lengthIndefinite=false)
 public interface Confidentiality {
 
-    Long getIntegerConfidentialityId();
+	Integer getIntegerConfidentialityId();
 
-    void setIntegerConfidentialityId(Long val);
+    void setIntegerConfidentialityId(Integer val);
 
     List<Long> getObjectConfidentialityId();
 

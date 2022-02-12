@@ -33,14 +33,14 @@ import org.restcomm.protocols.ss7.cap.api.errors.RequestedInfoErrorParameter;
  */
 public class CAPErrorMessageRequestedInfoErrorImpl extends EnumeratedСAPErrorMessage1Impl implements CAPErrorMessageRequestedInfoError {
 	protected CAPErrorMessageRequestedInfoErrorImpl(RequestedInfoErrorParameter requestedInfoErrorParameter) {
-        super((long) CAPErrorCode.requestedInfoError);
+        super(CAPErrorCode.requestedInfoError,"CAPErrorMessageRequestedInfoError",1,2);
 
         if(requestedInfoErrorParameter!=null)
-        	setValue(Long.valueOf(requestedInfoErrorParameter.getCode()));        
+        	setValue(requestedInfoErrorParameter.getCode());        
     }
 
     public CAPErrorMessageRequestedInfoErrorImpl() {
-        super((long) CAPErrorCode.requestedInfoError);
+        super(CAPErrorCode.requestedInfoError,"CAPErrorMessageRequestedInfoError",1,2);
     }
 
     public boolean isEmRequestedInfoError() {
@@ -52,11 +52,11 @@ public class CAPErrorMessageRequestedInfoErrorImpl extends EnumeratedСAPErrorMe
     }
 
     public RequestedInfoErrorParameter getRequestedInfoErrorParameter() {
-    	Long value=getValue();
+    	Integer value=getValue();
     	if(value==null)
     		return null;
     	
-    	return RequestedInfoErrorParameter.getInstance(value.intValue());
+    	return RequestedInfoErrorParameter.getInstance(value);
     }
 
     @Override

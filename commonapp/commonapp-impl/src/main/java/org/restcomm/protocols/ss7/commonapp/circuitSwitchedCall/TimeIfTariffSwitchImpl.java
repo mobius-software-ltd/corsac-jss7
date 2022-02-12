@@ -47,10 +47,10 @@ public class TimeIfTariffSwitchImpl implements TimeIfTariffSwitch {
     }
 
     public TimeIfTariffSwitchImpl(int timeSinceTariffSwitch, Integer tariffSwitchInterval) {
-        this.timeSinceTariffSwitch = new ASNInteger(timeSinceTariffSwitch);
+        this.timeSinceTariffSwitch = new ASNInteger(timeSinceTariffSwitch,"TimeSinceTariffSwitch",0,864000,false);
         
         if(tariffSwitchInterval!=null)
-        	this.tariffSwitchInterval = new ASNInteger(tariffSwitchInterval);        	
+        	this.tariffSwitchInterval = new ASNInteger(tariffSwitchInterval,"TariffSwitchInterval",0,864000,false);        	
     }
 
     public int getTimeSinceTariffSwitch() {

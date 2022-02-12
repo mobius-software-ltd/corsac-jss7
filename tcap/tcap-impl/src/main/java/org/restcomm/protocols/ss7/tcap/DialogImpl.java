@@ -145,7 +145,7 @@ public class DialogImpl implements Dialog {
     // only originating side keeps FSM, see: Q.771 - 3.1.5
     protected Invoke[] operationsSent = new Invoke[invokeIDTable.length];
     protected Invoke[] operationsSentA = new Invoke[invokeIDTable.length];
-    private ConcurrentHashMap<Long,Long> incomingInvokeList = new ConcurrentHashMap<Long,Long>();
+    private ConcurrentHashMap<Integer,Integer> incomingInvokeList = new ConcurrentHashMap<Integer,Integer>();
     private ScheduledExecutorService executor;
 
     // scheduled components list
@@ -167,14 +167,14 @@ public class DialogImpl implements Dialog {
 
     private ASNParser dialogParser;
     
-    private static int getIndexFromInvokeId(Long l) {
+    private static int getIndexFromInvokeId(Integer l) {
         int tmp = l.intValue();
         return tmp + _INVOKE_TABLE_SHIFT;
     }
 
-    private static Long getInvokeIdFromIndex(int index) {
+    private static Integer getInvokeIdFromIndex(int index) {
         int tmp = index - _INVOKE_TABLE_SHIFT;
-        return (long)tmp;
+        return tmp;
     }
 
     /**
@@ -270,7 +270,7 @@ public class DialogImpl implements Dialog {
      *
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#getNewInvokeId()
      */
-    public Long getNewInvokeId() throws TCAPException {
+    public Integer getNewInvokeId() throws TCAPException {
     	if (this.freeCount == 0) {
             throw new TCAPException("No free invokeId");
         }
@@ -300,9 +300,9 @@ public class DialogImpl implements Dialog {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#cancelInvocation (java.lang.Long)
+     * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#cancelInvocation (java.lang.Integer)
      */
-    public boolean cancelInvocation(Long invokeId) throws TCAPException {
+    public boolean cancelInvocation(Integer invokeId) throws TCAPException {
         int index = getIndexFromInvokeId(invokeId);
         if (index < 0 || index >= this.operationsSent.length) {
             throw new TCAPException("Wrong invoke id passed.");
@@ -325,7 +325,7 @@ public class DialogImpl implements Dialog {
         return false;
     }
 
-    private void freeInvokeId(Long l) {
+    private void freeInvokeId(Integer l) {
     	int index = getIndexFromInvokeId(l);
         if (this.invokeIDTable[index] == _INVOKEID_TAKEN)
             this.freeCount++;
@@ -411,12 +411,12 @@ public class DialogImpl implements Dialog {
      * @param invokeId
      * @return false: failure - this invokeId already present in the list
      */
-    private boolean addIncomingInvokeId(Long invokeId) {
-    	Long oldValue=this.incomingInvokeList.putIfAbsent(invokeId, invokeId);
+    private boolean addIncomingInvokeId(Integer invokeId) {
+    	Integer oldValue=this.incomingInvokeList.putIfAbsent(invokeId, invokeId);
     	return oldValue==null;
     }
 
-    private void removeIncomingInvokeId(Long invokeId) {
+    private void removeIncomingInvokeId(Integer invokeId) {
     	if(invokeId!=null)
     		this.incomingInvokeList.remove(invokeId);        
     }
@@ -1028,7 +1028,7 @@ public class DialogImpl implements Dialog {
         }
     }
     
-    public Long sendData(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,OperationCode operationCode,Object param,Boolean isRequest,Boolean isLastResponse) throws TCAPSendException, TCAPException {
+    public Integer sendData(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,OperationCode operationCode,Object param,Boolean isRequest,Boolean isLastResponse) throws TCAPSendException, TCAPException {
     	if(isRequest!=null && isRequest) {
     		Invoke invoke;
     		if(invokeClass==null)
@@ -1104,7 +1104,7 @@ public class DialogImpl implements Dialog {
         return invokeId;
     }
     
-    public void sendReject(Long invokeId,Problem problem) throws TCAPSendException {
+    public void sendReject(Integer invokeId,Problem problem) throws TCAPSendException {
     	Reject reject=TcapFactory.createComponentReject();
     	reject.setInvokeId(invokeId);
     	
@@ -1130,7 +1130,7 @@ public class DialogImpl implements Dialog {
         this.scheduledComponentList.add(reject);
     }
     
-    public void sendError(Long invokeId,ErrorCode errorCode,Object param) throws TCAPSendException {
+    public void sendError(Integer invokeId,ErrorCode errorCode,Object param) throws TCAPSendException {
     	ReturnError error=TcapFactory.createComponentReturnError();
     	
     	if(errorCode!=null && errorCode.getLocalErrorCode()!=null)
@@ -1147,7 +1147,7 @@ public class DialogImpl implements Dialog {
         this.scheduledComponentList.add(error);
     }
 
-    public void processInvokeWithoutAnswer(Long invokeId) {
+    public void processInvokeWithoutAnswer(Integer invokeId) {
         this.removeIncomingInvokeId(invokeId);
     }
 
@@ -1581,7 +1581,7 @@ public class DialogImpl implements Dialog {
         }
     }
 
-    public OperationCode getOperationCodeFromInvoke(Long invokeId) {
+    public OperationCode getOperationCodeFromInvoke(Integer invokeId) {
     	Invoke invoke = null;
         if (invokeId != null) {
         	int index = getIndexFromInvokeId(invokeId);
@@ -1601,7 +1601,7 @@ public class DialogImpl implements Dialog {
 
         List<BaseComponent> resultingIndications = new ArrayList<BaseComponent>();
         for (BaseComponent ci : components) {
-            Long invokeId;
+        	Integer invokeId;
             if (ci instanceof Invoke)
                 invokeId = ((Invoke)ci).getLinkedId();
             else
@@ -1762,7 +1762,7 @@ public class DialogImpl implements Dialog {
         return resultingIndications;
     }
 
-    private void addReject(List<BaseComponent> resultingIndications, Long invokeId, Problem p) {
+    private void addReject(List<BaseComponent> resultingIndications, Integer invokeId, Problem p) {
         try {
         	Reject reject=TcapFactory.createComponentReject();
         	reject.setLocalOriginated(true);
@@ -1885,7 +1885,7 @@ public class DialogImpl implements Dialog {
     }
 
     // TC-TIMER-RESET
-    public void resetTimer(Long invokeId) throws TCAPException {
+    public void resetTimer(Integer invokeId) throws TCAPException {
     	int index = getIndexFromInvokeId(invokeId);
         Invoke invoke = operationsSent[index];
         if (invoke == null) {

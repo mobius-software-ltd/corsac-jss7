@@ -61,7 +61,7 @@ public class ClientTest implements TCListener {
         clientDialog = this.tcapProvider.getNewDialog(localAddress, remoteAddress);
         
         // create some INVOKE
-        OperationCode oc = TcapFactory.createLocalOperationCode(12L);
+        OperationCode oc = TcapFactory.createLocalOperationCode(12);
         // no parameter
         this.clientDialog.sendData(null, null, null, null, oc, null, true, false);
         ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);

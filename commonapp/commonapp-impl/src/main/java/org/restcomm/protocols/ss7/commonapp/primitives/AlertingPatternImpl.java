@@ -35,19 +35,20 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  *
  */
 public class AlertingPatternImpl extends ASNSingleByte implements AlertingPattern {
-	public AlertingPatternImpl() {        
+	public AlertingPatternImpl() {  
+		super("AlertingPattern",0,8,false);
     }
 
     public AlertingPatternImpl(int data) {
-    	super(data);
+    	super(data,"AlertingPattern",0,8,false);
     }
 
     public AlertingPatternImpl(AlertingLevel alertingLevel) {
-    	super(alertingLevel.getLevel());
+    	super(alertingLevel.getLevel(),"AlertingPattern",0,8,false);
     }
 
     public AlertingPatternImpl(AlertingCategory alertingCategory) {
-    	super(alertingCategory.getCategory());
+    	super(alertingCategory.getCategory(),"AlertingPattern",0,8,false);
     }
 
     public Integer getData() {

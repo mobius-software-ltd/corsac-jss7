@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNSMDeliveryNotIntended extends ASNEnumerated {
 	public ASNSMDeliveryNotIntended() {
-		
+		super("SMDeliveryNotIntended",0,1,false);
 	}
 	
 	public ASNSMDeliveryNotIntended(SMDeliveryNotIntended t) {
-		super(t.getCode());
+		super(t.getCode(),"SMDeliveryNotIntended",0,1,false);
 	}
 	
 	public SMDeliveryNotIntended getType() {

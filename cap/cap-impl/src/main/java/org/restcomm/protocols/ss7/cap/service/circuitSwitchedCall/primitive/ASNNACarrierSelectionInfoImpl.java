@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNNACarrierSelectionInfoImpl extends ASNEnumerated {
 	public ASNNACarrierSelectionInfoImpl() {
-		
+		super("NACarrierSelectionInfo",0,4,false);
 	}
 	
 	public ASNNACarrierSelectionInfoImpl(NACarrierSelectionInfo t) {
-		super(t.getCode());
+		super(t.getCode(),"NACarrierSelectionInfo",0,4,false);
 	}
 	
 	public NACarrierSelectionInfo getType() {

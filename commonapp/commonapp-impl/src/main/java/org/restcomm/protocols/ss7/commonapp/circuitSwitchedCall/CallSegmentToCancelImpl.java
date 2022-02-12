@@ -48,10 +48,10 @@ public class CallSegmentToCancelImpl implements CallSegmentToCancel {
 
     public CallSegmentToCancelImpl(Integer invokeID, Integer callSegmentID) {
     	if(invokeID!=null)
-    		this.invokeID = new ASNInteger(invokeID);
+    		this.invokeID = new ASNInteger(invokeID,"InvokeID",-128,128,false);
     		
     	if(callSegmentID!=null)
-    		this.callSegmentID = new ASNInteger(callSegmentID);    		
+    		this.callSegmentID = new ASNInteger(callSegmentID,"CallSegmentID",1,127,false);    		
     }
 
     public Integer getInvokeID() {

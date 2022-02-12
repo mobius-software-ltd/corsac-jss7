@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNPDPInitiationTypeImpl extends ASNEnumerated {
 	public ASNPDPInitiationTypeImpl() {
-		
+		super("PDPInitiationType",0,1,false);
 	}
 	
 	public ASNPDPInitiationTypeImpl(PDPInitiationType t) {
-		super(t.getCode());
+		super(t.getCode(),"PDPInitiationType",0,1,false);
 	}
 	
 	public PDPInitiationType getType() {

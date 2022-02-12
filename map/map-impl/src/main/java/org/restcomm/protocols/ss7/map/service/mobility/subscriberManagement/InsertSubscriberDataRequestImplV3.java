@@ -265,7 +265,7 @@ public class InsertSubscriberDataRequestImplV3 extends MobilityMessageImpl imple
         this.lcsInformation = lcsInformation;
         
         if(istAlertTimer!=null)
-        	this.istAlertTimer = new ASNInteger(istAlertTimer);
+        	this.istAlertTimer = new ASNInteger(istAlertTimer,"ISTAlertTimer",15,255,false);
         	
         this.superChargerSupportedInHLR = superChargerSupportedInHLR;
         this.mcSsInfo = mcSsInfo;
@@ -275,7 +275,7 @@ public class InsertSubscriberDataRequestImplV3 extends MobilityMessageImpl imple
         this.accessRestrictionData = accessRestrictionData;
         
         if(icsIndicator!=null)
-        	this.icsIndicator = new ASNBoolean(icsIndicator);
+        	this.icsIndicator = new ASNBoolean(icsIndicator,"ICSIndicator",false,false);
         	
         this.epsSubscriptionData = epsSubscriptionData;
         
@@ -289,16 +289,16 @@ public class InsertSubscriberDataRequestImplV3 extends MobilityMessageImpl imple
         this.mmeName = mmeName;
         
         if(subscribedPeriodicRAUTAUtimer!=null)
-        	this.subscribedPeriodicRAUTAUtimer = new ASNInteger(subscribedPeriodicRAUTAUtimer);
+        	this.subscribedPeriodicRAUTAUtimer = new ASNInteger(subscribedPeriodicRAUTAUtimer,"SubscribedPeriodicRAUTAUtimer",0L,4294967295L,false);
         	
         if(vplmnLIPAAllowed)
         	this.vplmnLIPAAllowed = new ASNNull();
         
         if(mdtUserConsent!=null)
-        	this.mdtUserConsent = new ASNBoolean(mdtUserConsent);
+        	this.mdtUserConsent = new ASNBoolean(mdtUserConsent,"MDTUserConsent",false,false);
         	
         if(subscribedPeriodicLAUtimer!=null)
-        	this.subscribedPeriodicLAUtimer = new ASNInteger(subscribedPeriodicLAUtimer);
+        	this.subscribedPeriodicLAUtimer = new ASNInteger(subscribedPeriodicLAUtimer,"SubscribedPeriodicLAUtimer",0L,4294967295L,false);
     }
 
     @Override

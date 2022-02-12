@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNMonitorMode extends ASNEnumerated {
 	public ASNMonitorMode() {
-		
+		super("MonitorMode",0,2,false);
 	}
 	
 	public ASNMonitorMode(MonitorMode t) {
-		super(t.getCode());
+		super(t.getCode(),"MonitorMode",0,2,false);
 	}
 	
 	public MonitorMode getType() {

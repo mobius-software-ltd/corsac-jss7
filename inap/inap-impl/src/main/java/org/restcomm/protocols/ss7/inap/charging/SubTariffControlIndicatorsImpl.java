@@ -37,12 +37,12 @@ public class SubTariffControlIndicatorsImpl extends ASNBitString implements SubT
 	private static final int _ID_oneTimeCharge = 0;
     
     public SubTariffControlIndicatorsImpl() {
-    	super(0);
+    	super("SubTariffControlIndicators",0,7,false);
     	
     }
     
     public SubTariffControlIndicatorsImpl(boolean oneTimeCharge) {
-    	super(0);
+    	super("SubTariffControlIndicators",0,7,false);
         if (oneTimeCharge)
             this.setBit(_ID_oneTimeCharge);
     }

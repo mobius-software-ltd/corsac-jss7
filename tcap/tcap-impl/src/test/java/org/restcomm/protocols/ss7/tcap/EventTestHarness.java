@@ -183,7 +183,7 @@ public abstract class EventTestHarness implements TCListener {
 
     public void sendUni() throws TCAPException, TCAPSendException {
         // create some INVOKE
-        OperationCode oc = TcapFactory.createLocalOperationCode(12L);
+        OperationCode oc = TcapFactory.createLocalOperationCode(12);
         // no parameter
         this.dialog.sendData(null, null, InvokeClass.Class4, null, oc, null, true, false);
 

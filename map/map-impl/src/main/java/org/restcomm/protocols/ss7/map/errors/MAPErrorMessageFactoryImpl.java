@@ -76,8 +76,8 @@ public class MAPErrorMessageFactoryImpl implements MAPErrorMessageFactory {
      * @param errorCode
      * @return
      */
-    public MAPErrorMessage createMessageFromErrorCode(Long errorCode,Long mapVersion) {
-        long ec = (long) errorCode;
+    public MAPErrorMessage createMessageFromErrorCode(Integer errorCode,Long mapVersion) {
+        long ec = errorCode;
         switch ((int) ec) {
             case MAPErrorCode.unexpectedDataValue:
             case MAPErrorCode.dataMissing:
@@ -171,14 +171,13 @@ public class MAPErrorMessageFactoryImpl implements MAPErrorMessageFactory {
             default:
                 return new MAPErrorMessageParameterlessImpl(errorCode);
         }
-
     }
 
-    public MAPErrorMessageParameterless createMAPErrorMessageParameterless(Long errorCode) {
+    public MAPErrorMessageParameterless createMAPErrorMessageParameterless(Integer errorCode) {
         return new MAPErrorMessageParameterlessImpl(errorCode);
     }
 
-    public MAPErrorMessageExtensionContainer createMAPErrorMessageExtensionContainer(Long errorCode,
+    public MAPErrorMessageExtensionContainer createMAPErrorMessageExtensionContainer(Integer errorCode,
     		MAPExtensionContainer extensionContainer) {
         return new MAPErrorMessageExtensionContainerImpl(errorCode, extensionContainer);
     }

@@ -71,7 +71,7 @@ public class RejectTest {
 
         assertEquals(ComponentType.Reject, comp.getType(), "Wrong component Type");
         Reject rej = comp.getReject();
-        assertEquals(new Long(1), rej.getInvokeId(), "Wrong invoke ID");
+        assertEquals(new Integer(1), rej.getInvokeId(), "Wrong invoke ID");
         Problem prb = rej.getProblem();
         assertEquals(ProblemType.Invoke, prb.getType());
         assertEquals(InvokeProblemType.MistypedParameter, prb.getInvokeProblemType());
@@ -96,7 +96,7 @@ public class RejectTest {
     	
         byte[] expected = this.getData();
         Reject rej = TcapFactory.createComponentReject();
-        rej.setInvokeId(1L);
+        rej.setInvokeId(1);
         rej.setProblem(InvokeProblemType.MistypedParameter);
         ComponentImpl comp=new ComponentImpl();
         comp.setReject(rej);

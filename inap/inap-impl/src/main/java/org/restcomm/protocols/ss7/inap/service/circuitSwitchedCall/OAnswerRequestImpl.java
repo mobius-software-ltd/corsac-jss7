@@ -108,7 +108,7 @@ public class OAnswerRequestImpl extends CircuitSwitchedCallMessageImpl implement
         	this.callingFacilityGroup=new FacilityGroupWrapperImpl(callingFacilityGroup);
         
         if(callingFacilityGroupMember!=null)
-        	this.callingFacilityGroupMember=new ASNInteger(callingFacilityGroupMember);
+        	this.callingFacilityGroupMember=new ASNInteger(callingFacilityGroupMember,"CallingFacilityGroupMember",0,Integer.MAX_VALUE,false);
         	
         this.originalCalledPartyID=originalCalledPartyID;
         this.redirectingPartyID=redirectingPartyID;

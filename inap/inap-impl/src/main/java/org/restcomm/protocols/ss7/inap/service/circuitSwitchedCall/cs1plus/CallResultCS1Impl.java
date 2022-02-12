@@ -79,12 +79,12 @@ public class CallResultCS1Impl implements CallResultCS1 {
     		this.partyToCharge=new ReceivingLegIDWrapperImpl(new ReceivingLegIDImpl(partyToCharge));
     	
     	if(accumulatedCharge!=null)
-    		this.accumulatedCharge=new ASNInteger(accumulatedCharge);    		
+    		this.accumulatedCharge=new ASNInteger(accumulatedCharge,"AccumulatedCharge",0,65535,false);    		
     	
     	this.actualTariff=actualTariff;
     	
     	if(chargeableDuration!=null)
-    		this.chargeableDuration=new ASNInteger(chargeableDuration);
+    		this.chargeableDuration=new ASNInteger(chargeableDuration,"ChargeableDuration",0,Integer.MAX_VALUE,false);
     		
     	this.timeOfAnswer=timeOfAnswer;
     }

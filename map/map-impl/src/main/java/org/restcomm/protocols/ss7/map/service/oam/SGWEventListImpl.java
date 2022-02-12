@@ -37,11 +37,11 @@ public class SGWEventListImpl extends ASNBitString implements SGWEventList {
     static final int _ID_bearerActivationModificationDeletion = 2;
 
     public SGWEventListImpl() {
-    	super(3);
+    	super("SGWEventList",2,7,false);
     }
 
     public SGWEventListImpl(boolean pdnConnectionCreation, boolean pdnConnectionTermination, boolean bearerActivationModificationDeletion) {
-    	super(3);
+    	super("SGWEventList",2,7,false);
     	if (pdnConnectionCreation)
             this.setBit(_ID_pdnConnectionCreation);
         if (pdnConnectionTermination)

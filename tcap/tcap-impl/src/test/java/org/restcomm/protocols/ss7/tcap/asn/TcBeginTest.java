@@ -120,10 +120,10 @@ public class TcBeginTest {
         // INVOKE Component
 
         Invoke invComp = TcapFactory.createComponentInvoke();
-        invComp.setInvokeId(-128l);
+        invComp.setInvokeId(-128);
 
         // Operation Code
-        invComp.setOperationCode(591L);
+        invComp.setOperationCode(591);
 
         // Sequence of Parameter
         ASNOctetString p1=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 0x0f }),null,null,null,false);
@@ -322,19 +322,19 @@ public class TcBeginTest {
         BaseComponent c = tcm.getComponents().get(0);
         assertTrue(c instanceof Invoke, "Wrong component type");
         Invoke i = (Invoke)c;
-        assertEquals(new Long(1), i.getInvokeId(), "Wrong invoke ID");
+        assertEquals(new Integer(1), i.getInvokeId(), "Wrong invoke ID");
         assertNull(i.getLinkedId(), "Linked ID is not null");
 
         c = tcm.getComponents().get(1);
         assertTrue(c instanceof ReturnResult, "Wrong component type");
         ReturnResult rr = (ReturnResult)c;
-        assertEquals(new Long(2), rr.getInvokeId(), "Wrong invoke ID");
+        assertEquals(new Integer(2), rr.getInvokeId(), "Wrong invoke ID");
         assertNotNull(rr.getOperationCode(), "Operation code should not be null");
 
         OperationCode ocs = rr.getOperationCode();
 
         assertEquals(OperationCodeType.Local, ocs.getOperationType(), "Wrong Operation Code type");
-        assertEquals(new Long(1), ocs.getLocalOperationCode(), "Wrong Operation Code");
+        assertEquals(new Integer(1), ocs.getLocalOperationCode(), "Wrong Operation Code");
 
         assertNotNull(rr.getParameter(), "Parameter should not be null");
 
@@ -549,19 +549,19 @@ public class TcBeginTest {
         BaseComponent c = tcm.getComponents().get(0);
         assertTrue(c instanceof Invoke, "Wrong component type");
         Invoke i = (Invoke)c;
-        assertEquals(new Long(1), i.getInvokeId(), "Wrong invoke ID");
+        assertEquals(new Integer(1), i.getInvokeId(), "Wrong invoke ID");
         assertNull(i.getLinkedId(), "Linked ID is not null");
 
         c = tcm.getComponents().get(1);
         assertTrue(c instanceof ReturnResultLast, "Wrong component type");
         ReturnResultLast rrl = (ReturnResultLast)c;
-        assertEquals(new Long(2), rrl.getInvokeId(), "Wrong invoke ID");
+        assertEquals(new Integer(2), rrl.getInvokeId(), "Wrong invoke ID");
         assertNotNull(rrl.getOperationCode(), "Operation code should not be null");
 
         OperationCode ocs = rrl.getOperationCode();
 
         assertEquals(OperationCodeType.Local, ocs.getOperationType(), "Wrong Operation Code type");
-        assertEquals(new Long(0x00FF), ocs.getLocalOperationCode(), "Wrong Operation Code");
+        assertEquals(new Integer(0x00FF), ocs.getLocalOperationCode(), "Wrong Operation Code");
 
         assertNotNull(rrl.getParameter(), "Parameter should not be null");
 
@@ -686,10 +686,10 @@ public class TcBeginTest {
         // INVOKE Component
 
         Invoke invComp = TcapFactory.createComponentInvoke();
-        invComp.setInvokeId(-128l);
+        invComp.setInvokeId(-128);
 
         // Operation Code
-        invComp.setOperationCode(591L);
+        invComp.setOperationCode(591);
 
         TCBeginTestASN2 parameter=new TCBeginTestASN2();
         ASNOctetString o1=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 0x0f }),null,null,null,false);

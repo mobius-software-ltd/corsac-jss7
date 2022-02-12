@@ -34,15 +34,15 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,lengthIndefinite=false)
 public class ASNGeneralProblemType extends ASNEnumerated {
 	public ASNGeneralProblemType() {
-		
+		super("GeneralProblemType",0,2,false);
 	}
 	
 	public ASNGeneralProblemType(GeneralProblemType t) {
-		super(t.getType());
+		super(t.getType(),"GeneralProblemType",0,2,false);
 	}
 	
 	public GeneralProblemType getType() throws ParameterException {
-		Long realValue=super.getValue();
+		Integer realValue=super.getIntValue();
 		if(realValue==null)
 			return null;
 		

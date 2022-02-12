@@ -59,12 +59,12 @@ public class SMSCAMELTDPDataImpl implements SMSCAMELTDPData {
     public SMSCAMELTDPDataImpl() {
     }
 
-    public SMSCAMELTDPDataImpl(SMSTriggerDetectionPoint smsTriggerDetectionPoint, long serviceKey,
+    public SMSCAMELTDPDataImpl(SMSTriggerDetectionPoint smsTriggerDetectionPoint, int serviceKey,
             ISDNAddressString gsmSCFAddress, DefaultSMSHandling defaultSMSHandling, MAPExtensionContainer extensionContainer) {
         if(smsTriggerDetectionPoint!=null)
         	this.smsTriggerDetectionPoint = new ASNSMSTriggerDetectionPoint(smsTriggerDetectionPoint);
         	
-        this.serviceKey = new ASNInteger(serviceKey);
+        this.serviceKey = new ASNInteger(serviceKey,"ServiceKey",0,Integer.MAX_VALUE,false);
         this.gsmSCFAddress = gsmSCFAddress;
         
         if(defaultSMSHandling!=null)
@@ -80,11 +80,11 @@ public class SMSCAMELTDPDataImpl implements SMSCAMELTDPData {
         return this.smsTriggerDetectionPoint.getType();
     }
 
-    public long getServiceKey() {
+    public int getServiceKey() {
     	if(this.serviceKey==null)
     		return 0;
     	
-        return this.serviceKey.getValue();
+        return this.serviceKey.getIntValue();
     }
 
     public ISDNAddressString getGsmSCFAddress() {

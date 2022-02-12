@@ -48,10 +48,10 @@ public class CounterAndValueImpl implements CounterAndValue {
 
     public CounterAndValueImpl(Integer counterID,Integer counterValue) {
     	if(counterID!=null)
-    		this.counterID=new ASNInteger(counterID);
+    		this.counterID=new ASNInteger(counterID,"CounterID",0,99,false);
     		
     	if(counterValue!=null)
-    		this.counterValue=new ASNInteger(counterValue);    		
+    		this.counterValue=new ASNInteger(counterValue,"CounterValue",0,255,false);    		
     }
 
     public Integer getCounterID() {

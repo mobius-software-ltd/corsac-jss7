@@ -79,7 +79,7 @@ public class ReturnResultInnerImpl {
      *
      * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#setOperationCode(Long)
      */
-    public void setOperationCode(Long i) {    
+    public void setOperationCode(Integer i) {    
     	if(i==null)
     		this.operationCode=null;
     	else {

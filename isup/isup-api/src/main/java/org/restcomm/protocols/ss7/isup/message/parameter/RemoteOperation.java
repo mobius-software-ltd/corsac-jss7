@@ -26,9 +26,9 @@ package org.restcomm.protocols.ss7.isup.message.parameter;
  *
  */
 public interface RemoteOperation {
-    void setInvokeId(Long i);
+    void setInvokeId(Integer i);
 
-    Long getInvokeId();
+    Integer getInvokeId();
 
     OperationType getType();
 

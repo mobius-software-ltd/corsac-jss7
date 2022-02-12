@@ -107,7 +107,7 @@ public class SendRoutingInfoForSMRequestImpl extends SmsMessageImpl implements S
             boolean singleAttemptDelivery, TeleserviceCode teleservice, CorrelationID correlationID) {
         this.msisdn = msisdn;
         
-        this.sm_RP_PRI = new ASNBoolean(sm_RP_PRI);
+        this.sm_RP_PRI = new ASNBoolean(sm_RP_PRI,"SM_RP_PRI",true,false);
         this.serviceCentreAddress = serviceCentreAddress;
         this.extensionContainer = extensionContainer;
         

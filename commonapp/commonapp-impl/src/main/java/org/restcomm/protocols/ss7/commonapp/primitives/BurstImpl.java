@@ -56,52 +56,52 @@ public class BurstImpl implements Burst {
 
     public BurstImpl(Integer numberOfBursts, Integer burstInterval, Integer numberOfTonesInBurst, Integer toneDuration, Integer toneInterval) {
     	if(numberOfBursts!=null)
-    		this.numberOfBursts = new ASNInteger(numberOfBursts);
+    		this.numberOfBursts = new ASNInteger(numberOfBursts,"numberOfBursts",1,3,false);
     		
     	if(burstInterval!=null)
-    		this.burstInterval = new ASNInteger(burstInterval);
+    		this.burstInterval = new ASNInteger(burstInterval,"BurstInterval",1,1200,false);
     		
     	if(numberOfTonesInBurst!=null)
-    		this.numberOfTonesInBurst = new ASNInteger(numberOfTonesInBurst);
+    		this.numberOfTonesInBurst = new ASNInteger(numberOfTonesInBurst,"NumberOfTonesInBurst",1,3,false);
     		
     	if(toneDuration!=null)
-    		this.toneDuration = new ASNInteger(toneDuration);
+    		this.toneDuration = new ASNInteger(toneDuration,"ToneDuration",1,20,false);
     		
     	if(toneInterval!=null)
-    		this.toneInterval = new ASNInteger(toneInterval);    		
+    		this.toneInterval = new ASNInteger(toneInterval,"ToneInterval",1,20,false);    		
     }
 
     public Integer getNumberOfBursts() {
     	if(numberOfBursts==null)
-    		return null;
+    		return 1;
     	
         return numberOfBursts.getIntValue();
     }
 
     public Integer getBurstInterval() {
     	if(burstInterval==null)
-    		return null;
+    		return 2;
     	
         return burstInterval.getIntValue();
     }
 
     public Integer getNumberOfTonesInBurst() {
     	if(numberOfTonesInBurst==null)
-    		return null;
+    		return 3;
     	
         return numberOfTonesInBurst.getIntValue();
     }
 
     public Integer getToneDuration() {
     	if(toneDuration==null)
-    		return null;
+    		return 2;
     	
         return toneDuration.getIntValue();
     }
 
     public Integer getToneInterval() {
     	if(toneInterval==null)
-    		return null;
+    		return 2;
     	
         return toneInterval.getIntValue();
     }

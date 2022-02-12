@@ -92,7 +92,7 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
         	this.legToBeCreated = new LegIDWrapperImpl(legToBeCreated);
         
         if(newCallSegment!=null)
-        	this.newCallSegment = new ASNInteger(newCallSegment);
+        	this.newCallSegment = new ASNInteger(newCallSegment,"CallSegmentID",0,127,false);
         	
         this.callingPartyNumber = callingPartyNumber;
         this.callReferenceNumber = callReferenceNumber;

@@ -36,7 +36,7 @@ import java.util.List;
  */
 public interface Return extends BaseComponent {
     // opt all
-	void setOperationCode(Long i);
+	void setOperationCode(Integer i);
 
     void setOperationCode(List<Long> i);
     

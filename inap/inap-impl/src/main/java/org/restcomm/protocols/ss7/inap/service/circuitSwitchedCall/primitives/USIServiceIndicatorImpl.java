@@ -53,7 +53,7 @@ public class USIServiceIndicatorImpl implements USIServiceIndicator {
 
     public USIServiceIndicatorImpl(List<Long> global) {
     	if(global!=null)
-    		this.global=new ASNObjectIdentifier(global);    	
+    		this.global=new ASNObjectIdentifier(global,"Global",true,false);    	
     }
 
     public USIServiceIndicatorImpl(ByteBuf local) {

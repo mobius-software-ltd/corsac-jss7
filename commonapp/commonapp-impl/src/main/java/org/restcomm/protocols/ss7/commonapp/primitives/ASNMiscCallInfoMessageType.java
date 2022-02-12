@@ -34,11 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,lengthIndefinite=false)
 public class ASNMiscCallInfoMessageType extends ASNEnumerated {
 	public ASNMiscCallInfoMessageType() {
-		
+		super("MiscCallInfoMessageType",0,1,false);
 	}
 	
 	public ASNMiscCallInfoMessageType(MiscCallInfoMessageType t) {
-		super(t.getCode());
+		super(t.getCode(),"MiscCallInfoMessageType",0,1,false);
 	}
 	
 	public MiscCallInfoMessageType getType() {

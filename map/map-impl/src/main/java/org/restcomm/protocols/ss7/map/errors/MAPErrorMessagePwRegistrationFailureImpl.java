@@ -35,14 +35,14 @@ public class MAPErrorMessagePwRegistrationFailureImpl extends EnumeratedMAPError
         MAPErrorMessagePwRegistrationFailure {
 	
     public MAPErrorMessagePwRegistrationFailureImpl(PWRegistrationFailureCause pwRegistrationFailureCause) {
-        super((long) MAPErrorCode.pwRegistrationFailure);
+        super(MAPErrorCode.pwRegistrationFailure,"PWRegistrationFailure",0,2);
 
         if(pwRegistrationFailureCause!=null)
-        	setValue(Long.valueOf(pwRegistrationFailureCause.getCode()));
+        	setValue(pwRegistrationFailureCause.getCode());
     }
 
     public MAPErrorMessagePwRegistrationFailureImpl() {
-        super((long) MAPErrorCode.pwRegistrationFailure);
+        super(MAPErrorCode.pwRegistrationFailure,"PWRegistrationFailure",0,2);
     }
 
     public boolean isEmPwRegistrationFailure() {
@@ -55,7 +55,7 @@ public class MAPErrorMessagePwRegistrationFailureImpl extends EnumeratedMAPError
 
     @Override
     public PWRegistrationFailureCause getPWRegistrationFailureCause() {
-    	Long value=getValue();
+    	Integer value=getValue();
     	if(value==null)
     		return null;
     	
@@ -65,7 +65,7 @@ public class MAPErrorMessagePwRegistrationFailureImpl extends EnumeratedMAPError
     @Override
     public void setPWRegistrationFailureCause(PWRegistrationFailureCause val) {
     	if(val!=null)
-    		setValue(Long.valueOf(val.getCode()));
+    		setValue(val.getCode());
     	else
     		setValue(null);
     }

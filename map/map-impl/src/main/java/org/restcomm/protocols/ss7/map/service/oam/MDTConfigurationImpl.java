@@ -97,10 +97,10 @@ public class MDTConfigurationImpl implements MDTConfiguration {
         	this.reportAmount = new ASNReportAmountImpl(reportAmount);
         	
         if(eventThresholdRSRP!=null)
-        	this.eventThresholdRSRP = new ASNInteger(eventThresholdRSRP);
+        	this.eventThresholdRSRP = new ASNInteger(eventThresholdRSRP,"EventThresholdRSRP",0,97,false);
         	
         if(eventThresholdRSRQ!=null)
-        	this.eventThresholdRSRQ = new ASNInteger(eventThresholdRSRQ);
+        	this.eventThresholdRSRQ = new ASNInteger(eventThresholdRSRQ,"EventThresholdRSRQ",0,34,false);
         	
         if(loggingInterval!=null)
         	this.loggingInterval = new ASNLoggingIntervalImpl(loggingInterval);

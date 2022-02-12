@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNCallDiversionTreatmentIndicatorImpl extends ASNEnumerated {
 	public ASNCallDiversionTreatmentIndicatorImpl() {
-		
+		super("CallDiversionTreatmentIndicator",1,2,false);
 	}
 	
 	public ASNCallDiversionTreatmentIndicatorImpl(CallDiversionTreatmentIndicator t) {
-		super(t.getCode());
+		super(t.getCode(),"CallDiversionTreatmentIndicator",1,2,false);
 	}
 	
 	public CallDiversionTreatmentIndicator getType() {

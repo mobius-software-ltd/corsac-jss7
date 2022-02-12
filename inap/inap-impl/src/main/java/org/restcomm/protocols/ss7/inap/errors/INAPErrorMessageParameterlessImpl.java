@@ -32,12 +32,12 @@ import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessageParameterless;
  *
  */
 public class INAPErrorMessageParameterlessImpl extends INAPErrorMessageImpl implements INAPErrorMessageParameterless {
-	public INAPErrorMessageParameterlessImpl(Long errorCode) {
+	public INAPErrorMessageParameterlessImpl(Integer errorCode) {
         super(errorCode);
     }
 
     public INAPErrorMessageParameterlessImpl() {
-        super(0L);
+        super(0);
     }
 
     @Override

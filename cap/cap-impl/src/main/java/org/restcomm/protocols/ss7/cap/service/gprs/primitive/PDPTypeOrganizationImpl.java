@@ -32,15 +32,16 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  *
  */
 public class PDPTypeOrganizationImpl extends ASNSingleByte implements PDPTypeOrganization {
-	public PDPTypeOrganizationImpl() {        
+	public PDPTypeOrganizationImpl() {  
+		super("PDPTypeOrganization",1,2,false);
     }
 
     public PDPTypeOrganizationImpl(int data) {
-    	super(data);
+    	super(data,"PDPTypeOrganization",1,2,false);
     }
 
     public PDPTypeOrganizationImpl(PDPTypeOrganizationValue value) {
-    	super(value==null?0:(value.getCode() | 0xF0));    	       
+    	super(value==null?0:(value.getCode() | 0xF0),"PDPTypeOrganization",1,2,false);    	       
     }
 
     public PDPTypeOrganizationValue getPDPTypeOrganizationValue() {

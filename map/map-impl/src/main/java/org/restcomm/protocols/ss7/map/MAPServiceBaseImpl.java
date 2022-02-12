@@ -89,7 +89,7 @@ public abstract class MAPServiceBaseImpl implements MAPServiceBase {
     }
 
     public abstract void processComponent(ComponentType compType, OperationCode oc, MAPMessage parameter, MAPDialog mapDialog,
-            Long invokeId, Long linkedId) throws MAPParsingComponentException;
+    		Integer invokeId, Integer linkedId) throws MAPParsingComponentException;
 
     /**
      * Adding MAP Dialog into MAPProviderImpl.dialogs Used when creating a new outgoing MAP Dialog
@@ -162,13 +162,13 @@ public abstract class MAPServiceBaseImpl implements MAPServiceBase {
         // TODO: abort all active dialogs ?
     }
 
-    protected void deliverErrorComponent(MAPDialog mapDialog, Long invokeId, MAPErrorMessage mapErrorMessage) {
+    protected void deliverErrorComponent(MAPDialog mapDialog, Integer invokeId, MAPErrorMessage mapErrorMessage) {
         for (MAPServiceListener serLis : this.serviceListeners) {
             serLis.onErrorComponent(mapDialog, invokeId, mapErrorMessage);
         }
     }
 
-    protected void deliverRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    protected void deliverRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
         for (MAPServiceListener serLis : this.serviceListeners) {
             serLis.onRejectComponent(mapDialog, invokeId, problem, isLocalOriginated);
         }

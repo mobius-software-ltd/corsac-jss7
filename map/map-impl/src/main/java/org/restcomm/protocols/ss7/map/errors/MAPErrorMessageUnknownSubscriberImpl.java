@@ -47,14 +47,14 @@ public class MAPErrorMessageUnknownSubscriberImpl extends MAPErrorMessageImpl im
 
     public MAPErrorMessageUnknownSubscriberImpl(MAPExtensionContainer extensionContainer,
             UnknownSubscriberDiagnostic unknownSubscriberDiagnostic) {
-        super((long) MAPErrorCode.unknownSubscriber);
+        super(MAPErrorCode.unknownSubscriber);
 
         this.extensionContainer = extensionContainer;
         this.unknownSubscriberDiagnostic = new ASNUnknownSubscriberDiagnosticImpl(unknownSubscriberDiagnostic);        
     }
 
     public MAPErrorMessageUnknownSubscriberImpl() {
-        super((long) MAPErrorCode.unknownSubscriber);
+        super(MAPErrorCode.unknownSubscriber);
     }
 
     public boolean isEmUnknownSubscriber() {

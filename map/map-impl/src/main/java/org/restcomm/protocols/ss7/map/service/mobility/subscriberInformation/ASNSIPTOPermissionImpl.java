@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNSIPTOPermissionImpl extends ASNEnumerated {
 	public ASNSIPTOPermissionImpl() {
-		
+		super("SIPTOPermission",0,1,false);
 	}
 	
 	public ASNSIPTOPermissionImpl(SIPTOPermission t) {
-		super(t.getCode());
+		super(t.getCode(),"SIPTOPermission",0,1,false);
 	}
 	
 	public SIPTOPermission getType() {

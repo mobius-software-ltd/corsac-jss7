@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNISTSupportIndicatorImpl extends ASNEnumerated {
 	public ASNISTSupportIndicatorImpl() {
-		
+		super("ISTSupportIndicator",0,1,false);
 	}
 	
 	public ASNISTSupportIndicatorImpl(ISTSupportIndicator t) {
-		super(t.getCode());
+		super(t.getCode(),"ISTSupportIndicator",0,1,false);
 	}
 	
 	public ISTSupportIndicator getType() {

@@ -110,7 +110,7 @@ public class EstablishTemporaryConnectionRequestImpl extends CircuitSwitchedCall
         this.serviceInteractionIndicatorsTwo = serviceInteractionIndicatorsTwo;
         
         if(callSegmentID!=null)
-        	this.callSegmentID = new ASNInteger(callSegmentID);
+        	this.callSegmentID = new ASNInteger(callSegmentID,"CallSegmentID",0,127,false);
         	
         this.naOliInfo = naOliInfo;
         this.chargeNumber = chargeNumber;

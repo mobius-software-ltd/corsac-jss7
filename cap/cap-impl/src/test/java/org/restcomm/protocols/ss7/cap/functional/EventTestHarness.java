@@ -220,21 +220,21 @@ public class EventTestHarness implements CAPDialogListener, CAPServiceCircuitSwi
     }
 
     @Override
-    public void onErrorComponent(CAPDialog capDialog, Long invokeId, CAPErrorMessage capErrorMessage) {
+    public void onErrorComponent(CAPDialog capDialog, Integer invokeId, CAPErrorMessage capErrorMessage) {
         this.logger.debug("onErrorComponent");
         TestEvent te = TestEvent.createReceivedEvent(EventType.ErrorComponent, capDialog, sequence++);
         this.observerdEvents.add(te);
     }
 
     @Override
-    public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    public void onRejectComponent(CAPDialog capDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
         this.logger.debug("onRejectComponent");
         TestEvent te = TestEvent.createReceivedEvent(EventType.RejectComponent, capDialog, sequence++);
         this.observerdEvents.add(te);
     }
 
     @Override
-    public void onInvokeTimeout(CAPDialog capDialog, Long invokeId) {
+    public void onInvokeTimeout(CAPDialog capDialog, Integer invokeId) {
         this.logger.debug("onInvokeTimeout");
         if (!invokeTimeoutSuppressed) {
             TestEvent te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, capDialog, sequence++);

@@ -45,15 +45,15 @@ public class ConfidentialityImpl implements Confidentiality {
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x01,constructed=false,index=-1)
 	private ASNObjectIdentifier objectConfidentialityId;
 
-    public Long getIntegerConfidentialityId() {
+    public Integer getIntegerConfidentialityId() {
     	if(integerConfidentialityId==null)
     		return null;
     	
-        return integerConfidentialityId.getValue();
+        return integerConfidentialityId.getIntValue();
     }
 
-    public void setIntegerConfidentialityId(Long val) {
-        integerConfidentialityId = new ASNInteger(val);
+    public void setIntegerConfidentialityId(Integer val) {
+        integerConfidentialityId = new ASNInteger(val,"ConfidentialityID",Integer.MIN_VALUE,Integer.MAX_VALUE,false);
         objectConfidentialityId = null;
     }
 
@@ -66,7 +66,7 @@ public class ConfidentialityImpl implements Confidentiality {
 
     public void setObjectConfidentialityId(List<Long> val) {
         integerConfidentialityId = null;
-        objectConfidentialityId = new ASNObjectIdentifier(val);        
+        objectConfidentialityId = new ASNObjectIdentifier(val,"ConfidentialityID",true,false);        
     }
 
     public String toString() {

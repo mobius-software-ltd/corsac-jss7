@@ -39,7 +39,7 @@ public interface CAPServiceListener {
      * @param invokeId
      * @param capErrorMessage
      */
-    void onErrorComponent(CAPDialog capDialog, Long invokeId, CAPErrorMessage capErrorMessage);
+    void onErrorComponent(CAPDialog capDialog, Integer invokeId, CAPErrorMessage capErrorMessage);
 
     /**
      * Invoked when TC-U-REJECT primitive is received from the other peer
@@ -50,7 +50,7 @@ public interface CAPServiceListener {
      * @param isLocalOriginated true: local originated Reject (rejecting a bad incoming primitive by a local side) false: remote
      *        originated Reject (rejecting a bad outgoing primitive by a peer)
      */
-    void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated);
+    void onRejectComponent(CAPDialog capDialog, Integer invokeId, Problem problem, boolean isLocalOriginated);
 
     /**
      * Invoked when no answer from the other peer for a long time - for sending the a reject for the Invoke
@@ -58,7 +58,7 @@ public interface CAPServiceListener {
      * @param capDialog
      * @param invokeId
      */
-    void onInvokeTimeout(CAPDialog capDialog, Long invokeId);
+    void onInvokeTimeout(CAPDialog capDialog, Integer invokeId);
 
     /**
      * Called when any CAPMessage received (Invoke, ReturnResult, ReturnResultLast components) This component will be invoked

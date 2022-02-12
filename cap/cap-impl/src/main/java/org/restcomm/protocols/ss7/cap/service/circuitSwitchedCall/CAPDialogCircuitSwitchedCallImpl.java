@@ -109,7 +109,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addInitialDPRequest(int serviceKey, CalledPartyNumberIsup calledPartyNumber,
+    public Integer addInitialDPRequest(int serviceKey, CalledPartyNumberIsup calledPartyNumber,
             CallingPartyNumberIsup callingPartyNumber, CallingPartysCategoryIsup callingPartysCategory,
             CGEncountered CGEncountered, IPSSPCapabilities IPSSPCapabilities, LocationNumberIsup locationNumber,
             OriginalCalledNumberIsup originalCalledPartyID, CAPINAPExtensions extensions,
@@ -132,7 +132,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addInitialDPRequest(int customInvokeTimeout, int serviceKey, CalledPartyNumberIsup calledPartyNumber,
+    public Integer addInitialDPRequest(int customInvokeTimeout, int serviceKey, CalledPartyNumberIsup calledPartyNumber,
             CallingPartyNumberIsup  callingPartyNumber, CallingPartysCategoryIsup callingPartysCategory,
             CGEncountered CGEncountered, IPSSPCapabilities IPSSPCapabilities, LocationNumberIsup locationNumber,
             OriginalCalledNumberIsup  originalCalledPartyID, CAPINAPExtensions extensions,
@@ -166,16 +166,16 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                 redirectionInformation, cause, serviceInteractionIndicatorsTwo, carrier, cugIndex, cugInterlock,
                 cugOutgoingAccess, imsi, subscriberState, locationInformation, extBasicServiceCode, callReferenceNumber,
                 mscAddress, calledPartyBCDNumber, timeAndTimezone, callForwardingSSPending, initialDPArgExtension);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.initialDP, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.initialDP, req, true, false);        
     }
 
     @Override
-    public Long addApplyChargingReportRequest(TimeDurationChargingResult timeDurationChargingResult) throws CAPException {
+    public Integer addApplyChargingReportRequest(TimeDurationChargingResult timeDurationChargingResult) throws CAPException {
         return addApplyChargingReportRequest(_Timer_Default, timeDurationChargingResult);
     }
 
     @Override
-    public Long addApplyChargingReportRequest(int customInvokeTimeout, TimeDurationChargingResult timeDurationChargingResult)
+    public Integer addApplyChargingReportRequest(int customInvokeTimeout, TimeDurationChargingResult timeDurationChargingResult)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -192,11 +192,11 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         	customTimeout = customInvokeTimeout;
         
         ApplyChargingReportRequestImpl req = new ApplyChargingReportRequestImpl(timeDurationChargingResult);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.applyChargingReport, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.applyChargingReport, req, true, false);        
     }
 
     @Override
-    public Long addApplyChargingRequest(CAMELAChBillingChargingCharacteristics aChBillingChargingCharacteristics,
+    public Integer addApplyChargingRequest(CAMELAChBillingChargingCharacteristics aChBillingChargingCharacteristics,
             LegType partyToCharge, CAPINAPExtensions extensions, AChChargingAddress aChChargingAddress) throws CAPException {
 
         return addApplyChargingRequest(_Timer_Default, aChBillingChargingCharacteristics, partyToCharge, extensions,
@@ -204,7 +204,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addApplyChargingRequest(int customInvokeTimeout,
+    public Integer addApplyChargingRequest(int customInvokeTimeout,
             CAMELAChBillingChargingCharacteristics aChBillingChargingCharacteristics, LegType partyToCharge,
             CAPINAPExtensions extensions, AChChargingAddress aChChargingAddress) throws CAPException {
 
@@ -223,18 +223,18 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         
         ApplyChargingRequestImpl req = new ApplyChargingRequestImpl(aChBillingChargingCharacteristics, partyToCharge,
                 extensions, aChChargingAddress);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.applyCharging, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.applyCharging, req, true, false);        
     }
 
     @Override
-    public Long addCallInformationReportRequest(List<RequestedInformation> requestedInformationList,
+    public Integer addCallInformationReportRequest(List<RequestedInformation> requestedInformationList,
             CAPINAPExtensions extensions, LegType legID) throws CAPException {
 
         return addCallInformationReportRequest(_Timer_Default, requestedInformationList, extensions, legID);
     }
 
     @Override
-    public Long addCallInformationReportRequest(int customInvokeTimeout,
+    public Integer addCallInformationReportRequest(int customInvokeTimeout,
             List<RequestedInformation> requestedInformationList, CAPINAPExtensions extensions, LegType legID)
             throws CAPException {
 
@@ -252,18 +252,18 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         	customTimeout = customInvokeTimeout;
         
         CallInformationReportRequestImpl req = new CallInformationReportRequestImpl(requestedInformationList, extensions, legID);
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.callInformationReport, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.callInformationReport, req, true, false);        
     }
 
     @Override
-    public Long addCallInformationRequestRequest(List<RequestedInformationType> requestedInformationTypeList,
+    public Integer addCallInformationRequestRequest(List<RequestedInformationType> requestedInformationTypeList,
             CAPINAPExtensions extensions, LegType legID) throws CAPException {
 
         return addCallInformationRequestRequest(_Timer_Default, requestedInformationTypeList, extensions, legID);
     }
 
     @Override
-    public Long addCallInformationRequestRequest(int customInvokeTimeout,
+    public Integer addCallInformationRequestRequest(int customInvokeTimeout,
             List<RequestedInformationType> requestedInformationTypeList, CAPINAPExtensions extensions, LegType legID)
             throws CAPException {
 
@@ -282,11 +282,11 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         
         CallInformationRequestRequestImpl req = new CallInformationRequestRequestImpl(requestedInformationTypeList, extensions,
                 legID);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.callInformationRequest, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.callInformationRequest, req, true, false);        
     }
 
     @Override
-    public Long addConnectRequest(DestinationRoutingAddress   destinationRoutingAddress, AlertingPattern alertingPattern,
+    public Integer addConnectRequest(DestinationRoutingAddress   destinationRoutingAddress, AlertingPattern alertingPattern,
             OriginalCalledNumberIsup  originalCalledPartyID, CAPINAPExtensions extensions, Carrier carrier,
             CallingPartysCategoryIsup callingPartysCategory, RedirectingPartyIDIsup redirectingPartyID,
             RedirectionInformationIsup redirectionInformation, List<GenericNumberIsup> genericNumbers,
@@ -301,7 +301,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addConnectRequest(int customInvokeTimeout, DestinationRoutingAddress   destinationRoutingAddress,
+    public Integer addConnectRequest(int customInvokeTimeout, DestinationRoutingAddress   destinationRoutingAddress,
     		AlertingPattern alertingPattern, OriginalCalledNumberIsup  originalCalledPartyID, CAPINAPExtensions extensions,
             Carrier carrier, CallingPartysCategoryIsup callingPartysCategory, RedirectingPartyIDIsup redirectingPartyID,
             RedirectionInformationIsup redirectionInformation, List<GenericNumberIsup> genericNumbers,
@@ -327,17 +327,17 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                 extensions, carrier, callingPartysCategory, redirectingPartyID, redirectionInformation, genericNumbers,
                 serviceInteractionIndicatorsTwo, chargeNumber, legToBeConnected, cugInterlock, cugOutgoingAccess,
                 suppressionOfAnnouncement, ocsIApplicable, naoliInfo, borInterrogationRequested, suppressNCSI);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.connect, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.connect, req, true, false);        
     }
 
     @Override
-    public Long addContinueRequest() throws CAPException {
+    public Integer addContinueRequest() throws CAPException {
 
         return addContinueRequest(_Timer_Default);
     }
 
     @Override
-    public Long addContinueRequest(int customInvokeTimeout) throws CAPException {
+    public Integer addContinueRequest(int customInvokeTimeout) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV1_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -353,11 +353,11 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         else
         	customTimeout = customInvokeTimeout;
         
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.continueCode, null, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.continueCode, null, true, false);        
     }
 
     @Override
-    public Long addContinueWithArgumentRequest(AlertingPattern alertingPattern, CAPINAPExtensions extensions,
+    public Integer addContinueWithArgumentRequest(AlertingPattern alertingPattern, CAPINAPExtensions extensions,
             ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo,
             CallingPartysCategoryIsup callingPartysCategory, List<GenericNumberIsup> genericNumbers,
             CUGInterlock cugInterlock, boolean cugOutgoingAccess, LocationNumberIsup chargeNumber, Carrier carrier,
@@ -372,7 +372,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addContinueWithArgumentRequest(int customInvokeTimeout, AlertingPattern alertingPattern,
+    public Integer addContinueWithArgumentRequest(int customInvokeTimeout, AlertingPattern alertingPattern,
             CAPINAPExtensions extensions, ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo,
             CallingPartysCategoryIsup callingPartysCategory, List<GenericNumberIsup> genericNumbers,
             CUGInterlock cugInterlock, boolean cugOutgoingAccess, LocationNumberIsup chargeNumber, Carrier carrier,
@@ -395,11 +395,11 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                 serviceInteractionIndicatorsTwo, callingPartysCategory, genericNumbers, cugInterlock,
                 cugOutgoingAccess, chargeNumber, carrier, suppressionOfAnnouncement, naOliInfo,
                 borInterrogationRequested, suppressOCsi, continueWithArgumentArgExtension);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.continueWithArgument, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.continueWithArgument, req, true, false);        
     }
 
     @Override
-    public Long addEventReportBCSMRequest(EventTypeBCSM eventTypeBCSM,
+    public Integer addEventReportBCSMRequest(EventTypeBCSM eventTypeBCSM,
             EventSpecificInformationBCSM eventSpecificInformationBCSM, LegType legID, MiscCallInfo miscCallInfo,
             CAPINAPExtensions extensions) throws CAPException {
 
@@ -408,7 +408,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addEventReportBCSMRequest(int customInvokeTimeout, EventTypeBCSM eventTypeBCSM,
+    public Integer addEventReportBCSMRequest(int customInvokeTimeout, EventTypeBCSM eventTypeBCSM,
             EventSpecificInformationBCSM eventSpecificInformationBCSM, LegType legID, MiscCallInfo miscCallInfo,
             CAPINAPExtensions extensions) throws CAPException {
 
@@ -428,18 +428,18 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         
         EventReportBCSMRequestImpl req = new EventReportBCSMRequestImpl(eventTypeBCSM, eventSpecificInformationBCSM, legID,
                 miscCallInfo, extensions);
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.eventReportBCSM, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.eventReportBCSM, req, true, false);        
     }
 
     @Override
-    public Long addRequestReportBCSMEventRequest(List<BCSMEvent> bcsmEventList, CAPINAPExtensions extensions)
+    public Integer addRequestReportBCSMEventRequest(List<BCSMEvent> bcsmEventList, CAPINAPExtensions extensions)
             throws CAPException {
 
         return addRequestReportBCSMEventRequest(_Timer_Default, bcsmEventList, extensions);
     }
 
     @Override
-    public Long addRequestReportBCSMEventRequest(int customInvokeTimeout, List<BCSMEvent> bcsmEventList,
+    public Integer addRequestReportBCSMEventRequest(int customInvokeTimeout, List<BCSMEvent> bcsmEventList,
             CAPINAPExtensions extensions) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV1_gsmSSF_to_gsmSCF
@@ -457,17 +457,17 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         	customTimeout = customInvokeTimeout;
         
         RequestReportBCSMEventRequestImpl req = new RequestReportBCSMEventRequestImpl(bcsmEventList, extensions);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.requestReportBCSMEvent, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.requestReportBCSMEvent, req, true, false);        
     }
 
     @Override
-    public Long addReleaseCallRequest(CauseIsup cause) throws CAPException {
+    public Integer addReleaseCallRequest(CauseIsup cause) throws CAPException {
 
         return addReleaseCallRequest(_Timer_Default, cause);
     }
 
     @Override
-    public Long addReleaseCallRequest(int customInvokeTimeout, CauseIsup cause) throws CAPException {
+    public Integer addReleaseCallRequest(int customInvokeTimeout, CauseIsup cause) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV1_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -484,17 +484,17 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         	customTimeout = customInvokeTimeout;
         
         ReleaseCallRequestImpl req = new ReleaseCallRequestImpl(cause);
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.releaseCall, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.releaseCall, req, true, false);        
     }
 
     @Override
-    public Long addActivityTestRequest() throws CAPException {
+    public Integer addActivityTestRequest() throws CAPException {
 
         return addActivityTestRequest(_Timer_Default);
     }
 
     @Override
-    public Long addActivityTestRequest(int customInvokeTimeout) throws CAPException {
+    public Integer addActivityTestRequest(int customInvokeTimeout) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV1_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -518,10 +518,10 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         else
         	customTimeout = customInvokeTimeout;
         
-        return this.sendDataComponent(null, null, InvokeClass.Class3, customTimeout.longValue(), (long) CAPOperationCode.activityTest, null, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class3, customTimeout.longValue(), CAPOperationCode.activityTest, null, true, false);        
     }
 
-    public void addActivityTestResponse(long invokeId) throws CAPException {
+    public void addActivityTestResponse(int invokeId) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV1_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -543,14 +543,14 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addAssistRequestInstructionsRequest(DigitsIsup  correlationID, IPSSPCapabilities ipSSPCapabilities,
+    public Integer addAssistRequestInstructionsRequest(DigitsIsup  correlationID, IPSSPCapabilities ipSSPCapabilities,
             CAPINAPExtensions extensions) throws CAPException {
 
         return addAssistRequestInstructionsRequest(_Timer_Default, correlationID, ipSSPCapabilities, extensions);
     }
 
     @Override
-    public Long addAssistRequestInstructionsRequest(int customInvokeTimeout, DigitsIsup  correlationID,
+    public Integer addAssistRequestInstructionsRequest(int customInvokeTimeout, DigitsIsup  correlationID,
             IPSSPCapabilities ipSSPCapabilities, CAPINAPExtensions extensions) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -575,11 +575,11 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         
         AssistRequestInstructionsRequestImpl req = new AssistRequestInstructionsRequestImpl(correlationID, ipSSPCapabilities,
                 extensions);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.assistRequestInstructions, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.assistRequestInstructions, req, true, false);        
     }
 
     @Override
-    public Long addEstablishTemporaryConnectionRequest(DigitsIsup  assistingSSPIPRoutingAddress, DigitsIsup  correlationID, ScfID scfID,
+    public Integer addEstablishTemporaryConnectionRequest(DigitsIsup  assistingSSPIPRoutingAddress, DigitsIsup  correlationID, ScfID scfID,
             CAPINAPExtensions extensions, Carrier carrier, ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo,
             Integer callSegmentID, NAOliInfo naOliInfo, LocationNumberIsup chargeNumber,
             OriginalCalledNumberIsup  originalCalledPartyID, CallingPartyNumberIsup  callingPartyNumber) throws CAPException {
@@ -590,7 +590,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addEstablishTemporaryConnectionRequest(int customInvokeTimeout, DigitsIsup  assistingSSPIPRoutingAddress,
+    public Integer addEstablishTemporaryConnectionRequest(int customInvokeTimeout, DigitsIsup  assistingSSPIPRoutingAddress,
             DigitsIsup  correlationID, ScfID scfID, CAPINAPExtensions extensions, Carrier carrier,
             ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Integer callSegmentID, NAOliInfo naOliInfo,
             LocationNumberIsup chargeNumber, OriginalCalledNumberIsup  originalCalledPartyID,
@@ -612,13 +612,13 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         EstablishTemporaryConnectionRequestImpl req = new EstablishTemporaryConnectionRequestImpl(assistingSSPIPRoutingAddress,
                 correlationID, scfID, extensions, carrier, serviceInteractionIndicatorsTwo, callSegmentID, naOliInfo,
                 chargeNumber, originalCalledPartyID, callingPartyNumber);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.establishTemporaryConnection, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.establishTemporaryConnection, req, true, false);        
     }
     
 
 
     @Override
-    public Long addEstablishTemporaryConnectionRequest(DigitsIsup  assistingSSPIPRoutingAddress, DigitsIsup  correlationID, ScfID scfID,
+    public Integer addEstablishTemporaryConnectionRequest(DigitsIsup  assistingSSPIPRoutingAddress, DigitsIsup  correlationID, ScfID scfID,
             CAPINAPExtensions extensions, Carrier carrier, ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo,
             NAOliInfo naOliInfo, LocationNumberIsup chargeNumber,
             OriginalCalledNumberIsup  originalCalledPartyID, CallingPartyNumberIsup  callingPartyNumber) throws CAPException {
@@ -629,7 +629,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addEstablishTemporaryConnectionRequest(int customInvokeTimeout, DigitsIsup  assistingSSPIPRoutingAddress,
+    public Integer addEstablishTemporaryConnectionRequest(int customInvokeTimeout, DigitsIsup  assistingSSPIPRoutingAddress,
             DigitsIsup  correlationID, ScfID scfID, CAPINAPExtensions extensions, Carrier carrier,
             ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, NAOliInfo naOliInfo,
             LocationNumberIsup chargeNumber, OriginalCalledNumberIsup  originalCalledPartyID,
@@ -651,17 +651,17 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         EstablishTemporaryConnectionRequestImpl req = new EstablishTemporaryConnectionRequestImpl(assistingSSPIPRoutingAddress,
                 correlationID, scfID, extensions, carrier, serviceInteractionIndicatorsTwo, naOliInfo,
                 chargeNumber, originalCalledPartyID, callingPartyNumber);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.establishTemporaryConnection, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.establishTemporaryConnection, req, true, false);        
     }
 
     @Override
-    public Long addDisconnectForwardConnectionRequest() throws CAPException {
+    public Integer addDisconnectForwardConnectionRequest() throws CAPException {
 
         return addDisconnectForwardConnectionRequest(_Timer_Default);
     }
 
     @Override
-    public Long addDisconnectForwardConnectionRequest(int customInvokeTimeout) throws CAPException {
+    public Integer addDisconnectForwardConnectionRequest(int customInvokeTimeout) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSSF_scfGeneric
@@ -680,17 +680,17 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         else
         	customTimeout = customInvokeTimeout;
         
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.disconnectForwardConnection, null, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.disconnectForwardConnection, null, true, false);        
     }
 
     @Override
-    public Long addDisconnectForwardConnectionWithArgumentRequest(Integer callSegmentID, CAPINAPExtensions extensions)
+    public Integer addDisconnectForwardConnectionWithArgumentRequest(Integer callSegmentID, CAPINAPExtensions extensions)
             throws CAPException {
         return addDisconnectForwardConnectionWithArgumentRequest(_Timer_Default, callSegmentID, extensions);
     }
 
     @Override
-    public Long addDisconnectForwardConnectionWithArgumentRequest(int customInvokeTimeout, Integer callSegmentID,
+    public Integer addDisconnectForwardConnectionWithArgumentRequest(int customInvokeTimeout, Integer callSegmentID,
             CAPINAPExtensions extensions) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric
@@ -708,11 +708,11 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         
         DisconnectForwardConnectionWithArgumentRequestImpl req = new DisconnectForwardConnectionWithArgumentRequestImpl(
                 callSegmentID, extensions);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.dFCWithArgument, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.dFCWithArgument, req, true, false);        
     }
 
     @Override
-    public Long addConnectToResourceRequest(CalledPartyNumberIsup resourceAddress_IPRoutingAddress,
+    public Integer addConnectToResourceRequest(CalledPartyNumberIsup resourceAddress_IPRoutingAddress,
             boolean resourceAddress_Null, CAPINAPExtensions extensions,
             ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Integer callSegmentID) throws CAPException {
 
@@ -721,7 +721,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addConnectToResourceRequest(int customInvokeTimeout, CalledPartyNumberIsup resourceAddress_IPRoutingAddress,
+    public Integer addConnectToResourceRequest(int customInvokeTimeout, CalledPartyNumberIsup resourceAddress_IPRoutingAddress,
             boolean resourceAddress_Null, CAPINAPExtensions extensions,
             ServiceInteractionIndicatorsTwo serviceInteractionIndicatorsTwo, Integer callSegmentID) throws CAPException {
 
@@ -744,18 +744,18 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         
         ConnectToResourceRequestImpl req = new ConnectToResourceRequestImpl(resourceAddress_IPRoutingAddress,
                 resourceAddress_Null, extensions, serviceInteractionIndicatorsTwo, callSegmentID);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.connectToResource, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.connectToResource, req, true, false);        
     }
 
     @Override
-    public Long addResetTimerRequest(TimerID timerID, int timerValue, CAPINAPExtensions extensions, Integer callSegmentID)
+    public Integer addResetTimerRequest(TimerID timerID, int timerValue, CAPINAPExtensions extensions, Integer callSegmentID)
             throws CAPException {
 
         return addResetTimerRequest(_Timer_Default, timerID, timerValue, extensions, callSegmentID);
     }
 
     @Override
-    public Long addResetTimerRequest(int customInvokeTimeout, TimerID timerID, int timerValue, CAPINAPExtensions extensions,
+    public Integer addResetTimerRequest(int customInvokeTimeout, TimerID timerID, int timerValue, CAPINAPExtensions extensions,
             Integer callSegmentID) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -776,17 +776,17 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         	customTimeout = customInvokeTimeout;
         
         ResetTimerRequestImpl req = new ResetTimerRequestImpl(timerID, timerValue, extensions, callSegmentID);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.resetTimer, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.resetTimer, req, true, false);        
     }
 
     @Override
-    public Long addFurnishChargingInformationRequest(FCIBCCCAMELSequence1 FCIBCCCAMELsequence1) throws CAPException {
+    public Integer addFurnishChargingInformationRequest(FCIBCCCAMELSequence1 FCIBCCCAMELsequence1) throws CAPException {
 
         return addFurnishChargingInformationRequest(_Timer_Default, FCIBCCCAMELsequence1);
     }
 
     @Override
-    public Long addFurnishChargingInformationRequest(int customInvokeTimeout, FCIBCCCAMELSequence1 FCIBCCCAMELsequence1)
+    public Integer addFurnishChargingInformationRequest(int customInvokeTimeout, FCIBCCCAMELSequence1 FCIBCCCAMELsequence1)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -803,18 +803,18 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         	customTimeout = customInvokeTimeout;
         
         FurnishChargingInformationRequestImpl req = new FurnishChargingInformationRequestImpl(FCIBCCCAMELsequence1);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.furnishChargingInformation, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.furnishChargingInformation, req, true, false);        
     }
 
     @Override
-    public Long addSendChargingInformationRequest(SCIBillingChargingCharacteristics sciBillingChargingCharacteristics,
+    public Integer addSendChargingInformationRequest(SCIBillingChargingCharacteristics sciBillingChargingCharacteristics,
             LegType partyToCharge, CAPINAPExtensions extensions) throws CAPException {
 
         return addSendChargingInformationRequest(_Timer_Default, sciBillingChargingCharacteristics, partyToCharge, extensions);
     }
 
     @Override
-    public Long addSendChargingInformationRequest(int customInvokeTimeout,
+    public Integer addSendChargingInformationRequest(int customInvokeTimeout,
             SCIBillingChargingCharacteristics sciBillingChargingCharacteristics, LegType partyToCharge,
             CAPINAPExtensions extensions) throws CAPException {
 
@@ -832,17 +832,17 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         
         SendChargingInformationRequestImpl req = new SendChargingInformationRequestImpl(sciBillingChargingCharacteristics,
                 partyToCharge, extensions);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.sendChargingInformation, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.sendChargingInformation, req, true, false);        
     }
 
     @Override
-    public Long addSpecializedResourceReportRequest_CapV23(Long linkedId) throws CAPException {
+    public Integer addSpecializedResourceReportRequest_CapV23(Integer linkedId) throws CAPException {
 
         return addSpecializedResourceReportRequest_CapV23(linkedId, _Timer_Default);
     }
 
     @Override
-    public Long addSpecializedResourceReportRequest_CapV4(Long linkedId, boolean isAllAnnouncementsComplete,
+    public Integer addSpecializedResourceReportRequest_CapV4(Integer linkedId, boolean isAllAnnouncementsComplete,
             boolean isFirstAnnouncementStarted) throws CAPException {
 
         return addSpecializedResourceReportRequest_CapV4(linkedId, _Timer_Default, isAllAnnouncementsComplete,
@@ -850,7 +850,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addSpecializedResourceReportRequest_CapV23(Long linkedId, int customInvokeTimeout) throws CAPException {
+    public Integer addSpecializedResourceReportRequest_CapV23(Integer linkedId, int customInvokeTimeout) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSSF_scfGeneric
@@ -869,11 +869,11 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         	customTimeout = customInvokeTimeout;
         
         SpecializedResourceReportRequest req = new SpecializedResourceReportRequestImpl(false,false);
-        return this.sendDataComponent(null, linkedId, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.specializedResourceReport, req, true, false);        
+        return this.sendDataComponent(null, linkedId, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.specializedResourceReport, req, true, false);        
     }
 
     @Override
-    public Long addSpecializedResourceReportRequest_CapV4(Long linkedId, int customInvokeTimeout,
+    public Integer addSpecializedResourceReportRequest_CapV4(Integer linkedId, int customInvokeTimeout,
             boolean isAllAnnouncementsComplete, boolean isFirstAnnouncementStarted) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric
@@ -892,11 +892,11 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         
         SpecializedResourceReportRequestImpl req = new SpecializedResourceReportRequestImpl(isAllAnnouncementsComplete,
                 isFirstAnnouncementStarted);
-        return this.sendDataComponent(null, linkedId, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.specializedResourceReport, req, true, false);        
+        return this.sendDataComponent(null, linkedId, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.specializedResourceReport, req, true, false);        
     }
 
     @Override
-    public Long addPlayAnnouncementRequest(InformationToSend informationToSend, Boolean disconnectFromIPForbidden,
+    public Integer addPlayAnnouncementRequest(InformationToSend informationToSend, Boolean disconnectFromIPForbidden,
             Boolean requestAnnouncementCompleteNotification, CAPINAPExtensions extensions, Integer callSegmentID,
             Boolean requestAnnouncementStartedNotification) throws CAPException {
 
@@ -905,7 +905,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addPlayAnnouncementRequest(int customInvokeTimeout, InformationToSend informationToSend,
+    public Integer addPlayAnnouncementRequest(int customInvokeTimeout, InformationToSend informationToSend,
             Boolean disconnectFromIPForbidden, Boolean requestAnnouncementCompleteNotification, CAPINAPExtensions extensions,
             Integer callSegmentID, Boolean requestAnnouncementStartedNotification) throws CAPException {
 
@@ -933,11 +933,11 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         
         PlayAnnouncementRequestImpl req = new PlayAnnouncementRequestImpl(informationToSend, disconnectFromIPForbidden,
                 requestAnnouncementCompleteNotification, extensions, callSegmentID, requestAnnouncementStartedNotification);
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.playAnnouncement, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.playAnnouncement, req, true, false);        
     }
 
     @Override
-    public Long addPromptAndCollectUserInformationRequest(CollectedInfo collectedInfo, Boolean disconnectFromIPForbidden,
+    public Integer addPromptAndCollectUserInformationRequest(CollectedInfo collectedInfo, Boolean disconnectFromIPForbidden,
             InformationToSend informationToSend, CAPINAPExtensions extensions, Integer callSegmentID,
             Boolean requestAnnouncementStartedNotification) throws CAPException {
 
@@ -946,7 +946,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addPromptAndCollectUserInformationRequest(int customInvokeTimeout, CollectedInfo collectedInfo,
+    public Integer addPromptAndCollectUserInformationRequest(int customInvokeTimeout, CollectedInfo collectedInfo,
             Boolean disconnectFromIPForbidden, InformationToSend informationToSend, CAPINAPExtensions extensions,
             Integer callSegmentID, Boolean requestAnnouncementStartedNotification) throws CAPException {
 
@@ -974,11 +974,11 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         
         PromptAndCollectUserInformationRequestImpl req = new PromptAndCollectUserInformationRequestImpl(collectedInfo,
                 disconnectFromIPForbidden, informationToSend, extensions, callSegmentID, requestAnnouncementStartedNotification);
-        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), (long) CAPOperationCode.promptAndCollectUserInformation, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), CAPOperationCode.promptAndCollectUserInformation, req, true, false);        
     }
 
     @Override
-    public void addPromptAndCollectUserInformationResponse_DigitsResponse(long invokeId, DigitsIsup  digitsResponse)
+    public void addPromptAndCollectUserInformationResponse_DigitsResponse(int invokeId, DigitsIsup  digitsResponse)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
@@ -998,50 +998,50 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                             + ", CapV2_gsmSRF_to_gsmSCF, CapV3_gsmSRF_gsmSCF or CapV4_gsmSRF_gsmSCF");
 
         PromptAndCollectUserInformationResponseImpl res = new PromptAndCollectUserInformationResponseImpl(digitsResponse);
-        this.sendDataComponent(invokeId, null, null, null, (long) CAPOperationCode.promptAndCollectUserInformation, res, false, true);        
+        this.sendDataComponent(invokeId, null, null, null, CAPOperationCode.promptAndCollectUserInformation, res, false, true);        
     }
 
     @Override
-    public Long addCancelRequest_InvokeId(Integer invokeID) throws CAPException {
+    public Integer addCancelRequest_InvokeId(Integer invokeID) throws CAPException {
 
         return addCancelRequest_InvokeId(_Timer_Default, invokeID);
     }
 
     @Override
-    public Long addCancelRequest_AllRequests() throws CAPException {
+    public Integer addCancelRequest_AllRequests() throws CAPException {
 
         return addCancelRequest_AllRequests(_Timer_Default);
     }
 
     @Override
-    public Long addCancelRequest_CallSegmentToCancel(CallSegmentToCancel callSegmentToCancel) throws CAPException {
+    public Integer addCancelRequest_CallSegmentToCancel(CallSegmentToCancel callSegmentToCancel) throws CAPException {
 
         return addCancelRequest_CallSegmentToCancel(_Timer_Default, callSegmentToCancel);
     }
 
     @Override
-    public Long addCancelRequest_InvokeId(int customInvokeTimeout, Integer invokeID) throws CAPException {
+    public Integer addCancelRequest_InvokeId(int customInvokeTimeout, Integer invokeID) throws CAPException {
 
         CancelRequestImpl req = new CancelRequestImpl(invokeID);
         return addCancelRequest(customInvokeTimeout, req);
     }
 
     @Override
-    public Long addCancelRequest_AllRequests(int customInvokeTimeout) throws CAPException {
+    public Integer addCancelRequest_AllRequests(int customInvokeTimeout) throws CAPException {
 
         CancelRequestImpl req = new CancelRequestImpl(true);
         return addCancelRequest(customInvokeTimeout, req);
     }
 
     @Override
-    public Long addCancelRequest_CallSegmentToCancel(int customInvokeTimeout, CallSegmentToCancel callSegmentToCancel)
+    public Integer addCancelRequest_CallSegmentToCancel(int customInvokeTimeout, CallSegmentToCancel callSegmentToCancel)
             throws CAPException {
 
         CancelRequestImpl req = new CancelRequestImpl(callSegmentToCancel);
         return addCancelRequest(customInvokeTimeout, req);
     }
 
-    private Long addCancelRequest(int customInvokeTimeout, CancelRequest req) throws CAPException {
+    private Integer addCancelRequest(int customInvokeTimeout, CancelRequest req) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF
                 && this.appCntx != CAPApplicationContext.CapV3_gsmSSF_scfGeneric
@@ -1065,17 +1065,17 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         else
         	customTimeout = customInvokeTimeout;
         
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), (long) CAPOperationCode.cancelCode, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.cancelCode, req, true, false);        
     }
 
     @Override
-    public Long addDisconnectLegRequest(LegID logToBeReleased, CauseIsup releaseCause, CAPINAPExtensions extensions)
+    public Integer addDisconnectLegRequest(LegID logToBeReleased, CauseIsup releaseCause, CAPINAPExtensions extensions)
             throws CAPException {
         return addDisconnectLegRequest(_Timer_Default, logToBeReleased, releaseCause, extensions);
     }
 
     @Override
-    public Long addDisconnectLegRequest(int customInvokeTimeout, LegID logToBeReleased, CauseIsup releaseCause,
+    public Integer addDisconnectLegRequest(int customInvokeTimeout, LegID logToBeReleased, CauseIsup releaseCause,
             CAPINAPExtensions extensions) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric
@@ -1090,19 +1090,19 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         	customTimeout = customInvokeTimeout;
         
         DisconnectLegRequestImpl req = new DisconnectLegRequestImpl(logToBeReleased, releaseCause, extensions);
-        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), (long) CAPOperationCode.disconnectLeg, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), CAPOperationCode.disconnectLeg, req, true, false);        
     }
 
     @Override
-    public void addDisconnectLegResponse(long invokeId) throws CAPException {
+    public void addDisconnectLegResponse(int invokeId) throws CAPException {
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric && this.appCntx != CAPApplicationContext.CapV4_scf_gsmSSFGeneric)
             throw new CAPException("Bad application context name for addDisconnectLegResponse: must be " + "CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        this.sendDataComponent(invokeId, null, null, null, (long) CAPOperationCode.disconnectLeg, null, false, true);        
+        this.sendDataComponent(invokeId, null, null, null, CAPOperationCode.disconnectLeg, null, false, true);        
     }
 
     @Override
-    public Long addInitiateCallAttemptRequest(DestinationRoutingAddress   destinationRoutingAddress,
+    public Integer addInitiateCallAttemptRequest(DestinationRoutingAddress   destinationRoutingAddress,
             CAPINAPExtensions extensions, LegID legToBeCreated, Integer newCallSegment,
             CallingPartyNumberIsup  callingPartyNumber, CallReferenceNumber  callReferenceNumber,
             ISDNAddressString    gsmSCFAddress, boolean suppressTCsi) throws CAPException {
@@ -1111,7 +1111,7 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
     }
 
     @Override
-    public Long addInitiateCallAttemptRequest(int customInvokeTimeout,
+    public Integer addInitiateCallAttemptRequest(int customInvokeTimeout,
             DestinationRoutingAddress   destinationRoutingAddress, CAPINAPExtensions extensions, LegID legToBeCreated,
             Integer newCallSegment, CallingPartyNumberIsup  callingPartyNumber, CallReferenceNumber  callReferenceNumber,
             ISDNAddressString    gsmSCFAddress, boolean suppressTCsi) throws CAPException {
@@ -1129,11 +1129,11 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         
         InitiateCallAttemptRequestImpl req = new InitiateCallAttemptRequestImpl(destinationRoutingAddress, extensions,
                 legToBeCreated, newCallSegment, callingPartyNumber, callReferenceNumber, gsmSCFAddress, suppressTCsi);
-        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), (long) CAPOperationCode.initiateCallAttempt, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), CAPOperationCode.initiateCallAttempt, req, true, false);        
     }
 
     @Override
-    public void addInitiateCallAttemptResponse(long invokeId, SupportedCamelPhases supportedCamelPhases,
+    public void addInitiateCallAttemptResponse(int invokeId, SupportedCamelPhases supportedCamelPhases,
             OfferedCamel4Functionalities offeredCamel4Functionalities, CAPINAPExtensions extensions,
             boolean releaseCallArgExtensionAllowed) throws CAPException {
 
@@ -1144,16 +1144,16 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
 
         InitiateCallAttemptResponseImpl res = new InitiateCallAttemptResponseImpl(supportedCamelPhases,
                 offeredCamel4Functionalities, extensions, releaseCallArgExtensionAllowed);
-        this.sendDataComponent(invokeId, null, null, null, (long) CAPOperationCode.initiateCallAttempt, res, false, true);
+        this.sendDataComponent(invokeId, null, null, null, CAPOperationCode.initiateCallAttempt, res, false, true);
     }
 
     @Override
-    public Long addMoveLegRequest(LegID logIDToMove, CAPINAPExtensions extensions) throws CAPException {
+    public Integer addMoveLegRequest(LegID logIDToMove, CAPINAPExtensions extensions) throws CAPException {
         return addMoveLegRequest(_Timer_Default, logIDToMove, extensions);
     }
 
     @Override
-    public Long addMoveLegRequest(int customInvokeTimeout, LegID logIDToMove, CAPINAPExtensions extensions)
+    public Integer addMoveLegRequest(int customInvokeTimeout, LegID logIDToMove, CAPINAPExtensions extensions)
             throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric
@@ -1168,28 +1168,28 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         	customTimeout = customInvokeTimeout;
         
         MoveLegRequestImpl req = new MoveLegRequestImpl(logIDToMove, extensions);
-        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), (long) CAPOperationCode.moveLeg, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), CAPOperationCode.moveLeg, req, true, false);        
     }
 
     @Override
-    public void addMoveLegResponse(long invokeId) throws CAPException {
+    public void addMoveLegResponse(int invokeId) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric
                 && this.appCntx != CAPApplicationContext.CapV4_scf_gsmSSFGeneric)
             throw new CAPException(
                     "Bad application context name for addMoveLegResponse: must be CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        this.sendDataComponent(invokeId, null, null, null, (long) CAPOperationCode.moveLeg, null, false, true);        
+        this.sendDataComponent(invokeId, null, null, null, CAPOperationCode.moveLeg, null, false, true);        
     }
 
     @Override
-    public Long addCollectInformationRequest() throws CAPException {
+    public Integer addCollectInformationRequest() throws CAPException {
 
         return addCollectInformationRequest(_Timer_Default);
     }
 
     @Override
-    public Long addCollectInformationRequest(int customInvokeTimeout) throws CAPException {
+    public Integer addCollectInformationRequest(int customInvokeTimeout) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric && this.appCntx != CAPApplicationContext.CapV4_scf_gsmSSFGeneric)
             throw new CAPException(
@@ -1201,15 +1201,15 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         else
         	customTimeout = customInvokeTimeout;
         
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.collectInformation, null, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.collectInformation, null, true, false);        
     }
 
-    public Long addSplitLegRequest(LegID legIDToSplit, Integer newCallSegmentId, CAPINAPExtensions extensions)
+    public Integer addSplitLegRequest(LegID legIDToSplit, Integer newCallSegmentId, CAPINAPExtensions extensions)
             throws CAPException {
         return addSplitLegRequest(_Timer_Default, legIDToSplit, newCallSegmentId, extensions);
     }
 
-    public Long addSplitLegRequest(int customInvokeTimeout, LegID legIDToSplit, Integer newCallSegmentId,
+    public Integer addSplitLegRequest(int customInvokeTimeout, LegID legIDToSplit, Integer newCallSegmentId,
             CAPINAPExtensions extensions) throws CAPException {
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric
                 && this.appCntx != CAPApplicationContext.CapV4_scf_gsmSSFGeneric)
@@ -1223,26 +1223,26 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         	customTimeout = customInvokeTimeout;
         
         SplitLegRequestImpl req = new SplitLegRequestImpl(legIDToSplit, newCallSegmentId, extensions);
-        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), (long) CAPOperationCode.splitLeg, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class1, customTimeout.longValue(), CAPOperationCode.splitLeg, req, true, false);        
     }
 
-    public void addSplitLegResponse(long invokeId) throws CAPException {
+    public void addSplitLegResponse(int invokeId) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric
                 && this.appCntx != CAPApplicationContext.CapV4_scf_gsmSSFGeneric)
             throw new CAPException(
                     "Bad application context for addSplitLegResponse: must be CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        this.sendDataComponent(invokeId, null, null, null, (long) CAPOperationCode.splitLeg, null, false, true);        
+        this.sendDataComponent(invokeId, null, null, null, CAPOperationCode.splitLeg, null, false, true);        
     }
 
     @Override
-    public Long addCallGapRequest(GapCriteria gapCriteria, GapIndicators gapIndicators, ControlType controlType, GapTreatment gapTreatment, CAPINAPExtensions capExtension) throws CAPException {
+    public Integer addCallGapRequest(GapCriteria gapCriteria, GapIndicators gapIndicators, ControlType controlType, GapTreatment gapTreatment, CAPINAPExtensions capExtension) throws CAPException {
         return addCallGapRequest(_Timer_Default, gapCriteria, gapIndicators, controlType, gapTreatment, capExtension);
     }
 
     @Override
-    public Long addCallGapRequest(int customInvokeTimeout, GapCriteria gapCriteria, GapIndicators gapIndicators, ControlType controlType, GapTreatment gapTreatment, CAPINAPExtensions capExtension) throws CAPException {
+    public Integer addCallGapRequest(int customInvokeTimeout, GapCriteria gapCriteria, GapIndicators gapIndicators, ControlType controlType, GapTreatment gapTreatment, CAPINAPExtensions capExtension) throws CAPException {
 
         if (this.appCntx != CAPApplicationContext.CapV3_gsmSSF_scfGeneric
                 && this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric) {
@@ -1257,6 +1257,6 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         	customTimeout = customInvokeTimeout;
         
         CallGapRequestImpl req = new CallGapRequestImpl(gapCriteria, gapIndicators, controlType, gapTreatment, capExtension);
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), (long) CAPOperationCode.callGap, req, true, false);        
+        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.callGap, req, true, false);        
     }
 }

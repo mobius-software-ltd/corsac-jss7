@@ -34,15 +34,16 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  *
  */
 public class BearerServiceCodeImpl extends ASNSingleByte implements BearerServiceCode {
-	public BearerServiceCodeImpl() {        
+	public BearerServiceCodeImpl() {  
+		super("BearerServiceCode",0,255,false);
     }
 
     public BearerServiceCodeImpl(int data) {
-        super(data);
+        super(data,"BearerServiceCode",0,255,false);
     }
 
     public BearerServiceCodeImpl(BearerServiceCodeValue value) {
-    	super(value != null ? value.getCode() : 0);
+    	super(value != null ? value.getCode() : 0,"BearerServiceCode",0,255,false);
     }
 
     public int getData() {

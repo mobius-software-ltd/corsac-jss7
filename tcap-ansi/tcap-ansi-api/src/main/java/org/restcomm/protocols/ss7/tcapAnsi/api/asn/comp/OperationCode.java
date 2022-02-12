@@ -43,13 +43,13 @@ public interface OperationCode {
 
     OperationCodeType getOperationType();
 
-    void setNationalOperationCode(Long nationalOperationCode);
+    void setNationalOperationCode(Integer nationalOperationCode);
 
-    void setPrivateOperationCode(Long privateOperationCode);
+    void setPrivateOperationCode(Integer privateOperationCode);
 
-    Long getNationalOperationCode();
+    Integer getNationalOperationCode();
 
-    Long getPrivateOperationCode();
+    Integer getPrivateOperationCode();
 
 }
 

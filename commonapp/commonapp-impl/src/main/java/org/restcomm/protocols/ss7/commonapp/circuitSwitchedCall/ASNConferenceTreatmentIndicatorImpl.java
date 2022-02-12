@@ -6,10 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNConferenceTreatmentIndicatorImpl extends ASNEnumerated {
 	public ASNConferenceTreatmentIndicatorImpl() {
-		
+		super("ConferenceTreatmentIndicator",1,2,false);
 	}
+	
 	public ASNConferenceTreatmentIndicatorImpl(ConferenceTreatmentIndicator t) {
-		super(t.getCode());
+		super(t.getCode(),"ConferenceTreatmentIndicator",1,2,false);
 	}
 	
 	public ConferenceTreatmentIndicator getType() {

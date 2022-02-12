@@ -155,8 +155,8 @@ public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceO
     }
 
     public void processComponent(ComponentType compType, OperationCode oc, MAPMessage parameter, MAPDialog mapDialog,
-            Long invokeId, Long linkedId) throws MAPParsingComponentException {
-        Long ocValue = oc.getLocalOperationCode();
+    		Integer invokeId, Integer linkedId) throws MAPParsingComponentException {
+    	Integer ocValue = oc.getLocalOperationCode();
         if (ocValue == null)
             new MAPParsingComponentException("", MAPParsingComponentExceptionReason.UnrecognizedOperation);
         

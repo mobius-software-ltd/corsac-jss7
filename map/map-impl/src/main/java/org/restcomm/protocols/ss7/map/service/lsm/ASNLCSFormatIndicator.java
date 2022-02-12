@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNLCSFormatIndicator extends ASNEnumerated {
 	public ASNLCSFormatIndicator() {
-		
+		super("LCSFormatIndicator",0,4,false);
 	}
 	
 	public ASNLCSFormatIndicator(LCSFormatIndicator t) {
-		super(t.getIndicator());
+		super(t.getIndicator(),"LCSFormatIndicator",0,4,false);
 	}
 	
 	public LCSFormatIndicator getType() {

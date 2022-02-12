@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNSubscriberStatus extends ASNEnumerated {
 	public ASNSubscriberStatus() {
-		
+		super("SubscriberStatus",0,1,false);
 	}
 	
 	public ASNSubscriberStatus(SubscriberStatus t) {
-		super(t.getCode());
+		super(t.getCode(),"SubscriberStatus",0,1,false);
 	}
 	
 	public SubscriberStatus getType() {

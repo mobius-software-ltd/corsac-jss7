@@ -74,7 +74,7 @@ public class SendRoutingInformationRequestImplV1 extends CallHandlingMessageImpl
         this.msisdn = msisdn;
         
         if(numberOfForwarding!=null)
-        	this.numberOfForwarding = new ASNInteger(numberOfForwarding);
+        	this.numberOfForwarding = new ASNInteger(numberOfForwarding,"NumberOfForwarding",1,5,false);
         	
         this.networkSignalInfo=networkSignalInfo;
     }

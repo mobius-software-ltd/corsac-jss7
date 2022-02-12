@@ -50,7 +50,7 @@ public class FilteringTimeOutImpl implements FilteringTimeOut {
 
     public FilteringTimeOutImpl(Integer duration) {
     	if(duration!=null)
-    		this.duration=new ASNInteger(duration);    		
+    		this.duration=new ASNInteger(duration,"Duration",-2,86400,false);    		
     }
     
     public FilteringTimeOutImpl(DateAndTime stopTime) {

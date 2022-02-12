@@ -338,12 +338,12 @@ public abstract class INAPDialogImpl implements INAPDialog {
     }
 
     @Override
-    public void processInvokeWithoutAnswer(Long invokeId) {
+    public void processInvokeWithoutAnswer(Integer invokeId) {
         this.tcapDialog.processInvokeWithoutAnswer(invokeId);
     }
 
     @Override
-    public Long sendDataComponent(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,Long operationCode,INAPMessage param,Boolean isRequest,Boolean isLastResponse) throws INAPException {
+    public Integer sendDataComponent(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,Integer operationCode,INAPMessage param,Boolean isRequest,Boolean isLastResponse) throws INAPException {
         try {
         	if(operationCode!=null)
         		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
@@ -355,7 +355,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
     }
 
     @Override
-    public void sendErrorComponent(Long invokeId, INAPErrorMessage mem) throws INAPException {
+    public void sendErrorComponent(Integer invokeId, INAPErrorMessage mem) throws INAPException {
     	try {
         	if(mem instanceof INAPErrorMessageParameterless)
         		this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), null);
@@ -367,7 +367,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
         }
     }
 
-    public void sendRejectComponent(Long invokeId, Problem problem) throws INAPException {
+    public void sendRejectComponent(Integer invokeId, Problem problem) throws INAPException {
         try {
             this.tcapDialog.sendReject(invokeId, problem);
 
@@ -377,7 +377,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
     }
 
     @Override
-    public void resetInvokeTimer(Long invokeId) throws INAPException {
+    public void resetInvokeTimer(Integer invokeId) throws INAPException {
 
         try {
             this.getTcapDialog().resetTimer(invokeId);
@@ -387,7 +387,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
     }
 
     @Override
-    public boolean cancelInvocation(Long invokeId) throws INAPException {
+    public boolean cancelInvocation(Integer invokeId) throws INAPException {
         try {
             return this.getTcapDialog().cancelInvocation(invokeId);
         } catch (TCAPException e) {

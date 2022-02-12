@@ -77,7 +77,7 @@ public interface DialogPrimitiveFactory {
 
     ApplicationContext createApplicationContext(List<Long> val);
 
-    ApplicationContext createApplicationContext(long val);
+    ApplicationContext createApplicationContext(int val);
 
     UserInformation createUserInformation();
 

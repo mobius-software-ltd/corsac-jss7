@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNUsedRatTypeImpl extends ASNEnumerated {
 	public ASNUsedRatTypeImpl() {
-		
+		super("UsedRATType",0,4,false);
 	}
 	
 	public ASNUsedRatTypeImpl(UsedRATType t) {
-		super(t.getCode());
+		super(t.getCode(),"UsedRATType",0,4,false);
 	}
 	
 	public UsedRATType getType() {

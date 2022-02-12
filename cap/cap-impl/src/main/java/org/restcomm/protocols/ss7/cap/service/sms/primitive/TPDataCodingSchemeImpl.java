@@ -32,10 +32,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class TPDataCodingSchemeImpl extends ASNSingleByte implements TPDataCodingScheme {
 	public TPDataCodingSchemeImpl() {
-    }
+		super("TPDataCodingScheme",0,255,false);
+    }	
 
     public TPDataCodingSchemeImpl(int data) {
-    	super(data);
+    	super(data,"TPDataCodingScheme",0,255,false);
     }
 
     public int getData() {

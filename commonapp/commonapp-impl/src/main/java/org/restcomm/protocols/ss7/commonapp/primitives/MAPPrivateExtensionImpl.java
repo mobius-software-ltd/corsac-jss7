@@ -57,7 +57,7 @@ public class MAPPrivateExtensionImpl implements MAPPrivateExtension {
     }
 
     public MAPPrivateExtensionImpl(List<Long> oId, ByteBuf data) {
-        this.oId = new ASNObjectIdentifier(oId);
+        this.oId = new ASNObjectIdentifier(oId,"OID",true,false);
         if(data!=null)
         	this.data=Unpooled.wrappedBuffer(data);        
     }
@@ -120,7 +120,7 @@ public class MAPPrivateExtensionImpl implements MAPPrivateExtension {
      * @see org.restcomm.protocols.ss7.map.api.dialog.MAPPrivateExtension#setOId (long[])
      */
     public void setOId(List<Long> oId) {
-        this.oId = new ASNObjectIdentifier(oId);        
+        this.oId = new ASNObjectIdentifier(oId,"OID",true,false);        
     }
 
     /*

@@ -50,7 +50,7 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
  */
 public interface NoteMMEventRequest extends MobilityMessage {
 
-    long getServiceKey();
+    int getServiceKey();
 
     MMCode getMMCode();
 

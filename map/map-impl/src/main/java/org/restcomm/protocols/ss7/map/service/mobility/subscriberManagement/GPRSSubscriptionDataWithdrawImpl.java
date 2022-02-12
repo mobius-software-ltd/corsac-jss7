@@ -55,7 +55,7 @@ public class GPRSSubscriptionDataWithdrawImpl implements GPRSSubscriptionDataWit
     	if(contextIdList!=null) {
     		List<ASNInteger> realData=new ArrayList<ASNInteger>();
     		for(Integer curr:contextIdList) {
-    			ASNInteger currData=new ASNInteger(curr);
+    			ASNInteger currData=new ASNInteger(curr,"ContextId",1,50,false);
     			realData.add(currData);
     		}
     		this.contextIdList = new ASNIntegerListWrapperImpl(realData);

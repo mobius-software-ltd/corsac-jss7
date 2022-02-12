@@ -34,10 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class ApplicationIDImpl extends ASNSingleByte implements ApplicationID {
 	public ApplicationIDImpl() {
+		super("ApplicationID",0,255,false);
     }
 
     public ApplicationIDImpl(Integer value) {
-    	super(value);    		
+    	super(value,"ApplicationID",0,255,false);    		
     }
 
     public Integer getData() {

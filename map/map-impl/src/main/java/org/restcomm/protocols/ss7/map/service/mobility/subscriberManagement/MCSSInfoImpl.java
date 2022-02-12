@@ -61,8 +61,8 @@ public class MCSSInfoImpl implements MCSSInfo {
     public MCSSInfoImpl(SSCode ssCode, ExtSSStatus ssStatus, int nbrSB, int nbrUser, MAPExtensionContainer extensionContainer) {
         this.ssCode = ssCode;
         this.ssStatus = ssStatus;
-        this.nbrSB = new ASNInteger(nbrSB);
-        this.nbrUser = new ASNInteger(nbrUser);
+        this.nbrSB = new ASNInteger(nbrSB,"NBRSB",2,7,false);
+        this.nbrUser = new ASNInteger(nbrUser,"NBRUser",1,7,false);
         this.extensionContainer = extensionContainer;
     }
 

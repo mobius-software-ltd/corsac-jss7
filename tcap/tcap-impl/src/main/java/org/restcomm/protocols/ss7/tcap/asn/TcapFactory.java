@@ -122,7 +122,7 @@ public final class TcapFactory {
         return tc;
     }
 
-    public static OperationCode createLocalOperationCode(Long value) {
+    public static OperationCode createLocalOperationCode(Integer value) {
         OperationCodeImpl oc = new OperationCodeImpl();
         oc.setLocalOperationCode(value);
         return oc;
@@ -163,7 +163,7 @@ public final class TcapFactory {
         return p;
     }
 
-    public static ErrorCode createLocalErrorCode(Long value) {
+    public static ErrorCode createLocalErrorCode(Integer value) {
         ErrorCodeImpl ec = new ErrorCodeImpl();
         ec.setLocalErrorCode(value);
         return ec;

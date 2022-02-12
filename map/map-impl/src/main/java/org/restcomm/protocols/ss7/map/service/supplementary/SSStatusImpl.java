@@ -39,15 +39,15 @@ public class SSStatusImpl extends ASNSingleByte implements SSStatus {
     public static final int _mask_ABit = 0x01;
 
     public SSStatusImpl() {
-        super();
+        super("SSStatus",1,15,false);
     }
 
     public SSStatusImpl(int data) {
-    	super(data);
+    	super(data,"SSStatus",1,15,false);
     }
 
     public SSStatusImpl(boolean qBit, boolean pBit, boolean rBit, boolean aBit) {
-    	super((qBit ? _mask_QBit : 0) + (pBit ? _mask_PBit : 0) + (rBit ? _mask_RBit : 0) + (aBit ? _mask_ABit : 0));
+    	super((qBit ? _mask_QBit : 0) + (pBit ? _mask_PBit : 0) + (rBit ? _mask_RBit : 0) + (aBit ? _mask_ABit : 0),"SSStatus",1,15,false);
     }
 
     public int getData() {

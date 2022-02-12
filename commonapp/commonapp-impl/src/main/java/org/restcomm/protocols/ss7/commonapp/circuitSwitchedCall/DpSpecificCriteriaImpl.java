@@ -53,7 +53,7 @@ public class DpSpecificCriteriaImpl implements DpSpecificCriteria {
 
     public DpSpecificCriteriaImpl(Integer applicationTimer) {
     	if(applicationTimer!=null)
-    		this.applicationTimer = new ASNInteger(applicationTimer);    		
+    		this.applicationTimer = new ASNInteger(applicationTimer,"ApplicationTimer",0,2047,false);    		
     }
 
     public DpSpecificCriteriaImpl(MidCallControlInfo midCallControlInfo) {

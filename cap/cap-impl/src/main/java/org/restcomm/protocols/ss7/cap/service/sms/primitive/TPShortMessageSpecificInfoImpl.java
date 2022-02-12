@@ -32,10 +32,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class TPShortMessageSpecificInfoImpl extends ASNSingleByte implements TPShortMessageSpecificInfo {
 	public TPShortMessageSpecificInfoImpl() {
+		super("TPShortMessageSpecificInfo",0,255,false);
     }
 
     public TPShortMessageSpecificInfoImpl(int data) {
-    	super(data);
+    	super(data,"TPShortMessageSpecificInfo",0,255,false);
     }
 
     public int getData() {

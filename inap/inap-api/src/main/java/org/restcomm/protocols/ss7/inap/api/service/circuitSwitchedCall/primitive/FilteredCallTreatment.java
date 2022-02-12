@@ -36,7 +36,7 @@ import io.netty.buffer.ByteBuf;
 FilteredCallTreatment ::= SEQUENCE {
 	sFBillingChargingCharacteristics [0] SFBillingChargingCharacteristics,
 	informationToSend [1] InformationToSend OPTIONAL,
-	maximumNumberOfCounters [2] MaximumNumberOfCounters OPTIONAL,
+	maximumNumberOfCounters [2] MaximumNumberOfCounters INTEGER (1..100) DEFAULT 1,
 	releaseCause [3] Cause OPTIONAL
 }
 </code>

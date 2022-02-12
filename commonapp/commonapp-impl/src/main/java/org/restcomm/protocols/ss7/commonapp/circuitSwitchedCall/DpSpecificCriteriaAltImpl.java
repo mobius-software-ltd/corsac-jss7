@@ -55,7 +55,7 @@ public class DpSpecificCriteriaAltImpl implements DpSpecificCriteriaAlt {
         }
         
         if(numberOfDigits!=null)
-        	this.numberOfDigits = new ASNInteger(numberOfDigits);        	
+        	this.numberOfDigits = new ASNInteger(numberOfDigits,"NumberOfDigits",1,255,false);        	
     }
 
     public List<ChangeOfLocation> getChangeOfPositionControlInfo() {

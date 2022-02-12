@@ -32,10 +32,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class RPCauseImpl extends ASNSingleByte implements RPCause {
 	public RPCauseImpl() {
+		super("RPCause",0,255,false);
     }
 
     public RPCauseImpl(int data) {
-    	super(data);
+    	super(data,"RPCause",0,255,false);
     }
 
     public int getData() {

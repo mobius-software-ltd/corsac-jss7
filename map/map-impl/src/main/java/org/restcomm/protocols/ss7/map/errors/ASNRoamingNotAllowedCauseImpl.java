@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNRoamingNotAllowedCauseImpl extends ASNEnumerated {
 	public ASNRoamingNotAllowedCauseImpl() {
-		
+		super("PositionMethodFailureDiagnostic",0,3,false);
 	}
 	
 	public ASNRoamingNotAllowedCauseImpl(RoamingNotAllowedCause t) {
-		super(t.getCode());
+		super(t.getCode(),"PositionMethodFailureDiagnostic",0,3,false);
 	}
 	
 	public RoamingNotAllowedCause getType() {

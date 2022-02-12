@@ -59,13 +59,13 @@ public class GPRSCamelTDPDataImpl implements GPRSCamelTDPData {
     public GPRSCamelTDPDataImpl() {
     }
 
-    public GPRSCamelTDPDataImpl(GPRSTriggerDetectionPoint gprsTriggerDetectionPoint, long serviceKey,
+    public GPRSCamelTDPDataImpl(GPRSTriggerDetectionPoint gprsTriggerDetectionPoint, int serviceKey,
             ISDNAddressString gsmSCFAddress, DefaultGPRSHandling defaultSessionHandling,
             MAPExtensionContainer extensionContainer) {
         if(gprsTriggerDetectionPoint!=null)
         	this.gprsTriggerDetectionPoint =  new ASNGPRSTriggerDetectionPoint(gprsTriggerDetectionPoint);
         	
-        this.serviceKey = new ASNInteger(serviceKey);
+        this.serviceKey = new ASNInteger(serviceKey,"ServiceKey",0,Integer.MAX_VALUE,false);
         this.gsmSCFAddress = gsmSCFAddress;
         
         if(defaultSessionHandling!=null)
@@ -81,11 +81,11 @@ public class GPRSCamelTDPDataImpl implements GPRSCamelTDPData {
         return this.gprsTriggerDetectionPoint.getType();
     }
 
-    public long getServiceKey() {
+    public int getServiceKey() {
     	if(this.serviceKey==null)
     		return 0;
     	
-        return this.serviceKey.getValue();
+        return this.serviceKey.getIntValue();
     }
 
     public ISDNAddressString getGsmSCFAddress() {

@@ -44,8 +44,8 @@ public class GapIndicatorsImpl implements GapIndicators {
     }
 
     public GapIndicatorsImpl(int duration, int gapInterval) {
-        this.duration = new ASNInteger(duration);
-        this.gapInterval = new ASNInteger(gapInterval);        
+        this.duration = new ASNInteger(duration,"Duration",-2,86400,false);
+        this.gapInterval = new ASNInteger(gapInterval,"GapInterval",-1,60000,false);        
     }
 
     public int getDuration() {

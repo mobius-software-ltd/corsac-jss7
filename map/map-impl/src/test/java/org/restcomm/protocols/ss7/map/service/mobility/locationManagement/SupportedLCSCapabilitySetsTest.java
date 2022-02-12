@@ -47,7 +47,7 @@ import io.netty.buffer.Unpooled;
  */
 public class SupportedLCSCapabilitySetsTest {
 
-	byte[] data= new byte[] { 3, 2, 3, 64};
+	byte[] data= new byte[] { 3, 2, 6, 64};
 	
     @BeforeClass
     public static void setUpClass() throws Exception {

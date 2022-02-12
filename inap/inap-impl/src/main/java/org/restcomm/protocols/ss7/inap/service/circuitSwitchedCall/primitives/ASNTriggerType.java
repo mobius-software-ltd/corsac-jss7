@@ -34,11 +34,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=0x0A,constructed=false,lengthIndefinite=false)
 public class ASNTriggerType extends ASNEnumerated {
 	public ASNTriggerType() {
-		
+		super("TriggerType",0,35,false);
 	}
 	
 	public ASNTriggerType(TriggerType t) {
-		super(t.getCode());
+		super(t.getCode(),"TriggerType",0,35,false);
 	}
 	
 	public TriggerType getType() {

@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNCUGRejectCauseImpl extends ASNEnumerated {
 	public ASNCUGRejectCauseImpl() {
-		
+		super("CUGRejectCause",0,7,false);
 	}
 	
 	public ASNCUGRejectCauseImpl(CUGRejectCause t) {
-		super(t.getCode());
+		super(t.getCode(),"CUGRejectCause",0,7,false);
 	}
 	
 	public CUGRejectCause getType() {

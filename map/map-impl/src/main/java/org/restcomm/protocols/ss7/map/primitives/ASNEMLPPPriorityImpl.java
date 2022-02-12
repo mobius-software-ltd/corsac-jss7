@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNEMLPPPriorityImpl extends ASNEnumerated	 {
 	public ASNEMLPPPriorityImpl() {
-		
+		super("EMLPPPriority",0,15,false);
 	}
 	
 	public ASNEMLPPPriorityImpl(EMLPPPriority t) {
-		super(t.getCode());
+		super(t.getCode(),"EMLPPPriority",0,15,false);
 	}
 	
 	public EMLPPPriority getType() {

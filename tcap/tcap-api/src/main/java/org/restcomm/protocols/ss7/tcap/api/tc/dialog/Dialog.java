@@ -118,7 +118,7 @@ public interface Dialog extends Serializable {
      *
      * @return
      */
-    Long getNewInvokeId() throws TCAPException;
+    Integer getNewInvokeId() throws TCAPException;
 
     /**
      * @return NetworkId to which virtual network Dialog belongs to
@@ -161,7 +161,7 @@ public interface Dialog extends Serializable {
      *         </ul>
      * @throws TCAPException - thrown if passed invoke id is wrong
      */
-    boolean cancelInvocation(Long invokeId) throws TCAPException;
+    boolean cancelInvocation(Integer invokeId) throws TCAPException;
 
     /**
      *
@@ -190,7 +190,7 @@ public interface Dialog extends Serializable {
      * @param componentRequest
      * @throws TCAPSendException
      */
-    Long sendData(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,OperationCode operationCode,Object param,Boolean isRequest,Boolean isLastResponse) throws TCAPSendException,TCAPException;
+    Integer sendData(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,OperationCode operationCode,Object param,Boolean isRequest,Boolean isLastResponse) throws TCAPSendException,TCAPException;
 
     /**
      * Schedules component for sending. All components on list are queued. Components are sent once message primitive is issued.
@@ -198,7 +198,7 @@ public interface Dialog extends Serializable {
      * @param componentRequest
      * @throws TCAPSendException
      */
-    void sendReject(Long invokeId,Problem project) throws TCAPSendException;
+    void sendReject(Integer invokeId,Problem project) throws TCAPSendException;
 
     /**
      * Schedules component for sending. All components on list are queued. Components are sent once message primitive is issued.
@@ -206,7 +206,7 @@ public interface Dialog extends Serializable {
      * @param componentRequest
      * @throws TCAPSendException
      */
-    void sendError(Long invokeId,ErrorCode errorCode,Object param) throws TCAPSendException;
+    void sendError(Integer invokeId,ErrorCode errorCode,Object param) throws TCAPSendException;
 
     /**
      * If a TCAP user will not answer to an incoming Invoke with Response, Error or Reject components it should invoke this
@@ -214,14 +214,14 @@ public interface Dialog extends Serializable {
      *
      * @param invokeId
      */
-    void processInvokeWithoutAnswer(Long invokeId);
+    void processInvokeWithoutAnswer(Integer invokeId);
 
     /**
      * Helper function to retrieve operation code from Invoke
      *
      * @param invokeId
      */
-    OperationCode getOperationCodeFromInvoke(Long invokeId);
+    OperationCode getOperationCodeFromInvoke(Integer invokeId);
         
     /**
      * Send initial primitive for Structured dialog.
@@ -311,7 +311,7 @@ public interface Dialog extends Serializable {
      * @param invokeId
      * @throws TCAPException
      */
-    void resetTimer(Long invokeId) throws TCAPException;
+    void resetTimer(Integer invokeId) throws TCAPException;
 
     /**
      * This method can be called on timeout of dialog, inside {@link TCListener#onDialogTimeout(Dialog)} callback. If its

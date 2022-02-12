@@ -56,7 +56,7 @@ public class ServiceTypeImpl implements ServiceType {
 
     public ServiceTypeImpl(int serviceTypeIdentity, GMLCRestriction gmlcRestriction, NotificationToMSUser notificationToMSUser,
             MAPExtensionContainer extensionContainer) {
-        this.serviceTypeIdentity = new ASNInteger(serviceTypeIdentity);
+        this.serviceTypeIdentity = new ASNInteger(serviceTypeIdentity,"ServiceTypeIdentity",0,127,false);
         
         if(gmlcRestriction!=null)
         	this.gmlcRestriction = new ASNGMLCRestriction(gmlcRestriction);

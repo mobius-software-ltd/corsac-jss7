@@ -36,10 +36,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNIA5String;
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=18,constructed=false,lengthIndefinite=false)
 public class PasswordImpl extends ASNIA5String implements Password {
 	public PasswordImpl() {
+		super("Password",4,4,false);
     }
 
     public PasswordImpl(String data) {
-        super(data);
+        super(data,"Password",4,4,false);
     }
 
     public String getData() {

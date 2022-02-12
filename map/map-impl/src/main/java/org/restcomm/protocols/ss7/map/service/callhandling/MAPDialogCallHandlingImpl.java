@@ -87,11 +87,11 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
         super(appCntx, tcapDialog, mapProviderImpl, mapService, origReference, destReference);
     }
 
-    public Long addSendRoutingInformationRequest(ISDNAddressString msisdn,Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException {
+    public Integer addSendRoutingInformationRequest(ISDNAddressString msisdn,Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException {
         return this.addSendRoutingInformationRequest(_Timer_Default, msisdn, numberOfForwarding, networkSignalInfo);
     }
 
-    public Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn,
+    public Integer addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn,
             Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException {
 
     	 MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
@@ -107,15 +107,15 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
          	timeout=customInvokeTimeout;
 
          SendRoutingInformationRequestImplV1 req = new SendRoutingInformationRequestImplV1(msisdn, numberOfForwarding, networkSignalInfo);
-         return this.sendDataComponent(null, null, null, timeout.longValue(), (long)MAPOperationCode.sendRoutingInfo,req, true, false);
+         return this.sendDataComponent(null, null, null, timeout.longValue(), MAPOperationCode.sendRoutingInfo,req, true, false);
     }
     
-    public Long addSendRoutingInformationRequest(ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
+    public Integer addSendRoutingInformationRequest(ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
             Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException {
         return this.addSendRoutingInformationRequest(_Timer_Default, msisdn, cugCheckInfo, numberOfForwarding, networkSignalInfo);
     }
 
-    public Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
+    public Integer addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
             Integer numberOfForwarding, ExternalSignalInfo networkSignalInfo) throws MAPException {
 
     	 MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
@@ -131,11 +131,11 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
          	timeout=customInvokeTimeout;
 
          SendRoutingInformationRequestImplV2 req = new SendRoutingInformationRequestImplV2(msisdn, cugCheckInfo, numberOfForwarding, networkSignalInfo);
-         return this.sendDataComponent(null, null, null, timeout.longValue(), (long)MAPOperationCode.sendRoutingInfo,req, true, false);
+         return this.sendDataComponent(null, null, null, timeout.longValue(), MAPOperationCode.sendRoutingInfo,req, true, false);
     }
 
     @Override
-    public Long addSendRoutingInformationRequest(ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
+    public Integer addSendRoutingInformationRequest(ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
             Integer numberOfForwarding, InterrogationType interrogationType, boolean orInterrogation, Integer orCapability,
             ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber, ForwardingReason forwardingReason,
             ExtBasicServiceCode basicServiceGroup, ExternalSignalInfo networkSignalInfo, CamelInfo camelInfo,
@@ -158,7 +158,7 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
     }
 
     @Override
-    public Long addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
+    public Integer addSendRoutingInformationRequest(int customInvokeTimeout, ISDNAddressString msisdn, CUGCheckInfo cugCheckInfo,
             Integer numberOfForwarding, InterrogationType interrogationType, boolean orInterrogation, Integer orCapability,
             ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber, ForwardingReason forwardingReason,
             ExtBasicServiceCode basicServiceGroup, ExternalSignalInfo networkSignalInfo, CamelInfo camelInfo,
@@ -190,15 +190,15 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
                 gsmSCFInitiatedCall, basicServiceGroup2, networkSignalInfo2, supressMTSS, mtRoamingRetrySupported,
                 callPriority);
         
-        return this.sendDataComponent(null, null, null, timeout.longValue(), (long)MAPOperationCode.sendRoutingInfo,req, true, false);        
+        return this.sendDataComponent(null, null, null, timeout.longValue(), MAPOperationCode.sendRoutingInfo,req, true, false);        
     }
 
-    public void addSendRoutingInformationResponse(long invokeId, IMSI imsi, CUGCheckInfo cugCheckInfo, RoutingInfo routingInfo2)
+    public void addSendRoutingInformationResponse(int invokeId, IMSI imsi, CUGCheckInfo cugCheckInfo, RoutingInfo routingInfo2)
             throws MAPException {
     	this.doAddSendRoutingInformationResponse(invokeId, imsi, cugCheckInfo, routingInfo2);
     }
     
-    protected void doAddSendRoutingInformationResponse(long invokeId, IMSI imsi, CUGCheckInfo cugCheckInfo, RoutingInfo routingInfo2) throws MAPException {
+    protected void doAddSendRoutingInformationResponse(int invokeId, IMSI imsi, CUGCheckInfo cugCheckInfo, RoutingInfo routingInfo2) throws MAPException {
 
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.locationInfoRetrievalContext)
@@ -209,11 +209,11 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
         SendRoutingInformationResponse res;
         res = new SendRoutingInformationResponseImplV1(imsi,routingInfo2,cugCheckInfo);
         
-        this.sendDataComponent(invokeId, null, null, null, (long)MAPOperationCode.sendRoutingInfo, res, false, true);        
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.sendRoutingInfo, res, false, true);        
     }
 
     @Override
-    public void addSendRoutingInformationResponse(long invokeId, IMSI imsi, ExtendedRoutingInfo extRoutingInfo,
+    public void addSendRoutingInformationResponse(int invokeId, IMSI imsi, ExtendedRoutingInfo extRoutingInfo,
             CUGCheckInfo cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfo subscriberInfo, List<SSCode> ssList,
             ExtBasicServiceCode basicService, boolean forwardingInterrogationRequired, ISDNAddressString vmscAddress,
             MAPExtensionContainer extensionContainer, NAEAPreferredCI naeaPreferredCI, CCBSIndicators ccbsIndicators,
@@ -230,7 +230,7 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
     }
 
     @Override
-    public void addSendRoutingInformationResponse_NonLast(long invokeId, IMSI imsi, ExtendedRoutingInfo extRoutingInfo,
+    public void addSendRoutingInformationResponse_NonLast(int invokeId, IMSI imsi, ExtendedRoutingInfo extRoutingInfo,
             CUGCheckInfo cugCheckInfo, boolean cugSubscriptionFlag, SubscriberInfo subscriberInfo, List<SSCode> ssList,
             ExtBasicServiceCode basicService, boolean forwardingInterrogationRequired, ISDNAddressString vmscAddress,
             MAPExtensionContainer extensionContainer, NAEAPreferredCI naeaPreferredCI, CCBSIndicators ccbsIndicators,
@@ -246,7 +246,7 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
                 releaseResourcesSupported, gsmBearerCapability);
     }
 
-    protected void doAddSendRoutingInformationResponse(boolean nonLast, long invokeId, IMSI imsi,
+    protected void doAddSendRoutingInformationResponse(boolean nonLast, int invokeId, IMSI imsi,
             ExtendedRoutingInfo extRoutingInfo, CUGCheckInfo cugCheckInfo, boolean cugSubscriptionFlag,
             SubscriberInfo subscriberInfo, List<SSCode> ssList, ExtBasicServiceCode basicService,
             boolean forwardingInterrogationRequired, ISDNAddressString vmscAddress, MAPExtensionContainer extensionContainer,
@@ -269,11 +269,11 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
                 offeredCamel4CSIs, routingInfo2, ssList2, basicService2, allowedServices, unavailabilityCause,
                 releaseResourcesSupported, gsmBearerCapability);
         
-        this.sendDataComponent(invokeId, null, null, null, (long)MAPOperationCode.sendRoutingInfo, res, false, !nonLast);        
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.sendRoutingInfo, res, false, !nonLast);        
     }
 
     @Override
-    public Long addProvideRoamingNumberRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString msisdn, LMSI lmsi,
+    public Integer addProvideRoamingNumberRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString msisdn, LMSI lmsi,
             ExternalSignalInfo gsmBearerCapability, ExternalSignalInfo networkSignalInfo, boolean suppressionOfAnnouncement,
             ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber, boolean orInterrogation,
             MAPExtensionContainer extensionContainer, AlertingPattern alertingPattern, boolean ccbsCall,
@@ -290,7 +290,7 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
     }
 
     @Override
-    public Long addProvideRoamingNumberRequest(int customInvokeTimeout, IMSI imsi, ISDNAddressString mscNumber,
+    public Integer addProvideRoamingNumberRequest(int customInvokeTimeout, IMSI imsi, ISDNAddressString mscNumber,
     		ISDNAddressString msisdn, LMSI lmsi, ExternalSignalInfo gsmBearerCapability, ExternalSignalInfo networkSignalInfo,
             boolean suppressionOfAnnouncement, ISDNAddressString gmscAddress, CallReferenceNumber callReferenceNumber,
             boolean orInterrogation, MAPExtensionContainer extensionContainer, AlertingPattern alertingPattern,
@@ -320,11 +320,11 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
                 offeredCamel4CSIsInInterrogatingNode, mtRoamingRetrySupported, pagingArea, callPriority, mtrfIndicator,
                 oldMSCNumber);
         
-        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long)MAPOperationCode.provideRoamingNumber, req, true, false);
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.provideRoamingNumber, req, true, false);
     }
 
     @Override
-    public void addProvideRoamingNumberResponse(long invokeId, ISDNAddressString roamingNumber)
+    public void addProvideRoamingNumberResponse(int invokeId, ISDNAddressString roamingNumber)
             throws MAPException {
 
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
@@ -334,11 +334,11 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
                     "Bad application context name for addProvideRoamingNumberResponse: must be roamingNumberEnquiryContext_V1 or V2");
 
         ProvideRoamingNumberResponseImplV1 res = new ProvideRoamingNumberResponseImplV1(roamingNumber);
-        this.sendDataComponent(invokeId, null, null, null, (long)MAPOperationCode.provideRoamingNumber, res, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.provideRoamingNumber, res, false, true);
     }
     
     @Override
-    public void addProvideRoamingNumberResponse(long invokeId, ISDNAddressString roamingNumber,
+    public void addProvideRoamingNumberResponse(int invokeId, ISDNAddressString roamingNumber,
     		MAPExtensionContainer extensionContainer, boolean releaseResourcesSupported, ISDNAddressString vmscAddress)
             throws MAPException {
 
@@ -350,16 +350,16 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
 
         ProvideRoamingNumberResponseImplV3 res = new ProvideRoamingNumberResponseImplV3(roamingNumber, extensionContainer,
                 releaseResourcesSupported, vmscAddress);
-        this.sendDataComponent(invokeId, null, null, null, (long)MAPOperationCode.provideRoamingNumber, res, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.provideRoamingNumber, res, false, true);
     }
 
     @Override
-    public Long addIstCommandRequest(IMSI imsi, MAPExtensionContainer extensionContainer) throws MAPException {
+    public Integer addIstCommandRequest(IMSI imsi, MAPExtensionContainer extensionContainer) throws MAPException {
         return this.addIstCommandRequest(_Timer_Default, imsi, extensionContainer);
     }
 
     @Override
-    public Long addIstCommandRequest(int customInvokeTimeout, IMSI imsi, MAPExtensionContainer extensionContainer) throws MAPException {
+    public Integer addIstCommandRequest(int customInvokeTimeout, IMSI imsi, MAPExtensionContainer extensionContainer) throws MAPException {
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.ServiceTerminationContext)
                 || (vers != MAPApplicationContextVersion.version3))
@@ -373,11 +373,11 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
         	customTimeout=customInvokeTimeout;
 
         IstCommandRequestImpl req = new IstCommandRequestImpl(imsi, extensionContainer);
-        return this.sendDataComponent(null, null, null, customTimeout.longValue(), (long)MAPOperationCode.istCommand, req, true, false);
+        return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.istCommand, req, true, false);
     }
 
     @Override
-    public void addIstCommandResponse(long invokeId, MAPExtensionContainer extensionContainer) throws MAPException {
+    public void addIstCommandResponse(int invokeId, MAPExtensionContainer extensionContainer) throws MAPException {
 
         MAPApplicationContextVersion vers = this.appCntx.getApplicationContextVersion();
         if ((this.appCntx.getApplicationContextName() != MAPApplicationContextName.ServiceTerminationContext)
@@ -389,6 +389,6 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
         if (extensionContainer!=null)
             res = new IstCommandResponseImpl(extensionContainer);
             
-        this.sendDataComponent(invokeId, null, null, null, (long)MAPOperationCode.istCommand, res, false, true);
+        this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.istCommand, res, false, true);
     }
 }

@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNDomainTypeImpl extends ASNEnumerated {
 	public ASNDomainTypeImpl() {
-		
+		super("DomainType",0,1,false);
 	}
 	
 	public ASNDomainTypeImpl(DomainType t) {
-		super(t.getType());
+		super(t.getType(),"DomainType",0,1,false);
 	}
 	
 	public DomainType getType() {

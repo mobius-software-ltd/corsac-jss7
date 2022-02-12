@@ -32,10 +32,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class MTSMSCauseImpl extends ASNSingleByte implements MTSMSCause {
 	public MTSMSCauseImpl() {
+		super("MTSMSCause",0,255,false);
     }
 
     public MTSMSCauseImpl(int data) {
-    	super(data);
+    	super(data,"MTSMSCause",0,255,false);
     }
 
     public int getData() {

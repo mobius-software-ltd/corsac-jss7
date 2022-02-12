@@ -51,7 +51,7 @@ public class DisconnectSpecificInfoImpl implements DisconnectSpecificInfo {
         this.releaseCause = releaseCause;
         
         if(connectTime!=null)
-        	this.connectTime = new ASNInteger(connectTime);        	
+        	this.connectTime = new ASNInteger(connectTime,"ConnectTime",0,255,false);        	
     }
 
     public Integer getConnectTime() {

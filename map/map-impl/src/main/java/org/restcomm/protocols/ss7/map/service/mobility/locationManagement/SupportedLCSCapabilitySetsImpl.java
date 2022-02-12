@@ -40,12 +40,12 @@ public class SupportedLCSCapabilitySetsImpl extends ASNBitString implements Supp
      *
      */
     public SupportedLCSCapabilitySetsImpl() {
-        super(4);
+        super("SupportedLCSCapabilitySets",1,15,false);
     }
 
     public SupportedLCSCapabilitySetsImpl(boolean lcsCapabilitySetRelease98_99, boolean lcsCapabilitySetRelease4,
             boolean lcsCapabilitySetRelease5, boolean lcsCapabilitySetRelease6, boolean lcsCapabilitySetRelease7) {
-    	super(4);
+    	super("SupportedLCSCapabilitySets",1,15,false);
         if (lcsCapabilitySetRelease98_99)
             this.setBit(_INDEX_LCS_CAPABILITY_SET1);
         if (lcsCapabilitySetRelease4)

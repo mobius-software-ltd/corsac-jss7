@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNGuidanceInfoImpl extends ASNEnumerated {
 	public ASNGuidanceInfoImpl() {
-		
+		super("GuidanceInfo",0,2,false);
 	}
 	
 	public ASNGuidanceInfoImpl(GuidanceInfo t) {
-		super(t.getCode());
+		super(t.getCode(),"GuidanceInfo",0,2,false);
 	}
 	
 	public GuidanceInfo getType() {

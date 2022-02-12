@@ -47,19 +47,19 @@ public class OperationCodeImpl implements OperationCode {
 
 	public void setGlobalOperationCode(List<Long> globalOperationCode) {
 		this.localOperationCode=null;
-		this.globalOperationCode=new ASNObjectIdentifier(globalOperationCode);		
+		this.globalOperationCode=new ASNObjectIdentifier(globalOperationCode,"GlobalOperationCode",true,false);		
 	}
 
-	public Long getLocalOperationCode() {
+	public Integer getLocalOperationCode() {
 		if(localOperationCode==null)
 			return null;
 		
-		return localOperationCode.getValue();
+		return localOperationCode.getIntValue();
 	}
 
-	public void setLocalOperationCode(Long localOperationCode) {
+	public void setLocalOperationCode(Integer localOperationCode) {
 		this.globalOperationCode=null;
-		this.localOperationCode = new ASNInteger(localOperationCode);
+		this.localOperationCode = new ASNInteger(localOperationCode,"LocalOperationCode",Integer.MIN_VALUE,Integer.MAX_VALUE,false);
 	}
 
 	public OperationCodeType getOperationType() {

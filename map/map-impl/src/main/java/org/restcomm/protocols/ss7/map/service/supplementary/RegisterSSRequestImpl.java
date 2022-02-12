@@ -85,13 +85,13 @@ public class RegisterSSRequestImpl extends SupplementaryMessageImpl implements R
         this.forwardedToSubaddress = forwardedToSubaddress;
         
         if(noReplyConditionTime!=null)
-        	this.noReplyConditionTime = new ASNInteger(noReplyConditionTime);
+        	this.noReplyConditionTime = new ASNInteger(noReplyConditionTime,"NoReplyConditionTime",5,30,false);
         	
         if(defaultPriority!=null)
         	this.defaultPriority = new ASNEMLPPPriorityImpl(defaultPriority);
         	
         if(nbrUser!=null)
-        	this.nbrUser = new ASNInteger(nbrUser);
+        	this.nbrUser = new ASNInteger(nbrUser,"NBRUser",1,7,false);
         	
         this.longFTNSupported = longFTNSupported;
     }

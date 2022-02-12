@@ -69,18 +69,18 @@ public class SecurityContextImpl implements SecurityContext {
 
 	public void setObj(List<Long> value) {
 		this.intSecurityContext=null;
-		this.objSecurityContext=new ASNObjectIdentifier(value);		
+		this.objSecurityContext=new ASNObjectIdentifier(value,"SecurityCtx",true,false);		
 	}
 
-	public Long getInt() {
+	public Integer getInt() {
 		if(intSecurityContext==null)
 			return null;
 		
-		return intSecurityContext.getValue();
+		return intSecurityContext.getIntValue();
 	}
 
-	public void setInt(Long value) {
+	public void setInt(Integer value) {
 		this.objSecurityContext=null;
-		this.intSecurityContext = new ASNInteger(value);		
+		this.intSecurityContext = new ASNInteger(value,"SecurityCtx",Integer.MIN_VALUE,Integer.MAX_VALUE,false);		
 	}
 }

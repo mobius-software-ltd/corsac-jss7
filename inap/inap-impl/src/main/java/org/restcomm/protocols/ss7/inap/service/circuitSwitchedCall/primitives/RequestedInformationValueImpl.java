@@ -57,9 +57,9 @@ public class RequestedInformationValueImpl {
 
     public RequestedInformationValueImpl(RequestedInformationType requestedInformationType, int intValue) {
         if (requestedInformationType == RequestedInformationType.callAttemptElapsedTime)
-            this.callAttemptElapsedTimeValue = new ASNInteger(intValue);
+            this.callAttemptElapsedTimeValue = new ASNInteger(intValue,"CallAttemptElapsedTime",0,255,false);
         else if(requestedInformationType == RequestedInformationType.callConnectedElapsedTime)
-        	this.callConnectedElapsedTimeValue = new ASNInteger(intValue);            
+        	this.callConnectedElapsedTimeValue = new ASNInteger(intValue,"CallConnectedElapsedTime",0,255,false);
     }
 
     public RequestedInformationValueImpl(DateAndTime callStopTimeValue) {

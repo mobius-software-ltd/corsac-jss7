@@ -32,14 +32,15 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class SGSNCapabilitiesImpl extends ASNSingleByte implements SGSNCapabilities {
 	public SGSNCapabilitiesImpl() {
+		super("SGSNCapabilities",0,1,false);
     }
 
     public SGSNCapabilitiesImpl(int data) {
-    	super(data);
+    	super(data,"SGSNCapabilities",0,1,false);
     }
 
     public SGSNCapabilitiesImpl(boolean aoCSupportedBySGSN) {
-    	super(aoCSupportedBySGSN ? 0x01 : 0x00);
+    	super(aoCSupportedBySGSN ? 0x01 : 0x00,"SGSNCapabilities",0,1,false);
     }
 
     public int getData() {

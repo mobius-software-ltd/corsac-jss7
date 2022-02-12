@@ -35,11 +35,11 @@ public class BMSCInterfaceListImpl extends ASNBitString implements BMSCInterface
 	static final int _ID_gmb = 0;
 
     public BMSCInterfaceListImpl() { 
-    	super(0);
+    	super("BMSCInterfaceList",0,7,false);
     }
 
     public BMSCInterfaceListImpl(boolean gmb) {
-    	super(0);
+    	super("BMSCInterfaceList",0,7,false);
     	if (gmb)
             this.setBit(_ID_gmb);
     }

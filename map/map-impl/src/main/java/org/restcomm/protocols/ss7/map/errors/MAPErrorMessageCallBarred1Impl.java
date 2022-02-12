@@ -34,14 +34,14 @@ import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageCallBarred;
  */
 public class MAPErrorMessageCallBarred1Impl extends EnumeratedMAPErrorMessage1Impl implements MAPErrorMessageCallBarred {
 	public MAPErrorMessageCallBarred1Impl(CallBarringCause callBarringCause) {
-        super((long) MAPErrorCode.callBarred);
+        super(MAPErrorCode.callBarred,"CallBarred",0,1);
 
         if(callBarringCause!=null)
-        	setValue(Long.valueOf(callBarringCause.getCode()));
+        	setValue(callBarringCause.getCode());
     }
 
     public MAPErrorMessageCallBarred1Impl() {
-        super((long) MAPErrorCode.callBarred);
+        super(MAPErrorCode.callBarred,"CallBarred",0,1);
     }
 
     public boolean isEmCallBarred() {
@@ -54,7 +54,7 @@ public class MAPErrorMessageCallBarred1Impl extends EnumeratedMAPErrorMessage1Im
 
     @Override
     public CallBarringCause getCallBarringCause() {
-    	Long value=getValue();
+    	Integer value=getValue();
     	if(value==null)
     		return null;
     	
@@ -64,7 +64,7 @@ public class MAPErrorMessageCallBarred1Impl extends EnumeratedMAPErrorMessage1Im
     @Override
     public void setCallBarringCause(CallBarringCause val) {
     	if(val!=null)
-    		setValue(Long.valueOf(val.getCode()));
+    		setValue(val.getCode());
     	else
     		setValue(null);
     }

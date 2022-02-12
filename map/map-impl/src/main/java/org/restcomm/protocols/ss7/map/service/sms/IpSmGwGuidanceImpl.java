@@ -29,8 +29,8 @@ public class IpSmGwGuidanceImpl implements IpSmGwGuidance {
     public IpSmGwGuidanceImpl(int minimumDeliveryTimeValue, int recommendedDeliveryTimeValue, MAPExtensionContainer extensionContainer) {
         this.extensionContainer = extensionContainer;
                 
-        this.minimumDeliveryTimeValue = new ASNInteger(minimumDeliveryTimeValue);
-        this.recommendedDeliveryTimeValue = new ASNInteger(recommendedDeliveryTimeValue);        
+        this.minimumDeliveryTimeValue = new ASNInteger(minimumDeliveryTimeValue,"MinimumDeliveryTimeValue",30,600,false);
+        this.recommendedDeliveryTimeValue = new ASNInteger(recommendedDeliveryTimeValue,"RecommendedDeliveryTimeValue",30,600,false);        
     }
 
     public MAPExtensionContainer getExtensionContainer() {

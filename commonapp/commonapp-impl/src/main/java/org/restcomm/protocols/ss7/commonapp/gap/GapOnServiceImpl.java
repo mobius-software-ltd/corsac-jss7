@@ -41,7 +41,7 @@ public class GapOnServiceImpl implements GapOnService {
     }
 
     public GapOnServiceImpl(int serviceKey) {
-    	this.serviceKey = new ASNInteger(serviceKey);    	
+    	this.serviceKey = new ASNInteger(serviceKey,"ServiceKey",0,Integer.MAX_VALUE,false);    	
     }
 
     public int getServiceKey() {

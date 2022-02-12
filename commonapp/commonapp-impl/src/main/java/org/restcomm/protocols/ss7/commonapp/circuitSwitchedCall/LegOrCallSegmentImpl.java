@@ -49,7 +49,7 @@ public class LegOrCallSegmentImpl implements LegOrCallSegment {
 
     public LegOrCallSegmentImpl(Integer callSegmentID) {
     	if(callSegmentID!=null)
-    		this.callSegmentID = new ASNInteger(callSegmentID);    		
+    		this.callSegmentID = new ASNInteger(callSegmentID,"CallSegmentID",1,127,false);    		
     }
 
     public LegOrCallSegmentImpl(LegID legID) {

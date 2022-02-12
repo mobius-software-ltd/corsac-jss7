@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNInterrogationTypeImpl extends ASNEnumerated {
 	public ASNInterrogationTypeImpl() {
-		
+		super("InterrogationType",0,1,false);
 	}
 	
 	public ASNInterrogationTypeImpl(InterrogationType t) {
-		super(t.getCode());
+		super(t.getCode(),"InterrogationType",0,1,false);
 	}
 	
 	public InterrogationType getType() {

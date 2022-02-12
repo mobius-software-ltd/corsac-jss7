@@ -38,11 +38,11 @@ import io.netty.buffer.ByteBuf;
  */
 @ASNWrappedTag
 public class INAPErrorMessageOctetStringImpl extends INAPErrorMessageImpl implements INAPErrorMessageOctetString {
-	protected Long errorCode;
+	protected Integer errorCode;
 
 	private ASNOctetString value;
 	
-    protected INAPErrorMessageOctetStringImpl(Long errorCode) {
+    protected INAPErrorMessageOctetStringImpl(Integer errorCode) {
         this.errorCode = errorCode;
     }
 
@@ -56,7 +56,7 @@ public class INAPErrorMessageOctetStringImpl extends INAPErrorMessageImpl implem
     		this.value=null;
 	}
 	
-    public Long getErrorCode() {
+    public Integer getErrorCode() {
         return errorCode;
     }
 

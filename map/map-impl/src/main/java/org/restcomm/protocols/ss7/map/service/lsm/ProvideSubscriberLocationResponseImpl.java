@@ -122,7 +122,7 @@ public class ProvideSubscriberLocationResponseImpl extends LsmMessageImpl implem
         this.utranPositioningData = utranPositioningData;
         
         if(ageOfLocationEstimate!=null)
-        	this.ageOfLocationEstimate = new ASNInteger(ageOfLocationEstimate);        	
+        	this.ageOfLocationEstimate = new ASNInteger(ageOfLocationEstimate,"AgeOfLocationEstimate",0,32767,false);        	
         
         this.additionalLocationEstimate = additionalLocationEstimate;
         this.extensionContainer = extensionContainer;

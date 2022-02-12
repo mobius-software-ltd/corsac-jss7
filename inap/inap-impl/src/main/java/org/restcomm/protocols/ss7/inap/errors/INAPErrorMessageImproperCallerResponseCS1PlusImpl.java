@@ -33,14 +33,14 @@ import org.restcomm.protocols.ss7.inap.api.errors.ImproperCallerResponseParamete
  */
 public class INAPErrorMessageImproperCallerResponseCS1PlusImpl extends EnumeratedINAPErrorMessage1Impl implements INAPErrorMessageImproperCallerResponseCS1Plus {
 	protected INAPErrorMessageImproperCallerResponseCS1PlusImpl(ImproperCallerResponseParameter improperCallerResponseParameter) {
-        super((long) INAPErrorCode.systemFailure);
+        super(INAPErrorCode.systemFailure,"SystemFailure",1,2);
 
         if(improperCallerResponseParameter!=null)
-        	setValue(Long.valueOf(improperCallerResponseParameter.getCode()));        
+        	setValue(improperCallerResponseParameter.getCode());        
     }
 
     public INAPErrorMessageImproperCallerResponseCS1PlusImpl() {
-        super((long) INAPErrorCode.systemFailure);
+        super(INAPErrorCode.systemFailure,"SystemFailure",1,2);
     }
 
     public boolean isImproperCallerResponseCs1Plus() {
@@ -53,11 +53,11 @@ public class INAPErrorMessageImproperCallerResponseCS1PlusImpl extends Enumerate
 
     @Override
     public ImproperCallerResponseParameter getImproperCallerResponse() {
-    	Long value=getValue();
+    	Integer value=getValue();
     	if(value==null)
     		return null;
     	
-    	return ImproperCallerResponseParameter.getInstance(value.intValue());
+    	return ImproperCallerResponseParameter.getInstance(value);
     }
 
     @Override

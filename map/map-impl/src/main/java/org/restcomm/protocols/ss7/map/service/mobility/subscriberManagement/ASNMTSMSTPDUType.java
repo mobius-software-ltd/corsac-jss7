@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNMTSMSTPDUType extends ASNEnumerated {
 	public ASNMTSMSTPDUType() {
-		
+		super("MTSMSTPDUType",0,2,false);
 	}
 	
 	public ASNMTSMSTPDUType(MTSMSTPDUType t) {
-		super(t.getCode());
+		super(t.getCode(),"MTSMSTPDUType",0,2,false);
 	}
 	
 	public MTSMSTPDUType getType() {

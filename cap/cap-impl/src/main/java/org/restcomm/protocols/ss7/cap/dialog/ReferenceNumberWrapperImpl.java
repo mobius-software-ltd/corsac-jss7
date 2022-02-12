@@ -40,7 +40,7 @@ public class ReferenceNumberWrapperImpl {
 
     public ReferenceNumberWrapperImpl(Integer reference) {
     	if(reference!=null)
-    		this.reference = new ASNInteger(reference);    		
+    		this.reference = new ASNInteger(reference,"ReferenceNumber",0,Integer.MAX_VALUE,false);    		
     }
 
     public Integer getReference() {

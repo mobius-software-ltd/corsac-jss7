@@ -58,7 +58,7 @@ public class ResetTimerSMSRequestImpl extends SmsMessageImpl implements ResetTim
         if(timerID!=null)
         	this.timerID = new ASNTimerID(timerID);
         	
-        this.timerValue = new ASNInteger(timerValue);
+        this.timerValue = new ASNInteger(timerValue,"TimerValue",0,Integer.MAX_VALUE,false);
         this.extensions = extensions;
     }
 

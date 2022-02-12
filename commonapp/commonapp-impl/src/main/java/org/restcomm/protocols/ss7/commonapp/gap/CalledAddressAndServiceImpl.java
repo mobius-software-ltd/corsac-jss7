@@ -47,7 +47,7 @@ public class CalledAddressAndServiceImpl implements CalledAddressAndService {
 
     public CalledAddressAndServiceImpl(DigitsIsup calledAddressValue, int serviceKey) {
         this.calledAddressValue = calledAddressValue;
-        this.serviceKey = new ASNInteger(serviceKey);        
+        this.serviceKey = new ASNInteger(serviceKey,"ServiceKey",0,Integer.MAX_VALUE,false);        
     }
 
     public DigitsIsup getCalledAddressNumber() {

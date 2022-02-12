@@ -262,7 +262,7 @@ public interface MAPDialog extends Serializable {
      *
      * @param invokeId
      */
-    void processInvokeWithoutAnswer(Long invokeId);
+    void processInvokeWithoutAnswer(Integer invokeId);
 
     /**
      * Sends the TC-INVOKE,TC-RESULT or TC-RESULT-L component
@@ -270,7 +270,7 @@ public interface MAPDialog extends Serializable {
      * @param invoke
      * @throws MAPException
      */
-    public Long sendDataComponent(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,Long operationCode,MAPMessage param,Boolean isRequest,Boolean isLastResponse) throws MAPException;
+    public Integer sendDataComponent(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,Integer operationCode,MAPMessage param,Boolean isRequest,Boolean isLastResponse) throws MAPException;
 
     /**
      * Sends the TC-U-ERROR component
@@ -279,7 +279,7 @@ public interface MAPDialog extends Serializable {
      * @param mapErrorMessage
      * @throws MAPException
      */
-    public void sendErrorComponent(Long invokeId, MAPErrorMessage mem) throws MAPException;
+    public void sendErrorComponent(Integer invokeId, MAPErrorMessage mem) throws MAPException;
 
     /**
      * Sends the TC-U-REJECT component
@@ -288,7 +288,7 @@ public interface MAPDialog extends Serializable {
      * @param problem
      * @throws MAPException
      */
-    public void sendRejectComponent(Long invokeId, Problem problem) throws MAPException;
+    public void sendRejectComponent(Integer invokeId, Problem problem) throws MAPException;
 
     /**
      * Reset the Invoke Timeout timer for the Invoke. (TC-TIMER-RESET)
@@ -296,7 +296,7 @@ public interface MAPDialog extends Serializable {
      * @param invokeId
      * @throws MAPException
      */
-    void resetInvokeTimer(Long invokeId) throws MAPException;
+    void resetInvokeTimer(Integer invokeId) throws MAPException;
 
     /**
      * Causes local termination of an operation invocation (TC-U-CANCEL)
@@ -305,7 +305,7 @@ public interface MAPDialog extends Serializable {
      * @return true:OK, false: Invoke not found
      * @throws MAPException
      */
-    boolean cancelInvocation(Long invokeId) throws MAPException;
+    boolean cancelInvocation(Integer invokeId) throws MAPException;
 
     /**
      * Getting from the MAPDialog a user-defined object to save relating to the Dialog information

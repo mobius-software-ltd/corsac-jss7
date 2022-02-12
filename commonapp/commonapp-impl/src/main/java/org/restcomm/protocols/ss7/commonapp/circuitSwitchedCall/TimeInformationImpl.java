@@ -48,7 +48,7 @@ public class TimeInformationImpl implements TimeInformation {
     }
 
     public TimeInformationImpl(int timeIfNoTariffSwitch) {
-        this.timeIfNoTariffSwitch = new ASNInteger(timeIfNoTariffSwitch);        
+        this.timeIfNoTariffSwitch = new ASNInteger(timeIfNoTariffSwitch,"TimeIfNoTariffSwitch",0,864000,false);        
     }
 
     public TimeInformationImpl(TimeIfTariffSwitch timeIfTariffSwitch) {

@@ -69,7 +69,7 @@ public class Client extends EventTestHarness {
         // create some INVOKE
         Invoke invoke = cpFactory.createTCInvokeRequestNotLast(InvokeClass.Class1);
         invoke.setInvokeId(this.dialog.getNewInvokeId());
-        OperationCode oc = TcapFactory.createPrivateOperationCode(12L);
+        OperationCode oc = TcapFactory.createPrivateOperationCode(12);
         invoke.setOperationCode(oc);
         // no parameter
         WrappedComponentImpl component=new WrappedComponentImpl();
@@ -79,7 +79,7 @@ public class Client extends EventTestHarness {
         // create a second INVOKE for which we will test linkedId
         Invoke invokeLast = cpFactory.createTCInvokeRequestLast(InvokeClass.Class1);
         invokeLast.setInvokeId(this.dialog.getNewInvokeId());
-        oc = TcapFactory.createPrivateOperationCode(13L);
+        oc = TcapFactory.createPrivateOperationCode(13);
         invokeLast.setOperationCode(oc);
         // no parameter
         component=new WrappedComponentImpl();
@@ -123,7 +123,7 @@ public class Client extends EventTestHarness {
     	Invoke invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast();
         invoke.setInvokeId(12l);
 
-        OperationCode oc = TcapFactory.createPrivateOperationCode(59L);
+        OperationCode oc = TcapFactory.createPrivateOperationCode(59);
         invoke.setOperationCode(oc);
 
         ASNOctetString p1=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 0x0F }),null,null,null,false);        
@@ -142,7 +142,7 @@ public class Client extends EventTestHarness {
         for (Long invokeId : lstInvokeId) {
             Invoke invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast();
             invoke.setInvokeId(invokeId);
-            OperationCode opCode = TcapFactory.createPrivateOperationCode(0L);            
+            OperationCode opCode = TcapFactory.createPrivateOperationCode(0);            
             invoke.setOperationCode(opCode);
             WrappedComponentImpl component=new WrappedComponentImpl();
             component.setInvoke(invoke);

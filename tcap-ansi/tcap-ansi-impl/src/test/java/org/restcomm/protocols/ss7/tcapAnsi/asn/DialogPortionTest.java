@@ -77,7 +77,7 @@ public class DialogPortionTest {
         UserInformationElementTest.byteBufEquals(Unpooled.wrappedBuffer(dataValue), ((ASNOctetString)ui.getUserInformationElements().get(0).getChild()).getValue());
 
         SecurityContext sc = dp.getSecurityContext();
-        assertEquals(sc.getInt(), new Long(10L));
+        assertEquals(sc.getInt(), new Integer(10));
         Confidentiality con = dp.getConfidentiality();
         assertEquals((long) con.getIntegerConfidentialityId(), 20);
 
@@ -87,7 +87,7 @@ public class DialogPortionTest {
     	dp=(DialogPortionImpl)result.getResult();
         
     	assertNull(dp.getProtocolVersion());
-    	assertEquals(dp.getApplicationContext().getInt(), new Long(30L));
+    	assertEquals(dp.getApplicationContext().getInt(), new Integer(30));
         assertNull(dp.getUserInformation());
 
         sc = dp.getSecurityContext();
@@ -115,10 +115,10 @@ public class DialogPortionTest {
         ui.setUserInformationElements(uie);
         dp.setUserInformation(ui);
         SecurityContextImpl sc = new SecurityContextImpl();
-        sc.setInt(10L);
+        sc.setInt(10);
         dp.setSecurityContext(sc);
         ConfidentialityImpl con = new ConfidentialityImpl();
-        con.setIntegerConfidentialityId(20L);
+        con.setIntegerConfidentialityId(20);
         dp.setConfidentiality(con);
 
         ByteBuf output=parser.encode(dp);

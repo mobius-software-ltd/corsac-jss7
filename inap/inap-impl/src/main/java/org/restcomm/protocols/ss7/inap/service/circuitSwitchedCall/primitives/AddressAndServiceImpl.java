@@ -62,7 +62,7 @@ public class AddressAndServiceImpl implements AddressAndService {
     	this.calledAddressValue=calledAddressValue;
     	
     	if(serviceKey!=null)
-    		this.serviceKey=new ASNInteger(serviceKey);
+    		this.serviceKey=new ASNInteger(serviceKey,"ServiceKey",0,Integer.MAX_VALUE,false);
     		
     	this.callingAddressValue=callingAddressValue;
     	this.locationNumber=locationNumber;

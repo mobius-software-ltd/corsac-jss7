@@ -47,10 +47,10 @@ public interface MAPDialogSms extends MAPDialog {
      * @return invokeId
      * @throws MAPException
      */
-    Long addForwardShortMessageRequest(SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI,
+    Integer addForwardShortMessageRequest(SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI,
             boolean moreMessagesToSend) throws MAPException;
 
-    Long addForwardShortMessageRequest(int customInvokeTimeout, SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA,
+    Integer addForwardShortMessageRequest(int customInvokeTimeout, SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA,
             SmsSignalInfo sm_RP_UI, boolean moreMessagesToSend) throws MAPException;
 
     /**
@@ -59,7 +59,7 @@ public interface MAPDialogSms extends MAPDialog {
      * @param invokeId
      * @throws MAPException
      */
-    void addForwardShortMessageResponse(long invokeId) throws MAPException;
+    void addForwardShortMessageResponse(int invokeId) throws MAPException;
 
     /**
      * Sending MAP-MO-FORWARD-SHORT-MESSAGE request
@@ -72,10 +72,10 @@ public interface MAPDialogSms extends MAPDialog {
      * @return invokeId
      * @throws MAPException
      */
-    Long addMoForwardShortMessageRequest(SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI,
+    Integer addMoForwardShortMessageRequest(SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI,
     		MAPExtensionContainer extensionContainer, IMSI imsi) throws MAPException;
 
-    Long addMoForwardShortMessageRequest(int customInvokeTimeout, SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA,
+    Integer addMoForwardShortMessageRequest(int customInvokeTimeout, SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA,
             SmsSignalInfo sm_RP_UI, MAPExtensionContainer extensionContainer, IMSI imsi) throws MAPException;
 
     /**
@@ -86,7 +86,7 @@ public interface MAPDialogSms extends MAPDialog {
      * @param extensionContainer optional
      * @throws MAPException
      */
-    void addMoForwardShortMessageResponse(long invokeId, SmsSignalInfo sm_RP_UI, MAPExtensionContainer extensionContainer)
+    void addMoForwardShortMessageResponse(int invokeId, SmsSignalInfo sm_RP_UI, MAPExtensionContainer extensionContainer)
             throws MAPException;
 
     /**
@@ -100,10 +100,10 @@ public interface MAPDialogSms extends MAPDialog {
      * @return
      * @throws MAPException
      */
-    Long addMtForwardShortMessageRequest(SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI,
+    Integer addMtForwardShortMessageRequest(SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI,
             boolean moreMessagesToSend, MAPExtensionContainer extensionContainer) throws MAPException;
 
-    Long addMtForwardShortMessageRequest(int customInvokeTimeout, SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA,
+    Integer addMtForwardShortMessageRequest(int customInvokeTimeout, SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA,
             SmsSignalInfo sm_RP_UI, boolean moreMessagesToSend, MAPExtensionContainer extensionContainer) throws MAPException;
 
     /**
@@ -114,7 +114,7 @@ public interface MAPDialogSms extends MAPDialog {
      * @param extensionContainer optional
      * @throws MAPException
      */
-    void addMtForwardShortMessageResponse(long invokeId, SmsSignalInfo sm_RP_UI, MAPExtensionContainer extensionContainer)
+    void addMtForwardShortMessageResponse(int invokeId, SmsSignalInfo sm_RP_UI, MAPExtensionContainer extensionContainer)
             throws MAPException;
 
     /**
@@ -130,12 +130,12 @@ public interface MAPDialogSms extends MAPDialog {
      * @return
      * @throws MAPException
      */
-    Long addSendRoutingInfoForSMRequest(ISDNAddressString msisdn, boolean sm_RP_PRI, AddressString serviceCentreAddress,
+    Integer addSendRoutingInfoForSMRequest(ISDNAddressString msisdn, boolean sm_RP_PRI, AddressString serviceCentreAddress,
     		MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator, SM_RP_MTI sM_RP_MTI, SM_RP_SMEA sM_RP_SMEA,
             SMDeliveryNotIntended smDeliveryNotIntended, boolean ipSmGwGuidanceIndicator, IMSI imsi, boolean t4TriggerIndicator,
             boolean singleAttemptDelivery, TeleserviceCode teleservice, CorrelationID correlationID) throws MAPException;
 
-    Long addSendRoutingInfoForSMRequest(int customInvokeTimeout, ISDNAddressString msisdn, boolean sm_RP_PRI,
+    Integer addSendRoutingInfoForSMRequest(int customInvokeTimeout, ISDNAddressString msisdn, boolean sm_RP_PRI,
     		AddressString serviceCentreAddress, MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator,
             SM_RP_MTI sM_RP_MTI, SM_RP_SMEA sM_RP_SMEA, SMDeliveryNotIntended smDeliveryNotIntended,
             boolean ipSmGwGuidanceIndicator, IMSI imsi, boolean t4TriggerIndicator, boolean singleAttemptDelivery,
@@ -150,7 +150,7 @@ public interface MAPDialogSms extends MAPDialog {
      * @return
      * @throws MAPException
      */
-    void addSendRoutingInfoForSMResponse(long invokeId, IMSI imsi, LocationInfoWithLMSI locationInfoWithLMSI,
+    void addSendRoutingInfoForSMResponse(int invokeId, IMSI imsi, LocationInfoWithLMSI locationInfoWithLMSI,
     		MAPExtensionContainer extensionContainer, Boolean mwdSet, IpSmGwGuidance ipSmGwGuidance) throws MAPException;
 
     /**
@@ -168,12 +168,12 @@ public interface MAPDialogSms extends MAPDialog {
      * @return
      * @throws MAPException
      */
-    Long addReportSMDeliveryStatusRequest(ISDNAddressString msisdn, AddressString serviceCentreAddress,
+    Integer addReportSMDeliveryStatusRequest(ISDNAddressString msisdn, AddressString serviceCentreAddress,
             SMDeliveryOutcome sMDeliveryOutcome, Integer absentSubscriberDiagnosticSM,
             MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator, boolean deliveryOutcomeIndicator,
             SMDeliveryOutcome additionalSMDeliveryOutcome, Integer additionalAbsentSubscriberDiagnosticSM) throws MAPException;
 
-    Long addReportSMDeliveryStatusRequest(int customInvokeTimeout, ISDNAddressString msisdn,
+    Integer addReportSMDeliveryStatusRequest(int customInvokeTimeout, ISDNAddressString msisdn,
     		AddressString serviceCentreAddress, SMDeliveryOutcome sMDeliveryOutcome, Integer absentSubscriberDiagnosticSM,
             MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator, boolean deliveryOutcomeIndicator,
             SMDeliveryOutcome additionalSMDeliveryOutcome, Integer additionalAbsentSubscriberDiagnosticSM) throws MAPException;
@@ -186,7 +186,7 @@ public interface MAPDialogSms extends MAPDialog {
      * @return
      * @throws MAPException
      */
-    void addReportSMDeliveryStatusResponse(long invokeId, ISDNAddressString storedMSISDN) throws MAPException;
+    void addReportSMDeliveryStatusResponse(int invokeId, ISDNAddressString storedMSISDN) throws MAPException;
 
     /**
      * Sending MAP-SEND-ROUTING-INFO-FOR-SM response
@@ -197,7 +197,7 @@ public interface MAPDialogSms extends MAPDialog {
      * @return
      * @throws MAPException
      */
-    void addReportSMDeliveryStatusResponse(long invokeId, ISDNAddressString storedMSISDN,
+    void addReportSMDeliveryStatusResponse(int invokeId, ISDNAddressString storedMSISDN,
     		MAPExtensionContainer extensionContainer) throws MAPException;
 
     /**
@@ -211,11 +211,11 @@ public interface MAPDialogSms extends MAPDialog {
      * @return
      * @throws MAPException
      */
-    Long addInformServiceCentreRequest(ISDNAddressString storedMSISDN, MWStatus mwStatus,
+    Integer addInformServiceCentreRequest(ISDNAddressString storedMSISDN, MWStatus mwStatus,
     		MAPExtensionContainer extensionContainer, Integer absentSubscriberDiagnosticSM,
             Integer additionalAbsentSubscriberDiagnosticSM) throws MAPException;
 
-    Long addInformServiceCentreRequest(int customInvokeTimeout, ISDNAddressString storedMSISDN, MWStatus mwStatus,
+    Integer addInformServiceCentreRequest(int customInvokeTimeout, ISDNAddressString storedMSISDN, MWStatus mwStatus,
     		MAPExtensionContainer extensionContainer, Integer absentSubscriberDiagnosticSM,
             Integer additionalAbsentSubscriberDiagnosticSM) throws MAPException;
 
@@ -227,9 +227,9 @@ public interface MAPDialogSms extends MAPDialog {
      * @return
      * @throws MAPException
      */
-    Long addAlertServiceCentreRequest(ISDNAddressString msisdn, AddressString serviceCentreAddress) throws MAPException;
+    Integer addAlertServiceCentreRequest(ISDNAddressString msisdn, AddressString serviceCentreAddress) throws MAPException;
 
-    Long addAlertServiceCentreRequest(int customInvokeTimeout, ISDNAddressString msisdn,
+    Integer addAlertServiceCentreRequest(int customInvokeTimeout, ISDNAddressString msisdn,
     		AddressString serviceCentreAddress) throws MAPException;
 
     /**
@@ -238,19 +238,19 @@ public interface MAPDialogSms extends MAPDialog {
      * @param invokeId
      * @throws MAPException
      */
-    void addAlertServiceCentreResponse(long invokeId) throws MAPException;
+    void addAlertServiceCentreResponse(int invokeId) throws MAPException;
 
 
-    Long addReadyForSMRequest(IMSI imsi, AlertReason alertReason, boolean alertReasonIndicator, MAPExtensionContainer extensionContainer,
+    Integer addReadyForSMRequest(IMSI imsi, AlertReason alertReason, boolean alertReasonIndicator, MAPExtensionContainer extensionContainer,
             boolean additionalAlertReasonIndicator) throws MAPException;
 
-    Long addReadyForSMRequest(int customInvokeTimeout, IMSI imsi, AlertReason alertReason, boolean alertReasonIndicator,
+    Integer addReadyForSMRequest(int customInvokeTimeout, IMSI imsi, AlertReason alertReason, boolean alertReasonIndicator,
     		MAPExtensionContainer extensionContainer, boolean additionalAlertReasonIndicator) throws MAPException;
 
-    void addReadyForSMResponse(long invokeId, MAPExtensionContainer extensionContainer) throws MAPException;
+    void addReadyForSMResponse(int invokeId, MAPExtensionContainer extensionContainer) throws MAPException;
 
-    Long addNoteSubscriberPresentRequest(IMSI imsi) throws MAPException;
+    Integer addNoteSubscriberPresentRequest(IMSI imsi) throws MAPException;
 
-    Long addNoteSubscriberPresentRequest(int customInvokeTimeout, IMSI imsi) throws MAPException;
+    Integer addNoteSubscriberPresentRequest(int customInvokeTimeout, IMSI imsi) throws MAPException;
 
 }

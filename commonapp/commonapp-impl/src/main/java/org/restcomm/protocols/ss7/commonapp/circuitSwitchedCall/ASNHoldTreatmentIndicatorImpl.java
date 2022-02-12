@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNHoldTreatmentIndicatorImpl extends ASNEnumerated {
 	public ASNHoldTreatmentIndicatorImpl() {
-		
+		super("HoldTreatmentIndicator",1,2,false);
 	}
 	
 	public ASNHoldTreatmentIndicatorImpl(HoldTreatmentIndicator t) {
-		super(t.getCode());
+		super(t.getCode(),"HoldTreatmentIndicator",1,2,false);
 	}
 	
 	public HoldTreatmentIndicator getType() {

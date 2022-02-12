@@ -223,7 +223,7 @@ public class SGSNCAMELSubscriptionInfoTest {
 
         // start gprsCsi
         GPRSTriggerDetectionPoint gprsTriggerDetectionPoint = GPRSTriggerDetectionPoint.attachChangeOfPosition;
-        long serviceKey = 2;
+        int serviceKey = 2;
         ISDNAddressStringImpl gsmSCFAddress = new ISDNAddressStringImpl(AddressNature.international_number, NumberingPlan.ISDN,
                 "22228");
         DefaultGPRSHandling defaultSessionHandling = DefaultGPRSHandling.releaseTransaction;

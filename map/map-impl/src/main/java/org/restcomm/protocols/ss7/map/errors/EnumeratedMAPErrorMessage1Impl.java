@@ -53,30 +53,36 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
  */
 @ASNWrappedTag
 public abstract class EnumeratedMAPErrorMessage1Impl extends MAPErrorMessageImpl {
-	protected Long errorCode;
+	protected Integer errorCode;
 
 	private ASNEnumerated value;
+	private String name;
+	private Integer minValue;
+	private Integer maxValue;
 	
-    protected EnumeratedMAPErrorMessage1Impl(Long errorCode) {
+    protected EnumeratedMAPErrorMessage1Impl(Integer errorCode,String name,Integer minValue,Integer maxValue) {
         this.errorCode = errorCode;
+        this.name = name;
+        this.minValue = minValue;
+        this.maxValue = maxValue;
     }
 
     public EnumeratedMAPErrorMessage1Impl() {
     }
 
-    protected Long getValue() {
+    protected Integer getValue() {
     	if(this.value==null)
     		return null;
     	
-		return value.getValue();
+		return value.getIntValue();
 	}
 
-    protected void setValue(Long value) {
+    protected void setValue(Integer value) {
     	if(this.value==null)
-    		this.value=new ASNEnumerated(value);    	
+    		this.value=new ASNEnumerated(value,name,minValue,maxValue,true);    	
 	}
 	
-    public Long getErrorCode() {
+    public Integer getErrorCode() {
         return errorCode;
     }
 

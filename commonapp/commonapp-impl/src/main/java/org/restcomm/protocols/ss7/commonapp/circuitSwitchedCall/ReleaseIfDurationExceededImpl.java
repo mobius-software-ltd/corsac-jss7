@@ -50,7 +50,7 @@ public class ReleaseIfDurationExceededImpl {
 
     public ReleaseIfDurationExceededImpl(Boolean tone, CAPINAPExtensions extensions) {
     	if(tone!=null)
-    		this.tone = new ASNBoolean(tone);
+    		this.tone = new ASNBoolean(tone,"Tone",true,false);
     		
         this.extensions = extensions;        
     }

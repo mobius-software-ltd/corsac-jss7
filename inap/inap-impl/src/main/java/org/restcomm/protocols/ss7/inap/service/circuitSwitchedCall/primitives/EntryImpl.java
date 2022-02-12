@@ -51,12 +51,12 @@ public class EntryImpl implements Entry {
 
     public EntryImpl(List<Long> agreements) {
     	if(agreements!=null)
-    		this.agreements = new ASNObjectIdentifier(agreements);    		
+    		this.agreements = new ASNObjectIdentifier(agreements,"Agreements",true,false);    		
     }
 
     public EntryImpl(Integer networkSpecific) {
     	if(networkSpecific!=null)
-    		this.networkSpecific = new ASNInteger(networkSpecific);    		
+    		this.networkSpecific = new ASNInteger(networkSpecific,"NetworkSpecific",0,255,false);    		
     }
 
     public List<Long> getAgreements() {

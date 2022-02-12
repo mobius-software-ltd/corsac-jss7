@@ -32,11 +32,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
 *
 */
 public class ReportingTriggerImpl extends ASNSingleByte implements ReportingTrigger {
-	public ReportingTriggerImpl() {        
+	public ReportingTriggerImpl() {    
+		super("ReportingTrigger",0,255,false);
     }
 
     public ReportingTriggerImpl(int data) {
-    	super(data);
+    	super(data,"ReportingTrigger",0,255,false);
     }
 
     public int getData() {

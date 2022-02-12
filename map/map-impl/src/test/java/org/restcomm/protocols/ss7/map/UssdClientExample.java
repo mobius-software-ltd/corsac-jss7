@@ -123,17 +123,17 @@ public class UssdClientExample implements MAPDialogListener, MAPServiceSupplemen
         }
     }
 
-    public void onErrorComponent(MAPDialog mapDialog, Long invokeId, MAPErrorMessage mapErrorMessage) {
+    public void onErrorComponent(MAPDialog mapDialog, Integer invokeId, MAPErrorMessage mapErrorMessage) {
         // TODO Auto-generated method stub
 
     }
 
-    public void onRejectComponent(MAPDialog mapDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
         // TODO Auto-generated method stub
 
     }
 
-    public void onInvokeTimeout(MAPDialog mapDialog, Long invokeId) {
+    public void onInvokeTimeout(MAPDialog mapDialog, Integer invokeId) {
         // TODO Auto-generated method stub
 
     }

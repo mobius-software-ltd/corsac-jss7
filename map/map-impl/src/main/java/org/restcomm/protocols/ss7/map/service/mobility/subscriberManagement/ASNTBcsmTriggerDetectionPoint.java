@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNTBcsmTriggerDetectionPoint extends ASNEnumerated {
 	public ASNTBcsmTriggerDetectionPoint() {
-		
+		super("TBcsmTriggerDetectionPoint",12,14,false);
 	}
 	
 	public ASNTBcsmTriggerDetectionPoint(TBcsmTriggerDetectionPoint t) {
-		super(t.getCode());
+		super(t.getCode(),"TBcsmTriggerDetectionPoint",12,14,false);
 	}
 	
 	public TBcsmTriggerDetectionPoint getType() {

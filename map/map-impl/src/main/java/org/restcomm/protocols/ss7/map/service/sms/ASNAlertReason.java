@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNAlertReason extends ASNEnumerated {
 	public ASNAlertReason() {
-		
+		super("AlertReason",0,1,false);
 	}
 	
 	public ASNAlertReason(AlertReason t) {
-		super(t.getCode());
+		super(t.getCode(),"AlertReason",0,1,false);
 	}
 	
 	public AlertReason getType() {

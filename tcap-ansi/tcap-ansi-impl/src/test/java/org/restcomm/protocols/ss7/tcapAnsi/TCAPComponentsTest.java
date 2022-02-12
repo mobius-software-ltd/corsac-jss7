@@ -831,7 +831,7 @@ public class TCAPComponentsTest extends SccpHarness {
 
             invoke.setInvokeId(invokeId);
 
-            OperationCode oc = TcapFactory.createPrivateOperationCode(2357L);
+            OperationCode oc = TcapFactory.createPrivateOperationCode(2357);
 //            oc.setNationalOperationCode(10L);
             invoke.setOperationCode(oc);
 
@@ -881,7 +881,7 @@ public class TCAPComponentsTest extends SccpHarness {
             Invoke invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast();
             invoke.setInvokeId(invokeId);
 
-            OperationCode oc = TcapFactory.createNationalOperationCode(10L);
+            OperationCode oc = TcapFactory.createNationalOperationCode(10);
             invoke.setOperationCode(oc);
 
             invoke.setTimeout(timout);
@@ -946,7 +946,7 @@ public class TCAPComponentsTest extends SccpHarness {
             ReturnError err = this.tcapProvider.getComponentPrimitiveFactory().createTCReturnErrorRequest();
             err.setCorrelationId(invokeId);
 
-            ErrorCode ec = TcapFactory.createPrivateErrorCode(1L);           
+            ErrorCode ec = TcapFactory.createPrivateErrorCode(1);           
 //            ec.setNationalErrorCode(10L);
             err.setErrorCode(ec);
 
@@ -1047,10 +1047,10 @@ public class TCAPComponentsTest extends SccpHarness {
      */
     class BadComponentMistypedComponent extends InvokeLastImpl {
     	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=30,constructed=false,index=-1)
-    	private ASNInteger unexpectedParam=new ASNInteger((Long)null);
+    	private ASNInteger unexpectedParam=new ASNInteger((Long)null,"UnexpectedParam",null,null,false);
 		public BadComponentMistypedComponent() {
             this.setInvokeId(1l);
-            OperationCode oc=TcapFactory.createNationalOperationCode(20L);            
+            OperationCode oc=TcapFactory.createNationalOperationCode(20);            
             this.setOperationCode(oc);
         }
     }
@@ -1061,7 +1061,7 @@ public class TCAPComponentsTest extends SccpHarness {
      */
     class BadComponentBadlyStructuredComponent extends InvokeLastImpl {
 		public BadComponentBadlyStructuredComponent() {
-			OperationCode oc=TcapFactory.createNationalOperationCode(20L);            
+			OperationCode oc=TcapFactory.createNationalOperationCode(20);            
             this.setOperationCode(oc);
         }
 		

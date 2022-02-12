@@ -51,7 +51,7 @@ public class MAPErrorMessageAbsentSubscriberSMImpl extends MAPErrorMessageImpl i
 
     public MAPErrorMessageAbsentSubscriberSMImpl(AbsentSubscriberDiagnosticSM absentSubscriberDiagnosticSM,
     		MAPExtensionContainer extensionContainer, AbsentSubscriberDiagnosticSM additionalAbsentSubscriberDiagnosticSM) {
-        super((long) MAPErrorCode.absentSubscriberSM);
+        super(MAPErrorCode.absentSubscriberSM);
 
         if(absentSubscriberDiagnosticSM!=null)
         	this.absentSubscriberDiagnosticSM = new ASNAbsentSubscriberDiagnosticSMImpl(absentSubscriberDiagnosticSM);
@@ -63,7 +63,7 @@ public class MAPErrorMessageAbsentSubscriberSMImpl extends MAPErrorMessageImpl i
     }
 
     public MAPErrorMessageAbsentSubscriberSMImpl() {
-        super((long) MAPErrorCode.absentSubscriberSM);
+        super(MAPErrorCode.absentSubscriberSM);
     }
 
     public AbsentSubscriberDiagnosticSM getAbsentSubscriberDiagnosticSM() {

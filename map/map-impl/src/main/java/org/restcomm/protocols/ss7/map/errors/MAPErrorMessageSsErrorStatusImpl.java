@@ -46,19 +46,19 @@ public class MAPErrorMessageSsErrorStatusImpl extends MAPErrorMessageImpl implem
     private ASNSingleByte data;
     
     public MAPErrorMessageSsErrorStatusImpl(int data) {
-        super((long) MAPErrorCode.ssErrorStatus);
+        super(MAPErrorCode.ssErrorStatus);
 
-        this.data = new ASNSingleByte(data);        
+        this.data = new ASNSingleByte(data,"SSErrorStatus",0,15,true);        
     }
 
     public MAPErrorMessageSsErrorStatusImpl(boolean qBit, boolean pBit, boolean rBit, boolean aBit) {
-        super((long) MAPErrorCode.ssErrorStatus);
+        super(MAPErrorCode.ssErrorStatus);
 
-        this.data = new ASNSingleByte((qBit ? _mask_QBit : 0) + (pBit ? _mask_PBit : 0) + (rBit ? _mask_RBit : 0) + (aBit ? _mask_ABit : 0));        
+        this.data = new ASNSingleByte((qBit ? _mask_QBit : 0) + (pBit ? _mask_PBit : 0) + (rBit ? _mask_RBit : 0) + (aBit ? _mask_ABit : 0),"SSErrorStatus",0,15,true);        
     }
 
     public MAPErrorMessageSsErrorStatusImpl() {
-        super((long) MAPErrorCode.ssErrorStatus);
+        super(MAPErrorCode.ssErrorStatus);
     }
 
     public boolean isEmSsErrorStatus() {
@@ -100,7 +100,7 @@ public class MAPErrorMessageSsErrorStatusImpl extends MAPErrorMessageImpl implem
 
     @Override
     public void setData(int val) {
-    	this.data=new ASNSingleByte(val);
+    	this.data=new ASNSingleByte(val,"SSErrorStatus",0,15,true);
     }
 
     @Override

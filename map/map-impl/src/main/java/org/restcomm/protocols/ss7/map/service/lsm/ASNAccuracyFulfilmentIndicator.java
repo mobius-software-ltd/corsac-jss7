@@ -6,10 +6,10 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNAccuracyFulfilmentIndicator extends ASNEnumerated {
 	public ASNAccuracyFulfilmentIndicator() {
-		
+		super("AccuracyFulfilmentIndicator",0,1,false);
 	}
 	public ASNAccuracyFulfilmentIndicator(AccuracyFulfilmentIndicator t) {
-		super(t.getIndicator());
+		super(t.getIndicator(),"AccuracyFulfilmentIndicator",0,1,false);
 	}
 	
 	public AccuracyFulfilmentIndicator getType() {

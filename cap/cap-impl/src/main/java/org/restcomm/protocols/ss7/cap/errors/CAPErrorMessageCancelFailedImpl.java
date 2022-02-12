@@ -33,14 +33,14 @@ import org.restcomm.protocols.ss7.cap.api.errors.CancelProblem;
  */
 public class CAPErrorMessageCancelFailedImpl extends EnumeratedСAPErrorMessage1Impl implements CAPErrorMessageCancelFailed {
 	protected CAPErrorMessageCancelFailedImpl(CancelProblem cancelProblem) {
-        super((long) CAPErrorCode.cancelFailed);
+        super(CAPErrorCode.cancelFailed,"CAPErrorMessageCancelFailed",0,2);
         
         if(cancelProblem!=null)
-        	setValue(Long.valueOf(cancelProblem.getCode()));        
+        	setValue(cancelProblem.getCode());        
     }
 
     public CAPErrorMessageCancelFailedImpl() {
-        super((long) CAPErrorCode.cancelFailed);
+        super(CAPErrorCode.cancelFailed,"CAPErrorMessageCancelFailed",0,2);
     }
 
     @Override
@@ -55,16 +55,16 @@ public class CAPErrorMessageCancelFailedImpl extends EnumeratedСAPErrorMessage1
 
     @Override
     public CancelProblem getCancelProblem() {
-    	Long value=getValue();
+    	Integer value=getValue();
     	if(value==null)
     		return null;
     	
-    	return CancelProblem.getInstance(value.intValue());
+    	return CancelProblem.getInstance(value);
     }
 
     public void setCancelProblem(CancelProblem cancelProblem) {
     	if(cancelProblem!=null)
-        	setValue(Long.valueOf(cancelProblem.getCode()));     
+        	setValue(cancelProblem.getCode());
     	else
     		setValue(null);
     }

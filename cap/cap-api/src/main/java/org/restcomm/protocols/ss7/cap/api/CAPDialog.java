@@ -193,7 +193,7 @@ public interface CAPDialog extends Serializable {
      *
      * @param invokeId
      */
-     void processInvokeWithoutAnswer(Long invokeId);
+     void processInvokeWithoutAnswer(Integer invokeId);
 
      /**
       * Sends the TC-INVOKE,TC-RESULT or TC-RESULT-L component
@@ -201,7 +201,7 @@ public interface CAPDialog extends Serializable {
       * @param invoke
       * @throws CAPException
       */
-     public Long sendDataComponent(Long invokeId,Long linkedId,InvokeClass invokeClass,Long customTimeout,Long operationCode,CAPMessage param,Boolean isRequest,Boolean isLastResponse) throws CAPException;
+     public Integer sendDataComponent(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,Integer operationCode,CAPMessage param,Boolean isRequest,Boolean isLastResponse) throws CAPException;
 
      /**
       * Sends the TC-U-ERROR component
@@ -210,7 +210,7 @@ public interface CAPDialog extends Serializable {
       * @param mapErrorMessage
       * @throws CAPException
       */
-     public void sendErrorComponent(Long invokeId, CAPErrorMessage mem) throws CAPException;
+     public void sendErrorComponent(Integer invokeId, CAPErrorMessage mem) throws CAPException;
 
      /**
       * Sends the TC-U-REJECT component
@@ -219,7 +219,7 @@ public interface CAPDialog extends Serializable {
       * @param problem
       * @throws CAPException
       */
-     public void sendRejectComponent(Long invokeId, Problem problem) throws CAPException;
+     public void sendRejectComponent(Integer invokeId, Problem problem) throws CAPException;
 
     /**
      * Reset the Invoke Timeout timer for the Invoke. (TC-TIMER-RESET)
@@ -227,7 +227,7 @@ public interface CAPDialog extends Serializable {
      * @param invokeId
      * @throws CAPException
      */
-     void resetInvokeTimer(Long invokeId) throws CAPException;
+     void resetInvokeTimer(Integer invokeId) throws CAPException;
 
     /**
      * Causes local termination of an operation invocation (TC-U-CANCEL)
@@ -236,7 +236,7 @@ public interface CAPDialog extends Serializable {
      * @return true:OK, false: Invoke not found
      * @throws CAPException
      */
-     boolean cancelInvocation(Long invokeId) throws CAPException;
+     boolean cancelInvocation(Integer invokeId) throws CAPException;
 
     /**
      * Getting from the CAPDialog a user-defined object to save relating to the Dialog information

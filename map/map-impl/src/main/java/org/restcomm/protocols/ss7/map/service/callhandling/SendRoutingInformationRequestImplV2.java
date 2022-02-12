@@ -78,7 +78,7 @@ public class SendRoutingInformationRequestImplV2 extends CallHandlingMessageImpl
         this.cugCheckInfo = cugCheckInfo;
         
         if(numberOfForwarding!=null)
-        	this.numberOfForwarding = new ASNInteger(numberOfForwarding);
+        	this.numberOfForwarding = new ASNInteger(numberOfForwarding,"NumberOfForwarding",1,5,false);
         	
         this.networkSignalInfo=networkSignalInfo;
     }

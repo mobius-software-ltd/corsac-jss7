@@ -33,15 +33,16 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  *
  */
 public class InterCUGRestrictionsImpl extends ASNSingleByte implements InterCUGRestrictions {
-	public InterCUGRestrictionsImpl() {        
+	public InterCUGRestrictionsImpl() { 
+		super("InterCUGRestrictions",0,3,false);
     }
 
     public InterCUGRestrictionsImpl(int data) {
-    	super(data);
+    	super(data,"InterCUGRestrictions",0,3,false);
     }
 
     public InterCUGRestrictionsImpl(InterCUGRestrictionsValue val) {
-    	super((val != null ? val.getCode() : 0));
+    	super((val != null ? val.getCode() : 0),"InterCUGRestrictions",0,3,false);
     }
 
     public int getData() {

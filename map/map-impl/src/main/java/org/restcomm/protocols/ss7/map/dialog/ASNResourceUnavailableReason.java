@@ -9,11 +9,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=false,lengthIndefinite=false)
 public class ASNResourceUnavailableReason extends ASNEnumerated {
 	public ASNResourceUnavailableReason() {
-		
+		super("ResourceUnavailableReason",0,1,false);
 	}
 	
 	public ASNResourceUnavailableReason(ResourceUnavailableReason t) {
-		super(t.getCode());
+		super(t.getCode(),"ResourceUnavailableReason",0,1,false);
 	}
 	
 	public ResourceUnavailableReason getType() {

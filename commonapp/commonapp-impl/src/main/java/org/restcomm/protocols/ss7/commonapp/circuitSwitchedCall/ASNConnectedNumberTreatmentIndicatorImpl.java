@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNConnectedNumberTreatmentIndicatorImpl extends ASNEnumerated {
 	public ASNConnectedNumberTreatmentIndicatorImpl() {
-		
+		super("ConnectedNumberTreatmentInd",0,3,false);
 	}
 	
 	public ASNConnectedNumberTreatmentIndicatorImpl(ConnectedNumberTreatmentInd t) {
-		super(t.getCode());
+		super(t.getCode(),"ConnectedNumberTreatmentInd",0,3,false);
 	}
 	
 	public ConnectedNumberTreatmentInd getType() {

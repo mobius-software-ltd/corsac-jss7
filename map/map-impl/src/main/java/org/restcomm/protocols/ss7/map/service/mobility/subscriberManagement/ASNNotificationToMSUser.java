@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNNotificationToMSUser extends ASNEnumerated {
 	public ASNNotificationToMSUser() {
-		
+		super("NotificationToMSUser",0,3,false);
 	}
 	
 	public ASNNotificationToMSUser(NotificationToMSUser t) {
-		super(t.getCode());
+		super(t.getCode(),"NotificationToMSUser",0,3,false);
 	}
 	
 	public NotificationToMSUser getType() {

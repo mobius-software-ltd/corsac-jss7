@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNOverrideCategoryImpl extends ASNEnumerated {
 	public ASNOverrideCategoryImpl() {
-		
+		super("OverrideCategory",0,1,false);
 	}
 	
 	public ASNOverrideCategoryImpl(OverrideCategory t) {
-		super(Long.valueOf(t.getCode()));
+		super(t.getCode(),"OverrideCategory",0,1,false);
 	}
 	
 	public OverrideCategory getType() {

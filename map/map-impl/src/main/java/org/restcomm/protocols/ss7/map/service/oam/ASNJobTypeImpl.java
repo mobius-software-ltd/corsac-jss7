@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNJobTypeImpl extends ASNEnumerated {
 	public ASNJobTypeImpl() {
-		
+		super("JobType",0,3,false);
 	}
 	
 	public ASNJobTypeImpl(JobType t) {
-		super(t.getCode());
+		super(t.getCode(),"JobType",0,3,false);
 	}
 	
 	public JobType getType() {

@@ -39,13 +39,12 @@ public class ChargingControlIndicatorsImpl extends ASNBitString implements Charg
     private static final int _ID_delayUntilStart = 2;
     
     public ChargingControlIndicatorsImpl() {
-    	super(2);
-    	
+    	super("ChargingControlIndicators",0,7,false);    	
     }
     
     public ChargingControlIndicatorsImpl(boolean subscriberCharge, boolean immediateChangeOfActuallyAppliedTariff, 
     		boolean delayUntilStart) {
-    	super(2);
+    	super("ChargingControlIndicators",1,8,false);
         if (subscriberCharge)
             this.setBit(_ID_subscriberCharge);
         if (immediateChangeOfActuallyAppliedTariff)

@@ -45,7 +45,7 @@ public interface DPAnalysedInfoCriterium {
 
     ISDNAddressString getDialledNumber();
 
-    long getServiceKey();
+    int getServiceKey();
 
     ISDNAddressString getGsmSCFAddress();
 

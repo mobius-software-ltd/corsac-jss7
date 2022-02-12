@@ -32,11 +32,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  *
  */
 public class MMCodeImpl extends ASNSingleByte implements MMCode {
-	public MMCodeImpl() {        
+	public MMCodeImpl() {  
+		super("MMCode",0,134,false);
     }
 
     public MMCodeImpl(MMCodeValue value) {
-    	super(value != null ? value.getCode() : 0);
+    	super(value != null ? value.getCode() : 0,"MMCode",0,134,false);
     }
 
     public MMCodeValue getMMCodeValue() {

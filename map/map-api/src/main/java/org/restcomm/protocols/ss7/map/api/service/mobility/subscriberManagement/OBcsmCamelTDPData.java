@@ -46,7 +46,7 @@ public interface OBcsmCamelTDPData {
 
     OBcsmTriggerDetectionPoint getOBcsmTriggerDetectionPoint();
 
-    long getServiceKey();
+    int getServiceKey();
 
     ISDNAddressString getGsmSCFAddress();
 

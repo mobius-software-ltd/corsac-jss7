@@ -32,11 +32,12 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  *
  */
 public class KSIImpl extends ASNSingleByte implements KSI {
-	public KSIImpl() {        
+	public KSIImpl() {   
+		super("KSI",0,255,false);
     }
 
     public KSIImpl(int data) {
-    	super(data);
+    	super(data,"KSI",0,255,false);
     }
 
     public int getData() {

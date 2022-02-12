@@ -32,10 +32,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
  */
 public class TPProtocolIdentifierImpl extends ASNSingleByte implements TPProtocolIdentifier {
 	public TPProtocolIdentifierImpl() {
+		super("TPProtocolIdentifier",0,255,false);
     }
 
     public TPProtocolIdentifierImpl(int data) {
-    	super(data);
+    	super(data,"TPProtocolIdentifier",0,255,false);
     }
 
     public int getData() {

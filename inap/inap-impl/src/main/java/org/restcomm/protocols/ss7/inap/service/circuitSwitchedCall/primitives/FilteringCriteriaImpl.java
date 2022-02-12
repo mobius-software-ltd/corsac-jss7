@@ -49,7 +49,7 @@ public class FilteringCriteriaImpl implements FilteringCriteria {
 
     public FilteringCriteriaImpl(Integer serviceKey) {
     	if(serviceKey!=null)
-    		this.serviceKey=new ASNInteger(serviceKey);    		
+    		this.serviceKey=new ASNInteger(serviceKey,"ServiceKey",0,Integer.MAX_VALUE,false);    		
     }
     
     public FilteringCriteriaImpl(AddressAndService addressAndService) {

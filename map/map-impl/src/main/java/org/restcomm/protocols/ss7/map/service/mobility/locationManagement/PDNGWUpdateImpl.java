@@ -62,7 +62,7 @@ public class PDNGWUpdateImpl implements PDNGWUpdate {
         this.pdnGwIdentity = pdnGwIdentity;
         
         if(contextId!=null)
-        	this.contextId = new ASNInteger(contextId);
+        	this.contextId = new ASNInteger(contextId,"ContextId",1,50,false);
         	
         this.extensionContainer = extensionContainer;
     }

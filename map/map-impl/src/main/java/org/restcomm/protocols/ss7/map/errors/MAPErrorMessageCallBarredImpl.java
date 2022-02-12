@@ -50,7 +50,7 @@ public class MAPErrorMessageCallBarredImpl extends MAPErrorMessageImpl implement
 
     public MAPErrorMessageCallBarredImpl(CallBarringCause callBarringCause,
     		MAPExtensionContainer extensionContainer, Boolean unauthorisedMessageOriginator) {
-        super((long) MAPErrorCode.callBarred);
+        super(MAPErrorCode.callBarred);
 
         if(callBarringCause!=null)
         	this.callBarringCause = new ASNCallBaringCauseImpl(callBarringCause);
@@ -61,7 +61,7 @@ public class MAPErrorMessageCallBarredImpl extends MAPErrorMessageImpl implement
     }
 
     public MAPErrorMessageCallBarredImpl() {
-        super((long) MAPErrorCode.callBarred);
+        super(MAPErrorCode.callBarred);
     }
 
     public boolean isEmCallBarred() {

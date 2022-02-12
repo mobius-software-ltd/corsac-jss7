@@ -124,91 +124,91 @@ public class MAPErrorMessageTest {
 		ASNParser parser=new ASNParser();
     	parser.loadClass(ReturnErrorImpl.class);
     	ErrorCodeImpl errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.unexpectedDataValue);
+    	errorCode.setLocalErrorCode(MAPErrorCode.unexpectedDataValue);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageExtensionContainerImpl.class, MAPErrorMessageExtensionContainerImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.smDeliveryFailure);
+    	errorCode.setLocalErrorCode(MAPErrorCode.smDeliveryFailure);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSMDeliveryFailure1Impl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageSMDeliveryFailure1Impl.class, MAPErrorMessageSMDeliveryFailureImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageSMDeliveryFailure1Impl.class, MAPErrorMessageSMDeliveryFailure1Impl.class);
         
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.absentSubscriberSM);
+    	errorCode.setLocalErrorCode(MAPErrorCode.absentSubscriberSM);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageAbsentSubscriberSMImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriberSMImpl.class, MAPErrorMessageAbsentSubscriberSMImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.systemFailure);
+    	errorCode.setLocalErrorCode(MAPErrorCode.systemFailure);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSytemFailure1Impl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageSytemFailure1Impl.class, MAPErrorMessageSytemFailure1Impl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageSytemFailure1Impl.class, MAPErrorMessageSystemFailureImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.callBarred);
+    	errorCode.setLocalErrorCode(MAPErrorCode.callBarred);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageCallBarred1Impl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageCallBarred1Impl.class, MAPErrorMessageCallBarred1Impl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageCallBarred1Impl.class, MAPErrorMessageCallBarredImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.facilityNotSupported);
+    	errorCode.setLocalErrorCode(MAPErrorCode.facilityNotSupported);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageFacilityNotSupImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageFacilityNotSupImpl.class, MAPErrorMessageFacilityNotSupImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.unknownSubscriber);
+    	errorCode.setLocalErrorCode(MAPErrorCode.unknownSubscriber);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageUnknownSubscriberImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageUnknownSubscriberImpl.class, MAPErrorMessageUnknownSubscriberImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.subscriberBusyForMTSMS);
+    	errorCode.setLocalErrorCode(MAPErrorCode.subscriberBusyForMTSMS);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSubscriberBusyForMtSmsImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageSubscriberBusyForMtSmsImpl.class, MAPErrorMessageSubscriberBusyForMtSmsImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.absentSubscriber);
+    	errorCode.setLocalErrorCode(MAPErrorCode.absentSubscriber);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageAbsentSubscriber1Impl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriber1Impl.class, MAPErrorMessageAbsentSubscriber1Impl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriber1Impl.class, MAPErrorMessageAbsentSubscriberImpl.class);
         
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.unauthorizedLCSClient);
+    	errorCode.setLocalErrorCode(MAPErrorCode.unauthorizedLCSClient);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageUnauthorizedLCSClientImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageUnauthorizedLCSClientImpl.class, MAPErrorMessageUnauthorizedLCSClientImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.positionMethodFailure);
+    	errorCode.setLocalErrorCode(MAPErrorCode.positionMethodFailure);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessagePositionMethodFailureImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessagePositionMethodFailureImpl.class, MAPErrorMessagePositionMethodFailureImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.busySubscriber);
+    	errorCode.setLocalErrorCode(MAPErrorCode.busySubscriber);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageBusySubscriberImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageBusySubscriberImpl.class, MAPErrorMessageBusySubscriberImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.cugReject);
+    	errorCode.setLocalErrorCode(MAPErrorCode.cugReject);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageCUGRejectImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageCUGRejectImpl.class, MAPErrorMessageCUGRejectImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.roamingNotAllowed);
+    	errorCode.setLocalErrorCode(MAPErrorCode.roamingNotAllowed);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageRoamingNotAllowedImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageRoamingNotAllowedImpl.class, MAPErrorMessageRoamingNotAllowedImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.ssErrorStatus);
+    	errorCode.setLocalErrorCode(MAPErrorCode.ssErrorStatus);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSsErrorStatusImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageSsErrorStatusImpl.class, MAPErrorMessageSsErrorStatusImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.ssIncompatibility);
+    	errorCode.setLocalErrorCode(MAPErrorCode.ssIncompatibility);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSsIncompatibilityImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageSsIncompatibilityImpl.class, MAPErrorMessageSsIncompatibilityImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.pwRegistrationFailure);
+    	errorCode.setLocalErrorCode(MAPErrorCode.pwRegistrationFailure);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessagePwRegistrationFailureImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessagePwRegistrationFailureImpl.class, MAPErrorMessagePwRegistrationFailureImpl.class);
     	
@@ -218,10 +218,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         ReturnErrorImpl re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.unexpectedDataValue));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.unexpectedDataValue));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
         assertTrue(re.getParameter() instanceof MAPErrorMessageExtensionContainerImpl);
@@ -244,10 +244,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.smDeliveryFailure));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.smDeliveryFailure));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
         assertTrue(re.getParameter() instanceof MAPErrorMessageSMDeliveryFailureImpl);
@@ -263,10 +263,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.smDeliveryFailure));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.smDeliveryFailure));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
         assertTrue(re.getParameter() instanceof MAPErrorMessageSMDeliveryFailureImpl);
@@ -300,10 +300,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.smDeliveryFailure));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.smDeliveryFailure));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessage);
         assertTrue(re.getParameter() instanceof MAPErrorMessageSMDeliveryFailure1Impl);
@@ -317,10 +317,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.absentSubscriberSM));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.absentSubscriberSM));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessage);
         assertTrue(re.getParameter() instanceof MAPErrorMessageAbsentSubscriberSMImpl);
@@ -335,10 +335,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.absentSubscriberSM));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.absentSubscriberSM));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
         assertTrue(re.getParameter() instanceof MAPErrorMessageAbsentSubscriberSMImpl);
@@ -364,10 +364,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.systemFailure));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.systemFailure));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessage);
         assertTrue(re.getParameter() instanceof MAPErrorMessageSystemFailure);
@@ -382,10 +382,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.systemFailure));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.systemFailure));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
         assertTrue(re.getParameter() instanceof MAPErrorMessageSystemFailure);
@@ -411,10 +411,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.callBarred));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.callBarred));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessage);
         assertTrue(re.getParameter() instanceof MAPErrorMessageCallBarred);
@@ -429,10 +429,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.callBarred));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.callBarred));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
         assertTrue(re.getParameter() instanceof MAPErrorMessageCallBarred);
@@ -458,10 +458,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.facilityNotSupported));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.facilityNotSupported));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
         assertTrue(re.getParameter() instanceof MAPErrorMessageFacilityNotSup);
@@ -487,10 +487,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.unknownSubscriber));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.unknownSubscriber));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
         assertTrue(re.getParameter() instanceof MAPErrorMessageUnknownSubscriber);
@@ -515,10 +515,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.subscriberBusyForMTSMS));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.subscriberBusyForMTSMS));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
         assertTrue(re.getParameter() instanceof MAPErrorMessageSubscriberBusyForMtSms);
@@ -543,10 +543,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.absentSubscriber));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.absentSubscriber));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
         assertTrue(re.getParameter() instanceof MAPErrorMessageAbsentSubscriber);
@@ -572,10 +572,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.absentSubscriber));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.absentSubscriber));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessage);
         assertTrue(re.getParameter() instanceof MAPErrorMessageAbsentSubscriber1Impl);
@@ -590,10 +590,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.unauthorizedLCSClient));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.unauthorizedLCSClient));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
         assertTrue(re.getParameter() instanceof MAPErrorMessageUnauthorizedLCSClient);
@@ -618,10 +618,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.positionMethodFailure));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.positionMethodFailure));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
         assertTrue(re.getParameter() instanceof MAPErrorMessagePositionMethodFailure);
@@ -646,10 +646,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.busySubscriber));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.busySubscriber));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
         assertTrue(re.getParameter() instanceof MAPErrorMessageBusySubscriber);
@@ -675,10 +675,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.cugReject));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.cugReject));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
         assertTrue(re.getParameter() instanceof MAPErrorMessageCUGReject);
@@ -703,10 +703,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.roamingNotAllowed));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.roamingNotAllowed));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessageImpl);
         assertTrue(re.getParameter() instanceof MAPErrorMessageRoamingNotAllowed);
@@ -732,10 +732,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.ssErrorStatus));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.ssErrorStatus));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessage);
         assertTrue(re.getParameter() instanceof MAPErrorMessageSsErrorStatusImpl);
@@ -752,10 +752,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.ssIncompatibility));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.ssIncompatibility));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessage);
         assertTrue(re.getParameter() instanceof MAPErrorMessageSsIncompatibilityImpl);
@@ -773,10 +773,10 @@ public class MAPErrorMessageTest {
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof ReturnErrorImpl);
         re = (ReturnErrorImpl)result.getResult();
-        assertEquals(re.getInvokeId(),Long.valueOf(1L));
+        assertEquals(re.getInvokeId(),Integer.valueOf(1));
         assertNotNull(re.getErrorCode());
         assertEquals(re.getErrorCode().getErrorType(),ErrorCodeType.Local);
-        assertEquals(re.getErrorCode().getLocalErrorCode(),Long.valueOf(MAPErrorCode.pwRegistrationFailure));
+        assertEquals(re.getErrorCode().getLocalErrorCode(),Integer.valueOf(MAPErrorCode.pwRegistrationFailure));
         assertNotNull(re.getParameter());
         assertTrue(re.getParameter() instanceof MAPErrorMessage);
         assertTrue(re.getParameter() instanceof MAPErrorMessagePwRegistrationFailureImpl);
@@ -789,103 +789,103 @@ public class MAPErrorMessageTest {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(ReturnErrorImpl.class);
     	ErrorCodeImpl errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.unexpectedDataValue);
+    	errorCode.setLocalErrorCode(MAPErrorCode.unexpectedDataValue);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageExtensionContainerImpl.class, MAPErrorMessageExtensionContainerImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.smDeliveryFailure);
+    	errorCode.setLocalErrorCode(MAPErrorCode.smDeliveryFailure);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSMDeliveryFailure1Impl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageSMDeliveryFailure1Impl.class, MAPErrorMessageSMDeliveryFailureImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageSMDeliveryFailure1Impl.class, MAPErrorMessageSMDeliveryFailure1Impl.class);
         
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.absentSubscriberSM);
+    	errorCode.setLocalErrorCode(MAPErrorCode.absentSubscriberSM);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageAbsentSubscriberSMImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriberSMImpl.class, MAPErrorMessageAbsentSubscriberSMImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.systemFailure);
+    	errorCode.setLocalErrorCode(MAPErrorCode.systemFailure);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSytemFailure1Impl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageSytemFailure1Impl.class, MAPErrorMessageSytemFailure1Impl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageSytemFailure1Impl.class, MAPErrorMessageSystemFailureImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.callBarred);
+    	errorCode.setLocalErrorCode(MAPErrorCode.callBarred);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageCallBarred1Impl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageCallBarred1Impl.class, MAPErrorMessageCallBarred1Impl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageCallBarred1Impl.class, MAPErrorMessageCallBarredImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.facilityNotSupported);
+    	errorCode.setLocalErrorCode(MAPErrorCode.facilityNotSupported);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageFacilityNotSupImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageFacilityNotSupImpl.class, MAPErrorMessageFacilityNotSupImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.unknownSubscriber);
+    	errorCode.setLocalErrorCode(MAPErrorCode.unknownSubscriber);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageUnknownSubscriberImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageUnknownSubscriberImpl.class, MAPErrorMessageUnknownSubscriberImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.subscriberBusyForMTSMS);
+    	errorCode.setLocalErrorCode(MAPErrorCode.subscriberBusyForMTSMS);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSubscriberBusyForMtSmsImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageSubscriberBusyForMtSmsImpl.class, MAPErrorMessageSubscriberBusyForMtSmsImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.absentSubscriber);
+    	errorCode.setLocalErrorCode(MAPErrorCode.absentSubscriber);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageAbsentSubscriber1Impl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriber1Impl.class, MAPErrorMessageAbsentSubscriber1Impl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriber1Impl.class, MAPErrorMessageAbsentSubscriberImpl.class);
         
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.unauthorizedLCSClient);
+    	errorCode.setLocalErrorCode(MAPErrorCode.unauthorizedLCSClient);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageUnauthorizedLCSClientImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageUnauthorizedLCSClientImpl.class, MAPErrorMessageUnauthorizedLCSClientImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.positionMethodFailure);
+    	errorCode.setLocalErrorCode(MAPErrorCode.positionMethodFailure);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessagePositionMethodFailureImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessagePositionMethodFailureImpl.class, MAPErrorMessagePositionMethodFailureImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.busySubscriber);
+    	errorCode.setLocalErrorCode(MAPErrorCode.busySubscriber);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageBusySubscriberImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageBusySubscriberImpl.class, MAPErrorMessageBusySubscriberImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.cugReject);
+    	errorCode.setLocalErrorCode(MAPErrorCode.cugReject);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageCUGRejectImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageCUGRejectImpl.class, MAPErrorMessageCUGRejectImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.roamingNotAllowed);
+    	errorCode.setLocalErrorCode(MAPErrorCode.roamingNotAllowed);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageRoamingNotAllowedImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageRoamingNotAllowedImpl.class, MAPErrorMessageRoamingNotAllowedImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.ssErrorStatus);
+    	errorCode.setLocalErrorCode(MAPErrorCode.ssErrorStatus);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSsErrorStatusImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageSsErrorStatusImpl.class, MAPErrorMessageSsErrorStatusImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.ssIncompatibility);
+    	errorCode.setLocalErrorCode(MAPErrorCode.ssIncompatibility);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSsIncompatibilityImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessageSsIncompatibilityImpl.class, MAPErrorMessageSsIncompatibilityImpl.class);
     	
     	errorCode=new ErrorCodeImpl();
-    	errorCode.setLocalErrorCode((long)MAPErrorCode.pwRegistrationFailure);
+    	errorCode.setLocalErrorCode(MAPErrorCode.pwRegistrationFailure);
     	parser.registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessagePwRegistrationFailureImpl.class);
     	parser.registerAlternativeClassMapping(MAPErrorMessagePwRegistrationFailureImpl.class, MAPErrorMessagePwRegistrationFailureImpl.class);
     	
     	MAPErrorMessageFactoryImpl fact = new MAPErrorMessageFactoryImpl();
         
         //EXT ERROR
-        MAPErrorMessage em = fact.createMAPErrorMessageExtensionContainer((long)MAPErrorCode.unexpectedDataValue,MAPExtensionContainerTest.GetTestExtensionContainer());
+        MAPErrorMessage em = fact.createMAPErrorMessageExtensionContainer(MAPErrorCode.unexpectedDataValue,MAPExtensionContainerTest.GetTestExtensionContainer());
         ReturnErrorImpl re=new ReturnErrorImpl();
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.unexpectedDataValue);
+        re.setErrorCode(MAPErrorCode.unexpectedDataValue);
         
         ByteBuf buffer=parser.encode(re);
         byte[] data=new byte[buffer.readableBytes()];
@@ -896,9 +896,9 @@ public class MAPErrorMessageTest {
         em = fact.createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause.invalidSMEAddress,null,null);
         re=new ReturnErrorImpl();
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.smDeliveryFailure);
+        re.setErrorCode(MAPErrorCode.smDeliveryFailure);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -914,9 +914,9 @@ public class MAPErrorMessageTest {
         ((MAPErrorMessageSMDeliveryFailure)em).setSmsDeliverReportTpdu(tpdu);
         re=new ReturnErrorImpl();
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.smDeliveryFailure);
+        re.setErrorCode(MAPErrorCode.smDeliveryFailure);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -926,9 +926,9 @@ public class MAPErrorMessageTest {
         em = fact.createMAPErrorMessageSMDeliveryFailure(SMEnumeratedDeliveryFailureCause.equipmentProtocolError);
         re=new ReturnErrorImpl();
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.smDeliveryFailure);
+        re.setErrorCode(MAPErrorCode.smDeliveryFailure);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -938,9 +938,9 @@ public class MAPErrorMessageTest {
         em = fact.createMAPErrorMessageAbsentSubscriberSM(AbsentSubscriberDiagnosticSM.IMSIDetached, null, null);
         re=new ReturnErrorImpl();
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.absentSubscriberSM);
+        re.setErrorCode(MAPErrorCode.absentSubscriberSM);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -950,9 +950,9 @@ public class MAPErrorMessageTest {
         em = fact.createMAPErrorMessageAbsentSubscriberSM(AbsentSubscriberDiagnosticSM.NoPagingResponseViaTheMSC, MAPExtensionContainerTest.GetTestExtensionContainer(),AbsentSubscriberDiagnosticSM.GPRSDetached);
         re=new ReturnErrorImpl();
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.absentSubscriberSM);
+        re.setErrorCode(MAPErrorCode.absentSubscriberSM);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -962,9 +962,9 @@ public class MAPErrorMessageTest {
         em = fact.createMAPErrorMessageSystemFailure(NetworkResource.plmn);
         re=new ReturnErrorImpl();
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.systemFailure);
+        re.setErrorCode(MAPErrorCode.systemFailure);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -974,9 +974,9 @@ public class MAPErrorMessageTest {
         em = fact.createMAPErrorMessageSystemFailure(NetworkResource.vlr,AdditionalNetworkResource.gsmSCF, MAPExtensionContainerTest.GetTestExtensionContainer());
         re=new ReturnErrorImpl();
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.systemFailure);
+        re.setErrorCode(MAPErrorCode.systemFailure);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -986,9 +986,9 @@ public class MAPErrorMessageTest {
         em = fact.createMAPErrorMessageCallBarred(CallBarringCause.operatorBarring, null, null);
         re=new ReturnErrorImpl();
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.callBarred);
+        re.setErrorCode(MAPErrorCode.callBarred);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -998,9 +998,9 @@ public class MAPErrorMessageTest {
         em = fact.createMAPErrorMessageCallBarred(CallBarringCause.operatorBarring, MAPExtensionContainerTest.GetTestExtensionContainer(), true);
         re=new ReturnErrorImpl();
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.callBarred);
+        re.setErrorCode(MAPErrorCode.callBarred);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1009,9 +1009,9 @@ public class MAPErrorMessageTest {
         //Facility Not Supported
         em = fact.createMAPErrorMessageFacilityNotSup(MAPExtensionContainerTest.GetTestExtensionContainer(), true, true);
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.facilityNotSupported);
+        re.setErrorCode(MAPErrorCode.facilityNotSupported);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1020,9 +1020,9 @@ public class MAPErrorMessageTest {
         //Unknown Subscriber
         em = fact.createMAPErrorMessageUnknownSubscriber(MAPExtensionContainerTest.GetTestExtensionContainer(), UnknownSubscriberDiagnostic.gprsSubscriptionUnknown);
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.unknownSubscriber);
+        re.setErrorCode(MAPErrorCode.unknownSubscriber);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1031,9 +1031,9 @@ public class MAPErrorMessageTest {
         //Subscriber Busy For MT SMS
         em = fact.createMAPErrorMessageSubscriberBusyForMtSms(MAPExtensionContainerTest.GetTestExtensionContainer(), true);
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.subscriberBusyForMTSMS);
+        re.setErrorCode(MAPErrorCode.subscriberBusyForMTSMS);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1042,9 +1042,9 @@ public class MAPErrorMessageTest {
         //Absent Subscriber
         em = fact.createMAPErrorMessageAbsentSubscriber(MAPExtensionContainerTest.GetTestExtensionContainer(), AbsentSubscriberReason.purgedMS);
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.absentSubscriber);
+        re.setErrorCode(MAPErrorCode.absentSubscriber);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1053,9 +1053,9 @@ public class MAPErrorMessageTest {
         //Absent Subscriber V1
         em = fact.createMAPErrorMessageAbsentSubscriber(true);
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.absentSubscriber);
+        re.setErrorCode(MAPErrorCode.absentSubscriber);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1064,9 +1064,9 @@ public class MAPErrorMessageTest {
         //Unauthorized LCS Client
         em = fact.createMAPErrorMessageUnauthorizedLCSClient(UnauthorizedLCSClientDiagnostic.callToClientNotSetup, MAPExtensionContainerTest.GetTestExtensionContainer());
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.unauthorizedLCSClient);
+        re.setErrorCode(MAPErrorCode.unauthorizedLCSClient);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1075,9 +1075,9 @@ public class MAPErrorMessageTest {
         //Position Method Failure
         em = fact.createMAPErrorMessagePositionMethodFailure(PositionMethodFailureDiagnostic.locationProcedureNotCompleted,MAPExtensionContainerTest.GetTestExtensionContainer());
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.positionMethodFailure);
+        re.setErrorCode(MAPErrorCode.positionMethodFailure);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1086,9 +1086,9 @@ public class MAPErrorMessageTest {
         //Busy Subscriber
         em = fact.createMAPErrorMessageBusySubscriber(MAPExtensionContainerTest.GetTestExtensionContainer(), true, true);
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.busySubscriber);
+        re.setErrorCode(MAPErrorCode.busySubscriber);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1097,9 +1097,9 @@ public class MAPErrorMessageTest {
         //CUG Reject
         em = fact.createMAPErrorMessageCUGReject(CUGRejectCause.subscriberNotMemberOfCUG,MAPExtensionContainerTest.GetTestExtensionContainer());
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.cugReject);
+        re.setErrorCode(MAPErrorCode.cugReject);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1108,9 +1108,9 @@ public class MAPErrorMessageTest {
         //Roaming Not Allowed
         em = fact.createMAPErrorMessageRoamingNotAllowed(RoamingNotAllowedCause.plmnRoamingNotAllowed,MAPExtensionContainerTest.GetTestExtensionContainer(),AdditionalRoamingNotAllowedCause.supportedRATTypesNotAllowed);
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.roamingNotAllowed);
+        re.setErrorCode(MAPErrorCode.roamingNotAllowed);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1119,9 +1119,9 @@ public class MAPErrorMessageTest {
         //SS Error Status
         em = fact.createMAPErrorMessageSsErrorStatus(false, true, true, false);
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
         
-        re.setErrorCode((long)MAPErrorCode.ssErrorStatus);
+        re.setErrorCode(MAPErrorCode.ssErrorStatus);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1134,9 +1134,9 @@ public class MAPErrorMessageTest {
         SSStatusImpl ssStatus = new SSStatusImpl(true, false, false, true);
         em = fact.createMAPErrorMessageSsIncompatibility(ssCode, basicService, ssStatus);
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
                 
-        re.setErrorCode((long)MAPErrorCode.ssIncompatibility);
+        re.setErrorCode(MAPErrorCode.ssIncompatibility);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);
@@ -1145,9 +1145,9 @@ public class MAPErrorMessageTest {
         //Pw Registration Failure
         em = (MAPErrorMessageImpl) fact.createMAPErrorMessagePwRegistrationFailure(PWRegistrationFailureCause.newPasswordsMismatch);
         re.setParameter(em);
-        re.setInvokeId(1L);
+        re.setInvokeId(1);
                 
-        re.setErrorCode((long)MAPErrorCode.pwRegistrationFailure);
+        re.setErrorCode(MAPErrorCode.pwRegistrationFailure);
         buffer=parser.encode(re);
         data=new byte[buffer.readableBytes()];
         buffer.readBytes(data);

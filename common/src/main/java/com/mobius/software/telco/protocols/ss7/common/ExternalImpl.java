@@ -56,19 +56,19 @@ public abstract class ExternalImpl<T extends ASNGeneric>
 	public void setIdentifier(Long value) {
 		this.objectIdentifier=null;
 		this.descriptor=null;
-		this.indirectReference=new ASNInteger(value);		
+		this.indirectReference=new ASNInteger(value,"IndirectReference",null,null,false);		
 	}
 	
 	public void setIdentifier(String value) {
 		this.objectIdentifier=null;
 		this.indirectReference=null;
-		this.descriptor=new ASNGraphicString(value);		
+		this.descriptor=new ASNGraphicString(value,null,null,null,false);		
 	}
 	
 	public void setIdentifier(List<Long> ids) {
 		this.descriptor=null;
 		this.indirectReference=null;
-		this.objectIdentifier=new ASNObjectIdentifier(ids);		
+		this.objectIdentifier=new ASNObjectIdentifier(ids,null,false,false);		
 	}
 	
 	public void setChild(ByteBuf value) {

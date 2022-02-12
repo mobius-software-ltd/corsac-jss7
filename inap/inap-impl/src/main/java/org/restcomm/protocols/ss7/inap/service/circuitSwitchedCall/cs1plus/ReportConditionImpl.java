@@ -61,7 +61,7 @@ public class ReportConditionImpl implements ReportCondition {
     
     public ReportConditionImpl(Integer reportAtChargeLimit) {
     	if(reportAtChargeLimit!=null)
-    		this.reportAtChargeLimit=new ASNInteger(reportAtChargeLimit);    		
+    		this.reportAtChargeLimit=new ASNInteger(reportAtChargeLimit,"ReportAtChargeLimit",0,32767,false);    		
     }
 
     public boolean getReportAtEndOfConnection() {

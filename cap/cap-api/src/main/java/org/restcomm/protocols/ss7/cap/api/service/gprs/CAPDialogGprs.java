@@ -61,91 +61,91 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.RAIdentity
  */
 public interface CAPDialogGprs extends CAPDialog {
 
-    Long addInitialDpGprsRequest(int serviceKey, GPRSEventType gprsEventType, ISDNAddressString msisdn, IMSI imsi,
+    Integer addInitialDpGprsRequest(int serviceKey, GPRSEventType gprsEventType, ISDNAddressString msisdn, IMSI imsi,
             TimeAndTimezone timeAndTimezone, GPRSMSClass gprsMSClass, EndUserAddress endUserAddress,
             QualityOfService qualityOfService, AccessPointName accessPointName, RAIdentity routeingAreaIdentity,
             GPRSChargingID chargingID, SGSNCapabilities sgsnCapabilities, LocationInformationGPRS locationInformationGPRS,
             PDPInitiationType pdpInitiationType, CAPINAPExtensions extensions, GSNAddress gsnAddress, boolean secondaryPDPContext,
             IMEI imei) throws CAPException;
 
-    Long addInitialDpGprsRequest(int customInvokeTimeout, int serviceKey, GPRSEventType gprsEventType,
+    Integer addInitialDpGprsRequest(int customInvokeTimeout, int serviceKey, GPRSEventType gprsEventType,
             ISDNAddressString msisdn, IMSI imsi, TimeAndTimezone timeAndTimezone, GPRSMSClass gprsMSClass,
             EndUserAddress endUserAddress, QualityOfService qualityOfService, AccessPointName accessPointName,
             RAIdentity routeingAreaIdentity, GPRSChargingID chargingID, SGSNCapabilities sgsnCapabilities,
             LocationInformationGPRS locationInformationGPRS, PDPInitiationType pdpInitiationType, CAPINAPExtensions extensions,
             GSNAddress gsnAddress, boolean secondaryPDPContext, IMEI imei) throws CAPException;
 
-    Long addRequestReportGPRSEventRequest(List<GPRSEvent> gprsEvent, PDPID pdpID) throws CAPException;
+    Integer addRequestReportGPRSEventRequest(List<GPRSEvent> gprsEvent, PDPID pdpID) throws CAPException;
 
-    Long addRequestReportGPRSEventRequest(int customInvokeTimeout, List<GPRSEvent> gprsEvent, PDPID pdpID)
+    Integer addRequestReportGPRSEventRequest(int customInvokeTimeout, List<GPRSEvent> gprsEvent, PDPID pdpID)
             throws CAPException;
 
-    Long addApplyChargingGPRSRequest(ChargingCharacteristics chargingCharacteristics, Integer tariffSwitchInterval,
+    Integer addApplyChargingGPRSRequest(ChargingCharacteristics chargingCharacteristics, Integer tariffSwitchInterval,
             PDPID pdpID) throws CAPException;
 
-    Long addApplyChargingGPRSRequest(int customInvokeTimeout, ChargingCharacteristics chargingCharacteristics,
+    Integer addApplyChargingGPRSRequest(int customInvokeTimeout, ChargingCharacteristics chargingCharacteristics,
             Integer tariffSwitchInterval, PDPID pdpID) throws CAPException;
 
-    Long addEntityReleasedGPRSRequest(GPRSCause gprsCause, PDPID pdpID) throws CAPException;
+    Integer addEntityReleasedGPRSRequest(GPRSCause gprsCause, PDPID pdpID) throws CAPException;
 
-    Long addEntityReleasedGPRSRequest(int customInvokeTimeout, GPRSCause gprsCause, PDPID pdpID) throws CAPException;
+    Integer addEntityReleasedGPRSRequest(int customInvokeTimeout, GPRSCause gprsCause, PDPID pdpID) throws CAPException;
 
-    void addEntityReleasedGPRSResponse(long invokeId) throws CAPException;
+    void addEntityReleasedGPRSResponse(int invokeId) throws CAPException;
 
-    Long addConnectGPRSRequest(AccessPointName accessPointName, PDPID pdpID) throws CAPException;
+    Integer addConnectGPRSRequest(AccessPointName accessPointName, PDPID pdpID) throws CAPException;
 
-    Long addConnectGPRSRequest(int customInvokeTimeout, AccessPointName accessPointName, PDPID pdpID)
+    Integer addConnectGPRSRequest(int customInvokeTimeout, AccessPointName accessPointName, PDPID pdpID)
             throws CAPException;
 
-    Long addContinueGPRSRequest(PDPID pdpID) throws CAPException;
+    Integer addContinueGPRSRequest(PDPID pdpID) throws CAPException;
 
-    Long addContinueGPRSRequest(int customInvokeTimeout, PDPID pdpID) throws CAPException;
+    Integer addContinueGPRSRequest(int customInvokeTimeout, PDPID pdpID) throws CAPException;
 
-    Long addReleaseGPRSRequest(GPRSCause gprsCause, PDPID pdpID) throws CAPException;
+    Integer addReleaseGPRSRequest(GPRSCause gprsCause, PDPID pdpID) throws CAPException;
 
-    Long addReleaseGPRSRequest(int customInvokeTimeout, GPRSCause gprsCause, PDPID pdpID) throws CAPException;
+    Integer addReleaseGPRSRequest(int customInvokeTimeout, GPRSCause gprsCause, PDPID pdpID) throws CAPException;
 
-    Long addResetTimerGPRSRequest(TimerID timerID, int timerValue) throws CAPException;
+    Integer addResetTimerGPRSRequest(TimerID timerID, int timerValue) throws CAPException;
 
-    Long addResetTimerGPRSRequest(int customInvokeTimeout, TimerID timerID, int timerValue) throws CAPException;
+    Integer addResetTimerGPRSRequest(int customInvokeTimeout, TimerID timerID, int timerValue) throws CAPException;
 
-    Long addFurnishChargingInformationGPRSRequest(
+    Integer addFurnishChargingInformationGPRSRequest(
             CAMELFCIGPRSBillingChargingCharacteristics fciGPRSBillingChargingCharacteristics) throws CAPException;
 
-    Long addFurnishChargingInformationGPRSRequest(int customInvokeTimeout,
+    Integer addFurnishChargingInformationGPRSRequest(int customInvokeTimeout,
             CAMELFCIGPRSBillingChargingCharacteristics fciGPRSBillingChargingCharacteristics) throws CAPException;
 
-    Long addCancelGPRSRequest(PDPID pdpID) throws CAPException;
+    Integer addCancelGPRSRequest(PDPID pdpID) throws CAPException;
 
-    Long addCancelGPRSRequest(int customInvokeTimeout, PDPID pdpID) throws CAPException;
+    Integer addCancelGPRSRequest(int customInvokeTimeout, PDPID pdpID) throws CAPException;
 
-    Long addSendChargingInformationGPRSRequest(
+    Integer addSendChargingInformationGPRSRequest(
             CAMELSCIGPRSBillingChargingCharacteristics sciGPRSBillingChargingCharacteristics) throws CAPException;
 
-    Long addSendChargingInformationGPRSRequest(int customInvokeTimeout,
+    Integer addSendChargingInformationGPRSRequest(int customInvokeTimeout,
             CAMELSCIGPRSBillingChargingCharacteristics sciGPRSBillingChargingCharacteristics) throws CAPException;
 
-    Long addApplyChargingReportGPRSRequest(ChargingResult chargingResult, QualityOfService qualityOfService,
+    Integer addApplyChargingReportGPRSRequest(ChargingResult chargingResult, QualityOfService qualityOfService,
             boolean active, PDPID pdpID, ChargingRollOver chargingRollOver) throws CAPException;
 
-    Long addApplyChargingReportGPRSRequest(int customInvokeTimeout, ChargingResult chargingResult,
+    Integer addApplyChargingReportGPRSRequest(int customInvokeTimeout, ChargingResult chargingResult,
             QualityOfService qualityOfService, boolean active, PDPID pdpID, ChargingRollOver chargingRollOver)
             throws CAPException;
 
-    void addApplyChargingReportGPRSResponse(long invokeId) throws CAPException;
+    void addApplyChargingReportGPRSResponse(int invokeId) throws CAPException;
 
-    Long addEventReportGPRSRequest(GPRSEventType gprsEventType, MiscCallInfo miscGPRSInfo,
+    Integer addEventReportGPRSRequest(GPRSEventType gprsEventType, MiscCallInfo miscGPRSInfo,
             GPRSEventSpecificInformation gprsEventSpecificInformation, PDPID pdpID) throws CAPException;
 
-    Long addEventReportGPRSRequest(int customInvokeTimeout, GPRSEventType gprsEventType, MiscCallInfo miscGPRSInfo,
+    Integer addEventReportGPRSRequest(int customInvokeTimeout, GPRSEventType gprsEventType, MiscCallInfo miscGPRSInfo,
             GPRSEventSpecificInformation gprsEventSpecificInformation, PDPID pdpID) throws CAPException;
 
-    void addEventReportGPRSResponse(long invokeId) throws CAPException;
+    void addEventReportGPRSResponse(int invokeId) throws CAPException;
 
-    Long addActivityTestGPRSRequest() throws CAPException;
+    Integer addActivityTestGPRSRequest() throws CAPException;
 
-    Long addActivityTestGPRSRequest(int customInvokeTimeout) throws CAPException;
+    Integer addActivityTestGPRSRequest(int customInvokeTimeout) throws CAPException;
 
-    void addActivityTestGPRSResponse(long invokeId) throws CAPException;
+    void addActivityTestGPRSResponse(int invokeId) throws CAPException;
 
 }

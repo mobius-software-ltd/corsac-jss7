@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNRegionalSubscriptionResponse extends ASNEnumerated {
 	public ASNRegionalSubscriptionResponse() {
-		
+		super("RegionalSubscriptionResponse",0,3,false);
 	}
 	
 	public ASNRegionalSubscriptionResponse(RegionalSubscriptionResponse t) {
-		super(t.getCode());
+		super(t.getCode(),"RegionalSubscriptionResponse",0,3,false);
 	}
 	
 	public RegionalSubscriptionResponse getType() {

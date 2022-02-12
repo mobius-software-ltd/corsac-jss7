@@ -37,12 +37,12 @@ public class ODBHPLMNDataImpl extends ASNBitString implements ODBHPLMNData {
     private static final int _INDEX_plmnSpecificBarringType4 = 3;
 
     public ODBHPLMNDataImpl() {
-    	super(3);
+    	super("ODBHPLMNData",3,31,false);
     }
 
     public ODBHPLMNDataImpl(boolean plmnSpecificBarringType1, boolean plmnSpecificBarringType2,
             boolean plmnSpecificBarringType3, boolean plmnSpecificBarringType4) {
-    	super(3);
+    	super("ODBHPLMNData",3,31,false);
         if (plmnSpecificBarringType1)
             this.setBit(_INDEX_plmnSpecificBarringType1);
         if (plmnSpecificBarringType2)

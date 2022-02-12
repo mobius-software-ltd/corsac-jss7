@@ -222,7 +222,7 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
     }
 
     @Override
-    public void onInvokeTimeout(CAPDialog capDialog, Long invokeId) {
+    public void onInvokeTimeout(CAPDialog capDialog, Integer invokeId) {
         if (currentCapDialog != null && this.cc != null) {
             if (this.cc.activityTestInvokeId == invokeId) { // activityTest failure
                 try {
@@ -236,13 +236,13 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
     }
 
     @Override
-    public void onErrorComponent(CAPDialog capDialog, Long invokeId, CAPErrorMessage capErrorMessage) {
+    public void onErrorComponent(CAPDialog capDialog, Integer invokeId, CAPErrorMessage capErrorMessage) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void onRejectComponent(CAPDialog capDialog, Long invokeId, Problem problem, boolean isLocalOriginated) {
+    public void onRejectComponent(CAPDialog capDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
         // TODO Auto-generated method stub
 
     }
@@ -428,7 +428,7 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
     private class CallContent {
         public Step step;
         public ArrayList<EventReportBCSMRequest> eventList = new ArrayList<EventReportBCSMRequest>();
-        public Long activityTestInvokeId;
+        public Integer activityTestInvokeId;
     }
 
     @Override

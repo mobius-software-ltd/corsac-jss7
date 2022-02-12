@@ -6,11 +6,11 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 public class ASNNetworkResourceImpl extends ASNEnumerated {
 	public ASNNetworkResourceImpl() {
-		
+		super("NetworkResource",0,7,false);
 	}
 	
 	public ASNNetworkResourceImpl(NetworkResource t) {
-		super(t.getCode());
+		super(t.getCode(),"NetworkResource",0,7,false);
 	}
 	
 	public NetworkResource getType() {

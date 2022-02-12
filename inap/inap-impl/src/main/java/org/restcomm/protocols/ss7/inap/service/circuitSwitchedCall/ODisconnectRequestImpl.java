@@ -99,7 +99,7 @@ public class ODisconnectRequestImpl extends CircuitSwitchedCallMessageImpl imple
         	this.callingFacilityGroup=new FacilityGroupWrapperImpl(callingFacilityGroup);
         
         if(callingFacilityGroupMember!=null)
-        	this.callingFacilityGroupMember=new ASNInteger(callingFacilityGroupMember);
+        	this.callingFacilityGroupMember=new ASNInteger(callingFacilityGroupMember,"CallingFacilityGroupMember",0,Integer.MAX_VALUE,false);
         	
         this.releaseCause=releaseCause;
         this.routeList=routeList;
@@ -107,7 +107,7 @@ public class ODisconnectRequestImpl extends CircuitSwitchedCallMessageImpl imple
         this.carrier=carrier;
         
         if(connectTime!=null)
-        	this.connectTime=new ASNInteger(connectTime);        	
+        	this.connectTime=new ASNInteger(connectTime,"ConnectTime",0,255,false);        	
     }
 
     @Override

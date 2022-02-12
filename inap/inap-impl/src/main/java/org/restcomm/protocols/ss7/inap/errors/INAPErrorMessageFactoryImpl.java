@@ -49,9 +49,9 @@ import io.netty.buffer.ByteBuf;
 public class INAPErrorMessageFactoryImpl implements INAPErrorMessageFactory {
 
     @Override
-    public INAPErrorMessage createMessageFromErrorCode(Long errorCode,Boolean isCS1Plus) {
+    public INAPErrorMessage createMessageFromErrorCode(Integer errorCode,Boolean isCS1Plus) {
     	if(isCS1Plus==null || !isCS1Plus) {
-	        int ec = (int) (long) errorCode;
+	        int ec = (int) errorCode;
 	        switch (ec) {
 	            case INAPErrorCode.cancelFailed:
 	                INAPErrorMessageCancelFailedImpl emCancelFailed = new INAPErrorMessageCancelFailedImpl();
@@ -100,7 +100,7 @@ public class INAPErrorMessageFactoryImpl implements INAPErrorMessageFactory {
     }
 
     @Override
-    public INAPErrorMessageParameterless createINAPErrorMessageParameterless(Long errorCode) {
+    public INAPErrorMessageParameterless createINAPErrorMessageParameterless(Integer errorCode) {
         return new INAPErrorMessageParameterlessImpl(errorCode);
     }
 
@@ -131,7 +131,7 @@ public class INAPErrorMessageFactoryImpl implements INAPErrorMessageFactory {
     }
 
 	@Override
-	public INAPErrorMessageOctetString createINAPErrorMessageOctetString(Long errorCode, ByteBuf parameter) {
+	public INAPErrorMessageOctetString createINAPErrorMessageOctetString(Integer errorCode, ByteBuf parameter) {
 		INAPErrorMessageOctetStringImpl result = new INAPErrorMessageOctetStringImpl(errorCode);
 		if(parameter!=null)
 			result.setValue(parameter);
