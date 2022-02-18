@@ -226,13 +226,13 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 	}
 
 	@Override
-	public void processComponent(ComponentType compType, OperationCode oc, INAPMessage parameter, INAPDialog capDialog,
+	public void processComponent(ComponentType compType, OperationCode oc, INAPMessage parameter, INAPDialog inapDialog,
 			Integer invokeId, Integer linkedId) throws INAPParsingComponentException {
 
 		Integer ocValue = oc.getLocalOperationCode();
 		if (ocValue == null)
 			new INAPParsingComponentException("", INAPParsingComponentExceptionReason.UnrecognizedOperation);
-		INAPApplicationContext acn = capDialog.getApplicationContext();
+		INAPApplicationContext acn = inapDialog.getApplicationContext();
 		int ocValueInt = (int) (long) ocValue;
 		boolean processed = false;
 
@@ -607,7 +607,7 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					processed = true;
 					DisconnectForwardConnectionRequest ind = new DisconnectForwardConnectionRequestImpl();
 					ind.setInvokeId(invokeId);
-					ind.setINAPDialog(capDialog);
+					ind.setINAPDialog(inapDialog);
 
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
@@ -639,7 +639,7 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					processed = true;
 					DisconnectForwardConnectionRequest ind = new DisconnectForwardConnectionRequestImpl();
 					ind.setInvokeId(invokeId);
-					ind.setINAPDialog(capDialog);
+					ind.setINAPDialog(inapDialog);
 
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
@@ -978,6 +978,8 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 				if (parameter == null) {
 					processed = true;
 					ContinueRequest ind = new ContinueRequestImpl();
+					ind.setInvokeId(invokeId);
+					ind.setINAPDialog(inapDialog);
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
 							serLis.onINAPMessage(ind);
@@ -994,6 +996,9 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 				if (parameter == null) {
 					processed = true;
 					ContinueRequest ind = new ContinueRequestImpl();
+					ind.setInvokeId(invokeId);
+					ind.setINAPDialog(inapDialog);
+
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
 							serLis.onINAPMessage(ind);
@@ -1555,7 +1560,7 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					processed = true;
 					SpecializedResourceReportRequest ind = new SpecializedResourceReportRequestImpl();
 					ind.setInvokeId(invokeId);
-					ind.setINAPDialog(capDialog);
+					ind.setINAPDialog(inapDialog);
 
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
@@ -1589,7 +1594,7 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					processed = true;
 					SpecializedResourceReportRequest ind = new SpecializedResourceReportRequestImpl();
 					ind.setInvokeId(invokeId);
-					ind.setINAPDialog(capDialog);
+					ind.setINAPDialog(inapDialog);
 
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
@@ -1680,7 +1685,7 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					processed = true;
 					ActivityTestRequest ind = new ActivityTestRequestImpl();
 					ind.setInvokeId(invokeId);
-					ind.setINAPDialog(capDialog);
+					ind.setINAPDialog(inapDialog);
 
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
@@ -1694,7 +1699,7 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					processed = true;
 					ActivityTestResponse ind = new ActivityTestResponseImpl();
 					ind.setInvokeId(invokeId);
-					ind.setINAPDialog(capDialog);
+					ind.setINAPDialog(inapDialog);
 
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
@@ -1857,6 +1862,9 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					if(parameter==null) {
 						processed = true;
 						ReleaseCallPartyConnectionResponse ind = new ReleaseCallPartyConnectionParameterlessResponseImpl();
+						ind.setInvokeId(invokeId);
+						ind.setINAPDialog(inapDialog);
+
 						for (INAPServiceListener serLis : this.serviceListeners) {
 							try {
 								serLis.onINAPMessage(ind);
