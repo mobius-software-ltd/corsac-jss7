@@ -639,9 +639,8 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		else
 			customTimeout = customInvokeTimeout;
 
-		ContinueRequestImpl req = new ContinueRequestImpl();
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
-				INAPOperationCode.continueCode, req, true, false);
+				INAPOperationCode.continueCode, null, true, false);
 	}
 
 	@Override
@@ -978,9 +977,8 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		else
 			customTimeout = customInvokeTimeout;
 
-		DisconnectForwardConnectionRequestImpl req = new DisconnectForwardConnectionRequestImpl();
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
-				INAPOperationCode.disconnectForwardConnection, req, true, false);
+				INAPOperationCode.disconnectForwardConnection, null, true, false);
 	}
 
 	@Override
@@ -3153,8 +3151,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 			throw new INAPException(
 					"Bad application context name for addReleaseCallPartyConnectionResponse: must be Ericcson_cs1plus_SSP_TO_SCP_AC or Ericcson_cs1plus_SCP_to_SSP_AC");
 
-		ReleaseCallPartyConnectionParameterlessResponseImpl res = new ReleaseCallPartyConnectionParameterlessResponseImpl();
-		this.sendDataComponent(invokeId, null, null, null, INAPOperationCode.releaseCallPartyConnection, res, false, true);
+		this.sendDataComponent(invokeId, null, null, null, INAPOperationCode.releaseCallPartyConnection, null, false, true);
 	}
 	
 	@Override
