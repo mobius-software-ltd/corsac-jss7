@@ -39,6 +39,9 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * @author daniel bichara
@@ -147,5 +150,13 @@ public class ExtSSDataImpl implements ExtSSData {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(ssCode==null)
+			throw new ASNParsingComponentException("ss code should be set for ext ss data", ASNParsingComponentExceptionReason.MistypedParameter);
 
+		if(ssStatus==null)
+			throw new ASNParsingComponentException("ss status should be set for ext ss data", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

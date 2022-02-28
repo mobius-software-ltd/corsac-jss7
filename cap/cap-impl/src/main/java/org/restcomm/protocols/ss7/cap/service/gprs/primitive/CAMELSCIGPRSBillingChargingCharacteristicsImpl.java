@@ -28,6 +28,9 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPID;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -79,5 +82,10 @@ public class CAMELSCIGPRSBillingChargingCharacteristicsImpl implements CAMELSCIG
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(aocGPRS==null)
+			throw new ASNParsingComponentException("aoc gprs should be set for CAMEL sci gprs billing charging characteristics", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

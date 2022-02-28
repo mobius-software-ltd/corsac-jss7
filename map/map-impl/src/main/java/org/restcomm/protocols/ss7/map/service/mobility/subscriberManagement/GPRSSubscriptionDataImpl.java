@@ -34,6 +34,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.PDP
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -126,4 +129,13 @@ public class GPRSSubscriptionDataImpl implements GPRSSubscriptionData {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(gprsDataList==null || gprsDataList.getPDPContextList()==null || gprsDataList.getPDPContextList().size()==0)
+			throw new ASNParsingComponentException("gprs data list should be set for gprs subscription data", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(gprsDataList.getPDPContextList().size()>50)
+			throw new ASNParsingComponentException("gprs data list size should be between 1 and 50 for gprs subscription data", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

@@ -34,6 +34,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Caus
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -126,5 +129,16 @@ public class TBcsmCamelTdpCriteriaImpl implements TBcsmCamelTdpCriteria {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(tBcsmTriggerDetectionPoint==null)
+			throw new ASNParsingComponentException("tbcsm trigger detection point should be set for tbcsm camel tdp criteria", ASNParsingComponentExceptionReason.MistypedParameter);
 
+		if(basicServiceCriteria!=null && basicServiceCriteria.getExtBasicServiceCode()!=null && basicServiceCriteria.getExtBasicServiceCode().size()>5)
+			throw new ASNParsingComponentException("basic service criteria size should be between 1 and 5 for tbcsm camel tdp criteria", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(tCauseValueCriteria!=null && tCauseValueCriteria.getCauseValueImpl()!=null && tCauseValueCriteria.getCauseValueImpl().size()>5)
+			throw new ASNParsingComponentException("tcause value criteria size should be between 1 and 5 for tbcsm camel tdp criteria", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.inap.api.charging.TariffSwitchoverTime;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -80,4 +83,13 @@ public class TariffSwitchPulseImpl implements TariffSwitchPulse {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(nextTariffPulse==null)
+			throw new ASNParsingComponentException("next tariff pulse should be set for tariff switch pulse", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(tariffSwitchoverTime==null)
+			throw new ASNParsingComponentException("tariff switchover time should be set for tariff switch pulse", ASNParsingComponentExceptionReason.MistypedParameter);						
+	}
 }

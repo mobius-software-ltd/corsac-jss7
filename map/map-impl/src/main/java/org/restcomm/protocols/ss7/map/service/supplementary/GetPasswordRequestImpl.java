@@ -27,7 +27,10 @@ import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.GetPasswordRequest;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.GuidanceInfo;
 
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
 *
@@ -82,4 +85,9 @@ public class GetPasswordRequestImpl extends SupplementaryMessageImpl implements 
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(guidanceInfo==null)
+			throw new ASNParsingComponentException("guidance info should be set for get password request", ASNParsingComponentExceptionReason.MistypedRootParameter);		
+	}
 }

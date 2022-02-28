@@ -53,6 +53,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.PDPT
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
@@ -442,4 +445,13 @@ public class PDPContextInfoImpl implements PDPContextInfo {
         sb.append("]");
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(pdpContextIdentifier==null)
+			throw new ASNParsingComponentException("pdp context id should be set for pdp context info", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(pdpType==null)
+			throw new ASNParsingComponentException("pdp type should be set for pdp context", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

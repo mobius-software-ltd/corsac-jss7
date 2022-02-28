@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -84,5 +87,10 @@ public class GapTreatmentImpl implements GapTreatment {
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(informationToSend==null && releaseCause==null)
+			throw new ASNParsingComponentException("either information to send or release cause should be set for gap treatment", ASNParsingComponentExceptionReason.MistypedParameter);		
+	}
 }

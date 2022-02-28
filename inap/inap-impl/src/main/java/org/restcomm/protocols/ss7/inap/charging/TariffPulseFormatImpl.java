@@ -32,6 +32,9 @@ import org.restcomm.protocols.ss7.inap.api.charging.TariffPulseFormat;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -125,4 +128,10 @@ public class TariffPulseFormatImpl implements TariffPulseFormat {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(tariffControlIndicators==null)
+			throw new ASNParsingComponentException("tariff control indicators should be set for tariff pulse format", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

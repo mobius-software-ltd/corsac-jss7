@@ -33,6 +33,9 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.DataI
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -118,4 +121,16 @@ public class RetrieveRequestImpl extends CircuitSwitchedCallMessageImpl implemen
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(operationID==null)
+			throw new ASNParsingComponentException("operation ID should be set for retrieve request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(applicationID==null)
+			throw new ASNParsingComponentException("application ID should be set for retrieve request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(dataItemID==null)
+			throw new ASNParsingComponentException("data item ID should be set for retrieve request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

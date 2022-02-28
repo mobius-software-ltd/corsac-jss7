@@ -33,6 +33,9 @@ import org.restcomm.protocols.ss7.map.primitives.USSDStringImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -103,4 +106,13 @@ public class UnstructuredSSResponseImpl extends SupplementaryMessageImpl impleme
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(ussdDataCodingSch==null)
+			throw new ASNParsingComponentException("ussd data coding sch should be set for unstructured SS response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(ussdString==null)
+			throw new ASNParsingComponentException("ussd string should be set for process SS response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

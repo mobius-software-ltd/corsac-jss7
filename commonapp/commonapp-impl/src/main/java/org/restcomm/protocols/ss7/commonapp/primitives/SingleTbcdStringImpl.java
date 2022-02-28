@@ -30,6 +30,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
@@ -217,4 +218,16 @@ public class SingleTbcdStringImpl {
             return false;
         return true;
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(data==null)
+			throw new ASNParsingComponentException("data should be set for tbcd string", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(data.length()<1)
+			throw new ASNParsingComponentException("data length should not be less then 1", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(data.length()>2)
+			throw new ASNParsingComponentException("data length should not be more then 2", ASNParsingComponentExceptionReason.MistypedParameter);		
+	}
 }

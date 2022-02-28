@@ -27,6 +27,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -80,4 +83,10 @@ public class HoldCallInNetworkRequestChoisempl {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(holdCause==null && empty==null)
+			throw new ASNParsingComponentException("either hold cause or empty should be set for hold call in network", ASNParsingComponentExceptionReason.MistypedRootParameter);			
+	}
 }

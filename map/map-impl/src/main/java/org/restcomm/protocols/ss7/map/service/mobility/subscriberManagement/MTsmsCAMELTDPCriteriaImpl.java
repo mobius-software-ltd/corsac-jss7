@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -110,5 +113,13 @@ public class MTsmsCAMELTDPCriteriaImpl implements MTsmsCAMELTDPCriteria {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(smsTriggerDetectionPoint==null)
+			throw new ASNParsingComponentException("sms trigger detection point should be set for mt sms camel tdp criteria", ASNParsingComponentExceptionReason.MistypedParameter);
 
+		if(tPDUTypeCriterion!=null && tPDUTypeCriterion.getMTSMSTPDUType()!=null && tPDUTypeCriterion.getMTSMSTPDUType().size()>6)
+			throw new ASNParsingComponentException("tpdu criterion should be set for mt sms camel tdp criteria", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

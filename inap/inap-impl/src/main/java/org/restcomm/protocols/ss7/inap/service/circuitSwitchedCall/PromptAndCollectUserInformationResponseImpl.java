@@ -29,7 +29,10 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.PromptAnd
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.PromptAndCollectUserInformationResponeChoiseImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -94,4 +97,10 @@ public class PromptAndCollectUserInformationResponseImpl extends CircuitSwitched
         this.addInvokeIdInfo(sb);        
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(promptAndCollectUserInformationResponeChoiseImpl==null)
+			throw new ASNParsingComponentException("one of child elements should be set for prompt and collect response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

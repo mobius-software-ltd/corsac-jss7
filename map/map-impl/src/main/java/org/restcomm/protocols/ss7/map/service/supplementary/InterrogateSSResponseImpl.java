@@ -35,7 +35,10 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Basi
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
 *
@@ -160,4 +163,15 @@ public class InterrogateSSResponseImpl extends SupplementaryMessageImpl implemen
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(ssStatus==null && basicServiceGroupList==null && (forwardingFeatureList==null || forwardingFeatureList.getForwardingFeatures()==null || forwardingFeatureList.getForwardingFeatures().size()==0) && (genericServiceInfo==null || genericServiceInfo.getCcbsFeatureList()==null || genericServiceInfo.getCcbsFeatureList().size()==0))
+			throw new ASNParsingComponentException("one of child items should be set for interrogate SS response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+		
+		if(basicServiceGroupList!=null && basicServiceGroupList.getBasicServiceCodes()!=null && basicServiceGroupList.getBasicServiceCodes().size()>13)
+			throw new ASNParsingComponentException("basic service group list size should be between 1 and 13 for interrogate SS response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+		
+		if(forwardingFeatureList!=null && forwardingFeatureList.getForwardingFeatures()!=null && forwardingFeatureList.getForwardingFeatures().size()>13)
+			throw new ASNParsingComponentException("forwarding feature list size should be between 1 and 13 for interrogate SS response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

@@ -50,6 +50,9 @@ import org.restcomm.protocols.ss7.map.api.service.oam.TraceType;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
 *
@@ -267,5 +270,13 @@ public class ActivateTraceModeRequestImpl extends MessageImpl implements Activat
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(traceReference==null)
+			throw new ASNParsingComponentException("trace reference should be set for activate trace mode request", ASNParsingComponentExceptionReason.MistypedRootParameter);
 
+		if(traceType==null)
+			throw new ASNParsingComponentException("trace type should be set for activate trace mode request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

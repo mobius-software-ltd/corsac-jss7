@@ -32,6 +32,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.PasswordImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
@@ -134,4 +137,10 @@ public class CallBarringDataImpl implements CallBarringData {
         sb.append("]");
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(callBarringFeatureList==null)
+			throw new ASNParsingComponentException("call barring feature list should be set for call barring data", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.MSRadioAcc
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * @author abhayani
@@ -89,4 +92,10 @@ public class GPRSMSClassImpl implements GPRSMSClass {
         sb.append("]");
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(mSNetworkCapability==null)
+			throw new ASNParsingComponentException("ms network capability should be set for gprs ms class", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

@@ -28,6 +28,9 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.BurstList;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -83,4 +86,10 @@ public class BurstListImpl implements BurstList {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(bursts==null)
+			throw new ASNParsingComponentException("bursts should be set for bursts list", ASNParsingComponentExceptionReason.MistypedParameter);				
+	}
 }

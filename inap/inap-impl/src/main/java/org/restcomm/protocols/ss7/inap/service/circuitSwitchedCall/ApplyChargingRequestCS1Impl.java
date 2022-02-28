@@ -36,6 +36,9 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.AchBi
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
 
 /**
@@ -141,4 +144,10 @@ public class ApplyChargingRequestCS1Impl extends CircuitSwitchedCallMessageImpl 
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(aChBillingChargingCharacteristics==null)
+			throw new ASNParsingComponentException("ach billing charging characteristics should be set for apply charging request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

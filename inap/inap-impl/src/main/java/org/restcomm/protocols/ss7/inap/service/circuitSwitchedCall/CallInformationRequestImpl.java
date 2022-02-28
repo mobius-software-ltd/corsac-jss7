@@ -40,6 +40,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.CallInfor
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -159,4 +162,10 @@ public class CallInformationRequestImpl extends CircuitSwitchedCallMessageImpl i
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(requestedInformationList==null)
+			throw new ASNParsingComponentException("requested information type list should be set for call information request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

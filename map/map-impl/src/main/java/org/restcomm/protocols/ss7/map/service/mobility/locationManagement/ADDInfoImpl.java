@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.AD
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -80,4 +83,10 @@ public class ADDInfoImpl implements ADDInfo {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(imeisv==null)
+			throw new ASNParsingComponentException("imei sv should be set for add info", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

@@ -27,6 +27,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Authen
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -145,4 +148,22 @@ public class AuthenticationQuintupletImpl implements AuthenticationQuintuplet {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(rand==null)
+			throw new ASNParsingComponentException("rand should be set for authentication quintuplet", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(xres==null)
+			throw new ASNParsingComponentException("xres should be set for authentication quintuplet", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(ck==null)
+			throw new ASNParsingComponentException("ck should be set for authentication quintuplet", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(ik==null)
+			throw new ASNParsingComponentException("ik should be set for authentication quintuplet", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(autn==null)
+			throw new ASNParsingComponentException("autn should be set for authentication quintuplet", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

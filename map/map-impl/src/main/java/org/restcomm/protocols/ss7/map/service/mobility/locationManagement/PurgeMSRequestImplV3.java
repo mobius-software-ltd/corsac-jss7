@@ -35,6 +35,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -132,5 +135,13 @@ public class PurgeMSRequestImplV3 extends MobilityMessageImpl implements PurgeMS
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(imsi==null)
+			throw new ASNParsingComponentException("imsi should be set for purge MS", ASNParsingComponentExceptionReason.MistypedRootParameter);			
+	
+		if(vlrNumber==null)
+			throw new ASNParsingComponentException("vlr number should be set for purge MS", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

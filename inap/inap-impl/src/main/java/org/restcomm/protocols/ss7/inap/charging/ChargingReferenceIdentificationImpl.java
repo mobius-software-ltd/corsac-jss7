@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.inap.api.charging.ChargingReferenceIdentificat
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNObjectIdentifier;
 
@@ -91,4 +94,13 @@ public class ChargingReferenceIdentificationImpl implements ChargingReferenceIde
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(networkIdentification==null)
+			throw new ASNParsingComponentException("network identification should be set for charging reference identification", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(referenceID==null)
+			throw new ASNParsingComponentException("reference ID should be set for charging reference identification", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

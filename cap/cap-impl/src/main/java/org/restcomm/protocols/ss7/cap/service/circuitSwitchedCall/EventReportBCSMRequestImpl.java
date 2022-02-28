@@ -31,6 +31,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.commonapp.primitives.ASNEventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MiscCallInfoImpl;
@@ -40,6 +41,9 @@ import org.restcomm.protocols.ss7.commonapp.primitives.ReceivingLegIDWrapperImpl
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -121,6 +125,9 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
 
     @Override
     public MiscCallInfo getMiscCallInfo() {
+    	if(miscCallInfo==null)
+    		return new MiscCallInfoImpl(MiscCallInfoMessageType.request,null);
+    	
         return miscCallInfo;
     }
 
@@ -161,4 +168,10 @@ public class EventReportBCSMRequestImpl extends CircuitSwitchedCallMessageImpl i
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(eventTypeBCSM==null)
+			throw new ASNParsingComponentException("event type BCSM should be set for event report BCSM request", ASNParsingComponentExceptionReason.MistypedRootParameter);		
+	}
 }

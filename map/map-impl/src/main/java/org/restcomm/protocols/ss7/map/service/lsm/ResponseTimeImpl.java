@@ -27,6 +27,9 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.ResponseTimeCategory;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * @author amit bhayani
@@ -77,4 +80,10 @@ public class ResponseTimeImpl implements ResponseTime {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(responseTimeCategory==null)
+			throw new ASNParsingComponentException("response time category should be set for reporting plmn", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

@@ -35,6 +35,9 @@ import org.restcomm.protocols.ss7.map.primitives.TimeImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -128,5 +131,11 @@ public class CSGSubscriptionDataImpl implements CSGSubscriptionData {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(csgId==null)
+			throw new ASNParsingComponentException("csg id should be set for csg subscription", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 
 }

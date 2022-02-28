@@ -110,5 +110,4 @@ public class UUDataImpl implements UUData {
 
         return sb.toString();
     }
-
 }

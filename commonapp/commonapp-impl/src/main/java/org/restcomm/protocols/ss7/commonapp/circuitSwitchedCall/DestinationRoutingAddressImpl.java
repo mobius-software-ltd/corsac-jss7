@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -70,4 +73,16 @@ public class DestinationRoutingAddressImpl implements DestinationRoutingAddress 
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(calledPartyNumber==null)
+			throw new ASNParsingComponentException("called party number should be set for destination routing address", ASNParsingComponentExceptionReason.MistypedParameter);		    		
+		
+		if(calledPartyNumber.size()==0)
+			throw new ASNParsingComponentException("called party number should be set for destination routing address", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(calledPartyNumber.size()!=1)
+			throw new ASNParsingComponentException("called party number should have 1 item for destination routing address", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

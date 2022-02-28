@@ -34,6 +34,9 @@ import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -115,4 +118,12 @@ public class RequestReportGPRSEventRequestImpl extends GprsMessageImpl implement
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(gprsEvent==null || gprsEvent.getGPRSEvents()==null || gprsEvent.getGPRSEvents().size()==0)
+			throw new ASNParsingComponentException("gprs events should be set for request report gprs request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+		
+		if(gprsEvent.getGPRSEvents().size()>10)
+			throw new ASNParsingComponentException("gprs events size should be between 1 and 10 for request report gprs request", ASNParsingComponentExceptionReason.MistypedRootParameter);		
+	}
 }

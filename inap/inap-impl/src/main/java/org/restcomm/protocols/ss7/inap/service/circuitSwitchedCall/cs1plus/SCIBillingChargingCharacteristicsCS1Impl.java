@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.S
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -83,4 +86,13 @@ public class SCIBillingChargingCharacteristicsCS1Impl implements SCIBillingCharg
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(chargingInformation==null)
+			throw new ASNParsingComponentException("charging information should be set for sci billing charging characteristics", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(chargingAnalysisInputData==null)
+			throw new ASNParsingComponentException("charging analysis input data should be set for sci billing charging characteristics", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

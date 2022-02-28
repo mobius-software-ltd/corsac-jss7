@@ -28,6 +28,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -100,4 +103,13 @@ public class AMBRImpl implements AMBR {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(maxRequestedBandwidthDL==null)
+			throw new ASNParsingComponentException("max requested bandwidth DL should be set for AMBR", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(maxRequestedBandwidthUL==null)
+			throw new ASNParsingComponentException("max requested bandwidth UL should be set for AMBR", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

@@ -82,7 +82,7 @@ public class DialogueUserInformationRequestImpl extends CircuitSwitchedCallMessa
     @Override
     public SendingFunctionsActive getSendingFunctionsActive() {
     	if(sendingFunctionsActive==null || sendingFunctionsActive.getType()==null)
-    		return null;
+    		return SendingFunctionsActive.normal;
     	
     	return sendingFunctionsActive.getType();
     }
@@ -90,7 +90,7 @@ public class DialogueUserInformationRequestImpl extends CircuitSwitchedCallMessa
     @Override
     public ReceivingFunctionsRequested getReceivingFunctionsRequested() {
     	if(receivingFunctionsRequested==null || receivingFunctionsRequested.getType()==null)
-    		return null;
+    		return ReceivingFunctionsRequested.normal;
     	
     	return receivingFunctionsRequested.getType();
     }

@@ -27,6 +27,9 @@ import org.restcomm.protocols.ss7.commonapp.isup.CalledPartyNumberIsupImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -82,4 +85,9 @@ public class ResourceAddressImpl {
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(isNull==null && ipRoutingAddress==null)
+			throw new ASNParsingComponentException("either is null or ip routing address should be set for resource address", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

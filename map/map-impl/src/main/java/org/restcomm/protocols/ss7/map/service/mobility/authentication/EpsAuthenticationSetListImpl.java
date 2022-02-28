@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.EpsAut
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -71,4 +74,13 @@ public class EpsAuthenticationSetListImpl implements EpsAuthenticationSetList {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(epcAvs==null || epcAvs.size()==0)
+			throw new ASNParsingComponentException("epc av list should be set for epc authentication set list", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(epcAvs.size()>5)
+			throw new ASNParsingComponentException("epc av list size should be between 1 and 5 for epc authentication set list", ASNParsingComponentExceptionReason.MistypedParameter);		
+	}
 }

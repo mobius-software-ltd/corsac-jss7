@@ -33,6 +33,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * @author daniel bichara
@@ -127,5 +130,10 @@ public class CUGInfoImpl implements CUGInfo {
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(cugSubscriptionList==null)
+			throw new ASNParsingComponentException("cug subscription list should be set for cug ingo", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

@@ -60,6 +60,9 @@ import org.restcomm.protocols.ss7.commonapp.subscriberInformation.RAIdentityImpl
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
@@ -390,4 +393,21 @@ public class InitialDpGprsRequestImpl extends GprsMessageImpl implements Initial
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(serviceKey==null)
+			throw new ASNParsingComponentException("service key should be set for initial dp gprs request", ASNParsingComponentExceptionReason.MistypedRootParameter);			
+
+		if(gprsEventType==null)
+			throw new ASNParsingComponentException("gprs event type should be set for initial dp gprs request", ASNParsingComponentExceptionReason.MistypedRootParameter);			
+		
+		if(msisdn==null)
+			throw new ASNParsingComponentException("msisdn should be set for initial dp gprs request", ASNParsingComponentExceptionReason.MistypedRootParameter);			
+		
+		if(imsi==null)
+			throw new ASNParsingComponentException("imsi should be set for initial dp gprs request", ASNParsingComponentExceptionReason.MistypedRootParameter);			
+		
+		if(timeAndTimezone==null)
+			throw new ASNParsingComponentException("time and timezone should be set for initial dp gprs request", ASNParsingComponentExceptionReason.MistypedRootParameter);			
+	}
 }

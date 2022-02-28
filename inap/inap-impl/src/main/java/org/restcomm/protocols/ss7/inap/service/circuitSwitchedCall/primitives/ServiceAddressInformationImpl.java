@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -105,4 +108,10 @@ public class ServiceAddressInformationImpl implements ServiceAddressInformation 
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(miscCallInfo==null)
+			throw new ASNParsingComponentException("misc call info should be set for service address information", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

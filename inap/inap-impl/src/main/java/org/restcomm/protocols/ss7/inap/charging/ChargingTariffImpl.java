@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.inap.api.charging.TariffPulse;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -83,4 +86,13 @@ public class ChargingTariffImpl implements ChargingTariff {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(tariffCurrency==null)
+			throw new ASNParsingComponentException("tariff currency should be set for charging tariff", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(tariffPulse==null)
+			throw new ASNParsingComponentException("tariff pulse should be set for charging tariff", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

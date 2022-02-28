@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.inap.api.charging.TariffDuration;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -101,4 +104,16 @@ public class CommunicationChargeCurrencyImpl implements CommunicationChargeCurre
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(currencyFactorScale==null)
+			throw new ASNParsingComponentException("currency factor scale should be set for communication charge currency", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(tariffDuration==null)
+			throw new ASNParsingComponentException("tariff duration should be set for communication charge currency", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(subTariffControl==null)
+			throw new ASNParsingComponentException("subtariff control should be set for communication charge currency", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

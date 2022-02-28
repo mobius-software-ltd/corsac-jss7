@@ -28,6 +28,9 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferredVolu
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -89,5 +92,10 @@ public class ChargingResultImpl implements ChargingResult {
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(transferredVolume==null && elapsedTime==null)
+			throw new ASNParsingComponentException("either transferred volume or elapsed time should be set for charging result", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

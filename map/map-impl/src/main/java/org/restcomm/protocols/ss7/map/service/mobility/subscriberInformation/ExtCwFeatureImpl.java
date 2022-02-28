@@ -28,6 +28,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtS
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * Created by vsubbotin on 26/05/16.
@@ -78,4 +81,13 @@ public class ExtCwFeatureImpl implements ExtCwFeature {
         sb.append("]");
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(basicService==null || basicService.getExtBasicServiceCode()==null)
+			throw new ASNParsingComponentException("basic service should be set for ext cw feature", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(ssStatus==null)
+			throw new ASNParsingComponentException("ss status should be set for ext cw feature", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

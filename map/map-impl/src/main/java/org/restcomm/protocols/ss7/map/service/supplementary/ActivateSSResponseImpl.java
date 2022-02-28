@@ -28,7 +28,10 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.ActivateSSRespon
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSInfo;
 
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 
 /**
@@ -79,5 +82,11 @@ public class ActivateSSResponseImpl extends SupplementaryMessageImpl implements 
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(ssInfo==null)
+			throw new ASNParsingComponentException("SS info should be set for activate SS response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 
 }

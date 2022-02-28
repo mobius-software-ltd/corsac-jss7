@@ -37,6 +37,9 @@ import org.restcomm.protocols.ss7.map.api.service.oam.ReportingTrigger;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -241,5 +244,10 @@ public class MDTConfigurationImpl implements MDTConfiguration {
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(jobType==null)
+			throw new ASNParsingComponentException("job type should be set for MDT configuration", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

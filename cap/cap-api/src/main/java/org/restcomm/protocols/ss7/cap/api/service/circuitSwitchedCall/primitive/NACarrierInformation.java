@@ -29,10 +29,13 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
  *
- AOCBeforeAnswer ::= SEQUENCE { aOCInitial [0] CAI-GSM0224, aOCSubsequent [1] AOCSubsequent OPTIONAL }
+ NACarrierInformation ::= SEQUENCE {
+	naCarrierId [0] NAEA-CIC OPTIONAL,
+	naCICSelectionType [1] NACarrierSelectionInfo OPTIONAL,
+...}
  *
  *
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)

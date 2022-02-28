@@ -30,7 +30,10 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.RequestNo
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ChargingEvent;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ChargingEventListWrapperImpl;
 
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -93,4 +96,10 @@ public class RequestNotificationChargingEventRequestImpl extends CircuitSwitched
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(chargingEvents==null)
+			throw new ASNParsingComponentException("charging events should be set for request notification charging event request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

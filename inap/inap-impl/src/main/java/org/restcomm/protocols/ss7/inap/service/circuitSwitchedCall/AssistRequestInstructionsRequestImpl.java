@@ -37,6 +37,9 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.IP
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -132,4 +135,10 @@ public class AssistRequestInstructionsRequestImpl extends CircuitSwitchedCallMes
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(correlationID==null)
+			throw new ASNParsingComponentException("correlation ID should be set for assist request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

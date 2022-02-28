@@ -33,6 +33,9 @@ import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -83,7 +86,7 @@ public class ResetTimerRequestImpl extends CircuitSwitchedCallMessageImpl implem
     @Override
     public TimerID getTimerID() {
     	if(timerID==null)
-    		return null;
+    		return TimerID.tssf;
     	
         return timerID.getType();
     }
@@ -135,4 +138,10 @@ public class ResetTimerRequestImpl extends CircuitSwitchedCallMessageImpl implem
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(timerValue==null)
+			throw new ASNParsingComponentException("timer value should be set for reset timer request", ASNParsingComponentExceptionReason.MistypedRootParameter);		
+	}
 }

@@ -123,12 +123,3 @@ public class InitialDPRequestV3Impl extends InitialDPRequestBaseImpl implements 
 		return sb.toString();
 	}
 }
-
-// added:
-// CGEncountered
-// Cause
-// serviceInteractionIndicatorsTwo
-// carrier
-// cugIndex
-// cugInterlock
-// cugOutgoingAccess

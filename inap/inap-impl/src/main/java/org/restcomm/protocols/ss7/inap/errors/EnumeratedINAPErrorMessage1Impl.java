@@ -22,7 +22,10 @@
 
 package org.restcomm.protocols.ss7.inap.errors;
 
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
 
 /**
@@ -68,4 +71,10 @@ public abstract class EnumeratedINAPErrorMessage1Impl extends INAPErrorMessageIm
     public Integer getErrorCode() {
         return errorCode;
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(value==null)
+			throw new ASNParsingComponentException("value not set for " + name, ASNParsingComponentExceptionReason.MistypedRootParameter);			
+	}
 }

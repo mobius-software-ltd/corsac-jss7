@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.R
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -85,4 +88,13 @@ public class AchBillingChargingCharacteristicsCS1Impl implements AchBillingCharg
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(reportCondition==null)
+			throw new ASNParsingComponentException("report condition should be set for ach billing charging characteristics", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(requestedReportInfo==null)
+			throw new ASNParsingComponentException("request report info should be set for ach billing charging characteristics", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

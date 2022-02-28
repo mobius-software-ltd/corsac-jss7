@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.G
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -86,4 +89,13 @@ public class GenericDigitsSetImpl implements GenericDigitsSet {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(genericDigits==null || genericDigits.size()==0)
+			throw new ASNParsingComponentException("generic digits list should be set for generic digits", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(genericDigits.size()>20)
+			throw new ASNParsingComponentException("generic digits list size should be betwen 1 and 20 for generic digits", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

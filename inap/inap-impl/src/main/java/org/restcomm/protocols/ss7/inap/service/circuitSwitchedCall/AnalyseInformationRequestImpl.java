@@ -50,6 +50,9 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.IS
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -237,4 +240,10 @@ public class AnalyseInformationRequestImpl extends CircuitSwitchedCallMessageImp
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(destinationRoutingAddress==null)
+			throw new ASNParsingComponentException("destination routing address should be set for analyse information request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

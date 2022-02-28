@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -83,4 +86,13 @@ public class IMSIWithLMSIImpl implements IMSIWithLMSI {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(imsi==null)
+			throw new ASNParsingComponentException("imsi should be set for imsi with lmsi", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(lmsi==null)
+			throw new ASNParsingComponentException("lmsi should be set for imsi with lmsi", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

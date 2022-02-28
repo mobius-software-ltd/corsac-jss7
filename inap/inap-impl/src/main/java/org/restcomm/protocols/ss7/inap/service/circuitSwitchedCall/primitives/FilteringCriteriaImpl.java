@@ -28,6 +28,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -87,4 +90,13 @@ public class FilteringCriteriaImpl implements FilteringCriteria {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(serviceKey==null)
+			throw new ASNParsingComponentException("service key should be set for filtering criteria", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(addressAndService==null)
+			throw new ASNParsingComponentException("address and service should be set for filtering criteria", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

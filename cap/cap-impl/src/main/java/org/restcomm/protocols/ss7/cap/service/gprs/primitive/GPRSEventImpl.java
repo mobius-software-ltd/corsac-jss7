@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.commonapp.primitives.ASNMonitorMode;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -89,4 +92,12 @@ public class GPRSEventImpl implements GPRSEvent {
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(gprsEventType==null)
+			throw new ASNParsingComponentException("gprs event type should be set for gprs event", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(monitorMode==null)
+			throw new ASNParsingComponentException("monitor mode should be set for gprs event", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

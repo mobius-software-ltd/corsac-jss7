@@ -27,6 +27,9 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.TimeIfTariff
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -84,4 +87,10 @@ public class TimeIfTariffSwitchImpl implements TimeIfTariffSwitch {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(timeSinceTariffSwitch==null)
+			throw new ASNParsingComponentException("time since tariff switch should be set for time if tariff switch", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

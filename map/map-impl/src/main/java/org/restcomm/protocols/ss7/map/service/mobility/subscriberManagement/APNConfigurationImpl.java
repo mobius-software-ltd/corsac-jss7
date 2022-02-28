@@ -44,6 +44,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.ASN
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
@@ -328,4 +331,19 @@ public class APNConfigurationImpl implements APNConfiguration {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(contextId==null)
+			throw new ASNParsingComponentException("context ID should be set for apn configuration", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(pDNType==null)
+			throw new ASNParsingComponentException("pdn type should be set for apn configuration", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(apn==null)
+			throw new ASNParsingComponentException("apn should be set for apn configuration", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(ePSQoSSubscribed==null)
+			throw new ASNParsingComponentException("eps qos subscribed should be set for apn configuration", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

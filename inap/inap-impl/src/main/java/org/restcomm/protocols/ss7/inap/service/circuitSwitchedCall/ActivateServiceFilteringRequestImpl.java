@@ -41,6 +41,9 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.Fi
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -200,4 +203,19 @@ public class ActivateServiceFilteringRequestImpl extends CircuitSwitchedCallMess
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(filteredCallTreatment==null)
+			throw new ASNParsingComponentException("filtered call treatment should be set for activate service filtering request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(filteringCharacteristics==null)
+			throw new ASNParsingComponentException("filtering characteristics should be set for activate service filtering request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(filteringTimeOut==null)
+			throw new ASNParsingComponentException("fitering time out should be set for activate service filtering request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(filteringCriteria==null)
+			throw new ASNParsingComponentException("filtering criteria should be set for activate service filtering request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

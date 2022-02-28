@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.L
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -76,4 +79,13 @@ public class LegIDsImpl implements LegIDs {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(existingLegs==null || existingLegs.size()==0)
+			throw new ASNParsingComponentException("existing legs list should be set for leg IDs", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(existingLegs.size()>20)
+			throw new ASNParsingComponentException("existing legs list size should be betwen 1 and 30 for leg IDs", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

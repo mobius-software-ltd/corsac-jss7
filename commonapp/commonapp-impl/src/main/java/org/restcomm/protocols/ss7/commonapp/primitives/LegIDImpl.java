@@ -27,6 +27,9 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -80,4 +83,10 @@ public class LegIDImpl implements LegID {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(receivingLegID==null && sendingLegID==null)
+			throw new ASNParsingComponentException("either receiving leg ID or sending leg ID should be set for leg ID", ASNParsingComponentExceptionReason.MistypedParameter);		
+	}
 }

@@ -35,6 +35,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.EventNoti
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -126,7 +129,7 @@ public class EventNotificationChargingRequestImpl extends CircuitSwitchedCallMes
     @Override
     public MonitorMode getMonitorMode() {
     	if(monitorMode==null)
-    		return null;
+    		return MonitorMode.notifyAndContinue;
     	
         return monitorMode.getType();
     }
@@ -163,4 +166,10 @@ public class EventNotificationChargingRequestImpl extends CircuitSwitchedCallMes
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(eventTypeCharging==null)
+			throw new ASNParsingComponentException("event type charging should be set for event notification charging request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

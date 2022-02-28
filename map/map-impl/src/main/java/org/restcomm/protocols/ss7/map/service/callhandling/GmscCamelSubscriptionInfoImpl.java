@@ -41,6 +41,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TCSI
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -158,5 +161,13 @@ public class GmscCamelSubscriptionInfoImpl implements GmscCamelSubscriptionInfo 
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(oBcsmCamelTdpCriteriaList!=null && oBcsmCamelTdpCriteriaList.getOBcsmCamelTDPCriteriaList()!=null && oBcsmCamelTdpCriteriaList.getOBcsmCamelTDPCriteriaList().size()>10)
+			throw new ASNParsingComponentException("obcsm camel tdp criteria list should have size 1 to 10 for gmsc camel subscription info", ASNParsingComponentExceptionReason.MistypedParameter);			
 
+		if(tBcsmCamelTdpCriteriaList!=null && tBcsmCamelTdpCriteriaList.getTBcsmCamelTDPCriteriaList()!=null && tBcsmCamelTdpCriteriaList.getTBcsmCamelTDPCriteriaList().size()>10)
+			throw new ASNParsingComponentException("tbcsm camel tdp criteria list should have size 1 to 10 for gmsc camel subscription info", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

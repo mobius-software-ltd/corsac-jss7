@@ -52,6 +52,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TCSI
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -452,4 +455,25 @@ public class CAMELSubscriptionInfoImpl implements CAMELSubscriptionInfo {
         sb.append("]");
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(oBcsmCamelTDPCriteriaList!=null && oBcsmCamelTDPCriteriaList.getOBcsmCamelTDPCriteriaList()!=null && oBcsmCamelTDPCriteriaList.getOBcsmCamelTDPCriteriaList().size()>10)
+			throw new ASNParsingComponentException("obcsm camel tdp criteria list size should be between 1 and 10 for camel subscription data", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(tBcsmCamelTdpCriteriaList!=null && tBcsmCamelTdpCriteriaList.getTBcsmCamelTDPCriteriaList()!=null && tBcsmCamelTdpCriteriaList.getTBcsmCamelTDPCriteriaList().size()>10)
+			throw new ASNParsingComponentException("tbcsm camel tdp criteria list size should be between 1 and 10 for camel subscription data", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(vtBcsmCamelTdpCriteriaList!=null && vtBcsmCamelTdpCriteriaList.getTBcsmCamelTDPCriteriaList()!=null && vtBcsmCamelTdpCriteriaList.getTBcsmCamelTDPCriteriaList().size()>10)
+			throw new ASNParsingComponentException("vtbcsm camel tdp criteria list size should be between 1 and 10 for camel subscription data", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(mtSmsCamelTdpCriteriaList!=null && mtSmsCamelTdpCriteriaList.getMTSmsCAMELTDPCriteriaList()!=null && mtSmsCamelTdpCriteriaList.getMTSmsCAMELTDPCriteriaList().size()>10)
+			throw new ASNParsingComponentException("mtsms camel tdp criteria list size should be between 1 and 10 for camel subscription data", ASNParsingComponentExceptionReason.MistypedParameter);
+	
+		if(oImBcsmCamelTdpCriteriaList!=null && oImBcsmCamelTdpCriteriaList.getOBcsmCamelTDPCriteriaList()!=null && oImBcsmCamelTdpCriteriaList.getOBcsmCamelTDPCriteriaList().size()>10)
+			throw new ASNParsingComponentException("oimbcsm camel tdp criteria list size should be between 1 and 10 for camel subscription data", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(vtImBcsmCamelTdpCriteriaList!=null && vtImBcsmCamelTdpCriteriaList.getTBcsmCamelTDPCriteriaList()!=null && vtImBcsmCamelTdpCriteriaList.getTBcsmCamelTDPCriteriaList().size()>10)
+			throw new ASNParsingComponentException("vtimbcsm camel tdp criteria list size should be between 1 and 10 for camel subscription data", ASNParsingComponentExceptionReason.MistypedParameter);	
+	}
 }

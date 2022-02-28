@@ -34,6 +34,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -112,5 +115,10 @@ public class RestoreDataResponseImpl extends MobilityMessageImpl implements Rest
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(hlrNumber==null)
+			throw new ASNParsingComponentException("hlr number should be set for restore data response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

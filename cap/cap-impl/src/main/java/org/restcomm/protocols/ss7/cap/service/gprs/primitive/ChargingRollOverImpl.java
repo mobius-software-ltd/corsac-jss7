@@ -28,6 +28,9 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.TransferredVolu
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -116,4 +119,10 @@ public class ChargingRollOverImpl implements ChargingRollOver {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(transferredVolumeRollOver1==null && transferredVolumeRollOver2==null && elapsedTimeRollOver1==null && elapsedTimeRollOver2==null)
+			throw new ASNParsingComponentException("one of child items should be set for charging rollover", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

@@ -27,6 +27,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Authen
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -109,4 +112,16 @@ public class AuthenticationTripletImpl implements AuthenticationTriplet {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(rand==null)
+			throw new ASNParsingComponentException("rand should be set for authentication triplet", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(sres==null)
+			throw new ASNParsingComponentException("sres should be set for authentication triplet", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(kc==null)
+			throw new ASNParsingComponentException("kc should be set for authentication triplet", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

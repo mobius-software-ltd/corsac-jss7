@@ -32,6 +32,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
@@ -139,5 +142,13 @@ public class TCSIImpl implements TCSI {
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(tBcsmCamelTDPDataList==null || tBcsmCamelTDPDataList.getTBcsmCamelTDPDataList()==null || tBcsmCamelTDPDataList.getTBcsmCamelTDPDataList().size()==0)
+			throw new ASNParsingComponentException("tbcsm camel tdp data list should be set for tcsi", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(tBcsmCamelTDPDataList.getTBcsmCamelTDPDataList().size()>10)
+			throw new ASNParsingComponentException("tbcsm camel tdp data list size should be between 1 and 10 for tcsi", ASNParsingComponentExceptionReason.MistypedParameter);		
+	}
 }

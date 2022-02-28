@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
 *
@@ -91,4 +94,9 @@ public class CallBarringInfoImpl implements CallBarringInfo {
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(callBarringFeatureList==null || callBarringFeatureList.getCallBarringFeatures()==null || callBarringFeatureList.getCallBarringFeatures().size()==0)
+			throw new ASNParsingComponentException("call barring feature list should be set for call baring info", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

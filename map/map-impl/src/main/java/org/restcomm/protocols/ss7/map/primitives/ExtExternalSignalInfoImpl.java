@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.SignalInfo;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /*
  *
@@ -99,4 +102,13 @@ public class ExtExternalSignalInfoImpl implements ExtExternalSignalInfo {
         sb.append("]");
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(extProtocolId==null)
+			throw new ASNParsingComponentException("ext protocol ID should be set for external signal info", ASNParsingComponentExceptionReason.MistypedParameter);			
+		
+		if(signalInfo==null)
+			throw new ASNParsingComponentException("signal info should be set for external signal info", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

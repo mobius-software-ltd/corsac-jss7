@@ -33,6 +33,9 @@ import org.restcomm.protocols.ss7.inap.api.charging.Currency;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -150,4 +153,19 @@ public class AddOnChargingInformationImpl implements AddOnChargingInformation {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(chargingControlIndicators==null)
+			throw new ASNParsingComponentException("charging control indicators should be set for add on charging information", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(addOnCharge==null)
+			throw new ASNParsingComponentException("add on charge should be set for add on charging information", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(originationIdentification==null)
+			throw new ASNParsingComponentException("origination identification should be set for add on charging information", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(currency==null)
+			throw new ASNParsingComponentException("currency should be set for add on charging information", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

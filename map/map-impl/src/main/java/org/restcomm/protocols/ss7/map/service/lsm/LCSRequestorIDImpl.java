@@ -33,6 +33,9 @@ import org.restcomm.protocols.ss7.map.primitives.USSDStringImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * @author amit bhayani
@@ -129,4 +132,13 @@ public class LCSRequestorIDImpl  implements LCSRequestorID {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(dataCodingScheme==null)
+			throw new ASNParsingComponentException("data coding scheme should be set for lcs requestor ID", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(requestorIDString==null)
+			throw new ASNParsingComponentException("requestor ID string should be set for lcs requestor ID", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

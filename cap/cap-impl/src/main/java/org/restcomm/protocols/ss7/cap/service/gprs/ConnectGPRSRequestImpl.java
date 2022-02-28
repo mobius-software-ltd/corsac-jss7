@@ -32,6 +32,9 @@ import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -98,4 +101,10 @@ public class ConnectGPRSRequestImpl extends GprsMessageImpl implements ConnectGP
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(accessPointName==null)
+			throw new ASNParsingComponentException("access point name should be set for connect gprs request", ASNParsingComponentExceptionReason.MistypedRootParameter);			
+	}
 }

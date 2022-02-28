@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * @author amit bhayani
@@ -136,4 +139,10 @@ public class SubscriberIdentityImpl implements SubscriberIdentity {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(imsi==null && msisdn==null)
+			throw new ASNParsingComponentException("either imsi or msisdn should be set for subscriber identity", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

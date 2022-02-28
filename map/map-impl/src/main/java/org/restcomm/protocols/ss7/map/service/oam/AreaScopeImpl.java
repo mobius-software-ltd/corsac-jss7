@@ -41,6 +41,9 @@ import org.restcomm.protocols.ss7.map.primitives.GlobalCellIdListWrapperImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
 *
@@ -205,5 +208,22 @@ public class AreaScopeImpl implements AreaScope {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(cgiList!=null && cgiList.getGlobalCellIdList()!=null && cgiList.getGlobalCellIdList().size()>32)
+			throw new ASNParsingComponentException("cgi list size should be betwen 1 and 32 for area scope", ASNParsingComponentExceptionReason.MistypedParameter);
 
+		if(eUtranCgiList!=null && eUtranCgiList.getEUtranCgiList()!=null && eUtranCgiList.getEUtranCgiList().size()>32)
+			throw new ASNParsingComponentException("cgi list size should be betwen 1 and 32 for area scope", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(routingAreaIdList!=null && routingAreaIdList.getRAIdentityList()!=null && routingAreaIdList.getRAIdentityList().size()>8)
+			throw new ASNParsingComponentException("routing area list size should be betwen 1 and 8 for area scope", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(locationAreaIdList!=null && locationAreaIdList.getLAIFixedLengthList()!=null && locationAreaIdList.getLAIFixedLengthList().size()>8)
+			throw new ASNParsingComponentException("location area ID list size should be betwen 1 and 8 for area scope", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(trackingAreaIdList!=null && trackingAreaIdList.getTAIdList()!=null && trackingAreaIdList.getTAIdList().size()>8)
+			throw new ASNParsingComponentException("tracking area ID list size should be betwen 1 and 8 for area scope", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

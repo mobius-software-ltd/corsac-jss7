@@ -31,7 +31,10 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.SendAu
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -87,4 +90,10 @@ public class SendAuthenticationInfoResponseImplV1 extends MobilityMessageImpl im
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(authenticationSetList==null)
+			throw new ASNParsingComponentException("authentication set list should be set for send authentication info response", ASNParsingComponentExceptionReason.MistypedRootParameter);		
+	}
 }

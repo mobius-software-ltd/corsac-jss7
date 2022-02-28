@@ -34,6 +34,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeListWrapperImp
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -111,5 +114,13 @@ public class SSCamelDataImpl implements SSCamelData {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(ssEventList==null || ssEventList.getSSCode()==null || ssEventList.getSSCode().size()==0)
+			throw new ASNParsingComponentException("ss event list should be set for ss camel data", ASNParsingComponentExceptionReason.MistypedParameter);			
 
+		if(gsmSCFAddress==null)
+			throw new ASNParsingComponentException("gsm scf address should be set for ss camel data", ASNParsingComponentExceptionReason.MistypedParameter);					
+	}
 }

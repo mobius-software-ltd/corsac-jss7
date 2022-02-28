@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.VariablePart
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -94,4 +97,16 @@ public class VariableMessageImpl implements VariableMessage {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(elementaryMessageID==null)
+			throw new ASNParsingComponentException("elementary message ID should be set for variable message", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(variableParts==null || variableParts.getVariablePart()==null || variableParts.getVariablePart().size()==0)
+			throw new ASNParsingComponentException("variable parts should be set for variable message", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(variableParts.getVariablePart().size()>5)
+			throw new ASNParsingComponentException("variable parts should have between 1 and 5 items for variable message", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

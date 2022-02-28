@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Kc;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -82,5 +85,13 @@ public class GSMSecurityContextDataImpl implements GSMSecurityContextData {
         return sb.toString();
 
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(kc==null)
+			throw new ASNParsingComponentException("kc should be set for gsm security context", ASNParsingComponentExceptionReason.MistypedParameter);
 
+		if(cksn==null)
+			throw new ASNParsingComponentException("cksn should be set for gsm security context", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

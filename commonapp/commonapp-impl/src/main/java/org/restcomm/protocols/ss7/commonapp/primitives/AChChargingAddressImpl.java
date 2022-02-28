@@ -28,6 +28,9 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -89,4 +92,10 @@ public class AChChargingAddressImpl implements AChChargingAddress {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(legID==null && srfConnection==null)
+			throw new ASNParsingComponentException("either leg ID or srf connection should be set for ach charging address", ASNParsingComponentExceptionReason.MistypedParameter);		
+	}
 }

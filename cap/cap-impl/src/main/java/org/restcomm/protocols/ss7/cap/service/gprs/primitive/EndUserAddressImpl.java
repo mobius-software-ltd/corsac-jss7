@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.PDPTypeOrganiza
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -94,4 +97,12 @@ public class EndUserAddressImpl implements EndUserAddress {
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(pdpTypeOrganization==null)
+			throw new ASNParsingComponentException("pdp type organization should be set for end user address", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(pdpTypeNumber==null)
+			throw new ASNParsingComponentException("pdp type number should be set for end user address", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

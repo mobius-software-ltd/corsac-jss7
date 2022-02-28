@@ -30,7 +30,10 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.CallR
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 import io.netty.buffer.ByteBuf;
 
@@ -89,4 +92,10 @@ public class ApplyChargingReportRequestCS1Impl extends CircuitSwitchedCallMessag
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(callResult==null)
+			throw new ASNParsingComponentException("call result should be set for apply charging report request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

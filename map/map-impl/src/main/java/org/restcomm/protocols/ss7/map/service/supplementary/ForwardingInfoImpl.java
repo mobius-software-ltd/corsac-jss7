@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
 *
@@ -92,4 +95,12 @@ public class ForwardingInfoImpl implements ForwardingInfo {
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(forwardingFeatureList==null || forwardingFeatureList.getForwardingFeatures()==null || forwardingFeatureList.getForwardingFeatures().size()==0)
+			throw new ASNParsingComponentException("fowarding feature list should be set for fowarding info", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(forwardingFeatureList!=null && forwardingFeatureList.getForwardingFeatures()!=null && forwardingFeatureList.getForwardingFeatures().size()>13)
+			throw new ASNParsingComponentException("fowarding feature list size should be between 1 and 13 for fowarding info", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

@@ -24,6 +24,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
@@ -81,8 +82,11 @@ public class TimeDurationChargingResultTest {
         assertFalse(elem.getLegActive());
         assertFalse(elem.getCallLegReleasedAtTcpExpiry());
         assertNull(elem.getExtensions());
-        assertNull(elem.getAChChargingAddress());
-
+        assertNotNull(elem.getAChChargingAddress());
+        assertNotNull(elem.getAChChargingAddress().getLegID());
+        assertNotNull(elem.getAChChargingAddress().getLegID().getReceivingSideID());
+        assertEquals(elem.getAChChargingAddress().getLegID().getReceivingSideID(), LegType.leg1);
+        
         rawData = this.getData2();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
@@ -95,8 +99,11 @@ public class TimeDurationChargingResultTest {
         assertTrue(elem.getLegActive());
         assertTrue(elem.getCallLegReleasedAtTcpExpiry());
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
-        assertNull(elem.getAChChargingAddress());
-
+        assertNotNull(elem.getAChChargingAddress());
+        assertNotNull(elem.getAChChargingAddress().getLegID());
+        assertNotNull(elem.getAChChargingAddress().getLegID().getReceivingSideID());
+        assertEquals(elem.getAChChargingAddress().getLegID().getReceivingSideID(), LegType.leg1);
+        
         rawData = this.getData3();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
 

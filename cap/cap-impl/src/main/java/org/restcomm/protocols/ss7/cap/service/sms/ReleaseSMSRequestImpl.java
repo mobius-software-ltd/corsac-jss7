@@ -29,7 +29,10 @@ import org.restcomm.protocols.ss7.cap.service.sms.primitive.RPCauseImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -84,4 +87,9 @@ public class ReleaseSMSRequestImpl extends SmsMessageImpl implements ReleaseSMSR
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(rpCause==null)
+			throw new ASNParsingComponentException("rp cause should be set for release sms request", ASNParsingComponentExceptionReason.MistypedRootParameter);			
+	}
 }

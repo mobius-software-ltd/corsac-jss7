@@ -72,7 +72,7 @@ public class ContinueWithArgumentRequestImpl extends CircuitSwitchedCallMessageI
     public LegType getLegID() 
     {
     	if(legID==null || legID.getSendingLegID()==null)
-    		return null;
+    		return LegType.leg1;
     	
 		return legID.getSendingLegID().getSendingSideID();
 	}

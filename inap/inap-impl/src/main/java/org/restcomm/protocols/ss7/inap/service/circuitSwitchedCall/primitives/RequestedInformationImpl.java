@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -118,4 +121,13 @@ public class RequestedInformationImpl implements RequestedInformation {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(requestedInformationType==null)
+			throw new ASNParsingComponentException("requested information type should be set for requested information", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(requestedInformationValue==null)
+			throw new ASNParsingComponentException("requested information value should be set for requested information", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

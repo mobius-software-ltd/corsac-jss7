@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
@@ -127,4 +130,16 @@ public class APNConfigurationProfileImpl implements APNConfigurationProfile {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(defaultContext==null)
+			throw new ASNParsingComponentException("default context should be set for apn configuration", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(ePSDataList==null || ePSDataList.getAPNConfiguration()==null || ePSDataList.getAPNConfiguration().size()==0)
+			throw new ASNParsingComponentException("eps data list should be set for apn configuration", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(ePSDataList.getAPNConfiguration().size()>50)
+			throw new ASNParsingComponentException("eps data list size should be betwen 1 and 50 for apn configuration", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

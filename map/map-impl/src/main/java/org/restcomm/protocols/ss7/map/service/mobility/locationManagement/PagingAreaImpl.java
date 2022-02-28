@@ -30,6 +30,11 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.Pa
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
+
+import io.netty.channel.local.LocalAddress;
 
 /**
  *
@@ -70,4 +75,13 @@ public class PagingAreaImpl implements PagingArea {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(locationAreas==null || locationAreas.size()==0)
+			throw new ASNParsingComponentException("location areas should be set for paging area", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(locationAreas.size()>5)
+			throw new ASNParsingComponentException("location areas size should be between 1 and 5 for paging area", ASNParsingComponentExceptionReason.MistypedParameter);		
+	}
 }

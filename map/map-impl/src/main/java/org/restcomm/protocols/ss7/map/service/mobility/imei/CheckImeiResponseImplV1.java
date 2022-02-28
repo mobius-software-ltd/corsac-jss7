@@ -30,7 +30,10 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.imei.EquipmentStatus;
 import org.restcomm.protocols.ss7.map.api.service.mobility.imei.UESBIIu;
 import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -95,5 +98,10 @@ public class CheckImeiResponseImplV1 extends MobilityMessageImpl implements Chec
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(equipmentStatus==null)
+			throw new ASNParsingComponentException("equipment status should be set for check imei response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

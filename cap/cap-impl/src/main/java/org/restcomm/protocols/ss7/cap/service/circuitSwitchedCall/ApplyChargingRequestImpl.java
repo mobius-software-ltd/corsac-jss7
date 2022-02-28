@@ -30,14 +30,19 @@ import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.CAME
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AChChargingAddress;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.primitives.AChChargingAddressImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.AChChargingAddressWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.SendingLegIDImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.SendingLegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -95,7 +100,7 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
     @Override
     public LegType getPartyToCharge() {
     	if(partyToCharge==null || partyToCharge.getSendingLegID()==null)
-    		return null;
+    		return LegType.leg1;
     	
         return partyToCharge.getSendingLegID().getSendingSideID();
     }
@@ -108,7 +113,7 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
     @Override
     public AChChargingAddress getAChChargingAddress() {
     	if(aChChargingAddress==null)
-    		return null;
+    		return new AChChargingAddressImpl(new LegIDImpl(null,LegType.leg1));
     	
         return aChChargingAddress.getAChChargingAddress();
     }
@@ -141,4 +146,10 @@ public class ApplyChargingRequestImpl extends CircuitSwitchedCallMessageImpl imp
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(aChBillingChargingCharacteristics==null)
+			throw new ASNParsingComponentException("ach billing charging characteristics should be set for apply charging request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

@@ -29,7 +29,10 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.HoldCallInNetworkRequestChoisempl;
 
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -88,4 +91,10 @@ public class HoldCallInNetworkRequestImpl extends CircuitSwitchedCallMessageImpl
         
         return "";
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(holdCallInNetworkRequestChose==null)
+			throw new ASNParsingComponentException("one of childs should be set for hold call in network request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

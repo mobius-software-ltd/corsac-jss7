@@ -32,6 +32,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
@@ -135,5 +138,13 @@ public class OCSIImpl implements OCSI {
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(oBcsmCamelTDPDataList==null || oBcsmCamelTDPDataList.getOBcsmCamelTDPDataList()==null || oBcsmCamelTDPDataList.getOBcsmCamelTDPDataList().size()==0)
+			throw new ASNParsingComponentException("obcsm camel tdp data list should be set for ocsi", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(oBcsmCamelTDPDataList.getOBcsmCamelTDPDataList().size()>10)
+			throw new ASNParsingComponentException("obcsm camel tdp data list size should be between 1 and 10 for ocsi", ASNParsingComponentExceptionReason.MistypedParameter);		
+	}
 }

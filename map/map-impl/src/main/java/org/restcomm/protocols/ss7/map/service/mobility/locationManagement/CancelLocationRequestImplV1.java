@@ -37,7 +37,10 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -145,5 +148,13 @@ public class CancelLocationRequestImplV1 extends MobilityMessageImpl implements 
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(imsi==null && imsiWithLmsi==null)
+			throw new ASNParsingComponentException("either imsi or imsi with lmsi should be set for cancel location request", ASNParsingComponentExceptionReason.MistypedRootParameter);
 
+		if(imsi!=null && imsiWithLmsi!=null)
+			throw new ASNParsingComponentException("either imsi or imsi with lmsi should be set for cancel location request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

@@ -995,7 +995,7 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					|| acn == INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B) {
 				if (parameter == null) {
 					processed = true;
-					ContinueRequest ind = new ContinueRequestImpl();
+					ContinueCS1PlusRequest ind = new ContinueCS1PlusRequestImpl();
 					ind.setInvokeId(invokeId);
 					ind.setINAPDialog(inapDialog);
 

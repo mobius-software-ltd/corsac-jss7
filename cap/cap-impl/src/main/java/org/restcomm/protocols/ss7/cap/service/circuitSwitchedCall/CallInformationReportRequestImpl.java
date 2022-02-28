@@ -37,6 +37,9 @@ import org.restcomm.protocols.ss7.commonapp.primitives.ReceivingLegIDWrapperImpl
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -97,7 +100,7 @@ public class CallInformationReportRequestImpl extends CircuitSwitchedCallMessage
     @Override
     public LegType getLegID() {
     	if(legID==null || legID.getReceivingLegID()==null)
-    		return null;
+    		return LegType.leg2;
     	
         return legID.getReceivingLegID().getReceivingSideID();
     }
@@ -137,4 +140,10 @@ public class CallInformationReportRequestImpl extends CircuitSwitchedCallMessage
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(requestedInformationList==null || requestedInformationList.getRequestedInformation()==null || requestedInformationList.getRequestedInformation().size()==0)
+			throw new ASNParsingComponentException("requested information list should be set for call information report request", ASNParsingComponentExceptionReason.MistypedRootParameter);		
+	}
 }

@@ -65,14 +65,14 @@ public class DialogueUserInformationImpl implements DialogueUserInformation {
 
     public SendingFunctionsActive getSendingFunctionsActive() {
     	if(sendingFunctionsActive==null)
-    		return null;
+    		return SendingFunctionsActive.normal;
     	
     	return sendingFunctionsActive.getType();
     }
 
     public ReceivingFunctionsRequested getReceivingFunctionsRequested() {
     	if(receivingFunctionsRequested==null)
-    		return null;
+    		return ReceivingFunctionsRequested.normal;
     	
     	return receivingFunctionsRequested.getType();
     }

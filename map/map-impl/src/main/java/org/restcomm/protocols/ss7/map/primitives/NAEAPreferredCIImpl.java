@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.map.api.primitives.NAEAPreferredCI;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -81,5 +84,10 @@ public class NAEAPreferredCIImpl implements NAEAPreferredCI {
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(naeaPreferredCIC==null)
+			throw new ASNParsingComponentException("naea preferred CIC should be set for naea preferred CI", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

@@ -33,6 +33,9 @@ import org.restcomm.protocols.ss7.inap.charging.ASNEventTypeCharging;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -111,4 +114,13 @@ public class ChargingEventImpl implements ChargingEvent {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(eventTypeCharging==null)
+			throw new ASNParsingComponentException("event type charging should be set for charging event", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(monitorMode==null)
+			throw new ASNParsingComponentException("monitor mode should be set for charging event", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

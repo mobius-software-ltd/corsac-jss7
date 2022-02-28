@@ -25,11 +25,15 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.CAMELAChBillingChargingCharacteristics;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.AudibleIndicator;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
+import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.AudibleIndicatorImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.TimeDurationChargingImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -87,7 +91,7 @@ public class CAMELAChBillingChargingCharacteristicsImpl implements CAMELAChBilli
 
     public AudibleIndicator getAudibleIndicator() {
     	if(this.timeDurationCharging==null)
-    		return null;
+    		return new AudibleIndicatorImpl(false);
     	
         return this.timeDurationCharging.getAudibleIndicator();
     }
@@ -114,4 +118,10 @@ public class CAMELAChBillingChargingCharacteristicsImpl implements CAMELAChBilli
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(timeDurationCharging==null || timeDurationCharging.getTariffSwitchInterval()==null)
+			throw new ASNParsingComponentException("tariff switch interval should be set for CAMEL ach billing charging characteristics", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

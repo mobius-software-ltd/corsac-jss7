@@ -28,6 +28,9 @@ import org.restcomm.protocols.ss7.commonapp.subscriberManagement.Ext2QoSSubscrib
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -68,4 +71,10 @@ public class GPRSQoSExtensionImpl implements GPRSQoSExtension {
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(supplementToLongQoSFormat==null)
+			throw new ASNParsingComponentException("supplement to long qos format should be set for gprs qos extension", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

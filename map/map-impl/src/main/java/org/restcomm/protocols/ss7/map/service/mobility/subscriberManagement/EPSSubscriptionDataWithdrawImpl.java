@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.map.primitives.ASNIntegerListWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
@@ -102,5 +105,10 @@ public class EPSSubscriptionDataWithdrawImpl implements EPSSubscriptionDataWithd
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(allEpsData==null && contextIdList==null)
+			throw new ASNParsingComponentException("either all eps data or context id list should be set for eps subscription", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

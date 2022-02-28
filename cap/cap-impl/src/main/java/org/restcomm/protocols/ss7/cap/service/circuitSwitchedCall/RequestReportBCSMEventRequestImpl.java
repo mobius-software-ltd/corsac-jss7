@@ -35,6 +35,9 @@ import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -112,4 +115,13 @@ public class RequestReportBCSMEventRequestImpl extends CircuitSwitchedCallMessag
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(bcsmEventList==null || bcsmEventList.getBCSMEvents()==null || bcsmEventList.getBCSMEvents().size()==0)
+			throw new ASNParsingComponentException("bcsm event list should be set for request report bcsm event request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+		
+		if(bcsmEventList.getBCSMEvents().size()>30)
+			throw new ASNParsingComponentException("bcsm event list size should be between 1 and 30 for request report bcsm event request", ASNParsingComponentExceptionReason.MistypedRootParameter);		
+	}
 }

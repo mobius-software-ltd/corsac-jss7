@@ -51,6 +51,9 @@ import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNSingleByte;
@@ -481,4 +484,13 @@ public class ProvideSubscriberLocationRequestImpl extends LsmMessageImpl impleme
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(locationType==null)
+			throw new ASNParsingComponentException("location type should be set for periodic ldr info", ASNParsingComponentExceptionReason.MistypedRootParameter);			
+
+		if(mlcNumber==null)
+			throw new ASNParsingComponentException("mlc number should be set for provide subscrivber location request", ASNParsingComponentExceptionReason.MistypedRootParameter);			
+	}
 }

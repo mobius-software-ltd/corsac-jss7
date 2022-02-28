@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -95,5 +98,13 @@ public class SpecificAPNInfoImpl implements SpecificAPNInfo {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(apn==null)
+			throw new ASNParsingComponentException("apn should be set for specific apn info", ASNParsingComponentExceptionReason.MistypedParameter);			
 
+		if(pdnGwIdentity==null)
+			throw new ASNParsingComponentException("pdn gw identity should be set for specific apn info", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

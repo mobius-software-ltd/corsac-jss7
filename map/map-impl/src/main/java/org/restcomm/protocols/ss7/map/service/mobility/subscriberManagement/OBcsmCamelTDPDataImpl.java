@@ -33,6 +33,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -125,4 +128,19 @@ public class OBcsmCamelTDPDataImpl implements OBcsmCamelTDPData {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(oBcsmTriggerDetectionPoint==null)
+			throw new ASNParsingComponentException("obcsm trigger detection point should be set for obcsm camel tdp data", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(serviceKey!=null)
+			throw new ASNParsingComponentException("service key should be set for obcsm camel tdp data", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(gsmSCFAddress!=null)
+			throw new ASNParsingComponentException("gsm scf address should be set for obcsm camel tdp data", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(defaultCallHandling!=null)
+			throw new ASNParsingComponentException("default call handling should be set for obcsm camel tdp data", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

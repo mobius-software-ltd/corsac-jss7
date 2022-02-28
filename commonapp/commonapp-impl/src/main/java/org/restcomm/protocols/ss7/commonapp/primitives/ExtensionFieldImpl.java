@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.ExtensionField;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNObjectIdentifier;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
@@ -154,4 +157,17 @@ public class ExtensionFieldImpl implements ExtensionField {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(localCode==null && globalCode==null)
+			throw new ASNParsingComponentException("either local code or global code should be set for extension field", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(criticalityType==null)
+			throw new ASNParsingComponentException("criticality type should be set for extension field", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(data==null && data1==null)
+			throw new ASNParsingComponentException("data should be set for extension field", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+	}
 }

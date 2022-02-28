@@ -32,6 +32,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.Reconnect
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -87,4 +90,10 @@ public class ReconnectRequestImpl extends CircuitSwitchedCallMessageImpl impleme
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(legID==null)
+			throw new ASNParsingComponentException("leg ID should be set for reconnect request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

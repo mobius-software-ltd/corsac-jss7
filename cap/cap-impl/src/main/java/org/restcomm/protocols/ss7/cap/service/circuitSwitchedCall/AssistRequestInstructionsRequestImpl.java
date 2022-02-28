@@ -35,6 +35,9 @@ import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -117,4 +120,13 @@ public class AssistRequestInstructionsRequestImpl extends CircuitSwitchedCallMes
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(correlationID==null)
+			throw new ASNParsingComponentException("correlation ID should be set for assist request instructions request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+		
+		if(iPSSPCapabilities==null)
+			throw new ASNParsingComponentException("ipssp capabilities should be set for assist request instructions request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

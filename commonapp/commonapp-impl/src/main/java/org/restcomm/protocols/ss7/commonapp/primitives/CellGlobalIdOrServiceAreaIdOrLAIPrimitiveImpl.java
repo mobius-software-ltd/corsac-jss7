@@ -31,7 +31,9 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNExclude;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 
 import io.netty.buffer.ByteBuf;
 
@@ -96,5 +98,11 @@ public class CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl {
 		}			
 		
 		return false;
+	}
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(cellGlobalIdOrServiceAreaIdOrLAI!=null)
+			cellGlobalIdOrServiceAreaIdOrLAI.validateElement();						
 	}
 }

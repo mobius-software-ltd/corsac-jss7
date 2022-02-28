@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.inap.charging.ASNEventTypeCharging;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -90,4 +93,13 @@ public class ChargeMessageImpl implements ChargeMessage {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(eventTypeCharging==null)
+			throw new ASNParsingComponentException("event type charging should be set for charge message", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(eventSpecificInfoCharging==null)
+			throw new ASNParsingComponentException("event specific info should be set for charge message", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

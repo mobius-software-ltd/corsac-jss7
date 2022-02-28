@@ -32,6 +32,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * @author daniel bichara
@@ -142,5 +145,10 @@ public class ExtSSInfoImpl implements ExtSSInfo {
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(forwardingInfo==null && callBarringInfo==null && cugInfo==null && ssData==null && emlppInfo==null)
+			throw new ASNParsingComponentException("one of child items should be set for ext ss info", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

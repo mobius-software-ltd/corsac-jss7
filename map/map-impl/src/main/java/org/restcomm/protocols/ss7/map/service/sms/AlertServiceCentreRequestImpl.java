@@ -33,6 +33,9 @@ import org.restcomm.protocols.ss7.map.api.service.sms.AlertServiceCentreRequest;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -104,4 +107,13 @@ public class AlertServiceCentreRequestImpl extends SmsMessageImpl implements Ale
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(msisdn==null)
+			throw new ASNParsingComponentException("msisdn should be set for alert service center request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(serviceCentreAddress==null)
+			throw new ASNParsingComponentException("service centre address should be set for alert service center request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

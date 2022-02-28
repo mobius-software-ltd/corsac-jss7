@@ -29,7 +29,10 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SSForBSCode;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
 *
@@ -79,4 +82,10 @@ public class InterrogateSSRequestImpl extends SupplementaryMessageImpl implement
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(ssForBSCode==null)
+			throw new ASNParsingComponentException("SS for BS Code should be set for interrogate SS request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

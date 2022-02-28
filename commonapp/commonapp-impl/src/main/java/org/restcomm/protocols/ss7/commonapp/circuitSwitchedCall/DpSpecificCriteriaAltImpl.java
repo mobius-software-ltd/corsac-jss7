@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DpSpecificCr
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -100,4 +103,16 @@ public class DpSpecificCriteriaAltImpl implements DpSpecificCriteriaAlt {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(changeOfPositionControlInfo==null || changeOfPositionControlInfo.getChangeOfLocationList()==null)
+			throw new ASNParsingComponentException("change of position should be set for dp specific criteria alt", ASNParsingComponentExceptionReason.MistypedParameter);		    		
+		
+		if(changeOfPositionControlInfo.getChangeOfLocationList().size()==0)
+			throw new ASNParsingComponentException("change of position should be set for dp specific criteria alt", ASNParsingComponentExceptionReason.MistypedParameter);		    		
+		
+		if(changeOfPositionControlInfo.getChangeOfLocationList().size()>10)
+			throw new ASNParsingComponentException("change of position should have 1 to 10 items for dp specific criteria alt", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

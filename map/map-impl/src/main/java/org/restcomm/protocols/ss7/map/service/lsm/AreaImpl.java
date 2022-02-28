@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * @author amit bhayani
@@ -126,4 +129,13 @@ public class AreaImpl implements Area {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(areaType==null)
+			throw new ASNParsingComponentException("area type should be set for area", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(areaIdentification==null)
+			throw new ASNParsingComponentException("area identification should be set for area", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

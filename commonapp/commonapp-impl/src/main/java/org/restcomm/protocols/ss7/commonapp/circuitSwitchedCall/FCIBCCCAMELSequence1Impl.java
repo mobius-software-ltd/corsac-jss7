@@ -33,6 +33,9 @@ import org.restcomm.protocols.ss7.commonapp.primitives.SendingLegIDWrapperImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -69,14 +72,14 @@ public class FCIBCCCAMELSequence1Impl implements FCIBCCCAMELSequence1 {
 
     public LegType getPartyToCharge() {
     	if(partyToCharge==null || partyToCharge.getSendingLegID()==null)
-    		return null;
+    		return LegType.leg1;
     	
         return partyToCharge.getSendingLegID().getSendingSideID();
     }
 
     public AppendFreeFormatData getAppendFreeFormatData() {
     	if(appendFreeFormatData==null)
-    		return null;
+    		return AppendFreeFormatData.overwrite;
     	
         return appendFreeFormatData.getType();
     }
@@ -105,4 +108,10 @@ public class FCIBCCCAMELSequence1Impl implements FCIBCCCAMELSequence1 {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(freeFormatData==null)
+			throw new ASNParsingComponentException("free format data should be set for FCIBCC camel sequence1", ASNParsingComponentExceptionReason.MistypedParameter);		    				
+	}
 }

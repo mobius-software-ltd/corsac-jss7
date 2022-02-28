@@ -68,7 +68,7 @@ public abstract class BooleanMAPErrorMessage1Impl extends MAPErrorMessageImpl {
     	if(value==null)
     		this.value=null;
     	else
-    		this.value=new ASNBoolean(value,"Error",true,false);    	
+    		this.value=new ASNBoolean(value,"Error",true,true);    	
     }
     
     protected Boolean getValue() {

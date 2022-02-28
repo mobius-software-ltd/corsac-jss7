@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.inap.charging.ChargingTariffInformationImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -85,4 +88,10 @@ public class TariffImpl implements Tariff {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(chargingTariffInformation==null && addOnChargingInformation==null)
+			throw new ASNParsingComponentException("either charging tariff information or add on charging information should be set for tariff", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

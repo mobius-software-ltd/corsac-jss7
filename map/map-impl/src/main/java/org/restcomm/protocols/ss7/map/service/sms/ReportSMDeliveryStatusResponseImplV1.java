@@ -31,7 +31,10 @@ import org.restcomm.protocols.ss7.map.api.service.sms.ReportSMDeliveryStatusResp
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -87,4 +90,9 @@ public class ReportSMDeliveryStatusResponseImplV1 extends SmsMessageImpl impleme
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(storedMSISDN==null)
+			throw new ASNParsingComponentException("stored MSISDN should be set for report SM delivery response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

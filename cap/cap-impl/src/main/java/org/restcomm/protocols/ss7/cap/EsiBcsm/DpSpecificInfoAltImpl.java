@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.cap.api.EsiBcsm.TServiceChangeSpecificInfo;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
 *
@@ -95,4 +98,16 @@ public class DpSpecificInfoAltImpl implements DpSpecificInfoAlt {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(oServiceChangeSpecificInfo==null)
+			throw new ASNParsingComponentException("oservice change specific info should be set for dp specific info alt", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(tServiceChangeSpecificInfo==null)
+			throw new ASNParsingComponentException("tservice change specific info should be set for dp specific info alt", ASNParsingComponentExceptionReason.MistypedParameter);			
+	
+		if(collectedInfoSpecificInfo==null)
+			throw new ASNParsingComponentException("collected info specific info should be set for dp specific info alt", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

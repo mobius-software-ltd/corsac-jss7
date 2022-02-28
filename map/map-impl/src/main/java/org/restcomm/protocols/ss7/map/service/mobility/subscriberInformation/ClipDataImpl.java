@@ -28,6 +28,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.ASNOverrideCategoryI
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -92,4 +95,13 @@ public class ClipDataImpl implements ClipData {
         sb.append("]");
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(ssStatus==null)
+			throw new ASNParsingComponentException("ss status should be set for clip data", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(overrideCategory==null)
+			throw new ASNParsingComponentException("override category should be set for camel subscription data", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

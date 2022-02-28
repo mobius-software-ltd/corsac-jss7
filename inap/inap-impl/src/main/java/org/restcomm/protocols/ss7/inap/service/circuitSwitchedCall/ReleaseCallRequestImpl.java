@@ -30,7 +30,10 @@ import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -82,4 +85,10 @@ public class ReleaseCallRequestImpl extends CircuitSwitchedCallMessageImpl imple
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(cause==null)
+			throw new ASNParsingComponentException("cause should be set for release call request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

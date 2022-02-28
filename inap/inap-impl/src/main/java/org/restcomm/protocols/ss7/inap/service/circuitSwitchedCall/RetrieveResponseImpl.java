@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.DataI
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -103,4 +106,13 @@ public class RetrieveResponseImpl extends CircuitSwitchedCallMessageImpl impleme
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(operationReturnID==null)
+			throw new ASNParsingComponentException("operation return ID should be set for retrieve response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(dataItemInformation==null)
+			throw new ASNParsingComponentException("data item information should be set for retrieve response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

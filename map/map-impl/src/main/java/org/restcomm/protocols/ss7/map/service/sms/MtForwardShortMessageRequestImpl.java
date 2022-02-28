@@ -35,6 +35,9 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -137,4 +140,16 @@ public class MtForwardShortMessageRequestImpl extends SmsMessageImpl implements 
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(sM_RP_DA==null)
+			throw new ASNParsingComponentException("SM RP DA should be set for mt forward short message request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(sM_RP_OA==null)
+			throw new ASNParsingComponentException("SM RP OA should be set for mt forward short message request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(sM_RP_UI==null)
+			throw new ASNParsingComponentException("SM RP UI should be set for mt forward short message request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

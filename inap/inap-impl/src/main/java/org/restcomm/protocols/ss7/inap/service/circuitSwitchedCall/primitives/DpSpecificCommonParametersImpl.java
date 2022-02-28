@@ -50,6 +50,9 @@ import org.restcomm.protocols.ss7.inap.primitives.ASNTerminalType;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -293,4 +296,10 @@ public class DpSpecificCommonParametersImpl implements DpSpecificCommonParameter
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(serviceAddressInformation==null)
+			throw new ASNParsingComponentException("service address information should be set for dp specific common parameters", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

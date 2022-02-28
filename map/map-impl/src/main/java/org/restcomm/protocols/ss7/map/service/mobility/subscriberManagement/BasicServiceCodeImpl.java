@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -110,4 +113,10 @@ public class BasicServiceCodeImpl implements BasicServiceCode {
             return false;
         return true;
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(bearerService==null && teleservice==null)
+			throw new ASNParsingComponentException("either bearer service or teleservice should be set for basic service code", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

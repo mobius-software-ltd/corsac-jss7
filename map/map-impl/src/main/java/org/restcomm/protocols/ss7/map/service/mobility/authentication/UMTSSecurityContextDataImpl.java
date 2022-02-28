@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSe
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -97,5 +100,16 @@ public class UMTSSecurityContextDataImpl implements UMTSSecurityContextData {
         return sb.toString();
 
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(ck==null)
+			throw new ASNParsingComponentException("ck should be set for umts security context", ASNParsingComponentExceptionReason.MistypedParameter);
 
+		if(ik==null)
+			throw new ASNParsingComponentException("ik should be set for umts security context", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(ksi==null)
+			throw new ASNParsingComponentException("ksi should be set for umts security context", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

@@ -25,7 +25,10 @@ package org.restcomm.protocols.ss7.inap.errors;
 import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorCode;
 import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessageOctetString;
 
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -101,4 +104,10 @@ public class INAPErrorMessageOctetStringImpl extends INAPErrorMessageImpl implem
                 return errorCode.toString();
         }
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(value==null)
+			throw new ASNParsingComponentException("value not set for " + inapErrorCodeName(), ASNParsingComponentExceptionReason.MistypedRootParameter);			
+	}
 }

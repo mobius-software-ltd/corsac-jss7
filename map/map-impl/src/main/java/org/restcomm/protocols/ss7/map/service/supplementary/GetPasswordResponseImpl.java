@@ -29,7 +29,10 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.Password;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
 *
@@ -81,4 +84,9 @@ public class GetPasswordResponseImpl extends SupplementaryMessageImpl implements
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(password==null)
+			throw new ASNParsingComponentException("password should be set for get password response", ASNParsingComponentExceptionReason.MistypedRootParameter);		
+	}
 }

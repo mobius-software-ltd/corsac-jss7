@@ -28,7 +28,10 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.CancelReq
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.CancelRequestChoisempl;
 
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -87,4 +90,10 @@ public class CancelRequestImpl extends CircuitSwitchedCallMessageImpl implements
         
         return "";
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(cancelRequestChoise==null)
+			throw new ASNParsingComponentException("child item should be set for cancel request request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

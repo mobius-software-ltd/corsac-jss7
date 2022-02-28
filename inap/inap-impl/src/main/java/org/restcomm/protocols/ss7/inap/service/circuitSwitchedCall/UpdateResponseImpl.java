@@ -28,7 +28,10 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.UpdateRes
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.UpdateResultChoiseImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 import io.netty.buffer.ByteBuf;
 
@@ -77,4 +80,10 @@ public class UpdateResponseImpl extends CircuitSwitchedCallMessageImpl implement
         
         return "";
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(updateResponseChoise==null)
+			throw new ASNParsingComponentException("one of child items should be set for update response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

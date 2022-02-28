@@ -33,6 +33,9 @@ import org.restcomm.protocols.ss7.inap.api.charging.Currency;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -149,4 +152,19 @@ public class ChargingTariffInformationImpl implements ChargingTariffInformation 
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(chargingControlIndicators==null)
+			throw new ASNParsingComponentException("charging control indicators should be set for charging tariff information", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(chargingTariff==null)
+			throw new ASNParsingComponentException("charging tariff should be set for charging tariff information", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(originationIdentification==null)
+			throw new ASNParsingComponentException("origination identification should be set for charging tariff information", ASNParsingComponentExceptionReason.MistypedParameter);			
+
+		if(currency==null)
+			throw new ASNParsingComponentException("currency should be set for charging tariff information", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

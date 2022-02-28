@@ -41,6 +41,9 @@ import org.restcomm.protocols.ss7.commonapp.primitives.LegIDWrapperImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
@@ -200,4 +203,9 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
         return suppressTCsi!=null;
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(destinationRoutingAddress==null)
+			throw new ASNParsingComponentException("destination routing address should be set for initiate call attempt request", ASNParsingComponentExceptionReason.MistypedRootParameter);		
+	}
 }

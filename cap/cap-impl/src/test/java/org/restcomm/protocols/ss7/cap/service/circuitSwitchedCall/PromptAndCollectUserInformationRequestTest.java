@@ -68,10 +68,9 @@ public class PromptAndCollectUserInformationRequestTest {
         
         PromptAndCollectUserInformationRequestImpl elem = (PromptAndCollectUserInformationRequestImpl)result.getResult();        
         assertEquals(elem.getCollectedInfo().getCollectedDigits().getMaximumNbOfDigits(), 10);
-        assertNull(elem.getCollectedInfo().getCollectedDigits().getMinimumNbOfDigits());
+        assertEquals(elem.getCollectedInfo().getCollectedDigits().getMinimumNbOfDigits(), new Integer(1));
         assertNull(elem.getCollectedInfo().getCollectedDigits().getEndOfReplyDigit());
         assertNull(elem.getCollectedInfo().getCollectedDigits().getCancelDigit());
-        assertNull(elem.getCollectedInfo().getCollectedDigits().getMinimumNbOfDigits());
         assertNull(elem.getCollectedInfo().getCollectedDigits().getStartDigit());
         assertNull(elem.getCollectedInfo().getCollectedDigits().getFirstDigitTimeOut());
         assertNull(elem.getCollectedInfo().getCollectedDigits().getInterDigitTimeOut());

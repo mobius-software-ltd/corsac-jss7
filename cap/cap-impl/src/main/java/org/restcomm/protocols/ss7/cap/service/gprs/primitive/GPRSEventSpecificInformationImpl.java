@@ -38,6 +38,9 @@ import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInform
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -161,4 +164,9 @@ public class GPRSEventSpecificInformationImpl implements GPRSEventSpecificInform
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(locationInformationGPRS==null && pdpContextchangeOfPositionSpecificInformation==null && detachSpecificInformation==null && disconnectSpecificInformation==null && pdpContextEstablishmentAcknowledgementSpecificInformation==null && pdpContextEstablishmentSpecificInformation==null)
+			throw new ASNParsingComponentException("one of child items should be set for gprs event specific information", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

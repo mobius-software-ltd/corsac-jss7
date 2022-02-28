@@ -33,7 +33,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
 /**
 *
-* @author sergey vetyutnev
+* @author  yulian.oifa
 *
 */
 @ASNTag(asnClass = ASNClass.UNIVERSAL,tag = 16,constructed = true,lengthIndefinite = false)
@@ -87,5 +87,4 @@ public class NACarrierInformationImpl implements NACarrierInformation {
 
         return sb.toString();
     }
-
 }

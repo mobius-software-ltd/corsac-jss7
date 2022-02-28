@@ -27,6 +27,9 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.FCIBCCCAMELSequ
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -63,5 +66,10 @@ public class CAMELFCIGPRSBillingChargingCharacteristicsImpl implements CAMELFCIG
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(fcIBCCCAMELsequence1==null)
+			throw new ASNParsingComponentException("fcibcc CAMEL sequence 1 should be set for CAMEL fci gprs billing charging characteristics", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

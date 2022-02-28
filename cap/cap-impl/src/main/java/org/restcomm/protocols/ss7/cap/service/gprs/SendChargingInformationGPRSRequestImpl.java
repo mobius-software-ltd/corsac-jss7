@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.cap.service.gprs.primitive.CamelSCIGPRSBilling
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -88,5 +91,11 @@ public class SendChargingInformationGPRSRequestImpl extends GprsMessageImpl impl
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(sciGPRSBillingChargingCharacteristics==null)
+			throw new ASNParsingComponentException("sci gprs billing charging characteristics should be set for send charging information gprs request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 
 }

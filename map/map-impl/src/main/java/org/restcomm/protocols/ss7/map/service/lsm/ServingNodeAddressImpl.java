@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.ServingNodeAddress;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -97,4 +100,10 @@ public class ServingNodeAddressImpl implements ServingNodeAddress {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(mscNumber==null && sgsnNumber==null && mmeNumber==null)
+			throw new ASNParsingComponentException("one of child items should be set for serving node", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

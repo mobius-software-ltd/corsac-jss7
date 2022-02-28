@@ -83,6 +83,9 @@ import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtBasicService
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
@@ -560,14 +563,10 @@ public abstract class InitialDPRequestBaseImpl extends CircuitSwitchedCallMessag
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(serviceKey==null)
+			throw new ASNParsingComponentException("service key should be set for initial dp request", ASNParsingComponentExceptionReason.MistypedRootParameter);		
+	}
 }
-
-// added:
-// CGEncountered
-// Cause
-// serviceInteractionIndicatorsTwo
-// carrier
-// cugIndex
-// cugInterlock
-// cugOutgoingAccess
-

@@ -36,6 +36,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -155,4 +158,16 @@ public class CUGSubscriptionImpl implements CUGSubscription {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(cugIndex==null)
+			throw new ASNParsingComponentException("cug index should be set for cug subscription", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(cugInterlock==null)
+			throw new ASNParsingComponentException("cug interlock should be set for cug subscription", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(intraCugOptions==null)
+			throw new ASNParsingComponentException("intra cug options should be set for cug subscription", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

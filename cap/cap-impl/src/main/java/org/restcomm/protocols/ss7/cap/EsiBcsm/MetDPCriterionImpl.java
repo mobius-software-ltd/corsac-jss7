@@ -32,6 +32,9 @@ import org.restcomm.protocols.ss7.commonapp.primitives.LAIFixedLengthImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -211,4 +214,10 @@ public class MetDPCriterionImpl implements MetDPCriterion {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(enteringCellGlobalId==null && leavingCellGlobalId==null && enteringServiceAreaId==null && leavingServiceAreaId==null && enteringLocationAreaId==null && leavingLocationAreaId==null && interSystemHandOverToUMTS==null && interSystemHandOverToGSM==null && interPLMNHandOver==null && interMSCHandOver==null && metDPCriterionAlt==null)
+			throw new ASNParsingComponentException("one of child items should be set for met dp criterion", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

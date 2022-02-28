@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.AreaDefinition;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * @author amit bhayani
@@ -128,4 +131,13 @@ public class AreaDefinitionImpl implements AreaDefinition {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(areaList==null || areaList.getArea()==null || areaList.getArea().size()==0)
+			throw new ASNParsingComponentException("area list should be set for area definition", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(areaList.getArea().size()>10)
+			throw new ASNParsingComponentException("area list size should be between 1 and 10 for area definition", ASNParsingComponentExceptionReason.MistypedParameter);		
+	}
 }

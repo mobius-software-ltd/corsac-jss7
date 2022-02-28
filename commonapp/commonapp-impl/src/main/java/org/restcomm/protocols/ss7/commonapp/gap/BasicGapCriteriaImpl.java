@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -119,5 +122,10 @@ public class BasicGapCriteriaImpl implements BasicGapCriteria {
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(calledAddressValue==null && gapOnService==null && calledAddressAndService==null && callingAddressAndService==null)
+			throw new ASNParsingComponentException("one of child items  should be set for basic gap criteria", ASNParsingComponentExceptionReason.MistypedParameter);		
+	}
 }

@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.cs1plus.S
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
@@ -209,4 +212,22 @@ public class HandOverInfoImpl implements HandOverInfo {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(handoverCounter==null)
+			throw new ASNParsingComponentException("handover counter should be set for handover info", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(sendingSCPAddress==null)
+			throw new ASNParsingComponentException("sending scp address should be set for handover info", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(sendingSCPDialogueInfo==null)
+			throw new ASNParsingComponentException("sending scp dialogue info should be set for handover info", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(receivingSCPAddress==null)
+			throw new ASNParsingComponentException("receiving scp address should be set for handover info", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(receivingSCPDialogueInfo==null)
+			throw new ASNParsingComponentException("receiving scp dialogue info should be set for handover info", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

@@ -30,12 +30,16 @@ import org.restcomm.protocols.ss7.cap.service.sms.primitive.ASNEventTypeSMSImpl;
 import org.restcomm.protocols.ss7.cap.service.sms.primitive.EventSpecificInformationSMSWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MiscCallInfoImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -91,6 +95,9 @@ public class EventReportSMSRequestImpl extends SmsMessageImpl implements EventRe
     }
 
     public MiscCallInfo getMiscCallInfo() {
+    	if(this.miscCallInfo==null)
+    		return new MiscCallInfoImpl(MiscCallInfoMessageType.request, null);
+    	
         return this.miscCallInfo;
     }
 
@@ -137,4 +144,9 @@ public class EventReportSMSRequestImpl extends SmsMessageImpl implements EventRe
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(eventTypeSMS==null)
+			throw new ASNParsingComponentException("event type sms should be set for event report sms request", ASNParsingComponentExceptionReason.MistypedRootParameter);			
+	}
 }

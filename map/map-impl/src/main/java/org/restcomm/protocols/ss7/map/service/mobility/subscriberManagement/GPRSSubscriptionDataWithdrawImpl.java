@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.map.primitives.ASNIntegerListWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
@@ -100,5 +103,13 @@ public class GPRSSubscriptionDataWithdrawImpl implements GPRSSubscriptionDataWit
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(allGPRSData==null && (contextIdList==null || contextIdList.getIntegers()==null || contextIdList.getIntegers().size()==0))
+			throw new ASNParsingComponentException("one pf child items should be set for gprs subscription data withdraw", ASNParsingComponentExceptionReason.MistypedParameter);
 
+		if(contextIdList!=null && contextIdList.getIntegers()!=null && contextIdList.getIntegers().size()>50)
+			throw new ASNParsingComponentException("context ID list size should be between 1 and 50 for gprs subscription data withdraw", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

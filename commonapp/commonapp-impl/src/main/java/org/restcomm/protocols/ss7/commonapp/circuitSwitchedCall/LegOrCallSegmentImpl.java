@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.commonapp.primitives.LegIDImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -88,4 +91,10 @@ public class LegOrCallSegmentImpl implements LegOrCallSegment {
     public LegID getLegID() {
         return legID;
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(legID==null && callSegmentID==null)
+			throw new ASNParsingComponentException("either leg ID or call segment should be set for leg or call segment", ASNParsingComponentExceptionReason.MistypedParameter);		    				
+	}
 }

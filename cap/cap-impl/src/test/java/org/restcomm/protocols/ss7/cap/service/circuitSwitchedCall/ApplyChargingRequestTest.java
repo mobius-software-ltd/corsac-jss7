@@ -24,6 +24,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
@@ -83,8 +84,12 @@ public class ApplyChargingRequestTest {
         assertNull(elem.getAChBillingChargingCharacteristics().getTariffSwitchInterval());
         assertEquals(elem.getPartyToCharge(), LegType.leg1);
         assertNull(elem.getExtensions());
-        assertNull(elem.getAChChargingAddress());
-
+        assertNotNull(elem.getAChChargingAddress());
+        assertNotNull(elem.getAChChargingAddress().getLegID());
+        assertNotNull(elem.getAChChargingAddress().getLegID().getSendingSideID());
+        assertNull(elem.getAChChargingAddress().getLegID().getReceivingSideID());
+        assertEquals(elem.getAChChargingAddress().getLegID().getSendingSideID(), LegType.leg1);
+        
         rawData = this.getData2();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
@@ -99,8 +104,12 @@ public class ApplyChargingRequestTest {
         assertNull(elem.getAChBillingChargingCharacteristics().getTariffSwitchInterval());
         assertEquals(elem.getPartyToCharge(), LegType.leg1);
         assertTrue(CAPExtensionsTest.checkTestCAPExtensions(elem.getExtensions()));
-        assertNull(elem.getAChChargingAddress());
-
+        assertNotNull(elem.getAChChargingAddress());
+        assertNotNull(elem.getAChChargingAddress().getLegID());
+        assertNotNull(elem.getAChChargingAddress().getLegID().getSendingSideID());
+        assertNull(elem.getAChChargingAddress().getLegID().getReceivingSideID());
+        assertEquals(elem.getAChChargingAddress().getLegID().getSendingSideID(), LegType.leg1);
+        
         rawData = this.getData3();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
 
@@ -113,7 +122,8 @@ public class ApplyChargingRequestTest {
         assertNull(elem.getAChBillingChargingCharacteristics().getExtensions());
         assertFalse(elem.getAChBillingChargingCharacteristics().getReleaseIfdurationExceeded());
         assertNull(elem.getAChBillingChargingCharacteristics().getTariffSwitchInterval());
-        assertNull(elem.getPartyToCharge());
+        assertNotNull(elem.getPartyToCharge());
+        assertEquals(elem.getPartyToCharge(), LegType.leg1);
         assertNull(elem.getExtensions());
         assertEquals(elem.getAChChargingAddress().getSrfConnection(), 10);
     }

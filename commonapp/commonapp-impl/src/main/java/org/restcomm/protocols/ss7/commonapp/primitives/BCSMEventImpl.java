@@ -32,6 +32,9 @@ import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.DpSpecificCriter
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -140,4 +143,13 @@ public class BCSMEventImpl implements BCSMEvent {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(eventTypeBCSM==null)
+			throw new ASNParsingComponentException("event type BCSM should be set for BCSM event", ASNParsingComponentExceptionReason.MistypedParameter);		
+		
+		if(monitorMode==null)
+			throw new ASNParsingComponentException("monitor mode should be set for BCSM event", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

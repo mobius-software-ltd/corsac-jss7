@@ -73,6 +73,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.ForwardCallIndicators;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -210,7 +213,7 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
     @Override
     public LegType getLegToBeCreated() {
 		if(legToBeCreated==null || legToBeCreated.getSendingLegID()==null)
-			return null;
+			return LegType.leg1;
 		
 		return legToBeCreated.getSendingLegID().getSendingSideID();
 	}
@@ -411,4 +414,10 @@ public class InitiateCallAttemptRequestImpl extends CircuitSwitchedCallMessageIm
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(destinationRoutingAddress==null)
+			throw new ASNParsingComponentException("destination routing address should be set for initiate call attempt request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

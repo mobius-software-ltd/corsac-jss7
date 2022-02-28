@@ -57,7 +57,7 @@ public class ReleaseIfDurationExceededImpl {
 
     public Boolean getTone() {
     	if(tone==null)
-    		return null;
+    		return false;
     	
         return tone.getValue();
     }

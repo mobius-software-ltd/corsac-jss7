@@ -35,6 +35,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -136,4 +139,16 @@ public class AnyTimeSubscriptionInterrogationRequestImpl extends MobilityMessage
         sb.append("]");
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(subscriberIdentity==null)
+			throw new ASNParsingComponentException("subscriber identity should be set for any time subscription interrogation", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(requestedSubscriptionInfo==null)
+			throw new ASNParsingComponentException("requested subscription info should be set for any time subscription interrogation", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(gsmSCFAddress==null)
+			throw new ASNParsingComponentException("gsm scf address should be set for any time subscription interrogation", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.commonapp.primitives.ASNTimerID;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -62,7 +65,7 @@ public class ResetTimerGPRSRequestImpl extends GprsMessageImpl implements ResetT
     @Override
     public TimerID getTimerID() {
     	if(this.timerID==null)
-    		return null;
+    		return TimerID.tssf;
     	
         return this.timerID.getType();
     }
@@ -103,4 +106,10 @@ public class ResetTimerGPRSRequestImpl extends GprsMessageImpl implements ResetT
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(timerValue==null)
+			throw new ASNParsingComponentException("timer value should be set for reset timer gprs request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

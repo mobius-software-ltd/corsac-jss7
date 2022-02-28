@@ -7,6 +7,9 @@ import org.restcomm.protocols.ss7.map.api.service.sms.IpSmGwGuidance;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -77,4 +80,13 @@ public class IpSmGwGuidanceImpl implements IpSmGwGuidance {
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(minimumDeliveryTimeValue==null)
+			throw new ASNParsingComponentException("minimum delivery time value should be set for ipsmgw guidance", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(recommendedDeliveryTimeValue==null)
+			throw new ASNParsingComponentException("recommended delivery ttime should be set for ipsmgw guidance", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

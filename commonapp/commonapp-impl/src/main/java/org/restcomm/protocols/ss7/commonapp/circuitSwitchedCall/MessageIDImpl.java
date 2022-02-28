@@ -33,6 +33,9 @@ import org.restcomm.protocols.ss7.commonapp.primitives.IntegerListWrapperImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -141,4 +144,13 @@ public class MessageIDImpl implements MessageID {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(elementaryMessageID==null && text==null && (elementaryMessageID==null || elementaryMessageIDs.getValues()==null || elementaryMessageIDs.getValues().size()==0) && variableMessage==null)
+			throw new ASNParsingComponentException("one of child elements should be set for message ID", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(elementaryMessageIDs!=null && elementaryMessageIDs.getValues().size()>16)
+			throw new ASNParsingComponentException("number of elementary message IDs should be between 1 and 16 for message ID", ASNParsingComponentExceptionReason.MistypedParameter);		
+	}
 }

@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.OccurrenceInfo;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -167,4 +170,10 @@ public class AreaEventInfoImpl implements AreaEventInfo {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(areaDefinition==null)
+			throw new ASNParsingComponentException("area definition should be set for area event info", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

@@ -44,6 +44,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeListWrapperImp
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * @author daniel bichara
@@ -218,5 +221,16 @@ public class InsertSubscriberDataResponseImplV1 extends MobilityMessageImpl impl
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(teleserviceList!=null && teleserviceList.getExtTeleserviceCode()!=null && teleserviceList.getExtTeleserviceCode().size()>20)
+			throw new ASNParsingComponentException("teleservice list size should be between 1 and 20 for insert subscriber data response", ASNParsingComponentExceptionReason.MistypedRootParameter);
 
+		if(bearerServiceList!=null && bearerServiceList.getExtBearerServiceCode()!=null && bearerServiceList.getExtBearerServiceCode().size()>50)
+			throw new ASNParsingComponentException("bearer list size should be between 1 and 50 for insert subscriber data response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+		
+		if(ssList!=null && ssList.getSSCode()!=null && ssList.getSSCode().size()>30)
+			throw new ASNParsingComponentException("ss code size should be between 1 and 30 for insert subscriber data response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

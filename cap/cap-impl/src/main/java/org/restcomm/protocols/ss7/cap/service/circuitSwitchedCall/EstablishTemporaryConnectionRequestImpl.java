@@ -47,6 +47,9 @@ import org.restcomm.protocols.ss7.commonapp.primitives.ScfIDImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -267,4 +270,10 @@ public class EstablishTemporaryConnectionRequestImpl extends CircuitSwitchedCall
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(assistingSSPIPRoutingAddress==null)
+			throw new ASNParsingComponentException("assisting sspip routing address should be set for establish temporary connection request", ASNParsingComponentExceptionReason.MistypedRootParameter);		
+	}
 }

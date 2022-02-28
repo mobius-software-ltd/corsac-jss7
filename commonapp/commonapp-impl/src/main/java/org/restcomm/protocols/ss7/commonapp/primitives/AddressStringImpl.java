@@ -40,6 +40,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
@@ -262,4 +263,19 @@ public class AddressStringImpl implements AddressString  {
             return false;
         return true;
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(addressNature==null)
+			throw new ASNParsingComponentException("address nature is required for Address nature", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(numberingPlan==null)
+			throw new ASNParsingComponentException("numering plan is required for Address nature", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(address==null)
+			throw new ASNParsingComponentException("address required for Address nature", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if (this.address.length() > maxLength*2)
+            throw new ASNParsingComponentException("Error when encoding AddressString: address length must not exceed " + (maxLength*2) + " digits", ASNParsingComponentExceptionReason.MistypedParameter);    	
+	}
 }

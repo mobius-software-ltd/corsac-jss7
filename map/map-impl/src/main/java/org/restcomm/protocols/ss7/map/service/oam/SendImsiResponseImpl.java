@@ -30,7 +30,10 @@ import org.restcomm.protocols.ss7.map.api.service.oam.SendImsiResponse;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 
 /**
@@ -82,5 +85,10 @@ public class SendImsiResponseImpl extends OamMessageImpl implements SendImsiResp
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(imsi==null)
+			throw new ASNParsingComponentException("imsi should be set for send imsi response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

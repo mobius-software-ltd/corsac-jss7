@@ -28,6 +28,9 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedInf
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -65,4 +68,10 @@ public class CollectedInfoImpl implements CollectedInfo {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(collectedDigits==null)
+			throw new ASNParsingComponentException("collected digits should be set for collected info", ASNParsingComponentExceptionReason.MistypedParameter);		    		
+	}
 }

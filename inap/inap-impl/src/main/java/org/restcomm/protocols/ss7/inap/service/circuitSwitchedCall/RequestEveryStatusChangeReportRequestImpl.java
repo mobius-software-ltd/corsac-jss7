@@ -35,6 +35,9 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.Re
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -136,4 +139,10 @@ public class RequestEveryStatusChangeReportRequestImpl extends CircuitSwitchedCa
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(resourceID==null)
+			throw new ASNParsingComponentException("resource ID should be set for request every status change report request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

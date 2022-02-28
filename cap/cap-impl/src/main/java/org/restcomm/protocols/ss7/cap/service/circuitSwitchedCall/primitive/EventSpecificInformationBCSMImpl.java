@@ -61,6 +61,9 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -339,4 +342,10 @@ public class EventSpecificInformationBCSMImpl implements EventSpecificInformatio
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(routeSelectFailureSpecificInfo==null && oCalledPartyBusySpecificInfo==null && oNoAnswerSpecificInfo==null && oAnswerSpecificInfo==null && oMidCallSpecificInfo==null && oDisconnectSpecificInfo==null && tBusySpecificInfo==null && tNoAnswerSpecificInfo==null && tAnswerSpecificInfo==null && tMidCallSpecificInfo==null && tDisconnectSpecificInfo==null && oTermSeizedSpecificInfo==null && callAcceptedSpecificInfo==null && oAbandonSpecificInfo==null && oChangeOfPositionSpecificInfo==null && tChangeOfPositionSpecificInfo==null)
+			throw new ASNParsingComponentException("one of child items should be set for event specific information BCSM", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

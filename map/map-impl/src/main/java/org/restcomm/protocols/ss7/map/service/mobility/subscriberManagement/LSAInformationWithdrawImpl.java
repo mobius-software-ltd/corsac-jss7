@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -89,4 +92,10 @@ public class LSAInformationWithdrawImpl implements LSAInformationWithdraw {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(lsaIdentityList!=null && lsaIdentityList.getLSAIdentity()!=null && lsaIdentityList.getLSAIdentity().size()>20)
+			throw new ASNParsingComponentException("lsa identity list size should be between 1 and 20 for lsa information withdraw", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

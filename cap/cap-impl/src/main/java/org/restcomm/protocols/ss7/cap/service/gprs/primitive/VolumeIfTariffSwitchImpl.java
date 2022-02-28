@@ -26,6 +26,9 @@ import org.restcomm.protocols.ss7.cap.api.service.gprs.primitive.VolumeIfTariffS
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -84,4 +87,9 @@ public class VolumeIfTariffSwitchImpl implements VolumeIfTariffSwitch {
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(volumeSinceLastTariffSwitch==null)
+			throw new ASNParsingComponentException("volume since last tariff switch should be set for volume if tariff switch", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

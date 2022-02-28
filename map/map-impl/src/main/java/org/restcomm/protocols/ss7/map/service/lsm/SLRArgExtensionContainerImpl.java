@@ -32,6 +32,9 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.SLRArgPCSExtensions;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * @author amit bhayani
@@ -93,4 +96,10 @@ public class SLRArgExtensionContainerImpl implements SLRArgExtensionContainer {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(privateExtensionList!=null && privateExtensionList.getMAPPrivateExtensions()!=null && privateExtensionList.getMAPPrivateExtensions().size()>10)
+			throw new ASNParsingComponentException("private extensions list size should be between 1 and 10 for slr arg extension container", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.inap.primitives.DateAndTimeImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -88,4 +91,10 @@ public class FilteringTimeOutImpl implements FilteringTimeOut {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(duration==null && stopTime==null)
+			throw new ASNParsingComponentException("either duration or stop time should be set for filtering timeout", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

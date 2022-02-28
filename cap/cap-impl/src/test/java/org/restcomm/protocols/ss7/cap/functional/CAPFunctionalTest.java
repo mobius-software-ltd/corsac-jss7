@@ -439,7 +439,11 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                 assertNull(ind.getAChBillingChargingCharacteristics().getTariffSwitchInterval());
                 assertEquals(ind.getPartyToCharge(), LegType.leg1);
                 assertNull(ind.getExtensions());
-                assertNull(ind.getAChChargingAddress());
+                assertNotNull(ind.getAChChargingAddress());
+                assertNotNull(ind.getAChChargingAddress().getLegID());
+                assertNotNull(ind.getAChChargingAddress().getLegID().getSendingSideID());
+                assertNull(ind.getAChChargingAddress().getLegID().getReceivingSideID());
+                assertEquals(ind.getAChChargingAddress().getLegID().getSendingSideID(), LegType.leg1);
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
             }
 
@@ -608,7 +612,10 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                 TimeDurationChargingResult tdr = ind.getTimeDurationChargingResult();
                 assertEquals(tdr.getPartyToCharge(), LegType.leg1);
                 assertEquals((int) tdr.getTimeInformation().getTimeIfNoTariffSwitch(), 2000);
-                assertNull(tdr.getAChChargingAddress());
+                assertNotNull(tdr.getAChChargingAddress());
+                assertNotNull(tdr.getAChChargingAddress().getLegID());
+                assertNotNull(tdr.getAChChargingAddress().getLegID().getReceivingSideID());
+                assertEquals(tdr.getAChChargingAddress().getLegID().getReceivingSideID(), LegType.leg1);
                 assertFalse(tdr.getCallLegReleasedAtTcpExpiry());
                 assertNull(tdr.getExtensions());
                 assertTrue(tdr.getLegActive());
@@ -1549,7 +1556,8 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 assertEquals(dt.getMinute(), 50);
                 assertEquals(dt.getSecond(), 40);
                 assertNull(ind.getExtensions());
-                assertNull(ind.getLegID());
+                assertNotNull(ind.getLegID());
+                assertEquals(ind.getLegID(),LegType.leg2);
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
             }
 
@@ -1596,8 +1604,9 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                 assertEquals(al.size(), 1);
                 assertEquals(al.get(0), RequestedInformationType.callStopTime);
                 assertNull(ind.getExtensions());
-                assertNull(ind.getLegID());
-
+                assertNotNull(ind.getLegID());
+                assertEquals(ind.getLegID(), LegType.leg2);
+                
                 ind.getCAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
             }
 

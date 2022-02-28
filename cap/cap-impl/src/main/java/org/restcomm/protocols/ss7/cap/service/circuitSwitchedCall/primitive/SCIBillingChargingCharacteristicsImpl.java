@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.primitive.
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -92,4 +95,10 @@ public class SCIBillingChargingCharacteristicsImpl implements SCIBillingCharging
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(camelSCIBillingChargingCharacteristicsImpl==null)
+			throw new ASNParsingComponentException("camel SCI billing charging characteristics should be set for SCI billing charging characteristics ", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

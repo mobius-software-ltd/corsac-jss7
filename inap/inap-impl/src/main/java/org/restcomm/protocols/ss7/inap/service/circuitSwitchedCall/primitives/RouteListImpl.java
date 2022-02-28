@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -93,4 +96,13 @@ public class RouteListImpl implements RouteList {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(dataList==null && dataList.size()==0)
+			throw new ASNParsingComponentException("data list should be set for route list", ASNParsingComponentExceptionReason.MistypedParameter);
+		
+		if(dataList.size()>3)
+			throw new ASNParsingComponentException("data list size should be between 1 and 3 for route list", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.map.api.service.callhandling.RoutingInfo;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /*
  *
@@ -77,4 +80,10 @@ public class RoutingInfoImpl implements RoutingInfo {
         sb.append("]");
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(roamingNumber==null && forwardingData==null)
+			throw new ASNParsingComponentException("either roaming number or forwarding data should be set for routing info", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

@@ -27,6 +27,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.Su
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
@@ -101,4 +104,10 @@ public class SuperChargerInfoImpl implements SuperChargerInfo {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(sendSubscriberData==null && subscriberDataStored==null)
+			throw new ASNParsingComponentException("either send subscriber data or subscriber data stored should be set for super charging info", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

@@ -37,6 +37,9 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.cs1plus.Limit
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -126,4 +129,13 @@ public class CallLimitRequestImpl extends CircuitSwitchedCallMessageImpl impleme
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(limitCriteria==null)
+			throw new ASNParsingComponentException("limit criteria should be set for call limit request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(limitIndicators==null)
+			throw new ASNParsingComponentException("limit indicators should be set for call limit request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

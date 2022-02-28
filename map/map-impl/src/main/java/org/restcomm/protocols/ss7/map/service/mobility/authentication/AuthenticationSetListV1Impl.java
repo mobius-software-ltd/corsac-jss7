@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Triple
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -69,4 +72,10 @@ public class AuthenticationSetListV1Impl implements AuthenticationSetList {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(tripletList==null)
+			throw new ASNParsingComponentException("triplet list should be set for authentication set list", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

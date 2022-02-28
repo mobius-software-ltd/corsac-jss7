@@ -27,14 +27,19 @@ import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.TimeInformat
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AChChargingAddress;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CAPINAPExtensions;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
+import org.restcomm.protocols.ss7.commonapp.primitives.AChChargingAddressImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.AChChargingAddressWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.CAPINAPExtensionsImpl;
+import org.restcomm.protocols.ss7.commonapp.primitives.LegIDImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ReceivingLegIDImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ReceivingLegIDWrapperImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
@@ -118,7 +123,7 @@ public class TimeDurationChargingResultImpl implements TimeDurationChargingResul
 
     public AChChargingAddress getAChChargingAddress() {
     	if(aChChargingAddress==null)
-    		return null;
+    		return new AChChargingAddressImpl(new LegIDImpl(LegType.leg1,null));
     	
         return aChChargingAddress.getAChChargingAddress();
     }
@@ -156,4 +161,13 @@ public class TimeDurationChargingResultImpl implements TimeDurationChargingResul
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(partyToCharge==null || partyToCharge.getReceivingLegID()==null)
+			throw new ASNParsingComponentException("party to charge should be set for time duration charging resut", ASNParsingComponentExceptionReason.MistypedParameter);			
+		
+		if(timeInformation==null)
+			throw new ASNParsingComponentException("time information should be set for time duration charging resut", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

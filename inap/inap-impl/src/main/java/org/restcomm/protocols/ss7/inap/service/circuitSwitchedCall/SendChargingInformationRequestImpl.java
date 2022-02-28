@@ -36,6 +36,9 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.SC
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -121,4 +124,13 @@ public class SendChargingInformationRequestImpl extends CircuitSwitchedCallMessa
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(sciBillingChargingCharacteristics==null)
+			throw new ASNParsingComponentException("sci billingCharging characteristics should be set for send charging information request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(partyToCharge==null)
+			throw new ASNParsingComponentException("party to charge should be set for send charging information request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

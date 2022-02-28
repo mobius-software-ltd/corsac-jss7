@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.commonapp.primitives.ASNErrorTreatment;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
@@ -116,7 +119,7 @@ public class CollectedDigitsImpl implements CollectedDigits {
 
     public Integer getMinimumNbOfDigits() {
     	if(minimumNbOfDigits==null)
-    		return null;
+    		return 1;
     	
         return minimumNbOfDigits.getIntValue();
     }
@@ -247,4 +250,10 @@ public class CollectedDigitsImpl implements CollectedDigits {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(maximumNbOfDigits==null)
+			throw new ASNParsingComponentException("maximum number of digits should be set for collected digits", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

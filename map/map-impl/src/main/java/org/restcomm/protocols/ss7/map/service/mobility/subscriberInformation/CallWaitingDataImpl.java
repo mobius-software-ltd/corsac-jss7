@@ -27,6 +27,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -87,4 +90,10 @@ public class CallWaitingDataImpl implements CallWaitingData {
         sb.append("]");
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(cwFeatureList==null)
+			throw new ASNParsingComponentException("cw feature list should be set for call waiting data", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

@@ -28,7 +28,10 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.FurnishCh
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -88,4 +91,10 @@ public class FurnishChargingInformationRequestImpl extends CircuitSwitchedCallMe
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(fciBillingChargingCharacteristics==null)
+			throw new ASNParsingComponentException("fci billing charging characteristics should be set for furnish charging information request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

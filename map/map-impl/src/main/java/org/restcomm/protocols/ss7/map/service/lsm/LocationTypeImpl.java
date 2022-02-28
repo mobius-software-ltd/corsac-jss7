@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.LocationType;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * @author amit bhayani
@@ -97,4 +100,10 @@ public class LocationTypeImpl implements LocationType {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(locationEstimateType==null)
+			throw new ASNParsingComponentException("location estimate type should be set for location type", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

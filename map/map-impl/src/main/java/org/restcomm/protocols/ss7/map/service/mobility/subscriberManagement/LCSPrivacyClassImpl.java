@@ -40,6 +40,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -243,4 +246,25 @@ public class LCSPrivacyClassImpl implements LCSPrivacyClass {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(ssCode==null)
+			throw new ASNParsingComponentException("ss code should be set for lcs privacy class", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(ssStatus==null)
+			throw new ASNParsingComponentException("ss status should be set for lcs privacy class", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(externalClientList!=null && externalClientList.getExternalClient()!=null && externalClientList.getExternalClient().size()>5)
+			throw new ASNParsingComponentException("external client list should be set for lcs privacy class", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(plmnClientList!=null && plmnClientList.getLCSClientInternalID()!=null && plmnClientList.getLCSClientInternalID().size()>5)
+			throw new ASNParsingComponentException("plmn client list should be set for lcs privacy class", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(extExternalClientList!=null && extExternalClientList.getExternalClient()!=null && extExternalClientList.getExternalClient().size()>35)
+			throw new ASNParsingComponentException("ext external client list should be set for lcs privacy class", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(serviceTypeList!=null && serviceTypeList.getServiceType()!=null && serviceTypeList.getServiceType().size()>32)
+			throw new ASNParsingComponentException("service type list should be set for lcs privacy class", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

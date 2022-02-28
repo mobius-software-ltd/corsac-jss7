@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.Lo
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -82,4 +85,10 @@ public class LocationAreaImpl implements LocationArea {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(laiFixedLength==null && lac==null)
+			throw new ASNParsingComponentException("either lai fixed length or lac should be set for location area", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

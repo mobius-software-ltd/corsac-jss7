@@ -39,6 +39,9 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.Fi
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -181,4 +184,13 @@ public class ServiceFilteringResponseRequestImpl extends CircuitSwitchedCallMess
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(counterAndValue==null)
+			throw new ASNParsingComponentException("counter and value should be set for service filtering response request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(filteringCriteria==null)
+			throw new ASNParsingComponentException("filtering criteria should be set for service filtering response request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

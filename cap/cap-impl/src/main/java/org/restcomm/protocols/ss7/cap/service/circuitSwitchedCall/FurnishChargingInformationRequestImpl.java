@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.FCIBCCCAMELSeque
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -43,13 +46,13 @@ public class FurnishChargingInformationRequestImpl extends CircuitSwitchedCallMe
 	private static final long serialVersionUID = 1L;
 
 	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 0,constructed = true,index = -1,defaultImplementation = FCIBCCCAMELSequence1Impl.class)
-    private FCIBCCCAMELSequence1 FCIBCCCAMELsequence1;
+    private FCIBCCCAMELSequence1 fcibccCAMELsequence1;
 
     public FurnishChargingInformationRequestImpl() {
     }
 
-    public FurnishChargingInformationRequestImpl(FCIBCCCAMELSequence1 FCIBCCCAMELsequence1) {
-        this.FCIBCCCAMELsequence1 = FCIBCCCAMELsequence1;
+    public FurnishChargingInformationRequestImpl(FCIBCCCAMELSequence1 fcibccCAMELsequence1) {
+        this.fcibccCAMELsequence1 = fcibccCAMELsequence1;
     }
 
     @Override
@@ -64,7 +67,7 @@ public class FurnishChargingInformationRequestImpl extends CircuitSwitchedCallMe
 
     @Override
     public FCIBCCCAMELSequence1 getFCIBCCCAMELsequence1() {
-        return this.FCIBCCCAMELsequence1;
+        return this.fcibccCAMELsequence1;
     }
 
     @Override
@@ -74,13 +77,19 @@ public class FurnishChargingInformationRequestImpl extends CircuitSwitchedCallMe
         sb.append("FurnishChargingInformationIndication [");
         this.addInvokeIdInfo(sb);
 
-        if (this.FCIBCCCAMELsequence1 != null) {
+        if (this.fcibccCAMELsequence1 != null) {
             sb.append(", FCIBCCCAMELsequence1=");
-            sb.append(FCIBCCCAMELsequence1.toString());
+            sb.append(fcibccCAMELsequence1.toString());
         }
 
         sb.append("]");
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(fcibccCAMELsequence1==null)
+			throw new ASNParsingComponentException("fcibcc CAMEL sequence1 should be set for furnish charging information request", ASNParsingComponentExceptionReason.MistypedRootParameter);		
+	}
 }

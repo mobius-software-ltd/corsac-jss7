@@ -33,6 +33,9 @@ import org.restcomm.protocols.ss7.map.service.mobility.MobilityMessageImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
 *
@@ -95,5 +98,10 @@ public class ProvideSubscriberInfoResponseImpl extends MobilityMessageImpl imple
 
         return sb.toString();
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(subscriberInfo==null)
+			throw new ASNParsingComponentException("subscriber info should be set for provide subscriber info response", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

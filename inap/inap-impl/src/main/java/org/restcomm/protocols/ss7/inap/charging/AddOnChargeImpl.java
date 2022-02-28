@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.inap.api.charging.PulseUnits;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -83,4 +86,10 @@ public class AddOnChargeImpl implements AddOnCharge {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(addOnChargeCurrency==null && addOnChargePulse==null)
+			throw new ASNParsingComponentException("ext bearer service or ext teleservice should be set for ext basic service code", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

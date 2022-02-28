@@ -246,7 +246,7 @@ public class ConnectRequestImpl extends CircuitSwitchedCallMessageImpl implement
     
     public LegType getLegToBeCreated() {
     	if(legToBeCreated==null || legToBeCreated.getSendingLegID()==null)
-    		return null;
+    		return LegType.leg2;
     	
 		return legToBeCreated.getSendingLegID().getSendingSideID();
 	}

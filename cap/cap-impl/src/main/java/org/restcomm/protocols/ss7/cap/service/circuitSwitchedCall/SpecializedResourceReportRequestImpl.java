@@ -28,7 +28,10 @@ import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.Specialize
 import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive.SpecializedResourceReportArgImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -93,4 +96,10 @@ public class SpecializedResourceReportRequestImpl extends CircuitSwitchedCallMes
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(arg==null)
+			throw new ASNParsingComponentException("one of child items should be set for specialized resource report request", ASNParsingComponentExceptionReason.MistypedRootParameter);		
+	}
 }

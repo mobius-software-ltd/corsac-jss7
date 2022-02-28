@@ -38,6 +38,9 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.Fa
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -168,4 +171,10 @@ public class TAnswerRequestImpl extends CircuitSwitchedCallMessageImpl implement
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(dpSpecificCommonParameters==null)
+			throw new ASNParsingComponentException("dp specific common parameters should be set for tanswer request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

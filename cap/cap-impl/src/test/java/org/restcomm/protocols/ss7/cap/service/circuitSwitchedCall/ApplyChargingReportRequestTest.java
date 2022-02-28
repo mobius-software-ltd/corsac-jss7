@@ -24,6 +24,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
@@ -70,7 +71,11 @@ public class ApplyChargingReportRequestTest {
         assertFalse(elem.getTimeDurationChargingResult().getLegActive());
         assertFalse(elem.getTimeDurationChargingResult().getCallLegReleasedAtTcpExpiry());
         assertNull(elem.getTimeDurationChargingResult().getExtensions());
-        assertNull(elem.getTimeDurationChargingResult().getAChChargingAddress());
+        assertNotNull(elem.getTimeDurationChargingResult().getAChChargingAddress());
+        assertNotNull(elem.getTimeDurationChargingResult().getAChChargingAddress().getLegID());
+        assertNotNull(elem.getTimeDurationChargingResult().getAChChargingAddress().getLegID().getReceivingSideID());
+        assertEquals(elem.getTimeDurationChargingResult().getAChChargingAddress().getLegID().getReceivingSideID(), LegType.leg1);
+        
     }
 
     @Test(groups = { "functional.encode", "circuitSwitchedCall" })

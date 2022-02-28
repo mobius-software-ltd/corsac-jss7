@@ -37,6 +37,9 @@ import org.restcomm.protocols.ss7.map.smstpdu.SmsTpduImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -142,4 +145,10 @@ public class MAPErrorMessageSMDeliveryFailureImpl extends MAPErrorMessageImpl im
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(sMEnumeratedDeliveryFailureCause==null)
+			throw new ASNParsingComponentException("sm enumerated delivery failure cause not set for MAPErrorMessageSMDeliveryFailure", ASNParsingComponentExceptionReason.MistypedRootParameter);			
+	}
 }

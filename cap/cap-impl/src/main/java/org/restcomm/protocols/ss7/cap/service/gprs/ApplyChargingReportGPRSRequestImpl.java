@@ -36,6 +36,9 @@ import org.restcomm.protocols.ss7.cap.service.gprs.primitive.QualityOfServiceImp
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBoolean;
 
 /**
@@ -162,4 +165,10 @@ public class ApplyChargingReportGPRSRequestImpl extends GprsMessageImpl implemen
 
         return sb.toString();
     }
+
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(chargingResult==null || chargingResult.getChargingResult()==null)
+			throw new ASNParsingComponentException("charging result should be set for apply charging report gprs request", ASNParsingComponentExceptionReason.MistypedRootParameter);			
+	}
 }

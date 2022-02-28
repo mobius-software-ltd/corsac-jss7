@@ -24,6 +24,7 @@ package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
@@ -103,7 +104,10 @@ public class EventReportBCSMRequestTest {
         assertTrue(ByteBufUtil.equals(CauseIsupImpl.translate(elem.getEventSpecificInformationBCSM().getRouteSelectFailureSpecificInfo().getFailureCause()
                 .getCauseIndicators()),Unpooled.wrappedBuffer(getDataFailureCause())));
         assertEquals(elem.getLegID(), LegType.leg2);
-        assertNull(elem.getMiscCallInfo());
+        assertNotNull(elem.getMiscCallInfo());
+        assertNotNull(elem.getMiscCallInfo().getMessageType());
+        assertNull(elem.getMiscCallInfo().getDpAssignment());
+        assertEquals(elem.getMiscCallInfo().getMessageType(), MiscCallInfoMessageType.request);
         assertNull(elem.getExtensions());
 
         rawData = this.getData3();
@@ -157,9 +161,5 @@ public class EventReportBCSMRequestTest {
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         assertTrue(Arrays.equals(rawData, encodedData));
-
-        // EventTypeBCSM eventTypeBCSM, EventSpecificInformationBCSM
-        // eventSpecificInformationBCSM, ReceivingSideID legID,
-        // MiscCallInfo miscCallInfo, CAPExtensions extensions
     }
 }

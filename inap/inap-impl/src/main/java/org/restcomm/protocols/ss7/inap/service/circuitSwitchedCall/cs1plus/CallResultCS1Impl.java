@@ -34,6 +34,9 @@ import org.restcomm.protocols.ss7.inap.primitives.DateAndTimeImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -175,4 +178,16 @@ public class CallResultCS1Impl implements CallResultCS1 {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(callResultReportCondition==null)
+			throw new ASNParsingComponentException("call result report condition should be set for call result", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(timeOfAnswer==null)
+			throw new ASNParsingComponentException("timestamp should be set for call result", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(partyToCharge==null)
+			throw new ASNParsingComponentException("party to charge should be set for call result", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

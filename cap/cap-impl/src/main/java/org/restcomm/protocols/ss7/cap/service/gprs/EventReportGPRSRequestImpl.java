@@ -31,11 +31,15 @@ import org.restcomm.protocols.ss7.cap.service.gprs.primitive.ASNGPRSEventTypeImp
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.GPRSEventSpecificInformationWrapperImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfo;
+import org.restcomm.protocols.ss7.commonapp.api.primitives.MiscCallInfoMessageType;
 import org.restcomm.protocols.ss7.commonapp.primitives.MiscCallInfoImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -86,6 +90,9 @@ public class EventReportGPRSRequestImpl extends GprsMessageImpl implements Event
 
     @Override
     public MiscCallInfo getMiscGPRSInfo() {
+    	if(this.miscGPRSInfo==null)
+    		return new MiscCallInfoImpl(MiscCallInfoMessageType.request, null);
+    	
         return this.miscGPRSInfo;
     }
 
@@ -144,4 +151,9 @@ public class EventReportGPRSRequestImpl extends GprsMessageImpl implements Event
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(gprsEventType==null)
+			throw new ASNParsingComponentException("gprs event type should be set for event report gprs request", ASNParsingComponentExceptionReason.MistypedRootParameter);			
+	}
 }

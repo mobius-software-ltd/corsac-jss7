@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.map.api.service.callhandling.GmscCamelSubscrip
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -93,4 +96,10 @@ public class CamelRoutingInfoImpl implements CamelRoutingInfo {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(gmscCamelSubscriptionInfo==null)
+			throw new ASNParsingComponentException("gmsc camel subscription info should be set for camel info", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

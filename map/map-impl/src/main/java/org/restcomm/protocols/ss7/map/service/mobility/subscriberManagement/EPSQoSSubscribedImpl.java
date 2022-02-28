@@ -30,6 +30,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -100,5 +103,13 @@ public class EPSQoSSubscribedImpl implements EPSQoSSubscribed {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(qoSClassIdentifier==null)
+			throw new ASNParsingComponentException("qos class identifier should be set for eps qos subscriber", ASNParsingComponentExceptionReason.MistypedParameter);
 
+		if(allocationRetentionPriority==null)
+			throw new ASNParsingComponentException("allocation retention priority should be set for eps qos subscriber", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

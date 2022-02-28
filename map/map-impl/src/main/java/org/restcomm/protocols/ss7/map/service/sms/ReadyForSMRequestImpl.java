@@ -34,6 +34,9 @@ import org.restcomm.protocols.ss7.map.api.service.sms.ReadyForSMRequest;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
@@ -146,4 +149,12 @@ public class ReadyForSMRequestImpl extends SmsMessageImpl implements ReadyForSMR
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(imsi==null)
+			throw new ASNParsingComponentException("imsi should be set for note ready for SM request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+
+		if(alertReason==null)
+			throw new ASNParsingComponentException("alert reason should be set for note ready for SM request", ASNParsingComponentExceptionReason.MistypedRootParameter);
+	}
 }

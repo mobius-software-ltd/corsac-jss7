@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.map.api.service.lsm.AdditionalNumber;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -129,5 +132,10 @@ public class AdditionalNumberImpl implements AdditionalNumber {
             return false;
         return true;
     }
-
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(mSCNumber==null && sGSNNumber==null)
+			throw new ASNParsingComponentException("either msc number or sgsn number should be set for additional number", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }

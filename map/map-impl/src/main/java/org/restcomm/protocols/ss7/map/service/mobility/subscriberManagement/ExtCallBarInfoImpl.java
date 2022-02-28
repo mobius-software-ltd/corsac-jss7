@@ -34,6 +34,9 @@ import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  * @author daniel bichara
@@ -115,5 +118,16 @@ public class ExtCallBarInfoImpl implements ExtCallBarInfo {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(ssCode==null)
+			throw new ASNParsingComponentException("ss code should be set for ext call bar info", ASNParsingComponentExceptionReason.MistypedParameter);
 
+		if(callBarringFeatureList==null || callBarringFeatureList.getExtCallBarringFeature()==null || callBarringFeatureList.getExtCallBarringFeature().size()==0)
+			throw new ASNParsingComponentException("call barring feature list should be set for ext call bar info", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(callBarringFeatureList.getExtCallBarringFeature().size()>32)
+			throw new ASNParsingComponentException("call barring feature list size should be between 1 and 32 for ext call bar info", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

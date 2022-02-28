@@ -29,6 +29,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.UMTSSe
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -86,4 +89,10 @@ public class CurrentSecurityContextImpl implements CurrentSecurityContext {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(gsmSecurityContextData==null && umtsSecurityContextData==null)
+			throw new ASNParsingComponentException("either gsm security context data or umts security context data should be set for current security context", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

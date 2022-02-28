@@ -28,6 +28,9 @@ import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
@@ -88,5 +91,13 @@ public class CalledAddressAndServiceImpl implements CalledAddressAndService {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(calledAddressValue==null)
+			throw new ASNParsingComponentException("called address should be set for called address and service", ASNParsingComponentExceptionReason.MistypedParameter);		
 
+		if(serviceKey==null)
+			throw new ASNParsingComponentException("service key should be set for called address and service", ASNParsingComponentExceptionReason.MistypedParameter);		
+	}
 }

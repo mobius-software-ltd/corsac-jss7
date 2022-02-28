@@ -33,6 +33,9 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
@@ -156,5 +159,19 @@ public class MGCSIImpl implements MGCSI {
 
         return sb.toString();
     }
+	
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(mobilityTriggers==null || mobilityTriggers.getMMCode()==null || mobilityTriggers.getMMCode().size()==0)
+			throw new ASNParsingComponentException("mobility triggers should be set for mgcs", ASNParsingComponentExceptionReason.MistypedParameter);
 
+		if(mobilityTriggers.getMMCode().size()>10)
+			throw new ASNParsingComponentException("mobility triggers should be set for mgcs", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(serviceKey==null)
+			throw new ASNParsingComponentException("service key should be set for mgcs", ASNParsingComponentExceptionReason.MistypedParameter);
+
+		if(gsmSCFAddress==null)
+			throw new ASNParsingComponentException("gsm scf address should be set for mgcs", ASNParsingComponentExceptionReason.MistypedParameter);
+	}
 }

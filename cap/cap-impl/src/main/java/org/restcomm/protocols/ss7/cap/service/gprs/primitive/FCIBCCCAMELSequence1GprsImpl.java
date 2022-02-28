@@ -31,6 +31,9 @@ import org.restcomm.protocols.ss7.commonapp.primitives.ASNAppendFreeFormatData;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
 /**
  *
@@ -69,7 +72,7 @@ public class FCIBCCCAMELSequence1GprsImpl implements FCIBCCCAMELSequence1Gprs {
 
     public AppendFreeFormatData getAppendFreeFormatData() {
     	if(this.appendFreeFormatData==null)
-    		return null;
+    		return AppendFreeFormatData.overwrite;
     	
         return this.appendFreeFormatData.getType();
     }
@@ -101,4 +104,9 @@ public class FCIBCCCAMELSequence1GprsImpl implements FCIBCCCAMELSequence1Gprs {
         return sb.toString();
     }
 
+	@ASNValidate
+	public void validateElement() throws ASNParsingComponentException {
+		if(freeFormatData==null)
+			throw new ASNParsingComponentException("free format data should be set for fcibcc CAMEL sequence1 gprs", ASNParsingComponentExceptionReason.MistypedParameter);			
+	}
 }
