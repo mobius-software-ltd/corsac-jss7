@@ -351,6 +351,13 @@
 		<developerConnection>scm:git:https://github.com/mobius-software-ltd/async-jss7/</developerConnection>
 		<url>https://github.com/mobius-software-ltd/async-jss7/</url>
 	</scm>
+	<distributionManagement>
+   		<repository>
+     			<id>github</id>
+     			<name>GitHub OWNER Apache Maven Packages</name>
+     			<url>https://maven.pkg.github.com/lotusflare/corsac-jss7</url>
+   		</repository>
+	</distributionManagement>
 	<!-- repositories -->
 	<repositories>
 		<repository>
@@ -367,6 +374,7 @@
 				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
+		
 
 		<!-- the place to extra repos -->
 	</repositories>
