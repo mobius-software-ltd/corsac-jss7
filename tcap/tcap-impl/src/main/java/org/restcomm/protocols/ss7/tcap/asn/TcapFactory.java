@@ -46,6 +46,18 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCContinueMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCEndMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage;
+import org.restcomm.protocols.ss7.tcap.asn.tx.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogAbortAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogPortionImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogRequestAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogResponseAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.ResultImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.ResultSourceDiagnosticImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCAbortMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCBeginMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCContinueMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCEndMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCUniMessageImpl;
 
 /**
  * @author baranowb
@@ -76,7 +88,7 @@ public final class TcapFactory {
     }
 
     public static ProtocolVersion createProtocolVersion() {
-        return new ProtocolVersionImpl();
+        return new ProtocolVersionImpl(true);
     }
 
     public static ApplicationContextName createApplicationContextName(List<Long> oid) {

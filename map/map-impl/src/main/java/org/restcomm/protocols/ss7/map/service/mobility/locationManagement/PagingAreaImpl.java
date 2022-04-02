@@ -34,8 +34,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
-import io.netty.channel.local.LocalAddress;
-
 /**
  *
  * @author sergey vetyutnev

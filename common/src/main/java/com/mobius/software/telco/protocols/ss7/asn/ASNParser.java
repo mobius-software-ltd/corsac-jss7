@@ -66,6 +66,7 @@ import io.netty.buffer.Unpooled;
 
 public class ASNParser 
 {
+	private Class<?> defaultClass;
 	private ConcurrentHashMap<ASNHeader,Class<?>> rootClassMapping=new ConcurrentHashMap<ASNHeader,Class<?>>();
 	private ConcurrentHashMap<String,ParserClassData> cachedElements=new ConcurrentHashMap<String,ParserClassData>();
 	private ConcurrentHashMap<String,ASNParser> innerParser=new ConcurrentHashMap<String,ASNParser>();
@@ -77,13 +78,19 @@ public class ASNParser
 	private ASNParser parentParser;
 	private ASNDecodeHandler handler;
 	
+	public ASNParser(Class<?> defaultClass,Boolean skipErrors,Boolean loadDefaultPrimitives) {
+		this.defaultClass=defaultClass;
+		clear(loadDefaultPrimitives);
+		this.skipErrors=skipErrors;		
+	}
+	
 	public ASNParser(Boolean skipErrors) {
-		clear();
+		clear(true);
 		this.skipErrors=skipErrors;		
 	}
 	
 	public ASNParser() {
-		clear();
+		clear(true);
 	}
 	
 	protected ASNParser(ASNParser parentParser)
@@ -115,10 +122,11 @@ public class ASNParser
 		this.loadClass(ASNUTF8String.class);	
 	}
 	
-	public void clear() {
+	public void clear(Boolean loadDefaultPrimitives) {
 		rootClassMapping.clear();
 		cachedElements.clear();
-		loadPrimitives();
+		if(loadDefaultPrimitives)
+			loadPrimitives();
 	}
 	
 	public ASNParser getParser(Class<?> rootClazz) {
@@ -137,7 +145,7 @@ public class ASNParser
 	}
 	
 	public void clearClassMapping(Class<?> rootClazz) {
-		getParser(rootClazz).clear();
+		getParser(rootClazz).clear(true);
 	}
 	
 	public void registerAlternativeClassMapping(Class<?> rootClazz, Class<?> clazz) {
@@ -241,7 +249,7 @@ public class ASNParser
 	
 	public ASNDecodeResult decode(ByteBuf buffer, ConcurrentHashMap<Integer,Object> mappedData, Boolean skipErrors) throws ASNException {
 		try {
-			return decode(null, buffer,skipErrors, null, null, rootClassMapping,cachedElements,null,mappedData);
+			return decode(null, buffer,skipErrors, null, null, rootClassMapping,cachedElements,null,mappedData, defaultClass);
 		}
 		catch(Exception ex) {
 			throw new ASNException(ex.getMessage());
@@ -268,7 +276,7 @@ public class ASNParser
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private DecodeResult decode(Object parent,ByteBuf buffer,Boolean skipErrors,Field wildcardField, ConcurrentHashMap<ASNHeader, FieldData> fieldsMap,ConcurrentHashMap<ASNHeader,Class<?>> classMapping,ConcurrentHashMap<String,ParserClassData> cachedElements,Integer index,ConcurrentHashMap<Integer,Object> mappedData) throws ASNException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
+	private DecodeResult decode(Object parent,ByteBuf buffer,Boolean skipErrors,Field wildcardField, ConcurrentHashMap<ASNHeader, FieldData> fieldsMap,ConcurrentHashMap<ASNHeader,Class<?>> classMapping,ConcurrentHashMap<String,ParserClassData> cachedElements,Integer index,ConcurrentHashMap<Integer,Object> mappedData,Class<?> defaultClass) throws ASNException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		int oldIndex=buffer.readerIndex();
 		buffer.markReaderIndex();
 		ASNHeaderWithLength header=readHeader(buffer);
@@ -289,16 +297,20 @@ public class ASNParser
 					else
 						effectiveClass=wildcardField.getType();
 				} else {
-					if(skipErrors) {
-						if(buffer.readableBytes()>=header.getLength())
-							buffer.skipBytes(header.getLength());
+					if(defaultClass!=null)
+						effectiveClass=defaultClass;
+					else {
+						if(skipErrors) {
+							if(buffer.readableBytes()>=header.getLength())
+								buffer.skipBytes(header.getLength());
+							else
+								buffer.skipBytes(buffer.readableBytes());
+							
+							return new DecodeResult(null,parent,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(),true, new ASNDecodeResult(null, parent, true, null));
+						}
 						else
-							buffer.skipBytes(buffer.readableBytes());
-						
-						return new DecodeResult(null,parent,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(),true);
+							throw new ASNException("no class found for matching tag:" + currHeader.getAsnClass() + "," + currHeader.getAsnTag() + "," + currHeader.getIsConstructed() + "," + currHeader.getIndefiniteLength());
 					}
-					else
-						throw new ASNException("no class found for matching tag:" + currHeader.getAsnClass() + "," + currHeader.getAsnTag() + "," + currHeader.getIsConstructed() + "," + currHeader.getIndefiniteLength());					
 				}
 			}						
 		}
@@ -328,6 +340,8 @@ public class ASNParser
 		}
 
 		Boolean hadErrors=false;
+		ASNDecodeResult errorResults=null;
+		
 		Constructor<?> ctor = effectiveClass.getConstructor();
 		Object currObject = ctor.newInstance(new Object[] {  });		
 		if(cachedData.getHasWrappedTag())
@@ -370,8 +384,10 @@ public class ASNParser
 			
 			int originalIndex=buffer.readerIndex();
 			while((buffer.readerIndex()-originalIndex)<remainingBytes) {
-				DecodeResult innerValue=decode(currObject, buffer,skipErrors, cachedData.getWildcardField(),cachedData.getFieldsMap(),cachedData.getInnerMap(),cachedElements,innerIndex,mappedData);
+				DecodeResult innerValue=decode(currObject, buffer,skipErrors, cachedData.getWildcardField(),cachedData.getFieldsMap(),cachedData.getInnerMap(),cachedElements,innerIndex,mappedData, null);
 				hadErrors|=innerValue.getHadErrors();
+				if(innerValue.getHadErrors() && errorResults==null)
+					errorResults=innerValue;
 				
 				if(innerValue!=null && innerValue.getResult()!=null) {
 					ASNTag innerTag=innerValue.getResult().getClass().getAnnotation(ASNTag.class);
@@ -422,7 +438,7 @@ public class ASNParser
 			}			
 		}
 		
-		return new DecodeResult(currObject,parent,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(), hadErrors);
+		return new DecodeResult(currObject,parent,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(), hadErrors, errorResults);
 	}
 	
 	private ASNHeaderWithLength readHeader(ByteBuf buffer) throws ASNException {
@@ -1175,11 +1191,12 @@ public class ASNParser
 		private ASNClass realClass;
 		private Boolean realConstructed;
 		
-		private DecodeResult(Object result,Object parent,ASNClass realClass,Integer realTag,Boolean realConstructed,Boolean hadErrors) {
-			super(result,parent,hadErrors);
+		private DecodeResult(Object result,Object parent,ASNClass realClass,Integer realTag,Boolean realConstructed,Boolean hadErrors,ASNDecodeResult firstError) {
+			super(result,parent,hadErrors,firstError);
 			this.realClass=realClass;
 			this.realTag=realTag;
 			this.realConstructed=realConstructed;
+			this.firstError=firstError;
 		}
 	}
 }

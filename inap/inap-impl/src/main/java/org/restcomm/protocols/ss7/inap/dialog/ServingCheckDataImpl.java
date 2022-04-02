@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.inap.dialog;
 
 import org.restcomm.protocols.ss7.inap.api.dialog.ServingCheckData;
 import org.restcomm.protocols.ss7.inap.api.dialog.ServingCheckResult;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.ApplicationContextNameImpl;
 
 /**
  *

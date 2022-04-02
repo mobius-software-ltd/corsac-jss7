@@ -3017,7 +3017,7 @@ public class MAPFunctionalTest extends SccpHarness {
         TestEvent te = TestEvent.createSentEvent(EventType.AlertServiceCentreIndication, null, count++, stamp);
         clientExpectedEvents.add(te);
 
-        te = TestEvent.createReceivedEvent(EventType.DialogProviderAbort, null, count++, (stamp + _TCAP_DIALOG_RELEASE_TIMEOUT));
+        te = TestEvent.createReceivedEvent(EventType.DialogReject, null, count++, (stamp + _TCAP_DIALOG_RELEASE_TIMEOUT));
         clientExpectedEvents.add(te);
 
         te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, count++, (stamp + _TCAP_DIALOG_RELEASE_TIMEOUT));

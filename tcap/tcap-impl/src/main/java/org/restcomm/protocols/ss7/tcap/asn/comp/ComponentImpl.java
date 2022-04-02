@@ -41,10 +41,10 @@ public class ComponentImpl {
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=2,constructed=true,index=-1,defaultImplementation = ReturnResultLastImpl.class)
 	ReturnResultLast returnResultLast;
 	
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x04,constructed=true,index=-1,defaultImplementation = RejectImpl.class)
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=4,constructed=true,index=-1,defaultImplementation = RejectImpl.class)
 	Reject reject;
 	
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x03,constructed=true,index=-1,defaultImplementation = ReturnErrorImpl.class)
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=3,constructed=true,index=-1,defaultImplementation = ReturnErrorImpl.class)
 	ReturnError returnError;
 	
 	public Invoke getInvoke() {

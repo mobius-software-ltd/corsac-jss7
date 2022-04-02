@@ -20,7 +20,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.tcap.asn;
+package org.restcomm.protocols.ss7.tcap.asn.tx;
+
+import org.restcomm.protocols.ss7.tcap.asn.ASNDialogServiceProviderType;
+import org.restcomm.protocols.ss7.tcap.asn.ASNDialogServiceUserType;
+import org.restcomm.protocols.ss7.tcap.asn.DialogServiceProviderType;
+import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
+import org.restcomm.protocols.ss7.tcap.asn.ParseException;
+import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;

@@ -147,7 +147,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         client.compareEvents(clientExpectedEvents);
         server.compareEvents(serverExpectedEvents);
 
-        assertEquals(client.pAbortCauseType, PAbortCauseType.UnrecognizedMessageType);
+        assertEquals(client.pAbortCauseType, PAbortCauseType.NoCommonDialoguePortion);
     }
 
     /**
@@ -175,7 +175,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         client.compareEvents(clientExpectedEvents);
         server.compareEvents(serverExpectedEvents);
 
-        assertEquals(client.pAbortCauseType, PAbortCauseType.UnrecognizedMessageType);
+        assertEquals(client.pAbortCauseType, PAbortCauseType.IncorrectTxPortion);
     }
 
     @Test(groups = { "functional.flow" })
@@ -204,9 +204,9 @@ public class TCAPAbnormalTest extends SccpHarness {
         serverExpectedEvents.add(te);
         te = TestEvent.createSentEvent(EventType.Continue, null, 1, stamp + WAIT_TIME);
         serverExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.PAbort, null, 2, stamp + _DIALOG_TIMEOUT);
+        te = TestEvent.createReceivedEvent(EventType.PAbort, null, 2, stamp + WAIT_TIME*2);
         serverExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + _DIALOG_TIMEOUT);
+        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME*2);
         serverExpectedEvents.add(te);
 
         client.startClientDialog();
@@ -224,7 +224,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         client.compareEvents(clientExpectedEvents);
         server.compareEvents(serverExpectedEvents);
 
-        assertEquals(server.pAbortCauseType, PAbortCauseType.AbnormalDialogue);
+        assertEquals(server.pAbortCauseType, PAbortCauseType.UnrecognizedMessageType);
     }
 
     @Test(groups = { "functional.flow" })
@@ -496,5 +496,34 @@ public class TCAPAbnormalTest extends SccpHarness {
 
     public static ByteBuf getMessageBadTag() {
         return Unpooled.wrappedBuffer(new byte[] { 106, 6, 72, 1, 1, 73, 1, 1 });
+    }
+
+    @Test(groups = { "functional.flow" })
+    public void unrecognizedMessageTypeTest() throws Exception {
+
+        // case of receiving TC-Begin + AARQ apdu + unsupported protocol version (supported only V2)
+        long stamp = System.currentTimeMillis();
+        List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
+        TestEvent te = TestEvent.createReceivedEvent(EventType.PAbort, null, 0, stamp);
+        clientExpectedEvents.add(te);
+        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 1, stamp);
+        clientExpectedEvents.add(te);
+
+        List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
+
+        client.startClientDialog();
+        SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address, peer1Address,
+                Unpooled.wrappedBuffer(getUnrecognizedMessageTypeMessage()), 0, 0, false, null, null);
+        this.sccpProvider1.send(message);
+        Client.waitFor(WAIT_TIME);
+
+        client.compareEvents(clientExpectedEvents);
+        server.compareEvents(serverExpectedEvents);
+
+        assertEquals(client.pAbortCauseType, PAbortCauseType.UnrecognizedMessageType);
+    }
+
+    public static byte[] getUnrecognizedMessageTypeMessage() {
+        return new byte[] { 105, 6, 72, 4, 0, 0, 0, 1 };
     }
 }

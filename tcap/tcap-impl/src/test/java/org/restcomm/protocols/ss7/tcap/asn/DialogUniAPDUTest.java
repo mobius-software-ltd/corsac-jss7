@@ -30,6 +30,7 @@ import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogRequestAPDUImpl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

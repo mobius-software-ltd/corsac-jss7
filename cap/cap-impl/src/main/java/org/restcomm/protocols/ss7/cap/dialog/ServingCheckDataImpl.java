@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.cap.dialog;
 
 import org.restcomm.protocols.ss7.cap.api.dialog.ServingCheckData;
 import org.restcomm.protocols.ss7.cap.api.dialog.ServingCheckResult;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.ApplicationContextNameImpl;
 
 /**
  *
