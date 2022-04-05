@@ -25,6 +25,7 @@ package org.restcomm.protocols.ss7.tcap.asn;
 import org.restcomm.protocols.ss7.tcap.asn.comp.DestinationTransactionID;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OriginatingTransactionID;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUnifiedMessage;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogPortionImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;

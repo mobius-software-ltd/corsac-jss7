@@ -20,11 +20,12 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.tcap.asn;
+package org.restcomm.protocols.ss7.tcap.asn.tx;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.restcomm.protocols.ss7.tcap.asn.TCUnifiedMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.BaseComponent;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentPortionImpl;
@@ -33,7 +34,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Reject;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
-import org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage;
+import org.restcomm.protocols.ss7.tcap.asn.comp.TCEndMessage;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
@@ -46,14 +47,16 @@ import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponen
  * @author sergey vetyutnev
  *
  */
-@ASNTag(asnClass=ASNClass.APPLICATION,tag=0x01,constructed=true,lengthIndefinite=false)
-public class TCUniMessageImpl extends TCUnifiedMessageImpl implements TCUniMessage {
-	private ComponentPortionImpl component;
+@ASNTag(asnClass=ASNClass.APPLICATION,tag=0x04,constructed=true,lengthIndefinite=false)
+public class TCEndMessageImpl extends TCUnifiedMessageImpl implements TCEndMessage {
+
+	// opt
+    private ComponentPortionImpl component;
 
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage#getComponent()
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage#getComponent()
      */
     public List<BaseComponent> getComponents() {
 
@@ -70,8 +73,8 @@ public class TCUniMessageImpl extends TCUnifiedMessageImpl implements TCUniMessa
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage#setComponent(org
-     * .restcomm.protocols.ss7.tcap.asn.comp.Component[])
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage#setComponent
+     * (org.restcomm.protocols.ss7.tcap.asn.comp.Component[])
      */
     public void setComponents(List<BaseComponent> c) {
     	if(c==null)
@@ -101,7 +104,7 @@ public class TCUniMessageImpl extends TCUnifiedMessageImpl implements TCUniMessa
     
     @ASNValidate
 	public void validateElement() throws ASNParsingComponentException {
-    	if(getOriginatingTransactionId()!=null || getDestinationTransactionId()!=null || component==null)
-    		throw new ASNParsingComponentException("Originating and destination transaction IDs should be null,components should not be null", ASNParsingComponentExceptionReason.MistypedParameter); 
+    	if(getOriginatingTransactionId()!=null || getDestinationTransactionId()==null)
+    		throw new ASNParsingComponentException("Destination transaction ID should not be null,originating transaction ID should be null", ASNParsingComponentExceptionReason.MistypedParameter); 
 	}
 }

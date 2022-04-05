@@ -31,7 +31,7 @@ import org.restcomm.protocols.ss7.map.api.dialog.ServingCheckResult;
 import org.restcomm.protocols.ss7.map.dialog.ServingCheckDataImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.MAPServiceSupplementaryImpl;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.ApplicationContextNameImpl;
 
 public class MAPServiceSupplementaryImplWrapper extends MAPServiceSupplementaryImpl {
 

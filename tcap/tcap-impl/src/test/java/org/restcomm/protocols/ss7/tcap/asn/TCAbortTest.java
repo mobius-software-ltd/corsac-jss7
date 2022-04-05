@@ -34,6 +34,10 @@ import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.tcap.TCAPTestUtils;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogAbortAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogRequestAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogResponseAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCAbortMessageImpl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

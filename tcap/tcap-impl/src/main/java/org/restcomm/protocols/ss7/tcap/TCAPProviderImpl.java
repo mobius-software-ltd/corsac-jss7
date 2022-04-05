@@ -70,23 +70,16 @@ import org.restcomm.protocols.ss7.tcap.asn.ASNDialogPortionObjectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAPDU;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAPDUType;
-import org.restcomm.protocols.ss7.tcap.asn.DialogAbortAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogPortion;
 import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDU;
-import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogResponseAPDU;
-import org.restcomm.protocols.ss7.tcap.asn.DialogResponseAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceProviderType;
 import org.restcomm.protocols.ss7.tcap.asn.ParseException;
 import org.restcomm.protocols.ss7.tcap.asn.Result;
 import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
 import org.restcomm.protocols.ss7.tcap.asn.ResultType;
-import org.restcomm.protocols.ss7.tcap.asn.TCAbortMessageImpl;
-import org.restcomm.protocols.ss7.tcap.asn.TCBeginMessageImpl;
-import org.restcomm.protocols.ss7.tcap.asn.TCContinueMessageImpl;
-import org.restcomm.protocols.ss7.tcap.asn.TCEndMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TCNoticeIndicationImpl;
-import org.restcomm.protocols.ss7.tcap.asn.TCUniMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.TCUnknownMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.Utils;
 import org.restcomm.protocols.ss7.tcap.asn.comp.DestinationTransactionID;
@@ -102,6 +95,14 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.TCContinueMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCEndMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUnifiedMessage;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogAbortAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogRequestAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogResponseAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCAbortMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCBeginMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCContinueMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCEndMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCUniMessageImpl;
 import org.restcomm.protocols.ss7.tcap.tc.component.ComponentPrimitiveFactoryImpl;
 import org.restcomm.protocols.ss7.tcap.tc.dialog.events.DialogPrimitiveFactoryImpl;
 import org.restcomm.protocols.ss7.tcap.tc.dialog.events.DraftParsedMessageImpl;
@@ -147,7 +148,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 
     private transient ConcurrentHashMap<String, Integer> lstUserPartCongestionLevel = new ConcurrentHashMap<String, Integer>();
 
-    private ASNParser messageParser=new ASNParser(true);
+    private ASNParser messageParser=new ASNParser(TCUnknownMessageImpl.class,true,false);
     
     protected TCAPProviderImpl(SccpProvider sccpProvider, TCAPStackImpl stack, int ssn,ScheduledExecutorService service) {
         super();
@@ -669,6 +670,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
             if(output.getResult() instanceof TCUnifiedMessage) {
             	TCUnifiedMessage realMessage=(TCUnifiedMessage)output.getResult();
             	Boolean shouldProceed=!output.getHadErrors();
+            	
             	if(shouldProceed) {
             		if(shouldProceed) {
                 		try {
@@ -758,15 +760,33 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	                    setSsnToDialog(uniDialog, message.getCalledPartyAddress().getSubsystemNumber());
 	                    uniDialog.processUni(tcuni, localAddress, remoteAddress, data);	
 	            	} else {	
-	            		unrecognizedPackageType(message, realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());                    
+	            		unrecognizedPackageType(message, PAbortCauseType.UnrecognizedMessageType, realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());                    
 	            	}
             	}
             	else {
-            		unrecognizedPackageType(message,  realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());
+            		if(realMessage instanceof TCBeginMessage) {
+	            		TCBeginMessage tcb=(TCBeginMessage)realMessage;
+	            		if (tcb.getDialogPortion() != null && tcb.getDialogPortion().getDialogAPDU() != null
+	                            && tcb.getDialogPortion().getDialogAPDU() instanceof DialogRequestAPDU) {
+	                        DialogRequestAPDU dlg = (DialogRequestAPDU) tcb.getDialogPortion().getDialogAPDU();
+	                        if (dlg.getProtocolVersion() != null && !dlg.getProtocolVersion().isSupportedVersion()) {
+	                            logger.error("Unsupported protocol version of  has been received when parsing TCBeginMessage");
+	                            this.sendProviderAbort(DialogServiceProviderType.NoCommonDialogPortion,
+	                                    tcb.getOriginatingTransactionId(), remoteAddress, localAddress, message.getSls(),
+	                                    dlg.getApplicationContextName(), message.getNetworkId(), message.getIncomingOpc());
+	                            return;
+	                        }
+	                    }
+            		}
+            		
+            		if(output.getFirstError()!=null && output.getFirstError().getParent()!=null &&  output.getFirstError().getParent().getClass().getPackage().equals(TCUniMessageImpl.class.getPackage()))
+            			unrecognizedPackageType(message,  PAbortCauseType.IncorrectTxPortion, realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());
+            		else
+            			unrecognizedPackageType(message,  PAbortCauseType.UnrecognizedMessageType, realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());
             	}
             }
             else {
-            	unrecognizedPackageType(message, null, localAddress, remoteAddress, message.getNetworkId());
+            	unrecognizedPackageType(message, PAbortCauseType.UnrecognizedMessageType, null, localAddress, remoteAddress, message.getNetworkId());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -774,9 +794,9 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         }
     }
 
-    private void unrecognizedPackageType(SccpDataMessage message,ByteBuf transactionID, SccpAddress localAddress, SccpAddress remoteAddress,int networkId) throws ParseException {
-    	logger.error(String.format("Rx unidentified.SccpMessage=%s", message));
-        this.sendProviderAbort(PAbortCauseType.UnrecognizedMessageType, transactionID, remoteAddress, localAddress, message.getSls(), networkId, message.getIncomingOpc());        
+    private void unrecognizedPackageType(SccpDataMessage message,PAbortCauseType abortCausetype,ByteBuf transactionID, SccpAddress localAddress, SccpAddress remoteAddress,int networkId) throws ParseException {
+    	logger.error(String.format("Rx unidentified.SccpMessage=%s", message));                
+        this.sendProviderAbort(abortCausetype, transactionID, remoteAddress, localAddress, message.getSls(), networkId, message.getIncomingOpc());        
     }
 
     public void onNotice(SccpNoticeMessage msg) {
@@ -794,7 +814,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
             	TCUnifiedMessage tcUnidentified = (TCUnifiedMessage)output.getResult();
 	            if (tcUnidentified.getOriginatingTransactionId() != null) {
 	                long otid = Utils.decodeTransactionId(tcUnidentified.getOriginatingTransactionId(), this.stack.getSwapTcapIdBytes());
-	                dialog = this.dialogs.get(otid);
+	               dialog = this.dialogs.get(otid);
 	            }
             }
         } catch (Exception e) {

@@ -34,6 +34,11 @@ import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.DraftParsedMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ASNReturnResultParameterImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCAbortMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCBeginMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCContinueMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCEndMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCUniMessageImpl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

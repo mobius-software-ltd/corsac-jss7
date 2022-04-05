@@ -34,10 +34,6 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.DpSpecificCommonParameters;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.FeatureRequestIndicator;
 
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
-import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
-import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
-
 /**
  *
  * @author yulian.oifa
