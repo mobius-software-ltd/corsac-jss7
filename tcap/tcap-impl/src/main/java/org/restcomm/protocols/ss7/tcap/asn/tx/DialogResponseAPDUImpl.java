@@ -20,7 +20,17 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.tcap.asn;
+package org.restcomm.protocols.ss7.tcap.asn.tx;
+
+import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
+import org.restcomm.protocols.ss7.tcap.asn.DialogAPDUType;
+import org.restcomm.protocols.ss7.tcap.asn.DialogResponseAPDU;
+import org.restcomm.protocols.ss7.tcap.asn.ProtocolVersion;
+import org.restcomm.protocols.ss7.tcap.asn.ProtocolVersionImpl;
+import org.restcomm.protocols.ss7.tcap.asn.Result;
+import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcap.asn.UserInformationImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPostprocess;
@@ -55,7 +65,7 @@ public class DialogResponseAPDUImpl implements DialogResponseAPDU {
     	if(val)
     		protocolVersion=null;
     	else
-    		protocolVersion=new ProtocolVersionImpl();
+    		protocolVersion=new ProtocolVersionImpl(true);
     }
 
     // optional

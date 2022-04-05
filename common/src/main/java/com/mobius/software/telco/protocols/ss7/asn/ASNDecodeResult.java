@@ -5,11 +5,13 @@ public class ASNDecodeResult
 	private Object result;
 	private Object parent;
 	private Boolean hadErrors;
+	public ASNDecodeResult firstError;
 	
-	public ASNDecodeResult(Object result,Object parent,Boolean hadErrors) {
+	public ASNDecodeResult(Object result,Object parent,Boolean hadErrors,ASNDecodeResult firstError) {
 		this.result=result;
 		this.parent=parent;
 		this.hadErrors=hadErrors;
+		this.firstError=firstError;
 	}
 
 	public Object getResult() {
@@ -34,5 +36,9 @@ public class ASNDecodeResult
 
 	public void setHadErrors(Boolean hadErrors) {
 		this.hadErrors = hadErrors;
+	}
+	
+	public ASNDecodeResult getFirstError() {
+		return firstError;
 	}		
 }

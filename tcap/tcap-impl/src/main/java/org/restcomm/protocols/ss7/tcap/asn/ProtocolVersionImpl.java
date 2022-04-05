@@ -33,15 +33,16 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,lengthIndefinite=false)
 public class ProtocolVersionImpl extends ASNBitString implements ProtocolVersion {
-	private boolean supportedVersion = true;
-
 	public ProtocolVersionImpl() {
+		super("ProtocolVersion", null, 1, false);		
+	}
+	
+	public ProtocolVersionImpl(Boolean supported) {
 		super("ProtocolVersion", null, 1, false);
 		this.setBit(0);
 	}
 	
     public boolean isSupportedVersion() {
-
-        return supportedVersion;
+    	return isBitSet(0);
     }
 }

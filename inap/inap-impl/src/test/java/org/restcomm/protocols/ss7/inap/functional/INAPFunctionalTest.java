@@ -105,6 +105,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
+import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.asn.ParseException;
@@ -2953,6 +2954,55 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
         waitForEnd();
         client.compareEvents(clientExpectedEvents);
         server.compareEvents(serverExpectedEvents);
+    }
+
+    /**
+     *
+     * TC-Message + bad UnrecognizedMessageType TC-ABORT UnrecognizedMessageType
+     */
+    @Test(groups = { "functional.flow", "dialog" })
+    public void testUnrecognizedMessageType() throws Exception {
+
+        Client client = new Client(stack1, this, peer1Address, peer2Address) {
+
+            public void onDialogProviderAbort(INAPDialog capDialog, PAbortCauseType abortCause) {
+                super.onDialogProviderAbort(capDialog, abortCause);
+
+                assertEquals(abortCause, PAbortCauseType.UnrecognizedMessageType);
+            }
+        };
+
+        Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+        };
+
+        long stamp = System.currentTimeMillis();
+        int count = 0;
+        // Client side events
+        List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
+        TestEvent te = TestEvent.createReceivedEvent(EventType.DialogProviderAbort, null, count++, (stamp));
+        clientExpectedEvents.add(te);
+
+        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, count++, (stamp));
+        clientExpectedEvents.add(te);
+
+        count = 0;
+        // Server side events
+        List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
+
+        // sending a dummy message to a bad address for a dialog starting
+        client.sendDummyMessage();
+
+        // sending a badly formatted message
+        SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address, peer1Address,
+                Unpooled.wrappedBuffer(getMessageBadTag()), 0, 0, false, null, null);
+        
+        this.sccpProvider1.send(message);
+
+        waitForEnd();
+
+        client.compareEvents(clientExpectedEvents);
+        server.compareEvents(serverExpectedEvents);
+
     }
 
     /**

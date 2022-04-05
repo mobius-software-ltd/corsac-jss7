@@ -33,6 +33,11 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ASNInvokeParameterImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.BaseComponent;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage;
+import org.restcomm.protocols.ss7.tcap.asn.tx.ApplicationContextNameImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogAbortAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogRequestAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogResponseAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCUniMessageImpl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

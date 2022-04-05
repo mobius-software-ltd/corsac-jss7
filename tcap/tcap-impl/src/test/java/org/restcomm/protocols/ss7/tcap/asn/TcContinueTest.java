@@ -37,6 +37,10 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCContinueMessage;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogAbortAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogRequestAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.DialogResponseAPDUImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCContinueMessageImpl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 

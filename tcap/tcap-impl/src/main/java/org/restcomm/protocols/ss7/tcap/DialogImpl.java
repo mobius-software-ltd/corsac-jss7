@@ -1439,7 +1439,7 @@ public class DialogImpl implements Dialog {
 
     protected void processAbort(TCAbortMessage msg, SccpAddress localAddress2, SccpAddress remoteAddress2, ByteBuf data) {
     	try {
-            Boolean IsAareApdu = false;
+    		Boolean IsAareApdu = false;
             Boolean IsAbrtApdu = false;
             ApplicationContextName acn = null;
             ResultSourceDiagnostic resultSourceDiagnostic = null;
@@ -1483,7 +1483,7 @@ public class DialogImpl implements Dialog {
                     type = PAbortCauseType.AbnormalDialogue;
                 }
                 
-                DialogServiceProviderType dspType=null;
+            	DialogServiceProviderType dspType=null;
                 if(resultSourceDiagnostic!=null) {
                 	try {
                 		dspType=resultSourceDiagnostic.getDialogServiceProviderType();
