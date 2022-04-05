@@ -10,7 +10,7 @@
 	<name>Corsac jSS7 :: ${project.artifactId}</name>
 
 	<properties>
-		<revision>8.0.0l1</revision>
+		<revision>8.0.0-l2-SNAPSHOT</revision>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version> <!-- 2.4.2 -->
