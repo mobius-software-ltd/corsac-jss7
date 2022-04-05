@@ -3,13 +3,14 @@
 
 	<groupId>com.mobius-software.telco.protocols.ss7</groupId>
 	<artifactId>ss7-parent</artifactId>
-	<version>8.0.0-SNAPSHOT</version>
+	<version>${revision}</version>
 
 	<packaging>pom</packaging>
 
 	<name>Corsac jSS7 :: ${project.artifactId}</name>
 
 	<properties>
+		<revision>8.0.0l</revision>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version> <!-- 2.4.2 -->
@@ -342,7 +343,18 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

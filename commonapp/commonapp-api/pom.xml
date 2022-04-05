@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>commonapp-parent</artifactId>
 		<groupId>com.mobius-software.telco.protocols.ss7.commonapp</groupId>
-		<version>8.0.0-SNAPSHOT</version>
+		<version>${revision}</version>
 	</parent>
 
 	<artifactId>commonapp-api</artifactId>
