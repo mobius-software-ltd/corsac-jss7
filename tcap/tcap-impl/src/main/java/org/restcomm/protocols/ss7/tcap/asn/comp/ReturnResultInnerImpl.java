@@ -118,9 +118,6 @@ public class ReturnResultInnerImpl {
     		if(acn!=null) {
     			OperationCodeWithACN operationWithACN=new OperationCodeWithACN(operationCode, acn.getOid());
     			Class<?> result=parser.getLocalMapping(this.getClass(), operationWithACN);
-        		if(result==null)
-        			result=parser.getDefaultLocalMapping(this.getClass());
-        		
         		if(result!=null)
         			return result;
     		}

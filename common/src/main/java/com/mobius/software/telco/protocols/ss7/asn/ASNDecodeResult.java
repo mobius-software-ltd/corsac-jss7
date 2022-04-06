@@ -5,12 +5,14 @@ public class ASNDecodeResult
 	private Object result;
 	private Object parent;
 	private Boolean hadErrors;
+	private Boolean isTagError;
 	public ASNDecodeResult firstError;
 	
-	public ASNDecodeResult(Object result,Object parent,Boolean hadErrors,ASNDecodeResult firstError) {
+	public ASNDecodeResult(Object result,Object parent,Boolean hadErrors,Boolean isTagError,ASNDecodeResult firstError) {
 		this.result=result;
 		this.parent=parent;
 		this.hadErrors=hadErrors;
+		this.isTagError=isTagError;
 		this.firstError=firstError;
 	}
 
@@ -40,5 +42,9 @@ public class ASNDecodeResult
 	
 	public ASNDecodeResult getFirstError() {
 		return firstError;
-	}		
+	}
+
+	public Boolean getIsTagError() {
+		return isTagError;
+	}			
 }

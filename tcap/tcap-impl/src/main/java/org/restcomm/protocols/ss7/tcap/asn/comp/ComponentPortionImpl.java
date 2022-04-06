@@ -1,5 +1,7 @@
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
+import java.util.ArrayList;
+
 /*
  * Mobius Software LTD
  * Copyright 2019, Mobius Software LTD and individual contributors
@@ -27,22 +29,39 @@ package org.restcomm.protocols.ss7.tcap.asn.comp;
 
 import java.util.List;
 
+import org.restcomm.protocols.ss7.tcap.asn.ASNComponentPortionObjectImpl;
+
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWildcard;
 
 @ASNTag(asnClass=ASNClass.APPLICATION,tag=0x0c,constructed=true,lengthIndefinite=false)
 public class ComponentPortionImpl {
 
-	@ASNChoise
-	List<ComponentImpl> components;
+	@ASNWildcard
+	List<ASNComponentPortionObjectImpl> components;
 
-	public List<ComponentImpl> getComponents() {
-		return components;
+	public List<BaseComponent> getComponents() {
+		if(components==null)
+			return null;
+		else {
+			List<BaseComponent> output=new ArrayList<BaseComponent>();
+			for(ASNComponentPortionObjectImpl curr:components)
+				if(curr.getValue() instanceof BaseComponent)
+					output.add((BaseComponent)curr.getValue());
+			
+			return output;
+		}
 	}
 
-	public void setComponents(List<ComponentImpl> components) {
-		this.components = components;
+	public void setComponents(List<BaseComponent> components) {
+		if(components==null)
+			this.components=null;
+		else {
+			this.components = new ArrayList<ASNComponentPortionObjectImpl>();
+			for(BaseComponent curr:components)
+				this.components.add(new ASNComponentPortionObjectImpl(curr));
+		}
 	}
 	
 	public String toString() {

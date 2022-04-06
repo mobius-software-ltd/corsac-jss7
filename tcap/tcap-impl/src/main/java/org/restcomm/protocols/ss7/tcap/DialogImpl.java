@@ -1028,6 +1028,37 @@ public class DialogImpl implements Dialog {
         }
     }
     
+    protected Integer sendComponent(BaseComponent component) throws TCAPSendException, TCAPException {
+    	if(component instanceof Invoke) {
+    		Invoke invoke=(Invoke)component;
+        	if(invoke.getInvokeId()==null)
+        		invoke.setInvokeId(getNewInvokeId());		
+    	}
+    	
+		this.scheduledComponentList.add(component);
+		
+		// check if its taken!
+        int invokeIndex = DialogImpl.getIndexFromInvokeId(component.getInvokeId());
+        if (this.operationsSent[invokeIndex] != null) {
+            throw new TCAPSendException("There is already operation with such invoke id!");
+        }
+
+        if(component instanceof Invoke) {
+        	Invoke invoke=(Invoke)component;
+        	invoke.setProvider(provider);
+        	invoke.setState(OperationState.Pending);
+        	invoke.setDialog(this);
+	
+	        // if the Invoke timeout value has not be reset by TCAP-User
+	        // for this invocation we are setting it to the the TCAP stack
+	        // default value
+	        if (invoke.getTimeout() == TCAPStackImpl._EMPTY_INVOKE_TIMEOUT)
+	            invoke.setTimeout(this.provider.getStack().getInvokeTimeout());
+        }
+        
+        return component.getInvokeId();
+    }
+    
     public Integer sendData(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,OperationCode operationCode,Object param,Boolean isRequest,Boolean isLastResponse) throws TCAPSendException, TCAPException {
     	if(isRequest!=null && isRequest) {
     		Invoke invoke;

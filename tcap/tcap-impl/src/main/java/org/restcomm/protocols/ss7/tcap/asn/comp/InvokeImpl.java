@@ -60,7 +60,7 @@ public class InvokeImpl implements Invoke {
 
     // optional
 	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,index=1)
-    private ASNInteger linkedId;
+	private ASNInteger linkedId;
 	
 	@ASNExclude
     private Invoke linkedInvoke;
@@ -107,9 +107,6 @@ public class InvokeImpl implements Invoke {
     		if(acn!=null) {
     			OperationCodeWithACN operationWithACN=new OperationCodeWithACN(operationCode, acn.getOid());
     			Class<?> result=parser.getLocalMapping(this.getClass(), operationWithACN);
-        		if(result==null)
-        			result=parser.getDefaultLocalMapping(this.getClass());
-        		
         		if(result!=null)
         			return result;
     		}

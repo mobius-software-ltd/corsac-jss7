@@ -169,7 +169,7 @@ public class InvokeTest {
         assertTrue(invokeComp.getInvoke().getParameter() instanceof ASNOctetString);
         assertTrue(byteBufEquals(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }), ((ASNOctetString)invokeComp.getInvoke().getParameter()).getValue()));
     }
-
+    
     public static Boolean byteBufEquals(ByteBuf value1,ByteBuf value2) {
     	ByteBuf value1Wrapper=Unpooled.wrappedBuffer(value1);
     	ByteBuf value2Wrapper=Unpooled.wrappedBuffer(value2);

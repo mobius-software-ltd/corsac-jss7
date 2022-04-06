@@ -24,6 +24,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWildcard;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNDecodeException;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
@@ -153,20 +154,36 @@ public class ASNParser
 	}
 	
 	public void registerLocalMapping(Class<?> rootClazz, Object key, Class<?> clazz) {
+		if(parentParser!=null) {
+			parentParser.registerLocalMapping(rootClazz, key, clazz);
+			return;
+		}
+		
 		LocalMappingKey localKey=new LocalMappingKey(key, rootClazz.getCanonicalName());
 		localClassesMapping.put(localKey, clazz);
 	}
 	
 	public Class<?> getLocalMapping(Class<?> rootClazz,Object key) {
+		if(parentParser!=null)
+			return parentParser.getLocalMapping(rootClazz, key);
+		
 		LocalMappingKey localKey=new LocalMappingKey(key, rootClazz.getCanonicalName());
 		return localClassesMapping.get(localKey);
 	}
 	
 	public void registerDefaultLocalMapping(Class<?> rootClazz, Class<?> clazz) {
+		if(parentParser!=null) {
+			parentParser.registerDefaultLocalMapping(rootClazz, clazz);
+			return;
+		}
+		
 		defaultLocalClassesMapping.put(rootClazz.getCanonicalName(), clazz);
 	}
 	
 	public Class<?> getDefaultLocalMapping(Class<?> rootClazz) {
+		if(parentParser!=null)
+			return parentParser.getDefaultLocalMapping(rootClazz);
+		
 		return defaultLocalClassesMapping.get(rootClazz.getCanonicalName());
 	}
 	
@@ -251,6 +268,9 @@ public class ASNParser
 		try {
 			return decode(null, buffer,skipErrors, null, null, rootClassMapping,cachedElements,null,mappedData, defaultClass);
 		}
+		catch(ASNException ex) {
+			throw ex;
+		}
 		catch(Exception ex) {
 			throw new ASNException(ex.getMessage());
 		}
@@ -306,10 +326,10 @@ public class ASNParser
 							else
 								buffer.skipBytes(buffer.readableBytes());
 							
-							return new DecodeResult(null,parent,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(),true, new ASNDecodeResult(null, parent, true, null));
+							return new DecodeResult(null,parent,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(),true, true, new ASNDecodeResult(null, parent, true, true, null));
 						}
 						else
-							throw new ASNException("no class found for matching tag:" + currHeader.getAsnClass() + "," + currHeader.getAsnTag() + "," + currHeader.getIsConstructed() + "," + currHeader.getIndefiniteLength());
+							throw new ASNDecodeException("no class found for matching tag:" + currHeader.getAsnClass() + "," + currHeader.getAsnTag() + "," + currHeader.getIsConstructed() + "," + currHeader.getIndefiniteLength(),currHeader.getAsnTag(),currHeader.getAsnClass(),currHeader.getIsConstructed(),parent);						
 					}
 				}
 			}						
@@ -359,12 +379,31 @@ public class ASNParser
 			for(Method method:methods) {
 				ASNDecode asnDecode=method.getAnnotation(ASNDecode.class);
 				if(asnDecode!=null) {
-					if(parent!=null && wildcardField!=null && wildcardField.isAccessible() && wildcardField.get(parent)!=null) {
+					if(parent!=null && wildcardField!=null && wildcardField.isAccessible() &&!wildcardField.getType().isAssignableFrom(List.class) && wildcardField.get(parent)!=null) {
 						//patching in case multiple items get through wildcard to same item
 						currObject=wildcardField.get(parent);
 					}
 					
-					hadErrors|=(Boolean)method.invoke(currObject,new Object[] { this, parent, buffer.slice(buffer.readerIndex(), header.getLength()), mappedData, skipErrors });
+					try {
+						Object value=method.invoke(currObject,new Object[] { this, parent, buffer.slice(buffer.readerIndex(), header.getLength()), mappedData, skipErrors });
+						if(value instanceof Boolean)
+							hadErrors|=(Boolean)value;
+						else if(value instanceof ASNDecodeResult) {
+							if(errorResults==null)
+								errorResults=(ASNDecodeResult)value;
+							
+							if(value!=null)
+								hadErrors|=((ASNDecodeResult)value).getHadErrors();
+						}
+					}
+					catch(Exception ex) {
+						if(skipErrors) {
+							return new DecodeResult(null,parent,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(), true, false, new ASNDecodeResult(null, parent, true, false, null));
+						}
+						else
+							throw ex;
+					}
+					
 					buffer.skipBytes(header.getLength());
 					break;
 				}
@@ -438,7 +477,11 @@ public class ASNParser
 			}			
 		}
 		
-		return new DecodeResult(currObject,parent,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(), hadErrors, errorResults);
+		Boolean isTag=false;
+		if(errorResults!=null && errorResults.getIsTagError()!=null && errorResults.getIsTagError())
+			isTag=true;
+		
+		return new DecodeResult(currObject,parent,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(), hadErrors, isTag, errorResults);
 	}
 	
 	private ASNHeaderWithLength readHeader(ByteBuf buffer) throws ASNException {
@@ -1191,8 +1234,8 @@ public class ASNParser
 		private ASNClass realClass;
 		private Boolean realConstructed;
 		
-		private DecodeResult(Object result,Object parent,ASNClass realClass,Integer realTag,Boolean realConstructed,Boolean hadErrors,ASNDecodeResult firstError) {
-			super(result,parent,hadErrors,firstError);
+		private DecodeResult(Object result,Object parent,ASNClass realClass,Integer realTag,Boolean realConstructed,Boolean hadErrors,Boolean isTagError,ASNDecodeResult firstError) {
+			super(result,parent,hadErrors,isTagError,firstError);
 			this.realClass=realClass;
 			this.realTag=realTag;
 			this.realConstructed=realConstructed;

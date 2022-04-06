@@ -27,8 +27,6 @@ package com.mobius.software.telco.protocols.ss7.asn.primitives;
 import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 
-import io.netty.buffer.ByteBuf;
-
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -38,6 +36,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNGenericMapping
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNLength;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
+
+import io.netty.buffer.ByteBuf;
 
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=0,constructed=false,lengthIndefinite=false)
 public abstract class ASNGeneric {
@@ -68,13 +68,17 @@ public abstract class ASNGeneric {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws ASNException {
+	public Object decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws ASNException {
 		if(buffer.readableBytes()==0)
 		{
 			this.value=null;
 			return false;
 		}
 		
+		return getDecodeResult(parser, parent, buffer, mappedData, skipErrors);
+	}
+	
+	protected ASNDecodeResult getDecodeResult(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws ASNException {
 		Class<?> clazz=this.getClass();
 		if(parent!=null) {
 			Method[] methods=parent.getClass().getMethods();
@@ -107,11 +111,15 @@ public abstract class ASNGeneric {
 			result=parser.getParser(clazz).decode(buffer,mappedData,skipErrors);
 			this.value=result.getResult();
 		} 
-			
-		return result.getHadErrors();
+		
+		return result;
 	}
 
 	public Object getValue() {
 		return value;
-	}		
+	}
+	
+	protected void setvalue(Object value) {
+		this.value=value;
+	}
 }

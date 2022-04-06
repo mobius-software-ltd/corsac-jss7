@@ -28,7 +28,7 @@ package com.mobius.software.telco.protocols.ss7.asn.exceptions;
 public class ASNException extends Exception
 {
 	private static final long serialVersionUID = 1L;
-
+	
 	public ASNException(String s) {
 		super(s);		
 	}

@@ -22,23 +22,16 @@
 
 package org.restcomm.protocols.ss7.tcap.asn.tx;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.tcap.asn.TCUnifiedMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.BaseComponent;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentPortionImpl;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Reject;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnError;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 
@@ -62,11 +55,7 @@ public class TCBeginMessageImpl extends TCUnifiedMessageImpl implements TCBeginM
     	if(component==null)
     		return null;
     	
-    	List<BaseComponent> result=new ArrayList<BaseComponent>();
-    	for(ComponentImpl comp:component.getComponents())
-    		result.add(comp.getExistingComponent());
-    	
-        return result;
+    	return component.getComponents();
     }
 
     /*
@@ -80,24 +69,7 @@ public class TCBeginMessageImpl extends TCUnifiedMessageImpl implements TCBeginM
     		this.component=null;
     	else {
     		this.component = new ComponentPortionImpl();
-    		List<ComponentImpl> compList=new ArrayList<ComponentImpl>();
-    		for(BaseComponent curr:c) {
-    			ComponentImpl newComp=new ComponentImpl();
-    			if(curr instanceof Invoke)
-    				newComp.setInvoke((Invoke)curr);
-    			else if(curr instanceof ReturnError)
-    				newComp.setReturnError((ReturnError)curr);
-    			else if(curr instanceof Reject)
-    				newComp.setReject((Reject)curr);
-    			else if(curr instanceof ReturnResult)
-    				newComp.setReturnResult((ReturnResult)curr);
-    			else if(curr instanceof ReturnResultLast)
-    				newComp.setReturnResultLast((ReturnResultLast)curr);
-    			
-    			compList.add(newComp);
-    		}
-    		
-    		this.component.setComponents(compList);
+    		this.component.setComponents(c);
     	}
     }
     

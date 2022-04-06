@@ -66,6 +66,7 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCNoticeIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCPAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
+import org.restcomm.protocols.ss7.tcap.asn.ASNComponentPortionObjectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.ASNDialogPortionObjectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.DialogAPDU;
@@ -87,8 +88,12 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Return;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultInnerImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCAbortMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCContinueMessage;
@@ -171,6 +176,12 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         messageParser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogRequestAPDUImpl.class);
         messageParser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogResponseAPDUImpl.class);
         messageParser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogAbortAPDUImpl.class);
+        
+        messageParser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeImpl.class);
+        messageParser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultImpl.class);
+        messageParser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultLastImpl.class);
+        messageParser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, RejectImpl.class);
+        messageParser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnErrorImpl.class);        
     }
 
     /*
@@ -670,7 +681,6 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
             if(output.getResult() instanceof TCUnifiedMessage) {
             	TCUnifiedMessage realMessage=(TCUnifiedMessage)output.getResult();
             	Boolean shouldProceed=!output.getHadErrors();
-            	
             	if(shouldProceed) {
             		if(shouldProceed) {
                 		try {
@@ -759,9 +769,8 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	                    uniDialog.setRemotePc(remotePc);
 	                    setSsnToDialog(uniDialog, message.getCalledPartyAddress().getSubsystemNumber());
 	                    uniDialog.processUni(tcuni, localAddress, remoteAddress, data);	
-	            	} else {	
-	            		unrecognizedPackageType(message, PAbortCauseType.UnrecognizedMessageType, realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());                    
-	            	}
+	            	} else	
+	            		unrecognizedPackageType(message, PAbortCauseType.UnrecognizedMessageType, realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());                    	            	
             	}
             	else {
             		if(realMessage instanceof TCBeginMessage) {
@@ -785,9 +794,8 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
             			unrecognizedPackageType(message,  PAbortCauseType.UnrecognizedMessageType, realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());
             	}
             }
-            else {
-            	unrecognizedPackageType(message, PAbortCauseType.UnrecognizedMessageType, null, localAddress, remoteAddress, message.getNetworkId());
-            }
+            else 
+            	unrecognizedPackageType(message, PAbortCauseType.UnrecognizedMessageType, null, localAddress, remoteAddress, message.getNetworkId());            
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(String.format("Error while decoding Rx SccpMessage=%s", message), e);
