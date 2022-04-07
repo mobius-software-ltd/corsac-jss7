@@ -40,7 +40,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
@@ -72,9 +71,7 @@ public class Client extends EventTestHarness {
         OperationCode oc = TcapFactory.createPrivateOperationCode(12);
         invoke.setOperationCode(oc);
         // no parameter
-        WrappedComponentImpl component=new WrappedComponentImpl();
-        component.setInvoke(invoke);
-        this.dialog.sendComponent(component);
+        this.dialog.sendComponent(invoke);
 
         // create a second INVOKE for which we will test linkedId
         Invoke invokeLast = cpFactory.createTCInvokeRequestLast(InvokeClass.Class1);
@@ -82,9 +79,7 @@ public class Client extends EventTestHarness {
         oc = TcapFactory.createPrivateOperationCode(13);
         invokeLast.setOperationCode(oc);
         // no parameter
-        component=new WrappedComponentImpl();
-        component.setInvokeLast(invokeLast);
-        this.dialog.sendComponent(component);
+        this.dialog.sendComponent(invokeLast);
 
         super.sendBegin();
     }
@@ -144,9 +139,7 @@ public class Client extends EventTestHarness {
             invoke.setInvokeId(invokeId);
             OperationCode opCode = TcapFactory.createPrivateOperationCode(0);            
             invoke.setOperationCode(opCode);
-            WrappedComponentImpl component=new WrappedComponentImpl();
-            component.setInvoke(invoke);
-            this.dialog.sendComponent(component);
+            this.dialog.sendComponent(invoke);
         }
 
         this.sendBegin();

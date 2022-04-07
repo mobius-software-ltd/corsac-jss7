@@ -22,15 +22,15 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCConversationMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ComponentPortionImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
@@ -97,7 +97,7 @@ public class TCConversationMessageImpl extends TCUnifiedMessageImpl implements T
         if (this.component != null && this.component.getComponents()!=null && this.component.getComponents().size() > 0) {
             sb.append("Components=[");
             int i1 = 0;
-            for (WrappedComponent comp : this.component.getComponents()) {
+            for (Component comp : this.component.getComponents()) {
                 if (i1 == 0)
                     i1 = 1;
                 else

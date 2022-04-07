@@ -44,7 +44,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseIndica
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -169,9 +168,7 @@ public class TCAPFunctionalTest extends SccpHarness {
         assertNotNull(server.dialog.getRemoteDialogId());
 
         EventTestHarness.waitFor(WAIT_TIME);
-        WrappedComponentImpl component=new WrappedComponentImpl();
-        component.setInvoke(client.createNewInvoke());
-        client.dialog.sendComponent(component);
+        client.dialog.sendComponent(client.createNewInvoke());
         client.sendEnd(false);
         assertNotNull(client.dialog.getLocalAddress());
         assertNotNull(client.dialog.getRemoteDialogId());
@@ -226,8 +223,8 @@ public class TCAPFunctionalTest extends SccpHarness {
         @Override
         public void onTCConversation(TCConversationIndication ind) {
             assertEquals(ind.getComponents().getComponents().size(), 2);
-            Return rrl = ind.getComponents().getComponents().get(0).getReturnResultLast();
-            Invoke inv = (InvokeImpl) ind.getComponents().getComponents().get(1).getExistingComponent();
+            Return rrl = (Return)ind.getComponents().getComponents().get(0);
+            Invoke inv = (InvokeImpl) ind.getComponents().getComponents().get(1);
 
             // operationCode is not sent via ReturnResultLast because it does not contain a Parameter
             // so operationCode is taken from a sent Invoke

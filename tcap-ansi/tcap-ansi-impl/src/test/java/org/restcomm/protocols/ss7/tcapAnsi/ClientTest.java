@@ -49,7 +49,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseReques
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 
 /**
  * Simple example demonstrates how to use TCAP Stack
@@ -90,9 +89,7 @@ public class ClientTest implements TCListener {
         invoke.setOperationCode(oc);
         // no parameter
         
-        WrappedComponentImpl component=new WrappedComponentImpl();
-        component.setInvoke(invoke);
-        this.clientDialog.sendComponent(component);
+        this.clientDialog.sendComponent(invoke);
         
         ApplicationContext acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(Arrays.asList(_ACN_));
         // UI is optional!

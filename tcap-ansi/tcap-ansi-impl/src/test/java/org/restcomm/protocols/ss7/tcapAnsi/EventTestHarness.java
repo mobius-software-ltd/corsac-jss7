@@ -64,7 +64,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortReque
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.OperationCodeImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
@@ -164,9 +163,7 @@ public abstract class EventTestHarness implements TCListener {
             ASNOctetString innerString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 3, 4, 5 }),null,null,null,false);
             inv.setSeqParameter(innerString);
             
-            WrappedComponentImpl component=new WrappedComponentImpl();
-            component.setInvoke(inv);
-            dialog.sendComponent(component);
+            dialog.sendComponent(inv);
         }
 
         dialog.send(con);
@@ -197,9 +194,7 @@ public abstract class EventTestHarness implements TCListener {
             ASNOctetString innerString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 3, 4, 5 }),null,null,null,false);
             inv.setSeqParameter(innerString);
             
-            WrappedComponentImpl component=new WrappedComponentImpl();
-            component.setInvoke(inv);
-            dialog.sendComponent(component);
+            dialog.sendComponent(inv);
         }
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.End, end, sequence++));
@@ -232,9 +227,7 @@ public abstract class EventTestHarness implements TCListener {
         OperationCode oc = TcapFactory.createNationalOperationCode(12);
         invoke.setOperationCode(oc);
         // no parameter
-        WrappedComponentImpl component=new WrappedComponentImpl();
-        component.setInvoke(invoke);
-        this.dialog.sendComponent(component);
+        this.dialog.sendComponent(invoke);
 
         System.err.println(this + " T[" + System.currentTimeMillis() + "]send UNI");
         ApplicationContext acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
@@ -287,7 +280,7 @@ public abstract class EventTestHarness implements TCListener {
         ComponentPortion compp = ind.getComponents();
         if (compp != null && compp.getComponents()!=null && compp.getComponents().size() > 0) {
             if (compp.getComponents().get(0).getType() == ComponentType.Reject) {
-                Reject rej = compp.getComponents().get(0).getReject();
+                Reject rej = (Reject)compp.getComponents().get(0);
                 this.rejectProblem = null;
                 try {
                 	this.rejectProblem=rej.getProblem();

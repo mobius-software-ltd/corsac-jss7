@@ -59,6 +59,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCListener;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersion;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
@@ -71,7 +72,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCQueryMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCResponseMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUniMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUnifiedMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.TRPseudoState;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.DraftParsedMessage;
@@ -92,6 +92,13 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.TCUniMessageImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TransactionID;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.Utils;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ASNComponentPortionObjectImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.RejectImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnErrorImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultNotLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.tc.component.ComponentPrimitiveFactoryImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.DialogPrimitiveFactoryImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.DraftParsedMessageImpl;
@@ -160,6 +167,13 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         messageParser.loadClass(TCResponseMessageImpl.class);
         messageParser.loadClass(TCAbortMessageImpl.class);
         messageParser.loadClass(TCUniMessageImpl.class);                
+
+        messageParser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeNotLastImpl.class);
+        messageParser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeLastImpl.class);
+        messageParser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultNotLastImpl.class);
+        messageParser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultLastImpl.class);
+        messageParser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, RejectImpl.class);
+        messageParser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnErrorImpl.class);        
     }
 
     /*
@@ -569,12 +583,10 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         TCResponseMessage msg = TcapFactory.createTCResponseMessage();
         msg.setDestinationTransactionId(remoteTransactionId);
         ComponentPortion cPortion=TcapFactory.createComponentPortion();
-        List<WrappedComponent> cc = new ArrayList<WrappedComponent>(1);
+        List<Component> cc = new ArrayList<Component>(1);
         Reject r = TcapFactory.createComponentReject();
         r.setProblem(rp);
-        WrappedComponent curr=TcapFactory.createWrappedComponent();
-        curr.setReject(r);
-        cc.add(curr);
+        cc.add(r);
         cPortion.setComponents(cc);
         msg.setComponent(cPortion);
 

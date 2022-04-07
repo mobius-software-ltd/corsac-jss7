@@ -31,12 +31,18 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Return;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCResponseMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ASNComponentPortionObjectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ComponentPortionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.RejectImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnErrorImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultNotLastImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -66,6 +72,14 @@ public class TcResponseTest {
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(TCResponseMessageImpl.class);
+        
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeNotLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultNotLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, RejectImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnErrorImpl.class);        
+
         // 1
     	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(this.data1));
         assertTrue(result.getResult() instanceof TCResponseMessageImpl);
@@ -74,9 +88,9 @@ public class TcResponseTest {
         assertTrue(ByteBufUtil.equals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(trId)));
         assertNull(tcm.getDialogPortion());
         assertEquals(tcm.getComponent().getComponents().size(), 1);
-        WrappedComponent cmp = tcm.getComponent().getComponents().get(0);
+        Component cmp = tcm.getComponent().getComponents().get(0);
         assertEquals(cmp.getType(), ComponentType.ReturnResultLast);
-        Return rrl = cmp.getReturnResultLast();
+        Return rrl = (Return)cmp;
         assertEquals((long) rrl.getCorrelationId(), 1);
         assertTrue(rrl.getParameter() instanceof ASNOctetString);
         UserInformationElementTest.byteBufEquals(((ASNOctetString)rrl.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
@@ -103,12 +117,18 @@ public class TcResponseTest {
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(TCResponseMessageImpl.class);
+        
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeNotLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultNotLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, RejectImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnErrorImpl.class);        
+
         // 1
-        List<WrappedComponent> cc = new ArrayList<WrappedComponent>(1);
+        List<Component> cc = new ArrayList<Component>(1);
         Return rrl = TcapFactory.createComponentReturnResultLast();
-        WrappedComponentImpl component=new WrappedComponentImpl();
-        component.setReturnResultLast(rrl);
-        cc.add(component);
+        cc.add(rrl);
         rrl.setCorrelationId(1L);
         ASNOctetString p=new ASNOctetString(Unpooled.wrappedBuffer(parData),null,null,null,false);
         rrl.setSetParameter(p);

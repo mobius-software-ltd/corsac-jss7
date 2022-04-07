@@ -43,6 +43,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
@@ -55,7 +56,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCConversationMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCQueryMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCResponseMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUniMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.OperationState;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
@@ -133,7 +133,7 @@ public class DialogImpl implements Dialog {
     private ScheduledExecutorService executor;
 
     // scheduled components list
-    private List<WrappedComponent> scheduledComponentList = new ArrayList<WrappedComponent>();
+    private List<Component> scheduledComponentList = new ArrayList<Component>();
     private TCAPProviderImpl provider;
 
     private int seqControl;
@@ -269,22 +269,16 @@ public class DialogImpl implements Dialog {
 
         // lookup through send buffer.
         for (index = 0; index < this.scheduledComponentList.size(); index++) {
-            WrappedComponent cr = this.scheduledComponentList.get(index);
-            Invoke invoke=null;
+        	Component cr = this.scheduledComponentList.get(index);
             Long correlationID=null;
             
-            if (cr.getType() == ComponentType.InvokeNotLast) {
-            	invoke=cr.getInvoke();
-            	correlationID=cr.getInvoke().getCorrelationId();
-            } else if(cr.getType() == ComponentType.InvokeLast) {
-            	invoke=cr.getInvokeLast();
-            	correlationID=cr.getInvokeLast().getCorrelationId();
-            }
+            if (cr.getType() == ComponentType.InvokeNotLast || cr.getType() == ComponentType.InvokeLast)
+            	correlationID=cr.getCorrelationId();
             
             if(correlationID!=null && correlationID.equals(invokeId)) {
                 this.scheduledComponentList.remove(index);
-                invoke.stopTimer();
-                invoke.setState(OperationState.Idle);
+                ((Invoke)cr).stopTimer();
+                ((Invoke)cr).setState(OperationState.Idle);
                 return true;
             }
         }
@@ -437,7 +431,7 @@ public class DialogImpl implements Dialog {
 
         // now comps
         if (this.scheduledComponentList.size() > 0) {
-            List<WrappedComponent> componentsToSend = new ArrayList<WrappedComponent>(this.scheduledComponentList.size());
+            List<Component> componentsToSend = new ArrayList<Component>(this.scheduledComponentList.size());
             this.prepareComponents(componentsToSend);
             ComponentPortion cPortion=TcapFactory.createComponentPortion();
             cPortion.setComponents(componentsToSend);
@@ -494,7 +488,7 @@ public class DialogImpl implements Dialog {
                 tcbm.setDialogPortion(dp);
             }
             if (this.scheduledComponentList.size() > 0) {
-            	List<WrappedComponent> componentsToSend = new ArrayList<WrappedComponent>(this.scheduledComponentList.size());
+            	List<Component> componentsToSend = new ArrayList<Component>(this.scheduledComponentList.size());
                 this.prepareComponents(componentsToSend);
                 ComponentPortion cPortion=TcapFactory.createComponentPortion();
                 cPortion.setComponents(componentsToSend);
@@ -524,7 +518,7 @@ public class DialogImpl implements Dialog {
             tcbm.setOriginatingTransactionId(Utils.encodeTransactionId(this.localTransactionId, this.isSwapTcapIdBytes));
             tcbm.setDestinationTransactionId(Utils.encodeTransactionId(this.remoteTransactionIdObject, this.isSwapTcapIdBytes));
             if (this.scheduledComponentList.size() > 0) {
-            	List<WrappedComponent> componentsToSend = new ArrayList<WrappedComponent>(this.scheduledComponentList.size());
+            	List<Component> componentsToSend = new ArrayList<Component>(this.scheduledComponentList.size());
                 this.prepareComponents(componentsToSend);
                 ComponentPortion cPortion=TcapFactory.createComponentPortion();
                 cPortion.setComponents(componentsToSend);
@@ -588,7 +582,7 @@ public class DialogImpl implements Dialog {
                 tcbm.setDialogPortion(dp);
             }
             if (this.scheduledComponentList.size() > 0) {
-            	List<WrappedComponent> componentsToSend = new ArrayList<WrappedComponent>(this.scheduledComponentList.size());
+            	List<Component> componentsToSend = new ArrayList<Component>(this.scheduledComponentList.size());
                 this.prepareComponents(componentsToSend);
                 ComponentPortion cPortion=TcapFactory.createComponentPortion();
                 cPortion.setComponents(componentsToSend);
@@ -601,7 +595,7 @@ public class DialogImpl implements Dialog {
 
             tcbm.setDestinationTransactionId(Utils.encodeTransactionId(this.remoteTransactionIdObject, this.isSwapTcapIdBytes));
             if (this.scheduledComponentList.size() > 0) {
-            	List<WrappedComponent> componentsToSend = new ArrayList<WrappedComponent>(this.scheduledComponentList.size());
+            	List<Component> componentsToSend = new ArrayList<Component>(this.scheduledComponentList.size());
                 this.prepareComponents(componentsToSend);
                 ComponentPortion cPortion=TcapFactory.createComponentPortion();
                 cPortion.setComponents(componentsToSend);
@@ -658,7 +652,7 @@ public class DialogImpl implements Dialog {
         }
 
         if (this.scheduledComponentList.size() > 0) {
-        	List<WrappedComponent> componentsToSend = new ArrayList<WrappedComponent>(this.scheduledComponentList.size());
+        	List<Component> componentsToSend = new ArrayList<Component>(this.scheduledComponentList.size());
             this.prepareComponents(componentsToSend);
             ComponentPortion cPortion=TcapFactory.createComponentPortion();
             cPortion.setComponents(componentsToSend);
@@ -740,32 +734,26 @@ public class DialogImpl implements Dialog {
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#sendComponent(org
      * .restcomm.protocols.ss7.tcap.api.tc.component.ComponentRequest)
      */
-    public void sendComponent(WrappedComponent componentRequest) throws TCAPSendException {
-    	Invoke invoke=componentRequest.getInvokeLast();
-    	if (componentRequest.getType() == ComponentType.InvokeNotLast) 
-    		invoke=componentRequest.getInvoke();
-    	
-        if (invoke!=null) {
+    public void sendComponent(Component componentRequest) throws TCAPSendException {
+        if (componentRequest.getType() == ComponentType.InvokeLast || componentRequest.getType() == ComponentType.InvokeNotLast) {
             // check if its taken!
-            int invokeIndex = getIndexFromInvokeId(invoke.getInvokeId());
+            int invokeIndex = getIndexFromInvokeId(((Invoke)componentRequest).getInvokeId());
             if (this.operationsSent[invokeIndex] != null) {
                 throw new TCAPSendException("There is already operation with such invoke id!");
             }
 
-            invoke.setState(OperationState.Pending);
-            invoke.setDialog(this);
+            ((Invoke)componentRequest).setState(OperationState.Pending);
+            ((Invoke)componentRequest).setDialog(this);
 
             // if the Invoke timeout value has not be reset by TCAP-User
-            // for this invocation we are setting it to the the TCAP stack
+            // for this invocation we are setting it to t((Invoke)componentRequest)he the TCAP stack
             // default value
-            if (invoke.getTimeout() == TCAPStackImpl._EMPTY_INVOKE_TIMEOUT)
-                invoke.setTimeout(this.provider.getStack().getInvokeTimeout());
-        } else {
-            if (componentRequest.getType() != ComponentType.ReturnResultNotLast && componentRequest.getType() != ComponentType.ReturnResultLast) {
-                // we are sending a response and removing invokeId from
-                // incomingInvokeList
-                this.removeIncomingInvokeId(componentRequest.getExistingComponent().getCorrelationId());
-            }
+            if (((Invoke)componentRequest).getTimeout() == TCAPStackImpl._EMPTY_INVOKE_TIMEOUT)
+            	((Invoke)componentRequest).setTimeout(this.provider.getStack().getInvokeTimeout());
+        } else if (componentRequest.getType() != ComponentType.ReturnResultNotLast && componentRequest.getType() != ComponentType.ReturnResultLast) {
+        	// we are sending a response and removing invokeId from
+        	// incomingInvokeList
+        	this.removeIncomingInvokeId(componentRequest.getCorrelationId());            
         }
         this.scheduledComponentList.add(componentRequest);
     }
@@ -774,18 +762,13 @@ public class DialogImpl implements Dialog {
         this.removeIncomingInvokeId(invokeId);
     }
 
-    private void prepareComponents(List<WrappedComponent> res) {
+    private void prepareComponents(List<Component> res) {
 
         int index = 0;
         while (this.scheduledComponentList.size() > index) {
-        	WrappedComponent cr = this.scheduledComponentList.get(index);
-            if (cr.getType() == ComponentType.InvokeNotLast) {
-                Invoke in = cr.getInvoke();
-                // FIXME: check not null?
-                this.operationsSent[getIndexFromInvokeId(in.getInvokeId())] = in;
-                in.setState(OperationState.Sent);
-            } else if (cr.getType() == ComponentType.InvokeLast) {
-                Invoke in = cr.getInvokeLast();
+        	Component cr = this.scheduledComponentList.get(index);
+            if (cr.getType() == ComponentType.InvokeNotLast || cr.getType() == ComponentType.InvokeLast) {
+                Invoke in = (Invoke)cr;
                 // FIXME: check not null?
                 this.operationsSent[getIndexFromInvokeId(in.getInvokeId())] = in;
                 in.setState(OperationState.Sent);
@@ -820,7 +803,7 @@ public class DialogImpl implements Dialog {
 
         // now comps
         if (this.scheduledComponentList.size() > 0) {
-            List<WrappedComponent> componentsToSend = new ArrayList<WrappedComponent>(this.scheduledComponentList.size());
+            List<Component> componentsToSend = new ArrayList<Component>(this.scheduledComponentList.size());
             componentsToSend.addAll(this.scheduledComponentList);
             ComponentPortion cPortion=TcapFactory.createComponentPortion();
             cPortion.setComponents(componentsToSend);
@@ -857,7 +840,7 @@ public class DialogImpl implements Dialog {
         }
 
         if (this.scheduledComponentList.size() > 0) {
-        	List<WrappedComponent> componentsToSend = new ArrayList<WrappedComponent>(this.scheduledComponentList.size());
+        	List<Component> componentsToSend = new ArrayList<Component>(this.scheduledComponentList.size());
             componentsToSend.addAll(this.scheduledComponentList);
             ComponentPortion cPortion=TcapFactory.createComponentPortion();
             cPortion.setComponents(componentsToSend);
@@ -883,7 +866,7 @@ public class DialogImpl implements Dialog {
         tcbm.setDestinationTransactionId(Utils.encodeTransactionId(this.remoteTransactionIdObject, this.isSwapTcapIdBytes));
 
         if (this.scheduledComponentList.size() > 0) {
-        	List<WrappedComponent> componentsToSend = new ArrayList<WrappedComponent>(this.scheduledComponentList.size());
+        	List<Component> componentsToSend = new ArrayList<Component>(this.scheduledComponentList.size());
             componentsToSend.addAll(this.scheduledComponentList);
             ComponentPortion cPortion=TcapFactory.createComponentPortion();
             cPortion.setComponents(componentsToSend);
@@ -934,7 +917,7 @@ public class DialogImpl implements Dialog {
         }
 
         if (this.scheduledComponentList.size() > 0) {
-        	List<WrappedComponent> componentsToSend = new ArrayList<WrappedComponent>(this.scheduledComponentList.size());
+        	List<Component> componentsToSend = new ArrayList<Component>(this.scheduledComponentList.size());
             componentsToSend.addAll(this.scheduledComponentList);
             ComponentPortion cPortion=TcapFactory.createComponentPortion();
             cPortion.setComponents(componentsToSend);
@@ -1121,7 +1104,10 @@ public class DialogImpl implements Dialog {
 
             // now comps
             ComponentPortion cPortion=TcapFactory.createComponentPortion();
-            cPortion.setComponents(processOperationsState(msg.getComponent().getComponents()));
+            
+            if(msg.getComponent()!=null)
+            	cPortion.setComponents(processOperationsState(msg.getComponent().getComponents()));
+            
             tcContinueIndication.setComponents(cPortion);
 
             // lets deliver to provider
@@ -1256,15 +1242,15 @@ public class DialogImpl implements Dialog {
         return invoke;
     }
     
-    protected List<WrappedComponent> processOperationsState(List<WrappedComponent> components) {
+    protected List<Component> processOperationsState(List<Component> components) {
         if (components == null) {
             return null;
         }
 
-        List<WrappedComponent> resultingIndications = new ArrayList<WrappedComponent>();
-        for (WrappedComponent ci : components) {
+        List<Component> resultingIndications = new ArrayList<Component>();
+        for (Component ci : components) {
             Long invokeId;
-            invokeId = ci.getExistingComponent().getCorrelationId();
+            invokeId = ci.getCorrelationId();
             Invoke invoke = null;
             int index = 0;
             if (invokeId != null) {
@@ -1275,56 +1261,38 @@ public class DialogImpl implements Dialog {
             switch (ci.getType()) {
 
                 case InvokeNotLast:
-                	if (invokeId != null && invoke == null) {
-                        logger.error(String.format("Rx : %s but no sent Invoke for correlationId exists", ci));
-                        this.addReject(resultingIndications,  ci.getInvoke().getInvokeId(),
-                                RejectProblem.invokeUnrecognisedCorrelationId);
-                    } else {
-                        if (invoke != null) {
-                        	ci.getInvoke().setCorrelationInvoke(invoke);
-                        }
-
-                        if (!this.addIncomingInvokeId(ci.getInvoke().getInvokeId())) {
-                            logger.error(String.format("Rx : %s but there is already Invoke with this invokeId", ci));
-                            this.addReject(resultingIndications, ci.getInvoke().getInvokeId(),
-                                    RejectProblem.invokeDuplicateInvocation);
-                        } else {
-                            resultingIndications.add(ci);
-                        }
-                    }
-                	break;
                 case InvokeLast:
                     if (invokeId != null && invoke == null) {
                         logger.error(String.format("Rx : %s but no sent Invoke for correlationId exists", ci));
-                        this.addReject(resultingIndications, ci.getInvokeLast().getInvokeId(),
+                        this.addReject(resultingIndications,  ((Invoke)ci).getInvokeId(),
                                 RejectProblem.invokeUnrecognisedCorrelationId);
                     } else {
                         if (invoke != null) {
-                        	ci.getInvokeLast().setCorrelationInvoke(invoke);
+                        	((Invoke)ci).setCorrelationInvoke(invoke);
                         }
 
-                        if (!this.addIncomingInvokeId(ci.getInvokeLast().getInvokeId())) {
+                        if (!this.addIncomingInvokeId(((Invoke)ci).getInvokeId())) {
                             logger.error(String.format("Rx : %s but there is already Invoke with this invokeId", ci));
-                            this.addReject(resultingIndications, ci.getInvokeLast().getInvokeId(),
+                            this.addReject(resultingIndications, ((Invoke)ci).getInvokeId(),
                                     RejectProblem.invokeDuplicateInvocation);
                         } else {
                             resultingIndications.add(ci);
                         }
                     }
-                    break;
+                	break;                    
                 case ReturnResultNotLast:
 
                     if (invoke == null) {
                         logger.error(String.format("Rx : %s but there is no corresponding Invoke", ci));
-                        this.addReject(resultingIndications, ci.getReturnResult().getCorrelationId(),
+                        this.addReject(resultingIndications, ci.getCorrelationId(),
                                 RejectProblem.returnResultUnrecognisedCorrelationId);
                     } else if (invoke.getInvokeClass() != InvokeClass.Class1 && invoke.getInvokeClass() != InvokeClass.Class3) {
                         logger.error(String.format("Rx : %s but Invoke class is not 1 or 3", ci));
-                        this.addReject(resultingIndications, ci.getReturnResult().getCorrelationId(),
+                        this.addReject(resultingIndications, ci.getCorrelationId(),
                                 RejectProblem.returnResultUnexpectedReturnResult);
                     } else {
                         resultingIndications.add(ci);
-                        Return rri = ci.getReturnResult();
+                        Return rri = (Return)ci;
                         if (rri.getOperationCode() == null)
                             rri.setOperationCode(invoke.getOperationCode());
                     }
@@ -1334,18 +1302,18 @@ public class DialogImpl implements Dialog {
 
                     if (invoke == null) {
                         logger.error(String.format("Rx : %s but there is no corresponding Invoke", ci));
-                        this.addReject(resultingIndications, ci.getReturnResultLast().getCorrelationId(),
+                        this.addReject(resultingIndications, ci.getCorrelationId(),
                                 RejectProblem.returnResultUnrecognisedCorrelationId);
                     } else if (invoke.getInvokeClass() != InvokeClass.Class1 && invoke.getInvokeClass() != InvokeClass.Class3) {
                         logger.error(String.format("Rx : %s but Invoke class is not 1 or 3", ci));
-                        this.addReject(resultingIndications, ci.getReturnResultLast().getCorrelationId(),
+                        this.addReject(resultingIndications, ci.getCorrelationId(),
                                 RejectProblem.returnResultUnexpectedReturnResult);
                     } else {
                         invoke.onReturnResultLast();
                         if (invoke.isSuccessReported()) {
                             resultingIndications.add(ci);
                         }
-                        Return rri = ci.getReturnResultLast();
+                        Return rri = ((Return)ci);
                         if (rri.getOperationCode() == null)
                             rri.setOperationCode(invoke.getOperationCode());
                     }
@@ -1354,11 +1322,11 @@ public class DialogImpl implements Dialog {
                 case ReturnError:
                     if (invoke == null) {
                         logger.error(String.format("Rx : %s but there is no corresponding Invoke", ci));
-                        this.addReject(resultingIndications, ci.getReturnError().getCorrelationId(),
+                        this.addReject(resultingIndications, ci.getCorrelationId(),
                                 RejectProblem.returnErrorUnrecognisedCorrelationId);
                     } else if (invoke.getInvokeClass() != InvokeClass.Class1 && invoke.getInvokeClass() != InvokeClass.Class2) {
                         logger.error(String.format("Rx : %s but Invoke class is not 1 or 2", ci));
-                        this.addReject(resultingIndications, ci.getReturnError().getCorrelationId(), RejectProblem.returnErrorUnexpectedError);
+                        this.addReject(resultingIndications, ci.getCorrelationId(), RejectProblem.returnErrorUnexpectedError);
                     } else {
                         invoke.onError();
                         if (invoke.isErrorReported()) {
@@ -1368,7 +1336,7 @@ public class DialogImpl implements Dialog {
                     break;
 
                 case Reject:
-                    Reject rej = ci.getReject();
+                    Reject rej = (Reject)ci;
                     if (invoke != null) {
                         // If the Reject Problem is the InvokeProblemType we
                         // should move the invoke to the idle state
@@ -1408,7 +1376,7 @@ public class DialogImpl implements Dialog {
         return resultingIndications;
     }
 
-    private void addReject(List<WrappedComponent> resultingIndications, Long invokeId, RejectProblem p) {
+    private void addReject(List<Component> resultingIndications, Long invokeId, RejectProblem p) {
         try {
         	Reject rej = TcapFactory.createComponentReject();
             rej.setLocalOriginated(true);
@@ -1416,12 +1384,10 @@ public class DialogImpl implements Dialog {
             	rej.setCorrelationId(invokeId);
             rej.setProblem(p);
 
-            WrappedComponent component=TcapFactory.createWrappedComponent();
-            component.setReject(rej);
-            resultingIndications.add(component);
+            resultingIndications.add(rej);
 
             if (this.isStructured())
-                this.sendComponent(component);
+                this.sendComponent(rej);
         } catch (TCAPSendException e) {
             logger.error(String.format("Error sending Reject component", e));
         }

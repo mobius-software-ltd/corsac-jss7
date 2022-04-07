@@ -34,16 +34,24 @@ import java.util.List;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersion;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ErrorCode;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Reject;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Return;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnError;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCQueryMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ASNComponentPortionObjectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ComponentPortionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.RejectImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnErrorImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultNotLastImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -75,6 +83,10 @@ public class TcQueryTest {
     // DialogPortion[ACN], no components
     private byte[] data3 = new byte[] { -29, 11, -57, 4, 3, 3, 4, 4, -7, 3, -37, 1, 66 };
 
+    // 1 good component, 1 bad component
+    private byte[] data4 = new byte[] { -29, 34, -57, 4, 3, 3, 4, 4, (byte) 232, 26, (byte) 234, 13, (byte) 207, 2, 1, 0, (byte) 242, 30, 1, 2, 3,
+            4, 5, 6, 7, (byte) 235, 9, (byte) 207, 1, 1, -44, 2, 0, (byte) 200, (byte) 242, 0 };
+
     private byte[] trId = new byte[] { 0, 0, 0, 0 };
     private byte[] trId2 = new byte[] { 3, 3, 4, 4 };
 
@@ -91,6 +103,13 @@ public class TcQueryTest {
     	parser.loadClass(TCQueryMessageImpl.class);
     	parser.loadClass(TCQueryMessageImplWithPerm.class);
     	
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeNotLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultNotLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, RejectImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnErrorImpl.class);        
+
         // 1
     	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(this.data1));
     	assertTrue(result.getResult() instanceof TCQueryMessageImplWithPerm);
@@ -100,9 +119,9 @@ public class TcQueryTest {
         assertTrue(ByteBufUtil.equals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(trId)));
         assertNull(tcm.getDialogPortion());
         assertEquals(tcm.getComponent().getComponents().size(), 1);
-        WrappedComponent cmp = tcm.getComponent().getComponents().get(0);
+        Component cmp = tcm.getComponent().getComponents().get(0);
         assertEquals(cmp.getType(), ComponentType.InvokeLast);
-        Invoke inv = cmp.getInvokeLast();
+        Invoke inv = (Invoke)cmp;
         assertFalse(inv.isNotLast());
         assertEquals((long) inv.getInvokeId(), 0);
         assertNull(inv.getCorrelationId());
@@ -130,14 +149,14 @@ public class TcQueryTest {
         assertEquals(tcm.getComponent().getComponents().size(), 2);
         cmp = tcm.getComponent().getComponents().get(0);
         assertEquals(cmp.getType(), ComponentType.ReturnResultLast);
-        Return rrl = cmp.getReturnResultLast();
+        Return rrl = (Return)cmp;
         assertEquals((long)rrl.getCorrelationId(), 1);
         ASNOctetString p = (ASNOctetString)rrl.getParameter();
         UserInformationElementTest.byteBufEquals(p.getValue(), Unpooled.wrappedBuffer(parData2));
 
         cmp = tcm.getComponent().getComponents().get(1);
         assertEquals(cmp.getType(), ComponentType.ReturnError);
-        ReturnError re = cmp.getReturnError();
+        ReturnError re = (ReturnError)cmp;
         assertEquals((long) re.getCorrelationId(), 1);
         ErrorCode ec = re.getErrorCode();
         assertEquals(ec.getPrivateErrorCode(), new Integer(200));
@@ -158,7 +177,30 @@ public class TcQueryTest {
         assertNull(dp.getSecurityContext());
         assertNull(dp.getUserInformation());
 
-        assertNull(tcm.getComponent());           
+        assertNull(tcm.getComponent());       
+        
+        // 4
+        result=parser.decode(Unpooled.wrappedBuffer(this.data4));
+    	assertTrue(result.getResult() instanceof TCQueryMessageImpl);
+        tcm = (TCQueryMessage)result.getResult();
+
+        assertFalse(tcm.getDialogTermitationPermission());
+        assertTrue(ByteBufUtil.equals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(trId2)));
+        assertNull(tcm.getDialogPortion());
+
+        assertEquals(tcm.getComponent().getComponents().size(), 2);
+        cmp = tcm.getComponent().getComponents().get(0);
+        assertEquals(cmp.getType(), ComponentType.Reject);
+        Reject rej = (Reject) cmp;
+        assertTrue(rej.isLocalOriginated());
+        assertEquals(rej.getProblem(), RejectProblem.generalBadlyStructuredCompPortion);
+
+        cmp = tcm.getComponent().getComponents().get(1);
+        assertEquals(cmp.getType(), ComponentType.ReturnError);
+        re = (ReturnError) cmp;
+        assertEquals((long) re.getCorrelationId(), 1);
+        ec = re.getErrorCode();
+        assertEquals((long) ec.getPrivateErrorCode(), 200);        
     }
 
     @Test(groups = { "functional.encode" })
@@ -167,12 +209,17 @@ public class TcQueryTest {
     	parser.loadClass(TCQueryMessageImpl.class);
     	parser.loadClass(TCQueryMessageImplWithPerm.class);
     	
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeNotLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultNotLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, RejectImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnErrorImpl.class);        
+
         // 1
-        List<WrappedComponent> cc = new ArrayList<WrappedComponent>(1);
+        List<Component> cc = new ArrayList<Component>(1);
         Invoke inv = TcapFactory.createComponentInvokeNotLast();
-        WrappedComponentImpl component=new WrappedComponentImpl();
-        component.setInvoke(inv);
-        cc.add(component);
+        cc.add(inv);
         inv.setInvokeId(0L);
         OperationCode oc = TcapFactory.createPrivateOperationCode(2357);        
         inv.setOperationCode(oc);
@@ -190,18 +237,14 @@ public class TcQueryTest {
         UserInformationElementTest.byteBufEquals(encodedData, expectedData);
 
         // 2
-        cc = new ArrayList<WrappedComponent>(2);
+        cc = new ArrayList<Component>(2);
         Return rr = TcapFactory.createComponentReturnResultLast();
-        component=new WrappedComponentImpl();
-        component.setReturnResultLast(rr);
-        cc.add(component);
+        cc.add(rr);
         rr.setCorrelationId(1L);
         p=new ASNOctetString(Unpooled.wrappedBuffer(parData2),null,null,null,false);
         rr.setSetParameter(p);
         ReturnError re = TcapFactory.createComponentReturnError();
-        component=new WrappedComponentImpl();
-        component.setReturnError(re);
-        cc.add(component);
+        cc.add(re);
         re.setCorrelationId(1L);
         ErrorCode ec = TcapFactory.createPrivateErrorCode(200);
         re.setErrorCode(ec);

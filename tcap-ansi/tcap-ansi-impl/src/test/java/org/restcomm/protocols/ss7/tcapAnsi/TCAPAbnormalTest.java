@@ -41,7 +41,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationElementImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -198,9 +197,11 @@ public class TCAPAbnormalTest extends SccpHarness {
         clientExpectedEvents.add(te);
         te = TestEvent.createReceivedEvent(EventType.Continue, null, 1, stamp + WAIT_TIME);
         clientExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.End, null, 2, stamp + WAIT_TIME * 2);
+        te = TestEvent.createSentEvent(EventType.Continue, null, 2, stamp + WAIT_TIME);
         clientExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME * 2);
+        te = TestEvent.createReceivedEvent(EventType.End, null, 3, stamp + WAIT_TIME * 2);
+        clientExpectedEvents.add(te);
+        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 4, stamp + WAIT_TIME * 2);
         clientExpectedEvents.add(te);
 
         List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
@@ -208,9 +209,11 @@ public class TCAPAbnormalTest extends SccpHarness {
         serverExpectedEvents.add(te);
         te = TestEvent.createSentEvent(EventType.Continue, null, 1, stamp);
         serverExpectedEvents.add(te);
-        te = TestEvent.createSentEvent(EventType.End, null, 2, stamp + WAIT_TIME * 2);
+        te = TestEvent.createReceivedEvent(EventType.Continue, null, 2, stamp + WAIT_TIME * 2);
         serverExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME * 2);
+        te = TestEvent.createSentEvent(EventType.End, null, 3, stamp + WAIT_TIME * 2);
+        serverExpectedEvents.add(te);
+        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 4, stamp + WAIT_TIME * 2);
         serverExpectedEvents.add(te);
 
         client.startClientDialog();
@@ -223,8 +226,9 @@ public class TCAPAbnormalTest extends SccpHarness {
         assertNull(client.rejectProblem);
 
         SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address, peer1Address,
-        		Unpooled.wrappedBuffer(getMessageBadSyntax2()), 0, 0, false, null, null);
+                Unpooled.wrappedBuffer(getMessageBadSyntax2()), 0, 0, false, null, null);
         this.sccpProvider1.send(message);
+        client.sendContinue(onlyOneStack);
         Thread.sleep(WAIT_TIME);
 //        client.waitFor(WAIT_TIME);
 
@@ -234,6 +238,8 @@ public class TCAPAbnormalTest extends SccpHarness {
 
         client.compareEvents(clientExpectedEvents);
         server.compareEvents(serverExpectedEvents);
+
+        assertEquals(client.rejectProblem, RejectProblem.generalUnrecognisedComponentType);
     }
 
     @Test(groups = { "functional.flow" })
@@ -512,9 +518,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         DialogImpl tcapDialog = client.getCurDialog();
         Invoke invoke = client.createNewInvoke();
         invoke.setTimeout(INVOKE_WAIT_TIME);
-        WrappedComponentImpl component=new WrappedComponentImpl();
-        component.setInvoke(invoke);
-        tcapDialog.sendComponent(component);
+        tcapDialog.sendComponent(invoke);
 
         client.sendBeginUnreachableAddress(false);
         Thread.sleep(WAIT_TIME);
@@ -547,9 +551,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         DialogImpl tcapDialog = client.getCurDialog();
         Invoke invoke = client.createNewInvoke();
         invoke.setTimeout(_DIALOG_TIMEOUT * 2);
-        WrappedComponentImpl component=new WrappedComponentImpl();
-        component.setInvoke(invoke);
-        tcapDialog.sendComponent(component);
+        tcapDialog.sendComponent(invoke);
 
         client.sendBeginUnreachableAddress(false);
         Thread.sleep(WAIT_TIME);

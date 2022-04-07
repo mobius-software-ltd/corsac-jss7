@@ -32,13 +32,19 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCConversationMessage;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ASNComponentPortionObjectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ComponentPortionImpl;
-import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeNotLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.RejectImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnErrorImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultLastImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultNotLastImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -67,6 +73,13 @@ public class TcConversationTest {
     	parser.loadClass(TCConversationMessageImpl.class);
     	parser.loadClass(TCConversationMessageImplWithPerm.class);
     	
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeNotLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultNotLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, RejectImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnErrorImpl.class);        
+
         // 1
     	ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(this.data1));
     	assertTrue(result.getResult() instanceof TCConversationMessageImplWithPerm);
@@ -78,9 +91,9 @@ public class TcConversationTest {
         assertTrue(ByteBufUtil.equals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(trIdD)));
         assertNull(tcm.getDialogPortion());
         assertEquals(tcm.getComponent().getComponents().size(), 1);
-        WrappedComponent cmp = tcm.getComponent().getComponents().get(0);
+        Component cmp = tcm.getComponent().getComponents().get(0);
         assertEquals(cmp.getType(), ComponentType.InvokeLast);
-        Invoke inv = cmp.getInvokeLast();
+        Invoke inv = (Invoke)cmp;
         assertFalse(inv.isNotLast());
         assertEquals((long) inv.getInvokeId(), 0);
         assertNull(inv.getCorrelationId());
@@ -116,13 +129,18 @@ public class TcConversationTest {
     	parser.loadClass(TCConversationMessageImpl.class);
     	parser.loadClass(TCConversationMessageImplWithPerm.class);
     	
-    	// 1
-        List<WrappedComponent> cc = new ArrayList<WrappedComponent>(1);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeNotLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultNotLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultLastImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, RejectImpl.class);
+    	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnErrorImpl.class);        
+
+        // 1
+        List<Component> cc = new ArrayList<Component>(1);
         Invoke inv = TcapFactory.createComponentInvokeLast();
         
-        WrappedComponentImpl component=new WrappedComponentImpl();
-        component.setInvokeLast(inv);
-        cc.add(component);
+        cc.add(inv);
         inv.setInvokeId(0L);
         OperationCode oc = TcapFactory.createPrivateOperationCode(2357);
         inv.setOperationCode(oc);

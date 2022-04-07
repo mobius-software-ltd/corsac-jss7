@@ -33,7 +33,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=0x08,constructed=true,lengthIndefinite=false)
 public interface ComponentPortion {
 	
-	public List<WrappedComponent> getComponents();
+	public List<Component> getComponents();
 
-	public void setComponents(List<WrappedComponent> components);
+	public void setComponents(List<Component> components);
 }

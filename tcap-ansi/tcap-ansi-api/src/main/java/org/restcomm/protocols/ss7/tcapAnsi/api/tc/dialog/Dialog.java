@@ -31,8 +31,8 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.TCListener;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.WrappedComponent;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseRequest;
@@ -172,7 +172,7 @@ public interface Dialog extends Serializable {
      * @param componentRequest
      * @throws TCAPSendException
      */
-    void sendComponent(WrappedComponent componentRequest) throws TCAPSendException;
+    void sendComponent(Component componentRequest) throws TCAPSendException;
 
     /**
      * If a TCAP user will not answer to an incoming Invoke with Response, Error or Reject components it should invoke this
