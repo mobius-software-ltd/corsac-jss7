@@ -89,6 +89,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.TCQueryMessageImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TCQueryMessageImplWithPerm;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TCResponseMessageImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TCUniMessageImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.TCUnknownMessageImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TransactionID;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.Utils;
@@ -147,7 +148,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
     private int ssn;
     private AtomicLong curDialogId = new AtomicLong(0);
 
-    private ASNParser messageParser=new ASNParser(true);
+    private ASNParser messageParser=new ASNParser(TCUnknownMessageImpl.class,true,false);
     
     protected TCAPProviderImpl(SccpProvider sccpProvider, TCAPStackImpl stack, int ssn,ScheduledExecutorService service) {
         super();
@@ -579,7 +580,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
     	RejectProblem rp = RejectProblem.getFromPAbortCause(pAbortCause);
         if (rp == null)
             rp = RejectProblem.transactionBadlyStructuredTransPortion;
-
+        
         TCResponseMessage msg = TcapFactory.createTCResponseMessage();
         msg.setDestinationTransactionId(remoteTransactionId);
         ComponentPortion cPortion=TcapFactory.createComponentPortion();
@@ -627,8 +628,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
     }
     
     public void onMessage(SccpDataMessage message) {
-
-        try {
+    	try {
         	ByteBuf data = message.getData();
             SccpAddress localAddress = message.getCalledPartyAddress();
             SccpAddress remoteAddress = message.getCallingPartyAddress();
@@ -642,7 +642,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
                 this.sendProviderAbort(PAbortCause.UnrecognizedPackageType, null, remoteAddress, localAddress,message.getSls(), message.getNetworkId());                
                 return;
             }
-
+           
             if(output.getResult() instanceof TCUnifiedMessage) {
             	TCUnifiedMessage realMessage=(TCUnifiedMessage)output.getResult();
             	Boolean shouldProceed=!output.getHadErrors();
@@ -650,14 +650,27 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
             		try {
             			ASNParsingComponentException exception=messageParser.validateObject(realMessage); 
             			if(exception!=null)
-            				shouldProceed=false;
+            				shouldProceed=false;            			
             		}
             		catch(ASNException ex) {
             			shouldProceed=false;
             		}
             	}
             	
-				if(shouldProceed) {
+            	if(shouldProceed) {
+            		if(!realMessage.isTransactionExists()) {
+            			this.sendRejectAsProviderAbort(PAbortCause.IncorrectTransactionPortion,
+            					realMessage.getOriginatingTransactionId(), remoteAddress, localAddress, message.getSls(),
+                                message.getNetworkId());
+            			return;
+            		}
+            		else if(!realMessage.validateTransaction()) {
+            			this.sendRejectAsProviderAbort(PAbortCause.BadlyStructuredTransactionPortion,
+            					realMessage.getOriginatingTransactionId(), remoteAddress, localAddress, message.getSls(),
+                                message.getNetworkId());
+            			return;
+            		}
+            		
             		if(realMessage instanceof TCConversationMessage) {
             			TCConversationMessage tcm=(TCConversationMessage)realMessage;
             			long dialogId = Utils.decodeTransactionId(tcm.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
@@ -734,15 +747,25 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
                         setSsnToDialog(uniDialog, message.getCalledPartyAddress().getSubsystemNumber());
                         uniDialog.processUni(tcuni, localAddress, remoteAddress);                        
             		}
-            		else {
-            			unrecognizedPackageType(message,  realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());
-            		}   		
-            	}            	
-            	else {
-            		if(output.getHadErrors())
-            			this.sendRejectAsProviderAbort(PAbortCause.UnrecognizedDialoguePortionID ,realMessage.getOriginatingTransactionId(), remoteAddress, localAddress,message.getSls(), message.getNetworkId());
             		else
-            			this.sendRejectAsProviderAbort(PAbortCause.UnrecognizedPackageType ,realMessage.getOriginatingTransactionId(), remoteAddress, localAddress,message.getSls(), message.getNetworkId());
+            			unrecognizedPackageType(message,  realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());            		   	
+            	}           	
+            	else {
+            		
+            		if(realMessage instanceof TCUnknownMessageImpl)
+            			unrecognizedPackageType(message,  realMessage.getOriginatingTransactionId(), localAddress, remoteAddress, message.getNetworkId());
+            		else if(output.getFirstError()!=null && output.getFirstError().getParent()!=null &&  output.getFirstError().getParent().getClass().getPackage().equals(TCUniMessageImpl.class.getPackage())) {
+            			if (realMessage.isDialogPortionExists() && (realMessage instanceof TCConversationMessage || realMessage instanceof TCQueryMessage))
+            				this.sendProviderAbort(PAbortCause.BadlyStructuredDialoguePortion ,realMessage.getOriginatingTransactionId(), remoteAddress, localAddress,message.getSls(), message.getNetworkId());
+            			else
+            				this.sendRejectAsProviderAbort(PAbortCause.UnrecognizedDialoguePortionID ,realMessage.getOriginatingTransactionId(), remoteAddress, localAddress,message.getSls(), message.getNetworkId());
+            		}
+            		else {
+            			if (realMessage.isDialogPortionExists() && (realMessage instanceof TCConversationMessage || realMessage instanceof TCQueryMessage))
+            				this.sendProviderAbort(PAbortCause.UnrecognizedDialoguePortionID ,realMessage.getOriginatingTransactionId(), remoteAddress, localAddress,message.getSls(), message.getNetworkId());
+            			else
+            				this.sendRejectAsProviderAbort(PAbortCause.UnrecognizedDialoguePortionID ,realMessage.getOriginatingTransactionId(), remoteAddress, localAddress,message.getSls(), message.getNetworkId());
+            		}
             	}
             }
             else {

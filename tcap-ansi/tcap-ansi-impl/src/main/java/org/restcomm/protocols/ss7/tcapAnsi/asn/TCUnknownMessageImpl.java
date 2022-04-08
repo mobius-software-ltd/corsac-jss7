@@ -24,23 +24,18 @@ package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Component;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortion;
-import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCResponseMessage;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUniMessage;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ComponentPortionImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
-import io.netty.buffer.ByteBuf;
-
 /**
- * @author baranowb
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
-@ASNTag(asnClass=ASNClass.PRIVATE,tag=4,constructed=true,lengthIndefinite=false)
-public class TCResponseMessageImpl extends TCUnifiedMessageImpl implements TCResponseMessage {
+public class TCUnknownMessageImpl extends TCUnifiedMessageImpl implements TCUniMessage {
 	
 	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=0x08,constructed=true,index=-1,defaultImplementation = ComponentPortionImpl.class)
 	private ComponentPortion component;
@@ -49,32 +44,40 @@ public class TCResponseMessageImpl extends TCUnifiedMessageImpl implements TCRes
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage#getComponent()
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage#getComponent()
      */
     public ComponentPortion getComponent() {
 
-        return this.component;
+        return component;
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage#setComponent
-     * (org.restcomm.protocols.ss7.tcap.asn.comp.Component[])
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage#setComponent(org
+     * .restcomm.protocols.ss7.tcap.asn.comp.Component[])
      */
     public void setComponent(ComponentPortion c) {
         this.component = c;
+
     }
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("TCResponseMessage [");
+        sb.append("TCUnkownMessage [");
 
-        if (this.getDestinationTransactionId() != null) {
-            sb.append("destinationTransactionId=[");
-            sb.append(ASNOctetString.printDataArr(this.getDestinationTransactionId()));
-            sb.append("], ");
+        if(this.getOriginatingTransactionId()!=null) {
+            sb.append("originating TX=");
+            sb.append(ASNOctetString.printDataArr(this.getOriginatingTransactionId()));
+            sb.append(", ");
         }
+        
+        if(this.getDestinationTransactionId()!=null) {
+            sb.append("destination TX=");
+            sb.append(ASNOctetString.printDataArr(this.getDestinationTransactionId()));
+            sb.append(", ");
+        }
+        
         if (this.getDialogPortion() != null) {
             sb.append("DialogPortion=");
             sb.append(this.getDialogPortion());
@@ -95,35 +98,8 @@ public class TCResponseMessageImpl extends TCUnifiedMessageImpl implements TCRes
         sb.append("]");
         return sb.toString();
     }
-    
-    @Override
-    public ByteBuf getOriginatingTransactionId() {
-        return super.getDestinationTransactionId();
-    }
-
-    @Override
-    public ByteBuf getDestinationTransactionId() {
-        return super.getOriginatingTransactionId();
-    }
-
-    @Override
-	public void setOriginatingTransactionId(ByteBuf txID) {
-		super.setDestinationTransactionId(txID);
-	}
-
-	@Override
-	public void setDestinationTransactionId(ByteBuf txID) {
-		super.setOriginatingTransactionId(txID);
-	}
-	
-    public boolean validateTransaction() { 
-		if(getOriginatingTransactionId()!=null || getDestinationTransactionId()==null)
-			return false;
-		
-		return true;
-	}
 
     public boolean isDialogPortionExists() {
-        return this.getDialogPortion()!=null || this.getComponent()!=null;
+    	return true;
     }
 }

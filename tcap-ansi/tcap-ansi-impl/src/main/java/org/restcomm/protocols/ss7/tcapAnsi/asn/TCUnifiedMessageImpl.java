@@ -46,8 +46,8 @@ public abstract class TCUnifiedMessageImpl implements TCUnifiedMessage {
     public TCUnifiedMessageImpl() {
     }
 
-    public boolean isDialogPortionExists() {
-        return this.dp!=null;
+    public boolean isTransactionExists() {
+        return this.transactionId!=null;
     }
 
     public ByteBuf getOriginatingTransactionId() {
@@ -85,5 +85,9 @@ public abstract class TCUnifiedMessageImpl implements TCUnifiedMessage {
      */
     public void setDialogPortion(DialogPortion dp) {
         this.dp = dp;
+    }
+    
+    public boolean validateTransaction() {
+    	return true;
     }
 }

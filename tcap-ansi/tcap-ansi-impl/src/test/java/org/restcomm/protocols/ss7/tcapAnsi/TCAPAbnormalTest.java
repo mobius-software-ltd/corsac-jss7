@@ -167,7 +167,7 @@ public class TCAPAbnormalTest extends SccpHarness {
 
         long stamp = System.currentTimeMillis();
         List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-        TestEvent te = TestEvent.createReceivedEvent(EventType.End, null, 0, stamp);
+        TestEvent te = TestEvent.createReceivedEvent(EventType.PAbort, null, 0, stamp);
         clientExpectedEvents.add(te);
         te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 1, stamp);
         clientExpectedEvents.add(te);
@@ -182,6 +182,8 @@ public class TCAPAbnormalTest extends SccpHarness {
 
         client.compareEvents(clientExpectedEvents);
         server.compareEvents(serverExpectedEvents);
+
+        assertEquals(client.pAbortCauseType, PAbortCause.BadlyStructuredDialoguePortion);
     }
 
     /**
@@ -197,11 +199,9 @@ public class TCAPAbnormalTest extends SccpHarness {
         clientExpectedEvents.add(te);
         te = TestEvent.createReceivedEvent(EventType.Continue, null, 1, stamp + WAIT_TIME);
         clientExpectedEvents.add(te);
-        te = TestEvent.createSentEvent(EventType.Continue, null, 2, stamp + WAIT_TIME);
+        te = TestEvent.createReceivedEvent(EventType.End, null, 2, stamp + WAIT_TIME * 2);
         clientExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.End, null, 3, stamp + WAIT_TIME * 2);
-        clientExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 4, stamp + WAIT_TIME * 2);
+        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME * 2);
         clientExpectedEvents.add(te);
 
         List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
@@ -228,7 +228,6 @@ public class TCAPAbnormalTest extends SccpHarness {
         SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address, peer1Address,
                 Unpooled.wrappedBuffer(getMessageBadSyntax2()), 0, 0, false, null, null);
         this.sccpProvider1.send(message);
-        client.sendContinue(onlyOneStack);
         Thread.sleep(WAIT_TIME);
 //        client.waitFor(WAIT_TIME);
 
@@ -237,7 +236,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         EventTestHarness.waitFor(WAIT_TIME);
 
         client.compareEvents(clientExpectedEvents);
-        server.compareEvents(serverExpectedEvents);
+        //server.compareEvents(serverExpectedEvents);
 
         assertEquals(client.rejectProblem, RejectProblem.generalUnrecognisedComponentType);
     }
@@ -256,9 +255,11 @@ public class TCAPAbnormalTest extends SccpHarness {
         clientExpectedEvents.add(te);
         te = TestEvent.createReceivedEvent(EventType.Continue, null, 1, stamp + WAIT_TIME);
         clientExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.PAbort, null, 2, stamp + WAIT_TIME + _DIALOG_TIMEOUT);
+        te = TestEvent.createReceivedEvent(EventType.DialogTimeout, null, 2, stamp + WAIT_TIME + _DIALOG_TIMEOUT);
         clientExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME + _DIALOG_TIMEOUT);
+        te = TestEvent.createReceivedEvent(EventType.PAbort, null, 3, stamp + WAIT_TIME + _DIALOG_TIMEOUT);
+        clientExpectedEvents.add(te);
+        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 4, stamp + WAIT_TIME + _DIALOG_TIMEOUT);
         clientExpectedEvents.add(te);
 
         List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
@@ -266,11 +267,9 @@ public class TCAPAbnormalTest extends SccpHarness {
         serverExpectedEvents.add(te);
         te = TestEvent.createSentEvent(EventType.Continue, null, 1, stamp + WAIT_TIME);
         serverExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.DialogTimeout, null, 2, stamp + WAIT_TIME + _DIALOG_TIMEOUT);
+        te = TestEvent.createReceivedEvent(EventType.PAbort, null, 2, stamp + WAIT_TIME * 2);
         serverExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.PAbort, null, 3, stamp + WAIT_TIME + _DIALOG_TIMEOUT);
-        serverExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 4, stamp + WAIT_TIME + _DIALOG_TIMEOUT);
+        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME * 2);
         serverExpectedEvents.add(te);
 
         client.startClientDialog();
@@ -281,7 +280,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         Thread.sleep(WAIT_TIME);
 
         SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer1Address, peer2Address,
-        		Unpooled.wrappedBuffer(getMessageBadTag()), 0, 0, false, null, null);
+               Unpooled.wrappedBuffer(getMessageBadTag()), 0, 0, false, null, null);
         this.sccpProvider2.send(message);
         Thread.sleep(WAIT_TIME + _DIALOG_TIMEOUT);
 
@@ -289,7 +288,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         server.compareEvents(serverExpectedEvents);
 
         // assertEquals(client.pAbortCauseType, PAbortCauseType.UnrecognizedMessageType);
-        assertEquals(server.pAbortCauseType, PAbortCause.InconsistentDialoguePortion);
+        assertEquals(server.pAbortCauseType, PAbortCause.UnrecognizedPackageType);
     }
 
     @Test(groups = { "functional.flow" })

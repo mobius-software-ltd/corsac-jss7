@@ -32,8 +32,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
 
 /**
- * @author baranowb
- * @author sergey vetyutnev
+ * @author yulian.oifa
  *
  */
 public class TCUnknownMessageImpl extends TCUnifiedMessageImpl implements TCContinueMessage {

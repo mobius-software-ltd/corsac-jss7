@@ -31,6 +31,10 @@ import io.netty.buffer.ByteBuf;
  *
  */
 public interface TCUnifiedMessage {
+	public boolean isTransactionExists();
+	
+	public boolean validateTransaction();
+	
 	public ByteBuf getOriginatingTransactionId();
 
     public ByteBuf getDestinationTransactionId();

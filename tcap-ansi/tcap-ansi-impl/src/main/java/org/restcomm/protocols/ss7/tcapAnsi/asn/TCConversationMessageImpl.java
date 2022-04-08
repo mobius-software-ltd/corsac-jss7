@@ -30,9 +30,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ComponentPortionImpl;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNValidate;
-import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentException;
-import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponentExceptionReason;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 /**
@@ -110,9 +107,14 @@ public class TCConversationMessageImpl extends TCUnifiedMessageImpl implements T
         return sb.toString();
     }
 	
-    @ASNValidate
-	public void validateElement() throws ASNParsingComponentException { 
+    public boolean validateTransaction() { 
 		if(getOriginatingTransactionId()==null || getDestinationTransactionId()==null)
-			throw new ASNParsingComponentException("originating and destination transaction IDs should not be null",ASNParsingComponentExceptionReason.MistypedParameter);
+			return false;
+		
+		return true;
 	}
+
+    public boolean isDialogPortionExists() {
+        return this.getDialogPortion()!=null || this.getComponent()!=null;
+    }
 }
