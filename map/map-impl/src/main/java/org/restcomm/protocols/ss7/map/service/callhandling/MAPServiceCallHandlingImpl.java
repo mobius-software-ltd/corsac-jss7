@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.service.callhandling;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.map.MAPDialogImpl;
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
@@ -60,7 +61,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
  * @author eva ogallar
  */
 public class MAPServiceCallHandlingImpl extends MAPServiceBaseImpl implements MAPServiceCallHandling {
-    private static final Logger loger = Logger.getLogger(MAPServiceCallHandlingImpl.class);
+    private static final Logger loger = LogManager.getLogger(MAPServiceCallHandlingImpl.class);
 
     // Include these constants in MAPApplicationContextName and MAPOperationCode
     // sendRoutingInfo_Request: add constant to MAPMessageType

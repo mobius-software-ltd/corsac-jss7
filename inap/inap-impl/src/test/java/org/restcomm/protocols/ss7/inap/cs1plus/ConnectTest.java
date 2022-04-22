@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.DestinationRoutingAddressImpl;
@@ -29,7 +31,7 @@ import io.netty.buffer.Unpooled;
 
 public class ConnectTest 
 {
-	protected final transient Logger logger=Logger.getLogger(ConnectTest.class);
+	protected final transient Logger logger=LogManager.getLogger(ConnectTest.class);
 
 	private byte[] message1=new byte[] { 0x30,0x0c,(byte)0xa0,0x0a,0x04,0x08,(byte)0x84,(byte)0x90,
 			(byte)0x81,0x67,0x48,0x00,0x14,0x09 };
@@ -39,7 +41,7 @@ public class ConnectTest
 	@BeforeClass
 	public static void initTests()
 	{
-		BasicConfigurator.configure();
+		Configurator.initialize(new DefaultConfiguration());
 	}
 	
 	@Test(groups = { "functional.decode", "circuitSwitchedCall" })

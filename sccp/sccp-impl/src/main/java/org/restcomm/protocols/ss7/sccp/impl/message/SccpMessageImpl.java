@@ -24,7 +24,7 @@ package org.restcomm.protocols.ss7.sccp.impl.message;
 
 import io.netty.buffer.ByteBuf;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;

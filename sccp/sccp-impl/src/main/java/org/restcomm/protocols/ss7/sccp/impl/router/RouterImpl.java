@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.router;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.LoadSharingAlgorithm;
 import org.restcomm.protocols.ss7.sccp.LongMessageRule;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
@@ -164,7 +165,7 @@ import java.util.Map;
  * @author kulikov
  */
 public class RouterImpl implements Router {
-    private static final Logger logger = Logger.getLogger(RouterImpl.class);
+    private static final Logger logger = LogManager.getLogger(RouterImpl.class);
 
     // rule list
     private RuleMap rulesMap = new RuleMap();

@@ -29,7 +29,8 @@ import static org.testng.Assert.assertTrue;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
 import org.restcomm.protocols.ss7.indicator.NumberingPlan;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
@@ -67,7 +68,7 @@ public class SccpNoticeMessageTest {
     public void setUp() {
         this.stack.start();
         this.messageFactory = new MessageFactoryImpl(stack);
-        this.logger = Logger.getLogger(SccpStackImpl.class.getCanonicalName());
+        this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName());
     }
 
     @AfterMethod

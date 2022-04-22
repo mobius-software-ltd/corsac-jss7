@@ -22,14 +22,15 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateLudtFieldsLengthWithoutData;
+import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateUdtFieldsLengthWithoutData;
+import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateXudtFieldsLengthWithoutData;
+import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateXudtFieldsLengthWithoutData2;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
@@ -46,10 +47,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.sccp.parameter.Segmentation;
 
-import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateLudtFieldsLengthWithoutData;
-import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateUdtFieldsLengthWithoutData;
-import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateXudtFieldsLengthWithoutData;
-import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateXudtFieldsLengthWithoutData2;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author Oleg Kulikov
@@ -342,7 +341,7 @@ public abstract class SccpDataNoticeTemplateMessageImpl extends SccpSegmentableM
         if (useShortMessage) {
             // use UDT / UDTS
             if (data.readableBytes() > availLen) { // message is too long to encode UDT
-                if (logger.isEnabledFor(Level.WARN)) {
+                if (logger.isWarnEnabled()) {
                     logger.warn(String.format(
                             "Failure when sending a UDT message: message is too long. SccpMessageSegment=%s", this));
                 }
@@ -451,7 +450,7 @@ public abstract class SccpDataNoticeTemplateMessageImpl extends SccpSegmentableM
             } else {
                 // several segments
                 if (data.readableBytes() > availLenXSegm * 16) {
-                    if (logger.isEnabledFor(Level.WARN)) {
+                    if (logger.isWarnEnabled()) {
                         logger.warn(String.format(
                                 "Failure when segmenting a message XUDT: message is too long. SccpMessageSegment=%s", this));
                     }
@@ -470,7 +469,7 @@ public abstract class SccpDataNoticeTemplateMessageImpl extends SccpSegmentableM
                     if (this.segmentation == null) {
                         // MTP3 originated message - we may make segmentation
                         // only if incoming message has a "Segmentation" field
-                        if (logger.isEnabledFor(Level.WARN)) {
+                        if (logger.isWarnEnabled()) {
                             logger.warn(String
                                     .format("Failure when segmenting a message: message is not locally originated but \"segmentation\" field is absent. SccpMessageSegment=%s",
                                             this));
@@ -566,7 +565,7 @@ public abstract class SccpDataNoticeTemplateMessageImpl extends SccpSegmentableM
                     this.segmentation != null, this.importance != null);
             availLen = maxMtp3UserDataLength - fieldsLenL;
             if (data.readableBytes() > availLen) { // message is too long to encode LUDT
-                if (logger.isEnabledFor(Level.WARN)) {
+                if (logger.isWarnEnabled()) {
                     logger.warn(String.format(
                             "Failure when sending a LUDT message: message is too long. SccpMessageSegment=%s", this));
                 }

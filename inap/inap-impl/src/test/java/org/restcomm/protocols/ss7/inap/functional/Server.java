@@ -26,7 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.BCSMEvent;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
@@ -50,7 +51,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 */
 public class Server extends EventTestHarness {
 
-    private static Logger logger = Logger.getLogger(Server.class);
+    private static Logger logger = LogManager.getLogger(Server.class);
 
     protected INAPStack inapStack;
     protected INAPProvider inapProvider;

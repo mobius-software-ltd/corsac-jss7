@@ -29,7 +29,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.cap.api.CAPApplicationContext;
 import org.restcomm.protocols.ss7.cap.api.CAPDialog;
 import org.restcomm.protocols.ss7.cap.api.CAPDialogListener;
@@ -209,7 +210,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
     public CAPProviderImpl(String name, TCAPProvider tcapProvider) {
         this.tcapProvider = tcapProvider;
 
-        this.loger = Logger.getLogger(CAPStackImpl.class.getCanonicalName() + "-" + name);
+        this.loger = LogManager.getLogger(CAPStackImpl.class.getCanonicalName() + "-" + name);
 
         this.capServices.add(this.capServiceCircuitSwitchedCall);
         this.capServices.add(this.capServiceGprs);

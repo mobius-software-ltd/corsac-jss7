@@ -22,11 +22,12 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.Number;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:18:44:10 2009-03-27<br>
@@ -54,7 +55,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.Number;
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public abstract class AbstractNumber extends AbstractISUPParameter implements Number {
-	protected Logger logger = Logger.getLogger(this.getClass());
+	protected Logger logger = LogManager.getLogger(this.getClass());
     /**
      * Holds odd flag, it can have either value: 10000000(x80) or 00000000. For each it takes value 1 and 0;
      */

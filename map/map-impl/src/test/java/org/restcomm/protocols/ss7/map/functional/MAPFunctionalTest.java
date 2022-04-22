@@ -33,7 +33,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
@@ -302,7 +303,7 @@ import io.netty.buffer.Unpooled;
  */
 public class MAPFunctionalTest extends SccpHarness {
 
-    private static Logger logger = Logger.getLogger(MAPFunctionalTest.class);
+    private static Logger logger = LogManager.getLogger(MAPFunctionalTest.class);
     protected static final String USSD_STRING = "*133#";
     protected static final String USSD_MENU = "Select 1)Wallpaper 2)Ringtone 3)Games";
     protected static final String USSD_RESPONSE = "1";

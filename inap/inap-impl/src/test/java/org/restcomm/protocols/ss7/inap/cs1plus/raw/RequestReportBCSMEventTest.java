@@ -3,8 +3,10 @@ package org.restcomm.protocols.ss7.inap.cs1plus.raw;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.restcomm.protocols.ss7.inap.cs1plus.ApplyChargingReportTest;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.RequestReportBCSMEventRequestImpl;
 import org.testng.annotations.BeforeClass;
@@ -16,7 +18,7 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import io.netty.buffer.Unpooled;
 
 public class RequestReportBCSMEventTest {
-	protected final transient Logger logger=Logger.getLogger(ApplyChargingReportTest.class);
+	protected final transient Logger logger=LogManager.getLogger(ApplyChargingReportTest.class);
 
 	private byte[] message1=new byte[] { 0x30,0x17,(byte)0xa0,0x15,0x30,0x06,(byte)0x80,0x01,0x0a,
 			(byte)0x81,0x01,0x00,0x30,0x0b,(byte)0x80,0x01,0x09,(byte)0x81,0x01,0x00,(byte)0xa2,
@@ -33,7 +35,7 @@ public class RequestReportBCSMEventTest {
 	@BeforeClass
 	public static void initTests()
 	{
-		BasicConfigurator.configure();
+		Configurator.initialize(new DefaultConfiguration());
 	}
 	
 	@Test(groups = { "functional.decode", "circuitSwitchedCall" })

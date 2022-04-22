@@ -25,7 +25,8 @@ import io.netty.channel.ChannelHandlerContext;
 import java.net.InetSocketAddress;
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author <a href="mailto:amit.bhayani@telestax.com">Amit Bhayani</a>
@@ -33,7 +34,7 @@ import org.apache.log4j.Logger;
  */
 public class NettySctpServerHandler extends NettySctpChannelInboundHandlerAdapter {
 
-    Logger logger = Logger.getLogger(NettySctpServerHandler.class);
+    Logger logger = LogManager.getLogger(NettySctpServerHandler.class);
 
     private final ServerImpl serverImpl;
     private final SctpManagementImpl managementImpl;

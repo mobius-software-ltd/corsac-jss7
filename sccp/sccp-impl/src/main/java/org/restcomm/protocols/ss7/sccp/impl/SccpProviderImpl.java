@@ -27,8 +27,8 @@ import java.io.Serializable;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.MaxConnectionCountReached;
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
@@ -56,7 +56,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 public class SccpProviderImpl implements SccpProvider, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = Logger.getLogger(SccpProviderImpl.class);
+	private static final Logger logger = LogManager.getLogger(SccpProviderImpl.class);
 
     private transient SccpStackImpl stack;
     protected ConcurrentHashMap<Integer, SccpListener> ssnToListener = new ConcurrentHashMap<Integer, SccpListener>();
@@ -82,7 +82,7 @@ public class SccpProviderImpl implements SccpProvider, Serializable {
     public void registerSccpListener(int ssn, SccpListener listener) {
     	SccpListener existingListener = ssnToListener.get(ssn);
         if (existingListener != null) {
-            if (logger.isEnabledFor(Level.WARN)) {
+            if (logger.isWarnEnabled()) {
                 logger.warn(String.format("Registering SccpListener=%s for already existing SccpListnere=%s for SSN=%d",
                         listener, existingListener, ssn));
             }
@@ -95,7 +95,7 @@ public class SccpProviderImpl implements SccpProvider, Serializable {
     public void deregisterSccpListener(int ssn) {
     	SccpListener existingListener = ssnToListener.remove(ssn);
         if (existingListener == null) {
-            if (logger.isEnabledFor(Level.WARN)) {
+            if (logger.isWarnEnabled()) {
                 logger.warn(String.format("No existing SccpListnere=%s for SSN=%d", existingListener, ssn));
             }
         }

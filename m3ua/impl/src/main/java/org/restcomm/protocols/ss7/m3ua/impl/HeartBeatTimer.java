@@ -21,7 +21,8 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.impl.message.aspsm.HeartbeatImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.scheduler.M3UATask;
 import org.restcomm.protocols.ss7.m3ua.message.aspsm.Heartbeat;
@@ -32,7 +33,7 @@ import org.restcomm.protocols.ss7.m3ua.message.aspsm.Heartbeat;
  */
 public class HeartBeatTimer extends M3UATask {
 
-    private static final Logger logger = Logger.getLogger(HeartBeatTimer.class);
+    private static final Logger logger = LogManager.getLogger(HeartBeatTimer.class);
 
     private static final int HEART_BEAT_ACK_MISSED_ALLOWED = 2;
 

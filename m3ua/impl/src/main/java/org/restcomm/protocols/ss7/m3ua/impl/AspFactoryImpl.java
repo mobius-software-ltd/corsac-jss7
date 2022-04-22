@@ -22,19 +22,14 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.CompositeByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.util.ReferenceCountUtil;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.Asp;
 import org.restcomm.protocols.ss7.m3ua.AspFactory;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
@@ -77,6 +72,12 @@ import org.restcomm.protocols.ss7.sctp.proxy.Management;
 
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.CompositeByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.util.ReferenceCountUtil;
+
 /**
  *
  * @author amit bhayani
@@ -84,7 +85,7 @@ import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
  */
 public class AspFactoryImpl implements AssociationListener, AspFactory {
 
-    private static final Logger logger = Logger.getLogger(AspFactoryImpl.class);
+    private static final Logger logger = LogManager.getLogger(AspFactoryImpl.class);
 
     private static AtomicLong ASP_ID_COUNT = new AtomicLong(1L);
 

@@ -21,8 +21,8 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
 import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSM;
 import org.restcomm.protocols.ss7.m3ua.message.ssnm.DestinationAvailable;
@@ -33,10 +33,10 @@ import org.restcomm.protocols.ss7.m3ua.message.ssnm.DestinationUnavailable;
 import org.restcomm.protocols.ss7.m3ua.message.ssnm.SignallingCongestion;
 import org.restcomm.protocols.ss7.m3ua.parameter.AffectedPointCode;
 import org.restcomm.protocols.ss7.m3ua.parameter.CongestedIndication;
+import org.restcomm.protocols.ss7.m3ua.parameter.CongestedIndication.CongestionLevel;
 import org.restcomm.protocols.ss7.m3ua.parameter.ErrorCode;
 import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
 import org.restcomm.protocols.ss7.m3ua.parameter.UserCause;
-import org.restcomm.protocols.ss7.m3ua.parameter.CongestedIndication.CongestionLevel;
 import org.restcomm.protocols.ss7.mtp.Mtp3PausePrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3ResumePrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3StatusCause;
@@ -49,7 +49,7 @@ import org.restcomm.protocols.ss7.mtp.Mtp3StatusPrimitive;
  */
 public class SignalingNetworkManagementHandler extends MessageHandler {
 
-    private static final Logger logger = Logger.getLogger(SignalingNetworkManagementHandler.class);
+    private static final Logger logger = LogManager.getLogger(SignalingNetworkManagementHandler.class);
 
     public SignalingNetworkManagementHandler(AspFactoryImpl aspFactoryImpl) {
         super(aspFactoryImpl);
@@ -473,7 +473,7 @@ public class SignalingNetworkManagementHandler extends MessageHandler {
     public void handleDestinationRestricted(DestinationRestricted drst) {
 
         if (aspFactoryImpl.getFunctionality() == Functionality.AS) {
-            if (logger.isEnabledFor(Level.WARN)) {
+            if (logger.isWarnEnabled()) {
                 logger.warn(String.format("Received DRST message for AS side. Not implemented yet", drst));
             }
         } else {

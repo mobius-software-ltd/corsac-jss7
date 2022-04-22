@@ -29,7 +29,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
@@ -291,7 +292,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
      */
 
     public MAPProviderImpl(String name, TCAPProvider tcapProvider,MAPStackConfigurationManagement configuration) {
-        this.loger = Logger.getLogger(MAPStackImpl.class.getCanonicalName() + "-" + name);
+        this.loger = LogManager.getLogger(MAPStackImpl.class.getCanonicalName() + "-" + name);
 
         this.tcapProvider = tcapProvider;
         this.mapCfg=configuration;

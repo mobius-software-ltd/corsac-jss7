@@ -30,7 +30,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.As;
 import org.restcomm.protocols.ss7.m3ua.Asp;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
@@ -54,7 +55,7 @@ import org.restcomm.protocols.ss7.m3ua.parameter.TrafficModeType;
  */
 public class AsImpl implements As {
 
-    private static final Logger logger = Logger.getLogger(AsImpl.class);
+    private static final Logger logger = LogManager.getLogger(AsImpl.class);
 
     public static final String ATTRIBUTE_ASP = "asp";
 

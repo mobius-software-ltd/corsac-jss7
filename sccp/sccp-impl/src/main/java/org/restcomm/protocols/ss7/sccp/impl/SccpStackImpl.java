@@ -22,15 +22,26 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.util.ReferenceCountUtil;
-import io.netty.util.concurrent.DefaultThreadFactory;
+import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateLudtFieldsLengthWithoutData;
+import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateUdtFieldsLengthWithoutData;
+import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateXudtFieldsLengthWithoutData;
+import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateXudtFieldsLengthWithoutData2;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
-import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
 import org.restcomm.protocols.ss7.mtp.Mtp3EndCongestionPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3PausePrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3ResumePrimitive;
@@ -38,6 +49,7 @@ import org.restcomm.protocols.ss7.mtp.Mtp3StatusCause;
 import org.restcomm.protocols.ss7.mtp.Mtp3StatusPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPart;
+import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
 import org.restcomm.protocols.ss7.sccp.LongMessageRule;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
@@ -70,22 +82,10 @@ import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateLudtFieldsLengthWithoutData;
-import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateUdtFieldsLengthWithoutData;
-import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateXudtFieldsLengthWithoutData;
-import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateXudtFieldsLengthWithoutData2;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.util.ReferenceCountUtil;
+import io.netty.util.concurrent.DefaultThreadFactory;
 
 /**
  *
@@ -210,7 +210,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
      */
     public SccpStackImpl(String name) {    
         this.name = name;
-        this.logger = Logger.getLogger(SccpStackImpl.class.getCanonicalName() + "-" + this.name);
+        this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName() + "-" + this.name);
 
         this.messageFactory = new MessageFactoryImpl(this);
         this.sccpProvider = new SccpProviderImpl(this);
@@ -982,13 +982,13 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 
                 RemoteSignalingPointCode remoteSpc = this.getSccpResource().getRemoteSpcByPC(dpc);
                 if (remoteSpc == null) {
-                    if (logger.isEnabledFor(Level.WARN)) {
+                    if (logger.isWarnEnabled()) {
                         logger.warn(String.format("Incoming Mtp3 Message for nonlocal dpc=%d. But RemoteSpc is not found", dpc));
                     }
                     return;
                 }
                 if (remoteSpc.isRemoteSpcProhibited()) {
-                    if (logger.isEnabledFor(Level.WARN)) {
+                    if (logger.isWarnEnabled()) {
                         logger.warn(String
                                 .format("Incoming Mtp3 Message for nonlocal dpc=%d. But RemoteSpc is Prohibited", dpc));
                     }
@@ -996,7 +996,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
                     return;
                 }
                 if (remoteSpc.getCurrentRestrictionLevel() > 1) {
-                    if (logger.isEnabledFor(Level.WARN)) {
+                    if (logger.isWarnEnabled()) {
                         logger.warn(String
                                 .format("Incoming Mtp3 Message for nonlocal dpc=%d. But RemoteSpc is Congested", dpc));
                     }
@@ -1005,7 +1005,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
                 }
                 Mtp3ServiceAccessPoint sap2 = this.router.findMtp3ServiceAccessPoint(dpc, sls);
                 if (sap2 == null) {
-                    if (logger.isEnabledFor(Level.WARN)) {
+                    if (logger.isWarnEnabled()) {
                         logger.warn(String.format("Incoming Mtp3 Message for nonlocal dpc=%d / sls=%d. But SAP is not found",
                                 dpc, sls));
                     }
@@ -1013,7 +1013,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
                 }
                 Mtp3UserPart mup = this.getMtp3UserPart(sap2.getMtp3Id());
                 if (mup == null) {
-                    if (logger.isEnabledFor(Level.WARN)) {
+                    if (logger.isWarnEnabled()) {
                         logger.warn(String.format(
                                 "Incoming Mtp3 Message for nonlocal dpc=%d / sls=%d. no matching Mtp3UserPart found", dpc, sls));
                     }
@@ -1055,7 +1055,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
             Mtp3ServiceAccessPoint sap = this.router.findMtp3ServiceAccessPointForIncMes(dpc, opc, localGtDigits);
             int networkId = 0;
             if (sap == null) {
-                if (logger.isEnabledFor(Level.WARN)) {
+                if (logger.isWarnEnabled()) {
                     logger.warn(String.format("Incoming Mtp3 Message for local address for localPC=%d, remotePC=%d, sls=%d. But SAP is not found for localPC", dpc, opc, mtp3Msg.getSls()));
                 }
             } else {
@@ -1102,7 +1102,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
                             if (sgmMsgFst == null) {
                                 // previous segments cache is not found -
                                 // discard a segment                            	
-                                if (logger.isEnabledFor(Level.WARN)) {
+                                if (logger.isWarnEnabled()) {
                                     logger.warn(String
                                             .format("Reassembly function failure: received a non first segment without the first segement having recieved. SccpMessageSegment=%s",
                                                     msg));
@@ -1118,7 +1118,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
                                  if (mspMain != null)
                                      mspMain.stopTimer();
                                  
-                                if (logger.isEnabledFor(Level.WARN)) {
+                                if (logger.isWarnEnabled()) {
                                     logger.warn(String
                                             .format("Reassembly function failure: when receiving a next segment message order is missing. SccpMessageSegment=%s",
                                                     msg));

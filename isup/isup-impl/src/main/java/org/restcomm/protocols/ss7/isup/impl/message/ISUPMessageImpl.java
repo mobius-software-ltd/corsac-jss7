@@ -52,7 +52,7 @@ public abstract class ISUPMessageImpl extends AbstractISUPMessage {
      */
     protected static final EndOfOptionalParametersImpl _END_OF_OPTIONAL_PARAMETERS = new EndOfOptionalParametersImpl();
 
-    // protected static final Logger logger = Logger.getLogger(ISUPMessageImpl.class);
+    // protected static final Logger logger = LogManager.getLogger(ISUPMessageImpl.class);
 
     // TODO: change everything below into [], for such small size of arrays, its faster to even search through them.
     /**

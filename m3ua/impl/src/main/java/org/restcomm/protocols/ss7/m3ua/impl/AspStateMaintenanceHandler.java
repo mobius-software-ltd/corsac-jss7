@@ -24,7 +24,8 @@ package org.restcomm.protocols.ss7.m3ua.impl;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.Asp;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
@@ -50,7 +51,7 @@ import org.restcomm.protocols.ss7.m3ua.parameter.TrafficModeType;
  */
 public class AspStateMaintenanceHandler extends MessageHandler {
 
-    private static final Logger logger = Logger.getLogger(AspStateMaintenanceHandler.class);
+    private static final Logger logger = LogManager.getLogger(AspStateMaintenanceHandler.class);
 
     public AspStateMaintenanceHandler(AspFactoryImpl aspFactoryImpl) {
         super(aspFactoryImpl);

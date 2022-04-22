@@ -28,7 +28,8 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.SupportedCamelPhases;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.SupportedCamelPhasesImpl;
@@ -52,7 +53,7 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class CamelInfoTest {
-    Logger logger = Logger.getLogger(ExtendedRoutingInfoTest.class);
+    Logger logger = LogManager.getLogger(ExtendedRoutingInfoTest.class);
 
     @BeforeClass
     public static void setUpClass() throws Exception {

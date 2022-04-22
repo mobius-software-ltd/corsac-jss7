@@ -25,7 +25,8 @@ import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.State;
 import org.restcomm.protocols.ss7.mtp.Mtp3PausePrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3Primitive;
@@ -37,7 +38,7 @@ import org.restcomm.protocols.ss7.mtp.Mtp3ResumePrimitive;
  *
  */
 public class RouteRow implements AsStateListener {
-    private static final Logger logger = Logger.getLogger(RouteRow.class);
+    private static final Logger logger = LogManager.getLogger(RouteRow.class);
 
     private int mtp3Status = Mtp3PausePrimitive.PAUSE;
     private ConcurrentHashMap<String,AsImpl> servedByAsSet = null;

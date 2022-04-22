@@ -32,7 +32,8 @@ import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.isup.CircuitManager;
 import org.restcomm.protocols.ss7.isup.ISUPMessageFactory;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
@@ -59,7 +60,7 @@ import io.netty.buffer.ByteBuf;
  */
 public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
 
-    private Logger logger = Logger.getLogger(ISUPStackImpl.class);
+    private Logger logger = LogManager.getLogger(ISUPStackImpl.class);
 
     private State state = State.IDLE;
 

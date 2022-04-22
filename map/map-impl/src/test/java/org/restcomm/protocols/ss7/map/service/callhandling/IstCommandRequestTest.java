@@ -28,7 +28,8 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
@@ -50,7 +51,7 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class IstCommandRequestTest {
-    Logger logger = Logger.getLogger(IstCommandRequestTest.class);
+    Logger logger = LogManager.getLogger(IstCommandRequestTest.class);
 
     @BeforeClass
     public static void setUpClass() throws Exception {

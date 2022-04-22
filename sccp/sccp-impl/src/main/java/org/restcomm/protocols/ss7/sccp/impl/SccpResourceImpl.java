@@ -26,7 +26,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.ConcernedSignalingPointCode;
 import org.restcomm.protocols.ss7.sccp.RemoteSignalingPointCode;
 import org.restcomm.protocols.ss7.sccp.RemoteSubSystem;
@@ -36,7 +37,7 @@ import org.restcomm.protocols.ss7.sccp.SccpResource;
  * @author amit bhayani
  */
 public class SccpResourceImpl implements SccpResource {
-    private static final Logger logger = Logger.getLogger(SccpResourceImpl.class);
+    private static final Logger logger = LogManager.getLogger(SccpResourceImpl.class);
 
     protected RemoteSubSystemMap remoteSsns = new RemoteSubSystemMap();
     protected RemoteSignalingPointCodeMap remoteSpcs = new RemoteSignalingPointCodeMap();

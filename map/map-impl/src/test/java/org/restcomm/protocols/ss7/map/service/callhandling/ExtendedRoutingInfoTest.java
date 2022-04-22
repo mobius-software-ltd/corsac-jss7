@@ -32,7 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
@@ -63,7 +64,7 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class ExtendedRoutingInfoTest {
-    Logger logger = Logger.getLogger(ExtendedRoutingInfoTest.class);
+    Logger logger = LogManager.getLogger(ExtendedRoutingInfoTest.class);
 
     private byte[] getData1() {
         return new byte[] { 48, 9, 4, 7, -111, -105, 114, 99, 80, 24, -7 };

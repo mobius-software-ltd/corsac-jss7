@@ -22,8 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ProtocolClassImpl;
@@ -51,7 +51,7 @@ import io.netty.buffer.ByteBuf;
 public class MessageFactoryImpl implements MessageFactory {
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = Logger.getLogger(MessageFactoryImpl.class);
+	private static final Logger logger = LogManager.getLogger(MessageFactoryImpl.class);
 
     private transient SccpStackImpl sccpStackImpl;
 
@@ -178,7 +178,7 @@ public class MessageFactoryImpl implements MessageFactory {
 
         if (msg != null) {
             msg.decode(buffer, sccpStackImpl.getSccpProvider().getParameterFactory(), sccpProtocolVersion);
-        } else if (logger.isEnabledFor(Level.WARN)) {
+        } else if (logger.isWarnEnabled()) {
             logger.warn("No message implementation for MT: " + type);
         }
         return msg;

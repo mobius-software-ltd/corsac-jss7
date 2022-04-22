@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
@@ -52,7 +53,7 @@ public class SccpConnCrMessageTest {
     @BeforeMethod
     public void setUp() {
         this.messageFactory = new MessageFactoryImpl(stack);
-        this.logger = Logger.getLogger(SccpStackImpl.class.getCanonicalName());
+        this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName());
     }
 
     @AfterMethod

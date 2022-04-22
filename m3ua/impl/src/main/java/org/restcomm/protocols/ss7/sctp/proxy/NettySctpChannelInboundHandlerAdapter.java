@@ -19,7 +19,8 @@ package org.restcomm.protocols.ss7.sctp.proxy;
  *
  */
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.nio.sctp.AssociationChangeNotification;
 import com.sun.nio.sctp.PeerAddressChangeNotification;
@@ -38,7 +39,7 @@ import io.netty.channel.sctp.SctpMessage;
  */
 public class NettySctpChannelInboundHandlerAdapter extends ChannelInboundHandlerAdapter {
 
-    Logger logger = Logger.getLogger(NettySctpChannelInboundHandlerAdapter.class);
+    Logger logger = LogManager.getLogger(NettySctpChannelInboundHandlerAdapter.class);
 
     // Default value is 1 for TCP
     private volatile int maxInboundStreams = 1;

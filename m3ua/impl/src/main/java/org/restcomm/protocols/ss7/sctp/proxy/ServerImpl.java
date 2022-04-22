@@ -37,7 +37,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author <a href="mailto:amit.bhayani@telestax.com">Amit Bhayani</a>
@@ -45,7 +46,7 @@ import org.apache.log4j.Logger;
  */
 public class ServerImpl implements Server {
 
-    private static final Logger logger = Logger.getLogger(ServerImpl.class.getName());
+    private static final Logger logger = LogManager.getLogger(ServerImpl.class.getName());
 
     private String name;
     private String hostAddress;

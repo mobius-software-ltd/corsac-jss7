@@ -31,8 +31,8 @@ import java.util.Iterator;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.isup.CircuitManager;
 import org.restcomm.protocols.ss7.isup.ISUPEvent;
 import org.restcomm.protocols.ss7.isup.ISUPListener;
@@ -53,7 +53,7 @@ import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 public class ISUPProviderImpl implements ISUPProvider {
 	private static final long serialVersionUID = 1L;
 
-	protected static final Logger logger = Logger.getLogger(ISUPProviderImpl.class);
+	protected static final Logger logger = LogManager.getLogger(ISUPProviderImpl.class);
 
     protected final ConcurrentHashMap<UUID,ISUPListener> listeners = new ConcurrentHashMap<UUID,ISUPListener>();
 
@@ -253,7 +253,7 @@ public class ISUPProviderImpl implements ISUPProvider {
             try {
             	iterator.next().onEvent(event);
             } catch (Exception e) {
-                if (logger.isEnabledFor(Level.ERROR)) {
+                if (logger.isErrorEnabled()) {
                     logger.error("Exception thrown from listener.", e);
                 }
             }
@@ -270,7 +270,7 @@ public class ISUPProviderImpl implements ISUPProvider {
             try {
                 iterator.next().onTimeout(timeoutEvent);
             } catch (Exception e) {
-                if (logger.isEnabledFor(Level.ERROR)) {
+                if (logger.isErrorEnabled()) {
                     logger.error("Exception thrown from listener.", e);
                 }
             }

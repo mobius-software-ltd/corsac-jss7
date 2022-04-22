@@ -34,7 +34,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.nio.sctp.SctpStandardSocketOptions;
 import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
@@ -45,7 +46,7 @@ import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
  */
 public class SctpManagementImpl implements Management {
 
-    private static final Logger logger = Logger.getLogger(SctpManagementImpl.class);
+    private static final Logger logger = LogManager.getLogger(SctpManagementImpl.class);
 
     static final int DEFAULT_IO_THREADS = Runtime.getRuntime().availableProcessors() * 2;
 

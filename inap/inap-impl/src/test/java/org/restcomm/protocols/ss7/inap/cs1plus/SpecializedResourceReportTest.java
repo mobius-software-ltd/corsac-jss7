@@ -5,8 +5,10 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.SpecializedResourceReportCS1PlusRequest;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.SpecializedResourceReportCS1PlusRequestImpl;
 import org.testng.annotations.BeforeClass;
@@ -20,14 +22,14 @@ import io.netty.buffer.Unpooled;
 
 public class SpecializedResourceReportTest 
 {
-	protected final transient Logger logger=Logger.getLogger(SpecializedResourceReportTest.class);
+	protected final transient Logger logger=LogManager.getLogger(SpecializedResourceReportTest.class);
 
 	private byte[] message1=new byte[] { 0x05,0x00 };
 	 
 	@BeforeClass
 	public static void initTests()
 	{
-		BasicConfigurator.configure();
+		Configurator.initialize(new DefaultConfiguration());
 	}
 	
 	@Test(groups = { "functional.decode", "circuitSwitchedCall" })

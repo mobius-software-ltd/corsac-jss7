@@ -24,7 +24,8 @@ package org.restcomm.protocols.ss7.m3ua.impl;
 
 import static org.testng.Assert.assertEquals;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
 import org.restcomm.protocols.ss7.m3ua.IPSPType;
@@ -67,7 +68,7 @@ import com.sun.nio.sctp.SctpChannel;
  */
 public class RKMAsExistTest {
 
-    private static final Logger logger = Logger.getLogger(RKMAsExistTest.class);
+    private static final Logger logger = LogManager.getLogger(RKMAsExistTest.class);
     
     private MessageFactoryImpl messageFactory = new MessageFactoryImpl();
     private ParameterFactoryImpl parmFactory = new ParameterFactoryImpl();

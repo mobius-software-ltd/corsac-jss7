@@ -29,7 +29,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.inap.api.INAPApplicationContext;
 import org.restcomm.protocols.ss7.inap.api.INAPDialog;
 import org.restcomm.protocols.ss7.inap.api.INAPDialogListener;
@@ -154,6 +155,7 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
+import org.restcomm.protocols.ss7.tcap.asn.ASNUserInformationObjectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceProviderType;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
@@ -180,6 +182,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultInnerImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
+
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
 
@@ -213,14 +217,15 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
     public INAPProviderImpl(String name, TCAPProvider tcapProvider) {
         this.tcapProvider = tcapProvider;
 
-        this.loger = Logger.getLogger(INAPStackImpl.class.getCanonicalName() + "-" + name);
+        this.loger = LogManager.getLogger(INAPStackImpl.class.getCanonicalName() + "-" + name);
 
         this.inapServices.add(this.inapServiceCircuitSwitchedCall);
         
         try {
-        	//registering user information options
-        	
-        	ErrorCodeImpl errorCode=new ErrorCodeImpl();
+            //lets set default for user information as octet string
+        	tcapProvider.getParser().getParser(ASNUserInformationObjectImpl.class, ASNOctetString.class);                
+
+            ErrorCodeImpl errorCode=new ErrorCodeImpl();
         	errorCode.setLocalErrorCode(INAPErrorCode.cancelFailed);
         	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageCancelFailedImpl.class);
         	errorCode=new ErrorCodeImpl();

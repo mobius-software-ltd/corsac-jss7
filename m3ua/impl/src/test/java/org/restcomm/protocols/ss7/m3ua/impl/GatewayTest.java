@@ -26,7 +26,8 @@ import static org.testng.Assert.assertEquals;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
 import org.restcomm.protocols.ss7.m3ua.IPSPType;
@@ -61,7 +62,7 @@ import io.netty.buffer.Unpooled;
  */
 public class GatewayTest {
 
-    private static final Logger logger = Logger.getLogger(GatewayTest.class);
+    private static final Logger logger = LogManager.getLogger(GatewayTest.class);
 
     private static final String SERVER_NAME = "testserver";
     private static final String SERVER_HOST = "127.0.0.1";

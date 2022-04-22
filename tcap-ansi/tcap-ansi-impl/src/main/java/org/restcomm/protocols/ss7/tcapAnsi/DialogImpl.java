@@ -32,8 +32,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
@@ -91,7 +91,7 @@ public class DialogImpl implements Dialog {
     // timeout of remove task after TC_END
     //private static final int _REMOVE_TIMEOUT = 30000;
 
-	private static final Logger logger = Logger.getLogger(DialogImpl.class);
+	private static final Logger logger = LogManager.getLogger(DialogImpl.class);
 
     private Object userObject;
 
@@ -445,7 +445,7 @@ public class DialogImpl implements Dialog {
                     this.seqControl, this.getNetworkId(), this.localSsn);
             this.scheduledComponentList.clear();
         } catch (Throwable e) {
-            if (logger.isEnabledFor(Level.ERROR)) {
+            if (logger.isErrorEnabled()) {
                 logger.error("Failed to send message: ", e);
             }
             throw new TCAPSendException("Failed to send TC-Query message: " + e.getMessage(), e);
@@ -504,7 +504,7 @@ public class DialogImpl implements Dialog {
                 this.scheduledComponentList.clear();
             } catch (Exception e) {
                 // FIXME: remove freshly added invokes to free invoke ID??
-                if (logger.isEnabledFor(Level.ERROR)) {
+                if (logger.isErrorEnabled()) {
                     logger.error("Failed to send message: ", e);
                 }
                 throw new TCAPSendException("Failed to send TC-Continue message: " + e.getMessage(), e);
@@ -533,7 +533,7 @@ public class DialogImpl implements Dialog {
                 this.scheduledComponentList.clear();
             } catch (Exception e) {
                 // FIXME: remove freshly added invokes to free invoke ID??
-                if (logger.isEnabledFor(Level.ERROR)) {
+                if (logger.isErrorEnabled()) {
                     logger.error("Failed to send message: ", e);
                 }
                 throw new TCAPSendException("Failed to send TC-Continue message: " + e.getMessage(), e);
@@ -615,7 +615,7 @@ public class DialogImpl implements Dialog {
             this.scheduledComponentList.clear();
         } catch (Exception e) {
             // FIXME: remove freshly added invokes to free invoke ID??
-            if (logger.isEnabledFor(Level.ERROR)) {
+            if (logger.isErrorEnabled()) {
                 logger.error("Failed to send message: ", e);
             }
             throw new TCAPSendException("Failed to send TC-Response message: " + e.getMessage(), e);
@@ -666,7 +666,7 @@ public class DialogImpl implements Dialog {
                     this.seqControl, this.getNetworkId(), this.localSsn);
             this.scheduledComponentList.clear();
         } catch (Exception e) {
-            if (logger.isEnabledFor(Level.ERROR)) {
+            if (logger.isErrorEnabled()) {
                 logger.error("Failed to send message: ", e);
             }
             throw new TCAPSendException("Failed to send TC-Uni message: " + e.getMessage(), e);
@@ -715,7 +715,7 @@ public class DialogImpl implements Dialog {
                 this.scheduledComponentList.clear();
             } catch (Exception e) {
                 // FIXME: remove freshly added invokes to free invoke ID??
-                if (logger.isEnabledFor(Level.ERROR)) {
+                if (logger.isErrorEnabled()) {
                     e.printStackTrace();
                     logger.error("Failed to send message: ", e);
                 }
@@ -814,7 +814,7 @@ public class DialogImpl implements Dialog {
         	ByteBuf buffer=dialogParser.encode(tcbm);
             return buffer.readableBytes();
         } catch (Exception e) {
-            if (logger.isEnabledFor(Level.ERROR)) {
+            if (logger.isErrorEnabled()) {
                 logger.error("Failed to encode message while length testing: ", e);
             }
             throw new TCAPSendException("Error encoding TCBeginRequest", e);
@@ -851,7 +851,7 @@ public class DialogImpl implements Dialog {
         	ByteBuf buffer=dialogParser.encode(tcbm);
             return buffer.readableBytes();
         } catch (Exception e) {
-            if (logger.isEnabledFor(Level.ERROR)) {
+            if (logger.isErrorEnabled()) {
                 logger.error("Failed to encode message while length testing: ", e);
             }
             throw new TCAPSendException("Error encoding TCContinueRequest", e);
@@ -892,7 +892,7 @@ public class DialogImpl implements Dialog {
         	ByteBuf buffer=dialogParser.encode(tcbm);
             return buffer.readableBytes();
         } catch (Exception e) {
-            if (logger.isEnabledFor(Level.ERROR)) {
+            if (logger.isErrorEnabled()) {
                 logger.error("Failed to encode message while length testing: ", e);
             }
             throw new TCAPSendException("Error encoding TCEndRequest", e);
@@ -929,7 +929,7 @@ public class DialogImpl implements Dialog {
         	ByteBuf buffer=dialogParser.encode(msg);
             return buffer.readableBytes();
         } catch (Exception e) {
-            if (logger.isEnabledFor(Level.ERROR)) {
+            if (logger.isErrorEnabled()) {
                 logger.error("Failed to encode message while length testing: ", e);
             }
             throw new TCAPSendException("Error encoding TCUniRequest", e);
@@ -1014,7 +1014,7 @@ public class DialogImpl implements Dialog {
      // this is invoked ONLY for server.
         if (state.get() != TRPseudoState.Idle) {
             // should we terminate dialog here?
-            if (logger.isEnabledFor(Level.ERROR)) {
+            if (logger.isErrorEnabled()) {
                 logger.error("Received Begin primitive, but state is not: " + TRPseudoState.Idle + ". Dialog: " + this);
             }
             this.sendAbnormalDialog();
@@ -1114,7 +1114,7 @@ public class DialogImpl implements Dialog {
             this.provider.deliver(this, tcContinueIndication);
 
         } else {
-            if (logger.isEnabledFor(Level.ERROR)) {
+            if (logger.isErrorEnabled()) {
                 logger.error(
                         "Received Continue primitive, but state is not proper: " + this.state + ", Dialog: " + this);
             }

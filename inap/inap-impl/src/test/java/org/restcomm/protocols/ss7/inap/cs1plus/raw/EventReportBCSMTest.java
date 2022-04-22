@@ -3,8 +3,10 @@ package org.restcomm.protocols.ss7.inap.cs1plus.raw;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.EventReportBCSMRequestImpl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -16,7 +18,7 @@ import io.netty.buffer.Unpooled;
 
 public class EventReportBCSMTest 
 {
-	protected final transient Logger logger=Logger.getLogger(EventReportBCSMTest.class);
+	protected final transient Logger logger=LogManager.getLogger(EventReportBCSMTest.class);
 
 	private byte[] message1=new byte[] {0x30,0x18,(byte)0x80,0x01,0x07,(byte)0xa2,0x09,(byte)0xa5,
 			0x07,(byte)0xc1,0x01,0x06,(byte)0xc2,0x02,0x00,0x00,(byte)0xa3,0x03,(byte)0x81,0x01,
@@ -39,7 +41,7 @@ public class EventReportBCSMTest
 	@BeforeClass
 	public static void initTests()
 	{
-		BasicConfigurator.configure();
+		Configurator.initialize(new DefaultConfiguration());
 	}
 	
 	@Test(groups = { "functional.decode", "circuitSwitchedCall" })

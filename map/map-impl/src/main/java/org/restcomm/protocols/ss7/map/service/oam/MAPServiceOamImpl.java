@@ -24,7 +24,8 @@ package org.restcomm.protocols.ss7.map.service.oam;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.map.MAPDialogImpl;
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
@@ -63,7 +64,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
  */
 public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceOam {
 
-    protected Logger loger = Logger.getLogger(MAPServiceOamImpl.class);
+    protected Logger loger = LogManager.getLogger(MAPServiceOamImpl.class);
 
     public MAPServiceOamImpl(MAPProviderImpl mapProviderImpl) {
         super(mapProviderImpl);

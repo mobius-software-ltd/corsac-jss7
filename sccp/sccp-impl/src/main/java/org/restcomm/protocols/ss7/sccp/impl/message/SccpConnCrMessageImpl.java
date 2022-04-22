@@ -22,8 +22,9 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import java.io.IOException;
+
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
@@ -46,8 +47,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
-import java.io.IOException;
 
 public class SccpConnCrMessageImpl extends SccpAddressedMessageImpl implements SccpConnCrMessage {
     protected LocalReference sourceLocalReferenceNumber;
@@ -209,7 +208,7 @@ public class SccpConnCrMessageImpl extends SccpAddressedMessageImpl implements S
         	bfLength=userData.readableBytes();
         
         if (bfLength > availLen) {
-            if (logger.isEnabledFor(Level.WARN)) {
+            if (logger.isWarnEnabled()) {
                 logger.warn(String.format(
                         "Failure when sending a CR message: message is too long. SccpMessageSegment=%s", this));
             }

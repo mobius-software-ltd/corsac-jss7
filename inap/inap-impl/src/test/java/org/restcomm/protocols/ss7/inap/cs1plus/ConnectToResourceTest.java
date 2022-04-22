@@ -7,8 +7,10 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive.ServiceInteractionIndicators;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ConnectToResourceRequestImpl;
@@ -25,7 +27,7 @@ import io.netty.buffer.Unpooled;
 
 public class ConnectToResourceTest 
 {
-	protected final transient Logger logger=Logger.getLogger(ConnectToResourceTest.class);
+	protected final transient Logger logger=LogManager.getLogger(ConnectToResourceTest.class);
 
 	private byte[] message1=new byte[] { 0x30,0x0a,(byte)0xa1,0x03,(byte)0x81,0x01,0x01,(byte)0xbe,
 			0x03,(byte)0x82,0x01,0x01 };
@@ -35,7 +37,7 @@ public class ConnectToResourceTest
 	@BeforeClass
 	public static void initTests()
 	{
-		BasicConfigurator.configure();
+		Configurator.initialize(new DefaultConfiguration());
 	}
 	
 	@Test(groups = { "functional.decode", "circuitSwitchedCall" })

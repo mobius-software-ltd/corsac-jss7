@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.BearerCapability;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CalledPartyNumberIsup;
 import org.restcomm.protocols.ss7.commonapp.api.isup.CallingPartyNumberIsup;
@@ -41,7 +43,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 public class InitialDPTest {
-	protected final transient Logger logger=Logger.getLogger(ApplyChargingReportTest.class);
+	protected final transient Logger logger=LogManager.getLogger(ApplyChargingReportTest.class);
 
 	private byte[] message1=new byte[] {  0x30,0x50,(byte)0x80,0x01,0x0a,(byte)0x82,0x0a,0x02,(byte)0x90,
 			0x10,0x51,0x52,0x55,0x55,(byte)0x86,0x78,0x22,(byte)0x83,0x07,0x03,0x13,0x78,(byte)0x86,
@@ -64,7 +66,7 @@ public class InitialDPTest {
 	@BeforeClass
 	public static void initTests()
 	{
-		BasicConfigurator.configure();
+		Configurator.initialize(new DefaultConfiguration());
 	}
 	
 	@Test(groups = { "functional.decode", "circuitSwitchedCall" })

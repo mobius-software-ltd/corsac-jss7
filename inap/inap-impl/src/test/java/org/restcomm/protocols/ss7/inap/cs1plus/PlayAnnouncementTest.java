@@ -7,8 +7,10 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.InformationToSend;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.InbandInfoImpl;
@@ -26,7 +28,7 @@ import io.netty.buffer.Unpooled;
 
 public class PlayAnnouncementTest 
 {
-	protected final transient Logger logger=Logger.getLogger(PlayAnnouncementTest.class);
+	protected final transient Logger logger=LogManager.getLogger(PlayAnnouncementTest.class);
 
 	private byte[] message1=new byte[] { 0x30,0x15,(byte)0xe1,0x03,(byte)0x80,0x01,0x01,(byte)0xa0,
 			0x08,(byte)0xa0,0x06,(byte)0xa0,0x04,(byte)0x80,0x02,0x38,0x65,(byte)0x81,0x01,(byte)0xff,
@@ -35,7 +37,7 @@ public class PlayAnnouncementTest
 	@BeforeClass
 	public static void initTests()
 	{
-		BasicConfigurator.configure();
+		Configurator.initialize(new DefaultConfiguration());
 	}
 	
 	@Test(groups = { "functional.decode", "circuitSwitchedCall" })

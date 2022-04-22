@@ -3,8 +3,10 @@ package org.restcomm.protocols.ss7.inap.cs1plus.raw;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.SendChargingInformationCS1RequestImpl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -16,7 +18,7 @@ import io.netty.buffer.Unpooled;
 
 public class SendingChargingInformationTest 
 {
-	protected final transient Logger logger=Logger.getLogger(SendingChargingInformationTest.class);
+	protected final transient Logger logger=LogManager.getLogger(SendingChargingInformationTest.class);
 
 	private byte[] message1=new byte[] {0x30,0x24,(byte)0xa0,0x1d,(byte)0xa0,0x1b,(byte)0xa1,0x19,
 			(byte)0x81,0x01,0x01,(byte)0xa2,0x14,(byte)0xa0,0x12,(byte)0x80,0x01,0x01,(byte)0x81,
@@ -26,7 +28,7 @@ public class SendingChargingInformationTest
 	@BeforeClass
 	public static void initTests()
 	{
-		BasicConfigurator.configure();
+		Configurator.initialize(new DefaultConfiguration());
 	}
 	
 	@Test(groups = { "functional.decode", "circuitSwitchedCall" })

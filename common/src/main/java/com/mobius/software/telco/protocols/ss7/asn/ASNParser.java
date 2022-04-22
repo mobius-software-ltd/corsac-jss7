@@ -145,6 +145,22 @@ public class ASNParser
 		return parser;
 	}
 	
+	public ASNParser getParser(Class<?> rootClazz,Class<?> defaultClass) {
+		if(parentParser!=null)
+			return parentParser.getParser(rootClazz);
+		
+		ASNParser parser=innerParser.get(rootClazz.getCanonicalName());
+		if(parser==null) {
+			parser=new ASNParser(this);
+			parser.defaultClass=defaultClass;
+			ASNParser oldParser=innerParser.putIfAbsent(rootClazz.getCanonicalName(), parser);
+			if(oldParser!=null)
+				parser=oldParser;	
+		}
+		
+		return parser;
+	}
+	
 	public void clearClassMapping(Class<?> rootClazz) {
 		getParser(rootClazz).clear(true);
 	}

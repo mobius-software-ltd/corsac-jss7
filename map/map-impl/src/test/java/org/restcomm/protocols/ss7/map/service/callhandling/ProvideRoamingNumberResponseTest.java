@@ -30,7 +30,8 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
@@ -56,7 +57,7 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class ProvideRoamingNumberResponseTest {
-    Logger logger = Logger.getLogger(ProvideRoamingNumberResponseTest.class);
+    Logger logger = LogManager.getLogger(ProvideRoamingNumberResponseTest.class);
 
     @BeforeClass
     public static void setUpClass() throws Exception {

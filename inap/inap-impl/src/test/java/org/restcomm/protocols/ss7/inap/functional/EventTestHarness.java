@@ -28,7 +28,7 @@ import static org.testng.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.inap.api.INAPDialog;
 import org.restcomm.protocols.ss7.inap.api.INAPDialogListener;
 import org.restcomm.protocols.ss7.inap.api.INAPMessage;

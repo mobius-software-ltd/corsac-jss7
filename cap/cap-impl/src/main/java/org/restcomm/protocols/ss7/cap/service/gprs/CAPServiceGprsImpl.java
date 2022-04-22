@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.cap.service.gprs;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.cap.CAPDialogImpl;
 import org.restcomm.protocols.ss7.cap.CAPProviderImpl;
 import org.restcomm.protocols.ss7.cap.CAPServiceBaseImpl;
@@ -70,7 +71,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
  */
 public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPServiceGprs {
 
-    protected Logger loger = Logger.getLogger(CAPServiceGprsImpl.class);
+    protected Logger loger = LogManager.getLogger(CAPServiceGprsImpl.class);
 
     public CAPServiceGprsImpl(CAPProviderImpl capProviderImpl) {
         super(capProviderImpl);

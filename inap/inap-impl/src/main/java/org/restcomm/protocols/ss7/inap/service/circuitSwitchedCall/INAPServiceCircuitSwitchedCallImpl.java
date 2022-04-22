@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.inap.INAPDialogImpl;
 import org.restcomm.protocols.ss7.inap.INAPProviderImpl;
 import org.restcomm.protocols.ss7.inap.INAPServiceBaseImpl;
@@ -124,7 +125,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
  */
 public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl implements INAPServiceCircuitSwitchedCall {
 
-	protected Logger loger = Logger.getLogger(INAPServiceCircuitSwitchedCallImpl.class);
+	protected Logger loger = LogManager.getLogger(INAPServiceCircuitSwitchedCallImpl.class);
 
 	public INAPServiceCircuitSwitchedCallImpl(INAPProviderImpl inapProviderImpl) {
 		super(inapProviderImpl);

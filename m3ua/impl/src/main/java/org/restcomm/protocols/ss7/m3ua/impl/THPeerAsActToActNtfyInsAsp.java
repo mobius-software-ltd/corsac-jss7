@@ -24,7 +24,8 @@ package org.restcomm.protocols.ss7.m3ua.impl;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.Asp;
 import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSM;
 import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSMState;
@@ -40,7 +41,7 @@ import org.restcomm.protocols.ss7.m3ua.impl.fsm.UnknownTransitionException;
  */
 public class THPeerAsActToActNtfyInsAsp implements TransitionHandler {
 
-    private static final Logger logger = Logger.getLogger(THPeerAsActToActNtfyInsAsp.class);
+    private static final Logger logger = LogManager.getLogger(THPeerAsActToActNtfyInsAsp.class);
 
     private AsImpl asImpl = null;
     

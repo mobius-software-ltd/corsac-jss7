@@ -12,10 +12,6 @@
 	<name>Corsac jSS7 :: TCAP :: Api :: ${project.artifactId}</name>
 
 	<dependencies>
-		<!--
-			<dependency> <groupId>log4j</groupId> <artifactId>log4j</artifactId>
-			<version>${log4j.version}</version> </dependency>
-		-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

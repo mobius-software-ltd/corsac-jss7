@@ -27,7 +27,8 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingReason;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
@@ -47,7 +48,7 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class ForwardingOptionsTest {
-    Logger logger = Logger.getLogger(ForwardingOptionsTest.class);
+    Logger logger = LogManager.getLogger(ForwardingOptionsTest.class);
 
     @BeforeClass
     public static void setUpClass() throws Exception {

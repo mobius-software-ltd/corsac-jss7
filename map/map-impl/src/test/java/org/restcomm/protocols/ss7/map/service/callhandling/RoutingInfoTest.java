@@ -29,7 +29,8 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
@@ -56,7 +57,7 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class RoutingInfoTest {
-    Logger logger = Logger.getLogger(RoutingInfoTest.class);
+    Logger logger = LogManager.getLogger(RoutingInfoTest.class);
 
     byte[] data = new byte[] { 48, 9, 4, 7, -111, -105, 114, 99, 80, 24, -7 };
     byte[] _data = new byte[] { 48, 14, 48, 12, (byte) 133, 7, -111, -105, 114, 99, 80, 24, -7, (byte) 134, 1, 36 };

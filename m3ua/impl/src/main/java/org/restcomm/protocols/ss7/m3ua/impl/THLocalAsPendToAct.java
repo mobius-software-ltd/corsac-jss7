@@ -24,7 +24,8 @@ package org.restcomm.protocols.ss7.m3ua.impl;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.Asp;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
 import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSM;
@@ -52,7 +53,7 @@ import org.restcomm.protocols.ss7.m3ua.parameter.TrafficModeType;
  */
 public class THLocalAsPendToAct implements TransitionHandler {
 
-    private static final Logger logger = Logger.getLogger(THLocalAsPendToAct.class);
+    private static final Logger logger = LogManager.getLogger(THLocalAsPendToAct.class);
 
     private AsImpl asImpl = null;
     private FSM fsm;

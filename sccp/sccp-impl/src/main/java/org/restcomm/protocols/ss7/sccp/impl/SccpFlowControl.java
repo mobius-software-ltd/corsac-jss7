@@ -1,6 +1,7 @@
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnAkMessageImpl;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnDt2MessageImpl;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnItMessageImpl;
@@ -32,7 +33,7 @@ public class SccpFlowControl {
     private boolean preemptiveAk = false; // send AK before input window exhaustion
 
     public SccpFlowControl(String name, int maximumWindowSize) {
-        this.logger = Logger.getLogger(SccpFlowControl.class.getCanonicalName() + "-" + name);
+        this.logger = LogManager.getLogger(SccpFlowControl.class.getCanonicalName() + "-" + name);
 
         if (maximumWindowSize > 127) {
             throw new IllegalArgumentException();

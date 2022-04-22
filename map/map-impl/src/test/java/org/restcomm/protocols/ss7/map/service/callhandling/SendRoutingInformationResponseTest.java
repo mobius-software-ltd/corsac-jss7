@@ -32,7 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.IMSI;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.ISDNAddressString;
@@ -105,7 +106,7 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class SendRoutingInformationResponseTest {
-    Logger logger = Logger.getLogger(SendRoutingInformationResponseTest.class);
+    Logger logger = LogManager.getLogger(SendRoutingInformationResponseTest.class);
 
     @BeforeClass
     public static void setUpClass() throws Exception {

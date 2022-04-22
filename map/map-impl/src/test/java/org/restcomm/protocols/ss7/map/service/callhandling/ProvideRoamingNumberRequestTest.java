@@ -32,7 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.callhandling.CallReferenceNumber;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AlertingCategory;
@@ -84,7 +85,7 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class ProvideRoamingNumberRequestTest {
-    Logger logger = Logger.getLogger(ProvideRoamingNumberRequestTest.class);
+    Logger logger = LogManager.getLogger(ProvideRoamingNumberRequestTest.class);
 
     @BeforeClass
     public static void setUpClass() throws Exception {

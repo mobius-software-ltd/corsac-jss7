@@ -25,7 +25,8 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -46,7 +47,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
  */
 public class AssociationImpl implements Association {
 
-    protected static final Logger logger = Logger.getLogger(AssociationImpl.class.getName());
+    protected static final Logger logger = LogManager.getLogger(AssociationImpl.class.getName());
 
     private String hostAddress;
     private int hostPort;

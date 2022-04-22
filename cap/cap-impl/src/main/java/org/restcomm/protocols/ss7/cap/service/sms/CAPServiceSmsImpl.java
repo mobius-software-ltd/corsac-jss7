@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.cap.service.sms;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.cap.CAPDialogImpl;
 import org.restcomm.protocols.ss7.cap.CAPProviderImpl;
 import org.restcomm.protocols.ss7.cap.CAPServiceBaseImpl;
@@ -60,7 +61,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
  */
 public class CAPServiceSmsImpl extends CAPServiceBaseImpl implements CAPServiceSms {
 
-    protected Logger loger = Logger.getLogger(CAPServiceSmsImpl.class);
+    protected Logger loger = LogManager.getLogger(CAPServiceSmsImpl.class);
 
     public CAPServiceSmsImpl(CAPProviderImpl capProviderImpl) {
         super(capProviderImpl);

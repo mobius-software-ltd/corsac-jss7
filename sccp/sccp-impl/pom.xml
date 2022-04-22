@@ -28,18 +28,18 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>concurrent</groupId>
-			<artifactId>concurrent</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
@@ -81,11 +81,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- plugin> <artifactId>maven-assembly-plugin</artifactId> <configuration> 
-				<descriptors> <descriptor> src/main/assembly/pojo.xml </descriptor> </descriptors> 
-				<finalName>a${project.artifactId}</finalName> </configuration> <executions> <execution> 
-				<phase>package</phase> <goals> <goal>directory-inline</goal> </goals> </execution> 
-				</executions> </plugin -->
 		</plugins>
 	</build>
 </project>

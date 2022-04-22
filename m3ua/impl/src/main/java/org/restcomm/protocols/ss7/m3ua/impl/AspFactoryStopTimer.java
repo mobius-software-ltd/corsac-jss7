@@ -21,7 +21,8 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.impl.scheduler.M3UATask;
 
 /**
@@ -30,7 +31,7 @@ import org.restcomm.protocols.ss7.m3ua.impl.scheduler.M3UATask;
  */
 public class AspFactoryStopTimer extends M3UATask {
 
-    private static Logger logger = Logger.getLogger(AspFactoryStopTimer.class);
+    private static Logger logger = LogManager.getLogger(AspFactoryStopTimer.class);
 
     private int STOP_TIMER_TIMEOUT = 3000;
 

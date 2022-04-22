@@ -22,8 +22,9 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import java.io.IOException;
+
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
@@ -44,8 +45,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
-import java.io.IOException;
 
 public class SccpConnCcMessageImpl extends SccpConnReferencedMessageImpl implements SccpConnCcMessage {
     protected SccpAddress calledPartyAddress;
@@ -198,7 +197,7 @@ public class SccpConnCcMessageImpl extends SccpConnReferencedMessageImpl impleme
             availLen = 130;
         }
         if (bfLength > availLen) { // message is too long
-            if (logger.isEnabledFor(Level.WARN)) {
+            if (logger.isWarnEnabled()) {
                 logger.warn(String.format(
                         "Failure when sending a CC message: message is too long. SccpMessageSegment=%s", this));
             }

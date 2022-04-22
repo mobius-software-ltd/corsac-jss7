@@ -29,7 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedDigits;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedInfo;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
@@ -82,7 +83,7 @@ import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingExceptio
  */
 public class Client extends EventTestHarness {
 
-    private static Logger logger = Logger.getLogger(Client.class);
+    private static Logger logger = LogManager.getLogger(Client.class);
 
     // private CAPFunctionalTest runningTestCase;
     private SccpAddress thisAddress;

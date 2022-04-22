@@ -1,6 +1,7 @@
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.SccpConnectionState;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnCcMessageImpl;
@@ -65,7 +66,7 @@ public abstract class SccpConnectionBaseImpl {
         this.protocolClass = protocol;
         this.localReference = localReference;
         state.set(NEW);
-        this.logger = Logger.getLogger(SccpConnectionBaseImpl.class.getCanonicalName() + "-" + localReference + "-" + stack.name);
+        this.logger = LogManager.getLogger(SccpConnectionBaseImpl.class.getCanonicalName() + "-" + localReference + "-" + stack.name);
     }
 
     protected void receiveMessage(SccpConnMessage message) throws Exception {

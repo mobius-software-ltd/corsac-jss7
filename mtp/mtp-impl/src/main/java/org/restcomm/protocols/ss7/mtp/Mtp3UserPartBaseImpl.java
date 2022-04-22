@@ -29,7 +29,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 // lic dep 1
 
@@ -41,7 +42,7 @@ import org.apache.log4j.Logger;
  */
 public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 
-    private static final Logger logger = Logger.getLogger(Mtp3UserPartBaseImpl.class);
+    private static final Logger logger = LogManager.getLogger(Mtp3UserPartBaseImpl.class);
 
     public static final int _SI_SERVICE_ISUP = 5;
     public static final int _SI_SERVICE_SCCP = 3;

@@ -30,11 +30,12 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.TransitNetworkSelection;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * Start time:17:05:31 2009-04-03<br>
@@ -43,7 +44,7 @@ import org.restcomm.protocols.ss7.isup.message.parameter.TransitNetworkSelection
  * @author <a href="mailto:baranowb@gmail.com"> Bartosz Baranowski </a>
  */
 public class TransitNetworkSelectionImpl extends AbstractISUPParameter implements TransitNetworkSelection {
-	protected static final Logger logger = Logger.getLogger(TransitNetworkSelectionImpl.class);
+	protected static final Logger logger = LogManager.getLogger(TransitNetworkSelectionImpl.class);
 
     // FIXME: Oleg is this correct?
     private String address;

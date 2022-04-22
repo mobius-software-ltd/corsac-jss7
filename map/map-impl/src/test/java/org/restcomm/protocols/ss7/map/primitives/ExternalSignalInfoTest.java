@@ -28,7 +28,8 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.map.api.primitives.ProtocolId;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterTest;
@@ -49,7 +50,7 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class ExternalSignalInfoTest {
-    Logger logger = Logger.getLogger(ExternalSignalInfoTest.class);
+    Logger logger = LogManager.getLogger(ExternalSignalInfoTest.class);
 
     @BeforeClass
     public static void setUpClass() throws Exception {

@@ -24,7 +24,8 @@ package org.restcomm.protocols.ss7.map.service.pdpContextActivation;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.map.MAPDialogImpl;
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
@@ -60,7 +61,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
  */
 public class MAPServicePdpContextActivationImpl extends MAPServiceBaseImpl implements MAPServicePdpContextActivation {
 
-    protected Logger loger = Logger.getLogger(MAPServicePdpContextActivationImpl.class);
+    protected Logger loger = LogManager.getLogger(MAPServicePdpContextActivationImpl.class);
 
     public MAPServicePdpContextActivationImpl(MAPProviderImpl mapProviderImpl) {
         super(mapProviderImpl);

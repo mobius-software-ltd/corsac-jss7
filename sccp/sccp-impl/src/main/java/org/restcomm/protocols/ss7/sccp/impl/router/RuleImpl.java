@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.router;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.indicator.GlobalTitleIndicator;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.LoadSharingAlgorithm;
@@ -64,7 +65,7 @@ public class RuleImpl implements Rule, Serializable {
     private static final String MASK_IGNORE = "-";
     private static final String NETWORK_ID = "networkId";
 
-    private static final Logger logger = Logger.getLogger(RuleImpl.class);
+    private static final Logger logger = LogManager.getLogger(RuleImpl.class);
     /**
      *
      */

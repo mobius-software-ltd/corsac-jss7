@@ -12,17 +12,13 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version> <!-- 2.4.2 -->
-		<concurrent.version>1.3.4</concurrent.version>
-		<log4j.version>1.2.14</log4j.version>
+		<maven-surefire-plugin.version>3.0.0-M6</maven-surefire-plugin.version>
+		<log4j2.version>2.17.2</log4j2.version>
 		<junit.version>4.11</junit.version>
-		<testng.version>6.2</testng.version>
-		<compiler.plugin.version>2.0.2</compiler.plugin.version>
+		<testng.version>7.5</testng.version>
+		<compiler.plugin.version>3.8.1</compiler.plugin.version>
 		<compile.source>1.8</compile.source>
-		<asn.version>2.2.0-143</asn.version>
-		<stream.version>1.0.0.CR1</stream.version>
-		<commons.version>1.0.0.CR1</commons.version>
-		<netty.version>4.1.33.Final</netty.version>		
+		<netty.version>4.1.53.Final</netty.version>		
 	</properties>
 
 	<modules>
@@ -180,10 +176,17 @@
 
 			<!-- 3rd PARTY -->
 			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>${log4j.version}</version>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-core</artifactId>
+				<version>${log4j2.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-api</artifactId>
+				<version>${log4j2.version}</version>
+			</dependency>
+			
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -195,12 +198,6 @@
 				<artifactId>testng</artifactId>
 				<version>${testng.version}</version>
 				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>concurrent</groupId>
-				<artifactId>concurrent</artifactId>
-				<scope>provided</scope>
-				<version>${concurrent.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

@@ -9,8 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.BCSMEvent;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
@@ -29,7 +31,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 public class RequestReportBCSMEventTest {
-	protected final transient Logger logger=Logger.getLogger(ApplyChargingReportTest.class);
+	protected final transient Logger logger=LogManager.getLogger(ApplyChargingReportTest.class);
 
 	private byte[] message1=new byte[] { 0x30,0x3c,(byte)0xa0,0x3a,0x30,0x06,(byte)0x80,0x01,0x04,
 			(byte)0x81,0x01,0x00,0x30,0x06,(byte)0x80,0x01,0x05,(byte)0x81,0x01,0x00,0x30,0x06,
@@ -41,7 +43,7 @@ public class RequestReportBCSMEventTest {
 	@BeforeClass
 	public static void initTests()
 	{
-		BasicConfigurator.configure();
+		Configurator.initialize(new DefaultConfiguration());
 	}
 	
 	@Test(groups = { "functional.decode", "circuitSwitchedCall" })

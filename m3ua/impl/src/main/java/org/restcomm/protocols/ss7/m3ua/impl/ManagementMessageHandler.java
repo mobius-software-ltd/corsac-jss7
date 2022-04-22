@@ -21,7 +21,8 @@
  */
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
 import org.restcomm.protocols.ss7.m3ua.IPSPType;
@@ -39,7 +40,7 @@ import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
  */
 public class ManagementMessageHandler extends MessageHandler {
 
-    private static final Logger logger = Logger.getLogger(ManagementMessageHandler.class);
+    private static final Logger logger = LogManager.getLogger(ManagementMessageHandler.class);
 
     public ManagementMessageHandler(AspFactoryImpl aspFactoryImpl) {
         super(aspFactoryImpl);

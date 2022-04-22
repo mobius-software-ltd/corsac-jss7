@@ -24,7 +24,8 @@ package org.restcomm.protocols.ss7.map.service.sms;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.map.MAPDialogImpl;
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
@@ -74,7 +75,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
  */
 public class MAPServiceSmsImpl extends MAPServiceBaseImpl implements MAPServiceSms {
 
-    protected Logger loger = Logger.getLogger(MAPServiceSmsImpl.class);
+    protected Logger loger = LogManager.getLogger(MAPServiceSmsImpl.class);
 
     public MAPServiceSmsImpl(MAPProviderImpl mapProviderImpl) {
         super(mapProviderImpl);

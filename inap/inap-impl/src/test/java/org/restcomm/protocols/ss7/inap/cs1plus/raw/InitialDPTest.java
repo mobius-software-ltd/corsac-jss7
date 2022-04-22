@@ -3,8 +3,10 @@ package org.restcomm.protocols.ss7.inap.cs1plus.raw;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.InitialDPRequestImpl;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -16,7 +18,7 @@ import io.netty.buffer.Unpooled;
 
 public class InitialDPTest 
 {
-	protected final transient Logger logger=Logger.getLogger(InitialDPTest.class);
+	protected final transient Logger logger=LogManager.getLogger(InitialDPTest.class);
 
 	private byte[] message1=new byte[] { 0x30,0x4f,(byte)0x80,0x01,0x4b,(byte)0x82,0x09,0x02,(byte)0x90,0x10,
 			0x11,0x34,0x27,0x32,0x00,0x50,(byte)0x83,0x07,0x03,0x13,0x78,0x46,(byte)0x98,0x02,(byte)0x92,(byte)0x8a,
@@ -28,7 +30,7 @@ public class InitialDPTest
 	@BeforeClass
 	public static void initTests()
 	{
-		BasicConfigurator.configure();
+		Configurator.initialize(new DefaultConfiguration());
 	}
 	
 	@Test(groups = { "functional.decode", "circuitSwitchedCall" })
