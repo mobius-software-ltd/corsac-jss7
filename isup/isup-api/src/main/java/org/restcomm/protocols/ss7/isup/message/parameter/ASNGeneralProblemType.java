@@ -30,7 +30,11 @@ import org.restcomm.protocols.ss7.isup.ParameterException;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;
-
+/**
+ * 
+ * @author yulianoifa
+ *
+ */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0x00,constructed=false,lengthIndefinite=false)
 public class ASNGeneralProblemType extends ASNEnumerated {
 	public ASNGeneralProblemType() {

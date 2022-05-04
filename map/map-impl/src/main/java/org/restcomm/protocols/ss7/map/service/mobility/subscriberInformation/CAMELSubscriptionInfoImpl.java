@@ -1,6 +1,8 @@
 /*
  * TeleStax, Open Source Cloud Communications
- * Copyright 2011-2016, Telestax Inc and individual contributors
+ * Mobius Software LTD
+ * Copyright 2012, Telestax Inc and individual contributors
+ * Copyright 2019, Mobius Software LTD and individual contributors
  * by the @authors tag.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -59,6 +61,7 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNNull;
 
 /**
  * Created by vsubbotin on 25/05/16.
+ * @author yulianoifa
  */
 @ASNTag(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,lengthIndefinite=false)
 public class CAMELSubscriptionInfoImpl implements CAMELSubscriptionInfo {

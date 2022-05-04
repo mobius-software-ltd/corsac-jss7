@@ -1,6 +1,8 @@
 /*
  * TeleStax, Open Source Cloud Communications
- * Copyright 2011-2016, Telestax Inc and individual contributors
+ * Mobius Software LTD
+ * Copyright 2012, Telestax Inc and individual contributors
+ * Copyright 2019, Mobius Software LTD and individual contributors
  * by the @authors tag.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,6 +18,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
 package org.restcomm.protocols.ss7.isup.util;
 
 import java.io.UnsupportedEncodingException;
@@ -31,6 +34,7 @@ import io.netty.buffer.Unpooled;
  * Only BCD_EVEN and BCD_ODD encoding is supported currently
  *
  * @author <a href="mailto:grzegorz.figiel@pro-ids.com"> Grzegorz Figiel (ProIDS sp. z o.o.)</a>
+ * @author yulianoifa
  */
 public class BcdHelper {
 

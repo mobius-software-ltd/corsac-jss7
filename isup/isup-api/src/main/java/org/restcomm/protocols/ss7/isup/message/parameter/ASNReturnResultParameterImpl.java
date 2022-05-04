@@ -28,7 +28,11 @@ package org.restcomm.protocols.ss7.isup.message.parameter;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
-
+/**
+ * 
+ * @author yulianoifa
+ *
+ */
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=0,constructed=false,lengthIndefinite=false)
 public class ASNReturnResultParameterImpl extends ASNGeneric {
 	public ASNReturnResultParameterImpl() {

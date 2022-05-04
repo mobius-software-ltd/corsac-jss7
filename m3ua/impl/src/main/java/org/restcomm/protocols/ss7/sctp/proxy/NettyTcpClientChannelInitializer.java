@@ -1,7 +1,9 @@
 package org.restcomm.protocols.ss7.sctp.proxy;
 /*
  * TeleStax, Open Source Cloud Communications
- * Copyright 2011-2014, Telestax Inc and individual contributors
+ * Mobius Software LTD
+ * Copyright 2012, Telestax Inc and individual contributors
+ * Copyright 2019, Mobius Software LTD and individual contributors
  * by the @authors tag.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -16,7 +18,6 @@ package org.restcomm.protocols.ss7.sctp.proxy;
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
- *
  */
 
 import io.netty.channel.ChannelInitializer;
@@ -25,6 +26,7 @@ import io.netty.channel.socket.SocketChannel;
 /**
  * @author <a href="mailto:amit.bhayani@telestax.com">Amit Bhayani</a>
  * @author Sergey Vetyutnev</a>
+ * @author yulianoifa
  * 
  */
 public class NettyTcpClientChannelInitializer extends ChannelInitializer<SocketChannel> {

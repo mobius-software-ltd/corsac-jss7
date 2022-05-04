@@ -19,14 +19,12 @@ package org.restcomm.protocols.ss7.tcap.asn;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-/**
-*
-* @author yulian oifa
-*
-*/
-
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNGeneric;
-
+/**
+ * 
+ * @author yulianoifa
+ *
+ */
 public class ASNDialogPortionObjectImpl extends ASNGeneric {
 	public ASNDialogPortionObjectImpl() {		
 	}
