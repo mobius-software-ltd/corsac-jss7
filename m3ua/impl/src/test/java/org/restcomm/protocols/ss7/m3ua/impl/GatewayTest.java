@@ -137,7 +137,7 @@ public class GatewayTest {
         System.out.println("Starting Client");
         client.start();
 
-        Thread.sleep(12000); // 12000
+        Thread.sleep(10000); // 12000
 
         // Both AS and ASP should be ACTIVE now
         AspState.getState(remAsp.getPeerFSM().getState().getName());
@@ -150,7 +150,7 @@ public class GatewayTest {
         client.sendPayload();
         server.sendPayload();
 
-        Thread.sleep(1000);
+        Thread.sleep(100);
 
         client.stop();
         logger.debug("Stopped Client");

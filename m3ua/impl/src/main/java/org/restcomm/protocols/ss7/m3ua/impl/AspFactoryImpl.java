@@ -732,7 +732,7 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
                 if (this.isHeartBeatEnabled()) {
                     this.heartBeatTimer.reset();
                 }
-                this.read(m3UAMessage);
+                this.read(m3UAMessage);                               
             } finally {
                 ReferenceCountUtil.release(byteBuf);
             }
