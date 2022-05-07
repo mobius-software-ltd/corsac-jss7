@@ -425,7 +425,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                             dlg.send();
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }                   
                             catch(InterruptedException ex) {
                             	
@@ -526,7 +526,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                             dlg.send();
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -539,7 +539,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                                     null, sequence++));
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -567,7 +567,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                             dlg.send();
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -578,7 +578,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                             dlg.send();
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -623,7 +623,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
             }
         };
 
-        long _DIALOG_TIMEOUT = 2000;
+        long _DIALOG_TIMEOUT = 1500;
         long _SLEEP_BEFORE_ODISCONNECT = 2500;
         long stamp = System.currentTimeMillis();
         int count = 0;
@@ -671,6 +671,8 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
         te = TestEvent.createSentEvent(EventType.EventReportBCSMRequest, null, count++, stamp);
         clientExpectedEvents.add(te);
 
+        stamp += 500;
+        
         te = TestEvent.createSentEvent(EventType.ApplyChargingReportRequest, null, count++, stamp);
         clientExpectedEvents.add(te);
 
@@ -693,6 +695,8 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                 (stamp + _SLEEP_BEFORE_ODISCONNECT + _TCAP_DIALOG_RELEASE_TIMEOUT));
         clientExpectedEvents.add(te);
 
+        stamp -= 500;
+        
         count = 0;
         // Server side events
         List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
@@ -729,6 +733,8 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
         te = TestEvent.createReceivedEvent(EventType.DialogDelimiter, null, count++, stamp);
         serverExpectedEvents.add(te);
 
+        stamp += 500;
+        
         te = TestEvent.createReceivedEvent(EventType.ApplyChargingRequest, null, count++, stamp);
         serverExpectedEvents.add(te);
 
@@ -922,7 +928,7 @@ TC-CONTINUE + SpecializedResourceReportRequest
                             dlg.send();
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -941,7 +947,7 @@ TC-CONTINUE + SpecializedResourceReportRequest
                             dlg.send();
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -966,7 +972,7 @@ TC-CONTINUE + SpecializedResourceReportRequest
                             dlg.send();
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -1161,7 +1167,7 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
                             dlg.send();
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(Exception ex) {
                             	

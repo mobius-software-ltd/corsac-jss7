@@ -640,7 +640,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                             dlg.send();
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -656,7 +656,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                                     null, sequence++));
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -685,7 +685,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                             dlg.send();
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -696,7 +696,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                             dlg.send();
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -1049,7 +1049,7 @@ TC-CONTINUE + SpecializedResourceReportRequest
                             dlg.send();
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -1068,7 +1068,7 @@ TC-CONTINUE + SpecializedResourceReportRequest
                             dlg.send();
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -1094,7 +1094,7 @@ TC-CONTINUE + SpecializedResourceReportRequest
                             dlg.send();
 
                             try {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -3515,7 +3515,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             dlg.send();
 
                             try  {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -3547,7 +3547,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             dlg.send();
 
                             try  {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
@@ -3559,7 +3559,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                             dlg.send();
 
                             try  {
-                            	Thread.sleep(50);
+                            	Thread.sleep(100);
                             }
                             catch(InterruptedException ex) {
                             	
