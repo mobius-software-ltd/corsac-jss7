@@ -1,9 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.mobius-software.telco.protocols.ss7</groupId>
+	<parent>
+		<groupId>com.mobius-software</groupId>
+		<artifactId>mobius-public-parent</artifactId>
+		<version>1.0.7</version>
+	</parent>
+	
+	<groupId>com.mobius-software.protocols.ss7</groupId>
 	<artifactId>ss7-parent</artifactId>
-	<version>8.0.0-SNAPSHOT</version>
+	<version>10.0.0-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -19,6 +25,7 @@
 		<compiler.plugin.version>3.8.1</compiler.plugin.version>
 		<compile.source>1.8</compile.source>
 		<netty.version>4.1.53.Final</netty.version>		
+		<sctp.version>2.2.4</sctp.version>
 	</properties>
 
 	<modules>
@@ -41,65 +48,77 @@
 		<dependencies>			
 			<!-- Common -->
 			<dependency>
-				<groupId>com.mobius-software.telco.protocols.ss7.common</groupId>
+				<groupId>com.mobius-software.protocols.ss7.common</groupId>
 				<artifactId>common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.mobius-software.telco.protocols.ss7.common</groupId>
+				<groupId>com.mobius-software.protocols.ss7.common</groupId>
 				<artifactId>validator</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+
+			<!-- SCTP -->
+			<dependency>
+				<artifactId>sctp-api</artifactId>
+				<groupId>com.mobius-software.protocols.sctp</groupId>
+				<version>${sctp.version}</version>
+			</dependency>
+			<dependency>
+				<artifactId>sctp-impl</artifactId>
+				<groupId>com.mobius-software.protocols.sctp</groupId>
+				<version>${sctp.version}</version>
 			</dependency>
 
 			<!-- MTP -->
 			<dependency>
 				<artifactId>mtp</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
+				<groupId>com.mobius-software.protocols.ss7.mtp</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>mtp-api</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
+				<groupId>com.mobius-software.protocols.ss7.mtp</groupId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<!-- M3UA -->
 			<dependency>
 				<artifactId>m3ua-api</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.m3ua</groupId>
+				<groupId>com.mobius-software.protocols.ss7.m3ua</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>m3ua-impl</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.m3ua</groupId>
+				<groupId>com.mobius-software.protocols.ss7.m3ua</groupId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<!-- ISUP -->
 			<dependency>
 				<artifactId>isup-api</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.isup</groupId>
+				<groupId>com.mobius-software.protocols.ss7.isup</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>isup-impl</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.isup</groupId>
+				<groupId>com.mobius-software.protocols.ss7.isup</groupId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<!-- SCCP -->
 			<dependency>
 				<artifactId>sccp-api</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
+				<groupId>com.mobius-software.protocols.ss7.sccp</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>sccp-impl</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
+				<groupId>com.mobius-software.protocols.ss7.sccp</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
+				<groupId>com.mobius-software.protocols.ss7.sccp</groupId>
 				<artifactId>sccp-impl</artifactId>
 				<type>test-jar</type>
 				<version>${project.version}</version>
@@ -110,28 +129,28 @@
 			<!-- TCAP -->
 			<dependency>
 				<artifactId>tcap-api</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.tcap</groupId>
+				<groupId>com.mobius-software.protocols.ss7.tcap</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>tcap-impl</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.tcap</groupId>
+				<groupId>com.mobius-software.protocols.ss7.tcap</groupId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<!-- COMMON APP -->
 			<dependency>
 				<artifactId>commonapp-api</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.commonapp</groupId>
+				<groupId>com.mobius-software.protocols.ss7.commonapp</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>commonapp-impl</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.commonapp</groupId>
+				<groupId>com.mobius-software.protocols.ss7.commonapp</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.mobius-software.telco.protocols.ss7.commonapp</groupId>
+				<groupId>com.mobius-software.protocols.ss7.commonapp</groupId>
 				<artifactId>commonapp-impl</artifactId>
 				<type>test-jar</type>
 				<version>${project.version}</version>
@@ -141,36 +160,36 @@
 			<!-- MAP -->
 			<dependency>
 				<artifactId>map-api</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.map</groupId>
+				<groupId>com.mobius-software.protocols.ss7.map</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>map-impl</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.map</groupId>
+				<groupId>com.mobius-software.protocols.ss7.map</groupId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<!-- INAP -->
 			<dependency>
 				<artifactId>inap-api</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.inap</groupId>
+				<groupId>com.mobius-software.protocols.ss7.inap</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>inap-impl</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.inap</groupId>
+				<groupId>com.mobius-software.protocols.ss7.inap</groupId>
 				<version>${project.version}</version>
 			</dependency>
 
 			<!-- CAP -->
 			<dependency>
 				<artifactId>cap-api</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.cap</groupId>
+				<groupId>com.mobius-software.protocols.ss7.cap</groupId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<artifactId>cap-impl</artifactId>
-				<groupId>com.mobius-software.telco.protocols.ss7.cap</groupId>
+				<groupId>com.mobius-software.protocols.ss7.cap</groupId>
 				<version>${project.version}</version>
 			</dependency>
 
@@ -202,75 +221,6 @@
 		</dependencies>
 	</dependencyManagement>
 
-	<profiles>
-		<profile>
-			<id>maven-release</id>
-			<modules />
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-release-plugin</artifactId>
-						<configuration>
-							<allowTimestampedSnapshots>true</allowTimestampedSnapshots>
-							<preparationGoals>clean install</preparationGoals>
-							<autoVersionSubmodules>true</autoVersionSubmodules>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>release</id>
-			<modules />
-		</profile>
-		<profile>
-			<id>docs</id>
-			<modules>
-				<module>docs</module>
-			</modules>
-		</profile>
-		<!--profile>
-			<id>release-sign-artifacts</id>
-			<activation>
-				<property>
-					<name>performRelease</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>sign-artifacts</id>
-								<phase>install</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<version>2.1.2</version>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile-->
-	</profiles>
 	<developers>
 		<developer>
 			<id>serg.vetyutnev</id>
@@ -316,6 +266,17 @@
 			</roles>
 			<timezone>+3</timezone>
 		</developer>
+		<developer>
+			<id>yulian.oifa</id>
+			<name>Yulian Oifa</name>
+			<email>yulian.oifa@mobius-software.com</email>
+			<organization>Mobius Software</organization>
+			<organizationUrl>https://www.mobius-software.com/</organizationUrl>
+			<roles>
+				<role>Active Developer</role>
+			</roles>
+			<timezone>+3</timezone>
+		</developer>
 	</developers>
 
 	<licenses>
@@ -339,10 +300,119 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M6</version>				
+				<configuration>
+				    <skipTests>false</skipTests>					
+				</configuration>
+			</plugin>	
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>src</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.1.2</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>docs</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>no-gpg</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.1.2</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>none</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	
 	<scm>
 		<connection>scm:git:https://github.com/mobius-software-ltd/async-jss7/</connection>
 		<developerConnection>scm:git:https://github.com/mobius-software-ltd/async-jss7/</developerConnection>

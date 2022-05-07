@@ -3,8 +3,8 @@
 
 	<parent>
 		<artifactId>tcap-ansi-parent</artifactId>
-		<groupId>com.mobius-software.telco.protocols.ss7.tcapAnsi</groupId>
-		<version>8.0.0-SNAPSHOT</version>
+		<groupId>com.mobius-software.protocols.ss7.tcapAnsi</groupId>
+		<version>10.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>tcap-ansi-impl</artifactId>
@@ -39,11 +39,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
+			<groupId>com.mobius-software.protocols.ss7.mtp</groupId>
 			<artifactId>mtp</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
+			<groupId>com.mobius-software.protocols.ss7.sccp</groupId>
 			<artifactId>sccp-api</artifactId>
 		</dependency>
 	</dependencies>
@@ -99,18 +99,18 @@
 					<artifactId>testng</artifactId>
 				</dependency>
 				<dependency>
-					<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
+					<groupId>com.mobius-software.protocols.ss7.sccp</groupId>
 					<artifactId>sccp-impl</artifactId>
 					<scope>test</scope>
 				</dependency>
 				<dependency>
-					<groupId>com.mobius-software.telco.protocols.ss7.sccp</groupId>
+					<groupId>com.mobius-software.protocols.ss7.sccp</groupId>
 					<artifactId>sccp-impl</artifactId>
 					<type>test-jar</type>
 					<scope>test</scope>
 				</dependency>
 				<dependency>
-					<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
+					<groupId>com.mobius-software.protocols.ss7.mtp</groupId>
 					<artifactId>mtp-api</artifactId>
 					<scope>test</scope>
 				</dependency>

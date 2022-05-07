@@ -22,7 +22,7 @@ package org.restcomm.protocols.ss7.m3ua;
 
 import java.util.Collection;
 
-import org.restcomm.protocols.ss7.sctp.proxy.Association;
+import org.restcomm.protocols.api.Association;
 import org.restcomm.protocols.ss7.m3ua.parameter.ASPIdentifier;
 
 /**

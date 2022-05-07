@@ -3,8 +3,8 @@
 
 	<parent>
 		<artifactId>isup-parent</artifactId>
-		<groupId>com.mobius-software.telco.protocols.ss7.isup</groupId>
-		<version>8.0.0-SNAPSHOT</version>
+		<groupId>com.mobius-software.protocols.ss7.isup</groupId>
+		<version>10.0.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>isup-api</artifactId>
@@ -18,19 +18,19 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
+			<groupId>com.mobius-software.protocols.ss7.mtp</groupId>
 			<artifactId>mtp-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.mobius-software.telco.protocols.ss7.mtp</groupId>
+			<groupId>com.mobius-software.protocols.ss7.mtp</groupId>
 			<artifactId>mtp</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.mobius-software.telco.protocols.ss7.common</groupId>
+			<groupId>com.mobius-software.protocols.ss7.common</groupId>
 			<artifactId>common</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.mobius-software.telco.protocols.ss7.common</groupId>
+			<groupId>com.mobius-software.protocols.ss7.common</groupId>
 			<artifactId>validator</artifactId>			
 		</dependency>
 	</dependencies>

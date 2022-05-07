@@ -40,9 +40,9 @@ import org.restcomm.protocols.ss7.m3ua.message.transfer.PayloadData;
 import org.restcomm.protocols.ss7.m3ua.parameter.NetworkAppearance;
 import org.restcomm.protocols.ss7.m3ua.parameter.ProtocolData;
 import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
-import org.restcomm.protocols.ss7.sctp.proxy.Association;
-import org.restcomm.protocols.ss7.sctp.proxy.AssociationImpl;
-import org.restcomm.protocols.ss7.sctp.proxy.IpChannelType;
+import org.restcomm.protocols.api.Association;
+import org.restcomm.protocols.api.IpChannelType;
+import org.restcomm.protocols.sctp.AssociationImpl;
 import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
@@ -66,7 +66,7 @@ public class AspFactoryPayloadTest {
         // SCTP - SCTP layer netty support
         AspFactoryImplProxy aspFactory = new AspFactoryImplProxy();
         ByteBuf byteBuf = Unpooled.wrappedBuffer(data);
-        org.restcomm.protocols.ss7.sctp.proxy.PayloadData pd = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.capacity(), byteBuf,
+        org.restcomm.protocols.api.PayloadData pd = new org.restcomm.protocols.api.PayloadData(byteBuf.capacity(), byteBuf,
                 true, false, 0, 0);
         AssociationImpl association = new AssociationImpl("hostAddress", 1111, "peerAddress", 1112, "assocName",
                 IpChannelType.SCTP, null);
@@ -93,7 +93,7 @@ public class AspFactoryPayloadTest {
         // TCP - SCTP layer netty support
         aspFactory = new AspFactoryImplProxy();
         byteBuf = Unpooled.wrappedBuffer(data);
-        pd = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.capacity(), byteBuf, true, false, 0, 0);
+        pd = new org.restcomm.protocols.api.PayloadData(byteBuf.capacity(), byteBuf, true, false, 0, 0);
         association = new AssociationImpl("hostAddress", 1111, "peerAddress", 1112, "assocName", IpChannelType.TCP, null);
         aspFactory.onPayload(association, pd);
 
@@ -117,7 +117,7 @@ public class AspFactoryPayloadTest {
         // SCTP - SCTP layer netty NOT support
         aspFactory = new AspFactoryImplProxy();
         byteBuf = Unpooled.wrappedBuffer(data);
-        pd = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.capacity(), byteBuf, true, false, 0, 0);
+        pd = new org.restcomm.protocols.api.PayloadData(byteBuf.capacity(), byteBuf, true, false, 0, 0);
         association = new AssociationImpl("hostAddress", 1111, "peerAddress", 1112, "assocName", IpChannelType.SCTP, null);
         aspFactory.onPayload(association, pd);
 
@@ -141,7 +141,7 @@ public class AspFactoryPayloadTest {
         // TCP - SCTP layer netty NOT support
         aspFactory = new AspFactoryImplProxy();
         byteBuf = Unpooled.wrappedBuffer(data);
-        pd = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.capacity(), byteBuf, true, false, 0, 0);
+        pd = new org.restcomm.protocols.api.PayloadData(byteBuf.capacity(), byteBuf, true, false, 0, 0);
         association = new AssociationImpl("hostAddress", 1111, "peerAddress", 1112, "assocName", IpChannelType.TCP, null);
         aspFactory.onPayload(association, pd);
 
@@ -215,7 +215,7 @@ public class AspFactoryPayloadTest {
                 IpChannelType.TCP, null);
 
         ByteBuf byteBuf = Unpooled.wrappedBuffer(header);
-        org.restcomm.protocols.ss7.sctp.proxy.PayloadData pd = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.capacity(), byteBuf,
+        org.restcomm.protocols.api.PayloadData pd = new org.restcomm.protocols.api.PayloadData(byteBuf.capacity(), byteBuf,
                 true, false, 0, 0);
         aspFactory.onPayload(association, pd);        
 
@@ -224,14 +224,14 @@ public class AspFactoryPayloadTest {
         // Now lets read only first half of body and yet we have null
         // messageImpl
         byteBuf = Unpooled.wrappedBuffer(bodyStart);
-        pd = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.capacity(), byteBuf,
+        pd = new org.restcomm.protocols.api.PayloadData(byteBuf.capacity(), byteBuf,
                 true, false, 0, 0);
         aspFactory.onPayload(association, pd);        
         assertEquals(aspFactory.lstReadMessage.size(), 0);
 
         // Now lets read other half
         byteBuf = Unpooled.wrappedBuffer(bodyEndWithOtherMessage);
-        pd = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.capacity(), byteBuf,
+        pd = new org.restcomm.protocols.api.PayloadData(byteBuf.capacity(), byteBuf,
                 true, false, 0, 0);
         aspFactory.onPayload(association, pd);        
         assertEquals(aspFactory.lstReadMessage.size(), 2);
@@ -297,7 +297,7 @@ public class AspFactoryPayloadTest {
         aspFactory.doWrite(message);
 
         assertEquals(association.lstWriteMessage.size(), 1);
-        org.restcomm.protocols.ss7.sctp.proxy.PayloadData pl2 = association.lstWriteMessage.get(0);
+        org.restcomm.protocols.api.PayloadData pl2 = association.lstWriteMessage.get(0);
         byte[] pdata=new byte[pl2.getByteBuf().readableBytes()];
         pl2.getByteBuf().readBytes(pdata);
         assertEquals(pdata, data);
@@ -357,14 +357,14 @@ public class AspFactoryPayloadTest {
     }
 
     private class AssociationImplProxy extends AssociationImpl {
-        protected ArrayList<org.restcomm.protocols.ss7.sctp.proxy.PayloadData> lstWriteMessage = new ArrayList<org.restcomm.protocols.ss7.sctp.proxy.PayloadData>();
+        protected ArrayList<org.restcomm.protocols.api.PayloadData> lstWriteMessage = new ArrayList<org.restcomm.protocols.api.PayloadData>();
 
         public AssociationImplProxy() throws Exception {
             super("hostAddress", 1111, "peerAddress", 1112, "assocName", IpChannelType.SCTP, null);
         }
 
         @Override
-        public void send(org.restcomm.protocols.ss7.sctp.proxy.PayloadData payloadData) throws Exception {
+        public void send(org.restcomm.protocols.api.PayloadData payloadData) throws Exception {
             lstWriteMessage.add(payloadData);
         }
     }

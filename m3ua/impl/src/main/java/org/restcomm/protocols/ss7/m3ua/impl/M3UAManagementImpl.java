@@ -37,6 +37,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.restcomm.protocols.api.Association;
+import org.restcomm.protocols.api.Management;
 import org.restcomm.protocols.ss7.m3ua.As;
 import org.restcomm.protocols.ss7.m3ua.Asp;
 import org.restcomm.protocols.ss7.m3ua.AspFactory;
@@ -67,8 +69,6 @@ import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
 import org.restcomm.protocols.ss7.mtp.RoutingLabelFormat;
 import org.restcomm.protocols.ss7.m3ua.M3UAManagement;
 import org.restcomm.protocols.ss7.m3ua.M3UAManagementEventListener;
-import org.restcomm.protocols.ss7.sctp.proxy.Association;
-import org.restcomm.protocols.ss7.sctp.proxy.Management;
 
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 

@@ -29,6 +29,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.restcomm.protocols.api.Association;
+import org.restcomm.protocols.api.AssociationListener;
+import org.restcomm.protocols.api.IpChannelType;
+import org.restcomm.protocols.api.Management;
 import org.restcomm.protocols.ss7.m3ua.Asp;
 import org.restcomm.protocols.ss7.m3ua.AspFactory;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
@@ -64,10 +68,6 @@ import org.restcomm.protocols.ss7.m3ua.message.ssnm.SignallingCongestion;
 import org.restcomm.protocols.ss7.m3ua.message.transfer.PayloadData;
 import org.restcomm.protocols.ss7.m3ua.parameter.ASPIdentifier;
 import org.restcomm.protocols.ss7.m3ua.parameter.ParameterFactory;
-import org.restcomm.protocols.ss7.sctp.proxy.Association;
-import org.restcomm.protocols.ss7.sctp.proxy.AssociationListener;
-import org.restcomm.protocols.ss7.sctp.proxy.IpChannelType;
-import org.restcomm.protocols.ss7.sctp.proxy.Management;
 
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 
@@ -487,23 +487,23 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
 
             ((M3UAMessageImpl) message).encode(byteBuf);
 
-            org.restcomm.protocols.ss7.sctp.proxy.PayloadData payloadData = null;
+            org.restcomm.protocols.api.PayloadData payloadData = null;
 
             switch (message.getMessageClass()) {
 	            case MessageClass.ASP_STATE_MAINTENANCE:
 	            case MessageClass.MANAGEMENT:
 	            case MessageClass.ROUTING_KEY_MANAGEMENT:
-	                payloadData = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.readableBytes(), byteBuf, true, true,
+	                payloadData = new org.restcomm.protocols.api.PayloadData(byteBuf.readableBytes(), byteBuf, true, true,
 	                        SCTP_PAYLOAD_PROT_ID_M3UA, 0);
 	                break;
 	            case MessageClass.TRANSFER_MESSAGES:
 	                PayloadData payload = (PayloadData) message;
 	                int seqControl = payload.getData().getSLS();
-	                payloadData = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.readableBytes(), byteBuf, true,
+	                payloadData = new org.restcomm.protocols.api.PayloadData(byteBuf.readableBytes(), byteBuf, true,
 	                        false, SCTP_PAYLOAD_PROT_ID_M3UA, this.slsTable[seqControl]);
 	                break;
 	            default:
-	                payloadData = new org.restcomm.protocols.ss7.sctp.proxy.PayloadData(byteBuf.readableBytes(), byteBuf, true, true,
+	                payloadData = new org.restcomm.protocols.api.PayloadData(byteBuf.readableBytes(), byteBuf, true, true,
 	                        SCTP_PAYLOAD_PROT_ID_M3UA, 0);
 	                break;
 	        }
@@ -713,7 +713,7 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
     }
 
     @Override
-    public void onPayload(Association association, org.restcomm.protocols.ss7.sctp.proxy.PayloadData payloadData) {
+    public void onPayload(Association association, org.restcomm.protocols.api.PayloadData payloadData) {
         try {
         	ByteBuf byteBuf = payloadData.getByteBuf();
             processPayload(association.getIpChannelType(), byteBuf);
@@ -763,7 +763,7 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
      * @see org.restcomm.protocols.api.AssociationListener#inValidStreamId(org.restcomm .protocols.api.PayloadData)
      */
     @Override
-    public void inValidStreamId(org.restcomm.protocols.ss7.sctp.proxy.PayloadData payloadData) {
+    public void inValidStreamId(org.restcomm.protocols.api.PayloadData payloadData) {
         logger.error(String
                 .format("Tx : PayloadData with streamNumber=%d which is greater than or equal to maxSequenceNumber=%d. Droping PayloadData=%s",
                         payloadData.getStreamNumber(), this.maxOutboundStreams, payloadData));
