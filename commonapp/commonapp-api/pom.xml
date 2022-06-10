@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>commonapp-parent</artifactId>
 		<groupId>com.mobius-software.protocols.ss7.commonapp</groupId>
-		<version>10.0.2-SNAPSHOT</version>
+		<version>10.0.2</version>
 	</parent>
 
 	<artifactId>commonapp-api</artifactId>
