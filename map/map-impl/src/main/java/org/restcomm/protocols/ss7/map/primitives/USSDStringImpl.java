@@ -33,7 +33,6 @@ import org.restcomm.protocols.ss7.commonapp.datacoding.Gsm7EncodingStyle;
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingGroup;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
-import org.restcomm.protocols.ss7.map.api.datacoding.CBSNationalLanguage;
 import org.restcomm.protocols.ss7.map.api.primitives.USSDString;
 import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
 
@@ -52,9 +51,6 @@ import io.netty.buffer.Unpooled;
 public class USSDStringImpl extends ASNOctetString implements USSDString {
 	private CBSDataCodingScheme dataCodingScheme;
 
-    private static GSMCharset gsm7Charset = new GSMCharset();
-    private static GSMCharset gsm7Charset_Urdu = new GSMCharset(GSMCharset.urduMap,
-            GSMCharset.urduExtentionMap);
     private static Charset ucs2Charset = Charset.forName("UTF-16BE");
 
     public USSDStringImpl() {
@@ -94,9 +90,26 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
 
             switch (dataCodingScheme.getCharacterSet()) {
                 case GSM7:
-                    GSMCharset cSet = gsm7Charset;
-                    if (dataCodingScheme.getNationalLanguageShiftTable() == CBSNationalLanguage.Arabic) {
-                        cSet = gsm7Charset_Urdu;
+                	GSMCharset cSet = GSMCharset.gsm7CharsetDefault;
+                    if(dataCodingScheme.getNationalLanguageShiftTable()!=null)
+                    {
+                    	switch(dataCodingScheme.getNationalLanguageShiftTable())
+                    	{
+							case Arabic:
+								cSet=GSMCharset.gsm7CharsetUrdu;
+								break;
+							case Turkish:
+								cSet=GSMCharset.gsm7CharsetTurkish;
+								break;
+							case Portuguese:
+								cSet=GSMCharset.gsm7CharsetPortugese;
+								break;
+							case Spanish:
+								cSet=GSMCharset.gsm7CharsetSpanish;
+								break;
+							default:
+								break;                    		
+                    	}
                     }
                     GSMCharsetEncoder encoder = (GSMCharsetEncoder) cSet.newEncoder();
                     encoder.setGSMCharsetEncodingData(new GSMCharsetEncodingData(Gsm7EncodingStyle.bit7_ussd_style, null));
@@ -123,7 +136,7 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
                             ussdString = ussdString + " ";
                         if (ussdString.length() < 3)
                             ussdString = ussdString + "\n";
-                        cSet = gsm7Charset;
+                        cSet = GSMCharset.gsm7CharsetDefault;
                         encoder = (GSMCharsetEncoder) cSet.newEncoder();
                         encoder.setGSMCharsetEncodingData(new GSMCharsetEncodingData(Gsm7EncodingStyle.bit7_ussd_style, null));
                         bb = null;
@@ -182,9 +195,26 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
 
             switch (dataCodingScheme.getCharacterSet()) {
                 case GSM7:
-                    GSMCharset cSet = gsm7Charset;
-                    if (dataCodingScheme.getNationalLanguageShiftTable() == CBSNationalLanguage.Arabic) {
-                        cSet = gsm7Charset_Urdu;
+                	GSMCharset cSet = GSMCharset.gsm7CharsetDefault;
+                    if(dataCodingScheme.getNationalLanguageShiftTable()!=null)
+                    {
+                    	switch(dataCodingScheme.getNationalLanguageShiftTable())
+                    	{
+							case Arabic:
+								cSet=GSMCharset.gsm7CharsetUrdu;
+								break;
+							case Turkish:
+								cSet=GSMCharset.gsm7CharsetTurkish;
+								break;
+							case Portuguese:
+								cSet=GSMCharset.gsm7CharsetPortugese;
+								break;
+							case Spanish:
+								cSet=GSMCharset.gsm7CharsetSpanish;
+								break;
+							default:
+								break;                    		
+                    	}
                     }
                     GSMCharsetDecoder decoder = (GSMCharsetDecoder) cSet.newDecoder();
                     decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(Gsm7EncodingStyle.bit7_ussd_style,
@@ -207,7 +237,7 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
                 case UCS2:
                     String pref = "";
                     if (dataCodingScheme.getDataCodingGroup() == CBSDataCodingGroup.GeneralWithLanguageIndication) {
-                        cSet = gsm7Charset;
+                        cSet = GSMCharset.gsm7CharsetDefault;
                         decoder = (GSMCharsetDecoder) cSet.newDecoder();
                         decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(Gsm7EncodingStyle.bit7_ussd_style,
                                 Integer.MAX_VALUE, 0));
