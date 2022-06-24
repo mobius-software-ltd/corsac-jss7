@@ -36,7 +36,8 @@ import org.restcomm.protocols.ss7.m3ua.parameter.RegistrationStatus;
 public class RegistrationStatusImpl extends ParameterImpl implements RegistrationStatus {
 
     private int status;
-
+    private ByteBuf value;
+    
     public RegistrationStatusImpl(ByteBuf data) {
         this.status = 0;
         this.status |= data.readByte() & 0xFF;
@@ -55,15 +56,20 @@ public class RegistrationStatusImpl extends ParameterImpl implements Registratio
         this.status = status;
     }
 
+    protected void encode() {
+    	this.value = Unpooled.buffer(4);
+        value.writeByte((byte) (status >>> 24));
+        value.writeByte((byte) (status >>> 16));
+        value.writeByte((byte) (status >>> 8));
+        value.writeByte((byte) (status));
+    }
+
     @Override
     protected ByteBuf getValue() {
-        ByteBuf data = Unpooled.buffer(4);
-        data.writeByte((byte) (status >>> 24));
-        data.writeByte((byte) (status >>> 16));
-        data.writeByte((byte) (status >>> 8));
-        data.writeByte((byte) (status));
-
-        return data;
+    	if(value==null)
+    		encode();
+    	
+        return Unpooled.wrappedBuffer(this.value);
     }
 
     public int getStatus() {

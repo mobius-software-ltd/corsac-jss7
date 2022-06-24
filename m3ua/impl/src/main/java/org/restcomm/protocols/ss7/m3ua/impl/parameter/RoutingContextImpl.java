@@ -60,14 +60,11 @@ public class RoutingContextImpl extends ParameterImpl implements RoutingContext 
             rcs[arrSize] <<= 8;
             rcs[arrSize++] |= value.readByte() & 0xFF;
         }
-
-        this.value = value;
     }
 
     protected RoutingContextImpl(long[] routingcontexts) {
         this.tag = Parameter.Routing_Context;
         rcs = routingcontexts;
-        encode();
     }
 
     private void encode() {
@@ -88,6 +85,9 @@ public class RoutingContextImpl extends ParameterImpl implements RoutingContext 
 
     @Override
     protected ByteBuf getValue() {
+    	if(value==null)
+    		encode();
+    	
         return Unpooled.wrappedBuffer(value);
     }
 

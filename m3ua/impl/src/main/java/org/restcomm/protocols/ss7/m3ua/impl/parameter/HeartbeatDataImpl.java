@@ -38,10 +38,15 @@ public class HeartbeatDataImpl extends ParameterImpl implements HeartbeatData {
 
     protected HeartbeatDataImpl(ByteBuf value) {
         this.tag = Parameter.Heartbeat_Data;
-        this.value = value;
+        if(value!=null) {
+	        this.value=Unpooled.buffer(value.readableBytes());
+	        Unpooled.wrappedBuffer(value).readBytes(this.value);
+        }
+        else
+        	this.value=Unpooled.EMPTY_BUFFER;
     }
 
-    public ByteBuf getData() {
+    public ByteBuf getData() {    	
         return Unpooled.wrappedBuffer(this.value);
     }
 

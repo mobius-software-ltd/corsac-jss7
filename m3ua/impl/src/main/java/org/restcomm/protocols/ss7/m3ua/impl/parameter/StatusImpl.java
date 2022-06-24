@@ -37,6 +37,7 @@ public class StatusImpl extends ParameterImpl implements Status {
 
     private int type;
     private int info;
+    private ByteBuf value;
 
     public StatusImpl(int type, int info) {
         this.type = type;
@@ -56,19 +57,25 @@ public class StatusImpl extends ParameterImpl implements Status {
         this.info |= data.readByte() & 0xFF;
         this.info <<= 8;
         this.info |= data.readByte() & 0xFF;
+    }
 
+    private void encode() {
+        // create byte array taking into account data, point codes and
+        // indicators;
+        this.value = Unpooled.buffer(4);
+        // encode routing context
+        value.writeByte((byte) (type >> 8));
+        value.writeByte((byte) (type));
+        value.writeByte((byte) (info >> 8));
+        value.writeByte((byte) (info));
     }
 
     @Override
     protected ByteBuf getValue() {
-        ByteBuf data = Unpooled.buffer(4);
-        data.writeByte((byte) (type >>> 8));
-        data.writeByte((byte) (type));
-
-        data.writeByte((byte) (info >>> 8));
-        data.writeByte((byte) (info));
-
-        return data;
+    	if(value==null)
+    		encode();
+    	
+        return Unpooled.wrappedBuffer(value);
     }
 
     public int getInfo() {

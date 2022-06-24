@@ -62,14 +62,12 @@ public class OPCListImpl extends ParameterImpl implements OPCList {
             pointCodes[arrSize] <<= 8;
             pointCodes[arrSize++] |= value.readByte() & 0xFF;
         }
-        this.value = value;
     }
 
     protected OPCListImpl(int[] pointCodes, short[] masks) {
         this.tag = Parameter.Originating_Point_Code_List;
         this.pointCodes = pointCodes;
         this.masks = masks;
-        encode();
     }
 
     private void encode() {
@@ -90,6 +88,9 @@ public class OPCListImpl extends ParameterImpl implements OPCList {
 
     @Override
     protected ByteBuf getValue() {
+    	if(value==null)
+    		encode();
+    	
         return Unpooled.wrappedBuffer(this.value);
     }
 

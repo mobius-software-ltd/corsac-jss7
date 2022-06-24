@@ -36,7 +36,8 @@ import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 public class DeregistrationStatusImpl extends ParameterImpl implements DeregistrationStatus {
 
     private int status;
-
+    private ByteBuf value;
+    
     public DeregistrationStatusImpl(int status) {
         this.tag = Parameter.Deregistration_Status;
         this.status = status;
@@ -54,15 +55,20 @@ public class DeregistrationStatusImpl extends ParameterImpl implements Deregistr
         this.status |= data.readByte() & 0xFF;
     }
 
+    protected void encode() {
+    	this.value = Unpooled.buffer(4);
+        value.writeByte((byte) (status >>> 24));
+        value.writeByte((byte) (status >>> 16));
+        value.writeByte((byte) (status >>> 8));
+        value.writeByte((byte) (status));
+    }
+
     @Override
     protected ByteBuf getValue() {
-        ByteBuf data = Unpooled.buffer(4);
-        data.writeByte((byte) (status >>> 24));
-        data.writeByte((byte) (status >>> 16));
-        data.writeByte((byte) (status >>> 8));
-        data.writeByte((byte) (status));
-
-        return data;
+    	if(value==null)
+    		encode();
+    	
+        return Unpooled.wrappedBuffer(this.value);
     }
 
     public int getStatus() {

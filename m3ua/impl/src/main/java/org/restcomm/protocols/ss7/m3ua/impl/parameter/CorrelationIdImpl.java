@@ -36,9 +36,10 @@ import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 public class CorrelationIdImpl extends ParameterImpl implements CorrelationId {
 
     private long corrId;
+    private ByteBuf value;
 
     protected CorrelationIdImpl(long corrId) {
-        this.corrId = corrId;
+        this.corrId = corrId;        
         this.tag = Parameter.Correlation_ID;
     }
 
@@ -54,19 +55,27 @@ public class CorrelationIdImpl extends ParameterImpl implements CorrelationId {
         this.tag = Parameter.Correlation_ID;
     }
 
+    private void encode() {
+        // create byte array taking into account data, point codes and
+        // indicators;
+        this.value = Unpooled.buffer(4);
+        // encode routing context
+        value.writeByte((byte) (corrId >> 24));
+        value.writeByte((byte) (corrId >> 16));
+        value.writeByte((byte) (corrId >> 8));
+        value.writeByte((byte) (corrId));
+    }
+
     public long getCorrelationId() {
         return this.corrId;
     }
 
     @Override
     protected ByteBuf getValue() {
-        ByteBuf data = Unpooled.buffer(4);
-        data.writeByte((byte) (corrId >>> 24));
-        data.writeByte((byte) (corrId >>> 16));
-        data.writeByte((byte) (corrId >>> 8));
-        data.writeByte((byte) (corrId));
-
-        return data;
+    	if(value==null)
+    		encode();
+    	
+        return Unpooled.wrappedBuffer(value);
     }
 
     @Override

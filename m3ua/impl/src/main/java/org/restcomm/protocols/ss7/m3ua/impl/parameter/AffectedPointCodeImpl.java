@@ -58,14 +58,12 @@ public class AffectedPointCodeImpl extends ParameterImpl implements AffectedPoin
             pointCodes[arrSize] <<= 8;
             pointCodes[arrSize++] |= value.readByte() & 0xFF;
         }
-        this.value = value;
     }
 
     protected AffectedPointCodeImpl(int[] pointCodes, short[] masks) {
         this.tag = Parameter.Affected_Point_Code;
         this.pointCodes = pointCodes;
         this.masks = masks;
-        encode();
     }
 
     private void encode() {
@@ -86,6 +84,9 @@ public class AffectedPointCodeImpl extends ParameterImpl implements AffectedPoin
 
     @Override
     protected ByteBuf getValue() {
+    	if(value==null)
+    		encode();
+    	
         return Unpooled.wrappedBuffer(this.value);
     }
 

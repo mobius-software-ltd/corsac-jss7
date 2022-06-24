@@ -44,8 +44,7 @@ public class LocalRKIdentifierImpl extends ParameterImpl implements LocalRKIdent
 
     protected LocalRKIdentifierImpl(ByteBuf data) {
         this.tag = Parameter.Local_Routing_Key_Identifier;
-        this.value = data;
-
+        
         this.id = 0;
         this.id |= data.readByte() & 0xFF;
         this.id <<= 8;
@@ -59,7 +58,6 @@ public class LocalRKIdentifierImpl extends ParameterImpl implements LocalRKIdent
     protected LocalRKIdentifierImpl(long id) {
         this.tag = Parameter.Local_Routing_Key_Identifier;
         this.id = id;
-        this.encode();
     }
 
     private void encode() {
@@ -70,11 +68,14 @@ public class LocalRKIdentifierImpl extends ParameterImpl implements LocalRKIdent
         value.writeByte((byte) (this.id >> 24));
         value.writeByte((byte) (this.id >> 16));
         value.writeByte((byte) (this.id >> 8));
-        value.writeByte((byte) (this.id));
+        value.writeByte((byte) (this.id));        
     }
 
     @Override
     protected ByteBuf getValue() {
+    	if(value==null)
+    		encode();
+    	
         return Unpooled.wrappedBuffer(this.value);
     }
 

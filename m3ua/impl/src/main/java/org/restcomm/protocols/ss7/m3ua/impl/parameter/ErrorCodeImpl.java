@@ -36,6 +36,7 @@ import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 public class ErrorCodeImpl extends ParameterImpl implements ErrorCode {
 
     private int code;
+    private ByteBuf value;
 
     public ErrorCodeImpl(int code) {
         this.code = code;
@@ -54,15 +55,23 @@ public class ErrorCodeImpl extends ParameterImpl implements ErrorCode {
         this.tag = Parameter.Error_Code;
     }
 
+    private void encode() {
+        // create byte array taking into account data, point codes and
+        // indicators;
+        this.value = Unpooled.buffer(4);
+        // encode routing context
+        value.writeByte((byte) (code >> 24));
+        value.writeByte((byte) (code >> 16));
+        value.writeByte((byte) (code >> 8));
+        value.writeByte((byte) (code));
+    }
+
     @Override
     protected ByteBuf getValue() {
-    	ByteBuf data = Unpooled.buffer(4);
-        data.writeByte((byte) (code >>> 24));
-        data.writeByte((byte) (code >>> 16));
-        data.writeByte((byte) (code >>> 8));
-        data.writeByte((byte) (code));
-
-        return data;
+    	if(value==null)
+    		encode();
+    	
+        return Unpooled.wrappedBuffer(value);
     }
 
     public int getCode() {

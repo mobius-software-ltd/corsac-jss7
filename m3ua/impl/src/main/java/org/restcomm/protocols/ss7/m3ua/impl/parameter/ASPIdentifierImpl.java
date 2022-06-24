@@ -39,8 +39,6 @@ public class ASPIdentifierImpl extends ParameterImpl implements ASPIdentifier {
     protected ASPIdentifierImpl(ByteBuf value) {
     	this.tag = Parameter.ASP_Identifier;
 
-        this.value = Unpooled.wrappedBuffer(value);
-        
         this.aspID = 0;
         this.aspID |= value.readByte() & 0xFF;
         this.aspID <<= 8;
@@ -48,13 +46,12 @@ public class ASPIdentifierImpl extends ParameterImpl implements ASPIdentifier {
         this.aspID <<= 8;
         this.aspID |= value.readByte() & 0xFF;
         this.aspID <<= 8;
-        this.aspID |= value.readByte() & 0xFF;        
+        this.aspID |= value.readByte() & 0xFF; 
     }
 
     protected ASPIdentifierImpl(long id) {
     	this.tag = Parameter.ASP_Identifier;
         aspID = id;
-        encode();
     }
 
     private void encode() {
@@ -75,6 +72,9 @@ public class ASPIdentifierImpl extends ParameterImpl implements ASPIdentifier {
 
     @Override
     protected ByteBuf getValue() {
+    	if(value==null)
+    		encode();
+    	
     	return Unpooled.wrappedBuffer(value);
     }
 

@@ -34,42 +34,49 @@ import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
  */
 public class NetworkAppearanceImpl extends ParameterImpl implements NetworkAppearance {
 
-    private long value;
+    private long na;
+    private ByteBuf value;
 
     public NetworkAppearanceImpl() {
         this.tag = Parameter.Network_Appearance;
     }
 
     protected NetworkAppearanceImpl(long value) {
-        this.value = value;
+        this.na = value;
         this.tag = Parameter.Network_Appearance;
     }
 
     protected NetworkAppearanceImpl(ByteBuf data) {
-        this.value = 0;
-        this.value |= data.readByte() & 0xFF;
-        this.value <<= 8;
-        this.value |= data.readByte() & 0xFF;
-        this.value <<= 8;
-        this.value |= data.readByte() & 0xFF;
-        this.value <<= 8;
-        this.value |= data.readByte() & 0xFF;
+        this.na = 0;
+        this.na |= data.readByte() & 0xFF;
+        this.na <<= 8;
+        this.na |= data.readByte() & 0xFF;
+        this.na <<= 8;
+        this.na |= data.readByte() & 0xFF;
+        this.na <<= 8;
+        this.na |= data.readByte() & 0xFF;
         this.tag = Parameter.Network_Appearance;
     }
 
     public long getNetApp() {
-        return value;
+        return na;
     }
 
     @Override
     protected ByteBuf getValue() {
-        ByteBuf data = Unpooled.buffer(4);
-        data.writeByte((byte) (value >>> 24));
-        data.writeByte((byte) (value >>> 16));
-        data.writeByte((byte) (value >>> 8));
-        data.writeByte((byte) (value));
-
-        return data;
+    	if(value==null)
+    		encode();
+    	
+        return Unpooled.wrappedBuffer(value);
+    }
+    
+    private void encode() {
+    	this.value = Unpooled.buffer(4);
+        // encode routing context
+        value.writeByte((byte) (na >> 24));
+        value.writeByte((byte) (na >> 16));
+        value.writeByte((byte) (na >> 8));
+        value.writeByte((byte) (na));
     }
 
     @Override

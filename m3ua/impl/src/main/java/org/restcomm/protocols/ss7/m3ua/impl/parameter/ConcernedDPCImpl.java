@@ -36,7 +36,8 @@ import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 public class ConcernedDPCImpl extends ParameterImpl implements ConcernedDPC {
 
     private int pointCode;
-
+    private ByteBuf value;
+    
     protected ConcernedDPCImpl(int pointCode) {
         this.pointCode = pointCode;
         this.tag = Parameter.Concerned_Destination;
@@ -55,18 +56,23 @@ public class ConcernedDPCImpl extends ParameterImpl implements ConcernedDPC {
         this.tag = Parameter.Concerned_Destination;
     }
 
-    @Override
-    protected ByteBuf getValue() {
-        ByteBuf data = Unpooled.buffer(4);
+    protected void encode() {
+    	this.value = Unpooled.buffer(4);
         // reserved
-        data.writeByte(0);
+        value.writeByte(0);
 
         // DPC
-        data.writeByte((byte) (pointCode >>> 16));
-        data.writeByte((byte) (pointCode >>> 8));
-        data.writeByte((byte) (pointCode));
+        value.writeByte((byte) (pointCode >>> 16));
+        value.writeByte((byte) (pointCode >>> 8));
+        value.writeByte((byte) (pointCode));
+    }
 
-        return data;
+    @Override
+    protected ByteBuf getValue() {
+    	if(value==null)
+    		encode();
+    	
+        return Unpooled.wrappedBuffer(this.value);
     }
 
     @Override

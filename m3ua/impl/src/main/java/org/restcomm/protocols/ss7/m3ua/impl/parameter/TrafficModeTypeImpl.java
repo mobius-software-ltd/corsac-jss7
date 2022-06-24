@@ -42,8 +42,7 @@ public class TrafficModeTypeImpl extends ParameterImpl implements TrafficModeTyp
     }
 
     protected TrafficModeTypeImpl(ByteBuf data) {
-        this.tag = Parameter.Traffic_Mode_Type;
-        this.value = data;
+        this.tag = Parameter.Traffic_Mode_Type;       
         this.mode = 0;
         this.mode |= data.readByte() & 0xFF;
         this.mode <<= 8;
@@ -57,7 +56,6 @@ public class TrafficModeTypeImpl extends ParameterImpl implements TrafficModeTyp
     public TrafficModeTypeImpl(int traffmode) {
         this.tag = Parameter.Traffic_Mode_Type;
         mode = traffmode;
-        encode();
     }
 
     private void encode() {
@@ -77,6 +75,9 @@ public class TrafficModeTypeImpl extends ParameterImpl implements TrafficModeTyp
 
     @Override
     protected ByteBuf getValue() {
+    	if(value==null)
+    		encode();
+    	
         return Unpooled.wrappedBuffer(value);
     }
 

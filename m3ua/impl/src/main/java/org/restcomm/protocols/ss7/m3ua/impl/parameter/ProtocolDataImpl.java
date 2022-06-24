@@ -21,10 +21,10 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
+import org.restcomm.protocols.ss7.m3ua.parameter.ProtocolData;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
-import org.restcomm.protocols.ss7.m3ua.parameter.ProtocolData;
 
 /**
  * Implements Protocol Data parameter.
@@ -42,7 +42,8 @@ public class ProtocolDataImpl extends ParameterImpl implements ProtocolData {
     private int mp;
     private int sls;
     private ByteBuf data;
-
+    private ByteBuf value;
+    
     protected ProtocolDataImpl() {
         this.tag = ParameterImpl.Protocol_Data;
     }
@@ -56,7 +57,6 @@ public class ProtocolDataImpl extends ParameterImpl implements ProtocolData {
         this.mp = mp;
         this.sls = sls;
         this.data = data;
-        encode();
     }
 
     /**
@@ -76,11 +76,11 @@ public class ProtocolDataImpl extends ParameterImpl implements ProtocolData {
         this.ni = valueData.readByte() & 0xff;
         this.mp = valueData.readByte() & 0xff;
         this.sls = valueData.readByte() & 0xff;
-
+        
         this.data = valueData.slice();
     }
 
-    private ByteBuf encode() {
+    private void encode() {
         // create byte array taking into account data, point codes and
         // indicators;
     	ByteBuf headerValue=Unpooled.buffer(12);
@@ -103,8 +103,7 @@ public class ProtocolDataImpl extends ParameterImpl implements ProtocolData {
     	headerValue.writeByte((byte) (mp));
     	headerValue.writeByte((byte) (sls));
         
-    	ByteBuf value=Unpooled.wrappedBuffer(headerValue,data);
-        return value;
+    	this.value=Unpooled.wrappedBuffer(headerValue,data);
     }
 
     public int getOpc() {
@@ -137,7 +136,10 @@ public class ProtocolDataImpl extends ParameterImpl implements ProtocolData {
 
     @Override
     protected ByteBuf getValue() {
-        return this.encode();
+    	if(value==null)
+    		encode();
+    	
+        return Unpooled.wrappedBuffer(value);
     }
 
     @Override

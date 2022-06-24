@@ -52,15 +52,12 @@ public class UserCauseImpl extends ParameterImpl implements UserCause {
         this.cause |= value.readByte() & 0xFF;
         this.cause <<= 8;
         this.cause |= value.readByte() & 0xFF;
-
-        this.value = value;
     }
 
     protected UserCauseImpl(int user, int cause) {
         this.tag = Parameter.User_Cause;
         this.user = user;
         this.cause = cause;
-        encode();
     }
 
     private void encode() {
@@ -78,6 +75,9 @@ public class UserCauseImpl extends ParameterImpl implements UserCause {
 
     @Override
     protected ByteBuf getValue() {
+    	if(value==null)
+    		encode();
+    	
         return Unpooled.wrappedBuffer(value);
     }
 

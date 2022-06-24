@@ -40,7 +40,7 @@ public class RegistrationResultImpl extends ParameterImpl implements Registratio
     private RegistrationStatus status;
     private RoutingContext rc;
 
-    private ByteBuf buf = Unpooled.buffer(24);
+    private ByteBuf buf;
     
     public RegistrationResultImpl(ByteBuf data) {
         this.tag = Parameter.Registration_Result;
@@ -78,11 +78,11 @@ public class RegistrationResultImpl extends ParameterImpl implements Registratio
         this.localRKId = localRKId;
         this.status = status;
         this.rc = rc;
-
-        this.encode();
     }
 
     private void encode() {
+    	this.buf=Unpooled.buffer(24);
+    	
         ((LocalRKIdentifierImpl) this.localRKId).write(buf);
 
         ((RoutingContextImpl) rc).write(buf);
@@ -92,6 +92,9 @@ public class RegistrationResultImpl extends ParameterImpl implements Registratio
 
     @Override
     protected ByteBuf getValue() {
+    	if(buf==null)
+    		encode();
+    	
         return Unpooled.wrappedBuffer(this.buf);
     }
 

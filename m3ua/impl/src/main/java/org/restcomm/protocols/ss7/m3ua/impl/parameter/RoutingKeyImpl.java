@@ -51,8 +51,6 @@ public class RoutingKeyImpl extends ParameterImpl implements RoutingKey {
     private ServiceIndicators[] servInds;
     private OPCList[] opcList;
 
-    private ByteBuf buf = Unpooled.buffer(256);
-
     private ByteBuf value;
 
     public RoutingKeyImpl() {
@@ -64,8 +62,6 @@ public class RoutingKeyImpl extends ParameterImpl implements RoutingKey {
         this.value = value;
 
         this.decode(value);
-
-        this.value = value;
     }
 
     protected RoutingKeyImpl(LocalRKIdentifier localRkId, RoutingContext rc, TrafficModeType trafMdTy,
@@ -78,8 +74,6 @@ public class RoutingKeyImpl extends ParameterImpl implements RoutingKey {
         this.dpc = dpc;
         this.servInds = servInds;
         this.opcList = opcList;
-
-        this.encode();
     }
 
     private void decode(ByteBuf data) {
@@ -143,39 +137,42 @@ public class RoutingKeyImpl extends ParameterImpl implements RoutingKey {
     }
 
     private void encode() {
+    	this.value=Unpooled.buffer(256);
+    	
         if (this.localRkId != null) {
-            ((LocalRKIdentifierImpl) this.localRkId).write(buf);
+            ((LocalRKIdentifierImpl) this.localRkId).write(value);
         }
 
         if (this.rc != null) {
-            ((RoutingContextImpl) rc).write(buf);
+            ((RoutingContextImpl) rc).write(value);
         }
 
         if (this.trafMdTy != null) {
-            ((TrafficModeTypeImpl) trafMdTy).write(buf);
+            ((TrafficModeTypeImpl) trafMdTy).write(value);
         }
 
         if (this.netApp != null) {
-            ((NetworkAppearanceImpl) this.netApp).write(buf);
+            ((NetworkAppearanceImpl) this.netApp).write(value);
         }
 
         for (int i = 0; i < this.dpc.length; i++) {
-            ((DestinationPointCodeImpl) this.dpc[i]).write(buf);
+            ((DestinationPointCodeImpl) this.dpc[i]).write(value);
 
             if (this.servInds != null) {
-                ((ServiceIndicatorsImpl) this.servInds[i]).write(buf);
+                ((ServiceIndicatorsImpl) this.servInds[i]).write(value);
             }
 
             if (this.opcList != null) {
-                ((OPCListImpl) this.opcList[i]).write(buf);
+                ((OPCListImpl) this.opcList[i]).write(value);
             }
         }
-
-        value = Unpooled.wrappedBuffer(buf);        
     }
 
     @Override
     protected ByteBuf getValue() {
+    	if(value==null)
+    		encode();
+    	
         return Unpooled.wrappedBuffer(this.value);
     }
 

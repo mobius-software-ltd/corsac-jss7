@@ -39,14 +39,12 @@ public class DeregistrationResultImpl extends ParameterImpl implements Deregistr
 
     private RoutingContext rc;
     private DeregistrationStatus status;
-    private ByteBuf buf = Unpooled.buffer(16);
+    private ByteBuf buf;
 
     public DeregistrationResultImpl(RoutingContext rc, DeregistrationStatus status) {
         this.tag = Parameter.Deregistration_Result;
         this.rc = rc;
         this.status = status;
-
-        this.encode();
     }
 
     public DeregistrationResultImpl(ByteBuf data) {
@@ -77,12 +75,16 @@ public class DeregistrationResultImpl extends ParameterImpl implements Deregistr
     }
 
     private void encode() {
+    	this.buf=Unpooled.buffer(16);
         ((RoutingContextImpl) this.rc).write(buf);
         ((DeregistrationStatusImpl) this.status).write(buf);
     }
 
     @Override
     protected ByteBuf getValue() {
+    	if(this.buf==null)
+    		encode();
+    	
         return Unpooled.wrappedBuffer(this.buf);
     }
 

@@ -47,7 +47,6 @@ public class ServiceIndicatorsImpl extends ParameterImpl implements ServiceIndic
     protected ServiceIndicatorsImpl(short[] inds) {
         this.tag = Parameter.Service_Indicators;
         this.indicators = inds;
-        this.encode();
     }
 
     protected ServiceIndicatorsImpl(ByteBuf value) {
@@ -57,7 +56,6 @@ public class ServiceIndicatorsImpl extends ParameterImpl implements ServiceIndic
         while(value.readableBytes()>0) {
             this.indicators[index++] = value.readByte();
         }
-        this.value = value;
     }
 
     private void encode() {
@@ -72,6 +70,9 @@ public class ServiceIndicatorsImpl extends ParameterImpl implements ServiceIndic
 
     @Override
     protected ByteBuf getValue() {
+    	if(value==null)
+    		encode();
+    	
         return Unpooled.wrappedBuffer(this.value);
     }
 

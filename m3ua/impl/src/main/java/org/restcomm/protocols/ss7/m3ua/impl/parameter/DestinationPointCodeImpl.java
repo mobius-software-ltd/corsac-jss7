@@ -45,7 +45,6 @@ public class DestinationPointCodeImpl extends ParameterImpl implements Destinati
 
     protected DestinationPointCodeImpl(ByteBuf value) {
         this.tag = Parameter.Destination_Point_Code;
-        this.value = value;
         this.mask = value.readByte();
 
         destPC = 0;
@@ -60,7 +59,6 @@ public class DestinationPointCodeImpl extends ParameterImpl implements Destinati
         this.tag = Parameter.Destination_Point_Code;
         this.destPC = pc;
         this.mask = mask;
-        encode();
     }
 
     private void encode() {
@@ -81,6 +79,9 @@ public class DestinationPointCodeImpl extends ParameterImpl implements Destinati
 
     @Override
     protected ByteBuf getValue() {
+    	if(value==null)
+    		encode();
+    	
         return Unpooled.wrappedBuffer(value);
     }
 

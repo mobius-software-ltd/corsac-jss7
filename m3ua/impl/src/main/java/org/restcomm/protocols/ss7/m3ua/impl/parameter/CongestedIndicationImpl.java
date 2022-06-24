@@ -36,7 +36,8 @@ import org.restcomm.protocols.ss7.m3ua.parameter.Parameter;
 public class CongestedIndicationImpl extends ParameterImpl implements CongestedIndication {
 
     private CongestionLevel level;
-
+    private ByteBuf value;
+    
     protected CongestedIndicationImpl(CongestionLevel level) {
         this.level = level;
         this.tag = Parameter.Congestion_Indications;
@@ -50,15 +51,20 @@ public class CongestedIndicationImpl extends ParameterImpl implements CongestedI
         this.tag = Parameter.Congestion_Indications;
     }
 
+    protected void encode() {
+    	this.value = Unpooled.buffer(4);
+        value.writeByte(0);// Reserved
+        value.writeByte(0); // Reserved
+        value.writeByte(0);// Reserved
+        value.writeByte((byte) level.getLevel());
+    }
+
     @Override
     protected ByteBuf getValue() {
-        ByteBuf data = Unpooled.buffer(4);
-        data.writeByte(0);// Reserved
-        data.writeByte(0); // Reserved
-        data.writeByte(0);// Reserved
-        data.writeByte((byte) level.getLevel());
-
-        return data;
+    	if(value==null)
+    		encode();
+    	
+        return Unpooled.wrappedBuffer(this.value);
     }
 
     public CongestionLevel getCongestionLevel() {
