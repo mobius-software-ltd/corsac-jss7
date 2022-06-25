@@ -45,6 +45,7 @@ public class DeregistrationResultImpl extends ParameterImpl implements Deregistr
         this.tag = Parameter.Deregistration_Result;
         this.rc = rc;
         this.status = status;
+        encode();
     }
 
     public DeregistrationResultImpl(ByteBuf data) {

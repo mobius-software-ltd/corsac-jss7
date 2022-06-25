@@ -41,6 +41,7 @@ public class ConcernedDPCImpl extends ParameterImpl implements ConcernedDPC {
     protected ConcernedDPCImpl(int pointCode) {
         this.pointCode = pointCode;
         this.tag = Parameter.Concerned_Destination;
+        encode();
     }
 
     protected ConcernedDPCImpl(ByteBuf data) {

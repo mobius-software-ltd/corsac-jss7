@@ -58,6 +58,7 @@ public class LocalRKIdentifierImpl extends ParameterImpl implements LocalRKIdent
     protected LocalRKIdentifierImpl(long id) {
         this.tag = Parameter.Local_Routing_Key_Identifier;
         this.id = id;
+        encode();
     }
 
     private void encode() {

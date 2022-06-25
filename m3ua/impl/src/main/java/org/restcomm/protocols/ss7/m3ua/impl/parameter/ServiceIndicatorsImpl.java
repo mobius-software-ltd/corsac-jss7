@@ -47,6 +47,7 @@ public class ServiceIndicatorsImpl extends ParameterImpl implements ServiceIndic
     protected ServiceIndicatorsImpl(short[] inds) {
         this.tag = Parameter.Service_Indicators;
         this.indicators = inds;
+        encode();
     }
 
     protected ServiceIndicatorsImpl(ByteBuf value) {

@@ -58,6 +58,7 @@ public class UserCauseImpl extends ParameterImpl implements UserCause {
         this.tag = Parameter.User_Cause;
         this.user = user;
         this.cause = cause;
+        encode();
     }
 
     private void encode() {

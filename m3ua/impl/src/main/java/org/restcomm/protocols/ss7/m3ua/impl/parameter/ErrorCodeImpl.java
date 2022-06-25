@@ -41,6 +41,7 @@ public class ErrorCodeImpl extends ParameterImpl implements ErrorCode {
     public ErrorCodeImpl(int code) {
         this.code = code;
         this.tag = Parameter.Error_Code;
+        encode();
     }
 
     public ErrorCodeImpl(ByteBuf data) {

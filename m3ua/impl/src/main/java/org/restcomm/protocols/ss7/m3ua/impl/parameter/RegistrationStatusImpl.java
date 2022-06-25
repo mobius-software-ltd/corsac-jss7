@@ -54,6 +54,7 @@ public class RegistrationStatusImpl extends ParameterImpl implements Registratio
     public RegistrationStatusImpl(int status) {
         this.tag = Parameter.Registration_Status;
         this.status = status;
+        encode();
     }
 
     protected void encode() {

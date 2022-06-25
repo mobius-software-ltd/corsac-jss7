@@ -41,6 +41,7 @@ public class DeregistrationStatusImpl extends ParameterImpl implements Deregistr
     public DeregistrationStatusImpl(int status) {
         this.tag = Parameter.Deregistration_Status;
         this.status = status;
+        encode();
     }
 
     public DeregistrationStatusImpl(ByteBuf data) {

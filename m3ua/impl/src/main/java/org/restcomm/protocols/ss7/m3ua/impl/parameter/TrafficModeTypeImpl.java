@@ -56,6 +56,7 @@ public class TrafficModeTypeImpl extends ParameterImpl implements TrafficModeTyp
     public TrafficModeTypeImpl(int traffmode) {
         this.tag = Parameter.Traffic_Mode_Type;
         mode = traffmode;
+        encode();
     }
 
     private void encode() {

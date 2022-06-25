@@ -41,6 +41,7 @@ public class CongestedIndicationImpl extends ParameterImpl implements CongestedI
     protected CongestedIndicationImpl(CongestionLevel level) {
         this.level = level;
         this.tag = Parameter.Congestion_Indications;
+        encode();
     }
 
     protected CongestedIndicationImpl(ByteBuf data) {

@@ -65,6 +65,7 @@ public class RoutingContextImpl extends ParameterImpl implements RoutingContext 
     protected RoutingContextImpl(long[] routingcontexts) {
         this.tag = Parameter.Routing_Context;
         rcs = routingcontexts;
+        encode();
     }
 
     private void encode() {

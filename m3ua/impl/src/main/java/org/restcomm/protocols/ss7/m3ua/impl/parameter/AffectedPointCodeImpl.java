@@ -64,6 +64,7 @@ public class AffectedPointCodeImpl extends ParameterImpl implements AffectedPoin
         this.tag = Parameter.Affected_Point_Code;
         this.pointCodes = pointCodes;
         this.masks = masks;
+        encode();
     }
 
     private void encode() {

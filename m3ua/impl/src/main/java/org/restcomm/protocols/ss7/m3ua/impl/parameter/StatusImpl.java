@@ -43,6 +43,7 @@ public class StatusImpl extends ParameterImpl implements Status {
         this.type = type;
         this.info = info;
         this.tag = Parameter.Status;
+        encode();
     }
 
     public StatusImpl(ByteBuf data) {

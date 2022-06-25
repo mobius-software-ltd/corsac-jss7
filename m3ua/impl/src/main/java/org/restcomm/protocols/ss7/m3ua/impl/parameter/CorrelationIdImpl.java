@@ -41,6 +41,7 @@ public class CorrelationIdImpl extends ParameterImpl implements CorrelationId {
     protected CorrelationIdImpl(long corrId) {
         this.corrId = corrId;        
         this.tag = Parameter.Correlation_ID;
+        encode();
     }
 
     protected CorrelationIdImpl(ByteBuf data) {

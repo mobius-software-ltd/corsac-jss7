@@ -68,6 +68,7 @@ public class OPCListImpl extends ParameterImpl implements OPCList {
         this.tag = Parameter.Originating_Point_Code_List;
         this.pointCodes = pointCodes;
         this.masks = masks;
+        encode();
     }
 
     private void encode() {

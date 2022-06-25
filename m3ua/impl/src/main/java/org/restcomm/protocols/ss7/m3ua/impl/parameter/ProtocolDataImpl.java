@@ -57,6 +57,7 @@ public class ProtocolDataImpl extends ParameterImpl implements ProtocolData {
         this.mp = mp;
         this.sls = sls;
         this.data = data;
+        encode();
     }
 
     /**

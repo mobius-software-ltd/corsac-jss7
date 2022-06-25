@@ -74,6 +74,7 @@ public class RoutingKeyImpl extends ParameterImpl implements RoutingKey {
         this.dpc = dpc;
         this.servInds = servInds;
         this.opcList = opcList;
+        encode();
     }
 
     private void decode(ByteBuf data) {

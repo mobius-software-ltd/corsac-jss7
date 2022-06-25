@@ -44,6 +44,7 @@ public class NetworkAppearanceImpl extends ParameterImpl implements NetworkAppea
     protected NetworkAppearanceImpl(long value) {
         this.na = value;
         this.tag = Parameter.Network_Appearance;
+        encode();
     }
 
     protected NetworkAppearanceImpl(ByteBuf data) {

@@ -78,6 +78,7 @@ public class RegistrationResultImpl extends ParameterImpl implements Registratio
         this.localRKId = localRKId;
         this.status = status;
         this.rc = rc;
+        encode();
     }
 
     private void encode() {

@@ -52,6 +52,7 @@ public class ASPIdentifierImpl extends ParameterImpl implements ASPIdentifier {
     protected ASPIdentifierImpl(long id) {
     	this.tag = Parameter.ASP_Identifier;
         aspID = id;
+        encode();
     }
 
     private void encode() {

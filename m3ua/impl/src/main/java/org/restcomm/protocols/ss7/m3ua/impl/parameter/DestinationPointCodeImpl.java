@@ -59,6 +59,7 @@ public class DestinationPointCodeImpl extends ParameterImpl implements Destinati
         this.tag = Parameter.Destination_Point_Code;
         this.destPC = pc;
         this.mask = mask;
+        encode();
     }
 
     private void encode() {

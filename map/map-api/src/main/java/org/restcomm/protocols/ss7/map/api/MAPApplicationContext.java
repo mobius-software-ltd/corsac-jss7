@@ -328,10 +328,18 @@ public class MAPApplicationContext implements Serializable {
         MAPApplicationContext other = (MAPApplicationContext) obj;
         if (contextName != other.contextName)
             return false;
+        
         if (contextVersion != other.contextVersion)
-            return false;
-        if (res.equals(other.res))
-            return false;
+        	return false;
+       
+        if(res==null) {
+        	if(other.res!=null) {
+        		return false;
+        	}
+        }
+        else if (!res.equals(other.res))
+        	return false;
+        
         return true;
     }
 
