@@ -57,12 +57,12 @@ public class ProcessUnstructuredSSRequestImpl extends SupplementaryMessageImpl i
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=1, defaultImplementation = USSDStringImpl.class)
 	private USSDString ussdString;
 	
-	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
-	private ISDNAddressString msISDNAddressStringImpl = null;
-    
 	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=4,constructed=false,index=-1,defaultImplementation = AlertingPatternImpl.class)
 	private AlertingPattern alertingPattern = null;
 
+	@ASNProperty(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=0,constructed=false,index=-1, defaultImplementation = ISDNAddressStringImpl.class)
+	private ISDNAddressString msISDNAddressStringImpl = null;
+    
     /**
      * @param ussdDataCodingSch
      * @param ussdString
