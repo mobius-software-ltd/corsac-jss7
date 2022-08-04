@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>tcap-parent</artifactId>
 		<groupId>com.mobius-software.protocols.ss7.tcap</groupId>
-		<version>10.0.5-SNAPSHOT</version>
+		<version>10.0.6-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>tcap-api</artifactId>
