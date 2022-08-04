@@ -31,7 +31,7 @@ package org.restcomm.protocols.ss7.map.api.errors;
 public interface MAPErrorMessage {
 
     Integer getErrorCode();
-
+    
     boolean isEmParameterless();
 
     boolean isEmExtensionContainer();

@@ -236,7 +236,7 @@ public class MtpPrimitivesTest extends SccpHarness {
         // lets check stack functional.mgmt messages
 
         SccpStackImplProxy stack = (SccpStackImplProxy) sccpStack1;
-
+        
         assertTrue(stack.getManagementProxy().getMtp3Messages().size() == 1, "U1 did not receive Mtp3 Primitve, it should !");
         assertTrue(stack.getManagementProxy().getMgmtMessages().size() == 0, "U1 received Management message, it should not!");
         Mtp3PrimitiveMessage rmtpPause = stack.getManagementProxy().getMtp3Messages().get(0);

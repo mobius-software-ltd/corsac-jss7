@@ -19,6 +19,7 @@
 
 package org.restcomm.protocols.ss7.inap;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -31,6 +32,7 @@ import org.restcomm.protocols.ss7.inap.api.INAPProvider;
 import org.restcomm.protocols.ss7.inap.api.INAPServiceBase;
 import org.restcomm.protocols.ss7.inap.api.INAPServiceListener;
 import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessage;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.INAPServiceCircuitSwitchedCallImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
@@ -168,5 +170,9 @@ public abstract class INAPServiceBaseImpl implements INAPServiceBase {
         for (INAPServiceListener serLis : this.serviceListeners) {
             serLis.onInvokeTimeout(inapDialog, invoke.getInvokeId());
         }
+    }
+    
+    public static List<String> getNames() {
+    	return Arrays.asList(new String[] { INAPServiceCircuitSwitchedCallImpl.NAME});
     }
 }

@@ -21,6 +21,7 @@
 
 package org.restcomm.protocols.ss7.map;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -33,6 +34,13 @@ import org.restcomm.protocols.ss7.map.api.MAPProvider;
 import org.restcomm.protocols.ss7.map.api.MAPServiceBase;
 import org.restcomm.protocols.ss7.map.api.MAPServiceListener;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
+import org.restcomm.protocols.ss7.map.service.callhandling.MAPServiceCallHandlingImpl;
+import org.restcomm.protocols.ss7.map.service.lsm.MAPServiceLsmImpl;
+import org.restcomm.protocols.ss7.map.service.mobility.MAPServiceMobilityImpl;
+import org.restcomm.protocols.ss7.map.service.oam.MAPServiceOamImpl;
+import org.restcomm.protocols.ss7.map.service.pdpContextActivation.MAPServicePdpContextActivationImpl;
+import org.restcomm.protocols.ss7.map.service.sms.MAPServiceSmsImpl;
+import org.restcomm.protocols.ss7.map.service.supplementary.MAPServiceSupplementaryImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
@@ -184,5 +192,9 @@ public abstract class MAPServiceBaseImpl implements MAPServiceBase {
         for (MAPServiceListener serLis : this.serviceListeners) {
             serLis.onInvokeTimeout(mapDialog, invoke.getInvokeId());
         }
+    }
+    
+    public static List<String> getNames() {
+    	return Arrays.asList(new String[] { MAPServiceCallHandlingImpl.NAME, MAPServiceLsmImpl.NAME, MAPServiceMobilityImpl.NAME, MAPServiceOamImpl.NAME, MAPServicePdpContextActivationImpl.NAME, MAPServiceSmsImpl.NAME, MAPServiceSupplementaryImpl.NAME});
     }
 }

@@ -1,4 +1,6 @@
 package org.restcomm.protocols.ss7.inap.api;
+import java.util.Map;
+
 /*
  * Mobius Software LTD
  * Copyright 2019, Mobius Software LTD and individual contributors
@@ -38,4 +40,16 @@ public interface INAPStack {
    void start() throws Exception;
 
    TCAPStack getTCAPStack();
+
+   Map<String,Long> getMessagesSentByType();
+   
+   Map<String,Long> getMessagesReceivedByType();
+   
+   Map<String,Long> getErrorsSentByType();
+   
+   Map<String,Long> getErrorsReceivedByType();
+   
+   Map<String,Long> getDialogsSentByType();
+   
+   Map<String,Long> getDialogsReceivedByType();
 }

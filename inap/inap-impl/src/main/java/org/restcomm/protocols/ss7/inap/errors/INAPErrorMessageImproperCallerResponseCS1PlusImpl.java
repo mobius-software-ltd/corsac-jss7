@@ -30,14 +30,14 @@ import org.restcomm.protocols.ss7.inap.api.errors.ImproperCallerResponseParamete
  */
 public class INAPErrorMessageImproperCallerResponseCS1PlusImpl extends EnumeratedINAPErrorMessage1Impl implements INAPErrorMessageImproperCallerResponseCS1Plus {
 	protected INAPErrorMessageImproperCallerResponseCS1PlusImpl(ImproperCallerResponseParameter improperCallerResponseParameter) {
-        super(INAPErrorCode.systemFailure,"SystemFailure",1,2);
+        super(INAPErrorCode.improperCallerResponse,"ImproperCallerResponse",1,2);
 
         if(improperCallerResponseParameter!=null)
         	setValue(improperCallerResponseParameter.getCode());        
     }
 
     public INAPErrorMessageImproperCallerResponseCS1PlusImpl() {
-        super(INAPErrorCode.systemFailure,"SystemFailure",1,2);
+        super(INAPErrorCode.improperCallerResponse,"ImproperCallerResponse",1,2);
     }
 
     public boolean isImproperCallerResponseCs1Plus() {

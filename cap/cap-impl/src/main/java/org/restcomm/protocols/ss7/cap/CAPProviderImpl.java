@@ -207,11 +207,13 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
     private final transient CAPServiceGprs capServiceGprs = new CAPServiceGprsImpl(this);
     private final transient CAPServiceSms capServiceSms = new CAPServiceSmsImpl(this);
 
-    public CAPProviderImpl(String name, TCAPProvider tcapProvider) {
+    private CAPStackImpl stack;
+    
+    public CAPProviderImpl(String name, CAPStackImpl stack, TCAPProvider tcapProvider) {
         this.tcapProvider = tcapProvider;
 
         this.loger = LogManager.getLogger(CAPStackImpl.class.getCanonicalName() + "-" + name);
-
+        this.stack = stack;
         this.capServices.add(this.capServiceCircuitSwitchedCall);
         this.capServices.add(this.capServiceGprs);
         this.capServices.add(this.capServiceSms);
@@ -507,6 +509,10 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
         }        	
     }
 
+    public CAPStackImpl getCAPStack() {
+    	return stack;
+    }
+    
     public TCAPProvider getTCAPProvider() {
         return this.tcapProvider;
     }
@@ -1176,6 +1182,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                          return;
                     }
                     
+                    stack.newErrorReceived(CAPErrorCode.translate(msgErr.getErrorCode()));               
                     perfSer.deliverErrorComponent(capDialogImpl, comp.getInvokeId(), msgErr);
                     return;
                 }
@@ -1200,7 +1207,8 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
             	
             	CAPMessage realMessage=(CAPMessage)parameter;
             	if(realMessage!=null) {
-            		realMessage.setOriginalBuffer(buffer);
+            		stack.newMessageReceived(realMessage.getMessageType().name());               
+                    realMessage.setOriginalBuffer(buffer);
 	            	realMessage.setInvokeId(invokeId);
 	            	realMessage.setCAPDialog(capDialogImpl);
             	}

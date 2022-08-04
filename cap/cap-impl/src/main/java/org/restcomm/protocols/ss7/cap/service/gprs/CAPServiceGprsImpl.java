@@ -71,6 +71,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
  */
 public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPServiceGprs {
 
+	public static final String NAME="GPRS";
+    
     protected Logger loger = LogManager.getLogger(CAPServiceGprsImpl.class);
 
     public CAPServiceGprsImpl(CAPProviderImpl capProviderImpl) {
@@ -79,7 +81,8 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
 
     @Override
     public CAPDialogGprs createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress) throws CAPException {
-        return this.createNewDialog(appCntx, origAddress, destAddress, null);
+    	capProviderImpl.getCAPStack().newDialogSent(NAME);
+    	return this.createNewDialog(appCntx, origAddress, destAddress, null);
     }
 
     @Override
@@ -109,7 +112,8 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
 
     @Override
     protected CAPDialogImpl createNewDialogIncoming(CAPApplicationContext appCntx, Dialog tcapDialog) {
-        return new CAPDialogGprsImpl(appCntx, tcapDialog, this.capProviderImpl, this);
+    	capProviderImpl.getCAPStack().newDialogReceived(NAME);
+    	return new CAPDialogGprsImpl(appCntx, tcapDialog, this.capProviderImpl, this);
     }
 
     @Override
@@ -209,7 +213,8 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
         				EntityReleasedGPRSResponse ind = new EntityReleasedGPRSResponseImpl();
         				ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                		  
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                        
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -360,7 +365,8 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
                 		ApplyChargingReportGPRSResponse ind = new ApplyChargingReportGPRSResponseImpl();
                 		ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                		
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                        
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -392,7 +398,8 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
                 		EventReportGPRSResponse ind = new EventReportGPRSResponseImpl();
                 		ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                		
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                        
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -411,7 +418,8 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
                 		ActivityTestGPRSRequest ind = new ActivityTestGPRSRequestImpl();
                 		ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                		
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                        
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -426,7 +434,8 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
                 		ActivityTestGPRSResponse ind = new ActivityTestGPRSResponseImpl();
                 		ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                		
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                        
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);

@@ -35,7 +35,8 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
  *
  */
 public class TCUnknownMessageImpl extends TCUnifiedMessageImpl implements TCUniMessage {
-	
+	public static String NAME="Unknown";
+
 	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=0x08,constructed=true,index=-1,defaultImplementation = ComponentPortionImpl.class)
 	private ComponentPortion component;
 
@@ -101,4 +102,9 @@ public class TCUnknownMessageImpl extends TCUnifiedMessageImpl implements TCUniM
     public boolean isDialogPortionExists() {
     	return true;
     }
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
 }

@@ -42,7 +42,9 @@ import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponen
  */
 @ASNTag(asnClass=ASNClass.APPLICATION,tag=0x02,constructed=true,lengthIndefinite=false)
 public class TCBeginMessageImpl extends TCUnifiedMessageImpl implements TCBeginMessage {
-    // opt
+	public static String NAME="Begin";
+	
+	// opt
     private ComponentPortionImpl component;
 
     /*
@@ -77,5 +79,10 @@ public class TCBeginMessageImpl extends TCUnifiedMessageImpl implements TCBeginM
 	public void validateElement() throws ASNParsingComponentException {
     	if(getOriginatingTransactionId()==null || getDestinationTransactionId()!=null)
     		throw new ASNParsingComponentException("Originating transaction ID should not be null,destination transaction ID should be null", ASNParsingComponentExceptionReason.MistypedParameter); 
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
 	}
 }

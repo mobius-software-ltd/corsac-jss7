@@ -20,6 +20,7 @@
 package org.restcomm.protocols.ss7.inap.functional;
 
 import org.restcomm.protocols.ss7.inap.INAPProviderImpl;
+import org.restcomm.protocols.ss7.inap.INAPStackImpl;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 
 /**
@@ -32,8 +33,8 @@ public class INAPProviderImplWrapper extends INAPProviderImpl {
 
 	// private final MAPServiceSupplementary mapServiceSupplementaryTest = new MAPServiceSupplementaryImplWrapper(this);
 
-    public INAPProviderImplWrapper(TCAPProvider tcapProvider) {
-        super("Test", tcapProvider);
+    public INAPProviderImplWrapper(TCAPProvider tcapProvider,INAPStackImpl stack) {
+        super("Test", stack, tcapProvider);
 
         // this.inapServices.add(this.mapServiceSupplementaryTest);
     }

@@ -40,7 +40,8 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
  */
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=3,constructed=true,lengthIndefinite=false)
 public class TCQueryMessageImpl extends TCUnifiedMessageImpl implements TCQueryMessage {
-	
+	public static String NAME="Query";
+
 	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=0x08,constructed=true,index=-1,defaultImplementation = ComponentPortionImpl.class)
 	private ComponentPortion component;
 
@@ -114,5 +115,10 @@ public class TCQueryMessageImpl extends TCUnifiedMessageImpl implements TCQueryM
     public boolean isDialogPortionExists() {
         return this.getDialogPortion()!=null || this.getComponent()!=null;
     }
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
 }
 

@@ -469,6 +469,7 @@ public class DialogImpl implements Dialog {
         try {
         	ByteBuf buffer=dialogParser.encode(tcbm);
             this.setState(TRPseudoState.InitialSent);
+            provider.getStack().newMessageSent(tcbm.getName(),buffer.readableBytes());
             this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
                     this.seqControl, this.networkId, this.localSsn, this.remotePc);
             this.scheduledComponentList.clear();
@@ -536,7 +537,8 @@ public class DialogImpl implements Dialog {
             }
             try {
             	ByteBuf buffer=dialogParser.encode(tcbm);                
-            	this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress,
+            	provider.getStack().newMessageSent(tcbm.getName(),buffer.readableBytes());
+                this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.networkId, this.localSsn, this.remotePc);
                 this.setState(TRPseudoState.Active);
                 this.scheduledComponentList.clear();
@@ -564,7 +566,8 @@ public class DialogImpl implements Dialog {
 
             try {
             	ByteBuf buffer=dialogParser.encode(tcbm);
-            	this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress,
+            	provider.getStack().newMessageSent(tcbm.getName(),buffer.readableBytes());
+                this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.networkId, this.localSsn, this.remotePc);
                 this.scheduledComponentList.clear();
             } catch (Exception e) {
@@ -674,6 +677,7 @@ public class DialogImpl implements Dialog {
 
         try {
             ByteBuf buffer=dialogParser.encode(tcbm);
+            provider.getStack().newMessageSent(tcbm.getName(),buffer.readableBytes());
             this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
                     this.seqControl, this.networkId, this.localSsn, this.remotePc);
 
@@ -727,6 +731,7 @@ public class DialogImpl implements Dialog {
 
         try {
             ByteBuf buffer=dialogParser.encode(msg);
+            provider.getStack().newMessageSent(msg.getName(),buffer.readableBytes());
             this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
                     this.seqControl, this.networkId, this.localSsn, this.remotePc);
             this.scheduledComponentList.clear();
@@ -817,6 +822,12 @@ public class DialogImpl implements Dialog {
             // no components
             try {
                 ByteBuf buffer=dialogParser.encode(msg);
+                provider.getStack().newMessageSent(msg.getName(),buffer.readableBytes());
+                if(msg.getPAbortCause()!=null)
+                	provider.getStack().newAbortSent(msg.getPAbortCause().name());
+                else
+                	provider.getStack().newAbortSent("User");
+                
                 this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.networkId, this.localSsn, this.remotePc);
 
@@ -1186,13 +1197,44 @@ public class DialogImpl implements Dialog {
     	int index = 0;
         while (this.scheduledComponentList.size() > index) {
         	BaseComponent cr = this.scheduledComponentList.get(index);
+        	
+        	ComponentType ct=ComponentType.Invoke;
+            if(cr instanceof ReturnError)
+            	ct=ComponentType.ReturnError;
+            else if(cr instanceof ReturnResult)
+            	ct=ComponentType.ReturnResult;
+            else if(cr instanceof ReturnResultLast)
+            	ct=ComponentType.ReturnResultLast;
+            else if(cr instanceof Reject)
+            	ct=ComponentType.Reject;
+            
+        	provider.getStack().newComponentSent(ct.name());
+            
             if (cr instanceof Invoke) {
                 Invoke in = (Invoke)cr;
                 // FIXME: check not null?
                 this.operationsSent[getIndexFromInvokeId(in.getInvokeId())] = in;
                 in.setState(OperationState.Sent);
             }
-
+            else if(cr instanceof Reject) {
+            	Reject reject=(Reject)cr;
+            	if(reject.getProblem()!=null) {
+            		try {
+	            		if(reject.getProblem().getGeneralProblemType()!=null)
+	            			provider.getStack().newRejectSent(reject.getProblem().getGeneralProblemType().name());
+	            		else if(reject.getProblem().getInvokeProblemType()!=null)
+	            			provider.getStack().newRejectSent(reject.getProblem().getInvokeProblemType().name());
+	            		else if(reject.getProblem().getReturnErrorProblemType()!=null)
+	            			provider.getStack().newRejectSent(reject.getProblem().getReturnErrorProblemType().name());
+	            		else if(reject.getProblem().getReturnResultProblemType()!=null)
+	            			provider.getStack().newRejectSent(reject.getProblem().getReturnResultProblemType().name());
+            		}
+            		catch(ParseException ex) {
+            			
+            		}
+            	}
+            }
+            
             res.add(cr);
             index++;
         }
@@ -1591,6 +1633,8 @@ public class DialogImpl implements Dialog {
 
             try {
                 ByteBuf buffer=provider.encodeAbortMessage(msg);               
+                provider.getStack().newMessageSent(msg.getName(),buffer.readableBytes());
+                provider.getStack().newAbortSent(PAbortCauseType.AbnormalDialogue.name());
                 this.provider.send(buffer, false, this.remoteAddress, this.localAddress, this.seqControl,
                         this.networkId, this.localSsn, this.remotePc);
             } catch (Exception e) {
@@ -1655,10 +1699,11 @@ public class DialogImpl implements Dialog {
             else if(ci instanceof Reject)
             	ct=ComponentType.Reject;
             
+            provider.getStack().newComponentReceived(ct.name());
             switch (ct) {
 
                 case Invoke:
-                    if (invokeId != null && invoke == null) {
+                	if (invokeId != null && invoke == null) {
                         logger.error(String.format("Rx : %s but no sent Invoke for linkedId exists", ci));
 
                         Problem p = TcapFactory.createProblem();
@@ -1682,8 +1727,7 @@ public class DialogImpl implements Dialog {
                     break;
 
                 case ReturnResult:
-
-                    if (invoke == null) {
+                	if (invoke == null) {
                         logger.error(String.format("Rx : %s but there is no corresponding Invoke", ci));
 
                         Problem p = TcapFactory.createProblem();
@@ -1782,6 +1826,23 @@ public class DialogImpl implements Dialog {
                         }
                     }
                     resultingIndications.add(ci);
+                    
+                    if(rej.getProblem()!=null) {
+                		try {
+    	            		if(rej.getProblem().getGeneralProblemType()!=null)
+    	            			provider.getStack().newRejectReceived(rej.getProblem().getGeneralProblemType().name());
+    	            		else if(rej.getProblem().getInvokeProblemType()!=null)
+    	            			provider.getStack().newRejectReceived(rej.getProblem().getInvokeProblemType().name());
+    	            		else if(rej.getProblem().getReturnErrorProblemType()!=null)
+    	            			provider.getStack().newRejectReceived(rej.getProblem().getReturnErrorProblemType().name());
+    	            		else if(rej.getProblem().getReturnResultProblemType()!=null)
+    	            			provider.getStack().newRejectReceived(rej.getProblem().getReturnResultProblemType().name());
+                		}
+                		catch(ParseException ex) {
+                			
+                		}
+                	}
+                    
                     break;
 
                 default:

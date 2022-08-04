@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.cap.api;
 
+import java.util.Map;
+
 import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
 
 /**
@@ -45,5 +47,17 @@ public interface CAPStack {
     void start() throws Exception;
 
     TCAPStack getTCAPStack();
+
+    Map<String,Long> getMessagesSentByType();
+    
+    Map<String,Long> getMessagesReceivedByType();
+    
+    Map<String,Long> getErrorsSentByType();
+    
+    Map<String,Long> getErrorsReceivedByType();
+    
+    Map<String,Long> getDialogsSentByType();
+    
+    Map<String,Long> getDialogsReceivedByType();
 
 }

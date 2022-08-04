@@ -42,6 +42,8 @@ import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponen
  */
 @ASNTag(asnClass=ASNClass.APPLICATION,tag=0x01,constructed=true,lengthIndefinite=false)
 public class TCUniMessageImpl extends TCUnifiedMessageImpl implements TCUniMessage {
+	public static String NAME="Uni";
+	
 	private ComponentPortionImpl component;
 
     /*
@@ -76,5 +78,10 @@ public class TCUniMessageImpl extends TCUnifiedMessageImpl implements TCUniMessa
 	public void validateElement() throws ASNParsingComponentException {
     	if(getOriginatingTransactionId()!=null || getDestinationTransactionId()!=null || component==null)
     		throw new ASNParsingComponentException("Originating and destination transaction IDs should be null,components should not be null", ASNParsingComponentExceptionReason.MistypedParameter); 
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
 	}
 }

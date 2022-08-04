@@ -27,9 +27,13 @@ import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculate
 import static org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil.calculateXudtFieldsLengthWithoutData2;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -37,6 +41,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -75,6 +80,7 @@ import org.restcomm.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SegmentationImpl;
 import org.restcomm.protocols.ss7.sccp.impl.router.RouterImpl;
 import org.restcomm.protocols.ss7.sccp.message.SccpConnMessage;
+import org.restcomm.protocols.ss7.sccp.message.SccpMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle;
 import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
@@ -205,6 +211,19 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
     private ConcurrentHashMap<Integer, Date> lastCongNotice = new ConcurrentHashMap<Integer, Date>();
     private ConcurrentHashMap<Integer, Date> lastUserPartUnavailNotice = new ConcurrentHashMap<Integer, Date>();
 
+    private ConcurrentHashMap<String, AtomicLong> messagesSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> messagesReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> bytesSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> bytesReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    
+    private static List<String> allMessageTypes=Arrays.asList(new String[] {SccpMessageImpl.MESSAGE_NAME_OTHER,
+    		SccpMessageImpl.MESSAGE_NAME_CR, SccpMessageImpl.MESSAGE_NAME_CC, SccpMessageImpl.MESSAGE_NAME_CREF,
+    		SccpMessageImpl.MESSAGE_NAME_RLSD, SccpMessageImpl.MESSAGE_NAME_RLC, SccpMessageImpl.MESSAGE_NAME_DT1,
+    		SccpMessageImpl.MESSAGE_NAME_DT2, SccpMessageImpl.MESSAGE_NAME_AK, SccpMessageImpl.MESSAGE_NAME_RSR,
+    		SccpMessageImpl.MESSAGE_NAME_RSC, SccpMessageImpl.MESSAGE_NAME_ERR, SccpMessageImpl.MESSAGE_NAME_IT,
+    		SccpMessageImpl.MESSAGE_NAME_UDT, SccpMessageImpl.MESSAGE_NAME_UDTS, SccpMessageImpl.MESSAGE_NAME_XUDT,
+    		SccpMessageImpl.MESSAGE_NAME_XUDTS, SccpMessageImpl.MESSAGE_NAME_LUDT,SccpMessageImpl.MESSAGE_NAME_LUDTS });
+    
     /*
      * For non-connection oriented protocol class usage
      */
@@ -216,6 +235,13 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
         this.sccpProvider = new SccpProviderImpl(this);
 
         this.state = State.CONFIGURED;
+        
+        for(String currType:allMessageTypes) {
+        	messagesSentByType.put(currType, new AtomicLong(0L));
+        	messagesReceivedByType.put(currType, new AtomicLong(0L));
+        	bytesSentByType.put(currType, new AtomicLong(0L));
+        	bytesReceivedByType.put(currType, new AtomicLong(0L));
+        }
     }
 
     public String getName() {
@@ -973,6 +999,17 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
         int opc = mtp3Msg.getOpc();
 
         try {
+        	// decoding of a message
+            ByteBuf data=mtp3Msg.getData();
+            int bytes=data.readableBytes();
+            int mt = data.readUnsignedByte();
+            msg = ((MessageFactoryImpl) sccpProvider.getMessageFactory()).createMessage(mt, mtp3Msg.getOpc(), mtp3Msg.getDpc(), mtp3Msg.getSls(), data,
+                    this.sccpProtocolVersion, 0);
+            
+            messagesReceivedByType.get(SccpMessageImpl.getName(msg.getType())).incrementAndGet();
+        	bytesReceivedByType.get(SccpMessageImpl.getName(msg.getType())).addAndGet(bytes);
+        	
+        	
             // checking if incoming dpc is local
             if (!this.router.spcIsLocal(dpc)) {
 
@@ -1031,12 +1068,6 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
                                 mtp3Msg.getSi()));
                 return;
             }
-
-            // decoding of a message
-            ByteBuf data=mtp3Msg.getData();
-            int mt = data.readUnsignedByte();
-            msg = ((MessageFactoryImpl) sccpProvider.getMessageFactory()).createMessage(mt, mtp3Msg.getOpc(), mtp3Msg.getDpc(), mtp3Msg.getSls(), data,
-                    this.sccpProtocolVersion, 0);
 
             // finding sap and networkId for a message
             dpc = mtp3Msg.getDpc();
@@ -1242,4 +1273,78 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
             }
         }
     }
+    
+    protected void sendMessageToMTP(SccpMessage message,Mtp3UserPart mup,Mtp3TransferPrimitive mtp3Message) throws IOException {
+    	messagesSentByType.get(SccpMessageImpl.getName(message.getType())).incrementAndGet();
+     	bytesSentByType.get(SccpMessageImpl.getName(message.getType())).addAndGet(mtp3Message.getData().readableBytes());
+     	mup.sendMessage(mtp3Message);
+    }
+
+	@Override
+	public Map<String, Long> getMessagesSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=messagesSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getMessagesReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=messagesReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getBytesSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=bytesSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getBytesReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=bytesReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Long getDataMessagesSent() {
+		return messagesSentByType.get(SccpMessageImpl.MESSAGE_NAME_DT1).get() + messagesSentByType.get(SccpMessageImpl.MESSAGE_NAME_DT2).get() + messagesSentByType.get(SccpMessageImpl.MESSAGE_NAME_UDT).get() + messagesSentByType.get(SccpMessageImpl.MESSAGE_NAME_LUDT).get() + messagesSentByType.get(SccpMessageImpl.MESSAGE_NAME_XUDT).get();
+	}
+
+	@Override
+	public Long getDataMessagesReceived() {
+		return messagesReceivedByType.get(SccpMessageImpl.MESSAGE_NAME_DT1).get() + messagesReceivedByType.get(SccpMessageImpl.MESSAGE_NAME_DT2).get() + messagesReceivedByType.get(SccpMessageImpl.MESSAGE_NAME_UDT).get() + messagesReceivedByType.get(SccpMessageImpl.MESSAGE_NAME_LUDT).get() + messagesReceivedByType.get(SccpMessageImpl.MESSAGE_NAME_XUDT).get();
+	}
+
+	@Override
+	public Long getDataBytesSent() {
+		return bytesSentByType.get(SccpMessageImpl.MESSAGE_NAME_DT1).get() + bytesSentByType.get(SccpMessageImpl.MESSAGE_NAME_DT2).get() + bytesSentByType.get(SccpMessageImpl.MESSAGE_NAME_UDT).get() + bytesSentByType.get(SccpMessageImpl.MESSAGE_NAME_LUDT).get() + bytesSentByType.get(SccpMessageImpl.MESSAGE_NAME_XUDT).get();
+	}
+
+	@Override
+	public Long getDataBytesReceived() {
+		return bytesReceivedByType.get(SccpMessageImpl.MESSAGE_NAME_DT1).get() + bytesReceivedByType.get(SccpMessageImpl.MESSAGE_NAME_DT2).get() + bytesReceivedByType.get(SccpMessageImpl.MESSAGE_NAME_UDT).get() + bytesReceivedByType.get(SccpMessageImpl.MESSAGE_NAME_LUDT).get() + bytesReceivedByType.get(SccpMessageImpl.MESSAGE_NAME_XUDT).get();
+	}
 }

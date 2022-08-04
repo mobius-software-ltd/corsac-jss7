@@ -43,6 +43,8 @@ import io.netty.buffer.ByteBuf;
  */
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=22,constructed=true,lengthIndefinite=false)
 public class TCAbortMessageImpl extends TCUnifiedMessageImpl implements TCAbortMessage {
+	public static String NAME="Abort";
+
 	private ASNPAbortCauseType pAbortCause;
 	
 	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=24,constructed=true,index=-1,defaultImplementation = UserInformationImpl.class)
@@ -128,4 +130,9 @@ public class TCAbortMessageImpl extends TCUnifiedMessageImpl implements TCAbortM
     public boolean isDialogPortionExists() {
         return this.getDialogPortion()!=null || pAbortCause!=null;
     }
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
 }

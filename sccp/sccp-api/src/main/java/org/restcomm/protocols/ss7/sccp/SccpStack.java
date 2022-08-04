@@ -377,4 +377,20 @@ public interface SccpStack {
      * @return
      */
     Router getRouter();
+    
+    Map<String,Long> getMessagesSentByType();
+    
+    Map<String,Long> getMessagesReceivedByType();
+    
+    Map<String,Long> getBytesSentByType();
+    
+    Map<String,Long> getBytesReceivedByType();
+    
+    Long getDataMessagesSent();
+    
+    Long getDataMessagesReceived();
+    
+    Long getDataBytesSent();
+    
+    Long getDataBytesReceived();
 }

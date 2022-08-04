@@ -41,6 +41,7 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextName;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
 import org.restcomm.protocols.ss7.map.api.MAPException;
+import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
 import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
@@ -204,7 +205,9 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
         SendAuthenticationInfoRequestImplV1 req=null;
         if (imsi != null)
             req = new SendAuthenticationInfoRequestImplV1(imsi);
-            
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.sendAuthenticationInfo_Request.name());               
+
         return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.sendAuthenticationInfo, req, true, false);
     }
     
@@ -238,7 +241,9 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
             req = new SendAuthenticationInfoRequestImplV3(imsi, numberOfRequestedVectors, segmentationProhibited,
                     immediateResponsePreferred, reSynchronisationInfo, extensionContainer, requestingNodeType,
                     requestingPlmnId, numberOfRequestedAdditionalVectors, additionalVectorsAreForEPS);
-            
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.sendAuthenticationInfo_Request.name());               
+
         return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.sendAuthenticationInfo, req, true, false);
     }
 
@@ -261,7 +266,9 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
         SendAuthenticationInfoResponseImplV1 req = null;
         if (authenticationSetList != null)
             req = new SendAuthenticationInfoResponseImplV1(authenticationSetList);
-        
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.sendAuthenticationInfo_Response.name());               
+
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.sendAuthenticationInfo, req, false, !nonLast);
     }
     
@@ -283,7 +290,9 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
         SendAuthenticationInfoResponseImplV3 req = null;
         if (authenticationSetList != null || extensionContainer != null || epsAuthenticationSetList != null)
             req = new SendAuthenticationInfoResponseImplV3(authenticationSetList, extensionContainer,epsAuthenticationSetList);
-        
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.sendAuthenticationInfo_Response.name());               
+
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.sendAuthenticationInfo, req, false, true);
     }
 
@@ -323,7 +332,9 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
         AuthenticationFailureReportResponseImpl req=null;
         if (extensionContainer != null)
             req = new AuthenticationFailureReportResponseImpl(extensionContainer);
-            
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.authenticationFailureReport_Response.name());               
+
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.authenticationFailureReport, req, false, true);
     }
 
@@ -842,7 +853,9 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
                 && this.appCntx.getApplicationContextVersion().getVersion() != 1)
         	resp = new InsertSubscriberDataResponseImplV1(teleserviceList, bearerServiceList, 
         		ssList, odbGeneralData, regionalSubscriptionResponse);
-        
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.insertSubscriberData_Response.name());               
+
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.insertSubscriberData, resp, false, true);
     }
 
@@ -939,6 +952,8 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
         DeleteSubscriberDataResponseImpl resp = null;
         if ((regionalSubscriptionResponse != null || extensionContainer != null) && this.appCntx.getApplicationContextVersion().getVersion() != 1)
             resp = new DeleteSubscriberDataResponseImpl(regionalSubscriptionResponse, extensionContainer);
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.deleteSubscriberData_Response.name());               
 
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.deleteSubscriberData, resp, false, true);
     }
@@ -1014,7 +1029,9 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
         CancelLocationResponseImpl req = null;
         if (extensionContainer != null)
             req = new CancelLocationResponseImpl(extensionContainer);
-            
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.cancelLocation_Response.name());               
+
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.cancelLocation, req, false, true);
 
     }
@@ -1225,6 +1242,8 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
         PurgeMSResponseImpl resp = null;        
         if (this.appCntx.getApplicationContextVersion().getVersion() >= 3 && (freezeTMSI || freezePTMSI || extensionContainer != null || freezeMTMSI))
             resp =new PurgeMSResponseImpl(freezeTMSI, freezePTMSI, extensionContainer, freezeMTMSI);
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.purgeMS_Response.name());               
 
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.purgeMS, resp, false, true);
     }
@@ -1270,6 +1289,7 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
         else
             customTimeout=customInvokeTimeout;
 
+        mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.forwardCheckSSIndication_Request.name());               
         return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), MAPOperationCode.forwardCheckSsIndication, null, true, false);
     }
 
@@ -1376,7 +1396,9 @@ public class MAPDialogMobilityImpl extends MAPDialogImpl implements MAPDialogMob
         ActivateTraceModeResponseImpl req = null;
         if ((traceSupportIndicator || extensionContainer != null) && this.appCntx.getApplicationContextVersion().getVersion() >= 3)
             req = new ActivateTraceModeResponseImpl(extensionContainer, traceSupportIndicator);
-            
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.activateTraceMode_Response.name());               
+
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.activateTraceMode, req, false, true);
     }
 }

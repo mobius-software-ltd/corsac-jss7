@@ -62,7 +62,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 public class MAPServicePdpContextActivationImpl extends MAPServiceBaseImpl implements MAPServicePdpContextActivation {
 
     protected Logger loger = LogManager.getLogger(MAPServicePdpContextActivationImpl.class);
-
+    public static final String NAME="PdpContext";
+    
     public MAPServicePdpContextActivationImpl(MAPProviderImpl mapProviderImpl) {
         super(mapProviderImpl);
     }
@@ -72,6 +73,7 @@ public class MAPServicePdpContextActivationImpl extends MAPServiceBaseImpl imple
      */
     public MAPDialogPdpContextActivation createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
             SccpAddress destAddress, AddressString destReference) throws MAPException {
+    	mapProviderImpl.getMAPStack().newDialogSent(NAME);
         return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
     }
 
@@ -93,6 +95,7 @@ public class MAPServicePdpContextActivationImpl extends MAPServiceBaseImpl imple
     }
 
     protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog) {
+    	mapProviderImpl.getMAPStack().newDialogReceived(NAME);
         return new MAPDialogPdpContextActivationImpl(appCntx, tcapDialog, this.mapProviderImpl, this, null, null);
     }
 

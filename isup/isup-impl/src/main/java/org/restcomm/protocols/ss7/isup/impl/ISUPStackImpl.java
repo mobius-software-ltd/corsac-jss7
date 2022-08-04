@@ -22,8 +22,14 @@
 package org.restcomm.protocols.ss7.isup.impl;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +40,8 @@ import org.restcomm.protocols.ss7.isup.ISUPProvider;
 import org.restcomm.protocols.ss7.isup.ISUPStack;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.impl.message.AbstractISUPMessage;
+import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
+import org.restcomm.protocols.ss7.isup.message.parameter.MessageName;
 import org.restcomm.protocols.ss7.mtp.Mtp3EndCongestionPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3PausePrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3ResumePrimitive;
@@ -66,6 +74,12 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
     private ISUPParameterFactory parameterFactory;
 
     private ScheduledExecutorService scheduledExecutorService;
+    
+    private ConcurrentHashMap<String, AtomicLong> messagesSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> messagesReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> bytesSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> bytesReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    
     public ISUPStackImpl(final int localSpc, final int ni, final boolean automaticTimerMessages,int localThreads) {
         super();
         this.provider = new ISUPProviderImpl(this, ni, localSpc, automaticTimerMessages);
@@ -74,6 +88,13 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
 
         this.state = State.CONFIGURED;
         this.scheduledExecutorService=Executors.newScheduledThreadPool(localThreads);
+        
+        for(MessageName currType:MessageName.values()) {
+        	messagesSentByType.put(currType.name(), new AtomicLong(0L));
+        	messagesReceivedByType.put(currType.name(), new AtomicLong(0L));
+        	bytesSentByType.put(currType.name(), new AtomicLong(0L));
+        	bytesReceivedByType.put(currType.name(), new AtomicLong(0L));
+        }
     }
 
     public ISUPStackImpl(int localSpc, int ni,int localThreads) {
@@ -160,15 +181,17 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
     /**
      * @param message
      */
-    void send(Mtp3TransferPrimitive message) throws IOException {
+    void send(ISUPMessage message,Mtp3TransferPrimitive mtp3Message) throws IOException {
 
         if (this.state != State.RUNNING)
             return;
 
         // here we have encoded msg, nothing more, need to add MTP3 label.
         // txDataQueue.add(message);
-        try {        	
-            this.mtp3UserPart.sendMessage(message);
+        messagesSentByType.get(message.getMessageType().getMessageName().name()).incrementAndGet();
+     	bytesSentByType.get(message.getMessageType().getMessageName().name()).addAndGet(mtp3Message.getData().readableBytes());
+     	try {        	
+            this.mtp3UserPart.sendMessage(mtp3Message);
         } catch (IOException e) {
             // log here Exceptions from MTP3 level
             logger.error("IOException when sending the message to MTP3 level: " + e.getMessage(), e);
@@ -217,6 +240,7 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
 
         // 2(CIC) + 1(CODE)
         ByteBuf payload = mtpMsg.getData();
+        int bytes=payload.readableBytes();
         if(payload.readableBytes()<3)
         	throw new IllegalArgumentException("buffer must have atleast three readable octets");
         
@@ -234,5 +258,56 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
         msg.setSls(mtpMsg.getSls()); // store SLS...
         // should take here OPC or DPC????? since come in different direction looks like opc
         provider.receive(msg, mtpMsg.getOpc());
+        
+        messagesReceivedByType.get(msg.getMessageType().getMessageName().name()).incrementAndGet();
+    	bytesReceivedByType.get(msg.getMessageType().getMessageName().name()).addAndGet(bytes);    	
     }
+
+	@Override
+	public Map<String, Long> getMessagesSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=messagesSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getMessagesReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=messagesReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getBytesSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=bytesSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getBytesReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=bytesReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
 }

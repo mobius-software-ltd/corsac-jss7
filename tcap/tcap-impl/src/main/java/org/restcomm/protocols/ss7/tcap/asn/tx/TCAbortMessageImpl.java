@@ -42,6 +42,7 @@ import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponen
  */
 @ASNTag(asnClass=ASNClass.APPLICATION,tag=0x07,constructed=true,lengthIndefinite=false)
 public class TCAbortMessageImpl extends TCUnifiedMessageImpl implements TCAbortMessage {
+	public static String NAME="Abort";
 	
 	private ASNPAbortCause type;
     
@@ -71,5 +72,10 @@ public class TCAbortMessageImpl extends TCUnifiedMessageImpl implements TCAbortM
 	public void validateElement() throws ASNParsingComponentException {
     	if(getOriginatingTransactionId()!=null)
     		throw new ASNParsingComponentException("Originating transaction ID should be null", ASNParsingComponentExceptionReason.MistypedParameter); 
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
 	}
 }

@@ -121,7 +121,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
  *
  */
 public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl implements INAPServiceCircuitSwitchedCall {
-
+	public static String NAME="CircuitSwitchedCall";
+	
 	protected Logger loger = LogManager.getLogger(INAPServiceCircuitSwitchedCallImpl.class);
 
 	public INAPServiceCircuitSwitchedCallImpl(INAPProviderImpl inapProviderImpl) {
@@ -131,6 +132,7 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 	@Override
 	public INAPDialogCircuitSwitchedCall createNewDialog(INAPApplicationContext appCntx, SccpAddress origAddress,
 			SccpAddress destAddress) throws INAPException {
+		inapProviderImpl.getStack().newDialogSent(NAME);
 		return this.createNewDialog(appCntx, origAddress, destAddress, null);
 	}
 
@@ -164,6 +166,7 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 
 	@Override
 	protected INAPDialogImpl createNewDialogIncoming(INAPApplicationContext appCntx, Dialog tcapDialog) {
+		inapProviderImpl.getStack().newDialogReceived(NAME);
 		return new INAPDialogCircuitSwitchedCallImpl(appCntx, tcapDialog, this.inapProviderImpl, this);
 	}
 
@@ -606,7 +609,8 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					DisconnectForwardConnectionRequest ind = new DisconnectForwardConnectionRequestImpl();
 					ind.setInvokeId(invokeId);
 					ind.setINAPDialog(inapDialog);
-
+					inapProviderImpl.getStack().newMessageReceived(ind.getMessageType().name());
+					
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
 							serLis.onINAPMessage(ind);
@@ -638,7 +642,8 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					DisconnectForwardConnectionRequest ind = new DisconnectForwardConnectionRequestImpl();
 					ind.setInvokeId(invokeId);
 					ind.setINAPDialog(inapDialog);
-
+					inapProviderImpl.getStack().newMessageReceived(ind.getMessageType().name());
+					
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
 							serLis.onINAPMessage(ind);
@@ -978,6 +983,7 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					ContinueRequest ind = new ContinueRequestImpl();
 					ind.setInvokeId(invokeId);
 					ind.setINAPDialog(inapDialog);
+					inapProviderImpl.getStack().newMessageReceived(ind.getMessageType().name());
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
 							serLis.onINAPMessage(ind);
@@ -996,7 +1002,8 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					ContinueCS1PlusRequest ind = new ContinueCS1PlusRequestImpl();
 					ind.setInvokeId(invokeId);
 					ind.setINAPDialog(inapDialog);
-
+					inapProviderImpl.getStack().newMessageReceived(ind.getMessageType().name());
+					
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
 							serLis.onINAPMessage(ind);
@@ -1559,7 +1566,8 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					SpecializedResourceReportRequest ind = new SpecializedResourceReportRequestImpl();
 					ind.setInvokeId(invokeId);
 					ind.setINAPDialog(inapDialog);
-
+					inapProviderImpl.getStack().newMessageReceived(ind.getMessageType().name());
+					
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
 							serLis.onINAPMessage(ind);
@@ -1593,7 +1601,8 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					SpecializedResourceReportRequest ind = new SpecializedResourceReportRequestImpl();
 					ind.setInvokeId(invokeId);
 					ind.setINAPDialog(inapDialog);
-
+					inapProviderImpl.getStack().newMessageReceived(ind.getMessageType().name());
+					
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
 							serLis.onINAPMessage(ind);
@@ -1684,7 +1693,8 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					ActivityTestRequest ind = new ActivityTestRequestImpl();
 					ind.setInvokeId(invokeId);
 					ind.setINAPDialog(inapDialog);
-
+					inapProviderImpl.getStack().newMessageReceived(ind.getMessageType().name());
+					
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
 							serLis.onINAPMessage(ind);
@@ -1698,7 +1708,8 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 					ActivityTestResponse ind = new ActivityTestResponseImpl();
 					ind.setInvokeId(invokeId);
 					ind.setINAPDialog(inapDialog);
-
+					inapProviderImpl.getStack().newMessageReceived(ind.getMessageType().name());
+					
 					for (INAPServiceListener serLis : this.serviceListeners) {
 						try {
 							serLis.onINAPMessage(ind);
@@ -1862,7 +1873,8 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 						ReleaseCallPartyConnectionResponse ind = new ReleaseCallPartyConnectionParameterlessResponseImpl();
 						ind.setInvokeId(invokeId);
 						ind.setINAPDialog(inapDialog);
-
+						inapProviderImpl.getStack().newMessageReceived(ind.getMessageType().name());
+						
 						for (INAPServiceListener serLis : this.serviceListeners) {
 							try {
 								serLis.onINAPMessage(ind);

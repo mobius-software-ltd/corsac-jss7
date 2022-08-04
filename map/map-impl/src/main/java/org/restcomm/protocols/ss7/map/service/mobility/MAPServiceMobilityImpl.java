@@ -118,7 +118,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPServiceMobility {
 
     protected Logger loger = LogManager.getLogger(MAPServiceMobilityImpl.class);
-
+    public static final String NAME="Mobility";
+    
     public MAPServiceMobilityImpl(MAPProviderImpl mapProviderImpl) {
         super(mapProviderImpl);
     }
@@ -128,6 +129,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
      */
     public MAPDialogMobility createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
             AddressString destReference) throws MAPException {
+    	mapProviderImpl.getMAPStack().newDialogSent(NAME);
         return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
     }
 
@@ -149,6 +151,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
 
     @Override
     protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog) {
+    	mapProviderImpl.getMAPStack().newDialogReceived(NAME);
         return new MAPDialogMobilityImpl(appCntx, tcapDialog, this.mapProviderImpl, this, null, null);
     }
 
@@ -423,6 +426,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
                 			ind.setInvokeId(invokeId);
                             ind.setMAPDialog(mapDialog);
                             ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
                 		}
                 		
                 		for (MAPServiceListener serLis : this.serviceListeners) {
@@ -539,6 +543,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
                 			ind.setInvokeId(invokeId);
                             ind.setMAPDialog(mapDialog);
                             ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
                 		}
                 		
                 		for (MAPServiceListener serLis : this.serviceListeners) {
@@ -611,6 +616,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
                 			ind.setInvokeId(invokeId);
                             ind.setMAPDialog(mapDialog);
                             ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
                 		}
                 		
                 		for (MAPServiceListener serLis : this.serviceListeners) {
@@ -648,6 +654,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
                 			ind.setInvokeId(invokeId);
                             ind.setMAPDialog(mapDialog);
                             ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
                 		}
                 			
                 		
@@ -688,7 +695,8 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
                 		ForwardCheckSSIndicationRequestImpl ind = new ForwardCheckSSIndicationRequestImpl();
                 		ind.setInvokeId(invokeId);
                 		ind.setMAPDialog(mapDialog);
-                		
+                        mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
+                        
                         for (MAPServiceListener serLis : this.serviceListeners) {
                             try {
                                 serLis.onMAPMessage(ind);
@@ -895,6 +903,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
                 			ind.setInvokeId(invokeId);
                             ind.setMAPDialog(mapDialog);
                             ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
                 		}
                 		
                 		for (MAPServiceListener serLis : this.serviceListeners) {
@@ -932,6 +941,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
                 			ind.setInvokeId(invokeId);
                             ind.setMAPDialog(mapDialog);
                             ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
                 		}
                 		
                 		for (MAPServiceListener serLis : this.serviceListeners) {
@@ -974,6 +984,7 @@ public class MAPServiceMobilityImpl extends MAPServiceBaseImpl implements MAPSer
                 			ind.setInvokeId(invokeId);
                             ind.setMAPDialog(mapDialog);
                             ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
                 		}
                 		
                 		for (MAPServiceListener serLis : this.serviceListeners) {

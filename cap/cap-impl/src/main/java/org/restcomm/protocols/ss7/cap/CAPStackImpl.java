@@ -21,8 +21,17 @@
 
 package org.restcomm.protocols.ss7.cap;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPProvider;
 import org.restcomm.protocols.ss7.cap.api.CAPStack;
+import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorCode;
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
 import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
@@ -44,20 +53,49 @@ public class CAPStackImpl implements CAPStack {
 
     private final String name;
 
+    private ConcurrentHashMap<String, AtomicLong> messagesSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> messagesReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> errorsSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> errorsReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> dialogsSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> dialogsReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    
     public CAPStackImpl(String name, SccpProvider sccpPprovider, int ssn,int threads) {
         this.name = name;
         this.tcapStack = new TCAPStackImpl(name, sccpPprovider, ssn, threads);
         TCAPProvider tcapProvider = tcapStack.getProvider();
-        capProvider = new CAPProviderImpl(name, tcapProvider);
+        capProvider = new CAPProviderImpl(name, this, tcapProvider);
 
-        this.state = State.CONFIGURED;       
+        this.state = State.CONFIGURED; 
+        initCounters();
     }
 
     public CAPStackImpl(String name, TCAPProvider tcapProvider) {
         this.name = name;
-        capProvider = new CAPProviderImpl(name, tcapProvider);
+        capProvider = new CAPProviderImpl(name, this, tcapProvider);
         this.tcapStack = tcapProvider.getStack();
-        this.state = State.CONFIGURED;        
+        this.state = State.CONFIGURED; 
+        initCounters();
+    }
+    
+    private void initCounters() {
+    	for(String currName:CAPServiceBaseImpl.getNames()) {
+    		dialogsSentByType.put(currName,new AtomicLong(0));
+    		dialogsReceivedByType.put(currName,new AtomicLong(0));
+        } 
+    	
+    	for(CAPMessageType currType:CAPMessageType.values()) {
+    		messagesSentByType.put(currType.name(),new AtomicLong(0));
+    		messagesReceivedByType.put(currType.name(),new AtomicLong(0));
+        }  
+    	
+    	messagesSentByType.put("unknown",new AtomicLong(0));
+		messagesReceivedByType.put("unknown",new AtomicLong(0));
+		
+		for(String currName:CAPErrorCode.getAllNames()) {
+    		errorsSentByType.put(currName,new AtomicLong(0));
+    		errorsReceivedByType.put(currName,new AtomicLong(0));
+        }
     }
 
     @Override
@@ -106,5 +144,101 @@ public class CAPStackImpl implements CAPStack {
     private enum State {
         IDLE, CONFIGURED, RUNNING;
     }
+
+	@Override
+	public Map<String, Long> getMessagesSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=messagesSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getMessagesReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=messagesReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getErrorsSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=errorsSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getErrorsReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=errorsReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getDialogsSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=dialogsSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getDialogsReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=dialogsReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+	
+	public void newMessageReceived(String messageType) {
+		messagesSentByType.get(messageType).incrementAndGet();
+	}
+	
+	public void newMessageSent(String messageType) {
+		messagesReceivedByType.get(messageType).incrementAndGet();
+	}
+	
+	public void newErrorReceived(String errorType) {
+		errorsSentByType.get(errorType).incrementAndGet();
+	}
+	
+	public void newErrorSent(String errorType) {
+		errorsReceivedByType.get(errorType).incrementAndGet();
+	}
+	
+	public void newDialogReceived(String dialogType) {
+		dialogsSentByType.get(dialogType).incrementAndGet();
+	}
+	
+	public void newDialogSent(String dialogType) {
+		dialogsReceivedByType.get(dialogType).incrementAndGet();
+	}
 
 }

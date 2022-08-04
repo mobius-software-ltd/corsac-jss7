@@ -21,6 +21,8 @@
 
 package org.restcomm.protocols.ss7.isup;
 
+import java.util.Map;
+
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPart;
 
 /**
@@ -60,4 +62,12 @@ public interface ISUPStack {
     void setCircuitManager(CircuitManager mgr);
 
     CircuitManager getCircuitManager();
+    
+    Map<String,Long> getMessagesSentByType();
+    
+    Map<String,Long> getMessagesReceivedByType();
+    
+    Map<String,Long> getBytesSentByType();
+    
+    Map<String,Long> getBytesReceivedByType();
 }

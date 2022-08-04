@@ -27,6 +27,7 @@ import org.restcomm.protocols.ss7.cap.CAPDialogImpl;
 import org.restcomm.protocols.ss7.cap.CAPProviderImpl;
 import org.restcomm.protocols.ss7.cap.api.CAPApplicationContext;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
+import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.CAPServiceBase;
 import org.restcomm.protocols.ss7.cap.api.service.circuitSwitchedCall.CAPDialogCircuitSwitchedCall;
@@ -353,7 +354,8 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         else
         	customTimeout = customInvokeTimeout;
         
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.continueCode, null, true, false);        
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.continue_Request.name());               
+    	return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.continueCode, null, true, false);        
     }
 
     @Override
@@ -518,7 +520,8 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         else
         	customTimeout = customInvokeTimeout;
         
-        return this.sendDataComponent(null, null, InvokeClass.Class3, customTimeout.longValue(), CAPOperationCode.activityTest, null, true, false);        
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.activityTest_Request.name());               
+    	return this.sendDataComponent(null, null, InvokeClass.Class3, customTimeout.longValue(), CAPOperationCode.activityTest, null, true, false);        
     }
 
     public void addActivityTestResponse(int invokeId) throws CAPException {
@@ -539,7 +542,8 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
                             + "CapV2_assistGsmSSF_to_gsmSCF, CapV3_gsmSSF_scfAssistHandoff, CapV4_gsmSSF_scfAssistHandoff, CapV2_gsmSRF_to_gsmSCF, CapV3_gsmSRF_gsmSCF, CapV4_gsmSRF_gsmSCF "
                             + "or CapV4_scf_gsmSSFGeneric");
 
-        this.sendDataComponent(invokeId, null, null, null, null, null, false, true);
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.activityTest_Response.name());               
+    	this.sendDataComponent(invokeId, null, null, null, null, null, false, true);
     }
 
     @Override
@@ -680,7 +684,8 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         else
         	customTimeout = customInvokeTimeout;
         
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.disconnectForwardConnection, null, true, false);        
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.disconnectForwardConnection_Request.name());               
+    	return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.disconnectForwardConnection, null, true, false);        
     }
 
     @Override
@@ -1065,7 +1070,8 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         else
         	customTimeout = customInvokeTimeout;
         
-        return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.cancelCode, req, true, false);        
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.cancel_Request.name());               
+    	return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(), CAPOperationCode.cancelCode, req, true, false);        
     }
 
     @Override
@@ -1098,7 +1104,8 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         if (this.appCntx != CAPApplicationContext.CapV4_gsmSSF_scfGeneric && this.appCntx != CAPApplicationContext.CapV4_scf_gsmSSFGeneric)
             throw new CAPException("Bad application context name for addDisconnectLegResponse: must be " + "CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        this.sendDataComponent(invokeId, null, null, null, CAPOperationCode.disconnectLeg, null, false, true);        
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.disconnectLeg_Response.name());               
+    	this.sendDataComponent(invokeId, null, null, null, CAPOperationCode.disconnectLeg, null, false, true);        
     }
 
     @Override
@@ -1179,7 +1186,8 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context name for addMoveLegResponse: must be CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        this.sendDataComponent(invokeId, null, null, null, CAPOperationCode.moveLeg, null, false, true);        
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.moveLeg_Response.name());               
+    	this.sendDataComponent(invokeId, null, null, null, CAPOperationCode.moveLeg, null, false, true);        
     }
 
     @Override
@@ -1201,7 +1209,8 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
         else
         	customTimeout = customInvokeTimeout;
         
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.collectInformation, null, true, false);        
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.collectInformation_Request.name());               
+    	return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.collectInformation, null, true, false);        
     }
 
     public Integer addSplitLegRequest(LegID legIDToSplit, Integer newCallSegmentId, CAPINAPExtensions extensions)
@@ -1233,7 +1242,8 @@ public class CAPDialogCircuitSwitchedCallImpl extends CAPDialogImpl implements C
             throw new CAPException(
                     "Bad application context for addSplitLegResponse: must be CapV4_gsmSSF_scfGeneric or CapV4_scf_gsmSSFGeneric");
 
-        this.sendDataComponent(invokeId, null, null, null, CAPOperationCode.splitLeg, null, false, true);        
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.splitLeg_Response.name());               
+    	this.sendDataComponent(invokeId, null, null, null, CAPOperationCode.splitLeg, null, false, true);        
     }
 
     @Override

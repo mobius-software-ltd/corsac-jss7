@@ -240,8 +240,8 @@ public class ISUPProviderImpl implements ISUPProvider {
         return c;
     }
 
-    void send(Mtp3TransferPrimitive encoded) throws IOException {
-        this.stack.send(encoded);
+    void send(ISUPMessage message,Mtp3TransferPrimitive encoded) throws IOException {
+        this.stack.send(message,encoded);
     }
 
     /**

@@ -29,7 +29,7 @@ public class MAPStackImplWrapper extends MAPStackImpl {
 
     public MAPStackImplWrapper(SccpProvider sccpPprovider, int ssn) {
         super("Test", sccpPprovider, ssn);
-        this.mapProvider = new MAPProviderImplWrapper(this.tcapStack.getProvider());
+        this.mapProvider = new MAPProviderImplWrapper(this.tcapStack.getProvider(), this);
     }
 
 }

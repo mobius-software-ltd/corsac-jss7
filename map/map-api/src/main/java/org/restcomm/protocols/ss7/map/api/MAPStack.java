@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api;
 
+import java.util.Map;
+
 import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
 
 /**
@@ -46,6 +48,17 @@ public interface MAPStack {
 
     TCAPStack getTCAPStack();
 
+    Map<String,Long> getMessagesSentByType();
+    
+    Map<String,Long> getMessagesReceivedByType();
+    
+    Map<String,Long> getErrorsSentByType();
+    
+    Map<String,Long> getErrorsReceivedByType();
+    
+    Map<String,Long> getDialogsSentByType();
+    
+    Map<String,Long> getDialogsReceivedByType();        
 //    /**
 //     * As soon as congestion starts in the underlying source, it calls this method to notify about it. Notification is only
 //     * one-time till the congestion abates in which case {@link CongestionListener#onCongestionFinish(String)} is called

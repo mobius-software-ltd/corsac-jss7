@@ -31,6 +31,7 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextName;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
 import org.restcomm.protocols.ss7.map.api.MAPException;
+import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TeleserviceCode;
 import org.restcomm.protocols.ss7.map.api.service.sms.AlertReason;
@@ -103,6 +104,7 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
             throw new MAPException(
                     "Bad application context name for addForwardShortMessageResponse: must be shortMsgMORelayContext_V1 or V2 or shortMsgMTRelayContext_V1 or V2");
 
+        mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.moForwardSM_Response.name());               
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.mo_forwardSM, null, false, true);
     }
 
@@ -141,6 +143,8 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         MoForwardShortMessageResponseImpl req = null;
         if (sm_RP_UI != null || extensionContainer != null)
             req = new MoForwardShortMessageResponseImpl(sm_RP_UI, extensionContainer);
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.moForwardSM_Response.name());               
 
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.mo_forwardSM, req, false, true);
     }
@@ -181,7 +185,9 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         MtForwardShortMessageResponseImpl resp=null;
         if (sm_RP_UI != null || extensionContainer != null)
             resp = new MtForwardShortMessageResponseImpl(sm_RP_UI, extensionContainer);
-        
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.mtForwardSM_Response.name());               
+
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.mt_forwardSM, resp, false, true);
     }
 
@@ -279,7 +285,9 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         ReportSMDeliveryStatusResponse resp=null;
         if(storedMSISDN != null)
             resp = new ReportSMDeliveryStatusResponseImplV1(storedMSISDN);
-            
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.reportSM_DeliveryStatus_Response.name());               
+        	
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.reportSM_DeliveryStatus, resp, false, true);
     }
 
@@ -295,7 +303,9 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         ReportSMDeliveryStatusResponse resp=null;
         if (storedMSISDN != null || extensionContainer != null)
             resp = new ReportSMDeliveryStatusResponseImplV3(storedMSISDN,extensionContainer);
-            
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.reportSM_DeliveryStatus_Response.name());               
+
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.reportSM_DeliveryStatus, resp, false, true);
     }
 
@@ -367,6 +377,7 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
             throw new MAPException(
                     "Bad application context name for addAlertServiceCentreResponse: must be shortMsgAlertContext_V2");
 
+        mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.alertServiceCentre_Response.name());               
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.alertServiceCentre, null, false, true);
     }
 
@@ -404,6 +415,8 @@ public class MAPDialogSmsImpl extends MAPDialogImpl implements MAPDialogSms {
         ReadyForSMResponseImpl req=null;
         if (this.appCntx.getApplicationContextVersion().getVersion() >= 3 || extensionContainer != null)
             req = new ReadyForSMResponseImpl(extensionContainer);
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.readyForSM_Response.name());               
 
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.readyForSM, req, false, true);
     }

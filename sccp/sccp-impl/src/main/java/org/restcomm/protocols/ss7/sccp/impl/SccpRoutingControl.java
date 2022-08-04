@@ -279,13 +279,14 @@ public class SccpRoutingControl {
                     // nonsegmented data
                     Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(Mtp3UserPartBaseImpl._SI_SERVICE_SCCP, sap.getNi(), 0,
                             sap.getOpc(), dpc, sls, erd.getSolidData());
-                    mup.sendMessage(msg);
+                    
+                    sccpStackImpl.sendMessageToMTP(message,mup,msg);                    
                 } else {
                     // segmented data
                     for (ByteBuf bf : erd.getSegementedData()) {
                         Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(Mtp3UserPartBaseImpl._SI_SERVICE_SCCP, sap.getNi(), 0,
                                 sap.getOpc(), dpc, sls, bf);
-                        mup.sendMessage(msg);
+                        sccpStackImpl.sendMessageToMTP(message,mup,msg);
                     }
                 }
                 return;
@@ -336,8 +337,7 @@ public class SccpRoutingControl {
                 Mtp3TransferPrimitiveFactory factory = mup.getMtp3TransferPrimitiveFactory();
                 Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(Mtp3UserPartBaseImpl._SI_SERVICE_SCCP, sap.getNi(), 0,
                         sap.getOpc(), dpc, sls, erd.getSolidData());
-                mup.sendMessage(msg);
-
+                sccpStackImpl.sendMessageToMTP(message,mup,msg);
 //                if (erd.getSolidData() != null) {
 //                    // nonsegmented data
 //                    Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(Mtp3._SI_SERVICE_SCCP, sap.getNi(), 0,
@@ -398,7 +398,7 @@ public class SccpRoutingControl {
                     // nonsegmented data
                     Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(Mtp3UserPartBaseImpl._SI_SERVICE_SCCP, sap.getNi(), 0,
                             sap.getOpc(), dpc, 0, erd.getSolidData());
-                    mup.sendMessage(msg);
+                    sccpStackImpl.sendMessageToMTP(message,mup,msg);
                 } else {
                     // segmented data - not possible for a management message
                     if (logger.isWarnEnabled()) {

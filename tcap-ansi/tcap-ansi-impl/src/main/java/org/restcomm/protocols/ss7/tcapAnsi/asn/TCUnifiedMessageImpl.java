@@ -21,6 +21,9 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUnifiedMessage;
 
@@ -36,6 +39,10 @@ import io.netty.buffer.ByteBuf;
  */
 public abstract class TCUnifiedMessageImpl implements TCUnifiedMessage {
 	private TransactionID transactionId=new TransactionID();
+	
+	public static List<String> getAllNames() {
+    	return Arrays.asList(new String[] { TCAbortMessageImpl.NAME, TCConversationMessageImpl.NAME, TCQueryMessageImpl.NAME, TCResponseMessageImpl.NAME, TCUniMessageImpl.NAME, TCUnknownMessageImpl.NAME });
+    }
 	
 	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=25,constructed=true,index=-1,defaultImplementation = DialogPortionImpl.class)
 	private DialogPortion dp;

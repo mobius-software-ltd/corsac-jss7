@@ -38,7 +38,8 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=1,constructed=true,lengthIndefinite=false)
 public class TCUniMessageImpl extends TCUnifiedMessageImpl implements TCUniMessage {
-	
+	public static String NAME="Uni";
+
 	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=0x08,constructed=true,index=-1,defaultImplementation = ComponentPortionImpl.class)
 	private ComponentPortion component;
 
@@ -99,4 +100,9 @@ public class TCUniMessageImpl extends TCUnifiedMessageImpl implements TCUniMessa
     public boolean isDialogPortionExists() {
         return this.getDialogPortion()!=null || this.getComponent()!=null;
     }
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
 }

@@ -63,6 +63,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 public class MAPServiceCallHandlingImpl extends MAPServiceBaseImpl implements MAPServiceCallHandling {
     private static final Logger loger = LogManager.getLogger(MAPServiceCallHandlingImpl.class);
 
+    public static final String NAME="CallHandling";
+    
     // Include these constants in MAPApplicationContextName and MAPOperationCode
     // sendRoutingInfo_Request: add constant to MAPMessageType
     // sendRoutingInfo_Response: add constant to MAPMessageType
@@ -75,6 +77,7 @@ public class MAPServiceCallHandlingImpl extends MAPServiceBaseImpl implements MA
     @Override
     public MAPDialogCallHandling createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
             AddressString destReference) throws MAPException {
+    	mapProviderImpl.getMAPStack().newDialogSent(NAME);
         return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
     }
 
@@ -97,6 +100,7 @@ public class MAPServiceCallHandlingImpl extends MAPServiceBaseImpl implements MA
 
     @Override
     protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog) {
+    	mapProviderImpl.getMAPStack().newDialogReceived(NAME);
         return new MAPDialogCallHandlingImpl(appCntx, tcapDialog, this.mapProviderImpl, this, null, null);
     }
 
@@ -265,6 +269,7 @@ public class MAPServiceCallHandlingImpl extends MAPServiceBaseImpl implements MA
                 		ind.setInvokeId(invokeId);
                         ind.setMAPDialog(mapDialog);
                         ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                        mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
                 	}
                 	
                 	for (MAPServiceListener serLis : this.serviceListeners) {

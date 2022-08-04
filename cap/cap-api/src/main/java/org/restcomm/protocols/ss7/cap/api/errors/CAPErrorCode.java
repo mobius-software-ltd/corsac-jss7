@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.cap.api.errors;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * CAP Error codes Carried by ReturnError primitive
  *
@@ -70,4 +73,53 @@ public interface CAPErrorCode {
     int unknownPDPID = 50;
     // -- Call Segment not known to the gsmSSF.
     int unknownCSID = 51;
+    
+    public static List<String> getAllNames() {
+    	return Arrays.asList(new String[] {"canceled", "cancelFailed", "eTCFailed",
+        "improperCallerResponse", "missingCustomerRecord", "missingParameter",
+        "parameterOutOfRange", "requestedInfoError", "systemFailure", "taskRefused",
+        "unavailableResource", "unexpectedComponentSequence", "unexpectedDataValue",
+        "unexpectedParameter", "unknownLegID",  "unknownPDPID", "unknownCSID", "unknown" });
+    }
+    
+    public static String translate(int code) {
+    	switch(code) {
+	    	case canceled:
+	    		return "canceled";
+	    	case cancelFailed:
+	    		return "cancelFailed";
+	    	case eTCFailed:
+	    		return "eTCFailed";
+	    	case improperCallerResponse:
+	    		return "improperCallerResponse";
+	    	case missingCustomerRecord:
+	    		return "missingCustomerRecord";
+	    	case missingParameter:
+	    		return "missingParameter";
+	    	case parameterOutOfRange:
+	    		return "parameterOutOfRange";
+	    	case requestedInfoError:
+	    		return "requestedInfoError";
+	    	case systemFailure:
+	    		return "systemFailure";
+	    	case taskRefused:
+	    		return "taskRefused";
+	    	case unavailableResource:
+	    		return "unavailableResource";
+	    	case unexpectedComponentSequence:
+	    		return "unexpectedComponentSequence";
+	    	case unexpectedDataValue:
+	    		return "unexpectedDataValue";
+	    	case unexpectedParameter:
+	    		return "unexpectedParameter";
+	    	case unknownLegID:
+	    		return "unknownLegID";
+	    	case unknownPDPID:
+	    		return "unknownPDPID";
+	    	case unknownCSID:
+	    		return "unknownCSID";
+    	}
+    	
+    	return "unknown";
+    }
 }

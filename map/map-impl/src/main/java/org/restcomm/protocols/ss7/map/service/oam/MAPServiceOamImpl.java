@@ -65,7 +65,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceOam {
 
     protected Logger loger = LogManager.getLogger(MAPServiceOamImpl.class);
-
+    public static final String NAME="OAM";
+    
     public MAPServiceOamImpl(MAPProviderImpl mapProviderImpl) {
         super(mapProviderImpl);
     }
@@ -75,6 +76,7 @@ public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceO
      */
     public MAPDialogOam createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
     		AddressString destReference) throws MAPException {
+    	mapProviderImpl.getMAPStack().newDialogSent(NAME);
         return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
     }
 
@@ -95,6 +97,7 @@ public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceO
     }
 
     protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog) {
+    	mapProviderImpl.getMAPStack().newDialogReceived(NAME);
         return new MAPDialogOamImpl(appCntx, tcapDialog, this.mapProviderImpl, this, null, null);
     }
 
@@ -190,6 +193,7 @@ public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceO
                 		ind.setInvokeId(invokeId);
                         ind.setMAPDialog(mapDialog);
                         ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
+                        mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
                 	}
                 	
                 	for (MAPServiceListener serLis : this.serviceListeners) {

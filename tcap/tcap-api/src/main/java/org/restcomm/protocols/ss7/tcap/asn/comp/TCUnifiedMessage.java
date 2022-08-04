@@ -67,4 +67,6 @@ public interface TCUnifiedMessage {
     DialogPortion getDialogPortion();
 
     void setDialogPortion(DialogPortion dp);
+    
+    String getName();
 }

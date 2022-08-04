@@ -287,14 +287,16 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
     private final transient MAPServiceSms mapServiceSms = new MAPServiceSmsImpl(this);
     private final transient MAPServiceLsm mapServiceLsm = new MAPServiceLsmImpl(this);
 
+    private MAPStackImpl mapStack;
     /**
      * public common methods
      */
 
-    public MAPProviderImpl(String name, TCAPProvider tcapProvider,MAPStackConfigurationManagement configuration) {
+    public MAPProviderImpl(String name, MAPStackImpl mapStack, TCAPProvider tcapProvider,MAPStackConfigurationManagement configuration) {
         this.loger = LogManager.getLogger(MAPStackImpl.class.getCanonicalName() + "-" + name);
 
         this.tcapProvider = tcapProvider;
+        this.mapStack=mapStack;
         this.mapCfg=configuration;
         this.mapServices.add(this.mapServiceMobility);
         this.mapServices.add(this.mapServiceCallHandling);
@@ -889,6 +891,10 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         }
     }
 
+    public MAPStackImpl getMAPStack() {
+    	return this.mapStack;
+    }
+    
     public TCAPProvider getTCAPProvider() {
         return this.tcapProvider;
     }
@@ -1975,7 +1981,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
                     ReturnResultLast comp = (ReturnResultLast)c;
                     oc = comp.getOperationCode();
                     parameter = comp.getParameter();
-                }
+               }
                     break;
 
                 case ReturnError: {
@@ -2007,6 +2013,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
                          return;
                     }
                     
+                    mapStack.newErrorReceived(MAPErrorCode.translate(msgErr.getErrorCode()));               
                     perfSer.deliverErrorComponent(mapDialogImpl, comp.getInvokeId(), msgErr);                    
                     return;
                 }
@@ -2032,13 +2039,14 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
             	
             	MAPMessage realMessage=(MAPMessage)parameter;
             	if(realMessage!=null) {
-            		realMessage.setOriginalBuffer(buffer);
+            		mapStack.newMessageReceived(realMessage.getMessageType().name());               
+                    realMessage.setOriginalBuffer(buffer);
 	            	realMessage.setInvokeId(invokeId);
 	            	realMessage.setMAPDialog(mapDialogImpl);
 	            	realMessage.setReturnResultNotLast(compType == ComponentType.ReturnResult);
             	}
             	
-                perfSer.processComponent(compType, oc, realMessage, mapDialogImpl, invokeId, linkedId);
+            	perfSer.processComponent(compType, oc, realMessage, mapDialogImpl, invokeId, linkedId);
 
             } catch (MAPParsingComponentException e) {
 

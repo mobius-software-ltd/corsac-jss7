@@ -211,9 +211,11 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
     private final transient INAPServiceCircuitSwitchedCall inapServiceCircuitSwitchedCall = new INAPServiceCircuitSwitchedCallImpl(
             this);
     
-    public INAPProviderImpl(String name, TCAPProvider tcapProvider) {
+    private INAPStackImpl inapStack;
+    
+    public INAPProviderImpl(String name, INAPStackImpl inapStack, TCAPProvider tcapProvider) {
         this.tcapProvider = tcapProvider;
-
+        this.inapStack = inapStack;
         this.loger = LogManager.getLogger(INAPStackImpl.class.getCanonicalName() + "-" + name);
 
         this.inapServices.add(this.inapServiceCircuitSwitchedCall);
@@ -244,9 +246,6 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         	errorCode.setLocalErrorCode(INAPErrorCode.errorInParameterValue);
         	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageOctetStringImpl.class);
         	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(INAPErrorCode.executionError);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageOctetStringImpl.class);
-        	errorCode=new ErrorCodeImpl();
         	errorCode.setLocalErrorCode(INAPErrorCode.illegalCombinationOfParameters);
         	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageOctetStringImpl.class);
         	errorCode=new ErrorCodeImpl();
@@ -264,10 +263,17 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
       
         	//registering error options
         	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageCancelFailedImpl.class, INAPErrorMessageCancelFailedImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageRequestedInfoErrorImpl.class, INAPErrorMessageRequestedInfoErrorImpl.class);        	
         	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageSystemFailureImpl.class, INAPErrorMessageSystemFailureImpl.class);
+        	
+        	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageRequestedInfoErrorImpl.class, INAPErrorMessageRequestedInfoErrorImpl.class);        	
+        	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageRequestedInfoErrorImpl.class, INAPErrorMessageOctetStringImpl.class);
+        	
         	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageTaskRefusedImpl.class, INAPErrorMessageTaskRefusedImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageTaskRefusedImpl.class, INAPErrorMessageOctetStringImpl.class);
+        	
         	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageImproperCallerResponseCS1PlusImpl.class, INAPErrorMessageImproperCallerResponseCS1PlusImpl.class);
+        	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageImproperCallerResponseCS1PlusImpl.class, INAPErrorMessageOctetStringImpl.class);
+        	
         	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageOctetStringImpl.class, INAPErrorMessageOctetStringImpl.class);
         	
         	//register requests mappings
@@ -630,6 +636,10 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         }        	
     }
 
+    public INAPStackImpl getStack() {
+    	return inapStack;
+    }
+    
     public TCAPProvider getTCAPProvider() {
         return this.tcapProvider;
     }
@@ -1222,6 +1232,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
                          return;
                     }
                     
+                    inapStack.newErrorReceived(INAPErrorCode.translate(msgErr));
                     perfSer.deliverErrorComponent(inapDialogImpl, comp.getInvokeId(), msgErr);
                     return;
                 }
@@ -1246,7 +1257,8 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
             	
             	INAPMessage realMessage=(INAPMessage)parameter;
             	if(realMessage!=null) {
-            		realMessage.setOriginalBuffer(buffer);
+            		inapStack.newMessageReceived(realMessage.getMessageType().name());
+                    realMessage.setOriginalBuffer(buffer);
 	            	realMessage.setInvokeId(invokeId);
 	            	realMessage.setINAPDialog(inapDialogImpl);
             	}

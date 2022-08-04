@@ -61,6 +61,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
  */
 public class CAPServiceSmsImpl extends CAPServiceBaseImpl implements CAPServiceSms {
 
+	public static final String NAME="SMS";
+    
     protected Logger loger = LogManager.getLogger(CAPServiceSmsImpl.class);
 
     public CAPServiceSmsImpl(CAPProviderImpl capProviderImpl) {
@@ -70,7 +72,8 @@ public class CAPServiceSmsImpl extends CAPServiceBaseImpl implements CAPServiceS
     @Override
     public CAPDialogSms createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress)
             throws CAPException {
-        return this.createNewDialog(appCntx, origAddress, destAddress, null);
+    	capProviderImpl.getCAPStack().newDialogSent(NAME);
+    	return this.createNewDialog(appCntx, origAddress, destAddress, null);
     }
 
     @Override
@@ -101,7 +104,8 @@ public class CAPServiceSmsImpl extends CAPServiceBaseImpl implements CAPServiceS
 
     @Override
     protected CAPDialogImpl createNewDialogIncoming(CAPApplicationContext appCntx, Dialog tcapDialog) {
-        return new CAPDialogSmsImpl(appCntx, tcapDialog, this.capProviderImpl, this);
+    	capProviderImpl.getCAPStack().newDialogReceived(NAME);
+    	return new CAPDialogSmsImpl(appCntx, tcapDialog, this.capProviderImpl, this);
     }
 
     @Override
@@ -255,6 +259,8 @@ public class CAPServiceSmsImpl extends CAPServiceBaseImpl implements CAPServiceS
         				processed = true;
         				ContinueSMSRequest ind=new ContinueSMSRequestImpl();
         				ind.setCAPDialog(capDialog);
+        				capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                        
         				for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);

@@ -23,6 +23,7 @@ package org.restcomm.protocols.ss7.tcapAnsi.api;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author baranowb
@@ -143,4 +144,32 @@ public interface TCAPStack {
      * @return
      */
     void setSwapTcapIdBytes(boolean isSwapTcapIdBytes);
+    
+    Map<String,Long> getComponentsSentByType();
+    
+    Map<String,Long> getComponentsReceivedByType();
+    
+    Map<String,Long> getMessagesSentByType();
+    
+    Map<String,Long> getMessagesReceivedByType();
+    
+    Map<String,Long> getRejectsSentByType();
+    
+    Map<String,Long> getRejectsReceivedByType();
+    
+    Map<String,Long> getAbortsSentByType();
+    
+    Map<String,Long> getAbortsReceivedByType();
+    
+    Long getIncomingDialogsProcessed();
+    
+    Long getOutgoingDialogsProcessed();
+    
+    Long getBytesSent();
+    
+    Long getBytesReceived();
+    
+    Long getDialogTimeoutProcessed();
+
+	Long getInvokeTimeoutProcessed();
 }

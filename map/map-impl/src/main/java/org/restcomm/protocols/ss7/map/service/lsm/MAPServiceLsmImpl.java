@@ -64,6 +64,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceLsm {
 	private static final Logger loger = LogManager.getLogger(MAPServiceLsmImpl.class);
 
+	public static final String NAME="LocationServices";
+    
     /**
      * @param mapProviderImpl
      */
@@ -81,6 +83,7 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
      */
     public MAPDialogLsm createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
             SccpAddress destAddress, AddressString destReference) throws MAPException {
+    	mapProviderImpl.getMAPStack().newDialogSent(NAME);
         return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
     }
 
@@ -128,6 +131,7 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
      */
     @Override
     protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog) {
+    	mapProviderImpl.getMAPStack().newDialogReceived(NAME);
         return new MAPDialogLsmImpl(appCntx, tcapDialog, this.mapProviderImpl, this, null, null);
     }
 

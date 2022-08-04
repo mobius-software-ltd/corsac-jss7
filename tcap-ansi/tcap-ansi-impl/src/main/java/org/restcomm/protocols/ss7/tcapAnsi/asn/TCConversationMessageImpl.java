@@ -39,7 +39,8 @@ import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
  */
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=6,constructed=true,lengthIndefinite=false)
 public class TCConversationMessageImpl extends TCUnifiedMessageImpl implements TCConversationMessage {
-	
+	public static String NAME="Conversation";
+
 	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=0x08,constructed=true,index=-1,defaultImplementation = ComponentPortionImpl.class)
 	private ComponentPortion component;
 
@@ -117,4 +118,9 @@ public class TCConversationMessageImpl extends TCUnifiedMessageImpl implements T
     public boolean isDialogPortionExists() {
         return this.getDialogPortion()!=null || this.getComponent()!=null;
     }
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
 }

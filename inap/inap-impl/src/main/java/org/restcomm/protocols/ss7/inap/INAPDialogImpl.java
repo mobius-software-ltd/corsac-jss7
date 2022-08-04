@@ -27,6 +27,7 @@ import org.restcomm.protocols.ss7.inap.api.INAPServiceBase;
 import org.restcomm.protocols.ss7.inap.api.dialog.INAPDialogState;
 import org.restcomm.protocols.ss7.inap.api.dialog.INAPGeneralAbortReason;
 import org.restcomm.protocols.ss7.inap.api.dialog.INAPUserAbortReason;
+import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorCode;
 import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessage;
 import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessageParameterless;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
@@ -342,6 +343,9 @@ public abstract class INAPDialogImpl implements INAPDialog {
     @Override
     public Integer sendDataComponent(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,Integer operationCode,INAPMessage param,Boolean isRequest,Boolean isLastResponse) throws INAPException {
         try {
+        	if(param!=null)
+        		inapProviderImpl.getStack().newMessageSent(param.getMessageType().name());
+    		
         	if(operationCode!=null)
         		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
         	else
@@ -354,6 +358,9 @@ public abstract class INAPDialogImpl implements INAPDialog {
     @Override
     public void sendErrorComponent(Integer invokeId, INAPErrorMessage mem) throws INAPException {
     	try {
+        	if(mem!=null)
+        		inapProviderImpl.getStack().newErrorSent(INAPErrorCode.translate(mem));
+
         	if(mem instanceof INAPErrorMessageParameterless)
         		this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), null);
         	else

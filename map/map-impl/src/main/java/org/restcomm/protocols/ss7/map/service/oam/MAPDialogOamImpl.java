@@ -32,6 +32,7 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextName;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
 import org.restcomm.protocols.ss7.map.api.MAPException;
+import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.service.oam.MAPDialogOam;
 import org.restcomm.protocols.ss7.map.api.service.oam.MAPServiceOam;
@@ -129,7 +130,9 @@ public class MAPDialogOamImpl extends MAPDialogImpl implements MAPDialogOam {
         ActivateTraceModeResponseImpl req=null;
         if ((traceSupportIndicator || extensionContainer != null) && this.appCntx.getApplicationContextVersion().getVersion() >= 3)
         	req = new ActivateTraceModeResponseImpl(extensionContainer, traceSupportIndicator);
-       
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.activateTraceMode_Response.name());               
+
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.activateTraceMode, req, false, true);
     }
 

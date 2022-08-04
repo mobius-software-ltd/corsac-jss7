@@ -19,6 +19,9 @@
 
 package org.restcomm.protocols.ss7.inap.api.errors;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * INAP Error codes Carried by ReturnError primitive
  *
@@ -85,5 +88,81 @@ public interface INAPErrorCode {
    //parameterMissing ParameterMissing ::= localValue 13
 	int parameterMissing=13;
    //otherError OtherError ::= localValue 100
-   int otherError=100;      
+   int otherError=100; 
+   
+   public static List<String> getAllNames() {
+	   return Arrays.asList(new String[] {
+			   "canceled", "cancelFailed", "eTCFailed", "improperCallerResponse",
+			   "missingCustomerRecord", "missingParameter", "parameterOutOfRange",
+			   "requestedInfoError", "systemFailure", "taskRefused", "unavailableResource",
+			   "unexpectedComponentSequence", "unexpectedDataValue", "unexpectedParameter",
+			   "unknownLegID", "unknownResource", "congestion", "errorInParameterValue",
+			   "executionError", "illegalCombinationOfParameters", "infoNotAvailable",
+			   "invalidDataItemID", "notAuthorized", "parameterMissing","otherError", "other"
+	   });
+   }
+   
+   public static String translate(INAPErrorMessage msg) {
+	   switch(msg.getErrorCode()) {
+		   case canceled:
+			   return "canceled";
+		   case cancelFailed:
+			   return "cancelFailed";
+		   case eTCFailed:
+		   //case errorInParameterValue:
+			   if(msg instanceof INAPErrorMessageOctetString)
+				   return "errorInParameterValue";	
+		   	   return "eTCFailed";
+		   case improperCallerResponse:
+		   //case executionError:
+			  if(msg instanceof INAPErrorMessageOctetString)
+				  return "executionError";
+		      return "improperCallerResponse";
+		   case missingCustomerRecord:
+			   return "missingCustomerRecord";
+		   case missingParameter:
+		   //case illegalCombinationOfParameters:
+			  if(msg instanceof INAPErrorMessageOctetString)
+				   return "illegalCombinationOfParameters";
+		      return "missingParameter";
+		   case parameterOutOfRange:
+		   //case infoNotAvailable:
+			  if(msg instanceof INAPErrorMessageOctetString)
+				   return "infoNotAvailable";
+		      return "parameterOutOfRange";
+		   case requestedInfoError:
+		   //case invalidDataItemID:
+			  if(msg instanceof INAPErrorMessageOctetString)
+				  return "invalidDataItemID";
+		      return "requestedInfoError";
+		   case systemFailure:
+			   return "systemFailure";
+		   case taskRefused:
+		   //case notAuthorized:
+			  if(msg instanceof INAPErrorMessageOctetString)
+				  return "notAuthorized";
+		      return "taskRefused";
+		   case unavailableResource:
+		   //case parameterMissing:
+			   if(msg instanceof INAPErrorMessageOctetString)
+					return "parameterMissing";
+		   	   return "unavailableResource";
+		   case unexpectedComponentSequence:
+			   return "unexpectedComponentSequence";
+		   case unexpectedDataValue:
+			   return "unexpectedDataValue";
+		   case unexpectedParameter:
+			   return "unexpectedParameter";
+		   case unknownLegID:
+			   return "unknownLegID";
+		   case unknownResource:
+			   return "unknownResource";
+		   case congestion:
+			   return "congestion";
+		   case otherError:
+		   		return "otherError";
+	   }
+	   
+	   return "other";
+   }
 }

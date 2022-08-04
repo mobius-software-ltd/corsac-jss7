@@ -31,6 +31,7 @@ import org.restcomm.protocols.ss7.map.api.MAPServiceBase;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPDialogState;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
 import org.restcomm.protocols.ss7.map.api.dialog.Reason;
+import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageParameterless;
 import org.restcomm.protocols.ss7.map.dialog.MAPUserAbortInfoImpl;
@@ -409,6 +410,9 @@ public abstract class MAPDialogImpl implements MAPDialog {
 
     public Integer sendDataComponent(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,Integer operationCode,MAPMessage param,Boolean isRequest,Boolean isLastResponse) throws MAPException {
         try {
+        	if(param!=null)
+                mapProviderImpl.getMAPStack().newMessageSent(param.getMessageType().name());               
+
         	if(operationCode!=null)
         		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
         	else
@@ -420,6 +424,9 @@ public abstract class MAPDialogImpl implements MAPDialog {
 
     public void sendErrorComponent(Integer invokeId, MAPErrorMessage mem) throws MAPException {
         try {
+        	if(mem!=null)
+                mapProviderImpl.getMAPStack().newErrorSent(MAPErrorCode.translate(mem.getErrorCode()));               
+
         	if(mem instanceof MAPErrorMessageParameterless)
         		this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), null);
         	else

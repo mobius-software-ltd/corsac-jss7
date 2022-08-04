@@ -87,6 +87,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
  */
 public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implements CAPServiceCircuitSwitchedCall {
 
+	public static final String NAME="CircuitSwitchedCall";
+    
     protected Logger loger = LogManager.getLogger(CAPServiceCircuitSwitchedCallImpl.class);
 
     public CAPServiceCircuitSwitchedCallImpl(CAPProviderImpl capProviderImpl) {
@@ -95,7 +97,8 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
 
     @Override
     public CAPDialogCircuitSwitchedCall createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress) throws CAPException {
-        return this.createNewDialog(appCntx, origAddress, destAddress, null);
+        capProviderImpl.getCAPStack().newDialogSent(NAME);
+    	return this.createNewDialog(appCntx, origAddress, destAddress, null);
     }
 
     @Override
@@ -128,7 +131,8 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
 
     @Override
     protected CAPDialogImpl createNewDialogIncoming(CAPApplicationContext appCntx, Dialog tcapDialog) {
-        return new CAPDialogCircuitSwitchedCallImpl(appCntx, tcapDialog, this.capProviderImpl, this);
+    	capProviderImpl.getCAPStack().newDialogReceived(NAME);
+    	return new CAPDialogCircuitSwitchedCallImpl(appCntx, tcapDialog, this.capProviderImpl, this);
     }
 
     @Override
@@ -265,7 +269,8 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
                     	ContinueRequestImpl ind = new ContinueRequestImpl();
                     	ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                		
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                        
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -433,7 +438,8 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
                 		ActivityTestRequest ind = new ActivityTestRequestImpl();
                 		ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                		
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                        
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -448,7 +454,8 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
                 		ActivityTestResponse ind = new ActivityTestResponseImpl();
                 		ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                		
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                        
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -517,7 +524,8 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
                 		DisconnectForwardConnectionRequest ind = new DisconnectForwardConnectionRequestImpl();
                 		ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                		
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                        
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -552,7 +560,8 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
         				DisconnectLegResponse ind = new DisconnectLegResponseImpl();
         				ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                		
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                        
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -839,7 +848,8 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
                 		MoveLegResponseImpl ind = new MoveLegResponseImpl();
         				ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                		
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                        
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -874,7 +884,8 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
         				SplitLegResponse ind = new SplitLegResponseImpl();
         				ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                		
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                        
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);
@@ -895,7 +906,8 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
         				CollectInformationRequest ind = new CollectInformationRequestImpl();
         				ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                		
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                        
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
 	        	                serLis.onCAPMessage(ind);

@@ -21,10 +21,18 @@
 
 package org.restcomm.protocols.ss7.tcap.asn;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.restcomm.protocols.ss7.tcap.asn.comp.DestinationTransactionID;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OriginatingTransactionID;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUnifiedMessage;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogPortionImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCAbortMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCBeginMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCContinueMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCEndMessageImpl;
+import org.restcomm.protocols.ss7.tcap.asn.tx.TCUniMessageImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
@@ -52,6 +60,10 @@ public abstract class TCUnifiedMessageImpl implements TCUnifiedMessage {
     public TCUnifiedMessageImpl() {
     }
 
+    public static List<String> getAllNames() {
+    	return Arrays.asList(new String[] { TCAbortMessageImpl.NAME, TCBeginMessageImpl.NAME, TCContinueMessageImpl.NAME, TCEndMessageImpl.NAME, TCUniMessageImpl.NAME, TCUnknownMessageImpl.NAME });
+    }
+    
     public ByteBuf getOriginatingTransactionId() {
     	if(originatingTransactionId==null)
     		return null;

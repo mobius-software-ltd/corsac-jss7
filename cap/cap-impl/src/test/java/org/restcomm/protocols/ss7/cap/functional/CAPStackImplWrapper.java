@@ -34,6 +34,6 @@ public class CAPStackImplWrapper extends CAPStackImpl {
 
     public CAPStackImplWrapper(SccpProvider sccpPprovider, int ssn,int threads) {
         super("Test", sccpPprovider, ssn, threads);
-        this.capProvider = new CAPProviderImplWrapper(this.tcapStack.getProvider());
+        this.capProvider = new CAPProviderImplWrapper(this.tcapStack.getProvider(), this);
     }
 }

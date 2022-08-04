@@ -42,6 +42,8 @@ import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponen
  */
 @ASNTag(asnClass=ASNClass.APPLICATION,tag=0x05,constructed=true,lengthIndefinite=false)
 public class TCContinueMessageImpl extends TCUnifiedMessageImpl implements TCContinueMessage {
+	public static String NAME="Continue";
+	
 	// opt
     private ComponentPortionImpl component;
 
@@ -77,5 +79,10 @@ public class TCContinueMessageImpl extends TCUnifiedMessageImpl implements TCCon
 	public void validateElement() throws ASNParsingComponentException {
     	if(getOriginatingTransactionId()==null || getDestinationTransactionId()==null)
     		throw new ASNParsingComponentException("Originating and destination transaction IDs should not be null", ASNParsingComponentExceptionReason.MistypedParameter); 
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
 	}
 }

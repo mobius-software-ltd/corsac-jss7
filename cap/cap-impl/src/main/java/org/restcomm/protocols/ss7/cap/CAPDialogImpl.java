@@ -30,6 +30,7 @@ import org.restcomm.protocols.ss7.cap.api.dialog.CAPDialogState;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGeneralAbortReason;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPGprsReferenceNumber;
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPUserAbortReason;
+import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorCode;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessage;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessageParameterless;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
@@ -367,6 +368,9 @@ public abstract class CAPDialogImpl implements CAPDialog {
     @Override
     public Integer sendDataComponent(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,Integer operationCode,CAPMessage param,Boolean isRequest,Boolean isLastResponse) throws CAPException {
         try {
+        	if(param!=null)
+                capProviderImpl.getCAPStack().newMessageSent(param.getMessageType().name());               
+
         	if(operationCode!=null)
         		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
         	else
@@ -379,6 +383,9 @@ public abstract class CAPDialogImpl implements CAPDialog {
     @Override
     public void sendErrorComponent(Integer invokeId, CAPErrorMessage mem) throws CAPException {
     	try {
+    		if(mem!=null)
+                capProviderImpl.getCAPStack().newErrorSent(CAPErrorCode.translate(mem.getErrorCode()));               
+
         	if(mem instanceof CAPErrorMessageParameterless)
         		this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), null);
         	else

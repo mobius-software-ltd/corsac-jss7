@@ -257,7 +257,7 @@ class Circuit {
                     break;
             }
             // send
-            provider.send(msg);
+            provider.send(message,msg);
         } catch (Exception e) {
             e.printStackTrace();
         } 
@@ -752,7 +752,7 @@ class Circuit {
                 if (provider.isAutomaticTimerMessages())
                     try {
                         // TODO: CI required ?
-                        provider.send(t1t5encodedREL);
+                        provider.send(t1t5REL,t1t5encodedREL);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -887,7 +887,7 @@ class Circuit {
                 // send
                 if (provider.isAutomaticTimerMessages())
                     try {
-                        provider.send(t12t13encodedBLO);
+                        provider.send(t12t13BLO,t12t13encodedBLO);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -932,7 +932,7 @@ class Circuit {
                 // send
                 if (provider.isAutomaticTimerMessages())
                     try {
-                        provider.send(t12t13encodedBLO);
+                        provider.send(t12t13BLO,t12t13encodedBLO);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -971,7 +971,7 @@ class Circuit {
                 // send
                 if (provider.isAutomaticTimerMessages())
                     try {
-                        provider.send(t14t15encodedUBL);
+                        provider.send(t14t15UBL,t14t15encodedUBL);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1016,7 +1016,7 @@ class Circuit {
                 // send
                 if (provider.isAutomaticTimerMessages())
                     try {
-                        provider.send(t14t15encodedUBL);
+                        provider.send(t14t15UBL,t14t15encodedUBL);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1055,7 +1055,7 @@ class Circuit {
                 // send
                 if (provider.isAutomaticTimerMessages())
                     try {
-                        provider.send(t16t17encodedRSC);
+                        provider.send(t16t17RSC,t16t17encodedRSC);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1100,7 +1100,7 @@ class Circuit {
                 // send
                 if (provider.isAutomaticTimerMessages())
                     try {
-                        provider.send(t16t17encodedRSC);
+                        provider.send(t16t17RSC,t16t17encodedRSC);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1141,7 +1141,7 @@ class Circuit {
                 
                 if (provider.isAutomaticTimerMessages())
                     try {
-                        provider.send(t18t19encodedCGB);
+                        provider.send(t18t19CGB,t18t19encodedCGB);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1187,7 +1187,7 @@ class Circuit {
                 // send
                 if (provider.isAutomaticTimerMessages())
                     try {
-                        provider.send(t18t19encodedCGB);
+                        provider.send(t18t19CGB,t18t19encodedCGB);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1226,7 +1226,7 @@ class Circuit {
                 // send
                 if (provider.isAutomaticTimerMessages())
                     try {
-                        provider.send(t20t21encodedCGU);
+                        provider.send(t20t21CGU,t20t21encodedCGU);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1271,7 +1271,7 @@ class Circuit {
                 // send
                 if (provider.isAutomaticTimerMessages())
                     try {
-                        provider.send(t20t21encodedCGU);
+                        provider.send(t20t21CGU,t20t21encodedCGU);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1310,7 +1310,7 @@ class Circuit {
                 // send
                 if (provider.isAutomaticTimerMessages())
                     try {
-                        provider.send(t22t23encodedGRS);
+                        provider.send(t22t23GRS,t22t23encodedGRS);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1355,7 +1355,7 @@ class Circuit {
                 // send
                 if (provider.isAutomaticTimerMessages())
                     try {
-                        provider.send(t22t23encodedGRS);
+                        provider.send(t22t23GRS,t22t23encodedGRS);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

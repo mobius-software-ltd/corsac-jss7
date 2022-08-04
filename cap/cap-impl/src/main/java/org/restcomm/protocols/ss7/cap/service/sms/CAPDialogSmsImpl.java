@@ -27,6 +27,7 @@ import org.restcomm.protocols.ss7.cap.CAPDialogImpl;
 import org.restcomm.protocols.ss7.cap.CAPProviderImpl;
 import org.restcomm.protocols.ss7.cap.api.CAPApplicationContext;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
+import org.restcomm.protocols.ss7.cap.api.CAPMessageType;
 import org.restcomm.protocols.ss7.cap.api.CAPOperationCode;
 import org.restcomm.protocols.ss7.cap.api.CAPServiceBase;
 import org.restcomm.protocols.ss7.cap.api.service.sms.CAPDialogSms;
@@ -275,7 +276,8 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
         else
         	customTimeout = customInvokeTimeout;
         
-        return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.continueSMS, null, true, false);        
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.continueSMS_Request.name());               
+    	return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.continueSMS, null, true, false);        
     }
 
 }

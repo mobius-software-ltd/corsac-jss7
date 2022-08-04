@@ -90,4 +90,78 @@ public interface MessageType {
     String S_REG_RESPONSE = "REGRSP";
     String S_DEREG_REQUEST = "DEREGREQ";
     String S_DEREG_RESPONSE = "DEREGRESP";
+    
+    String S_OTHER = "OTHER";
+    
+    public static String getName(int messageClass,int messageType)
+    {
+    	switch(messageClass) {
+    		case MessageClass.MANAGEMENT:
+    			switch(messageType) {
+    				case ERROR:
+    					return S_ERROR;
+    				case NOTIFY:
+    					return S_NOTIFY;
+    			}
+    			break;
+    		case MessageClass.TRANSFER_MESSAGES:
+    			return S_PAYLOAD;    			
+    		case MessageClass.SIGNALING_NETWORK_MANAGEMENT:
+    			switch(messageType) {
+					case DESTINATION_UNAVAILABLE:
+						return S_DESTINATION_UNAVAILABLE;
+					case DESTINATION_AVAILABLE:
+						return S_DESTINATION_AVAILABLE;
+					case DESTINATION_STATE_AUDIT:
+						return S_DESTINATION_STATE_AUDIT;
+					case SIGNALING_CONGESTION:
+						return S_SIGNALING_CONGESTION;
+					case DESTINATION_USER_PART_UNAVAILABLE:
+						return S_DESTINATION_USER_PART_UNAVAILABLE;
+					case DESTINATION_RESTRICTED:
+						return S_DESTINATION_RESTRICTED;
+				}
+    			break;
+    		case MessageClass.ASP_STATE_MAINTENANCE:
+    			switch(messageType) {
+					case ASP_UP:
+						return S_ASP_UP;
+					case ASP_UP_ACK:
+						return S_ASP_UP_ACK;
+					case ASP_DOWN:
+						return S_ASP_DOWN;
+					case ASP_DOWN_ACK:
+						return S_ASP_DOWN_ACK;
+					case HEARTBEAT:
+						return S_HEARTBEAT;
+					case HEARTBEAT_ACK:
+						return S_HEARTBEAT_ACK;
+				}
+    			break;
+    		case MessageClass.ASP_TRAFFIC_MAINTENANCE:
+    			switch(messageType) {
+					case ASP_ACTIVE:
+						return S_ASP_ACTIVE;
+					case ASP_ACTIVE_ACK:
+						return S_ASP_ACTIVE_ACK;
+					case ASP_INACTIVE:
+						return S_ASP_INACTIVE;
+					case ASP_INACTIVE_ACK:
+						return S_ASP_INACTIVE_ACK;
+				}
+				break;
+    		case MessageClass.ROUTING_KEY_MANAGEMENT:
+    			switch(messageType) {
+					case REG_REQUEST:
+						return S_REG_REQUEST;
+					case DEREG_REQUEST:
+						return S_DEREG_REQUEST;
+				}
+    			break;
+    		default:
+    			break;
+    	}
+    	
+    	return S_OTHER;
+    }
 }

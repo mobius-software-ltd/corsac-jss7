@@ -123,5 +123,5 @@ public class ComponentImpl {
 			return ComponentType.ReturnError;
 		
 		return null;
-	}
+	}		
 }

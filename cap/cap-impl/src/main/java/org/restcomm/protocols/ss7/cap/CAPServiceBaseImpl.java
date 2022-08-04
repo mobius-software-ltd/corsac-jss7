@@ -21,6 +21,7 @@
 
 package org.restcomm.protocols.ss7.cap;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -33,6 +34,9 @@ import org.restcomm.protocols.ss7.cap.api.CAPProvider;
 import org.restcomm.protocols.ss7.cap.api.CAPServiceBase;
 import org.restcomm.protocols.ss7.cap.api.CAPServiceListener;
 import org.restcomm.protocols.ss7.cap.api.errors.CAPErrorMessage;
+import org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.CAPServiceCircuitSwitchedCallImpl;
+import org.restcomm.protocols.ss7.cap.service.gprs.CAPServiceGprsImpl;
+import org.restcomm.protocols.ss7.cap.service.sms.CAPServiceSmsImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
@@ -171,5 +175,9 @@ public abstract class CAPServiceBaseImpl implements CAPServiceBase {
         for (CAPServiceListener serLis : this.serviceListeners) {
             serLis.onInvokeTimeout(capDialog, invoke.getInvokeId());
         }
+    }
+    
+    public static List<String> getNames() {
+    	return Arrays.asList(new String[] { CAPServiceCircuitSwitchedCallImpl.NAME, CAPServiceGprsImpl.NAME, CAPServiceSmsImpl.NAME});
     }
 }

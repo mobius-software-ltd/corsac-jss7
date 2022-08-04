@@ -22,6 +22,9 @@
 
 package org.restcomm.protocols.ss7.map.api.errors;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * MAP Error codes Carried by ReturnError primitive
  *
@@ -102,4 +105,116 @@ public interface MAPErrorCode {
      *
      */
 
+    public static List<String> getAllNames() {
+    	return Arrays.asList(new String[] { "systemFailure", "dataMissing", "unexpectedDataValue", "facilityNotSupported",
+    			"incompatibleTerminal", "resourceLimitation", "noRoamingNumberAvailable", "absentSubscriber",
+    			"busySubscriber", "noSubscriberReply", "callBarred", "forwardingFailed", "orNotAllowed",
+    			"forwardingViolation", "cugReject", "unknownSubscriber", "numberChanged", "unknownMSC",
+    			"unidentifiedSubscriber", "unknownEquipment", "roamingNotAllowed", "illegalSubscriber",
+    			"illegalEquipment", "bearerServiceNotProvisioned", "teleserviceNotProvisioned", "subscriberBusyForMTSMS",
+    			"smDeliveryFailure", "messageWaitingListFull", "absentSubscriberSM", "unauthorizedRequestingNetwork",
+    			"unauthorizedLCSClient", "positionMethodFailure", "unknownOrUnreachableLCSClient", "mmEventNotSupported",
+    			"illegalSSOperation", "ssErrorStatus", "ssNotAvailable", "ssSubscriptionViolation", "ssIncompatibility",
+    			"unknownAlphabet", "ussdBusy", "pwRegistrationFailure", "negativePWCheck", "numberOfPWAttemptsViolation",
+    			"shortTermDenial", "longTermDenial", "unknown" });
+    }
+    
+    public static String translate(int errorCode) {
+    	switch(errorCode) {
+	    	case systemFailure:
+	    		return "systemFailure";
+	        case dataMissing:
+	        	return "dataMissing";
+	        case unexpectedDataValue:
+	        	return "unexpectedDataValue";
+	        case facilityNotSupported:
+	        	return "facilityNotSupported";
+	        case incompatibleTerminal:
+	        	return "incompatibleTerminal";
+	        case resourceLimitation:
+	        	return "resourceLimitation";
+	        case noRoamingNumberAvailable:
+	        	return "noRoamingNumberAvailable";
+	        case absentSubscriber:
+	        	return "absentSubscriber";
+	        case busySubscriber:
+	        	return "busySubscriber";
+	        case noSubscriberReply:
+	        	return "noSubscriberReply";
+	        case callBarred:
+	        	return "callBarred";
+	        case forwardingFailed:
+	        	return "forwardingFailed";
+	        case orNotAllowed:
+	        	return "orNotAllowed";
+	        case forwardingViolation:
+	        	return "forwardingViolation";
+	        case cugReject:
+	        	return "cugReject";
+	        case unknownSubscriber:
+	        	return "unknownSubscriber";
+	        case numberChanged:
+	        	return "numberChanged";
+	        case unknownMSC:
+	        	return "unknownMSC";
+	        case unidentifiedSubscriber:
+	        	return "unidentifiedSubscriber";
+	        case unknownEquipment:
+	        	return "unknownEquipment";
+	        case roamingNotAllowed:
+	        	return "roamingNotAllowed";
+	        case illegalSubscriber:
+	        	return "illegalSubscriber";
+	        case illegalEquipment:
+	        	return "illegalEquipment";
+	        case bearerServiceNotProvisioned:
+	        	return "bearerServiceNotProvisioned";
+	        case teleserviceNotProvisioned:
+	        	return "teleserviceNotProvisioned";
+	        case subscriberBusyForMTSMS:
+	        	return "subscriberBusyForMTSMS";
+	        case smDeliveryFailure:
+	        	return "smDeliveryFailure";
+	        case messageWaitingListFull:
+	        	return "messageWaitingListFull";
+	        case absentSubscriberSM:
+	        	return "absentSubscriberSM";
+	        case unauthorizedRequestingNetwork:	        	
+	        	return "unauthorizedRequestingNetwork";
+	        case unauthorizedLCSClient:
+	        	return "unauthorizedLCSClient";
+	        case positionMethodFailure:
+	        	return "positionMethodFailure";
+	        case unknownOrUnreachableLCSClient:
+	        	return "unknownOrUnreachableLCSClient";
+	        case mmEventNotSupported:
+	        	return "mmEventNotSupported";
+	        case illegalSSOperation:
+	        	return "illegalSSOperation";
+	        case ssErrorStatus:
+	        	return "ssErrorStatus";
+	        case ssNotAvailable:
+	        	return "ssNotAvailable";
+	        case ssSubscriptionViolation:
+	        	return "ssSubscriptionViolation";
+	        case ssIncompatibility:
+	        	return "ssIncompatibility";
+	        case unknownAlphabet:
+	        	return "unknownAlphabet";
+	        case ussdBusy:
+	        	return "ussdBusy";
+	        case pwRegistrationFailure:
+	        	return "pwRegistrationFailure";
+	        case negativePWCheck:
+	        	return "negativePWCheck";
+	        case numberOfPWAttemptsViolation:
+	        	return "numberOfPWAttemptsViolation";
+	        case shortTermDenial:
+	        	return "shortTermDenial";
+	        case longTermDenial:
+	        	return "longTermDenial";
+    	}
+    	
+    	return "unknown";
+    }
 }

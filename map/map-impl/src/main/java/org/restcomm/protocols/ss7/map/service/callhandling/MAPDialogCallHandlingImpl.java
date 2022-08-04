@@ -37,6 +37,7 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextName;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
 import org.restcomm.protocols.ss7.map.api.MAPException;
+import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.MAPServiceBase;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
@@ -388,7 +389,9 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
         IstCommandResponseImpl res=null;
         if (extensionContainer!=null)
             res = new IstCommandResponseImpl(extensionContainer);
-            
+        else
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.istCommand_Response.name());               
+
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.istCommand, res, false, true);
     }
 }

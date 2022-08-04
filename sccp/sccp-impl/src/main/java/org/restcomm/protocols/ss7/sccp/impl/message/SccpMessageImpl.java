@@ -39,7 +39,26 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
  * @author yulianoifa
  */
 public abstract class SccpMessageImpl implements SccpMessage {
-
+	public static String MESSAGE_NAME_OTHER = "OTHER";
+	public static String MESSAGE_NAME_CR = "CR";
+	public static String MESSAGE_NAME_CC = "CC";
+	public static String MESSAGE_NAME_CREF = "CREF";
+	public static String MESSAGE_NAME_RLSD = "RLSD";
+	public static String MESSAGE_NAME_RLC = "RLC";
+	public static String MESSAGE_NAME_DT1 = "DT1";
+	public static String MESSAGE_NAME_DT2 = "DT2";
+	public static String MESSAGE_NAME_AK = "AK";
+	public static String MESSAGE_NAME_RSR = "RSR";
+	public static String MESSAGE_NAME_RSC = "RSC";
+	public static String MESSAGE_NAME_ERR = "ERR";
+	public static String MESSAGE_NAME_IT = "IT";
+	public static String MESSAGE_NAME_UDT = "UDT";
+	public static String MESSAGE_NAME_UDTS = "UDTS";
+	public static String MESSAGE_NAME_XUDT = "XUDT";
+	public static String MESSAGE_NAME_XUDTS = "XUDTS";
+	public static String MESSAGE_NAME_LUDT = "LUDT";
+	public static String MESSAGE_NAME_LUDTS = "LUTDS";
+    
     protected boolean isMtpOriginated;
     protected boolean isIncoming;
     protected int type;
@@ -140,4 +159,46 @@ public abstract class SccpMessageImpl implements SccpMessage {
     public abstract EncodingResultData encode(SccpStackImpl sccpStackImpl, LongMessageRuleType longMessageRuleType, int maxMtp3UserDataLength, Logger logger,
             boolean removeSPC, SccpProtocolVersion sccpProtocolVersion) throws ParseException;
 
+    public static String getName(int type) {
+    	switch(type) {
+    		case MESSAGE_TYPE_CR: 
+    			return MESSAGE_NAME_CR;
+    		case MESSAGE_TYPE_CC:
+    			return MESSAGE_NAME_CC;
+    		case MESSAGE_TYPE_CREF:
+    			return MESSAGE_NAME_CREF;
+    		case MESSAGE_TYPE_RLSD:
+    			return MESSAGE_NAME_RLSD;
+    		case MESSAGE_TYPE_RLC:
+    			return MESSAGE_NAME_RLC;
+    		case MESSAGE_TYPE_DT1:
+    			return MESSAGE_NAME_DT1;
+    		case MESSAGE_TYPE_DT2:
+    			return MESSAGE_NAME_DT2;
+    		case MESSAGE_TYPE_AK:
+    			return MESSAGE_NAME_AK;
+    		case MESSAGE_TYPE_RSR:
+    			return MESSAGE_NAME_RSR;
+    		case MESSAGE_TYPE_RSC:
+    			return MESSAGE_NAME_RSC;
+    		case MESSAGE_TYPE_ERR:
+    			return MESSAGE_NAME_ERR;
+    		case MESSAGE_TYPE_IT:
+    			return MESSAGE_NAME_IT;
+    		case MESSAGE_TYPE_UDT:
+    			return MESSAGE_NAME_UDT;
+    		case MESSAGE_TYPE_UDTS:
+    			return MESSAGE_NAME_UDTS;
+    		case MESSAGE_TYPE_XUDT:
+    			return MESSAGE_NAME_XUDT;
+    		case MESSAGE_TYPE_XUDTS:
+    			return MESSAGE_NAME_XUDTS;
+    		case MESSAGE_TYPE_LUDT:
+    			return MESSAGE_NAME_LUDT;
+    		case MESSAGE_TYPE_LUDTS:
+    			return MESSAGE_NAME_LUDTS;
+    	}
+    	
+    	return MESSAGE_NAME_OTHER;
+    }
 }

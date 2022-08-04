@@ -32,6 +32,7 @@ import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextName;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContextVersion;
 import org.restcomm.protocols.ss7.map.api.MAPException;
+import org.restcomm.protocols.ss7.map.api.MAPMessageType;
 import org.restcomm.protocols.ss7.map.api.MAPOperationCode;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingScheme;
 import org.restcomm.protocols.ss7.map.api.primitives.EMLPPPriority;
@@ -106,7 +107,9 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
         RegisterSSResponseImpl req=null;
         if (ssInfo != null)
             req = new RegisterSSResponseImpl(ssInfo);
-            
+        else
+        	mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.registerSS_Response.name());               
+        
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.registerSS, req, false, true);
     }
 
@@ -140,8 +143,9 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
         EraseSSResponseImpl req = null;
         if (ssInfo != null)
             req = new EraseSSResponseImpl(ssInfo);
+        else
+        	mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.eraseSS_Response.name());               
             
-
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.eraseSS, req, false, true);
     }
 
@@ -175,7 +179,9 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
         ActivateSSResponseImpl req=null;
         if (ssInfo != null)
             req = new ActivateSSResponseImpl(ssInfo);            
-
+        else
+        	mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.activateSS_Response.name());               
+        
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.activateSS, req, false, true);
     }
 
@@ -209,7 +215,9 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
         DeactivateSSResponseImpl req=null;
         if (ssInfo != null)
             req = new DeactivateSSResponseImpl(ssInfo);           
-
+        else
+        	mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.deactivateSS_Response.name());               
+        
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.deactivateSS, req, false, true);
     }
 
@@ -392,7 +400,9 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
         UnstructuredSSRequestImpl req = null;
         if (ussdString != null)
             req = new UnstructuredSSRequestImpl(ussdDataCodingScheme, ussdString, alertingPatter, msisdn);
-            
+        else
+        	mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.unstructuredSSNotify_Request.name());               
+        
         return this.sendDataComponent(null, null, null, customTimeout.longValue(), MAPOperationCode.unstructuredSS_Notify, req, true, false);
     }
 
@@ -402,11 +412,14 @@ public class MAPDialogSupplementaryImpl extends MAPDialogImpl implements MAPDial
     	UnstructuredSSResponseImpl req=null;
         if (ussdString != null)
             req = new UnstructuredSSResponseImpl(ussdDataCodingScheme, ussdString);
-            
+        else
+        	mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.unstructuredSSRequest_Response.name());               
+        
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.unstructuredSS_Request, req, false, true);
     }
 
     public void addUnstructuredSSNotifyResponse(int invokeId) throws MAPException {
+        mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.unstructuredSSNotify_Response.name());               
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.unstructuredSS_Notify, null, false, true);
     }
 }

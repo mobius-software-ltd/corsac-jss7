@@ -22,6 +22,7 @@
 package org.restcomm.protocols.ss7.cap.functional;
 
 import org.restcomm.protocols.ss7.cap.CAPProviderImpl;
+import org.restcomm.protocols.ss7.cap.CAPStackImpl;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 
 /**
@@ -36,8 +37,8 @@ public class CAPProviderImplWrapper extends CAPProviderImpl {
 
 	// private final MAPServiceSupplementary mapServiceSupplementaryTest = new MAPServiceSupplementaryImplWrapper(this);
 
-    public CAPProviderImplWrapper(TCAPProvider tcapProvider) {
-        super("Test", tcapProvider);
+    public CAPProviderImplWrapper(TCAPProvider tcapProvider, CAPStackImpl stack) {
+        super("Test", stack, tcapProvider);
 
         // this.capServices.add(this.mapServiceSupplementaryTest);
     }

@@ -22,17 +22,25 @@
 package org.restcomm.protocols.ss7.tcapAnsi;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPStack;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.TCUnifiedMessageImpl;
 
 /**
  * @author amit bhayani
@@ -74,12 +82,50 @@ public class TCAPStackImpl implements TCAPStack {
     // SLS value
     private SlsRangeType slsRange = SlsRangeType.All;
 
+    private ConcurrentHashMap<String, AtomicLong> messagesSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> messagesReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> componentsSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> componentsReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> rejectsSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> rejectsReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> abortsSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> abortsReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    private AtomicLong incomingDialogsProcessed=new AtomicLong(0L);
+    private AtomicLong outgoingDialogsProcessed=new AtomicLong(0L);
+    private AtomicLong dialogTimeoutProcessed=new AtomicLong(0L);
+    private AtomicLong invokeTimeoutProcessed=new AtomicLong(0L);
+    private AtomicLong bytesSent=new AtomicLong(0L);
+    private AtomicLong bytesReceived=new AtomicLong(0L);
+    
     public TCAPStackImpl(String name,int threads) {
         super();
         this.name = name;
 
         service=Executors.newScheduledThreadPool(threads);
         this.logger = LogManager.getLogger(TCAPStackImpl.class.getCanonicalName() + "-" + this.name);
+        
+        for(String currName:TCUnifiedMessageImpl.getAllNames()) {
+        	messagesSentByType.put(currName,new AtomicLong(0));
+        	messagesReceivedByType.put(currName,new AtomicLong(0));
+        }        	
+        
+        for(ComponentType currComponentType:ComponentType.values()) {
+        	componentsSentByType.put(currComponentType.name(),new AtomicLong(0));
+        	componentsReceivedByType.put(currComponentType.name(),new AtomicLong(0));
+        }
+        
+        for(RejectProblem rejectProblem:RejectProblem.values()) {
+        	rejectsSentByType.put(rejectProblem.name(),new AtomicLong(0));
+        	rejectsReceivedByType.put(rejectProblem.name(),new AtomicLong(0));
+        }
+        
+        for(PAbortCause abortType:PAbortCause.values()) {
+        	abortsReceivedByType.put(abortType.name(),new AtomicLong(0));
+        	abortsSentByType.put(abortType.name(),new AtomicLong(0));
+        }
+        
+        abortsReceivedByType.put("User",new AtomicLong(0));
+    	abortsSentByType.put("User",new AtomicLong(0));
     }
 
     public TCAPStackImpl(String name, SccpProvider sccpProvider, int ssn,int threads) {
@@ -311,4 +357,180 @@ public class TCAPStackImpl implements TCAPStack {
     public SlsRangeType getSlsRangeType() {
         return this.slsRange;
     }
+
+	@Override
+	public Map<String, Long> getComponentsSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=componentsSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getComponentsReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=componentsReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getMessagesSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=messagesSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getMessagesReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=messagesReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getRejectsSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=rejectsSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getRejectsReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=rejectsReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getAbortsSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=abortsSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getAbortsReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=abortsReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Long getIncomingDialogsProcessed() {
+		return incomingDialogsProcessed.get();
+	}
+
+	@Override
+	public Long getOutgoingDialogsProcessed() {
+		return outgoingDialogsProcessed.get();
+	}
+
+	@Override
+	public Long getBytesSent() {
+		return bytesSent.get();
+	}
+
+	@Override
+	public Long getBytesReceived() {
+		return bytesReceived.get();
+	}
+
+	@Override
+	public Long getDialogTimeoutProcessed() {
+		return dialogTimeoutProcessed.get();
+	}
+
+	@Override
+	public Long getInvokeTimeoutProcessed() {
+		return invokeTimeoutProcessed.get();
+	}
+	
+	protected void newIncomingDialogProcessed() {
+		incomingDialogsProcessed.incrementAndGet();
+	}
+	
+	protected void newOutgoingDialogProcessed() {
+		outgoingDialogsProcessed.incrementAndGet();
+	}
+	
+	protected void newComponentReceived(String componentName) {
+		componentsSentByType.get(componentName).incrementAndGet();
+	}
+	
+	protected void newComponentSent(String componentName) {
+		componentsReceivedByType.get(componentName).incrementAndGet();
+	}
+	
+	protected void newRejectReceived(String rejectReason) {
+		rejectsSentByType.get(rejectReason).incrementAndGet();
+	}
+	
+	protected void newRejectSent(String rejectReason) {
+		rejectsReceivedByType.get(rejectReason).incrementAndGet();
+	}
+	
+	protected void newAbortReceived(String abortCause) {
+		abortsSentByType.get(abortCause).incrementAndGet();
+	}
+	
+	protected void newAbortSent(String abortCause) {
+		abortsReceivedByType.get(abortCause).incrementAndGet();
+	}
+	
+	protected void newMessageReceived(String messageType,int bytes) {
+		messagesSentByType.get(messageType).incrementAndGet();
+		bytesSent.addAndGet(bytes);
+	}
+	
+	protected void newMessageSent(String messageType,int bytes) {
+		messagesReceivedByType.get(messageType).incrementAndGet();
+		bytesReceived.addAndGet(bytes);
+	}
+	
+	protected void dialogTimedOut() {
+		dialogTimeoutProcessed.incrementAndGet();
+	}
+	
+	protected void invokeTimedOut() {
+		invokeTimeoutProcessed.incrementAndGet();
+	}
 }

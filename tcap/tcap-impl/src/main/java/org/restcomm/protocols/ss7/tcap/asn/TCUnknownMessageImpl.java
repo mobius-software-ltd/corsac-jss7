@@ -35,6 +35,8 @@ import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingComponen
  *
  */
 public class TCUnknownMessageImpl extends TCUnifiedMessageImpl implements TCContinueMessage {
+	public static String NAME="Unknown";
+
 	// opt
     private ComponentPortionImpl component;
 
@@ -70,5 +72,10 @@ public class TCUnknownMessageImpl extends TCUnifiedMessageImpl implements TCCont
 	public void validateElement() throws ASNParsingComponentException {
     	//if(getOriginatingTransactionId()==null || getDestinationTransactionId()==null)
     	//	throw new ASNParsingComponentException("Originating and destination transaction IDs should not be null", ASNParsingComponentExceptionReason.MistypedParameter); 
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
 	}
 }

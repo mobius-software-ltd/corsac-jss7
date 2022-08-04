@@ -31,6 +31,6 @@ public class INAPStackImplWrapper extends INAPStackImpl {
 
     public INAPStackImplWrapper(SccpProvider sccpPprovider, int ssn,int threads) {
         super("Test", sccpPprovider, ssn, threads);
-        this.inapProvider = new INAPProviderImplWrapper(this.tcapStack.getProvider());
+        this.inapProvider = new INAPProviderImplWrapper(this.tcapStack.getProvider(), this);
     }
 }

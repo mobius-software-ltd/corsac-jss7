@@ -21,6 +21,7 @@
 package org.restcomm.protocols.ss7.m3ua;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.restcomm.protocols.api.Association;
 import org.restcomm.protocols.ss7.m3ua.parameter.ASPIdentifier;
@@ -48,4 +49,20 @@ public interface AspFactory {
     ASPIdentifier getAspid();
 
     boolean isHeartBeatEnabled();
+    
+    Map<String,Long> getMessagesSentByType();
+    
+    Map<String,Long> getMessagesReceivedByType();
+    
+    Map<String,Long> getBytesSentByType();
+    
+    Map<String,Long> getBytesReceivedByType();
+    
+    Long getTransferMessagesSent();
+    
+    Long getTransferMessagesReceived();
+    
+    Long getTransferBytesSent();
+    
+    Long getTransferBytesReceived();        
 }

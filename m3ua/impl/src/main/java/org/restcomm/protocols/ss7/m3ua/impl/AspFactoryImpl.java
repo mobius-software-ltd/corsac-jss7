@@ -21,8 +21,13 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -119,6 +124,11 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
     private AspTrafficMaintenanceHandler aspTrafficMaintenanceHandler = new AspTrafficMaintenanceHandler(this);
     private RoutingKeyManagementHandler routingKeyManagementHandler = new RoutingKeyManagementHandler(this);
 
+    private ConcurrentHashMap<String, AtomicLong> messagesSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> messagesReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> bytesSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> bytesReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    
     protected Functionality functionality = null;
     protected IPSPType ipspType = null;
     protected ExchangeType exchangeType = null;
@@ -135,9 +145,24 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
     private boolean isHeartBeatEnabled = false;
     private UUIDGenerator uuidGenerator;
     
+    private static List<String> allMessageTypes=Arrays.asList(new String[] {MessageType.S_ERROR, MessageType.S_NOTIFY,
+    		MessageType.S_PAYLOAD,MessageType.S_DESTINATION_UNAVAILABLE, MessageType.S_DESTINATION_AVAILABLE,
+    		MessageType.S_DESTINATION_STATE_AUDIT, MessageType.S_SIGNALING_CONGESTION, MessageType.S_DESTINATION_USER_PART_UNAVAILABLE,
+    		MessageType.S_DESTINATION_RESTRICTED, MessageType.S_ASP_UP, MessageType.S_ASP_DOWN, MessageType.S_HEARTBEAT,
+    		MessageType.S_ASP_UP_ACK, MessageType.S_ASP_DOWN_ACK, MessageType.S_HEARTBEAT_ACK, MessageType.S_ASP_ACTIVE,
+    		MessageType.S_ASP_INACTIVE, MessageType.S_ASP_ACTIVE_ACK, MessageType.S_ASP_INACTIVE_ACK, MessageType.S_REG_REQUEST,
+    		MessageType.S_REG_RESPONSE, MessageType.S_DEREG_REQUEST, MessageType.S_DEREG_RESPONSE, MessageType.S_OTHER });
+    
     public AspFactoryImpl(UUIDGenerator uuidGenerator) {
         this.heartBeatTimer = new HeartBeatTimer(this);
-        this.uuidGenerator=uuidGenerator;
+        this.uuidGenerator=uuidGenerator; 
+        
+        for(String currType:allMessageTypes) {
+        	messagesSentByType.put(currType, new AtomicLong(0L));
+        	messagesReceivedByType.put(currType, new AtomicLong(0L));
+        	bytesSentByType.put(currType, new AtomicLong(0L));
+        	bytesReceivedByType.put(currType, new AtomicLong(0L));
+        }
     }
 
     public AspFactoryImpl(String name, int maxSequenceNumber, long aspId, boolean isHeartBeatEnabled,UUIDGenerator uuidGenerator) {
@@ -318,12 +343,21 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
     }
 
     protected void read(M3UAMessage message) {
+    	read(message,null);
+    }
+    
+    protected void read(M3UAMessage message,Integer bytes) {
+    	messagesReceivedByType.get(MessageType.getName(message.getMessageClass(), message.getMessageType())).incrementAndGet();
+    	
+    	//this is for test only where count is not required
+    	if(bytes!=null)
+    		bytesReceivedByType.get(MessageType.getName(message.getMessageClass(), message.getMessageType())).addAndGet(bytes);
+    	
     	switch (message.getMessageClass()) {
             case MessageClass.MANAGEMENT:
                 switch (message.getMessageType()) {
-                    case MessageType.ERROR:
-
-                        this.managementMessageHandler
+                    case MessageType.ERROR:                    	
+                    	this.managementMessageHandler
                                 .handleError((org.restcomm.protocols.ss7.m3ua.message.mgmt.Error) message);
                         break;
                     case MessageType.NOTIFY:
@@ -488,8 +522,9 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
             ((M3UAMessageImpl) message).encode(byteBuf);
 
             org.restcomm.protocols.api.PayloadData payloadData = null;
-
-            switch (message.getMessageClass()) {
+            messagesSentByType.get(MessageType.getName(message.getMessageClass(), message.getMessageType())).incrementAndGet();
+        	bytesSentByType.get(MessageType.getName(message.getMessageClass(), message.getMessageType())).addAndGet(byteBuf.readableBytes());
+        	switch (message.getMessageClass()) {
 	            case MessageClass.ASP_STATE_MAINTENANCE:
 	            case MessageClass.MANAGEMENT:
 	            case MessageClass.ROUTING_KEY_MANAGEMENT:
@@ -724,6 +759,7 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
     }
 
     private void processPayload(IpChannelType ipChannelType, ByteBuf byteBuf) {
+    	int bytes=byteBuf.readableBytes();
         M3UAMessage m3UAMessage;
         if (ipChannelType == IpChannelType.SCTP) {
             try {
@@ -732,7 +768,7 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
                 if (this.isHeartBeatEnabled()) {
                     this.heartBeatTimer.reset();
                 }
-                this.read(m3UAMessage);                               
+                this.read(m3UAMessage,bytes);                               
             } finally {
                 ReferenceCountUtil.release(byteBuf);
             }
@@ -742,16 +778,18 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
             }
             tcpIncBuffer.addComponent(byteBuf);
             tcpIncBuffer.writerIndex(tcpIncBuffer.capacity());
-
+            bytes=tcpIncBuffer.readableBytes();
             while (true) {
                 m3UAMessage = this.messageFactory.createMessage(tcpIncBuffer);
                 if (m3UAMessage == null)
                     break;
-
+                
+                int messageBytes=bytes-tcpIncBuffer.readableBytes();
                 if (this.isHeartBeatEnabled()) {
                     this.heartBeatTimer.reset();
                 }
-                this.read(m3UAMessage);
+                this.read(m3UAMessage,messageBytes);
+                bytes=tcpIncBuffer.readableBytes();
             }
             tcpIncBuffer.discardReadBytes();
         }
@@ -800,4 +838,72 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
             sb.append(M3UAOAMMessages.NEW_LINE);
         }
     }
+
+	@Override
+	public Map<String, Long> getMessagesSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=messagesSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getMessagesReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=messagesReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getBytesSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=bytesSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getBytesReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=bytesReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Long getTransferMessagesSent() {
+		return messagesSentByType.get(MessageType.S_PAYLOAD).get();
+	}
+
+	@Override
+	public Long getTransferMessagesReceived() {
+		return messagesReceivedByType.get(MessageType.S_PAYLOAD).get();
+	}
+
+	@Override
+	public Long getTransferBytesSent() {
+		return bytesSentByType.get(MessageType.S_PAYLOAD).get();
+	}
+
+	@Override
+	public Long getTransferBytesReceived() {
+		return bytesReceivedByType.get(MessageType.S_PAYLOAD).get();
+	}
 }

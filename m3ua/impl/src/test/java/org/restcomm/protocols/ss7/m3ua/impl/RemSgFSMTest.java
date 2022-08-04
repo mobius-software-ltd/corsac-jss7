@@ -1628,6 +1628,54 @@ public class RemSgFSMTest {
             // TODO Auto-generated method stub
             return null;
         }
+
+		@Override
+		public Integer getCommunicationsUp() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Integer getCommunicationsDown() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Integer getCommunicationsLost() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Integer getCommunicationsRestart() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Long getPacketsSent() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Long getPacketsReceived() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Long getBytesSent() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Long getBytesReceived() {
+			// TODO Auto-generated method stub
+			return null;
+		}
     }
 
     class NettyTransportManagement implements Management {

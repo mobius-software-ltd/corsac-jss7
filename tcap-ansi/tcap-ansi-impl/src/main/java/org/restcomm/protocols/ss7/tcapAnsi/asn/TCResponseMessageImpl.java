@@ -41,7 +41,8 @@ import io.netty.buffer.ByteBuf;
  */
 @ASNTag(asnClass=ASNClass.PRIVATE,tag=4,constructed=true,lengthIndefinite=false)
 public class TCResponseMessageImpl extends TCUnifiedMessageImpl implements TCResponseMessage {
-	
+	public static String NAME="Response";
+
 	@ASNProperty(asnClass=ASNClass.PRIVATE,tag=0x08,constructed=true,index=-1,defaultImplementation = ComponentPortionImpl.class)
 	private ComponentPortion component;
 
@@ -126,4 +127,9 @@ public class TCResponseMessageImpl extends TCUnifiedMessageImpl implements TCRes
     public boolean isDialogPortionExists() {
         return this.getDialogPortion()!=null || this.getComponent()!=null;
     }
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
 }

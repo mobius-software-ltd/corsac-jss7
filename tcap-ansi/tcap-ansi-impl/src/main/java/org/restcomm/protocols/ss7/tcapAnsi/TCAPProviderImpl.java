@@ -287,6 +287,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
      * .protocols.ss7.sccp.parameter.SccpAddress, org.restcomm.protocols.ss7.sccp.parameter.SccpAddress)
      */
     public Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress) throws TCAPException {
+    	stack.newOutgoingDialogProcessed();
         DialogImpl res = getNewDialog(localAddress, remoteAddress, getNextSeqControl(), null);
         this.setSsnToDialog(res, localAddress.getSubsystemNumber());
         return res;
@@ -299,7 +300,10 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
      * .protocols.ss7.sccp.parameter.SccpAddress, org.restcomm.protocols.ss7.sccp.parameter.SccpAddress, Long id)
      */
     public Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress, Long id) throws TCAPException {
-        DialogImpl res = getNewDialog(localAddress, remoteAddress, getNextSeqControl(), id);
+    	if(id==null)
+        	stack.newOutgoingDialogProcessed();
+        
+    	DialogImpl res = getNewDialog(localAddress, remoteAddress, getNextSeqControl(), id);
         this.setSsnToDialog(res, localAddress.getSubsystemNumber());
         return res;
     }
@@ -492,7 +496,8 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
      * @param d
      */
     public void timeout(DialogImpl d) {
-
+    	stack.dialogTimedOut();
+        
         try {
             for (TCListener lst : this.tcListeners) {
                 lst.onDialogTimeout(d);
@@ -517,6 +522,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
     }
 
     public void operationTimedOut(Invoke tcInvokeRequest) {
+    	stack.invokeTimedOut();
         try {
             for (TCListener lst : this.tcListeners) {
                 lst.onInvokeTimeout(tcInvokeRequest);
@@ -567,6 +573,8 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 
         try {
         	ByteBuf output=messageParser.encode(msg);
+        	stack.newMessageSent(msg.getName(),output.readableBytes());
+        	stack.newAbortSent(pAbortCause.name());
             this.send(output, false, remoteAddress, localAddress, seqControl, networkId, localAddress.getSubsystemNumber());
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
@@ -593,7 +601,13 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 
         try {
             ByteBuf output=messageParser.encode(msg);
-            this.send(output, false, remoteAddress, localAddress, seqControl, networkId, localAddress.getSubsystemNumber());
+            stack.newMessageSent(msg.getName(),output.readableBytes());
+            if(pAbortCause!=null)
+        		stack.newAbortSent(pAbortCause.name());
+        	else
+        		stack.newAbortSent("User");
+        	
+        	this.send(output, false, remoteAddress, localAddress, seqControl, networkId, localAddress.getSubsystemNumber());
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to send message: ", e);
@@ -630,6 +644,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
     public void onMessage(SccpDataMessage message) {
     	try {
         	ByteBuf data = message.getData();
+        	int bytes=data.readableBytes();
             SccpAddress localAddress = message.getCalledPartyAddress();
             SccpAddress remoteAddress = message.getCallingPartyAddress();
 
@@ -645,6 +660,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
            
             if(output.getResult() instanceof TCUnifiedMessage) {
             	TCUnifiedMessage realMessage=(TCUnifiedMessage)output.getResult();
+            	stack.newMessageReceived(realMessage.getName(),bytes);
             	Boolean shouldProceed=!output.getHadErrors();
             	if(shouldProceed) {
             		try {
@@ -694,7 +710,8 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
             			DialogImpl di = null;
                         try {
                         	di = (DialogImpl) this.getNewDialog(localAddress, remoteAddress, message.getSls(), null);
-                            setSsnToDialog(di, message.getCalledPartyAddress().getSubsystemNumber());
+                        	stack.newIncomingDialogProcessed();  
+                        	setSsnToDialog(di, message.getCalledPartyAddress().getSubsystemNumber());
                         } catch (TCAPException e) {
                             if (tcb.getDialogPortion() != null) {
                                 this.sendProviderAbort(PAbortCause.ResourceUnavailable, tcb.getOriginatingTransactionId(),
@@ -736,6 +753,11 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
             				di = this.dialogs.get(dialogId);                        
             			}
             			
+            			if(tub.getPAbortCause()!=null)
+                    		stack.newAbortReceived(tub.getPAbortCause().name());
+                    	else
+                    		stack.newAbortReceived("User");
+                    	
                         if (di == null) {
                             logger.warn("TC-ABORT: No dialog/transaction for id: " + dialogId);
                         } else {

@@ -19,8 +19,17 @@
 
 package org.restcomm.protocols.ss7.inap;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+
+import org.restcomm.protocols.ss7.inap.api.INAPMessageType;
 import org.restcomm.protocols.ss7.inap.api.INAPProvider;
 import org.restcomm.protocols.ss7.inap.api.INAPStack;
+import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorCode;
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
 import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
@@ -41,20 +50,49 @@ public class INAPStackImpl implements INAPStack {
 
     private final String name;
 
+    private ConcurrentHashMap<String, AtomicLong> messagesSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> messagesReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> errorsSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> errorsReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> dialogsSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> dialogsReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    
     public INAPStackImpl(String name, SccpProvider sccpPprovider, int ssn,int threads) {
         this.name = name;
         this.tcapStack = new TCAPStackImpl(name, sccpPprovider, ssn, threads);
         TCAPProvider tcapProvider = tcapStack.getProvider();
-        inapProvider = new INAPProviderImpl(name, tcapProvider);
+        inapProvider = new INAPProviderImpl(name, this, tcapProvider);
 
-        this.state = State.CONFIGURED;       
+        this.state = State.CONFIGURED; 
+        initCounters();       
     }
 
     public INAPStackImpl(String name, TCAPProvider tcapProvider) {
         this.name = name;
-        inapProvider = new INAPProviderImpl(name, tcapProvider);
+        inapProvider = new INAPProviderImpl(name, this, tcapProvider);
         this.tcapStack = tcapProvider.getStack();
-        this.state = State.CONFIGURED;        
+        this.state = State.CONFIGURED;  
+        initCounters();       
+    }
+    
+    private void initCounters() {
+    	for(String currName:INAPServiceBaseImpl.getNames()) {
+    		dialogsSentByType.put(currName,new AtomicLong(0));
+    		dialogsReceivedByType.put(currName,new AtomicLong(0));
+        } 
+    	
+    	for(INAPMessageType currType:INAPMessageType.values()) {
+    		messagesSentByType.put(currType.name(),new AtomicLong(0));
+    		messagesReceivedByType.put(currType.name(),new AtomicLong(0));
+        }  
+    	
+    	messagesSentByType.put("unknown",new AtomicLong(0));
+		messagesReceivedByType.put("unknown",new AtomicLong(0));
+		
+		for(String currName:INAPErrorCode.getAllNames()) {
+    		errorsSentByType.put(currName,new AtomicLong(0));
+    		errorsReceivedByType.put(currName,new AtomicLong(0));
+        }
     }
 
     @Override
@@ -103,5 +141,101 @@ public class INAPStackImpl implements INAPStack {
     private enum State {
         IDLE, CONFIGURED, RUNNING;
     }
+
+	@Override
+	public Map<String, Long> getMessagesSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=messagesSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getMessagesReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=messagesReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getErrorsSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=errorsSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getErrorsReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=errorsReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getDialogsSentByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=dialogsSentByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getDialogsReceivedByType() {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator=dialogsReceivedByType.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry=iterator.next();
+			result.put(currEntry.getKey(), currEntry.getValue().get());
+		}
+		
+		return result;
+	}
+	
+	public void newMessageReceived(String messageType) {
+		messagesSentByType.get(messageType).incrementAndGet();
+	}
+	
+	public void newMessageSent(String messageType) {
+		messagesReceivedByType.get(messageType).incrementAndGet();
+	}
+	
+	public void newErrorReceived(String errorType) {
+		errorsSentByType.get(errorType).incrementAndGet();
+	}
+	
+	public void newErrorSent(String errorType) {
+		errorsReceivedByType.get(errorType).incrementAndGet();
+	}
+	
+	public void newDialogReceived(String dialogType) {
+		dialogsSentByType.get(dialogType).incrementAndGet();
+	}
+	
+	public void newDialogSent(String dialogType) {
+		dialogsReceivedByType.get(dialogType).incrementAndGet();
+	}
 
 }
