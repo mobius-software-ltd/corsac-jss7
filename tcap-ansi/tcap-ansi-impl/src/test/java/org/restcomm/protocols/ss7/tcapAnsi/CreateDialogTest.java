@@ -99,19 +99,19 @@ public class CreateDialogTest {
         SccpAddress localAddress = new SccpAddressImpl();
         SccpAddress remoteAddress = new SccpAddressImpl();
 
-        Dialog dlg1 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress);
+        Dialog dlg1 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 0);
         assertEquals((long) dlg1.getLocalDialogId(), 1L);
 
         try {
-            this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 1L);
+            this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 1L, 0);
             fail("Must be failure because dialogID==1 is taken");
         } catch (Exception e) {
         }
 
-        Dialog dlg3 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 2L);
+        Dialog dlg3 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 2L, 0);
         assertEquals((long) dlg3.getLocalDialogId(), 2L);
 
-        Dialog dlg4 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress);
+        Dialog dlg4 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 0);
         assertEquals((long) dlg4.getLocalDialogId(), 3L);
     }
 

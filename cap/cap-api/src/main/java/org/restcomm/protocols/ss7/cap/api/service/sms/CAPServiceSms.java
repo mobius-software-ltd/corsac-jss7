@@ -34,9 +34,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
  */
 public interface CAPServiceSms extends CAPServiceBase {
 
-    CAPDialogSms createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, Long localTrId) throws CAPException;
+    CAPDialogSms createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, Long localTrId, int networkId) throws CAPException;
 
-    CAPDialogSms createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress) throws CAPException;
+    CAPDialogSms createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, int networkId) throws CAPException;
 
     void addCAPServiceListener(CAPServiceSmsListener capServiceListener);
 

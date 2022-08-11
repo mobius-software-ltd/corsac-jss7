@@ -4255,7 +4255,7 @@ public class MAPFunctionalTest extends SccpHarness {
                     NumberingPlan.land_mobile, "204208300008002");
 
             clientDialogSms = this.mapProvider.getMAPServiceSms().createNewDialog(appCnt, this.thisAddress, orgiReference,
-                    this.remoteAddress, destReference);
+                    this.remoteAddress, destReference, 0);
             clientDialogSms.setExtentionContainer(MAPExtensionContainerTest.GetTestExtensionContainer());
 
             sendMoForwardShortMessageRequest_WithLengthChecking_2(this.dataLength, clientDialogSms);

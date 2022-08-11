@@ -46,7 +46,7 @@ public interface INAPServiceBase {
      *
      * @return
      */
-    INAPDialog createNewDialog(INAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress)
+    INAPDialog createNewDialog(INAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, int networkId)
             throws INAPException;
 
     /**
@@ -55,7 +55,7 @@ public interface INAPServiceBase {
      * (for example if we need of recreating a Dialog for which a peer already has in memory)
      * If a Dialog with local TransactionId is already present there will be INAPException
      */
-    INAPDialog createNewDialog(INAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, Long localTrId) throws INAPException;
+    INAPDialog createNewDialog(INAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, Long localTrId, int networkId) throws INAPException;
 
     /**
      * Returns true if the service can perform dialogs with given ApplicationContext

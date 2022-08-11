@@ -51,7 +51,7 @@ public interface CAPServiceBase {
      *
      * @return
      */
-    CAPDialog createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress)
+    CAPDialog createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, int networkId)
             throws CAPException;
 
     /**
@@ -60,7 +60,7 @@ public interface CAPServiceBase {
      * (for example if we need of recreating a Dialog for which a peer already has in memory)
      * If a Dialog with local TransactionId is already present there will be CAPException
      */
-    CAPDialog createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, Long localTrId) throws CAPException;
+    CAPDialog createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, Long localTrId, int networkId) throws CAPException;
 
     /**
      * Returns true if the service can perform dialogs with given ApplicationContext

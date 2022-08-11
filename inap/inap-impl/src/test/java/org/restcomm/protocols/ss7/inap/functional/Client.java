@@ -122,7 +122,7 @@ public class Client extends EventTestHarness {
     public void sendInitialDp(INAPApplicationContext appCnt) throws INAPException {
 
         clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(appCnt, this.thisAddress,
-                this.remoteAddress);
+                this.remoteAddress, 0);
 
         InitialDPRequest initialDp = getTestInitialDp();
         clientCscDialog.addInitialDPRequest(initialDp.getServiceKey(), initialDp.getCalledPartyNumber(),
@@ -143,7 +143,7 @@ public class Client extends EventTestHarness {
     public void sendAssistRequestInstructionsRequest() throws INAPException {
 
         clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(
-                INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B, this.thisAddress, this.remoteAddress);
+                INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B, this.thisAddress, this.remoteAddress, 0);
 
         GenericNumber genericNumber = this.isupParameterFactory.createGenericNumber();
         genericNumber.setAddress("333111222");
@@ -164,7 +164,7 @@ public class Client extends EventTestHarness {
     public void sendEstablishTemporaryConnectionRequest_CallInformationRequest() throws INAPException {
 
         clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(
-                INAPApplicationContext.Core_INAP_CS1_SSP_to_SCP_AC, this.thisAddress, this.remoteAddress);
+                INAPApplicationContext.Core_INAP_CS1_SSP_to_SCP_AC, this.thisAddress, this.remoteAddress, 0);
 
         GenericNumber genericNumber = this.isupParameterFactory.createGenericNumber();
         genericNumber.setAddress("333111222");
@@ -193,7 +193,7 @@ public class Client extends EventTestHarness {
     public void sendActivityTestRequest(int invokeTimeout) throws INAPException {
 
         clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(
-                INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B, this.thisAddress, this.remoteAddress);
+                INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B, this.thisAddress, this.remoteAddress, 0);
 
         clientCscDialog.addActivityTestRequest(invokeTimeout);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ActivityTestRequest, null, sequence++));
@@ -221,7 +221,7 @@ public class Client extends EventTestHarness {
     public void sendBadDataNoAcn() throws INAPException {
 
         clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(null, this.thisAddress,
-                this.remoteAddress);
+                this.remoteAddress, 0);
 
         try {
             Dialog tcapDialog = ((INAPDialogImpl) clientCscDialog).getTcapDialog();
@@ -237,7 +237,7 @@ public class Client extends EventTestHarness {
     public void testMessageUserDataLength() throws INAPException {
 
         clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(
-                INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B, this.thisAddress, this.remoteAddress);
+                INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B, this.thisAddress, this.remoteAddress, 0);
 
         GenericNumber genericNumber = this.isupParameterFactory.createGenericNumber();
         genericNumber.setAddress("333111222");
@@ -363,7 +363,7 @@ public class Client extends EventTestHarness {
 
         INAPApplicationContext appCnt = INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B;
         clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(appCnt, this.thisAddress,
-                this.remoteAddress);
+                this.remoteAddress, 0);
 
         InitialDPRequest initialDp = getTestInitialDp();
         clientCscDialog.addInitialDPRequest(initialDp.getServiceKey(), initialDp.getCalledPartyNumber(),
@@ -396,7 +396,7 @@ public class Client extends EventTestHarness {
 
         INAPApplicationContext appCnt = INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B;
         clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(appCnt, this.thisAddress,
-                this.remoteAddress);
+                this.remoteAddress, 0);
 
         InitialDPRequest initialDp = getTestInitialDp();
         clientCscDialog.addInitialDPRequest(initialDp.getServiceKey(), initialDp.getCalledPartyNumber(),
@@ -429,7 +429,7 @@ public class Client extends EventTestHarness {
 
         INAPApplicationContext appCnt = INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B;
         clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(appCnt, this.thisAddress,
-                this.remoteAddress);
+                this.remoteAddress, 0);
 
         InitialDPRequest initialDp = getTestInitialDp();
         clientCscDialog.addInitialDPRequest(1000000, initialDp.getServiceKey(), initialDp.getCalledPartyNumber(),
@@ -456,7 +456,7 @@ public class Client extends EventTestHarness {
 
         INAPApplicationContext appCnt = INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B;
         clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(appCnt, this.thisAddress,
-                this.remoteAddress);
+                this.remoteAddress, 0);
 
         InitialDPRequest initialDp = getTestInitialDp();
         clientCscDialog.addInitialDPRequest(1000000, initialDp.getServiceKey(), initialDp.getCalledPartyNumber(),
@@ -514,7 +514,7 @@ public class Client extends EventTestHarness {
         INAPApplicationContext appCnt = INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B;
         SccpAddress dummyAddress = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 3333, 6);
         clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(appCnt, this.thisAddress,
-                dummyAddress);
+                dummyAddress, 0);
 
         clientCscDialog.send();
     }
@@ -523,7 +523,7 @@ public class Client extends EventTestHarness {
         INAPApplicationContext appCnt = INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B;
         SccpAddress dummyAddress = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 3333, 6);
         clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(appCnt, this.thisAddress,
-                dummyAddress);
+                dummyAddress, 0);
         clientCscDialog.setReturnMessageOnError(true);
 
         clientCscDialog.send();
@@ -532,7 +532,7 @@ public class Client extends EventTestHarness {
     public void sendInitiateCallAttemptRequest() throws INAPException {
 
         clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B, this.thisAddress,
-                this.remoteAddress);
+                this.remoteAddress, 0);
 
         List<CalledPartyNumberIsup> calledPartyNumberArr = new ArrayList<CalledPartyNumberIsup>();
         CalledPartyNumber cpn = this.isupParameterFactory.createCalledPartyNumber();

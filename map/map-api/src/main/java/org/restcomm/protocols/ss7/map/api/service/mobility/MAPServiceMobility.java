@@ -36,10 +36,10 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 public interface MAPServiceMobility extends MAPServiceBase {
 
     MAPDialogMobility createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
-            AddressString destReference, Long localTrId) throws MAPException;
+            AddressString destReference, Long localTrId, int networkId) throws MAPException;
 
     MAPDialogMobility createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress,
-            AddressString origReference, SccpAddress destAddress, AddressString destReference) throws MAPException;
+            AddressString origReference, SccpAddress destAddress, AddressString destReference, int networkId) throws MAPException;
 
     void addMAPServiceListener(MAPServiceMobilityListener mapServiceListener);
 

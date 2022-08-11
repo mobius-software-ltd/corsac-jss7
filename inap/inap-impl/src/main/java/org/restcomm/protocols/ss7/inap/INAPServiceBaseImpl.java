@@ -80,9 +80,9 @@ public abstract class INAPServiceBaseImpl implements INAPServiceBase {
      * @return
      * @throws INAPException
      */
-    protected Dialog createNewTCAPDialog(SccpAddress origAddress, SccpAddress destAddress, Long localTrId) throws INAPException {
+    protected Dialog createNewTCAPDialog(SccpAddress origAddress, SccpAddress destAddress, Long localTrId, int networkId) throws INAPException {
         try {
-            return this.inapProviderImpl.getTCAPProvider().getNewDialog(origAddress, destAddress, localTrId);
+            return this.inapProviderImpl.getTCAPProvider().getNewDialog(origAddress, destAddress, localTrId, networkId);
         } catch (TCAPException e) {
             throw new INAPException(e.getMessage(), e);
         }

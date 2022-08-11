@@ -276,7 +276,7 @@ public class CAPDialogSmsImpl extends CAPDialogImpl implements CAPDialogSms {
         else
         	customTimeout = customInvokeTimeout;
         
-        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.continueSMS_Request.name());               
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.continueSMS_Request.name(), getNetworkId());               
     	return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(), CAPOperationCode.continueSMS, null, true, false);        
     }
 

@@ -1182,7 +1182,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                          return;
                     }
                     
-                    stack.newErrorReceived(CAPErrorCode.translate(msgErr.getErrorCode()));               
+                    stack.newErrorReceived(CAPErrorCode.translate(msgErr.getErrorCode()),capDialogImpl.getNetworkId());               
                     perfSer.deliverErrorComponent(capDialogImpl, comp.getInvokeId(), msgErr);
                     return;
                 }
@@ -1207,7 +1207,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
             	
             	CAPMessage realMessage=(CAPMessage)parameter;
             	if(realMessage!=null) {
-            		stack.newMessageReceived(realMessage.getMessageType().name());               
+            		stack.newMessageReceived(realMessage.getMessageType().name(),capDialogImpl.getNetworkId());               
                     realMessage.setOriginalBuffer(buffer);
 	            	realMessage.setInvokeId(invokeId);
 	            	realMessage.setCAPDialog(capDialogImpl);

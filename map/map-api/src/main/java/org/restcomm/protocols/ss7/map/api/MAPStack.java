@@ -58,7 +58,20 @@ public interface MAPStack {
     
     Map<String,Long> getDialogsSentByType();
     
-    Map<String,Long> getDialogsReceivedByType();        
+    Map<String,Long> getDialogsReceivedByType();  
+    
+    Map<String,Long> getMessagesSentByTypeAndNetwork(int networkID);
+    
+    Map<String,Long> getMessagesReceivedByTypeAndNetwork(int networkID);
+    
+    Map<String,Long> getErrorsSentByTypeAndNetwork(int networkID);
+    
+    Map<String,Long> getErrorsReceivedByTypeAndNetwork(int networkID);
+    
+    Map<String,Long> getDialogsSentByTypeAndNetwork(int networkID);
+    
+    Map<String,Long> getDialogsReceivedByTypeAndNetwork(int networkID);
+    
 //    /**
 //     * As soon as congestion starts in the underlying source, it calls this method to notify about it. Notification is only
 //     * one-time till the congestion abates in which case {@link CongestionListener#onCongestionFinish(String)} is called

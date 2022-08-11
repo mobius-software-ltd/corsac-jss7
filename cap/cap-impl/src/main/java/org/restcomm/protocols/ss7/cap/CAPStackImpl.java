@@ -60,6 +60,13 @@ public class CAPStackImpl implements CAPStack {
     private ConcurrentHashMap<String, AtomicLong> dialogsSentByType=new ConcurrentHashMap<String, AtomicLong>();
     private ConcurrentHashMap<String, AtomicLong> dialogsReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
     
+    private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> messagesSentByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
+    private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> messagesReceivedByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
+    private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> errorsSentByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
+    private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> errorsReceivedByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
+    private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> dialogsSentByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
+    private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> dialogsReceivedByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
+    
     public CAPStackImpl(String name, SccpProvider sccpPprovider, int ssn,int threads) {
         this.name = name;
         this.tcapStack = new TCAPStackImpl(name, sccpPprovider, ssn, threads);
@@ -216,29 +223,200 @@ public class CAPStackImpl implements CAPStack {
 		
 		return result;
 	}
+
+	@Override
+	public Map<String, Long> getMessagesSentByTypeAndNetwork(int networkID) {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Map<String,AtomicLong> messagesSentByType = messagesSentByTypeAndNetwork.get(networkID);
+		if(messagesSentByType!=null) {
+			Iterator<Entry<String, AtomicLong>> iterator=messagesSentByType.entrySet().iterator();
+			while(iterator.hasNext()) {
+				Entry<String, AtomicLong> currEntry=iterator.next();
+				result.put(currEntry.getKey(), currEntry.getValue().get());
+			}
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getMessagesReceivedByTypeAndNetwork(int networkID) {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Map<String,AtomicLong> messagesReceivedByType = messagesReceivedByTypeAndNetwork.get(networkID);
+		if(messagesReceivedByType!=null) {
+			Iterator<Entry<String, AtomicLong>> iterator=messagesReceivedByType.entrySet().iterator();
+			while(iterator.hasNext()) {
+				Entry<String, AtomicLong> currEntry=iterator.next();
+				result.put(currEntry.getKey(), currEntry.getValue().get());
+			}
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getErrorsSentByTypeAndNetwork(int networkID) {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Map<String,AtomicLong> errorsSentByType = errorsSentByTypeAndNetwork.get(networkID);
+		if(errorsSentByType!=null) {
+			Iterator<Entry<String, AtomicLong>> iterator=errorsSentByType.entrySet().iterator();
+			while(iterator.hasNext()) {
+				Entry<String, AtomicLong> currEntry=iterator.next();
+				result.put(currEntry.getKey(), currEntry.getValue().get());
+			}
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getErrorsReceivedByTypeAndNetwork(int networkID) {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Map<String,AtomicLong> errorsReceivedByType = errorsReceivedByTypeAndNetwork.get(networkID);
+		if(errorsReceivedByType!=null) {
+			Iterator<Entry<String, AtomicLong>> iterator=errorsReceivedByType.entrySet().iterator();
+			while(iterator.hasNext()) {
+				Entry<String, AtomicLong> currEntry=iterator.next();
+				result.put(currEntry.getKey(), currEntry.getValue().get());
+			}
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getDialogsSentByTypeAndNetwork(int networkID) {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Map<String,AtomicLong> dialogsSentByType = dialogsSentByTypeAndNetwork.get(networkID);
+		if(dialogsSentByType!=null) {
+			Iterator<Entry<String, AtomicLong>> iterator=dialogsSentByType.entrySet().iterator();
+			while(iterator.hasNext()) {
+				Entry<String, AtomicLong> currEntry=iterator.next();
+				result.put(currEntry.getKey(), currEntry.getValue().get());
+			}
+		}
+		
+		return result;
+	}
+
+	@Override
+	public Map<String, Long> getDialogsReceivedByTypeAndNetwork(int networkID) {
+		Map<String,Long> result=new HashMap<String, Long>();
+		Map<String,AtomicLong> dialogsReceivedByType = dialogsReceivedByTypeAndNetwork.get(networkID);
+		if(dialogsReceivedByType!=null) {
+			Iterator<Entry<String, AtomicLong>> iterator=dialogsReceivedByType.entrySet().iterator();
+			while(iterator.hasNext()) {
+				Entry<String, AtomicLong> currEntry=iterator.next();
+				result.put(currEntry.getKey(), currEntry.getValue().get());
+			}
+		}
+		
+		return result;
+	}
 	
-	public void newMessageReceived(String messageType) {
+	public void newMessageReceived(String messageType,int networkID) {
+		messagesSentByType.get(messageType).incrementAndGet();
+		
+		ConcurrentHashMap<String,AtomicLong> messagesSentByType =messagesSentByTypeAndNetwork.get(networkID);
+		if(messagesSentByType==null) {
+			messagesSentByType=new ConcurrentHashMap<String,AtomicLong>();
+			for(CAPMessageType currType:CAPMessageType.values())
+				messagesSentByType.put(currType.name(),new AtomicLong(0));
+	        
+			messagesSentByType.put("unknown",new AtomicLong(0));
+			
+			ConcurrentHashMap<String,AtomicLong> oldValue=messagesSentByTypeAndNetwork.putIfAbsent(networkID, messagesSentByType);
+			if(oldValue!=null)
+				messagesSentByType=oldValue;
+		}
+		
 		messagesSentByType.get(messageType).incrementAndGet();
 	}
 	
-	public void newMessageSent(String messageType) {
+	public void newMessageSent(String messageType,int networkID) {
+		messagesReceivedByType.get(messageType).incrementAndGet();
+		
+		ConcurrentHashMap<String,AtomicLong> messagesReceivedByType =messagesReceivedByTypeAndNetwork.get(networkID);
+		if(messagesReceivedByType==null) {
+			messagesReceivedByType=new ConcurrentHashMap<String,AtomicLong>();
+			for(CAPMessageType currType:CAPMessageType.values())
+	    		messagesReceivedByType.put(currType.name(),new AtomicLong(0));
+	        
+	    	messagesReceivedByType.put("unknown",new AtomicLong(0));
+			
+			ConcurrentHashMap<String,AtomicLong> oldValue=messagesReceivedByTypeAndNetwork.putIfAbsent(networkID, messagesReceivedByType);
+			if(oldValue!=null)
+				messagesReceivedByType=oldValue;
+		}
+		
 		messagesReceivedByType.get(messageType).incrementAndGet();
 	}
 	
-	public void newErrorReceived(String errorType) {
+	public void newErrorReceived(String errorType,int networkID) {
+		errorsSentByType.get(errorType).incrementAndGet();
+		
+		ConcurrentHashMap<String,AtomicLong> errorsSentByType =errorsSentByTypeAndNetwork.get(networkID);
+		if(errorsSentByType==null) {
+			errorsSentByType=new ConcurrentHashMap<String,AtomicLong>();
+			for(String currName:CAPErrorCode.getAllNames())
+				errorsSentByType.put(currName,new AtomicLong(0));
+	        
+			ConcurrentHashMap<String,AtomicLong> oldValue=errorsSentByTypeAndNetwork.putIfAbsent(networkID, errorsSentByType);
+			if(oldValue!=null)
+				errorsSentByType=oldValue;
+		}
+		
 		errorsSentByType.get(errorType).incrementAndGet();
 	}
 	
-	public void newErrorSent(String errorType) {
+	public void newErrorSent(String errorType,int networkID) {
+		errorsReceivedByType.get(errorType).incrementAndGet();
+		
+		ConcurrentHashMap<String,AtomicLong> errorsReceivedByType =errorsReceivedByTypeAndNetwork.get(networkID);
+		if(errorsReceivedByType==null) {
+			errorsReceivedByType=new ConcurrentHashMap<String,AtomicLong>();
+			for(String currName:CAPErrorCode.getAllNames())
+	    		errorsReceivedByType.put(currName,new AtomicLong(0));
+	        
+			ConcurrentHashMap<String,AtomicLong> oldValue=errorsReceivedByTypeAndNetwork.putIfAbsent(networkID, errorsReceivedByType);
+			if(oldValue!=null)
+				errorsReceivedByType=oldValue;
+		}
+		
 		errorsReceivedByType.get(errorType).incrementAndGet();
 	}
 	
-	public void newDialogReceived(String dialogType) {
+	public void newDialogReceived(String dialogType,int networkID) {
+		dialogsSentByType.get(dialogType).incrementAndGet();
+		
+		ConcurrentHashMap<String,AtomicLong> dialogsSentByType =dialogsSentByTypeAndNetwork.get(networkID);
+		if(dialogsSentByType==null) {
+			dialogsSentByType=new ConcurrentHashMap<String,AtomicLong>();
+			for(String currName:CAPServiceBaseImpl.getNames())
+				dialogsSentByType.put(currName,new AtomicLong(0));
+	        
+			ConcurrentHashMap<String,AtomicLong> oldValue=dialogsSentByTypeAndNetwork.putIfAbsent(networkID, dialogsSentByType);
+			if(oldValue!=null)
+				dialogsSentByType=oldValue;
+		}
+		
 		dialogsSentByType.get(dialogType).incrementAndGet();
 	}
 	
-	public void newDialogSent(String dialogType) {
+	public void newDialogSent(String dialogType,int networkID) {
 		dialogsReceivedByType.get(dialogType).incrementAndGet();
+		
+		ConcurrentHashMap<String,AtomicLong> dialogsReceivedByType =dialogsReceivedByTypeAndNetwork.get(networkID);
+		if(dialogsReceivedByType==null) {
+			dialogsReceivedByType=new ConcurrentHashMap<String,AtomicLong>();
+			for(String currName:CAPServiceBaseImpl.getNames())
+	    		dialogsReceivedByType.put(currName,new AtomicLong(0));
+	        
+			ConcurrentHashMap<String,AtomicLong> oldValue=dialogsReceivedByTypeAndNetwork.putIfAbsent(networkID, dialogsReceivedByType);
+			if(oldValue!=null)
+				dialogsReceivedByType=oldValue;
+		}
+		
+		dialogsReceivedByType.get(dialogType).incrementAndGet();		
 	}
-
 }

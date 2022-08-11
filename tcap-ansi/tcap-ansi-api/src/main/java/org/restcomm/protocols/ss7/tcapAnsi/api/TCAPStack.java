@@ -172,4 +172,32 @@ public interface TCAPStack {
     Long getDialogTimeoutProcessed();
 
 	Long getInvokeTimeoutProcessed();
+	
+	Map<String,Long> getComponentsSentByTypeAndNetwork(Integer networkID);
+    
+    Map<String,Long> getComponentsReceivedByTypeAndNetwork(Integer networkID);
+    
+    Map<String,Long> getMessagesSentByTypeAndNetwork(Integer networkID);
+    
+    Map<String,Long> getMessagesReceivedByTypeAndNetwork(Integer networkID);
+    
+    Map<String,Long> getRejectsSentByTypeAndNetwork(Integer networkID);
+    
+    Map<String,Long> getRejectsReceivedByTypeAndNetwork(Integer networkID);
+    
+    Map<String,Long> getAbortsSentByTypeAndNetwork(Integer networkID);
+    
+    Map<String,Long> getAbortsReceivedByTypeAndNetwork(Integer networkID);
+    
+    Long getIncomingDialogsProcessedByNetwork(Integer networkID);
+    
+    Long getOutgoingDialogsProcessedByNetwork(Integer networkID);
+    
+    Long getBytesSentByNetwork(Integer networkID);
+    
+    Long getBytesReceivedByNetwork(Integer networkID);
+    
+    Long getDialogTimeoutProcessedByNetwork(Integer networkID);
+
+	Long getInvokeTimeoutProcessedByNetwork(Integer networkID);
 }

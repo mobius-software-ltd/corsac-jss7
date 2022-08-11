@@ -119,7 +119,7 @@ public class UssdClientExample implements MAPDialogListener, MAPServiceSupplemen
         // First create Dialog
         MAPDialogSupplementary currentMapDialog = mapProvider.getMAPServiceSupplementary().createNewDialog(
                 MAPApplicationContext.getInstance(MAPApplicationContextName.networkUnstructuredSsContext,
-                        MAPApplicationContextVersion.version2), origAddress, destReference, remoteAddress, destReference);
+                        MAPApplicationContextVersion.version2), origAddress, destReference, remoteAddress, destReference, 0);
 
         CBSDataCodingScheme ussdDataCodingScheme = new CBSDataCodingSchemeImpl(0x0f);
         // The Charset is null, here we let system use default Charset (UTF-7 as

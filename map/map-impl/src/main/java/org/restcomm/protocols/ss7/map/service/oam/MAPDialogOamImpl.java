@@ -131,7 +131,7 @@ public class MAPDialogOamImpl extends MAPDialogImpl implements MAPDialogOam {
         if ((traceSupportIndicator || extensionContainer != null) && this.appCntx.getApplicationContextVersion().getVersion() >= 3)
         	req = new ActivateTraceModeResponseImpl(extensionContainer, traceSupportIndicator);
         else
-            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.activateTraceMode_Response.name());               
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.activateTraceMode_Response.name(), getNetworkId());               
 
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.activateTraceMode, req, false, true);
     }

@@ -51,5 +51,17 @@ public interface INAPStack {
    
    Map<String,Long> getDialogsSentByType();
    
-   Map<String,Long> getDialogsReceivedByType();
+   Map<String,Long> getDialogsReceivedByType();  
+   
+   Map<String,Long> getMessagesSentByTypeAndNetwork(int networkID);
+   
+   Map<String,Long> getMessagesReceivedByTypeAndNetwork(int networkID);
+   
+   Map<String,Long> getErrorsSentByTypeAndNetwork(int networkID);
+   
+   Map<String,Long> getErrorsReceivedByTypeAndNetwork(int networkID);
+   
+   Map<String,Long> getDialogsSentByTypeAndNetwork(int networkID);
+   
+   Map<String,Long> getDialogsReceivedByTypeAndNetwork(int networkID);
 }

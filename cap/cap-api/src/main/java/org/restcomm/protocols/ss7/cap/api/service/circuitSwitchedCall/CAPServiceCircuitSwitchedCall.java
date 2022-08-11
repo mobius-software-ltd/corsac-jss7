@@ -35,10 +35,10 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 public interface CAPServiceCircuitSwitchedCall extends CAPServiceBase {
 
     CAPDialogCircuitSwitchedCall createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress,
-            SccpAddress destAddress, Long localTrId) throws CAPException;
+            SccpAddress destAddress, Long localTrId, int networkId) throws CAPException;
 
     CAPDialogCircuitSwitchedCall createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress,
-            SccpAddress destAddress) throws CAPException;
+            SccpAddress destAddress, int networkId) throws CAPException;
 
     void addCAPServiceListener(CAPServiceCircuitSwitchedCallListener capServiceListener);
 

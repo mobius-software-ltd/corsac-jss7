@@ -82,18 +82,18 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
      * org.restcomm.protocols.ss7.map.api.dialog.AddressString)
      */
     public MAPDialogLsm createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
-            SccpAddress destAddress, AddressString destReference) throws MAPException {
-    	mapProviderImpl.getMAPStack().newDialogSent(NAME);
-        return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
+            SccpAddress destAddress, AddressString destReference, int networkId) throws MAPException {
+    	mapProviderImpl.getMAPStack().newDialogSent(NAME, networkId);
+        return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null, networkId);
     }
 
     public MAPDialogLsm createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
-            SccpAddress destAddress, AddressString destReference, Long localTrId) throws MAPException {
+            SccpAddress destAddress, AddressString destReference, Long localTrId, int networkId) throws MAPException {
         // We cannot create a dialog if the service is not activated
         if (!this.isActivated())
             throw new MAPException("Cannot create MAPDialogLsm because MAPServiceLsm is not activated");
 
-        Dialog tcapDialog = this.createNewTCAPDialog(origAddress, destAddress, localTrId);
+        Dialog tcapDialog = this.createNewTCAPDialog(origAddress, destAddress, localTrId, networkId);
 
         MAPDialogLsmImpl dialog = new MAPDialogLsmImpl(appCntx, tcapDialog, this.mapProviderImpl, this, origReference,
                 destReference);
@@ -131,7 +131,7 @@ public class MAPServiceLsmImpl extends MAPServiceBaseImpl implements MAPServiceL
      */
     @Override
     protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog) {
-    	mapProviderImpl.getMAPStack().newDialogReceived(NAME);
+    	mapProviderImpl.getMAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
         return new MAPDialogLsmImpl(appCntx, tcapDialog, this.mapProviderImpl, this, null, null);
     }
 

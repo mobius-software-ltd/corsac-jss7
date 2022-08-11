@@ -32,10 +32,10 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 public interface INAPServiceCircuitSwitchedCall extends INAPServiceBase {
 
     INAPDialogCircuitSwitchedCall createNewDialog(INAPApplicationContext appCntx, SccpAddress origAddress,
-            SccpAddress destAddress, Long localTrId) throws INAPException;
+            SccpAddress destAddress, Long localTrId, int networkId) throws INAPException;
 
     INAPDialogCircuitSwitchedCall createNewDialog(INAPApplicationContext appCntx, SccpAddress origAddress,
-            SccpAddress destAddress) throws INAPException;
+            SccpAddress destAddress, int networkId) throws INAPException;
 
     void addINAPServiceListener(INAPServiceCircuitSwitchedCallListener inapServiceListener);
 

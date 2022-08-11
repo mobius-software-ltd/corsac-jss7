@@ -60,7 +60,7 @@ public interface MAPServiceBase {
      * @return
      */
     MAPDialog createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
-            SccpAddress destAddress, AddressString destReference) throws MAPException;
+            SccpAddress destAddress, AddressString destReference, int networkId) throws MAPException;
 
     /**
      * Create new structured dialog with predefined local TransactionId.
@@ -69,7 +69,7 @@ public interface MAPServiceBase {
      * If a Dialog with local TransactionId is already present there will be MAPException
      */
     MAPDialog createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
-            SccpAddress destAddress, AddressString destReference, Long localTrId) throws MAPException;
+            SccpAddress destAddress, AddressString destReference, Long localTrId, int networkId) throws MAPException;
 
     /**
      * Returns true if the service can perform dialogs with given ApplicationContext

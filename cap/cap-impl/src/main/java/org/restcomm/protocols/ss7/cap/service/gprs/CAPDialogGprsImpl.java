@@ -193,7 +193,7 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
             throw new CAPException(
                     "Bad application context name for EntityReleasedGPRSResponse: must be CapV3_gsmSCF_gprsSSF or CapV3_gsmSCF_gprsSSF");
 
-        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.entityReleasedGPRS_Response.name());               
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.entityReleasedGPRS_Response.name(), getNetworkId());               
     	this.sendDataComponent(invokeId, null, null, null, null, null, false, true); 
     }
 
@@ -409,7 +409,7 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
             throw new CAPException(
                     "Bad application context name for ApplyChargingReportGPRSResponse: must be CapV3_gsmSCF_gprsSSF or CapV3_gsmSCF_gprsSSF");
 
-        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.applyChargingReportGPRS_Response.name());               
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.applyChargingReportGPRS_Response.name(), getNetworkId());               
     	this.sendDataComponent(invokeId, null, null, null, null, null, false, true); 
     }
 
@@ -448,7 +448,7 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
             throw new CAPException(
                     "Bad application context name for RequestReportGPRSEventRequest: must be CapV3_gsmSCF_gprsSSF or CapV3_gsmSCF_gprsSSF");
 
-        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.eventReportGPRS_Response.name());               
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.eventReportGPRS_Response.name(), getNetworkId());               
     	this.sendDataComponent(invokeId, null, null, null, null, null, false, true); 
     }
 
@@ -471,7 +471,7 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
         else
         	customTimeout = customInvokeTimeout;
         
-        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.activityTestGPRS_Request.name());               
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.activityTestGPRS_Request.name(), getNetworkId());               
     	return this.sendDataComponent(null, null, InvokeClass.Class3, customTimeout.longValue(), CAPOperationCode.activityTestGPRS, null, true, false);        
     }
 
@@ -483,7 +483,7 @@ public class CAPDialogGprsImpl extends CAPDialogImpl implements CAPDialogGprs {
             throw new CAPException(
                     "Bad application context name for ActivityTestGPRSResponse: must be CapV3_gsmSCF_gprsSSF or CapV3_gsmSCF_gprsSSF");
 
-        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.activityTestGPRS_Response.name());               
+        capProviderImpl.getCAPStack().newMessageSent(CAPMessageType.activityTestGPRS_Response.name(), getNetworkId());               
     	this.sendDataComponent(invokeId, null, null, null, null, null, false, true);        
     }
 }

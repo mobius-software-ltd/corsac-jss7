@@ -130,7 +130,7 @@ public class CallSsfExample implements CAPDialogListener, CAPServiceCircuitSwitc
             EventTypeBCSM eventTypeBCSM, LocationInformation locationInformation) throws CAPException {
         // First create Dialog
         CAPApplicationContext acn = CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF;
-        currentCapDialog = capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(acn, origAddress, remoteAddress);
+        currentCapDialog = capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(acn, origAddress, remoteAddress, 0);
 
         currentCapDialog.addInitialDPRequest(serviceKey, calledPartyNumber, callingPartyNumber, null, null, null,
                 locationNumber, null, null, null, null, null, eventTypeBCSM, null, null, null, null, null, null, null, false,

@@ -2013,7 +2013,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
                          return;
                     }
                     
-                    mapStack.newErrorReceived(MAPErrorCode.translate(msgErr.getErrorCode()));               
+                    mapStack.newErrorReceived(MAPErrorCode.translate(msgErr.getErrorCode()), mapDialogImpl.getNetworkId());               
                     perfSer.deliverErrorComponent(mapDialogImpl, comp.getInvokeId(), msgErr);                    
                     return;
                 }
@@ -2039,7 +2039,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
             	
             	MAPMessage realMessage=(MAPMessage)parameter;
             	if(realMessage!=null) {
-            		mapStack.newMessageReceived(realMessage.getMessageType().name());               
+            		mapStack.newMessageReceived(realMessage.getMessageType().name(), mapDialogImpl.getNetworkId());               
                     realMessage.setOriginalBuffer(buffer);
 	            	realMessage.setInvokeId(invokeId);
 	            	realMessage.setMAPDialog(mapDialogImpl);

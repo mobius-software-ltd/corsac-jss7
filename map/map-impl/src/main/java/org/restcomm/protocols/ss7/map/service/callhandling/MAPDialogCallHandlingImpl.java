@@ -390,7 +390,7 @@ public class MAPDialogCallHandlingImpl extends MAPDialogImpl implements MAPDialo
         if (extensionContainer!=null)
             res = new IstCommandResponseImpl(extensionContainer);
         else
-            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.istCommand_Response.name());               
+            mapProviderImpl.getMAPStack().newMessageSent(MAPMessageType.istCommand_Response.name(), getNetworkId());               
 
         this.sendDataComponent(invokeId, null, null, null, MAPOperationCode.istCommand, res, false, true);
     }

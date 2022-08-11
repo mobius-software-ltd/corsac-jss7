@@ -80,19 +80,19 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
     }
 
     @Override
-    public CAPDialogGprs createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress) throws CAPException {
-    	capProviderImpl.getCAPStack().newDialogSent(NAME);
-    	return this.createNewDialog(appCntx, origAddress, destAddress, null);
+    public CAPDialogGprs createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, int networkId) throws CAPException {
+    	capProviderImpl.getCAPStack().newDialogSent(NAME, networkId);
+    	return this.createNewDialog(appCntx, origAddress, destAddress, null, networkId);
     }
 
     @Override
-    public CAPDialogGprs createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, Long localTrId) throws CAPException {
+    public CAPDialogGprs createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, Long localTrId, int networkId) throws CAPException {
 
         // We cannot create a dialog if the service is not activated
         if (!this.isActivated())
             throw new CAPException("Cannot create CAPDialogGprs because CAPServiceGprsl is not activated");
 
-        Dialog tcapDialog = this.createNewTCAPDialog(origAddress, destAddress, localTrId);
+        Dialog tcapDialog = this.createNewTCAPDialog(origAddress, destAddress, localTrId, networkId);
         CAPDialogGprsImpl dialog = new CAPDialogGprsImpl(appCntx, tcapDialog, this.capProviderImpl, this);
 
         this.putCAPDialogIntoCollection(dialog);
@@ -112,7 +112,7 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
 
     @Override
     protected CAPDialogImpl createNewDialogIncoming(CAPApplicationContext appCntx, Dialog tcapDialog) {
-    	capProviderImpl.getCAPStack().newDialogReceived(NAME);
+    	capProviderImpl.getCAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
     	return new CAPDialogGprsImpl(appCntx, tcapDialog, this.capProviderImpl, this);
     }
 
@@ -213,7 +213,7 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
         				EntityReleasedGPRSResponse ind = new EntityReleasedGPRSResponseImpl();
         				ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name(), capDialog.getNetworkId());               
                         
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
@@ -365,7 +365,7 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
                 		ApplyChargingReportGPRSResponse ind = new ApplyChargingReportGPRSResponseImpl();
                 		ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name(), capDialog.getNetworkId());               
                         
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
@@ -398,7 +398,7 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
                 		EventReportGPRSResponse ind = new EventReportGPRSResponseImpl();
                 		ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name(), capDialog.getNetworkId());               
                         
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
@@ -418,7 +418,7 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
                 		ActivityTestGPRSRequest ind = new ActivityTestGPRSRequestImpl();
                 		ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name(), capDialog.getNetworkId());               
                         
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {
@@ -434,7 +434,7 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
                 		ActivityTestGPRSResponse ind = new ActivityTestGPRSResponseImpl();
                 		ind.setInvokeId(invokeId);
                     	ind.setCAPDialog(capDialog);
-                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+                    	capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name(), capDialog.getNetworkId());               
                         
 	        	        for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {

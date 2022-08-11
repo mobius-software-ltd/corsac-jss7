@@ -94,19 +94,19 @@ public class MAPServiceSupplementaryImpl extends MAPServiceBaseImpl implements M
      *
      */
     public MAPDialogSupplementary createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
-    		AddressString destReference) throws MAPException {
-    	mapProviderImpl.getMAPStack().newDialogSent(NAME);
-        return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
+    		AddressString destReference, int networkId) throws MAPException {
+    	mapProviderImpl.getMAPStack().newDialogSent(NAME, networkId);
+        return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null, networkId);
     }
 
     public MAPDialogSupplementary createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
-    		AddressString destReference, Long localTrId) throws MAPException {
+    		AddressString destReference, Long localTrId, int networkId) throws MAPException {
 
         // We cannot create a dialog if the service is not activated
         if (!this.isActivated())
             throw new MAPException("Cannot create MAPDialogSupplementary because MAPServiceSupplementary is not activated");
 
-        Dialog tcapDialog = this.createNewTCAPDialog(origAddress, destAddress, localTrId);
+        Dialog tcapDialog = this.createNewTCAPDialog(origAddress, destAddress, localTrId, networkId);
         MAPDialogSupplementaryImpl dialog = new MAPDialogSupplementaryImpl(appCntx, tcapDialog, this.mapProviderImpl, this,
                 origReference, destReference);
 
@@ -122,7 +122,7 @@ public class MAPServiceSupplementaryImpl extends MAPServiceBaseImpl implements M
      * (org.restcomm.protocols.ss7.map.api.MAPApplicationContext, org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog)
      */
     protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog) {
-    	mapProviderImpl.getMAPStack().newDialogReceived(NAME);
+    	mapProviderImpl.getMAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
         return new MAPDialogSupplementaryImpl(appCntx, tcapDialog, this.mapProviderImpl, this, null, null);
     }
 
@@ -216,7 +216,7 @@ public class MAPServiceSupplementaryImpl extends MAPServiceBaseImpl implements M
                     		ind.setInvokeId(invokeId);
                             ind.setMAPDialog(mapDialog);
                             ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
-                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
+                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name(), mapDialog.getNetworkId());
                     	}
                     	for (MAPServiceListener serLis : this.serviceListeners) {
                             try {
@@ -256,7 +256,7 @@ public class MAPServiceSupplementaryImpl extends MAPServiceBaseImpl implements M
                     		ind.setInvokeId(invokeId);
                             ind.setMAPDialog(mapDialog);
                             ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
-                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
+                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name(), mapDialog.getNetworkId());
                     	}
                     	
                     	for (MAPServiceListener serLis : this.serviceListeners) {
@@ -297,7 +297,7 @@ public class MAPServiceSupplementaryImpl extends MAPServiceBaseImpl implements M
                     		ind.setInvokeId(invokeId);
                             ind.setMAPDialog(mapDialog);
                             ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
-                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
+                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name(), mapDialog.getNetworkId());
                     	}
                     	
                     	for (MAPServiceListener serLis : this.serviceListeners) {
@@ -338,7 +338,7 @@ public class MAPServiceSupplementaryImpl extends MAPServiceBaseImpl implements M
                     		ind.setInvokeId(invokeId);
                             ind.setMAPDialog(mapDialog);
                             ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
-                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
+                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name(), mapDialog.getNetworkId());
                     	}
                     	
                     	for (MAPServiceListener serLis : this.serviceListeners) {
@@ -504,7 +504,7 @@ public class MAPServiceSupplementaryImpl extends MAPServiceBaseImpl implements M
                     		ind.setInvokeId(invokeId);
                             ind.setMAPDialog(mapDialog);
                             ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
-                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
+                            mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name(), mapDialog.getNetworkId());
                     	}
                     	
                     	for (MAPServiceListener serLis : this.serviceListeners) {
@@ -541,7 +541,7 @@ public class MAPServiceSupplementaryImpl extends MAPServiceBaseImpl implements M
                     	ind.setInvokeId(invokeId);
                         ind.setMAPDialog(mapDialog);
                         ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
-                        mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
+                        mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name(), mapDialog.getNetworkId());
 
                         for (MAPServiceListener serLis : this.serviceListeners) {
                             try {

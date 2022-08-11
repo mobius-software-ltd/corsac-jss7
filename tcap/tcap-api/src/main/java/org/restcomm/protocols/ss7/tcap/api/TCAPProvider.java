@@ -47,7 +47,7 @@ public interface TCAPProvider extends Serializable {
      * @param remoteAddress - initial remote address, it can change after first TCContinue.
      * @return
      */
-    Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress) throws TCAPException;
+    Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress,int networkId) throws TCAPException;
 
     /**
      * Create new structured dialog with predefined local TransactionId.
@@ -60,7 +60,7 @@ public interface TCAPProvider extends Serializable {
      * @param localTrId - predefined local TransactionId
      * @return
      */
-    Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress, Long localTrId) throws TCAPException;
+    Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress, Long localTrId,int networkId) throws TCAPException;
 
     /**
      * Create new unstructured dialog.
@@ -70,7 +70,7 @@ public interface TCAPProvider extends Serializable {
      * @return
      * @throws TCAPException
      */
-    Dialog getNewUnstructuredDialog(SccpAddress localAddress, SccpAddress remoteAddress) throws TCAPException;
+    Dialog getNewUnstructuredDialog(SccpAddress localAddress, SccpAddress remoteAddress,int networkId) throws TCAPException;
 
     // /////////////
     // Factories //

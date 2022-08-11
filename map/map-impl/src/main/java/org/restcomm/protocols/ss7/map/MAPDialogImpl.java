@@ -411,7 +411,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
     public Integer sendDataComponent(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,Integer operationCode,MAPMessage param,Boolean isRequest,Boolean isLastResponse) throws MAPException {
         try {
         	if(param!=null)
-                mapProviderImpl.getMAPStack().newMessageSent(param.getMessageType().name());               
+                mapProviderImpl.getMAPStack().newMessageSent(param.getMessageType().name(), getNetworkId());               
 
         	if(operationCode!=null)
         		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
@@ -425,7 +425,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
     public void sendErrorComponent(Integer invokeId, MAPErrorMessage mem) throws MAPException {
         try {
         	if(mem!=null)
-                mapProviderImpl.getMAPStack().newErrorSent(MAPErrorCode.translate(mem.getErrorCode()));               
+                mapProviderImpl.getMAPStack().newErrorSent(MAPErrorCode.translate(mem.getErrorCode()), getNetworkId());               
 
         	if(mem instanceof MAPErrorMessageParameterless)
         		this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), null);

@@ -34,9 +34,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
  */
 public interface CAPServiceGprs extends CAPServiceBase {
 
-    CAPDialogGprs createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, Long localTrId) throws CAPException;
+    CAPDialogGprs createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, Long localTrId, int networkId) throws CAPException;
 
-    CAPDialogGprs createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress) throws CAPException;
+    CAPDialogGprs createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, int networkId) throws CAPException;
 
     void addCAPServiceListener(CAPServiceGprsListener capServiceListener);
 

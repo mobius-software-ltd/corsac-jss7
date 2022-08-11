@@ -344,7 +344,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
     public Integer sendDataComponent(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,Integer operationCode,INAPMessage param,Boolean isRequest,Boolean isLastResponse) throws INAPException {
         try {
         	if(param!=null)
-        		inapProviderImpl.getStack().newMessageSent(param.getMessageType().name());
+        		inapProviderImpl.getStack().newMessageSent(param.getMessageType().name(), this.tcapDialog.getNetworkId());
     		
         	if(operationCode!=null)
         		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
@@ -359,7 +359,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
     public void sendErrorComponent(Integer invokeId, INAPErrorMessage mem) throws INAPException {
     	try {
         	if(mem!=null)
-        		inapProviderImpl.getStack().newErrorSent(INAPErrorCode.translate(mem));
+        		inapProviderImpl.getStack().newErrorSent(INAPErrorCode.translate(mem), this.tcapDialog.getNetworkId());
 
         	if(mem instanceof INAPErrorMessageParameterless)
         		this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), null);

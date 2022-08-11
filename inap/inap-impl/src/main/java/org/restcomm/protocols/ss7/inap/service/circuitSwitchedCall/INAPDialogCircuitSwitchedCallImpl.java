@@ -637,7 +637,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		else
 			customTimeout = customInvokeTimeout;
 
-		inapProviderImpl.getStack().newMessageSent(INAPMessageType.continue_Request.name());
+		inapProviderImpl.getStack().newMessageSent(INAPMessageType.continue_Request.name(), getNetworkId());
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
 				INAPOperationCode.continueCode, null, true, false);
 	}
@@ -813,7 +813,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		else
 			customTimeout = customInvokeTimeout;
 
-		inapProviderImpl.getStack().newMessageSent(INAPMessageType.activityTest_Request.name());
+		inapProviderImpl.getStack().newMessageSent(INAPMessageType.activityTest_Request.name(), getNetworkId());
 		return this.sendDataComponent(null, null, InvokeClass.Class4, customTimeout.longValue(),
 				INAPOperationCode.activityTest, null, true, false);
 	}
@@ -842,7 +842,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 							+ "Q1218_DP_specific_SCF_to_SSF_AC, Core_INAP_CS1_SSP_to_SCP_AC, Core_INAP_CS1_assist_handoff_SSP_to_SCP_AC, Core_INAP_CS1_IP_to_SCP_AC, Core_INAP_CS1_SCP_to_SSP_AC, Ericcson_cs1plus_SSP_TO_SCP_AC, "
 							+ "Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC, Ericcson_cs1plus_IP_to_SCP_AC or Ericcson_cs1plus_SCP_to_SSP_AC");
 
-		inapProviderImpl.getStack().newMessageSent(INAPMessageType.activityTest_Response.name());
+		inapProviderImpl.getStack().newMessageSent(INAPMessageType.activityTest_Response.name(), getNetworkId());
 		this.sendDataComponent(invokeId, null, null, null, null, null, false, true);
 	}
 
@@ -978,7 +978,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		else
 			customTimeout = customInvokeTimeout;
 
-		inapProviderImpl.getStack().newMessageSent(INAPMessageType.disconnectForwardConnection_Request.name());
+		inapProviderImpl.getStack().newMessageSent(INAPMessageType.disconnectForwardConnection_Request.name(), getNetworkId());
 		return this.sendDataComponent(null, null, InvokeClass.Class2, customTimeout.longValue(),
 				INAPOperationCode.disconnectForwardConnection, null, true, false);
 	}
@@ -1317,7 +1317,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 		else
 			customTimeout = customInvokeTimeout;
 
-		inapProviderImpl.getStack().newMessageSent(INAPMessageType.specializedResourceReport_Request.name());
+		inapProviderImpl.getStack().newMessageSent(INAPMessageType.specializedResourceReport_Request.name(), getNetworkId());
 		return this.sendDataComponent(null, linkedId, InvokeClass.Class4, customTimeout.longValue(),
 				INAPOperationCode.specializedResourceReport, null, true, false);
 	}
@@ -3154,7 +3154,7 @@ public class INAPDialogCircuitSwitchedCallImpl extends INAPDialogImpl implements
 			throw new INAPException(
 					"Bad application context name for addReleaseCallPartyConnectionResponse: must be Ericcson_cs1plus_SSP_TO_SCP_AC or Ericcson_cs1plus_SCP_to_SSP_AC");
 
-		inapProviderImpl.getStack().newMessageSent(INAPMessageType.releaseCallPartyConnection_Response.name());
+		inapProviderImpl.getStack().newMessageSent(INAPMessageType.releaseCallPartyConnection_Response.name(), getNetworkId());
 		this.sendDataComponent(invokeId, null, null, null, INAPOperationCode.releaseCallPartyConnection, null, false, true);
 	}
 	

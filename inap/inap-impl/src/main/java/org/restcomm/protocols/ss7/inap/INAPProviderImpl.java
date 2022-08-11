@@ -1232,7 +1232,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
                          return;
                     }
                     
-                    inapStack.newErrorReceived(INAPErrorCode.translate(msgErr));
+                    inapStack.newErrorReceived(INAPErrorCode.translate(msgErr), inapDialogImpl.getNetworkId());
                     perfSer.deliverErrorComponent(inapDialogImpl, comp.getInvokeId(), msgErr);
                     return;
                 }
@@ -1257,7 +1257,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
             	
             	INAPMessage realMessage=(INAPMessage)parameter;
             	if(realMessage!=null) {
-            		inapStack.newMessageReceived(realMessage.getMessageType().name());
+            		inapStack.newMessageReceived(realMessage.getMessageType().name(), inapDialogImpl.getNetworkId());
                     realMessage.setOriginalBuffer(buffer);
 	            	realMessage.setInvokeId(invokeId);
 	            	realMessage.setINAPDialog(inapDialogImpl);

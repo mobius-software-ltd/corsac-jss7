@@ -161,7 +161,7 @@ public class CallSsfExample implements INAPDialogListener, INAPServiceCircuitSwi
             EventTypeBCSM eventTypeBCSM, LocationInformation locationInformation) throws INAPException {
         // First create Dialog
         INAPApplicationContext acn = INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B;
-        currentCapDialog = inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(acn, origAddress, remoteAddress);
+        currentCapDialog = inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(acn, origAddress, remoteAddress, 0);
 
         currentCapDialog.addInitialDPRequest(serviceKey, callingPartyNumber, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);

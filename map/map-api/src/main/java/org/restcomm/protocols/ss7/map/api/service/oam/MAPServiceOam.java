@@ -36,10 +36,10 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 public interface MAPServiceOam extends MAPServiceBase {
 
     MAPDialogOam createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
-            SccpAddress destAddress, AddressString destReference, Long localTrId) throws MAPException;
+            SccpAddress destAddress, AddressString destReference, Long localTrId, int networkId) throws MAPException;
 
     MAPDialogOam createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference,
-            SccpAddress destAddress, AddressString destReference) throws MAPException;
+            SccpAddress destAddress, AddressString destReference, int networkId) throws MAPException;
 
     void addMAPServiceListener(MAPServiceOamListener mapServiceListener);
 

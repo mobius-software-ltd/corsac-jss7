@@ -35,10 +35,10 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
  */
 public interface MAPServiceCallHandling extends MAPServiceBase {
     MAPDialogCallHandling createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
-            AddressString destReference, Long localTrId) throws MAPException;
+            AddressString destReference, Long localTrId, int networkId) throws MAPException;
 
     MAPDialogCallHandling createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress,
-            AddressString origReference, SccpAddress destAddress, AddressString destReference) throws MAPException;
+            AddressString origReference, SccpAddress destAddress, AddressString destReference, int networkId) throws MAPException;
 
      void addMAPServiceListener(MAPServiceCallHandlingListener mapServiceListener);
 

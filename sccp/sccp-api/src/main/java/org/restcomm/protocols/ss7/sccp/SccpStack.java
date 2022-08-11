@@ -393,4 +393,20 @@ public interface SccpStack {
     Long getDataBytesSent();
     
     Long getDataBytesReceived();
+    
+    Map<String,Long> getMessagesSentByTypeAndNetworkID(int networkID);
+    
+    Map<String,Long> getMessagesReceivedByTypeAndNetworkID(int networkID);
+    
+    Map<String,Long> getBytesSentByTypeAndNetworkID(int networkID);
+    
+    Map<String,Long> getBytesReceivedByTypeAndNetworkID(int networkID);
+    
+    Long getDataMessagesSentAndNetworkID(int networkID);
+    
+    Long getDataMessagesReceivedAndNetworkID(int networkID);
+    
+    Long getDataBytesSentAndNetworkID(int networkID);
+    
+    Long getDataBytesReceivedAndNetworkID(int networkID);
 }

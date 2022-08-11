@@ -163,7 +163,7 @@ public class Client extends EventTestHarness {
     public void sendInitialDp(CAPApplicationContext appCnt) throws CAPException {
 
         clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(appCnt, this.thisAddress,
-                this.remoteAddress);
+                this.remoteAddress, 0);
 
         InitialDPRequest initialDp = getTestInitialDp();
         clientCscDialog.addInitialDPRequest(initialDp.getServiceKey(), initialDp.getCalledPartyNumber(),
@@ -185,7 +185,7 @@ public class Client extends EventTestHarness {
     public void sendAssistRequestInstructionsRequest() throws CAPException {
 
         clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(
-                CAPApplicationContext.CapV4_gsmSSF_scfAssistHandoff, this.thisAddress, this.remoteAddress);
+                CAPApplicationContext.CapV4_gsmSSF_scfAssistHandoff, this.thisAddress, this.remoteAddress, 0);
 
         GenericNumber genericNumber = this.isupParameterFactory.createGenericNumber();
         genericNumber.setAddress("333111222");
@@ -206,7 +206,7 @@ public class Client extends EventTestHarness {
     public void sendEstablishTemporaryConnectionRequest_CallInformationRequest() throws CAPException {
 
         clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(
-                CAPApplicationContext.CapV4_scf_gsmSSFGeneric, this.thisAddress, this.remoteAddress);
+                CAPApplicationContext.CapV4_scf_gsmSSFGeneric, this.thisAddress, this.remoteAddress, 0);
 
         GenericNumber genericNumber = this.isupParameterFactory.createGenericNumber();
         genericNumber.setAddress("333111222");
@@ -235,7 +235,7 @@ public class Client extends EventTestHarness {
     public void sendActivityTestRequest(int invokeTimeout) throws CAPException {
 
         clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(
-                CAPApplicationContext.CapV2_assistGsmSSF_to_gsmSCF, this.thisAddress, this.remoteAddress);
+                CAPApplicationContext.CapV2_assistGsmSSF_to_gsmSCF, this.thisAddress, this.remoteAddress, 0);
 
         clientCscDialog.addActivityTestRequest(invokeTimeout);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ActivityTestRequest, null, sequence++));
@@ -263,7 +263,7 @@ public class Client extends EventTestHarness {
     public void sendBadDataNoAcn() throws CAPException {
 
         clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(null, this.thisAddress,
-                this.remoteAddress);
+                this.remoteAddress, 0);
 
         try {
             Dialog tcapDialog = ((CAPDialogImpl) clientCscDialog).getTcapDialog();
@@ -279,7 +279,7 @@ public class Client extends EventTestHarness {
     public void sendReferensedNumber() throws CAPException {
 
         clientGprsDialog = this.capProvider.getCAPServiceGprs().createNewDialog(CAPApplicationContext.CapV3_gsmSCF_gprsSSF,
-                this.thisAddress, this.remoteAddress);
+                this.thisAddress, this.remoteAddress, 0);
         CAPGprsReferenceNumber capGprsReferenceNumber = this.capParameterFactory.createCAPGprsReferenceNumber(1005, 1006);
         clientGprsDialog.setGprsReferenceNumber(capGprsReferenceNumber);
 
@@ -289,7 +289,7 @@ public class Client extends EventTestHarness {
     public void testMessageUserDataLength() throws CAPException {
 
         clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(
-                CAPApplicationContext.CapV2_assistGsmSSF_to_gsmSCF, this.thisAddress, this.remoteAddress);
+                CAPApplicationContext.CapV2_assistGsmSSF_to_gsmSCF, this.thisAddress, this.remoteAddress, 0);
 
         GenericNumber genericNumber = this.isupParameterFactory.createGenericNumber();
         genericNumber.setAddress("333111222");
@@ -464,7 +464,7 @@ public class Client extends EventTestHarness {
 
         CAPApplicationContext appCnt = CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF;
         clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(appCnt, this.thisAddress,
-                this.remoteAddress);
+                this.remoteAddress, 0);
 
         CAPGprsReferenceNumber grn = this.capParameterFactory.createCAPGprsReferenceNumber(101, 102);
         clientCscDialog.setGprsReferenceNumber(grn);
@@ -502,7 +502,7 @@ public class Client extends EventTestHarness {
 
         CAPApplicationContext appCnt = CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF;
         clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(appCnt, this.thisAddress,
-                this.remoteAddress);
+                this.remoteAddress, 0);
 
         InitialDPRequest initialDp = getTestInitialDp();
         clientCscDialog.addInitialDPRequest(initialDp.getServiceKey(), initialDp.getCalledPartyNumber(),
@@ -537,7 +537,7 @@ public class Client extends EventTestHarness {
 
         CAPApplicationContext appCnt = CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF;
         clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(appCnt, this.thisAddress,
-                this.remoteAddress);
+                this.remoteAddress, 0);
 
         InitialDPRequest initialDp = getTestInitialDp();
         clientCscDialog.addInitialDPRequest(1000000, initialDp.getServiceKey(), initialDp.getCalledPartyNumber(),
@@ -565,7 +565,7 @@ public class Client extends EventTestHarness {
 
         CAPApplicationContext appCnt = CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF;
         clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(appCnt, this.thisAddress,
-                this.remoteAddress);
+                this.remoteAddress, 0);
 
         InitialDPRequest initialDp = getTestInitialDp();
         clientCscDialog.addInitialDPRequest(1000000, initialDp.getServiceKey(), initialDp.getCalledPartyNumber(),
@@ -625,7 +625,7 @@ public class Client extends EventTestHarness {
         CAPApplicationContext appCnt = CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF;
         SccpAddress dummyAddress = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 3333, 6);
         clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(appCnt, this.thisAddress,
-                dummyAddress);
+                dummyAddress, 0);
 
         clientCscDialog.send();
     }
@@ -634,7 +634,7 @@ public class Client extends EventTestHarness {
         CAPApplicationContext appCnt = CAPApplicationContext.CapV2_gsmSSF_to_gsmSCF;
         SccpAddress dummyAddress = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 3333, 6);
         clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(appCnt, this.thisAddress,
-                dummyAddress);
+                dummyAddress, 0);
         clientCscDialog.setReturnMessageOnError(true);
 
         clientCscDialog.send();
@@ -656,7 +656,7 @@ public class Client extends EventTestHarness {
 
     public void sendInitialDpGprs(CAPApplicationContext appCnt) throws CAPException {
 
-        clientGprsDialog = this.capProvider.getCAPServiceGprs().createNewDialog(appCnt, this.thisAddress, this.remoteAddress);
+        clientGprsDialog = this.capProvider.getCAPServiceGprs().createNewDialog(appCnt, this.thisAddress, this.remoteAddress, 0);
 
         InitialDpGprsRequest initialDp = getTestInitialDpGprsRequest();
         clientGprsDialog.addInitialDpGprsRequest(initialDp.getServiceKey(), initialDp.getGPRSEventType(),
@@ -740,7 +740,7 @@ public class Client extends EventTestHarness {
 
     public void sendActivityTestGPRSRequest(CAPApplicationContext appCnt) throws CAPException {
 
-        clientGprsDialog = this.capProvider.getCAPServiceGprs().createNewDialog(appCnt, this.thisAddress, this.remoteAddress);
+        clientGprsDialog = this.capProvider.getCAPServiceGprs().createNewDialog(appCnt, this.thisAddress, this.remoteAddress, 0);
         clientGprsDialog.addActivityTestGPRSRequest();
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ActivityTestGPRSRequest, null, sequence++));
         clientGprsDialog.send();
@@ -748,7 +748,7 @@ public class Client extends EventTestHarness {
 
     public void sendEventReportGPRSRequest(CAPApplicationContext appCnt) throws CAPException {
 
-        clientGprsDialog = this.capProvider.getCAPServiceGprs().createNewDialog(appCnt, this.thisAddress, this.remoteAddress);
+        clientGprsDialog = this.capProvider.getCAPServiceGprs().createNewDialog(appCnt, this.thisAddress, this.remoteAddress, 0);
 
         GPRSEventType gprsEventType = GPRSEventType.attachChangeOfPosition;
         MiscCallInfoImpl miscGPRSInfo = new MiscCallInfoImpl(MiscCallInfoMessageType.notification, null);
@@ -792,7 +792,7 @@ public class Client extends EventTestHarness {
 
     public void sendReleaseGPRSRequest(CAPApplicationContext appCnt) throws CAPException {
 
-        clientGprsDialog = this.capProvider.getCAPServiceGprs().createNewDialog(appCnt, this.thisAddress, this.remoteAddress);
+        clientGprsDialog = this.capProvider.getCAPServiceGprs().createNewDialog(appCnt, this.thisAddress, this.remoteAddress, 0);
         GPRSCauseImpl gprsCause = new GPRSCauseImpl(5);
         PDPIDImpl pdpID = new PDPIDImpl(2);
         clientGprsDialog.addReleaseGPRSRequest(gprsCause, pdpID);
@@ -802,7 +802,7 @@ public class Client extends EventTestHarness {
 
     public void sendInitialDpSmsRequest(CAPApplicationContext appCnt) throws CAPException {
 
-        clientSmsDialog = this.capProvider.getCAPServiceSms().createNewDialog(appCnt, this.thisAddress, this.remoteAddress);
+        clientSmsDialog = this.capProvider.getCAPServiceSms().createNewDialog(appCnt, this.thisAddress, this.remoteAddress, 0);
 
         CalledPartyBCDNumber destinationSubscriberNumber = this.capParameterFactory.createCalledPartyBCDNumber(AddressNature.international_number, NumberingPlan.ISDN,
                 "123678");
@@ -818,7 +818,7 @@ public class Client extends EventTestHarness {
     public void sendInitiateCallAttemptRequest() throws CAPException {
 
         clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(CAPApplicationContext.CapV4_scf_gsmSSFGeneric, this.thisAddress,
-                this.remoteAddress);
+                this.remoteAddress, 0);
 
         List<CalledPartyNumberIsup> calledPartyNumberArr = new ArrayList<CalledPartyNumberIsup>();
         CalledPartyNumber cpn = this.isupParameterFactory.createCalledPartyNumber();

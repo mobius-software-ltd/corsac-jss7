@@ -79,7 +79,7 @@ public class ClientTest implements TCListener {
         SccpAddress localAddress = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
         SccpAddress remoteAddress = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
 
-        clientDialog = this.tcapProvider.getNewDialog(localAddress, remoteAddress);
+        clientDialog = this.tcapProvider.getNewDialog(localAddress, remoteAddress, 0);
         
         // create some INVOKE
         OperationCode oc = TcapFactory.createLocalOperationCode(12);

@@ -70,21 +70,21 @@ public class CAPServiceSmsImpl extends CAPServiceBaseImpl implements CAPServiceS
     }
 
     @Override
-    public CAPDialogSms createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress)
+    public CAPDialogSms createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress, SccpAddress destAddress, int networkId)
             throws CAPException {
-    	capProviderImpl.getCAPStack().newDialogSent(NAME);
-    	return this.createNewDialog(appCntx, origAddress, destAddress, null);
+    	capProviderImpl.getCAPStack().newDialogSent(NAME, networkId);
+    	return this.createNewDialog(appCntx, origAddress, destAddress, null, networkId);
     }
 
     @Override
     public CAPDialogSms createNewDialog(CAPApplicationContext appCntx, SccpAddress origAddress,
-            SccpAddress destAddress, Long localTrId) throws CAPException {
+            SccpAddress destAddress, Long localTrId, int networkId) throws CAPException {
 
         // We cannot create a dialog if the service is not activated
         if (!this.isActivated())
             throw new CAPException("Cannot create CAPDialogSms because CAPServiceSms is not activated");
 
-        Dialog tcapDialog = this.createNewTCAPDialog(origAddress, destAddress, localTrId);
+        Dialog tcapDialog = this.createNewTCAPDialog(origAddress, destAddress, localTrId, networkId);
         CAPDialogSmsImpl dialog = new CAPDialogSmsImpl(appCntx, tcapDialog, this.capProviderImpl, this);
 
         this.putCAPDialogIntoCollection(dialog);
@@ -104,7 +104,7 @@ public class CAPServiceSmsImpl extends CAPServiceBaseImpl implements CAPServiceS
 
     @Override
     protected CAPDialogImpl createNewDialogIncoming(CAPApplicationContext appCntx, Dialog tcapDialog) {
-    	capProviderImpl.getCAPStack().newDialogReceived(NAME);
+    	capProviderImpl.getCAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
     	return new CAPDialogSmsImpl(appCntx, tcapDialog, this.capProviderImpl, this);
     }
 
@@ -259,7 +259,7 @@ public class CAPServiceSmsImpl extends CAPServiceBaseImpl implements CAPServiceS
         				processed = true;
         				ContinueSMSRequest ind=new ContinueSMSRequestImpl();
         				ind.setCAPDialog(capDialog);
-        				capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name());               
+        				capProviderImpl.getCAPStack().newMessageReceived(ind.getMessageType().name(), capDialog.getNetworkId());               
                         
         				for (CAPServiceListener serLis : this.serviceListeners) {
 	        	            try {

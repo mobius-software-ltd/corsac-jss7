@@ -369,7 +369,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
     public Integer sendDataComponent(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,Integer operationCode,CAPMessage param,Boolean isRequest,Boolean isLastResponse) throws CAPException {
         try {
         	if(param!=null)
-                capProviderImpl.getCAPStack().newMessageSent(param.getMessageType().name());               
+                capProviderImpl.getCAPStack().newMessageSent(param.getMessageType().name(), getNetworkId());               
 
         	if(operationCode!=null)
         		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
@@ -384,7 +384,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
     public void sendErrorComponent(Integer invokeId, CAPErrorMessage mem) throws CAPException {
     	try {
     		if(mem!=null)
-                capProviderImpl.getCAPStack().newErrorSent(CAPErrorCode.translate(mem.getErrorCode()));               
+                capProviderImpl.getCAPStack().newErrorSent(CAPErrorCode.translate(mem.getErrorCode()), getNetworkId());               
 
         	if(mem instanceof CAPErrorMessageParameterless)
         		this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), null);

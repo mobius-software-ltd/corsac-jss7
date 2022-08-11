@@ -75,19 +75,19 @@ public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceO
      * Creating a new outgoing MAP OAM dialog and adding it to the MAPProvider.dialog collection
      */
     public MAPDialogOam createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
-    		AddressString destReference) throws MAPException {
-    	mapProviderImpl.getMAPStack().newDialogSent(NAME);
-        return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null);
+    		AddressString destReference, int networkId) throws MAPException {
+    	mapProviderImpl.getMAPStack().newDialogSent(NAME, networkId);
+        return this.createNewDialog(appCntx, origAddress, origReference, destAddress, destReference, null, networkId);
     }
 
     public MAPDialogOam createNewDialog(MAPApplicationContext appCntx, SccpAddress origAddress, AddressString origReference, SccpAddress destAddress,
-    		AddressString destReference, Long localTrId) throws MAPException {
+    		AddressString destReference, Long localTrId, int networkId) throws MAPException {
 
         // We cannot create a dialog if the service is not activated
         if (!this.isActivated())
             throw new MAPException("Cannot create MAPDialogOam because MAPServiceOam is not activated");
 
-        Dialog tcapDialog = this.createNewTCAPDialog(origAddress, destAddress, localTrId);
+        Dialog tcapDialog = this.createNewTCAPDialog(origAddress, destAddress, localTrId, networkId);
         MAPDialogOamImpl dialog = new MAPDialogOamImpl(appCntx, tcapDialog, this.mapProviderImpl, this, origReference,
                 destReference);
 
@@ -97,7 +97,7 @@ public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceO
     }
 
     protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog) {
-    	mapProviderImpl.getMAPStack().newDialogReceived(NAME);
+    	mapProviderImpl.getMAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
         return new MAPDialogOamImpl(appCntx, tcapDialog, this.mapProviderImpl, this, null, null);
     }
 
@@ -193,7 +193,7 @@ public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceO
                 		ind.setInvokeId(invokeId);
                         ind.setMAPDialog(mapDialog);
                         ind.setReturnResultNotLast(compType==ComponentType.ReturnResultLast);
-                        mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name());
+                        mapProviderImpl.getMAPStack().newMessageReceived(ind.getMessageType().name(), mapDialog.getNetworkId());
                 	}
                 	
                 	for (MAPServiceListener serLis : this.serviceListeners) {
