@@ -21,6 +21,7 @@
 
 package org.restcomm.protocols.ss7.tcap;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -117,6 +118,29 @@ public class TCAPStackImpl implements TCAPStack {
     private ConcurrentHashMap<Integer,AtomicLong> invokeTimeoutProcessedByNetwork=new ConcurrentHashMap<Integer,AtomicLong>();
     private ConcurrentHashMap<Integer,AtomicLong> bytesSentByNetwork=new ConcurrentHashMap<Integer,AtomicLong>();
     private ConcurrentHashMap<Integer,AtomicLong> bytesReceivedByNetwork=new ConcurrentHashMap<Integer,AtomicLong>();
+    
+    public static List<String> allAbortCauses=new ArrayList<String>();
+    public static List<String> allProblemTypes=new ArrayList<String>();
+    
+    static
+    {
+    	for(PAbortCauseType abortType:PAbortCauseType.values())
+    		allAbortCauses.add(abortType.name());
+        
+    	allAbortCauses.add("User");
+    	
+    	for(GeneralProblemType generalProblem:GeneralProblemType.values())
+    		allProblemTypes.add(generalProblem.name());
+        
+        for(InvokeProblemType invokeProblem:InvokeProblemType.values())
+        	allProblemTypes.add(invokeProblem.name());
+        
+        for(ReturnErrorProblemType returnErrorProblem:ReturnErrorProblemType.values())
+        	allProblemTypes.add(returnErrorProblem.name());
+        
+        for(ReturnResultProblemType returnResultProblem:ReturnResultProblemType.values())
+        	allProblemTypes.add(returnResultProblem.name());        
+    }
     
     public TCAPStackImpl(String name,int threads) {
         super();

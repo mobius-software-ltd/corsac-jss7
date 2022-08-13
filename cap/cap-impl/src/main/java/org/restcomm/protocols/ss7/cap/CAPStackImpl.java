@@ -21,8 +21,10 @@
 
 package org.restcomm.protocols.ss7.cap;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -66,6 +68,16 @@ public class CAPStackImpl implements CAPStack {
     private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> errorsReceivedByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
     private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> dialogsSentByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
     private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> dialogsReceivedByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
+    
+    public static List<String> allMessageTypes=new ArrayList<String>();
+    
+    static
+    {
+    	for(CAPMessageType messageType:CAPMessageType.values())
+    		allMessageTypes.add(messageType.name());
+        
+    	allMessageTypes.add("unknown");    	
+    }
     
     public CAPStackImpl(String name, SccpProvider sccpPprovider, int ssn,int threads) {
         this.name = name;

@@ -21,8 +21,10 @@
 
 package org.restcomm.protocols.ss7.map;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -85,6 +87,16 @@ public class MAPStackImpl implements MAPStack {
         this.tcapStack = tcapProvider.getStack();
         this.state = State.CONFIGURED;   
         initCounters();
+    }
+    
+    public static List<String> allMessageTypes=new ArrayList<String>();
+    
+    static
+    {
+    	for(MAPMessageType messageType:MAPMessageType.values())
+    		allMessageTypes.add(messageType.name());
+        
+    	allMessageTypes.add("unknown");    	
     }
     
     private void initCounters() {

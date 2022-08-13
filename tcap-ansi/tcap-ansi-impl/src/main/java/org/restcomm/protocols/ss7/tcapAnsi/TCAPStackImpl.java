@@ -21,6 +21,7 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -111,6 +112,16 @@ public class TCAPStackImpl implements TCAPStack {
     private ConcurrentHashMap<Integer,AtomicLong> invokeTimeoutProcessedByNetwork=new ConcurrentHashMap<Integer,AtomicLong>();
     private ConcurrentHashMap<Integer,AtomicLong> bytesSentByNetwork=new ConcurrentHashMap<Integer,AtomicLong>();
     private ConcurrentHashMap<Integer,AtomicLong> bytesReceivedByNetwork=new ConcurrentHashMap<Integer,AtomicLong>();
+    
+    public static List<String> allAbortCauses=new ArrayList<String>();
+    
+    static
+    {
+    	for(PAbortCause abortType:PAbortCause.values())
+    		allAbortCauses.add(abortType.name());
+        
+    	allAbortCauses.add("User");
+    }
     
     public TCAPStackImpl(String name,int threads) {
         super();

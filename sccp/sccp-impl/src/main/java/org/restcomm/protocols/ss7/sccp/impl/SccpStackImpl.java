@@ -220,7 +220,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
     private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> bytesSentByTypeAndNetwork=new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
     private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> bytesReceivedByTypeAndNetwork=new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
         
-    private static List<String> allMessageTypes=Arrays.asList(new String[] {SccpMessageImpl.MESSAGE_NAME_OTHER,
+    public static List<String> allMessageTypes=Arrays.asList(new String[] {SccpMessageImpl.MESSAGE_NAME_OTHER,
     		SccpMessageImpl.MESSAGE_NAME_CR, SccpMessageImpl.MESSAGE_NAME_CC, SccpMessageImpl.MESSAGE_NAME_CREF,
     		SccpMessageImpl.MESSAGE_NAME_RLSD, SccpMessageImpl.MESSAGE_NAME_RLC, SccpMessageImpl.MESSAGE_NAME_DT1,
     		SccpMessageImpl.MESSAGE_NAME_DT2, SccpMessageImpl.MESSAGE_NAME_AK, SccpMessageImpl.MESSAGE_NAME_RSR,

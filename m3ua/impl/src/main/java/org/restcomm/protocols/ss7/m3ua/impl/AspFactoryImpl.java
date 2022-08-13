@@ -145,7 +145,7 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
     private boolean isHeartBeatEnabled = false;
     private UUIDGenerator uuidGenerator;
     
-    private static List<String> allMessageTypes=Arrays.asList(new String[] {MessageType.S_ERROR, MessageType.S_NOTIFY,
+    public static List<String> allMessageTypes=Arrays.asList(new String[] {MessageType.S_ERROR, MessageType.S_NOTIFY,
     		MessageType.S_PAYLOAD,MessageType.S_DESTINATION_UNAVAILABLE, MessageType.S_DESTINATION_AVAILABLE,
     		MessageType.S_DESTINATION_STATE_AUDIT, MessageType.S_SIGNALING_CONGESTION, MessageType.S_DESTINATION_USER_PART_UNAVAILABLE,
     		MessageType.S_DESTINATION_RESTRICTED, MessageType.S_ASP_UP, MessageType.S_ASP_DOWN, MessageType.S_HEARTBEAT,
