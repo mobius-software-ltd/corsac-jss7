@@ -402,11 +402,11 @@ public interface SccpStack {
     
     Map<String,Long> getBytesReceivedByTypeAndNetworkID(int networkID);
     
-    Long getDataMessagesSentAndNetworkID(int networkID);
+    Long getDataMessagesSentByTypeAndNetworkID(int networkID);
     
-    Long getDataMessagesReceivedAndNetworkID(int networkID);
+    Long getDataMessagesReceivedByTypeAndNetworkID(int networkID);
     
-    Long getDataBytesSentAndNetworkID(int networkID);
+    Long getDataBytesSentByTypeAndNetworkID(int networkID);
     
-    Long getDataBytesReceivedAndNetworkID(int networkID);
+    Long getDataBytesReceivedByTypeAndNetworkID(int networkID);
 }

@@ -1467,7 +1467,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 	}
 
 	@Override
-	public Long getDataMessagesSentAndNetworkID(int networkID) {
+	public Long getDataMessagesSentByTypeAndNetworkID(int networkID) {
 		ConcurrentHashMap<String, AtomicLong> messagesSentByType=messagesSentByTypeAndNetwork.get(networkID);
 		if(messagesSentByType==null)
 			return 0L;
@@ -1476,7 +1476,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 	}
 
 	@Override
-	public Long getDataMessagesReceivedAndNetworkID(int networkID) {
+	public Long getDataMessagesReceivedByTypeAndNetworkID(int networkID) {
 		ConcurrentHashMap<String, AtomicLong> messagesReceivedByType=messagesReceivedByTypeAndNetwork.get(networkID);
 		if(messagesReceivedByType==null)
 			return 0L;
@@ -1485,7 +1485,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 	}
 
 	@Override
-	public Long getDataBytesSentAndNetworkID(int networkID) {
+	public Long getDataBytesSentByTypeAndNetworkID(int networkID) {
 		ConcurrentHashMap<String, AtomicLong> bytesSentByType=bytesSentByTypeAndNetwork.get(networkID);
 		if(bytesSentByType==null)
 			return 0L;
@@ -1494,7 +1494,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 	}
 
 	@Override
-	public Long getDataBytesReceivedAndNetworkID(int networkID) {
+	public Long getDataBytesReceivedByTypeAndNetworkID(int networkID) {
 		ConcurrentHashMap<String, AtomicLong> bytesReceivedByType=bytesReceivedByTypeAndNetwork.get(networkID);
 		if(bytesReceivedByType==null)
 			return 0L;
