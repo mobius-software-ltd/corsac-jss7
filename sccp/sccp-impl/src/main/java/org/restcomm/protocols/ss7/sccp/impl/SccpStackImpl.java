@@ -1324,7 +1324,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
      		for(String currType:allMessageTypes)
             	bytesSentByTypeAndNetwork.put(currType, new AtomicLong(0L));            	
             
-     		ConcurrentHashMap<String, AtomicLong> oldValue=this.bytesSentByTypeAndNetwork.putIfAbsent(networkID, messagesSentByTypeAndNetwork);
+     		ConcurrentHashMap<String, AtomicLong> oldValue=this.bytesSentByTypeAndNetwork.putIfAbsent(networkID, bytesSentByTypeAndNetwork);
      		if(oldValue!=null)
      			bytesSentByTypeAndNetwork=oldValue;     			
      	}
