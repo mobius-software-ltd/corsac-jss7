@@ -844,7 +844,7 @@ public class MAPFunctionalTest extends SccpHarness {
     @Test(groups = { "functional.flow", "dialog" })
     public void testInvalidApplicationContext() throws Exception {
 
-        ((MAPServiceSupplementaryImplWrapper) this.stack2.getMAPProvider().getMAPServiceSupplementary()).setTestMode(1);
+        ((MAPServiceSupplementaryImplWrapper) this.stack2.getProvider().getMAPServiceSupplementary()).setTestMode(1);
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
             @Override
@@ -1043,7 +1043,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
         Server server = new Server(this.stack2, this, peer2Address, peer1Address);
 
-        ((MAPProviderImplWrapper) this.stack2.getMAPProvider()).setTestMode(1);
+        ((MAPProviderImplWrapper) this.stack2.getProvider()).setTestMode(1);
 
         long stamp = System.currentTimeMillis();
         int count = 0;

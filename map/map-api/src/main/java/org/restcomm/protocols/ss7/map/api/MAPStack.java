@@ -22,69 +22,12 @@
 
 package org.restcomm.protocols.ss7.map.api;
 
-import java.util.Map;
-
-import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
+import org.restcomm.protocols.ss7.commonapp.api.CommonAppStack;
 
 /**
  *
  * @author amit bhayani
  *
  */
-public interface MAPStack {
-
-    /**
-     * Returns the name of this stack
-     *
-     * @return
-     */
-    String getName();
-
-    MAPProvider getMAPProvider();
-
-    void stop();
-
-    void start() throws Exception;
-
-    TCAPStack getTCAPStack();
-
-    Map<String,Long> getMessagesSentByType();
-    
-    Map<String,Long> getMessagesReceivedByType();
-    
-    Map<String,Long> getErrorsSentByType();
-    
-    Map<String,Long> getErrorsReceivedByType();
-    
-    Map<String,Long> getDialogsSentByType();
-    
-    Map<String,Long> getDialogsReceivedByType();  
-    
-    Map<String,Long> getMessagesSentByTypeAndNetwork(int networkID);
-    
-    Map<String,Long> getMessagesReceivedByTypeAndNetwork(int networkID);
-    
-    Map<String,Long> getErrorsSentByTypeAndNetwork(int networkID);
-    
-    Map<String,Long> getErrorsReceivedByTypeAndNetwork(int networkID);
-    
-    Map<String,Long> getDialogsSentByTypeAndNetwork(int networkID);
-    
-    Map<String,Long> getDialogsReceivedByTypeAndNetwork(int networkID);
-    
-//    /**
-//     * As soon as congestion starts in the underlying source, it calls this method to notify about it. Notification is only
-//     * one-time till the congestion abates in which case {@link CongestionListener#onCongestionFinish(String)} is called
-//     *
-//     * @param source The underlying source which is facing congestion
-//     */
-//    void onCongestionStart(String source);
-//
-//    /**
-//     * As soon as congestion abates in the underlying source, it calls this method to notify about it. Notification is only
-//     * one-time till the congestion starts agaain in which case {@link CongestionListener#onCongestionStart(String)} is called
-//     *
-//     * @param source The underlying source
-//     */
-//    void onCongestionFinish(String source);
+public interface MAPStack extends CommonAppStack<MAPProvider> {
 }

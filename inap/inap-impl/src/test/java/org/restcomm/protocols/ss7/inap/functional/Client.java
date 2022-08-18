@@ -107,7 +107,7 @@ public class Client extends EventTestHarness {
         // this.runningTestCase = runningTestCase;
         this.thisAddress = thisAddress;
         this.remoteAddress = remoteAddress;
-        this.inapProvider = this.inapStack.getINAPProvider();
+        this.inapProvider = this.inapStack.getProvider();
 
         this.inapParameterFactory = this.inapProvider.getINAPParameterFactory();
         this.isupParameterFactory = this.inapProvider.getISUPParameterFactory();

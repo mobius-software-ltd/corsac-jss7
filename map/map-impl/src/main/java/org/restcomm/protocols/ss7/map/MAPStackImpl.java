@@ -47,6 +47,8 @@ import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
  */
 public class MAPStackImpl implements MAPStack {
 
+	public static final String PROTOCOL_NAME="map";
+	
     protected TCAPStack tcapStack = null;
 
     protected MAPProviderImpl mapProvider = null;
@@ -125,7 +127,7 @@ public class MAPStackImpl implements MAPStack {
     }
 
     @Override
-    public MAPProvider getMAPProvider() {
+    public MAPProvider getProvider() {
         return this.mapProvider;
     }
 
@@ -450,5 +452,10 @@ public class MAPStackImpl implements MAPStack {
 		}
 		
 		dialogsReceivedByType.get(dialogType).incrementAndGet();		
+	}
+
+	@Override
+	public String getProtocol() {
+		return PROTOCOL_NAME;
 	}
 }

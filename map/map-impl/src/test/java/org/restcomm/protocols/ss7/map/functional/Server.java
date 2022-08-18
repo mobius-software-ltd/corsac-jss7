@@ -58,7 +58,7 @@ public class Server extends EventTestHarness {
         //this.runningTestCase = runningTestCase;
         //this.thisAddress = thisAddress;
         //this.remoteAddress = remoteAddress;
-        this.mapProvider = this.mapStack.getMAPProvider();
+        this.mapProvider = this.mapStack.getProvider();
 
         this.mapParameterFactory = this.mapProvider.getMAPParameterFactory();
         this.mapErrorMessageFactory = this.mapProvider.getMAPErrorMessageFactory();

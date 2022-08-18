@@ -47,6 +47,8 @@ import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
  */
 public class CAPStackImpl implements CAPStack {
 
+	public static final String PROTOCOL_NAME="cap";
+	
     protected TCAPStack tcapStack = null;
 
     protected CAPProviderImpl capProvider = null;
@@ -123,7 +125,7 @@ public class CAPStackImpl implements CAPStack {
     }
 
     @Override
-    public CAPProvider getCAPProvider() {
+    public CAPProvider getProvider() {
         return this.capProvider;
     }
 
@@ -430,5 +432,10 @@ public class CAPStackImpl implements CAPStack {
 		}
 		
 		dialogsReceivedByType.get(dialogType).incrementAndGet();		
+	}
+
+	@Override
+	public String getProtocol() {
+		return PROTOCOL_NAME;
 	}
 }

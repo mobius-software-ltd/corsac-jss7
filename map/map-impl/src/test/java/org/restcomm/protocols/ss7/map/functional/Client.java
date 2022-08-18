@@ -218,7 +218,7 @@ public class Client extends EventTestHarness {
         this.mapStack = mapStack;
         this.thisAddress = thisAddress;
         this.remoteAddress = remoteAddress;
-        this.mapProvider = this.mapStack.getMAPProvider();
+        this.mapProvider = this.mapStack.getProvider();
 
         this.mapParameterFactory = this.mapProvider.getMAPParameterFactory();
 

@@ -70,7 +70,7 @@ public class Server extends EventTestHarness {
     Server(INAPStack inapStack, INAPFunctionalTest runningTestCase, SccpAddress thisAddress, SccpAddress remoteAddress) {
         super(logger);
         this.inapStack = inapStack;
-        this.inapProvider = this.inapStack.getINAPProvider();
+        this.inapProvider = this.inapStack.getProvider();
 
         this.inapParameterFactory = this.inapProvider.getINAPParameterFactory();
         this.isupParameterFactory = this.inapProvider.getISUPParameterFactory();

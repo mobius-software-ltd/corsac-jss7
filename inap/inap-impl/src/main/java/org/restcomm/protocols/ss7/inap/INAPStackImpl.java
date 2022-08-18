@@ -44,6 +44,8 @@ import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
  */
 public class INAPStackImpl implements INAPStack {
 
+	public static final String PROTOCOL_NAME="inap";
+	
     protected TCAPStack tcapStack = null;
 
     protected INAPProviderImpl inapProvider = null;
@@ -120,7 +122,7 @@ public class INAPStackImpl implements INAPStack {
     }
 
     @Override
-    public INAPProvider getINAPProvider() {
+    public INAPProvider getProvider() {
         return this.inapProvider;
     }
 
@@ -427,5 +429,10 @@ public class INAPStackImpl implements INAPStack {
 		}
 		
 		dialogsReceivedByType.get(dialogType).incrementAndGet();		
+	}
+
+	@Override
+	public String getProtocol() {
+		return PROTOCOL_NAME;
 	}
 }

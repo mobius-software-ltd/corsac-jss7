@@ -189,7 +189,7 @@ public interface TCAPStack {
 
 	Long getInvokeTimeoutProcessed();
 	
-Map<String,Long> getComponentsSentByTypeAndNetwork(Integer networkID);
+	Map<String,Long> getComponentsSentByTypeAndNetwork(Integer networkID);
     
     Map<String,Long> getComponentsReceivedByTypeAndNetwork(Integer networkID);
     

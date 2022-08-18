@@ -144,7 +144,7 @@ public class Client extends EventTestHarness {
         // this.runningTestCase = runningTestCase;
         this.thisAddress = thisAddress;
         this.remoteAddress = remoteAddress;
-        this.capProvider = this.capStack.getCAPProvider();
+        this.capProvider = this.capStack.getProvider();
 
         this.capParameterFactory = this.capProvider.getCAPParameterFactory();
         this.isupParameterFactory = this.capProvider.getISUPParameterFactory();

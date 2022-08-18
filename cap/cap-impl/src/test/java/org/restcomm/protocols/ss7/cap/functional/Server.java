@@ -81,7 +81,7 @@ public class Server extends EventTestHarness {
     Server(CAPStack capStack, CAPFunctionalTest runningTestCase, SccpAddress thisAddress, SccpAddress remoteAddress) {
         super(logger);
         this.capStack = capStack;
-        this.capProvider = this.capStack.getCAPProvider();
+        this.capProvider = this.capStack.getProvider();
 
         this.capParameterFactory = this.capProvider.getCAPParameterFactory();
         this.capErrorMessageFactory = this.capProvider.getCAPErrorMessageFactory();
