@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>cap-parent</artifactId>
 		<groupId>com.mobius-software.protocols.ss7.cap</groupId>
-		<version>10.0.6-SNAPSHOT</version>
+		<version>10.0.6</version>
 	</parent>
 
 	<artifactId>cap-impl</artifactId>
