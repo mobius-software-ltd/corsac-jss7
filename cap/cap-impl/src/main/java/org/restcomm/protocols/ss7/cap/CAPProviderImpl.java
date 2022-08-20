@@ -1156,7 +1156,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                 case ReturnError: {
                     ReturnError comp = (ReturnError)c;
 
-                    long errorCode = 0;
+                    int errorCode = 0;
                     if (comp.getErrorCode() != null && comp.getErrorCode().getErrorType() == ErrorCodeType.Local)
                         errorCode = comp.getErrorCode().getLocalErrorCode();
                     if (errorCode < CAPErrorCode.minimalCodeValue || errorCode > CAPErrorCode.maximumCodeValue) {
@@ -1182,7 +1182,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                          return;
                     }
                     
-                    stack.newErrorReceived(CAPErrorCode.translate(msgErr.getErrorCode()),capDialogImpl.getNetworkId());               
+                    stack.newErrorReceived(CAPErrorCode.translate(errorCode),capDialogImpl.getNetworkId());               
                     perfSer.deliverErrorComponent(capDialogImpl, comp.getInvokeId(), msgErr);
                     return;
                 }

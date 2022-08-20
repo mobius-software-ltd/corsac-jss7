@@ -2013,7 +2013,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
                          return;
                     }
                     
-                    mapStack.newErrorReceived(MAPErrorCode.translate(msgErr.getErrorCode()), mapDialogImpl.getNetworkId());               
+                    mapStack.newErrorReceived(MAPErrorCode.translate(errorCode), mapDialogImpl.getNetworkId());               
                     perfSer.deliverErrorComponent(mapDialogImpl, comp.getInvokeId(), msgErr);                    
                     return;
                 }

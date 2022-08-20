@@ -1206,7 +1206,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
                 case ReturnError: {
                     ReturnError comp = (ReturnError)c;
 
-                    long errorCode = 0;
+                    int errorCode = 0;
                     if (comp.getErrorCode() != null && comp.getErrorCode().getErrorType() == ErrorCodeType.Local)
                         errorCode = comp.getErrorCode().getLocalErrorCode();
                     if (errorCode < INAPErrorCode.minimalCodeValue || errorCode > INAPErrorCode.maximumCodeValue) {
@@ -1232,7 +1232,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
                          return;
                     }
                     
-                    inapStack.newErrorReceived(INAPErrorCode.translate(msgErr), inapDialogImpl.getNetworkId());
+                    inapStack.newErrorReceived(INAPErrorCode.translate(msgErr, errorCode), inapDialogImpl.getNetworkId());
                     perfSer.deliverErrorComponent(inapDialogImpl, comp.getInvokeId(), msgErr);
                     return;
                 }

@@ -359,7 +359,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
     public void sendErrorComponent(Integer invokeId, INAPErrorMessage mem) throws INAPException {
     	try {
         	if(mem!=null)
-        		inapProviderImpl.getStack().newErrorSent(INAPErrorCode.translate(mem), this.tcapDialog.getNetworkId());
+        		inapProviderImpl.getStack().newErrorSent(INAPErrorCode.translate(mem, mem.getErrorCode()), this.tcapDialog.getNetworkId());
 
         	if(mem instanceof INAPErrorMessageParameterless)
         		this.tcapDialog.sendError(invokeId, TcapFactory.createLocalErrorCode(mem.getErrorCode()), null);

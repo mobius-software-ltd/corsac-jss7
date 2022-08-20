@@ -102,49 +102,49 @@ public interface INAPErrorCode {
 	   });
    }
    
-   public static String translate(INAPErrorMessage msg) {
-	   switch(msg.getErrorCode()) {
+   public static String translate(INAPErrorMessage msg,int errorCode) {
+	   switch(errorCode) {
 		   case canceled:
 			   return "canceled";
 		   case cancelFailed:
 			   return "cancelFailed";
 		   case eTCFailed:
 		   //case errorInParameterValue:
-			   if(msg instanceof INAPErrorMessageOctetString)
+			   if(msg!=null && msg instanceof INAPErrorMessageOctetString)
 				   return "errorInParameterValue";	
 		   	   return "eTCFailed";
 		   case improperCallerResponse:
 		   //case executionError:
-			  if(msg instanceof INAPErrorMessageOctetString)
+			  if(msg!=null && msg instanceof INAPErrorMessageOctetString)
 				  return "executionError";
 		      return "improperCallerResponse";
 		   case missingCustomerRecord:
 			   return "missingCustomerRecord";
 		   case missingParameter:
 		   //case illegalCombinationOfParameters:
-			  if(msg instanceof INAPErrorMessageOctetString)
+			  if(msg!=null && msg instanceof INAPErrorMessageOctetString)
 				   return "illegalCombinationOfParameters";
 		      return "missingParameter";
 		   case parameterOutOfRange:
 		   //case infoNotAvailable:
-			  if(msg instanceof INAPErrorMessageOctetString)
+			  if(msg!=null && msg instanceof INAPErrorMessageOctetString)
 				   return "infoNotAvailable";
 		      return "parameterOutOfRange";
 		   case requestedInfoError:
 		   //case invalidDataItemID:
-			  if(msg instanceof INAPErrorMessageOctetString)
+			  if(msg!=null && msg instanceof INAPErrorMessageOctetString)
 				  return "invalidDataItemID";
 		      return "requestedInfoError";
 		   case systemFailure:
 			   return "systemFailure";
 		   case taskRefused:
 		   //case notAuthorized:
-			  if(msg instanceof INAPErrorMessageOctetString)
+			  if(msg!=null && msg instanceof INAPErrorMessageOctetString)
 				  return "notAuthorized";
 		      return "taskRefused";
 		   case unavailableResource:
 		   //case parameterMissing:
-			   if(msg instanceof INAPErrorMessageOctetString)
+			   if(msg!=null && msg instanceof INAPErrorMessageOctetString)
 					return "parameterMissing";
 		   	   return "unavailableResource";
 		   case unexpectedComponentSequence:
