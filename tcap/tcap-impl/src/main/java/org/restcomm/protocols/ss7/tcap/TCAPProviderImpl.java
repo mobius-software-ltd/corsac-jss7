@@ -362,7 +362,11 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         }
     }
 
-    private void setSsnToDialog(DialogImpl di, int ssn) {
+    protected DialogImpl getDialog(Long id) {
+    	return this.dialogs.get(id);
+    }
+    
+    protected void setSsnToDialog(DialogImpl di, int ssn) {
         if (ssn != this.ssn) {
             if (ssn <= 0 || !this.stack.isExtraSsnPresent(ssn))
                 ssn = this.ssn;
@@ -483,7 +487,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         this.doRelease(d);
     }
 
-    private void doRelease(DialogImpl d) {
+    protected void doRelease(DialogImpl d) {
         try {
             for (TCListener lst : this.tcListeners) {
                 lst.onDialogReleased(d);
@@ -636,7 +640,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
     public void postProcessElement(Object parent,Object element,ConcurrentHashMap<Integer,Object> data) {
     	if(element instanceof DestinationTransactionID) {
     		long dialogId = Utils.decodeTransactionId(((DestinationTransactionID)element).getValue(), this.stack.getSwapTcapIdBytes());
-   			DialogImpl di = this.dialogs.get(dialogId);
+    		DialogImpl di = this.getDialog(dialogId);
    			if(di!=null) {
    				ApplicationContextName acn=di.getApplicationContextName();
    				if(acn!=null)
@@ -717,7 +721,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	            	if(realMessage instanceof TCContinueMessage) {
 	            		TCContinueMessage tcm=(TCContinueMessage)realMessage;
 	            		long dialogId = Utils.decodeTransactionId(tcm.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
-	                    DialogImpl di = this.dialogs.get(dialogId);
+	                    DialogImpl di = this.getDialog(dialogId);
 	                    
 	                    if (di == null) {
 	                        logger.warn("TC-CONTINUE: No dialog/transaction for id: " + dialogId);
@@ -760,7 +764,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	            	else if(realMessage instanceof TCEndMessage) {
 	            		TCEndMessage teb=(TCEndMessage)realMessage;
 	            		long dialogId = Utils.decodeTransactionId(teb.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
-	                    DialogImpl di = this.dialogs.get(dialogId);
+	                    DialogImpl di = this.getDialog(dialogId);
 	                    if (di == null) {
 	                        logger.warn("TC-END: No dialog/transaction for id: " + dialogId);
 	                    } else {
@@ -773,7 +777,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	            		Long dialogId=null;
 	            		if(tub.getDestinationTransactionId()!=null) {
 	            			dialogId = Utils.decodeTransactionId(tub.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
-	            			di = this.dialogs.get(dialogId);
+	            			di = this.getDialog(dialogId);
 	            		}
 	            		
 	                    if (di == null) {
@@ -847,7 +851,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
             	TCUnifiedMessage tcUnidentified = (TCUnifiedMessage)output.getResult();
 	            if (tcUnidentified.getOriginatingTransactionId() != null) {
 	                long otid = Utils.decodeTransactionId(tcUnidentified.getOriginatingTransactionId(), this.stack.getSwapTcapIdBytes());
-	               dialog = this.dialogs.get(otid);
+	               dialog = this.getDialog(otid);
 	            }
             }
         } catch (Exception e) {

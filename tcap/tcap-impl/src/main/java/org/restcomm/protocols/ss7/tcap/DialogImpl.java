@@ -144,7 +144,6 @@ public class DialogImpl implements Dialog {
 
     // only originating side keeps FSM, see: Q.771 - 3.1.5
     protected Invoke[] operationsSent = new Invoke[invokeIDTable.length];
-    protected Invoke[] operationsSentA = new Invoke[invokeIDTable.length];
     private ConcurrentHashMap<Integer,Integer> incomingInvokeList = new ConcurrentHashMap<Integer,Integer>();
     private ScheduledExecutorService executor;
 
