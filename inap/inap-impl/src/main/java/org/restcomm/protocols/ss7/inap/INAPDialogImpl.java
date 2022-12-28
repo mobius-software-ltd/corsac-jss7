@@ -19,6 +19,8 @@
 
 package org.restcomm.protocols.ss7.inap;
 
+import java.io.Externalizable;
+
 import org.restcomm.protocols.ss7.inap.api.INAPApplicationContext;
 import org.restcomm.protocols.ss7.inap.api.INAPDialog;
 import org.restcomm.protocols.ss7.inap.api.INAPException;
@@ -30,6 +32,7 @@ import org.restcomm.protocols.ss7.inap.api.dialog.INAPUserAbortReason;
 import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorCode;
 import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessage;
 import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessageParameterless;
+import org.restcomm.protocols.ss7.inap.dialog.INAPUserObject;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
@@ -57,7 +60,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
     // Application Context of this Dialog
     protected INAPApplicationContext appCntx;
 
-    protected INAPDialogState state = INAPDialogState.Idle;
+    protected INAPDialogState state = INAPDialogState.IDLE;
 
     // protected boolean normalDialogShutDown = false;
 
@@ -75,6 +78,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
         this.inapProviderImpl = inapProviderImpl;
         this.inapService = inapService;
         this.inapStackConfigurationManagement = new INAPStackConfigurationManagement();
+        setUserObject(null);
     }
 
     public SccpAddress getLocalAddress() {
@@ -96,6 +100,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
     @Override
     public void setReturnMessageOnError(boolean val) {
         returnMessageOnError = val;
+        setUserObject(getUserObject());
     }
 
     @Override
@@ -138,7 +143,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
 
     public void release() {
         // this.setNormalDialogShutDown();
-        this.setState(INAPDialogState.Expunged);
+        this.setState(INAPDialogState.EXPUNGED);
 
         if (this.tcapDialog != null)
             this.tcapDialog.release();
@@ -183,11 +188,12 @@ public abstract class INAPDialogImpl implements INAPDialog {
     }
 
     protected void setState(INAPDialogState newState) {
-        if (this.state == INAPDialogState.Expunged) {
+        if (this.state == INAPDialogState.EXPUNGED) {
             return;
         }
 
         this.state = newState;
+        setUserObject(getUserObject());
     }
 
     public void send() throws INAPException {
@@ -197,7 +203,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
 	        	ApplicationContextName acn = this.inapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
-	            this.setState(INAPDialogState.InitialSent);
+	            this.setState(INAPDialogState.INITIAL_SENT);
 	
 	            this.inapProviderImpl.fireTCBegin(this.getTcapDialog(), acn,this.getReturnMessageOnError());
 	            break;
@@ -216,7 +222,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
 	
 	            this.inapProviderImpl.fireTCContinue(this.getTcapDialog(), acn1,this.getReturnMessageOnError());
 	            
-	            this.setState(INAPDialogState.Active);
+	            this.setState(INAPDialogState.ACTIVE);
 	            break;
 	
 	        case InitialSent: // we have sent TC-BEGIN already, need to wait
@@ -256,7 +262,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
 	                this.inapProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, acn,this.getReturnMessageOnError());	                
 	            }
 	
-	            this.setState(INAPDialogState.Expunged);
+	            this.setState(INAPDialogState.EXPUNGED);
 	            break;
 	
 	        case Active:
@@ -269,7 +275,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
 	                        this.getReturnMessageOnError());
 	            }
 	
-	            this.setState(INAPDialogState.Expunged);
+	            this.setState(INAPDialogState.EXPUNGED);
 	            break;
 	
 	        case Idle:
@@ -279,7 +285,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
 	                // we do not send any data in a prearrangedEnd case
 	                if (this.tcapDialog != null)
 	                    this.tcapDialog.release();
-	                this.setState(INAPDialogState.Expunged);
+	                this.setState(INAPDialogState.EXPUNGED);
 	                return;
 	            } else {
 	                throw new INAPException("Awaiting TC-BEGIN response, can not send another dialog initiating primitive!");
@@ -323,8 +329,8 @@ public abstract class INAPDialogImpl implements INAPDialog {
         // Dialog is not started or has expunged - we need not send
         // TC-U-ABORT,
         // only Dialog removing
-        if (this.getState() == INAPDialogState.Expunged || this.getState() == INAPDialogState.Idle) {
-            this.setState(INAPDialogState.Expunged);
+        if (this.getState() == INAPDialogState.EXPUNGED || this.getState() == INAPDialogState.IDLE) {
+            this.setState(INAPDialogState.EXPUNGED);
             return;
         }
 
@@ -332,7 +338,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
         this.inapProviderImpl.fireTCAbort(this.getTcapDialog(), INAPGeneralAbortReason.UserSpecific, abortReason,
                 this.getReturnMessageOnError());
 
-        this.setState(INAPDialogState.Expunged);
+        this.setState(INAPDialogState.EXPUNGED);
     }
 
     @Override
@@ -399,12 +405,18 @@ public abstract class INAPDialogImpl implements INAPDialog {
         }
     }
 
-    public Object getUserObject() {
-        return this.tcapDialog.getUserObject();
+    public Externalizable getUserObject() {
+    	Externalizable tcapObject = this.tcapDialog.getUserObject();
+    	if(tcapObject == null)
+    		return null;
+    	else if(!(tcapObject instanceof INAPUserObject))
+    		return tcapObject;
+    	
+        return ((INAPUserObject)this.tcapDialog.getUserObject()).getRealObject();
     }
 
-    public void setUserObject(Object userObject) {
-        this.tcapDialog.setUserObject(userObject);
+    public void setUserObject(Externalizable userObject) {
+    	this.tcapDialog.setUserObject(new INAPUserObject(state, returnMessageOnError, appCntx, userObject));
     }
 
     @Override

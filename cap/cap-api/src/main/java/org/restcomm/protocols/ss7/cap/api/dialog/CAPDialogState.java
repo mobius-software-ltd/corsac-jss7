@@ -22,16 +22,42 @@
 
 package org.restcomm.protocols.ss7.cap.api.dialog;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author amit bhayani
  *
  */
 public enum CAPDialogState {
-    Idle,
 
-    InitialReceived, InitialSent,
+    IDLE(0),
 
-    Active,
+    INITIAL_RECEIVED(1), INITIAL_SENT(2),
+
+    ACTIVE(3),
     // additional state to mark removal
-    Expunged;
+    EXPUNGED(4);
+
+    private final Integer state;
+    private static final Map<Integer, CAPDialogState> intToTypeMap = new HashMap<Integer, CAPDialogState>();
+	static
+	{
+	    for (CAPDialogState state : CAPDialogState.values()) 
+	    {
+	        intToTypeMap.put(state.state, state);
+	    }
+	}
+	
+    private CAPDialogState(Integer state) {
+        this.state = state;
+    }
+
+    public Integer getState() {
+        return this.state;
+    }
+
+    public static CAPDialogState getInstance(Integer state) {
+    	return intToTypeMap.get(Integer.valueOf(state));
+    }
 }

@@ -21,6 +21,7 @@
 
 package org.restcomm.protocols.ss7.tcap.api;
 
+import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueIndication;
@@ -29,7 +30,6 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCNoticeIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCPAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 
 /**
  * @author baranowb
@@ -93,20 +93,21 @@ public interface TCListener {
      * Called once dialog is released. It is invoked once primitives are delivered. Indicates that stack has no reference, and
      * dialog object is considered invalid.
      *
-     * @param d
+     * @param dialog
      */
-    void onDialogReleased(Dialog d);
+    void onDialogReleased(Dialog dialog);
 
     /**
      *
-     * @param tcInvokeRequest
+     * @param dialog
+     * @param invokeId
      */
-    void onInvokeTimeout(Invoke tcInvokeRequest);
+    void onInvokeTimeout(Dialog dialog,int invokeId, InvokeClass invokeClass);
 
     /**
      * Called once dialog times out. Once this method is called, dialog cant be used anymore.
      *
-     * @param d
+     * @param dialog
      */
-    void onDialogTimeout(Dialog d);
+    void onDialogTimeout(Dialog dialog);
 }

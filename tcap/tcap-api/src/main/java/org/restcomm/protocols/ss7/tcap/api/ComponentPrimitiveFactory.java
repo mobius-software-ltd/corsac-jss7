@@ -21,7 +21,6 @@
 
 package org.restcomm.protocols.ss7.tcap.api;
 
-import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Reject;
@@ -39,9 +38,7 @@ public interface ComponentPrimitiveFactory {
 
 	Invoke createTCInvokeRequest();
 	
-	Invoke createTCInvokeRequest(InvokeClass invokeClass);
-	
-    Problem createProblem();
+	Problem createProblem();
     
     ReturnResultLast createTCResultLastRequest();
     

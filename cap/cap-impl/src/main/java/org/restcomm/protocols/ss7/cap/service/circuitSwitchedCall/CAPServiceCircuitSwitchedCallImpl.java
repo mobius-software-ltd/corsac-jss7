@@ -114,8 +114,6 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
         CAPDialogCircuitSwitchedCallImpl dialog = new CAPDialogCircuitSwitchedCallImpl(appCntx, tcapDialog,
                 this.capProviderImpl, this);
 
-        this.putCAPDialogIntoCollection(dialog);
-
         return dialog;
     }
 
@@ -130,8 +128,10 @@ public class CAPServiceCircuitSwitchedCallImpl extends CAPServiceBaseImpl implem
     }
 
     @Override
-    protected CAPDialogImpl createNewDialogIncoming(CAPApplicationContext appCntx, Dialog tcapDialog) {
-    	capProviderImpl.getCAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+    protected CAPDialogImpl createNewDialogIncoming(CAPApplicationContext appCntx, Dialog tcapDialog, Boolean logStats) {
+    	if(logStats)
+    		capProviderImpl.getCAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+    	
     	return new CAPDialogCircuitSwitchedCallImpl(appCntx, tcapDialog, this.capProviderImpl, this);
     }
 

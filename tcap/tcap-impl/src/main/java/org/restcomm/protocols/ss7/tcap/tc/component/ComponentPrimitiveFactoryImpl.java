@@ -21,9 +21,7 @@
 
 package org.restcomm.protocols.ss7.tcap.tc.component;
 
-import org.restcomm.protocols.ss7.tcap.TCAPProviderImpl;
 import org.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory;
-import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
@@ -39,10 +37,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
  */
 public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory {
 
-    private TCAPProviderImpl provider;
-
-    public ComponentPrimitiveFactoryImpl(TCAPProviderImpl tcaProviderImpl) {
-        this.provider = tcaProviderImpl;
+    public ComponentPrimitiveFactoryImpl() {
     }
 
     /*
@@ -53,20 +48,7 @@ public class ComponentPrimitiveFactoryImpl implements ComponentPrimitiveFactory 
     public Invoke createTCInvokeRequest() {
 
     	Invoke result = TcapFactory.createComponentInvoke();
-    	result.setProvider(provider);
-        return result;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @seeorg.restcomm.protocols.ss7.tcap.api.ComponentPrimitiveFactory# createTCInvokeRequest()
-     */
-    public Invoke createTCInvokeRequest(InvokeClass invokeClass) {
-
-    	Invoke result = TcapFactory.createComponentInvoke(invokeClass);
-    	result.setProvider(provider);
-        return result;
+    	return result;
     }
 
     /*

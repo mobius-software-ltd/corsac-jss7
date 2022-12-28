@@ -21,6 +21,8 @@
 
 package org.restcomm.protocols.ss7.map;
 
+import java.io.Externalizable;
+
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.map.api.MAPApplicationContext;
@@ -35,6 +37,7 @@ import org.restcomm.protocols.ss7.map.api.errors.MAPErrorCode;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.restcomm.protocols.ss7.map.api.errors.MAPErrorMessageParameterless;
 import org.restcomm.protocols.ss7.map.dialog.MAPUserAbortInfoImpl;
+import org.restcomm.protocols.ss7.map.dialog.MAPUserObject;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
@@ -97,10 +100,12 @@ public abstract class MAPDialogImpl implements MAPDialog {
         this.destReference = destReference;
         this.origReference = origReference;
         this.mapCfg = this.mapProviderImpl.getMapCfg();
+        setUserObject(null);
     }
 
     public void setReturnMessageOnError(boolean val) {
         returnMessageOnError = val;
+        setUserObject(getUserObject());
     }
 
     public boolean getReturnMessageOnError() {
@@ -401,7 +406,8 @@ public abstract class MAPDialogImpl implements MAPDialog {
             return;
         }
 
-        this.state = newState;        
+        this.state = newState; 
+        setUserObject(getUserObject());
     }
 
     public void processInvokeWithoutAnswer(Integer invokeId) {
@@ -464,12 +470,18 @@ public abstract class MAPDialogImpl implements MAPDialog {
         }
     }
 
-    public Object getUserObject() {
-        return this.tcapDialog.getUserObject();
+    public Externalizable getUserObject() {
+    	Externalizable tcapObject = this.tcapDialog.getUserObject();
+    	if(tcapObject == null)
+    		return null;
+    	else if(!(tcapObject instanceof MAPUserObject))
+    		return tcapObject;
+    	
+        return ((MAPUserObject)this.tcapDialog.getUserObject()).getRealObject();
     }
 
-    public void setUserObject(Object userObject) {
-        this.tcapDialog.setUserObject(userObject);
+    public void setUserObject(Externalizable userObject) {
+    	this.tcapDialog.setUserObject(new MAPUserObject(state, returnMessageOnError, appCntx, userObject));
     }
 
     public int getMaxUserDataLength() {

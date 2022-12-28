@@ -72,6 +72,7 @@ import org.restcomm.protocols.ss7.map.dialog.MAPOpenInfoImpl;
 import org.restcomm.protocols.ss7.map.dialog.MAPProviderAbortInfoImpl;
 import org.restcomm.protocols.ss7.map.dialog.MAPRefuseInfoImpl;
 import org.restcomm.protocols.ss7.map.dialog.MAPUserAbortInfoImpl;
+import org.restcomm.protocols.ss7.map.dialog.MAPUserObject;
 import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageAbsentSubscriber1Impl;
 import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageAbsentSubscriberImpl;
 import org.restcomm.protocols.ss7.map.errors.MAPErrorMessageAbsentSubscriberSMImpl;
@@ -263,13 +264,6 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 	private final MAPStackConfigurationManagement mapCfg;
     protected final transient Logger loger;
     private transient ConcurrentHashMap<UUID,MAPDialogListener> dialogListeners = new ConcurrentHashMap<UUID,MAPDialogListener>();
-//    protected transient FastMap<Long, MAPDialogImpl> dialogs = new FastMap<Long, MAPDialogImpl>().shared();
-    protected transient ConcurrentHashMap<Long, MAPDialogImpl> dialogs = new ConcurrentHashMap<Long, MAPDialogImpl>();
-
-//    /**
-//     * Congestion sources name list. Congestion is where this collection is not empty
-//     */
-//    protected transient FastMap<String, String> congSources = new FastMap<String, String>();
 
     private transient TCAPProvider tcapProvider = null;
 
@@ -277,15 +271,15 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
     private final transient MAPSmsTpduParameterFactory mapSmsTpduParameterFactory = new MAPSmsTpduParameterFactoryImpl();
     private final transient MAPErrorMessageFactory mapErrorMessageFactory = new MAPErrorMessageFactoryImpl();
 
-    protected transient Set<MAPServiceBase> mapServices = new HashSet<MAPServiceBase>();
-    private final transient MAPServiceMobility mapServiceMobility = new MAPServiceMobilityImpl(this);
-    private final transient MAPServiceCallHandling mapServiceCallHandling = new MAPServiceCallHandlingImpl(this);
-    private final transient MAPServiceOam mapServiceOam = new MAPServiceOamImpl(this);
-    private final transient MAPServicePdpContextActivation mapServicePdpContextActivation = new MAPServicePdpContextActivationImpl(
+    protected transient Set<MAPServiceBaseImpl> mapServices = new HashSet<MAPServiceBaseImpl>();
+    private final transient MAPServiceMobilityImpl mapServiceMobility = new MAPServiceMobilityImpl(this);
+    private final transient MAPServiceCallHandlingImpl mapServiceCallHandling = new MAPServiceCallHandlingImpl(this);
+    private final transient MAPServiceOamImpl mapServiceOam = new MAPServiceOamImpl(this);
+    private final transient MAPServicePdpContextActivationImpl mapServicePdpContextActivation = new MAPServicePdpContextActivationImpl(
             this);
-    private final transient MAPServiceSupplementary mapServiceSupplementary = new MAPServiceSupplementaryImpl(this);
-    private final transient MAPServiceSms mapServiceSms = new MAPServiceSmsImpl(this);
-    private final transient MAPServiceLsm mapServiceLsm = new MAPServiceLsmImpl(this);
+    private final transient MAPServiceSupplementaryImpl mapServiceSupplementary = new MAPServiceSupplementaryImpl(this);
+    private final transient MAPServiceSmsImpl mapServiceSms = new MAPServiceSmsImpl(this);
+    private final transient MAPServiceLsmImpl mapServiceLsm = new MAPServiceLsmImpl(this);
 
     private MAPStackImpl mapStack;
     /**
@@ -952,7 +946,44 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
     }
 
     public MAPDialog getMAPDialog(Long dialogId) {
-            return this.dialogs.get(dialogId);        
+    	Dialog dialog = this.tcapProvider.getDialogById(dialogId);
+    	if(dialog==null)
+    		return null;
+            
+    	return getMAPDialog(dialog);
+    }
+
+    public MAPDialog getMAPDialog(Dialog dialog) {
+    	if(dialog.getUserObject()==null || !(dialog.getUserObject() instanceof MAPUserObject))
+    		return null;
+    	
+    	MAPUserObject uo = (MAPUserObject)dialog.getUserObject();
+    	
+    	MAPServiceBaseImpl perfSer = null;
+    	if(uo.getApplicationContext()==null)
+    		return null;
+    	
+        for (MAPServiceBaseImpl ser : this.mapServices) {
+
+            ServingCheckData chkRes = ser.isServingService(uo.getApplicationContext());
+            switch (chkRes.getResult()) {
+                case AC_Serving:
+                    perfSer = ser;
+                    break;
+                case AC_VersionIncorrect:
+                    return null;
+				default:
+					break;
+            }
+
+            if (perfSer != null)
+                break;
+        }
+            
+        MAPDialogImpl mapDialog = perfSer.createNewDialogIncoming(uo.getApplicationContext(), dialog, false);
+        mapDialog.setState(uo.getState());
+        mapDialog.setReturnMessageOnError(uo.isReturnMessageOnError());
+        return mapDialog;
     }
 
     public void start() {
@@ -961,20 +992,6 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
     public void stop() {
         this.tcapProvider.removeTCListener(this);
-
-        this.dialogs.clear();
-    }
-
-    /**
-     * protected common methods
-     */
-
-    protected void addDialog(MAPDialogImpl dialog) {
-            this.dialogs.put(dialog.getLocalDialogId(), dialog);        
-    }
-
-    protected MAPDialogImpl removeDialog(Long dialogId) {
-            return this.dialogs.remove(dialogId);        
     }
 
     public void onTCBegin(TCBeginIndication tcBeginIndication) {
@@ -1275,8 +1292,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         }
 
         MAPDialogImpl mapDialogImpl = ((MAPServiceBaseImpl) perfSer).createNewDialogIncoming(mapAppCtx,
-                tcBeginIndication.getDialog());
-        this.addDialog(mapDialogImpl);
+                tcBeginIndication.getDialog(), true);
         mapDialogImpl.tcapMessageType = MessageType.Begin;
         mapDialogImpl.receivedOrigReference = origReference;
         mapDialogImpl.receivedDestReference = destReference;
@@ -1336,7 +1352,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
         Dialog tcapDialog = tcContinueIndication.getDialog();
 
-        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog.getLocalDialogId());
+        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog);
        
         if (mapDialogImpl == null) {
             loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
@@ -1469,7 +1485,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
         Dialog tcapDialog = tcEndIndication.getDialog();
 
-        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog.getLocalDialogId());
+        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog);
         
         if (mapDialogImpl == null) {
             loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
@@ -1588,9 +1604,10 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         // MAP do not use TCUni - we just ignore them
     }
 
-    public void onInvokeTimeout(Invoke invoke) {
+    @Override
+    public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
 
-        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(invoke.getDialog().getLocalDialogId());
+        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(dialog);
 
         if (mapDialogImpl != null) {
         	if (mapDialogImpl.getState() != MAPDialogState.EXPUNGED) {
@@ -1599,17 +1616,18 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
                 MAPServiceBaseImpl perfSer = (MAPServiceBaseImpl) mapDialogImpl.getService();
 
                 // We do not send invokeTimeout for Class 4 invokes
-                if (invoke.getInvokeClass() == InvokeClass.Class4)
+                if (invokeClass == InvokeClass.Class4)
                     return;
 
-                perfSer.deliverInvokeTimeout(mapDialogImpl, invoke);
+                perfSer.deliverInvokeTimeout(mapDialogImpl, invokeId);
             }
         }
     }
 
-    public void onDialogTimeout(Dialog tcapDialog) {
+    @Override
+    public void onDialogTimeout(Dialog dialog) {
 
-        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog.getLocalDialogId());
+        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(dialog);
 
         if (mapDialogImpl != null) {
         	if (mapDialogImpl.getState() != MAPDialogState.EXPUNGED) {
@@ -1618,19 +1636,21 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
         }
     }
 
-    public void onDialogReleased(Dialog tcapDialog) {
+    @Override
+    public void onDialogReleased(Dialog dialog) {
 
-        MAPDialogImpl mapDialogImpl = this.removeDialog(tcapDialog.getLocalDialogId());
+        MAPDialog mapDialog = this.getMAPDialog(dialog);
 
-        if (mapDialogImpl != null) {
-        	this.deliverDialogRelease(mapDialogImpl);
+        if (mapDialog != null) {
+        	this.deliverDialogRelease(mapDialog);
+        	dialog.setUserObject(null);
         }
     }
 
     public void onTCPAbort(TCPAbortIndication tcPAbortIndication) {
         Dialog tcapDialog = tcPAbortIndication.getDialog();
 
-        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog.getLocalDialogId());
+        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog);
         
         if (mapDialogImpl == null) {
             loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
@@ -1702,7 +1722,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
     public void onTCUserAbort(TCUserAbortIndication tcUserAbortIndication) {
         Dialog tcapDialog = tcUserAbortIndication.getDialog();
 
-        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog.getLocalDialogId());
+        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog);
         if (mapDialogImpl == null) {
             loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
             return;
@@ -1922,8 +1942,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
             Object parameter;
             OperationCode oc;
             Integer linkedId = 0;
-            Invoke linkedInvoke = null;
-
+            
             switch (compType) {
                 case Invoke: {
                     Invoke comp = (Invoke)c;
@@ -1933,11 +1952,10 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
                     if (linkedId != null) {
                         // linkedId exists Checking if the linkedId exists
-                        linkedInvoke = comp.getLinkedInvoke();
-
                         long[] lstInv = null;
-                        if(linkedInvoke.getOperationCode().getOperationType()==OperationCodeType.Local)
-                        	lstInv=perfSer.getLinkedOperationList((linkedInvoke.getOperationCode()).getLocalOperationCode());
+                        if(comp.getLinkedOperationCode().getOperationType()==OperationCodeType.Local)
+                        	lstInv=perfSer.getLinkedOperationList(comp.getLinkedOperationCode().getLocalOperationCode());
+                        
                         if (lstInv == null) {
                             ProblemImpl problem = new ProblemImpl();
                             problem.setInvokeProblemType(InvokeProblemType.LinkedResponseUnexpected);
@@ -2099,7 +2117,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
             return;
         }
 
-        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog.getLocalDialogId());
+        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog);
 
         if (mapDialogImpl == null) {
             loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());

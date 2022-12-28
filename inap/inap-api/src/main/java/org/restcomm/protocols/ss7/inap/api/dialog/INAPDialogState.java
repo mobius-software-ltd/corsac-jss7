@@ -18,15 +18,42 @@
  */
 package org.restcomm.protocols.ss7.inap.api.dialog;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author yulian.oifa
  *
  */
 public enum INAPDialogState {
-   Idle,
-   InitialReceived,
-   InitialSent,
-   Active,
-   // additional state to mark removal
-   Expunged;
+
+    IDLE(0),
+
+    INITIAL_RECEIVED(1), INITIAL_SENT(2),
+
+    ACTIVE(3),
+    // additional state to mark removal
+    EXPUNGED(4);
+
+    private final Integer state;
+    private static final Map<Integer, INAPDialogState> intToTypeMap = new HashMap<Integer, INAPDialogState>();
+	static
+	{
+	    for (INAPDialogState state : INAPDialogState.values()) 
+	    {
+	        intToTypeMap.put(state.state, state);
+	    }
+	}
+	
+    private INAPDialogState(Integer state) {
+        this.state = state;
+    }
+
+    public Integer getState() {
+        return this.state;
+    }
+
+    public static INAPDialogState getInstance(Integer state) {
+    	return intToTypeMap.get(Integer.valueOf(state));
+    }
 }

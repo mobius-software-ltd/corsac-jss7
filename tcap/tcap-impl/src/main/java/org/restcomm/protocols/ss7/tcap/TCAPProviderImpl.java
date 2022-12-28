@@ -55,6 +55,7 @@ import org.restcomm.protocols.ss7.tcap.api.DialogPrimitiveFactory;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.TCListener;
+import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.TRPseudoState;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.DraftParsedMessage;
@@ -79,11 +80,11 @@ import org.restcomm.protocols.ss7.tcap.asn.Result;
 import org.restcomm.protocols.ss7.tcap.asn.ResultSourceDiagnostic;
 import org.restcomm.protocols.ss7.tcap.asn.ResultType;
 import org.restcomm.protocols.ss7.tcap.asn.TCNoticeIndicationImpl;
+import org.restcomm.protocols.ss7.tcap.asn.TCUnifiedMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TCUnknownMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.Utils;
 import org.restcomm.protocols.ss7.tcap.asn.comp.DestinationTransactionID;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
@@ -162,7 +163,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         messageFactory = sccpProvider.getMessageFactory();
         this.stack = stack;
 
-        this.componentPrimitiveFactory = new ComponentPrimitiveFactoryImpl(this);
+        this.componentPrimitiveFactory = new ComponentPrimitiveFactoryImpl();
         this.dialogPrimitiveFactory = new DialogPrimitiveFactoryImpl(this.componentPrimitiveFactory);
         this.service=service;
         
@@ -362,7 +363,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         }
     }
 
-    protected DialogImpl getDialog(Long id) {
+    public DialogImpl getDialogById(Long id) {
     	return this.dialogs.get(id);
     }
     
@@ -528,11 +529,11 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         return this.service.schedule(operationTimerTask, invokeTimeout, TimeUnit.MILLISECONDS);
     }
 
-    public void operationTimedOut(Invoke tcInvokeRequestImpl,int networkId) {
+    public void operationTimedOut(Dialog dialog, int invokeId, InvokeClass invokeClass,int networkId) {
     	stack.invokeTimedOut(networkId);
         try {
             for (TCListener lst : this.tcListeners) {
-                lst.onInvokeTimeout(tcInvokeRequestImpl);
+                lst.onInvokeTimeout(dialog, invokeId, invokeClass);
             }
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
@@ -640,11 +641,12 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
     public void postProcessElement(Object parent,Object element,ConcurrentHashMap<Integer,Object> data) {
     	if(element instanceof DestinationTransactionID) {
     		long dialogId = Utils.decodeTransactionId(((DestinationTransactionID)element).getValue(), this.stack.getSwapTcapIdBytes());
-    		DialogImpl di = this.getDialog(dialogId);
+    		DialogImpl di = this.getDialogById(dialogId);
    			if(di!=null) {
+   				((DestinationTransactionID)element).setDialog(di);   				
    				ApplicationContextName acn=di.getApplicationContextName();
    				if(acn!=null)
-   					data.put(TCAP_ACN, acn);   					
+   					data.put(TCAP_ACN, acn);   				
    			}
     	}
     	else if(element instanceof DialogAPDU) {
@@ -672,13 +674,13 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 			}
     		
     		ApplicationContextName acn=(ApplicationContextName)data.remove(TCAP_ACN);
-    		if(acn!=null)
-    			((ReturnResultInnerImpl)element).setACN(acn);
+    		if(acn!=null)    			
+    			((ReturnResultInnerImpl)element).setACN(acn);  
     	}
     	if(element instanceof InvokeImpl) {
     		ApplicationContextName acn=(ApplicationContextName)data.remove(TCAP_ACN);
     		if(acn!=null)
-    			((InvokeImpl)element).setACN(acn);
+    			((InvokeImpl)element).setACN(acn);   		
     	}
     }
     
@@ -703,7 +705,9 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
             if(output.getResult() instanceof TCUnifiedMessage) {
             	TCUnifiedMessage realMessage=(TCUnifiedMessage)output.getResult();
             	stack.newMessageReceived(realMessage.getName(),bytes, message.getNetworkId());
-            	Boolean shouldProceed=!output.getHadErrors();
+            	DialogImpl di = ((TCUnifiedMessageImpl)realMessage).getDialog();
+                
+                Boolean shouldProceed=!output.getHadErrors();
             	if(shouldProceed) {
             		if(shouldProceed) {
                 		try {
@@ -719,9 +723,11 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
             	
             	if(shouldProceed) {
 	            	if(realMessage instanceof TCContinueMessage) {
-	            		TCContinueMessage tcm=(TCContinueMessage)realMessage;
+	            		TCContinueMessage tcm=(TCContinueMessage)realMessage;	            		
 	            		long dialogId = Utils.decodeTransactionId(tcm.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
-	                    DialogImpl di = this.getDialog(dialogId);
+	            		
+	            		if(di==null)
+	                    	di=this.getDialogById(dialogId);
 	                    
 	                    if (di == null) {
 	                        logger.warn("TC-CONTINUE: No dialog/transaction for id: " + dialogId);
@@ -744,7 +750,6 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	                        }
 	                    }
 	
-	                    DialogImpl di = null;
 	                    try {
 	                    	int remotePc = message.getIncomingOpc();
                             di = (DialogImpl) this.getNewDialog(localAddress, remoteAddress, message.getSls(), null);
@@ -764,7 +769,9 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	            	else if(realMessage instanceof TCEndMessage) {
 	            		TCEndMessage teb=(TCEndMessage)realMessage;
 	            		long dialogId = Utils.decodeTransactionId(teb.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
-	                    DialogImpl di = this.getDialog(dialogId);
+	                    if(di==null)
+	                    	di=this.getDialogById(dialogId);
+	                    
 	                    if (di == null) {
 	                        logger.warn("TC-END: No dialog/transaction for id: " + dialogId);
 	                    } else {
@@ -773,11 +780,12 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	            	}
 	            	else if(realMessage instanceof TCAbortMessage) {
 	            		TCAbortMessage tub=(TCAbortMessage)realMessage;
-	            		DialogImpl di=null;
 	            		Long dialogId=null;
 	            		if(tub.getDestinationTransactionId()!=null) {
 	            			dialogId = Utils.decodeTransactionId(tub.getDestinationTransactionId(), this.stack.getSwapTcapIdBytes());
-	            			di = this.getDialog(dialogId);
+	            			
+	            			if(di==null)
+	            				di = this.getDialogById(dialogId);
 	            		}
 	            		
 	                    if (di == null) {
@@ -851,7 +859,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
             	TCUnifiedMessage tcUnidentified = (TCUnifiedMessage)output.getResult();
 	            if (tcUnidentified.getOriginatingTransactionId() != null) {
 	                long otid = Utils.decodeTransactionId(tcUnidentified.getOriginatingTransactionId(), this.stack.getSwapTcapIdBytes());
-	               dialog = this.getDialog(otid);
+	               dialog = this.getDialogById(otid);
 	            }
             }
         } catch (Exception e) {

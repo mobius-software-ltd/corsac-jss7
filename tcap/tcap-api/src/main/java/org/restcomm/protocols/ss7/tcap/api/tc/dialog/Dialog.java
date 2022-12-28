@@ -21,11 +21,13 @@
 
 package org.restcomm.protocols.ss7.tcap.api.tc.dialog;
 
+import java.io.Externalizable;
 import java.io.Serializable;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
+import org.restcomm.protocols.ss7.tcap.api.TCListener;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueRequest;
@@ -35,7 +37,6 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
@@ -338,14 +339,14 @@ public interface Dialog extends Serializable {
      *
      * @return
      */
-    Object getUserObject();
+    Externalizable getUserObject();
 
     /**
      * Store in the Dialog a user-defined object to save relating to the Dialog information
      *
      * @param userObject
      */
-    void setUserObject(Object userObject);
+    void setUserObject(Externalizable userObject);
 
     /**
     *
@@ -365,7 +366,7 @@ public interface Dialog extends Serializable {
      */
     long getStartTimeDialog();
 
-    public void operationEnded(Invoke tcInvokeRequestImpl);
+    public void operationEnded(int invokeId);
 
-    public void operationTimedOut(Invoke invoke);    
+    public void operationTimedOut(InvokeClass invokeClass, int invokeId);    
 }

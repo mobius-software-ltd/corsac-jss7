@@ -49,6 +49,7 @@ import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessage;
 import org.restcomm.protocols.ss7.inap.api.errors.INAPErrorMessageFactory;
 import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.INAPServiceCircuitSwitchedCall;
 import org.restcomm.protocols.ss7.inap.dialog.INAPUserAbortPrimitiveImpl;
+import org.restcomm.protocols.ss7.inap.dialog.INAPUserObject;
 import org.restcomm.protocols.ss7.inap.errors.INAPErrorMessageCancelFailedImpl;
 import org.restcomm.protocols.ss7.inap.errors.INAPErrorMessageFactoryImpl;
 import org.restcomm.protocols.ss7.inap.errors.INAPErrorMessageImproperCallerResponseCS1PlusImpl;
@@ -139,6 +140,7 @@ import org.restcomm.protocols.ss7.tcap.api.OperationCodeWithACN;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.TCListener;
+import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
@@ -198,17 +200,14 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
     private transient ConcurrentHashMap<UUID,INAPDialogListener> dialogListeners = new ConcurrentHashMap<UUID,INAPDialogListener>();
 
-//    protected transient FastMap<Long, INAPDialogImpl> dialogs = new FastMap<Long, INAPDialogImpl>().shared();
-    protected transient ConcurrentHashMap<Long, INAPDialogImpl> dialogs = new ConcurrentHashMap<Long, INAPDialogImpl>();
-
     private transient TCAPProvider tcapProvider = null;
 
     private final transient INAPParameterFactory inapParameterFactory = new INAPParameterFactoryImpl();
     private final transient ISUPParameterFactory isupParameterFactory = new ISUPParameterFactoryImpl();
     private final transient INAPErrorMessageFactory inapErrorMessageFactory = new INAPErrorMessageFactoryImpl();
 
-    protected transient Set<INAPServiceBase> inapServices = new HashSet<INAPServiceBase>();
-    private final transient INAPServiceCircuitSwitchedCall inapServiceCircuitSwitchedCall = new INAPServiceCircuitSwitchedCallImpl(
+    protected transient Set<INAPServiceBaseImpl> inapServices = new HashSet<INAPServiceBaseImpl>();
+    private final transient INAPServiceCircuitSwitchedCallImpl inapServiceCircuitSwitchedCall = new INAPServiceCircuitSwitchedCallImpl(
             this);
     
     private INAPStackImpl inapStack;
@@ -676,7 +675,43 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
     @Override
     public INAPDialog getINAPDialog(Long dialogId) {
-            return this.dialogs.get(dialogId);       
+    	Dialog dialog = this.tcapProvider.getDialogById(dialogId);
+    	if(dialog==null)
+    		return null;
+    	
+    	return getINAPDialog(dialog);
+    }
+
+    public INAPDialog getINAPDialog(Dialog dialog) {
+    	if(dialog.getUserObject()==null || !(dialog.getUserObject() instanceof INAPUserObject))
+    		return null;
+    	
+    	INAPUserObject uo = (INAPUserObject)dialog.getUserObject();
+    	if(uo.getApplicationContext()==null)
+    		return null;
+    	
+    	INAPServiceBaseImpl perfSer = null;
+        for (INAPServiceBaseImpl ser : this.inapServices) {
+
+            ServingCheckData chkRes = ser.isServingService(uo.getApplicationContext());
+            switch (chkRes.getResult()) {
+                case AC_Serving:
+                    perfSer = ser;
+                    break;
+                case AC_VersionIncorrect:
+                    return null;
+				default:
+					break;
+            }
+
+            if (perfSer != null)
+                break;
+        }
+            
+        INAPDialogImpl inapDialog = perfSer.createNewDialogIncoming(uo.getApplicationContext(), dialog, false);
+        inapDialog.setState(uo.getState());
+        inapDialog.setReturnMessageOnError(uo.isReturnMessageOnError());
+        return inapDialog;
     }
 
     public void start() {
@@ -686,14 +721,6 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
     public void stop() {
         this.tcapProvider.removeTCListener(this);
 
-    }
-
-    protected void addDialog(INAPDialogImpl dialog) {
-            this.dialogs.put(dialog.getLocalDialogId(), dialog);        
-    }
-
-    protected INAPDialogImpl removeDialog(Long dialogId) {
-            return this.dialogs.remove(dialogId);        
     }
 
     private void SendUnsupportedAcn(ApplicationContextName acn, Dialog dialog, String cs) {
@@ -770,17 +797,16 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         }
 
         INAPDialogImpl inapDialogImpl = ((INAPServiceBaseImpl) perfSer).createNewDialogIncoming(inapAppCtx,
-                tcBeginIndication.getDialog());
+                tcBeginIndication.getDialog(), true);
         
-        this.addDialog(inapDialogImpl);
         inapDialogImpl.tcapMessageType = MessageType.Begin;
         
-        inapDialogImpl.setState(INAPDialogState.InitialReceived);
+        inapDialogImpl.setState(INAPDialogState.INITIAL_RECEIVED);
 
         inapDialogImpl.delayedAreaState = INAPDialogImpl.DelayedAreaState.No;
 
         this.deliverDialogRequest(inapDialogImpl);
-        if (inapDialogImpl.getState() == INAPDialogState.Expunged) {
+        if (inapDialogImpl.getState() == INAPDialogState.EXPUNGED) {
             // The Dialog was aborter or refused
             return;
         }
@@ -797,7 +823,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
     private void finishComponentProcessingState(INAPDialogImpl inapDialogImpl) {
 
-        if (inapDialogImpl.getState() == INAPDialogState.Expunged)
+        if (inapDialogImpl.getState() == INAPDialogState.EXPUNGED)
             return;
 
         try {
@@ -825,7 +851,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
         Dialog tcapDialog = tcContinueIndication.getDialog();
 
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog.getLocalDialogId());
+        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog);
         
         if (inapDialogImpl == null) {
             loger.warn("INAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
@@ -838,7 +864,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
             return;
         }
         inapDialogImpl.tcapMessageType = MessageType.Continue;
-        if (inapDialogImpl.getState() == INAPDialogState.InitialSent) {
+        if (inapDialogImpl.getState() == INAPDialogState.INITIAL_SENT) {
             ApplicationContextName acn = tcContinueIndication.getApplicationContextName();
 
             if (acn == null) {
@@ -851,7 +877,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
                 }
 
                 this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.AbnormalDialogAction);
-                inapDialogImpl.setState(INAPDialogState.Expunged);
+                inapDialogImpl.setState(INAPDialogState.EXPUNGED);
 
                 return;
             }
@@ -869,17 +895,17 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
                 }
 
                 this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.AbnormalDialogAction);
-                inapDialogImpl.setState(INAPDialogState.Expunged);
+                inapDialogImpl.setState(INAPDialogState.EXPUNGED);
 
                 return;
             }
 
             inapDialogImpl.delayedAreaState = INAPDialogImpl.DelayedAreaState.No;
 
-            inapDialogImpl.setState(INAPDialogState.Active);
+            inapDialogImpl.setState(INAPDialogState.ACTIVE);
             this.deliverDialogAccept(inapDialogImpl);
 
-            if (inapDialogImpl.getState() == INAPDialogState.Expunged) {
+            if (inapDialogImpl.getState() == INAPDialogState.EXPUNGED) {
                 // The Dialog was aborter
                 finishComponentProcessingState(inapDialogImpl);
                 return;
@@ -889,7 +915,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         }
 
         // Now let us decode the Components
-        if (inapDialogImpl.getState() == INAPDialogState.Active) {
+        if (inapDialogImpl.getState() == INAPDialogState.ACTIVE) {
             List<BaseComponent> comps = tcContinueIndication.getComponents();
             if (comps != null) {
                 processComponents(inapDialogImpl, comps, tcContinueIndication.getOriginalBuffer());
@@ -908,21 +934,21 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
         Dialog tcapDialog = tcEndIndication.getDialog();
 
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog.getLocalDialogId());
+        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog);
         
         if (inapDialogImpl == null) {
             loger.warn("IMAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
             return;
         }
         inapDialogImpl.tcapMessageType = MessageType.End;
-        if (inapDialogImpl.getState() == INAPDialogState.InitialSent) {
+        if (inapDialogImpl.getState() == INAPDialogState.INITIAL_SENT) {
             ApplicationContextName acn = tcEndIndication.getApplicationContextName();
 
             if (acn == null) {
                 loger.warn("INAP Dialog is in InitialSent state but no application context name is received");
 
                 this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.AbnormalDialogAction);
-                inapDialogImpl.setState(INAPDialogState.Expunged);
+                inapDialogImpl.setState(INAPDialogState.EXPUNGED);
 
                 return;
             }
@@ -936,15 +962,15 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
                 // inapDialogImpl.setNormalDialogShutDown();
 
                 this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.AbnormalDialogAction);
-                inapDialogImpl.setState(INAPDialogState.Expunged);
+                inapDialogImpl.setState(INAPDialogState.EXPUNGED);
 
                 return;
             }
 
-            inapDialogImpl.setState(INAPDialogState.Active);
+            inapDialogImpl.setState(INAPDialogState.ACTIVE);
 
             this.deliverDialogAccept(inapDialogImpl);
-            if (inapDialogImpl.getState() == INAPDialogState.Expunged) {
+            if (inapDialogImpl.getState() == INAPDialogState.EXPUNGED) {
                 // The Dialog was aborter
                 return;
             }
@@ -959,19 +985,19 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         // inapDialogImpl.setNormalDialogShutDown();
         this.deliverDialogClose(inapDialogImpl);
 
-        inapDialogImpl.setState(INAPDialogState.Expunged);
+        inapDialogImpl.setState(INAPDialogState.EXPUNGED);
     }
 
     public void onTCUni(TCUniIndication arg0) {
     }
 
     @Override
-    public void onInvokeTimeout(Invoke invoke) {
+    public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
 
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(invoke.getDialog().getLocalDialogId());
+        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(dialog);
 
         if (inapDialogImpl != null) {
-        	if (inapDialogImpl.getState() != INAPDialogState.Expunged) {
+        	if (inapDialogImpl.getState() != INAPDialogState.EXPUNGED) {
                 // if (inapDialogImpl.getState() != INAPDialogState.Expunged && !inapDialogImpl.getNormalDialogShutDown()) {
 
                 // Getting the INAP Service that serves the CAP Dialog
@@ -980,18 +1006,18 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
                 // Check if the InvokeTimeout in this situation is normal (may be for a class 2,3,4 components)
                 // TODO: ................................
 
-                perfSer.deliverInvokeTimeout(inapDialogImpl, invoke);
+                perfSer.deliverInvokeTimeout(inapDialogImpl, invokeId);
             }
         }
     }
 
     @Override
-    public void onDialogTimeout(Dialog tcapDialog) {
+    public void onDialogTimeout(Dialog dialog) {
 
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog.getLocalDialogId());
+        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(dialog);
 
         if (inapDialogImpl != null) {
-        	if (inapDialogImpl.getState() != INAPDialogState.Expunged) {
+        	if (inapDialogImpl.getState() != INAPDialogState.EXPUNGED) {
                 // if (inapDialogImpl.getState() != INAPDialogState.Expunged && !inapDialogImpl.getNormalDialogShutDown()) {
 
                 this.deliverDialogTimeout(inapDialogImpl);
@@ -1000,19 +1026,20 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
     }
 
     @Override
-    public void onDialogReleased(Dialog tcapDialog) {
+    public void onDialogReleased(Dialog dialog) {
 
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.removeDialog(tcapDialog.getLocalDialogId());
+        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(dialog);
 
         if (inapDialogImpl != null) {
         	this.deliverDialogRelease(inapDialogImpl);
+        	dialog.setUserObject(null);
         }
     }
 
     public void onTCPAbort(TCPAbortIndication tcPAbortIndication) {
         Dialog tcapDialog = tcPAbortIndication.getDialog();
 
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog.getLocalDialogId());
+        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog);
         
         if (inapDialogImpl == null) {
             loger.warn("INAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
@@ -1024,13 +1051,13 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
         this.deliverDialogProviderAbort(inapDialogImpl, pAbortCause);
 
-        inapDialogImpl.setState(INAPDialogState.Expunged);
+        inapDialogImpl.setState(INAPDialogState.EXPUNGED);
     }
 
     public void onTCUserAbort(TCUserAbortIndication tcUserAbortIndication) {
         Dialog tcapDialog = tcUserAbortIndication.getDialog();
 
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog.getLocalDialogId());
+        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog);
         
         if (inapDialogImpl == null) {
             loger.error("INAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
@@ -1043,7 +1070,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
         INAPUserAbortReason userReason = null;
 
         if (tcUserAbortIndication.IsAareApdu()) {
-            if (inapDialogImpl.getState() == INAPDialogState.InitialSent) {
+            if (inapDialogImpl.getState() == INAPDialogState.INITIAL_SENT) {
                 generalReason = INAPGeneralAbortReason.DialogRefused;
                 ResultSourceDiagnostic resultSourceDiagnostic = tcUserAbortIndication.getResultSourceDiagnostic();
                 if (resultSourceDiagnostic != null) {
@@ -1087,14 +1114,14 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
         this.deliverDialogUserAbort(inapDialogImpl, generalReason, userReason);
 
-        inapDialogImpl.setState(INAPDialogState.Expunged);
+        inapDialogImpl.setState(INAPDialogState.EXPUNGED);
     }
 
     @Override
     public void onTCNotice(TCNoticeIndication ind) {
         Dialog tcapDialog = ind.getDialog();
 
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog.getLocalDialogId());
+        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog);
 
         if (inapDialogImpl == null) {
             loger.error("INAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
@@ -1103,9 +1130,9 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
         this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.MessageCannotBeDeliveredToThePeer);
 
-        if (inapDialogImpl.getState() == INAPDialogState.InitialSent) {
+        if (inapDialogImpl.getState() == INAPDialogState.INITIAL_SENT) {
             // inapDialogImpl.setNormalDialogShutDown();
-            inapDialogImpl.setState(INAPDialogState.Expunged);
+            inapDialogImpl.setState(INAPDialogState.EXPUNGED);
         }
     }
 
@@ -1141,8 +1168,6 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
             Object parameter;
             OperationCode oc;
             Integer linkedId = 0;
-            Invoke linkedInvoke = null;
-
             switch (compType) {
                 case Invoke: {
                     Invoke comp = (Invoke)c;
@@ -1153,9 +1178,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
                     // Checking if the invokeId is not duplicated
                     if (linkedId != null) {
                         // linkedId exists Checking if the linkedId exists
-                        linkedInvoke = comp.getLinkedInvoke();
-
-                        long[] lstInv = perfSer.getLinkedOperationList(linkedInvoke.getOperationCode().getLocalOperationCode());
+                        long[] lstInv = perfSer.getLinkedOperationList(comp.getLinkedOperationCode().getLocalOperationCode());
                         if (lstInv == null) {
                         	ProblemImpl problem = new ProblemImpl();
                             problem.setInvokeProblemType(InvokeProblemType.LinkedResponseUnexpected);

@@ -21,7 +21,9 @@
 
 package org.restcomm.protocols.ss7.tcap;
 
+import java.io.Externalizable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
@@ -74,7 +76,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.BaseComponent;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
+import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeWrapper;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
@@ -110,7 +114,7 @@ public class DialogImpl implements Dialog {
 
     private static final Logger logger = LogManager.getLogger(DialogImpl.class);
 
-    private Object userObject;
+    private Externalizable userObject;
 
     // values for timer timeouts
     //private long removeTaskTimeout = _REMOVE_TIMEOUT;
@@ -143,7 +147,9 @@ public class DialogImpl implements Dialog {
     private int lastInvokeIdIndex = _INVOKE_TABLE_SHIFT - 1;
 
     // only originating side keeps FSM, see: Q.771 - 3.1.5
-    protected Invoke[] operationsSent = new Invoke[invokeIDTable.length];
+    protected ConcurrentHashMap<Integer,InvokeWrapper> sentOperations = new ConcurrentHashMap<Integer,InvokeWrapper>();
+    protected InvokeWrapper[] scheduledOperations = new InvokeWrapper[invokeIDTable.length];
+    
     private ConcurrentHashMap<Integer,Integer> incomingInvokeList = new ConcurrentHashMap<Integer,Integer>();
     private ScheduledExecutorService executor;
 
@@ -235,10 +241,10 @@ public class DialogImpl implements Dialog {
     }
 
     public void release() {
-    	for (int i = 0; i < this.operationsSent.length; i++) {
-            Invoke invokeImpl = this.operationsSent[i];
-            if (invokeImpl != null) {
-                invokeImpl.setState(OperationState.Idle);
+    	Collection<InvokeWrapper> allInvokes = getAllInvokes();
+    	for (InvokeWrapper invoke:allInvokes) {
+            if (invoke != null) {
+            	invoke.setState(OperationState.Idle);
                 // TODO whether to call operationTimedOut or not is still not clear
                 // operationTimedOut(invokeImpl);
             }
@@ -303,7 +309,7 @@ public class DialogImpl implements Dialog {
      */
     public boolean cancelInvocation(Integer invokeId) throws TCAPException {
         int index = getIndexFromInvokeId(invokeId);
-        if (index < 0 || index >= this.operationsSent.length) {
+        if (index < 0 || index >= this.invokeIDTable.length) {
             throw new TCAPException("Wrong invoke id passed.");
         }
 
@@ -315,8 +321,13 @@ public class DialogImpl implements Dialog {
                 // TCInvokeRequestImpl invoke = (TCInvokeRequestImpl) cr;
                 // there is no notification on cancel?
                 this.scheduledComponentList.remove(index);
-                ((Invoke)cr).stopTimer();
-                ((Invoke)cr).setState(OperationState.Idle);
+                int invokeIndex = DialogImpl.getIndexFromInvokeId(cr.getInvokeId());
+            	InvokeWrapper pendingWrapper = this.scheduledOperations[invokeIndex];
+                if(pendingWrapper!=null) {
+                	pendingWrapper.stopTimer();
+                	pendingWrapper.setState(OperationState.Idle);
+                	this.scheduledOperations[invokeIndex]=null;
+                }
                 return true;
             }
         }
@@ -1049,21 +1060,21 @@ public class DialogImpl implements Dialog {
 		
 		// check if its taken!
         int invokeIndex = DialogImpl.getIndexFromInvokeId(component.getInvokeId());
-        if (this.operationsSent[invokeIndex] != null) {
+        if (invokeExists(invokeIndex)) {
             throw new TCAPSendException("There is already operation with such invoke id!");
         }
 
         if(component instanceof Invoke) {
         	Invoke invoke=(Invoke)component;
-        	invoke.setProvider(provider);
-        	invoke.setState(OperationState.Pending);
-        	invoke.setDialog(this);
-	
+        	InvokeWrapper wrapper=new InvokeWrapper(invoke.getOperationCode(), this, component.getInvokeId(), provider, null);
+        	wrapper.setState(OperationState.Pending);        	
+        	this.scheduledOperations[invokeIndex]=wrapper;
+        	
 	        // if the Invoke timeout value has not be reset by TCAP-User
 	        // for this invocation we are setting it to the the TCAP stack
 	        // default value
-	        if (invoke.getTimeout() == TCAPStackImpl._EMPTY_INVOKE_TIMEOUT)
-	            invoke.setTimeout(this.provider.getStack().getInvokeTimeout());
+	        if (wrapper.getTimeout() == TCAPStackImpl._EMPTY_INVOKE_TIMEOUT)
+	        	wrapper.setTimeout(this.provider.getStack().getInvokeTimeout());
         }
         
         return component.getInvokeId();
@@ -1072,14 +1083,14 @@ public class DialogImpl implements Dialog {
     public Integer sendData(Integer invokeId,Integer linkedId,InvokeClass invokeClass,Long customTimeout,OperationCode operationCode,Object param,Boolean isRequest,Boolean isLastResponse) throws TCAPSendException, TCAPException {
     	if(isRequest!=null && isRequest) {
     		Invoke invoke;
-    		if(invokeClass==null)
-    			invoke=TcapFactory.createComponentInvoke();
-    		else
-    			invoke=TcapFactory.createComponentInvoke(invokeClass);
+    		if(invokeId==null)
+    			invokeId=getNewInvokeId();
     		
+    		InvokeWrapper invokeWrapper=new InvokeWrapper(operationCode, this, invokeId, provider, invokeClass);
     		if(customTimeout!=null)
-    			invoke.setTimeout(customTimeout);
+    			invokeWrapper.setTimeout(customTimeout);
     		
+    		invoke=TcapFactory.createComponentInvoke();
     		if(operationCode!=null && operationCode.getLocalOperationCode()!=null)
     			invoke.setOperationCode(operationCode.getLocalOperationCode());
     		else if(operationCode!=null && operationCode.getGlobalOperationCode()!=null)
@@ -1087,9 +1098,6 @@ public class DialogImpl implements Dialog {
     		
     		if(param!=null)
     			invoke.setParameter(param);
-    		
-    		if(invokeId==null)
-    			invokeId=getNewInvokeId();
     		
     		invoke.setInvokeId(invokeId);
     		
@@ -1100,19 +1108,18 @@ public class DialogImpl implements Dialog {
     		
     		// check if its taken!
             int invokeIndex = DialogImpl.getIndexFromInvokeId(invoke.getInvokeId());
-            if (this.operationsSent[invokeIndex] != null) {
+            if (invokeExists(invokeIndex)) {
                 throw new TCAPSendException("There is already operation with such invoke id!");
             }
 
-            invoke.setProvider(provider);
-            invoke.setState(OperationState.Pending);
-            invoke.setDialog(this);
-
+            invokeWrapper.setState(OperationState.Pending);
+            this.scheduledOperations[invokeIndex]=invokeWrapper;
+        	
             // if the Invoke timeout value has not be reset by TCAP-User
             // for this invocation we are setting it to the the TCAP stack
             // default value
-            if (invoke.getTimeout() == TCAPStackImpl._EMPTY_INVOKE_TIMEOUT)
-                invoke.setTimeout(this.provider.getStack().getInvokeTimeout());
+            if (invokeWrapper.getTimeout() == TCAPStackImpl._EMPTY_INVOKE_TIMEOUT)
+            	invokeWrapper.setTimeout(this.provider.getStack().getInvokeTimeout());
     	} else if(isLastResponse!=null && isLastResponse) {
     		ReturnResultLast returnResultLast=TcapFactory.createComponentReturnResultLast();
     		returnResultLast.setInvokeId(invokeId);
@@ -1196,7 +1203,6 @@ public class DialogImpl implements Dialog {
     	int index = 0;
         while (this.scheduledComponentList.size() > index) {
         	BaseComponent cr = this.scheduledComponentList.get(index);
-        	
         	ComponentType ct=ComponentType.Invoke;
             if(cr instanceof ReturnError)
             	ct=ComponentType.ReturnError;
@@ -1210,10 +1216,14 @@ public class DialogImpl implements Dialog {
         	provider.getStack().newComponentSent(ct.name(), this.networkId);
             
             if (cr instanceof Invoke) {
-                Invoke in = (Invoke)cr;
-                // FIXME: check not null?
-                this.operationsSent[getIndexFromInvokeId(in.getInvokeId())] = in;
-                in.setState(OperationState.Sent);
+            	int invokeIndex = DialogImpl.getIndexFromInvokeId(cr.getInvokeId());
+            	InvokeWrapper pendingWrapper = this.scheduledOperations[invokeIndex];
+                    	    
+            	if(pendingWrapper!=null) {
+            		setInvokeByIndex(getIndexFromInvokeId(cr.getInvokeId()), pendingWrapper);            		
+            		pendingWrapper.setState(OperationState.Sent);
+            		this.scheduledOperations[invokeIndex]=null;
+            	}
             }
             else if(cr instanceof Reject) {
             	Reject reject=(Reject)cr;
@@ -1349,7 +1359,7 @@ public class DialogImpl implements Dialog {
         }
         
         tcBeginIndication.setComponents(processOperationsState(msg.getComponents()));
-     // change state - before we deliver
+        // change state - before we deliver
         this.setState(TRPseudoState.InitialReceived);
 
         // lets deliver to provider
@@ -1656,10 +1666,10 @@ public class DialogImpl implements Dialog {
     }
 
     public OperationCode getOperationCodeFromInvoke(Integer invokeId) {
-    	Invoke invoke = null;
+    	InvokeWrapper invoke = null;
         if (invokeId != null) {
         	int index = getIndexFromInvokeId(invokeId);
-            invoke = this.operationsSent[index];            
+            invoke = getInvokeByIndex(index);            
         }
         
         if(invoke!=null)
@@ -1681,11 +1691,11 @@ public class DialogImpl implements Dialog {
             else
                 invokeId = ci.getInvokeId();
             
-            Invoke invoke = null;
+            InvokeWrapper wrapper = null;
             int index = 0;
             if (invokeId != null) {
                 index = getIndexFromInvokeId(invokeId);
-                invoke = this.operationsSent[index];                
+                wrapper = getInvokeByIndex(index);                
             }
 
             ComponentType ct=ComponentType.Invoke;
@@ -1702,15 +1712,15 @@ public class DialogImpl implements Dialog {
             switch (ct) {
 
                 case Invoke:
-                	if (invokeId != null && invoke == null) {
+                	if (invokeId != null && wrapper == null) {
                         logger.error(String.format("Rx : %s but no sent Invoke for linkedId exists", ci));
 
                         Problem p = TcapFactory.createProblem();
                         p.setInvokeProblemType(InvokeProblemType.UnrechognizedLinkedID);
                         this.addReject(resultingIndications, ((Invoke)ci).getInvokeId(), p);
                     } else {
-                        if (invoke != null) {
-                        	((Invoke)ci).setLinkedInvoke(invoke);
+                        if (wrapper != null) {
+                        	((InvokeImpl)ci).setLinkedOperationCode(wrapper.getOperationCode());
                         }
 
                         if (!this.addIncomingInvokeId(((Invoke)ci).getInvokeId())) {
@@ -1726,13 +1736,13 @@ public class DialogImpl implements Dialog {
                     break;
 
                 case ReturnResult:
-                	if (invoke == null) {
+                	if (wrapper == null) {
                         logger.error(String.format("Rx : %s but there is no corresponding Invoke", ci));
 
                         Problem p = TcapFactory.createProblem();
                         p.setReturnResultProblemType(ReturnResultProblemType.UnrecognizedInvokeID);
                         this.addReject(resultingIndications, ((ReturnResult)ci).getInvokeId(), p);
-                    } else if (invoke.getInvokeClass() != InvokeClass.Class1 && invoke.getInvokeClass() != InvokeClass.Class3) {
+                    } else if (wrapper.getInvokeClass() != InvokeClass.Class1 && wrapper.getInvokeClass() != InvokeClass.Class3) {
                         logger.error(String.format("Rx : %s but Invoke class is not 1 or 3", ci));
 
                         Problem p = TcapFactory.createProblem();
@@ -1742,57 +1752,57 @@ public class DialogImpl implements Dialog {
                         resultingIndications.add(ci);
                         ReturnResult rri = ((ReturnResult)ci);
                         if (rri.getOperationCode() == null) {
-                        	if(invoke.getOperationCode()!=null && invoke.getOperationCode().getLocalOperationCode()!=null)
-                        		rri.setOperationCode(invoke.getOperationCode().getLocalOperationCode());
-                        	else if(invoke.getOperationCode()!=null && invoke.getOperationCode().getGlobalOperationCode()!=null)
-                        		rri.setOperationCode(invoke.getOperationCode().getGlobalOperationCode());
+                        	if(wrapper.getOperationCode()!=null && wrapper.getOperationCode().getLocalOperationCode()!=null)
+                        		rri.setOperationCode(wrapper.getOperationCode().getLocalOperationCode());
+                        	else if(wrapper.getOperationCode()!=null && wrapper.getOperationCode().getGlobalOperationCode()!=null)
+                        		rri.setOperationCode(wrapper.getOperationCode().getGlobalOperationCode());
                         }
                     }
                     break;
 
                 case ReturnResultLast:
 
-                    if (invoke == null) {
+                    if (wrapper == null) {
                         logger.error(String.format("Rx : %s but there is no corresponding Invoke", ci));
 
                         Problem p = TcapFactory.createProblem();
                         p.setReturnResultProblemType(ReturnResultProblemType.UnrecognizedInvokeID);
                         this.addReject(resultingIndications, ((ReturnResultLast)ci).getInvokeId(), p);
-                    } else if (invoke.getInvokeClass() != InvokeClass.Class1 && invoke.getInvokeClass() != InvokeClass.Class3) {
+                    } else if (wrapper.getInvokeClass() != InvokeClass.Class1 && wrapper.getInvokeClass() != InvokeClass.Class3) {
                         logger.error(String.format("Rx : %s but Invoke class is not 1 or 3", ci));
 
                         Problem p = TcapFactory.createProblem();
                         p.setReturnResultProblemType(ReturnResultProblemType.ReturnResultUnexpected);
                         this.addReject(resultingIndications, ((ReturnResultLast)ci).getInvokeId(), p);
                     } else {
-                        invoke.onReturnResultLast();
-                        if (invoke.isSuccessReported()) {
+                    	wrapper.onReturnResultLast();
+                        if (wrapper.isSuccessReported()) {
                             resultingIndications.add(ci);
                         }
                         ReturnResultLast rri = ((ReturnResultLast)ci);
-                        if(invoke.getOperationCode()!=null && invoke.getOperationCode().getLocalOperationCode()!=null)
-                    		rri.setOperationCode(invoke.getOperationCode().getLocalOperationCode());
-                    	else if(invoke.getOperationCode()!=null && invoke.getOperationCode().getGlobalOperationCode()!=null)
-                    		rri.setOperationCode(invoke.getOperationCode().getGlobalOperationCode());                        
+                        if(wrapper.getOperationCode()!=null && wrapper.getOperationCode().getLocalOperationCode()!=null)
+                    		rri.setOperationCode(wrapper.getOperationCode().getLocalOperationCode());
+                    	else if(wrapper.getOperationCode()!=null && wrapper.getOperationCode().getGlobalOperationCode()!=null)
+                    		rri.setOperationCode(wrapper.getOperationCode().getGlobalOperationCode());                        
                     }
                     break;
 
                 case ReturnError:
-                    if (invoke == null) {
+                    if (wrapper == null) {
                         logger.error(String.format("Rx : %s but there is no corresponding Invoke", ci));
 
                         Problem p = TcapFactory.createProblem();
                         p.setReturnErrorProblemType(ReturnErrorProblemType.UnrecognizedInvokeID);
                         this.addReject(resultingIndications, ((ReturnError)ci).getInvokeId(), p);
-                    } else if (invoke.getInvokeClass() != InvokeClass.Class1 && invoke.getInvokeClass() != InvokeClass.Class2) {
+                    } else if (wrapper.getInvokeClass() != InvokeClass.Class1 && wrapper.getInvokeClass() != InvokeClass.Class2) {
                         logger.error(String.format("Rx : %s but Invoke class is not 1 or 2", ci));
 
                         Problem p = TcapFactory.createProblem();
                         p.setReturnErrorProblemType(ReturnErrorProblemType.ReturnErrorUnexpected);
                         this.addReject(resultingIndications, ((ReturnError)ci).getInvokeId(), p);
                     } else {
-                        invoke.onError();
-                        if (invoke.isErrorReported()) {
+                    	wrapper.onError();
+                        if (wrapper.isErrorReported()) {
                             resultingIndications.add(ci);
                         }
                     }
@@ -1800,7 +1810,7 @@ public class DialogImpl implements Dialog {
 
                 case Reject:
                     Reject rej = ((Reject)ci);
-                    if (invoke != null) {
+                    if (wrapper != null) {
                         // If the Reject Problem is the InvokeProblemType we
                         // should move the invoke to the idle state
                         Problem problem = rej.getProblem();
@@ -1813,7 +1823,7 @@ public class DialogImpl implements Dialog {
                         }
                         
                         if (!rej.isLocalOriginated() && ipt != null)
-                            invoke.onReject();
+                        	wrapper.onReject();
                     }
                     if (rej.isLocalOriginated() && this.isStructured()) {
                         try {
@@ -1895,7 +1905,7 @@ public class DialogImpl implements Dialog {
         }
     }
 
-    private void startIdleTimer() {
+    protected void startIdleTimer() {
         if (!this.structured)
             return;
         
@@ -1910,7 +1920,7 @@ public class DialogImpl implements Dialog {
         this.idleTimerFuture.set(this.executor.schedule(t, this.idleTaskTimeout, TimeUnit.MILLISECONDS));
     }
 
-    private void stopIdleTimer() {
+    protected void stopIdleTimer() {
         if (!this.structured)
             return;
 
@@ -1920,7 +1930,7 @@ public class DialogImpl implements Dialog {
         }
     }
 
-    private void restartIdleTimer() {
+    protected void restartIdleTimer() {
         stopIdleTimer();
         startIdleTimer();
     }
@@ -1951,11 +1961,11 @@ public class DialogImpl implements Dialog {
     // ////////////////////
     // IND like methods //
     // ///////////////////
-    public void operationEnded(Invoke tcInvokeRequestImpl) {
+    public void operationEnded(int invokeId) {
     	// this op died cause of timeout, TC-L-CANCEL!
-        int index = getIndexFromInvokeId(tcInvokeRequestImpl.getInvokeId());
-        freeInvokeId(tcInvokeRequestImpl.getInvokeId());
-        this.operationsSent[index] = null;
+        int index = getIndexFromInvokeId(invokeId);
+        freeInvokeId(invokeId);
+        setInvokeByIndex(index, null);
         // lets call listener
         // This is done actually with COmponentIndication ....
     }
@@ -1966,34 +1976,54 @@ public class DialogImpl implements Dialog {
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#operationEnded(
      * org.restcomm.protocols.ss7.tcap.tc.component.TCInvokeRequestImpl)
      */
-    public void operationTimedOut(Invoke invoke) {
+    public void operationTimedOut(InvokeClass invokeClass, int invokeId) {
         // this op died cause of timeout, TC-L-CANCEL!
-    	int index = getIndexFromInvokeId(invoke.getInvokeId());
-        freeInvokeId(invoke.getInvokeId());
-        this.operationsSent[index] = null;
+    	int index = getIndexFromInvokeId(invokeId);
+    
+        freeInvokeId(invokeId);
+        setInvokeByIndex(index, null);
         // lets call listener
-        this.provider.operationTimedOut(invoke, this.networkId);
+        this.provider.operationTimedOut(this, invokeId, invokeClass, this.networkId);
     }
 
     // TC-TIMER-RESET
     public void resetTimer(Integer invokeId) throws TCAPException {
     	int index = getIndexFromInvokeId(invokeId);
-        Invoke invoke = operationsSent[index];
-        if (invoke == null) {
+        InvokeWrapper wrapper = getInvokeByIndex(index);
+        if (wrapper == null) {
             throw new TCAPException("No operation with this ID");
         }
-        invoke.startTimer();
+        wrapper.startTimer();
     }
 
+    protected Boolean invokeExists(int index) {
+    	return this.sentOperations.containsKey(index);
+    }
+    
+    protected Collection<InvokeWrapper> getAllInvokes() {
+    	return this.sentOperations.values();
+    }
+    
+    protected InvokeWrapper getInvokeByIndex(int index) {
+    	return this.sentOperations.get(index);
+    }
+    
+    protected void setInvokeByIndex(int index, InvokeWrapper invoke) {
+    	if(invoke!=null)
+    		this.sentOperations.put(index,invoke);
+    	else
+    		this.sentOperations.remove(index);
+    }
+    
     public TRPseudoState getState() {
         return this.state.get();
     }
 
-    public Object getUserObject() {
+    public Externalizable getUserObject() {
         return this.userObject;
     }
 
-    public void setUserObject(Object userObject) {
+    public void setUserObject(Externalizable userObject) {
         this.userObject = userObject;
     }
 

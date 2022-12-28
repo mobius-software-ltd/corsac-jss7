@@ -22,43 +22,42 @@
 
 package org.restcomm.protocols.ss7.map.api.dialog;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author amit bhayani
  *
  */
 public enum MAPDialogState {
 
-    IDLE("IDLE"),
+    IDLE(0),
 
-    INITIAL_RECEIVED("INITIAL_RECEIVED"), INITIAL_SENT("INITIAL_SENT"),
+    INITIAL_RECEIVED(1), INITIAL_SENT(2),
 
-    ACTIVE("ACTIVE"),
+    ACTIVE(3),
     // additional state to mark removal
-    EXPUNGED("EXPUNGED");
+    EXPUNGED(4);
 
-    private final String state;
-
-    private MAPDialogState(String state) {
+    private final Integer state;
+    private static final Map<Integer, MAPDialogState> intToTypeMap = new HashMap<Integer, MAPDialogState>();
+	static
+	{
+	    for (MAPDialogState state : MAPDialogState.values()) 
+	    {
+	        intToTypeMap.put(state.state, state);
+	    }
+	}
+	
+    private MAPDialogState(Integer state) {
         this.state = state;
     }
 
-    public String getState() {
+    public Integer getState() {
         return this.state;
     }
 
-    public MAPDialogState getInstance(String state) {
-        if (state.equals("IDLE")) {
-            return IDLE;
-        } else if (state.equals("INITIAL_RECEIVED")) {
-            return INITIAL_RECEIVED;
-        } else if (state.equals("INITIAL_SENT")) {
-            return INITIAL_SENT;
-        } else if (state.equals("ACTIVE")) {
-            return ACTIVE;
-        } else if (state.equals("EXPUNGED")) {
-            return EXPUNGED;
-        }
-
-        return null;
+    public static MAPDialogState getInstance(Integer state) {
+    	return intToTypeMap.get(Integer.valueOf(state));
     }
 }

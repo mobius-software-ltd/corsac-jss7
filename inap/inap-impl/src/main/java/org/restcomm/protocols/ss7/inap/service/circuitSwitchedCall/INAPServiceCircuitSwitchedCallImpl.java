@@ -149,8 +149,6 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 		INAPDialogCircuitSwitchedCallImpl dialog = new INAPDialogCircuitSwitchedCallImpl(appCntx, tcapDialog,
 				this.inapProviderImpl, this);
 
-		this.putINAPDialogIntoCollection(dialog);
-
 		return dialog;
 	}
 
@@ -165,8 +163,10 @@ public class INAPServiceCircuitSwitchedCallImpl extends INAPServiceBaseImpl impl
 	}
 
 	@Override
-	protected INAPDialogImpl createNewDialogIncoming(INAPApplicationContext appCntx, Dialog tcapDialog) {
-		inapProviderImpl.getStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+	protected INAPDialogImpl createNewDialogIncoming(INAPApplicationContext appCntx, Dialog tcapDialog, Boolean logStats) {
+		if(logStats)
+			inapProviderImpl.getStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+		
 		return new INAPDialogCircuitSwitchedCallImpl(appCntx, tcapDialog, this.inapProviderImpl, this);
 	}
 

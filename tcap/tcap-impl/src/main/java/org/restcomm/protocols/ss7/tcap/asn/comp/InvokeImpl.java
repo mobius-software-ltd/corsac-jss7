@@ -22,15 +22,8 @@
 package org.restcomm.protocols.ss7.tcap.asn.comp;
 
 import java.util.List;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.restcomm.protocols.ss7.tcap.api.OperationCodeWithACN;
-import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
-import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
-import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
-import org.restcomm.protocols.ss7.tcap.api.tc.component.OperationState;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -63,7 +56,7 @@ public class InvokeImpl implements Invoke {
 	private ASNInteger linkedId;
 	
 	@ASNExclude
-    private Invoke linkedInvoke;
+    private OperationCode linkedOperationCode;
 
     // mandatory
 	@ASNChoise(defaultImplementation = OperationCodeImpl.class)
@@ -73,31 +66,10 @@ public class InvokeImpl implements Invoke {
     @ASNWildcard
     private ASNInvokeParameterImpl parameter;
     
-	// local to stack
-    private InvokeClass invokeClass = InvokeClass.Class1;
-    
-    private long invokeTimeout = TCAPStack._EMPTY_INVOKE_TIMEOUT;
-    private OperationState state = OperationState.Idle;
-    
-    private AtomicReference<Future<?>> timerFuture=new AtomicReference<Future<?>>();
-    private OperationTimerTask operationTimerTask = new OperationTimerTask(this);
-    private TCAPProvider provider;
-    private Dialog dialog;
-
-    @ASNExclude
+	@ASNExclude
     private ApplicationContextName acn;
     
-    public InvokeImpl() {
-        // Set Default Class
-        this.invokeClass = InvokeClass.Class1;
-    }
-
-    public InvokeImpl(InvokeClass invokeClass) {
-        if (invokeClass == null) {
-            this.invokeClass = InvokeClass.Class1;
-        } else {
-            this.invokeClass = invokeClass;
-        }
+	public InvokeImpl() {
     }
 
     @ASNGenericMapping
@@ -148,10 +120,10 @@ public class InvokeImpl implements Invoke {
     /*
      * (non-Javadoc)
      *
-     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getLinkedInvoke()
+     * @see org.restcomm.protocols.ss7.tcap.asn.comp.Invoke#getLinkedOperationCode()
      */
-    public Invoke getLinkedInvoke() {
-        return linkedInvoke;
+    public OperationCode getLinkedOperationCode() {
+        return linkedOperationCode;
     }
 
     /*
@@ -199,8 +171,8 @@ public class InvokeImpl implements Invoke {
         this.linkedId = new ASNInteger(i,"InvokeID",-128,127,false);
     }
 
-    public void setLinkedInvoke(Invoke val) {
-        this.linkedInvoke = val;
+    public void setLinkedOperationCode(OperationCode linkedOperationCode) {
+        this.linkedOperationCode = linkedOperationCode;
     }
 
     /*
@@ -274,164 +246,7 @@ public class InvokeImpl implements Invoke {
     		p=this.parameter.getValue();
     	
         return "Invoke[invokeId=" + invokeIdValue + ", linkedId=" + linkedInvokeIdValue + ", operationCode=" + oc + ", parameter="
-                + p + ", invokeClass=" + invokeClass + ", state=" + state + "]";
-    }
-
-    /**
-     * @return the invokeClass
-     */
-    public InvokeClass getInvokeClass() {
-        return this.invokeClass;
-    }
-
-    /**
-     * @return the invokeTimeout
-     */
-    public long getTimeout() {
-        return invokeTimeout;
-    }
-
-    /**
-     * @param invokeTimeout the invokeTimeout to set
-     */
-    public void setTimeout(long invokeTimeout) {
-        this.invokeTimeout = invokeTimeout;
-    }
-
-    // ////////////////////
-    // set methods for //
-    // relevant data //
-    // ///////////////////
-    /**
-     * @return the provider
-     */
-    public TCAPProvider getProvider() {
-        return provider;
-    }
-
-    /**
-     * @param provider the provider to set
-     */
-    public void setProvider(TCAPProvider provider) {
-        this.provider = provider;
-    }
-
-    /**
-     * @return the dialog
-     */
-    public Dialog getDialog() {
-        return dialog;
-    }
-
-    /**
-     * @param dialog the dialog to set
-     */
-    public void setDialog(Dialog dialog) {
-        this.dialog = dialog;
-    }
-
-    /**
-     * @return the state
-     */
-    public OperationState getState() {
-        return state;
-    }
-
-    /**
-     * @param state the state to set
-     */
-    public void setState(OperationState state) {
-    	if (this.dialog == null) {
-            // bad call on server side.
-            return;
-        }
-        OperationState old = this.state;
-        this.state = state;
-        if (old != state) {
-
-            switch (state) {
-                case Sent:
-                    // start timer
-                    this.startTimer();
-                    break;
-                case Idle:
-                case Reject_W:
-                    this.stopTimer();
-                    dialog.operationEnded(this);
-				default:
-					break;
-            }
-            if (state == OperationState.Sent) {
-
-            } else if (state == OperationState.Idle || state == OperationState.Reject_W) {
-
-            }
-
-        }
-    }
-
-    public void onReturnResultLast() {
-        this.setState(OperationState.Idle);
-
-    }
-
-    public void onError() {
-        this.setState(OperationState.Idle);
-
-    }
-
-    public void onReject() {
-        this.setState(OperationState.Idle);
-    }
-
-    public void startTimer() {
-        if (this.dialog == null)
-            return;
-
-        this.stopTimer();
-        if (this.invokeTimeout > 0) 
-            this.timerFuture.set(this.provider.createOperationTimer(this.operationTimerTask, this.invokeTimeout));
-    }
-
-    public void stopTimer() {
-    	Future<?> curr=this.timerFuture.getAndSet(null);
-        if (curr != null) {
-        	curr.cancel(false);            
-        }
-
-    }
-
-    public boolean isErrorReported() {
-        if (this.invokeClass == InvokeClass.Class1 || this.invokeClass == InvokeClass.Class2) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean isSuccessReported() {
-        if (this.invokeClass == InvokeClass.Class1 || this.invokeClass == InvokeClass.Class3) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private class OperationTimerTask implements Runnable {
-        InvokeImpl invoke;
-
-        OperationTimerTask(InvokeImpl invoke) {
-            this.invoke = invoke;
-        }
-
-        public void run() {
-        	// op failed, we must delete it from dialog and notify!
-            timerFuture.set(null);
-            setState(OperationState.Idle);
-            // TC-L-CANCEL
-            ((Dialog) invoke.dialog).operationTimedOut(invoke);
-        }
-
+                + p + "]";
     }
 
     public void setACN(ApplicationContextName acn) {

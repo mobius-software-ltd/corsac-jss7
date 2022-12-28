@@ -32,6 +32,7 @@ import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCListener;
+import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueIndication;
@@ -236,8 +237,7 @@ public class TCAPFunctionalTest extends SccpHarness {
             assertEquals((long) inv.getLinkedId(), 1);
 
             // we should see operationCode of the second sent Invoke
-            Invoke linkedInv = inv.getLinkedInvoke();
-            assertEquals((long) linkedInv.getOperationCode().getLocalOperationCode(), 13);
+            assertEquals((long) inv.getLinkedOperationCode().getLocalOperationCode(), 13);
         }
 
         @Override
@@ -265,22 +265,20 @@ public class TCAPFunctionalTest extends SccpHarness {
         }
 
         @Override
-        public void onDialogReleased(Dialog d) {
+        public void onDialogReleased(Dialog dialog) {
             // TODO Auto-generated method stub
 
         }
 
         @Override
-        public void onInvokeTimeout(Invoke tcInvokeRequest) {
+        public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
             // TODO Auto-generated method stub
-
         }
 
         @Override
-        public void onDialogTimeout(Dialog d) {
+        public void onDialogTimeout(Dialog dialog) {
             // TODO Auto-generated method stub
 
         }
-
     }
 }

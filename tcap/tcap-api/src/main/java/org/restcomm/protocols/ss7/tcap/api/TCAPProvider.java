@@ -40,6 +40,14 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
  */
 public interface TCAPProvider extends Serializable {
 
+	/**
+     * Gets existing structured dialog.
+     *
+     * @param dialogId - local ID of the dialog
+     * @return
+     */
+    Dialog getDialogById(Long dialogId);
+	
     /**
      * Create new structured dialog.
      *

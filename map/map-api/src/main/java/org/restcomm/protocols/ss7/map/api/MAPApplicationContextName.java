@@ -22,7 +22,8 @@
 
 package org.restcomm.protocols.ss7.map.api;
 
-import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -85,6 +86,15 @@ public enum MAPApplicationContextName {
 
     private int code;
 
+    private static final Map<Integer, MAPApplicationContextName> intToTypeMap = new HashMap<Integer, MAPApplicationContextName>();
+	static
+	{
+	    for (MAPApplicationContextName name : MAPApplicationContextName.values()) 
+	    {
+	        intToTypeMap.put(name.code, name);
+	    }
+	}
+	
     private MAPApplicationContextName(int code) {
         this.code = code;
     }
@@ -93,15 +103,7 @@ public enum MAPApplicationContextName {
         return this.code;
     }
 
-    public static MAPApplicationContextName getInstance(Long code) {
-
-        EnumSet<MAPApplicationContextName> lst = EnumSet.allOf(MAPApplicationContextName.class);
-        for (MAPApplicationContextName el : lst) {
-            if (el.code == code)
-                return el;
-        }
-
-        return null;
+    public static MAPApplicationContextName getInstance(int code) {
+        return intToTypeMap.get(code);
     }
-
 }

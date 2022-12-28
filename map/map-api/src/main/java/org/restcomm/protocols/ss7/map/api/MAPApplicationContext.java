@@ -58,6 +58,10 @@ public class MAPApplicationContext implements Serializable {
         return res;
     }
 
+    public static MAPApplicationContext fromValues(MAPApplicationContextName contextName, MAPApplicationContextVersion contextVersion) {
+    	return new MAPApplicationContext(contextName, contextVersion);
+    }
+    
     public MAPApplicationContextName getApplicationContextName() {
         return this.contextName;
     }
@@ -102,7 +106,7 @@ public class MAPApplicationContext implements Serializable {
                 return null;
         }
 
-        MAPApplicationContextName contextName = MAPApplicationContextName.getInstance(oid.get(6));
+        MAPApplicationContextName contextName = MAPApplicationContextName.getInstance(oid.get(6).intValue());
         MAPApplicationContextVersion contextVersion = MAPApplicationContextVersion.getInstance(oid.get(7));
 
         if (contextName == null || contextVersion == null)

@@ -54,7 +54,6 @@ import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 
@@ -251,23 +250,22 @@ public abstract class EventTestHarness implements TCListener {
         pAbortCauseType = ind.getPAbortCause();
     }
 
-    public void onDialogReleased(Dialog d) {
+    public void onDialogReleased(Dialog dialog) {
         System.err.println(this + " T[" + System.currentTimeMillis() + "]onDialogReleased");
-        TestEvent te = TestEvent.createReceivedEvent(EventType.DialogRelease, d, sequence++);
+        TestEvent te = TestEvent.createReceivedEvent(EventType.DialogRelease, dialog, sequence++);
         this.observerdEvents.add(te);
-
     }
 
-    public void onInvokeTimeout(Invoke tcInvokeRequest) {
+    public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
         System.err.println(this + " T[" + System.currentTimeMillis() + "]onInvokeTimeout");
-        TestEvent te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, tcInvokeRequest, sequence++);
+        TestEvent te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, sequence++);
         this.observerdEvents.add(te);
 
     }
 
-    public void onDialogTimeout(Dialog d) {
+    public void onDialogTimeout(Dialog dialog) {
         System.err.println(this + " T[" + System.currentTimeMillis() + "]onDialogTimeout");
-        TestEvent te = TestEvent.createReceivedEvent(EventType.DialogTimeout, d, sequence++);
+        TestEvent te = TestEvent.createReceivedEvent(EventType.DialogTimeout, dialog, sequence++);
         this.observerdEvents.add(te);
 
     }

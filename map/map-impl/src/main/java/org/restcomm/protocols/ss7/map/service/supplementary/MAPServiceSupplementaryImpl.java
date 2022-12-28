@@ -110,8 +110,6 @@ public class MAPServiceSupplementaryImpl extends MAPServiceBaseImpl implements M
         MAPDialogSupplementaryImpl dialog = new MAPDialogSupplementaryImpl(appCntx, tcapDialog, this.mapProviderImpl, this,
                 origReference, destReference);
 
-        this.putMAPDialogIntoCollection(dialog);
-
         return dialog;
     }
 
@@ -121,8 +119,10 @@ public class MAPServiceSupplementaryImpl extends MAPServiceBaseImpl implements M
      * @see org.restcomm.protocols.ss7.map.MAPServiceBaseImpl#createNewDialogIncoming
      * (org.restcomm.protocols.ss7.map.api.MAPApplicationContext, org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog)
      */
-    protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog) {
-    	mapProviderImpl.getMAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+    protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog, Boolean logStats) {
+    	if(logStats)
+    		mapProviderImpl.getMAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+    	
         return new MAPDialogSupplementaryImpl(appCntx, tcapDialog, this.mapProviderImpl, this, null, null);
     }
 

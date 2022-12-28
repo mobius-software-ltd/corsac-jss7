@@ -91,13 +91,13 @@ public class MAPServiceOamImpl extends MAPServiceBaseImpl implements MAPServiceO
         MAPDialogOamImpl dialog = new MAPDialogOamImpl(appCntx, tcapDialog, this.mapProviderImpl, this, origReference,
                 destReference);
 
-        this.putMAPDialogIntoCollection(dialog);
-
         return dialog;
     }
 
-    protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog) {
-    	mapProviderImpl.getMAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+    protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog, Boolean logStats) {
+    	if(logStats)
+    		mapProviderImpl.getMAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+    	
         return new MAPDialogOamImpl(appCntx, tcapDialog, this.mapProviderImpl, this, null, null);
     }
 

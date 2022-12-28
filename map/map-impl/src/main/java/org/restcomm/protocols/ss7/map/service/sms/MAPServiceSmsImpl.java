@@ -102,14 +102,14 @@ public class MAPServiceSmsImpl extends MAPServiceBaseImpl implements MAPServiceS
         MAPDialogSmsImpl dialog = new MAPDialogSmsImpl(appCntx, tcapDialog, this.mapProviderImpl, this, origReference,
                 destReference);
 
-        this.putMAPDialogIntoCollection(dialog);
-
         return dialog;
     }
 
     @Override
-    protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog) {
-    	mapProviderImpl.getMAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+    protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog, Boolean logStats) {
+    	if(logStats)
+    		mapProviderImpl.getMAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+    	
         return new MAPDialogSmsImpl(appCntx, tcapDialog, this.mapProviderImpl, this, null, null);
     }
 

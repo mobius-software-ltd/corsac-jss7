@@ -1,4 +1,6 @@
 package org.restcomm.protocols.ss7.tcap.asn.comp;
+import org.restcomm.protocols.ss7.tcap.DialogImpl;
+
 /*
  * TeleStax, Open Source Cloud Communications
  * Mobius Software LTD
@@ -20,6 +22,7 @@ package org.restcomm.protocols.ss7.tcap.asn.comp;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNExclude;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNPostprocess;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
@@ -33,11 +36,22 @@ import io.netty.buffer.ByteBuf;
 @ASNTag(asnClass=ASNClass.APPLICATION,tag=0x09,constructed=false,lengthIndefinite=false)
 @ASNPostprocess
 public class DestinationTransactionID extends ASNOctetString {
-	public DestinationTransactionID() {
+	@ASNExclude
+    private DialogImpl dialog;
+    
+    public DestinationTransactionID() {
 		super("DestinationTransactionID",1,4,false);
 	}
 	
 	public DestinationTransactionID(ByteBuf value) {
 		super(value,"DestinationTransactionID",1,4,false);
 	}
+    
+    public void setDialog(DialogImpl dialog) {
+    	this.dialog=dialog;
+    }
+    
+    public DialogImpl getDialog() {
+    	return this.dialog;
+    }
 }

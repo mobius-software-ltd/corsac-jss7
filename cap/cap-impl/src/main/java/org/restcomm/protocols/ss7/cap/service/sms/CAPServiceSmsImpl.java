@@ -87,8 +87,6 @@ public class CAPServiceSmsImpl extends CAPServiceBaseImpl implements CAPServiceS
         Dialog tcapDialog = this.createNewTCAPDialog(origAddress, destAddress, localTrId, networkId);
         CAPDialogSmsImpl dialog = new CAPDialogSmsImpl(appCntx, tcapDialog, this.capProviderImpl, this);
 
-        this.putCAPDialogIntoCollection(dialog);
-
         return dialog;
     }
 
@@ -103,8 +101,10 @@ public class CAPServiceSmsImpl extends CAPServiceBaseImpl implements CAPServiceS
     }
 
     @Override
-    protected CAPDialogImpl createNewDialogIncoming(CAPApplicationContext appCntx, Dialog tcapDialog) {
-    	capProviderImpl.getCAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+    protected CAPDialogImpl createNewDialogIncoming(CAPApplicationContext appCntx, Dialog tcapDialog, Boolean logStats) {
+    	if(logStats)
+    		capProviderImpl.getCAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+    	
     	return new CAPDialogSmsImpl(appCntx, tcapDialog, this.capProviderImpl, this);
     }
 

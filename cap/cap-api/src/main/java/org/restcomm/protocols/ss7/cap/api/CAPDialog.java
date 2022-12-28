@@ -21,6 +21,7 @@
 
 package org.restcomm.protocols.ss7.cap.api;
 
+import java.io.Externalizable;
 import java.io.Serializable;
 
 import org.restcomm.protocols.ss7.cap.api.dialog.CAPDialogState;
@@ -243,14 +244,14 @@ public interface CAPDialog extends Serializable {
      *
      * @return
      */
-     Object getUserObject();
+     Externalizable getUserObject();
 
     /**
      * Store in the CAPDialog a user-defined object to save relating to the Dialog information
      *
      * @param userObject
      */
-     void setUserObject(Object userObject);
+     void setUserObject(Externalizable userObject);
 
      CAPApplicationContext getApplicationContext();
 

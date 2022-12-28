@@ -23,7 +23,6 @@ package org.restcomm.protocols.ss7.tcap.asn;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
@@ -160,10 +159,6 @@ public final class TcapFactory {
 
     public static Invoke createComponentInvoke() {
     	return new InvokeImpl();
-    }
-
-    public static Invoke createComponentInvoke(InvokeClass invokeClass) {
-    	return new InvokeImpl(invokeClass);
     }
 
     public static ReturnError createComponentReturnError() {

@@ -23,11 +23,6 @@ package org.restcomm.protocols.ss7.tcap.asn.comp;
 
 import java.util.List;
 
-import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
-import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
-import org.restcomm.protocols.ss7.tcap.api.tc.component.OperationState;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 
@@ -39,9 +34,6 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
  */
 @ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,lengthIndefinite=false)
 public interface Invoke extends BaseComponent {
-    // local, relevant only for send
-    InvokeClass getInvokeClass();
-
     // /**
     // * @return the invokeTimeout
     // */
@@ -62,10 +54,6 @@ public interface Invoke extends BaseComponent {
 
     Integer getLinkedId();
 
-    Invoke getLinkedInvoke();
-
-    void setLinkedInvoke(Invoke val);
-
     // mandatory
     void setOperationCode(Integer i);
 
@@ -73,47 +61,10 @@ public interface Invoke extends BaseComponent {
     
     OperationCode getOperationCode();
 
+    OperationCode getLinkedOperationCode();
+    
     // optional
     void setParameter(Object p);
 
-    Object getParameter();
-
-    /**
-     * @return the current invokeTimeout value
-     */
-    long getTimeout();
-
-    /**
-     * Setting the Invoke timeout in milliseconds Must be invoked before sendComponent() invoking
-     *
-     * @param invokeTimeout
-     */
-    void setTimeout(long invokeTimeout);
-    
-    OperationState getState();
-
-    /**
-     * @param state the state to set
-     */
-    void setState(OperationState state);
-    
-    void stopTimer();
-    
-    void startTimer();
-    
-    void setProvider(TCAPProvider provider);
-    
-    void setDialog(Dialog dialog);
-    
-    void onReturnResultLast();
-
-    void onError();
-
-    void onReject();
-    
-    boolean isErrorReported();
-    
-    boolean isSuccessReported();
-    
-    Dialog getDialog();
+    Object getParameter();    
 }

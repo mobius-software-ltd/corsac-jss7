@@ -22,7 +22,9 @@ package org.restcomm.protocols.ss7.cap.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -49,6 +51,19 @@ public enum CAPApplicationContext {
     private int code;
     private CAPApplicationContextVersion applicationContextVersion;
 
+    private static final Map<Integer, CAPApplicationContext> intToTypeMap = new HashMap<Integer, CAPApplicationContext>();
+	static
+	{
+	    for (CAPApplicationContext context : CAPApplicationContext.values()) 
+	    {
+	        intToTypeMap.put(context.code, context);
+	    }
+	}
+
+    public static CAPApplicationContext getInstance(Integer code) {
+    	return intToTypeMap.get(Integer.valueOf(code));
+    }
+    
     private CAPApplicationContext(int code) {
         this.code = code;
 

@@ -41,7 +41,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
@@ -75,7 +74,7 @@ public abstract class CAPServiceBaseImpl implements CAPServiceBase {
      * @param tcapDialog
      * @return
      */
-    protected abstract CAPDialogImpl createNewDialogIncoming(CAPApplicationContext appCntx, Dialog tcapDialog);
+    protected abstract CAPDialogImpl createNewDialogIncoming(CAPApplicationContext appCntx, Dialog tcapDialog, Boolean countInStats);
 
     /**
      * Creating new outgoing TCAP Dialog. Used when creating a new outgoing CAP Dialog
@@ -104,15 +103,6 @@ public abstract class CAPServiceBaseImpl implements CAPServiceBase {
      */
     public long[] getLinkedOperationList(long operCode) {
         return null;
-    }
-
-    /**
-     * Adding CAP Dialog into CAPProviderImpl.dialogs Used when creating a new outgoing CAP Dialog
-     *
-     * @param dialog
-     */
-    protected void putCAPDialogIntoCollection(CAPDialogImpl dialog) {
-        this.capProviderImpl.addDialog((CAPDialogImpl) dialog);
     }
 
     protected void addCAPServiceListener(CAPServiceListener capServiceListener) {
@@ -171,9 +161,9 @@ public abstract class CAPServiceBaseImpl implements CAPServiceBase {
         }
     }
 
-    protected void deliverInvokeTimeout(CAPDialog capDialog, Invoke invoke) {
+    protected void deliverInvokeTimeout(CAPDialog capDialog, Integer invokeId) {
         for (CAPServiceListener serLis : this.serviceListeners) {
-            serLis.onInvokeTimeout(capDialog, invoke.getInvokeId());
+            serLis.onInvokeTimeout(capDialog, invokeId);
         }
     }
     

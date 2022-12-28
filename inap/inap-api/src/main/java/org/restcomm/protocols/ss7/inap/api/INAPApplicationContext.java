@@ -20,7 +20,9 @@ package org.restcomm.protocols.ss7.inap.api;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 /**
  * @author yulian.oifa
  *
@@ -77,6 +79,19 @@ public enum INAPApplicationContext {
    private int code;
    private INAPApplicationContextVersion applicationContextVersion;
 
+   private static final Map<Integer, INAPApplicationContext> intToTypeMap = new HashMap<Integer, INAPApplicationContext>();
+	static
+	{
+	    for (INAPApplicationContext context : INAPApplicationContext.values()) 
+	    {
+	        intToTypeMap.put(context.code, context);
+	    }
+	}
+
+    public static INAPApplicationContext getInstance(Integer code) {
+    	return intToTypeMap.get(Integer.valueOf(code));
+    }
+	
    private INAPApplicationContext(int code) {
       this.code = code;
       if (code < 100) {

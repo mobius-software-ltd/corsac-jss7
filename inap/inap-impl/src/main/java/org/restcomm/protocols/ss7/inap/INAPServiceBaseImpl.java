@@ -37,7 +37,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
@@ -70,7 +69,7 @@ public abstract class INAPServiceBaseImpl implements INAPServiceBase {
      * @param tcapDialog
      * @return
      */
-    protected abstract INAPDialogImpl createNewDialogIncoming(INAPApplicationContext appCntx, Dialog tcapDialog);
+    protected abstract INAPDialogImpl createNewDialogIncoming(INAPApplicationContext appCntx, Dialog tcapDialog, Boolean logStats);
 
     /**
      * Creating new outgoing TCAP Dialog. Used when creating a new outgoing INAP Dialog
@@ -99,15 +98,6 @@ public abstract class INAPServiceBaseImpl implements INAPServiceBase {
      */
     public long[] getLinkedOperationList(long operCode) {
         return null;
-    }
-
-    /**
-     * Adding INAP Dialog into INAPProviderImpl.dialogs Used when creating a new outgoing INAP Dialog
-     *
-     * @param dialog
-     */
-    protected void putINAPDialogIntoCollection(INAPDialogImpl dialog) {
-        this.inapProviderImpl.addDialog((INAPDialogImpl) dialog);
     }
 
     protected void addINAPServiceListener(INAPServiceListener inapServiceListener) {
@@ -166,9 +156,9 @@ public abstract class INAPServiceBaseImpl implements INAPServiceBase {
         }
     }
 
-    protected void deliverInvokeTimeout(INAPDialog inapDialog, Invoke invoke) {
+    protected void deliverInvokeTimeout(INAPDialog inapDialog, int invokeId) {
         for (INAPServiceListener serLis : this.serviceListeners) {
-            serLis.onInvokeTimeout(inapDialog, invoke.getInvokeId());
+            serLis.onInvokeTimeout(inapDialog, invokeId);
         }
     }
     

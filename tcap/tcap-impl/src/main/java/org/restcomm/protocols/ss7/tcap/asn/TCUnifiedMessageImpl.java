@@ -24,6 +24,7 @@ package org.restcomm.protocols.ss7.tcap.asn;
 import java.util.Arrays;
 import java.util.List;
 
+import org.restcomm.protocols.ss7.tcap.DialogImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.DestinationTransactionID;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OriginatingTransactionID;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUnifiedMessage;
@@ -78,6 +79,13 @@ public abstract class TCUnifiedMessageImpl implements TCUnifiedMessage {
         return destinationTransactionId.getValue();
     }
 
+    public DialogImpl getDialog() {
+    	if(destinationTransactionId==null)
+    		return null;
+    	
+    	return destinationTransactionId.getDialog();
+    }
+    
 	@Override
 	public void setOriginatingTransactionId(ByteBuf t) {
 		if(t==null)

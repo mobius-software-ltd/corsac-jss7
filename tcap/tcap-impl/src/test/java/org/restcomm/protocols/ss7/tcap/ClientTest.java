@@ -33,6 +33,7 @@ import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.TCListener;
+import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
@@ -46,7 +47,6 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndicatio
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 
 /**
@@ -92,14 +92,14 @@ public class ClientTest implements TCListener {
         this.clientDialog.send(tcbr);
     }
 
-    public void onDialogReleased(Dialog d) {
+    public void onDialogReleased(Dialog dialog) {
     }
 
-    public void onInvokeTimeout(Invoke tcInvokeRequest) {
+    public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
     }
 
-    public void onDialogTimeout(Dialog d) {
-        d.keepAlive();
+    public void onDialogTimeout(Dialog dialog) {
+    	dialog.keepAlive();        
     }
 
     public void onTCBegin(TCBeginIndication ind) {

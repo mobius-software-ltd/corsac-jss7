@@ -89,13 +89,13 @@ public class MAPServicePdpContextActivationImpl extends MAPServiceBaseImpl imple
         MAPDialogPdpContextActivationImpl dialog = new MAPDialogPdpContextActivationImpl(appCntx, tcapDialog,
                 this.mapProviderImpl, this, origReference, destReference);
 
-        this.putMAPDialogIntoCollection(dialog);
-
         return dialog;
     }
 
-    protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog) {
-    	mapProviderImpl.getMAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+    protected MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog, Boolean logStats) {
+    	if(logStats)
+    		mapProviderImpl.getMAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+    	
         return new MAPDialogPdpContextActivationImpl(appCntx, tcapDialog, this.mapProviderImpl, this, null, null);
     }
 

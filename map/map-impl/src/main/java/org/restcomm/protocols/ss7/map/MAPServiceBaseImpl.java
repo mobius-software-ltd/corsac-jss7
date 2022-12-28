@@ -45,7 +45,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
@@ -78,7 +77,7 @@ public abstract class MAPServiceBaseImpl implements MAPServiceBase {
      * @param tcapDialog
      * @return
      */
-    protected abstract MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog);
+    protected abstract MAPDialogImpl createNewDialogIncoming(MAPApplicationContext appCntx, Dialog tcapDialog, Boolean logStats);
 
     /**
      * Creating new outgoing TCAP Dialog. Used when creating a new outgoing MAP Dialog
@@ -98,15 +97,6 @@ public abstract class MAPServiceBaseImpl implements MAPServiceBase {
 
     public abstract void processComponent(ComponentType compType, OperationCode oc, MAPMessage parameter, MAPDialog mapDialog,
     		Integer invokeId, Integer linkedId) throws MAPParsingComponentException;
-
-    /**
-     * Adding MAP Dialog into MAPProviderImpl.dialogs Used when creating a new outgoing MAP Dialog
-     *
-     * @param dialog
-     */
-    protected void putMAPDialogIntoCollection(MAPDialogImpl dialog) {
-        this.mapProviderImpl.addDialog((MAPDialogImpl) dialog);
-    }
 
     protected void addMAPServiceListener(MAPServiceListener mapServiceListener) {
         this.serviceListeners.add(mapServiceListener);
@@ -188,9 +178,9 @@ public abstract class MAPServiceBaseImpl implements MAPServiceBase {
     // }
     // }
 
-    protected void deliverInvokeTimeout(MAPDialog mapDialog, Invoke invoke) {
+    protected void deliverInvokeTimeout(MAPDialog mapDialog, Integer invokeId) {
         for (MAPServiceListener serLis : this.serviceListeners) {
-            serLis.onInvokeTimeout(mapDialog, invoke.getInvokeId());
+            serLis.onInvokeTimeout(mapDialog, invokeId);
         }
     }
     

@@ -21,6 +21,7 @@
 
 package org.restcomm.protocols.ss7.map.api;
 
+import java.io.Externalizable;
 import java.io.Serializable;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
@@ -312,14 +313,14 @@ public interface MAPDialog extends Serializable {
      *
      * @return
      */
-    Object getUserObject();
+    Externalizable getUserObject();
 
     /**
      * Store in the MAPDialog a user-defined object to save relating to the Dialog information
      *
      * @param userObject
      */
-    void setUserObject(Object userObject);
+    void setUserObject(Externalizable userObject);
 
     MAPApplicationContext getApplicationContext();
 

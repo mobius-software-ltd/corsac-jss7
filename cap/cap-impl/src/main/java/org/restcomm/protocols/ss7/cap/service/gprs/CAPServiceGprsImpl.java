@@ -95,8 +95,6 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
         Dialog tcapDialog = this.createNewTCAPDialog(origAddress, destAddress, localTrId, networkId);
         CAPDialogGprsImpl dialog = new CAPDialogGprsImpl(appCntx, tcapDialog, this.capProviderImpl, this);
 
-        this.putCAPDialogIntoCollection(dialog);
-
         return dialog;
     }
 
@@ -111,8 +109,10 @@ public class CAPServiceGprsImpl extends CAPServiceBaseImpl implements CAPService
     }
 
     @Override
-    protected CAPDialogImpl createNewDialogIncoming(CAPApplicationContext appCntx, Dialog tcapDialog) {
-    	capProviderImpl.getCAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+    protected CAPDialogImpl createNewDialogIncoming(CAPApplicationContext appCntx, Dialog tcapDialog, Boolean logStats) {
+    	if(logStats)
+    		capProviderImpl.getCAPStack().newDialogReceived(NAME, tcapDialog.getNetworkId());
+    	
     	return new CAPDialogGprsImpl(appCntx, tcapDialog, this.capProviderImpl, this);
     }
 

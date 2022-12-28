@@ -21,6 +21,8 @@
 
 package org.restcomm.protocols.ss7.cap;
 
+import java.io.Externalizable;
+
 import org.restcomm.protocols.ss7.cap.api.CAPApplicationContext;
 import org.restcomm.protocols.ss7.cap.api.CAPDialog;
 import org.restcomm.protocols.ss7.cap.api.CAPException;
@@ -64,7 +66,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
     protected CAPGprsReferenceNumber gprsReferenceNumber = null;
     protected CAPGprsReferenceNumber receivedGprsReferenceNumber;
 
-    protected CAPDialogState state = CAPDialogState.Idle;
+    protected CAPDialogState state = CAPDialogState.IDLE;
 
     // protected boolean normalDialogShutDown = false;
 
@@ -82,6 +84,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
         this.capProviderImpl = capProviderImpl;
         this.capService = capService;
         this.capStackConfigurationManagement = new CAPStackConfigurationManagement();
+        setUserObject(null);
     }
 
     public SccpAddress getLocalAddress() {
@@ -103,6 +106,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
     @Override
     public void setReturnMessageOnError(boolean val) {
         returnMessageOnError = val;
+        setUserObject(getUserObject());
     }
 
     @Override
@@ -145,7 +149,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
 
     public void release() {
         // this.setNormalDialogShutDown();
-        this.setState(CAPDialogState.Expunged);
+        this.setState(CAPDialogState.EXPUNGED);
 
         if (this.tcapDialog != null)
             this.tcapDialog.release();
@@ -190,11 +194,12 @@ public abstract class CAPDialogImpl implements CAPDialog {
     }
 
     protected void setState(CAPDialogState newState) {
-        if (this.state == CAPDialogState.Expunged) {
+        if (this.state == CAPDialogState.EXPUNGED) {
             return;
         }
 
         this.state = newState;
+        setUserObject(getUserObject());
     }
 
     public void setGprsReferenceNumber(CAPGprsReferenceNumber gprsReferenceNumber) {
@@ -216,7 +221,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
 	        	ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
-	            this.setState(CAPDialogState.InitialSent);
+	            this.setState(CAPDialogState.INITIAL_SENT);
 	
 	            this.capProviderImpl.fireTCBegin(this.getTcapDialog(), acn, this.gprsReferenceNumber,
 	                    this.getReturnMessageOnError());
@@ -239,7 +244,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
 	                    this.getReturnMessageOnError());
 	            this.gprsReferenceNumber = null;
 	
-	            this.setState(CAPDialogState.Active);
+	            this.setState(CAPDialogState.ACTIVE);
 	            break;
 	
 	        case InitialSent: // we have sent TC-BEGIN already, need to wait
@@ -281,7 +286,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
 	                this.gprsReferenceNumber = null;
 	            }
 	
-	            this.setState(CAPDialogState.Expunged);
+	            this.setState(CAPDialogState.EXPUNGED);
 	            break;
 	
 	        case Active:
@@ -294,7 +299,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
 	                        this.getReturnMessageOnError());
 	            }
 	
-	            this.setState(CAPDialogState.Expunged);
+	            this.setState(CAPDialogState.EXPUNGED);
 	            break;
 	
 	        case Idle:
@@ -304,7 +309,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
 	                // we do not send any data in a prearrangedEnd case
 	                if (this.tcapDialog != null)
 	                    this.tcapDialog.release();
-	                this.setState(CAPDialogState.Expunged);
+	                this.setState(CAPDialogState.EXPUNGED);
 	                return;
 	            } else {
 	                throw new CAPException("Awaiting TC-BEGIN response, can not send another dialog initiating primitive!");
@@ -348,8 +353,8 @@ public abstract class CAPDialogImpl implements CAPDialog {
         // Dialog is not started or has expunged - we need not send
         // TC-U-ABORT,
         // only Dialog removing
-        if (this.getState() == CAPDialogState.Expunged || this.getState() == CAPDialogState.Idle) {
-            this.setState(CAPDialogState.Expunged);
+        if (this.getState() == CAPDialogState.EXPUNGED || this.getState() == CAPDialogState.IDLE) {
+            this.setState(CAPDialogState.EXPUNGED);
             return;
         }
 
@@ -357,7 +362,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
         this.capProviderImpl.fireTCAbort(this.getTcapDialog(), CAPGeneralAbortReason.UserSpecific, abortReason,
                 this.getReturnMessageOnError());
 
-        this.setState(CAPDialogState.Expunged);
+        this.setState(CAPDialogState.EXPUNGED);
     }
 
     @Override
@@ -424,12 +429,18 @@ public abstract class CAPDialogImpl implements CAPDialog {
         }
     }
 
-    public Object getUserObject() {
-        return this.tcapDialog.getUserObject();
+    public Externalizable getUserObject() {
+    	Externalizable tcapObject = this.tcapDialog.getUserObject();
+    	if(tcapObject == null)
+    		return null;
+    	else if(!(tcapObject instanceof CAPUserObject))
+    		return tcapObject;
+    	
+        return ((CAPUserObject)this.tcapDialog.getUserObject()).getRealObject();
     }
 
-    public void setUserObject(Object userObject) {
-        this.tcapDialog.setUserObject(userObject);
+    public void setUserObject(Externalizable userObject) {
+        this.tcapDialog.setUserObject(new CAPUserObject(state, returnMessageOnError, appCntx, userObject));
     }
 
     @Override
