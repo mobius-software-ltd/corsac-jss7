@@ -31,6 +31,7 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.logging.log4j.LogManager;
@@ -124,8 +125,8 @@ public class DialogImpl implements Dialog {
     private ApplicationContextName lastACN;
     private UserInformation lastUI; // optional
 
-    private Long localTransactionIdObject;
-    private Long remoteTransactionIdObject;
+    protected Long localTransactionIdObject;
+    protected Long remoteTransactionIdObject;
 
     private SccpAddress localAddress;
     private SccpAddress remoteAddress;
@@ -133,37 +134,37 @@ public class DialogImpl implements Dialog {
     private int remotePc = -1;
 
     private AtomicReference<Future<?>> idleTimerFuture=new AtomicReference<Future<?>>();
-    private AtomicBoolean idleTimerActionTaken = new AtomicBoolean(false);
-    private AtomicBoolean idleTimerInvoked = new AtomicBoolean(false);
-    private AtomicReference<TRPseudoState> state = new AtomicReference<TRPseudoState>(TRPseudoState.Idle);
-    private boolean structured = true;
+    protected AtomicBoolean idleTimerActionTaken = new AtomicBoolean(false);
+    protected AtomicBoolean idleTimerInvoked = new AtomicBoolean(false);
+    protected AtomicReference<TRPseudoState> state = new AtomicReference<TRPseudoState>(TRPseudoState.Idle);
+    protected boolean structured = true;
     // invokde ID space :)
     private static final boolean _INVOKEID_TAKEN = true;
     private static final boolean _INVOKEID_FREE = false;
     private static final int _INVOKE_TABLE_SHIFT = 128;
 
-    private boolean[] invokeIDTable = new boolean[256];
-    private int freeCount = invokeIDTable.length;
-    private int lastInvokeIdIndex = _INVOKE_TABLE_SHIFT - 1;
+    protected boolean[] invokeIDTable = new boolean[256];
+    protected AtomicInteger freeCount = new AtomicInteger(invokeIDTable.length);
+    protected int lastInvokeIdIndex = _INVOKE_TABLE_SHIFT - 1;
 
     // only originating side keeps FSM, see: Q.771 - 3.1.5
     protected ConcurrentHashMap<Integer,InvokeWrapper> sentOperations = new ConcurrentHashMap<Integer,InvokeWrapper>();
     protected InvokeWrapper[] scheduledOperations = new InvokeWrapper[invokeIDTable.length];
     
-    private ConcurrentHashMap<Integer,Integer> incomingInvokeList = new ConcurrentHashMap<Integer,Integer>();
+    protected ConcurrentHashMap<Integer,Integer> incomingInvokeList = new ConcurrentHashMap<Integer,Integer>();
     private ScheduledExecutorService executor;
 
     // scheduled components list
     private List<BaseComponent> scheduledComponentList = new ArrayList<BaseComponent>();
     private TCAPProviderImpl provider;
 
-    private int seqControl;
+    protected int seqControl;
 
     // If the Dialogue Portion is sent in TCBegin message, the first received
     // Continue message should have the Dialogue Portion too
-    private boolean dpSentInBegin = false;
+    protected boolean dpSentInBegin = false;
 
-    private long startDialogTime;
+    protected long startDialogTime;
     private int networkId;
 
     private Boolean doNotSendProtocolVersion = null;
@@ -182,6 +183,11 @@ public class DialogImpl implements Dialog {
         return tmp;
     }
 
+    //constructor for serialization
+    protected DialogImpl() {
+    	
+    }
+    
     /**
      * Creating a Dialog for normal mode
      *
@@ -276,7 +282,7 @@ public class DialogImpl implements Dialog {
      * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#getNewInvokeId()
      */
     public Integer getNewInvokeId() throws TCAPException {
-    	if (this.freeCount == 0) {
+    	if (this.freeCount.get() == 0) {
             throw new TCAPException("No free invokeId");
         }
 
@@ -285,7 +291,7 @@ public class DialogImpl implements Dialog {
             if (++this.lastInvokeIdIndex >= this.invokeIDTable.length)
                 this.lastInvokeIdIndex = 0;
             if (this.invokeIDTable[this.lastInvokeIdIndex] == _INVOKEID_FREE) {
-                freeCount--;
+                freeCount.decrementAndGet();
                 this.invokeIDTable[this.lastInvokeIdIndex] = _INVOKEID_TAKEN;
                 return getInvokeIdFromIndex(this.lastInvokeIdIndex);
             }
@@ -338,7 +344,7 @@ public class DialogImpl implements Dialog {
     private void freeInvokeId(Integer l) {
     	int index = getIndexFromInvokeId(l);
         if (this.invokeIDTable[index] == _INVOKEID_TAKEN)
-            this.freeCount++;
+            this.freeCount.incrementAndGet();
         this.invokeIDTable[index] = _INVOKEID_FREE;
     }
 

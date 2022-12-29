@@ -154,8 +154,15 @@ public class InvokeWrapper {
     public InvokeClass getInvokeClass() {
         return this.invokeClass;
     }    
+    
+    /**
+     * @return the invokeId
+     */
+    public int getInvokeId() {
+		return invokeId;
+	}
 
-    public boolean isErrorReported() {
+	public boolean isErrorReported() {
         if (this.invokeClass == InvokeClass.Class1 || this.invokeClass == InvokeClass.Class2) {
             return true;
         } else {
