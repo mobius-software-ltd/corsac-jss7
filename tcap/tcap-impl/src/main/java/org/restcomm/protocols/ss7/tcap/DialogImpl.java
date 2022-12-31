@@ -486,7 +486,7 @@ public class DialogImpl implements Dialog {
         	ByteBuf buffer=dialogParser.encode(tcbm);
             this.setState(TRPseudoState.InitialSent);
             provider.getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
-            this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+            this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
                     this.seqControl, this.networkId, this.localSsn, this.remotePc);
             this.scheduledComponentList.clear();
         } catch (Throwable e) {
@@ -554,7 +554,7 @@ public class DialogImpl implements Dialog {
             try {
             	ByteBuf buffer=dialogParser.encode(tcbm);                
             	provider.getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
-                this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress,
+                this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.networkId, this.localSsn, this.remotePc);
                 this.setState(TRPseudoState.Active);
                 this.scheduledComponentList.clear();
@@ -583,7 +583,7 @@ public class DialogImpl implements Dialog {
             try {
             	ByteBuf buffer=dialogParser.encode(tcbm);
             	provider.getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
-                this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress,
+                this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.networkId, this.localSsn, this.remotePc);
                 this.scheduledComponentList.clear();
             } catch (Exception e) {
@@ -694,7 +694,7 @@ public class DialogImpl implements Dialog {
         try {
             ByteBuf buffer=dialogParser.encode(tcbm);
             provider.getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
-            this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+            this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
                     this.seqControl, this.networkId, this.localSsn, this.remotePc);
 
             this.scheduledComponentList.clear();
@@ -748,7 +748,7 @@ public class DialogImpl implements Dialog {
         try {
             ByteBuf buffer=dialogParser.encode(msg);
             provider.getStack().newMessageSent(msg.getName(),buffer.readableBytes(), this.networkId);
-            this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+            this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
                     this.seqControl, this.networkId, this.localSsn, this.remotePc);
             this.scheduledComponentList.clear();
         } catch (Exception e) {
@@ -844,7 +844,7 @@ public class DialogImpl implements Dialog {
                 else
                 	provider.getStack().newAbortSent("User", this.networkId);
                 
-                this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress,
+                this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.networkId, this.localSsn, this.remotePc);
 
                 this.scheduledComponentList.clear();
@@ -1650,7 +1650,7 @@ public class DialogImpl implements Dialog {
                 ByteBuf buffer=provider.encodeAbortMessage(msg);               
                 provider.getStack().newMessageSent(msg.getName(),buffer.readableBytes(), this.networkId);
                 provider.getStack().newAbortSent(PAbortCauseType.AbnormalDialogue.name(), this.networkId);
-                this.provider.send(buffer, false, this.remoteAddress, this.localAddress, this.seqControl,
+                this.provider.send(this, buffer, false, this.remoteAddress, this.localAddress, this.seqControl,
                         this.networkId, this.localSsn, this.remotePc);
             } catch (Exception e) {
                 if (logger.isErrorEnabled()) {

@@ -380,7 +380,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         return this.dialogs.size();
     }
 
-    public void send(ByteBuf data, boolean returnMessageOnError, SccpAddress destinationAddress, SccpAddress originatingAddress,
+    public void send(DialogImpl dialog, ByteBuf data, boolean returnMessageOnError, SccpAddress destinationAddress, SccpAddress originatingAddress,
             int seqControl, int networkId, int localSsn, int remotePc) throws IOException {
         SccpDataMessage msg = messageFactory.createDataMessageClass1(destinationAddress, originatingAddress, data, seqControl,
                 localSsn, returnMessageOnError, null, null);
@@ -529,7 +529,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         return this.service.schedule(operationTimerTask, invokeTimeout, TimeUnit.MILLISECONDS);
     }
 
-    public void operationTimedOut(Dialog dialog, int invokeId, InvokeClass invokeClass,int networkId) {
+    public void operationTimedOut(DialogImpl dialog, int invokeId, InvokeClass invokeClass,int networkId) {
     	stack.invokeTimedOut(networkId);
         try {
             for (TCListener lst : this.tcListeners) {
@@ -596,7 +596,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         		stack.newAbortSent("User", networkId);
         	
         	stack.newMessageSent(msg.getName(),buffer.readableBytes(), networkId);
-            this.send(buffer, false, remoteAddress, localAddress, seqControl, networkId, localAddress.getSubsystemNumber(), remotePc);
+            this.send(null, buffer, false, remoteAddress, localAddress, seqControl, networkId, localAddress.getSubsystemNumber(), remotePc);
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to send message: ", e);
@@ -630,7 +630,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         	ByteBuf buffer=messageParser.encode(msg);
         	stack.newAbortSent("User", networkId);
         	stack.newMessageSent(msg.getName(),buffer.readableBytes(), networkId);
-            this.send(buffer, false, remoteAddress, localAddress, seqControl, networkId, localAddress.getSubsystemNumber(), remotePc);
+            this.send(null, buffer, false, remoteAddress, localAddress, seqControl, networkId, localAddress.getSubsystemNumber(), remotePc);
         } catch (Exception e) {
             if (logger.isErrorEnabled()) {
                 logger.error("Failed to send message: ", e);
