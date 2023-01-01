@@ -169,7 +169,7 @@ public class DialogImpl implements Dialog {
 
     private Boolean doNotSendProtocolVersion = null;
 
-    private boolean isSwapTcapIdBytes;
+    protected boolean isSwapTcapIdBytes;
 
     private ASNParser dialogParser;
     
