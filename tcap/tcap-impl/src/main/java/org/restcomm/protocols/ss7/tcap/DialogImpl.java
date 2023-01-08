@@ -156,6 +156,7 @@ public class DialogImpl implements Dialog {
 
     // scheduled components list
     private List<BaseComponent> scheduledComponentList = new ArrayList<BaseComponent>();
+    
     private TCAPProviderImpl provider;
 
     protected int seqControl;
@@ -173,12 +174,12 @@ public class DialogImpl implements Dialog {
 
     private ASNParser dialogParser;
     
-    private static int getIndexFromInvokeId(Integer l) {
+    protected static int getIndexFromInvokeId(Integer l) {
         int tmp = l.intValue();
         return tmp + _INVOKE_TABLE_SHIFT;
     }
 
-    private static Integer getInvokeIdFromIndex(int index) {
+    protected static Integer getInvokeIdFromIndex(int index) {
         int tmp = index - _INVOKE_TABLE_SHIFT;
         return tmp;
     }
@@ -213,7 +214,7 @@ public class DialogImpl implements Dialog {
 
         this.seqControl = seqControl;
         
-        TCAPStack stack = this.provider.getStack();
+        TCAPStack stack = provider.getStack();
         this.idleTaskTimeout = stack.getDialogIdleTimeout();
         this.isSwapTcapIdBytes = stack.getSwapTcapIdBytes();
 
@@ -243,9 +244,13 @@ public class DialogImpl implements Dialog {
     private boolean doNotSendProtocolVersion() {
         return doNotSendProtocolVersion != null ?
                 doNotSendProtocolVersion  :
-                provider.getStack().getDoNotSendProtocolVersion();
+                getProvider().getStack().getDoNotSendProtocolVersion();
     }
 
+    protected TCAPProviderImpl getProvider() {
+    	return this.provider;
+    }
+    
     public void release() {
     	Collection<InvokeWrapper> allInvokes = getAllInvokes();
     	for (InvokeWrapper invoke:allInvokes) {
@@ -485,8 +490,8 @@ public class DialogImpl implements Dialog {
         try {
         	ByteBuf buffer=dialogParser.encode(tcbm);
             this.setState(TRPseudoState.InitialSent);
-            provider.getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
-            this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+            getProvider().getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
+            getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
                     this.seqControl, this.networkId, this.localSsn, this.remotePc);
             this.scheduledComponentList.clear();
         } catch (Throwable e) {
@@ -553,8 +558,8 @@ public class DialogImpl implements Dialog {
             }
             try {
             	ByteBuf buffer=dialogParser.encode(tcbm);                
-            	provider.getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
-                this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress,
+            	getProvider().getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
+            	getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.networkId, this.localSsn, this.remotePc);
                 this.setState(TRPseudoState.Active);
                 this.scheduledComponentList.clear();
@@ -582,8 +587,8 @@ public class DialogImpl implements Dialog {
 
             try {
             	ByteBuf buffer=dialogParser.encode(tcbm);
-            	provider.getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
-                this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress,
+            	getProvider().getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
+            	getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.networkId, this.localSsn, this.remotePc);
                 this.scheduledComponentList.clear();
             } catch (Exception e) {
@@ -693,8 +698,8 @@ public class DialogImpl implements Dialog {
 
         try {
             ByteBuf buffer=dialogParser.encode(tcbm);
-            provider.getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
-            this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+            getProvider().getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
+            getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
                     this.seqControl, this.networkId, this.localSsn, this.remotePc);
 
             this.scheduledComponentList.clear();
@@ -747,8 +752,8 @@ public class DialogImpl implements Dialog {
 
         try {
             ByteBuf buffer=dialogParser.encode(msg);
-            provider.getStack().newMessageSent(msg.getName(),buffer.readableBytes(), this.networkId);
-            this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+            getProvider().getStack().newMessageSent(msg.getName(),buffer.readableBytes(), this.networkId);
+            getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
                     this.seqControl, this.networkId, this.localSsn, this.remotePc);
             this.scheduledComponentList.clear();
         } catch (Exception e) {
@@ -838,13 +843,13 @@ public class DialogImpl implements Dialog {
             // no components
             try {
                 ByteBuf buffer=dialogParser.encode(msg);
-                provider.getStack().newMessageSent(msg.getName(),buffer.readableBytes(), this.networkId);
+                getProvider().getStack().newMessageSent(msg.getName(),buffer.readableBytes(), this.networkId);
                 if(msg.getPAbortCause()!=null)
-                	provider.getStack().newAbortSent(msg.getPAbortCause().name(), this.networkId);
+                	getProvider().getStack().newAbortSent(msg.getPAbortCause().name(), this.networkId);
                 else
-                	provider.getStack().newAbortSent("User", this.networkId);
+                	getProvider().getStack().newAbortSent("User", this.networkId);
                 
-                this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress,
+                getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.networkId, this.localSsn, this.remotePc);
 
                 this.scheduledComponentList.clear();
@@ -1072,7 +1077,7 @@ public class DialogImpl implements Dialog {
 
         if(component instanceof Invoke) {
         	Invoke invoke=(Invoke)component;
-        	InvokeWrapper wrapper=new InvokeWrapper(invoke.getOperationCode(), this, component.getInvokeId(), provider, null);
+        	InvokeWrapper wrapper=new InvokeWrapper(invoke.getOperationCode(), this, component.getInvokeId(), getProvider(), null);
         	wrapper.setState(OperationState.Pending);        	
         	this.scheduledOperations[invokeIndex]=wrapper;
         	
@@ -1080,7 +1085,7 @@ public class DialogImpl implements Dialog {
 	        // for this invocation we are setting it to the the TCAP stack
 	        // default value
 	        if (wrapper.getTimeout() == TCAPStackImpl._EMPTY_INVOKE_TIMEOUT)
-	        	wrapper.setTimeout(this.provider.getStack().getInvokeTimeout());
+	        	wrapper.setTimeout(getProvider().getStack().getInvokeTimeout());
         }
         
         return component.getInvokeId();
@@ -1092,7 +1097,7 @@ public class DialogImpl implements Dialog {
     		if(invokeId==null)
     			invokeId=getNewInvokeId();
     		
-    		InvokeWrapper invokeWrapper=new InvokeWrapper(operationCode, this, invokeId, provider, invokeClass);
+    		InvokeWrapper invokeWrapper=new InvokeWrapper(operationCode, this, invokeId, getProvider(), invokeClass);
     		if(customTimeout!=null)
     			invokeWrapper.setTimeout(customTimeout);
     		
@@ -1125,7 +1130,7 @@ public class DialogImpl implements Dialog {
             // for this invocation we are setting it to the the TCAP stack
             // default value
             if (invokeWrapper.getTimeout() == TCAPStackImpl._EMPTY_INVOKE_TIMEOUT)
-            	invokeWrapper.setTimeout(this.provider.getStack().getInvokeTimeout());
+            	invokeWrapper.setTimeout(getProvider().getStack().getInvokeTimeout());
     	} else if(isLastResponse!=null && isLastResponse) {
     		ReturnResultLast returnResultLast=TcapFactory.createComponentReturnResultLast();
     		returnResultLast.setInvokeId(invokeId);
@@ -1219,7 +1224,7 @@ public class DialogImpl implements Dialog {
             else if(cr instanceof Reject)
             	ct=ComponentType.Reject;
             
-        	provider.getStack().newComponentSent(ct.name(), this.networkId);
+            getProvider().getStack().newComponentSent(ct.name(), this.networkId);
             
             if (cr instanceof Invoke) {
             	int invokeIndex = DialogImpl.getIndexFromInvokeId(cr.getInvokeId());
@@ -1236,13 +1241,13 @@ public class DialogImpl implements Dialog {
             	if(reject.getProblem()!=null) {
             		try {
 	            		if(reject.getProblem().getGeneralProblemType()!=null)
-	            			provider.getStack().newRejectSent(reject.getProblem().getGeneralProblemType().name(), this.networkId);
+	            			getProvider().getStack().newRejectSent(reject.getProblem().getGeneralProblemType().name(), this.networkId);
 	            		else if(reject.getProblem().getInvokeProblemType()!=null)
-	            			provider.getStack().newRejectSent(reject.getProblem().getInvokeProblemType().name(), this.networkId);
+	            			getProvider().getStack().newRejectSent(reject.getProblem().getInvokeProblemType().name(), this.networkId);
 	            		else if(reject.getProblem().getReturnErrorProblemType()!=null)
-	            			provider.getStack().newRejectSent(reject.getProblem().getReturnErrorProblemType().name(), this.networkId);
+	            			getProvider().getStack().newRejectSent(reject.getProblem().getReturnErrorProblemType().name(), this.networkId);
 	            		else if(reject.getProblem().getReturnResultProblemType()!=null)
-	            			provider.getStack().newRejectSent(reject.getProblem().getReturnResultProblemType().name(), this.networkId);
+	            			getProvider().getStack().newRejectSent(reject.getProblem().getReturnResultProblemType().name(), this.networkId);
             		}
             		catch(ParseException ex) {
             			
@@ -1257,7 +1262,7 @@ public class DialogImpl implements Dialog {
 
     public int getMaxUserDataLength() {
 
-        return this.provider.getMaxUserDataLength(remoteAddress, localAddress, this.networkId);
+        return getProvider().getMaxUserDataLength(remoteAddress, localAddress, this.networkId);
     }
 
     // /////////////////
@@ -1292,7 +1297,7 @@ public class DialogImpl implements Dialog {
 
             // no dialog portion!
             // convert to indications
-            TCUniIndication tcUniIndication = ((DialogPrimitiveFactoryImpl) this.provider
+            TCUniIndication tcUniIndication = ((DialogPrimitiveFactoryImpl) getProvider()
                     .getDialogPrimitiveFactory()).createUniIndication(this, data);
 
             tcUniIndication.setDestinationAddress(localAddress);
@@ -1312,7 +1317,7 @@ public class DialogImpl implements Dialog {
             }
 
             // lets deliver to provider, this MUST not throw anything
-            this.provider.deliver(this, tcUniIndication);
+            getProvider().deliver(this, tcUniIndication);
 
         } finally {
             this.release();
@@ -1338,7 +1343,7 @@ public class DialogImpl implements Dialog {
         this.setLocalAddress(localAddress);
         this.setRemoteTransactionId(Utils.decodeTransactionId(msg.getOriginatingTransactionId(), isSwapTcapIdBytes));
         // convert to indications
-        tcBeginIndication = ((DialogPrimitiveFactoryImpl) this.provider.getDialogPrimitiveFactory())
+        tcBeginIndication = ((DialogPrimitiveFactoryImpl) getProvider().getDialogPrimitiveFactory())
                 .createBeginIndication(this, data);
 
         tcBeginIndication.setDestinationAddress(localAddress);
@@ -1369,7 +1374,7 @@ public class DialogImpl implements Dialog {
         this.setState(TRPseudoState.InitialReceived);
 
         // lets deliver to provider
-        this.provider.deliver(this, tcBeginIndication);
+        getProvider().deliver(this, tcBeginIndication);
     }
 
     protected void processContinue(TCContinueMessage msg, SccpAddress localAddress, SccpAddress remoteAddress, ByteBuf data) {
@@ -1377,7 +1382,7 @@ public class DialogImpl implements Dialog {
         TCContinueIndication tcContinueIndication = null;
         if (state.get() == TRPseudoState.InitialSent) {
             restartIdleTimer();
-            tcContinueIndication = ((DialogPrimitiveFactoryImpl) this.provider
+            tcContinueIndication = ((DialogPrimitiveFactoryImpl) getProvider()
                     .getDialogPrimitiveFactory()).createContinueIndication(this, data);
 
             // in continue remote address MAY change be changed, so lets
@@ -1453,12 +1458,12 @@ public class DialogImpl implements Dialog {
             this.setState(TRPseudoState.Active);
 
             // lets deliver to provider
-            this.provider.deliver(this, tcContinueIndication);
+            getProvider().deliver(this, tcContinueIndication);
 
         } else if (state.get() == TRPseudoState.Active) {
             restartIdleTimer();
             // XXX: here NO APDU will be present, hence, no ACN/UI change
-            tcContinueIndication = ((DialogPrimitiveFactoryImpl) this.provider
+            tcContinueIndication = ((DialogPrimitiveFactoryImpl) getProvider()
                     .getDialogPrimitiveFactory()).createContinueIndication(this, data);
 
             tcContinueIndication.setOriginatingAddress(remoteAddress);
@@ -1467,7 +1472,7 @@ public class DialogImpl implements Dialog {
             tcContinueIndication.setComponents(processOperationsState(msg.getComponents()));
 
             // lets deliver to provider
-            this.provider.deliver(this, tcContinueIndication);
+            getProvider().deliver(this, tcContinueIndication);
 
         } else {
             if (logger.isErrorEnabled()) {
@@ -1483,7 +1488,7 @@ public class DialogImpl implements Dialog {
         TCEndIndication tcEndIndication = null;
         try {
         	restartIdleTimer();
-            tcEndIndication = ((DialogPrimitiveFactoryImpl) this.provider
+            tcEndIndication = ((DialogPrimitiveFactoryImpl) getProvider()
                     .getDialogPrimitiveFactory()).createEndIndication(this, data);
 
             if (state.get() == TRPseudoState.InitialSent) {
@@ -1519,7 +1524,7 @@ public class DialogImpl implements Dialog {
             // now comps
             tcEndIndication.setComponents(processOperationsState(msg.getComponents()));
 
-            this.provider.deliver(this, tcEndIndication);
+            getProvider().deliver(this, tcEndIndication);
         } finally {
             release();
         }
@@ -1592,15 +1597,15 @@ public class DialogImpl implements Dialog {
             if (type != null) {
 
                 // its TC-P-Abort
-                TCPAbortIndication tcAbortIndication = ((DialogPrimitiveFactoryImpl) this.provider
+                TCPAbortIndication tcAbortIndication = ((DialogPrimitiveFactoryImpl) getProvider()
                         .getDialogPrimitiveFactory()).createPAbortIndication(this, data);
                 tcAbortIndication.setPAbortCause(type);
 
-                this.provider.deliver(this, tcAbortIndication);
+                getProvider().deliver(this, tcAbortIndication);
 
             } else {
                 // its TC-U-Abort
-                TCUserAbortIndication tcUAbortIndication = ((DialogPrimitiveFactoryImpl) this.provider
+                TCUserAbortIndication tcUAbortIndication = ((DialogPrimitiveFactoryImpl) getProvider()
                         .getDialogPrimitiveFactory()).createUAbortIndication(this, data);
                 if (IsAareApdu)
                     tcUAbortIndication.setAareApdu();
@@ -1618,7 +1623,7 @@ public class DialogImpl implements Dialog {
                     tcUAbortIndication.setOriginatingAddress(remoteAddress);
                 }
 
-                this.provider.deliver(this, tcUAbortIndication);
+                getProvider().deliver(this, tcUAbortIndication);
             }
         } finally {
             release();
@@ -1647,10 +1652,10 @@ public class DialogImpl implements Dialog {
             msg.setDialogPortion(dp);
 
             try {
-                ByteBuf buffer=provider.encodeAbortMessage(msg);               
-                provider.getStack().newMessageSent(msg.getName(),buffer.readableBytes(), this.networkId);
-                provider.getStack().newAbortSent(PAbortCauseType.AbnormalDialogue.name(), this.networkId);
-                this.provider.send(this, buffer, false, this.remoteAddress, this.localAddress, this.seqControl,
+                ByteBuf buffer=getProvider().encodeAbortMessage(msg);               
+                getProvider().getStack().newMessageSent(msg.getName(),buffer.readableBytes(), this.networkId);
+                getProvider().getStack().newAbortSent(PAbortCauseType.AbnormalDialogue.name(), this.networkId);
+                getProvider().send(this, buffer, false, this.remoteAddress, this.localAddress, this.seqControl,
                         this.networkId, this.localSsn, this.remotePc);
             } catch (Exception e) {
                 if (logger.isErrorEnabled()) {
@@ -1659,12 +1664,12 @@ public class DialogImpl implements Dialog {
             }
 
             // sending to the local side
-            tcAbortIndication = ((DialogPrimitiveFactoryImpl) this.provider
+            tcAbortIndication = ((DialogPrimitiveFactoryImpl) getProvider()
                     .getDialogPrimitiveFactory()).createPAbortIndication(this, null);
             tcAbortIndication.setPAbortCause(PAbortCauseType.AbnormalDialogue);
             // tcAbortIndication.setLocalProviderOriginated(true);
 
-            this.provider.deliver(this, tcAbortIndication);
+            getProvider().deliver(this, tcAbortIndication);
         } finally {
             this.release();
             // this.scheduledComponentList.clear();
@@ -1714,7 +1719,7 @@ public class DialogImpl implements Dialog {
             else if(ci instanceof Reject)
             	ct=ComponentType.Reject;
             
-            provider.getStack().newComponentReceived(ct.name(), this.networkId);
+            getProvider().getStack().newComponentReceived(ct.name(), this.networkId);
             switch (ct) {
 
                 case Invoke:
@@ -1845,13 +1850,13 @@ public class DialogImpl implements Dialog {
                     if(rej.getProblem()!=null) {
                 		try {
     	            		if(rej.getProblem().getGeneralProblemType()!=null)
-    	            			provider.getStack().newRejectReceived(rej.getProblem().getGeneralProblemType().name(), this.networkId);
+    	            			getProvider().getStack().newRejectReceived(rej.getProblem().getGeneralProblemType().name(), this.networkId);
     	            		else if(rej.getProblem().getInvokeProblemType()!=null)
-    	            			provider.getStack().newRejectReceived(rej.getProblem().getInvokeProblemType().name(), this.networkId);
+    	            			getProvider().getStack().newRejectReceived(rej.getProblem().getInvokeProblemType().name(), this.networkId);
     	            		else if(rej.getProblem().getReturnErrorProblemType()!=null)
-    	            			provider.getStack().newRejectReceived(rej.getProblem().getReturnErrorProblemType().name(), this.networkId);
+    	            			getProvider().getStack().newRejectReceived(rej.getProblem().getReturnErrorProblemType().name(), this.networkId);
     	            		else if(rej.getProblem().getReturnResultProblemType()!=null)
-    	            			provider.getStack().newRejectReceived(rej.getProblem().getReturnResultProblemType().name(), this.networkId);
+    	            			getProvider().getStack().newRejectReceived(rej.getProblem().getReturnResultProblemType().name(), this.networkId);
                 		}
                 		catch(ParseException ex) {
                 			
@@ -1907,7 +1912,7 @@ public class DialogImpl implements Dialog {
     	
         if (newState == TRPseudoState.Expunged) {
             stopIdleTimer();
-            provider.release(this);
+            getProvider().release(this);
         }
     }
 
@@ -1949,7 +1954,7 @@ public class DialogImpl implements Dialog {
 
         	d.idleTimerActionTaken.set(false);
             d.idleTimerInvoked.set(true);
-            provider.timeout(d);
+            getProvider().timeout(d);
             // send abort
             if (d.idleTimerActionTaken.get()) {
                 startIdleTimer();
@@ -1989,7 +1994,7 @@ public class DialogImpl implements Dialog {
         freeInvokeId(invokeId);
         setInvokeByIndex(index, null);
         // lets call listener
-        this.provider.operationTimedOut(this, invokeId, invokeClass, this.networkId);
+        getProvider().operationTimedOut(this, invokeId, invokeClass, this.networkId);
     }
 
     // TC-TIMER-RESET

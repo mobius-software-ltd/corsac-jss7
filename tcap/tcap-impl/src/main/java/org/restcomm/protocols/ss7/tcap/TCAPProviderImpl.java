@@ -209,14 +209,14 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 
     }
 
-    private boolean checkAvailableTxId(Long id) {
+    protected boolean checkAvailableTxId(Long id) {
         if (!this.dialogs.containsKey(id))
             return true;
         else
             return false;
     }
 
-    private Long getAvailableTxId() throws TCAPException {
+    protected Long getAvailableTxId() throws TCAPException {
         while (true) {
         	this.curDialogId.compareAndSet(this.stack.getDialogIdRangeEnd(), this.stack.getDialogIdRangeStart()-1);
 
@@ -333,11 +333,11 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         return res;
     }
 
-    private DialogImpl getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress, int seqControl, Long id) throws TCAPException {
+    protected DialogImpl getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress, int seqControl, Long id) throws TCAPException {
         return _getDialog(localAddress, remoteAddress, true, seqControl, id);
     }
 
-    private DialogImpl _getDialog(SccpAddress localAddress, SccpAddress remoteAddress, boolean structured, int seqControl, Long id)
+    protected DialogImpl _getDialog(SccpAddress localAddress, SccpAddress remoteAddress, boolean structured, int seqControl, Long id)
             throws TCAPException {
 
         if (localAddress == null) {
