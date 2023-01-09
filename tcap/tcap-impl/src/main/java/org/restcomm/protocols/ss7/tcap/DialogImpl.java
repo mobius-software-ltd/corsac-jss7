@@ -96,8 +96,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.TCEndMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage;
 import org.restcomm.protocols.ss7.tcap.tc.dialog.events.DialogPrimitiveFactoryImpl;
 
-import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
-
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -171,8 +169,6 @@ public class DialogImpl implements Dialog {
     private Boolean doNotSendProtocolVersion = null;
 
     protected boolean isSwapTcapIdBytes;
-
-    private ASNParser dialogParser;
     
     protected static int getIndexFromInvokeId(Integer l) {
         int tmp = l.intValue();
@@ -201,7 +197,7 @@ public class DialogImpl implements Dialog {
      * @param seqControl
      */
     protected DialogImpl(SccpAddress localAddress, SccpAddress remoteAddress, Long origTransactionId, boolean structured,
-            ScheduledExecutorService executor, TCAPProviderImpl provider, int seqControl,ASNParser dialogParser) {
+            ScheduledExecutorService executor, TCAPProviderImpl provider, int seqControl) {
         super();
         this.localAddress = localAddress;
         this.remoteAddress = remoteAddress;
@@ -219,8 +215,7 @@ public class DialogImpl implements Dialog {
         this.isSwapTcapIdBytes = stack.getSwapTcapIdBytes();
 
         startDialogTime = System.currentTimeMillis();
-
-        this.dialogParser=dialogParser;
+        
         // start
         startIdleTimer();
     }
@@ -488,7 +483,7 @@ public class DialogImpl implements Dialog {
         }
 
         try {
-        	ByteBuf buffer=dialogParser.encode(tcbm);
+        	ByteBuf buffer=getProvider().getParser().encode(tcbm);
             this.setState(TRPseudoState.InitialSent);
             getProvider().getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
             getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
@@ -557,7 +552,7 @@ public class DialogImpl implements Dialog {
                 this.localAddress = event.getOriginatingAddress();
             }
             try {
-            	ByteBuf buffer=dialogParser.encode(tcbm);                
+            	ByteBuf buffer=getProvider().getParser().encode(tcbm);                
             	getProvider().getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
             	getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.networkId, this.localSsn, this.remotePc);
@@ -586,7 +581,7 @@ public class DialogImpl implements Dialog {
             }
 
             try {
-            	ByteBuf buffer=dialogParser.encode(tcbm);
+            	ByteBuf buffer=getProvider().getParser().encode(tcbm);
             	getProvider().getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
             	getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.networkId, this.localSsn, this.remotePc);
@@ -697,7 +692,7 @@ public class DialogImpl implements Dialog {
         }
 
         try {
-            ByteBuf buffer=dialogParser.encode(tcbm);
+            ByteBuf buffer=getProvider().getParser().encode(tcbm);
             getProvider().getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
             getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
                     this.seqControl, this.networkId, this.localSsn, this.remotePc);
@@ -751,7 +746,7 @@ public class DialogImpl implements Dialog {
         }
 
         try {
-            ByteBuf buffer=dialogParser.encode(msg);
+            ByteBuf buffer=getProvider().getParser().encode(msg);
             getProvider().getStack().newMessageSent(msg.getName(),buffer.readableBytes(), this.networkId);
             getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
                     this.seqControl, this.networkId, this.localSsn, this.remotePc);
@@ -842,7 +837,7 @@ public class DialogImpl implements Dialog {
 
             // no components
             try {
-                ByteBuf buffer=dialogParser.encode(msg);
+                ByteBuf buffer=getProvider().getParser().encode(msg);
                 getProvider().getStack().newMessageSent(msg.getName(),buffer.readableBytes(), this.networkId);
                 if(msg.getPAbortCause()!=null)
                 	getProvider().getStack().newAbortSent(msg.getPAbortCause().name(), this.networkId);
@@ -898,7 +893,7 @@ public class DialogImpl implements Dialog {
         }
 
         try {
-	        ByteBuf buffer=dialogParser.encode(tcbm);
+	        ByteBuf buffer=getProvider().getParser().encode(tcbm);
 	        return buffer.readableBytes();
         }catch (Throwable e) {
             // FIXME: remove freshly added invokes to free invoke ID??
@@ -950,7 +945,7 @@ public class DialogImpl implements Dialog {
         }
 
         try {
-	        ByteBuf buffer=dialogParser.encode(tcbm);
+	        ByteBuf buffer=getProvider().getParser().encode(tcbm);
 	        return buffer.readableBytes();
         }catch (Throwable e) {
             // FIXME: remove freshly added invokes to free invoke ID??
@@ -1007,7 +1002,7 @@ public class DialogImpl implements Dialog {
         }
 
         try {
-	        ByteBuf buffer=dialogParser.encode(tcbm);
+	        ByteBuf buffer=getProvider().getParser().encode(tcbm);
 	        return buffer.readableBytes();
         }catch (Throwable e) {
             // FIXME: remove freshly added invokes to free invoke ID??
@@ -1048,7 +1043,7 @@ public class DialogImpl implements Dialog {
         }
 
         try {
-	        ByteBuf buffer=dialogParser.encode(msg);
+	        ByteBuf buffer=getProvider().getParser().encode(msg);
 	        return buffer.readableBytes();
         }catch (Throwable e) {
             // FIXME: remove freshly added invokes to free invoke ID??

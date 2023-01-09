@@ -352,12 +352,12 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
             }
         }
         if (structured) {
-            DialogImpl di = new DialogImpl(localAddress, remoteAddress, id, structured, this.service, this, seqControl,messageParser);
+            DialogImpl di = new DialogImpl(localAddress, remoteAddress, id, structured, this.service, this, seqControl);
 
             this.dialogs.put(id, di);
             return di;
         } else {
-            DialogImpl di = new DialogImpl(localAddress, remoteAddress, id, structured, this.service, this, seqControl,messageParser);
+            DialogImpl di = new DialogImpl(localAddress, remoteAddress, id, structured, this.service, this, seqControl);
             
             return di;
         }
