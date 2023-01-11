@@ -84,7 +84,7 @@ public abstract class CAPDialogImpl implements CAPDialog {
         this.capProviderImpl = capProviderImpl;
         this.capService = capService;
         this.capStackConfigurationManagement = new CAPStackConfigurationManagement();
-        setUserObject(null);
+        setUserObject(getUserObject());
     }
 
     public SccpAddress getLocalAddress() {

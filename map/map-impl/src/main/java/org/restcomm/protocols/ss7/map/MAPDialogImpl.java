@@ -99,8 +99,8 @@ public abstract class MAPDialogImpl implements MAPDialog {
         this.mapService = mapService;
         this.destReference = destReference;
         this.origReference = origReference;
-        this.mapCfg = this.mapProviderImpl.getMapCfg();
-        setUserObject(null);
+        this.mapCfg = this.mapProviderImpl.getMapCfg();        
+        setUserObject(getUserObject());
     }
 
     public void setReturnMessageOnError(boolean val) {

@@ -78,7 +78,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
         this.inapProviderImpl = inapProviderImpl;
         this.inapService = inapService;
         this.inapStackConfigurationManagement = new INAPStackConfigurationManagement();
-        setUserObject(null);
+        setUserObject(getUserObject());
     }
 
     public SccpAddress getLocalAddress() {
