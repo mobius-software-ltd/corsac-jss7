@@ -1,8 +1,6 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 /*
- * TeleStax, Open Source Cloud Communications
  * Mobius Software LTD
- * Copyright 2012, Telestax Inc and individual contributors
  * Copyright 2019, Mobius Software LTD and individual contributors
  * by the @authors tag.
  *
@@ -19,6 +17,7 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
+
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.SMSTriggerDetectionPoint;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNEnumerated;

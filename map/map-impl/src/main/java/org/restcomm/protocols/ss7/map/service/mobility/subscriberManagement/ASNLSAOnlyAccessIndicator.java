@@ -1,8 +1,6 @@
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 /*
- * TeleStax, Open Source Cloud Communications
  * Mobius Software LTD
- * Copyright 2012, Telestax Inc and individual contributors
  * Copyright 2019, Mobius Software LTD and individual contributors
  * by the @authors tag.
  *
