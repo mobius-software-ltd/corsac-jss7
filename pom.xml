@@ -19,13 +19,13 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<maven-surefire-plugin.version>3.0.0-M6</maven-surefire-plugin.version>
-		<log4j2.version>2.17.2</log4j2.version>
+		<log4j2.version>2.19.0</log4j2.version>
 		<junit.version>4.11</junit.version>
 		<testng.version>7.5</testng.version>
 		<compiler.plugin.version>3.8.1</compiler.plugin.version>
 		<compile.source>1.8</compile.source>
 		<netty.version>4.1.53.Final</netty.version>		
-		<sctp.version>2.2.8</sctp.version>
+		<sctp.version>2.2.9</sctp.version>
 	</properties>
 
 	<modules>
