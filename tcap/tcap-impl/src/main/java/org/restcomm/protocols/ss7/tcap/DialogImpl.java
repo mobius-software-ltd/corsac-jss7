@@ -550,11 +550,21 @@ public class DialogImpl implements Dialog {
                 this.localAddress = event.getOriginatingAddress();
             }
             try {
-            	ByteBuf buffer=getProvider().getParser().encode(tcbm);                
+            	ByteBuf buffer=getProvider().getParser().encode(tcbm); 
             	getProvider().getStack().newMessageSent(tcbm.getName(),buffer.readableBytes(), this.networkId);
-            	getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress,
+            	TRPseudoState oldState=this.getState();
+            	this.setState(TRPseudoState.Active);
+                try
+                {
+                	getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress,
                         this.localAddress, this.seqControl, this.networkId, this.localSsn, this.remotePc);
-                this.setState(TRPseudoState.Active);
+                }
+                catch(Exception ex)
+                {
+                	this.state.set(oldState);
+                	throw ex;
+                }
+                
                 this.scheduledComponentList.clear();
             } catch (Exception e) {
                 // FIXME: remove freshly added invokes to free invoke ID??
