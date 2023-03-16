@@ -235,10 +235,18 @@ public abstract class MAPDialogImpl implements MAPDialog {
             return;
         }
 
-        this.mapProviderImpl.fireTCAbortUser(this.getTcapDialog(), mapUserAbortInfoImpl,this.getReturnMessageOnError());
-        this.extContainer = null;
-
+        MAPDialogState oldState=this.getState();
         this.setState(MAPDialogState.EXPUNGED);
+        try
+        {
+        	this.mapProviderImpl.fireTCAbortUser(this.getTcapDialog(), mapUserAbortInfoImpl,this.getReturnMessageOnError());
+        	this.extContainer = null;
+        }
+        catch(Exception ex)
+    	{
+        	this.state = oldState; 
+            setUserObject(getUserObject());
+    	}                
     }
 
     public void refuse(Reason reason) throws MAPException {
@@ -248,11 +256,19 @@ public abstract class MAPDialogImpl implements MAPDialog {
             throw new MAPException("Refuse can be called in the Dialog InitialReceived state");
         }
 
-        this.mapProviderImpl.fireTCAbortRefused(this.getTcapDialog(), reason, this.extContainer,
-                this.getReturnMessageOnError());
-        this.extContainer = null;
-
+        MAPDialogState oldState = this.getState();
         this.setState(MAPDialogState.EXPUNGED);
+    	try
+        {
+        	this.mapProviderImpl.fireTCAbortRefused(this.getTcapDialog(), reason, this.extContainer,
+                this.getReturnMessageOnError());
+        	this.extContainer = null;
+        }
+        catch(Exception ex)
+    	{
+        	this.state = oldState; 
+            setUserObject(getUserObject());
+    	}
     }
 
     public void close(boolean prearrangedEnd) throws MAPException {
@@ -262,30 +278,49 @@ public abstract class MAPDialogImpl implements MAPDialog {
 	            ApplicationContextName acn = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
+	            MAPDialogState oldState=this.getState();
+	            this.setState(MAPDialogState.EXPUNGED);
+	            
 	            if (prearrangedEnd) {
 	                // we do not send any data in a prearrangedEnd case
 	                if (this.tcapDialog != null)
 	                    this.tcapDialog.release();
 	            } else {
-	                this.mapProviderImpl.fireTCEnd(this.getTcapDialog(), true, prearrangedEnd, acn, this.extContainer,
-	                        this.getReturnMessageOnError());
-	                this.extContainer = null;
+	            	try
+	            	{
+		                this.mapProviderImpl.fireTCEnd(this.getTcapDialog(), true, prearrangedEnd, acn, this.extContainer,
+		                        this.getReturnMessageOnError());
+		                this.extContainer = null;
+	            	}
+	                catch(Exception ex)
+	            	{
+	                	this.state = oldState; 
+	                    setUserObject(getUserObject());
+	            	}
 	            }
 	
-	            this.setState(MAPDialogState.EXPUNGED);
 	            break;
 	
 	        case Active:
+	        	oldState=this.getState();
+	        	this.setState(MAPDialogState.EXPUNGED);
 	            if (prearrangedEnd) {
 	                // we do not send any data in a prearrangedEnd case
 	                if (this.tcapDialog != null)
 	                    this.tcapDialog.release();
 	            } else {
-	                this.mapProviderImpl.fireTCEnd(this.getTcapDialog(), false, prearrangedEnd, null, null,
+	            	try
+	            	{
+	            		this.mapProviderImpl.fireTCEnd(this.getTcapDialog(), false, prearrangedEnd, null, null,
 	                        this.getReturnMessageOnError());
+	            	}
+	                catch(Exception ex)
+	            	{
+	                	this.state = oldState; 
+	                    setUserObject(getUserObject());
+	            	}
 	            }
 	
-	            this.setState(MAPDialogState.EXPUNGED);
 	            break;
 	
 	        case Idle:
@@ -296,6 +331,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
 	                // we do not send any data in a prearrangedEnd case
 	                if (this.tcapDialog != null)
 	                    this.tcapDialog.release();
+	                
 	                this.setState(MAPDialogState.EXPUNGED);
 	                return;
 	            } else {
@@ -362,11 +398,19 @@ public abstract class MAPDialogImpl implements MAPDialog {
 	            ApplicationContextName acn1 = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
-	            this.mapProviderImpl.fireTCContinue(this.getTcapDialog(), true, acn1, this.extContainer,
-	                    this.getReturnMessageOnError());
-	            this.extContainer = null;
-	
+	            MAPDialogState oldState = this.getState();
 	            this.setState(MAPDialogState.ACTIVE);
+	            try
+	            {
+	            	this.mapProviderImpl.fireTCContinue(this.getTcapDialog(), true, acn1, this.extContainer,
+	                    this.getReturnMessageOnError());
+	            	this.extContainer = null;
+	            }
+	            catch(Exception ex)
+	            {
+	            	this.setState(oldState);
+	            	throw ex;
+	            }
 	            break;
 	
 	        case InitialSent: // we have sent TC-BEGIN already, need to wait

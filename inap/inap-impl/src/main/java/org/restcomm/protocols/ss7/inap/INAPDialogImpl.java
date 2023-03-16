@@ -220,9 +220,17 @@ public abstract class INAPDialogImpl implements INAPDialog {
 	            ApplicationContextName acn1 = this.inapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
-	            this.inapProviderImpl.fireTCContinue(this.getTcapDialog(), acn1,this.getReturnMessageOnError());
-	            
+	            INAPDialogState oldState=getState();
 	            this.setState(INAPDialogState.ACTIVE);
+	            try
+	            {
+	            	this.inapProviderImpl.fireTCContinue(this.getTcapDialog(), acn1,this.getReturnMessageOnError());
+			    }
+		        catch(Exception ex)
+		    	{
+		        	this.state = oldState; 
+		            setUserObject(getUserObject());
+		    	} 
 	            break;
 	
 	        case InitialSent: // we have sent TC-BEGIN already, need to wait
@@ -254,28 +262,46 @@ public abstract class INAPDialogImpl implements INAPDialog {
 	            ApplicationContextName acn = this.inapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
+	            INAPDialogState oldState=getState();
+	            this.setState(INAPDialogState.EXPUNGED);
 	            if (prearrangedEnd) {
 	                // we do not send any data in a prearrangedEnd case
 	                if (this.tcapDialog != null)
 	                    this.tcapDialog.release();
 	            } else {
-	                this.inapProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, acn,this.getReturnMessageOnError());	                
+	            	try
+	            	{
+	            		this.inapProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, acn,this.getReturnMessageOnError());
+	            	}
+			        catch(Exception ex)
+			    	{
+			        	this.state = oldState; 
+			            setUserObject(getUserObject());
+			    	} 
 	            }
 	
-	            this.setState(INAPDialogState.EXPUNGED);
 	            break;
 	
 	        case Active:
+	        	oldState=getState();
+	        	this.setState(INAPDialogState.EXPUNGED);
 	            if (prearrangedEnd) {
 	                // we do not send any data in a prearrangedEnd case
 	                if (this.tcapDialog != null)
 	                    this.tcapDialog.release();
 	            } else {
-	                this.inapProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, null,
+	            	try
+	            	{
+	            		this.inapProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, null,
 	                        this.getReturnMessageOnError());
+	            	}
+			        catch(Exception ex)
+			    	{
+			        	this.state = oldState; 
+			            setUserObject(getUserObject());
+			    	} 
 	            }
 	
-	            this.setState(INAPDialogState.EXPUNGED);
 	            break;
 	
 	        case Idle:
@@ -334,11 +360,19 @@ public abstract class INAPDialogImpl implements INAPDialog {
             return;
         }
 
-        // this.setNormalDialogShutDown();
-        this.inapProviderImpl.fireTCAbort(this.getTcapDialog(), INAPGeneralAbortReason.UserSpecific, abortReason,
-                this.getReturnMessageOnError());
-
+        INAPDialogState oldState=getState();
         this.setState(INAPDialogState.EXPUNGED);
+        try
+        {
+        	// this.setNormalDialogShutDown();
+        	this.inapProviderImpl.fireTCAbort(this.getTcapDialog(), INAPGeneralAbortReason.UserSpecific, abortReason,
+                this.getReturnMessageOnError());
+        }
+        catch(Exception ex)
+    	{
+        	this.state = oldState; 
+            setUserObject(getUserObject());
+    	} 
     }
 
     @Override

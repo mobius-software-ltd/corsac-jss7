@@ -238,11 +238,20 @@ public abstract class CAPDialogImpl implements CAPDialog {
 	            ApplicationContextName acn1 = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
-	            this.capProviderImpl.fireTCContinue(this.getTcapDialog(), acn1, this.gprsReferenceNumber,
-	                    this.getReturnMessageOnError());
-	            this.gprsReferenceNumber = null;
-	
+	            
+	            CAPDialogState oldState=this.getState();
 	            this.setState(CAPDialogState.ACTIVE);
+	            try
+	            {	            
+	            	this.capProviderImpl.fireTCContinue(this.getTcapDialog(), acn1, this.gprsReferenceNumber,
+	                    this.getReturnMessageOnError());
+	            	this.gprsReferenceNumber = null;
+			    }
+		        catch(Exception ex)
+		    	{
+		        	this.state = oldState; 
+		            setUserObject(getUserObject());
+		    	}   
 	            break;
 	
 	        case InitialSent: // we have sent TC-BEGIN already, need to wait
@@ -274,30 +283,48 @@ public abstract class CAPDialogImpl implements CAPDialog {
 	            ApplicationContextName acn = this.capProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
 	                    .createApplicationContextName(this.appCntx.getOID());
 	
+	            CAPDialogState oldState=getState();
+	            this.setState(CAPDialogState.EXPUNGED);
 	            if (prearrangedEnd) {
 	                // we do not send any data in a prearrangedEnd case
 	                if (this.tcapDialog != null)
 	                    this.tcapDialog.release();
 	            } else {
-	                this.capProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, acn, this.gprsReferenceNumber,
-	                        this.getReturnMessageOnError());
-	                this.gprsReferenceNumber = null;
+	            	try
+	            	{
+		                this.capProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, acn, this.gprsReferenceNumber,
+		                        this.getReturnMessageOnError());
+		                this.gprsReferenceNumber = null;		            	
+				    }
+			        catch(Exception ex)
+			    	{
+			        	this.state = oldState; 
+			            setUserObject(getUserObject());
+			    	}   
 	            }
 	
-	            this.setState(CAPDialogState.EXPUNGED);
 	            break;
 	
 	        case Active:
+	        	oldState=getState();
+	        	this.setState(CAPDialogState.EXPUNGED);
 	            if (prearrangedEnd) {
 	                // we do not send any data in a prearrangedEnd case
 	                if (this.tcapDialog != null)
 	                    this.tcapDialog.release();
 	            } else {
-	                this.capProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, null, null,
+	            	try
+	            	{
+	                	this.capProviderImpl.fireTCEnd(this.getTcapDialog(), prearrangedEnd, null, null,
 	                        this.getReturnMessageOnError());
+	            	}
+			        catch(Exception ex)
+			    	{
+			        	this.state = oldState; 
+			            setUserObject(getUserObject());
+			    	} 	
 	            }
 	
-	            this.setState(CAPDialogState.EXPUNGED);
 	            break;
 	
 	        case Idle:
@@ -356,11 +383,19 @@ public abstract class CAPDialogImpl implements CAPDialog {
             return;
         }
 
-        // this.setNormalDialogShutDown();
-        this.capProviderImpl.fireTCAbort(this.getTcapDialog(), CAPGeneralAbortReason.UserSpecific, abortReason,
-                this.getReturnMessageOnError());
-
+        CAPDialogState oldState=getState();
         this.setState(CAPDialogState.EXPUNGED);
+        try
+        {
+        	// this.setNormalDialogShutDown();
+        	this.capProviderImpl.fireTCAbort(this.getTcapDialog(), CAPGeneralAbortReason.UserSpecific, abortReason,
+                this.getReturnMessageOnError());
+        }
+        catch(Exception ex)
+    	{
+        	this.state = oldState; 
+            setUserObject(getUserObject());
+    	} 	        
     }
 
     @Override
