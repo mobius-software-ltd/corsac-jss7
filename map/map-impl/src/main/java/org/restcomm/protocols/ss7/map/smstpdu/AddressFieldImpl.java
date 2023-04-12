@@ -88,8 +88,7 @@ public class AddressFieldImpl implements AddressField {
                 GSMCharset cs = new GSMCharset();
                 GSMCharsetDecoder decoder = (GSMCharsetDecoder) cs.newDecoder();
                 int totalSeptetCount = (addressLength < 14 ? addressArrayLength : addressArrayLength + 1);
-                GSMCharsetDecodingData encodingData = new GSMCharsetDecodingData(Gsm7EncodingStyle.bit7_sms_style,
-                        totalSeptetCount, 0);
+                GSMCharsetDecodingData encodingData = new GSMCharsetDecodingData(Gsm7EncodingStyle.bit7_sms_style, totalSeptetCount, 0);
                 decoder.setGSMCharsetDecodingData(encodingData);
                 if(buf.readableBytes()>addressArrayLength) {
                 	res.addressValue = decoder.decode(buf.slice(buf.readerIndex(), addressArrayLength));

@@ -41,6 +41,8 @@ public interface UserDataHeader {
 
     Map<Integer, ByteBuf> getAllData();
 
+    int getLength();
+    
     void addInformationElement(int informationElementIdentifier, ByteBuf encodedData);
 
     void addInformationElement(UserDataHeaderElement informationElement);

@@ -42,7 +42,7 @@ public class UserDataHeaderImpl implements UserDataHeader {
     public UserDataHeaderImpl() {
     }
 
-    public UserDataHeaderImpl(ByteBuf encodedData) {
+   public UserDataHeaderImpl(ByteBuf encodedData) {
         if (encodedData == null || encodedData.readableBytes() < 1)
             return;
         //we just read it
@@ -60,7 +60,25 @@ public class UserDataHeaderImpl implements UserDataHeader {
         }
     }
 
-    public void getEncodedData(ByteBuf buf) {
+   	public int getLength() {
+   		if (data.size() == 0)
+           return 0;
+       
+   		//length of the udh
+   		int length=1;
+   		for (int id : data.keySet()) {
+           ByteBuf innerData = data.get(id);
+           //1 byte id and 1 length + the data itself if any
+           if(innerData==null)
+        	   length+=2;
+           else
+        	   length+=2+innerData.readableBytes();           
+       }
+   		
+   	   return length;
+   	}
+  
+   	public void getEncodedData(ByteBuf buf) {
 
         if (data.size() == 0)
             return;

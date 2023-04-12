@@ -152,10 +152,18 @@ public class GSMCharsetTest {
             int totalSeptetCount) throws Exception {
         GSMCharset cs = new GSMCharset();
         GSMCharsetEncoder encoder = (GSMCharsetEncoder) cs.newEncoder();
-        encoder.setGSMCharsetEncodingData(new GSMCharsetEncodingData(gsm7EncodingStyle, bufUDH));
+        int udhLength=0;
+        if(bufUDH!=null)
+        	udhLength = bufUDH.readableBytes();
+        
+        encoder.setGSMCharsetEncodingData(new GSMCharsetEncodingData(gsm7EncodingStyle, udhLength));
         ByteBuf bb = encoder.encode(decodedString);
-        byte[] data = new byte[bb.readableBytes()];
-        bb.readBytes(data);
+        byte[] data = new byte[udhLength + bb.readableBytes()];
+        
+        if(udhLength>0)
+        	bufUDH.readBytes(data, 0, udhLength);
+        
+        bb.readBytes(data, udhLength, bb.readableBytes());
         int len = encoder.getGSMCharsetEncodingData().getTotalSeptetCount();
 
         assertEquals(encodedData, data);
@@ -173,11 +181,18 @@ public class GSMCharsetTest {
                 decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(gsm7EncodingStyle, Integer.MAX_VALUE, 0));
                 break;
             case bit7_sms_style:
-                decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(gsm7EncodingStyle, totalSeptetCount,
-                        leadingSeptetSkipCount));
+            	int bitsSkip = leadingSeptetSkipCount * 7;
+                while(bitsSkip>=8)
+                {
+                	bb.readByte();
+                	bitsSkip-=8;
+                }
+                
+                decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(gsm7EncodingStyle, totalSeptetCount - leadingSeptetSkipCount, bitsSkip));
                 break;
             case bit8_smpp_style:
-                decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(gsm7EncodingStyle, Integer.MAX_VALUE, leadingSeptetSkipCount));
+            	bb.skipBytes(leadingSeptetSkipCount);            	
+                decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(gsm7EncodingStyle, Integer.MAX_VALUE, 0));
                 break;
         }
 

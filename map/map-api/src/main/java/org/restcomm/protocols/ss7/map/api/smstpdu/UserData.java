@@ -37,8 +37,10 @@ public interface UserData {
 
     boolean getEncodedUserDataHeaderIndicator();
 
-    int getEncodedUserDataLength();
+    int getUserDataLength();
 
+    ByteBuf getMessageWithSkipBits();
+    
     String getDecodedMessage();
 
     UserDataHeader getDecodedUserDataHeader();

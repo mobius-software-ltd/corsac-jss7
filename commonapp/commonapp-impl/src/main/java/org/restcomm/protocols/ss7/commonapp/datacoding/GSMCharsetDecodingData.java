@@ -28,19 +28,19 @@ package org.restcomm.protocols.ss7.commonapp.datacoding;
  */
 public class GSMCharsetDecodingData {
 
-    protected int totalSeptetCount;
-    protected int leadingSeptetSkipCount;
+    protected int septetCount;
+    protected int leadingBitsSkipCount;
     protected Gsm7EncodingStyle encodingStyle;
 
     /**
      * constructor
      *
-     * @param totalSeptetCount Length of a decoded message in characters (for SMS case)
-     * @param leadingSeptetSkipCount Count of leading septets to skip
+     * @param septetCount Length of a decoded message in characters (for SMS case)
+     * @param leadingBitsSkipCount Count of leading bits to skip
      */
-    public GSMCharsetDecodingData(Gsm7EncodingStyle encodingStyle, int totalSeptetCount, int leadingSeptetSkipCount) {
-        this.totalSeptetCount = totalSeptetCount;
-        this.leadingSeptetSkipCount = leadingSeptetSkipCount;
+    public GSMCharsetDecodingData(Gsm7EncodingStyle encodingStyle, int septetCount, int leadingBitsSkipCount) {
+        this.septetCount = septetCount;
+        this.leadingBitsSkipCount = leadingBitsSkipCount;
         this.encodingStyle = encodingStyle;
     }
 }

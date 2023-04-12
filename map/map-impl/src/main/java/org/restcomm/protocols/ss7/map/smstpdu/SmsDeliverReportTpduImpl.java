@@ -147,7 +147,7 @@ public class SmsDeliverReportTpduImpl extends SmsTpduImpl implements SmsDeliverR
         if (this.userData != null) {
             this.userData.encode();
             this.userDataHeaderIndicator = this.userData.getEncodedUserDataHeaderIndicator();
-            this.userDataLength = this.userData.getEncodedUserDataLength();
+            this.userDataLength = this.userData.getUserDataLength();
             this.dataCodingScheme = this.userData.getDataCodingScheme();
 
             if (this.userData.getEncodedData().readableBytes() > _UserDataDeliverReportLimit)

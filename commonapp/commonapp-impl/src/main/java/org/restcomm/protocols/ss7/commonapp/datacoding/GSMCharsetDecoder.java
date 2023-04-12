@@ -132,9 +132,7 @@ public class GSMCharsetDecoder {
 
         this.decodedBytes++;
         if (this.encodingData != null) {
-            if (this.decodedBytes <= this.encodingData.leadingSeptetSkipCount)
-                return;
-            if (this.encodingData.totalSeptetCount >= 0 && this.decodedBytes > this.encodingData.totalSeptetCount)
+            if (this.encodingData.septetCount >= 0 && this.decodedBytes > this.encodingData.septetCount)
                 return;
         }
 
@@ -162,6 +160,31 @@ public class GSMCharsetDecoder {
     
     public final String decode(ByteBuf in) throws CharacterCodingException {
     	StringBuilder sb = new StringBuilder();
+    	if(encodingData.leadingBitsSkipCount!=0)
+    	{
+    		int currByte = in.readByte() & 0x0FF;
+    		if(encodingData.leadingBitsSkipCount==1)
+    		{
+    			currByte = (byte) (((currByte & 0xFE)) >>> 1);
+
+                 if (this.encodingData != null && this.encodingData.encodingStyle == Gsm7EncodingStyle.bit7_ussd_style
+                         && currByte == '\r' && in.readableBytes()==0) {
+                     // case when found '\r' at the byte border if USSD style: skip final '\r' char
+                 } else
+                     putChar((byte)currByte, sb);
+    		}
+    		else
+    		{
+	    		bitpos = 7 - encodingData.leadingBitsSkipCount;
+	    		leftOver = (byte) (currByte >>> (7 - bitpos));  
+	    		
+	    		bitpos++;
+	            if (bitpos == 7) {
+	            	bitpos = 0;
+	            }
+    		}
+    	}
+    	
     	try {
             decodeLoop(in, sb);
         } catch (BufferUnderflowException x) {

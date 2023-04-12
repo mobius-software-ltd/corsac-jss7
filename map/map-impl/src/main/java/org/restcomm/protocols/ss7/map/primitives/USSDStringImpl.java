@@ -215,8 +215,7 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
                     	}
                     }
                     GSMCharsetDecoder decoder = (GSMCharsetDecoder) cSet.newDecoder();
-                    decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(Gsm7EncodingStyle.bit7_ussd_style,
-                            Integer.MAX_VALUE, 0));
+                    decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(Gsm7EncodingStyle.bit7_ussd_style, Integer.MAX_VALUE, 0));
                     String bf = null;
                     try {
                         bf = decoder.decode(value);
@@ -237,8 +236,7 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
                     if (dataCodingScheme.getDataCodingGroup() == CBSDataCodingGroup.GeneralWithLanguageIndication) {
                         cSet = GSMCharset.gsm7CharsetDefault;
                         decoder = (GSMCharsetDecoder) cSet.newDecoder();
-                        decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(Gsm7EncodingStyle.bit7_ussd_style,
-                                Integer.MAX_VALUE, 0));
+                        decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(Gsm7EncodingStyle.bit7_ussd_style, Integer.MAX_VALUE, 0));
                         ByteBuf buf2;
                         if (value.readableBytes() < 3)
                             buf2 = value;

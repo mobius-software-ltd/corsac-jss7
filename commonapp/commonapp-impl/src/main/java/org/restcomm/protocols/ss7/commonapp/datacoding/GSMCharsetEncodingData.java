@@ -19,8 +19,6 @@
 
 package org.restcomm.protocols.ss7.commonapp.datacoding;
 
-import io.netty.buffer.ByteBuf;
-
 /**
  *
  * @author amit bhayani
@@ -30,19 +28,18 @@ import io.netty.buffer.ByteBuf;
  */
 public class GSMCharsetEncodingData {
 
-    protected ByteBuf leadingBuffer;
+    protected Integer leadingBytes;
     protected Gsm7EncodingStyle encodingStyle;
 
     protected int totalSeptetCount;
-    protected boolean leadingBufferIsEncoded = false;
-
+    
     /**
      * constructor
      *
      * @param leadingBuffer Encoded UserDataHeader (if does not exist == null)
      */
-    public GSMCharsetEncodingData(Gsm7EncodingStyle encodingStyle, ByteBuf leadingBuffer) {
-        this.leadingBuffer = leadingBuffer;
+    public GSMCharsetEncodingData(Gsm7EncodingStyle encodingStyle, Integer leadingBytes) {
+        this.leadingBytes = leadingBytes;
         this.encodingStyle = encodingStyle;
     }
 

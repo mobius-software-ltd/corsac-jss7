@@ -41,5 +41,4 @@ public interface SM_RP_OA {
     ISDNAddressString getMsisdn();
 
     AddressString getServiceCentreAddressOA();
-
 }

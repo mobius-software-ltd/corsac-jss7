@@ -30,6 +30,7 @@ import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetEncoder;
 import org.restcomm.protocols.ss7.commonapp.datacoding.GSMCharsetEncodingData;
 import org.restcomm.protocols.ss7.commonapp.datacoding.Gsm7EncodingStyle;
 import org.restcomm.protocols.ss7.map.api.MAPException;
+import org.restcomm.protocols.ss7.map.api.smstpdu.CharacterSet;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingScheme;
 import org.restcomm.protocols.ss7.map.api.smstpdu.Gsm7NationalLanguageIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserData;
@@ -53,18 +54,19 @@ public class UserDataImpl implements UserData {
     private DataCodingScheme dataCodingScheme;
     private Charset gsm8Charset;
     private ByteBuf encodedData;
-    private int encodedUserDataLength;
+    private int userDataLength;
     private boolean encodedUserDataHeaderIndicator;
     private UserDataHeader decodedUserDataHeader;
+    private ByteBuf messageWithSkipBits;
     private String decodedMessage;
 
     private boolean isDecoded;
     private boolean isEncoded;
 
-    public UserDataImpl(ByteBuf encodedData, DataCodingScheme dataCodingScheme, int encodedUserDataLength,
+    public UserDataImpl(ByteBuf encodedData, DataCodingScheme dataCodingScheme, int userDataLength,
             boolean encodedUserDataHeaderIndicator, Charset gsm8Charset) {
         this.encodedData = encodedData;
-        this.encodedUserDataLength = encodedUserDataLength;
+        this.userDataLength = userDataLength;
         this.encodedUserDataHeaderIndicator = encodedUserDataHeaderIndicator;
         if (dataCodingScheme != null)
             this.dataCodingScheme = dataCodingScheme;
@@ -75,6 +77,19 @@ public class UserDataImpl implements UserData {
         this.isEncoded = true;
     }
 
+    public UserDataImpl(ByteBuf messageWithSkipBits, DataCodingScheme dataCodingScheme, UserDataHeader decodedUserDataHeader,
+            Charset gsm8Charset) {
+        this.messageWithSkipBits = messageWithSkipBits;
+        this.decodedUserDataHeader = decodedUserDataHeader;
+        if (dataCodingScheme != null)
+            this.dataCodingScheme = dataCodingScheme;
+        else
+            this.dataCodingScheme = new DataCodingSchemeImpl(0);
+        this.gsm8Charset = gsm8Charset;
+        
+        this.isDecoded = true;
+    }
+
     public UserDataImpl(String decodedMessage, DataCodingScheme dataCodingScheme, UserDataHeader decodedUserDataHeader,
             Charset gsm8Charset) {
         this.decodedMessage = decodedMessage;
@@ -83,8 +98,10 @@ public class UserDataImpl implements UserData {
             this.dataCodingScheme = dataCodingScheme;
         else
             this.dataCodingScheme = new DataCodingSchemeImpl(0);
+        
         this.gsm8Charset = gsm8Charset;
 
+        encodeMessage();  
         this.isDecoded = true;
     }
 
@@ -96,8 +113,8 @@ public class UserDataImpl implements UserData {
         return this.encodedData;
     }
 
-    public int getEncodedUserDataLength() {
-        return encodedUserDataLength;
+    public int getUserDataLength() {
+        return userDataLength;
     }
 
     public boolean getEncodedUserDataHeaderIndicator() {
@@ -108,10 +125,96 @@ public class UserDataImpl implements UserData {
         return decodedUserDataHeader;
     }
 
+    public ByteBuf getMessageWithSkipBits() {
+    	return messageWithSkipBits;
+    }
+    
     public String getDecodedMessage() {
+    	if(decodedMessage==null && messageWithSkipBits!=null)
+    		decodeMessage();
+    	
         return decodedMessage;
     }
 
+    private void encodeMessage() {
+    	if(messageWithSkipBits!=null)
+    		return;
+    	
+    	if (!this.dataCodingScheme.getIsCompressed()) {            
+            switch (this.dataCodingScheme.getCharacterSet()) {
+            	case GSM7:
+            		Integer udhLength=null;
+            		if(decodedUserDataHeader!=null)
+            			udhLength=decodedUserDataHeader.getLength();
+            		
+                    GSMCharset cSet = obtainGsmCharacterSet(this.decodedUserDataHeader);
+                    GSMCharsetEncoder encoder = (GSMCharsetEncoder) cSet.newEncoder();
+                    encoder.setGSMCharsetEncodingData(new GSMCharsetEncodingData(Gsm7EncodingStyle.bit7_sms_style, udhLength));
+                    try {
+                    	messageWithSkipBits = encoder.encode(this.decodedMessage);
+                    } catch (Exception e) {
+                        // This can not occur
+                    }
+                    
+                    if (messageWithSkipBits == null)
+                    	messageWithSkipBits = Unpooled.EMPTY_BUFFER;   
+            		this.userDataLength = encoder.getGSMCharsetEncodingData().getTotalSeptetCount();
+                    break;
+            	case GSM8:
+            		messageWithSkipBits = Unpooled.wrappedBuffer(this.decodedMessage.getBytes(gsm8Charset));
+            		break;
+            	case UCS2:
+            		messageWithSkipBits = Unpooled.wrappedBuffer(this.decodedMessage.getBytes(ucs2Charset));
+            		break;
+            	default:
+            		messageWithSkipBits = Unpooled.EMPTY_BUFFER;
+            		break;
+            }
+    	}
+    }   
+    
+    private void decodeMessage() {
+    	switch (this.dataCodingScheme.getCharacterSet()) {
+	        case GSM7:
+	            GSMCharset cSet = obtainGsmCharacterSet(this.decodedUserDataHeader);
+	            GSMCharsetDecoder decoder = (GSMCharsetDecoder) cSet.newDecoder();
+	            
+	            int septetOffset = 0;
+	            int bitPos=0;
+	            if(decodedUserDataHeader!=null)
+	            {
+	            	bitPos = decodedUserDataHeader.getLength() * 8;
+	            	bitPos = 7- (bitPos - ((int)(bitPos/7))*7);
+	            }
+	            
+	            decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(Gsm7EncodingStyle.bit7_sms_style, this.userDataLength - septetOffset, bitPos)); 
+	            String bf = null;
+	            try {
+	                bf = decoder.decode(Unpooled.wrappedBuffer(this.messageWithSkipBits));
+	            } catch (CharacterCodingException e) {
+	                // This can not occur
+	            }
+	            if (bf != null) {
+	                this.decodedMessage = bf;
+	                if(this.decodedMessage.endsWith("@"))
+	                	this.decodedMessage=this.decodedMessage.substring(0,this.decodedMessage.length()-1);
+	            }
+	            else
+	                this.decodedMessage = "";
+	            
+	            break;
+	        case GSM8:
+	            if (gsm8Charset != null)
+	                this.decodedMessage = messageWithSkipBits.toString(gsm8Charset);
+	            break;
+	        case UCS2:
+	            this.decodedMessage = messageWithSkipBits.toString(ucs2Charset);
+	            break;
+			default:
+				break;
+	    }
+    }
+    
     public void encode() throws MAPException {
 
         if (this.isEncoded)
@@ -119,11 +222,10 @@ public class UserDataImpl implements UserData {
         this.isEncoded = true;
 
         this.encodedData = null;
-        this.encodedUserDataLength = 0;
         this.encodedUserDataHeaderIndicator = false;
 
-        if (this.decodedMessage == null)
-            this.decodedMessage = "";
+        if (this.messageWithSkipBits == null)
+            this.messageWithSkipBits = Unpooled.EMPTY_BUFFER;
 
         // encoding UserDataHeader if it exists
         ByteBuf buf2 = Unpooled.buffer();
@@ -134,72 +236,27 @@ public class UserDataImpl implements UserData {
             else
                 buf2 = null;
         }
-
-        if (this.dataCodingScheme.getIsCompressed()) {
-            // TODO: implement the case with compressed message
-            throw new MAPException("Error encoding a text in Sms UserData: compressed message is not supported yet");
-        } else {
-            switch (this.dataCodingScheme.getCharacterSet()) {
-                case GSM7:
-                    // selecting a Charset for encoding
-//                    Charset cSet = gsm7Charset;
-//                    Gsm7NationalLanguageIdentifier nationalLanguageLockingShift = null;
-//                    Gsm7NationalLanguageIdentifier nationalLanguageSingleShift = null;
-//                    NationalLanguageIdentifier nationalLanguageLockingShiftIdentifier = null;
-//                    NationalLanguageIdentifier nationalLanguageSingleShiftIdentifier = null;
-//                    if (this.decodedUserDataHeader != null) {
-//                        nationalLanguageLockingShift = this.decodedUserDataHeader.getNationalLanguageLockingShift();
-//                        nationalLanguageSingleShift = this.decodedUserDataHeader.getNationalLanguageSingleShift();
-//                        if (nationalLanguageLockingShift != null)
-//                            nationalLanguageLockingShiftIdentifier = nationalLanguageLockingShift
-//                                    .getNationalLanguageIdentifier();
-//                        if (nationalLanguageSingleShift != null)
-//                            nationalLanguageSingleShiftIdentifier = nationalLanguageSingleShift.getNationalLanguageIdentifier();
-//                    }
-//                    if (nationalLanguageLockingShift != null || nationalLanguageSingleShift != null) {
-//                        cSet = new GSMCharset("GSM", new String[] {}, nationalLanguageLockingShiftIdentifier,
-//                                nationalLanguageSingleShiftIdentifier);
-//                    }
-
-                    GSMCharset cSet = obtainGsmCharacterSet(this.decodedUserDataHeader);
-                    GSMCharsetEncoder encoder = (GSMCharsetEncoder) cSet.newEncoder();
-                    encoder.setGSMCharsetEncodingData(new GSMCharsetEncodingData(Gsm7EncodingStyle.bit7_sms_style, buf2));
-                    ByteBuf bb = null;
-                    try {
-                        bb = encoder.encode(this.decodedMessage);
-                    } catch (Exception e) {
-                        // This can not occur
-                    }
-                    this.encodedUserDataLength = encoder.getGSMCharsetEncodingData().getTotalSeptetCount();
-                    if (bb != null)
-                        this.encodedData = bb.readSlice(bb.readableBytes());                        
-                    else
-                        this.encodedData = Unpooled.EMPTY_BUFFER;                    
-                    break;
-
-                case GSM8:
-                    if (gsm8Charset != null) {                    	
-                        this.encodedData = Unpooled.wrappedBuffer(this.decodedMessage.getBytes(gsm8Charset));
-                        if (buf2 != null)
-                            this.encodedData = Unpooled.wrappedBuffer(buf2,encodedData);                            
-                        
-                        this.encodedUserDataLength = this.encodedData.readableBytes();
-                    } else {
-                        throw new MAPException(
-                                "Error encoding a text in Sms UserData: gsm8Charset is not defined for GSM8 dataCodingScheme");
-                    }
-                    break;
-
-                case UCS2:
-                    this.encodedData = Unpooled.wrappedBuffer(this.decodedMessage.getBytes(ucs2Charset));
-                    if (buf2 != null)
-                        this.encodedData = Unpooled.wrappedBuffer(buf2,encodedData);                            
-                    
-                    this.encodedUserDataLength = this.encodedData.readableBytes();
-                    break;
-				default:
-					break;
-            }
+        else
+        	buf2 = null;
+   
+        if (buf2 != null)
+            this.encodedData = Unpooled.wrappedBuffer(buf2,messageWithSkipBits);                            
+        else
+        	this.encodedData = messageWithSkipBits;
+        
+        this.userDataLength = this.encodedData.readableBytes();
+        if(this.dataCodingScheme.getCharacterSet()==CharacterSet.GSM7) {
+        	this.userDataLength = GSMCharset.octetsToSeptets(this.userDataLength);
+        	
+        	if(this.userDataLength!=0 && (this.userDataLength%8)==0)
+        	{
+	        	byte lastByte = this.encodedData.getByte(this.encodedData.readableBytes()-1);
+	        	//we have 7 empty bits in the end
+	        	if((lastByte & 0xFE)==0)
+	        		this.userDataLength--;
+        	}
+        	else
+        		this.userDataLength--;
         }
     }
 
@@ -227,75 +284,10 @@ public class UserDataImpl implements UserData {
             if (offset > this.encodedData.readableBytes())
                 return;
 
-            this.encodedData.markReaderIndex();
-            this.decodedUserDataHeader = new UserDataHeaderImpl(this.encodedData);
-            this.encodedData.resetReaderIndex();            
+            this.decodedUserDataHeader = new UserDataHeaderImpl(this.encodedData);                       
         }
 
-        if (this.dataCodingScheme.getIsCompressed()) {
-            // TODO: implement the case with compressed sms message
-            // If this is a signal message - this.decodedMessage can be decoded
-            // If thus is a segment of concatenated message this.decodedMessage should stay null and this case should be
-            // processed by a special static method            
-        } else {
-            switch (this.dataCodingScheme.getCharacterSet()) {
-                case GSM7:
-                    GSMCharset cSet = obtainGsmCharacterSet(this.decodedUserDataHeader);
-                    GSMCharsetDecoder decoder = (GSMCharsetDecoder) cSet.newDecoder();
-                    if (offset > 0) {
-                        int bitOffset = offset * 8;
-                        int septetOffset = (bitOffset - 1) / 7 + 1;
-                        decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(Gsm7EncodingStyle.bit7_sms_style,
-                                this.encodedUserDataLength, septetOffset));
-                    } else
-                        decoder.setGSMCharsetDecodingData(new GSMCharsetDecodingData(Gsm7EncodingStyle.bit7_sms_style,
-                                this.encodedUserDataLength, 0));
-                    ByteBuf bb = Unpooled.wrappedBuffer(this.encodedData);
-                    String bf = null;
-                    try {
-                        bf = decoder.decode(bb);
-                    } catch (CharacterCodingException e) {
-                        // This can not occur
-                    }
-                    if (bf != null)
-                        this.decodedMessage = bf;
-                    else
-                        this.decodedMessage = "";
-                    break;
-
-                case GSM8:
-                    if (gsm8Charset != null) {
-                        ByteBuf buf = this.encodedData;
-                        int len = this.encodedUserDataLength;
-                        if (len > buf.readableBytes())
-                            len = buf.readableBytes();
-                        if (offset > 0) {
-                            if (offset > len)
-                                buf = Unpooled.EMPTY_BUFFER;
-                            else
-                            	buf.skipBytes(offset);                            
-                        }
-                        this.decodedMessage = buf.toString(gsm8Charset);
-                    }
-                    break;
-
-                case UCS2:
-                    ByteBuf buf = this.encodedData;
-                    int len = this.encodedUserDataLength;
-                    if (len > buf.readableBytes())
-                        len = buf.readableBytes();
-                    if (offset > 0) {
-                        if (offset > len)
-                        	 buf = Unpooled.EMPTY_BUFFER;
-                        else 
-                        	buf.skipBytes(offset);
-                    }
-                    this.decodedMessage = buf.toString(ucs2Charset);
-                    break;
-				default:
-					break;
-            }
-        }
+        this.messageWithSkipBits=encodedData.readSlice(encodedData.readableBytes());
     }
 
     private static GSMCharset obtainGsmCharacterSet(UserDataHeader udh) {

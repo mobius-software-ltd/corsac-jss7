@@ -63,15 +63,12 @@ public class GSMCharsetEncoder {
     byte rawData = 0;
 
     protected void encodeLoop(String in, ByteBuf out) {
-        if (this.encodingData != null && this.encodingData.leadingBuffer != null && !this.encodingData.leadingBufferIsEncoded) {
+        if (this.encodingData != null && this.encodingData.leadingBytes != null) {
         	if (this.encodingData.encodingStyle != Gsm7EncodingStyle.bit8_smpp_style) {
-                int septetCount = (this.encodingData.leadingBuffer.readableBytes() * 8 + 6) / 7;
+                int septetCount = (this.encodingData.leadingBytes * 8 + 6) / 7;
                 bitpos = septetCount % 8;
                 this.encodingData.totalSeptetCount = septetCount;
             }
-        	
-        	out.writeBytes(this.encodingData.leadingBuffer);
-            this.encodingData.leadingBufferIsEncoded = true;
         }
 
         char lastChar = ' ';
