@@ -201,6 +201,10 @@ public class MAPSmsTpduParameterFactoryImpl implements MAPSmsTpduParameterFactor
                 gsm8Charset);
     }
 
+    public UserData createUserData(ByteBuf messageWithSkipBits, DataCodingScheme dataCodingScheme, UserDataHeader decodedUserDataHeader, Charset gsm8Charset) {
+    	return new UserDataImpl(messageWithSkipBits, dataCodingScheme, decodedUserDataHeader, gsm8Charset);
+    }
+
     public UserData createUserData(String decodedMessage, DataCodingScheme dataCodingScheme,
             UserDataHeader decodedUserDataHeader, Charset gsm8Charset) {
         return new UserDataImpl(decodedMessage, dataCodingScheme, decodedUserDataHeader, gsm8Charset);
