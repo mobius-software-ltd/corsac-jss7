@@ -74,7 +74,9 @@ public class SmsSignalInfoImpl extends ASNOctetString implements SmsSignalInfo {
     }
 
     public SmsTpduImpl decodeTpdu(boolean mobileOriginatedMessage) throws MAPException {
-        return SmsTpduImpl.createInstance(getValue(), mobileOriginatedMessage, this.getGsm8Charset());
+    	ByteBuf buffer=getValue();
+    	buffer.retain();
+        return SmsTpduImpl.createInstance(buffer, mobileOriginatedMessage, this.getGsm8Charset());
     }
 
     @Override
@@ -85,7 +87,9 @@ public class SmsSignalInfoImpl extends ASNOctetString implements SmsSignalInfo {
 
         boolean moExists = false;
         try {
-            SmsTpduImpl tpdu = SmsTpduImpl.createInstance(getValue(), true, getGsm8Charset());
+        	ByteBuf buffer=getValue();
+        	buffer.retain();
+            SmsTpduImpl tpdu = SmsTpduImpl.createInstance(buffer, true, getGsm8Charset());
             sb.append("MO case: ");
             sb.append(tpdu.toString());
             moExists = true;
@@ -94,7 +98,10 @@ public class SmsSignalInfoImpl extends ASNOctetString implements SmsSignalInfo {
         try {
             if (moExists)
                 sb.append("\n");
-            SmsTpduImpl tpdu = SmsTpduImpl.createInstance(getValue(), false, getGsm8Charset());
+            
+            ByteBuf buffer=getValue();
+        	buffer.retain();
+            SmsTpduImpl tpdu = SmsTpduImpl.createInstance(buffer, false, getGsm8Charset());
             sb.append("MT case: ");
             sb.append(tpdu.toString());
         } catch (MAPException e) {

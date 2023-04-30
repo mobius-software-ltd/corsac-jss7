@@ -1254,6 +1254,9 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
                          perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
                          return;
                     }
+                                        
+                    if(msgErr.getErrorCode()==null)
+                    	msgErr.updateErrorCode(errorCode);
                     
                     inapStack.newErrorReceived(INAPErrorCode.translate(msgErr, errorCode), inapDialogImpl.getNetworkId());
                     perfSer.deliverErrorComponent(inapDialogImpl, comp.getInvokeId(), msgErr);

@@ -1205,6 +1205,9 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
                          return;
                     }
                     
+                    if(msgErr.getErrorCode()==null)
+                    	msgErr.updateErrorCode(errorCode);
+                    
                     stack.newErrorReceived(CAPErrorCode.translate(errorCode),capDialogImpl.getNetworkId());               
                     perfSer.deliverErrorComponent(capDialogImpl, comp.getInvokeId(), msgErr);
                     return;

@@ -49,6 +49,11 @@ public abstract class CAPErrorMessageImpl implements CAPErrorMessage {
     }
 
     @Override
+    public void updateErrorCode(Integer errorCode) {
+    	this.errorCode = errorCode;
+    }
+    
+    @Override
     public boolean isEmParameterless() {
         return false;
     }

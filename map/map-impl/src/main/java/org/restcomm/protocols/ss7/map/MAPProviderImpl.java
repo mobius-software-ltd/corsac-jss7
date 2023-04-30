@@ -2029,6 +2029,9 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
                          return;
                     }
                     
+                    if(msgErr.getErrorCode()==null)
+                    	msgErr.updateErrorCode(errorCode);
+                    
                     mapStack.newErrorReceived(MAPErrorCode.translate(errorCode), mapDialogImpl.getNetworkId());               
                     perfSer.deliverErrorComponent(mapDialogImpl, comp.getInvokeId(), msgErr);                    
                     return;

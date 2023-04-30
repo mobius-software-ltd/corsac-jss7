@@ -28,6 +28,8 @@ package org.restcomm.protocols.ss7.inap.api.errors;
 public interface INAPErrorMessage {
    Integer getErrorCode();
 
+   void updateErrorCode(Integer errorCode);
+   
    boolean isEmParameterless();
 
    boolean isEmCancelFailed();

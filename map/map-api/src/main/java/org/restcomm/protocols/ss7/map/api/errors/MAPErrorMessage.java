@@ -30,6 +30,8 @@ public interface MAPErrorMessage {
 
     Integer getErrorCode();
     
+    void updateErrorCode(Integer errorCode);
+    
     boolean isEmParameterless();
 
     boolean isEmExtensionContainer();

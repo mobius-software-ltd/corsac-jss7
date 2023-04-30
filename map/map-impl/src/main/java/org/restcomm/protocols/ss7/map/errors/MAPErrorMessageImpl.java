@@ -54,6 +54,11 @@ public abstract class MAPErrorMessageImpl implements MAPErrorMessage {
         this.errorCode=errorCode;
     }
 
+    @Override
+    public void updateErrorCode(Integer errorCode) {
+    	this.errorCode = errorCode;
+    }
+
     public MAPErrorMessageImpl() {
     }
     

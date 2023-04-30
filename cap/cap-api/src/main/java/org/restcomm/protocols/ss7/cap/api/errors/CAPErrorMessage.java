@@ -34,6 +34,8 @@ public interface CAPErrorMessage {
 
     Integer getErrorCode();
 
+    void updateErrorCode(Integer errorCode);
+    
     boolean isEmParameterless();
 
     boolean isEmCancelFailed();

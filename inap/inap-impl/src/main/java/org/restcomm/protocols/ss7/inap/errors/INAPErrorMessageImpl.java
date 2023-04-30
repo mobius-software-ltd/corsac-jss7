@@ -44,6 +44,11 @@ public abstract class INAPErrorMessageImpl implements INAPErrorMessage {
     }
 
     @Override
+    public void updateErrorCode(Integer errorCode) {
+    	this.errorCode = errorCode;
+    }
+
+    @Override
     public Integer getErrorCode() {
         return errorCode;
     }
