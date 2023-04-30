@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>sccp-parent</artifactId>
 		<groupId>com.mobius-software.protocols.ss7.sccp</groupId>
-		<version>10.0.25</version>
+		<version>10.0.26-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>sccp-impl</artifactId>
