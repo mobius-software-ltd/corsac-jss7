@@ -124,8 +124,6 @@ public class UserDataHeaderImpl implements UserDataHeader {
         if (data.size() == 0)
             return;
         
-        int index=buf.writerIndex();
-        buf.writeByte(0);
         for (int id : data.keySet()) {
             ByteBuf innerData = data.get(id);
 
@@ -136,10 +134,7 @@ public class UserDataHeaderImpl implements UserDataHeader {
             	buf.writeByte(innerData.readableBytes());
             	buf.writeBytes(innerData);
             }
-        }
-
-        int newIndex=buf.writerIndex();
-        buf.setByte(index, newIndex-index-1);        
+        }     
     }
 
     public Map<Integer, ByteBuf> getAllData() {
