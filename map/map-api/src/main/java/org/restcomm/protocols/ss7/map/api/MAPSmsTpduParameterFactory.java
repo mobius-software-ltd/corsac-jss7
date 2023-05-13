@@ -123,6 +123,8 @@ public interface MAPSmsTpduParameterFactory {
 
     UserDataHeader createUserDataHeader(ByteBuf encodedData);
 
+    UserDataHeader createUserDataHeader(ByteBuf encodedData, int length);
+
     UserData createUserData(ByteBuf encodedData, DataCodingScheme dataCodingScheme, int encodedUserDataLength,
             boolean encodedUserDataHeaderIndicator, Charset gsm8Charset);
 

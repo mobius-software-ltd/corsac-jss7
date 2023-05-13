@@ -59,6 +59,24 @@ public class UserDataHeaderImpl implements UserDataHeader {
                 data.put(id, encodedData.readSlice(len));             
         }
     }
+   
+   public UserDataHeaderImpl(ByteBuf encodedData, int length) {
+       if (encodedData == null || encodedData.readableBytes() < 1)
+           return;
+       //we just read it
+       int udhl = length;
+       if (udhl > encodedData.readableBytes())
+           udhl = encodedData.readableBytes();
+       
+       while (udhl>0) {
+           int id = encodedData.readByte();
+           int len = encodedData.readByte();
+           udhl-=2;
+           udhl-=len;
+           if (len <= encodedData.readableBytes())
+               data.put(id, encodedData.readSlice(len));             
+       }
+   }
 
    	public int getLength() {
    		if (data.size() == 0)
@@ -79,6 +97,29 @@ public class UserDataHeaderImpl implements UserDataHeader {
    	}
   
    	public void getEncodedData(ByteBuf buf) {
+
+        if (data.size() == 0)
+            return;
+        
+        int index=buf.writerIndex();
+        buf.writeByte(0);
+        for (int id : data.keySet()) {
+            ByteBuf innerData = data.get(id);
+
+            buf.writeByte(id);
+            if (innerData == null)
+            	buf.writeByte(0);
+            else {
+            	buf.writeByte(innerData.readableBytes());
+            	buf.writeBytes(innerData);
+            }
+        }
+
+        int newIndex=buf.writerIndex();
+        buf.setByte(index, newIndex-index-1);        
+    }
+   	
+   	public void getEncodedDataWithoutLength(ByteBuf buf) {
 
         if (data.size() == 0)
             return;

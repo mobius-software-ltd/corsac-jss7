@@ -39,6 +39,8 @@ public interface UserDataHeader {
 
     void getEncodedData(ByteBuf buf);
 
+    void getEncodedDataWithoutLength(ByteBuf buf);
+
     Map<Integer, ByteBuf> getAllData();
 
     int getLength();

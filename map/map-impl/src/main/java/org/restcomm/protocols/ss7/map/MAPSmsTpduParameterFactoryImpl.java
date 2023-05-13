@@ -195,6 +195,10 @@ public class MAPSmsTpduParameterFactoryImpl implements MAPSmsTpduParameterFactor
         return new UserDataHeaderImpl(encodedData);
     }
 
+    public UserDataHeader createUserDataHeader(ByteBuf encodedData,int length) {
+        return new UserDataHeaderImpl(encodedData,length);
+    }
+
     public UserData createUserData(ByteBuf encodedData, DataCodingScheme dataCodingScheme, int encodedUserDataLength,
             boolean encodedUserDataHeaderIndicator, Charset gsm8Charset) {
         return new UserDataImpl(encodedData, dataCodingScheme, encodedUserDataLength, encodedUserDataHeaderIndicator,

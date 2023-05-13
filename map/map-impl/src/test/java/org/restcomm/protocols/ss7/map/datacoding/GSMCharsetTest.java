@@ -238,7 +238,7 @@ public class GSMCharsetTest {
         buffer.readBytes(data);
         
         assertEquals(data, new byte[] { 64, 4, -111, 17, 17, 0, 0, 81, 80, 33, 32, 2, 17, 0, 11, 5, 0, 3, 5, 1, 3, -112, 101,
-                54, 27 });
+                54, 27 });          
     }
 
     @Test(groups = { "datacoding" })
@@ -381,5 +381,4 @@ public class GSMCharsetTest {
 
         this.doTestEncode(msg, encodedDataGsm, Gsm7EncodingStyle.bit8_smpp_style, null, 0);
     }
-
 }
