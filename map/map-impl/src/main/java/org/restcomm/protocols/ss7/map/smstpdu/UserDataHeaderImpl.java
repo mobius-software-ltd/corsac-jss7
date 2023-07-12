@@ -56,7 +56,7 @@ public class UserDataHeaderImpl implements UserDataHeader {
             udhl-=2;
             udhl-=len;
             if (len <= encodedData.readableBytes())
-                data.put(id, encodedData.readSlice(len));             
+                data.put(id, encodedData.readSlice(len));            
         }
     }
    
@@ -74,7 +74,7 @@ public class UserDataHeaderImpl implements UserDataHeader {
            udhl-=2;
            udhl-=len;
            if (len <= encodedData.readableBytes())
-               data.put(id, encodedData.readSlice(len));             
+               data.put(id, encodedData.readSlice(len));           
        }
    }
 

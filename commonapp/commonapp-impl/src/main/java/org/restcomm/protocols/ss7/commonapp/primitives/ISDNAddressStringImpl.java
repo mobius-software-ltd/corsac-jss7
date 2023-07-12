@@ -37,15 +37,15 @@ ISDN-AddressString ::= AddressString (SIZE (1..maxISDN-AddressLength))
 */
 public class ISDNAddressStringImpl extends AddressStringImpl implements ISDNAddressString {
 	public ISDNAddressStringImpl() {
-		super(8);
+		super(9);
     }
 
 	public ISDNAddressStringImpl(AddressNature addressNature, NumberingPlan numberingPlan, String address) {
-        super(8,addressNature, numberingPlan, address);
+        super(9,addressNature, numberingPlan, address);
     }
 
     public ISDNAddressStringImpl(boolean extension, AddressNature addressNature, NumberingPlan numberingPlan, String address) {
-        super(8,extension, addressNature, numberingPlan, address);
+        super(9,extension, addressNature, numberingPlan, address);
     }
 
     @Override
