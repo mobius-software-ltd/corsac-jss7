@@ -50,6 +50,7 @@ public abstract class DialogIndicationImpl implements DialogIndication {
     protected DialogIndicationImpl(EventType type,ByteBuf originalBuffer) {
         super();
         this.type = type;
+        this.originalBuffer = originalBuffer;
     }
 
     /**
