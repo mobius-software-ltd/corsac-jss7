@@ -83,6 +83,7 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.AS
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.CallingPartyBusinessGroupIDImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.CallingPartySubaddressImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.IPAvailableImpl;
+import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ServiceInteractionIndicatorsImpl;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.primitives.ServiceProfileIdentifierImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.BackwardGVNSImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ForwardCallIndicatorsImpl;
@@ -157,7 +158,7 @@ public class InitialDPRequestImpl extends CircuitSwitchedCallMessageImpl impleme
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 23,constructed = false,index = -1, defaultImplementation = HighLayerCompatibilityIsupImpl.class)
     private HighLayerCompatibilityIsup highLayerCompatibility;
     
-    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 24,constructed = false,index = -1, defaultImplementation = ServiceInteractionIndicators.class)
+    @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 24,constructed = false,index = -1, defaultImplementation = ServiceInteractionIndicatorsImpl.class)
     private ServiceInteractionIndicators serviceInteractionIndicators;
     
     @ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag = 25,constructed = false,index = -1, defaultImplementation = DigitsIsupImpl.class)
