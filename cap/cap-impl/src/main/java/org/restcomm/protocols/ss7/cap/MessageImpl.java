@@ -64,6 +64,10 @@ public abstract class MessageImpl implements CAPMessage {
     	this.originalBuffer=buffer;
     }
     
+    public ByteBuf getOriginalBuffer() {
+    	return this.originalBuffer;
+    }
+    
     public void retain() {
     	if(originalBuffer!=null)
     		ReferenceCountUtil.retain(originalBuffer);

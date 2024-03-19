@@ -76,6 +76,11 @@ public class ASNBitString
 	}
 	
 	public void setBit(int index) {
+		if(isBitSet(index)) {
+			//do not allow setting second time
+			return;
+		}
+		
 		if(maxBitUsed!=null && maxBitUsed<index)
 			maxBitUsed=index;
 		

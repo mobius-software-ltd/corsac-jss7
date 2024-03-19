@@ -68,6 +68,10 @@ public abstract class MessageImpl implements MAPMessage {
     	this.originalBuffer=buffer;
     }
     
+    public ByteBuf getOriginalBuffer() {
+    	return this.originalBuffer;
+    }
+    
     public void retain() {
     	if(originalBuffer!=null)
     		ReferenceCountUtil.retain(originalBuffer);

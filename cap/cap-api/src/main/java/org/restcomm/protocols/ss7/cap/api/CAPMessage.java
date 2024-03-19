@@ -50,6 +50,8 @@ public interface CAPMessage extends Serializable {
      
      void setOriginalBuffer(ByteBuf buffer);
      
+     ByteBuf getOriginalBuffer();
+     
      void retain();
      
      void release();
