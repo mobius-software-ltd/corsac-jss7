@@ -82,7 +82,6 @@ public class SccpStackImplProxy extends SccpStackImpl {
         // initiating of SCCP delivery executors
 
         int maxSls = 16;
-        slsFilter = 0x0f;
         this.slsTable = new int[maxSls];
         this.createSLSTable(maxSls, this.deliveryTransferMessageThreadCount);
         

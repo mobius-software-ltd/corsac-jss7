@@ -23,6 +23,21 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.CLOSED;
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.CONNECTION_INITIATED;
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.CR_RECEIVED;
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.DISCONNECT_INITIATED;
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.ESTABLISHED;
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.ESTABLISHED_SEND_WINDOW_EXHAUSTED;
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.NEW;
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.RSR_PROPAGATED_VIA_COUPLED;
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.RSR_RECEIVED;
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.RSR_RECEIVED_WILL_PROPAGATE;
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.RSR_SENT;
+
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.SccpConnectionState;
@@ -49,21 +64,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 import io.netty.buffer.ByteBuf;
-
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.CLOSED;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.CONNECTION_INITIATED;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.CR_RECEIVED;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.DISCONNECT_INITIATED;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.ESTABLISHED;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.ESTABLISHED_SEND_WINDOW_EXHAUSTED;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.NEW;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.RSR_PROPAGATED_VIA_COUPLED;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.RSR_RECEIVED;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.RSR_RECEIVED_WILL_PROPAGATE;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.RSR_SENT;
 /**
  * 
  * @author yulianoifa
@@ -153,7 +153,7 @@ public abstract class SccpConnectionBaseImpl {
         setState(SccpConnectionState.ESTABLISHED);
     }
 
-    protected void sendErr(ErrorCause cause) throws Exception {
+    public void sendErr(ErrorCause cause) throws Exception {
         SccpConnErrMessageImpl err = new SccpConnErrMessageImpl(sls, localSsn);
         err.setDestinationLocalReferenceNumber(remoteReference);
         err.setSourceLocalReferenceNumber(localReference);
@@ -162,7 +162,7 @@ public abstract class SccpConnectionBaseImpl {
         sendMessage(err);
     }
 
-    protected void sendMessage(SccpConnMessage message) throws Exception {
+    public void sendMessage(SccpConnMessage message) throws Exception {
         if (message instanceof SccpConnSegmentableMessageImpl) { // data message
             prepareMessageForSending((SccpConnSegmentableMessageImpl) message);
         }

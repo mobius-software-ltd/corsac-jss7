@@ -120,7 +120,7 @@ public class SccpManagementProxy extends SccpManagement {
     }
 
     @Override
-    protected void recdMsgForProhibitedSsn(SccpMessage msg, int ssn) {
+    public void recdMsgForProhibitedSsn(SccpMessage msg, int ssn) {
 
         super.recdMsgForProhibitedSsn(msg, ssn);
     }

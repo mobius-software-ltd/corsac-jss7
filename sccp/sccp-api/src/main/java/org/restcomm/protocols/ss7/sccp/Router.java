@@ -24,6 +24,8 @@ package org.restcomm.protocols.ss7.sccp;
 
 import java.util.Map;
 
+import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
+
 /**
  *
  * @author Amit Bhayani
@@ -67,4 +69,13 @@ public interface Router {
 
     boolean spcIsLocal(int spc);
 
+    public Rule findRule(SccpAddress calledParty, SccpAddress callingParty, boolean isMtpOriginated, int msgNetworkId);
+
+    public LongMessageRule findLongMessageRule(int dpc);
+
+    public Mtp3ServiceAccessPoint findMtp3ServiceAccessPoint(int dpc, int sls);
+    
+    public Mtp3ServiceAccessPoint findMtp3ServiceAccessPoint(int dpc, int sls, int networkId);
+    
+    public Mtp3ServiceAccessPoint findMtp3ServiceAccessPointForIncMes(int localPC, int remotePC, String localGtDigits);
 }

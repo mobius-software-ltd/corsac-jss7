@@ -44,7 +44,7 @@ abstract class SccpConnectionWithTransmitQueueImpl extends SccpConnectionBaseImp
         super(sls, localSsn, localReference, protocol, stack, sccpRoutingControl);
     }
 
-    protected void sendMessage(SccpConnMessage message) throws Exception {
+    public void sendMessage(SccpConnMessage message) throws Exception {
         if (stack.state != SccpStackImpl.State.RUNNING) {
             logger.error("Trying to send SCCP message from SCCP user but SCCP stack is not RUNNING");
             return;

@@ -168,12 +168,12 @@ public class DialogImpl implements Dialog {
 
     protected boolean isSwapTcapIdBytes;
     
-    protected static int getIndexFromInvokeId(Integer l) {
+    public static int getIndexFromInvokeId(Integer l) {
         int tmp = l.intValue();
         return tmp + _INVOKE_TABLE_SHIFT;
     }
 
-    protected static Integer getInvokeIdFromIndex(int index) {
+    public static Integer getInvokeIdFromIndex(int index) {
         int tmp = index - _INVOKE_TABLE_SHIFT;
         return tmp;
     }
@@ -1275,7 +1275,7 @@ public class DialogImpl implements Dialog {
     /**
      * @param remoteTransactionId the remoteTransactionId to set
      */
-    void setRemoteTransactionId(Long remoteTransactionId) {
+    public void setRemoteTransactionId(Long remoteTransactionId) {
         this.remoteTransactionIdObject = remoteTransactionId;        
     }
 
@@ -1633,7 +1633,7 @@ public class DialogImpl implements Dialog {
         }
     }
 
-    protected void sendAbnormalDialog() {
+    public void sendAbnormalDialog() {
         TCPAbortIndication tcAbortIndication = null;
         try {
             if (this.remoteTransactionIdObject == null) {

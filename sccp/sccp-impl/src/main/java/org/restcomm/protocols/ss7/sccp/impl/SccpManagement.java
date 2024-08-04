@@ -315,7 +315,7 @@ public class SccpManagement {
         }
     }
 
-    protected void recdMsgForProhibitedSsn(SccpMessage msg, int ssn) {
+    public void recdMsgForProhibitedSsn(SccpMessage msg, int ssn) {
 
         // we do not send new SSP's to the same DPC+SSN during the one second
         // interval

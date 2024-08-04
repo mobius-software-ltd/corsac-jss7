@@ -195,7 +195,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 
     protected ScheduledExecutorService msgDeliveryExecutors;
     
-    protected int slsFilter = 0x0f;
+    public static final int slsFilter = 0x0f;
     protected int[] slsTable = null;
 
     // protected int localSpc;
@@ -614,12 +614,16 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
     }
 
     public void start() throws IllegalStateException {
+    	start(new SccpRoutingControl(sccpProvider, this));
+    }
+    
+    public void start(SccpRoutingControl routingControl) throws IllegalStateException {
         logger.info("Starting ...");
 
         // FIXME: make this configurable
         // FIXME: move creation to constructor ?
         this.sccpManagement = new SccpManagement(name, sccpProvider, this);
-        this.sccpRoutingControl = new SccpRoutingControl(sccpProvider, this);
+        this.sccpRoutingControl = routingControl;
         
         this.sccpManagement.setSccpRoutingControl(sccpRoutingControl);
         this.sccpRoutingControl.setSccpManagement(sccpManagement);
@@ -642,7 +646,6 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
         // TODO: we do it for ITU standard, may be we may configure it for other standard's (different SLS count) maxSls and
         // slsFilter values initiating
         int maxSls = 16;
-        slsFilter = 0x0f;
         this.slsTable = new int[maxSls];
         this.createSLSTable(maxSls, this.deliveryTransferMessageThreadCount);
         
@@ -1304,7 +1307,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
         }
     }
     
-    protected void sendMessageToMTP(SccpMessage message,Mtp3UserPart mup,Mtp3TransferPrimitive mtp3Message) throws IOException {
+    public void sendMessageToMTP(SccpMessage message,Mtp3UserPart mup,Mtp3TransferPrimitive mtp3Message) throws IOException {
     	messagesSentByType.get(SccpMessageImpl.getName(message.getType())).incrementAndGet();
      	bytesSentByType.get(SccpMessageImpl.getName(message.getType())).addAndGet(mtp3Message.getData().readableBytes());
      	

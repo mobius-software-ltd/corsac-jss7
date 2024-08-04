@@ -98,7 +98,7 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
         super.receiveMessage(message);
     }
 
-    protected void sendMessage(SccpConnMessage message) throws Exception {
+    public void sendMessage(SccpConnMessage message) throws Exception {
         if (stack.state != SccpStackImpl.State.RUNNING) {
             logger.error("Trying to send SCCP message from SCCP user but SCCP stack is not RUNNING");
             return;

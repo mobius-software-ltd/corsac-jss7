@@ -26,6 +26,7 @@ package org.restcomm.protocols.ss7.sccp.impl.message;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
+import org.restcomm.protocols.ss7.sccp.SccpStack;
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ProtocolClassImpl;
 import org.restcomm.protocols.ss7.sccp.message.MessageFactory;
@@ -55,21 +56,21 @@ public class MessageFactoryImpl implements MessageFactory {
 
 	private static final Logger logger = LogManager.getLogger(MessageFactoryImpl.class);
 
-    private transient SccpStackImpl sccpStackImpl;
+    private transient SccpStack sccpStack;
 
-    public MessageFactoryImpl(SccpStackImpl sccpStackImpl) {
-        this.sccpStackImpl = sccpStackImpl;
+    public MessageFactoryImpl(SccpStackImpl sccpStack) {
+        this.sccpStack = sccpStack;
     }
 
     public SccpDataMessage createDataMessageClass0(SccpAddress calledParty, SccpAddress callingParty, ByteBuf data,
             int localSsn, boolean returnMessageOnError, HopCounter hopCounter, Importance importance) {
-        return new SccpDataMessageImpl( this.sccpStackImpl.getMaxDataMessage(),new ProtocolClassImpl(0, returnMessageOnError),
-                sccpStackImpl.newSls(), localSsn, calledParty, callingParty, data, hopCounter, importance);
+        return new SccpDataMessageImpl( this.sccpStack.getMaxDataMessage(),new ProtocolClassImpl(0, returnMessageOnError),
+        		sccpStack.newSls(), localSsn, calledParty, callingParty, data, hopCounter, importance);
     }
 
     public SccpDataMessage createDataMessageClass1(SccpAddress calledParty, SccpAddress callingParty, ByteBuf data, int sls,
             int localSsn, boolean returnMessageOnError, HopCounter hopCounter, Importance importance) {
-        return new SccpDataMessageImpl( this.sccpStackImpl.getMaxDataMessage(),new ProtocolClassImpl(1, returnMessageOnError), sls, localSsn,
+        return new SccpDataMessageImpl( this.sccpStack.getMaxDataMessage(),new ProtocolClassImpl(1, returnMessageOnError), sls, localSsn,
                 calledParty, callingParty, data, hopCounter, importance);
     }
 
@@ -88,12 +89,12 @@ public class MessageFactoryImpl implements MessageFactory {
                 break;
         }
 
-        return new SccpNoticeMessageImpl(this.sccpStackImpl.getMaxDataMessage(), type, returnCause, calledParty, callingParty, data, hopCounter,
+        return new SccpNoticeMessageImpl(this.sccpStack.getMaxDataMessage(), type, returnCause, calledParty, callingParty, data, hopCounter,
                 importance);
     }
 
     public SccpConnCrMessage createConnectMessageClass2(int localSsn, SccpAddress calledAddress, SccpAddress callingAddress, ByteBuf data, Importance importance) {
-        SccpConnCrMessageImpl message = new SccpConnCrMessageImpl(sccpStackImpl.newSls(), localSsn, calledAddress, callingAddress, null);
+        SccpConnCrMessageImpl message = new SccpConnCrMessageImpl(sccpStack.newSls(), localSsn, calledAddress, callingAddress, null);
         message.setCalledPartyAddress(calledAddress);
         message.setCallingPartyAddress(callingAddress);
         message.setProtocolClass(new ProtocolClassImpl(2));
@@ -103,7 +104,7 @@ public class MessageFactoryImpl implements MessageFactory {
     }
 
     public SccpConnCrMessage createConnectMessageClass3(int localSsn, SccpAddress calledAddress, SccpAddress callingAddress, Credit credit, ByteBuf data, Importance importance) {
-        SccpConnCrMessageImpl message = new SccpConnCrMessageImpl(sccpStackImpl.newSls(), localSsn, calledAddress, callingAddress, null);
+        SccpConnCrMessageImpl message = new SccpConnCrMessageImpl(sccpStack.newSls(), localSsn, calledAddress, callingAddress, null);
         message.setCalledPartyAddress(calledAddress);
         message.setCallingPartyAddress(callingAddress);
         message.setProtocolClass(new ProtocolClassImpl(3));
@@ -120,13 +121,13 @@ public class MessageFactoryImpl implements MessageFactory {
             case SccpMessage.MESSAGE_TYPE_UDT:
             case SccpMessage.MESSAGE_TYPE_XUDT:
             case SccpMessage.MESSAGE_TYPE_LUDT:
-                msg = new SccpDataMessageImpl(this.sccpStackImpl.getMaxDataMessage(), type, opc, dpc, sls, networkId);
+                msg = new SccpDataMessageImpl(this.sccpStack.getMaxDataMessage(), type, opc, dpc, sls, networkId);
                 break;
 
             case SccpMessage.MESSAGE_TYPE_UDTS:
             case SccpMessage.MESSAGE_TYPE_XUDTS:
             case SccpMessage.MESSAGE_TYPE_LUDTS:
-                msg = new SccpNoticeMessageImpl(this.sccpStackImpl.getMaxDataMessage(), type, opc, dpc, sls, networkId);
+                msg = new SccpNoticeMessageImpl(this.sccpStack.getMaxDataMessage(), type, opc, dpc, sls, networkId);
                 break;
 
             case SccpMessage.MESSAGE_TYPE_CR:
@@ -150,11 +151,11 @@ public class MessageFactoryImpl implements MessageFactory {
                 break;
 
             case SccpMessage.MESSAGE_TYPE_DT1:
-                msg = new SccpConnDt1MessageImpl(this.sccpStackImpl.getMaxDataMessage(), opc, dpc, sls, networkId);
+                msg = new SccpConnDt1MessageImpl(this.sccpStack.getMaxDataMessage(), opc, dpc, sls, networkId);
                 break;
 
             case SccpMessage.MESSAGE_TYPE_DT2:
-                msg = new SccpConnDt2MessageImpl(this.sccpStackImpl.getMaxDataMessage(), opc, dpc, sls, networkId);
+                msg = new SccpConnDt2MessageImpl(this.sccpStack.getMaxDataMessage(), opc, dpc, sls, networkId);
                 break;
 
             case SccpMessage.MESSAGE_TYPE_AK:
@@ -179,7 +180,7 @@ public class MessageFactoryImpl implements MessageFactory {
         }
 
         if (msg != null) {
-            msg.decode(buffer, sccpStackImpl.getSccpProvider().getParameterFactory(), sccpProtocolVersion);
+            msg.decode(buffer, sccpStack.getSccpProvider().getParameterFactory(), sccpProtocolVersion);
         } else if (logger.isWarnEnabled()) {
             logger.warn("No message implementation for MT: " + type);
         }

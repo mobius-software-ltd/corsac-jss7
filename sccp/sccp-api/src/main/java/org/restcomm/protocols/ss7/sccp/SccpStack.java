@@ -378,6 +378,8 @@ public interface SccpStack {
      */
     Router getRouter();
     
+    int newSls();
+    
     Map<String,Long> getMessagesSentByType();
     
     Map<String,Long> getMessagesReceivedByType();

@@ -47,7 +47,7 @@ public class SccpConnectionImpl extends SccpConnectionWithCouplingImpl implement
     	super.receiveMessage(message);
     }
 
-    protected void sendMessage(SccpConnMessage message) throws Exception {
+    public void sendMessage(SccpConnMessage message) throws Exception {
     	super.sendMessage(message);
     }
 

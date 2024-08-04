@@ -25,9 +25,11 @@ package org.restcomm.protocols.ss7.sccp.message;
 
 import java.io.Serializable;
 
+import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.parameter.Credit;
 import org.restcomm.protocols.ss7.sccp.parameter.HopCounter;
 import org.restcomm.protocols.ss7.sccp.parameter.Importance;
+import org.restcomm.protocols.ss7.sccp.parameter.ReturnCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 import io.netty.buffer.ByteBuf;
@@ -100,4 +102,33 @@ public interface MessageFactory extends Serializable {
      * @return
      */
     SccpConnCrMessage createConnectMessageClass3(int localSsn, SccpAddress calledParty, SccpAddress callingParty, Credit credit, ByteBuf data, Importance importance);
+    
+    /**
+    * Create a SCCP notice message
+    *
+    * @param origMsgType
+    * @param returnCause
+    * @param calledParty
+    * @param callingParty
+    * @param data
+    * @param hopCounter
+    * @param importance
+    * @return
+    */
+   public SccpNoticeMessage createNoticeMessage(int origMsgType, ReturnCause returnCause, SccpAddress calledParty,
+            SccpAddress callingParty, ByteBuf data, HopCounter hopCounter, Importance importance);
+    
+    /**
+     * Create a SCCP message
+     *
+     * @param type
+     * @param opc
+     * @param dpc
+     * @param sls
+     * @param buffer
+     * @param sccpProtocolVersion
+     * @param networkId
+     * @return
+     */
+    public SccpMessage createMessage(int type, int opc, int dpc, int sls, ByteBuf buffer, final SccpProtocolVersion sccpProtocolVersion, int networkId) throws ParseException;    
 }

@@ -115,11 +115,11 @@ public class SccpProviderImpl implements SccpProvider, Serializable {
     	this.managementEventListeners.remove(key);
     }
 
-    protected SccpListener getSccpListener(int ssn) {
+    public SccpListener getSccpListener(int ssn) {
         return ssnToListener.get(ssn);
     }
 
-    protected ConcurrentHashMap<Integer, SccpListener> getAllSccpListeners() {
+    public ConcurrentHashMap<Integer, SccpListener> getAllSccpListeners() {
         return ssnToListener;
     }
 

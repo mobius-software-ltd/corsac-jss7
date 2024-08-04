@@ -1154,7 +1154,7 @@ public class SccpRoutingControl {
             // we need to make asynch delivering for local user originated messages
             int seqControl = msg.getSls();
             SccpTransferDeliveryHandler hdl = new SccpTransferDeliveryHandler(msg, listener);
-            seqControl = seqControl & this.sccpStackImpl.slsFilter;
+            seqControl = seqControl & SccpStackImpl.slsFilter;
             //ok here we need to retain again for 2 options SccpConnCrMessageImpl,SccpSegmentableMessageImpl
             //most likely some if not all would be handled by direct onMessage several rows higher , but
             //need to make sure all are handled

@@ -731,7 +731,7 @@ public class TCAPStackImpl implements TCAPStack {
 		return result.get();
 	}
 	
-	protected void newIncomingDialogProcessed(int networkID) {
+	public void newIncomingDialogProcessed(int networkID) {
 		incomingDialogsProcessed.incrementAndGet();
 		
 		AtomicLong incomingDialogsProcessed = incomingDialogsProcessedByNetwork.get(networkID);
@@ -745,7 +745,7 @@ public class TCAPStackImpl implements TCAPStack {
 		incomingDialogsProcessed.incrementAndGet();
 	}
 	
-	protected void newOutgoingDialogProcessed(int networkID) {
+	public void newOutgoingDialogProcessed(int networkID) {
 		outgoingDialogsProcessed.incrementAndGet();
 		
 		AtomicLong outgoingDialogsProcessed = outgoingDialogsProcessedByNetwork.get(networkID);
@@ -759,7 +759,7 @@ public class TCAPStackImpl implements TCAPStack {
 		outgoingDialogsProcessed.incrementAndGet();
 	}
 	
-	protected void newComponentSent(String componentName,int networkID) {
+	public void newComponentSent(String componentName,int networkID) {
 		componentsSentByType.get(componentName).incrementAndGet();
 		
 		ConcurrentHashMap<String,AtomicLong> componentsSentByType =componentsSentByTypeAndNetwork.get(networkID);
@@ -776,7 +776,7 @@ public class TCAPStackImpl implements TCAPStack {
 		componentsSentByType.get(componentName).incrementAndGet();	
 	}
 	
-	protected void newComponentReceived(String componentName,int networkID) {
+	public void newComponentReceived(String componentName,int networkID) {
 		componentsReceivedByType.get(componentName).incrementAndGet();
 		
 		ConcurrentHashMap<String,AtomicLong> componentsReceivedByType =componentsReceivedByTypeAndNetwork.get(networkID);
@@ -819,7 +819,7 @@ public class TCAPStackImpl implements TCAPStack {
 		rejectsSentByType.get(rejectReason).incrementAndGet();	
 	}
 	
-	protected void newRejectReceived(String rejectReason,int networkID) {
+	public void newRejectReceived(String rejectReason,int networkID) {
 		rejectsReceivedByType.get(rejectReason).incrementAndGet();
 		
 		ConcurrentHashMap<String,AtomicLong> rejectsReceivedByType =rejectsReceivedByTypeAndNetwork.get(networkID);
@@ -845,7 +845,7 @@ public class TCAPStackImpl implements TCAPStack {
 		rejectsReceivedByType.get(rejectReason).incrementAndGet();	
 	}
 	
-	protected void newAbortSent(String abortCause,int networkID) {
+	public void newAbortSent(String abortCause,int networkID) {
 		abortsSentByType.get(abortCause).incrementAndGet();
 		
 		ConcurrentHashMap<String,AtomicLong> abortsSentByType =abortsSentByTypeAndNetwork.get(networkID);
@@ -864,7 +864,7 @@ public class TCAPStackImpl implements TCAPStack {
 		abortsSentByType.get(abortCause).incrementAndGet();
 	}
 	
-	protected void newAbortReceived(String abortCause,Integer networkID) {
+	public void newAbortReceived(String abortCause,Integer networkID) {
 		abortsReceivedByType.get(abortCause).incrementAndGet();
 		
 		if(networkID!=null) {
@@ -885,7 +885,7 @@ public class TCAPStackImpl implements TCAPStack {
 		}
 	}
 	
-	protected void newMessageSent(String messageType,int bytes,int networkID) {
+	public void newMessageSent(String messageType,int bytes,int networkID) {
 		messagesSentByType.get(messageType).incrementAndGet();
 		bytesSent.addAndGet(bytes);
 		
@@ -913,7 +913,7 @@ public class TCAPStackImpl implements TCAPStack {
 		bytesSent.addAndGet(bytes);		
 	}
 	
-	protected void newMessageReceived(String messageType,int bytes,int networkID) {
+	public void newMessageReceived(String messageType,int bytes,int networkID) {
 		messagesReceivedByType.get(messageType).incrementAndGet();
 		bytesReceived.addAndGet(bytes);
 		
@@ -941,7 +941,7 @@ public class TCAPStackImpl implements TCAPStack {
 		bytesReceived.addAndGet(bytes);		
 	}
 	
-	protected void dialogTimedOut(int networkID) {
+	public void dialogTimedOut(int networkID) {
 		dialogTimeoutProcessed.incrementAndGet();
 		
 		AtomicLong dialogTimeoutProcessed = dialogTimeoutProcessedByNetwork.get(networkID);
@@ -955,7 +955,7 @@ public class TCAPStackImpl implements TCAPStack {
 		dialogTimeoutProcessed.incrementAndGet();
 	}
 	
-	protected void invokeTimedOut(int networkID) {
+	public void invokeTimedOut(int networkID) {
 		invokeTimeoutProcessed.incrementAndGet();
 		
 		AtomicLong invokeTimeoutProcessed = invokeTimeoutProcessedByNetwork.get(networkID);

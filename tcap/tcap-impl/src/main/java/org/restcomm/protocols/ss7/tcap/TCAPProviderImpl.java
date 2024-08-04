@@ -561,7 +561,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
         lstUserPartCongestionLevel.clear();
     }
 
-    void stop() {
+    public void stop() {
         this.sccpProvider.deregisterSccpListener(ssn);
 
         if(this.stack.getExtraSsns()!=null) {
