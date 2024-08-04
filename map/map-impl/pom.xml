@@ -55,6 +55,10 @@
 			<groupId>com.mobius-software.protocols.ss7.mtp</groupId>
 			<artifactId>mtp</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.mobius-software.protocols.ss7.common</groupId>
+			<artifactId>validator</artifactId>			
+		</dependency>
 	</dependencies>
 
 	<build>

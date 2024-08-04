@@ -740,7 +740,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
         IDLE, CONFIGURED, RUNNING;
     }
 
-    protected SccpConnectionImpl newConnection(int localSsn, ProtocolClass protocol) throws MaxConnectionCountReached {
+    public SccpConnectionImpl newConnection(int localSsn, ProtocolClass protocol) throws MaxConnectionCountReached {
         SccpConnectionImpl conn;
         Integer refNumber = newReferenceNumber();
 
@@ -757,7 +757,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
         return conn;
     }
 
-    protected void removeConnection(LocalReference ref) {
+    public void removeConnection(LocalReference ref) {
         SccpConnectionImpl conn = (SccpConnectionImpl)connections.remove(ref.getValue());
         if (conn != null) {
             conn.stopTimers();

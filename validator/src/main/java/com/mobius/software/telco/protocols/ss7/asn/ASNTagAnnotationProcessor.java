@@ -85,7 +85,7 @@ public class ASNTagAnnotationProcessor extends AbstractProcessor {
 			
 			String className=typeElement.getQualifiedName().toString();		
 			if(annotatedElement.getKind()!=ElementKind.INTERFACE) {
-				List<? extends Element> innerElements=annotatedElement.getEnclosedElements();				
+				List<? extends Element> innerElements=annotatedElement.getEnclosedElements();	
 				List<ExecutableElement> methods=ElementFilter.methodsIn(innerElements);
 				List<VariableElement> fields=ElementFilter.fieldsIn(innerElements);
 								
@@ -168,7 +168,8 @@ public class ASNTagAnnotationProcessor extends AbstractProcessor {
 					
 					ASNDecode decode=method.getAnnotation(ASNDecode.class);
 					if(decode!=null) {
-						decodeTags+=1;					
+						//we may have decode multiple times for Generic
+						decodeTags=1;					
 	
 						if(params.size()!=5)
 							processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have four parameters", className, method.getSimpleName()));
@@ -177,13 +178,13 @@ public class ASNTagAnnotationProcessor extends AbstractProcessor {
 							String thirdParamName=((TypeElement)processingEnv.getTypeUtils().asElement(params.get(2).asType())).getQualifiedName().toString();
 							String fithParamName=((TypeElement)processingEnv.getTypeUtils().asElement(params.get(4).asType())).getQualifiedName().toString();
 							if(!firstParamName.equals(EXPECTED_PARSER_PARAM))
-								processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have four parameters with type %s ANY %s %s", className, method.getSimpleName(), EXPECTED_PARSER_PARAM, EXPECTED_ENCODE_DECODE_PARAM, EXPECTED_BOOLEAN_PARAM));							
+								processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have four parameters with type %s ANY %s ConcurrentHashMap %s", className, method.getSimpleName(), EXPECTED_PARSER_PARAM, EXPECTED_ENCODE_DECODE_PARAM, EXPECTED_BOOLEAN_PARAM));							
 						
 							if(!thirdParamName.equals(EXPECTED_ENCODE_DECODE_PARAM))
-									processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have four parameters with type %s ANY %s %s", className, method.getSimpleName(), EXPECTED_PARSER_PARAM, EXPECTED_ENCODE_DECODE_PARAM, EXPECTED_BOOLEAN_PARAM));							
+									processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have four parameters with type %s ANY %s ConcurrentHashMap %s", className, method.getSimpleName(), EXPECTED_PARSER_PARAM, EXPECTED_ENCODE_DECODE_PARAM, EXPECTED_BOOLEAN_PARAM));							
 							
 							if(!fithParamName.equals(EXPECTED_BOOLEAN_PARAM))
-								processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have four parameters with type %s ANY %s %s", className, method.getSimpleName(), EXPECTED_PARSER_PARAM, EXPECTED_ENCODE_DECODE_PARAM, EXPECTED_BOOLEAN_PARAM));
+								processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have four parameters with type %s ANY %s ConcurrentHashMap %s", className, method.getSimpleName(), EXPECTED_PARSER_PARAM, EXPECTED_ENCODE_DECODE_PARAM, EXPECTED_BOOLEAN_PARAM));
 						}
 					}
 					
@@ -191,7 +192,12 @@ public class ASNTagAnnotationProcessor extends AbstractProcessor {
 					if(mapping!=null) {
 						mappingTags+=1;					
 						if(params.size()!=1)
-							processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNGenericMapping should have two parameter", className, method.getSimpleName()));
+							processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNGenericMapping should have one parameter", className, method.getSimpleName()));
+						else {
+							String realParamName=((TypeElement)processingEnv.getTypeUtils().asElement(params.get(0).asType())).getQualifiedName().toString();
+							if(!realParamName.equals(EXPECTED_PARSER_PARAM))
+									processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNGenericMapping should have only one parameter with type %s", className, method.getSimpleName(), EXPECTED_PARSER_PARAM));
+						}
 					}
 				}
 				

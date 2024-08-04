@@ -27,7 +27,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.mobius-software.protocols.ss7.common</groupId>
-			<artifactId>common</artifactId>
+			<artifactId>validator</artifactId>
 		</dependency>
 	</dependencies>
 

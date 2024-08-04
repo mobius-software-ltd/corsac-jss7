@@ -25,6 +25,10 @@
 			<groupId>com.mobius-software.protocols.ss7.isup</groupId>
 			<artifactId>isup-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.mobius-software.protocols.ss7.common</groupId>
+			<artifactId>validator</artifactId>			
+		</dependency>
 	</dependencies>
 
 	<build>

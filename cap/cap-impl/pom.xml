@@ -50,6 +50,10 @@
 			<groupId>com.mobius-software.protocols.ss7.commonapp</groupId>
 			<artifactId>commonapp-impl</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.mobius-software.protocols.ss7.common</groupId>
+			<artifactId>validator</artifactId>			
+		</dependency>
 	</dependencies>
 
 	<build>

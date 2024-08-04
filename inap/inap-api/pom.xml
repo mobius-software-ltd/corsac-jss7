@@ -33,6 +33,10 @@
 			<artifactId>commonapp-api</artifactId>
 			<groupId>com.mobius-software.protocols.ss7.commonapp</groupId>			
 		</dependency>
+		<dependency>
+			<groupId>com.mobius-software.protocols.ss7.common</groupId>
+			<artifactId>validator</artifactId>			
+		</dependency>
 	</dependencies>
 
 	<build>

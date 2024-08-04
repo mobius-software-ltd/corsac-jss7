@@ -22,6 +22,10 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>com.mobius-software.protocols.ss7.common</groupId>
+			<artifactId>validator</artifactId>			
+		</dependency>
+		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
 			<scope>test</scope>
