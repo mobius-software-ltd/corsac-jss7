@@ -23,10 +23,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.stack.timers;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,6 +44,9 @@ import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author baranowb
@@ -72,8 +73,8 @@ public abstract class EventTestHarness /* extends TestCase */implements ISUPList
     
     public void setUp() throws Exception {
     	listenerUUID=UUID.randomUUID();
-    	this.userPart = new TimerTestMtp3UserPart();
-        this.userPart.start();
+    	userPart = new TimerTestMtp3UserPart();
+        userPart.start();
         this.stack = new ISUPStackImpl(localSpc, ni,4);
         this.provider = this.stack.getIsupProvider();
         this.provider.addListener(listenerUUID,this);
@@ -105,13 +106,11 @@ public abstract class EventTestHarness /* extends TestCase */implements ISUPList
         }
 
         for (int index = 0; index < expectedLocalEvents.size(); index++) {
-            assertEquals(localEventsReceived.get(index), expectedLocalEvents.get(index),
-                    "Local received event does not match, index[" + index + "]");
+            assertEquals(localEventsReceived.get(index), expectedLocalEvents.get(index));
         }
 
         for (int index = 0; index < expectedLocalEvents.size(); index++) {
-            assertEquals(remoteEventsReceived.get(index), expectedRemoteEventsReceived.get(index),
-                    "Remote received event does not match, index[" + index + "]");
+            assertEquals(remoteEventsReceived.get(index), expectedRemoteEventsReceived.get(index));
         }
     }
 

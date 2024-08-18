@@ -23,18 +23,19 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import static org.testng.Assert.assertEquals;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.NumberingPlan;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.message.MessageSegmentationTest;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -56,18 +57,18 @@ public class GT0011Test {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() {
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
     }
 
     /**
      * Test of decode method, of class GT0011Codec.
      */
-    @Test(groups = { "parameter", "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
         // create GT object and read data from ByteBuf
         GlobalTitle0011Impl gt1 = new GlobalTitle0011Impl();
@@ -82,7 +83,7 @@ public class GT0011Test {
     /**
      * Test of encode method, of class GT0011Codec.
      */
-    @Test(groups = { "parameter", "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
         ByteBuf bout = Unpooled.buffer();
         GlobalTitle0011Impl gt = new GlobalTitle0011Impl("9023629581",0, BCDEvenEncodingScheme.INSTANCE, NumberingPlan.ISDN_TELEPHONY);

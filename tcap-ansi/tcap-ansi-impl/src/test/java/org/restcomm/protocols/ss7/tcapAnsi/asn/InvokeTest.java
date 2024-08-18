@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ASNInvokeSetParameterImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeNotLastImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -46,7 +46,6 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class InvokeTest {
 
     private byte[] data1 = new byte[] { (byte) 233, 43, (byte) 207, 1, 0, (byte) 209, 2, 9, 53, (byte) 242, 34, 4, 32, (byte) 159, 105, 0, (byte) 159, 116, 0,
@@ -60,7 +59,7 @@ public class InvokeTest {
     private byte[] parData = new byte[] { -97, 105, 0, -97, 116, 0, -97, -127, 0, 1, 8, -120, 5, 22, 25, 50, 4, 0, -97, -127, 65, 1, 1, -97, -127, 67, 5, 34,
             34, 34, 34, 34 };
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(InvokeNotLastImpl.class);
@@ -99,7 +98,7 @@ public class InvokeTest {
         assertNull(inv.getParameter());
     }
 
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(InvokeNotLastImpl.class);

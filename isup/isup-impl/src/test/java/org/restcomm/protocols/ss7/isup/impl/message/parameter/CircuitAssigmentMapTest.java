@@ -23,9 +23,9 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:14:11:03 2009-04-23<br>
@@ -65,7 +65,7 @@ public class CircuitAssigmentMapTest extends ParameterHarness {
         return Unpooled.wrappedBuffer(body);
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, IOException, ParameterException {
         CircuitAssigmentMapImpl bci = new CircuitAssigmentMapImpl(getBody1());
@@ -80,7 +80,7 @@ public class CircuitAssigmentMapTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    @Test(groups = { "functional.flags", "parameter" })
+    @Test
     public void testBoundries() throws IOException, ParameterException {
         CircuitAssigmentMapImpl bci = new CircuitAssigmentMapImpl(getBody1());
 
@@ -111,15 +111,15 @@ public class CircuitAssigmentMapTest extends ParameterHarness {
         }
     }
 
-    @Test(groups = { "functional.flags", "parameter" })
+    @Test
     public void testEnableDissable() throws IOException, ParameterException {
         CircuitAssigmentMapImpl bci = new CircuitAssigmentMapImpl(getBody1());
 
-        assertFalse(bci.isCircuitEnabled(30), "Circuit was enabled, it should not.");
+        assertFalse(bci.isCircuitEnabled(30));
         bci.enableCircuit(30);
-        assertTrue(bci.isCircuitEnabled(30), "Circuit was not enabled, it should not.");
+        assertTrue(bci.isCircuitEnabled(30));
         bci.disableCircuit(30);
-        assertFalse(bci.isCircuitEnabled(30), "Circuit was not disabled, it should not.");
+        assertFalse(bci.isCircuitEnabled(30));
         ByteBuf encData=Unpooled.buffer();
         bci.encode(encData);
         super.makeCompare(getBody1(), encData);

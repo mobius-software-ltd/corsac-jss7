@@ -19,16 +19,16 @@
 
 package org.restcomm.protocols.ss7.commonapp.primitives;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -49,7 +49,7 @@ public class LegIDTest {
         return new byte[] { (byte) 129, 1, 1 };
     }
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(ReceivingLegIDImpl.class);
@@ -69,7 +69,7 @@ public class LegIDTest {
 
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(ReceivingLegIDImpl.class);

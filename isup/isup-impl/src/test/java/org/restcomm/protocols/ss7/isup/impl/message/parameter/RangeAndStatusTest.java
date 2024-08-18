@@ -22,14 +22,14 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -52,7 +52,7 @@ public class RangeAndStatusTest extends ParameterHarness {
 
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, IOException, ParameterException {
         RangeAndStatusImpl bci = new RangeAndStatusImpl(getBody((byte) 12, new byte[] { 0x0F, 0x04 }));
@@ -62,7 +62,7 @@ public class RangeAndStatusTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    @Test(groups = { "functional.flags", "parameter" })
+    @Test
     public void testAffectedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, IOException, ParameterException {
         RangeAndStatusImpl bci = new RangeAndStatusImpl(getBody((byte) 12, new byte[] { 0x0F, 0x04 }));

@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +39,7 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.Su
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.SupportedRATTypes;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.OfferedCamel4CSIs;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -73,7 +73,7 @@ public class VLRCapabilityTest {
         return new byte[] { 48, 16, -126, 0, -124, 0, -122, 2, 1, 14, -121, 2, 4, 80, -120, 0, -119, 0 };
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(VLRCapabilityImpl.class);
@@ -214,7 +214,7 @@ public class VLRCapabilityTest {
         assertTrue(asc.getMtRoamingForwardingSupported());
     }
 
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(VLRCapabilityImpl.class);

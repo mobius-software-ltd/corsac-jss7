@@ -19,12 +19,13 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CategoryValue;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -44,7 +45,7 @@ public class CategoryTest {
         return new byte[] { 4, 1, 10 };
     };
 
-    @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CategoryImpl.class);
@@ -58,7 +59,7 @@ public class CategoryTest {
         assertEquals(prim.getCategoryValue(), CategoryValue.ordinaryCallingSubscriber);
     }
 
-    @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CategoryImpl.class);
@@ -69,6 +70,6 @@ public class CategoryTest {
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         
-        assertEquals(encodedData, this.getData1());
+        assertArrayEquals(encodedData, this.getData1());
     }
 }

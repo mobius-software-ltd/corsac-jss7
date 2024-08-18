@@ -23,8 +23,15 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
@@ -34,16 +41,9 @@ import org.restcomm.protocols.ss7.sccp.impl.parameter.HopCounterImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ImportanceImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.LocalReferenceImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 /**
  * 
  * @author yulianoifa
@@ -55,13 +55,13 @@ public class SccpConnCrMessageTest {
     private SccpStackImpl stack = new SccpStackImpl("SccpConnCrMessageTestStack");
     private MessageFactoryImpl messageFactory;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         this.messageFactory = new MessageFactoryImpl(stack);
         this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName());
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
     }
 
@@ -80,7 +80,7 @@ public class SccpConnCrMessageTest {
         });
     }
 
-    @Test(groups = { "SccpMessage", "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
         // ---- no optional params
         ByteBuf buf = this.getDataCrNoOptParams();
@@ -133,7 +133,7 @@ public class SccpConnCrMessageTest {
         assertEquals(testObjectDecoded.getImportance().getValue(), 5);
     }
 
-    @Test(groups = { "SccpMessage", "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
         // ---- no optional params
         SccpAddress calledAddress = stack.getSccpProvider().getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 0, 8);

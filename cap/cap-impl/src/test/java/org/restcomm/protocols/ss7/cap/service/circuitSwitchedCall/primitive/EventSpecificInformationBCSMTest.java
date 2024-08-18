@@ -19,14 +19,16 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.cap.EsiBcsm.CallAcceptedSpecificInfoImpl;
 import org.restcomm.protocols.ss7.cap.EsiBcsm.DpSpecificInfoAltImpl;
 import org.restcomm.protocols.ss7.cap.EsiBcsm.MidCallEventsImpl;
@@ -59,7 +61,6 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -147,7 +148,7 @@ public class EventSpecificInformationBCSMTest {
         return new byte[] { 1, 2, 3, 4 };
     }
 
-    @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(EventSpecificInformationBCSMWrapperImpl.class);
@@ -277,7 +278,7 @@ public class EventSpecificInformationBCSMTest {
         assertNotNull(value);
         byte[] data=new byte[value.readableBytes()];
         value.readBytes(data);
-        assertEquals(data, getDigitsData());
+        assertArrayEquals(data, getDigitsData());
 
         rawData = this.getData12();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
@@ -290,7 +291,7 @@ public class EventSpecificInformationBCSMTest {
         assertNotNull(value);
         data=new byte[value.readableBytes()];
         value.readBytes(data);
-        assertEquals(data, getDigitsData());
+        assertArrayEquals(data, getDigitsData());
 
         rawData = this.getData13();
         result=parser.decode(Unpooled.wrappedBuffer(rawData));
@@ -339,7 +340,7 @@ public class EventSpecificInformationBCSMTest {
                 BearerServiceCodeValue.padAccessCA_9600bps);
     }
 
-    @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(EventSpecificInformationBCSMWrapperImpl.class);

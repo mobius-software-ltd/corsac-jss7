@@ -19,15 +19,18 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
@@ -51,11 +54,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ASNInvokeSetParameterImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeNotLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.WrappedComponentImpl;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -89,25 +87,16 @@ public class TCAPComponentsTest extends SccpHarness {
 
     }
 
-    @BeforeClass
-    public void setUpClass() {
-        this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
-        this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
-        System.out.println("setUpClass");
-    }
-
-    @AfterClass
-    public void tearDownClass() throws Exception {
-        System.out.println("tearDownClass");
-    }
-
     /*
      * (non-Javadoc)
      *
      * @see junit.framework.TestCase#setUp()
      */
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
+    	this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
+        this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
+        
         System.out.println("setUp");
         super.setUp();
 
@@ -133,7 +122,7 @@ public class TCAPComponentsTest extends SccpHarness {
      *
      * @see junit.framework.TestCase#tearDown()
      */
-    @AfterMethod
+    @After
     public void tearDown() {
         this.tcapStack1.stop();
         this.tcapStack2.stop();
@@ -155,7 +144,7 @@ public class TCAPComponentsTest extends SccpHarness {
      * TC-CONTINUE + InvokeLast (invokeId==1) + InvokeLast (invokeId==2)
      *   TC-END + Reject (duplicateInvokeId for invokeId==2)
      */
-    @Test(groups = { "functional.flow" })
+    @Test
     public void DuplicateInvokeIdTest() throws Exception {
 
         this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
@@ -222,7 +211,7 @@ public class TCAPComponentsTest extends SccpHarness {
                         break;
                     }
                 } catch (Exception e) {
-                    fail("Exception when sendComponent / send message 2", e);
+                    fail("Exception when sendComponent / send message 2");
                     e.printStackTrace();
                 }
             }
@@ -240,7 +229,7 @@ public class TCAPComponentsTest extends SccpHarness {
                     assertEquals(r.getProblem(), RejectProblem.invokeDuplicateInvocation);
                     assertFalse(r.isLocalOriginated());
                 } catch (Exception e) {
-                    fail("Exception when sendComponent / send message 3", e);
+                    fail("Exception when sendComponent / send message 3");
                     e.printStackTrace();
                 }
             }
@@ -260,7 +249,7 @@ public class TCAPComponentsTest extends SccpHarness {
                     this.addNewReturnResult(1L);
                     this.sendContinue(false);
                 } catch (Exception e) {
-                    fail("Exception when sendComponent / send message 1", e);
+                    fail("Exception when sendComponent / send message 1");
                     e.printStackTrace();
                 }
             }
@@ -323,7 +312,7 @@ public class TCAPComponentsTest extends SccpHarness {
                         break;
                     }
                 } catch (Exception e) {
-                    fail("Exception when sendComponent / send message 2", e);
+                    fail("Exception when sendComponent / send message 2");
                     e.printStackTrace();
                 }
             }
@@ -465,7 +454,7 @@ public class TCAPComponentsTest extends SccpHarness {
      * TC-BEGIN + bad component (with component type != Invoke,ReturnResult,...) + Invoke TC-END + Reject
      * (unrecognizedComponent)
      */
-    @Test(groups = { "functional.flow" })
+    @Test
     public void UnrecognizedComponentTest() throws Exception {
 
         this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
@@ -513,7 +502,7 @@ public class TCAPComponentsTest extends SccpHarness {
                 try {
                     this.sendEnd(false);
                 } catch (Exception e) {
-                    fail("Exception when sendComponent / send message 1", e);
+                    fail("Exception when sendComponent / send message 1");
                     e.printStackTrace();
                 }
             }
@@ -566,7 +555,7 @@ public class TCAPComponentsTest extends SccpHarness {
      *
      * TC-BEGIN + Invoke with an extra bad component + Invoke TC-END + Reject (mistypedComponent)
      */
-    @Test(groups = { "functional.flow" })
+    @Test
     public void MistypedComponentTest() throws Exception {
 
         this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
@@ -614,7 +603,7 @@ public class TCAPComponentsTest extends SccpHarness {
                 try {
                     this.sendEnd(false);
                 } catch (Exception e) {
-                    fail("Exception when sendComponent / send message 1", e);
+                    fail("Exception when sendComponent / send message 1");
                     e.printStackTrace();
                 }
             }
@@ -668,7 +657,7 @@ public class TCAPComponentsTest extends SccpHarness {
      *
      * TC-BEGIN + Invoke with BadlyStructuredComponent + Invoke TC-END + Reject (mistypedComponent)
      */
-    @Test(groups = { "functional.flow" })
+    @Test
     public void BadlyStructuredComponentTest() throws Exception {
 
         this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
@@ -715,7 +704,7 @@ public class TCAPComponentsTest extends SccpHarness {
                 try {
                     this.sendEnd(false);
                 } catch (Exception e) {
-                    fail("Exception when sendComponent / send message 1", e);
+                    fail("Exception when sendComponent / send message 1");
                     e.printStackTrace();
                 }
             }

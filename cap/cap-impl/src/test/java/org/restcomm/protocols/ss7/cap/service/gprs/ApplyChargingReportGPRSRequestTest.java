@@ -18,11 +18,11 @@
  */
 package org.restcomm.protocols.ss7.cap.service.gprs;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -55,7 +55,7 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscrib
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.Ext2QoSSubscribedImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtQoSSubscribedImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.QoSSubscribedImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -101,7 +101,7 @@ public class ApplyChargingReportGPRSRequestTest {
                 (byte) 0x82, 0x01, (byte) 0xff };
     };
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ApplyChargingReportGPRSRequestImpl.class);
@@ -137,7 +137,7 @@ public class ApplyChargingReportGPRSRequestTest {
         assertNull(prim.getChargingRollOver().getTransferredVolumeRollOver());
     }
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecodeLiveTrace() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ApplyChargingReportGPRSRequestImpl.class);
@@ -171,7 +171,7 @@ public class ApplyChargingReportGPRSRequestTest {
         assertNull(prim.getChargingRollOver());
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ApplyChargingGPRSRequestImpl.class);
@@ -231,7 +231,7 @@ public class ApplyChargingReportGPRSRequestTest {
 
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncodeLiveTrace() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ApplyChargingGPRSRequestImpl.class);

@@ -19,16 +19,16 @@
 
 package org.restcomm.protocols.ss7.map.smstpdu;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -51,7 +51,7 @@ public class SmsDeliverTpduTest {
         return new byte[] { -21, 2, 1 };
     }
 
-    @Test(groups = { "functional.decode", "smstpdu" })
+    @Test
     public void testDecode() throws Exception {
 
         SmsDeliverTpduImpl impl = new SmsDeliverTpduImpl(Unpooled.wrappedBuffer(this.getData1()), null);
@@ -79,7 +79,7 @@ public class SmsDeliverTpduTest {
         assertTrue(ByteBufUtil.equals(impl.getUserData().getDecodedUserDataHeader().getInformationElementData(0), Unpooled.wrappedBuffer(this.getData1A())));
     }
 
-    @Test(groups = { "functional.encode", "smstpdu" })
+    @Test
     public void testEncode() throws Exception {
 
         UserDataHeaderImpl udh = new UserDataHeaderImpl();

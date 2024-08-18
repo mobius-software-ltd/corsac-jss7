@@ -23,15 +23,15 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.SubsequentDirectoryNumberMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.SubsequentNumber;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:09:26:46 2009-04-22<br>
@@ -43,7 +43,7 @@ import org.testng.annotations.Test;
  */
 public class SDNTest extends MessageHarness {
 
-    @Test(groups = { "functional.encode", "functional.decode", "message" })
+    @Test
     public void testTwo_Params() throws Exception {
 
         ByteBuf message = getDefaultBody();

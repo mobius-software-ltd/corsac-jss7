@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.faultRecovery;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.map.api.primitives.NetworkResource;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -58,7 +58,7 @@ public class ResetRequestTest {
         return new byte[] { 48, 14, 4, 4, (byte) 145, 33, 67, (byte) 245, 48, 6, 4, 4, 33, 67, 0, (byte) 241 };
     }
 
-    @Test(groups = { "functional.decode", "service.mobility.faultRecovery" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ResetRequestImpl.class);
@@ -85,7 +85,7 @@ public class ResetRequestTest {
         assertEquals(prim.getHlrList().get(0).getData(), "1234001");
     }
 
-    @Test(groups = { "functional.encode", "service.mobility.faultRecovery" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ResetRequestImpl.class);

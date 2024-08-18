@@ -19,11 +19,11 @@
 
 package org.restcomm.protocols.ss7.map.service.callhandling;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,11 +63,11 @@ import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.LACImp
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.LocationAreaImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.PagingAreaImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OfferedCamel4CSIsImpl;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -93,11 +93,11 @@ public class ProvideRoamingNumberRequestTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeTest
+    @Before
     public void setUp() {
     }
 
-    @AfterTest
+    @After
     public void tearDown() {
     }
 
@@ -144,7 +144,7 @@ public class ProvideRoamingNumberRequestTest {
         return new byte[] { 19, -6, 61, 61, -22 };
     }
 
-    @Test(groups = { "functional.decode", "service.callhandling" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ProvideRoamingNumberRequestImpl.class);
@@ -365,7 +365,7 @@ public class ProvideRoamingNumberRequestTest {
         assertEquals(oldMSCNumber.getAddress(), "22225");
     }
 
-    @Test(groups = { "functional.encode", "service.callhandling" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ProvideRoamingNumberRequestImpl.class);

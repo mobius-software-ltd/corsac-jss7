@@ -23,8 +23,14 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
@@ -32,15 +38,9 @@ import org.restcomm.protocols.ss7.sccp.impl.parameter.CreditImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.LocalReferenceImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ProtocolClassImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SequencingSegmentingImpl;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 /**
  * 
  * @author yulianoifa
@@ -52,13 +52,13 @@ public class SccpConnItMessageTest {
     private SccpStackImpl stack = new SccpStackImpl("SccpConnItMessageTestStack");
     private MessageFactoryImpl messageFactory;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         this.messageFactory = new MessageFactoryImpl(stack);
         this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName());
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
     }
 
@@ -66,7 +66,7 @@ public class SccpConnItMessageTest {
         return Unpooled.wrappedBuffer(new byte[] { 0x10, 0x00, 0x00, 0x01, 0x00, 0x00, 0x02, 0x03, 0x00, 0x00, 0x64 });
     }
 
-    @Test(groups = { "SccpMessage", "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
         ByteBuf buf = this.getDataIt();
         int type = buf.readByte();
@@ -80,7 +80,7 @@ public class SccpConnItMessageTest {
         assertEquals(testObjectDecoded.getCredit().getValue(), 100);
     }
 
-    @Test(groups = { "SccpMessage", "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
         SccpConnItMessageImpl original = new SccpConnItMessageImpl(0, 0);
         original.setDestinationLocalReferenceNumber(new LocalReferenceImpl(1));

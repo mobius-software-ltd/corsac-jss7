@@ -19,17 +19,17 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.AudibleIndicatorImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -75,7 +75,7 @@ public class CAMELAChBillingChargingCharacteristicsTest {
         return new byte[] { 4, 9, (byte) 160, 7, (byte) 128, 2, 39, 16, (byte) 131, 1, (byte) 255 };
     }
 
-    @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CAMELAChBillingChargingCharacteristicsImpl.class);
@@ -160,7 +160,7 @@ public class CAMELAChBillingChargingCharacteristicsTest {
         assertNull(elem.getExtensions());
     }
 
-    @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CAMELAChBillingChargingCharacteristicsImpl.class);

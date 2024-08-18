@@ -23,16 +23,16 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericDigits;
 import org.restcomm.protocols.ss7.isup.util.StringHelper;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -52,11 +52,11 @@ public class GenericDigitsTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeTest
+    @Before
     public void setUp() {
     }
 
-    @AfterTest
+    @After
     public void tearDown() {
     }
 
@@ -86,7 +86,7 @@ public class GenericDigitsTest {
 
     private String digitsIA5String = "ABab12";
 
-    @Test(groups = { "functional.decode", "parameter" })
+    @Test
     public void testDecodeEven() throws Exception {
 
         GenericDigitsImpl prim = new GenericDigitsImpl();
@@ -98,7 +98,7 @@ public class GenericDigitsTest {
         assertEquals(prim.getDecodedDigits(), "123456");
     }
 
-    @Test(groups = { "functional.decode", "parameter" })
+    @Test
     public void testDecodeOdd() throws Exception {
 
         GenericDigitsImpl prim = new GenericDigitsImpl();
@@ -110,7 +110,7 @@ public class GenericDigitsTest {
         assertEquals(prim.getDecodedDigits(), "1234567");
     }
 
-    @Test(groups = { "functional.encode", "parameter" })
+    @Test
     public void testEncodeEven() throws Exception {
 
         GenericDigitsImpl prim = new GenericDigitsImpl(GenericDigits._ENCODING_SCHEME_BCD_EVEN, GenericDigits._TOD_BGCI,
@@ -131,7 +131,7 @@ public class GenericDigitsTest {
 
     }
 
-    @Test(groups = { "functional.encode", "parameter" })
+    @Test
     public void testEncodeOdd() throws Exception {
 
         GenericDigitsImpl prim = new GenericDigitsImpl(GenericDigits._ENCODING_SCHEME_BCD_ODD, GenericDigits._TOD_BGCI,
@@ -151,7 +151,7 @@ public class GenericDigitsTest {
         assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
     }
 
-    @Test(groups = { "functional.encode", "parameter" })
+    @Test
     public void testSetDecodedDigits() throws Exception {
 
         GenericDigitsImpl prim = new GenericDigitsImpl();
@@ -173,7 +173,7 @@ public class GenericDigitsTest {
         assertTrue(ParameterHarness.byteBufEquals(data, encodedData));
     }
 
-    @Test(groups = { "functional.decode", "parameter" })
+    @Test
     public void testSetDecodedHexDigits() throws Exception {
         String hexString = "0123456789abcdef*#";
         System.out.println("Test input digits: " + hexString);
@@ -187,7 +187,7 @@ public class GenericDigitsTest {
         assertTrue(originalConvertedDigits.equals(convertedDigits));
     }
 
-    @Test(groups = { "functional.encode", "parameter" })
+    @Test
     public void testEncodingIA5() throws Exception {
         GenericDigitsImpl prim = new GenericDigitsImpl();
         prim.setDecodedDigits(GenericDigits._ENCODING_SCHEME_IA5, digitsIA5String);
@@ -198,7 +198,7 @@ public class GenericDigitsTest {
         assertEquals(getIA5Data(), data);
     }
 
-    @Test(groups = { "functional.decode", "parameter" })
+    @Test
     public void testDecodingIA5() throws Exception {
         GenericDigitsImpl prim = new GenericDigitsImpl();
         prim.decode(getIA5Data());

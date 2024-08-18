@@ -23,8 +23,8 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -33,11 +33,11 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Start time:20:07:45 2009-04-26<br>
@@ -57,11 +57,11 @@ public class RedirectionInformationTest extends ParameterHarness {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeTest
+    @Before
     public void setUp() {
     }
 
-    @AfterTest
+    @After
     public void tearDown() {
     }
 
@@ -69,7 +69,7 @@ public class RedirectionInformationTest extends ParameterHarness {
         return Unpooled.wrappedBuffer(new byte[] { 35, 20 });
     }
 
-    @Test(groups = { "functional.decode", "parameter" })
+    @Test
     public void testDecode() throws Exception {
 
         RedirectionInformationImpl prim = new RedirectionInformationImpl();
@@ -81,7 +81,7 @@ public class RedirectionInformationTest extends ParameterHarness {
         assertEquals(prim.getRedirectionReason(), RedirectionInformation._RI_CALL_REROUTED);
     }
 
-    @Test(groups = { "functional.encode", "parameter" })
+    @Test
     public void testEncode() throws Exception {
 
         RedirectionInformationImpl prim = new RedirectionInformationImpl(RedirectionInformation._RI_CALL_D,
@@ -104,7 +104,7 @@ public class RedirectionInformationTest extends ParameterHarness {
         super.badBodies.add(Unpooled.wrappedBuffer(new byte[3]));
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, IOException, ParameterException {
         RedirectionInformationImpl bci = new RedirectionInformationImpl(getBody(RedirectionInformationImpl._RI_CALL_D_RNPR,

@@ -19,12 +19,11 @@
 
 package org.restcomm.protocols.ss7.map.service.oam;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -41,10 +40,10 @@ import io.netty.buffer.Unpooled;
 public class TraceInterfaceListTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 40, -128, 2, 3, 8, -127, 2, 5, 32, -126, 2, 6, 64, -125, 2, 7, -128, -124, 2, 4, 16, -123, 2, 7, -128, -122, 2, 3, 8, -121, 2, 7, -128, -120, 2, 2, 4, -119, 2, 6, 64 };
+        return new byte[] { 48, 41, -128, 3, 6, 8, 0, -127, 2, 5, 32, -126, 2, 0, 64, -125, 2, 5, -128, -124, 2, 4, 16, -123, 2, 7, -128, -122, 2, 3, 8, -121, 2, 3, -128, -120, 2, 0, 4, -119, 2, 5, 64 };
     }
 
-    @Test(groups = { "functional.decode", "service.oam" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(TraceInterfaceListImpl.class);
@@ -86,7 +85,7 @@ public class TraceInterfaceListTest {
 
     }
 
-    @Test(groups = { "functional.encode", "service.oam" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(TraceInterfaceListImpl.class);
@@ -107,6 +106,6 @@ public class TraceInterfaceListTest {
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        assertArrayEquals(rawData, encodedData);
     }
 }

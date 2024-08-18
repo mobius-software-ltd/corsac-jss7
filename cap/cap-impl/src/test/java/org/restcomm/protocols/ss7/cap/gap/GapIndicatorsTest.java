@@ -19,14 +19,14 @@
 
 package org.restcomm.protocols.ss7.cap.gap;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.gap.GapIndicatorsImpl;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -46,7 +46,7 @@ public class GapIndicatorsTest {
         return new byte[] { 48, 6, (byte) 128, 1, 100, (byte) 129, 1, (byte) 255 };
     }
 
-    @Test(groups = { "functional.decode", "gap" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GapIndicatorsImpl.class);
@@ -62,7 +62,7 @@ public class GapIndicatorsTest {
         assertEquals(elem.getGapInterval(), -1);
     }
 
-    @Test(groups = { "functional.encode", "gap" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GapIndicatorsImpl.class);

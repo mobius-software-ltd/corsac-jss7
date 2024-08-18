@@ -21,7 +21,7 @@ package org.restcomm.protocols.ss7.commonapp.datacoding;
 
 import java.nio.charset.Charset;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
 *
@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
 */
 public class EncodingData {
 
-    @Test(groups = { "functional.encode", "datacoding" })
+    @Test
     public void testEncode() throws Exception {
         Charset ucs2Charset = Charset.forName("UTF-16BE");
         Charset utf8Charset = Charset.forName("UTF-8");

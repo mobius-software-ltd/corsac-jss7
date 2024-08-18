@@ -19,16 +19,16 @@
 
 package org.restcomm.protocols.ss7.map.primitives;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotEquals;
 
 import java.util.Arrays;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.primitives.TestOctetStringLength1Impl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Ext4QoSSubscribedImpl;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -51,7 +51,7 @@ public class OctetStringLength1BaseTest {
         return new byte[] { 4, 8, 1, 2, 3, 4, 5, 6, 7, 8 };
     }
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(TestOctetStringLength1Impl.class);
@@ -72,7 +72,7 @@ public class OctetStringLength1BaseTest {
         assertTrue(result.getResult() instanceof TestOctetStringLength1Impl);        
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(TestOctetStringLength1Impl.class);
@@ -87,7 +87,7 @@ public class OctetStringLength1BaseTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.encode", "equality" })
+    @Test
     public void testEqality() throws Exception {
 
         Ext4QoSSubscribedImpl imp1 = new Ext4QoSSubscribedImpl(10);

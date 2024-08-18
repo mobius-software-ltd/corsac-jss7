@@ -19,16 +19,16 @@
 
 package org.restcomm.protocols.ss7.cap.gap;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.gap.CalledAddressAndServiceImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -55,7 +55,7 @@ public class CalledAddressAndServiceTest {
         return new byte[] {48, 69, 91, 84};
     }
 
-    @Test(groups = { "functional.decode", "gap" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CalledAddressAndServiceImpl.class);
@@ -71,7 +71,7 @@ public class CalledAddressAndServiceTest {
         assertEquals(elem.getServiceKey(), SERVICE_KEY);
     }
 
-    @Test(groups = { "functional.encode", "gap" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CalledAddressAndServiceImpl.class);

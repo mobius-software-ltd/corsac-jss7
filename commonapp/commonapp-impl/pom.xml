@@ -28,12 +28,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<scope>test</scope>
-		</dependency>
+		</dependency>		
 		<dependency>
 			<groupId>com.mobius-software.protocols.ss7.sccp</groupId>
 			<artifactId>sccp-api</artifactId>
@@ -79,15 +74,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>
 					${maven-surefire-plugin.version}
-				</version>
-				<!--
-				<configuration>
-					<suiteXmlFiles>
-						
-						<suiteXmlFile>testng-classes.xml</suiteXmlFile>
-					</suiteXmlFiles>
-				</configuration>
-				-->
+				</version>				
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

@@ -23,8 +23,14 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
@@ -32,15 +38,9 @@ import org.restcomm.protocols.ss7.sccp.impl.parameter.ImportanceImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.LocalReferenceImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ReleaseCauseImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCauseValue;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 /**
  * 
  * @author yulianoifa
@@ -52,13 +52,13 @@ public class SccpConnRlsdMessageTest {
     private SccpStackImpl stack = new SccpStackImpl("SccpConnRlsdMessageTestStack");
     private MessageFactoryImpl messageFactory;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         this.messageFactory = new MessageFactoryImpl(stack);
         this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName());
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
     }
 
@@ -77,7 +77,7 @@ public class SccpConnRlsdMessageTest {
         });
     }
 
-    @Test(groups = { "SccpMessage", "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
         // ---- no optional params
         ByteBuf buf = this.getDataRlsdNoOptParams();
@@ -113,7 +113,7 @@ public class SccpConnRlsdMessageTest {
         assertEquals(testObjectDecoded.getImportance().getValue(), 2);
     }
 
-    @Test(groups = { "SccpMessage", "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
         // ---- no optional params
         SccpConnRlsdMessageImpl original = new SccpConnRlsdMessageImpl(0, 0);

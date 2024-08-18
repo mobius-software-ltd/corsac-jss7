@@ -17,11 +17,11 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,7 +90,7 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Spec
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TBcsmCamelTDPDataImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TCSIImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -119,7 +119,7 @@ public class CAMELSubscriptionInfoTest {
             28, 48, 19, 48, 17, 10, 1, 13, 2, 1, 5, -128, 6, -111, 33, 67, 101, -121, 9, -127, 1, 1, -128, 1,
             4, -127, 0, -126, 0, -74, 15, 48, 13, 10, 1, 13, -96, 3, -125, 1, 32, -95, 3, 4, 1, 83};
 
-    @Test(groups = {"functional.decode", "subscriberInformation"})
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CAMELSubscriptionInfoImpl.class);
@@ -322,7 +322,7 @@ public class CAMELSubscriptionInfoTest {
         assertNull(camelSubscriptionInfo.getVtImBcsmCamelTdpCriteriaList());
     }
 
-    @Test(groups = {"functional.decode", "subscriberInformation"})
+    @Test
     public void testDecode1() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CAMELSubscriptionInfoImpl.class);
@@ -451,7 +451,7 @@ public class CAMELSubscriptionInfoTest {
         assertEquals(causeValue.getCauseValueCodeValue(), CauseValueCodeValue.ASuspendedCallExists);
     }
 
-    @Test(groups = {"functional.encode", "subscriberInformation"})
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CAMELSubscriptionInfoImpl.class);
@@ -525,7 +525,7 @@ public class CAMELSubscriptionInfoTest {
         assertTrue(Arrays.equals(encodedData, data));
     }
 
-    @Test(groups = {"functional.encode", "subscriberInformation"})
+    @Test
     public void testEncode1() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CAMELSubscriptionInfoImpl.class);

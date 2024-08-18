@@ -19,11 +19,11 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -34,7 +34,7 @@ import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.VariablePartTime
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.VariablePartWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -74,7 +74,7 @@ public class VariablePartTest {
         return new byte[] { 48, 6, (byte) 132, 4, 0, 1, 0, 0 };
     }
 
-    @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(VariablePartWrapperImpl.class);
@@ -165,7 +165,7 @@ public class VariablePartTest {
         assertEquals(elem.getVariablePart().get(0).getPrice().getPriceHundredthPart(), 0);
     }
 
-    @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(VariablePartWrapperImpl.class);

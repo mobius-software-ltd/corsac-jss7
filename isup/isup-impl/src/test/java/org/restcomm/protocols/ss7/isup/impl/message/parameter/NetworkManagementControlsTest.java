@@ -23,14 +23,14 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import static org.testng.Assert.fail;
+import static org.junit.Assert.fail;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:13:20:04 2009-04-26<br>
@@ -49,7 +49,7 @@ public class NetworkManagementControlsTest extends ParameterHarness {
         super.goodBodies.add(Unpooled.wrappedBuffer(new byte[] { 0x01, 0x01, 0x01, (byte)0x81 }));
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws IOException, ParameterException {
 
         boolean[] bools = new boolean[] { true, true, false, true, false, true, true };

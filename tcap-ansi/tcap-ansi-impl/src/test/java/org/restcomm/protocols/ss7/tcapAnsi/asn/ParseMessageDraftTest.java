@@ -19,9 +19,9 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import io.netty.buffer.Unpooled;
 
 import java.io.IOException;
@@ -31,13 +31,12 @@ import org.restcomm.protocols.ss7.tcapAnsi.TCAPStackImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.DraftParsedMessage;
-import org.testng.annotations.Test;
+import org.junit.Test;
 /**
  * 
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class ParseMessageDraftTest {
 
     private byte[] dataTcQuery = new byte[] { (byte) 0xe2, 0x35, (byte) 0xc7, 0x04, 0x00, 0x00, 0x01, 0x00, (byte) 0xe8, 0x2d, (byte) 0xe9, 0x2b, (byte) 0xcf, 0x01,
@@ -57,7 +56,7 @@ public class ParseMessageDraftTest {
 
     private byte[] dataTcUnidirectional = new byte[] { -31, 22, -57, 0, -24, 18, -23, 16, -49, 1, 0, -47, 2, 9, 53, -14, 7, 1, 2, 3, 4, 5, 6, 7 };
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testTCQuery() throws IOException, ParseException {
 
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
@@ -71,7 +70,7 @@ public class ParseMessageDraftTest {
         assertNull(msg.getParsingErrorReason());
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testTCConversation() throws IOException, ParseException {
 
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
@@ -85,7 +84,7 @@ public class ParseMessageDraftTest {
         assertNull(msg.getParsingErrorReason());
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testTCResponse() throws IOException, ParseException {
 
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
@@ -99,7 +98,7 @@ public class ParseMessageDraftTest {
         assertNull(msg.getParsingErrorReason());
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testTCAbort() throws IOException, ParseException {
 
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
@@ -113,7 +112,7 @@ public class ParseMessageDraftTest {
         assertNull(msg.getParsingErrorReason());
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testTCUnidirectional() throws IOException, ParseException {
 
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");

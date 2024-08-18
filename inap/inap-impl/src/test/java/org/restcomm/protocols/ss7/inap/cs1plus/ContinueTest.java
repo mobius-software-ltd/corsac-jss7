@@ -17,10 +17,10 @@ package org.restcomm.protocols.ss7.inap.cs1plus;
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -29,8 +29,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.DefaultConfiguration;
 import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.ApplyChargingReportRequestImpl;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -61,7 +61,7 @@ public class ContinueTest
 		Configurator.initialize(new DefaultConfiguration());
 	}
 	
-	@Test(groups = { "functional.decode", "circuitSwitchedCall" })
+	@Test
 	public void testDecode() throws Exception {
 		ASNParser parser=new ASNParser(true);
 		parser.replaceClass(ApplyChargingReportRequestImpl.class);
@@ -79,7 +79,7 @@ public class ContinueTest
 		logger.info(elem);		
 	}
 	
-	@Test(groups = { "functional.encode", "circuitSwitchedCall" })
+	@Test
 	public void testEncode() throws Exception {
 		ASNParser parser=new ASNParser(true);
 		parser.replaceClass(ApplyChargingReportRequestImpl.class);

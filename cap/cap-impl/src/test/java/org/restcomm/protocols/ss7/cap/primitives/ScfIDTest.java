@@ -19,13 +19,13 @@
 
 package org.restcomm.protocols.ss7.cap.primitives;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.primitives.ScfIDImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -50,7 +50,7 @@ public class ScfIDTest {
         return new byte[] { 1, 2, 3, 4 };
     }
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ScfIDImpl.class);
@@ -65,7 +65,7 @@ public class ScfIDTest {
         assertTrue(ByteBufUtil.equals(elem.getValue(), Unpooled.wrappedBuffer(this.getDataInt())));
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ScfIDImpl.class);

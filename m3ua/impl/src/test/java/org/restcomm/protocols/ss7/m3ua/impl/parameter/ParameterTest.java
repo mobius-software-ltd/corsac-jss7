@@ -23,25 +23,26 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.parameter;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.restcomm.protocols.ss7.m3ua.parameter.CongestedIndication.CongestionLevel;
 import org.restcomm.protocols.ss7.m3ua.parameter.DeregistrationStatus;
 import org.restcomm.protocols.ss7.m3ua.parameter.LocalRKIdentifier;
 import org.restcomm.protocols.ss7.m3ua.parameter.RegistrationStatus;
 import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
 import org.restcomm.protocols.ss7.m3ua.parameter.Status;
-import org.restcomm.protocols.ss7.m3ua.parameter.CongestedIndication.CongestionLevel;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
@@ -64,12 +65,12 @@ public class ParameterTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         out = Unpooled.buffer(8192);
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
     }
 
@@ -150,7 +151,7 @@ public class ParameterTest {
         byte[] p2Arr=new byte[buf2.readableBytes()];
         buf2.readBytes(p2Arr);
         boolean isDataCorrect = Arrays.equals(p1Arr, p2Arr);
-        assertTrue(isDataCorrect, "Data mismatch");
+        assertTrue(isDataCorrect);
     }
 
     /**
@@ -182,7 +183,7 @@ public class ParameterTest {
         byte[] p2Arr=new byte[p2Buf.readableBytes()];
         p2Buf.readBytes(p2Arr);
         boolean isDataCorrect = Arrays.equals(p1Arr, p2Arr);
-        assertTrue(isDataCorrect, "Data mismatch");
+        assertTrue(isDataCorrect);
     }
 
     @Test

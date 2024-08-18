@@ -19,14 +19,14 @@
 
 package org.restcomm.protocols.ss7.cap.service.gprs.primitive;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AppendFreeFormatData;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -51,7 +51,7 @@ public class FCIBCCCAMELSequence1GprsTest {
         return new byte[] { 48, 6, -128, 1, 5, -127, 1, 2 };
     };
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(FCIBCCCAMELSequence1GprsImpl.class);
@@ -68,7 +68,7 @@ public class FCIBCCCAMELSequence1GprsTest {
         assertEquals(prim.getAppendFreeFormatData(), AppendFreeFormatData.append);
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(FCIBCCCAMELSequence1GprsImpl.class);

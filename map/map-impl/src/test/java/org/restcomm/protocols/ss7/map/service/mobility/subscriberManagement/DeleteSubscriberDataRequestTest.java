@@ -19,10 +19,11 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -69,7 +70,7 @@ public class DeleteSubscriberDataRequestTest {
         return new byte[] { 48, 41, -128, 6, 17, 33, 34, 51, 67, 68, -86, 2, 5, 0, -117, 0, -84, 2, 5, 0, -115, 0, -114, 0, -113, 2, 0, -112, -112, 0, -111, 0, -78, 5, 48, 3, 2, 1, 15, -109, 0, -108, 0 };
     }
 
-    @Test(groups = { "functional.decode", "service.mobility.subscriberManagement" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(DeleteSubscriberDataRequestImpl.class);
@@ -177,7 +178,7 @@ public class DeleteSubscriberDataRequestTest {
         assertTrue(asc.getCsgSubscriptionDeleted());
     }
 
-    @Test(groups = { "functional.encode", "service.mobility.subscriberManagement" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(DeleteSubscriberDataRequestImpl.class);
@@ -190,7 +191,7 @@ public class DeleteSubscriberDataRequestTest {
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         byte[] rawData = this.getEncodedData();
-        assertEquals(encodedData, rawData);
+        assertArrayEquals(encodedData, rawData);
 
 
         List<ExtBasicServiceCode> basicServiceList = new ArrayList<ExtBasicServiceCode>();
@@ -210,7 +211,7 @@ public class DeleteSubscriberDataRequestTest {
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         rawData = this.getEncodedData2();
-        assertEquals(encodedData, rawData);
+        assertArrayEquals(encodedData, rawData);
 
 
         GPRSSubscriptionDataWithdrawImpl gprsSubscriptionDataWithdraw = new GPRSSubscriptionDataWithdrawImpl(true);
@@ -227,6 +228,6 @@ public class DeleteSubscriberDataRequestTest {
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         rawData = this.getEncodedData3();
-        assertEquals(encodedData, rawData);
+        assertArrayEquals(encodedData, rawData);
     }
 }

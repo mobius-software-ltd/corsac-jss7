@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.isup.message.FacilityMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallTransferNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageCompatibilityInformation;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:09:26:46 2009-04-22<br>
@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
  */
 public class FACTest extends MessageHarness {
 
-    @Test(groups = { "functional.encode", "functional.decode", "message" })
+    @Test
     public void testTwo_Params() throws Exception {
 
     	ByteBuf message = getDefaultBody();

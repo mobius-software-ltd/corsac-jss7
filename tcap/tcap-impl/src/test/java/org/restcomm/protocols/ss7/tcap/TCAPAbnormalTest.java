@@ -19,12 +19,15 @@
 
 package org.restcomm.protocols.ss7.tcap;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
@@ -33,11 +36,6 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.TRPseudoState;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -66,25 +64,16 @@ public class TCAPAbnormalTest extends SccpHarness {
 
     }
 
-    @BeforeClass
-    public void setUpClass() {
-        this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
-        this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
-        System.out.println("setUpClass");
-    }
-
-    @AfterClass
-    public void tearDownClass() throws Exception {
-        System.out.println("tearDownClass");
-    }
-
     /*
      * (non-Javadoc)
      *
      * @see junit.framework.TestCase#setUp()
      */
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
+    	 this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
+         this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
+         
         System.out.println("setUp");
         super.setUp();
 
@@ -112,7 +101,7 @@ public class TCAPAbnormalTest extends SccpHarness {
      *
      * @see junit.framework.TestCase#tearDown()
      */
-    @AfterMethod
+    @After
     public void tearDown() {
         this.tcapStack1.stop();
         this.tcapStack2.stop();
@@ -124,7 +113,7 @@ public class TCAPAbnormalTest extends SccpHarness {
      * A case of receiving TC-Begin + AARQ apdu + unsupported protocol version (supported only V2) TC-BEGIN + AARQ apdu
      * (unsupported protocol version) TC-ABORT + PAbortCauseType.NoCommonDialogPortion
      */
-    @Test(groups = { "functional.flow" })
+    @Test
     public void badDialogProtocolVersionTest() throws Exception {
 
         long stamp = System.currentTimeMillis();
@@ -152,7 +141,7 @@ public class TCAPAbnormalTest extends SccpHarness {
      * Case of receiving TC-Begin that has a bad structure TC-BEGIN (bad formatted) TC-ABORT +
      * PAbortCauseType.IncorrectTxPortion
      */
-    @Test(groups = { "functional.flow" })
+    @Test
     public void badSyntaxMessageTest() throws Exception {
 
         long stamp = System.currentTimeMillis();
@@ -176,7 +165,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         assertEquals(client.pAbortCauseType, PAbortCauseType.IncorrectTxPortion);
     }
 
-    @Test(groups = { "functional.flow" })
+    @Test
     /**
      * Case of receiving a reply for TC-Begin the message with a bad TAG
      * TC-BEGIN (bad message Tag - not Begin, Continue, ...)
@@ -225,7 +214,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         assertEquals(server.pAbortCauseType, PAbortCauseType.UnrecognizedMessageType);
     }
 
-    @Test(groups = { "functional.flow" })
+    @Test
     /**
      * Case of receiving a message TC-Continue when a local Dialog has been released
      * TC-BEGIN
@@ -279,7 +268,7 @@ public class TCAPAbnormalTest extends SccpHarness {
      * TC-BEGIN TC-CONTINUE we are setting a State of a Client Dialog to TRPseudoState.InitialSent like it has just been sent a
      * TC-BEGIN message TC-CONTINUE TC-ABORT + PAbortCauseType.AbnormalDialogue
      */
-    @Test(groups = { "functional.flow" })
+    @Test
     public void abnormalDialogTest() throws Exception {
 
         long stamp = System.currentTimeMillis();
@@ -328,7 +317,7 @@ public class TCAPAbnormalTest extends SccpHarness {
      *
      * TC-BEGIN TC-ABORT + UserAbort by TCAP user
      */
-    @Test(groups = { "functional.flow" })
+    @Test
     public void userAbortTest() throws Exception {
 
         //
@@ -366,7 +355,7 @@ public class TCAPAbnormalTest extends SccpHarness {
     /**
      * Sending a message with unreachable CalledPartyAddress TC-BEGIN
      */
-    @Test(groups = { "functional.flow" })
+    @Test
     public void badAddressMessage1Test() throws Exception {
 
         long stamp = System.currentTimeMillis();
@@ -393,7 +382,7 @@ public class TCAPAbnormalTest extends SccpHarness {
      * Sending a message with unreachable CalledPartyAddress + returnMessageOnError -> TC-Notice TC-BEGIN + returnMessageOnError
      * TC-NOTICE
      */
-    @Test(groups = { "functional.flow" })
+    @Test
     public void badAddressMessage2Test() throws Exception {
 
         long stamp = System.currentTimeMillis();
@@ -418,7 +407,7 @@ public class TCAPAbnormalTest extends SccpHarness {
     /**
      * Invoke timeouts before dialog timeout TC-BEGIN InvokeTimeout DialogTimeout
      */
-    @Test(groups = { "functional.flow" })
+    @Test
     public void invokeTimeoutTest1() throws Exception {
 
         long stamp = System.currentTimeMillis();
@@ -450,7 +439,7 @@ public class TCAPAbnormalTest extends SccpHarness {
     /**
      * Invoke timeouts after dialog timeout TC-BEGIN DialogTimeout
      */
-    @Test(groups = { "functional.flow" })
+    @Test
     public void invokeTimeoutTest2() throws Exception {
 
         long stamp = System.currentTimeMillis();
@@ -496,7 +485,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         return Unpooled.wrappedBuffer(new byte[] { 106, 6, 72, 1, 1, 73, 1, 1 });
     }
 
-    @Test(groups = { "functional.flow" })
+    @Test
     public void unrecognizedMessageTypeTest() throws Exception {
 
         // case of receiving TC-Begin + AARQ apdu + unsupported protocol version (supported only V2)

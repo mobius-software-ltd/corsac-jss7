@@ -19,11 +19,11 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -55,7 +55,7 @@ public class ChargingCharacteristicsTest {
         return new byte[] { 4, 2, 1, 0 };
     };
 
-    @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ChargingCharacteristicsImpl.class);
@@ -108,7 +108,7 @@ public class ChargingCharacteristicsTest {
         assertTrue(prim.isChargingByHotBillingCharging());
     }
 
-    @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ChargingCharacteristicsImpl.class);
@@ -119,8 +119,7 @@ public class ChargingCharacteristicsTest {
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
 
-        assertEquals(encodedData, this.getData1());
-
+        assertArrayEquals(encodedData, this.getData1());
 
         prim = new ChargingCharacteristicsImpl(false, true, false, false);
 
@@ -128,11 +127,15 @@ public class ChargingCharacteristicsTest {
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
 
+        assertArrayEquals(encodedData, this.getData2());
+
         prim = new ChargingCharacteristicsImpl(false, false, true, false);
 
         buffer=parser.encode(prim);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
+
+        assertArrayEquals(encodedData, this.getData3());
 
         prim = new ChargingCharacteristicsImpl(false, false, false, true);
 
@@ -140,6 +143,6 @@ public class ChargingCharacteristicsTest {
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
 
-        assertEquals(encodedData, this.getData4());
+        assertArrayEquals(encodedData, this.getData4());
     }
 }

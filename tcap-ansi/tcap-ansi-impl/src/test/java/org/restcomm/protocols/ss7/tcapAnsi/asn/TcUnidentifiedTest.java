@@ -19,13 +19,13 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCUnifiedMessage;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -34,7 +34,6 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class TcUnidentifiedTest {
 
     private byte[] data1 = new byte[] { -26, 15, -57, 8, 1, 1, 2, 2, 3, 3, 4, 4, -7, 3, -37, 1, 66 };
@@ -42,7 +41,7 @@ public class TcUnidentifiedTest {
     private byte[] trIdO = new byte[] { 1, 1, 2, 2 };
     private byte[] trIdD = new byte[] { 3, 3, 4, 4 };
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(TCUniMessageImpl.class);

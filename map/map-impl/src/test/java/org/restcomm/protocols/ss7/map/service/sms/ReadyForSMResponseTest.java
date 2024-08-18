@@ -19,13 +19,13 @@
 
 package org.restcomm.protocols.ss7.map.service.sms;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -46,7 +46,7 @@ public class ReadyForSMResponseTest {
                 23, 24, 25, 26, (byte) 161, 3, 31, 32, 33  };
     }
 
-    @Test(groups = { "functional.decode", "service.sms" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ReadyForSMResponseImpl.class);
@@ -60,7 +60,7 @@ public class ReadyForSMResponseTest {
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(impl.getExtensionContainer()));
     }
 
-    @Test(groups = { "functional.encode", "service.sms" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ReadyForSMResponseImpl.class);

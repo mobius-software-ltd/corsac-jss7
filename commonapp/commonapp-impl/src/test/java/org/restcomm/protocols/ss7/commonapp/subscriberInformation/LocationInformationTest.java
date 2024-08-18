@@ -19,9 +19,9 @@
 
 package org.restcomm.protocols.ss7.commonapp.subscriberInformation;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -34,7 +34,7 @@ import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.LSAIdentityImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -79,7 +79,7 @@ public class LocationInformationTest {
         return new byte[] { 31, 16, 33, 34, 35, 36, 37, 38, 39, 40 };
     }
 
-    @Test(groups = { "functional.decode", "subscriberInformation" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(LocationInformationImpl.class);
@@ -162,7 +162,7 @@ public class LocationInformationTest {
         assertTrue(bs.isBitSet(26));
     }
 
-    @Test(groups = { "functional.encode", "subscriberInformation" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(LocationInformationImpl.class);

@@ -23,18 +23,18 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
@@ -51,11 +51,11 @@ public class CauseIndicatorsTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeTest
+    @Before
     public void setUp() {
     }
 
-    @AfterTest
+    @After
     public void tearDown() {
     }
 
@@ -71,7 +71,7 @@ public class CauseIndicatorsTest {
         return Unpooled.wrappedBuffer(new byte[] { 1, 2, (byte) 0xFF });
     }
 
-    @Test(groups = { "functional.decode", "parameter" })
+    @Test
     public void testDecode() throws Exception {
 
         CauseIndicatorsImpl prim = new CauseIndicatorsImpl();
@@ -96,7 +96,7 @@ public class CauseIndicatorsTest {
         // recomendations!=null (extra Recommendation byte)
     }
 
-    @Test(groups = { "functional.encode", "parameter" })
+    @Test
     public void testEncode() throws Exception {
 
         CauseIndicatorsImpl prim = new CauseIndicatorsImpl(CauseIndicators._CODING_STANDARD_ITUT,

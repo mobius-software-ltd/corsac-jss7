@@ -18,10 +18,10 @@
  */
 package org.restcomm.protocols.ss7.cap.service.sms;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.cap.api.service.sms.primitive.FCIBCCCAMELSeque
 import org.restcomm.protocols.ss7.cap.service.sms.primitive.FCIBCCCAMELSequence1SMSImpl;
 import org.restcomm.protocols.ss7.cap.service.sms.primitive.FreeFormatDataSMSImpl;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AppendFreeFormatData;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -55,7 +55,7 @@ public class FurnishChargingInformationSMSRequestTest {
         return new byte[] { 48, 6, -128, 1, 3, -118, 1, 1 };
     };
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(FurnishChargingInformationSMSRequestImpl.class);
@@ -73,7 +73,7 @@ public class FurnishChargingInformationSMSRequestTest {
         assertEquals(fcIBCCCAMELsequence1.getAppendFreeFormatData(), AppendFreeFormatData.append);
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(FurnishChargingInformationSMSRequestImpl.class);

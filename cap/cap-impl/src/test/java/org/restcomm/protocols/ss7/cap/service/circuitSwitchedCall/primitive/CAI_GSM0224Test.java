@@ -19,14 +19,14 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CAI_GSM0224Impl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -47,7 +47,7 @@ public class CAI_GSM0224Test {
                 (byte) 133, 1, 6, (byte) 134, 1, 7 };
     }
 
-    @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CAI_GSM0224Impl.class);
@@ -68,7 +68,7 @@ public class CAI_GSM0224Test {
         assertEquals((int) elem.getE7(), 7);
     }
 
-    @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CAI_GSM0224Impl.class);

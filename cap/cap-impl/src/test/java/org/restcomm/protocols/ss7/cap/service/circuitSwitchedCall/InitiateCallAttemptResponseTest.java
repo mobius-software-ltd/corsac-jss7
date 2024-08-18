@@ -19,15 +19,15 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.cap.primitives.CAPExtensionsTest;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.OfferedCamel4FunctionalitiesImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.SupportedCamelPhasesImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -48,7 +48,7 @@ public class InitiateCallAttemptResponseTest {
                 (byte) 255, (byte) 129, 3, 1, (byte) 128, 0, (byte) 131, 0 };
     }
 
-    @Test(groups = { "functional.decode", "circuitSwitchedCall" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(InitiateCallAttemptResponseImpl.class);
@@ -70,7 +70,7 @@ public class InitiateCallAttemptResponseTest {
         assertTrue(elem.getReleaseCallArgExtensionAllowed());
     }
 
-    @Test(groups = { "functional.encode", "circuitSwitchedCall" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(InitiateCallAttemptResponseImpl.class);

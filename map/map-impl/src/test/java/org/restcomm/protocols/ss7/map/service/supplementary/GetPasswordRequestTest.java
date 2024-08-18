@@ -19,14 +19,14 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.service.supplementary.GuidanceInfo;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -46,7 +46,7 @@ public class GetPasswordRequestTest {
         return new byte[] { 10, 1, 2 };
     }
 
-    @Test(groups = { "functional.decode", "service.supplementary" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(GetPasswordRequestImpl.class);
@@ -59,7 +59,7 @@ public class GetPasswordRequestTest {
         assertEquals(impl.getGuidanceInfo(), GuidanceInfo.enterNewPWAgain);
     }
 
-    @Test(groups = { "functional.encode", "service.supplementary" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(GetPasswordRequestImpl.class);

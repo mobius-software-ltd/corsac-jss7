@@ -22,16 +22,16 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.restcomm.protocols.ss7.isup.message.CircuitGroupResetAckMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallReference;
 import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -47,7 +47,7 @@ import io.netty.buffer.Unpooled;
  */
 public class GRATest extends MessageHarness {
 
-    @Test(groups = { "functional.encode", "functional.decode", "message" })
+    @Test
     public void testTwo_Params() throws Exception {
     	ByteBuf message = getDefaultBody();
 
@@ -57,20 +57,13 @@ public class GRATest extends MessageHarness {
 
         try {
             RangeAndStatus RS = (RangeAndStatus) grs.getParameter(RangeAndStatus._PARAMETER_CODE);
-            assertNotNull(RS, "Range And Status retrun is null, it shoul not be");
-            if (RS == null)
-                return;
+            assertNotNull(RS);
             byte range = RS.getRange();
-            assertEquals(range, 0x01, "Range is wrong,");
+            assertEquals(range, 0x01);
             ByteBuf b = RS.getStatus();
-            assertNotNull(b, "RangeAndStatus.getRange() is null");
-            if (b == null) {
-                return;
-            }
-            assertEquals(b.readableBytes(), 1, "Length of param is wrong");
-            if (b.readByte() != 1)
-                return;
-            assertTrue(ByteBufUtil.equals(b,Unpooled.wrappedBuffer(new byte[] { 0x02 })), "RangeAndStatus.getRange() is wrong");
+            assertNotNull(b);
+            assertEquals(b.readableBytes(), 1);
+            assertTrue(ByteBufUtil.equals(b,Unpooled.wrappedBuffer(new byte[] { 0x02 })));
 
         } catch (Exception e) {
             e.printStackTrace();

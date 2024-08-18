@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi;
 
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -33,8 +33,7 @@ import java.util.Arrays;
 public class TCAPTestUtils {
 
     public static void compareArrays(byte[] expected, byte[] encoded) {
-        boolean same = Arrays.equals(expected, encoded);
-        assertTrue(same, "byte[] dont match, expected|encoded \n" + Arrays.toString(expected) + "\n" + Arrays.toString(encoded));
+        assertTrue(Arrays.equals(expected, encoded));
     }
 
 }

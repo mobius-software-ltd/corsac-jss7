@@ -16,12 +16,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<scope>test</scope>
-		</dependency>
+		</dependency>		
 		<!-- other -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
@@ -57,13 +52,6 @@
 				<version>
 					${maven-surefire-plugin.version}
 				</version>
-
-				<configuration>
-					<suiteXmlFiles>
-						<suiteXmlFile>testng-methods.xml</suiteXmlFile>
-						<suiteXmlFile>testng-classes.xml</suiteXmlFile>
-					</suiteXmlFiles>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

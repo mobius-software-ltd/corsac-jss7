@@ -23,12 +23,20 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.restcomm.protocols.api.IpChannelType;
+import org.restcomm.protocols.api.Management;
+import org.restcomm.protocols.sctp.SctpManagementImpl;
 import org.restcomm.protocols.ss7.m3ua.ExchangeType;
 import org.restcomm.protocols.ss7.m3ua.Functionality;
 import org.restcomm.protocols.ss7.m3ua.IPSPType;
@@ -42,14 +50,6 @@ import org.restcomm.protocols.ss7.mtp.Mtp3StatusPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
-import org.restcomm.protocols.api.IpChannelType;
-import org.restcomm.protocols.api.Management;
-import org.restcomm.protocols.sctp.SctpManagementImpl;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 import com.sun.nio.sctp.SctpChannel;
@@ -99,7 +99,7 @@ public class GatewayTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         mtp3UserPartListener = new Mtp3UserPartListenerImpl();
 
@@ -121,7 +121,7 @@ public class GatewayTest {
 
     }
 
-    @AfterMethod
+    @After
     public void tearDown() throws Exception {
 
         this.sctpManagement.stop();

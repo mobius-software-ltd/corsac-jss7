@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -34,7 +34,7 @@ import org.restcomm.protocols.ss7.map.api.primitives.SubscriberIdentity;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.DomainType;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfo;
 import org.restcomm.protocols.ss7.map.primitives.SubscriberIdentityImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -53,7 +53,7 @@ public class AnyTimeInterrogationRequestTest {
             0x15, 0x09, (byte) 0xa1, 0x04, (byte) 0x80, 0x00, (byte) 0x81, 0x00, (byte) 0x83, 0x07, (byte) 0x91, 0x55, 0x43,
             0x69, 0x26, (byte) 0x99, 0x34 };
 
-    @Test(groups = { "functional.decode", "subscriberInformation" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AnyTimeInterrogationRequestImpl.class);
@@ -78,7 +78,7 @@ public class AnyTimeInterrogationRequestTest {
 
     }
 
-    @Test(groups = { "functional.decode", "subscriberInformation" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AnyTimeInterrogationRequestImpl.class);

@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +32,7 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringFeatu
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringInfo;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SSStatus;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -56,7 +56,7 @@ public class CallBarringInfoTest {
         return new byte[] { 48, 10, 4, 1, 33, 48, 5, 48, 3, (byte) 132, 1, 14 };
     }
 
-    @Test(groups = { "functional.decode", "service.supplementary" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CallBarringInfoImpl.class);
@@ -86,7 +86,7 @@ public class CallBarringInfoTest {
         assertTrue(impl.getCallBarringFeatureList().get(0).getSsStatus().getPBit());
     }
 
-    @Test(groups = { "functional.encode", "service.supplementary" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CallBarringInfoImpl.class);

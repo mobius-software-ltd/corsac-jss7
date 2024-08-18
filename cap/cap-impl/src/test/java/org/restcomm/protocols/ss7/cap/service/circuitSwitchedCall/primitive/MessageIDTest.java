@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +33,7 @@ import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.MessageIDTextImp
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.MessageIDWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.VariableMessageImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.VariablePartImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -65,7 +65,7 @@ public class MessageIDTest {
         return new byte[] { 48, 10, (byte) 190, 8, (byte) 128, 1, 99, (byte) 161, 3, (byte) 128, 1, 28 };
     }
 
-    @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(MessageIDWrapperImpl.class);
@@ -124,7 +124,7 @@ public class MessageIDTest {
         assertEquals((int) elem.getMessageID().getVariableMessage().getVariableParts().get(0).getInteger(), 28);
     }
 
-    @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(MessageIDWrapperImpl.class);

@@ -19,9 +19,9 @@
 
 package org.restcomm.protocols.ss7.cap.errors;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.cap.api.errors.CancelProblem;
 import org.restcomm.protocols.ss7.cap.api.errors.RequestedInfoErrorParameter;
 import org.restcomm.protocols.ss7.cap.api.errors.TaskRefusedParameter;
 import org.restcomm.protocols.ss7.cap.api.errors.UnavailableNetworkResource;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -61,7 +61,7 @@ public class ErrorMessageEncodingTest {
         return new byte[] { 10, 1, 1 };
     }
 
-    @Test(groups = { "functional.decode", "errors.primitive" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CAPErrorMessageTaskRefusedImpl.class);
@@ -106,7 +106,7 @@ public class ErrorMessageEncodingTest {
         assertEquals(elem4.getCancelProblem(), CancelProblem.tooLate);
     }
 
-    @Test(groups = { "functional.encode", "errors.primitive" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	

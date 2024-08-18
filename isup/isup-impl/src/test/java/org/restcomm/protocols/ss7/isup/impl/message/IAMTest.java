@@ -22,13 +22,13 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import static org.testng.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.InitialAddressMessage;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:15:07:07 2009-07-17<br>
@@ -39,7 +39,7 @@ import org.testng.annotations.Test;
  */
 public class IAMTest extends MessageHarness {
 
-    @Test(groups = { "functional.encode", "functional.decode", "message" })
+    @Test
     public void testTwo_Parameters() throws Exception {
     	ByteBuf message = getDefaultBody();
 

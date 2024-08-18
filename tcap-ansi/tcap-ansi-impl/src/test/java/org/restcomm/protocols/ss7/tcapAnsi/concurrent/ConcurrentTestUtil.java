@@ -19,6 +19,8 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.concurrent;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
@@ -26,7 +28,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.testng.AssertJUnit;
 
 /**
 *
@@ -64,17 +65,14 @@ public class ConcurrentTestUtil {
                 });
             }
             // wait until all threads are ready
-            AssertJUnit.assertTrue(
-                    "Timeout initializing threads! Perform long lasting initializations before passing runnables to assertConcurrent",
-                    allExecutorThreadsReady.await(runnables.size() * 10, TimeUnit.MILLISECONDS));
+            assertTrue(allExecutorThreadsReady.await(runnables.size() * 10, TimeUnit.MILLISECONDS));
             // start all test runners
             afterInitBlocker.countDown();
-            AssertJUnit.assertTrue(message + " timeout! More than" + maxTimeout + " millis",
-                    allDone.await(maxTimeout, TimeUnit.MILLISECONDS));
+            assertTrue(allDone.await(maxTimeout, TimeUnit.MILLISECONDS));
         } finally {
             threadPool.shutdownNow();
         }
-        AssertJUnit.assertTrue(message + "failed with exception(s)" + exceptions, exceptions.isEmpty());
+        assertTrue(exceptions.isEmpty());
     }
 
 }

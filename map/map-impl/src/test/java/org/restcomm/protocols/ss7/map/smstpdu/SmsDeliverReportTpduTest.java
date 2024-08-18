@@ -19,14 +19,14 @@
 
 package org.restcomm.protocols.ss7.map.smstpdu;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -47,7 +47,7 @@ public class SmsDeliverReportTpduTest {
         return new byte[] { 0, 1, 44 };
     }
 
-    @Test(groups = { "functional.decode", "smstpdu" })
+    @Test
     public void testDecode() throws Exception {
 
         SmsDeliverReportTpduImpl impl = new SmsDeliverReportTpduImpl(Unpooled.wrappedBuffer(this.getData1()), null);
@@ -68,7 +68,7 @@ public class SmsDeliverReportTpduTest {
         assertNull(impl.getUserData());
     }
 
-    @Test(groups = { "functional.encode", "smstpdu" })
+    @Test
     public void testEncode() throws Exception {
 
         UserDataImpl ud = new UserDataImpl("Hello !!!!", new DataCodingSchemeImpl(0), null, null);

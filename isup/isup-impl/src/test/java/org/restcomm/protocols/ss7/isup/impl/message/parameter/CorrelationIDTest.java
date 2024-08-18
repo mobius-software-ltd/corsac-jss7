@@ -27,7 +27,7 @@ import io.netty.buffer.Unpooled;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:14:11:03 2009-04-23<br>
@@ -49,7 +49,7 @@ public class CorrelationIDTest extends ParameterHarness {
         // super.goodBodies.add(getBody2());
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, IOException {
         // CorrelationID bci = new CorrelationID(getBody1());

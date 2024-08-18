@@ -19,16 +19,19 @@
 
 package org.restcomm.protocols.ss7.inap.functional;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedDigits;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.CollectedInfo;
 import org.restcomm.protocols.ss7.commonapp.api.circuitSwitchedCall.DestinationRoutingAddress;
@@ -113,11 +116,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
@@ -149,23 +147,12 @@ public class INAPFunctionalTest extends SccpHarness {
         return 146;
     }
 
-    @BeforeClass
-    public void setUpClass() throws Exception {
-
-        System.out.println("setUpClass");
-    }
-
-    @AfterClass
-    public void tearDownClass() throws Exception {
-        System.out.println("tearDownClass");
-    }
-
     /*
      * (non-Javadoc)
      *
      * @see junit.framework.TestCase#setUp()
      */
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         // this.setupLog4j();
         System.out.println("setUpTest");
@@ -199,7 +186,7 @@ public class INAPFunctionalTest extends SccpHarness {
      * @see junit.framework.TestCase#tearDown()
      */
 
-    @AfterMethod
+    @After
     public void tearDown() {
         System.out.println("tearDownTest");
         this.stack1.stop();
@@ -212,7 +199,7 @@ public class INAPFunctionalTest extends SccpHarness {
      *
      * TC-BEGIN + InitialDPRequest TC-END + Error message SystemFailure
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testInitialDp_Error() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -319,7 +306,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
   TC-END (empty)
 </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testCircuitCall1() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -367,7 +354,7 @@ TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
                     assertEquals(calledPartyNumber.getInternalNetworkNumberIndicator(), CalledPartyNumber._INN_ROUTING_ALLOWED);
                 } catch (ASNParsingException e) {
                     e.printStackTrace();
-                    fail("Exception while checking ConnectRequest imdication", e);
+                    fail("Exception while checking ConnectRequest imdication");
                 }
                 assertNull(ind.getAlertingPattern());
                 assertNull(ind.getCallingPartysCategory());
@@ -799,7 +786,7 @@ TC-CONTINUE + SpecializedResourceReportRequest
   TC-END + ReleaseCallRequest
 </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testPlayAnnouncment() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -1101,7 +1088,7 @@ TC-CONTINUE + PromptAndCollectUserInformationResponse
   TC-END + CancelRequest
 </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testAssistSsf() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -1410,7 +1397,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
   TC-END + callInformationReport
 <code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testScfSsf() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -1571,7 +1558,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
      * InvokeTimeout TC-CONTINUE + CancelRequest + cancelInvocation() -> CancelRequest will not go to Server TC-CONTINUE +
      * ResetTimerRequest reject ResetTimerRequest DialogUserAbort: AbortReason=missing_reference
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testAbnormal() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -1787,7 +1774,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
      *
      * TC-BEGIN + InitialDPRequest TC-CONTINUE empty (no answer - DialogTimeout at both sides)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testDialogTimeout() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -1910,7 +1897,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
      *
      * TC-BEGIN + InitialDPRequest (Server service is down -> ACN not supported) TC-ABORT + ACNNotSuported
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testACNNotSuported() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -1976,7 +1963,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
      *
      * TC-BEGIN + no ACN TC-ABORT + BadReceivedData
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testBadDataSendingNoAcn() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -2037,7 +2024,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
      *
      * TC-BEGIN + InitialDP relaseDialog TC-CONTINUE ProviderAbort
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testProviderAbort() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -2117,7 +2104,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
      *
      * TC-BEGIN + broken referensedNumber TC-ABORT
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testMessageUserDataLength() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -2162,7 +2149,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
      * sendDelayed(ContinueRequest) + sendDelayed(ContinueRequest) TC-END + closeDelayed(CancelRequest) +
      * sendDelayed(CancelRequest)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testDelayedSendClose() throws Exception {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
 
@@ -2306,7 +2293,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
      * TC-BEGIN + initialDPRequest + initialDPRequest
      *   TC-END + Prearranged + [ContinueRequest + ContinueRequest]
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testDelayedClosePrearranged() throws Exception {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
             public void onDialogAccept(INAPDialog inapDialog) {
@@ -2412,7 +2399,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
      * UnrechognizedLinkedID) + ContinueRequest to a playAnnouncement operation (-> UnexpectedLinkedOperation) +
      * SpecializedResourceReportRequest to a playAnnouncement operation (-> normal case) TC-END
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testBadInvokeLinkedId() throws Exception {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
             int dialogStep = 0;
@@ -2624,7 +2611,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
      * (ReturnResultUnexpected) + Reject (ReturnErrorUnexpected) + Reject (ReturnResultUnexpected) + Reject
      * (ReturnErrorUnexpected)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testUnexpectedResultError() throws Exception {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
             int rejectStep = 0;
@@ -2962,7 +2949,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
      *
      * TC-Message + bad UnrecognizedMessageType TC-ABORT UnrecognizedMessageType
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testUnrecognizedMessageType() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -3010,7 +2997,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
     /**
      * TC-BEGIN + (bad sccp address + setReturnMessageOnError) TC-NOTICE
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testTcNotice() throws Exception {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
             public void onDialogNotice(INAPDialog inapDialog, INAPNoticeProblemDiagnostic noticeProblemDiagnostic) {
@@ -3055,7 +3042,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
      *   TC-CONTINUE + ContinueWithArgumentRequest
      * TC-END 
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testContinueWithArgument() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -3181,7 +3168,7 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
      *   TC-CONTINUE + callGap
      * TC-END 
      */
-    @Test(groups = {"functional.flow", "dialog"})
+    @Test
     public void testCallGap() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {

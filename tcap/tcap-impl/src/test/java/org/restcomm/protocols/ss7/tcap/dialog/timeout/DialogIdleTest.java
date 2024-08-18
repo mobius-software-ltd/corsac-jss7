@@ -22,6 +22,9 @@ package org.restcomm.protocols.ss7.tcap.dialog.timeout;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
@@ -32,11 +35,6 @@ import org.restcomm.protocols.ss7.tcap.TestEvent;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 /**
  * Test for call flow.
@@ -45,7 +43,6 @@ import org.testng.annotations.Test;
  * @author yulianoifa
  *
  */
-@Test
 public class DialogIdleTest extends SccpHarness {
 
     private static final int _DIALOG_TIMEOUT = 5000;
@@ -61,25 +58,16 @@ public class DialogIdleTest extends SccpHarness {
 
     }
 
-    @BeforeClass
-    public void setUpClass() throws Exception {
-        this.sccpStack1Name = "DialogIdleTestSccpStack1";
-        this.sccpStack2Name = "DialogIdleTestSccpStack2";
-        System.out.println("setUpClass");
-    }
-
-    @AfterClass
-    public void tearDownClass() throws Exception {
-        System.out.println("tearDownClass");
-    }
-
     /*
      * (non-Javadoc)
      *
      * @see junit.framework.TestCase#setUp()
      */
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
+    	this.sccpStack1Name = "DialogIdleTestSccpStack1";
+        this.sccpStack2Name = "DialogIdleTestSccpStack2";
+        
         System.out.println("setUp");
         super.setUp();
 
@@ -107,7 +95,7 @@ public class DialogIdleTest extends SccpHarness {
      *
      * @see junit.framework.TestCase#tearDown()
      */
-    @AfterMethod
+    @After
     public void tearDown() {
         System.out.println("tearDown");
         this.tcapStack1.stop();
@@ -115,7 +103,7 @@ public class DialogIdleTest extends SccpHarness {
         super.tearDown();
     }
 
-    @Test(groups = { "functional.timeout.idle" })
+    @Test
     public void testCreateOnly() throws TCAPException {
         long stamp = System.currentTimeMillis();
         List<TestEvent> expectedEvents = new ArrayList<TestEvent>();
@@ -131,7 +119,7 @@ public class DialogIdleTest extends SccpHarness {
 
     }
 
-    @Test(groups = { "functional.timeout.idle" })
+    @Test
     public void testAfterBeginOnly1() throws TCAPException, TCAPSendException {
       //client timeout first
         long stamp = System.currentTimeMillis();
@@ -162,7 +150,7 @@ public class DialogIdleTest extends SccpHarness {
 
     }
 
-    @Test(groups = { "functional.timeout.idle" })
+    @Test
     public void testAfterBeginOnly2() throws Exception {
       //server timeout first
         this.tcapStack1.setDialogIdleTimeout(_DIALOG_TIMEOUT);
@@ -194,7 +182,7 @@ public class DialogIdleTest extends SccpHarness {
         server.compareEvents(serverExpectedEvents);
     }
 
-    @Test(groups = { "functional.timeout.idle" })
+    @Test
     public void testAfterContinue() throws TCAPException, TCAPSendException {
         long stamp = System.currentTimeMillis();
         List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
@@ -233,7 +221,7 @@ public class DialogIdleTest extends SccpHarness {
 
     }
 
-    @Test(groups = { "functional.timeout.idle" })
+    @Test
     public void testAfterContinue2() throws TCAPException, TCAPSendException {
         long stamp = System.currentTimeMillis();
         List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
@@ -277,7 +265,7 @@ public class DialogIdleTest extends SccpHarness {
 
     }
 
-    @Test(groups = { "functional.timeout.idle" })
+    @Test
     public void testAfterEnd() throws TCAPException, TCAPSendException {
         long stamp = System.currentTimeMillis();
         List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();

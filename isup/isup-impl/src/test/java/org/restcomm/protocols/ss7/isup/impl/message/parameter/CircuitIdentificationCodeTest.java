@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:14:11:03 2009-04-23<br>
@@ -63,7 +63,7 @@ public class CircuitIdentificationCodeTest extends ParameterHarness {
         return Unpooled.wrappedBuffer(new byte[] { (byte) 0xAB, 0x0C });
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, IOException, ParameterException {
         CircuitIdentificationCodeImpl bci = new CircuitIdentificationCodeImpl();
@@ -73,7 +73,7 @@ public class CircuitIdentificationCodeTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody2EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, IOException, ParameterException {
         CircuitIdentificationCodeImpl bci = new CircuitIdentificationCodeImpl();

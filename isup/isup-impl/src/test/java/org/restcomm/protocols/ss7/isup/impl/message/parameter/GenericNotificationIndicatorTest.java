@@ -22,14 +22,15 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import static org.testng.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Start time:11:34:01 2009-04-24<br>
@@ -50,14 +51,13 @@ public class GenericNotificationIndicatorTest extends ParameterHarness {
         return Unpooled.wrappedBuffer(super.goodBodies.get(0));
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws IOException, ParameterException {
         GenericNotificationIndicatorImpl eci = new GenericNotificationIndicatorImpl(getBody());
         ByteBuf body = getBody();
         ByteBuf encoded=Unpooled.buffer();
         eci.encode(encoded);
-        boolean equal = ParameterHarness.byteBufEquals(body, encoded);
-        assertTrue(equal, "Body index: \n" + makeCompare(body, encoded));
+        assertTrue(ParameterHarness.byteBufEquals(body, encoded));
 
     }
 

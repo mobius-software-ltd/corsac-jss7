@@ -19,16 +19,16 @@
 
 package org.restcomm.protocols.ss7.cap.isup;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.isup.CallingPartyNumberIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -53,7 +53,7 @@ public class CallingPartyNumberCapTest {
         return new byte[] { (byte) 132, 17, 20, (byte) 135, 9, 80, 64, (byte) 7 }; // 247
     }
 
-    @Test(groups = { "functional.decode", "isup" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CallingPartyNumberIsupImpl.class);
@@ -76,7 +76,7 @@ public class CallingPartyNumberCapTest {
         assertTrue(cpn.getAddress().equals("41789005047"));
     }
 
-    @Test(groups = { "functional.encode", "isup" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CallingPartyNumberIsupImpl.class);

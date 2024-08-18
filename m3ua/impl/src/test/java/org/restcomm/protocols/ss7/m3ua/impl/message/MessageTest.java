@@ -23,15 +23,19 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.message;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.m3ua.impl.message.aspsm.ASPDownAckImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.message.aspsm.ASPDownImpl;
 import org.restcomm.protocols.ss7.m3ua.impl.message.aspsm.ASPUpAckImpl;
@@ -65,6 +69,7 @@ import org.restcomm.protocols.ss7.m3ua.parameter.ASPIdentifier;
 import org.restcomm.protocols.ss7.m3ua.parameter.AffectedPointCode;
 import org.restcomm.protocols.ss7.m3ua.parameter.ConcernedDPC;
 import org.restcomm.protocols.ss7.m3ua.parameter.CongestedIndication;
+import org.restcomm.protocols.ss7.m3ua.parameter.CongestedIndication.CongestionLevel;
 import org.restcomm.protocols.ss7.m3ua.parameter.DeregistrationResult;
 import org.restcomm.protocols.ss7.m3ua.parameter.DeregistrationStatus;
 import org.restcomm.protocols.ss7.m3ua.parameter.DestinationPointCode;
@@ -82,12 +87,9 @@ import org.restcomm.protocols.ss7.m3ua.parameter.ServiceIndicators;
 import org.restcomm.protocols.ss7.m3ua.parameter.Status;
 import org.restcomm.protocols.ss7.m3ua.parameter.TrafficModeType;
 import org.restcomm.protocols.ss7.m3ua.parameter.UserCause;
-import org.restcomm.protocols.ss7.m3ua.parameter.CongestedIndication.CongestionLevel;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -110,11 +112,11 @@ public class MessageTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() {
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
     }
 
@@ -144,12 +146,12 @@ public class MessageTest {
         ByteBuf p1Buf=p1.getData();
         byte[] p1Arr=new byte[p1Buf.readableBytes()];
         p1Buf.readBytes(p1Arr);
-        assertEquals(payload, p1Arr);
+        assertArrayEquals(payload, p1Arr);
         
         ByteBuf p2Buf=p2.getData();
         byte[] p2Arr=new byte[p2Buf.readableBytes()];
         p2Buf.readBytes(p2Arr);
-        assertEquals(payload, p2Arr);
+        assertArrayEquals(payload, p2Arr);
     }
 
     @Test
@@ -178,12 +180,12 @@ public class MessageTest {
         ByteBuf p1Buf=p1.getData();
         byte[] p1Arr=new byte[p1Buf.readableBytes()];
         p1Buf.readBytes(p1Arr);
-        assertEquals(payload, p1Arr);
+        assertArrayEquals(payload, p1Arr);
         
         ByteBuf p2Buf=p2.getData();
         byte[] p2Arr=new byte[p2Buf.readableBytes()];
         p2Buf.readBytes(p2Arr);
-        assertEquals(payload, p2Arr);
+        assertArrayEquals(payload, p2Arr);
     }
 
     @Test

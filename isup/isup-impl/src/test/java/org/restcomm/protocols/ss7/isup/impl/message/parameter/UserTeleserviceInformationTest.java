@@ -23,9 +23,9 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -34,11 +34,11 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Start time:11:36:27 2009-04-27<br>
@@ -58,11 +58,11 @@ public class UserTeleserviceInformationTest extends ParameterHarness {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeTest
+    @Before
     public void setUp() {
     }
 
-    @AfterTest
+    @After
     public void tearDown() {
     }
 
@@ -78,7 +78,7 @@ public class UserTeleserviceInformationTest extends ParameterHarness {
         return Unpooled.wrappedBuffer(new byte[] { (byte) 145, 98, (byte) 129 });
     }
 
-    @Test(groups = { "functional.decode", "parameter" })
+    @Test
     public void testDecode() throws Exception {
 
         UserTeleserviceInformationImpl prim = new UserTeleserviceInformationImpl();
@@ -114,7 +114,7 @@ public class UserTeleserviceInformationTest extends ParameterHarness {
         assertEquals(prim.getEVideoTelephonyCharIdentification(), UserTeleserviceInformation._EACI_CSIC_H221);
     }
 
-    @Test(groups = { "functional.encode", "parameter" })
+    @Test
     public void testEncode() throws Exception {
 
         UserTeleserviceInformationImpl prim = new UserTeleserviceInformationImpl(
@@ -167,7 +167,7 @@ public class UserTeleserviceInformationTest extends ParameterHarness {
                         UserTeleserviceInformationImpl._EACI_CSIC_AA_3_1_CALL));
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, IOException, ParameterException {
         UserTeleserviceInformationImpl bci = new UserTeleserviceInformationImpl(getBody(
@@ -182,7 +182,7 @@ public class UserTeleserviceInformationTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody2EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, IOException, ParameterException {
         UserTeleserviceInformationImpl bci = new UserTeleserviceInformationImpl(

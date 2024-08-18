@@ -23,19 +23,19 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
@@ -52,11 +52,11 @@ public class CallingPartyNumberTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeTest
+    @Before
     public void setUp() {
     }
 
-    @AfterTest
+    @After
     public void tearDown() {
     }
 
@@ -72,7 +72,7 @@ public class CallingPartyNumberTest {
         return Unpooled.wrappedBuffer(new byte[] { (byte) 0x00, 0x0B });
     }
 
-    @Test(groups = { "functional.decode", "parameter" })
+    @Test
     public void testDecode() throws Exception {
 
         CallingPartyNumberImpl prim = new CallingPartyNumberImpl();
@@ -109,7 +109,7 @@ public class CallingPartyNumberTest {
         assertFalse(prim.isOddFlag());
     }
 
-    @Test(groups = { "functional.encode", "parameter" })
+    @Test
     public void testEncode() throws Exception {
 
         CallingPartyNumberImpl prim = new CallingPartyNumberImpl(NAINumber._NAI_NATIONAL_SN, "12345",

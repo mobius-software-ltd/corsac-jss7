@@ -23,18 +23,19 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.isup.message.ApplicationTransportMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.ApplicationTransport;
 import org.restcomm.protocols.ss7.isup.message.parameter.CircuitIdentificationCode;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageCompatibilityInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.MessageCompatibilityInstructionIndicator;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Start time:09:26:46 2009-04-22<br>
@@ -46,7 +47,7 @@ import org.testng.annotations.Test;
  */
 public class APTTest extends MessageHarness {
 
-    @Test(groups = { "functional.encode", "functional.decode", "message" })
+    @Test
     public void testTwo_Params() throws Exception {
 
         ByteBuf message = getDefaultBody();
@@ -77,8 +78,8 @@ public class APTTest extends MessageHarness {
         assertEquals(mic.getBandInterworkingIndicator(), 0);
 
         CircuitIdentificationCode cic = msg.getCircuitIdentificationCode();
-        assertNotNull(cic, "CircuitIdentificationCode must not be null");
-        assertEquals(getDefaultCIC(), cic.getCIC(), "CircuitIdentificationCode value does not match");
+        assertNotNull(cic);
+        assertEquals(getDefaultCIC(), cic.getCIC());
 
     }
 

@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.cap.service.gprs;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -31,7 +31,7 @@ import org.restcomm.protocols.ss7.cap.service.gprs.primitive.AOCGPRSImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.CAMELSCIGPRSBillingChargingCharacteristicsImpl;
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CAI_GSM0224Impl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -52,7 +52,7 @@ public class SendChargingInformationGPRSRequestTest {
                 1, 5, -123, 1, 6, -122, 1, 7, -95, 12, -96, 6, -125, 1, 4, -124, 1, 5, -127, 2, 0, -34, -127, 1, 1 };
     };
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(SendChargingInformationGPRSRequestImpl.class);
@@ -85,7 +85,7 @@ public class SendChargingInformationGPRSRequestTest {
         assertEquals(prim.getSCIGPRSBillingChargingCharacteristics().getPDPID().getId(), 1);
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(SendChargingInformationGPRSRequestImpl.class);

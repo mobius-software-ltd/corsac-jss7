@@ -23,10 +23,10 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
 			<scope>test</scope>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>com.mobius-software.protocols.ss7.m3ua</groupId>
 			<artifactId>m3ua-api</artifactId>
@@ -75,13 +75,6 @@
 				<version>
 					${maven-surefire-plugin.version}
 				</version>
-
-				<configuration>
-					<suiteXmlFiles>
-						<suiteXmlFile>testng-methods.xml</suiteXmlFile>
-						<suiteXmlFile>testng-classes.xml</suiteXmlFile>
-					</suiteXmlFiles>
-				</configuration>
 			</plugin>               
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>

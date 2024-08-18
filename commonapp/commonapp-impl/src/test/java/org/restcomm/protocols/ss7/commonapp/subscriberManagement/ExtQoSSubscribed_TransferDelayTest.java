@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.commonapp.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_TransferDelay;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
 *
@@ -32,7 +32,7 @@ import org.testng.annotations.Test;
 */
 public class ExtQoSSubscribed_TransferDelayTest {
 
-    @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
+    @Test
     public void testDecode() throws Exception {
 
         ExtQoSSubscribed_TransferDelay prim = new ExtQoSSubscribed_TransferDelay(0, true);
@@ -63,7 +63,7 @@ public class ExtQoSSubscribed_TransferDelayTest {
         assertEquals(prim.getTransferDelay(), 4000);
     }
 
-    @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
+    @Test
     public void testEncode() throws Exception {
 
         ExtQoSSubscribed_TransferDelay prim = new ExtQoSSubscribed_TransferDelay(0, false);

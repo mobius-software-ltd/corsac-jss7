@@ -23,18 +23,18 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Start time:14:11:03 2009-04-23<br>
@@ -53,11 +53,11 @@ public class LocationNumberTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeTest
+    @Before
     public void setUp() {
     }
 
-    @AfterTest
+    @After
     public void tearDown() {
     }
 
@@ -69,7 +69,7 @@ public class LocationNumberTest {
         return Unpooled.wrappedBuffer(new byte[] { 0, 11 });
     }
 
-    @Test(groups = { "functional.decode", "parameter" })
+    @Test
     public void testDecode() throws Exception {
 
         LocationNumberImpl prim = new LocationNumberImpl();
@@ -96,7 +96,7 @@ public class LocationNumberTest {
 
     }
 
-    @Test(groups = { "functional.encode", "parameter" })
+    @Test
     public void testEncode() throws Exception {
 
         LocationNumberImpl prim = new LocationNumberImpl(LocationNumber._NAI_NATIONAL_SN, "12345", LocationNumber._NPI_TELEX,

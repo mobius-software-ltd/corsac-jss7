@@ -22,19 +22,21 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.InvokingRedirectReason;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectBackwardInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectReason;
 import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchangeCallIdentifier;
 import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchangeDuration;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Start time:12:21:06 2009-04-23<br>
@@ -83,43 +85,43 @@ public class RedirectBackwardInformationTest {
         return Unpooled.wrappedBuffer(body);
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, ParameterException {
         RedirectBackwardInformationImpl parameter = new RedirectBackwardInformationImpl(getBody1());
         
         ReturnToInvokingExchangeDuration[] rtied = parameter.getReturnToInvokingExchangeDuration();
-        Assert.assertNotNull(rtied);
-        Assert.assertEquals(rtied.length,1);
-        Assert.assertNotNull(rtied[0]);
-        Assert.assertEquals(rtied[0].getDuration(),0xBBAA);
+        assertNotNull(rtied);
+        assertEquals(rtied.length,1);
+        assertNotNull(rtied[0]);
+        assertEquals(rtied[0].getDuration(),0xBBAA);
 
         ReturnToInvokingExchangeCallIdentifier[] callIds = parameter.getReturnToInvokingExchangeCallIdentifier();
-        Assert.assertNotNull(callIds);
-        Assert.assertEquals(callIds.length,1);
+        assertNotNull(callIds);
+        assertEquals(callIds.length,1);
         ReturnToInvokingExchangeCallIdentifier id = callIds[0];
-        Assert.assertNotNull(id);
-        Assert.assertEquals(id.getCallIdentity(), 0xAA00AA);
-        Assert.assertEquals(id.getSignalingPointCode(), 0x1555);
+        assertNotNull(id);
+        assertEquals(id.getCallIdentity(), 0xAA00AA);
+        assertEquals(id.getSignalingPointCode(), 0x1555);
 
         InvokingRedirectReason[] inrs = parameter.getInvokingRedirectReason();
-        Assert.assertNotNull(inrs);
-        Assert.assertEquals(inrs.length,1);
-        Assert.assertNotNull(inrs[0]);
+        assertNotNull(inrs);
+        assertEquals(inrs.length,1);
+        assertNotNull(inrs[0]);
         InvokingRedirectReason inr = inrs[0];
         RedirectReason[] rrs2 = inr.getReason();
-        Assert.assertNotNull(rrs2);
-        Assert.assertEquals(rrs2.length,3);
-        Assert.assertNotNull(rrs2[0]);
-        Assert.assertEquals(rrs2[0].getRedirectReason(), 1);
-        Assert.assertNotNull(rrs2[1]);
-        Assert.assertEquals(rrs2[1].getRedirectReason(), 2);
-        Assert.assertNotNull(rrs2[2]);
-        Assert.assertEquals(rrs2[2].getRedirectReason(), 3);
+        assertNotNull(rrs2);
+        assertEquals(rrs2.length,3);
+        assertNotNull(rrs2[0]);
+        assertEquals(rrs2[0].getRedirectReason(), 1);
+        assertNotNull(rrs2[1]);
+        assertEquals(rrs2[1].getRedirectReason(), 2);
+        assertNotNull(rrs2[2]);
+        assertEquals(rrs2[2].getRedirectReason(), 3);
     }
 
     
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testSetAndGet() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, ParameterException {
         RedirectBackwardInformationImpl parameter = new RedirectBackwardInformationImpl();
@@ -151,30 +153,30 @@ public class RedirectBackwardInformationTest {
         parameter = new RedirectBackwardInformationImpl();
         parameter.decode(data);
 
-        Assert.assertNotNull(parameter.getReturnToInvokingExchangeDuration());
-        Assert.assertEquals(parameter.getReturnToInvokingExchangeDuration().length,1);
-        Assert.assertNotNull(parameter.getReturnToInvokingExchangeDuration()[0]);
+        assertNotNull(parameter.getReturnToInvokingExchangeDuration());
+        assertEquals(parameter.getReturnToInvokingExchangeDuration().length,1);
+        assertNotNull(parameter.getReturnToInvokingExchangeDuration()[0]);
         
-        Assert.assertEquals(parameter.getReturnToInvokingExchangeDuration()[0].getDuration(),0xAA0C);
+        assertEquals(parameter.getReturnToInvokingExchangeDuration()[0].getDuration(),0xAA0C);
 
-        Assert.assertNotNull(parameter.getReturnToInvokingExchangeCallIdentifier());
-        Assert.assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier().length,2);
-        Assert.assertNotNull(parameter.getReturnToInvokingExchangeCallIdentifier()[0]);
-        Assert.assertNotNull(parameter.getReturnToInvokingExchangeCallIdentifier()[1]);
+        assertNotNull(parameter.getReturnToInvokingExchangeCallIdentifier());
+        assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier().length,2);
+        assertNotNull(parameter.getReturnToInvokingExchangeCallIdentifier()[0]);
+        assertNotNull(parameter.getReturnToInvokingExchangeCallIdentifier()[1]);
         
-        Assert.assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier()[0].getCallIdentity(),0XBB00BC);
-        Assert.assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier()[1].getCallIdentity(),0XCBF0BC);
-        Assert.assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier()[1].getSignalingPointCode(),1);
+        assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier()[0].getCallIdentity(),0XBB00BC);
+        assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier()[1].getCallIdentity(),0XCBF0BC);
+        assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier()[1].getSignalingPointCode(),1);
 
 
-        Assert.assertNotNull(parameter.getInvokingRedirectReason()[0].getReason());
-        Assert.assertEquals(parameter.getInvokingRedirectReason()[0].getReason().length,2);
-        Assert.assertNotNull(parameter.getInvokingRedirectReason()[0].getReason()[0]);
-        Assert.assertNotNull(parameter.getInvokingRedirectReason()[0].getReason()[1]);
-        Assert.assertEquals(parameter.getInvokingRedirectReason()[0].getReason()[0].getRedirectReason(),1);
-        Assert.assertEquals(parameter.getInvokingRedirectReason()[0].getReason()[1].getRedirectReason(),1);
+        assertNotNull(parameter.getInvokingRedirectReason()[0].getReason());
+        assertEquals(parameter.getInvokingRedirectReason()[0].getReason().length,2);
+        assertNotNull(parameter.getInvokingRedirectReason()[0].getReason()[0]);
+        assertNotNull(parameter.getInvokingRedirectReason()[0].getReason()[1]);
+        assertEquals(parameter.getInvokingRedirectReason()[0].getReason()[0].getRedirectReason(),1);
+        assertEquals(parameter.getInvokingRedirectReason()[0].getReason()[1].getRedirectReason(),1);
         //0 casuse this one does not have it.
-        Assert.assertEquals(parameter.getInvokingRedirectReason()[0].getReason()[1].getRedirectPossibleAtPerformingExchange(),0);
+        assertEquals(parameter.getInvokingRedirectReason()[0].getReason()[1].getRedirectPossibleAtPerformingExchange(),0);
     }
 
 }

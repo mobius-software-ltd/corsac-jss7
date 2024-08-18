@@ -19,16 +19,16 @@
 
 package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.LAIFixedLengthImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -88,7 +88,7 @@ public class MetDPCriterionTest {
         return new byte[] { 48, 2, (byte) 170, 0 };
     }
 
-    @Test(groups = { "functional.decode", "EsiBcsm" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(MetDPCriterionWrapperImpl.class);
@@ -215,7 +215,7 @@ public class MetDPCriterionTest {
         assertNotNull(elem.getMetDPCriterion().get(0).getMetDPCriterionAlt());
     }
 
-    @Test(groups = { "functional.encode", "EsiBcsm" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(MetDPCriterionWrapperImpl.class);

@@ -19,9 +19,9 @@
 
 package org.restcomm.protocols.ss7.map.service.sms;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.AddressField;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.restcomm.protocols.ss7.map.smstpdu.AddressFieldImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -61,7 +61,7 @@ public class SM_RP_SMEATest {
         return new byte[] { 4, 4, 4, (byte) 129, 20, 0 };
     }
 
-    @Test(groups = { "functional.decode", "service.sms" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SM_RP_SMEAImpl.class);
@@ -115,7 +115,7 @@ public class SM_RP_SMEATest {
         assertTrue(af.getAddressValue().equals("4100"));
     }
 
-    @Test(groups = { "functional.encode", "service.sms" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SM_RP_SMEAImpl.class);

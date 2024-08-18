@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
+import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.BeforeClass;
+import org.junit.Before;
 
 /**
  * @author Amit Bhayani
@@ -46,11 +46,11 @@ public class UnstructuredSSResponseTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeTest
+    @Before
     public void setUp() {
     }
 
-    @AfterTest
+    @After
     public void tearDown() {
     }
 }

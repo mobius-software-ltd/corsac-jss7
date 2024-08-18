@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnErrorImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultNotLastImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -56,7 +56,6 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class TcConversationTest {
 
     private byte[] data1 = new byte[] { -27, 30, -57, 8, 1, 1, 2, 2, 3, 3, 4, 4, -24, 18, -23, 16, -49, 1, 0, -47, 2, 9, 53, -14, 7, 4, 5, 3, 4, 5, 6, 7 };
@@ -68,7 +67,7 @@ public class TcConversationTest {
     private byte[] trIdO = new byte[] { 1, 1, 2, 2 };
     private byte[] trIdD = new byte[] { 3, 3, 4, 4 };
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(TCConversationMessageImpl.class);
@@ -124,7 +123,7 @@ public class TcConversationTest {
 
     }
 
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(TCConversationMessageImpl.class);

@@ -19,14 +19,13 @@
 
 package org.restcomm.protocols.ss7.commonapp.subscriberInformation;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.TypeOfShape;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -58,7 +57,7 @@ public class GeographicalInformationTest {
         return new byte[] { 4, 8, 16, (byte) 0x2C, 0x16, (byte) 0xC1, (byte) 0x25, (byte) 0xB0, 0x5B, 0 };
     }
 
-    @Test(groups = { "functional.decode", "subscriberInformation" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(GeographicalInformationImpl.class);
@@ -109,7 +108,7 @@ public class GeographicalInformationTest {
         assertTrue(Math.abs(impl.getUncertainty() - 57.27) < 0.01);
     }
 
-    @Test(groups = { "functional.encode", "subscriberInformation" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(GeographicalInformationImpl.class);
@@ -120,7 +119,7 @@ public class GeographicalInformationTest {
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData01();
-        assertEquals(rawData, encodedData);
+        assertArrayEquals(rawData, encodedData);
 
         impl = new GeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle,
                 31, 53, 0);
@@ -128,7 +127,7 @@ public class GeographicalInformationTest {
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         rawData = getEncodedData02();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        assertArrayEquals(rawData, encodedData);
 
         impl = new GeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle,
                 21.5, 171, 0);
@@ -136,13 +135,13 @@ public class GeographicalInformationTest {
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);        
         rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        assertArrayEquals(rawData, encodedData);
 
         impl = new GeographicalInformationImpl(TypeOfShape.EllipsoidPointWithUncertaintyCircle, -70.33, -179.5, 58);
         buffer=parser.encode(impl);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);        
         rawData = getEncodedData2();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        assertArrayEquals(rawData, encodedData);
     }
 }

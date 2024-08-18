@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -31,7 +31,7 @@ import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CollectedDigitsI
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.CollectedInfoImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.InformationToSendImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ToneImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -53,7 +53,7 @@ public class PromptAndCollectUserInformationRequestTest {
                 1, 3, 10, 1, 1, (byte) 129, 1, (byte) 255, (byte) 132, 1, 22, (byte) 159, 51, 1, 0 };
     }
 
-    @Test(groups = { "functional.decode", "circuitSwitchedCall" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(PromptAndCollectUserInformationRequestImpl.class);
@@ -84,7 +84,7 @@ public class PromptAndCollectUserInformationRequestTest {
         assertFalse(elem.getRequestAnnouncementStartedNotification());
     }
 
-    @Test(groups = { "functional.encode", "circuitSwitchedCall" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(PromptAndCollectUserInformationRequestImpl.class);

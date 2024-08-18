@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.tcap.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -32,8 +32,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
@@ -48,13 +48,12 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class ReturnResultLastTest {
 
-	ASNParser parser=new ASNParser();
+	static ASNParser parser=new ASNParser();
 	
 	@BeforeClass
-	public void setUp() {
+	public static void setUp() {
 		parser.loadClass(ComponentImpl.class);
     	
 		parser.clearClassMapping(ASNReturnResultParameterImpl.class);
@@ -81,7 +80,7 @@ public class ReturnResultLastTest {
         return new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecodeWithParaSequ() throws ASNException {
     	byte[] b = this.getLDataEmpty();
         Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
@@ -136,7 +135,7 @@ public class ReturnResultLastTest {
         assertTrue(InvokeTest.byteBufEquals(Unpooled.wrappedBuffer(this.getParameterData()), ((TCEndTestASN)p).getValue()));        
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testEncode() throws ASNException {
     	byte[] expected = this.getLDataEmpty();
         ReturnResultLast rrl = TcapFactory.createComponentReturnResultLast();

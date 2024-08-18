@@ -19,13 +19,13 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ErrorCode;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ReturnError;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnErrorImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -40,14 +40,13 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class ReturnErrorTest {
 
     private byte[] data1 = new byte[] { -21, 15, -49, 1, 5, -44, 1, 14, -14, 7, 4, 5, 1, 2, 3, 4, 5 };
 
     private byte[] parData = new byte[] { 1, 2, 3, 4, 5 };
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(ReturnErrorImpl.class);
@@ -63,7 +62,7 @@ public class ReturnErrorTest {
         assertEquals(((ASNOctetString)re.getParameter()).getValue(), Unpooled.wrappedBuffer(parData));
     }
 
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(ReturnErrorImpl.class);

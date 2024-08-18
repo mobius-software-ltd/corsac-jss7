@@ -19,12 +19,13 @@
 
 package org.restcomm.protocols.ss7.cap.gap;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.gap.BasicGapCriteriaImpl;
 import org.restcomm.protocols.ss7.commonapp.gap.CompoundCriteriaImpl;
 import org.restcomm.protocols.ss7.commonapp.gap.GapCriteriaImpl;
@@ -33,7 +34,6 @@ import org.restcomm.protocols.ss7.commonapp.gap.GapOnServiceImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ScfIDImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -75,7 +75,7 @@ public class GapCriteriaTest {
         return new byte[] { 12, 32, 23, 56 };
     }
 
-    @Test(groups = { "functional.decode", "gap" })
+    @Test
     public void testDecode_CalledAddressValue() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GapCriteriaWrapperImpl.class);
@@ -90,7 +90,7 @@ public class GapCriteriaTest {
         assertTrue(ByteBufUtil.equals(DigitsIsupImpl.translate(elem.getGapCriteria().getBasicGapCriteria().getCalledAddressDigits().getGenericDigits()),Unpooled.wrappedBuffer(getDigitsData())));
     }
 
-    @Test(groups = { "functional.encode", "gap" })
+    @Test
     public void testEncode_CalledAddressValue() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GapCriteriaWrapperImpl.class);
@@ -106,7 +106,7 @@ public class GapCriteriaTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.decode", "gap" })
+    @Test
     public void testDecode_GapOnService() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GapCriteriaWrapperImpl.class);
@@ -121,7 +121,7 @@ public class GapCriteriaTest {
         assertEquals(elem.getGapCriteria().getBasicGapCriteria().getGapOnService().getServiceKey(), SERVICE_KEY);
     }
 
-    @Test(groups = { "functional.encode", "gap" })
+    @Test
     public void testEncode_GapOnService() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GapCriteriaWrapperImpl.class);
@@ -137,7 +137,7 @@ public class GapCriteriaTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.decode", "gap" })
+    @Test
     public void testDecode_CompoundCriteria() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GapCriteriaWrapperImpl.class);
@@ -153,7 +153,7 @@ public class GapCriteriaTest {
         assertTrue(ByteBufUtil.equals(elem.getGapCriteria().getCompoundGapCriteria().getScfID().getValue(), Unpooled.wrappedBuffer(getScfIDData())));
     }
 
-    @Test(groups = { "functional.encode", "gap" })
+    @Test	
     public void testEncode_CompoundCriteria() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GapCriteriaWrapperImpl.class);

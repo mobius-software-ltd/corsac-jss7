@@ -22,11 +22,12 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.InvokingRedirectReason;
 import org.restcomm.protocols.ss7.isup.message.parameter.PerformingRedirectIndicator;
@@ -34,8 +35,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.RedirectForwardInformat
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectReason;
 import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchangeCallIdentifier;
 import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchangePossible;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Start time:12:21:06 2009-04-23<br>
@@ -101,68 +103,68 @@ public class RedirectForwardInformationTest {
         return Unpooled.wrappedBuffer(body);
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, ParameterException {
         RedirectForwardInformationImpl rfi = new RedirectForwardInformationImpl(getBody1());
         ReturnToInvokingExchangePossible[] rtiep = rfi.getReturnToInvokingExchangePossible();
-        Assert.assertNotNull(rtiep);
-        Assert.assertEquals(rtiep.length,2);
-        Assert.assertNotNull(rtiep[0]);
-        Assert.assertNotNull(rtiep[1]);
+        assertNotNull(rtiep);
+        assertEquals(rtiep.length,2);
+        assertNotNull(rtiep[0]);
+        assertNotNull(rtiep[1]);
 
         ReturnToInvokingExchangeCallIdentifier[] callIds = rfi.getReturnToInvokingExchangeCallIdentifier();
-        Assert.assertNotNull(callIds);
-        Assert.assertEquals(callIds.length,1);
+        assertNotNull(callIds);
+        assertEquals(callIds.length,1);
         ReturnToInvokingExchangeCallIdentifier id = callIds[0];
-        Assert.assertNotNull(id);
-        Assert.assertEquals(id.getCallIdentity(), 0xAA00AA);
-        Assert.assertEquals(id.getSignalingPointCode(), 0x1555);
+        assertNotNull(id);
+        assertEquals(id.getCallIdentity(), 0xAA00AA);
+        assertEquals(id.getSignalingPointCode(), 0x1555);
         
         PerformingRedirectIndicator[] pris = rfi.getPerformingRedirectIndicator();
-        Assert.assertNotNull(pris);
-        Assert.assertEquals(pris.length,1);
+        assertNotNull(pris);
+        assertEquals(pris.length,1);
         PerformingRedirectIndicator ri = pris[0];
-        Assert.assertNotNull(ri);
+        assertNotNull(ri);
         RedirectReason[] rrs = ri.getReason();
-        Assert.assertNotNull(rrs);
-        Assert.assertEquals(rrs.length,4);
-        Assert.assertNotNull(rrs[0]);
-        Assert.assertNotNull(rrs[1]);
-        Assert.assertNotNull(rrs[2]);
-        Assert.assertNotNull(rrs[3]);
+        assertNotNull(rrs);
+        assertEquals(rrs.length,4);
+        assertNotNull(rrs[0]);
+        assertNotNull(rrs[1]);
+        assertNotNull(rrs[2]);
+        assertNotNull(rrs[3]);
 
-        Assert.assertEquals(rrs[0].getRedirectReason(), 18);
-        Assert.assertEquals(rrs[0].getRedirectPossibleAtPerformingExchange(), 0);
+        assertEquals(rrs[0].getRedirectReason(), 18);
+        assertEquals(rrs[0].getRedirectPossibleAtPerformingExchange(), 0);
 
-        Assert.assertEquals(rrs[1].getRedirectReason(), 18);
-        Assert.assertEquals(rrs[1].getRedirectPossibleAtPerformingExchange(), 5);
+        assertEquals(rrs[1].getRedirectReason(), 18);
+        assertEquals(rrs[1].getRedirectPossibleAtPerformingExchange(), 5);
 
-        Assert.assertEquals(rrs[2].getRedirectReason(), 17);
-        Assert.assertEquals(rrs[2].getRedirectPossibleAtPerformingExchange(), 4);
+        assertEquals(rrs[2].getRedirectReason(), 17);
+        assertEquals(rrs[2].getRedirectPossibleAtPerformingExchange(), 4);
 
-        Assert.assertEquals(rrs[3].getRedirectReason(), 2);
-        Assert.assertEquals(rrs[3].getRedirectPossibleAtPerformingExchange(), 0);
+        assertEquals(rrs[3].getRedirectReason(), 2);
+        assertEquals(rrs[3].getRedirectPossibleAtPerformingExchange(), 0);
         
         InvokingRedirectReason[] inrs = rfi.getInvokingRedirectReason();
-        Assert.assertNotNull(inrs);
-        Assert.assertEquals(inrs.length,1);
-        Assert.assertNotNull(inrs[0]);
+        assertNotNull(inrs);
+        assertEquals(inrs.length,1);
+        assertNotNull(inrs[0]);
         InvokingRedirectReason inr = inrs[0];
         RedirectReason[] rrs2 = inr.getReason();
-        Assert.assertNotNull(rrs2);
-        Assert.assertEquals(rrs2.length,3);
-        Assert.assertNotNull(rrs2[0]);
-        Assert.assertEquals(rrs2[0].getRedirectReason(), 1);
-        Assert.assertNotNull(rrs2[1]);
-        Assert.assertEquals(rrs2[1].getRedirectReason(), 2);
-        Assert.assertNotNull(rrs2[2]);
-        Assert.assertEquals(rrs2[2].getRedirectReason(), 3);
+        assertNotNull(rrs2);
+        assertEquals(rrs2.length,3);
+        assertNotNull(rrs2[0]);
+        assertEquals(rrs2[0].getRedirectReason(), 1);
+        assertNotNull(rrs2[1]);
+        assertEquals(rrs2[1].getRedirectReason(), 2);
+        assertNotNull(rrs2[2]);
+        assertEquals(rrs2[2].getRedirectReason(), 3);
         
     }
 
     
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testSetAndGet() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, ParameterException {
         RedirectForwardInformationImpl rfi = new RedirectForwardInformationImpl();
@@ -197,37 +199,37 @@ public class RedirectForwardInformationTest {
         rfi.decode(data);
 
 
-        Assert.assertNotNull(rfi.getReturnToInvokingExchangePossible());
-        Assert.assertEquals(rfi.getReturnToInvokingExchangePossible().length,1);
+        assertNotNull(rfi.getReturnToInvokingExchangePossible());
+        assertEquals(rfi.getReturnToInvokingExchangePossible().length,1);
 
-        Assert.assertNotNull(rfi.getReturnToInvokingExchangeCallIdentifier());
-        Assert.assertEquals(rfi.getReturnToInvokingExchangeCallIdentifier().length,2);
-        Assert.assertNotNull(rfi.getReturnToInvokingExchangeCallIdentifier()[0]);
-        Assert.assertNotNull(rfi.getReturnToInvokingExchangeCallIdentifier()[1]);
+        assertNotNull(rfi.getReturnToInvokingExchangeCallIdentifier());
+        assertEquals(rfi.getReturnToInvokingExchangeCallIdentifier().length,2);
+        assertNotNull(rfi.getReturnToInvokingExchangeCallIdentifier()[0]);
+        assertNotNull(rfi.getReturnToInvokingExchangeCallIdentifier()[1]);
         
-        Assert.assertEquals(rfi.getReturnToInvokingExchangeCallIdentifier()[0].getCallIdentity(),0XBB00BC);
-        Assert.assertEquals(rfi.getReturnToInvokingExchangeCallIdentifier()[1].getCallIdentity(),0XCBF0BC);
-        Assert.assertEquals(rfi.getReturnToInvokingExchangeCallIdentifier()[1].getSignalingPointCode(),1);
+        assertEquals(rfi.getReturnToInvokingExchangeCallIdentifier()[0].getCallIdentity(),0XBB00BC);
+        assertEquals(rfi.getReturnToInvokingExchangeCallIdentifier()[1].getCallIdentity(),0XCBF0BC);
+        assertEquals(rfi.getReturnToInvokingExchangeCallIdentifier()[1].getSignalingPointCode(),1);
      
-        Assert.assertNotNull(rfi.getPerformingRedirectIndicator());
-        Assert.assertEquals(rfi.getPerformingRedirectIndicator().length,1);
+        assertNotNull(rfi.getPerformingRedirectIndicator());
+        assertEquals(rfi.getPerformingRedirectIndicator().length,1);
 
-        Assert.assertNotNull(rfi.getPerformingRedirectIndicator()[0].getReason());
-        Assert.assertEquals(rfi.getPerformingRedirectIndicator()[0].getReason().length,2);
-        Assert.assertNotNull(rfi.getPerformingRedirectIndicator()[0].getReason()[0]);
-        Assert.assertNotNull(rfi.getPerformingRedirectIndicator()[0].getReason()[1]);
-        Assert.assertEquals(rfi.getPerformingRedirectIndicator()[0].getReason()[0].getRedirectReason(),1);
-        Assert.assertEquals(rfi.getPerformingRedirectIndicator()[0].getReason()[1].getRedirectReason(),1);
-        Assert.assertEquals(rfi.getPerformingRedirectIndicator()[0].getReason()[1].getRedirectPossibleAtPerformingExchange(),2);
+        assertNotNull(rfi.getPerformingRedirectIndicator()[0].getReason());
+        assertEquals(rfi.getPerformingRedirectIndicator()[0].getReason().length,2);
+        assertNotNull(rfi.getPerformingRedirectIndicator()[0].getReason()[0]);
+        assertNotNull(rfi.getPerformingRedirectIndicator()[0].getReason()[1]);
+        assertEquals(rfi.getPerformingRedirectIndicator()[0].getReason()[0].getRedirectReason(),1);
+        assertEquals(rfi.getPerformingRedirectIndicator()[0].getReason()[1].getRedirectReason(),1);
+        assertEquals(rfi.getPerformingRedirectIndicator()[0].getReason()[1].getRedirectPossibleAtPerformingExchange(),2);
 
-        Assert.assertNotNull(rfi.getInvokingRedirectReason()[0].getReason());
-        Assert.assertEquals(rfi.getInvokingRedirectReason()[0].getReason().length,2);
-        Assert.assertNotNull(rfi.getInvokingRedirectReason()[0].getReason()[0]);
-        Assert.assertNotNull(rfi.getInvokingRedirectReason()[0].getReason()[1]);
-        Assert.assertEquals(rfi.getInvokingRedirectReason()[0].getReason()[0].getRedirectReason(),1);
-        Assert.assertEquals(rfi.getInvokingRedirectReason()[0].getReason()[1].getRedirectReason(),1);
+        assertNotNull(rfi.getInvokingRedirectReason()[0].getReason());
+        assertEquals(rfi.getInvokingRedirectReason()[0].getReason().length,2);
+        assertNotNull(rfi.getInvokingRedirectReason()[0].getReason()[0]);
+        assertNotNull(rfi.getInvokingRedirectReason()[0].getReason()[1]);
+        assertEquals(rfi.getInvokingRedirectReason()[0].getReason()[0].getRedirectReason(),1);
+        assertEquals(rfi.getInvokingRedirectReason()[0].getReason()[1].getRedirectReason(),1);
         //0 casuse this one does not have it.
-        Assert.assertEquals(rfi.getInvokingRedirectReason()[0].getReason()[1].getRedirectPossibleAtPerformingExchange(),0);
+        assertEquals(rfi.getInvokingRedirectReason()[0].getReason()[1].getRedirectPossibleAtPerformingExchange(),0);
     }
 
 }

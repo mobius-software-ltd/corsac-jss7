@@ -19,15 +19,15 @@
 
 package org.restcomm.protocols.ss7.map.smstpdu;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -44,7 +44,7 @@ public class SmsCommandTpduTest {
         return new byte[] { 2, 11, 33, 44, 12, 13, -111, 17, 34, 51, 68, 85, 102, -9, 5, 115, 101, 116, 32, 65 };
     }
 
-    @Test(groups = { "functional.decode", "smstpdu" })
+    @Test
     public void testDecode() throws Exception {
 
         SmsCommandTpduImpl impl = new SmsCommandTpduImpl(Unpooled.wrappedBuffer(this.getData1()));
@@ -63,7 +63,7 @@ public class SmsCommandTpduTest {
         assertTrue(impl.getCommandData().getDecodedMessage().equals("set A"));
     }
 
-    @Test(groups = { "functional.encode", "smstpdu" })
+    @Test
     public void testEncode() throws Exception {
 
         AddressFieldImpl destinationAddress = new AddressFieldImpl(TypeOfNumber.InternationalNumber,

@@ -19,14 +19,14 @@
 
 package org.restcomm.protocols.ss7.cap.primitives;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.primitives.BurstImpl;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -50,7 +50,7 @@ public class BurstTest {
         return new byte[] { 48, 15, (byte) 128, 1, 1, (byte) 129, 1, 10, (byte) 130, 1, 2, (byte) 131, 1, 11, (byte) 132, 1, 12 };
     }
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BurstImpl.class);
@@ -82,7 +82,7 @@ public class BurstTest {
         assertEquals((int) elem.getToneInterval(), 12);
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BurstImpl.class);

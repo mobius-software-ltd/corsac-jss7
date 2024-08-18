@@ -19,15 +19,15 @@
 
 package org.restcomm.protocols.ss7.cap.primitives;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.primitives.BurstImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.BurstListImpl;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -47,7 +47,7 @@ public class BurstListTest {
         return new byte[] { 48, 8, (byte) 128, 1, 101, (byte) 161, 3, (byte) 129, 1, 10 };
     }
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BurstListImpl.class);
@@ -63,7 +63,7 @@ public class BurstListTest {
         assertEquals((int) elem.getBursts().getBurstInterval(), 10);
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BurstListImpl.class);

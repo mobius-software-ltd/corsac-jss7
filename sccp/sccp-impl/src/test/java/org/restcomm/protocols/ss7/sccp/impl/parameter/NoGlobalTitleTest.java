@@ -23,10 +23,10 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 /**
  * @author amit bhayani
@@ -50,11 +50,11 @@ public class NoGlobalTitleTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() {
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
     }
 }

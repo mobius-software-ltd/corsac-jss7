@@ -19,9 +19,9 @@
 
 package org.restcomm.protocols.ss7.cap.EsiGprs;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -68,7 +68,7 @@ import org.restcomm.protocols.ss7.commonapp.subscriberManagement.Ext2QoSSubscrib
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtQoSSubscribedImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.LSAIdentityImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.QoSSubscribedImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -126,7 +126,7 @@ public class PdpContextChangeOfPositionSpecificInformationTest {
         return new byte[] { 1, 1, 1, 1 };
     }
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(PdpContextChangeOfPositionSpecificInformationImpl.class);
@@ -176,7 +176,7 @@ public class PdpContextChangeOfPositionSpecificInformationTest {
 
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(PdpContextChangeOfPositionSpecificInformationImpl.class);

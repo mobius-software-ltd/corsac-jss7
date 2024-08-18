@@ -19,11 +19,11 @@
 
 package org.restcomm.protocols.ss7.map.service.sms;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -38,7 +38,7 @@ import org.restcomm.protocols.ss7.map.api.primitives.LMSI;
 import org.restcomm.protocols.ss7.map.api.service.sms.LocationInfoWithLMSI;
 import org.restcomm.protocols.ss7.map.primitives.LMSIImpl;
 import org.restcomm.protocols.ss7.map.service.lsm.AdditionalNumberImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -75,7 +75,7 @@ public class SendRoutingInfoForSMResponseTest {
         return new byte[] {48,30,4,7,82,0,17,17,17,17,17,-96,8,-127,6,-111,-105,-103,25,17,17,-126,1,0,-91,6,2,1,30,2,1,40};
     }
 
-    @Test(groups = { "functional.decode", "service.sms" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SendRoutingInfoForSMResponseImpl.class);
@@ -161,7 +161,7 @@ public class SendRoutingInfoForSMResponseTest {
         assertFalse(ind.getMwdSet());
     }
 
-    @Test(groups = { "functional.encode", "service.sms" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SendRoutingInfoForSMResponseImpl.class);

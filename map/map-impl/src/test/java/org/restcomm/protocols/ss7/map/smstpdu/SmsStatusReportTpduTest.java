@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.smstpdu;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.StatusReportQualifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -53,7 +53,7 @@ public class SmsStatusReportTpduTest {
                 7, 0, 0, 4, -63, -80, -48, 14 };
     }
 
-    @Test(groups = { "functional.decode", "smstpdu" })
+    @Test
     public void testDecode() throws Exception {
 
         SmsStatusReportTpduImpl impl = new SmsStatusReportTpduImpl(Unpooled.wrappedBuffer(this.getData1()), null);
@@ -120,7 +120,7 @@ public class SmsStatusReportTpduTest {
         assertNull(impl.getUserData().getDecodedUserDataHeader());
     }
 
-    @Test(groups = { "functional.encode", "smstpdu" })
+    @Test
     public void testEncode() throws Exception {
 
         AddressFieldImpl recipientAddress = new AddressFieldImpl(TypeOfNumber.InternationalNumber,

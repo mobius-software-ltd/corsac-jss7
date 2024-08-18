@@ -24,9 +24,9 @@
 package org.restcomm.protocols.ss7.sccp.impl;
 
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SequenceNumberImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 /**
  * 
  * @author yulianoifa

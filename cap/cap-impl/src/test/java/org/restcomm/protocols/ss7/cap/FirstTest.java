@@ -18,12 +18,12 @@ package org.restcomm.protocols.ss7.cap;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.util.EnumSet;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.EventTypeBCSM;
-import org.testng.annotations.Test;
+import org.junit.Test;
 /**
 *
 * @author sergey vetyutnev
@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
 */
 public class FirstTest {
 
-    @Test(groups = { "FirstTest", "A" })
+    @Test
     public void TestATest() {
         EnumSet<EventTypeBCSM> all = EnumSet.allOf(EventTypeBCSM.class);
 

@@ -18,15 +18,15 @@
  */
 package org.restcomm.protocols.ss7.cap.service.gprs;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.cap.service.gprs.primitive.PDPIDImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -50,7 +50,7 @@ public class ContinueGPRSRequestTest {
         return new byte[] { 0x30, 0x00 };
     }
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ContinueGPRSRequestImpl.class);
@@ -65,7 +65,7 @@ public class ContinueGPRSRequestTest {
         assertEquals(prim.getPDPID().getId(), 2);
     }
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecodeLiveTrace() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ContinueGPRSRequestImpl.class);
@@ -80,7 +80,7 @@ public class ContinueGPRSRequestTest {
         assertNull(prim.getPDPID());
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ContinueGPRSRequestImpl.class);
@@ -94,7 +94,7 @@ public class ContinueGPRSRequestTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncodeLiveTrace() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ContinueGPRSRequestImpl.class);

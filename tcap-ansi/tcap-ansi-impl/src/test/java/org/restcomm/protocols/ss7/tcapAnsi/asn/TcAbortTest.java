@@ -19,9 +19,9 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.DialogPortion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.TCAbortMessage;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -47,7 +47,6 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class TcAbortTest {
 
     private byte[] data1 = new byte[] { -10, 9, -57, 4, 20, 0, 0, 0, -41, 1, 6 };
@@ -60,7 +59,7 @@ public class TcAbortTest {
 
     private byte[] dataValue = new byte[] { 3, 4, 5, 6, 7 };
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(TCAbortMessageImpl.class);
@@ -100,7 +99,7 @@ public class TcAbortTest {
         assertEquals(Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 1L, 1L, 1L }), uie.getUserInformationElements().get(0).getObjectIdentifier());
     }
 
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(TCAbortMessageImpl.class);

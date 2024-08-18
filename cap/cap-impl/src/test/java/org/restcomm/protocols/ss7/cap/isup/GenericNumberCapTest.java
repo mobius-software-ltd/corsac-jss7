@@ -19,16 +19,16 @@
 
 package org.restcomm.protocols.ss7.cap.isup;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.isup.GenericNumberIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -48,7 +48,7 @@ public class GenericNumberCapTest {
         return new byte[] { 4, 7, 1, (byte) 131, 20, 7, 1, 9, 0 };
     }
 
-    @Test(groups = { "functional.decode", "isup" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GenericNumberIsupImpl.class);
@@ -69,7 +69,7 @@ public class GenericNumberCapTest {
         assertEquals(gn.getScreeningIndicator(), 0);
     }
 
-    @Test(groups = { "functional.encode", "isup" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GenericNumberIsupImpl.class);

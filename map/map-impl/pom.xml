@@ -70,15 +70,6 @@
 				<version>
 					${maven-surefire-plugin.version}
 				</version>
-
-				<configuration>
-					<suiteXmlFiles>
-						<!-- -->
-						<suiteXmlFile>testng-methods.xml</suiteXmlFile>
-
-						<suiteXmlFile>testng-classes.xml</suiteXmlFile>
-					</suiteXmlFiles>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -91,8 +82,8 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>org.testng</groupId>
-					<artifactId>testng</artifactId>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
 					<scope>test</scope>
 				</dependency>
 				<dependency>

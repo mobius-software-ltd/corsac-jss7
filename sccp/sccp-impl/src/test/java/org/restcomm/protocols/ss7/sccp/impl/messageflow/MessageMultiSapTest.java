@@ -23,10 +23,11 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.messageflow;
 
-import static org.testng.Assert.assertEquals;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
 import org.restcomm.protocols.ss7.sccp.impl.Mtp3UserPartImpl;
@@ -38,11 +39,9 @@ import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.message.SccpNoticeMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -58,13 +57,13 @@ public class MessageMultiSapTest extends SccpHarness {
     public MessageMultiSapTest() {
     }
 
-    @BeforeClass
+    @Before
     public void setUpClass() throws Exception {
         this.sccpStack1Name = "MessageMultiSapTestStack1";
         this.sccpStack2Name = "MessageMultiSapTestStack2";
     }
 
-    @AfterClass
+    @After
     public void tearDownClass() throws Exception {
     }
 
@@ -87,7 +86,7 @@ public class MessageMultiSapTest extends SccpHarness {
         return stack;
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         super.setUp();
 
@@ -98,7 +97,7 @@ public class MessageMultiSapTest extends SccpHarness {
         resource1.addRemoteSsn(2, 12, getSSN(), 0, false);
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
         super.tearDown();
     }
@@ -119,7 +118,7 @@ public class MessageMultiSapTest extends SccpHarness {
         return Unpooled.wrappedBuffer(new byte[] { 9, 0, 3, 5, 7, 2, 66, 8, 2, 66, 8, 5, 11, 12, 13, 14, 15 });
     }
 
-    @Test(groups = { "SccpMessage", "functional.transfer" })
+    @Test
     public void testTransfer() throws Exception {
 
         a1 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack1PC(), 8);

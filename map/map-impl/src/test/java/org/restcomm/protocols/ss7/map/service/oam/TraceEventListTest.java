@@ -19,12 +19,11 @@
 
 package org.restcomm.protocols.ss7.map.service.oam;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -41,10 +40,10 @@ import io.netty.buffer.Unpooled;
 public class TraceEventListTest {
 
     private byte[] getEncodedData() {
-        return new byte[] { 48, 32, -128, 2, 7, -128, -127, 2, 7, -128, -126, 2, 6, 64, -125, 2, 6, 64, -124, 2, 7, -128, -123, 2, 2, 36, -122, 2, 5, 32, -121, 2, 6, 64 };
+        return new byte[] { 48, 32, -128, 2, 3, -128, -127, 2, 7, -128, -126, 2, 4, 64, -125, 2, 6, 64, -124, 2, 7, -128, -123, 2, 2, 36, -122, 2, 5, 32, -121, 2, 5, 64 };
     }
 
-    @Test(groups = { "functional.decode", "service.oam" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(TraceEventListImpl.class);
@@ -80,7 +79,7 @@ public class TraceEventListTest {
 
     }
 
-    @Test(groups = { "functional.encode", "service.oam" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(TraceEventListImpl.class);
@@ -99,6 +98,6 @@ public class TraceEventListTest {
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         byte[] rawData = getEncodedData();
-        assertTrue(Arrays.equals(rawData, encodedData));
+        assertArrayEquals(rawData, encodedData);
     }
 }

@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.commonapp.primitives;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.GSNAddressAddressType;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
 *
@@ -40,7 +40,7 @@ public class GSNAddressAddressTypeTest {
         return 80;
     }
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
 
         int firstByte = getEncodedData();
@@ -55,7 +55,7 @@ public class GSNAddressAddressTypeTest {
         assertEquals(asc, GSNAddressAddressType.IPv6);
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
 
         GSNAddressAddressType asc = GSNAddressAddressType.IPv4;

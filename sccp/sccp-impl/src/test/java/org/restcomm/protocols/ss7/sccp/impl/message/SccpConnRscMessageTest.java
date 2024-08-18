@@ -23,21 +23,21 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.LocalReferenceImpl;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 /**
  * 
  * @author yulianoifa
@@ -49,13 +49,13 @@ public class SccpConnRscMessageTest {
     private SccpStackImpl stack = new SccpStackImpl("SccpConnRscMessageTestStack");
     private MessageFactoryImpl messageFactory;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         this.messageFactory = new MessageFactoryImpl(stack);
         this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName());
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
     }
 
@@ -63,7 +63,7 @@ public class SccpConnRscMessageTest {
         return Unpooled.wrappedBuffer(new byte[] { 0x0E, 0x00, 0x00, 0x01, 0x00, 0x00, 0x02  });
     }
 
-    @Test(groups = { "SccpMessage", "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
     	ByteBuf buf = this.getDataRsc();
         int type = buf.readByte();
@@ -74,7 +74,7 @@ public class SccpConnRscMessageTest {
         assertEquals(testObjectDecoded.getSourceLocalReferenceNumber().getValue(), 2);
     }
 
-    @Test(groups = { "SccpMessage", "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
         SccpConnRscMessageImpl original = new SccpConnRscMessageImpl(0, 0);
         original.setDestinationLocalReferenceNumber(new LocalReferenceImpl(1));

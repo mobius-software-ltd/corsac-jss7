@@ -19,12 +19,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_BitRateExtended;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
 *
@@ -34,7 +34,7 @@ import org.testng.annotations.Test;
 */
 public class ExtQoSSubscribed_BitRateExtendedTest {
 
-    @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
+    @Test
     public void testDecode() throws Exception {
 
         ExtQoSSubscribed_BitRateExtended prim = new ExtQoSSubscribed_BitRateExtended(0, true);
@@ -79,7 +79,7 @@ public class ExtQoSSubscribed_BitRateExtendedTest {
 
     }
 
-    @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
+    @Test
     public void testEncode() throws Exception {
 
         ExtQoSSubscribed_BitRateExtended prim = new ExtQoSSubscribed_BitRateExtended(8700, false);

@@ -19,12 +19,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.subscriberManagement;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -56,7 +56,7 @@ public class LSAIdentityTest {
         return new byte[] { 4, 1, 0 };
     };
 
-    @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(LSAIdentityImpl.class);
@@ -80,7 +80,7 @@ public class LSAIdentityTest {
         assertFalse(prim.isPlmnSignificantLSA());
     }
 
-    @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(LSAIdentityImpl.class);

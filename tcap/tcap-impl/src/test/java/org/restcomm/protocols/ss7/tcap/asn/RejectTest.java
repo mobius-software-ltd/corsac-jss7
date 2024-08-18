@@ -19,12 +19,13 @@
 
 package org.restcomm.protocols.ss7.tcap.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.GeneralProblemType;
@@ -32,7 +33,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Reject;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
@@ -46,7 +46,6 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class RejectTest {
 
     private byte[] getData() {
@@ -57,7 +56,7 @@ public class RejectTest {
         return new byte[] { 108, 7, -92, 5, 5, 0, -128, 1, 0 };
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecode() throws ParseException, ASNException {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(ComponentImpl.class);
@@ -67,9 +66,9 @@ public class RejectTest {
         assertTrue(output instanceof ComponentImpl);
         ComponentImpl comp = (ComponentImpl)output;
 
-        assertEquals(ComponentType.Reject, comp.getType(), "Wrong component Type");
+        assertEquals(ComponentType.Reject, comp.getType());
         Reject rej = comp.getReject();
-        assertEquals(new Integer(1), rej.getInvokeId(), "Wrong invoke ID");
+        assertEquals(new Integer(1), rej.getInvokeId());
         Problem prb = rej.getProblem();
         assertEquals(ProblemType.Invoke, prb.getType());
         assertEquals(InvokeProblemType.MistypedParameter, prb.getInvokeProblemType());
@@ -79,7 +78,7 @@ public class RejectTest {
         assertTrue(output instanceof ComponentImpl);
         comp = (ComponentImpl)output;
 
-        assertEquals(ComponentType.Reject, comp.getType(), "Wrong component Type");
+        assertEquals(ComponentType.Reject, comp.getType());
         rej = comp.getReject();
         assertNull(rej.getInvokeId());
         prb = rej.getProblem();
@@ -87,7 +86,7 @@ public class RejectTest {
         assertEquals(GeneralProblemType.UnrecognizedComponent, prb.getGeneralProblemType());
     }
 
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testEncode() throws EncodeException, ASNException {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(ComponentImpl.class);

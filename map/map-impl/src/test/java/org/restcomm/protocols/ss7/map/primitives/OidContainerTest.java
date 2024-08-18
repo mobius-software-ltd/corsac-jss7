@@ -19,9 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.primitives;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  *
@@ -39,16 +40,16 @@ public class OidContainerTest {
         return "1.205.3";
     }
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
 
         OidContainer oid = new OidContainer();
         oid.parseSerializedData(getString());
 
-        assertEquals(oid.getData(), getSourceData());
+        assertArrayEquals(oid.getData(), getSourceData());
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
 
         OidContainer oid = new OidContainer(getSourceData());

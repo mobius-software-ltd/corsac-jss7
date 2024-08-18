@@ -19,11 +19,11 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -181,7 +181,7 @@ import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.AgeInd
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.PDPContextImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.TBcsmCamelTdpCriteriaImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -274,7 +274,7 @@ public class InsertSubscriberDataRequestTest {
         return new byte[] { 41, 42, 43, 44, 45, 46, 47, 48, 49 };
     }
 
-    @Test(groups = { "functional.decode", "service.mobility.subscriberManagement" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(InsertSubscriberDataRequestImplV3.class);
@@ -1689,7 +1689,7 @@ public class InsertSubscriberDataRequestTest {
 
     }
 
-    @Test(groups = { "functional.encode", "service.mobility.subscriberManagement" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(InsertSubscriberDataRequestImplV3.class);

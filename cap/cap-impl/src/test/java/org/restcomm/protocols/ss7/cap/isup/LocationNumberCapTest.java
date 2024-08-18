@@ -19,16 +19,16 @@
 
 package org.restcomm.protocols.ss7.cap.isup;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.isup.LocationNumberIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.LocationNumber;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -52,7 +52,7 @@ public class LocationNumberCapTest {
         return new byte[] { (byte) 132, (byte) 151, 8, 2, (byte) 151, 1, 32, 0 };
     }
 
-    @Test(groups = { "functional.decode", "isup" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(LocationNumberIsupImpl.class);
@@ -73,7 +73,7 @@ public class LocationNumberCapTest {
         assertEquals(ln.getScreeningIndicator(), 3);
     }
 
-    @Test(groups = { "functional.encode", "isup" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(LocationNumberIsupImpl.class);

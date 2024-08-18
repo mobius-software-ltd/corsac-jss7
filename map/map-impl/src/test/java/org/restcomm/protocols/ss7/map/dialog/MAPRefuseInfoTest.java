@@ -19,16 +19,16 @@
 
 package org.restcomm.protocols.ss7.map.dialog;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.dialog.Reason;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -55,7 +55,7 @@ public class MAPRefuseInfoTest {
                 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33, 6, 5, 42, 3, 4, 5, 6 };
     }
 
-    @Test(groups = { "functional.decode", "dialog" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(MAPRefuseInfoImpl.class);
@@ -87,7 +87,7 @@ public class MAPRefuseInfoTest {
         assertTrue(Arrays.equals(new Long[] { 1L, 2L, 3L, 4L, 5L, 6L }, mapRefuseInfoImpl.getAlternativeAcn().getValue().toArray()));
     }
 
-    @Test(groups = { "functional.encode", "dialog" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(MAPRefuseInfoImpl.class);

@@ -19,11 +19,11 @@
 
 package org.restcomm.protocols.ss7.tcap.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -40,8 +40,8 @@ import org.restcomm.protocols.ss7.tcap.asn.tx.DialogAbortAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogRequestAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogResponseAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.TCAbortMessageImpl;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
@@ -53,7 +53,6 @@ import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class TCAbortTest {
 
     private byte[] getDataDialogPort() {
@@ -71,10 +70,10 @@ public class TCAbortTest {
         return Unpooled.wrappedBuffer(new byte[] { 0x7B, (byte) 0xA5, 0x34, 0x13 });
     }
 
-    ASNParser parser=new ASNParser();
+    static ASNParser parser=new ASNParser();
     
     @BeforeClass
-	public void setUp()
+	public static void setUp()
 	{		
     	parser.loadClass(TCAbortMessageImpl.class);
         
@@ -94,7 +93,7 @@ public class TCAbortTest {
     	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnErrorImpl.class); 
 	}
 	
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testBasicTCAbortTestEncode() throws ParseException, ASNException {
 
     	// This Raw data is taken from ussd-abort- from msc2.txt
@@ -141,14 +140,14 @@ public class TCAbortTest {
         TCAPTestUtils.compareArrays(expected, data);
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testBasicTCAbortTestDecode() throws ParseException, ASNException {
 
     	// This Raw data is taken from ussd-abort- from msc2.txt
         byte[] data = getDataDialogPort();
 
         Object output=parser.decode(Unpooled.wrappedBuffer(data)).getResult();
-        assertTrue(output instanceof TCAbortMessageImpl, "Expected TCAbort");
+        assertTrue(output instanceof TCAbortMessageImpl);
 
         TCAbortMessageImpl impl = (TCAbortMessageImpl)output;
         assertTrue(InvokeTest.byteBufEquals(impl.getDestinationTransactionId(), getDestTrId()));
@@ -164,7 +163,7 @@ public class TCAbortTest {
 
         data = getDataAbortCause();
         output=parser.decode(Unpooled.wrappedBuffer(data)).getResult();
-        assertTrue(output instanceof TCAbortMessageImpl, "Expected TCAbort");
+        assertTrue(output instanceof TCAbortMessageImpl);
 
         impl = (TCAbortMessageImpl)output;
         

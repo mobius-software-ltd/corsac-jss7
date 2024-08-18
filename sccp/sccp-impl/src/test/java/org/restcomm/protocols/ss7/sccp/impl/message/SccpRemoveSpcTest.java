@@ -23,12 +23,16 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
-import static org.testng.Assert.*;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
@@ -36,9 +40,9 @@ import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
 import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -52,7 +56,7 @@ public class SccpRemoveSpcTest {
     private SccpStackImpl stack;
     private MessageFactoryImpl messageFactory;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         this.stack = new SccpStackImpl("SccpRemoveSpcTest");
         this.stack.start();
@@ -60,7 +64,7 @@ public class SccpRemoveSpcTest {
         this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName());
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
         this.stack.stop();
     }
@@ -82,7 +86,7 @@ public class SccpRemoveSpcTest {
         return Unpooled.wrappedBuffer(new byte[] { 22, 22, 22, 22, 22 });
     }
 
-    @Test(groups = { "SccpMessage", "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
 
         // ---- Encoding based on GT - removeSpc on
@@ -172,7 +176,7 @@ public class SccpRemoveSpcTest {
 
     }
 
-    @Test(groups = { "SccpMessage", "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
 
         // ---- Encoding based on GT - removeSpc on

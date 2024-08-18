@@ -22,17 +22,17 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.isup.message.CircuitGroupQueryResponseMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallReference;
 import org.restcomm.protocols.ss7.isup.message.parameter.CircuitStateIndicator;
 import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
-import org.testng.annotations.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -48,7 +48,7 @@ import io.netty.buffer.Unpooled;
  */
 public class CQRTest extends MessageHarness {
 
-    @Test(groups = { "functional.encode", "functional.decode", "message" })
+    @Test
     public void testTwo_Params() throws Exception {
         ByteBuf message = getDefaultBody();
         // CircuitGroupQueryResponseMessage grs=new CircuitGroupQueryResponseMessageImpl(this,message);
@@ -57,12 +57,10 @@ public class CQRTest extends MessageHarness {
 
         try {
             RangeAndStatus RS = (RangeAndStatus) grs.getParameter(RangeAndStatus._PARAMETER_CODE);
-            assertNotNull(RS, "Range And Status retrun is null, it shoul not be");
-            if (RS == null)
-                return;
+            assertNotNull(RS);
             byte range = RS.getRange();
-            assertEquals(range, 0x01, "Range is wrong,");
-            assertNull(RS.getStatus(), "RangeAndStatus.getRange() is not null");
+            assertEquals(range, 0x01);
+            assertNull(RS.getStatus());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,18 +68,13 @@ public class CQRTest extends MessageHarness {
         }
         try {
             CircuitStateIndicator CSI = (CircuitStateIndicator) grs.getParameter(CircuitStateIndicator._PARAMETER_CODE);
-            assertNotNull(CSI, "Circuit State Indicator return is null, it should not be");
-            if (CSI == null)
-                return;
-            assertNotNull(CSI.getCircuitState(), "CircuitStateIndicator getCircuitState return is null, it should not be");
+            assertNotNull(CSI);
+            assertNotNull(CSI.getCircuitState());
             ByteBuf circuitState = CSI.getCircuitState();
-            assertEquals(circuitState.readableBytes(), 3, "CircuitStateIndicator.getCircuitState() length is nto correct");
-            assertEquals(CSI.getMaintenanceBlockingState(circuitState.readByte()), 1,
-                    "CircuitStateIndicator.getCircuitState()[0] value is not correct");
-            assertEquals(CSI.getMaintenanceBlockingState(circuitState.readByte()), 2,
-                    "CircuitStateIndicator.getCircuitState()[1] value is not correct");
-            assertEquals(CSI.getMaintenanceBlockingState(circuitState.readByte()), 3,
-                    "CircuitStateIndicator.getCircuitState()[2] value is not correct");
+            assertEquals(circuitState.readableBytes(), 3);
+            assertEquals(CSI.getMaintenanceBlockingState(circuitState.readByte()), 1);
+            assertEquals(CSI.getMaintenanceBlockingState(circuitState.readByte()), 2);
+            assertEquals(CSI.getMaintenanceBlockingState(circuitState.readByte()), 3);
         } catch (Exception e) {
             e.printStackTrace();
             fail("Failed on get parameter[" + CallReference._PARAMETER_CODE + "]:" + e);

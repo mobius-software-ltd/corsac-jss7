@@ -17,10 +17,10 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -33,7 +33,7 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.Basi
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.BearerServiceCodeImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.SSForBSCodeImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -51,7 +51,7 @@ public class RequestedSubscriptionInfoTest {
             22, 23, 24, 25, 26, -95, 3, 31, 32, 33, -121, 1, 0, -120, 0, -119, 0, -118, 0, -117, 0, -116, 0, -115, 0,
             -114, 0};
 
-    @Test(groups = {"functional.decode", "subscriberInformation"})
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(RequestedSubscriptionInfoImpl.class);
@@ -78,7 +78,7 @@ public class RequestedSubscriptionInfoTest {
         assertTrue(requestedSubscriptionInfo.getEctInfo());
     }
 
-    @Test(groups = {"functional.encode", "subscriberInformation"})
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(RequestedSubscriptionInfoImpl.class);

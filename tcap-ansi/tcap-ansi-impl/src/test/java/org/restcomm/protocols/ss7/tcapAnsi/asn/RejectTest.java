@@ -19,17 +19,21 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.*;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Reject;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.RejectImpl;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -37,14 +41,13 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class RejectTest {
 
     private byte[] data1 = new byte[] { -20, 9, -49, 1, 5, -43, 2, 2, 3, -16, 0 };
 
     private byte[] data2 = new byte[] { -20, 8, -49, 0, -43, 2, 2, 3, -16, 0 };
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(RejectImpl.class);
@@ -68,7 +71,7 @@ public class RejectTest {
         assertFalse(rej.isLocalOriginated());
     }
 
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(RejectImpl.class);

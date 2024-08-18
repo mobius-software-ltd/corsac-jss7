@@ -19,14 +19,14 @@
 
 package org.restcomm.protocols.ss7.commonapp.isup;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.RedirectionInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.RedirectionInformation;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -46,7 +46,7 @@ public class RedirectionInformationInapTest {
         return new byte[] { (byte) 158, 2, 3, 97 };
     }
 
-    @Test(groups = { "functional.decode", "isup" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(RedirectionInformationIsupImpl.class);
@@ -61,7 +61,7 @@ public class RedirectionInformationInapTest {
         assertEquals(ri.getRedirectionReason(), 6);
     }
 
-    @Test(groups = { "functional.encode", "isup" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(RedirectionInformationIsupImpl.class);

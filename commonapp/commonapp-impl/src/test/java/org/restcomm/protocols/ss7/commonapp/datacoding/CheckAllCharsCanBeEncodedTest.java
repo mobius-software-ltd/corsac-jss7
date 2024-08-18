@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.commonapp.datacoding;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  *
@@ -32,7 +32,7 @@ import org.testng.annotations.Test;
  */
 public class CheckAllCharsCanBeEncodedTest {
 
-    @Test(groups = { "functional.encode", "datacoding" })
+    @Test
     public void testCheckAllCharsCanBeEncoded() throws Exception {
 
         boolean res = GSMCharset.checkAllCharsCanBeEncoded("", GSMCharset.basicMap,

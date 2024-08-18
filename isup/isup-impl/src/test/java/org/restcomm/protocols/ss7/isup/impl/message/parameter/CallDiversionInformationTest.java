@@ -27,7 +27,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:13:37:14 2009-04-23<br>
@@ -55,7 +55,7 @@ public class CallDiversionInformationTest extends ParameterHarness {
         return Unpooled.wrappedBuffer(new byte[] { 0x22 });
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws ParameterException {
         CallDiversionInformationImpl cdi = new CallDiversionInformationImpl(getBody1());
         String[] methodNames = { "getNotificationSubscriptionOptions", "getRedirectingReason" };

@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:21:30:13 2009-04-26<br>
@@ -56,7 +56,7 @@ public class TerminatingNetworkRoutingNumberTest extends ParameterHarness {
                 TerminatingNetworkRoutingNumberImpl._NAI_NATIONAL_SN, new byte[8], 8));
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, IOException, ParameterException {
         TerminatingNetworkRoutingNumberImpl bci = new TerminatingNetworkRoutingNumberImpl(getBody(false,

@@ -23,18 +23,19 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import static org.testng.Assert.assertEquals;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.message.MessageSegmentationTest;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
@@ -59,18 +60,18 @@ public class GT0001Test {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() {
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
     }
 
     /**
      * Test of decode method, of class GT0001Codec.
      */
-    @Test(groups = { "parameter", "functional.decode" })
+    @Test
     public void testDecodeEven() throws Exception {
     	
     	// create GT object and read data from ByteBuf
@@ -85,7 +86,7 @@ public class GT0001Test {
     /**
      * Test of encode method, of class GT0001Codec.
      */
-    @Test(groups = { "parameter", "functional.encode" })
+    @Test
     public void testEncodeEven() throws Exception {
         ByteBuf bout = Unpooled.buffer();
         GlobalTitle0001Impl gt = new GlobalTitle0001Impl( "9023629581",NatureOfAddress.NATIONAL);
@@ -96,7 +97,7 @@ public class GT0001Test {
     /**
      * Test of decode method, of class GT0001Codec.
      */
-    @Test(groups = { "parameter", "functional.decode" })
+    @Test
     public void testDecodeOdd() throws Exception {
         // create GT object and read data from ByteBuf
         GlobalTitle0001Impl gt1 = new GlobalTitle0001Impl();
@@ -109,7 +110,7 @@ public class GT0001Test {
     /**
      * Test of encode method, of class GT0001Codec.
      */
-    @Test(groups = { "parameter", "functional.encode" })
+    @Test
     public void testEncodeOdd() throws Exception {
     	ByteBuf bout = Unpooled.buffer();
         GlobalTitle0001Impl gt = new GlobalTitle0001Impl("902362958",NatureOfAddress.NATIONAL);

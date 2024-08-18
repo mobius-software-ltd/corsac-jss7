@@ -35,7 +35,7 @@ import org.restcomm.protocols.ss7.sccp.SignallingPointStatus;
 import org.restcomm.protocols.ss7.sccp.impl.router.RouterImpl;
 import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.message.SccpNoticeMessage;
-import org.testng.annotations.Test;
+import org.junit.Test;
 /**
  * 
  * @author yulianoifa

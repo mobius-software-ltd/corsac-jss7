@@ -19,8 +19,8 @@
 
 package org.restcomm.protocols.ss7.inap.functional;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,8 +135,7 @@ public class EventTestHarness implements INAPDialogListener, INAPServiceCircuitS
         }
 
         for (int index = 0; index < expectedEvents.size(); index++) {
-            assertEquals(expectedEvents.get(index), observerdEvents.get(index), "Received event does not match, index[" + index
-                    + "]");
+            assertEquals(expectedEvents.get(index), observerdEvents.get(index));
         }
     }
 

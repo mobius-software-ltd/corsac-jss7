@@ -19,8 +19,8 @@
 
 package org.restcomm.protocols.ss7.tcap.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,8 +40,8 @@ import org.restcomm.protocols.ss7.tcap.asn.tx.DialogAbortAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogRequestAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogResponseAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.TCUniMessageImpl;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
@@ -56,7 +56,6 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class TcUnidirectionalTest {
 	
 	private byte[] getData() {
@@ -64,10 +63,10 @@ public class TcUnidirectionalTest {
                 6, 4, 40, 2, 3, 4, 108, 14, -95, 12, 2, 1, -128, 2, 2, 2, 79, 4, 3, 1, 2, 3 };
     }
 	
-	ASNParser parser=new ASNParser();
+	static ASNParser parser=new ASNParser();
     
 	@BeforeClass
-	public void setUp() {
+	public static void setUp() {
 		parser.loadClass(TCUniMessageImpl.class);
     
 		parser.clearClassMapping(ASNInvokeParameterImpl.class);	
@@ -85,7 +84,7 @@ public class TcUnidirectionalTest {
     	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnErrorImpl.class);  
 	}
 	
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testEncode() throws ASNException {
 
         byte[] expected = getData();
@@ -115,7 +114,7 @@ public class TcUnidirectionalTest {
         TCAPTestUtils.compareArrays(expected, data);
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecode() throws ASNException {
 
     	ByteBuf buffer=Unpooled.wrappedBuffer(this.getData());

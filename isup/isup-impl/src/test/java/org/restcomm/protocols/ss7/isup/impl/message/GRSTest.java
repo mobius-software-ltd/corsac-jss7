@@ -22,16 +22,16 @@
  */
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.isup.message.CircuitGroupResetMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallReference;
 import org.restcomm.protocols.ss7.isup.message.parameter.RangeAndStatus;
-import org.testng.annotations.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -46,7 +46,7 @@ import io.netty.buffer.Unpooled;
  */
 public class GRSTest extends MessageHarness {
 
-    @Test(groups = { "functional.encode", "functional.decode", "message" })
+    @Test
     public void testTwo_Params() throws Exception {
         ByteBuf message = getDefaultBody();
 
@@ -56,12 +56,10 @@ public class GRSTest extends MessageHarness {
 
         try {
             RangeAndStatus RS = (RangeAndStatus) grs.getParameter(RangeAndStatus._PARAMETER_CODE);
-            assertNotNull(RS, "Range And Status retrun is null, it shoul not be");
-            if (RS == null)
-                return;
+            assertNotNull(RS);
             byte range = RS.getRange();
-            assertEquals(range, 0x01, "Range is wrong,");
-            assertNull(RS.getStatus(), "RangeAndStatus.getRange() is not null");
+            assertEquals(range, 0x01);
+            assertNull(RS.getStatus());
 
         } catch (Exception e) {
             e.printStackTrace();

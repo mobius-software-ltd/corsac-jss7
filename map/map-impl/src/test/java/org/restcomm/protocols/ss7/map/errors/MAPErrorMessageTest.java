@@ -19,11 +19,11 @@
 
 package org.restcomm.protocols.ss7.map.errors;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -72,7 +72,7 @@ import org.restcomm.protocols.ss7.map.smstpdu.UserDataImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ErrorCodeType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -116,7 +116,7 @@ public class MAPErrorMessageTest {
     
     private byte[] uData = { 1, 2, 0, 0, 0, 9, 9, 9 };
 
-    @Test(groups = { "functional.decode", "dialog.message" })
+    @Test
     public void testDecode() throws Exception {
 		ASNParser parser=new ASNParser();
     	parser.loadClass(ReturnErrorImpl.class);
@@ -781,7 +781,7 @@ public class MAPErrorMessageTest {
         assertEquals(emPwRegistrationFailure.getPWRegistrationFailureCause(), PWRegistrationFailureCause.newPasswordsMismatch);
 	}
 	
-	@Test(groups = { "functional.encode", "dialog.message" })
+	@Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(ReturnErrorImpl.class);

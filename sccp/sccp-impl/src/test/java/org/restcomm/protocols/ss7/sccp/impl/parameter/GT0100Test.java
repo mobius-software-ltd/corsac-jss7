@@ -23,19 +23,20 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import static org.testng.Assert.assertEquals;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
 import org.restcomm.protocols.ss7.indicator.NumberingPlan;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.message.MessageSegmentationTest;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -61,18 +62,18 @@ public class GT0100Test {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() {
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
     }
 
     /**
      * Test of decode method, of class GT0011.
      */
-    @Test(groups = { "parameter", "functional.decode" })
+    @Test
     public void testDecodeEven() throws Exception {
     	// create GT object and read data from ByteBuf
         GlobalTitle0100Impl gt1 = new GlobalTitle0100Impl();
@@ -87,7 +88,7 @@ public class GT0100Test {
     /**
      * Test of encode method, of class GT0011.
      */
-    @Test(groups = { "parameter", "functional.encode" })
+    @Test
     public void testEncodeEven() throws Exception {
         ByteBuf bout = Unpooled.buffer();
         GlobalTitle0100Impl gt = new GlobalTitle0100Impl("9023629581",0, BCDEvenEncodingScheme.INSTANCE,NumberingPlan.ISDN_TELEPHONY, NatureOfAddress.NATIONAL);
@@ -98,7 +99,7 @@ public class GT0100Test {
     /**
      * Test of decode method, of class GT0011.
      */
-    @Test(groups = { "parameter", "functional.decode" })
+    @Test
     public void testDecodeOdd() throws Exception {
         // create GT object and read data from ByteBuf
         GlobalTitle0100Impl gt1 = new GlobalTitle0100Impl();
@@ -110,7 +111,7 @@ public class GT0100Test {
         assertEquals(gt1.getDigits(), "902362958");
     }
 
-    @Test(groups = { "parameter", "functional.encode" })
+    @Test
     public void testEncodeHex() throws Exception {
         ByteBuf bout = Unpooled.buffer();
         GlobalTitle0100Impl gt = new GlobalTitle0100Impl("902ABC958",0, BCDOddEncodingScheme.INSTANCE,NumberingPlan.ISDN_TELEPHONY, NatureOfAddress.NATIONAL);
@@ -124,7 +125,7 @@ public class GT0100Test {
         MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(dataHex), bout);
     }
 
-    @Test(groups = { "parameter", "functional.decode" })
+    @Test
     public void testDecodeHex() throws Exception {
         // create GT object and read data from ByteBuf
         GlobalTitle0100Impl gt1 = new GlobalTitle0100Impl();
@@ -139,7 +140,7 @@ public class GT0100Test {
     /**
      * Test of encode method, of class GT0011.
      */
-    @Test(groups = { "parameter", "functional.encode" })
+    @Test
     public void testEncodeOdd() throws Exception {
         ByteBuf bout = Unpooled.buffer();
         GlobalTitle0100Impl gt = new GlobalTitle0100Impl("902362958",0, BCDOddEncodingScheme.INSTANCE,NumberingPlan.ISDN_TELEPHONY, NatureOfAddress.NATIONAL);

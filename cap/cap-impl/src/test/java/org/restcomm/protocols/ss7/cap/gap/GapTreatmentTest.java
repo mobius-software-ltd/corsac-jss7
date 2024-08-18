@@ -19,12 +19,13 @@
 
 package org.restcomm.protocols.ss7.cap.gap;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.InformationToSendImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ToneImpl;
 import org.restcomm.protocols.ss7.commonapp.gap.GapTreatmentImpl;
@@ -32,7 +33,6 @@ import org.restcomm.protocols.ss7.commonapp.gap.GapTreatmentWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.CauseIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CauseIndicatorsImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CauseIndicators;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -56,7 +56,7 @@ public class GapTreatmentTest {
         return new byte[] { 48, 4, (byte) 129, 2, (byte) 192, (byte) 131 };
     }
 
-    @Test(groups = { "functional.decode", "gap" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GapTreatmentWrapperImpl.class);
@@ -82,7 +82,7 @@ public class GapTreatmentTest {
         assertEquals(elem.getGapTreatment().getCause().getCauseIndicators().getCauseValue(), 3);
     }
 
-    @Test(groups = { "functional.encode", "gap" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(GapTreatmentWrapperImpl.class);

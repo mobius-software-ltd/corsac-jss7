@@ -19,9 +19,10 @@
 
 package org.restcomm.protocols.ss7.commonapp.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_BitRate;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_DeliveryOfErroneousSdus;
@@ -32,7 +33,7 @@ import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubsc
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_TrafficClass;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_TrafficHandlingPriority;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_TransferDelay;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -56,7 +57,7 @@ public class ExtQoSSubscribedTest {
         return new byte[] { 4, 9, 15, (byte) 130, (byte) 151, 23, (byte) 128, 22, 17, 24, 25 };
     };
 
-    @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ExtQoSSubscribedImpl.class);
@@ -103,7 +104,7 @@ public class ExtQoSSubscribedTest {
         assertEquals(prim.getGuaranteedBitRateForDownlink().getBitRate(), 25);
     }
 
-    @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ExtQoSSubscribedImpl.class);
@@ -122,7 +123,7 @@ public class ExtQoSSubscribedTest {
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
-        assertEquals(encodedData, this.getData1());
+        assertArrayEquals(encodedData, this.getData1());
 
 
         maximumSduSize = new ExtQoSSubscribed_MaximumSduSize(1502, false);
@@ -139,6 +140,6 @@ public class ExtQoSSubscribedTest {
         buffer=parser.encode(prim);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
-        assertEquals(encodedData, this.getData2());
+        assertArrayEquals(encodedData, this.getData2());
     }
 }

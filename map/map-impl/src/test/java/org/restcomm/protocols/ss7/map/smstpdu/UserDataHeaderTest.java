@@ -19,16 +19,16 @@
 
 package org.restcomm.protocols.ss7.map.smstpdu;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Map;
 
 import org.restcomm.protocols.ss7.commonapp.api.datacoding.NationalLanguageIdentifier;
 import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderElement;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -87,7 +87,7 @@ public class UserDataHeaderTest {
         return new byte[] { 2, 112, 0 };
     }
 
-    @Test(groups = { "functional.decode", "smstpdu" })
+    @Test
     public void testDecode() throws Exception {
 
         UserDataHeaderImpl impl = new UserDataHeaderImpl(Unpooled.wrappedBuffer(this.getData1()));
@@ -147,7 +147,7 @@ public class UserDataHeaderTest {
         assertTrue(ByteBufUtil.equals(mp.get(112),Unpooled.wrappedBuffer(new byte[] { })));
     }
 
-    @Test(groups = { "functional.encode", "smstpdu" })
+    @Test
     public void testEncode() throws Exception {
 
         UserDataHeaderImpl impl = new UserDataHeaderImpl();

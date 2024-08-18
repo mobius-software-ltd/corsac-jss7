@@ -19,16 +19,16 @@
 
 package org.restcomm.protocols.ss7.map.smstpdu;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.restcomm.protocols.ss7.map.api.smstpdu.CharacterSet;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingGroup;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemaIndicationType;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemaMessageClass;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  *
@@ -38,7 +38,7 @@ import org.testng.annotations.Test;
  */
 public class DataCodingSchemeTest {
 
-    @Test(groups = { "functional.decode", "smstpdu" })
+    @Test
     public void testDecode() throws Exception {
 
         
@@ -164,7 +164,7 @@ public class DataCodingSchemeTest {
         assertNull(dcs.getSetIndicationActive());
     }
 
-    @Test(groups = { "functional.encode", "smstpdu" })
+    @Test
     public void testEncode() throws Exception {
 
         DataCodingSchemeImpl dcs = new DataCodingSchemeImpl(DataCodingGroup.GeneralGroup, null, null, null, CharacterSet.GSM7,

@@ -29,7 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.CircuitGroupSuperVisionMessageType;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:12:21:06 2009-04-23<br>
@@ -56,7 +56,7 @@ public class CircuitGroupSupervisionMessageTypeTest extends ParameterHarness {
        return Unpooled.wrappedBuffer(body);
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, ParameterException {
         CircuitGroupSuperVisionMessageTypeImpl at = new CircuitGroupSuperVisionMessageTypeImpl(getBody1());

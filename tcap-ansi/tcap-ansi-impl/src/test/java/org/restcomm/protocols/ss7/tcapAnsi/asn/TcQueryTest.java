@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +49,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnErrorImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultNotLastImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -65,7 +65,6 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class TcQueryTest {
 
     // no DialogPortion, 1 Invoke
@@ -95,7 +94,7 @@ public class TcQueryTest {
 
     private List<Long> acn = Arrays.asList(new Long[] { 1L, 8L, 11L });
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(TCQueryMessageImpl.class);
@@ -201,7 +200,7 @@ public class TcQueryTest {
         assertEquals((long) ec.getPrivateErrorCode(), 200);        
     }
 
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(TCQueryMessageImpl.class);

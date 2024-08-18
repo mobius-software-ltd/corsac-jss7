@@ -19,14 +19,14 @@
 
 package org.restcomm.protocols.ss7.map.smstpdu;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -54,7 +54,7 @@ public class AddressFieldTest {
         return new byte[] { 0x09, (byte) 0xd0, (byte) 0x55, (byte) 0xf3, (byte) 0xdb, 0x5d, 0x06 };
     }
 
-    @Test(groups = { "functional.decode", "smstpdu" })
+    @Test
     public void testDecode() throws Exception {
 
         ByteBuf buffer = Unpooled.wrappedBuffer(this.getData());
@@ -64,7 +64,7 @@ public class AddressFieldTest {
         assertEquals(impl.getAddressValue(), "72223884321");
     }
 
-    @Test(groups = { "functional.encode", "smstpdu" })
+    @Test
     public void testEncode() throws Exception {
 
         AddressFieldImpl impl = new AddressFieldImpl(TypeOfNumber.InternationalNumber,
@@ -76,7 +76,7 @@ public class AddressFieldTest {
         assertTrue(Arrays.equals(encodedData, this.getData()));
     }
 
-    @Test(groups = { "functional.decode", "smstpduAlphaNumeric" })
+    @Test
     public void testDecodeAlphaNumericAwcc() throws Exception {
 
         ByteBuf buffer = Unpooled.wrappedBuffer(this.getDataAlphaNumeric_AWCC());
@@ -86,7 +86,7 @@ public class AddressFieldTest {
         assertEquals(impl.getAddressValue(), "AWCC");
     }
 
-    @Test(groups = { "functional.encode", "smstpduAlphaNumeric" })
+    @Test
     public void testEncodeAlphaNumericAwcc() throws Exception {
 
         AddressFieldImpl impl = new AddressFieldImpl(TypeOfNumber.Alphanumeric, NumberingPlanIdentification.Unknown, "AWCC");
@@ -97,7 +97,7 @@ public class AddressFieldTest {
         assertTrue(Arrays.equals(encodedData, this.getDataAlphaNumeric_AWCC()));
     }
 
-    @Test(groups = { "functional.decode", "smstpduAlphaNumeric" })
+    @Test
     public void testDecodeAlphaNumericUfone() throws Exception {
 
     	ByteBuf buffer = Unpooled.wrappedBuffer(this.getDataAlphaNumeric_Ufone());
@@ -107,7 +107,7 @@ public class AddressFieldTest {
         assertEquals(impl.getAddressValue(), "Ufone");
     }
 
-    @Test(groups = { "functional.encode", "smstpduAlphaNumeric" })
+    @Test
     public void testEncodeAlphaNumericUfone() throws Exception {
 
         AddressFieldImpl impl = new AddressFieldImpl(TypeOfNumber.Alphanumeric, NumberingPlanIdentification.Unknown, "Ufone");

@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.smstpdu;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -33,7 +33,7 @@ import org.restcomm.protocols.ss7.commonapp.smstpu.ValidityEnhancedFormatDataImp
 import org.restcomm.protocols.ss7.commonapp.smstpu.ValidityPeriodImpl;
 import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -75,7 +75,7 @@ public class SmsSubmitTpduTest {
         return new byte[] { 1, 2, 3, 4, 5, 6, 7 };
     }
 
-    @Test(groups = { "functional.decode", "smstpdu" })
+    @Test
     public void testDecode() throws Exception {
 
         SmsSubmitTpduImpl impl = new SmsSubmitTpduImpl(Unpooled.wrappedBuffer(this.getData1()), null);
@@ -144,7 +144,7 @@ public class SmsSubmitTpduTest {
         assertNull(impl.getUserData().getDecodedUserDataHeader());
     }
 
-    @Test(groups = { "functional.encode", "smstpdu" })
+    @Test
     public void testEncode() throws Exception {
 
         // SortedMap<String,Charset> rr = Charset.availableCharsets();

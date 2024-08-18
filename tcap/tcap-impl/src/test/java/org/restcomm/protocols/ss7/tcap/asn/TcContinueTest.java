@@ -19,11 +19,11 @@
 
 package org.restcomm.protocols.ss7.tcap.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.restcomm.protocols.ss7.tcap.TCAPTestUtils;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ASNInvokeParameterImpl;
@@ -43,8 +43,8 @@ import org.restcomm.protocols.ss7.tcap.asn.tx.DialogAbortAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogRequestAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogResponseAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.TCContinueMessageImpl;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
@@ -56,12 +56,11 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class TcContinueTest {
-	ASNParser parser=new ASNParser();
+	static ASNParser parser=new ASNParser();
 	
 	@BeforeClass
-	public void setUp() {
+	public static void setUp() {
 		parser.loadClass(TCContinueMessageImpl.class);
         
 		parser.clearClassMapping(ASNInvokeParameterImpl.class);
@@ -82,7 +81,7 @@ public class TcContinueTest {
     	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnErrorImpl.class); 
 	}
 	
-    @Test(groups = { "functional.encode", "functional.decode" })
+    @Test
     public void testBasicTCContinue() throws ASNException {
 
     	// OrigTran ID (full)............ 145031169
@@ -106,37 +105,35 @@ public class TcContinueTest {
                 0x02, 0x01, 0x37 };
 
         Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
-        assertTrue(output instanceof TCContinueMessage, "Expected TCInvoke");
+        assertTrue(output instanceof TCContinueMessage);
         TCContinueMessage tcm = (TCContinueMessageImpl)output;
 
-        assertNull(tcm.getDialogPortion(), "Dialog portion should not be present");
+        assertNull(tcm.getDialogPortion());
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(),"Originating transaction id does not match");
-        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })),
-                "Originating transaction id does not match");
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })));
         // assertEquals(144965633L, tcm.getDestinationTransactionId(),"Destination transaction id does not match");
-        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA4, 0, 1, })),
-                "Destination transaction id does not match");
+        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA4, 0, 1, })));
 
-        assertNotNull(tcm.getComponents(), "Component portion should be present");
-        assertEquals(1, tcm.getComponents().size(), "Component count is wrong");
+        assertNotNull(tcm.getComponents());
+        assertEquals(1, tcm.getComponents().size());
         BaseComponent c = tcm.getComponents().get(0);
-        assertTrue(c instanceof Invoke, "Wrong component type");
+        assertTrue(c instanceof Invoke);
         Invoke i = (Invoke)c;
-        assertEquals(new Integer(1), i.getInvokeId(), "Wrong invoke ID");
-        assertNull(i.getLinkedId(), "Linked ID is not null");
+        assertEquals(new Integer(1), i.getInvokeId());
+        assertNull(i.getLinkedId());
 
-        assertNotNull(i.getOperationCode(), "Operation code is null");
-        assertNull(i.getParameter(), "Parameter not null");
+        assertNotNull(i.getOperationCode());
+        assertNull(i.getParameter());
         OperationCode oc = i.getOperationCode();
-        assertEquals(OperationCodeType.Local, oc.getOperationType(), "Wrong operation type");
-        assertEquals(new Integer(0x37), oc.getLocalOperationCode(), "Wrong operation code");
+        assertEquals(OperationCodeType.Local, oc.getOperationType());
+        assertEquals(new Integer(0x37), oc.getLocalOperationCode());
         
         ByteBuf buffer=parser.encode(tcm);
         byte[] encoded = buffer.array();
         TCAPTestUtils.compareArrays(b, encoded);
     }
 
-    @Test(groups = { "functional.encode", "functional.decode" })
+    @Test
     public void testBasicTCContinue_Long() throws ASNException {
 
     	// trace
@@ -182,37 +179,35 @@ public class TcContinueTest {
         };
 
         Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
-        assertTrue(output instanceof TCContinueMessage, "Expected TCInvoke");
+        assertTrue(output instanceof TCContinueMessage);
         TCContinueMessage tcm = (TCContinueMessageImpl)output;
 
-        assertNull(tcm.getDialogPortion(), "Dialog portion should not be present");
+        assertNull(tcm.getDialogPortion());
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(),"Originating transaction id does not match");
         // assertEquals(144965633L,tcm.getDestinationTransactionId(),"Desination transaction id does not match");
-        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })),
-                "Originating transaction id does not match");
-        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA4, 0, 1, })),
-                "Destination transaction id does not match");
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })));
+        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA4, 0, 1, })));
 
-        assertNotNull(tcm.getComponents(), "Component portion should be present");
-        assertEquals(1, tcm.getComponents().size(), "Component count is wrong");
+        assertNotNull(tcm.getComponents());
+        assertEquals(1, tcm.getComponents().size());
         BaseComponent c = tcm.getComponents().get(0);
-        assertTrue(c instanceof Invoke, "Wrong component type");
+        assertTrue(c instanceof Invoke);
         Invoke i = (Invoke)c;
-        assertEquals(new Integer(2), i.getInvokeId(), "Wrong invoke ID");
-        assertNull(i.getLinkedId(), "Linked ID is not null");
+        assertEquals(new Integer(2), i.getInvokeId());
+        assertNull(i.getLinkedId());
 
-        assertNotNull(i.getOperationCode(), "Operation code is null");
-        assertNotNull(i.getParameter(), "Parameter null");
+        assertNotNull(i.getOperationCode());
+        assertNotNull(i.getParameter());
         OperationCode oc = i.getOperationCode();
-        assertEquals(OperationCodeType.Local, oc.getOperationType(), "Wrong operation type");
-        assertEquals(new Integer(42), oc.getLocalOperationCode(), "Wrong operation code");
+        assertEquals(OperationCodeType.Local, oc.getOperationType());
+        assertEquals(new Integer(42), oc.getLocalOperationCode());
 
         ByteBuf buffer=parser.encode(tcm);
         byte[] encoded = buffer.array();
         TCAPTestUtils.compareArrays(b, encoded);
     }
 
-    @Test(groups = { "functional.encode", "functional.decode" })
+    @Test
     public void testTCContinueMessage_No_Dialog() throws ASNException {
 
     	// no idea how to check rest...?
@@ -267,44 +262,42 @@ public class TcContinueTest {
                 (byte) 0xCD, (byte) 0xEF };
 
         Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
-        assertTrue(output instanceof TCContinueMessage, "Expected TCInvoke");
+        assertTrue(output instanceof TCContinueMessage);
         TCContinueMessage tcm = (TCContinueMessageImpl)output;
 
-        assertNull(tcm.getDialogPortion(), "Dialog portion should not be present");
+        assertNull(tcm.getDialogPortion());
         // assertEquals(144965633L, tcm.getDestinationTransactionId(),"Destination transaction id does not match");
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(),"Originating transaction id does not match");
-        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })),
-                "Originating transaction id does not match");
-        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA4, 0, 1, })),
-                "Destination transaction id does not match");
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })));
+        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA4, 0, 1, })));
         // comp portion
-        assertNotNull(tcm.getComponents(), "Component portion should be present");
-        assertEquals(2, tcm.getComponents().size(), "Component count is wrong");
+        assertNotNull(tcm.getComponents());
+        assertEquals(2, tcm.getComponents().size());
         BaseComponent c = tcm.getComponents().get(0);
-        assertTrue(c instanceof Invoke, "Wrong component type");
+        assertTrue(c instanceof Invoke);
         Invoke i = (Invoke)c;
-        assertEquals(new Integer(1), i.getInvokeId(), "Wrong invoke ID");
-        assertNull(i.getLinkedId(), "Linked ID is not null");
+        assertEquals(new Integer(1), i.getInvokeId());
+        assertNull(i.getLinkedId());
 
         c = tcm.getComponents().get(1);
-        assertTrue(c instanceof ReturnResultLast, "Wrong component type");
+        assertTrue(c instanceof ReturnResultLast);
         ReturnResultLast rrl = (ReturnResultLast)c;
-        assertEquals(new Integer(2), rrl.getInvokeId(), "Wrong invoke ID");
-        assertNotNull(rrl.getOperationCode(), "Operation code should not be null");
+        assertEquals(new Integer(2), rrl.getInvokeId());
+        assertNotNull(rrl.getOperationCode());
 
         OperationCode ocs = rrl.getOperationCode();
 
-        assertEquals(OperationCodeType.Local, ocs.getOperationType(), "Wrong Operation Code type");
-        assertEquals(new Integer(0x00FF), ocs.getLocalOperationCode(), "Wrong Operation Code");
+        assertEquals(OperationCodeType.Local, ocs.getOperationType());
+        assertEquals(new Integer(0x00FF), ocs.getLocalOperationCode());
 
-        assertNotNull(rrl.getParameter(), "Parameter should not be null");
+        assertNotNull(rrl.getParameter());
 
         ByteBuf buffer=parser.encode(tcm);
         byte[] encoded = buffer.array();
         TCAPTestUtils.compareArrays(b, encoded);
     }
 
-    @Test(groups = { "functional.encode", "functional.decode" })
+    @Test
     public void testTCContinueMessage_No_Component() throws ParseException, ASNException {
 
     	// created by hand
@@ -343,45 +336,42 @@ public class TcContinueTest {
         };
 
         Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
-        assertTrue(output instanceof TCContinueMessage, "Expected TCInvoke");
+        assertTrue(output instanceof TCContinueMessage);
         TCContinueMessage tcm = (TCContinueMessageImpl)output;
 
-        assertNull(tcm.getComponents(), "Component portion should not be present");
-        assertNotNull(tcm.getDialogPortion(), "Dialog portion should not be null");
+        assertNull(tcm.getComponents());
+        assertNotNull(tcm.getDialogPortion());
         // assertEquals(145031169L, tcm.getDestinationTransactionId(),"Destination transaction id does not match");
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(),"Originating transaction id does not match");
-        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })),
-                "Originating transaction id does not match");
-        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA5, 0, 1, })),
-                "Destination transaction id does not match");
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })));
+        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA5, 0, 1, })));
 
-        assertFalse(tcm.getDialogPortion().isUnidirectional(), "Dialog should not be Uni");
+        assertFalse(tcm.getDialogPortion().isUnidirectional());
         DialogAPDU _dapd = tcm.getDialogPortion().getDialogAPDU();
-        assertEquals(DialogAPDUType.Response, _dapd.getType(), "Wrong dialog APDU type!");
+        assertEquals(DialogAPDUType.Response, _dapd.getType());
 
         DialogResponseAPDUImpl dapd = (DialogResponseAPDUImpl) _dapd;
 
         // check nulls first
-        assertNull(dapd.getUserInformation(), "UserInformation should not be present");
+        assertNull(dapd.getUserInformation());
 
         // not nulls
-        assertNotNull(dapd.getResult(), "Result should not be null");
+        assertNotNull(dapd.getResult());
         Result r = dapd.getResult();
-        assertEquals(ResultType.Accepted, r.getResultType(), "Wrong result");
+        assertEquals(ResultType.Accepted, r.getResultType());
 
-        assertNotNull(dapd.getResultSourceDiagnostic(), "Result Source Diagnostic should not be null");
+        assertNotNull(dapd.getResultSourceDiagnostic());
 
         ResultSourceDiagnostic rsd = dapd.getResultSourceDiagnostic();
-        assertNull(rsd.getDialogServiceUserType(), "User diagnostic should not be present");
-        assertEquals(DialogServiceProviderType.NoCommonDialogPortion, rsd.getDialogServiceProviderType(),
-                "Wrong provider diagnostic type");
+        assertNull(rsd.getDialogServiceUserType());
+        assertEquals(DialogServiceProviderType.NoCommonDialogPortion, rsd.getDialogServiceProviderType());
 
         ByteBuf buffer=parser.encode(tcm);
         byte[] encoded = buffer.array();
         TCAPTestUtils.compareArrays(b, encoded);
     }
 
-    @Test(groups = { "functional.encode", "functional.decode" })
+    @Test
     public void testTCContinueMessage_No_Nothing() throws ParseException, ASNException {
 
     	// no idea how to check rest...?
@@ -400,17 +390,15 @@ public class TcContinueTest {
         };
 
         Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
-        assertTrue(output instanceof TCContinueMessage, "Expected TCInvoke");
+        assertTrue(output instanceof TCContinueMessage);
         TCContinueMessage tcm = (TCContinueMessageImpl)output;
 
-        assertNull(tcm.getDialogPortion(), "Dialog portion should be null");
-        assertNull(tcm.getComponents(), "Component portion should not be present");
+        assertNull(tcm.getDialogPortion());
+        assertNull(tcm.getComponents());
         // assertEquals(145031169L, tcm.getDestinationTransactionId(),"Destination transaction id does not match");
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(),"Originating transaction id does not match");
-        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })),
-                "Originating transaction id does not match");
-        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA5, 0, 1, })),
-                "Destination transaction id does not match");
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })));
+        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA5, 0, 1, })));
 
         ByteBuf buffer=parser.encode(tcm);
         byte[] encoded = buffer.array();
@@ -493,62 +481,60 @@ public class TcContinueTest {
                 (byte) 0xCD, (byte) 0xEF };
 
         Object output=parser.decode(Unpooled.wrappedBuffer(b)).getResult();
-        assertTrue(output instanceof TCContinueMessage, "Expected TCInvoke");
+        assertTrue(output instanceof TCContinueMessage);
         TCContinueMessage tcm = (TCContinueMessageImpl)output;
 
         // universal
         // assertEquals(144965633L, tcm.getDestinationTransactionId(),"Destination transaction id does not match");
         // assertEquals(145031169L, tcm.getOriginatingTransactionId(),"Originating transaction id does not match");
-        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })),
-                "Originating transaction id does not match");
-        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA4, 0, 1, })),
-                "Destination transaction id does not match");
+        assertTrue(InvokeTest.byteBufEquals(tcm.getOriginatingTransactionId(), Unpooled.wrappedBuffer(new byte[] { 0x08, (byte) 0xA5, 0, 0x01, })));
+        assertTrue(InvokeTest.byteBufEquals(tcm.getDestinationTransactionId(), Unpooled.wrappedBuffer(new byte[] { 8, (byte) 0xA4, 0, 1, })));
 
         // dialog portion
-        assertNotNull(tcm.getDialogPortion(), "Dialog portion should not be null");
+        assertNotNull(tcm.getDialogPortion());
         // assertEquals(144965633L, tcm.getDestinationTransactionId(),"Destination transaction id does not match");
 
-        assertFalse(tcm.getDialogPortion().isUnidirectional(), "Dialog should not be Uni");
+        assertFalse(tcm.getDialogPortion().isUnidirectional());
         DialogAPDU _dapd = tcm.getDialogPortion().getDialogAPDU();
-        assertEquals(DialogAPDUType.Response, _dapd.getType(), "Wrong dialog APDU type!");
+        assertEquals(DialogAPDUType.Response, _dapd.getType());
 
         DialogResponseAPDUImpl dapd = (DialogResponseAPDUImpl) _dapd;
 
         // check nulls first
-        assertNull(dapd.getUserInformation(), "UserInformation should not be present");
+        assertNull(dapd.getUserInformation());
 
         // not nulls
-        assertNotNull(dapd.getResult(), "Result should not be null");
+        assertNotNull(dapd.getResult());
         Result r = dapd.getResult();
-        assertEquals(ResultType.RejectedPermanent, r.getResultType(), "Wrong result");
+        assertEquals(ResultType.RejectedPermanent, r.getResultType());
 
-        assertNotNull(dapd.getResultSourceDiagnostic(), "Result Source Diagnostic should not be null");
+        assertNotNull(dapd.getResultSourceDiagnostic());
 
         ResultSourceDiagnostic rsd = dapd.getResultSourceDiagnostic();
-        assertNull(rsd.getDialogServiceUserType(), "User diagnostic should not be present");
-        assertEquals(DialogServiceProviderType.Null, rsd.getDialogServiceProviderType(), "Wrong provider diagnostic type");
+        assertNull(rsd.getDialogServiceUserType());
+        assertEquals(DialogServiceProviderType.Null, rsd.getDialogServiceProviderType());
 
         // comp portion
-        assertNotNull(tcm.getComponents(), "Component portion should be present");
-        assertEquals(2, tcm.getComponents().size(), "Component count is wrong");
+        assertNotNull(tcm.getComponents());
+        assertEquals(2, tcm.getComponents().size());
         BaseComponent c = tcm.getComponents().get(0);
-        assertTrue(c instanceof Invoke, "Wrong component type");
+        assertTrue(c instanceof Invoke);
         Invoke i = (Invoke)c;
-        assertEquals(new Integer(1), i.getInvokeId(), "Wrong invoke ID");
-        assertNull(i.getLinkedId(), "Linked ID is not null");
+        assertEquals(new Integer(1), i.getInvokeId());
+        assertNull(i.getLinkedId());
 
         c = tcm.getComponents().get(1);
-        assertTrue(c instanceof ReturnResultLast, "Wrong component type");
+        assertTrue(c instanceof ReturnResultLast);
         ReturnResultLast rrl = (ReturnResultLast)c;
-        assertEquals(new Integer(2), rrl.getInvokeId(), "Wrong invoke ID");
-        assertNotNull(rrl.getOperationCode(), "Operation code should not be null");
+        assertEquals(new Integer(2), rrl.getInvokeId());
+        assertNotNull(rrl.getOperationCode());
 
         OperationCode ocs = rrl.getOperationCode();
 
-        assertEquals(OperationCodeType.Local, ocs.getOperationType(), "Wrong Operation Code type");
-        assertEquals(new Integer(1), ocs.getLocalOperationCode(), "Wrong Operation Code");
+        assertEquals(OperationCodeType.Local, ocs.getOperationType());
+        assertEquals(new Integer(1), ocs.getLocalOperationCode());
 
-        assertNotNull(rrl.getParameter(), "Parameter should not be null");
+        assertNotNull(rrl.getParameter());
 
         ByteBuf buffer=parser.encode(tcm);
         byte[] encoded = buffer.array();

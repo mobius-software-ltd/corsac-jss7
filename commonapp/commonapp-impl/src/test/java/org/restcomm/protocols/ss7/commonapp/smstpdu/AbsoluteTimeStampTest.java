@@ -19,13 +19,13 @@
 
 package org.restcomm.protocols.ss7.commonapp.smstpdu;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -42,7 +42,7 @@ public class AbsoluteTimeStampTest {
         return new byte[] { 112, 80, 81, 81, 0, 20, 33 };
     }
 
-    @Test(groups = { "functional.decode", "smstpdu" })
+    @Test
     public void testDecode() throws Exception {
 
         ByteBuf buffer=Unpooled.wrappedBuffer(this.getData());
@@ -56,7 +56,7 @@ public class AbsoluteTimeStampTest {
         assertEquals(impl.getTimeZone(), 12);
     }
 
-    @Test(groups = { "functional.encode", "smstpdu" })
+    @Test
     public void testEncode() throws Exception {
 
         AbsoluteTimeStampImpl impl = new AbsoluteTimeStampImpl(7, 5, 15, 15, 0, 41, 12);

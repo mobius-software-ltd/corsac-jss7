@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall.primitive;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -35,7 +35,7 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.BothwayThroughConnect
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.BackwardServiceInteractionIndImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ForwardServiceInteractionIndImpl;
 import org.restcomm.protocols.ss7.commonapp.circuitSwitchedCall.ServiceInteractionIndicatorsTwoImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -60,7 +60,7 @@ public class ServiceInteractionIndicatorsTwoTest {
                 (byte) 159, 50, 1, 1, (byte) 159, 51, 1, 2, (byte) 159, 52, 1, 1 };
     }
 
-    @Test(groups = { "functional.decode", "circuitSwitchedCall.primitive" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ServiceInteractionIndicatorsTwoImpl.class);
@@ -99,7 +99,7 @@ public class ServiceInteractionIndicatorsTwoTest {
         assertEquals(elem.getEctTreatmentIndicator(), EctTreatmentIndicator.acceptEctRequest);
     }
 
-    @Test(groups = { "functional.encode", "circuitSwitchedCall.primitive" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ServiceInteractionIndicatorsTwoImpl.class);

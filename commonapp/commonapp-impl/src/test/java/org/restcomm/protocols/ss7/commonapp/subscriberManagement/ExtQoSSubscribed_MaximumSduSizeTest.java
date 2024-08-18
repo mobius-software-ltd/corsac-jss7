@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.commonapp.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_MaximumSduSize;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
 *
@@ -32,7 +32,7 @@ import org.testng.annotations.Test;
 */
 public class ExtQoSSubscribed_MaximumSduSizeTest {
 
-    @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
+    @Test
     public void testDecode() throws Exception {
 
         ExtQoSSubscribed_MaximumSduSize prim = new ExtQoSSubscribed_MaximumSduSize(0, true);
@@ -60,7 +60,7 @@ public class ExtQoSSubscribed_MaximumSduSizeTest {
         assertEquals(prim.getMaximumSduSize(), 0);
     }
 
-    @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
+    @Test
     public void testEncode() throws Exception {
 
         ExtQoSSubscribed_MaximumSduSize prim = new ExtQoSSubscribed_MaximumSduSize(0, false);

@@ -19,16 +19,19 @@
 
 package org.restcomm.protocols.ss7.tcap.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorImpl;
@@ -38,13 +41,11 @@ import org.restcomm.protocols.ss7.tcap.asn.tx.DialogAbortAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogPortionImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogRequestAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogResponseAPDUImpl;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author baranowb
@@ -52,7 +53,6 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
  * @author sergey vetyutnev
  * @author yulianoifa
  */
-@Test(groups = { "asn" })
 public class DialogPortionTest {
 
 	static ASNParser parser=new ASNParser();
@@ -81,17 +81,17 @@ public class DialogPortionTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() {
 
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
 
     }
 
-    @Test(groups = { "functional.encode", "functional.decode" })
+    @Test
     public void testDialogPortion_UserInformation() throws Exception {
 
     	// Hex dump is from wireshark trace for TCAP - MAP/USSD
@@ -147,7 +147,7 @@ public class DialogPortionTest {
 
     }
 
-    @Test(groups = { "functional.encode", "functional.decode" })
+    @Test
     public void testDialogPortion_DialogRequestAPDU() throws Exception {
     	// trace
         byte[] b = new byte[] { 107, 30, 40, 28, 6, 7, 0, 17, (byte) 134, 5, 1, 1, 1, (byte) 160, 17, 0x60, 15, (byte) 128, 2,
@@ -178,7 +178,7 @@ public class DialogPortionTest {
 
     }
 
-    @Test(groups = { "functional.encode", "functional.decode" })
+    @Test
     public void testDialogPortion_DialogAbortAPDU() throws Exception {
     	// trace
         byte[] b = new byte[] { 0x6B, 0x12, 0x28, 0x10, 0x06, 0x07, 0x00, 0x11, (byte) 0x86, 0x05, 0x01, 0x01, 0x01,

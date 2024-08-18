@@ -19,14 +19,14 @@
 
 package org.restcomm.protocols.ss7.commonapp.isup;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCategoryImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -50,7 +50,7 @@ public class CallingPartysCategoryInapTest {
         return new byte[] { 10 };
     }
 
-    @Test(groups = { "functional.decode", "isup" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(CallingPartysCategoryIsupImpl.class);
@@ -62,7 +62,7 @@ public class CallingPartysCategoryInapTest {
         assertEquals(cpc.getCallingPartyCategory(), 10);
     }
 
-    @Test(groups = { "functional.encode", "isup" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(CallingPartysCategoryIsupImpl.class);

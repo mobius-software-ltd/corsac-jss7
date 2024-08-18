@@ -19,13 +19,13 @@
 
 package org.restcomm.protocols.ss7.commonapp.callhandling;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -50,7 +50,7 @@ public class CallReferenceNumberTest {
         return new byte[] { 19, -6, 61, 61, -22 };
     };
 
-    @Test(groups = { "functional.decode", "service.callhandling" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CallReferenceNumberImpl.class);
@@ -66,7 +66,7 @@ public class CallReferenceNumberTest {
 
     }
 
-    @Test(groups = { "functional.decode", "service.callhandling" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CallReferenceNumberImpl.class);

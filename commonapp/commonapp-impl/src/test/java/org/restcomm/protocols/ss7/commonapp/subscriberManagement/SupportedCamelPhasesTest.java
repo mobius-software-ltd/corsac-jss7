@@ -19,11 +19,11 @@
 
 package org.restcomm.protocols.ss7.commonapp.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -43,7 +43,7 @@ public class SupportedCamelPhasesTest {
         return new byte[] { 3, 2, 5, (byte) 160 };
     }
 
-    @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SupportedCamelPhasesImpl.class);
@@ -61,7 +61,7 @@ public class SupportedCamelPhasesTest {
         assertFalse(impl.getPhase4Supported());
     }
 
-    @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SupportedCamelPhasesImpl.class);
@@ -71,6 +71,6 @@ public class SupportedCamelPhasesTest {
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         byte[] rawData = this.getEncodedData();
-        assertEquals(encodedData, rawData);
+        assertArrayEquals(encodedData, rawData);
     }
 }

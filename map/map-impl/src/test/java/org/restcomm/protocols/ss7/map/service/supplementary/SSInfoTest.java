@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.service.supplementary;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.restcomm.protocols.ss7.map.api.service.supplementary.CallBarringFeature;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.ForwardingFeature;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -58,7 +58,7 @@ public class SSInfoTest {
         return new byte[] { 48, 5, (byte) 163, 3, (byte) 132, 1, 4 };
     }
 
-    @Test(groups = { "functional.decode", "service.supplementary" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SSInfoImpl.class);
@@ -110,7 +110,7 @@ public class SSInfoTest {
         assertNull(impl.getForwardingInfo());
     }
 
-    @Test(groups = { "functional.encode", "service.supplementary" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SSInfoImpl.class);

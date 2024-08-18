@@ -23,23 +23,23 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.sccp.LongMessageRuleType;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.LocalReferenceImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ResetCauseImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCauseValue;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
 /**
  * 
  * @author yulianoifa
@@ -51,13 +51,13 @@ public class SccpConnRsrMessageTest {
     private SccpStackImpl stack = new SccpStackImpl("SccpConnRsrMessageTestStack");
     private MessageFactoryImpl messageFactory;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         this.messageFactory = new MessageFactoryImpl(stack);
         this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName());
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
     }
 
@@ -65,7 +65,7 @@ public class SccpConnRsrMessageTest {
         return Unpooled.wrappedBuffer(new byte[] { 0x0D, 0x00, 0x00, 0x01, 0x00, 0x00, 0x02, 0x09 });
     }
 
-    @Test(groups = { "SccpMessage", "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
         // ---- CR no optional params
         ByteBuf buf = this.getDataRsr();
@@ -78,7 +78,7 @@ public class SccpConnRsrMessageTest {
         assertEquals(testObjectDecoded.getResetCause().getValue(), ResetCauseValue.ACCESS_OPERATIONAL);
     }
 
-    @Test(groups = { "SccpMessage", "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
         SccpConnRsrMessageImpl original = new SccpConnRsrMessageImpl(0, 0);
         original.setDestinationLocalReferenceNumber(new LocalReferenceImpl(1));

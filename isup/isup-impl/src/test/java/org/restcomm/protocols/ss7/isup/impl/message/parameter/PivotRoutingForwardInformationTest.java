@@ -23,13 +23,14 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.InvokingPivotReason;
 import org.restcomm.protocols.ss7.isup.message.parameter.PerformingPivotIndicator;
@@ -37,8 +38,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.PivotReason;
 import org.restcomm.protocols.ss7.isup.message.parameter.PivotRoutingForwardInformation;
 import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchangeCallIdentifier;
 import org.restcomm.protocols.ss7.isup.message.parameter.ReturnToInvokingExchangePossible;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Start time:12:21:06 2009-04-23<br>
@@ -104,68 +106,68 @@ public class PivotRoutingForwardInformationTest {
         return Unpooled.wrappedBuffer(body);
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, ParameterException {
         PivotRoutingForwardInformationImpl parameter = new PivotRoutingForwardInformationImpl(getBody1());
         ReturnToInvokingExchangePossible[] rtiep = parameter.getReturnToInvokingExchangePossible();
-        Assert.assertNotNull(rtiep);
-        Assert.assertEquals(rtiep.length,2);
-        Assert.assertNotNull(rtiep[0]);
-        Assert.assertNotNull(rtiep[1]);
+        assertNotNull(rtiep);
+        assertEquals(rtiep.length,2);
+        assertNotNull(rtiep[0]);
+        assertNotNull(rtiep[1]);
 
         ReturnToInvokingExchangeCallIdentifier[] callIds = parameter.getReturnToInvokingExchangeCallIdentifier();
-        Assert.assertNotNull(callIds);
-        Assert.assertEquals(callIds.length,1);
+        assertNotNull(callIds);
+        assertEquals(callIds.length,1);
         ReturnToInvokingExchangeCallIdentifier id = callIds[0];
-        Assert.assertNotNull(id);
-        Assert.assertEquals(id.getCallIdentity(), 0xAA00AA);
-        Assert.assertEquals(id.getSignalingPointCode(), 0x1555);
+        assertNotNull(id);
+        assertEquals(id.getCallIdentity(), 0xAA00AA);
+        assertEquals(id.getSignalingPointCode(), 0x1555);
         
         PerformingPivotIndicator[] pris = parameter.getPerformingPivotIndicator();
-        Assert.assertNotNull(pris);
-        Assert.assertEquals(pris.length,1);
+        assertNotNull(pris);
+        assertEquals(pris.length,1);
         PerformingPivotIndicator ri = pris[0];
-        Assert.assertNotNull(ri);
+        assertNotNull(ri);
         List<PivotReason> rrs = ri.getReason();
-        Assert.assertNotNull(rrs);
-        Assert.assertEquals(rrs.size(),4);
-        Assert.assertNotNull(rrs.get(0));
-        Assert.assertNotNull(rrs.get(1));
-        Assert.assertNotNull(rrs.get(2));
-        Assert.assertNotNull(rrs.get(3));
+        assertNotNull(rrs);
+        assertEquals(rrs.size(),4);
+        assertNotNull(rrs.get(0));
+        assertNotNull(rrs.get(1));
+        assertNotNull(rrs.get(2));
+        assertNotNull(rrs.get(3));
 
-        Assert.assertEquals(rrs.get(0).getPivotReason(), 18);
-        Assert.assertEquals(rrs.get(0).getPivotPossibleAtPerformingExchange(), 0);
+        assertEquals(rrs.get(0).getPivotReason(), 18);
+        assertEquals(rrs.get(0).getPivotPossibleAtPerformingExchange(), 0);
 
-        Assert.assertEquals(rrs.get(1).getPivotReason(), 18);
-        Assert.assertEquals(rrs.get(1).getPivotPossibleAtPerformingExchange(), 5);
+        assertEquals(rrs.get(1).getPivotReason(), 18);
+        assertEquals(rrs.get(1).getPivotPossibleAtPerformingExchange(), 5);
 
-        Assert.assertEquals(rrs.get(2).getPivotReason(), 17);
-        Assert.assertEquals(rrs.get(2).getPivotPossibleAtPerformingExchange(), 4);
+        assertEquals(rrs.get(2).getPivotReason(), 17);
+        assertEquals(rrs.get(2).getPivotPossibleAtPerformingExchange(), 4);
 
-        Assert.assertEquals(rrs.get(3).getPivotReason(), 2);
-        Assert.assertEquals(rrs.get(3).getPivotPossibleAtPerformingExchange(), 0);
+        assertEquals(rrs.get(3).getPivotReason(), 2);
+        assertEquals(rrs.get(3).getPivotPossibleAtPerformingExchange(), 0);
         
         InvokingPivotReason[] inrs = parameter.getInvokingPivotReason();
-        Assert.assertNotNull(inrs);
-        Assert.assertEquals(inrs.length,1);
-        Assert.assertNotNull(inrs[0]);
+        assertNotNull(inrs);
+        assertEquals(inrs.length,1);
+        assertNotNull(inrs[0]);
         InvokingPivotReason inr = inrs[0];
         PivotReason[] rrs2 = inr.getReason();
-        Assert.assertNotNull(rrs2);
-        Assert.assertEquals(rrs2.length,3);
-        Assert.assertNotNull(rrs2[0]);
-        Assert.assertEquals(rrs2[0].getPivotReason(), 1);
-        Assert.assertNotNull(rrs2[1]);
-        Assert.assertEquals(rrs2[1].getPivotReason(), 2);
-        Assert.assertNotNull(rrs2[2]);
-        Assert.assertEquals(rrs2[2].getPivotReason(), 3);
+        assertNotNull(rrs2);
+        assertEquals(rrs2.length,3);
+        assertNotNull(rrs2[0]);
+        assertEquals(rrs2[0].getPivotReason(), 1);
+        assertNotNull(rrs2[1]);
+        assertEquals(rrs2[1].getPivotReason(), 2);
+        assertNotNull(rrs2[2]);
+        assertEquals(rrs2[2].getPivotReason(), 3);
         
     }
 
     
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testSetAndGet() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, ParameterException {
         PivotRoutingForwardInformationImpl parameter = new PivotRoutingForwardInformationImpl();
@@ -200,37 +202,37 @@ public class PivotRoutingForwardInformationTest {
         parameter.decode(data);
 
 
-        Assert.assertNotNull(parameter.getReturnToInvokingExchangePossible());
-        Assert.assertEquals(parameter.getReturnToInvokingExchangePossible().length,1);
+        assertNotNull(parameter.getReturnToInvokingExchangePossible());
+        assertEquals(parameter.getReturnToInvokingExchangePossible().length,1);
 
-        Assert.assertNotNull(parameter.getReturnToInvokingExchangeCallIdentifier());
-        Assert.assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier().length,2);
-        Assert.assertNotNull(parameter.getReturnToInvokingExchangeCallIdentifier()[0]);
-        Assert.assertNotNull(parameter.getReturnToInvokingExchangeCallIdentifier()[1]);
+        assertNotNull(parameter.getReturnToInvokingExchangeCallIdentifier());
+        assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier().length,2);
+        assertNotNull(parameter.getReturnToInvokingExchangeCallIdentifier()[0]);
+        assertNotNull(parameter.getReturnToInvokingExchangeCallIdentifier()[1]);
         
-        Assert.assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier()[0].getCallIdentity(),0XBB00BC);
-        Assert.assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier()[1].getCallIdentity(),0XCBF0BC);
-        Assert.assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier()[1].getSignalingPointCode(),1);
+        assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier()[0].getCallIdentity(),0XBB00BC);
+        assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier()[1].getCallIdentity(),0XCBF0BC);
+        assertEquals(parameter.getReturnToInvokingExchangeCallIdentifier()[1].getSignalingPointCode(),1);
      
-        Assert.assertNotNull(parameter.getPerformingPivotIndicator());
-        Assert.assertEquals(parameter.getPerformingPivotIndicator().length,1);
+        assertNotNull(parameter.getPerformingPivotIndicator());
+        assertEquals(parameter.getPerformingPivotIndicator().length,1);
 
-        Assert.assertNotNull(parameter.getPerformingPivotIndicator()[0].getReason());
-        Assert.assertEquals(parameter.getPerformingPivotIndicator()[0].getReason().size(),2);
-        Assert.assertNotNull(parameter.getPerformingPivotIndicator()[0].getReason().get(0));
-        Assert.assertNotNull(parameter.getPerformingPivotIndicator()[0].getReason().get(1));
-        Assert.assertEquals(parameter.getPerformingPivotIndicator()[0].getReason().get(0).getPivotReason(),1);
-        Assert.assertEquals(parameter.getPerformingPivotIndicator()[0].getReason().get(1).getPivotReason(),1);
-        Assert.assertEquals(parameter.getPerformingPivotIndicator()[0].getReason().get(1).getPivotPossibleAtPerformingExchange(),2);
+        assertNotNull(parameter.getPerformingPivotIndicator()[0].getReason());
+        assertEquals(parameter.getPerformingPivotIndicator()[0].getReason().size(),2);
+        assertNotNull(parameter.getPerformingPivotIndicator()[0].getReason().get(0));
+        assertNotNull(parameter.getPerformingPivotIndicator()[0].getReason().get(1));
+        assertEquals(parameter.getPerformingPivotIndicator()[0].getReason().get(0).getPivotReason(),1);
+        assertEquals(parameter.getPerformingPivotIndicator()[0].getReason().get(1).getPivotReason(),1);
+        assertEquals(parameter.getPerformingPivotIndicator()[0].getReason().get(1).getPivotPossibleAtPerformingExchange(),2);
 
-        Assert.assertNotNull(parameter.getInvokingPivotReason()[0].getReason());
-        Assert.assertEquals(parameter.getInvokingPivotReason()[0].getReason().length,2);
-        Assert.assertNotNull(parameter.getInvokingPivotReason()[0].getReason()[0]);
-        Assert.assertNotNull(parameter.getInvokingPivotReason()[0].getReason()[1]);
-        Assert.assertEquals(parameter.getInvokingPivotReason()[0].getReason()[0].getPivotReason(),1);
-        Assert.assertEquals(parameter.getInvokingPivotReason()[0].getReason()[1].getPivotReason(),1);
+        assertNotNull(parameter.getInvokingPivotReason()[0].getReason());
+        assertEquals(parameter.getInvokingPivotReason()[0].getReason().length,2);
+        assertNotNull(parameter.getInvokingPivotReason()[0].getReason()[0]);
+        assertNotNull(parameter.getInvokingPivotReason()[0].getReason()[1]);
+        assertEquals(parameter.getInvokingPivotReason()[0].getReason()[0].getPivotReason(),1);
+        assertEquals(parameter.getInvokingPivotReason()[0].getReason()[1].getPivotReason(),1);
         //0 casuse this one does not have it.
-        Assert.assertEquals(parameter.getInvokingPivotReason()[0].getReason()[1].getPivotPossibleAtPerformingExchange(),0);
+        assertEquals(parameter.getInvokingPivotReason()[0].getReason()[1].getPivotPossibleAtPerformingExchange(),0);
     }
 
 }

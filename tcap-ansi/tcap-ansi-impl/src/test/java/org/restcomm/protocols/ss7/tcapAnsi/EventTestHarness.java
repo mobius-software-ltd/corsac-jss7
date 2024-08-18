@@ -19,8 +19,8 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -347,7 +347,7 @@ public abstract class EventTestHarness implements TCListener {
         }
 
         for (int index = 0; index < expectedEvents.size(); index++) {
-            assertEquals(observerdEvents.get(index), expectedEvents.get(index), "Received event does not match, index[" + index + "]");
+            assertEquals(observerdEvents.get(index), expectedEvents.get(index));
         }
     }
 

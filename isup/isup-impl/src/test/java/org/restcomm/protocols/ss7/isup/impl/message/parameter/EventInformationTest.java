@@ -26,7 +26,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:11:34:01 2009-04-24<br>
@@ -54,7 +54,7 @@ public class EventInformationTest extends ParameterHarness {
         return Unpooled.wrappedBuffer(b);
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws ParameterException {
         EventInformationImpl eci = new EventInformationImpl(getBody(EventInformationImpl._EVENT_INDICATOR_CFONNR,
                 EventInformationImpl._EVENT_PRESENTATION_IPR));

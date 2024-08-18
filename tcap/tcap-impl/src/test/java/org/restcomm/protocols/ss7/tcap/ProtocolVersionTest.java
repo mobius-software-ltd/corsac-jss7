@@ -19,9 +19,12 @@
 
 package org.restcomm.protocols.ss7.tcap;
 
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.RemoteSccpStatus;
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
@@ -52,11 +55,6 @@ import org.restcomm.protocols.ss7.tcap.asn.tx.DialogAbortAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogRequestAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogResponseAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.TCBeginMessageImpl;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
@@ -86,25 +84,16 @@ public class ProtocolVersionTest extends SccpHarness {
 
     }
 
-    @BeforeClass
-    public void setUpClass() {
-        this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
-        this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
-        System.out.println("setUpClass");
-    }
-
-    @AfterClass
-    public void tearDownClass() throws Exception {
-        System.out.println("tearDownClass");
-    }
-
     /*
      * (non-Javadoc)
      *
      * @see junit.framework.TestCase#setUp()
      */
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
+    	this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
+        this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
+        
         System.out.println("setUp");
         super.setUp();
 
@@ -132,7 +121,7 @@ public class ProtocolVersionTest extends SccpHarness {
      *
      * @see junit.framework.TestCase#tearDown()
      */
-    @AfterMethod
+    @After
     public void tearDown() {
         this.tcapStack1.stop();
         this.tcapStack2.stop();
@@ -140,7 +129,7 @@ public class ProtocolVersionTest extends SccpHarness {
 
     }
 
-    @Test(groups = { "functional.flow" })
+    @Test
     public void doNotSendProtocolVersionDialogTest() throws Exception {
 
         client.startClientDialog();
@@ -152,7 +141,7 @@ public class ProtocolVersionTest extends SccpHarness {
         assertNull(pv);
     }
     
-    @Test(groups = { "functional.flow" })
+    @Test
     public void sendProtocolVersionDialogTest() throws Exception {
 
         client.startClientDialog();
@@ -164,7 +153,7 @@ public class ProtocolVersionTest extends SccpHarness {
         assertNotNull(pv);        
     }
     
-    @Test(groups = { "functional.flow" })
+    @Test
     public void doNotSendProtocolVersionStackTest() throws Exception {
         this.tcapStack1.setDoNotSendProtocolVersion(true);
         client.startClientDialog();
@@ -174,7 +163,7 @@ public class ProtocolVersionTest extends SccpHarness {
         assertNull(pv);
     }
 
-    @Test(groups = { "functional.flow" })
+    @Test
     public void sendProtocolVersionStackTest() throws Exception {
         this.tcapStack1.setDoNotSendProtocolVersion(false);
         client.startClientDialog();

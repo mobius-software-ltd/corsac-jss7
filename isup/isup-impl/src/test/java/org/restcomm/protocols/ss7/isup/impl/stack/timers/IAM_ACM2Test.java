@@ -22,7 +22,7 @@
 
 package org.restcomm.protocols.ss7.isup.impl.stack.timers;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * @author baranowb
@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
  */
 public class IAM_ACM2Test extends IAM_ACMTest {
 
-    @Test(groups = { "functional.timer", "timer.timeout.wotimeout" })
+    @Test
     public void testWithoutTimeout() throws Exception {
         super.testWithoutTimeout();
 

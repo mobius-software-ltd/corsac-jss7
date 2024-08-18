@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.smstpdu;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -39,7 +39,7 @@ public class ApplicationPortAddressing16BitAddressTest {
         return new byte[] { 0x3e, (byte) 0x94, 0, 1 };
     }
 
-    @Test(groups = { "functional.decode", "smstpdu" })
+    @Test
     public void testDecode() throws Exception {
 
         ApplicationPortAddressing16BitAddressImpl dcs = new ApplicationPortAddressing16BitAddressImpl(Unpooled.wrappedBuffer(getData()));
@@ -47,7 +47,7 @@ public class ApplicationPortAddressing16BitAddressTest {
         assertEquals(dcs.getOriginatorPort(), 1);
     }
 
-    @Test(groups = { "functional.encode", "smstpdu" })
+    @Test
     public void testEncode() throws Exception {
 
         ApplicationPortAddressing16BitAddressImpl dcs = new ApplicationPortAddressing16BitAddressImpl(16020, 1);

@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:14:11:03 2009-04-23<br>
@@ -56,7 +56,7 @@ public class NetworkRoutingNumberTest extends ParameterHarness {
         // super.goodBodies.add(getBody2());
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, IOException, ParameterException {
         NetworkRoutingNumberImpl bci = new NetworkRoutingNumberImpl(getBody(false, getSixDigits(),
@@ -68,7 +68,7 @@ public class NetworkRoutingNumberTest extends ParameterHarness {
         super.testValues(bci, methodNames, expectedValues);
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody2EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, IOException, ParameterException {
         NetworkRoutingNumberImpl bci = new NetworkRoutingNumberImpl(getBody(true, getFiveDigits(),

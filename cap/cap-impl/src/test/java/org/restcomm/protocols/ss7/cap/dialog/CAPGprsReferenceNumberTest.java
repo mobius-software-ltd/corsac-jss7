@@ -19,14 +19,14 @@
 
 package org.restcomm.protocols.ss7.cap.dialog;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -46,7 +46,7 @@ public class CAPGprsReferenceNumberTest {
         return new byte[] { 48, 13, (byte) 160, 3, 2, 1, 100, (byte) 161, 6, 2, 4, 9, 0, 23, 103 };
     }
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CAPGprsReferenceNumberImpl.class);
@@ -65,7 +65,7 @@ public class CAPGprsReferenceNumberTest {
 
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CAPGprsReferenceNumberImpl.class);

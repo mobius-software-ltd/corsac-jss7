@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.service.callhandling;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +42,7 @@ import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OBcs
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.OCSIImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TBcsmCamelTDPDataImpl;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.TCSIImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -63,7 +63,7 @@ public class GmscCamelSubscriptionInfoTest {
                 -128, 1, 2, -95, 23, 48, 18, 48, 16, 10, 1, 2, 2, 1, 3, -128, 5, -111, 17, 34, 51, -13, -127, 1, 1, -128, 1, 2 };
     }
 
-    @Test(groups = { "functional.decode", "service.mobility.subscriberManagement" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(GmscCamelSubscriptionInfoImpl.class);
@@ -109,7 +109,7 @@ public class GmscCamelSubscriptionInfoTest {
         assertFalse(ocsi.getCsiActive());
     }
 
-    @Test(groups = { "functional.encode", "service.mobility.subscriberManagement" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(GmscCamelSubscriptionInfoImpl.class);

@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.commonapp.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.BearerServiceCodeValue;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * @author Amit Bhayani
@@ -37,7 +37,7 @@ public class BearerServiceCodeValueTest {
     public BearerServiceCodeValueTest() {       
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void test() throws Exception {
         int code = BearerServiceCodeValue.padAccessCA_9600bps.getCode();
         BearerServiceCodeValue valueFromCode = BearerServiceCodeValue.getInstance(code);

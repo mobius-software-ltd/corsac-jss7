@@ -19,11 +19,12 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -51,7 +52,7 @@ public class APNTest {
         return new byte[] { 4, 12, 11, 121, 101, 115, 105, 110, 116, 101, 114, 110, 101, 116 };
     };
 
-    @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(APNImpl.class);
@@ -82,7 +83,7 @@ public class APNTest {
         assertEquals(prim.getApn(), "yesinternet");
     }
 
-    @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(APNImpl.class);
@@ -92,20 +93,20 @@ public class APNTest {
         ByteBuf buffer=parser.encode(prim);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);        
-        assertEquals(encodedData, this.getData1());
+        assertArrayEquals(encodedData, this.getData1());
 
 
         prim = new APNImpl("BLACKBERRY.NET");
         buffer=parser.encode(prim);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
-        assertEquals(encodedData, this.getData2());
+        assertArrayEquals(encodedData, this.getData2());
 
 
         prim = new APNImpl("yesinternet");
         buffer=parser.encode(prim);
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
-        assertEquals(encodedData, this.getData3());
+        assertArrayEquals(encodedData, this.getData3());
     }
 }

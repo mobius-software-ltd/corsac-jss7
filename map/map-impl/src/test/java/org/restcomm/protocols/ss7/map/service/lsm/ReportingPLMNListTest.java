@@ -19,9 +19,9 @@
 
 package org.restcomm.protocols.ss7.map.service.lsm;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +30,7 @@ import java.util.List;
 import org.restcomm.protocols.ss7.map.api.service.lsm.RANTechnology;
 import org.restcomm.protocols.ss7.map.api.service.lsm.ReportingPLMN;
 import org.restcomm.protocols.ss7.map.primitives.PlmnIdImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -51,7 +51,7 @@ public class ReportingPLMNListTest {
                 33, -127, 1, 1 };
     }
 
-    @Test(groups = { "functional.decode", "service.lms" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ReportingPLMNListImpl.class);
@@ -78,7 +78,7 @@ public class ReportingPLMNListTest {
         assertFalse(p2.getRanPeriodicLocationSupport());
     }
 
-    @Test(groups = { "functional.encode", "service.lms" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ReportingPLMNListImpl.class);

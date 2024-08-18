@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -47,7 +47,7 @@ import org.restcomm.protocols.ss7.commonapp.subscriberInformation.MSClassmark2Im
 import org.restcomm.protocols.ss7.commonapp.subscriberInformation.MSNetworkCapabilityImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberInformation.SubscriberStateImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberInformation.PSSubscriberStateChoise;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -77,7 +77,7 @@ public class SubscriberInfoTest {
     byte[] dataMsClassMark2 = new byte[] { 11, 12, 13 };
     byte[] dataMSNetworkCapability = new byte[] { 12 };
 
-    @Test(groups = { "functional.decode", "subscriberInformation" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SubscriberInfoImpl.class);
@@ -132,7 +132,7 @@ public class SubscriberInfoTest {
         assertTrue(subscriberInfo.getMNPInfoRes().getIMSI().getData().equals("456787654"));
     }
 
-    @Test(groups = { "functional.encode", "subscriberInformation" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(SubscriberInfoImpl.class);

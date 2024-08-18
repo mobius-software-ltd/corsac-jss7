@@ -23,17 +23,18 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import static org.testng.Assert.assertEquals;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.impl.message.MessageSegmentationTest;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author amit bhayani
@@ -56,15 +57,15 @@ public class GT0010Test {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() {
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
     }
 
-    @Test(groups = { "parameter", "functional.decode" })
+    @Test
     public void testDecodeEven() throws Exception {
         // TODO: we are testing here BCD even. We will need to add national encoding when we add soem staff
 
@@ -77,7 +78,7 @@ public class GT0010Test {
         assertEquals(gt1.getDigits(), "9023629581");
     }
 
-    @Test(groups = { "parameter", "functional.encode" })
+    @Test
     public void testEncodeEven() throws Exception {
         // TODO: we are testing here BCD even. We will need to add national encoding when we add soem staff
 

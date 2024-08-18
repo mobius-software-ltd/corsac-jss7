@@ -19,8 +19,8 @@
 
 package org.restcomm.protocols.ss7.cap.functional;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,8 +132,7 @@ public class EventTestHarness implements CAPDialogListener, CAPServiceCircuitSwi
         }
 
         for (int index = 0; index < expectedEvents.size(); index++) {
-            assertEquals(expectedEvents.get(index), observerdEvents.get(index), "Received event does not match, index[" + index
-                    + "]");
+            assertEquals(expectedEvents.get(index), observerdEvents.get(index));
         }
     }
 

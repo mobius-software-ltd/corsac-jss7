@@ -19,10 +19,11 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtTeleserviceC
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.CauseValue;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmTriggerDetectionPoint;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation.TBcsmCamelTdpCriteriaImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -56,7 +57,7 @@ public class TBcsmCamelTdpCriteriaTest {
         return new byte[] { 48, 19, 10, 1, 13, -96, 6, -126, 1, 38, -125, 1, 16, -95, 6, 4, 1, 7, 4, 1, 6 };
     };
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(TBcsmCamelTdpCriteriaImpl.class);
@@ -90,7 +91,7 @@ public class TBcsmCamelTdpCriteriaTest {
         assertEquals(oCauseValueCriteria.get(1).getData(), 6);
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(TBcsmCamelTdpCriteriaImpl.class);
@@ -114,6 +115,6 @@ public class TBcsmCamelTdpCriteriaTest {
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         byte[] rawData = this.getData();
-        assertEquals(encodedData, rawData);
+        assertArrayEquals(encodedData, rawData);
     }
 }

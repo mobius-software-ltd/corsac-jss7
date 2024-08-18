@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.cap.service.circuitSwitchedCall;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +45,7 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.CallingPartyCatego
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallingPartyCategory;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -82,7 +82,7 @@ public class ContinueWithArgumentRequestTest {
         return new byte[] { 5, 6, 7, 8 };
     }
 
-    @Test(groups = { "functional.decode", "circuitSwitchedCall" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ContinueWithArgumentRequestImpl.class);
@@ -137,7 +137,7 @@ public class ContinueWithArgumentRequestTest {
         assertFalse(elem.getContinueWithArgumentArgExtension().getSuppressNCsi());
     }
 
-    @Test(groups = { "functional.encode", "circuitSwitchedCall" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(ContinueWithArgumentRequestImpl.class);

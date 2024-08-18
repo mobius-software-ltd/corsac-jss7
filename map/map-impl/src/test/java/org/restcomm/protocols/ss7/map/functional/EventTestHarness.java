@@ -17,8 +17,8 @@ package org.restcomm.protocols.ss7.map.functional;
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -363,8 +363,7 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
         }
 
         for (int index = 0; index < expectedEvents.size(); index++) {
-            assertEquals(expectedEvents.get(index), observerdEvents.get(index), "Received event does not match, index[" + index
-                    + "]");
+            assertEquals(expectedEvents.get(index), observerdEvents.get(index));
         }
     }
 

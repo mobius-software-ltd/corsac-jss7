@@ -23,15 +23,18 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.isup.message.parameter.PivotReason;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author baranowb
@@ -47,7 +50,7 @@ public class PerformingPivotIndicatorTest {
         // TODO Auto-generated constructor stub
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testSetEncodeDecodeGet() throws Exception {
         PerformingPivotIndicatorImpl ppi = new PerformingPivotIndicatorImpl();
         PivotReasonImpl pr1 = new PivotReasonImpl();
@@ -62,13 +65,13 @@ public class PerformingPivotIndicatorTest {
         ppi = new PerformingPivotIndicatorImpl();
         ppi.decode(b);
         List<PivotReason> reasons = ppi.getReason();
-        Assert.assertNotNull(reasons);
-        Assert.assertEquals(reasons.size(), 2);
-        Assert.assertNotNull(reasons.get(0));
-        Assert.assertNotNull(reasons.get(1));
-        Assert.assertEquals(reasons.get(0).getPivotReason(), (byte) 1);
-        Assert.assertEquals(reasons.get(0).getPivotPossibleAtPerformingExchange(), (byte) 5);
-        Assert.assertEquals(reasons.get(1).getPivotReason(), (byte) 21);
-        Assert.assertEquals(reasons.get(1).getPivotPossibleAtPerformingExchange(), (byte) 3);
+        assertNotNull(reasons);
+        assertEquals(reasons.size(), 2);
+        assertNotNull(reasons.get(0));
+        assertNotNull(reasons.get(1));
+        assertEquals(reasons.get(0).getPivotReason(), (byte) 1);
+        assertEquals(reasons.get(0).getPivotPossibleAtPerformingExchange(), (byte) 5);
+        assertEquals(reasons.get(1).getPivotReason(), (byte) 21);
+        assertEquals(reasons.get(1).getPivotPossibleAtPerformingExchange(), (byte) 3);
     }
 }

@@ -22,10 +22,11 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.router;
 
-import static org.testng.Assert.assertEquals;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.Mtp3UserPartImpl;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
@@ -38,11 +39,9 @@ import org.restcomm.protocols.ss7.sccp.message.SccpNoticeMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
 *
@@ -72,13 +71,13 @@ public class RouteOnGtTest extends SccpHarness {
                 0x01, (byte) 0xfe });
     }
 
-    @BeforeClass
+    @Before
     public void setUpClass() throws Exception {
         this.sccpStack1Name = "RouteOnGtTestStack1";
         this.sccpStack2Name = "RouteOnGtTestStack2";
     }
 
-    @AfterClass
+    @After
     public void tearDownClass() throws Exception {
     }
 
@@ -100,17 +99,17 @@ public class RouteOnGtTest extends SccpHarness {
         return stack;
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
         super.tearDown();
     }
 
-    @Test(groups = { "SccpMessage", "functional.transfer" })
+    @Test
     public void testSend() throws Exception {
         a1 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack1PC(), 8);
         a2 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack2PC(), 8);
@@ -137,7 +136,7 @@ public class RouteOnGtTest extends SccpHarness {
         assertEquals(returnCause.getValue(), ReturnCauseValue.NO_TRANSLATION_FOR_ADDRESS);
     }
 
-    @Test(groups = { "SccpMessage", "functional.transfer" })
+    @Test
     public void testReceive() throws Exception {
         a1 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack1PC(), 8);
         a2 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack2PC(), 8);

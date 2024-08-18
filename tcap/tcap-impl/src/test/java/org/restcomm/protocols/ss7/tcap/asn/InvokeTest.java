@@ -19,9 +19,9 @@
 
 package org.restcomm.protocols.ss7.tcap.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -31,8 +31,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ComponentType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCodeType;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
@@ -49,9 +49,8 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class InvokeTest {
-	ASNParser parser=new ASNParser();
+	static ASNParser parser=new ASNParser();
 	
     private byte[] getData() {
         return new byte[] {
@@ -77,7 +76,7 @@ public class InvokeTest {
     }
 
     @BeforeClass
-	public void setUp()
+	public static void setUp()
 	{		
     	parser.loadClass(ComponentImpl.class);
     	
@@ -85,7 +84,7 @@ public class InvokeTest {
     	parser.registerAlternativeClassMapping(ASNInvokeParameterImpl.class, InvokeTestASN.class);    	
 	}
     
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testEncode() throws ASNException {
 
     	byte[] expected = this.getData();
@@ -128,7 +127,7 @@ public class InvokeTest {
         assertTrue(Arrays.equals(expected, encodedData));
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecodeWithParaSequ() throws ParseException, ASNException {
 
     	byte[] b = this.getData();

@@ -23,23 +23,19 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import io.netty.buffer.ByteBufAllocator;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.restcomm.protocols.ss7.m3ua.As;
-import org.restcomm.protocols.ss7.m3ua.ExchangeType;
-import org.restcomm.protocols.ss7.m3ua.Functionality;
-import org.restcomm.protocols.ss7.m3ua.RouteAs;
-import org.restcomm.protocols.ss7.m3ua.RoutingKey;
-import org.restcomm.protocols.ss7.m3ua.impl.parameter.ParameterFactoryImpl;
-import org.restcomm.protocols.ss7.m3ua.parameter.NetworkAppearance;
-import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.api.Association;
 import org.restcomm.protocols.api.AssociationListener;
 import org.restcomm.protocols.api.AssociationType;
@@ -49,13 +45,18 @@ import org.restcomm.protocols.api.ManagementEventListener;
 import org.restcomm.protocols.api.PayloadData;
 import org.restcomm.protocols.api.Server;
 import org.restcomm.protocols.api.ServerListener;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.restcomm.protocols.ss7.m3ua.As;
+import org.restcomm.protocols.ss7.m3ua.ExchangeType;
+import org.restcomm.protocols.ss7.m3ua.Functionality;
+import org.restcomm.protocols.ss7.m3ua.RouteAs;
+import org.restcomm.protocols.ss7.m3ua.RoutingKey;
+import org.restcomm.protocols.ss7.m3ua.impl.parameter.ParameterFactoryImpl;
+import org.restcomm.protocols.ss7.m3ua.parameter.NetworkAppearance;
+import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
 
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
+
+import io.netty.buffer.ByteBufAllocator;
 
 /**
  * Test the serialization/de-serialization
@@ -85,7 +86,7 @@ public class M3UAManagementTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         this.transportManagement = new NettyTransportManagement();
 
@@ -96,7 +97,7 @@ public class M3UAManagementTest {
         this.m3uaMgmt.removeAllResourses();
     }
 
-    @AfterMethod
+    @After
     public void tearDown() throws Exception {
         m3uaMgmt.stop();
     }

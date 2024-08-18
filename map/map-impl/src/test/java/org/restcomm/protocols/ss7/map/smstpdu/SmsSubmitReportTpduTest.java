@@ -19,15 +19,15 @@
 
 package org.restcomm.protocols.ss7.map.smstpdu;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.smstpu.AbsoluteTimeStampImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -48,7 +48,7 @@ public class SmsSubmitReportTpduTest {
         return new byte[] { 1, 1, 112, 80, 81, 81, 16, 17, 33, 44 };
     }
 
-    @Test(groups = { "functional.decode", "smstpdu" })
+    @Test
     public void testDecode() throws Exception {
 
         SmsSubmitReportTpduImpl impl = new SmsSubmitReportTpduImpl(Unpooled.wrappedBuffer(this.getData1()), null);
@@ -83,7 +83,7 @@ public class SmsSubmitReportTpduTest {
         assertNull(impl.getUserData());
     }
 
-    @Test(groups = { "functional.encode", "smstpdu" })
+    @Test
     public void testEncode() throws Exception {
 
         UserDataImpl ud = new UserDataImpl("Hello !!!!", new DataCodingSchemeImpl(0), null, null);

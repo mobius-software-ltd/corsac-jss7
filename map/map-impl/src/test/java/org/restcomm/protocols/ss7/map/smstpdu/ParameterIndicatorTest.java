@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.smstpdu;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  *
@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
  *
  */
 public class ParameterIndicatorTest {
-    @Test(groups = { "functional.encode", "smstpdu" })
+    @Test
     public void testEncode() throws Exception {
 
         // ParameterIndicatorImpl ind = new ParameterIndicatorImpl(boolean TP_UDLPresence, boolean getTP_DCSPresence, boolean

@@ -19,19 +19,19 @@
 
 package org.restcomm.protocols.ss7.cap.gap;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.gap.BasicGapCriteriaImpl;
 import org.restcomm.protocols.ss7.commonapp.gap.CalledAddressAndServiceImpl;
 import org.restcomm.protocols.ss7.commonapp.gap.CompoundCriteriaImpl;
 import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.ScfIDImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -62,7 +62,7 @@ public class CompoundCriteriaTest {
         return new byte[] {12, 32, 23, 56};
     }
 
-    @Test(groups = { "functional.decode", "circuitSwitchedCall" })
+    @Test
     public void testDecode_CalledAddressAndService() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CompoundCriteriaImpl.class);
@@ -79,7 +79,7 @@ public class CompoundCriteriaTest {
         assertTrue(ByteBufUtil.equals(elem.getScfID().getValue(), Unpooled.wrappedBuffer(getDigitsData1())));
     }
 
-    @Test(groups = { "functional.encode", "circuitSwitchedCall" })
+    @Test
     public void testEncode_CalledAddressAndService() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CompoundCriteriaImpl.class);

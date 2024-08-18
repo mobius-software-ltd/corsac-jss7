@@ -19,16 +19,16 @@
 
 package org.restcomm.protocols.ss7.map.datacoding;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSDataCodingGroup;
 import org.restcomm.protocols.ss7.map.api.datacoding.CBSNationalLanguage;
 import org.restcomm.protocols.ss7.map.api.smstpdu.CharacterSet;
 import org.restcomm.protocols.ss7.map.api.smstpdu.DataCodingSchemaMessageClass;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  *
@@ -38,7 +38,7 @@ import org.testng.annotations.Test;
  */
 public class CBSDataCodingSchemeTest {
 
-    @Test(groups = { "functional.decode", "datacoding" })
+    @Test
     public void testDecode() throws Exception {
 
         // first common case - dcs=15 - GSM7
@@ -164,7 +164,7 @@ public class CBSDataCodingSchemeTest {
         assertFalse(dcs.getIsCompressed());
     }
 
-    @Test(groups = { "functional.encode", "datacoding" })
+    @Test
     public void testEncode() throws Exception {
 
         CBSDataCodingSchemeImpl dcs = new CBSDataCodingSchemeImpl(CBSDataCodingGroup.GeneralGsm7, CharacterSet.GSM7,

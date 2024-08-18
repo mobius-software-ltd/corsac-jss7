@@ -19,10 +19,11 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ import org.restcomm.protocols.ss7.map.api.service.supplementary.SSCode;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.SupplementaryCodeValue;
 import org.restcomm.protocols.ss7.map.service.mobility.locationManagement.SupportedFeaturesImpl;
 import org.restcomm.protocols.ss7.map.service.supplementary.SSCodeImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -70,7 +71,7 @@ public class InsertSubscriberDataResponseTest {
         return new byte[] { 48, 25, -95, 3, 4, 1, 16, -94, 3, 4, 1, 38, -93, 3, 4, 1, 0, -124, 5, 4, 74, -43, 85, 80, -123, 1, 1 };
     };
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(InsertSubscriberDataResponseImplV3.class);
@@ -246,7 +247,7 @@ public class InsertSubscriberDataResponseTest {
 
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(InsertSubscriberDataResponseImplV1.class);
@@ -291,7 +292,7 @@ public class InsertSubscriberDataResponseTest {
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         byte[] rawData = this.getData();
-        assertEquals(encodedData, rawData);
+        assertArrayEquals(encodedData, rawData);
 
         // Start ISD Response Vesrion 2 Test
         prim = new InsertSubscriberDataResponseImplV1(teleserviceList, bearerServiceList, ssList, odbGeneralData,
@@ -301,6 +302,6 @@ public class InsertSubscriberDataResponseTest {
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         rawData = this.getData1();
-        assertEquals(encodedData, rawData);
+        assertArrayEquals(encodedData, rawData);
     }
 }

@@ -27,7 +27,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 /**
  * 
  * @author yulianoifa

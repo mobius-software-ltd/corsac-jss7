@@ -19,17 +19,17 @@
 
 package org.restcomm.protocols.ss7.map.service.lsm;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.service.lsm.AreaType;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -74,7 +74,7 @@ public class AreaIdentificationTest {
         return new byte[] { 4, 7, 82, (byte) 128, 118, (byte) 248, 0, 0, 1 };
     };
 
-    @Test(groups = { "functional.decode", "service.lsm" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AreaIdentificationImpl.class);
@@ -236,7 +236,7 @@ public class AreaIdentificationTest {
         assertEquals(prim.getUtranCellId(), (int) (4160749569L));
     }
 
-    @Test(groups = { "functional.decode", "service.lsm" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AreaIdentificationImpl.class);

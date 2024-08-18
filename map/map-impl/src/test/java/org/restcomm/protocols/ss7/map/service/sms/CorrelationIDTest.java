@@ -19,15 +19,15 @@
 
 package org.restcomm.protocols.ss7.map.service.sms;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.primitives.IMSIImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -54,7 +54,7 @@ public class CorrelationIDTest {
                 -126, 23, 115, 105, 112, 58, 110, 111, 115, 97, 99, 104, 64, 116, 101, 108, 101, 115, 116, 97, 120, 46, 99, 111, 109};
     }
 
-    @Test(groups = { "functional.decode", "service.sms" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CorrelationIDImpl.class);
@@ -78,7 +78,7 @@ public class CorrelationIDTest {
         assertEquals(correlationId.getSipUriB().getValue().toString(Charset.forName("UTF-8")), "sip:nosach@telestax.com");
     }
 
-    @Test(groups = { "functional.encode", "service.sms" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(CorrelationIDImpl.class);

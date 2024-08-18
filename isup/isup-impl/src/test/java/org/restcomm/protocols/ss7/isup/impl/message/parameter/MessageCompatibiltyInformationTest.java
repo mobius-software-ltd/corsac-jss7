@@ -29,7 +29,7 @@ import io.netty.buffer.Unpooled;
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:12:21:06 2009-04-23<br>
@@ -57,7 +57,7 @@ public class MessageCompatibiltyInformationTest extends ParameterHarness {
         return Unpooled.wrappedBuffer(body);
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, ParameterException {
         MessageCompatibilityInformationImpl at = new MessageCompatibilityInformationImpl(getBody1());
@@ -78,7 +78,7 @@ public class MessageCompatibiltyInformationTest extends ParameterHarness {
         byte[] body = new byte[] { 0x42, (byte) 0x81 };
         return Unpooled.wrappedBuffer(body);
     }
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody2EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, ParameterException {
         MessageCompatibilityInformationImpl at = new MessageCompatibilityInformationImpl(getBody2());

@@ -19,12 +19,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.subscriberInformation;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -53,7 +53,7 @@ public class GPRSMSClassTest {
         return new byte[] { 11, 22, 33, 44 };
     }
 
-    @Test(groups = { "functional.decode", "subscriberInformation" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(GPRSMSClassImpl.class);
@@ -68,7 +68,7 @@ public class GPRSMSClassTest {
         assertTrue(ByteBufUtil.equals(impl.getMSRadioAccessCapability().getValue(),Unpooled.wrappedBuffer(this.getEncodedDataRadioAccessCapability())));               
     }
 
-    @Test(groups = { "functional.encode", "subscriberInformation" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(GPRSMSClassImpl.class);

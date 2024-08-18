@@ -19,13 +19,13 @@
 
 package org.restcomm.protocols.ss7.commonapp.primitives;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -49,7 +49,7 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthTest {
         return new byte[] { 4, 7, 16, 97, 66, 1, 77, 1, (byte) 188 };
     };
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);
@@ -79,7 +79,7 @@ public class CellGlobalIdOrServiceAreaIdFixedLengthTest {
         assertEquals(prim.getCellIdOrServiceAreaCode(), 444);
     }
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CellGlobalIdOrServiceAreaIdFixedLengthImpl.class);

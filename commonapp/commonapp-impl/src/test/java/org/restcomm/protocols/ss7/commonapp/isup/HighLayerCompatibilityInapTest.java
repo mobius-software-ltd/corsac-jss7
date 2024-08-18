@@ -19,12 +19,12 @@
 
 package org.restcomm.protocols.ss7.commonapp.isup;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.UserTeleserviceInformationImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.UserTeleserviceInformation;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -44,7 +44,7 @@ public class HighLayerCompatibilityInapTest {
         return new byte[] { (byte) 151, 2, (byte) 145, (byte) 129 };
     }
 
-    @Test(groups = { "functional.decode", "isup" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(HighLayerCompatibilityIsupImpl.class);
@@ -61,7 +61,7 @@ public class HighLayerCompatibilityInapTest {
         assertEquals(hlc.getHighLayerCharIdentification(), 1);
     }
 
-    @Test(groups = { "functional.encode", "isup" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(HighLayerCompatibilityIsupImpl.class);

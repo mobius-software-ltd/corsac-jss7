@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.dialog;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -30,7 +30,7 @@ import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest
 import org.restcomm.protocols.ss7.map.api.dialog.MAPUserAbortChoice;
 import org.restcomm.protocols.ss7.map.api.dialog.ProcedureCancellationReason;
 import org.restcomm.protocols.ss7.map.api.dialog.ResourceUnavailableReason;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -69,7 +69,7 @@ public class MAPUserAbortInfoTest {
                 3, 6, 48, 11, 6, 3, 42, 3, 5, 21, 22, 23, 24, 25, 26, -95, 3, 31, 32, 33 };
     }
 
-    @Test(groups = { "functional.decode", "dialog" })
+    @Test
     public void testUserSpecificReasonDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(MAPUserAbortInfoImpl.class);
@@ -92,7 +92,7 @@ public class MAPUserAbortInfoTest {
 
     }
 
-    @Test(groups = { "functional.encode", "dialog" })
+    @Test
     public void testUserSpecificReasonEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(MAPUserAbortInfoImpl.class);
@@ -109,7 +109,7 @@ public class MAPUserAbortInfoTest {
         assertTrue(Arrays.equals(getDataUserSpecificReason(), data));
     }
 
-    @Test(groups = { "functional.decode", "dialog" })
+    @Test
     public void testUserResourceLimitationDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(MAPUserAbortInfoImpl.class);
@@ -132,7 +132,7 @@ public class MAPUserAbortInfoTest {
 
     }
 
-    @Test(groups = { "functional.encode", "dialog" })
+    @Test
     public void testUserResourceLimitationEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(MAPUserAbortInfoImpl.class);
@@ -150,7 +150,7 @@ public class MAPUserAbortInfoTest {
         assertTrue(Arrays.equals(getUserResourceLimitationReason(), data));
     }
 
-    @Test(groups = { "functional.decode", "dialog" })
+    @Test
     public void testResourceUnavailableDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(MAPUserAbortInfoImpl.class);
@@ -174,7 +174,7 @@ public class MAPUserAbortInfoTest {
 
     }
 
-    @Test(groups = { "functional.encode", "dialog" })
+    @Test
     public void testResourceUnavailableEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(MAPUserAbortInfoImpl.class);
@@ -192,7 +192,7 @@ public class MAPUserAbortInfoTest {
         assertTrue(Arrays.equals(getResourceUnavailableReason(), data));
     }
 
-    @Test(groups = { "functional.decode", "dialog" })
+    @Test
     public void testProcedureCancellationReasonDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(MAPUserAbortInfoImpl.class);
@@ -221,7 +221,7 @@ public class MAPUserAbortInfoTest {
 
     }
 
-    @Test(groups = { "functional.encode", "dialog" })
+    @Test
     public void testProcedureCancellationReasonEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(MAPUserAbortInfoImpl.class);
@@ -239,7 +239,7 @@ public class MAPUserAbortInfoTest {
         assertTrue(Arrays.equals(getProcedureCancellationReason(), data));
     }
 
-    @Test(groups = { "functional.decode", "dialog" })
+    @Test
     public void testFullDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(MAPUserAbortInfoImpl.class);
@@ -269,7 +269,7 @@ public class MAPUserAbortInfoTest {
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(mapUserAbortInfo.getExtensionContainer()));
     }
 
-    @Test(groups = { "functional.encode", "dialog" })
+    @Test
     public void testFullEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(MAPUserAbortInfoImpl.class);

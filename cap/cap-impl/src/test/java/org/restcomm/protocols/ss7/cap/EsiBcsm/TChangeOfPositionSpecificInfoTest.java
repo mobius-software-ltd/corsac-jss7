@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +31,7 @@ import java.util.List;
 import org.restcomm.protocols.ss7.cap.api.EsiBcsm.MetDPCriterion;
 import org.restcomm.protocols.ss7.commonapp.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInformationImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -56,7 +56,7 @@ public class TChangeOfPositionSpecificInfoTest {
                 (byte) 135, 0 };
     }
 
-    @Test(groups = { "functional.decode", "EsiBcsm" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(TChangeOfPositionSpecificInfoImpl.class);
@@ -85,7 +85,7 @@ public class TChangeOfPositionSpecificInfoTest {
         assertTrue(elem.getMetDPCriteriaList().get(1).getInterSystemHandOverToGSM());
     }
 
-    @Test(groups = { "functional.encode", "EsiBcsm" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(TChangeOfPositionSpecificInfoImpl.class);

@@ -23,11 +23,11 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -39,6 +39,20 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.restcomm.protocols.api.Association;
+import org.restcomm.protocols.api.AssociationListener;
+import org.restcomm.protocols.api.AssociationType;
+import org.restcomm.protocols.api.IpChannelType;
+import org.restcomm.protocols.api.Management;
+import org.restcomm.protocols.api.ManagementEventListener;
+import org.restcomm.protocols.api.PayloadData;
+import org.restcomm.protocols.api.Server;
+import org.restcomm.protocols.api.ServerListener;
 import org.restcomm.protocols.ss7.m3ua.As;
 import org.restcomm.protocols.ss7.m3ua.Asp;
 import org.restcomm.protocols.ss7.m3ua.AspFactory;
@@ -69,20 +83,6 @@ import org.restcomm.protocols.ss7.mtp.Mtp3StatusPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
-import org.restcomm.protocols.api.Association;
-import org.restcomm.protocols.api.AssociationListener;
-import org.restcomm.protocols.api.AssociationType;
-import org.restcomm.protocols.api.IpChannelType;
-import org.restcomm.protocols.api.Management;
-import org.restcomm.protocols.api.ManagementEventListener;
-import org.restcomm.protocols.api.PayloadData;
-import org.restcomm.protocols.api.Server;
-import org.restcomm.protocols.api.ServerListener;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 
@@ -122,7 +122,7 @@ public class RemSgFSMTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         semaphore = new Semaphore(0);
         this.transportManagement = new NettyTransportManagement();
@@ -138,7 +138,7 @@ public class RemSgFSMTest {
 
     }
 
-    @AfterMethod
+    @After
     public void tearDown() throws Exception {
         clientM3UAMgmt.removeAllResourses();
         clientM3UAMgmt.stop();

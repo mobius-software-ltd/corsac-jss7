@@ -26,7 +26,7 @@ package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 import java.lang.reflect.InvocationTargetException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -52,7 +52,7 @@ public class AccessDeliveryInformationTest extends ParameterHarness {
        return Unpooled.wrappedBuffer(body);
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, ParameterException {
         AccessDeliveryInformationImpl at = new AccessDeliveryInformationImpl(getBody1());

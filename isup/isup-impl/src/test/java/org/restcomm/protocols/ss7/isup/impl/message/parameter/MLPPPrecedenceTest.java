@@ -29,7 +29,7 @@ import io.netty.buffer.Unpooled;
 import java.io.IOException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:17:14:12 2009-04-24<br>
@@ -49,7 +49,7 @@ public class MLPPPrecedenceTest extends ParameterHarness {
 
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws IOException, ParameterException {
         // FIXME: This one fails....
         int serDomain = 15;

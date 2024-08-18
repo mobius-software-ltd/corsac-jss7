@@ -23,12 +23,18 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.sccp.ConcernedSignalingPointCode;
 import org.restcomm.protocols.ss7.sccp.RemoteSignalingPointCode;
 import org.restcomm.protocols.ss7.sccp.RemoteSubSystem;
-import org.testng.annotations.*;
-
-import static org.testng.Assert.*;
 
 /**
  * @author gennadiy dubina
@@ -50,13 +56,13 @@ public class SccpResourceProhibitedTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
         resource.removeAllResourses();
         resource.stop();
     }
 
-    @Test(groups = { "sccpresource", "functional.sccp" })
+    @Test
     public void testProhibitedTrue() throws Exception {
         resource = new SccpResourceImpl("SccpResourceProhibitedTest", true);
         resource.start();
@@ -72,7 +78,7 @@ public class SccpResourceProhibitedTest {
         assertTrue(resource.getRemoteSpc(2).isRemoteSccpProhibited());
     }
 
-    @Test(groups = { "sccpresource", "functional.sccp" })
+    @Test
     public void testProhibitedFalse() throws Exception {
         resource = new SccpResourceImpl("SccpResourceProhibitedTest", false);
         resource.start();
@@ -88,7 +94,7 @@ public class SccpResourceProhibitedTest {
         assertFalse(resource.getRemoteSpc(2).isRemoteSccpProhibited());
     }
 
-    @Test(groups = { "sccpresource", "functional.encode" })
+    @Test
     public void testSerialization() throws Exception {
 
         resource = new SccpResourceImpl("SccpResourceProhibitedTest", true);

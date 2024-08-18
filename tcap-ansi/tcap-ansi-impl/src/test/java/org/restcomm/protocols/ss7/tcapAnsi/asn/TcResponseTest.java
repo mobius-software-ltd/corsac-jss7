@@ -19,9 +19,9 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnErrorImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultNotLastImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -54,7 +54,6 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class TcResponseTest {
 
     private byte[] data1 = new byte[] { (byte) 0xe4, 0x3e, (byte) 0xc7, 0x04, 0x14, 0x00, 0x00, 0x00, (byte) 0xe8, 0x36, (byte) 0xea, 0x34, (byte) 0xcf, 0x01,
@@ -69,7 +68,7 @@ public class TcResponseTest {
     private byte[] parData = new byte[] { -106, 1, 19, -114, 2, 6, 0, -107, 3, 0, 12, 16, -97, 78, 1, 1, -103, 3, 122, 13, 17, -97, 93, 7, 0, 0, 33, 6, 54, 84,
             16, -105, 1, 7, -97, 115, 1, 0, -97, 117, 1, 0, -104, 1, 2 };
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(TCResponseMessageImpl.class);
@@ -114,7 +113,7 @@ public class TcResponseTest {
 
     }
 
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(TCResponseMessageImpl.class);

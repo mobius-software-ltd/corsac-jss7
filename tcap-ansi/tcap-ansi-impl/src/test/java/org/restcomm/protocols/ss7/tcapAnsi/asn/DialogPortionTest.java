@@ -19,9 +19,9 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +34,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ProtocolVersion;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.SecurityContext;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformationElement;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -49,7 +49,6 @@ import io.netty.buffer.Unpooled;
 * @author yulianoifa
 *
 */
-@Test(groups = { "asn" })
 public class DialogPortionTest {
 
     private byte[] data1 = new byte[] { -7, 33, -38, 1, 3, -3, 20, 40, 18, 6, 7, 4, 0, 0, 1, 1, 1, 1, -96, 7, 4, 5, 3, 4, 5, 6, 7, -128, 1, 10, -94, 3, -128,
@@ -59,7 +58,7 @@ public class DialogPortionTest {
 
     private byte[] dataValue = new byte[] { 3, 4, 5, 6, 7 };
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(DialogPortionImpl.class);
@@ -94,7 +93,7 @@ public class DialogPortionTest {
         assertEquals(con.getObjectConfidentialityId(), Arrays.asList(new Long[] { 1L, 4L }));
     }
 
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(DialogPortionImpl.class);

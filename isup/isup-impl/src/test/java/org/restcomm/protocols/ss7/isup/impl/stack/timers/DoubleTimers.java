@@ -26,11 +26,11 @@ package org.restcomm.protocols.ss7.isup.impl.stack.timers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
 import org.restcomm.protocols.ss7.isup.ISUPEvent;
 import org.restcomm.protocols.ss7.isup.ISUPTimeoutEvent;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 
 /**
  * @author baranowb
@@ -50,7 +50,7 @@ public abstract class DoubleTimers extends EventTestHarness {
     protected ISUPMessage request; // message exchanged within
     protected ISUPMessage answer;
 
-    @BeforeClass
+    @Before
     public void setUp() throws Exception {
 
         super.setUp();
@@ -67,7 +67,7 @@ public abstract class DoubleTimers extends EventTestHarness {
         this.answer = getAnswer();
     }
 
-    @AfterClass
+    @After
     public void tearDown() throws Exception {
         super.provider.removeListener(listenerUUID);
         super.tearDown();

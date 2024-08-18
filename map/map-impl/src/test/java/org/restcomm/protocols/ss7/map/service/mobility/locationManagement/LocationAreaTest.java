@@ -19,17 +19,17 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.locationManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LAIFixedLength;
 import org.restcomm.protocols.ss7.commonapp.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.locationManagement.LAC;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -53,7 +53,7 @@ public class LocationAreaTest {
         return new byte[] { 48, 4, (byte) 129, 2, 54, (byte) 186 };
     };
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(LocationAreaImpl.class);
@@ -81,7 +81,7 @@ public class LocationAreaTest {
         assertEquals(lac.getLac(), 14010);
     }
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(LocationAreaImpl.class);

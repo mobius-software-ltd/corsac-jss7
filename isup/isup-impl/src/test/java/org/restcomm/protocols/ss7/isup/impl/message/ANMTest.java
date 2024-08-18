@@ -23,19 +23,20 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ParameterHarness;
 import org.restcomm.protocols.ss7.isup.message.AnswerMessage;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.CallReference;
 import org.restcomm.protocols.ss7.isup.message.parameter.ServiceActivation;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Start time:09:26:46 2009-04-22<br>
@@ -47,7 +48,7 @@ import org.testng.annotations.Test;
  */
 public class ANMTest extends MessageHarness {
 
-    @Test(groups = { "functional.encode", "functional.decode", "message" })
+    @Test
     public void testTwo_Params() throws Exception {
         ByteBuf message = getDefaultBody();
 
@@ -56,11 +57,9 @@ public class ANMTest extends MessageHarness {
         ((AbstractISUPMessage) ANM).decode(message, messageFactory,parameterFactory);
         try {
             CallReference cr = (CallReference) ANM.getParameter(CallReference._PARAMETER_CODE);
-            assertNotNull(cr, "Call Reference return is null, it should not be");
-            if (cr == null)
-                return;
-            assertEquals(cr.getCallIdentity(), 65793, "CallIdentity missmatch");
-            assertEquals(cr.getSignalingPointCode(), 478, "SignalingPointCode missmatch");
+            assertNotNull(cr);
+            assertEquals(cr.getCallIdentity(), 65793);
+            assertEquals(cr.getSignalingPointCode(), 478);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,20 +67,12 @@ public class ANMTest extends MessageHarness {
         }
         try {
             ServiceActivation sa = (ServiceActivation) ANM.getParameter(ServiceActivation._PARAMETER_CODE);
-            assertNotNull(sa, "Service Activation return is null, it should not be");
-            if (sa == null)
-                return;
-
+            assertNotNull(sa);
+            
             ByteBuf b = sa.getFeatureCodes();
-            assertNotNull(b, "ServerActivation.getFeatureCodes() is null");
-            if (b == null) {
-                return;
-            }
-            assertEquals(b.readableBytes(), 7, "Length of param is wrong");
-            if (b.readableBytes() != 7)
-                return;
-            assertTrue(ParameterHarness.byteBufEquals(b, Unpooled.wrappedBuffer(new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 })),
-                    "Content of ServiceActivation.getFeatureCodes is wrong");
+            assertNotNull(b);
+            assertEquals(b.readableBytes(), 7);
+            assertTrue(ParameterHarness.byteBufEquals(b, Unpooled.wrappedBuffer(new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 })));
 
         } catch (Exception e) {
             e.printStackTrace();

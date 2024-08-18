@@ -19,14 +19,14 @@
 
 package org.restcomm.protocols.ss7.map.service.lsm;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberInformation.TypeOfShape;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -46,7 +46,7 @@ public class AddGeographicalInformationTest {
         return new byte[] { 4, 8, 16, 92, 113, -57, -106, 11, 97, 7 };
     }
 
-    @Test(groups = { "functional.decode", "lsm" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AddGeographicalInformationImpl.class);
@@ -63,7 +63,7 @@ public class AddGeographicalInformationTest {
         assertTrue(Math.abs(impl.getUncertainty() - 9.48) < 0.01);
     }
 
-    @Test(groups = { "functional.encode", "lsm" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AddGeographicalInformationImpl.class);

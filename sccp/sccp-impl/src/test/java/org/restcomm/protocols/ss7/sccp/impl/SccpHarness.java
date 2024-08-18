@@ -23,7 +23,7 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Random;
 

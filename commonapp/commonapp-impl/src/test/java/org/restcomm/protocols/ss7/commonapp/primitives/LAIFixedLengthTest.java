@@ -19,13 +19,13 @@
 
 package org.restcomm.protocols.ss7.commonapp.primitives;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -53,7 +53,7 @@ public class LAIFixedLengthTest {
         return new byte[] { -127, 5, 16, 97, 66, 1, 77 };
     };
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.loadClass(LAIFixedLengthImpl.class);
@@ -81,7 +81,7 @@ public class LAIFixedLengthTest {
         assertEquals(prim.getLac(), 333);
     }
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.loadClass(LAIFixedLengthImpl.class);

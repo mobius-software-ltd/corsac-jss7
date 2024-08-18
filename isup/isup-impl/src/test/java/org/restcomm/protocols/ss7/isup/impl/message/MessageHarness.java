@@ -23,9 +23,9 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -37,7 +37,7 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.ISUPParameterFacto
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.ParameterHarness;
 import org.restcomm.protocols.ss7.isup.message.ISUPMessage;
 import org.restcomm.protocols.ss7.isup.message.parameter.CircuitIdentificationCode;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:09:16:42 2009-04-22<br>
@@ -175,7 +175,7 @@ public abstract class MessageHarness {
 
     protected abstract ISUPMessage getDefaultMessage();
 
-    @Test(groups = { "functional.encode", "functional.decode", "message" })
+    @Test
     public void testOne() throws Exception {
 
         final ByteBuf defaultBody = getDefaultBody();
@@ -183,11 +183,10 @@ public abstract class MessageHarness {
         msg.decode(Unpooled.wrappedBuffer(defaultBody),messageFactory, parameterFactory);
         final ByteBuf encodedBody = Unpooled.buffer(255);
         msg.encode(encodedBody);        
-        final boolean equal = ParameterHarness.byteBufEquals(Unpooled.wrappedBuffer(defaultBody), Unpooled.wrappedBuffer(encodedBody));
-        assertTrue(equal, makeStringCompare(Unpooled.wrappedBuffer(defaultBody), Unpooled.wrappedBuffer(encodedBody)));
+        assertTrue(ParameterHarness.byteBufEquals(Unpooled.wrappedBuffer(defaultBody), Unpooled.wrappedBuffer(encodedBody)));
         final CircuitIdentificationCode cic = msg.getCircuitIdentificationCode();
-        assertNotNull(cic, "CircuitIdentificationCode must not be null");
-        assertEquals(getDefaultCIC(), cic.getCIC(), "CircuitIdentificationCode value does not match");
+        assertNotNull(cic);
+        assertEquals(getDefaultCIC(), cic.getCIC());
 
     }
 

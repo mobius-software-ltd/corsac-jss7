@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.authentication;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +33,7 @@ import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.Authen
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.AuthenticationTriplet;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.QuintupletList;
 import org.restcomm.protocols.ss7.map.api.service.mobility.authentication.TripletList;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -61,7 +61,7 @@ public class AuthenticationSetListTest {
         return new byte[] { 48, 38, 48, 36, 48, 34, 4, 16, 15, -2, 18, -92, -49, 43, -35, -71, -78, -98, 109, 83, -76, -87, 77, -128, 4, 4, -32, 82, -17, -14, 4, 8, 31, 72, -93, 97, 78, -17, -52, 0 };
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AuthenticationSetListV1Impl.class);
@@ -95,7 +95,7 @@ public class AuthenticationSetListTest {
         assertEquals(asc.getQuintupletList().getAuthenticationQuintuplets().size(), 1);
     }
 
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(AuthenticationSetListV1Impl.class);

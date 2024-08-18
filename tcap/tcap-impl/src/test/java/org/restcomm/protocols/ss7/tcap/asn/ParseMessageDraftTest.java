@@ -19,13 +19,13 @@
 
 package org.restcomm.protocols.ss7.tcap.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
 import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
@@ -36,25 +36,18 @@ import org.restcomm.protocols.ss7.tcap.asn.tx.TCBeginMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.TCContinueMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.TCEndMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.TCUniMessageImpl;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.Unpooled;
 /**
  * 
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class ParseMessageDraftTest {
 
-	@BeforeClass
-	public void setUp()
-	{
-				
-	}
-	
-    private byte[] dataTcBegin = new byte[] {
+	private byte[] dataTcBegin = new byte[] {
             // TCBegin
             0x62, 38,
             // oidTx
@@ -140,7 +133,7 @@ public class ParseMessageDraftTest {
     private byte[] dataTcUnidirectional = new byte[] { 97, 45, 107, 27, 40, 25, 6, 7, 0, 17, -122, 5, 1, 2, 1, -96, 14, 96, 12,
             -128, 2, 7, -128, -95, 6, 6, 4, 40, 2, 3, 4, 108, 14, -95, 12, 2, 1, -128, 2, 2, 2, 79, 4, 3, 1, 2, 3 };
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testTCBegin() throws IOException, EncodeException, ParseException {
 
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
@@ -159,7 +152,7 @@ public class ParseMessageDraftTest {
         assertNull(msg.getParsingErrorReason());
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testTCContinue() throws IOException, EncodeException, ParseException {
 
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
@@ -178,7 +171,7 @@ public class ParseMessageDraftTest {
         assertNull(msg.getParsingErrorReason());
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testTCEnd() throws IOException, EncodeException, ParseException {
 
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
@@ -197,7 +190,7 @@ public class ParseMessageDraftTest {
         assertNull(msg.getParsingErrorReason());
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testTCAbort() throws IOException, EncodeException, ParseException {
 
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
@@ -216,7 +209,7 @@ public class ParseMessageDraftTest {
         assertNull(msg.getParsingErrorReason());
     }
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testTCUnidirectional() throws IOException, EncodeException, ParseException {
 
         SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");

@@ -19,10 +19,10 @@
 
 package org.restcomm.protocols.ss7.commonapp.subscriberInformation;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -33,7 +33,7 @@ import org.restcomm.protocols.ss7.commonapp.primitives.CellGlobalIdOrServiceArea
 import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.LAIFixedLengthImpl;
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.LSAIdentityImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -86,7 +86,7 @@ public class LocationInformationGPRSTest {
         return new byte[] { 1, 16, 3, 4, 5, 6, 7, 8, 9, 10 };
     }
 
-    @Test(groups = { "functional.decode", "subscriberInformation" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(LocationInformationGPRSImpl.class);
@@ -155,7 +155,7 @@ public class LocationInformationGPRSTest {
         assertNull(impl.getRouteingAreaIdentity());
     }
 
-    @Test(groups = { "functional.encode", "subscriberInformation" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(LocationInformationGPRSImpl.class);

@@ -23,9 +23,9 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -157,7 +157,7 @@ public abstract class ParameterHarness {
         return out;
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testDecodeEncode() throws ParameterException {
 
         for (int index = 0; index < this.goodBodies.size(); index++) {
@@ -166,8 +166,7 @@ public abstract class ParameterHarness {
             doTestDecode(Unpooled.wrappedBuffer(goodBody), true, component, index);
             ByteBuf output=Unpooled.buffer(255);
             component.encode(output);
-            boolean equal = byteBufEquals(goodBody, output);
-            assertTrue(equal, "Body index: " + index + "\n" + makeCompare(goodBody, output));
+            assertTrue(byteBufEquals(goodBody, output));
 
         }
         
@@ -246,17 +245,13 @@ public abstract class ParameterHarness {
                 }
                 if (expectedValues[index] != null && expectedValues[index].getClass().isArray()) {
                     assertTrue(
-                            Arrays.deepEquals(new Object[] { expectedValues[index] }, new Object[] { v }),
-                            "Failed to validate values in component: " + component.getClass().getName() + ". Value of: "
-                                    + getterMethodNames[index] + ":\n"
-                                    + makeCompare( expectedValues[index],v));
+                            Arrays.deepEquals(new Object[] { expectedValues[index] }, new Object[] { v }));
                 }
                 else if(expectedValues[index] != null && expectedValues[index] instanceof ByteBuf) {
                 	assertTrue(byteBufEquals((ByteBuf)v,(ByteBuf)expectedValues[index]));
                 }
                 else {
-                    assertEquals(v, expectedValues[index], "Failed to validate values in component: "
-                            + component.getClass().getName() + ". Value of: " + getterMethodNames[index]);
+                    assertEquals(v, expectedValues[index]);
                 }
 
             }

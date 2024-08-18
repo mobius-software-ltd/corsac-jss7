@@ -23,17 +23,18 @@
 
 package org.restcomm.protocols.ss7.isup.impl.message.parameter;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.isup.ParameterException;
 import org.restcomm.protocols.ss7.isup.message.parameter.ParameterCompatibilityInstructionIndicators;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Start time:17:28:44 2009-04-26<br>
@@ -108,13 +109,13 @@ public class ParameterCompatibilityInformationTest extends ParameterHarness {
         super.goodBodies.add(getBody1());
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
             IllegalAccessException, InvocationTargetException, IOException, ParameterException {
         ParameterCompatibilityInformationImpl bci = new ParameterCompatibilityInformationImpl(getBody1());
 
         assertNotNull(bci.getParameterCompatibilityInstructionIndicators());
-        assertEquals(bci.getParameterCompatibilityInstructionIndicators().length, 4, "Wrong number of instructions. ");
+        assertEquals(bci.getParameterCompatibilityInstructionIndicators().length, 4);
 
         // Yeah this is different
         ParameterCompatibilityInstructionIndicators[] indicators = bci.getParameterCompatibilityInstructionIndicators();

@@ -19,14 +19,14 @@
 
 package org.restcomm.protocols.ss7.cap.EsiBcsm;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.commonapp.subscriberInformation.LocationInformationImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -46,7 +46,7 @@ public class CallAcceptedSpecificInfoTest {
         return new byte[] { 48, 7, (byte) 191, 50, 4, 2, 2, 0, (byte) 200 };
     }
 
-    @Test(groups = { "functional.decode", "EsiBcsm" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CallAcceptedSpecificInfoImpl.class);
@@ -61,7 +61,7 @@ public class CallAcceptedSpecificInfoTest {
         assertEquals((int) elem.getLocationInformation().getAgeOfLocationInformation(), 200);
     }
 
-    @Test(groups = { "functional.encode", "EsiBcsm" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(CallAcceptedSpecificInfoImpl.class);

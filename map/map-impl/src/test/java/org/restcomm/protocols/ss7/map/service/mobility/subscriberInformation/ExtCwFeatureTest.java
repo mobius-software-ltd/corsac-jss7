@@ -17,9 +17,9 @@ package org.restcomm.protocols.ss7.map.service.mobility.subscriberInformation;
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
@@ -29,7 +29,7 @@ import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtBasicService
 import org.restcomm.protocols.ss7.commonapp.subscriberManagement.ExtTeleserviceCodeImpl;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.ExtSSStatus;
 import org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement.ExtSSStatusImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -44,7 +44,7 @@ import io.netty.buffer.Unpooled;
 public class ExtCwFeatureTest {
     private byte[] data = {48, 8, -95, 3, -125, 1, 32, -126, 1, 12};
 
-    @Test(groups = { "functional.decode", "subscriberInformation" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ExtCwFeatureImpl.class);
@@ -64,7 +64,7 @@ public class ExtCwFeatureTest {
         assertFalse(extSSStatus.getBitA());
     }
 
-    @Test(groups = { "functional.encode", "subscriberInformation" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(ExtCwFeatureImpl.class);

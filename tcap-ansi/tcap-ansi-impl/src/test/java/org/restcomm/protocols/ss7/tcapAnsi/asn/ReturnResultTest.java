@@ -19,14 +19,14 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Return;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.ReturnResultNotLastImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -41,7 +41,6 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class ReturnResultTest {
 
     private byte[] data1 = new byte[] { (byte) 0xea, 0x1f, (byte) 0xcf, 0x01, 0x00, (byte) 0xf2, 0x1a, 0x04, 0x18, (byte) 0x89, 0x04, (byte) 0xfe, 0x3a, 0x2f, (byte) 0xe5,
@@ -52,7 +51,7 @@ public class ReturnResultTest {
     private byte[] parData = new byte[] { (byte) 0x89, 0x04, (byte) 0xfe, 0x3a, 0x2f, (byte) 0xe5, (byte) 0x9f, (byte) 0x81, 0x38, 0x05, 0x00, 0x00, 0x00,
             0x26, 0x31, (byte) 0x95, 0x03, 0x00, 0x0c, 0x06, (byte) 0x9f, 0x31, 0x01, 0x00 };
 
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(ReturnResultLastImpl.class);
@@ -78,7 +77,7 @@ public class ReturnResultTest {
         assertNull(rrnl.getParameter());
     }
 
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.loadClass(ReturnResultLastImpl.class);

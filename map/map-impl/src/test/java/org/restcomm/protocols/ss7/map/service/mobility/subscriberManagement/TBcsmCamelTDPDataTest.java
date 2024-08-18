@@ -19,10 +19,11 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
 
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.NumberingPlan;
@@ -30,7 +31,7 @@ import org.restcomm.protocols.ss7.commonapp.primitives.ISDNAddressStringImpl;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.DefaultCallHandling;
 import org.restcomm.protocols.ss7.map.api.service.mobility.subscriberManagement.TBcsmTriggerDetectionPoint;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -56,7 +57,7 @@ public class TBcsmCamelTDPDataTest {
                 3, 31, 32, 33 };
     }
 
-    @Test(groups = { "functional.decode", "service.mobility.subscriberManagement" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(TBcsmCamelTDPDataImpl.class);
@@ -91,7 +92,7 @@ public class TBcsmCamelTDPDataTest {
 
     }
 
-    @Test(groups = { "functional.encode", "service.mobility.subscriberManagement" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(TBcsmCamelTDPDataImpl.class);
@@ -105,7 +106,7 @@ public class TBcsmCamelTDPDataTest {
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         byte[] rawData = this.getEncodedData();
-        assertEquals(encodedData, rawData);
+        assertArrayEquals(encodedData, rawData);
 
         ind = new TBcsmCamelTDPDataImpl(TBcsmTriggerDetectionPoint.termAttemptAuthorized, 3, gsmSCFAddress,
                 DefaultCallHandling.releaseCall, MAPExtensionContainerTest.GetTestExtensionContainer());
@@ -114,7 +115,7 @@ public class TBcsmCamelTDPDataTest {
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         rawData = this.getEncodedDataFull();
-        assertEquals(encodedData, rawData);
+        assertArrayEquals(encodedData, rawData);
     }
 
 }

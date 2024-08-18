@@ -19,16 +19,16 @@
 
 package org.restcomm.protocols.ss7.tcap.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
@@ -44,13 +44,12 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class UserInformationTest {
 
-	ASNParser parser=new ASNParser();
+	static ASNParser parser=new ASNParser();
     
 	@BeforeClass
-	public void setUp()
+	public static void setUp()
 	{
 		parser.loadClass(UserInformationImpl.class);
         
@@ -58,7 +57,7 @@ public class UserInformationTest {
         parser.registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, UserInformationTestASN.class);		
 	}
 	
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testUserInformationDecode() throws Exception {
 
         // This raw data is from wireshark trace of TCAP - MAP
@@ -89,7 +88,7 @@ public class UserInformationTest {
 
     }
 
-    @Test(groups = { "functional.encode" })
+    @Test
     public void testUserInformationEncode() throws IOException, EncodeException {
 
     	byte[] encodedData = new byte[] { (byte) 0xbe, 0x25, 0x28, 0x23, 0x06, 0x07, 0x04, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01,
@@ -123,7 +122,7 @@ public class UserInformationTest {
 
     public static final List<Long> _ACN_ = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L });
 
-    @Test(groups = { "functional.encode", "functional.decode" })
+    @Test
     public void testFailuuure() throws Exception {
     	
     	byte[] encoded = new byte[] { -66, 15, 40, 13, 6, 7, 4, 0, 0, 1, 0, 19, 2, -126, 2, 4, -112 };

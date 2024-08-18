@@ -23,16 +23,16 @@
 
 package org.restcomm.protocols.ss7.indicator;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 /**
  * @author amit bhayani
@@ -57,15 +57,15 @@ public class AddressIndicatorTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() {
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
     }
 
-    @Test(groups = { "functional.decode", "indicator" })
+    @Test
     public void testDecode() throws Exception {
         byte b = 0x42;
         AddressIndicator ai = new AddressIndicator(b, SccpProtocolVersion.ITU);
@@ -100,7 +100,7 @@ public class AddressIndicatorTest {
         assertTrue(ai.isReservedForNationalUseBit());
     }
 
-    @Test(groups = { "functional.encode", "indicator" })
+    @Test
     public void testEncode() throws Exception {
         AddressIndicator ai = new AddressIndicator(false, true, RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN,
                 GlobalTitleIndicator.NO_GLOBAL_TITLE_INCLUDED);

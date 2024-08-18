@@ -19,18 +19,18 @@
 
 package org.restcomm.protocols.ss7.tcap.asn;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogAbortAPDUImpl;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
@@ -40,7 +40,6 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
  * @author yulianoifa
  *
  */
-@Test(groups = { "asn" })
 public class DialogAbortAPDUTest {
 
     private byte[] getData() {
@@ -62,7 +61,7 @@ public class DialogAbortAPDUTest {
     	parser.registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, TCBeginTestASN3.class);    	
     }
     
-    @Test(groups = { "functional.decode" })
+    @Test
     public void testDecode() throws Exception {
     	Object output=parser.decode(Unpooled.wrappedBuffer(getData())).getResult();
         assertTrue(output instanceof DialogAbortAPDUImpl);

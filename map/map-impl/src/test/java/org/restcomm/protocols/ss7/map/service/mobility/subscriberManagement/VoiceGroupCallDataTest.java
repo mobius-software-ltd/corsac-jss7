@@ -19,15 +19,15 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MAPExtensionContainer;
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -60,7 +60,7 @@ public class VoiceGroupCallDataTest {
                 -127, 4, -11, -1, -1, -1 };
     };
 
-    @Test(groups = { "functional.decode", "primitives" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(VoiceGroupCallDataImpl.class);
@@ -117,7 +117,7 @@ public class VoiceGroupCallDataTest {
 
     }
 
-    @Test(groups = { "functional.encode", "primitives" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(VoiceGroupCallDataImpl.class);
@@ -136,7 +136,7 @@ public class VoiceGroupCallDataTest {
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         byte[] rawData = this.getData();
-        assertEquals(encodedData, rawData);
+        assertArrayEquals(encodedData, rawData);
 
         // Option 2
         prim = new VoiceGroupCallDataImpl(groupId, extensionContainer, additionalSubscriptions, additionalInfo, null);
@@ -144,7 +144,7 @@ public class VoiceGroupCallDataTest {
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         rawData = this.getData2();
-        assertEquals(encodedData, rawData);
+        assertArrayEquals(encodedData, rawData);
 
         // Option 3
         prim = new VoiceGroupCallDataImpl(null, extensionContainer, additionalSubscriptions, additionalInfo, longGroupId);
@@ -152,6 +152,6 @@ public class VoiceGroupCallDataTest {
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         rawData = this.getData3();
-        assertEquals(encodedData, rawData);
+        assertArrayEquals(encodedData, rawData);
     }
 }

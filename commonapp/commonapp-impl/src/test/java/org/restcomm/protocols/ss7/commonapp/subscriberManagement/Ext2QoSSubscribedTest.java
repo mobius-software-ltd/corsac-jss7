@@ -19,13 +19,14 @@
 
 package org.restcomm.protocols.ss7.commonapp.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.Ext2QoSSubscribed_SourceStatisticsDescriptor;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.ExtQoSSubscribed_BitRateExtended;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -49,7 +50,7 @@ public class Ext2QoSSubscribedTest {
         return new byte[] { 4, 3, 0, (byte) 142, 0 };
     };
 
-    @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(Ext2QoSSubscribedImpl.class);
@@ -80,7 +81,7 @@ public class Ext2QoSSubscribedTest {
         assertTrue(prim.getGuaranteedBitRateForDownlinkExtended().isUseNonextendedValue());
     }
 
-    @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(Ext2QoSSubscribedImpl.class);
@@ -94,7 +95,7 @@ public class Ext2QoSSubscribedTest {
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         
-        assertEquals(encodedData, this.getData1());
+        assertArrayEquals(encodedData, this.getData1());
 
 
         maximumBitRateForDownlinkExtended = new ExtQoSSubscribed_BitRateExtended(84000, false);
@@ -106,6 +107,6 @@ public class Ext2QoSSubscribedTest {
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         
-        assertEquals(encodedData, this.getData2());
+        assertArrayEquals(encodedData, this.getData2());
     }
 }

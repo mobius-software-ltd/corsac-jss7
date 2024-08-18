@@ -23,13 +23,16 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.parameter;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.GlobalTitleIndicator;
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
 import org.restcomm.protocols.ss7.indicator.NumberingPlan;
@@ -39,11 +42,9 @@ import org.restcomm.protocols.ss7.sccp.impl.message.MessageSegmentationTest;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle0011;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -72,18 +73,18 @@ public class SccpAddressTest {
     public static void tearDownClass() throws Exception {
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() {
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
     }
 
     /**
      * Test of decode method, of class SccpAddressCodec.
      */
-    @Test(groups = { "parameter", "functional.decode" })
+    @Test
     public void testDecode1() throws Exception {
         SccpAddressImpl address = new SccpAddressImpl();
         address.decode(Unpooled.wrappedBuffer(data), factory, SccpProtocolVersion.ITU);
@@ -92,7 +93,7 @@ public class SccpAddressTest {
         assertEquals(address.getGlobalTitle().getDigits(), "79023700299");
     }
 
-    @Test(groups = { "parameter", "functional.decode" })
+    @Test
     public void testDecode2() throws Exception {
         SccpAddressImpl address = new SccpAddressImpl();
         address.decode(Unpooled.wrappedBuffer(new byte[] { 0x42, 0x08 }), factory, SccpProtocolVersion.ITU);
@@ -101,7 +102,7 @@ public class SccpAddressTest {
         assertNull(address.getGlobalTitle());
     }
 
-    @Test(groups = { "parameter", "functional.decode" })
+    @Test
     public void testDecode4() throws Exception {
         SccpAddressImpl address = new SccpAddressImpl();
         address.decode(Unpooled.wrappedBuffer(data4), factory, SccpProtocolVersion.ANSI);
@@ -140,7 +141,7 @@ public class SccpAddressTest {
     /**
      * Test of encode method, of class SccpAddressCodec.
      */
-    @Test(groups = { "parameter", "functional.encode" })
+    @Test
     public void testEncode() throws Exception {
         GlobalTitle gt = factory.createGlobalTitle("79023700299",0,NumberingPlan.ISDN_TELEPHONY, BCDOddEncodingScheme.INSTANCE,NatureOfAddress.INTERNATIONAL); 
         SccpAddressImpl address = (SccpAddressImpl)factory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE,gt, 0, 146); 
@@ -150,7 +151,7 @@ public class SccpAddressTest {
         MessageSegmentationTest.assertByteBufs(Unpooled.wrappedBuffer(data), bin);
     }
 
-    @Test(groups = { "parameter", "functional.encode" })
+    @Test
     public void testEncode2() throws Exception {
         SccpAddressImpl address = (SccpAddressImpl) factory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null,0,  8);
         ByteBuf bin=Unpooled.buffer();
@@ -163,7 +164,7 @@ public class SccpAddressTest {
      *
      * @throws Exception
      */
-    @Test(groups = { "parameter", "functional.encode" })
+    @Test
     public void testEncode3() throws Exception {
         byte[] data1 = new byte[] { 0x12, 0x06, 0x00, 0x11, 0x04, 0x39, 0x07, (byte) 0x92, 0x49, 0x00, 0x06 };
         // SccpAddressCodec codec = new SccpAddressCodec(true);
@@ -178,7 +179,7 @@ public class SccpAddressTest {
 
     }
 
-    @Test(groups = { "parameter", "functional.encode" })
+    @Test
     public void testEncode4() throws Exception {
         GlobalTitle gt = factory.createGlobalTitle("79023700299", 0, NumberingPlan.ISDN_TELEPHONY, BCDOddEncodingScheme.INSTANCE);
         SccpAddressImpl address = (SccpAddressImpl) factory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE, gt, 0, 146);

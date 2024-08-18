@@ -29,7 +29,7 @@ import io.netty.buffer.Unpooled;
 import java.io.IOException;
 
 import org.restcomm.protocols.ss7.isup.ParameterException;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Start time:13:20:04 2009-04-26<br>
@@ -47,7 +47,7 @@ public class NatureOfConnectionIndicatorsTest extends ParameterHarness {
         super.goodBodies.add(Unpooled.wrappedBuffer(new byte[] { 0x0E }));
     }
 
-    @Test(groups = { "functional.encode", "functional.decode", "parameter" })
+    @Test
     public void testBody1EncodedValues() throws IOException, ParameterException {
 
         NatureOfConnectionIndicatorsImpl eci = new NatureOfConnectionIndicatorsImpl(

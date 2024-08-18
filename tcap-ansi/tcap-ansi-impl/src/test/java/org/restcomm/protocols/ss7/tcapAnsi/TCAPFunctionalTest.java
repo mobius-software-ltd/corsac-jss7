@@ -19,13 +19,16 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
@@ -41,11 +44,6 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseIndica
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndication;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeImpl;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 /**
  * Test for call flow.
@@ -69,25 +67,16 @@ public class TCAPFunctionalTest extends SccpHarness {
 
     }
 
-    @BeforeClass
-    public void setUpClass() {
-        this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
-        this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
-        System.out.println("setUpClass");
-    }
-
-    @AfterClass
-    public void tearDownClass() throws Exception {
-        System.out.println("tearDownClass");
-    }
-
     /*
      * (non-Javadoc)
      *
      * @see junit.framework.TestCase#setUp()
      */
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
+    	this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
+        this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
+        
         System.out.println("setUp");
         super.setUp();
 
@@ -116,7 +105,7 @@ public class TCAPFunctionalTest extends SccpHarness {
      *
      * @see junit.framework.TestCase#tearDown()
      */
-    @AfterMethod
+    @After
     public void tearDown() {
         this.tcapStack1.stop();
         this.tcapStack2.stop();
@@ -124,7 +113,7 @@ public class TCAPFunctionalTest extends SccpHarness {
 
     }
 
-    @Test(groups = { "functional.flow" })
+    @Test
     public void simpleTCWithDialogTest() throws Exception {
 
         long stamp = System.currentTimeMillis();
@@ -179,7 +168,7 @@ public class TCAPFunctionalTest extends SccpHarness {
 
     }
 
-    @Test(groups = { "functional.flow" })
+    @Test
     public void uniMsgTest() throws Exception {
 
         long stamp = System.currentTimeMillis();

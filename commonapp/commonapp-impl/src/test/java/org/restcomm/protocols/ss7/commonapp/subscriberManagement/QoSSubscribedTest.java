@@ -19,16 +19,17 @@
 
 package org.restcomm.protocols.ss7.commonapp.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_DelayClass;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_MeanThroughput;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_PeakThroughput;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_PrecedenceClass;
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.QoSSubscribed_ReliabilityClass;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -56,7 +57,7 @@ public class QoSSubscribedTest {
         return new byte[] { 4, 3, 21, 33, 5 };
     };
 
-    @Test(groups = { "functional.decode", "mobility.subscriberManagement" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(QoSSubscribedImpl.class);
@@ -98,7 +99,7 @@ public class QoSSubscribedTest {
         assertEquals(prim.getMeanThroughput(), QoSSubscribed_MeanThroughput._2000_octetH);
     }
 
-    @Test(groups = { "functional.encode", "mobility.subscriberManagement" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(QoSSubscribedImpl.class);
@@ -111,7 +112,7 @@ public class QoSSubscribedTest {
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         byte[] rawData = this.getData1();
-        assertEquals(encodedData, rawData);
+        assertArrayEquals(encodedData, rawData);
 
 
         prim = new QoSSubscribedImpl(QoSSubscribed_ReliabilityClass.unacknowledgedGtpAndLlc_AcknowledgedRlc_ProtectedData,
@@ -122,7 +123,7 @@ public class QoSSubscribedTest {
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         rawData = this.getData2();
-        assertEquals(encodedData, rawData);
+        assertArrayEquals(encodedData, rawData);
 
 
         prim = new QoSSubscribedImpl(QoSSubscribed_ReliabilityClass.unacknowledgedGtpLlcAndRlc_UnprotectedData,
@@ -133,6 +134,6 @@ public class QoSSubscribedTest {
         encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
         rawData = this.getData3();
-        assertEquals(encodedData, rawData);        
+        assertArrayEquals(encodedData, rawData);        
     }
 }

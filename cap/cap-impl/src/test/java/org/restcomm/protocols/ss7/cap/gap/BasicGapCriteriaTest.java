@@ -19,12 +19,13 @@
 
 package org.restcomm.protocols.ss7.cap.gap;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
 
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.gap.BasicGapCriteriaImpl;
 import org.restcomm.protocols.ss7.commonapp.gap.BasicGapCriteriaWrapperImpl;
 import org.restcomm.protocols.ss7.commonapp.gap.CalledAddressAndServiceImpl;
@@ -34,7 +35,6 @@ import org.restcomm.protocols.ss7.commonapp.isup.DigitsIsupImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericDigitsImpl;
 import org.restcomm.protocols.ss7.isup.impl.message.parameter.GenericNumberImpl;
 import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -75,7 +75,7 @@ public class BasicGapCriteriaTest {
         return new byte[] { 48, 12, (byte) 190, 10, (byte) 128, 4, 48, 69, 91, 84, (byte) 129, 2, 3, 53 };
     }
 
-    @Test(groups = { "functional.decode", "gap" })
+    @Test
     public void testDecode_CalledAddressValue() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
@@ -91,7 +91,7 @@ public class BasicGapCriteriaTest {
         assertEquals(elem.getBasicGapCriteria().getCalledAddressNumber().getGenericNumber().getNumberingPlanIndicator(), 4);
     }
 
-    @Test(groups = { "functional.encode", "gap" })
+    @Test
     public void testEncode_CalledAddressValue() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
@@ -108,7 +108,7 @@ public class BasicGapCriteriaTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.decode", "gap" })
+    @Test
     public void testDecode_GapOnService() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
@@ -123,7 +123,7 @@ public class BasicGapCriteriaTest {
         assertEquals(elem.getBasicGapCriteria().getGapOnService().getServiceKey(), 18);
     }
 
-    @Test(groups = { "functional.encode", "gap" })
+    @Test
     public void testEncode_GapOnService() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
@@ -139,7 +139,7 @@ public class BasicGapCriteriaTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.decode", "gap" })
+    @Test
     public void testDecode_CalledAddressAndService() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
@@ -155,7 +155,7 @@ public class BasicGapCriteriaTest {
         assertTrue(ByteBufUtil.equals(DigitsIsupImpl.translate(elem.getBasicGapCriteria().getCalledAddressAndService().getCalledAddressDigits().getGenericDigits()),Unpooled.wrappedBuffer(getDigitsData())));
     }
 
-    @Test(groups = { "functional.encode", "gap" })
+    @Test
     public void testEncode_CalledAddressAndService() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
@@ -172,7 +172,7 @@ public class BasicGapCriteriaTest {
         assertTrue(Arrays.equals(rawData, encodedData));
     }
 
-    @Test(groups = { "functional.decode", "gap" })
+    @Test
     public void testDecode_CallingAddressAndService() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);
@@ -189,7 +189,7 @@ public class BasicGapCriteriaTest {
         
     }
 
-    @Test(groups = { "functional.encode", "gap" })
+    @Test
     public void testEncode_CallingAddressAndService() throws Exception {
     	ASNParser parser=new ASNParser(true);
     	parser.replaceClass(BasicGapCriteriaWrapperImpl.class);

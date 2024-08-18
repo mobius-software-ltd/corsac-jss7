@@ -19,12 +19,13 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.subscriberManagement;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertArrayEquals;
 
 import org.restcomm.protocols.ss7.commonapp.api.subscriberManagement.TeleserviceCodeValue;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -42,7 +43,7 @@ public class TeleserviceCodeTest {
 
     byte[] data = new byte[] { 4, 1, 0x11 };
 
-    @Test(groups = { "functional.decode", "subscriberInformation" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(TeleserviceCodeImpl.class);
@@ -55,7 +56,7 @@ public class TeleserviceCodeTest {
         assertEquals(impl.getTeleserviceCodeValue(), TeleserviceCodeValue.telephony);
     }
 
-    @Test(groups = { "functional.encode", "subscriberInformation" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(TeleserviceCodeImpl.class);
@@ -64,6 +65,6 @@ public class TeleserviceCodeTest {
         ByteBuf buffer=parser.encode(impl);
         byte[] encodedData = new byte[buffer.readableBytes()];
         buffer.readBytes(encodedData);
-        assertEquals(encodedData, data);
+        assertArrayEquals(encodedData, data);
     }
 }

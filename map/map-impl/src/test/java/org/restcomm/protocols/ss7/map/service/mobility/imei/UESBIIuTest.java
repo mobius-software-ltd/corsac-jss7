@@ -19,12 +19,12 @@
 
 package org.restcomm.protocols.ss7.map.service.mobility.imei;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -45,7 +45,7 @@ public class UESBIIuTest {
         return new byte[] { 48, 8, -128, 2, 7, -128, -127, 2, 0, 0 };
     }
 
-    @Test(groups = { "functional.decode", "imei" })
+    @Test
     public void testDecode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(UESBIIuImpl.class);
@@ -60,7 +60,7 @@ public class UESBIIuTest {
         assertFalse(imp.getUESBI_IuB().isBitSet(0));
     }
 
-    @Test(groups = { "functional.encode", "imei" })
+    @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
     	parser.replaceClass(UESBIIuImpl.class);

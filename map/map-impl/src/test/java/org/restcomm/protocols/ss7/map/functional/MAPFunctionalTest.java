@@ -19,12 +19,12 @@
 
 package org.restcomm.protocols.ss7.map.functional;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +32,11 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressNature;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.CellGlobalIdOrServiceAreaIdFixedLength;
@@ -279,12 +284,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
@@ -316,23 +315,12 @@ public class MAPFunctionalTest extends SccpHarness {
     private SccpAddress peer1Address;
     private SccpAddress peer2Address;
 
-    @BeforeClass
-    public void setUpClass() throws Exception {
-
-        System.out.println("setUpClass");
-    }
-
-    @AfterClass
-    public void tearDownClass() throws Exception {
-        System.out.println("tearDownClass");
-    }
-
     /*
      * (non-Javadoc)
      *
      * @see junit.framework.TestCase#setUp()
      */
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         // this.setupLog4j();
         System.out.println("setUpTest");
@@ -362,7 +350,7 @@ public class MAPFunctionalTest extends SccpHarness {
      * @see junit.framework.TestCase#tearDown()
      */
 
-    @AfterMethod
+    @After
     public void tearDown() {
         System.out.println("tearDownTest");
         this.stack1.stop();
@@ -380,7 +368,7 @@ public class MAPFunctionalTest extends SccpHarness {
      * TC-BEGIN + ExtensionContainer + addProcessUnstructuredSSRequest TC-CONTINUE + ExtensionContainer +
      * addUnstructuredSSRequest TC-CONTINUE + addUnstructuredSSResponse TC-END + addProcessUnstructuredSSResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testComplexTCWithDialog() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -426,7 +414,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
             @Override
             public void onDialogAccept(MAPDialog mapDialog, MAPExtensionContainer extensionContainer) {
-                Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+                assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
                 super.onDialogAccept(mapDialog, extensionContainer);
             }
 
@@ -475,7 +463,7 @@ public class MAPFunctionalTest extends SccpHarness {
             @Override
             public void onDialogRequest(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
                     MAPExtensionContainer extensionContainer) {
-                Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+                assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
                 super.onDialogRequest(mapDialog, destReference, origReference, extensionContainer);
             }
 
@@ -570,7 +558,7 @@ public class MAPFunctionalTest extends SccpHarness {
      *   TC-CONTINUE + ExtensionContainer + addUnstructuredSSRequest 
      * prearranged TC-END
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testDialogEndAtTheMiddleConversation() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -616,7 +604,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
             @Override
             public void onDialogAccept(MAPDialog mapDialog, MAPExtensionContainer extensionContainer) {
-                Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+                assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
                 super.onDialogAccept(mapDialog, extensionContainer);
             }
 
@@ -665,7 +653,7 @@ public class MAPFunctionalTest extends SccpHarness {
             @Override
             public void onDialogRequest(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
                     MAPExtensionContainer extensionContainer) {
-                Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+                assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
                 super.onDialogRequest(mapDialog, destReference, origReference, extensionContainer);
             }
 
@@ -750,7 +738,7 @@ public class MAPFunctionalTest extends SccpHarness {
      *
      * TC-BEGIN + addProcessUnstructuredSSRequest refuse() -> TC-ABORT + MapRefuseInfo + ExtensionContainer
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testDialogRefuse() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -839,7 +827,7 @@ public class MAPFunctionalTest extends SccpHarness {
      *
      * TC-BEGIN + addProcessUnstructuredSSRequest TC-ABORT(Reason=ACN_Not_Supprted) + alternativeApplicationContextName
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testInvalidApplicationContext() throws Exception {
 
         ((MAPServiceSupplementaryImplWrapper) this.stack2.getProvider().getMAPServiceSupplementary()).setTestMode(1);
@@ -894,7 +882,7 @@ public class MAPFunctionalTest extends SccpHarness {
      * TC-BEGIN + addProcessUnstructuredSSRequest TC-CONTINUE + addUnstructuredSSRequest TC-ABORT(MAP-UserAbortInfo) +
      * ExtensionContainer
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testDialogUserAbort() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -1021,7 +1009,7 @@ public class MAPFunctionalTest extends SccpHarness {
      *
      * TC-BEGIN + addProcessUnstructuredSSRequest TC-ABORT(MAP-ProviderAbortInfo)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testReceivedDialogAbortInfo() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -1072,7 +1060,7 @@ public class MAPFunctionalTest extends SccpHarness {
      *
      * TC-BEGIN + Ericsson-style MAP-OpenInfo + addProcessUnstructuredSSRequest TC-END
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testEricssonDialog() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -1173,7 +1161,7 @@ public class MAPFunctionalTest extends SccpHarness {
      *
      * TC-BEGIN + alertServiceCentre V2 TC-ABORT + DialogReject+ACNNotSupported
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testRejectServiceIsNotActive() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -1223,7 +1211,7 @@ public class MAPFunctionalTest extends SccpHarness {
      *
      * TC-BEGIN + alertServiceCentre V1 TC-ABORT + DialogReject+ACNNotSupported
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testRejectServiceIsNotActiveV1() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -1266,7 +1254,7 @@ public class MAPFunctionalTest extends SccpHarness {
      *
      * TC-BEGIN + addProcessUnstructuredSSRequest TC-END + ReturnError(systemFailure)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testComponentErrorMessageSystemFailure() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -1365,7 +1353,7 @@ public class MAPFunctionalTest extends SccpHarness {
      *
      * TC-BEGIN + addProcessUnstructuredSSRequest TC-END + ReturnError(SM-DeliveryFailure + SM-DeliveryFailureCause)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testComponentErrorMessageSMDeliveryFailure() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -1463,7 +1451,7 @@ public class MAPFunctionalTest extends SccpHarness {
      * TC-BEGIN + addProcessUnstructuredSSRequest TC-CONTINUE + ReturnResult (addProcessUnstructuredSSResponse) TC-CONTINUE
      * TC-END + ReturnResultLast (addProcessUnstructuredSSResponse)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testComponentD() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -1624,7 +1612,7 @@ public class MAPFunctionalTest extends SccpHarness {
      *
      * TC-BEGIN + addProcessUnstructuredSSRequest TC-END + Reject (ResourceLimitation) - manually sent Reject
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testComponentDuplicateInvokeID() throws Exception {
         // Action_Component_E
 
@@ -1737,7 +1725,7 @@ public class MAPFunctionalTest extends SccpHarness {
      * TC-BEGIN + addProcessUnstructuredSSRequest
      *   no TC-END + ReturnError(systemFailure) (prearranged end)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testComponentErrorCloseTrue() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -1836,7 +1824,7 @@ public class MAPFunctionalTest extends SccpHarness {
      * TC-BEGIN + addProcessUnstructuredSSRequest TC-END + Reject (invokeProblem-ResourceLimitation) without invokeId! - this
      * Reject is Invoked by MAP-user
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testComponentGeneralProblemTypeComponent() throws Exception {
         // Action_Component_G
 
@@ -1947,7 +1935,7 @@ public class MAPFunctionalTest extends SccpHarness {
      *
      * TC-BEGIN + Invoke(bad opCode==1000) TC-END + Reject (generalProblem-UnrecognizedOperation) without invokeId!
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testInvokeUnrecognizedOperation() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -2062,7 +2050,7 @@ public class MAPFunctionalTest extends SccpHarness {
      *
      * TC-BEGIN + Invoke(bad opCode==1000) TC-END + Reject (generalProblem-MistypedParameter) without invokeId!
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testInvokeMistypedParameter() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -2177,7 +2165,7 @@ public class MAPFunctionalTest extends SccpHarness {
      * sendRoutingInfoForSMResponse for the same InvokeId + SystemFailureError for the same InvokeId TC-END +
      * Reject(ReturnResultProblemType.UnrecognizedInvokeID) + Reject(ReturnErrorProblemType.UnrecognizedInvokeID)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testUnrecognizedInvokeID() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -2390,7 +2378,7 @@ public class MAPFunctionalTest extends SccpHarness {
      * (=1000) TC-END + Reject (ReturnResultProblem.MistypedParameter) + Reject (ReturnErrorProblem.MistypedParameter) + Reject
      * (ReturnErrorProblem.UnrecognizedError)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testResultErrorMistypedParameter() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -2613,7 +2601,7 @@ public class MAPFunctionalTest extends SccpHarness {
      * TC-BEGIN + addProcessUnstructuredSSRequest (releasing Dialog at a client side) TC-CONTINUE
      * addProcessUnstructuredSSResponse TC-ABORT (UnrecognizedTxID)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testSupportingDialogueTransactionReleased() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -2721,7 +2709,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * TC-BEGIN + addProcessUnstructuredSSRequest (bad sccp address + setReturnMessageOnError) TC-NOTICE
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testTcNotice() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -2770,7 +2758,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * TC-BEGIN+INVOKE(opCode=47) -> TC-END+RRL(opCode=47) (47=reportSM-DeliveryStatus)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testV1ReportSMDeliveryStatus() throws Exception {
         // Action_V1_A
         Client client = new Client(stack1, this, peer1Address, peer2Address);
@@ -2793,21 +2781,21 @@ public class MAPFunctionalTest extends SccpHarness {
                 Integer additionalAbsentSubscriberDiagnosticSM = reportSMDeliveryStatusInd
                         .getAdditionalAbsentSubscriberDiagnosticSM();
 
-                Assert.assertNotNull(msisdn);
-                Assert.assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-                Assert.assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
-                Assert.assertEquals(msisdn.getAddress(), "111222333");
-                Assert.assertNotNull(sca);
-                Assert.assertEquals(sca.getAddressNature(), AddressNature.network_specific_number);
-                Assert.assertEquals(sca.getNumberingPlan(), NumberingPlan.national);
-                Assert.assertEquals(sca.getAddress(), "999000");
-                Assert.assertNull(sMDeliveryOutcome);
-                Assert.assertNull(absentSubscriberDiagnosticSM);
-                Assert.assertFalse(gprsSupportIndicator);
-                Assert.assertFalse(deliveryOutcomeIndicator);
-                Assert.assertNull(additionalSMDeliveryOutcome);
-                Assert.assertNull(additionalAbsentSubscriberDiagnosticSM);
-                Assert.assertNull(extensionContainer);
+                assertNotNull(msisdn);
+                assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
+                assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+                assertEquals(msisdn.getAddress(), "111222333");
+                assertNotNull(sca);
+                assertEquals(sca.getAddressNature(), AddressNature.network_specific_number);
+                assertEquals(sca.getNumberingPlan(), NumberingPlan.national);
+                assertEquals(sca.getAddress(), "999000");
+                assertNull(sMDeliveryOutcome);
+                assertNull(absentSubscriberDiagnosticSM);
+                assertFalse(gprsSupportIndicator);
+                assertFalse(deliveryOutcomeIndicator);
+                assertNull(additionalSMDeliveryOutcome);
+                assertNull(additionalAbsentSubscriberDiagnosticSM);
+                assertNull(extensionContainer);
 
                 try {
                     d.addReportSMDeliveryStatusResponse(reportSMDeliveryStatusInd.getInvokeId(), null);
@@ -2879,7 +2867,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * TC-BEGIN+INVOKE(opCode=49) -> release()
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testV1AlertServiceCentreRequest() throws Exception {
         // Action_V1_B
 
@@ -2895,14 +2883,14 @@ public class MAPFunctionalTest extends SccpHarness {
                 ISDNAddressString msisdn = alertServiceCentreInd.getMsisdn();
                 AddressString serviceCentreAddress = alertServiceCentreInd.getServiceCentreAddress();
 
-                Assert.assertNotNull(msisdn);
-                Assert.assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-                Assert.assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
-                Assert.assertEquals(msisdn.getAddress(), "111222333");
-                Assert.assertNotNull(serviceCentreAddress);
-                Assert.assertEquals(serviceCentreAddress.getAddressNature(), AddressNature.subscriber_number);
-                Assert.assertEquals(serviceCentreAddress.getNumberingPlan(), NumberingPlan.national);
-                Assert.assertEquals(serviceCentreAddress.getAddress(), "0011");
+                assertNotNull(msisdn);
+                assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
+                assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+                assertEquals(msisdn.getAddress(), "111222333");
+                assertNotNull(serviceCentreAddress);
+                assertEquals(serviceCentreAddress.getAddressNature(), AddressNature.subscriber_number);
+                assertEquals(serviceCentreAddress.getNumberingPlan(), NumberingPlan.national);
+                assertEquals(serviceCentreAddress.getAddress(), "0011");
 
                 if (d.getApplicationContext().getApplicationContextVersion() == MAPApplicationContextVersion.version1)
                     d.processInvokeWithoutAnswer(alertServiceCentreInd.getInvokeId());
@@ -2950,7 +2938,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * TC-BEGIN(empty - no components) -> TC-ABORT V1
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testV1AlertServiceCentreRequestReject() throws Exception {
         // Action_V1_C
 
@@ -2992,7 +2980,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * TC-BEGIN(unsupported opCode) -> TC-ABORT V1
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testV1AlertServiceCentreRequestReject2() throws Exception {
         // Action_V1_D
 
@@ -3035,7 +3023,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * TC-BEGIN+INVOKE(opCode=46) -> TC-CONTINUE(empty) -> TC-ABORT(UserReason) (->Abort V1)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testV1ForwardShortMessageRequest() throws Exception {
         // Action_V1_E
 
@@ -3066,25 +3054,25 @@ public class MAPFunctionalTest extends SccpHarness {
                 SM_RP_OA sm_RP_OA = forwSmInd.getSM_RP_OA();
                 SmsSignalInfo sm_RP_UI = forwSmInd.getSM_RP_UI();
 
-                Assert.assertNotNull(sm_RP_DA);
-                Assert.assertNotNull(sm_RP_DA.getIMSI());
-                Assert.assertEquals(sm_RP_DA.getIMSI().getData(), "250991357999");
-                Assert.assertNotNull(sm_RP_OA);
-                Assert.assertNotNull(sm_RP_OA.getMsisdn());
-                Assert.assertEquals(sm_RP_OA.getMsisdn().getAddressNature(), AddressNature.international_number);
-                Assert.assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
-                Assert.assertEquals(sm_RP_OA.getMsisdn().getAddress(), "111222333");
-                Assert.assertNotNull(sm_RP_UI);
+                assertNotNull(sm_RP_DA);
+                assertNotNull(sm_RP_DA.getIMSI());
+                assertEquals(sm_RP_DA.getIMSI().getData(), "250991357999");
+                assertNotNull(sm_RP_OA);
+                assertNotNull(sm_RP_OA.getMsisdn());
+                assertEquals(sm_RP_OA.getMsisdn().getAddressNature(), AddressNature.international_number);
+                assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
+                assertEquals(sm_RP_OA.getMsisdn().getAddress(), "111222333");
+                assertNotNull(sm_RP_UI);
                 ByteBuf translatedValue=Unpooled.buffer();
                 try {
                 	sm_RP_UI.decodeTpdu(false).encodeData(translatedValue);
                 }
                 catch(Exception ex) {
-                	Assert.assertFalse(true);
+                	assertFalse(true);
                 }
-                Assert.assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
                         -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
-                Assert.assertFalse(forwSmInd.getMoreMessagesToSend());
+                assertFalse(forwSmInd.getMoreMessagesToSend());
             }
 
             @Override
@@ -3092,7 +3080,7 @@ public class MAPFunctionalTest extends SccpHarness {
                     MAPAbortSource abortSource, MAPExtensionContainer extensionContainer) {
                 super.onDialogProviderAbort(mapDialog, abortProviderReason, abortSource, extensionContainer);
 
-                Assert.assertEquals(abortProviderReason, MAPAbortProviderReason.AbnormalMAPDialogueLocal);
+                assertEquals(abortProviderReason, MAPAbortProviderReason.AbnormalMAPDialogueLocal);
                 assertEquals(mapDialog.getTCAPMessageType(), MessageType.Abort);
             }
 
@@ -3163,7 +3151,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * TC-BEGIN + AlertServiceCentreRequest TC-END
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testV2AlertServiceCentreRequest() throws Exception {
         // Action_Sms_AlertServiceCentre
 
@@ -3179,14 +3167,14 @@ public class MAPFunctionalTest extends SccpHarness {
                 ISDNAddressString msisdn = alertServiceCentreInd.getMsisdn();
                 AddressString serviceCentreAddress = alertServiceCentreInd.getServiceCentreAddress();
 
-                Assert.assertNotNull(msisdn);
-                Assert.assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-                Assert.assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
-                Assert.assertEquals(msisdn.getAddress(), "111222333");
-                Assert.assertNotNull(serviceCentreAddress);
-                Assert.assertEquals(serviceCentreAddress.getAddressNature(), AddressNature.subscriber_number);
-                Assert.assertEquals(serviceCentreAddress.getNumberingPlan(), NumberingPlan.national);
-                Assert.assertEquals(serviceCentreAddress.getAddress(), "0011");
+                assertNotNull(msisdn);
+                assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
+                assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+                assertEquals(msisdn.getAddress(), "111222333");
+                assertNotNull(serviceCentreAddress);
+                assertEquals(serviceCentreAddress.getAddressNature(), AddressNature.subscriber_number);
+                assertEquals(serviceCentreAddress.getNumberingPlan(), NumberingPlan.national);
+                assertEquals(serviceCentreAddress.getAddress(), "0011");
 
                 try {
                     d.addAlertServiceCentreResponse(alertServiceCentreInd.getInvokeId());
@@ -3258,7 +3246,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * TC-BEGIN + ForwardSMRequest_V2 TC-END + ForwardSMResponse_V2
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testV2ForwardShortMessageRequest() throws Exception {
         // Action_Sms_ForwardSM
 
@@ -3274,25 +3262,25 @@ public class MAPFunctionalTest extends SccpHarness {
                 SM_RP_OA sm_RP_OA = forwSmInd.getSM_RP_OA();
                 SmsSignalInfo sm_RP_UI = forwSmInd.getSM_RP_UI();
 
-                Assert.assertNotNull(sm_RP_DA);
-                Assert.assertNotNull(sm_RP_DA.getIMSI());
-                Assert.assertEquals(sm_RP_DA.getIMSI().getData(), "250991357999");
-                Assert.assertNotNull(sm_RP_OA);
-                Assert.assertNotNull(sm_RP_OA.getMsisdn());
-                Assert.assertEquals(sm_RP_OA.getMsisdn().getAddressNature(), AddressNature.international_number);
-                Assert.assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
-                Assert.assertEquals(sm_RP_OA.getMsisdn().getAddress(), "111222333");
-                Assert.assertNotNull(sm_RP_UI);
+                assertNotNull(sm_RP_DA);
+                assertNotNull(sm_RP_DA.getIMSI());
+                assertEquals(sm_RP_DA.getIMSI().getData(), "250991357999");
+                assertNotNull(sm_RP_OA);
+                assertNotNull(sm_RP_OA.getMsisdn());
+                assertEquals(sm_RP_OA.getMsisdn().getAddressNature(), AddressNature.international_number);
+                assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
+                assertEquals(sm_RP_OA.getMsisdn().getAddress(), "111222333");
+                assertNotNull(sm_RP_UI);
                 ByteBuf translatedValue=Unpooled.buffer();
                 try {
                 	sm_RP_UI.decodeTpdu(false).encodeData(translatedValue);
                 }
                 catch(Exception ex) {
-                	Assert.assertFalse(true);
+                	assertFalse(true);
                 }
-                Assert.assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
                         -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
-                Assert.assertTrue(forwSmInd.getMoreMessagesToSend());
+                assertTrue(forwSmInd.getMoreMessagesToSend());
                 try {
                     d.addForwardShortMessageResponse(forwSmInd.getInvokeId());
                 } catch (MAPException e) {
@@ -3365,7 +3353,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * TC-BEGIN + MoForwardSMRequest TC-END + MoForwardSMResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testMoForwardShortMessageRequest() throws Exception {
         // Action_Sms_MoForwardSM
 
@@ -3376,17 +3364,17 @@ public class MAPFunctionalTest extends SccpHarness {
                 SmsSignalInfo sm_RP_UI = moForwSmRespInd.getSM_RP_UI();
                 MAPExtensionContainer extensionContainer = moForwSmRespInd.getExtensionContainer();
 
-                Assert.assertNotNull(sm_RP_UI);
+                assertNotNull(sm_RP_UI);
                 ByteBuf translatedValue=Unpooled.buffer();
                 try {
                 	sm_RP_UI.decodeTpdu(false).encodeData(translatedValue);
                 }
                 catch(Exception ex) {
-                	Assert.assertFalse(true);
+                	assertFalse(true);
                 }
-                Assert.assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
                         -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
-                Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+                assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
 
             }
 
@@ -3404,39 +3392,39 @@ public class MAPFunctionalTest extends SccpHarness {
                 MAPExtensionContainer extensionContainer = moForwSmInd.getExtensionContainer();
                 IMSI imsi2 = moForwSmInd.getIMSI();
 
-                Assert.assertNotNull(sm_RP_DA);
-                Assert.assertNotNull(sm_RP_DA.getIMSI());
-                Assert.assertEquals(sm_RP_DA.getIMSI().getData(), "250991357999");
-                Assert.assertNotNull(sm_RP_OA);
-                Assert.assertNotNull(sm_RP_OA.getMsisdn());
-                Assert.assertEquals(sm_RP_OA.getMsisdn().getAddressNature(), AddressNature.international_number);
-                Assert.assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
-                Assert.assertEquals(sm_RP_OA.getMsisdn().getAddress(), "111222333");
-                Assert.assertNotNull(sm_RP_UI);
+                assertNotNull(sm_RP_DA);
+                assertNotNull(sm_RP_DA.getIMSI());
+                assertEquals(sm_RP_DA.getIMSI().getData(), "250991357999");
+                assertNotNull(sm_RP_OA);
+                assertNotNull(sm_RP_OA.getMsisdn());
+                assertEquals(sm_RP_OA.getMsisdn().getAddressNature(), AddressNature.international_number);
+                assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
+                assertEquals(sm_RP_OA.getMsisdn().getAddress(), "111222333");
+                assertNotNull(sm_RP_UI);
 
                 try {
                 	SmsSubmitTpduImpl tpdu = (SmsSubmitTpduImpl) sm_RP_UI.decodeTpdu(true);
                     tpdu.getUserData().decode();
-                    Assert.assertFalse(tpdu.getRejectDuplicates());
-                    Assert.assertTrue(tpdu.getReplyPathExists());
-                    Assert.assertFalse(tpdu.getStatusReportRequest());
-                    Assert.assertEquals(tpdu.getMessageReference(), 55);
-                    Assert.assertEquals(tpdu.getDestinationAddress().getTypeOfNumber(), TypeOfNumber.InternationalNumber);
-                    Assert.assertEquals(tpdu.getDestinationAddress().getNumberingPlanIdentification(),
+                    assertFalse(tpdu.getRejectDuplicates());
+                    assertTrue(tpdu.getReplyPathExists());
+                    assertFalse(tpdu.getStatusReportRequest());
+                    assertEquals(tpdu.getMessageReference(), 55);
+                    assertEquals(tpdu.getDestinationAddress().getTypeOfNumber(), TypeOfNumber.InternationalNumber);
+                    assertEquals(tpdu.getDestinationAddress().getNumberingPlanIdentification(),
                             NumberingPlanIdentification.ISDNTelephoneNumberingPlan);
-                    Assert.assertTrue(tpdu.getDestinationAddress().getAddressValue().equals("700007"));
-                    Assert.assertEquals(tpdu.getProtocolIdentifier().getCode(), 0);
-                    Assert.assertEquals((int) tpdu.getValidityPeriod().getRelativeFormatValue(), 100);
-                    Assert.assertEquals(tpdu.getUserData().getDataCodingScheme().getCode(), 0);
-                    Assert.assertTrue(tpdu.getUserData().getDecodedMessage().equals("Hello, world !!!"));
+                    assertTrue(tpdu.getDestinationAddress().getAddressValue().equals("700007"));
+                    assertEquals(tpdu.getProtocolIdentifier().getCode(), 0);
+                    assertEquals((int) tpdu.getValidityPeriod().getRelativeFormatValue(), 100);
+                    assertEquals(tpdu.getUserData().getDataCodingScheme().getCode(), 0);
+                    assertTrue(tpdu.getUserData().getDecodedMessage().equals("Hello, world !!!"));
                 } catch (MAPException e) {
                     this.error("Erro while trying to decode SmsSubmitTpdu", e);
                     fail("Erro while trying to decode SmsSubmitTpdu");
                 }
 
-                Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
-                Assert.assertNotNull(imsi2);
-                Assert.assertEquals(imsi2.getData(), "25007123456789");
+                assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+                assertNotNull(imsi2);
+                assertEquals(imsi2.getData(), "25007123456789");
 
                 try {
                 	SmsSignalInfoImpl sm_RP_UI2 = new SmsSignalInfoImpl(SmsTpduImpl.createInstance(Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
@@ -3515,7 +3503,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * TC-BEGIN + MtForwardSMRequest TC-END + MtForwardSMResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testMtForwardShortMessageRequest() throws Exception {
         // Action_Sms_MtForwardSM
 
@@ -3526,17 +3514,17 @@ public class MAPFunctionalTest extends SccpHarness {
                 SmsSignalInfo sm_RP_UI = mtForwSmRespInd.getSM_RP_UI();
                 MAPExtensionContainer extensionContainer = mtForwSmRespInd.getExtensionContainer();
 
-                Assert.assertNotNull(sm_RP_UI);
+                assertNotNull(sm_RP_UI);
                 ByteBuf translatedValue=Unpooled.buffer();
                 try {
                 	sm_RP_UI.decodeTpdu(false).encodeData(translatedValue);
                 }
                 catch(Exception ex) {
-                	Assert.assertFalse(true);
+                	assertFalse(true);
                 }
-                Assert.assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
                         -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
-                Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+                assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
 
             }
 
@@ -3555,26 +3543,26 @@ public class MAPFunctionalTest extends SccpHarness {
                 MAPExtensionContainer extensionContainer = mtForwSmInd.getExtensionContainer();
                 Boolean moreMessagesToSend = mtForwSmInd.getMoreMessagesToSend();
 
-                Assert.assertNotNull(sm_RP_DA);
-                Assert.assertNotNull(sm_RP_DA.getLMSI());
-                Assert.assertTrue(ByteBufUtil.equals(sm_RP_DA.getLMSI().getValue(),Unpooled.wrappedBuffer(new byte[] { 49, 48, 47, 46 })));
-                Assert.assertNotNull(sm_RP_OA);
-                Assert.assertNotNull(sm_RP_OA.getServiceCentreAddressOA());
-                Assert.assertEquals(sm_RP_OA.getServiceCentreAddressOA().getAddressNature(), AddressNature.international_number);
-                Assert.assertEquals(sm_RP_OA.getServiceCentreAddressOA().getNumberingPlan(), NumberingPlan.ISDN);
-                Assert.assertEquals(sm_RP_OA.getServiceCentreAddressOA().getAddress(), "111222333");
-                Assert.assertNotNull(sm_RP_UI);
+                assertNotNull(sm_RP_DA);
+                assertNotNull(sm_RP_DA.getLMSI());
+                assertTrue(ByteBufUtil.equals(sm_RP_DA.getLMSI().getValue(),Unpooled.wrappedBuffer(new byte[] { 49, 48, 47, 46 })));
+                assertNotNull(sm_RP_OA);
+                assertNotNull(sm_RP_OA.getServiceCentreAddressOA());
+                assertEquals(sm_RP_OA.getServiceCentreAddressOA().getAddressNature(), AddressNature.international_number);
+                assertEquals(sm_RP_OA.getServiceCentreAddressOA().getNumberingPlan(), NumberingPlan.ISDN);
+                assertEquals(sm_RP_OA.getServiceCentreAddressOA().getAddress(), "111222333");
+                assertNotNull(sm_RP_UI);
                 ByteBuf translatedValue=Unpooled.buffer();
                 try {
                 	sm_RP_UI.decodeTpdu(false).encodeData(translatedValue);
                 }
                 catch(Exception ex) {
-                	Assert.assertFalse(true);
+                	assertFalse(true);
                 }
-                Assert.assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+                assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
                         -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
-                Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
-                Assert.assertTrue(moreMessagesToSend);
+                assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+                assertTrue(moreMessagesToSend);
 
                 try {
                 	SmsSignalInfoImpl sm_RP_UI2 = new SmsSignalInfoImpl(SmsTpduImpl.createInstance(Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
@@ -3653,7 +3641,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * MAP V3 TC-BEGIN + ReportSMDeliveryStatusRequest TC-END + ReportSMDeliveryStatusResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testReportSMDeliveryStatusRequestV3() throws Exception {
         // Action_Sms_ReportSMDeliveryStatus
 
@@ -3664,11 +3652,11 @@ public class MAPFunctionalTest extends SccpHarness {
                 ISDNAddressString storedMSISDN = reportSMDeliveryStatusRespInd.getStoredMSISDN();
                 MAPExtensionContainer extensionContainer = reportSMDeliveryStatusRespInd.getExtensionContainer();
 
-                Assert.assertNotNull(storedMSISDN);
-                Assert.assertEquals(storedMSISDN.getAddressNature(), AddressNature.network_specific_number);
-                Assert.assertEquals(storedMSISDN.getNumberingPlan(), NumberingPlan.national);
-                Assert.assertEquals(storedMSISDN.getAddress(), "111000111");
-                Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+                assertNotNull(storedMSISDN);
+                assertEquals(storedMSISDN.getAddressNature(), AddressNature.network_specific_number);
+                assertEquals(storedMSISDN.getNumberingPlan(), NumberingPlan.national);
+                assertEquals(storedMSISDN.getAddress(), "111000111");
+                assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
 
             }
 
@@ -3692,24 +3680,24 @@ public class MAPFunctionalTest extends SccpHarness {
                 Integer additionalAbsentSubscriberDiagnosticSM = reportSMDeliveryStatusInd
                         .getAdditionalAbsentSubscriberDiagnosticSM();
 
-                Assert.assertNotNull(msisdn);
-                Assert.assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-                Assert.assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
-                Assert.assertEquals(msisdn.getAddress(), "111222333");
-                Assert.assertNotNull(sca);
-                Assert.assertEquals(sca.getAddressNature(), AddressNature.network_specific_number);
-                Assert.assertEquals(sca.getNumberingPlan(), NumberingPlan.national);
-                Assert.assertEquals(sca.getAddress(), "999000");
-                Assert.assertEquals(sMDeliveryOutcome, SMDeliveryOutcome.absentSubscriber);
+                assertNotNull(msisdn);
+                assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
+                assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+                assertEquals(msisdn.getAddress(), "111222333");
+                assertNotNull(sca);
+                assertEquals(sca.getAddressNature(), AddressNature.network_specific_number);
+                assertEquals(sca.getNumberingPlan(), NumberingPlan.national);
+                assertEquals(sca.getAddress(), "999000");
+                assertEquals(sMDeliveryOutcome, SMDeliveryOutcome.absentSubscriber);
 
-                Assert.assertNotNull(absentSubscriberDiagnosticSM);
-                Assert.assertEquals((int) absentSubscriberDiagnosticSM, 555);
-                Assert.assertTrue(gprsSupportIndicator);
-                Assert.assertTrue(deliveryOutcomeIndicator);
-                Assert.assertEquals(additionalSMDeliveryOutcome, SMDeliveryOutcome.successfulTransfer);
-                Assert.assertNotNull(additionalAbsentSubscriberDiagnosticSM);
-                Assert.assertEquals((int) additionalAbsentSubscriberDiagnosticSM, 444);
-                Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+                assertNotNull(absentSubscriberDiagnosticSM);
+                assertEquals((int) absentSubscriberDiagnosticSM, 555);
+                assertTrue(gprsSupportIndicator);
+                assertTrue(deliveryOutcomeIndicator);
+                assertEquals(additionalSMDeliveryOutcome, SMDeliveryOutcome.successfulTransfer);
+                assertNotNull(additionalAbsentSubscriberDiagnosticSM);
+                assertEquals((int) additionalAbsentSubscriberDiagnosticSM, 444);
+                assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
 
                 ISDNAddressString storedMSISDN = this.mapParameterFactory.createISDNAddressString(
                         AddressNature.network_specific_number, NumberingPlan.national, "111000111");
@@ -3786,7 +3774,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * MAP V2 TC-BEGIN + ReportSMDeliveryStatusRequest TC-END + ReportSMDeliveryStatusResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testReportSMDeliveryStatusRequestV2() throws Exception {
         // Action_Sms_ReportSMDeliveryStatus
 
@@ -3797,11 +3785,11 @@ public class MAPFunctionalTest extends SccpHarness {
                 ISDNAddressString storedMSISDN = reportSMDeliveryStatusRespInd.getStoredMSISDN();
                 MAPExtensionContainer extensionContainer = reportSMDeliveryStatusRespInd.getExtensionContainer();
 
-                Assert.assertNotNull(storedMSISDN);
-                Assert.assertEquals(storedMSISDN.getAddressNature(), AddressNature.network_specific_number);
-                Assert.assertEquals(storedMSISDN.getNumberingPlan(), NumberingPlan.national);
-                Assert.assertEquals(storedMSISDN.getAddress(), "111000111");
-                Assert.assertNull(extensionContainer);
+                assertNotNull(storedMSISDN);
+                assertEquals(storedMSISDN.getAddressNature(), AddressNature.network_specific_number);
+                assertEquals(storedMSISDN.getNumberingPlan(), NumberingPlan.national);
+                assertEquals(storedMSISDN.getAddress(), "111000111");
+                assertNull(extensionContainer);
 
             }
 
@@ -3826,22 +3814,22 @@ public class MAPFunctionalTest extends SccpHarness {
                 Integer additionalAbsentSubscriberDiagnosticSM = reportSMDeliveryStatusInd
                         .getAdditionalAbsentSubscriberDiagnosticSM();
 
-                Assert.assertNotNull(msisdn);
-                Assert.assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-                Assert.assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
-                Assert.assertEquals(msisdn.getAddress(), "111222333");
-                Assert.assertNotNull(sca);
-                Assert.assertEquals(sca.getAddressNature(), AddressNature.network_specific_number);
-                Assert.assertEquals(sca.getNumberingPlan(), NumberingPlan.national);
-                Assert.assertEquals(sca.getAddress(), "999000");
-                Assert.assertEquals(sMDeliveryOutcome, SMDeliveryOutcome.absentSubscriber);
+                assertNotNull(msisdn);
+                assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
+                assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+                assertEquals(msisdn.getAddress(), "111222333");
+                assertNotNull(sca);
+                assertEquals(sca.getAddressNature(), AddressNature.network_specific_number);
+                assertEquals(sca.getNumberingPlan(), NumberingPlan.national);
+                assertEquals(sca.getAddress(), "999000");
+                assertEquals(sMDeliveryOutcome, SMDeliveryOutcome.absentSubscriber);
 
-                Assert.assertNull(absentSubscriberDiagnosticSM);
-                Assert.assertFalse(gprsSupportIndicator);
-                Assert.assertFalse(deliveryOutcomeIndicator);
-                Assert.assertNull(additionalSMDeliveryOutcome);
-                Assert.assertNull(additionalAbsentSubscriberDiagnosticSM);
-                Assert.assertNull(extensionContainer);
+                assertNull(absentSubscriberDiagnosticSM);
+                assertFalse(gprsSupportIndicator);
+                assertFalse(deliveryOutcomeIndicator);
+                assertNull(additionalSMDeliveryOutcome);
+                assertNull(additionalAbsentSubscriberDiagnosticSM);
+                assertNull(extensionContainer);
 
                 ISDNAddressString storedMSISDN = this.mapParameterFactory.createISDNAddressString(
                         AddressNature.network_specific_number, NumberingPlan.national, "111000111");
@@ -3917,7 +3905,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * TC-BEGIN + SendRoutingInfoForSMRequest TC-END + SendRoutingInfoForSMResponse + InformServiceCentreRequest
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testSendRoutingInfoForSM() throws Exception {
         // Action_Sms_SendRoutingInfoForSM
 
@@ -3933,21 +3921,21 @@ public class MAPFunctionalTest extends SccpHarness {
                 MAPExtensionContainer extensionContainer2 = locationInfoWithLMSI.getExtensionContainer();
                 AdditionalNumber additionalNumber = locationInfoWithLMSI.getAdditionalNumber();
 
-                Assert.assertNotNull(imsi);
-                Assert.assertEquals(imsi.getData(), "25099777000");
-                Assert.assertNotNull(networkNodeNumber);
-                Assert.assertEquals(networkNodeNumber.getAddressNature(), AddressNature.network_specific_number);
-                Assert.assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlan.national);
-                Assert.assertEquals(networkNodeNumber.getAddress(), "111000111");
-                Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer2));
-                Assert.assertTrue(locationInfoWithLMSI.getGprsNodeIndicator());
-                Assert.assertNotNull(lmsi);
-                Assert.assertTrue(ByteBufUtil.equals(lmsi.getValue(), Unpooled.wrappedBuffer(new byte[] { 75, 74, 73, 72 })));
-                Assert.assertNotNull(additionalNumber);
-                Assert.assertEquals(additionalNumber.getSGSNNumber().getAddressNature(), AddressNature.subscriber_number);
-                Assert.assertEquals(additionalNumber.getSGSNNumber().getNumberingPlan(), NumberingPlan.private_plan);
-                Assert.assertEquals(additionalNumber.getSGSNNumber().getAddress(), "000111000");
-                Assert.assertNull(extensionContainer);
+                assertNotNull(imsi);
+                assertEquals(imsi.getData(), "25099777000");
+                assertNotNull(networkNodeNumber);
+                assertEquals(networkNodeNumber.getAddressNature(), AddressNature.network_specific_number);
+                assertEquals(networkNodeNumber.getNumberingPlan(), NumberingPlan.national);
+                assertEquals(networkNodeNumber.getAddress(), "111000111");
+                assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer2));
+                assertTrue(locationInfoWithLMSI.getGprsNodeIndicator());
+                assertNotNull(lmsi);
+                assertTrue(ByteBufUtil.equals(lmsi.getValue(), Unpooled.wrappedBuffer(new byte[] { 75, 74, 73, 72 })));
+                assertNotNull(additionalNumber);
+                assertEquals(additionalNumber.getSGSNNumber().getAddressNature(), AddressNature.subscriber_number);
+                assertEquals(additionalNumber.getSGSNNumber().getNumberingPlan(), NumberingPlan.private_plan);
+                assertEquals(additionalNumber.getSGSNNumber().getAddress(), "000111000");
+                assertNull(extensionContainer);
 
             }
 
@@ -3983,18 +3971,18 @@ public class MAPFunctionalTest extends SccpHarness {
                 SM_RP_MTI sM_RP_MTI = sendRoutingInfoForSMInd.getSM_RP_MTI();
                 SM_RP_SMEA sM_RP_SMEA = sendRoutingInfoForSMInd.getSM_RP_SMEA();
 
-                Assert.assertNotNull(msisdn);
-                Assert.assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
-                Assert.assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
-                Assert.assertEquals(msisdn.getAddress(), "111222333");
-                Assert.assertFalse(sm_RP_PRI);
-                Assert.assertNotNull(sca);
-                Assert.assertEquals(sca.getAddressNature(), AddressNature.network_specific_number);
-                Assert.assertEquals(sca.getNumberingPlan(), NumberingPlan.national);
-                Assert.assertEquals(sca.getAddress(), "999000");
-                Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
-                Assert.assertTrue(gprsSupportIndicator);
-                Assert.assertEquals(sM_RP_MTI, SM_RP_MTI.SMS_Status_Report);
+                assertNotNull(msisdn);
+                assertEquals(msisdn.getAddressNature(), AddressNature.international_number);
+                assertEquals(msisdn.getNumberingPlan(), NumberingPlan.ISDN);
+                assertEquals(msisdn.getAddress(), "111222333");
+                assertFalse(sm_RP_PRI);
+                assertNotNull(sca);
+                assertEquals(sca.getAddressNature(), AddressNature.network_specific_number);
+                assertEquals(sca.getNumberingPlan(), NumberingPlan.national);
+                assertEquals(sca.getAddress(), "999000");
+                assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+                assertTrue(gprsSupportIndicator);
+                assertEquals(sM_RP_MTI, SM_RP_MTI.SMS_Status_Report);
                 
                 try {
 	                AddressField af=sM_RP_SMEA.getAddressField();
@@ -4003,7 +3991,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	                assertEquals(af.getAddressValue(), "72223884321");
                 }
                 catch(MAPException ex) {
-                	Assert.assertTrue(false);
+                	assertTrue(false);
                 }
                 
                 IMSI imsi = this.mapParameterFactory.createIMSI("25099777000");
@@ -4107,7 +4095,7 @@ public class MAPFunctionalTest extends SccpHarness {
      *
      * TC-BEGIN+MtForward(Short SMS) -> TC-END+MtForward(Response)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testAction_TestMsgLength_A() throws Exception {
         // Action_Sms_MoForwardSM
 
@@ -4167,7 +4155,7 @@ public class MAPFunctionalTest extends SccpHarness {
      *
      * TC-BEGIN -> TC-CONTINUE -> TC-CONTINUE+MtForward(Long SMS) -> TC-END+MtForward(Response)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testAction_TestMsgLength_B() throws Exception {
         // Action_Sms_MoForwardSM
 
@@ -4299,11 +4287,11 @@ public class MAPFunctionalTest extends SccpHarness {
             	sm_RP_UI.decodeTpdu(false).encodeData(translatedValue);
             }
             catch(Exception ex) {
-            	Assert.assertFalse(true);
+            	assertFalse(true);
             }
-            Assert.assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
+            assertTrue(ByteBufUtil.equals(translatedValue, Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
                     -112, 101, 54, -5, -51, 2, -35, -33, 114, 54, 25, 20, 10, -123, 0 })));
-            Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+            assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
         }
 
         @Override
@@ -4346,19 +4334,19 @@ public class MAPFunctionalTest extends SccpHarness {
             //MAPExtensionContainer extensionContainer = moForwSmInd.getExtensionContainer();
             IMSI imsi2 = moForwSmInd.getIMSI();
 
-            Assert.assertNotNull(sm_RP_DA);
-            Assert.assertNotNull(sm_RP_DA.getIMSI());
-            Assert.assertEquals(sm_RP_DA.getIMSI().getData(), "250991357999");
-            Assert.assertNotNull(sm_RP_OA);
-            Assert.assertNotNull(sm_RP_OA.getMsisdn());
-            Assert.assertEquals(sm_RP_OA.getMsisdn().getAddressNature(), AddressNature.international_number);
-            Assert.assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
-            Assert.assertEquals(sm_RP_OA.getMsisdn().getAddress(), "111222333");
-            Assert.assertNotNull(sm_RP_UI);
+            assertNotNull(sm_RP_DA);
+            assertNotNull(sm_RP_DA.getIMSI());
+            assertEquals(sm_RP_DA.getIMSI().getData(), "250991357999");
+            assertNotNull(sm_RP_OA);
+            assertNotNull(sm_RP_OA.getMsisdn());
+            assertEquals(sm_RP_OA.getMsisdn().getAddressNature(), AddressNature.international_number);
+            assertEquals(sm_RP_OA.getMsisdn().getNumberingPlan(), NumberingPlan.ISDN);
+            assertEquals(sm_RP_OA.getMsisdn().getAddress(), "111222333");
+            assertNotNull(sm_RP_UI);
 
-            // Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
-            Assert.assertNotNull(imsi2);
-            Assert.assertEquals(imsi2.getData(), "25007123456789");
+            // assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
+            assertNotNull(imsi2);
+            assertEquals(imsi2.getData(), "25007123456789");
 
             try {
             	SmsSignalInfoImpl sm_RP_UI2 = new SmsSignalInfoImpl(SmsTpduImpl.createInstance(Unpooled.wrappedBuffer(new byte[] { -28, 10, -111, 33, 67, 101, -121, 9, 0, 0, 112, 80, 81, 81, 16, 17, 33, 23, 5, 0, 3, -21, 2, 1,
@@ -4395,7 +4383,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * TC-BEGIN + sendAuthenticationInfoRequest_V3 TC-END + sendAuthenticationInfoResponse_V3
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testSendAuthenticationInfo_V3() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -4406,13 +4394,13 @@ public class MAPFunctionalTest extends SccpHarness {
                 AuthenticationSetList asl = ind.getAuthenticationSetList();
                 AuthenticationTriplet at = asl.getTripletList().getAuthenticationTriplets().get(0);
 
-                Assert.assertEquals(asl.getTripletList().getAuthenticationTriplets().size(), 1);
-                Assert.assertTrue(ByteBufUtil.equals(at.getRand(),Unpooled.wrappedBuffer(TripletListTest.getRandData())));
-                Assert.assertTrue(ByteBufUtil.equals(at.getSres(), Unpooled.wrappedBuffer(TripletListTest.getSresData())));
-                Assert.assertTrue(ByteBufUtil.equals(at.getKc(), Unpooled.wrappedBuffer(TripletListTest.getKcData())));
-                Assert.assertNull(asl.getQuintupletList());
-                Assert.assertNull(ind.getEpsAuthenticationSetList());
-                Assert.assertNull(ind.getExtensionContainer());
+                assertEquals(asl.getTripletList().getAuthenticationTriplets().size(), 1);
+                assertTrue(ByteBufUtil.equals(at.getRand(),Unpooled.wrappedBuffer(TripletListTest.getRandData())));
+                assertTrue(ByteBufUtil.equals(at.getSres(), Unpooled.wrappedBuffer(TripletListTest.getSresData())));
+                assertTrue(ByteBufUtil.equals(at.getKc(), Unpooled.wrappedBuffer(TripletListTest.getKcData())));
+                assertNull(asl.getQuintupletList());
+                assertNull(ind.getEpsAuthenticationSetList());
+                assertNull(ind.getExtensionContainer());
             }
 
         };
@@ -4426,16 +4414,16 @@ public class MAPFunctionalTest extends SccpHarness {
 
                 IMSI imsi = ind.getImsi();
 
-                Assert.assertTrue(imsi.getData().equals("4567890"));
-                Assert.assertEquals(ind.getNumberOfRequestedVectors(), 3);
-                Assert.assertTrue(ind.getSegmentationProhibited());
-                Assert.assertTrue(ind.getImmediateResponsePreferred());
-                Assert.assertNull(ind.getReSynchronisationInfo());
-                Assert.assertNull(ind.getExtensionContainer());
-                Assert.assertEquals(ind.getRequestingNodeType(), RequestingNodeType.sgsn);
-                Assert.assertNull(ind.getRequestingPlmnId());
-                Assert.assertEquals((int) ind.getNumberOfRequestedAdditionalVectors(), 5);
-                Assert.assertFalse(ind.getAdditionalVectorsAreForEPS());
+                assertTrue(imsi.getData().equals("4567890"));
+                assertEquals(ind.getNumberOfRequestedVectors(), 3);
+                assertTrue(ind.getSegmentationProhibited());
+                assertTrue(ind.getImmediateResponsePreferred());
+                assertNull(ind.getReSynchronisationInfo());
+                assertNull(ind.getExtensionContainer());
+                assertEquals(ind.getRequestingNodeType(), RequestingNodeType.sgsn);
+                assertNull(ind.getRequestingPlmnId());
+                assertEquals((int) ind.getNumberOfRequestedAdditionalVectors(), 5);
+                assertFalse(ind.getAdditionalVectorsAreForEPS());
 
                 ArrayList<AuthenticationTriplet> authenticationTriplets = new ArrayList<AuthenticationTriplet>();
                 AuthenticationTriplet at = this.mapParameterFactory.createAuthenticationTriplet(Unpooled.wrappedBuffer(TripletListTest.getRandData()),
@@ -4515,7 +4503,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * TC-BEGIN + sendAuthenticationInfoRequest_V2 TC-END + sendAuthenticationInfoResponse_V2
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testSendAuthenticationInfo_V2() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -4526,13 +4514,13 @@ public class MAPFunctionalTest extends SccpHarness {
                 AuthenticationSetList asl = ind.getAuthenticationSetList();
                 AuthenticationTriplet at = asl.getTripletList().getAuthenticationTriplets().get(0);
 
-                Assert.assertEquals(asl.getTripletList().getAuthenticationTriplets().size(), 1);
-                Assert.assertTrue(ByteBufUtil.equals(at.getRand(),Unpooled.wrappedBuffer(TripletListTest.getRandData())));
-                Assert.assertTrue(ByteBufUtil.equals(at.getSres(), Unpooled.wrappedBuffer(TripletListTest.getSresData())));
-                Assert.assertTrue(ByteBufUtil.equals(at.getKc(), Unpooled.wrappedBuffer(TripletListTest.getKcData())));
-                Assert.assertNull(asl.getQuintupletList());
-                Assert.assertNull(ind.getEpsAuthenticationSetList());
-                Assert.assertNull(ind.getExtensionContainer());
+                assertEquals(asl.getTripletList().getAuthenticationTriplets().size(), 1);
+                assertTrue(ByteBufUtil.equals(at.getRand(),Unpooled.wrappedBuffer(TripletListTest.getRandData())));
+                assertTrue(ByteBufUtil.equals(at.getSres(), Unpooled.wrappedBuffer(TripletListTest.getSresData())));
+                assertTrue(ByteBufUtil.equals(at.getKc(), Unpooled.wrappedBuffer(TripletListTest.getKcData())));
+                assertNull(asl.getQuintupletList());
+                assertNull(ind.getEpsAuthenticationSetList());
+                assertNull(ind.getExtensionContainer());
             }
 
         };
@@ -4546,16 +4534,16 @@ public class MAPFunctionalTest extends SccpHarness {
 
                 IMSI imsi = ind.getImsi();
 
-                Assert.assertTrue(imsi.getData().equals("456789000"));
-                Assert.assertEquals(ind.getNumberOfRequestedVectors(), 0);
-                Assert.assertFalse(ind.getSegmentationProhibited());
-                Assert.assertFalse(ind.getImmediateResponsePreferred());
-                Assert.assertNull(ind.getReSynchronisationInfo());
-                Assert.assertNull(ind.getExtensionContainer());
-                Assert.assertNull(ind.getRequestingNodeType());
-                Assert.assertNull(ind.getRequestingPlmnId());
-                Assert.assertNull(ind.getNumberOfRequestedAdditionalVectors());
-                Assert.assertFalse(ind.getAdditionalVectorsAreForEPS());
+                assertTrue(imsi.getData().equals("456789000"));
+                assertEquals(ind.getNumberOfRequestedVectors(), 0);
+                assertFalse(ind.getSegmentationProhibited());
+                assertFalse(ind.getImmediateResponsePreferred());
+                assertNull(ind.getReSynchronisationInfo());
+                assertNull(ind.getExtensionContainer());
+                assertNull(ind.getRequestingNodeType());
+                assertNull(ind.getRequestingPlmnId());
+                assertNull(ind.getNumberOfRequestedAdditionalVectors());
+                assertFalse(ind.getAdditionalVectorsAreForEPS());
 
                 ArrayList<AuthenticationTriplet> authenticationTriplets = new ArrayList<AuthenticationTriplet>();
                 AuthenticationTriplet at = this.mapParameterFactory.createAuthenticationTriplet(Unpooled.wrappedBuffer(TripletListTest.getRandData()),
@@ -4635,7 +4623,7 @@ public class MAPFunctionalTest extends SccpHarness {
     /**
      * TC-BEGIN + updateLocation TC-END + updateLocationResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testUpdateLocation() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -4645,12 +4633,12 @@ public class MAPFunctionalTest extends SccpHarness {
 
                 ISDNAddressString hlrNumber = ind.getHlrNumber();
 
-                Assert.assertEquals(hlrNumber.getAddressNature(), AddressNature.international_number);
-                Assert.assertEquals(hlrNumber.getNumberingPlan(), NumberingPlan.ISDN);
-                Assert.assertTrue(hlrNumber.getAddress().equals("765765765"));
-                Assert.assertNull(ind.getExtensionContainer());
-                Assert.assertTrue(ind.getAddCapability());
-                Assert.assertFalse(ind.getPagingAreaCapability());
+                assertEquals(hlrNumber.getAddressNature(), AddressNature.international_number);
+                assertEquals(hlrNumber.getNumberingPlan(), NumberingPlan.ISDN);
+                assertTrue(hlrNumber.getAddress().equals("765765765"));
+                assertNull(ind.getExtensionContainer());
+                assertTrue(ind.getAddCapability());
+                assertFalse(ind.getPagingAreaCapability());
             }
 
         };
@@ -4668,24 +4656,24 @@ public class MAPFunctionalTest extends SccpHarness {
                 LMSI lmsi = ind.getLmsi();
                 ADDInfo addInfo = ind.getADDInfo();
 
-                Assert.assertTrue(imsi.getData().equals("45670000"));
-                Assert.assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
-                Assert.assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
-                Assert.assertTrue(mscNumber.getAddress().equals("8222333444"));
-                Assert.assertNull(ind.getRoamingNumber());
-                Assert.assertEquals(vlrNumber.getAddressNature(), AddressNature.network_specific_number);
-                Assert.assertEquals(vlrNumber.getNumberingPlan(), NumberingPlan.ISDN);
-                Assert.assertTrue(vlrNumber.getAddress().equals("700000111"));
-                Assert.assertTrue(ByteBufUtil.equals(lmsi.getValue(),Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 })));
-                Assert.assertNull(ind.getExtensionContainer());
-                Assert.assertNull(ind.getVlrCapability());
-                Assert.assertTrue(ind.getInformPreviousNetworkEntity());
-                Assert.assertFalse(ind.getCsLCSNotSupportedByUE());
-                Assert.assertNull(ind.getVGmlcAddress());
-                Assert.assertTrue(addInfo.getImeisv().getIMEI().equals("987654321098765"));
-                Assert.assertNull(ind.getPagingArea());
-                Assert.assertFalse(ind.getSkipSubscriberDataUpdate());
-                Assert.assertTrue(ind.getRestorationIndicator());
+                assertTrue(imsi.getData().equals("45670000"));
+                assertEquals(mscNumber.getAddressNature(), AddressNature.international_number);
+                assertEquals(mscNumber.getNumberingPlan(), NumberingPlan.ISDN);
+                assertTrue(mscNumber.getAddress().equals("8222333444"));
+                assertNull(ind.getRoamingNumber());
+                assertEquals(vlrNumber.getAddressNature(), AddressNature.network_specific_number);
+                assertEquals(vlrNumber.getNumberingPlan(), NumberingPlan.ISDN);
+                assertTrue(vlrNumber.getAddress().equals("700000111"));
+                assertTrue(ByteBufUtil.equals(lmsi.getValue(),Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 })));
+                assertNull(ind.getExtensionContainer());
+                assertNull(ind.getVlrCapability());
+                assertTrue(ind.getInformPreviousNetworkEntity());
+                assertFalse(ind.getCsLCSNotSupportedByUE());
+                assertNull(ind.getVGmlcAddress());
+                assertTrue(addInfo.getImeisv().getIMEI().equals("987654321098765"));
+                assertNull(ind.getPagingArea());
+                assertFalse(ind.getSkipSubscriberDataUpdate());
+                assertTrue(ind.getRestorationIndicator());
 
                 ISDNAddressString hlrNumber = this.mapParameterFactory.createISDNAddressString(
                         AddressNature.international_number, NumberingPlan.ISDN, "765765765");
@@ -4761,7 +4749,7 @@ TC-BEGIN + anyTimeInterrogationRequest
 TC-END + anyTimeInterrogationResponse
 </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testAnyTimeInterrogation() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -4771,17 +4759,17 @@ TC-END + anyTimeInterrogationResponse
 
                 SubscriberInfo si = ind.getSubscriberInfo();
                 SubscriberState ss = si.getSubscriberState();
-                Assert.assertEquals(ss.getSubscriberStateChoice(), SubscriberStateChoice.camelBusy);
-                Assert.assertNull(ss.getNotReachableReason());
-                Assert.assertNull(si.getLocationInformation());
-                Assert.assertNull(si.getExtensionContainer());
-                Assert.assertNull(si.getGPRSMSClass());
-                Assert.assertNull(si.getIMEI());
-                Assert.assertNull(si.getLocationInformationGPRS());
-                Assert.assertNull(si.getMNPInfoRes());
-                Assert.assertNull(si.getMSClassmark2());
-                Assert.assertNull(si.getPSSubscriberState());
-                Assert.assertNull(ind.getExtensionContainer());
+                assertEquals(ss.getSubscriberStateChoice(), SubscriberStateChoice.camelBusy);
+                assertNull(ss.getNotReachableReason());
+                assertNull(si.getLocationInformation());
+                assertNull(si.getExtensionContainer());
+                assertNull(si.getGPRSMSClass());
+                assertNull(si.getIMEI());
+                assertNull(si.getLocationInformationGPRS());
+                assertNull(si.getMNPInfoRes());
+                assertNull(si.getMSClassmark2());
+                assertNull(si.getPSSubscriberState());
+                assertNull(ind.getExtensionContainer());
             }
 
         };
@@ -4793,18 +4781,18 @@ TC-END + anyTimeInterrogationResponse
 
                 MAPDialogMobility d = ind.getMAPDialog();
                 SubscriberIdentity subscriberIdentity = ind.getSubscriberIdentity();
-                Assert.assertTrue(subscriberIdentity.getIMSI().getData().equals("33334444"));
+                assertTrue(subscriberIdentity.getIMSI().getData().equals("33334444"));
                 RequestedInfo requestedInfo = ind.getRequestedInfo();
-                Assert.assertTrue(requestedInfo.getLocationInformation());
-                Assert.assertTrue(requestedInfo.getSubscriberState());
-                Assert.assertFalse(requestedInfo.getCurrentLocation());
-                Assert.assertNull(requestedInfo.getRequestedDomain());
-                Assert.assertFalse(requestedInfo.getImei());
-                Assert.assertFalse(requestedInfo.getMsClassmark());
+                assertTrue(requestedInfo.getLocationInformation());
+                assertTrue(requestedInfo.getSubscriberState());
+                assertFalse(requestedInfo.getCurrentLocation());
+                assertNull(requestedInfo.getRequestedDomain());
+                assertFalse(requestedInfo.getImei());
+                assertFalse(requestedInfo.getMsClassmark());
                 ISDNAddressString gsmSCFAddress = ind.getGsmSCFAddress();
-                Assert.assertTrue(gsmSCFAddress.getAddress().equals("11112222"));
-                Assert.assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-                Assert.assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+                assertTrue(gsmSCFAddress.getAddress().equals("11112222"));
+                assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
+                assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
 
                 SubscriberState ss = this.mapParameterFactory.createSubscriberState(SubscriberStateChoice.camelBusy, null);
                 SubscriberInfo si = this.mapParameterFactory.createSubscriberInfo(null, ss, null, null, null, null, null, null,
@@ -4883,7 +4871,7 @@ TC-END + anyTimeInterrogationResponse
      TC-END + anyTimeSubscriptionInterrogationResponse
      </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testAyTimeSubscriptionInterrogation() throws Exception {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
             @Override
@@ -4891,33 +4879,33 @@ TC-END + anyTimeInterrogationResponse
                 super.onAnyTimeSubscriptionInterrogationResponse(ind);
 
                 OCSI ocsi = ind.getCamelSubscriptionInfo().getOCsi();
-                Assert.assertNotNull(ocsi.getOBcsmCamelTDPDataList());
-                Assert.assertEquals(ocsi.getOBcsmCamelTDPDataList().size(), 1);
+                assertNotNull(ocsi.getOBcsmCamelTDPDataList());
+                assertEquals(ocsi.getOBcsmCamelTDPDataList().size(), 1);
 
                 OBcsmCamelTDPData tdpData = ocsi.getOBcsmCamelTDPDataList().get(0);
-                Assert.assertEquals(tdpData.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.collectedInfo);
-                Assert.assertEquals(tdpData.getServiceKey(), 3);
-                Assert.assertEquals(tdpData.getDefaultCallHandling(), DefaultCallHandling.continueCall);
+                assertEquals(tdpData.getOBcsmTriggerDetectionPoint(), OBcsmTriggerDetectionPoint.collectedInfo);
+                assertEquals(tdpData.getServiceKey(), 3);
+                assertEquals(tdpData.getDefaultCallHandling(), DefaultCallHandling.continueCall);
 
                 ISDNAddressString gsmSCFAddress = tdpData.getGsmSCFAddress();
-                Assert.assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
-                Assert.assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
-                Assert.assertEquals(gsmSCFAddress.getAddress(), "123456789");
+                assertEquals(gsmSCFAddress.getAddressNature(), AddressNature.international_number);
+                assertEquals(gsmSCFAddress.getNumberingPlan(), NumberingPlan.ISDN);
+                assertEquals(gsmSCFAddress.getAddress(), "123456789");
 
                 SupportedCamelPhases supportedCamelPhasesVlr = ind.getsupportedVlrCamelPhases();
-                Assert.assertTrue(supportedCamelPhasesVlr.getPhase1Supported());
-                Assert.assertTrue(supportedCamelPhasesVlr.getPhase2Supported());
-                Assert.assertTrue(supportedCamelPhasesVlr.getPhase3Supported());
-                Assert.assertTrue(supportedCamelPhasesVlr.getPhase4Supported());
+                assertTrue(supportedCamelPhasesVlr.getPhase1Supported());
+                assertTrue(supportedCamelPhasesVlr.getPhase2Supported());
+                assertTrue(supportedCamelPhasesVlr.getPhase3Supported());
+                assertTrue(supportedCamelPhasesVlr.getPhase4Supported());
 
                 OfferedCamel4CSIs offeredCamel4CSIsVlr = ind.getOfferedCamel4CSIsInVlr();
-                Assert.assertTrue(offeredCamel4CSIsVlr.getOCsi());
-                Assert.assertFalse(offeredCamel4CSIsVlr.getDCsi());
-                Assert.assertFalse(offeredCamel4CSIsVlr.getVtCsi());
-                Assert.assertFalse(offeredCamel4CSIsVlr.getTCsi());
-                Assert.assertFalse(offeredCamel4CSIsVlr.getMtSmsCsi());
-                Assert.assertFalse(offeredCamel4CSIsVlr.getMgCsi());
-                Assert.assertFalse(offeredCamel4CSIsVlr.getPsiEnhancements());
+                assertTrue(offeredCamel4CSIsVlr.getOCsi());
+                assertFalse(offeredCamel4CSIsVlr.getDCsi());
+                assertFalse(offeredCamel4CSIsVlr.getVtCsi());
+                assertFalse(offeredCamel4CSIsVlr.getTCsi());
+                assertFalse(offeredCamel4CSIsVlr.getMtSmsCsi());
+                assertFalse(offeredCamel4CSIsVlr.getMgCsi());
+                assertFalse(offeredCamel4CSIsVlr.getPsiEnhancements());
             }
 
         };
@@ -4928,28 +4916,28 @@ TC-END + anyTimeInterrogationResponse
                 super.onAnyTimeSubscriptionInterrogationRequest(ind);
 
                 SubscriberIdentity subscriberIdentity = ind.getSubscriberIdentity();
-                Assert.assertEquals(subscriberIdentity.getMSISDN().getAddress(), "111222333");
+                assertEquals(subscriberIdentity.getMSISDN().getAddress(), "111222333");
 
                 ISDNAddressString gsmSCFAddressReq = ind.getGsmScfAddress();
-                Assert.assertEquals(gsmSCFAddressReq.getAddress(), "1234567890");
+                assertEquals(gsmSCFAddressReq.getAddress(), "1234567890");
 
                 RequestedSubscriptionInfo requestedSubscriptionInfo = ind.getRequestedSubscriptionInfo();
-                Assert.assertNull(requestedSubscriptionInfo.getRequestedSSInfo());
-                Assert.assertFalse(requestedSubscriptionInfo.getOdb());
-                Assert.assertEquals(requestedSubscriptionInfo.getRequestedCAMELSubscriptionInfo(),
+                assertNull(requestedSubscriptionInfo.getRequestedSSInfo());
+                assertFalse(requestedSubscriptionInfo.getOdb());
+                assertEquals(requestedSubscriptionInfo.getRequestedCAMELSubscriptionInfo(),
                         RequestedCAMELSubscriptionInfo.oCSI);
-                Assert.assertTrue(requestedSubscriptionInfo.getSupportedVlrCamelPhases());
-                Assert.assertFalse(requestedSubscriptionInfo.getSupportedSgsnCamelPhases());
-                Assert.assertNull(requestedSubscriptionInfo.getExtensionContainer());
-                Assert.assertEquals(requestedSubscriptionInfo.getAdditionalRequestedCamelSubscriptionInfo(),
+                assertTrue(requestedSubscriptionInfo.getSupportedVlrCamelPhases());
+                assertFalse(requestedSubscriptionInfo.getSupportedSgsnCamelPhases());
+                assertNull(requestedSubscriptionInfo.getExtensionContainer());
+                assertEquals(requestedSubscriptionInfo.getAdditionalRequestedCamelSubscriptionInfo(),
                         AdditionalRequestedCAMELSubscriptionInfo.mtSmsCSI);
-                Assert.assertFalse(requestedSubscriptionInfo.getMsisdnBsList());
-                Assert.assertTrue(requestedSubscriptionInfo.getCsgSubscriptionDataRequested());
-                Assert.assertFalse(requestedSubscriptionInfo.getCwInfo());
-                Assert.assertFalse(requestedSubscriptionInfo.getClipInfo());
-                Assert.assertFalse(requestedSubscriptionInfo.getClirInfo());
-                Assert.assertFalse(requestedSubscriptionInfo.getHoldInfo());
-                Assert.assertFalse(requestedSubscriptionInfo.getEctInfo());
+                assertFalse(requestedSubscriptionInfo.getMsisdnBsList());
+                assertTrue(requestedSubscriptionInfo.getCsgSubscriptionDataRequested());
+                assertFalse(requestedSubscriptionInfo.getCwInfo());
+                assertFalse(requestedSubscriptionInfo.getClipInfo());
+                assertFalse(requestedSubscriptionInfo.getClirInfo());
+                assertFalse(requestedSubscriptionInfo.getHoldInfo());
+                assertFalse(requestedSubscriptionInfo.getEctInfo());
 
                 // send response
                 ISDNAddressString gsmSCFAddress = mapProvider.getMAPParameterFactory()
@@ -5042,7 +5030,7 @@ TC-BEGIN + provideSubscriberInfoRequest
 TC-END + provideSubscriberInfoResponse
 </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testProvideSubscriberInfo() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -5052,16 +5040,16 @@ TC-END + provideSubscriberInfoResponse
 
                 SubscriberInfo si = ind.getSubscriberInfo();
                 SubscriberState ss = si.getSubscriberState();
-                Assert.assertEquals(ss.getSubscriberStateChoice(), SubscriberStateChoice.camelBusy);
-                Assert.assertNull(ss.getNotReachableReason());
-                Assert.assertNull(si.getExtensionContainer());
-                Assert.assertNull(si.getGPRSMSClass());
-                Assert.assertNull(si.getIMEI());
-                Assert.assertNull(si.getLocationInformationGPRS());
-                Assert.assertNull(si.getMNPInfoRes());
-                Assert.assertNull(si.getMSClassmark2());
-                Assert.assertNull(si.getPSSubscriberState());
-                Assert.assertNull(ind.getExtensionContainer());
+                assertEquals(ss.getSubscriberStateChoice(), SubscriberStateChoice.camelBusy);
+                assertNull(ss.getNotReachableReason());
+                assertNull(si.getExtensionContainer());
+                assertNull(si.getGPRSMSClass());
+                assertNull(si.getIMEI());
+                assertNull(si.getLocationInformationGPRS());
+                assertNull(si.getMNPInfoRes());
+                assertNull(si.getMSClassmark2());
+                assertNull(si.getPSSubscriberState());
+                assertNull(ind.getExtensionContainer());
 
                 LocationInformation locationInformation = si.getLocationInformation();
                 assertEquals((int) locationInformation.getAgeOfLocationInformation(), 10);
@@ -5080,12 +5068,12 @@ TC-END + provideSubscriberInfoResponse
                 MAPDialogMobility d = ind.getMAPDialog();
                 assertEquals(ind.getImsi().getData(), "33334444");
                 RequestedInfo requestedInfo = ind.getRequestedInfo();
-                Assert.assertTrue(requestedInfo.getLocationInformation());
-                Assert.assertTrue(requestedInfo.getSubscriberState());
-                Assert.assertFalse(requestedInfo.getCurrentLocation());
-                Assert.assertNull(requestedInfo.getRequestedDomain());
-                Assert.assertFalse(requestedInfo.getImei());
-                Assert.assertFalse(requestedInfo.getMsClassmark());
+                assertTrue(requestedInfo.getLocationInformation());
+                assertTrue(requestedInfo.getSubscriberState());
+                assertFalse(requestedInfo.getCurrentLocation());
+                assertNull(requestedInfo.getRequestedDomain());
+                assertFalse(requestedInfo.getImei());
+                assertFalse(requestedInfo.getMsClassmark());
 
                 try {
                     GeographicalInformation geographicalInformation = this.mapParameterFactory.createGeographicalInformation(30, 60, 10);
@@ -5165,7 +5153,7 @@ TC-END + provideSubscriberInfoResponse
     /**
      * TC-BEGIN + provideSubscriberLocationRequest TC-END + provideSubscriberLocationResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testProvideSubscriberLocation() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -5173,11 +5161,11 @@ TC-END + provideSubscriberInfoResponse
             public void onProvideSubscriberLocationResponse(ProvideSubscriberLocationResponse ind) {
                 super.onProvideSubscriberLocationResponse(ind);
 
-//                Assert.assertTrue(ByteBufUtil.equals(ind.getLocationEstimate().getData(), new byte[] { 50 }));
-                Assert.assertEquals((int) ind.getAgeOfLocationEstimate(), 6);
+//                assertTrue(ByteBufUtil.equals(ind.getLocationEstimate().getData(), new byte[] { 50 }));
+                assertEquals((int) ind.getAgeOfLocationEstimate(), 6);
 
-                Assert.assertTrue(ind.getLocationEstimate().getLatitude() - (-31) < 0.001);
-                Assert.assertTrue(ind.getLocationEstimate().getLongitude() - (-53) < 0.001);
+                assertTrue(ind.getLocationEstimate().getLatitude() - (-31) < 0.001);
+                assertTrue(ind.getLocationEstimate().getLongitude() - (-53) < 0.001);
             }
 
         };
@@ -5189,9 +5177,9 @@ TC-END + provideSubscriberInfoResponse
 
                 MAPDialogLsm d = ind.getMAPDialog();
 
-                Assert.assertEquals(ind.getLocationType().getLocationEstimateType(),
+                assertEquals(ind.getLocationType().getLocationEstimateType(),
                         LocationEstimateType.cancelDeferredLocation);
-                Assert.assertTrue(ind.getMlcNumber().getAddress().equals("11112222"));
+                assertTrue(ind.getMlcNumber().getAddress().equals("11112222"));
 
                 try {
                     ExtGeographicalInformation locationEstimate = this.mapParameterFactory.createExtGeographicalInformation_EllipsoidPoint(-31, -53);
@@ -5268,7 +5256,7 @@ TC-END + provideSubscriberInfoResponse
     /**
      * TC-BEGIN + subscriberLocationReportRequest TC-END + subscriberLocationReportResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testSubscriberLocationReport() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -5276,7 +5264,7 @@ TC-END + provideSubscriberInfoResponse
             public void onSubscriberLocationReportResponse(SubscriberLocationReportResponse ind) {
                 super.onSubscriberLocationReportResponse(ind);
 
-                Assert.assertTrue(ind.getNaESRD().getAddress().equals("11114444"));
+                assertTrue(ind.getNaESRD().getAddress().equals("11114444"));
             }
 
         };
@@ -5288,9 +5276,9 @@ TC-END + provideSubscriberInfoResponse
 
                 MAPDialogLsm d = ind.getMAPDialog();
 
-                Assert.assertEquals(ind.getLCSEvent(), LCSEvent.emergencyCallOrigination);
-                Assert.assertEquals(ind.getLCSClientID().getLCSClientType(), LCSClientType.plmnOperatorServices);
-                Assert.assertTrue(ind.getLCSLocationInfo().getNetworkNodeNumber().getAddress().equals("11113333"));
+                assertEquals(ind.getLCSEvent(), LCSEvent.emergencyCallOrigination);
+                assertEquals(ind.getLCSClientID().getLCSClientType(), LCSClientType.plmnOperatorServices);
+                assertTrue(ind.getLCSLocationInfo().getNetworkNodeNumber().getAddress().equals("11113333"));
 
                 ISDNAddressString naEsrd = this.mapParameterFactory.createISDNAddressString(AddressNature.international_number,
                         NumberingPlan.ISDN, "11114444");
@@ -5366,7 +5354,7 @@ TC-END + provideSubscriberInfoResponse
     /**
      * TC-BEGIN + sendRoutingInforForLCSRequest TC-END + sendRoutingInforForLCSResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testSendRoutingInforForLCS() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -5374,8 +5362,8 @@ TC-END + provideSubscriberInfoResponse
             public void onSendRoutingInfoForLCSResponse(SendRoutingInfoForLCSResponse ind) {
                 super.onSendRoutingInfoForLCSResponse(ind);
 
-                Assert.assertTrue(ind.getTargetMS().getIMSI().getData().equals("6666644444"));
-                Assert.assertTrue(ind.getLCSLocationInfo().getNetworkNodeNumber().getAddress().equals("11114444"));
+                assertTrue(ind.getTargetMS().getIMSI().getData().equals("6666644444"));
+                assertTrue(ind.getLCSLocationInfo().getNetworkNodeNumber().getAddress().equals("11114444"));
             }
 
         };
@@ -5387,8 +5375,8 @@ TC-END + provideSubscriberInfoResponse
 
                 MAPDialogLsm d = ind.getMAPDialog();
 
-                Assert.assertTrue(ind.getMLCNumber().getAddress().equals("11112222"));
-                Assert.assertTrue(ind.getTargetMS().getIMSI().getData().equals("5555544444"));
+                assertTrue(ind.getMLCNumber().getAddress().equals("11112222"));
+                assertTrue(ind.getTargetMS().getIMSI().getData().equals("5555544444"));
 
                 IMSI imsi = this.mapParameterFactory.createIMSI("6666644444");
                 SubscriberIdentity targetMS = this.mapParameterFactory.createSubscriberIdentity(imsi);
@@ -5469,17 +5457,17 @@ TC-END + provideSubscriberInfoResponse
     /**
      * TC-BEGIN + checkImeiRequest TC-END + checkImeiResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testCheckImei() throws Exception {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
             @Override
             public void onCheckImeiResponse(CheckImeiResponse ind) {
                 super.onCheckImeiResponse(ind);
 
-                Assert.assertTrue(ind.getEquipmentStatus().equals(EquipmentStatus.blackListed));
-                Assert.assertTrue(ind.getBmuef().getUESBI_IuA().isBitSet(0));
-                Assert.assertFalse(ind.getBmuef().getUESBI_IuB().isBitSet(0));
-                Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(ind.getExtensionContainer()));
+                assertTrue(ind.getEquipmentStatus().equals(EquipmentStatus.blackListed));
+                assertTrue(ind.getBmuef().getUESBI_IuA().isBitSet(0));
+                assertFalse(ind.getBmuef().getUESBI_IuB().isBitSet(0));
+                assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(ind.getExtensionContainer()));
             };
         };
 
@@ -5490,10 +5478,10 @@ TC-END + provideSubscriberInfoResponse
 
                 MAPDialogMobility d = ind.getMAPDialog();
 
-                Assert.assertTrue(ind.getIMEI().getIMEI().equals("111111112222222"));
-                Assert.assertTrue(ind.getRequestedEquipmentInfo().getEquipmentStatus());
-                Assert.assertFalse(ind.getRequestedEquipmentInfo().getBmuef());
-                Assert.assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(ind.getExtensionContainer()));
+                assertTrue(ind.getIMEI().getIMEI().equals("111111112222222"));
+                assertTrue(ind.getRequestedEquipmentInfo().getEquipmentStatus());
+                assertFalse(ind.getRequestedEquipmentInfo().getBmuef());
+                assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(ind.getExtensionContainer()));
 
                 UESBIIuAImpl uesbiIuA = new UESBIIuAImpl();
                 uesbiIuA.setBit(0);
@@ -5569,16 +5557,16 @@ TC-END + provideSubscriberInfoResponse
     /**
      * TC-BEGIN + checkImeiRequest_V2 TC-END + checkImeiResponse_V2
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testCheckImei_V2() throws Exception {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
             @Override
             public void onCheckImeiResponse(CheckImeiResponse ind) {
                 super.onCheckImeiResponse(ind);
 
-                Assert.assertTrue(ind.getEquipmentStatus().equals(EquipmentStatus.blackListed));
-                Assert.assertNull(ind.getBmuef());
-                Assert.assertNull(ind.getExtensionContainer());
+                assertTrue(ind.getEquipmentStatus().equals(EquipmentStatus.blackListed));
+                assertNull(ind.getBmuef());
+                assertNull(ind.getExtensionContainer());
             };
         };
 
@@ -5589,9 +5577,9 @@ TC-END + provideSubscriberInfoResponse
 
                 MAPDialogMobility d = ind.getMAPDialog();
 
-                Assert.assertTrue(ind.getIMEI().getIMEI().equals("333333334444444"));
-                Assert.assertNull(ind.getRequestedEquipmentInfo());
-                Assert.assertNull(ind.getExtensionContainer());
+                assertTrue(ind.getIMEI().getIMEI().equals("333333334444444"));
+                assertNull(ind.getRequestedEquipmentInfo());
+                assertNull(ind.getExtensionContainer());
 
                 try {
                     d.addCheckImeiResponse(ind.getInvokeId(), EquipmentStatus.blackListed);
@@ -5660,16 +5648,16 @@ TC-END + provideSubscriberInfoResponse
     /**
      * TC-BEGIN + checkImeiRequest_V2_Huawei_extention_test TC-END + checkImeiResponse_V2
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testCheckImei_Huawei_V2() throws Exception {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
             @Override
             public void onCheckImeiResponse(CheckImeiResponse ind) {
                 super.onCheckImeiResponse(ind);
 
-                Assert.assertTrue(ind.getEquipmentStatus().equals(EquipmentStatus.blackListed));
-                Assert.assertNull(ind.getBmuef());
-                Assert.assertNull(ind.getExtensionContainer());
+                assertTrue(ind.getEquipmentStatus().equals(EquipmentStatus.blackListed));
+                assertNull(ind.getBmuef());
+                assertNull(ind.getExtensionContainer());
             };
         };
 
@@ -5680,11 +5668,11 @@ TC-END + provideSubscriberInfoResponse
 
                 MAPDialogMobility d = ind.getMAPDialog();
 
-                Assert.assertTrue(ind.getIMEI().getIMEI().equals("333333334444444"));
-                Assert.assertNull(ind.getRequestedEquipmentInfo());
-                Assert.assertNull(ind.getExtensionContainer());
+                assertTrue(ind.getIMEI().getIMEI().equals("333333334444444"));
+                assertNull(ind.getRequestedEquipmentInfo());
+                assertNull(ind.getExtensionContainer());
                 CheckImeiRequestImplV1 impl = (CheckImeiRequestImplV1) ind;
-                Assert.assertTrue(impl.getIMSI().getData().equals("999999998888888"));
+                assertTrue(impl.getIMSI().getData().equals("999999998888888"));
 
                 try {
                 	d.addCheckImeiResponse(ind.getInvokeId(), EquipmentStatus.blackListed);                    
@@ -5756,7 +5744,7 @@ TC-END + provideSubscriberInfoResponse
      * sendDelayed(checkImeiResponse) + sendDelayed(checkImeiResponse) TC-END + closeDelayed(checkImeiResponse) +
      * sendDelayed(checkImeiResponse)
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testDelayedSendClose() throws Exception {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
 
@@ -5766,9 +5754,9 @@ TC-END + provideSubscriberInfoResponse
             public void onCheckImeiResponse(CheckImeiResponse ind) {
                 super.onCheckImeiResponse(ind);
 
-                Assert.assertTrue(ind.getEquipmentStatus().equals(EquipmentStatus.blackListed));
-                Assert.assertNull(ind.getBmuef());
-                Assert.assertNull(ind.getExtensionContainer());
+                assertTrue(ind.getEquipmentStatus().equals(EquipmentStatus.blackListed));
+                assertNull(ind.getBmuef());
+                assertNull(ind.getExtensionContainer());
 
                 MAPDialogMobility d = ind.getMAPDialog();
                 assertEquals(d.getTCAPMessageType(), MessageType.Continue);
@@ -5816,9 +5804,9 @@ TC-END + provideSubscriberInfoResponse
 
                 MAPDialogMobility d = ind.getMAPDialog();
 
-                Assert.assertTrue(ind.getIMEI().getIMEI().equals("333333334444444"));
-                Assert.assertNull(ind.getRequestedEquipmentInfo());
-                Assert.assertNull(ind.getExtensionContainer());
+                assertTrue(ind.getIMEI().getIMEI().equals("333333334444444"));
+                assertNull(ind.getRequestedEquipmentInfo());
+                assertNull(ind.getExtensionContainer());
 
                 assertEquals(d.getReceivedOrigReference().getAddressNature(), AddressNature.international_number);
                 assertEquals(d.getReceivedOrigReference().getNumberingPlan(), NumberingPlan.ISDN);
@@ -5924,7 +5912,7 @@ TC-END + provideSubscriberInfoResponse
      * TC-BEGIN + checkImeiRequest + checkImeiRequest
      *   no TC-END (Prearranged) + [checkImeiResponse + checkImeiResponse]
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testDelayedClosePrearranged() throws Exception {
         Client client = new Client(stack1, this, peer1Address, peer2Address) {            
         };
@@ -6028,7 +6016,7 @@ TC-END + provideSubscriberInfoResponse
     /**
      * TC-BEGIN + cancelLocation MAV V3 TC-END + cancleLocationResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testCancelLocation() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -6142,7 +6130,7 @@ TC-END + provideSubscriberInfoResponse
     /**
      * TC-BEGIN + cancelLocationRequest MAV V2 TC-END + cancleLocationResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testCancelLocation_V2() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -6250,7 +6238,7 @@ TC-END + provideSubscriberInfoResponse
     /**
      * TC-BEGIN + provideRoamingNumber V3 TC-END + provideRoamingNumberResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testProvideRoamingNumber() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -6404,7 +6392,7 @@ TC-END + provideSubscriberInfoResponse
     /**
      * TC-BEGIN + provideRoamingNumberRequest V2 TC-END + provideRoamingNumberResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testProvideRoamingNumber_V2() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -6548,7 +6536,7 @@ TC-END + provideSubscriberInfoResponse
     /**
      * TC-BEGIN + istCommandRequest  TC-END + istCommandResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testIstCommand() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -6651,7 +6639,7 @@ TC-BEGIN + InsertSubscriberDataRequest MAV V3
 TC-END + InsertSubscriberDataRequestResponse
 </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testInsertSubscriberData_V3() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -6830,7 +6818,7 @@ TC-BEGIN + InsertSubscriberDataRequest MAV V2
 TC-END + InsertSubscriberDataRequestResponse
 </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testInsertSubscriberData_V2() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -6999,7 +6987,7 @@ TC-BEGIN + DeleteSubscriberDataRequest MAV V3
 TC-END + DeleteSubscriberDataRequestResponse
 </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testDeleteSubscriberData_V3() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -7108,7 +7096,7 @@ TC-BEGIN + DeleteSubscriberDataRequest MAV V2
 TC-END + DeleteSubscriberDataRequestResponse
 </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testDeleteSubscriberData_V2() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -7211,7 +7199,7 @@ TC-BEGIN + SendRoutingInformation MAV V3
 TC-END + SendRoutingInformationResponse
 </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testSendRoutingInformation_V3() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -7379,7 +7367,7 @@ TC-CONTINUE
   TC-END + SendRoutingInformationResponse-Last
 </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testSendRoutingInformation_V3_NonLast() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -7613,7 +7601,7 @@ TC-BEGIN + SendRoutingInformation MAV V2
 TC-END + SendRoutingInformationResponse
 </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testSendRoutingInformation_V2() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -7722,7 +7710,7 @@ TC-END + SendRoutingInformationResponse
     /**
      * TC-BEGIN + sendIdentificationRequest MAV V2 TC-END + sendIdentificationResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testSendIdentification_V2() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -7815,7 +7803,7 @@ TC-END + SendRoutingInformationResponse
     /**
      * TC-BEGIN + sendIdentificationRequest MAV V3 TC-END + sendIdentificationResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testSendIdentification_V3() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -7906,7 +7894,7 @@ TC-END + SendRoutingInformationResponse
     /**
      * TC-BEGIN + UpdateGprsLocationRequest MAV V3 TC-END + UpdateGprsLocationResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testUpdateGprsLocation_V3() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -8022,7 +8010,7 @@ TC-END + SendRoutingInformationResponse
     /**
      * TC-BEGIN + PurgeMSRequest MAV V3 TC-END + PurgeMSResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testPurgeMSRequest_V3() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -8118,7 +8106,7 @@ TC-END + SendRoutingInformationResponse
     /**
      * TC-BEGIN + PurgeMSRequest MAP V2 TC-END + PurgeMSResponse
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testPurgeMSRequest_V2() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -8216,7 +8204,7 @@ TC-END + SendRoutingInformationResponse
      * TC-BEGIN + reset MAP V1
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testResetRequest_V1() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -8277,7 +8265,7 @@ TC-END + SendRoutingInformationResponse
      * TC-BEGIN + forwardCheckSSIndicationRequest MAP V3
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testForwardCheckSSIndicationRequest_V3() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -8336,7 +8324,7 @@ TC-END + SendRoutingInformationResponse
      * TC-END + RestoreDataRequest
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testRestoreDataRequest() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -8435,7 +8423,7 @@ TC-END + SendRoutingInformationResponse
      * TC-END + SendImsiResponse
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testSendImsiRequest() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -8533,7 +8521,7 @@ TC-END + SendRoutingInformationResponse
      * TC-END + RegisterSSResponse with parameter
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testRegisterSSRequest() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -8645,7 +8633,7 @@ TC-END + SendRoutingInformationResponse
      * TC-END + EraseSSResponse without parameter
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testEraseSSRequest() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -8747,7 +8735,7 @@ TC-END + SendRoutingInformationResponse
      * TC-END + ActivateSSResponse with parameter
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testActivateSSRequest() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -8858,7 +8846,7 @@ TC-END + SendRoutingInformationResponse
      * TC-END + DeactivateSSResponse without parameter
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testDeactivateSSRequest() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -8960,7 +8948,7 @@ TC-END + SendRoutingInformationResponse
      * TC-END + InterrogateSSResponse
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testInterrogateSSRequest() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -9070,7 +9058,7 @@ TC-END + SendRoutingInformationResponse
      * TC-END + ReadyForSMResponse
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testReadyForSMRequest() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -9167,7 +9155,7 @@ TC-END + SendRoutingInformationResponse
      * TC-BEGIN + noteSubscriberPresent
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testNoteSubscriberPresentRequest() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -9228,7 +9216,7 @@ TC-END + SendRoutingInformationResponse
      * TC-END + SendRoutingInfoForGprsResponse
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testSendRoutingInfoForGprsRequest() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -9334,7 +9322,7 @@ TC-END + SendRoutingInformationResponse
      * TC-END + ActivateTraceModeResponse (empty)
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testActivateTraceModeRequest_Oam() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -9437,7 +9425,7 @@ TC-END + SendRoutingInformationResponse
      * TC-END + ActivateTraceModeResponse (with primitive)
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testActivateTraceModeRequest_Mobility() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -9542,7 +9530,7 @@ TC-END + SendRoutingInformationResponse
      *   TC-END + RegisterPasswordResponse
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testRegisterPassword_GetPassword() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
@@ -9720,7 +9708,7 @@ TC-END + SendRoutingInformationResponse
      * TC-END + AuthenticationFailureReportResponse (without parameter)
      * </code>
      */
-    @Test(groups = { "functional.flow", "dialog" })
+    @Test
     public void testAuthenticationFailureReport() throws Exception {
 
         Client client = new Client(stack1, this, peer1Address, peer2Address) {
