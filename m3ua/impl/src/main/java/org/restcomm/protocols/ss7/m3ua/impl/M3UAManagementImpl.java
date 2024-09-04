@@ -134,6 +134,13 @@ public class M3UAManagementImpl extends Mtp3UserPartBaseImpl implements M3UAMana
         return maxSequenceNumber;
     }
 
+    //for m3ua there is no 272 limit, therefore we may increase the message further to support max SMS/USSD messages
+    //otherwise in some cases 2 bytes are missing
+    @Override
+    public int getMaxUserDataLength(int dpc) {
+        return 272;
+    }
+    
     /**
      * Set the maximum SLS that can be used by SCTP. Internally SLS vs SCTP Stream Sequence Number is maintained. Stream Seq
      * Number 0 is for management.
