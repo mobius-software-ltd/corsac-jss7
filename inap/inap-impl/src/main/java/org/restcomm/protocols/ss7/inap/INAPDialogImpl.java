@@ -386,7 +386,7 @@ public abstract class INAPDialogImpl implements INAPDialog {
         	if(param!=null)
         		inapProviderImpl.getStack().newMessageSent(param.getMessageType().name(), this.tcapDialog.getNetworkId());
     		
-        	if(operationCode!=null)
+        	if(operationCode!=null && (param!=null || isRequest))
         		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
         	else
         		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, null, param, isRequest, isLastResponse);

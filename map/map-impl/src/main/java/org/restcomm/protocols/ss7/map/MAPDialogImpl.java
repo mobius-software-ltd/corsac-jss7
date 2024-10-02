@@ -461,7 +461,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
         	if(param!=null)
                 mapProviderImpl.getMAPStack().newMessageSent(param.getMessageType().name(), getNetworkId());               
 
-        	if(operationCode!=null)
+        	if(operationCode!=null && (param!=null || isRequest))
         		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, TcapFactory.createLocalOperationCode(operationCode), param, isRequest, isLastResponse);
         	else
         		return this.tcapDialog.sendData(invokeId, linkedId, invokeClass, customTimeout, null, param, isRequest, isLastResponse);
