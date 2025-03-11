@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.mobius-software</groupId>
 		<artifactId>mobius-public-parent</artifactId>
-		<version>1.0.9</version>
+		<version>1.0.10</version>
 	</parent>
 	
 	<groupId>com.mobius-software.protocols.ss7</groupId>
@@ -16,15 +16,11 @@
 	<name>Corsac jSS7 :: ${project.artifactId}</name>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
 		<maven-surefire-plugin.version>3.0.0-M6</maven-surefire-plugin.version>
 		<log4j2.version>2.19.0</log4j2.version>
 		<junit.version>4.12</junit.version>
 		<compiler.plugin.version>3.8.1</compiler.plugin.version>
-		<compile.source>1.8</compile.source>
-		<netty.version>4.1.63.Final</netty.version>		
-		<sctp.version>2.2.11</sctp.version>
+		<netty.version>4.1.63.Final</netty.version>				
 	</properties>
 
 	<modules>
@@ -331,6 +327,51 @@
 	</build>
 
 	<profiles>
+		<profile>
+			<id>java8</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<sctp.version>2.2.14</sctp.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>${compiler.plugin.version}</version>
+						<configuration>
+							<source>1.8</source>
+							<target>1.8</target>
+							<debug>1.8</debug>
+							<encoding>UTF-8</encoding>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>			
+		</profile>
+		<profile>
+			<id>java11</id>
+			<properties>
+				<sctp.version>2.2.14-java11</sctp.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<version>${compiler.plugin.version}</version>
+						<configuration>
+							<source>11</source>
+							<target>11</target>
+							<debug>11</debug>
+							<encoding>UTF-8</encoding>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>			
+		</profile>
 		<profile>
 			<id>src</id>
 			<build>
