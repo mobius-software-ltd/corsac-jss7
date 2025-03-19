@@ -267,8 +267,8 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 	            }
         	}
         	finally {
-        		 //we have proceed the message should be good time to release the message here
-                ReferenceCountUtil.release(msg.getData());                
+        		 //we have proceed the message should be good time to release the message here , lets release all
+                ReferenceCountUtil.release(msg.getData(), msg.getData().refCnt());                
         	}
         }
     }
