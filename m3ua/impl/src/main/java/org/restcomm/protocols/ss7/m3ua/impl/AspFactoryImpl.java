@@ -772,7 +772,7 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
                 }
                 this.read(m3UAMessage,bytes);                               
             } finally {
-                ReferenceCountUtil.release(byteBuf);
+                ReferenceCountUtil.release(byteBuf, byteBuf.refCnt());
             }
         } else {
             if (tcpIncBuffer == null) {
