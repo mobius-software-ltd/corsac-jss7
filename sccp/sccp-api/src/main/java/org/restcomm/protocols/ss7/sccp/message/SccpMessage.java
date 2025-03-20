@@ -87,5 +87,4 @@ public interface SccpMessage {
     int getNetworkId();
 
     void setNetworkId(int networkId);
-
 }

@@ -68,7 +68,6 @@ import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnRsrMessageImpl;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpDataMessageImpl;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpMessageImpl;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpNoticeMessageImpl;
-import org.restcomm.protocols.ss7.sccp.impl.message.SccpSegmentableMessageImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ErrorCauseImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ParameterFactoryImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.RefusalCauseImpl;
@@ -88,7 +87,6 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.util.ReferenceCountUtil;
 
 /**
  *
@@ -1153,17 +1151,8 @@ public class SccpRoutingControl {
         } else {
             // we need to make asynch delivering for local user originated messages
             int seqControl = msg.getSls();
-            SccpTransferDeliveryHandler hdl = new SccpTransferDeliveryHandler(msg, listener);
             seqControl = seqControl & SccpStackImpl.slsFilter;
-            //ok here we need to retain again for 2 options SccpConnCrMessageImpl,SccpSegmentableMessageImpl
-            //most likely some if not all would be handled by direct onMessage several rows higher , but
-            //need to make sure all are handled
-            if(msg instanceof SccpConnCrMessage)
-            	ReferenceCountUtil.retain(((SccpConnCrMessage)msg).getUserData());
-            else if(msg instanceof SccpSegmentableMessageImpl)
-            	((SccpSegmentableMessageImpl)msg).retainBuffers();
-            
-            this.sccpStackImpl.msgDeliveryExecutors.execute(hdl);
+            deliverMessage(msg,listener);            
         }
     }
 
@@ -1431,64 +1420,45 @@ public class SccpRoutingControl {
         return ((SccpConnReferencedMessageImpl)msg).getSourceLocalReferenceNumber().getValue() == conn.getRemoteReference().getValue();
     }
 
-    private class SccpTransferDeliveryHandler implements Runnable {
-        private SccpMessage msg;
-        private SccpListener listener;
+    private void deliverMessage(SccpMessage msg,SccpListener listener)
+    {
+    	if (sccpStackImpl.isStarted()) {
+            try {
+                if (msg instanceof SccpDataMessage) {
+                    listener.onMessage((SccpDataMessage) msg);
 
-        public SccpTransferDeliveryHandler(SccpMessage msg, SccpListener listener) {
-            this.msg = msg;
-            this.listener = listener;
-        }
+                } else if (msg instanceof SccpConnMessage) {
 
-        @Override
-        public void run() {
-        	try {
-	            if (sccpStackImpl.isStarted()) {
-	                try {
-	                    if (msg instanceof SccpDataMessage) {
-	                        listener.onMessage((SccpDataMessage) msg);
-	
-	                    } else if (msg instanceof SccpConnMessage) {
-	
-	                        LocalReference dln = getDln((SccpConnMessage)msg);
-	                        SccpConnectionImpl dconn = sccpStackImpl.getConnection(dln);
-	                        if (dconn == null) {
-	                            logger.error(String
-	                                    .format("Dropping message. Received SCCPMessage=%s for routing but can't find connection by local reference %s in this message",
-	                                            msg, dln));
-	                            return;
-	                        }
-	                        int ssn = dconn.getLocalSsn();
-	
-	                        // This message is for local routing
-	                        SccpListener connListener = sccpProviderImpl.getSccpListener(ssn);
-	                        if (connListener == null) {
-	                            if (logger.isWarnEnabled()) {
-	                                logger.warn(String.format(
-	                                        "Received SccpMessage=%s for routing but the SSN is not available for local routing", msg));
-	                            }
-	                            sendSccpErrorConn((SccpConnMessage)msg, ReleaseCauseValue.SUBSYSTEM_FAILURE);
-	                            return;
-	                        }
-	                        processCoMessages((SccpConnMessage)msg, dconn, connListener);
-	                    }
-	
-	
-	                } catch (Exception e) {
-	                    logger.error("Exception while delivering a system messages to the SCCP-user: " + e.getMessage(), e);
-	                }
-	            } else {
-	                logger.error(String.format("Received SccpDataMessage=%s but SccpStack is not started. Message will be dropped",
-	                        msg));
-	            }
-        	}
-        	finally {
-         		 //lets make sure all are released
-        		 if(msg instanceof SccpConnCrMessage)
-                 	ReferenceCountUtil.release(((SccpConnCrMessage)msg).getUserData());
-                 else if(msg instanceof SccpSegmentableMessageImpl)
-                 	((SccpSegmentableMessageImpl)msg).releaseBuffers();                 
-        	}
+                    LocalReference dln = getDln((SccpConnMessage)msg);
+                    SccpConnectionImpl dconn = sccpStackImpl.getConnection(dln);
+                    if (dconn == null) {
+                        logger.error(String
+                                .format("Dropping message. Received SCCPMessage=%s for routing but can't find connection by local reference %s in this message",
+                                        msg, dln));
+                        return;
+                    }
+                    int ssn = dconn.getLocalSsn();
+
+                    // This message is for local routing
+                    SccpListener connListener = sccpProviderImpl.getSccpListener(ssn);
+                    if (connListener == null) {
+                        if (logger.isWarnEnabled()) {
+                            logger.warn(String.format(
+                                    "Received SccpMessage=%s for routing but the SSN is not available for local routing", msg));
+                        }
+                        sendSccpErrorConn((SccpConnMessage)msg, ReleaseCauseValue.SUBSYSTEM_FAILURE);
+                        return;
+                    }
+                    processCoMessages((SccpConnMessage)msg, dconn, connListener);
+                }
+
+
+            } catch (Exception e) {
+                logger.error("Exception while delivering a system messages to the SCCP-user: " + e.getMessage(), e);
+            }
+        } else {
+            logger.error(String.format("Received SccpDataMessage=%s but SccpStack is not started. Message will be dropped",
+                    msg));
         }
     }
 }

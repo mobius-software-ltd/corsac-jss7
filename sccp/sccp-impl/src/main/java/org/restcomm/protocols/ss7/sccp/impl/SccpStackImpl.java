@@ -169,9 +169,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
     // if true outgoing SCCP messages will be blocked (depending on message type, UDP messages from level N=6)
     protected boolean congControl_blockingOutgoungSccpMessages = false;
 
-    // The count of threads that will be used for message delivering to
-    // SccpListener's for SCCP user -> SCCP -> SCCP user transit (without MTP part)
-    protected int deliveryTransferMessageThreadCount = 4;
+    protected int connectionHandlingThreadCount = 4;
     
     protected volatile State state = State.IDLE;
 
@@ -193,7 +191,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
     protected ConcurrentHashMap<Integer, Mtp3UserPart> mtp3UserParts = new ConcurrentHashMap<Integer, Mtp3UserPart>();
     protected ConcurrentHashMap<MessageReassemblyProcess, SccpSegmentableMessageImpl> reassemplyCache = new ConcurrentHashMap<MessageReassemblyProcess, SccpSegmentableMessageImpl>();
 
-    protected ScheduledExecutorService msgDeliveryExecutors;
+    protected ScheduledExecutorService connectionExecutors;
     
     public static final int slsFilter = 0x0f;
     protected int[] slsTable = null;
@@ -321,16 +319,16 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
             this.sccpProtocolVersion = sccpProtocolVersion;
     }
 
-    public int getDeliveryMessageThreadCount() {
-        return this.deliveryTransferMessageThreadCount;
+    public int getConnectionHandlingThreadsCount() {
+        return this.connectionHandlingThreadCount;
     }
 
-    public void setDeliveryMessageThreadCount(int deliveryMessageThreadCount) throws Exception {
+    public void setConnectionHandlingThreadsCount(int deliveryMessageThreadCount) throws Exception {
         if (this.isStarted())
             throw new Exception("DeliveryMessageThreadCount parameter can be updated only when SCCP stack is NOT running");
 
         if (deliveryMessageThreadCount > 0 && deliveryMessageThreadCount <= 100)
-            this.deliveryTransferMessageThreadCount = deliveryMessageThreadCount;
+            this.connectionHandlingThreadCount = deliveryMessageThreadCount;
     }
 
     public void setSstTimerDuration_Min(int sstTimerDuration_Min) throws Exception {
@@ -640,14 +638,14 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
         this.sccpManagement.start();
         logger.info("Starting MSU handler...");
 
-        this.msgDeliveryExecutors = Executors.newScheduledThreadPool(deliveryTransferMessageThreadCount, new DefaultThreadFactory("SccpTransit-DeliveryExecutor"));
+        this.connectionExecutors = Executors.newScheduledThreadPool(connectionHandlingThreadCount, new DefaultThreadFactory("SccpTransit-DeliveryExecutor"));
         
         // initiating of SCCP delivery executors
         // TODO: we do it for ITU standard, may be we may configure it for other standard's (different SLS count) maxSls and
         // slsFilter values initiating
         int maxSls = 16;
         this.slsTable = new int[maxSls];
-        this.createSLSTable(maxSls, this.deliveryTransferMessageThreadCount);
+        this.createSLSTable(maxSls, this.connectionHandlingThreadCount);
         
         Iterator<Mtp3UserPart> mtp3Iterator=this.mtp3UserParts.values().iterator();
         while(mtp3Iterator.hasNext()) {
@@ -676,11 +674,6 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
         // executor = null;
         //
         // layer3exec = null;
-
-        if (this.msgDeliveryExecutors != null) {
-        	this.msgDeliveryExecutors.shutdown();
-            this.msgDeliveryExecutors = null;
-        }
 
         Iterator<SccpManagementEventListener> iterator=this.sccpProvider.managementEventListeners.values().iterator();
         while(iterator.hasNext()) {
@@ -1177,8 +1170,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
                                 // segments bad order
                             	 this.reassemplyCache.remove(msp);
                             	 //need to release buffers stored till now
-                            	 sgmMsgFst.releaseBuffers();
-                                 MessageReassemblyProcess mspMain = sgmMsgFst.getMessageReassemblyProcess();
+                            	 MessageReassemblyProcess mspMain = sgmMsgFst.getMessageReassemblyProcess();
                                  if (mspMain != null)
                                      mspMain.stopTimer();
                                  
@@ -1205,8 +1197,6 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 
                                 sgmMsgFst.setReceivedNextSegment(sgmMsg);
                                 msg = sgmMsgFst;
-                                //completed the process lest release count for all
-                                ((SccpSegmentableMessageImpl) msg).releaseBuffers();
                             } else {
                                 // not last segment
                                 sgmMsgFst.setReceivedNextSegment(sgmMsg);
@@ -1281,7 +1271,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
         }
 
         public void startTimer() {
-            this.timer = msgDeliveryExecutors.schedule(this, reassemblyTimerDelay, TimeUnit.MILLISECONDS);
+            this.timer = connectionExecutors.schedule(this, reassemblyTimerDelay, TimeUnit.MILLISECONDS);
         }
 
         public void stopTimer() {

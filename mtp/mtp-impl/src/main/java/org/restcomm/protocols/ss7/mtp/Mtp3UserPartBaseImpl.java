@@ -31,7 +31,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.netty.util.IllegalReferenceCountException;
-import io.netty.util.ReferenceCountUtil;
 import io.netty.util.concurrent.DefaultThreadFactory;
 
 // lic dep 1
@@ -195,7 +194,8 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 
             seqControl = seqControl & slsFilter;
             //ok here we need to retain again
-            ReferenceCountUtil.retain(msg.getData());
+            msg.retain();
+            logger.info("Ref count for message is " + msg.getRefCount());
             this.msgDeliveryExecutors.execute(hdl);
         } else {
             logger.error(String.format(
@@ -269,17 +269,14 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
         	}
         	finally {
         		 //we have proceed the message should be good time to release the message here , lets release all
-        		if(msg.getData().refCnt()>0)
-        		{
-        			try
-        			{
-        				ReferenceCountUtil.release(msg.getData(), msg.getData().refCnt());                
-        			}
-        			catch(IllegalReferenceCountException ex)
-        			{
-        				//may be its already decreased
-        			}
-        		}
+        		try
+    			{
+    				msg.releaseFully();                
+    			}
+    			catch(IllegalReferenceCountException ex)
+    			{
+    				//may be its already decreased
+    			}
         	}
         }
     }

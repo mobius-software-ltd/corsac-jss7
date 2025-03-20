@@ -24,6 +24,7 @@ package org.restcomm.protocols.ss7.mtp;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.util.ReferenceCountUtil;
 
 /**
  * @author sergey vetyutnev
@@ -42,7 +43,7 @@ public class Mtp3TransferPrimitive {
 
     private final RoutingLabelFormat pointCodeFormat;
 
-    protected Mtp3TransferPrimitive(int si, int ni, int mp, int opc, int dpc, int sls, ByteBuf data,
+    public Mtp3TransferPrimitive(int si, int ni, int mp, int opc, int dpc, int sls, ByteBuf data,
             RoutingLabelFormat pointCodeFormat) {
         this.si = si;
         this.ni = ni;
@@ -78,9 +79,26 @@ public class Mtp3TransferPrimitive {
     public int getSls() {
         return this.sls;
     }
+    
+    public RoutingLabelFormat getPointCodeFormat() {
+    	return this.pointCodeFormat;
+    }
 
     public ByteBuf getData() {
         return Unpooled.wrappedBuffer(this.data);
+    }
+    
+    public void retain() {
+    	ReferenceCountUtil.retain(this.data);
+    }    
+    
+    public Integer getRefCount() {
+    	return this.data.refCnt();
+    }
+    
+    public void releaseFully() {
+    	if(this.data.refCnt()>0)
+    		ReferenceCountUtil.release(this.data,this.data.refCnt());    	
     }
 
     public ByteBuf encodeMtp3() {

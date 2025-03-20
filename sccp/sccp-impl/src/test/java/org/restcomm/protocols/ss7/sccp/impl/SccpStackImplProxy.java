@@ -70,8 +70,8 @@ public class SccpStackImplProxy extends SccpStackImpl {
 
         this.sccpRoutingControl.start();
         this.sccpManagement.start();
-        
-        this.msgDeliveryExecutors = Executors.newScheduledThreadPool(1);
+
+        this.connectionExecutors = Executors.newScheduledThreadPool(1);
 
         Iterator<Mtp3UserPart> iterator=this.mtp3UserParts.values().iterator();
         while(iterator.hasNext()) {
@@ -83,7 +83,7 @@ public class SccpStackImplProxy extends SccpStackImpl {
 
         int maxSls = 16;
         this.slsTable = new int[maxSls];
-        this.createSLSTable(maxSls, this.deliveryTransferMessageThreadCount);
+        this.createSLSTable(maxSls, this.connectionHandlingThreadCount);
         
         this.state = State.RUNNING;
     }

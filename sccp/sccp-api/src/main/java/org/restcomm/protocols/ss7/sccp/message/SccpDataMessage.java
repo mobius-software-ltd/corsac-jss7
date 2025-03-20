@@ -54,8 +54,6 @@ public interface SccpDataMessage extends SccpAddressedMessage {
 
     void setHopCounter(HopCounter hopCounter);
 
-    void setData(ByteBuf data);
-
     void setImportance(Importance p);
 
 }

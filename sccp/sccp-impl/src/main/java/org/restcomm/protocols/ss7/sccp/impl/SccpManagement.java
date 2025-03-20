@@ -708,7 +708,7 @@ public class SccpManagement {
 
         void startTest() {
         	if (!started) {
-                this.testFuture = sccpStackImpl.msgDeliveryExecutors.schedule(this, currentTimerDelay, TimeUnit.MILLISECONDS);
+                this.testFuture = sccpStackImpl.connectionExecutors.schedule(this, currentTimerDelay, TimeUnit.MILLISECONDS);
 
                 // increase the "T(stat info)" timer delay up to 10 minutes
                 // for the next step

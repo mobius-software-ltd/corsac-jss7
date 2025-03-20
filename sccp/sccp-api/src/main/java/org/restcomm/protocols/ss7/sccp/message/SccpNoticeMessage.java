@@ -49,8 +49,6 @@ public interface SccpNoticeMessage extends SccpAddressedMessage {
 
     void setReturnCause(ReturnCause rc);
 
-    void setData(ByteBuf data);
-
     void setImportance(Importance p);
 
 }

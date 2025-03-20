@@ -316,6 +316,20 @@ public class ASNParser
 		int oldIndex=buffer.readerIndex();
 		buffer.markReaderIndex();
 		ASNHeaderWithLength header=readHeader(buffer);
+		if(buffer.readableBytes()<header.getLength()-2)
+		{
+			if(skipErrors) {
+				if(buffer.readableBytes()>=header.getLength())
+					buffer.skipBytes(header.getLength());
+				else
+					buffer.skipBytes(buffer.readableBytes());
+				
+				return new DecodeResult(null,parent,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(),true, true, new ASNDecodeResult(null, parent, true, true, null));
+			}
+			else
+				throw new ASNDecodeException("Not enough bytes for :" + header.getAsnClass() + "," + header.getAsnTag() + "," + header.getIsConstructed() + "," + header.getIndefiniteLength(),header.getAsnTag(),header.getAsnClass(),header.getIsConstructed(),parent);
+		}
+		
 		ASNHeader currHeader=new ASNHeader(header.getAsnClass(), header.getIsConstructed(), header.getAsnTag(), header.getIndefiniteLength(),index);
 		Class<?> effectiveClass=classMapping.get(currHeader);
 		

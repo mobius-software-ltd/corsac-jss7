@@ -323,7 +323,7 @@ abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueI
         	if (this.future != null) { // need to lock because otherwise this check won't ensure safety
                 logger.error(new IllegalStateException(String.format("Already started %s timer", getClass())));
             }
-            this.future = stack.msgDeliveryExecutors.schedule(this, delay, TimeUnit.MILLISECONDS);
+            this.future = stack.connectionExecutors.schedule(this, delay, TimeUnit.MILLISECONDS);
         }
 
         public void stopTimer() {

@@ -23,9 +23,6 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +33,7 @@ import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
 import org.restcomm.protocols.ss7.sccp.SignallingPointStatus;
+import org.restcomm.protocols.ss7.sccp.impl.message.SccpSegmentableMessageImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.RefusalCauseImpl;
 import org.restcomm.protocols.ss7.sccp.message.MessageFactory;
 import org.restcomm.protocols.ss7.sccp.message.SccpAddressedMessage;
@@ -51,6 +49,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.RefusalCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author baranowb
@@ -145,6 +146,9 @@ public class User extends BaseSccpListener implements SccpListener {
 
     public void onMessage(SccpDataMessage message) {
         this.messages.add(message);
+        if(message instanceof SccpSegmentableMessageImpl)
+        	((SccpSegmentableMessageImpl)message).copyData();	
+        
         System.out.println(String.format("SccpDataMessage=%s seqControl=%d", message, message.getSls()));
 
         // localAddress = message.getCalledPartyAddress();

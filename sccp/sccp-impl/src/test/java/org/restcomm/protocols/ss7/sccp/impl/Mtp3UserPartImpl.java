@@ -23,8 +23,6 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +35,8 @@ import org.restcomm.protocols.ss7.mtp.Mtp3StatusPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * @author abhayani
@@ -71,18 +71,20 @@ public class Mtp3UserPartImpl extends Mtp3UserPartBaseImpl {
     }
 
     public void sendMessage(Mtp3TransferPrimitive msg) throws IOException {
+    	//we need to work with copy otherwise the buffer would be released
+    	Mtp3TransferPrimitive copy = new Mtp3TransferPrimitive(msg.getSi(), msg.getNi(), msg.getMp(), msg.getOpc(), msg.getDpc(), msg.getSls(), msg.getData().copy(),msg.getPointCodeFormat());
         if (!this.otherParts.isEmpty()) {
             if (otherParts.size() == 1) {
-                this.otherParts.iterator().next().sendTransferMessageToLocalUser(msg, msg.getSls());
+                this.otherParts.iterator().next().sendTransferMessageToLocalUser(copy, copy.getSls());
             } else {
                 for (Mtp3UserPartImpl part: otherParts) {
                     if (part.dpcs.contains(msg.getDpc())) {
-                        part.sendTransferMessageToLocalUser(msg, msg.getSls());
+                        part.sendTransferMessageToLocalUser(copy, copy.getSls());
                     }
                 }
             }
         } else
-            this.messages.add(msg);
+            this.messages.add(copy);
     }
 
     public void sendTransferMessageToLocalUser(int opc, int dpc, ByteBuf data) {
