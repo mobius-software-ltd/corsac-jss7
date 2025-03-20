@@ -190,7 +190,7 @@ public class TcQueryTest {
         assertEquals(cmp.getType(), ComponentType.Reject);
         Reject rej = (Reject) cmp;
         assertTrue(rej.isLocalOriginated());
-        assertEquals(rej.getProblem(), RejectProblem.generalBadlyStructuredCompPortion);
+        assertEquals(rej.getProblem(), RejectProblem.generalIncorrectComponentPortion);
 
         cmp = tcm.getComponent().getComponents().get(1);
         assertEquals(cmp.getType(), ComponentType.ReturnError);

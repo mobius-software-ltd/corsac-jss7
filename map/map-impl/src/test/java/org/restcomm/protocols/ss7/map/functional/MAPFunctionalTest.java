@@ -2946,7 +2946,7 @@ public class MAPFunctionalTest extends SccpHarness {
                     ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
                 super.onDialogReject(mapDialog, refuseReason, alternativeApplicationContext, extensionContainer);
                 assertNotNull(refuseReason);
-                assertEquals(refuseReason, MAPRefuseReason.PotentialVersionIncompatibility);
+                assertEquals(refuseReason, MAPRefuseReason.NoReasonGiven);
                 assertEquals(mapDialog.getTCAPMessageType(), MessageType.Abort);
             }
         };
@@ -2988,7 +2988,7 @@ public class MAPFunctionalTest extends SccpHarness {
                     ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
                 super.onDialogReject(mapDialog, refuseReason, alternativeApplicationContext, extensionContainer);
                 assertNotNull(refuseReason);
-                assertEquals(refuseReason, MAPRefuseReason.PotentialVersionIncompatibility);
+                assertEquals(refuseReason, MAPRefuseReason.NoReasonGiven);
                 assertEquals(mapDialog.getTCAPMessageType(), MessageType.Abort);
             }
         };

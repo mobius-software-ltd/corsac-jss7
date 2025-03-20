@@ -146,7 +146,7 @@ public class TCAPComponentsTest extends SccpHarness {
                 Reject r = (Reject) c;
                 assertEquals(r.getInvokeId(),new Integer(1));
                 try {
-                	assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.BadlyStructuredComponent);
+                	assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.MistypedComponent);
                 }
                 catch(ParseException ex) {
                 	assertEquals(1, 2);
@@ -168,7 +168,7 @@ public class TCAPComponentsTest extends SccpHarness {
                 assertTrue(c instanceof Reject);
                 Reject r = (Reject) c;
                 try {
-                	assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.BadlyStructuredComponent);
+                	assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.MistypedComponent);
                 }
                 catch(ParseException ex) {
                 	assertEquals(1, 2);
