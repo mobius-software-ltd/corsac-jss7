@@ -23,15 +23,16 @@
 
 package org.restcomm.protocols.ss7.mtp;
 
-import io.netty.util.ReferenceCountUtil;
-import io.netty.util.concurrent.DefaultThreadFactory;
-
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import io.netty.util.IllegalReferenceCountException;
+import io.netty.util.ReferenceCountUtil;
+import io.netty.util.concurrent.DefaultThreadFactory;
 
 // lic dep 1
 
@@ -268,7 +269,17 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
         	}
         	finally {
         		 //we have proceed the message should be good time to release the message here , lets release all
-                ReferenceCountUtil.release(msg.getData(), msg.getData().refCnt());                
+        		if(msg.getData().refCnt()>0)
+        		{
+        			try
+        			{
+        				ReferenceCountUtil.release(msg.getData(), msg.getData().refCnt());                
+        			}
+        			catch(IllegalReferenceCountException ex)
+        			{
+        				//may be its already decreased
+        			}
+        		}
         	}
         }
     }
