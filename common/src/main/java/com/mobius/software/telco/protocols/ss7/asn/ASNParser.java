@@ -540,13 +540,14 @@ public class ASNParser
 				buffer.markReaderIndex();
 				Boolean previousWasZero=false;
 				Boolean gotEOF=false;
+				int tempLength = 0;
 				while(!gotEOF && buffer.readableBytes()>0) {
-					length++;
+					tempLength++;
 					if(buffer.readByte()!=0x00) {
 						previousWasZero=false;
 					} else {
 						if(previousWasZero) {
-							length-=2;
+							length=tempLength-2;
 							gotEOF=true;
 						}
 						else
