@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>isup-parent</artifactId>
 		<groupId>com.mobius-software.protocols.ss7.isup</groupId>
-		<version>10.0.44-SNAPSHOT</version>
+		<version>10.0.44</version>
 	</parent>
 
 	<artifactId>isup-impl</artifactId>
