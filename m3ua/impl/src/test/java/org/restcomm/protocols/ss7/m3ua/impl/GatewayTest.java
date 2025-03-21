@@ -26,6 +26,7 @@ package org.restcomm.protocols.ss7.m3ua.impl;
 import static org.junit.Assert.assertEquals;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -261,7 +262,7 @@ public class GatewayTest {
         public void sendPayload() throws Exception {
         	Mtp3TransferPrimitiveFactory factory = m3uaMgmt.getMtp3TransferPrimitiveFactory();
             Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 123, 1408, 1,
-                    Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 }));
+                    Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 }),new AtomicBoolean(false));
             m3uaMgmt.sendMessage(mtp3TransferPrimitive);            
         }
     }
@@ -334,7 +335,7 @@ public class GatewayTest {
         public void sendPayload() throws Exception {
             Mtp3TransferPrimitiveFactory factory = m3uaMgmt.getMtp3TransferPrimitiveFactory();
             Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1408, 123, 1,
-            		Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 }));
+            		Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 }),new AtomicBoolean(false));
             m3uaMgmt.sendMessage(mtp3TransferPrimitive);
         }
 

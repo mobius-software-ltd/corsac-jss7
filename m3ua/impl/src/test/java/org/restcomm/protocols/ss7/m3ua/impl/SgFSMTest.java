@@ -37,6 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -198,7 +199,7 @@ public class SgFSMTest {
 
         // Check for ASP_UP
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.INACTIVE, this.getAspState(aspPeerFSM));
         assertEquals(remAsp.getState().getName(), State.STATE_INACTIVE);
@@ -217,7 +218,7 @@ public class SgFSMTest {
         // Check for ASP_ACTIVE
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE);
         ((ASPActiveImpl) message).setRoutingContext(rc);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(aspPeerFSM));
         assertEquals(remAsp.getState().getName(), State.STATE_ACTIVE);
@@ -252,7 +253,7 @@ public class SgFSMTest {
         // Check for ASP_INACTIVE
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_INACTIVE);
         ((ASPInactiveImpl) message).setRoutingContext(rc);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.INACTIVE, this.getAspState(aspPeerFSM));
         assertEquals(remAsp.getState().getName(), State.STATE_INACTIVE);
@@ -270,7 +271,7 @@ public class SgFSMTest {
 
         // Check for ASP_DOWN
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
         assertEquals(AspState.DOWN, this.getAspState(aspPeerFSM));
         assertEquals(remAsp.getState().getName(), State.STATE_DOWN);
         assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AspDown, System
@@ -337,7 +338,7 @@ public class SgFSMTest {
 
         // Check for ASP_UP
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.INACTIVE, this.getAspState(aspPeerFSM));
         assertEquals(remAsp.getState().getName(), State.STATE_INACTIVE);
@@ -355,7 +356,7 @@ public class SgFSMTest {
 
         // Check for ASP_ACTIVE
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(aspPeerFSM));
         assertEquals(remAsp.getState().getName(), State.STATE_ACTIVE);
@@ -389,7 +390,7 @@ public class SgFSMTest {
 
         // Check for ASP_INACTIVE
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_INACTIVE);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.INACTIVE, this.getAspState(aspPeerFSM));
         assertEquals(remAsp.getState().getName(), State.STATE_INACTIVE);
@@ -407,7 +408,7 @@ public class SgFSMTest {
 
         // Check for ASP_DOWN
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.DOWN, this.getAspState(aspPeerFSM));
         assertEquals(remAsp.getState().getName(), State.STATE_DOWN);
@@ -501,7 +502,7 @@ public class SgFSMTest {
 
         // Check for ASP_UP
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.INACTIVE, this.getAspState(asp1PeerFSM));
         assertEquals(remAsp1.getState().getName(), State.STATE_INACTIVE);
@@ -562,7 +563,7 @@ public class SgFSMTest {
         // Check for ASP_ACTIVE for both Routing Contexts
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE);
         ((ASPActiveImpl) message).setRoutingContext(this.parmFactory.createRoutingContext(new long[] { 100, 200 }));
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(asp1PeerFSM));
         assertEquals(remAsp1.getState().getName(), State.STATE_ACTIVE);
@@ -596,7 +597,7 @@ public class SgFSMTest {
         // Check for ASP_INACTIVE for ASP1
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_INACTIVE);
         ((ASPInactiveImpl) message).setRoutingContext(this.parmFactory.createRoutingContext(new long[] { 100 }));
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.INACTIVE, this.getAspState(asp1PeerFSM));
         assertEquals(remAsp1.getState().getName(), State.STATE_INACTIVE);
@@ -620,7 +621,7 @@ public class SgFSMTest {
 
         // Check for ASP_DOWN
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.DOWN, this.getAspState(asp1PeerFSM));
         assertEquals(remAsp1.getState().getName(), State.STATE_DOWN);
@@ -725,7 +726,7 @@ public class SgFSMTest {
 
         // Check for ASP_UP for ASP1
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP);
-        aspFactory1.read(message);
+        aspFactory1.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.INACTIVE, this.getAspState(asp1PeerFSM));
         assertEquals(remAsp1.getState().getName(), State.STATE_INACTIVE);
@@ -742,7 +743,7 @@ public class SgFSMTest {
                 Status.STATUS_AS_State_Change, Status.INFO_AS_INACTIVE));
 
         // Check for ASP_UP for ASP2
-        aspFactory2.read(message);
+        aspFactory2.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.INACTIVE, this.getAspState(asp2PeerFSM));
         assertEquals(remAsp2.getState().getName(), State.STATE_INACTIVE);
@@ -760,7 +761,7 @@ public class SgFSMTest {
         // Check for ASP_ACTIVE for ASP1
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE);
         ((ASPActiveImpl) message).setRoutingContext(rc);
-        aspFactory1.read(message);
+        aspFactory1.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(asp1PeerFSM));
         assertEquals(remAsp1.getState().getName(), State.STATE_ACTIVE);
@@ -783,7 +784,7 @@ public class SgFSMTest {
         // 5.2.1. 1+1 Sparing, Withdrawal of ASP, Backup Override
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_INACTIVE);
         ((ASPInactiveImpl) message).setRoutingContext(rc);
-        aspFactory1.read(message);
+        aspFactory1.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.INACTIVE, this.getAspState(asp1PeerFSM));
         assertEquals(remAsp1.getState().getName(), State.STATE_INACTIVE);
@@ -805,7 +806,7 @@ public class SgFSMTest {
         // ACTIVATE ASP2
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE);
         ((ASPActiveImpl) message).setRoutingContext(rc);
-        aspFactory2.read(message);
+        aspFactory2.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(asp2PeerFSM));
         assertEquals(remAsp2.getState().getName(), State.STATE_ACTIVE);
@@ -829,7 +830,7 @@ public class SgFSMTest {
         // ACTIVATE ASP1 also
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE);
         ((ASPActiveImpl) message).setRoutingContext(rc);
-        aspFactory1.read(message);
+        aspFactory1.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(asp1PeerFSM));
         assertEquals(remAsp1.getState().getName(), State.STATE_ACTIVE);
@@ -854,7 +855,7 @@ public class SgFSMTest {
 
         // Check for ASP_DOWN for aspFactory1
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN);
-        aspFactory1.read(message);
+        aspFactory1.read(message,new AtomicBoolean(false));
         assertEquals(AspState.DOWN, this.getAspState(asp1PeerFSM));
         assertTrue(validateMessage(testAssociation1, MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN_ACK, -1, -1));
 
@@ -863,7 +864,7 @@ public class SgFSMTest {
 
         // Check for ASP_DOWN for aspFactory2
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN);
-        aspFactory2.read(message);
+        aspFactory2.read(message,new AtomicBoolean(false));
         assertEquals(AspState.DOWN, this.getAspState(asp2PeerFSM));
 
         // TODO fix these below asserts fails
@@ -935,12 +936,12 @@ public class SgFSMTest {
 
         // Check for ASP_UP for ASP1/2
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP);
-        aspFactoryImpl1.read(message);
-        aspFactoryImpl2.read(message);
+        aspFactoryImpl1.read(message,new AtomicBoolean(false));
+        aspFactoryImpl2.read(message,new AtomicBoolean(false));
 
         // Check for ASP_ACTIVE for ASP1/2
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE);
-        aspFactoryImpl1.read(message);
+        aspFactoryImpl1.read(message,new AtomicBoolean(false));
 
         // Check if MTP3 RESUME received
         // lets wait for 2second to receive the MTP3 primitive before giving up
@@ -951,7 +952,7 @@ public class SgFSMTest {
         assertNotNull(mtp3Primitive);
         assertEquals(Mtp3Primitive.RESUME, mtp3Primitive.getType());
 
-        aspFactoryImpl2.read(message);
+        aspFactoryImpl2.read(message,new AtomicBoolean(false));
 
         // Send Transfer Message and check load balancing behavior
         // int si, int ni, int mp, int opc, int dpc, int sls, byte[] data,
@@ -962,7 +963,7 @@ public class SgFSMTest {
 
         for (int sls = 0; sls < 256; sls++) {
             Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
-                    1, 2, 3, 4 }));
+                    1, 2, 3, 4 }),new AtomicBoolean(false));
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -980,10 +981,10 @@ public class SgFSMTest {
 
         // bring DOWN ASP1.
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_INACTIVE);
-        aspFactoryImpl1.read(message);
+        aspFactoryImpl1.read(message,new AtomicBoolean(false));
 
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN);
-        aspFactoryImpl1.read(message);
+        aspFactoryImpl1.read(message,new AtomicBoolean(false));
 
         // lets wait for 3 seconds to receive the MTP3 primitive before giving
         // up. We know Pending timeout is 2 secs
@@ -998,7 +999,7 @@ public class SgFSMTest {
 
         for (int sls = 0; sls < 256; sls++) {
             Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
-                    1, 2, 3, 4 }));
+                    1, 2, 3, 4 }),new AtomicBoolean(false));
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -1012,10 +1013,10 @@ public class SgFSMTest {
 
         // bring DOWN ASP2.
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_INACTIVE);
-        aspFactoryImpl2.read(message);
+        aspFactoryImpl2.read(message,new AtomicBoolean(false));
 
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN);
-        aspFactoryImpl2.read(message);
+        aspFactoryImpl2.read(message,new AtomicBoolean(false));
 
         // lets wait for 3 seconds to receive the MTP3 primitive before giving
         // up. We know Pending timeout is 2 secs
@@ -1085,12 +1086,12 @@ public class SgFSMTest {
 
         // Check for ASP_UP for ASP1/2
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP);
-        aspFactoryImpl1.read(message);
-        aspFactoryImpl2.read(message);
+        aspFactoryImpl1.read(message,new AtomicBoolean(false));
+        aspFactoryImpl2.read(message,new AtomicBoolean(false));
 
         // Check for ASP_ACTIVE for ASP1/2
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE);
-        aspFactoryImpl1.read(message);
+        aspFactoryImpl1.read(message,new AtomicBoolean(false));
 
         // Check if MTP3 RESUME received
         // lets wait for 2second to receive the MTP3 primitive before giving up
@@ -1101,7 +1102,7 @@ public class SgFSMTest {
         assertNotNull(mtp3Primitive);
         assertEquals(Mtp3Primitive.RESUME, mtp3Primitive.getType());
 
-        aspFactoryImpl2.read(message);
+        aspFactoryImpl2.read(message,new AtomicBoolean(false));
 
         // Send Transfer Message and check load balancing behavior
         // int si, int ni, int mp, int opc, int dpc, int sls, byte[] data,
@@ -1112,7 +1113,7 @@ public class SgFSMTest {
 
         for (int sls = 0; sls < 256; sls++) {
             Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
-                    1, 2, 3, 4 }));
+                    1, 2, 3, 4 }),new AtomicBoolean(false));
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -1129,10 +1130,10 @@ public class SgFSMTest {
 
         // bring DOWN ASP1.
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_INACTIVE);
-        aspFactoryImpl1.read(message);
+        aspFactoryImpl1.read(message,new AtomicBoolean(false));
 
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN);
-        aspFactoryImpl1.read(message);
+        aspFactoryImpl1.read(message,new AtomicBoolean(false));
 
         // lets wait for 3 seconds to receive the MTP3 primitive before giving
         // up. We know Pending timeout is 2 secs
@@ -1147,7 +1148,7 @@ public class SgFSMTest {
 
         for (int sls = 0; sls < 256; sls++) {
             Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
-                    1, 2, 3, 4 }));
+                    1, 2, 3, 4 }),new AtomicBoolean(false));
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -1161,10 +1162,10 @@ public class SgFSMTest {
 
         // bring DOWN ASP2.
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_INACTIVE);
-        aspFactoryImpl2.read(message);
+        aspFactoryImpl2.read(message,new AtomicBoolean(false));
 
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN);
-        aspFactoryImpl2.read(message);
+        aspFactoryImpl2.read(message,new AtomicBoolean(false));
 
         // lets wait for 3 seconds to receive the MTP3 primitive before giving
         // up. We know Pending timeout is 2 secs
@@ -1246,7 +1247,7 @@ public class SgFSMTest {
 
         // Check for ASP_UP for ASP1
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP);
-        aspFactory1.read(message);
+        aspFactory1.read(message,new AtomicBoolean(false));
         assertEquals(AspState.INACTIVE, this.getAspState(aspPeerFSM1));
         assertEquals(remAsp1.getState().getName(), State.STATE_INACTIVE);
         assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AspInactive, System
@@ -1263,7 +1264,7 @@ public class SgFSMTest {
 
         // Check for ASP_UP for ASP2
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP);
-        aspFactory2.read(message);
+        aspFactory2.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.INACTIVE, this.getAspState(aspPeerFSM2));
         assertEquals(remAsp2.getState().getName(), State.STATE_INACTIVE);
@@ -1280,7 +1281,7 @@ public class SgFSMTest {
         // Check for ASP_ACTIVE for ASP1
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE);
         ((ASPActiveImpl) message).setRoutingContext(rc);
-        aspFactory1.read(message);
+        aspFactory1.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(aspPeerFSM1));
         assertEquals(remAsp1.getState().getName(), State.STATE_ACTIVE);
@@ -1295,7 +1296,7 @@ public class SgFSMTest {
         // Check for ASP_ACTIVE for ASP2
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE);
         ((ASPActiveImpl) message).setRoutingContext(rc);
-        aspFactory2.read(message);
+        aspFactory2.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(aspPeerFSM2));
         assertEquals(remAsp2.getState().getName(), State.STATE_ACTIVE);
@@ -1318,7 +1319,7 @@ public class SgFSMTest {
         // RoutingLabelFormat pointCodeFormat
         for (int sls = 0; sls < 256; sls++) {
             Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
-                    1, 2, 3, 4 }));
+                    1, 2, 3, 4 }),new AtomicBoolean(false));
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -1333,7 +1334,7 @@ public class SgFSMTest {
         // INACTIVATE ASP1.But AS remains ACTIVE in any case
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_INACTIVE);
         ((ASPInactiveImpl) message).setRoutingContext(rc);
-        aspFactory1.read(message);
+        aspFactory1.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.INACTIVE, this.getAspState(aspPeerFSM1));
         assertEquals(remAsp1.getState().getName(), State.STATE_INACTIVE);
@@ -1355,7 +1356,7 @@ public class SgFSMTest {
         // RoutingLabelFormat pointCodeFormat
         for (int sls = 0; sls < 256; sls++) {
             Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
-                    1, 2, 3, 4 }));
+                    1, 2, 3, 4 }),new AtomicBoolean(false));
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -1365,7 +1366,7 @@ public class SgFSMTest {
 
         // Bring down ASP1
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN);
-        aspFactory1.read(message);
+        aspFactory1.read(message,new AtomicBoolean(false));
         assertEquals(AspState.DOWN, this.getAspState(aspPeerFSM1));
         assertEquals(remAsp1.getState().getName(), State.STATE_DOWN);
         assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AspDown, System
@@ -1381,7 +1382,7 @@ public class SgFSMTest {
         // INACTIVE state
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_INACTIVE);
         ((ASPInactiveImpl) message).setRoutingContext(rc);
-        aspFactory2.read(message);
+        aspFactory2.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.INACTIVE, this.getAspState(aspPeerFSM2));
         assertEquals(remAsp2.getState().getName(), State.STATE_INACTIVE);
@@ -1404,7 +1405,7 @@ public class SgFSMTest {
 
         // Bring down ASP2
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN);
-        aspFactory2.read(message);
+        aspFactory2.read(message,new AtomicBoolean(false));
 
     }
 
@@ -1446,7 +1447,7 @@ public class SgFSMTest {
 
         // Check for ASP_UP
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.INACTIVE, this.getAspState(aspPeerFSM));
         assertTrue(validateMessage(testAssociation1, MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP_ACK, -1, -1));
@@ -1458,7 +1459,7 @@ public class SgFSMTest {
         // Check for ASP_ACTIVE
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE);
         ((ASPActiveImpl) message).setRoutingContext(rc);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
         assertEquals(AspState.ACTIVE, this.getAspState(aspPeerFSM));
         assertTrue(validateMessage(testAssociation1, MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE_ACK, -1, -1));
         // also the AS should be ACTIVE now
@@ -1468,7 +1469,7 @@ public class SgFSMTest {
 
         // Check for ASP_UP received while ASP is already UP
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
         // The ASP Transitions to INACTIVE
         assertEquals(AspState.INACTIVE, this.getAspState(aspPeerFSM));
         // Receives ASP_UP Ack messages
@@ -1487,7 +1488,7 @@ public class SgFSMTest {
 
         // Bring down ASP
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
     }
 
@@ -1533,7 +1534,7 @@ public class SgFSMTest {
 
         // Check for ASP_UP
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.INACTIVE, this.getAspState(aspPeerFSM));
         assertEquals(remAsp.getState().getName(), State.STATE_INACTIVE);
@@ -1552,7 +1553,7 @@ public class SgFSMTest {
         // Check for ASP_ACTIVE
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE);
         ((ASPActiveImpl) message).setRoutingContext(rc);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(aspPeerFSM));
         assertEquals(remAsp.getState().getName(), State.STATE_ACTIVE);
@@ -1571,7 +1572,7 @@ public class SgFSMTest {
         // Check for ASP_INACTIVE
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_INACTIVE);
         ((ASPInactiveImpl) message).setRoutingContext(rc);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.INACTIVE, this.getAspState(aspPeerFSM));
         assertEquals(remAsp.getState().getName(), State.STATE_INACTIVE);
@@ -1600,7 +1601,7 @@ public class SgFSMTest {
         // Now bring UP the ASP
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE);
         ((ASPActiveImpl) message).setRoutingContext(rc);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(aspPeerFSM));
         assertEquals(remAsp.getState().getName(), State.STATE_ACTIVE);
@@ -1627,7 +1628,7 @@ public class SgFSMTest {
 
         // Bring down ASP
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
     }
 
     /**

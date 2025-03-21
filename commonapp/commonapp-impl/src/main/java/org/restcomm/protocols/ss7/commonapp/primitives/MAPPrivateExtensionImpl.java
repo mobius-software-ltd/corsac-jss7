@@ -87,7 +87,7 @@ public class MAPPrivateExtensionImpl implements MAPPrivateExtension {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws ASNException {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors,Integer level) throws ASNException {
 		ASNDecodeResult oidResult=parser.decode(buffer);
 		if(!oidResult.getHadErrors() && (oidResult.getResult() instanceof ASNObjectIdentifier))
 			this.oId=(ASNObjectIdentifier)oidResult.getResult();

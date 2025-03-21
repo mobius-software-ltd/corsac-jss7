@@ -23,6 +23,8 @@
 
 package org.restcomm.protocols.ss7.mtp;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -39,13 +41,13 @@ public class Mtp3TransferPrimitiveFactory {
         this.pointCodeFormat = pointCodeFormat;
     }
 
-    public Mtp3TransferPrimitive createMtp3TransferPrimitive(int si, int ni, int mp, int opc, int dpc, int sls, ByteBuf data) {
+    public Mtp3TransferPrimitive createMtp3TransferPrimitive(int si, int ni, int mp, int opc, int dpc, int sls, ByteBuf data,AtomicBoolean referenceLocker) {
         Mtp3TransferPrimitive mtp3TransferPrimitive = new Mtp3TransferPrimitive(si, ni, mp, opc, dpc, sls, data,
-                this.pointCodeFormat);
+                this.pointCodeFormat,referenceLocker);
         return mtp3TransferPrimitive;
     }
 
-    public Mtp3TransferPrimitive createMtp3TransferPrimitive(ByteBuf msg) {
+    public Mtp3TransferPrimitive createMtp3TransferPrimitive(ByteBuf msg, AtomicBoolean referenceLocker) {
         Mtp3TransferPrimitive mtp3TransferPrimitive = null;
 
         // sio
@@ -110,7 +112,7 @@ public class Mtp3TransferPrimitiveFactory {
                 // TODO : We don't support rest justyet
                 break;
         }
-        mtp3TransferPrimitive = new Mtp3TransferPrimitive(si, ni, mp, opc, dpc, sls, data, this.pointCodeFormat);
+        mtp3TransferPrimitive = new Mtp3TransferPrimitive(si, ni, mp, opc, dpc, sls, data, this.pointCodeFormat, referenceLocker);
         return mtp3TransferPrimitive;
     }
 }

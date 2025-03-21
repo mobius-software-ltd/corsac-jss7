@@ -85,7 +85,7 @@ public class ASNIA5String {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws UnsupportedEncodingException {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors, Integer level) throws UnsupportedEncodingException {
 		value=buffer.toString(ENCODING);
 		return false;
 	}

@@ -23,6 +23,8 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSM;
@@ -54,7 +56,7 @@ public class TransferMessageHandler extends MessageHandler {
         this.mtp3TransferPrimitiveFactory = m3uaManagement.getMtp3TransferPrimitiveFactory();
     }
 
-    public void handlePayload(PayloadData payload) {
+    public void handlePayload(PayloadData payload,AtomicBoolean referenceLocker) {
         RoutingContext rc = payload.getRoutingContext();
 
         if (rc == null) {
@@ -75,7 +77,7 @@ public class TransferMessageHandler extends MessageHandler {
                 ProtocolData protocolData = payload.getData();
                 Mtp3TransferPrimitive mtp3TransferPrimitive = this.mtp3TransferPrimitiveFactory.createMtp3TransferPrimitive(
                         protocolData.getSI(), protocolData.getNI(), protocolData.getMP(), protocolData.getOpc(),
-                        protocolData.getDpc(), protocolData.getSLS(), protocolData.getData());
+                        protocolData.getDpc(), protocolData.getSLS(), protocolData.getData(),referenceLocker);
                 ((AsImpl) aspImpl.getAs()).getM3UAManagement().sendTransferMessageToLocalUser(mtp3TransferPrimitive,
                         payload.getData().getSLS());
             } else {
@@ -108,7 +110,7 @@ public class TransferMessageHandler extends MessageHandler {
                 ProtocolData protocolData = payload.getData();
                 Mtp3TransferPrimitive mtp3TransferPrimitive = this.mtp3TransferPrimitiveFactory.createMtp3TransferPrimitive(
                         protocolData.getSI(), protocolData.getNI(), protocolData.getMP(), protocolData.getOpc(),
-                        protocolData.getDpc(), protocolData.getSLS(), protocolData.getData());
+                        protocolData.getDpc(), protocolData.getSLS(), protocolData.getData(),referenceLocker);
                 ((AsImpl) aspImpl.getAs()).getM3UAManagement().sendTransferMessageToLocalUser(mtp3TransferPrimitive,
                         payload.getData().getSLS());
             } else {

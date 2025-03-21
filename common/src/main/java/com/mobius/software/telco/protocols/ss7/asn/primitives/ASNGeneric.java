@@ -68,17 +68,17 @@ public abstract class ASNGeneric {
 	}
 	
 	@ASNDecode
-	public Object decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws ASNException {
+	public Object decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors,Integer level) throws ASNException {
 		if(buffer.readableBytes()==0)
 		{
 			this.value=null;
 			return false;
 		}
 		
-		return getDecodeResult(parser, parent, buffer, mappedData, skipErrors);
+		return getDecodeResult(parser, parent, buffer, mappedData, skipErrors, level);
 	}
 	
-	protected ASNDecodeResult getDecodeResult(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) throws ASNException {
+	protected ASNDecodeResult getDecodeResult(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors,Integer level) throws ASNException {
 		Class<?> clazz=this.getClass();
 		if(parent!=null) {
 			Method[] methods=parent.getClass().getMethods();
@@ -103,14 +103,14 @@ public abstract class ASNGeneric {
 		
 		ASNDecodeResult result;
 		if(this.value!=null) {
-			result=parser.getParser(clazz).decode(buffer,mappedData,skipErrors);
+			result=parser.getParser(clazz).decode(buffer,mappedData,skipErrors, level);
 			if(!result.getHadErrors() && result.getResult()!=null)
 				parser.getParser(clazz).merge(this.value, result.getResult());							
 		}
 		else {
-			result=parser.getParser(clazz).decode(buffer,mappedData,skipErrors);
+			result=parser.getParser(clazz).decode(buffer,mappedData,skipErrors, level);
 			this.value=result.getResult();
-		} 
+		}
 		
 		return result;
 	}

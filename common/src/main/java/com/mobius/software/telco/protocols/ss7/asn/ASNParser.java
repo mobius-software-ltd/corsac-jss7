@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNDecode;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNEncode;
@@ -67,6 +70,10 @@ import io.netty.buffer.Unpooled;
 
 public class ASNParser 
 {
+	protected Logger logger = LogManager.getLogger(ASNParser.class);
+
+    public static Integer MAX_DEPTH = 1000;
+	
 	private Class<?> defaultClass;
 	private ConcurrentHashMap<ASNHeader,Class<?>> rootClassMapping=new ConcurrentHashMap<ASNHeader,Class<?>>();
 	private ConcurrentHashMap<String,ParserClassData> cachedElements=new ConcurrentHashMap<String,ParserClassData>();
@@ -277,12 +284,12 @@ public class ASNParser
 	}
 	
 	public ASNDecodeResult decode(ByteBuf buffer)  throws ASNException {
-		return decode(buffer,new ConcurrentHashMap<Integer,Object>(),skipErrors);
+		return decode(buffer,new ConcurrentHashMap<Integer,Object>(),skipErrors, 0);
 	}
 	
-	public ASNDecodeResult decode(ByteBuf buffer, ConcurrentHashMap<Integer,Object> mappedData, Boolean skipErrors) throws ASNException {
+	public ASNDecodeResult decode(ByteBuf buffer, ConcurrentHashMap<Integer,Object> mappedData, Boolean skipErrors, Integer level) throws ASNException {
 		try {
-			return decode(null, buffer,skipErrors, null, null, rootClassMapping,cachedElements,null,mappedData, defaultClass);
+			return decode(null, buffer,skipErrors, null, null, rootClassMapping,cachedElements,null,mappedData, defaultClass, level + 1);
 		}
 		catch(ASNException ex) {
 			throw ex;
@@ -312,10 +319,37 @@ public class ASNParser
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private DecodeResult decode(Object parent,ByteBuf buffer,Boolean skipErrors,Field wildcardField, ConcurrentHashMap<ASNHeader, FieldData> fieldsMap,ConcurrentHashMap<ASNHeader,Class<?>> classMapping,ConcurrentHashMap<String,ParserClassData> cachedElements,Integer index,ConcurrentHashMap<Integer,Object> mappedData,Class<?> defaultClass) throws ASNException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
+	private DecodeResult decode(Object parent,ByteBuf buffer,Boolean skipErrors,Field wildcardField, ConcurrentHashMap<ASNHeader, FieldData> fieldsMap,ConcurrentHashMap<ASNHeader,Class<?>> classMapping,ConcurrentHashMap<String,ParserClassData> cachedElements,Integer index,ConcurrentHashMap<Integer,Object> mappedData,Class<?> defaultClass, Integer level) throws ASNException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException {
 		int oldIndex=buffer.readerIndex();
 		buffer.markReaderIndex();
 		ASNHeaderWithLength header=readHeader(buffer);
+		if(level.equals(MAX_DEPTH))
+		{
+			buffer.readerIndex(0);
+			try
+			{
+				logger.warn("we have reached max level for ASN Parser, the buffer content is " + toHex(buffer));
+			}
+			catch(Exception ex)
+			{
+				logger.warn("we have reached max level for ASN Parser, can not print buffer content!!!");					
+			}
+			
+			buffer.resetReaderIndex();
+			buffer.markReaderIndex();
+			
+			if(skipErrors) {
+				if(buffer.readableBytes()>=header.getLength())
+					buffer.skipBytes(header.getLength());
+				else
+					buffer.skipBytes(buffer.readableBytes());
+				
+				return new DecodeResult(null,parent,header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(),true, true, new ASNDecodeResult(null, parent, true, true, null));
+			}
+			else
+				throw new ASNDecodeException("We have a real problem here , the level of ASN parser got to " + MAX_DEPTH,header.getAsnTag(),header.getAsnClass(),header.getIsConstructed(),parent);
+		}
+		
 		if(buffer.readableBytes()<header.getLength()-2)
 		{
 			if(skipErrors) {
@@ -415,7 +449,7 @@ public class ASNParser
 					}
 					
 					try {
-						Object value=method.invoke(currObject,new Object[] { this, parent, buffer.slice(buffer.readerIndex(), header.getLength()), mappedData, skipErrors });
+						Object value=method.invoke(currObject,new Object[] { this, parent, buffer.slice(buffer.readerIndex(), header.getLength()), mappedData, skipErrors, level });
 						if(value instanceof Boolean)
 							hadErrors|=(Boolean)value;
 						else if(value instanceof ASNDecodeResult) {
@@ -453,7 +487,7 @@ public class ASNParser
 			
 			int originalIndex=buffer.readerIndex();
 			while((buffer.readerIndex()-originalIndex)<remainingBytes) {
-				DecodeResult innerValue=decode(currObject, buffer,skipErrors, cachedData.getWildcardField(),cachedData.getFieldsMap(),cachedData.getInnerMap(),cachedElements,innerIndex,mappedData, null);
+				DecodeResult innerValue=decode(currObject, buffer,skipErrors, cachedData.getWildcardField(),cachedData.getFieldsMap(),cachedData.getInnerMap(),cachedElements,innerIndex,mappedData, null, level + 1);
 				hadErrors|=innerValue.getHadErrors();
 				if(innerValue.getHadErrors() && errorResults==null)
 					errorResults=innerValue;
@@ -1273,4 +1307,13 @@ public class ASNParser
 			this.firstError=firstError;
 		}
 	}
+	
+	public static String toHex(ByteBuf b) {
+        String out = "";
+        for (int index = 0; index < b.readableBytes(); index++) {
+            out += "b[" + index + "][" + Integer.toHexString(b.readByte()) + "]\n";
+        }
+
+        return out;
+    }
 }

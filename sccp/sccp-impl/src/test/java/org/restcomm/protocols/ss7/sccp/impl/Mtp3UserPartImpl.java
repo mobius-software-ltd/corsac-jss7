@@ -26,6 +26,7 @@ package org.restcomm.protocols.ss7.sccp.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.restcomm.protocols.ss7.mtp.Mtp3EndCongestionPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3PausePrimitive;
@@ -72,7 +73,7 @@ public class Mtp3UserPartImpl extends Mtp3UserPartBaseImpl {
 
     public void sendMessage(Mtp3TransferPrimitive msg) throws IOException {
     	//we need to work with copy otherwise the buffer would be released
-    	Mtp3TransferPrimitive copy = new Mtp3TransferPrimitive(msg.getSi(), msg.getNi(), msg.getMp(), msg.getOpc(), msg.getDpc(), msg.getSls(), msg.getData().copy(),msg.getPointCodeFormat());
+    	Mtp3TransferPrimitive copy = new Mtp3TransferPrimitive(msg.getSi(), msg.getNi(), msg.getMp(), msg.getOpc(), msg.getDpc(), msg.getSls(), msg.getData().copy(),msg.getPointCodeFormat(),new AtomicBoolean(false));
         if (!this.otherParts.isEmpty()) {
             if (otherParts.size() == 1) {
                 this.otherParts.iterator().next().sendTransferMessageToLocalUser(copy, copy.getSls());
@@ -93,7 +94,7 @@ public class Mtp3UserPartImpl extends Mtp3UserPartBaseImpl {
         int mp = 0;
         int sls = 0;
         Mtp3TransferPrimitiveFactory factory = this.getMtp3TransferPrimitiveFactory();
-        Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(si, ni, mp, opc, dpc, sls, data);
+        Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(si, ni, mp, opc, dpc, sls, data,new AtomicBoolean(false));
         int seqControl = 0;
         this.sendTransferMessageToLocalUser(msg, seqControl);
     }

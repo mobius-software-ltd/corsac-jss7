@@ -109,7 +109,7 @@ public class ASNAnnotationsTest
 		 
 		 AssertionError expected = expectFailure.getFailure();
 		 assertThat(expected.getMessage()).contains("error: Element 'com.mobius.software.telco.protocols.ss7.asn.primitives.InvalidSignaturePrimitive' is annotated as @ASNTag, however its method getLength annoted with @ASNLength should have only one parameter");
-		 assertThat(expected.getMessage()).contains("error: Element 'com.mobius.software.telco.protocols.ss7.asn.primitives.InvalidSignaturePrimitive' is annotated as @ASNTag, however its method decode annoted with @ASNDecode should have four parameters");	
+		 assertThat(expected.getMessage()).contains("error: Element 'com.mobius.software.telco.protocols.ss7.asn.primitives.InvalidSignaturePrimitive' is annotated as @ASNTag, however its method decode annoted with @ASNDecode should have six parameters");	
 		 assertThat(expected.getMessage()).contains("error: Element 'com.mobius.software.telco.protocols.ss7.asn.primitives.InvalidSignaturePrimitive' is annotated as @ASNTag, however its method encode annoted with @ASNEncode should have two parameters");
 	 }
 	 

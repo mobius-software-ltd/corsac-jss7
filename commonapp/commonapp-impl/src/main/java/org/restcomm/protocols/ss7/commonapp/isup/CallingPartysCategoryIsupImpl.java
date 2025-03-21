@@ -82,7 +82,7 @@ public class CallingPartysCategoryIsupImpl implements CallingPartysCategoryIsup 
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors,Integer level) {
 		try {
 			this.category=new CallingPartyCategoryImpl(buffer);
 		} catch (ParameterException e) {

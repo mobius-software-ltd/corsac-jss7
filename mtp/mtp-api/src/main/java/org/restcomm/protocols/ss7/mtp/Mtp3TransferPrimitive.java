@@ -22,6 +22,8 @@
 
 package org.restcomm.protocols.ss7.mtp;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.util.ReferenceCountUtil;
@@ -42,9 +44,10 @@ public class Mtp3TransferPrimitive {
     protected final ByteBuf data;
 
     private final RoutingLabelFormat pointCodeFormat;
-
+    private AtomicBoolean referenceLocker;
+    
     public Mtp3TransferPrimitive(int si, int ni, int mp, int opc, int dpc, int sls, ByteBuf data,
-            RoutingLabelFormat pointCodeFormat) {
+            RoutingLabelFormat pointCodeFormat,AtomicBoolean referenceLocker) {
         this.si = si;
         this.ni = ni;
         this.mp = mp;
@@ -54,6 +57,7 @@ public class Mtp3TransferPrimitive {
         this.data = data;
 
         this.pointCodeFormat = pointCodeFormat;
+        this.referenceLocker = referenceLocker;
     }
 
     public int getSi() {
@@ -97,8 +101,11 @@ public class Mtp3TransferPrimitive {
     }
     
     public void releaseFully() {
-    	if(this.data.refCnt()>0)
-    		ReferenceCountUtil.release(this.data,this.data.refCnt());    	
+    	if(referenceLocker.compareAndSet(false, true))
+    	{
+    		if(this.data.refCnt()>0)
+    			ReferenceCountUtil.release(this.data,this.data.refCnt());
+    	}
     }
 
     public ByteBuf encodeMtp3() {

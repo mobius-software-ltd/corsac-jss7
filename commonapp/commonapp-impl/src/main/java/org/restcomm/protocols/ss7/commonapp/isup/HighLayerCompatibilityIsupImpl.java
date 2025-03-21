@@ -79,7 +79,7 @@ public class HighLayerCompatibilityIsupImpl implements HighLayerCompatibilityIsu
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors,Integer level) {
 		try {
 			this.teleserviceInformation=new UserTeleserviceInformationImpl(buffer);
 		} catch (ParameterException e) {

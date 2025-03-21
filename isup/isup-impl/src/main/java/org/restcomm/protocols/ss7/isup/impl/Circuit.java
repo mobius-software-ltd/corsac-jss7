@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.restcomm.protocols.ss7.isup.ISUPEvent;
 import org.restcomm.protocols.ss7.isup.ISUPTimeoutEvent;
@@ -281,7 +282,7 @@ class Circuit {
         int sls = message.getSls() & 0x0F; // promote
 
         Mtp3TransferPrimitiveFactory factory = this.provider.stack.getMtp3UserPart().getMtp3TransferPrimitiveFactory();
-        Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(si, ni, 0, opc, dpc, sls, buffer);
+        Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(si, ni, 0, opc, dpc, sls, buffer,new AtomicBoolean(false));
         return msg;
     }
 

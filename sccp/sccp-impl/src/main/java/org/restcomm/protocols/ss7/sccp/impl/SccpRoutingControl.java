@@ -31,6 +31,7 @@ import static org.restcomm.protocols.ss7.sccp.parameter.ReleaseCauseValue.SCCP_F
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -278,14 +279,14 @@ public class SccpRoutingControl {
                 if (erd.getSolidData() != null) {
                     // nonsegmented data
                     Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(Mtp3UserPartBaseImpl._SI_SERVICE_SCCP, sap.getNi(), 0,
-                            sap.getOpc(), dpc, sls, erd.getSolidData());
+                            sap.getOpc(), dpc, sls, erd.getSolidData(),new AtomicBoolean(false));
                     
                     sccpStackImpl.sendMessageToMTP(message,mup,msg);                    
                 } else {
                     // segmented data
                     for (ByteBuf bf : erd.getSegementedData()) {
                         Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(Mtp3UserPartBaseImpl._SI_SERVICE_SCCP, sap.getNi(), 0,
-                                sap.getOpc(), dpc, sls, bf);
+                                sap.getOpc(), dpc, sls, bf,new AtomicBoolean(false));
                         sccpStackImpl.sendMessageToMTP(message,mup,msg);
                     }
                 }
@@ -336,7 +337,7 @@ public class SccpRoutingControl {
             case Success:
                 Mtp3TransferPrimitiveFactory factory = mup.getMtp3TransferPrimitiveFactory();
                 Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(Mtp3UserPartBaseImpl._SI_SERVICE_SCCP, sap.getNi(), 0,
-                        sap.getOpc(), dpc, sls, erd.getSolidData());
+                        sap.getOpc(), dpc, sls, erd.getSolidData(),new AtomicBoolean(false));
                 sccpStackImpl.sendMessageToMTP(message,mup,msg);
 //                if (erd.getSolidData() != null) {
 //                    // nonsegmented data
@@ -397,7 +398,7 @@ public class SccpRoutingControl {
                 if (erd.getSolidData() != null) {
                     // nonsegmented data
                     Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(Mtp3UserPartBaseImpl._SI_SERVICE_SCCP, sap.getNi(), 0,
-                            sap.getOpc(), dpc, 0, erd.getSolidData());
+                            sap.getOpc(), dpc, 0, erd.getSolidData(),new AtomicBoolean(false));
                     sccpStackImpl.sendMessageToMTP(message,mup,msg);
                 } else {
                     // segmented data - not possible for a management message

@@ -1,6 +1,6 @@
 package org.restcomm.protocols.ss7.map;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 
 import org.junit.Test;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;

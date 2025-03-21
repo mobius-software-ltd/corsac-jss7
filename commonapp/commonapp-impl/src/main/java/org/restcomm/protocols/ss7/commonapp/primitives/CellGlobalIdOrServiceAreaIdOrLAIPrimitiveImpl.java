@@ -82,15 +82,15 @@ public class CellGlobalIdOrServiceAreaIdOrLAIPrimitiveImpl {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors,Integer level) {
 		if(buffer.readableBytes()>0) {
 			if(buffer.readableBytes()==5) {
 				LAIFixedLengthImpl lai=new LAIFixedLengthImpl();
-				lai.decode(parser, parent, buffer, mappedData,skipErrors);
+				lai.decode(parser, parent, buffer, mappedData,skipErrors,level);
 				cellGlobalIdOrServiceAreaIdOrLAI=new CellGlobalIdOrServiceAreaIdOrLAIImpl(lai);
 			} else if(buffer.readableBytes()==7) {
 				CellGlobalIdOrServiceAreaIdFixedLengthImpl cgi=new CellGlobalIdOrServiceAreaIdFixedLengthImpl();
-				cgi.decode(parser, parent, buffer, mappedData,skipErrors);
+				cgi.decode(parser, parent, buffer, mappedData,skipErrors,level);
 				cellGlobalIdOrServiceAreaIdOrLAI=new CellGlobalIdOrServiceAreaIdOrLAIImpl(cgi);
 			}
 		}			

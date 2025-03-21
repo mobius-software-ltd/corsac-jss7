@@ -74,7 +74,7 @@ public class MAPOpenInfoTest {
                 0x00, (byte) 0x80, 0x00, (byte) 0xf2, (byte) 0x81, 0x07, (byte) 0x91, 0x13, 0x26, (byte) 0x98, (byte) 0x86,
                 0x03, (byte) 0xf0, 0x00, 0x00 };
 
-        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data),null,true);
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data),null,true,0);
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof MAPOpenInfoImpl);
         MAPOpenInfoImpl mapOpenInfoImpl = (MAPOpenInfoImpl)result.getResult();
@@ -95,7 +95,7 @@ public class MAPOpenInfoTest {
         assertTrue(origRef.getAddress().equals("31628968300"));
         assertFalse(mapOpenInfoImpl.getEriStyle());
 
-        result=parser.decode(Unpooled.wrappedBuffer(this.getDataFull()),null,true);
+        result=parser.decode(Unpooled.wrappedBuffer(this.getDataFull()),null,true,0);
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof MAPOpenInfoImpl);
         mapOpenInfoImpl = (MAPOpenInfoImpl)result.getResult();
@@ -118,7 +118,7 @@ public class MAPOpenInfoTest {
         assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(mapOpenInfoImpl.getExtensionContainer()));
         assertFalse(mapOpenInfoImpl.getEriStyle());
 
-        result=parser.decode(Unpooled.wrappedBuffer(this.getDataEri()),null,true);
+        result=parser.decode(Unpooled.wrappedBuffer(this.getDataEri()),null,true,0);
         assertFalse(result.getHadErrors());
         assertTrue(result.getResult() instanceof MAPOpenInfoImpl);
         mapOpenInfoImpl = (MAPOpenInfoImpl)result.getResult();

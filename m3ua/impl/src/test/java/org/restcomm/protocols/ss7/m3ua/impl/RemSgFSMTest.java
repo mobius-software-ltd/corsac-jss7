@@ -38,6 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -205,7 +206,7 @@ public class RemSgFSMTest {
 
         // The other side will send ASP_UP_ACK and after that NTFY(AS-INACTIVE)
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP_ACK);
-        localAspFactory.read(message);
+        localAspFactory.read(message,new AtomicBoolean(false));
 
         assertEquals(aspImpl.getState().getName(), State.STATE_INACTIVE);
         assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AspInactive, System
@@ -215,7 +216,7 @@ public class RemSgFSMTest {
         notify.setRoutingContext(rc);
         Status status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_INACTIVE);
         notify.setStatus(status);
-        localAspFactory.read(notify);
+        localAspFactory.read(notify,new AtomicBoolean(false));
 
         assertEquals(asImpl.getState().getName(), State.STATE_INACTIVE);
         assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AsInactive, System
@@ -234,7 +235,7 @@ public class RemSgFSMTest {
         ASPActiveAck aspActiveAck = (ASPActiveAck) messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE,
                 MessageType.ASP_ACTIVE_ACK);
         aspActiveAck.setRoutingContext(rc);
-        localAspFactory.read(aspActiveAck);
+        localAspFactory.read(aspActiveAck,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(aspLocalFSM));
         assertEquals(aspImpl.getState().getName(), State.STATE_ACTIVE);
@@ -245,7 +246,7 @@ public class RemSgFSMTest {
         notify.setRoutingContext(rc);
         status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_ACTIVE);
         notify.setStatus(status);
-        localAspFactory.read(notify);
+        localAspFactory.read(notify,new AtomicBoolean(false));
 
         // also the AS should be ACTIVE now
         assertEquals(AsState.ACTIVE, this.getAsState(asPeerFSM));
@@ -324,7 +325,7 @@ public class RemSgFSMTest {
 
         ASPDownAck aspDownAck = (ASPDownAck) messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE,
                 MessageType.ASP_DOWN_ACK);
-        localAspFactory.read(aspDownAck);
+        localAspFactory.read(aspDownAck,new AtomicBoolean(false));
 
     }
 
@@ -375,7 +376,7 @@ public class RemSgFSMTest {
 
         // The other side will send ASP_UP_ACK and after that NTFY(AS-INACTIVE)
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP_ACK);
-        localAspFactory.read(message);
+        localAspFactory.read(message,new AtomicBoolean(false));
 
         assertEquals(aspImpl.getState().getName(), State.STATE_INACTIVE);
         assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AspInactive, System
@@ -384,7 +385,7 @@ public class RemSgFSMTest {
         Notify notify = (Notify) messageFactory.createMessage(MessageClass.MANAGEMENT, MessageType.NOTIFY);
         Status status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_INACTIVE);
         notify.setStatus(status);
-        localAspFactory.read(notify);
+        localAspFactory.read(notify,new AtomicBoolean(false));
 
         assertEquals(asImpl.getState().getName(), State.STATE_INACTIVE);
         assertTrue(this.m3uaManagementEventListenerImpl.validateEvent(new TestEvent(TestEventType.AsInactive, System
@@ -401,7 +402,7 @@ public class RemSgFSMTest {
         // NTFY(AS-ACTIVE)
         ASPActiveAck aspActiveAck = (ASPActiveAck) messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE,
                 MessageType.ASP_ACTIVE_ACK);
-        localAspFactory.read(aspActiveAck);
+        localAspFactory.read(aspActiveAck,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(aspLocalFSM));
         assertEquals(aspImpl.getState().getName(), State.STATE_ACTIVE);
@@ -411,7 +412,7 @@ public class RemSgFSMTest {
         notify = (Notify) messageFactory.createMessage(MessageClass.MANAGEMENT, MessageType.NOTIFY);
         status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_ACTIVE);
         notify.setStatus(status);
-        localAspFactory.read(notify);
+        localAspFactory.read(notify,new AtomicBoolean(false));
 
         // also the AS should be ACTIVE now
         assertEquals(AsState.ACTIVE, this.getAsState(asPeerFSM));
@@ -477,7 +478,7 @@ public class RemSgFSMTest {
 
         ASPDownAck aspDownAck = (ASPDownAck) messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE,
                 MessageType.ASP_DOWN_ACK);
-        localAspFactory.read(aspDownAck);
+        localAspFactory.read(aspDownAck,new AtomicBoolean(false));
     }
 
     @Test
@@ -543,25 +544,25 @@ public class RemSgFSMTest {
         // The other side will send ASP_UP_ACK and after that NTFY(AS-INACTIVE)
         // for both the AS
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP_ACK);
-        aspFactoryImpl1.read(message);
-        aspFactoryImpl2.read(message);
+        aspFactoryImpl1.read(message,new AtomicBoolean(false));
+        aspFactoryImpl2.read(message,new AtomicBoolean(false));
 
         Notify notify = (Notify) messageFactory.createMessage(MessageClass.MANAGEMENT, MessageType.NOTIFY);
         Status status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_INACTIVE);
         notify.setStatus(status);
-        aspFactoryImpl1.read(notify);
-        aspFactoryImpl2.read(notify);
+        aspFactoryImpl1.read(notify,new AtomicBoolean(false));
+        aspFactoryImpl2.read(notify,new AtomicBoolean(false));
 
         // The other side will send ASP_ACTIVE_ACK and after that NTFY(AS-ACTIVE)
         ASPActiveAck aspActiveAck = (ASPActiveAck) messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE,
                 MessageType.ASP_ACTIVE_ACK);
-        aspFactoryImpl1.read(aspActiveAck);
-        aspFactoryImpl2.read(aspActiveAck);
+        aspFactoryImpl1.read(aspActiveAck,new AtomicBoolean(false));
+        aspFactoryImpl2.read(aspActiveAck,new AtomicBoolean(false));
 
         notify = (Notify) messageFactory.createMessage(MessageClass.MANAGEMENT, MessageType.NOTIFY);
         status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_ACTIVE);
         notify.setStatus(status);
-        aspFactoryImpl1.read(notify);
+        aspFactoryImpl1.read(notify,new AtomicBoolean(false));
 
         // Check if MTP3 RESUME received
         // lets wait for 2second to receive the MTP3 primitive before giving up
@@ -572,7 +573,7 @@ public class RemSgFSMTest {
         assertNotNull(mtp3Primitive);
         assertEquals(Mtp3Primitive.RESUME, mtp3Primitive.getType());
 
-        aspFactoryImpl2.read(notify);
+        aspFactoryImpl2.read(notify,new AtomicBoolean(false));
 
         // Send Transfer Message and check load balancing behavior
         // int si, int ni, int mp, int opc, int dpc, int sls, byte[] data,
@@ -583,7 +584,7 @@ public class RemSgFSMTest {
 
         for (int sls = 0; sls < 256; sls++) {
             Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
-                    1, 2, 3, 4 }));
+                    1, 2, 3, 4 }),new AtomicBoolean(false));
             clientM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -605,7 +606,7 @@ public class RemSgFSMTest {
 
         ASPDownAck aspDownAck = (ASPDownAck) messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE,
                 MessageType.ASP_DOWN_ACK);
-        aspFactoryImpl1.read(aspDownAck);
+        aspFactoryImpl1.read(aspDownAck,new AtomicBoolean(false));
 
         // lets wait for 3 seconds to receive the MTP3 primitive before giving
         // up. We know Pending timeout is 2 secs
@@ -620,7 +621,7 @@ public class RemSgFSMTest {
 
         for (int sls = 0; sls < 256; sls++) {
             Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, Unpooled.wrappedBuffer(new byte[] {
-                    1, 2, 3, 4 }));
+                    1, 2, 3, 4 }),new AtomicBoolean(false));
             clientM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
@@ -634,7 +635,7 @@ public class RemSgFSMTest {
         // Bring down one AS2
         // Lets stop ASP Factory
         aspFactoryImpl2.stop();
-        aspFactoryImpl2.read(aspDownAck);
+        aspFactoryImpl2.read(aspDownAck,new AtomicBoolean(false));
 
         // lets wait for 3 seconds to receive the MTP3 primitive before giving
         // up. We know Pending timeout is 2 secs
@@ -724,7 +725,7 @@ public class RemSgFSMTest {
         // The other side will send ASP_UP_ACK and after that NTFY(AS-INACTIVE)
         // for both the AS
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP_ACK);
-        aspFactoryImpl.read(message);
+        aspFactoryImpl.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE_SENT, this.getAspState(asp1LocalFSM));
         assertEquals(AspState.ACTIVE_SENT, this.getAspState(asp2LocalFSM));
@@ -754,7 +755,7 @@ public class RemSgFSMTest {
         notify.setRoutingContext(rc1);
         Status status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_INACTIVE);
         notify.setStatus(status);
-        aspFactoryImpl.read(notify);
+        aspFactoryImpl.read(notify,new AtomicBoolean(false));
 
         // the AS1 should be INACTIVE now but AS2 still DOWN
         assertEquals(AsState.INACTIVE, this.getAsState(as1PeerFSM));
@@ -769,7 +770,7 @@ public class RemSgFSMTest {
         notify.setRoutingContext(rc2);// RC 200
         status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_INACTIVE);
         notify.setStatus(status);
-        aspFactoryImpl.read(notify);
+        aspFactoryImpl.read(notify,new AtomicBoolean(false));
 
         // AS2 should be INACTIVE now
         assertEquals(AsState.INACTIVE, this.getAsState(as2PeerFSM));
@@ -782,7 +783,7 @@ public class RemSgFSMTest {
         ASPActiveAck aspActiveAck = (ASPActiveAck) messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE,
                 MessageType.ASP_ACTIVE_ACK);
         aspActiveAck.setRoutingContext(this.parmFactory.createRoutingContext(new long[] { 100, 200 }));
-        aspFactoryImpl.read(aspActiveAck);
+        aspFactoryImpl.read(aspActiveAck,new AtomicBoolean(false));
 
         // Both ASP are ACTIVE now
         assertEquals(AspState.ACTIVE, this.getAspState(asp1LocalFSM));
@@ -799,7 +800,7 @@ public class RemSgFSMTest {
         notify.setRoutingContext(rc1);
         status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_ACTIVE);
         notify.setStatus(status);
-        aspFactoryImpl.read(notify);
+        aspFactoryImpl.read(notify,new AtomicBoolean(false));
 
         // the AS1 should be ACTIVE now but AS2 still INACTIVE
         assertEquals(AsState.ACTIVE, this.getAsState(as1PeerFSM));
@@ -841,7 +842,7 @@ public class RemSgFSMTest {
         notify.setRoutingContext(rc2);
         status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_ACTIVE);
         notify.setStatus(status);
-        aspFactoryImpl.read(notify);
+        aspFactoryImpl.read(notify,new AtomicBoolean(false));
 
         // the AS2 is also ACTIVE now
         assertEquals(AsState.ACTIVE, this.getAsState(as1PeerFSM));
@@ -952,7 +953,7 @@ public class RemSgFSMTest {
 
         ASPDownAck aspDownAck = (ASPDownAck) messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE,
                 MessageType.ASP_DOWN_ACK);
-        aspFactoryImpl.read(aspDownAck);
+        aspFactoryImpl.read(aspDownAck,new AtomicBoolean(false));
     }
 
     @Test
@@ -1020,7 +1021,7 @@ public class RemSgFSMTest {
 
         // Far end send ASP_UP_ACK and NTFY
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP_ACK);
-        aspFactory1.read(message);
+        aspFactory1.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE_SENT, this.getAspState(asp1LocalFSM));
         assertEquals(remAsp1.getState().getName(), State.STATE_INACTIVE);
@@ -1032,7 +1033,7 @@ public class RemSgFSMTest {
         notify.setRoutingContext(rc);
         Status status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_INACTIVE);
         notify.setStatus(status);
-        aspFactory1.read(notify);
+        aspFactory1.read(notify,new AtomicBoolean(false));
         // the AS1 should be INACTIVE
         assertEquals(AsState.INACTIVE, this.getAsState(asPeerFSM));
         assertEquals(remAs.getState().getName(), State.STATE_INACTIVE);
@@ -1045,7 +1046,7 @@ public class RemSgFSMTest {
                 MessageType.ASP_ACTIVE_ACK);
         aspActiveAck.setRoutingContext(rc);
         aspActiveAck.setTrafficModeType(trModType);
-        aspFactory1.read(aspActiveAck);
+        aspFactory1.read(aspActiveAck,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(asp1LocalFSM));
         assertEquals(remAsp1.getState().getName(), State.STATE_ACTIVE);
@@ -1056,8 +1057,8 @@ public class RemSgFSMTest {
         notify.setRoutingContext(rc);
         status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_ACTIVE);
         notify.setStatus(status);
-        aspFactory1.read(notify);
-        aspFactory2.read(notify);
+        aspFactory1.read(notify,new AtomicBoolean(false));
+        aspFactory2.read(notify,new AtomicBoolean(false));
 
         assertEquals(AsState.ACTIVE, this.getAsState(asPeerFSM));
         assertEquals(remAs.getState().getName(), State.STATE_ACTIVE);
@@ -1085,7 +1086,7 @@ public class RemSgFSMTest {
         assertTrue(validateMessage(testAssociation2, MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP, -1, -1));
         // Far end send ASP_UP_ACK
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP_ACK);
-        aspFactory2.read(message);
+        aspFactory2.read(message,new AtomicBoolean(false));
 
         // ASP2 now is INACTIVE as ASP1 is still ACTIVATING
         assertEquals(AspState.INACTIVE, this.getAspState(asp2LocalFSM));
@@ -1117,7 +1118,7 @@ public class RemSgFSMTest {
         aspActiveAck = (ASPActiveAck) messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE,
                 MessageType.ASP_ACTIVE_ACK);
         aspActiveAck.setRoutingContext(rc);
-        aspFactory2.read(aspActiveAck);
+        aspFactory2.read(aspActiveAck,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(asp2LocalFSM));
         assertEquals(remAsp2.getState().getName(), State.STATE_ACTIVE);
@@ -1129,7 +1130,7 @@ public class RemSgFSMTest {
         notify.setRoutingContext(rc);
         status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_ACTIVE);
         notify.setStatus(status);
-        aspFactory2.read(notify);
+        aspFactory2.read(notify,new AtomicBoolean(false));
 
         assertEquals(AsState.ACTIVE, this.getAsState(asPeerFSM));
         assertEquals(remAs.getState().getName(), State.STATE_ACTIVE);
@@ -1154,7 +1155,7 @@ public class RemSgFSMTest {
 
         // The far end sends DOWN_ACK
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN_ACK);
-        aspFactory2.read(message);
+        aspFactory2.read(message,new AtomicBoolean(false));
 
     }
     
@@ -1209,7 +1210,7 @@ public class RemSgFSMTest {
 
         // Far end send ASP_UP_ACK and NTFY
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP_ACK);
-        aspFactory1.read(message);
+        aspFactory1.read(message,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE_SENT, this.getAspState(asp1LocalFSM));
         assertEquals(remAsp1.getState().getName(), State.STATE_INACTIVE);
@@ -1221,7 +1222,7 @@ public class RemSgFSMTest {
         notify.setRoutingContext(rc);
         Status status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_ACTIVE);
         notify.setStatus(status);
-        aspFactory1.read(notify);
+        aspFactory1.read(notify,new AtomicBoolean(false));
         // the AS1 should be ACTIVE
         assertEquals(AsState.ACTIVE, this.getAsState(asPeerFSM));
         assertEquals(remAs.getState().getName(), State.STATE_ACTIVE);
@@ -1234,7 +1235,7 @@ public class RemSgFSMTest {
                 MessageType.ASP_ACTIVE_ACK);
         aspActiveAck.setRoutingContext(rc);
         aspActiveAck.setTrafficModeType(trModType);
-        aspFactory1.read(aspActiveAck);
+        aspFactory1.read(aspActiveAck,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(asp1LocalFSM));
         assertEquals(remAsp1.getState().getName(), State.STATE_ACTIVE);
@@ -1318,13 +1319,13 @@ public class RemSgFSMTest {
 
         // The other side will send ASP_UP_ACK and after that NTFY(AS-INACTIVE)
         M3UAMessageImpl message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP_ACK);
-        localAspFactory.read(message);
+        localAspFactory.read(message,new AtomicBoolean(false));
 
         Notify notify = (Notify) messageFactory.createMessage(MessageClass.MANAGEMENT, MessageType.NOTIFY);
         notify.setRoutingContext(rc);
         Status status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_INACTIVE);
         notify.setStatus(status);
-        localAspFactory.read(notify);
+        localAspFactory.read(notify,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE_SENT, this.getAspState(aspLocalFSM));
         assertTrue(validateMessage(testAssociation, MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE, -1, -1));
@@ -1336,13 +1337,13 @@ public class RemSgFSMTest {
         ASPActiveAck aspActiveAck = (ASPActiveAck) messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE,
                 MessageType.ASP_ACTIVE_ACK);
         aspActiveAck.setRoutingContext(rc);
-        localAspFactory.read(aspActiveAck);
+        localAspFactory.read(aspActiveAck,new AtomicBoolean(false));
 
         notify = (Notify) messageFactory.createMessage(MessageClass.MANAGEMENT, MessageType.NOTIFY);
         notify.setRoutingContext(rc);
         status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_ACTIVE);
         notify.setStatus(status);
-        localAspFactory.read(notify);
+        localAspFactory.read(notify,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(aspLocalFSM));
         // also the AS should be ACTIVE now
@@ -1370,7 +1371,7 @@ public class RemSgFSMTest {
 
         // The far end sends DOWN_ACK
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN_ACK);
-        localAspFactory.read(message);
+        localAspFactory.read(message,new AtomicBoolean(false));
 
         // start the ASP Factory again
         localAspFactory.start();
@@ -1394,13 +1395,13 @@ public class RemSgFSMTest {
 
         // The other side will send ASP_UP_ACK and after that NTFY(AS-INACTIVE)
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_UP_ACK);
-        localAspFactory.read(message);
+        localAspFactory.read(message,new AtomicBoolean(false));
 
         notify = (Notify) messageFactory.createMessage(MessageClass.MANAGEMENT, MessageType.NOTIFY);
         notify.setRoutingContext(rc);
         status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_INACTIVE);
         notify.setStatus(status);
-        localAspFactory.read(notify);
+        localAspFactory.read(notify,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE_SENT, this.getAspState(aspLocalFSM));
         assertTrue(validateMessage(testAssociation, MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_ACTIVE, -1, -1));
@@ -1412,13 +1413,13 @@ public class RemSgFSMTest {
         aspActiveAck = (ASPActiveAck) messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE,
                 MessageType.ASP_ACTIVE_ACK);
         aspActiveAck.setRoutingContext(rc);
-        localAspFactory.read(aspActiveAck);
+        localAspFactory.read(aspActiveAck,new AtomicBoolean(false));
 
         notify = (Notify) messageFactory.createMessage(MessageClass.MANAGEMENT, MessageType.NOTIFY);
         notify.setRoutingContext(rc);
         status = parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_ACTIVE);
         notify.setStatus(status);
-        localAspFactory.read(notify);
+        localAspFactory.read(notify,new AtomicBoolean(false));
 
         assertEquals(AspState.ACTIVE, this.getAspState(aspLocalFSM));
         // also the AS should be ACTIVE now
@@ -1447,7 +1448,7 @@ public class RemSgFSMTest {
 
         // The far end sends DOWN_ACK
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN_ACK);
-        localAspFactory.read(message);
+        localAspFactory.read(message,new AtomicBoolean(false));
 
     }
 

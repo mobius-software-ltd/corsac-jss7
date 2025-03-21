@@ -93,7 +93,7 @@ public class SmsSignalInfoImpl extends ASNOctetString implements SmsSignalInfo {
             sb.append("MO case: ");
             sb.append(tpdu.toString());
             moExists = true;
-        } catch (MAPException e) {
+        } catch (Exception e) {
         }
         try {
             if (moExists)
@@ -104,7 +104,7 @@ public class SmsSignalInfoImpl extends ASNOctetString implements SmsSignalInfo {
             SmsTpduImpl tpdu = SmsTpduImpl.createInstance(buffer, false, getGsm8Charset());
             sb.append("MT case: ");
             sb.append(tpdu.toString());
-        } catch (MAPException e) {
+        } catch (Exception e) {
         }
 
         sb.append("]");

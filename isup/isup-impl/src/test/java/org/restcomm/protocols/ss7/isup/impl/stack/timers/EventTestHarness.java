@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.restcomm.protocols.ss7.isup.ISUPEvent;
 import org.restcomm.protocols.ss7.isup.ISUPListener;
@@ -159,7 +160,7 @@ public abstract class EventTestHarness /* extends TestCase */implements ISUPList
 
             // this.userPart.toRead.add(msg);
             Mtp3TransferPrimitiveFactory factory = stack.getMtp3UserPart().getMtp3TransferPrimitiveFactory();
-            Mtp3TransferPrimitive mtpMsg = factory.createMtp3TransferPrimitive(si, ni, 0, opc, dpc, sls, message);
+            Mtp3TransferPrimitive mtpMsg = factory.createMtp3TransferPrimitive(si, ni, 0, opc, dpc, sls, message,new AtomicBoolean(false));
             this.userPart.sendTransferMessageToLocalUser(mtpMsg, mtpMsg.getSls());
 
         } catch (Exception e) {

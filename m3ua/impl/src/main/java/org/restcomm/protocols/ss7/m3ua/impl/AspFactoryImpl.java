@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.LogManager;
@@ -344,11 +345,11 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
         return this.name;
     }
 
-    protected void read(M3UAMessage message) {
-    	read(message,null);
+    protected void read(M3UAMessage message, AtomicBoolean referenceLocker) {
+    	read(message,null, referenceLocker);
     }
     
-    protected void read(M3UAMessage message,Integer bytes) {
+    protected void read(M3UAMessage message,Integer bytes, AtomicBoolean referenceLocker) {
     	messagesReceivedByType.get(MessageType.getName(message.getMessageClass(), message.getMessageType())).incrementAndGet();
     	
     	//this is for test only where count is not required
@@ -378,7 +379,7 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
                 switch (message.getMessageType()) {
                     case MessageType.PAYLOAD:
                     	PayloadData payload = (PayloadData) message;                    	
-                    	this.transferMessageHandler.handlePayload(payload);
+                    	this.transferMessageHandler.handlePayload(payload,referenceLocker);
                         break;
                     default:
                         logger.error(String.format("Rx : Transfer message with invalid MessageType=%d message=%s",
@@ -764,15 +765,17 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
     	int bytes=byteBuf.readableBytes();
         M3UAMessage m3UAMessage;
         if (ipChannelType == IpChannelType.SCTP) {
+        	AtomicBoolean referenceLocker = new AtomicBoolean(false);
             try {
                 // TODO where is streamNumber stored?
                 m3UAMessage = this.messageFactory.createMessage(byteBuf);
                 if (this.isHeartBeatEnabled()) {
                     this.heartBeatTimer.reset();
                 }
-                this.read(m3UAMessage,bytes);                               
+                this.read(m3UAMessage,bytes,referenceLocker);                               
             } finally {
-                ReferenceCountUtil.release(byteBuf);
+            	if(referenceLocker.compareAndSet(false, true))
+            		ReferenceCountUtil.release(byteBuf);
             }
         } else {
             if (tcpIncBuffer == null) {
@@ -790,7 +793,8 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
                 if (this.isHeartBeatEnabled()) {
                     this.heartBeatTimer.reset();
                 }
-                this.read(m3UAMessage,messageBytes);
+                AtomicBoolean referenceLocker = new AtomicBoolean(false);
+                this.read(m3UAMessage,messageBytes,referenceLocker);
                 bytes=tcpIncBuffer.readableBytes();
             }
             tcpIncBuffer.discardReadBytes();

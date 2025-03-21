@@ -82,7 +82,7 @@ public class ASNCorrelationID {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser, Object length, ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser, Object length, ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors,Integer level) {
 		if(buffer.readableBytes()>0)
 			firstValue=buffer.readByte();
 		

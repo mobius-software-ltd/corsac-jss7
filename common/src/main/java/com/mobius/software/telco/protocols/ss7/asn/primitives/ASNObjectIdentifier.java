@@ -98,7 +98,7 @@ public class ASNObjectIdentifier {
 	}
 	
 	@ASNDecode
-	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors) {
+	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors, Integer level) {
 		int b = 0x00FF & buffer.readByte();
 
 		long currValue = b / 40;

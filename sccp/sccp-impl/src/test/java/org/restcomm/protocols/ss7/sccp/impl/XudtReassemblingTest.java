@@ -35,6 +35,9 @@ import org.restcomm.protocols.ss7.sccp.SignallingPointStatus;
 import org.restcomm.protocols.ss7.sccp.impl.router.RouterImpl;
 import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.message.SccpNoticeMessage;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.junit.Test;
 /**
  * 
@@ -82,11 +85,11 @@ public class XudtReassemblingTest {
         router.addMtp3ServiceAccessPoint(1, 1, 1002, 2, 0, null);
 
         Mtp3TransferPrimitiveFactory mtp3TransferPrimitiveFactory = new Mtp3TransferPrimitiveFactory(RoutingLabelFormat.ITU);
-        Mtp3TransferPrimitive mtp3Msg = mtp3TransferPrimitiveFactory.createMtp3TransferPrimitive(3, 2, 0, 1001, 1002, 5, data1);
+        Mtp3TransferPrimitive mtp3Msg = mtp3TransferPrimitiveFactory.createMtp3TransferPrimitive(3, 2, 0, 1001, 1002, 5, data1,new AtomicBoolean(false));
         sccpStack.onMtp3TransferMessage(mtp3Msg);
 
         mtp3TransferPrimitiveFactory = new Mtp3TransferPrimitiveFactory(RoutingLabelFormat.ITU);
-        mtp3Msg = mtp3TransferPrimitiveFactory.createMtp3TransferPrimitive(3, 2, 0, 1001, 1002, 5, data2);
+        mtp3Msg = mtp3TransferPrimitiveFactory.createMtp3TransferPrimitive(3, 2, 0, 1001, 1002, 5, data2,new AtomicBoolean(false));
         sccpStack.onMtp3TransferMessage(mtp3Msg);
     }
 

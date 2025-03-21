@@ -56,6 +56,7 @@ import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNWrappedTag;
 public class ASNTagAnnotationProcessor extends AbstractProcessor {
 	private static final String EXPECTED_ENCODE_DECODE_PARAM=ByteBuf.class.getCanonicalName();
 	private static final String EXPECTED_BOOLEAN_PARAM=Boolean.class.getCanonicalName();
+	private static final String EXPECTED_INTEGER_PARAM=Integer.class.getCanonicalName();
 	private static final String EXPECTED_PARSER_PARAM=ASNParser.class.getCanonicalName();
 	
 	@Override
@@ -171,20 +172,24 @@ public class ASNTagAnnotationProcessor extends AbstractProcessor {
 						//we may have decode multiple times for Generic
 						decodeTags=1;					
 	
-						if(params.size()!=5)
-							processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have four parameters", className, method.getSimpleName()));
+						if(params.size()!=6)
+							processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have six parameters", className, method.getSimpleName()));
 						else {
 							String firstParamName=((TypeElement)processingEnv.getTypeUtils().asElement(params.get(0).asType())).getQualifiedName().toString();
 							String thirdParamName=((TypeElement)processingEnv.getTypeUtils().asElement(params.get(2).asType())).getQualifiedName().toString();
-							String fithParamName=((TypeElement)processingEnv.getTypeUtils().asElement(params.get(4).asType())).getQualifiedName().toString();
+							String fifthParamName=((TypeElement)processingEnv.getTypeUtils().asElement(params.get(4).asType())).getQualifiedName().toString();
+							String sixthParamName=((TypeElement)processingEnv.getTypeUtils().asElement(params.get(5).asType())).getQualifiedName().toString();
 							if(!firstParamName.equals(EXPECTED_PARSER_PARAM))
-								processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have four parameters with type %s ANY %s ConcurrentHashMap %s", className, method.getSimpleName(), EXPECTED_PARSER_PARAM, EXPECTED_ENCODE_DECODE_PARAM, EXPECTED_BOOLEAN_PARAM));							
+								processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have six parameters with type %s ANY %s ConcurrentHashMap %s %s", className, method.getSimpleName(), EXPECTED_PARSER_PARAM, EXPECTED_ENCODE_DECODE_PARAM, EXPECTED_BOOLEAN_PARAM, EXPECTED_INTEGER_PARAM));							
 						
 							if(!thirdParamName.equals(EXPECTED_ENCODE_DECODE_PARAM))
-									processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have four parameters with type %s ANY %s ConcurrentHashMap %s", className, method.getSimpleName(), EXPECTED_PARSER_PARAM, EXPECTED_ENCODE_DECODE_PARAM, EXPECTED_BOOLEAN_PARAM));							
+									processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have six parameters with type %s ANY %s ConcurrentHashMap %s %s", className, method.getSimpleName(), EXPECTED_PARSER_PARAM, EXPECTED_ENCODE_DECODE_PARAM, EXPECTED_BOOLEAN_PARAM, EXPECTED_INTEGER_PARAM));							
 							
-							if(!fithParamName.equals(EXPECTED_BOOLEAN_PARAM))
-								processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have four parameters with type %s ANY %s ConcurrentHashMap %s", className, method.getSimpleName(), EXPECTED_PARSER_PARAM, EXPECTED_ENCODE_DECODE_PARAM, EXPECTED_BOOLEAN_PARAM));
+							if(!fifthParamName.equals(EXPECTED_BOOLEAN_PARAM))
+								processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have six parameters with type %s ANY %s ConcurrentHashMap %s %s", className, method.getSimpleName(), EXPECTED_PARSER_PARAM, EXPECTED_ENCODE_DECODE_PARAM, EXPECTED_BOOLEAN_PARAM, EXPECTED_INTEGER_PARAM));
+							
+							if(!sixthParamName.equals(EXPECTED_INTEGER_PARAM))
+								processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR,String.format( "Element '%s' is annotated as @ASNTag, however its method %s annoted with @ASNDecode should have six parameters with type %s ANY %s ConcurrentHashMap %s %s", className, method.getSimpleName(), EXPECTED_PARSER_PARAM, EXPECTED_ENCODE_DECODE_PARAM, EXPECTED_BOOLEAN_PARAM, EXPECTED_INTEGER_PARAM));
 						}
 					}
 					

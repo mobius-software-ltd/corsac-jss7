@@ -334,6 +334,7 @@
 			</activation>
 			<properties>
 				<sctp.version>2.2.14</sctp.version>
+				<xmlbind.version>3.0.1</xmlbind.version>         		
 			</properties>
 			<build>
 				<plugins>
@@ -355,6 +356,7 @@
 			<id>java11</id>
 			<properties>
 				<sctp.version>2.2.14-java11</sctp.version>
+				<xmlbind.version>4.0.0</xmlbind.version>				
 			</properties>
 			<build>
 				<plugins>

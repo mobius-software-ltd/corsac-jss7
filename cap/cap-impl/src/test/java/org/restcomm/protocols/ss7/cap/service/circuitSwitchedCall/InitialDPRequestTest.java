@@ -383,13 +383,13 @@ public class InitialDPRequestTest {
         IPSSPCapabilitiesImpl IPSSPCapabilities = new IPSSPCapabilitiesImpl(true, true, false, false, true, null);
         LocationNumberIsupImpl locationNumber = new LocationNumberIsupImpl(new LocationNumberImpl(Unpooled.wrappedBuffer(getLocationNumber())));
         HighLayerCompatibilityIsupImpl highLayerCompatibility = new HighLayerCompatibilityIsupImpl();
-        highLayerCompatibility.decode(parser,null,Unpooled.wrappedBuffer(getHighLayerCompatibility()),null,false);
+        highLayerCompatibility.decode(parser,null,Unpooled.wrappedBuffer(getHighLayerCompatibility()),null,false,1);
         DigitsIsupImpl additionalCallingPartyNumber = new DigitsIsupImpl(new GenericNumberImpl(Unpooled.wrappedBuffer(getAdditionalCallingPartyNumberCap())));
         SubscriberStateImpl subscriberState = new SubscriberStateImpl(SubscriberStateChoice.notProvidedFromVLR, null);
         LocationInformationImpl locationInformation = new LocationInformationImpl(111, null, null, null, null, null, null,
                 null, null, false, false, null, null);
         CalledPartyBCDNumberImpl calledPartyBCDNumber = new CalledPartyBCDNumberImpl();
-        calledPartyBCDNumber.decode(parser,null,Unpooled.wrappedBuffer(getCalledPartyBCDNumber()),null,false);
+        calledPartyBCDNumber.decode(parser,null,Unpooled.wrappedBuffer(getCalledPartyBCDNumber()),null,false,1);
 
         elem = new InitialDPRequestV1Impl(110, calledPartyNumber, callingPartyNumber, callingPartysCategory, null,
                 IPSSPCapabilities, locationNumber, originalCalledPartyID, CAPExtensionsTest.createTestCAPExtensions(),
