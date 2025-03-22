@@ -1774,8 +1774,8 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     CAPUserAbortReason userReason) {
                 super.onDialogUserAbort(capDialog, generalReason, userReason);
 
-                assertEquals(generalReason, CAPGeneralAbortReason.UserSpecific);
-                assertEquals(userReason, CAPUserAbortReason.missing_reference);
+                assertNull(generalReason);
+                assertNull(userReason);
             }
 
             public void onDialogRelease(CAPDialog capDialog) {
@@ -2108,8 +2108,8 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     CAPUserAbortReason userReason) {
                 super.onDialogUserAbort(capDialog, generalReason, userReason);
 
-                assertEquals(generalReason, CAPGeneralAbortReason.UserSpecific);
-                assertEquals(userReason, CAPUserAbortReason.abnormal_processing);
+                assertNull(generalReason);
+                assertNull(userReason);
                 assertEquals(capDialog.getTCAPMessageType(), MessageType.Abort);
             }
 

@@ -42,7 +42,9 @@ public class Mtp3TransferPrimitive {
     protected final int dpc;
     protected final int sls;
     protected final ByteBuf data;
-
+    private Integer readerIndex;
+    private Integer readableBytes;
+    
     private final RoutingLabelFormat pointCodeFormat;
     
     public Mtp3TransferPrimitive(int si, int ni, int mp, int opc, int dpc, int sls, ByteBuf data,
@@ -53,8 +55,11 @@ public class Mtp3TransferPrimitive {
         this.opc = opc;
         this.dpc = dpc;
         this.sls = sls;
+        
         this.data = data;
-
+        this.readableBytes = this.data.readableBytes();
+        this.readerIndex = this.data.readerIndex();
+        
         this.pointCodeFormat = pointCodeFormat;
         //now we control the release
         referenceLocker.set(true);
@@ -182,6 +187,14 @@ public class Mtp3TransferPrimitive {
         return res;
     }
 
+    public String printBuffer() {
+    	String out = "";
+		for (int index = readerIndex, i=0; i< readableBytes; i++,index++)
+			out += Integer.toHexString(data.getByte(index));
+		
+		return out;
+    }
+    
     @Override
     public String toString() {
 

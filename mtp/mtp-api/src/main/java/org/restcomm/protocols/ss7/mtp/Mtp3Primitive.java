@@ -63,4 +63,8 @@ public abstract class Mtp3Primitive {
         return type;
     }
 
+	@Override
+	public String toString() {
+		return "Mtp3Primitive [type=" + type + ", affectedDpc=" + affectedDpc + "]";
+	}    
 }

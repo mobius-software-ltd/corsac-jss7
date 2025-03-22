@@ -1638,8 +1638,8 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     INAPUserAbortReason userReason) {
                 super.onDialogUserAbort(inapDialog, generalReason, userReason);
 
-                assertEquals(generalReason, INAPGeneralAbortReason.UserSpecific);
-                assertEquals(userReason, INAPUserAbortReason.missing_reference);
+                assertNull(generalReason);
+                assertNull(userReason);
             }
 
             public void onDialogRelease(INAPDialog inapDialog) {
@@ -1972,8 +1972,8 @@ TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInform
                     INAPUserAbortReason userReason) {
                 super.onDialogUserAbort(inapDialog, generalReason, userReason);
 
-                assertEquals(generalReason, INAPGeneralAbortReason.UserSpecific);
-                assertEquals(userReason, INAPUserAbortReason.abnormal_processing);
+                assertNull(generalReason);
+                assertNull(userReason);
                 assertEquals(inapDialog.getTCAPMessageType(), MessageType.Abort);
             }
 
