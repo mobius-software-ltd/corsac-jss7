@@ -189,8 +189,13 @@ public class Mtp3TransferPrimitive {
 
     public String printBuffer() {
     	String out = "";
-		for (int index = readerIndex, i=0; i< readableBytes; i++,index++)
-			out += Integer.toHexString(data.getByte(index));
+		for (int index = readerIndex, i=0; i< readableBytes; i++,index++) {
+			int value = data.getByte(index) & 0x0ff;
+			if(value<0x10)
+				out +="0";
+			
+			out += Integer.toHexString(value);
+		}
 		
 		return out;
     }

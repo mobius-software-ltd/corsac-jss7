@@ -209,14 +209,16 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 	 */
 	protected void sendTransferMessageToLocalUser(Mtp3TransferPrimitive msg, int seqControl) {
 		if (this.isStarted) {
-			MsgTransferDeliveryHandler hdl = new MsgTransferDeliveryHandler(msg);
+			Long taskIdentifier = localTaskIdentifier.incrementAndGet();
+			MsgTransferDeliveryHandler hdl = new MsgTransferDeliveryHandler(taskIdentifier, msg);
 			seqControl = seqControl & slsFilter;
 			
 			// ok here we need to retain again
 			msg.retain();
 			
 			Future<?> future = this.msgDeliveryExecutors.submit(hdl);
-			queuedTasks.put(localTaskIdentifier.incrementAndGet(), new DeliveryRunnableData(hdl, future));
+			
+			queuedTasks.put(taskIdentifier, new DeliveryRunnableData(hdl, future));
 		} else {
 			logger.error(String.format(
 					"Received Mtp3TransferPrimitive=%s but Mtp3UserPart is not started. Message will be dropped", msg));
@@ -225,9 +227,10 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 
 	protected void sendPauseMessageToLocalUser(Mtp3PausePrimitive msg) {
 		if (this.isStarted) {
-			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(msg);
+			Long taskIdentifier = localTaskIdentifier.incrementAndGet();
+			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(taskIdentifier,msg);
 			Future<?> future = this.msgDeliveryExecutors.submit(hdl);
-			queuedTasks.put(localTaskIdentifier.incrementAndGet(), new DeliveryRunnableData(hdl, future));
+			queuedTasks.put(taskIdentifier, new DeliveryRunnableData(hdl, future));
 		} else {
 			logger.error(String
 					.format("Received Mtp3PausePrimitive=%s but MTP3 is not started. Message will be dropped", msg));
@@ -236,9 +239,10 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 
 	protected void sendResumeMessageToLocalUser(Mtp3ResumePrimitive msg) {
 		if (this.isStarted) {
-			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(msg);
+			Long taskIdentifier = localTaskIdentifier.incrementAndGet();
+			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(taskIdentifier, msg);
 			Future<?> future = this.msgDeliveryExecutors.submit(hdl);
-			queuedTasks.put(localTaskIdentifier.incrementAndGet(), new DeliveryRunnableData(hdl, future));
+			queuedTasks.put(taskIdentifier, new DeliveryRunnableData(hdl, future));
 		} else {
 			logger.error(String
 					.format("Received Mtp3ResumePrimitive=%s but MTP3 is not started. Message will be dropped", msg));
@@ -247,9 +251,10 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 
 	protected void sendStatusMessageToLocalUser(Mtp3StatusPrimitive msg) {
 		if (this.isStarted) {
-			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(msg);
+			Long taskIdentifier = localTaskIdentifier.incrementAndGet();
+			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(taskIdentifier, msg);
 			Future<?> future = this.msgDeliveryExecutors.submit(hdl);
-			queuedTasks.put(localTaskIdentifier.incrementAndGet(), new DeliveryRunnableData(hdl, future));
+			queuedTasks.put(taskIdentifier, new DeliveryRunnableData(hdl, future));
 		} else {
 			logger.error(String
 					.format("Received Mtp3StatusPrimitive=%s but MTP3 is not started. Message will be dropped", msg));
@@ -258,9 +263,10 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 
 	protected void sendEndCongestionMessageToLocalUser(Mtp3EndCongestionPrimitive msg) {
 		if (this.isStarted) {
-			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(msg);
+			Long taskIdentifier = localTaskIdentifier.incrementAndGet();
+			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(taskIdentifier, msg);
 			Future<?> future = this.msgDeliveryExecutors.submit(hdl);
-			queuedTasks.put(localTaskIdentifier.incrementAndGet(), new DeliveryRunnableData(hdl, future));
+			queuedTasks.put(taskIdentifier, new DeliveryRunnableData(hdl, future));
 		} else {
 			logger.error(String.format(
 					"Received Mtp3EndCongestionPrimitive=%s but MTP3 is not started. Message will be dropped", msg));
@@ -271,9 +277,11 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 
 		private Mtp3TransferPrimitive msg;
 		private Long startTime;
-
-		public MsgTransferDeliveryHandler(Mtp3TransferPrimitive msg) {
+		private Long taskIdentifier;
+		
+		public MsgTransferDeliveryHandler(Long taskIdentifier,Mtp3TransferPrimitive msg) {
 			this.msg = msg;
+			this.taskIdentifier = taskIdentifier;
 		}
 
 		public Long getStartTime() {
@@ -307,6 +315,8 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 					// may be its already decreased
 				}
 			}
+			
+			queuedTasks.remove(taskIdentifier);
 		}
 
 		@Override
@@ -319,9 +329,11 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 
 		Mtp3Primitive msg;
 		private Long startTime;
-
-		public MsgSystemDeliveryHandler(Mtp3Primitive msg) {
+		private Long taskIdentifier;
+		
+		public MsgSystemDeliveryHandler(Long taskIdentifier,Mtp3Primitive msg) {
 			this.msg = msg;
+			this.taskIdentifier = taskIdentifier;
 		}
 
 		public Long getStartTime()
@@ -353,6 +365,8 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 				logger.error(String.format(
 						"Received Mtp3Primitive=%s but Mtp3UserPart is not started. Message will be dropped", msg));
 			}
+			
+			queuedTasks.remove(taskIdentifier);
 		}
 		
 		@Override
@@ -376,6 +390,8 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 						//10 seconds is too high, however the number of stucked tasks should be minimal
 						currEntry.getValue().getRunnable().logRunnable();
 						runnablesToRemove.add(currEntry.getKey());
+						//not sure it helps , however we at least get log of the killer message...
+						currEntry.getValue().getFuture().cancel(true);			
 					}
 				}
 				

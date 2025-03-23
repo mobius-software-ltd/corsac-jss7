@@ -20,7 +20,8 @@
 		<log4j2.version>2.19.0</log4j2.version>
 		<junit.version>4.12</junit.version>
 		<compiler.plugin.version>3.8.1</compiler.plugin.version>
-		<netty.version>4.1.63.Final</netty.version>				
+		<netty.version>4.1.63.Final</netty.version>	
+		<pcap.version>3.0.10</pcap.version>			
 	</properties>
 
 	<modules>

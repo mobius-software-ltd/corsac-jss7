@@ -421,6 +421,9 @@ public class ASNParser
 				if (wildcardField != null)
 				{
 					header.setLength(header.getLength() + buffer.readerIndex() - oldIndex);
+					if(header.getIndefiniteLength())
+						header.setLength(header.getLength()-2);
+					
 					buffer.resetReaderIndex();
 					if (wildcardField.getType().isAssignableFrom(List.class) && !wildcardField.getType().equals(Object.class))
 					{
@@ -514,7 +517,7 @@ public class ASNParser
 
 					try
 					{
-						Object value = method.invoke(currObject, new Object[] { this, parent, buffer.slice(buffer.readerIndex(), header.getLength()), mappedData, skipErrors, level });
+						Object value = method.invoke(currObject, new Object[] { this, parent, buffer.slice(buffer.readerIndex(), header.getLength()), mappedData, skipErrors, level + 1 });
 						if (value instanceof Boolean)
 							hadErrors |= (Boolean) value;
 						else if (value instanceof ASNDecodeResult)
@@ -557,7 +560,35 @@ public class ASNParser
 			int originalIndex = buffer.readerIndex();
 			while ((buffer.readerIndex() - originalIndex) < remainingBytes)
 			{
+				int readableBytes = buffer.readableBytes();
 				DecodeResult innerValue = decode(currObject, buffer, skipErrors, cachedData.getWildcardField(), cachedData.getFieldsMap(), cachedData.getInnerMap(), cachedElements, innerIndex, mappedData, null, level + 1);
+				if(buffer.readableBytes()==readableBytes)
+				{
+					//oops we have passed a cycle without moving, lets skip internal
+					buffer.readerIndex(0);
+					try
+					{
+						logger.warn("The internal parsing is not capable to find next element for ASN Parser, the buffer content is " + toHex(buffer));
+					}
+					catch (Exception ex)
+					{
+						logger.warn("The internal parsing is not capable to find next element for ASN Parser, can not print buffer content!!!");
+					}
+
+					buffer.resetReaderIndex();
+					buffer.markReaderIndex();
+
+					if (skipErrors)
+					{
+						if((buffer.readerIndex() - originalIndex) < remainingBytes)
+							buffer.skipBytes(readableBytes + originalIndex + buffer.readerIndex());
+
+						return new DecodeResult(null, parent, header.getAsnClass(), header.getAsnTag(), header.getIsConstructed(), true, true, new ASNDecodeResult(null, parent, true, true, null));
+					}
+					else
+						throw new ASNDecodeException("We have a real problem here , the level of ASN parser got to " + MAX_DEPTH, header.getAsnTag(), header.getAsnClass(), header.getIsConstructed(), parent);
+				}
+				
 				hadErrors |= innerValue.getHadErrors();
 				if (innerValue.getHadErrors() && errorResults == null)
 					errorResults = innerValue;
@@ -614,9 +645,7 @@ public class ASNParser
 		{
 			ASNPostprocess postprocessAnnotation = effectiveClass.getAnnotation(ASNPostprocess.class);
 			if (postprocessAnnotation != null)
-			{
 				handler.postProcessElement(parent, currObject, mappedData);
-			}
 		}
 
 		Boolean isTag = false;
