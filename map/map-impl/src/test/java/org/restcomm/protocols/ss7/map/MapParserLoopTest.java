@@ -120,6 +120,9 @@ public class MapParserLoopTest {
 		mapStack.start();
 
 		final AtomicReference<String> lastError = new AtomicReference<String>(null);
+				
+		if(this.getClass().getClassLoader().getResource("samples")==null)
+			return;
 		
 		File folder = new File(this.getClass().getClassLoader().getResource("samples").getFile());
 		File[] listOfFiles = folder.listFiles();
