@@ -208,6 +208,10 @@ public class AsImpl implements As {
         // ******************************************************************/
         // STATE ACTIVE /
         // ******************************************************************/
+        //it may be occuring when multiple nodes for same AS concurrently sending the traffic
+        this.peerFSM.createTransition(TransitionState.AS_STATE_CHANGE_INACTIVE, AsState.ACTIVE.toString(),
+                AsState.ACTIVE.toString());
+        
         this.peerFSM.createTransition(TransitionState.AS_STATE_CHANGE_ACTIVE, AsState.ACTIVE.toString(),
                 AsState.ACTIVE.toString());
 
