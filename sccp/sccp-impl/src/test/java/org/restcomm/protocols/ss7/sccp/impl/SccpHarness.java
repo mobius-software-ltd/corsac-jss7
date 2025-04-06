@@ -80,7 +80,7 @@ public abstract class SccpHarness {
     }
 
     protected SccpStackImpl createStack(final String name) {
-        SccpStackImpl stack = new SccpStackImpl(name);
+        SccpStackImpl stack = new SccpStackImpl(name, true);
         return stack;
     }
 

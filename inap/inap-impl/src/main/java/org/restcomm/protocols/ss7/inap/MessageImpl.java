@@ -72,7 +72,7 @@ public abstract class MessageImpl implements INAPMessage {
     }
     
     public void release() {
-    	if(originalBuffer!=null)
-    		ReferenceCountUtil.release(originalBuffer);
+    	if(originalBuffer!=null && originalBuffer.refCnt()>0)
+    		ReferenceCountUtil.release(originalBuffer, originalBuffer.refCnt());
     }
 }

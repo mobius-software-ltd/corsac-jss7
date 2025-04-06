@@ -82,6 +82,7 @@ import org.restcomm.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SegmentationImpl;
 import org.restcomm.protocols.ss7.sccp.impl.router.RouterImpl;
 import org.restcomm.protocols.ss7.sccp.message.SccpConnMessage;
+import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.message.SccpMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle;
 import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
@@ -202,7 +203,8 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
     protected final String name;
 
     protected boolean rspProhibitedByDefault;
-
+    protected boolean useCopy = false;
+    
     private volatile AtomicInteger segmentationLocalRef = new AtomicInteger(0);
     private volatile AtomicInteger slsCounter = new AtomicInteger(0);
     private volatile AtomicBoolean selectorCounter = new AtomicBoolean(false);
@@ -228,6 +230,11 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
     		SccpMessageImpl.MESSAGE_NAME_UDT, SccpMessageImpl.MESSAGE_NAME_UDTS, SccpMessageImpl.MESSAGE_NAME_XUDT,
     		SccpMessageImpl.MESSAGE_NAME_XUDTS, SccpMessageImpl.MESSAGE_NAME_LUDT,SccpMessageImpl.MESSAGE_NAME_LUDTS });
     
+    public SccpStackImpl(String name,Boolean useBuffersCopy) {
+    	this(name);
+    	if(useBuffersCopy!=null)
+    		this.useCopy = useBuffersCopy;
+    }
     /*
      * For non-connection oriented protocol class usage
      */
@@ -1207,6 +1214,9 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
                 }
             }
 
+            if(useCopy && msg instanceof SccpSegmentableMessageImpl)
+            	((SccpSegmentableMessageImpl)msg).copyData();
+            	
             if (msg instanceof SccpAddressedMessageImpl) {
                 // CR or connectionless messages
                 SccpAddressedMessageImpl msgAddr = (SccpAddressedMessageImpl) msg;
