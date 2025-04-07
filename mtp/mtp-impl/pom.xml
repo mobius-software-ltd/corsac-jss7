@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.mobius-software.protocols.ss7.mtp</groupId>
 		<artifactId>mtp-parent</artifactId>
-		<version>10.0.48-SNAPSHOT</version>
+		<version>10.0.47-java11</version>
 	</parent>
 
 	<artifactId>mtp</artifactId>
