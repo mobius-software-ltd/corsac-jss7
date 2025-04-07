@@ -4,7 +4,7 @@
 	<parent>
 		<artifactId>m3ua</artifactId>
 		<groupId>com.mobius-software.protocols.ss7.m3ua</groupId>
-		<version>10.0.47-SNAPSHOT</version>
+		<version>10.0.47</version>
 	</parent>
 
 	<artifactId>m3ua-api</artifactId>
