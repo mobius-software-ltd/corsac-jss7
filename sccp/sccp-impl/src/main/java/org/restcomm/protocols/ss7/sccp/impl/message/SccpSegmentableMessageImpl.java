@@ -47,6 +47,7 @@ public abstract class SccpSegmentableMessageImpl extends SccpAddressedMessageImp
 
     protected boolean isFullyRecieved;
     protected int remainingSegments;
+    protected int segments = 1;
     
     protected SccpStackImpl.MessageReassemblyProcess mrp;
 
@@ -74,18 +75,17 @@ public abstract class SccpSegmentableMessageImpl extends SccpAddressedMessageImp
     public int getRemainingSegments() {
         return remainingSegments;
     }
-
-    public void retain() {
-        this.data.retain();
-    }
     
     public ByteBuf getData() {
         return Unpooled.wrappedBuffer(this.data);
     }
     
-    //for regular operation copy of data should not be stored, however for testing we do use it
+    //for regular operation copy of data should not be stored
+    //however for testing or for async handling where the message should be retained in memory 
+    //we do use it. for multiple segments we already have copy so no need to copy again
     public void copyData() {
-        this.data = data.copy();
+    	if(segments==1)
+    		this.data = data.copy();
     }
 
     public void setReceivedSingleSegment() {
@@ -102,6 +102,7 @@ public abstract class SccpSegmentableMessageImpl extends SccpAddressedMessageImp
     }
 
     public void setReceivedNextSegment(SccpSegmentableMessageImpl nextSegement) {
+    	segments ++;
     	this.data = Unpooled.copiedBuffer(data,nextSegement.data);
         if (--this.remainingSegments == 0) {
             this.isFullyRecieved = true;

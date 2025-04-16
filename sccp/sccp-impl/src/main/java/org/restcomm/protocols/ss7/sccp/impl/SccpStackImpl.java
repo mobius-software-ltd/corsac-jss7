@@ -205,55 +205,59 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 	// protected int ni = 2;
 
 	protected final String name;
+    protected boolean rspProhibitedByDefault;
+    protected boolean useCopy = false;
+    
+    private volatile AtomicInteger segmentationLocalRef = new AtomicInteger(0);
+    private volatile AtomicInteger slsCounter = new AtomicInteger(0);
+    private volatile AtomicBoolean selectorCounter = new AtomicBoolean(false);
+    protected volatile AtomicInteger referenceNumberCounter = new AtomicInteger(0);
 
-	protected boolean rspProhibitedByDefault;
+    private ConcurrentHashMap<Integer, Date> lastCongNotice = new ConcurrentHashMap<Integer, Date>();
+    private ConcurrentHashMap<Integer, Date> lastUserPartUnavailNotice = new ConcurrentHashMap<Integer, Date>();
+    
+    private ConcurrentHashMap<String, AtomicLong> messagesSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> messagesReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> bytesSentByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<String, AtomicLong> bytesReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
+    private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> messagesSentByTypeAndNetwork=new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+    private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> messagesReceivedByTypeAndNetwork=new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+    private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> bytesSentByTypeAndNetwork=new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+    private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> bytesReceivedByTypeAndNetwork=new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+        
+    public static List<String> allMessageTypes=Arrays.asList(new String[] {SccpMessageImpl.MESSAGE_NAME_OTHER,
+    		SccpMessageImpl.MESSAGE_NAME_CR, SccpMessageImpl.MESSAGE_NAME_CC, SccpMessageImpl.MESSAGE_NAME_CREF,
+    		SccpMessageImpl.MESSAGE_NAME_RLSD, SccpMessageImpl.MESSAGE_NAME_RLC, SccpMessageImpl.MESSAGE_NAME_DT1,
+    		SccpMessageImpl.MESSAGE_NAME_DT2, SccpMessageImpl.MESSAGE_NAME_AK, SccpMessageImpl.MESSAGE_NAME_RSR,
+    		SccpMessageImpl.MESSAGE_NAME_RSC, SccpMessageImpl.MESSAGE_NAME_ERR, SccpMessageImpl.MESSAGE_NAME_IT,
+    		SccpMessageImpl.MESSAGE_NAME_UDT, SccpMessageImpl.MESSAGE_NAME_UDTS, SccpMessageImpl.MESSAGE_NAME_XUDT,
+    		SccpMessageImpl.MESSAGE_NAME_XUDTS, SccpMessageImpl.MESSAGE_NAME_LUDT,SccpMessageImpl.MESSAGE_NAME_LUDTS });
+    
+    public SccpStackImpl(String name,Boolean useBuffersCopy, PeriodicQueuedTasks<Timer> queuedTasks) {
+    	this(name, queuedTasks);
+    	if(useBuffersCopy!=null)
+    		this.useCopy = useBuffersCopy;
+    }
+    /*
+     * For non-connection oriented protocol class usage
+     */
+    public SccpStackImpl(String name, PeriodicQueuedTasks<Timer> queuedTasks) {    
+        this.name = name;
+        this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName() + "-" + this.name);
 
-	private volatile AtomicInteger segmentationLocalRef = new AtomicInteger(0);
-	private volatile AtomicInteger slsCounter = new AtomicInteger(0);
-	private volatile AtomicBoolean selectorCounter = new AtomicBoolean(false);
-	protected volatile AtomicInteger referenceNumberCounter = new AtomicInteger(0);
+        this.messageFactory = new MessageFactoryImpl(this);
+        this.sccpProvider = new SccpProviderImpl(this);
+        this.queuedTasks = queuedTasks;
 
-	private ConcurrentHashMap<Integer, Date> lastCongNotice = new ConcurrentHashMap<Integer, Date>();
-	private ConcurrentHashMap<Integer, Date> lastUserPartUnavailNotice = new ConcurrentHashMap<Integer, Date>();
-
-	private ConcurrentHashMap<String, AtomicLong> messagesSentByType = new ConcurrentHashMap<String, AtomicLong>();
-	private ConcurrentHashMap<String, AtomicLong> messagesReceivedByType = new ConcurrentHashMap<String, AtomicLong>();
-	private ConcurrentHashMap<String, AtomicLong> bytesSentByType = new ConcurrentHashMap<String, AtomicLong>();
-	private ConcurrentHashMap<String, AtomicLong> bytesReceivedByType = new ConcurrentHashMap<String, AtomicLong>();
-	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> messagesSentByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
-	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> messagesReceivedByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
-	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> bytesSentByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
-	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> bytesReceivedByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
-
-	public static List<String> allMessageTypes = Arrays.asList(new String[] { SccpMessageImpl.MESSAGE_NAME_OTHER,
-			SccpMessageImpl.MESSAGE_NAME_CR, SccpMessageImpl.MESSAGE_NAME_CC, SccpMessageImpl.MESSAGE_NAME_CREF,
-			SccpMessageImpl.MESSAGE_NAME_RLSD, SccpMessageImpl.MESSAGE_NAME_RLC, SccpMessageImpl.MESSAGE_NAME_DT1,
-			SccpMessageImpl.MESSAGE_NAME_DT2, SccpMessageImpl.MESSAGE_NAME_AK, SccpMessageImpl.MESSAGE_NAME_RSR,
-			SccpMessageImpl.MESSAGE_NAME_RSC, SccpMessageImpl.MESSAGE_NAME_ERR, SccpMessageImpl.MESSAGE_NAME_IT,
-			SccpMessageImpl.MESSAGE_NAME_UDT, SccpMessageImpl.MESSAGE_NAME_UDTS, SccpMessageImpl.MESSAGE_NAME_XUDT,
-			SccpMessageImpl.MESSAGE_NAME_XUDTS, SccpMessageImpl.MESSAGE_NAME_LUDT,
-			SccpMessageImpl.MESSAGE_NAME_LUDTS });
-
-	/*
-	 * For non-connection oriented protocol class usage
-	 */
-	public SccpStackImpl(String name, PeriodicQueuedTasks<Timer> queuedTasks) {
-		this.name = name;
-		this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName() + "-" + this.name);
-
-		this.messageFactory = new MessageFactoryImpl(this);
-		this.sccpProvider = new SccpProviderImpl(this);
-
-		this.state = State.CONFIGURED;
-		this.queuedTasks = queuedTasks;
-
-		for (String currType : allMessageTypes) {
-			messagesSentByType.put(currType, new AtomicLong(0L));
-			messagesReceivedByType.put(currType, new AtomicLong(0L));
-			bytesSentByType.put(currType, new AtomicLong(0L));
-			bytesReceivedByType.put(currType, new AtomicLong(0L));
-		}
-	}
+        this.state = State.CONFIGURED;
+        
+        for(String currType:allMessageTypes) {
+        	messagesSentByType.put(currType, new AtomicLong(0L));
+        	messagesReceivedByType.put(currType, new AtomicLong(0L));
+        	bytesSentByType.put(currType, new AtomicLong(0L));
+        	bytesReceivedByType.put(currType, new AtomicLong(0L));
+        }
+    }
 
 	@Override
 	public String getName() {
@@ -1299,7 +1303,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 			MessageReassemblyProcess x = (MessageReassemblyProcess) obj;
 			if (this.segmentationLocalRef != x.segmentationLocalRef)
 				return false;
-
+			
 			if (this.callingPartyAddress == null || x.callingPartyAddress == null)
 				return false;
 

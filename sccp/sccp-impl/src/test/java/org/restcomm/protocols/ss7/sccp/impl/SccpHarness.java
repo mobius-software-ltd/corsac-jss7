@@ -81,17 +81,17 @@ public abstract class SccpHarness {
 	}
 
 	protected void createStack1() {
-		sccpStack1 = createStack(sccpStack1Name);
-	}
+        sccpStack1 = createStack(sccpStack1Name);
+    }
 
 	protected void createStack2() {
 		sccpStack2 = createStack(sccpStack2Name);
 	}
 
 	protected SccpStackImpl createStack(final String name) {
-		SccpStackImpl stack = new SccpStackImpl(name, workerPool.getPeriodicQueue());
-		return stack;
-	}
+        SccpStackImpl stack = new SccpStackImpl(name, true, this.workerPool.getPeriodicQueue());
+        return stack;
+    }
 
 	protected void setUpStack1() throws Exception {
 		createStack1();
