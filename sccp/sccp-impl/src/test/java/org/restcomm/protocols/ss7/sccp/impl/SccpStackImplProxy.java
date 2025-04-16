@@ -24,11 +24,12 @@
 package org.restcomm.protocols.ss7.sccp.impl;
 
 import java.util.Iterator;
-import java.util.concurrent.Executors;
 
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPart;
 import org.restcomm.protocols.ss7.sccp.impl.message.MessageFactoryImpl;
 import org.restcomm.protocols.ss7.sccp.impl.router.RouterImpl;
+
+import com.mobius.software.common.dal.timers.WorkerPool;
 
 /**
  * @author baranowb
@@ -36,65 +37,68 @@ import org.restcomm.protocols.ss7.sccp.impl.router.RouterImpl;
  *
  */
 public class SccpStackImplProxy extends SccpStackImpl {
+	private static WorkerPool workerPool;
 
-    /**
+	static {
+		workerPool = new WorkerPool();
+		workerPool.start(4);
+	}
+
+	/**
 	 *
 	 */
-    public SccpStackImplProxy(String name) {
-        super(name);
-    }
+	public SccpStackImplProxy(String name) {
+		super(name, workerPool.getPeriodicQueue());
+	}
 
-    public SccpManagementProxy getManagementProxy() {
-        return (SccpManagementProxy) super.sccpManagement;
-    }
+	public SccpManagementProxy getManagementProxy() {
+		return (SccpManagementProxy) super.sccpManagement;
+	}
 
-    @Override
-    public void start() {
-        this.messageFactory = new MessageFactoryImpl(this);
+	@Override
+	public void start() {
+		this.messageFactory = new MessageFactoryImpl(this);
 
-        this.sccpProvider = new SccpProviderImpl(this);
+		this.sccpProvider = new SccpProviderImpl(this);
 
-        super.sccpManagement = new SccpManagementProxy(this.getName(), sccpProvider, this);
-        super.sccpRoutingControl = new SccpRoutingControl(sccpProvider, this);
+		super.sccpManagement = new SccpManagementProxy(this.getName(), sccpProvider, this);
+		super.sccpRoutingControl = new SccpRoutingControl(sccpProvider, this);
 //        super.sccpCongestionControl = new SccpCongestionControl(sccpManagement, this);
 
-        super.sccpManagement.setSccpRoutingControl(sccpRoutingControl);
-        super.sccpRoutingControl.setSccpManagement(sccpManagement);
+		super.sccpManagement.setSccpRoutingControl(sccpRoutingControl);
+		super.sccpRoutingControl.setSccpManagement(sccpManagement);
 //        this.sccpManagement.setSccpCongestionControl(sccpCongestionControl);
 
-        this.router = new RouterImpl(this.getName(), this);
-        this.router.start();
+		this.router = new RouterImpl(this.getName(), this);
+		this.router.start();
 
-        this.sccpResource = new SccpResourceImpl(this.getName());
-        this.sccpResource.start();
+		this.sccpResource = new SccpResourceImpl(this.getName());
+		this.sccpResource.start();
 
-        this.sccpRoutingControl.start();
-        this.sccpManagement.start();
+		this.sccpRoutingControl.start();
+		this.sccpManagement.start();
 
-        this.connectionExecutors = Executors.newScheduledThreadPool(1);
+		Iterator<Mtp3UserPart> iterator = this.mtp3UserParts.values().iterator();
+		while (iterator.hasNext()) {
+			Mtp3UserPart mup = iterator.next();
+			mup.addMtp3UserPartListener(this);
+		}
+		// this.mtp3UserPart.addMtp3UserPartListener(this);
 
-        Iterator<Mtp3UserPart> iterator=this.mtp3UserParts.values().iterator();
-        while(iterator.hasNext()) {
-            Mtp3UserPart mup = iterator.next();
-            mup.addMtp3UserPartListener(this);
-        }
-        // this.mtp3UserPart.addMtp3UserPartListener(this);
-        // initiating of SCCP delivery executors
+		int maxSls = 16;
+		this.slsTable = new int[maxSls];
+		this.createSLSTable(maxSls, this.connectionHandlingThreadCount);
 
-        int maxSls = 16;
-        this.slsTable = new int[maxSls];
-        this.createSLSTable(maxSls, this.connectionHandlingThreadCount);
-        
-        this.state = State.RUNNING;
-    }
+		this.state = State.RUNNING;
+	}
 
-    public int getReassemplyCacheSize() {
-        return reassemplyCache.size();
-    }
+	public int getReassemplyCacheSize() {
+		return reassemplyCache.size();
+	}
 
-    @Override
-    public void setReassemblyTimerDelay(int reassemblyTimerDelay) {
-        this.reassemblyTimerDelay = reassemblyTimerDelay;
-    }
+	@Override
+	public void setReassemblyTimerDelay(int reassemblyTimerDelay) {
+		this.reassemblyTimerDelay = reassemblyTimerDelay;
+	}
 
 }

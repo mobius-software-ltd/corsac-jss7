@@ -102,14 +102,4 @@ public interface Mtp3UserPart {
      * @param useLsbForLinksetSelection
      */
     void setUseLsbForLinksetSelection(boolean useLsbForLinksetSelection) throws Exception;
-
-    /**
-     * @return
-     */
-    int getDeliveryMessageThreadCount();
-
-    /**
-     * @param deliveryMessageThreadCount
-     */
-    void setDeliveryMessageThreadCount(int deliveryMessageThreadCount) throws Exception;
 }

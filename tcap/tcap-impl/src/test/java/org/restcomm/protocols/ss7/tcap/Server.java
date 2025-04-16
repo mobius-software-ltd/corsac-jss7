@@ -55,28 +55,25 @@ public class Server extends EventTestHarness {
     public void onTCBegin(TCBeginIndication ind) {
         // TODO Auto-generated method stub
         super.onTCBegin(ind);
-        this.components = ind.getComponents();
+	this.components = ind.getComponents();
     }
 
     @Override
     public void sendContinue() throws TCAPSendException, TCAPException {
 
         List<BaseComponent> comps = components;
-        if (comps == null || comps.size() != 2) {
-            throw new TCAPSendException("Bad comps!");
-        }
+        if (comps == null || comps.size() != 2)
+	    throw new TCAPSendException("Bad comps!");
         BaseComponent c = comps.get(0);
-        if (!(c instanceof Invoke)) {
-            throw new TCAPSendException("Bad type: " + c.getClass().getName());
-        }
+        if (!(c instanceof Invoke))
+	    throw new TCAPSendException("Bad type: " + c.getClass().getName());
         // lets kill this Invoke - sending ReturnResultLast
         Invoke invoke = (Invoke)c;
         super.dialog.sendData(invoke.getInvokeId(), null, null, null, null, null, false, true);
 
         c = comps.get(1);
-        if (!(c instanceof Invoke)) {
-                throw new TCAPSendException("Bad type: " + c.getClass().getName());
-        }
+        if (!(c instanceof Invoke))
+	    throw new TCAPSendException("Bad type: " + c.getClass().getName());
 
         // lets kill this Invoke - sending Invoke with linkedId
         invoke = (Invoke)c;

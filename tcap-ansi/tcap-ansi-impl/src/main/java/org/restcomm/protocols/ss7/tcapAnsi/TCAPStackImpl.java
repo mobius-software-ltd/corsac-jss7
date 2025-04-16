@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.LogManager;
@@ -41,6 +39,9 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TCUnifiedMessageImpl;
 
+import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
+import com.mobius.software.common.dal.timers.Timer;
+
 /**
  * @author amit bhayani
  * @author baranowb
@@ -49,432 +50,437 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.TCUnifiedMessageImpl;
  */
 public class TCAPStackImpl implements TCAPStack {
 
-    private final Logger logger;
+	private final Logger logger;
 
-    protected static final String TCAP_MANAGEMENT_PERSIST_DIR_KEY = "tcapmanagement.persist.dir";
-    protected static final String USER_DIR_KEY = "user.dir";
-    protected static final String PERSIST_FILE_NAME = "management.xml";
-    // default value of idle timeout and after TC_END remove of task.
-    
-    // TCAP state data, it is used ONLY on client side
-    protected TCAPProviderImpl tcapProvider;
-    protected ScheduledExecutorService service;
-    
-    private final String name;
+	protected static final String TCAP_MANAGEMENT_PERSIST_DIR_KEY = "tcapmanagement.persist.dir";
+	protected static final String USER_DIR_KEY = "user.dir";
+	protected static final String PERSIST_FILE_NAME = "management.xml";
+	// default value of idle timeout and after TC_END remove of task.
 
-    protected String persistDir = null;
+	// TCAP state data, it is used ONLY on client side
+	protected TCAPProviderImpl tcapProvider;
+	protected PeriodicQueuedTasks<Timer> queuedTasks;
 
-    private volatile boolean started = false;
+	private final String name;
 
-    private long dialogTimeout = _DIALOG_TIMEOUT;
-    private long invokeTimeout = _INVOKE_TIMEOUT;
-    
-    // TODO: make this configurable
-    private long dialogIdRangeStart = 1;
-    private long dialogIdRangeEnd = Integer.MAX_VALUE;
-    private ConcurrentHashMap<Integer,Integer> extraSsns = new ConcurrentHashMap<Integer,Integer>();
-    
-    private boolean isSwapTcapIdBytes = true;  // for now configurable only via XML file
+	protected String persistDir = null;
 
-    private int ssn = -1;
+	private volatile boolean started = false;
 
-    // SLS value
-    private SlsRangeType slsRange = SlsRangeType.All;
+	private long dialogTimeout = _DIALOG_TIMEOUT;
+	private long invokeTimeout = _INVOKE_TIMEOUT;
 
-    private ConcurrentHashMap<String, AtomicLong> messagesSentByType=new ConcurrentHashMap<String, AtomicLong>();
-    private ConcurrentHashMap<String, AtomicLong> messagesReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
-    private ConcurrentHashMap<String, AtomicLong> componentsSentByType=new ConcurrentHashMap<String, AtomicLong>();
-    private ConcurrentHashMap<String, AtomicLong> componentsReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
-    private ConcurrentHashMap<String, AtomicLong> rejectsSentByType=new ConcurrentHashMap<String, AtomicLong>();
-    private ConcurrentHashMap<String, AtomicLong> rejectsReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
-    private ConcurrentHashMap<String, AtomicLong> abortsSentByType=new ConcurrentHashMap<String, AtomicLong>();
-    private ConcurrentHashMap<String, AtomicLong> abortsReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
-    private AtomicLong incomingDialogsProcessed=new AtomicLong(0L);
-    private AtomicLong outgoingDialogsProcessed=new AtomicLong(0L);
-    private AtomicLong dialogTimeoutProcessed=new AtomicLong(0L);
-    private AtomicLong invokeTimeoutProcessed=new AtomicLong(0L);
-    private AtomicLong bytesSent=new AtomicLong(0L);
-    private AtomicLong bytesReceived=new AtomicLong(0L);
-    
-    private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> messagesSentByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
-    private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> messagesReceivedByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
-    private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> componentsSentByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
-    private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> componentsReceivedByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
-    private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> rejectsSentByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
-    private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> rejectsReceivedByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
-    private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> abortsSentByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
-    private ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>> abortsReceivedByTypeAndNetwork=new ConcurrentHashMap<Integer,ConcurrentHashMap<String, AtomicLong>>();
-    private ConcurrentHashMap<Integer,AtomicLong> incomingDialogsProcessedByNetwork=new ConcurrentHashMap<Integer,AtomicLong>();
-    private ConcurrentHashMap<Integer,AtomicLong> outgoingDialogsProcessedByNetwork=new ConcurrentHashMap<Integer,AtomicLong>();
-    private ConcurrentHashMap<Integer,AtomicLong> dialogTimeoutProcessedByNetwork=new ConcurrentHashMap<Integer,AtomicLong>();
-    private ConcurrentHashMap<Integer,AtomicLong> invokeTimeoutProcessedByNetwork=new ConcurrentHashMap<Integer,AtomicLong>();
-    private ConcurrentHashMap<Integer,AtomicLong> bytesSentByNetwork=new ConcurrentHashMap<Integer,AtomicLong>();
-    private ConcurrentHashMap<Integer,AtomicLong> bytesReceivedByNetwork=new ConcurrentHashMap<Integer,AtomicLong>();
-    
-    public static List<String> allAbortCauses=new ArrayList<String>();
-    
-    static
-    {
-    	for(PAbortCause abortType:PAbortCause.values())
-    		allAbortCauses.add(abortType.name());
-        
-    	allAbortCauses.add("User");
-    }
-    
-    public TCAPStackImpl(String name,int threads) {
-        super();
-        this.name = name;
+	// TODO: make this configurable
+	private long dialogIdRangeStart = 1;
+	private long dialogIdRangeEnd = Integer.MAX_VALUE;
+	private ConcurrentHashMap<Integer, Integer> extraSsns = new ConcurrentHashMap<Integer, Integer>();
 
-        service=Executors.newScheduledThreadPool(threads);
-        this.logger = LogManager.getLogger(TCAPStackImpl.class.getCanonicalName() + "-" + this.name);
-        
-        for(String currName:TCUnifiedMessageImpl.getAllNames()) {
-        	messagesSentByType.put(currName,new AtomicLong(0));
-        	messagesReceivedByType.put(currName,new AtomicLong(0));
-        }        	
-        
-        for(ComponentType currComponentType:ComponentType.values()) {
-        	componentsSentByType.put(currComponentType.name(),new AtomicLong(0));
-        	componentsReceivedByType.put(currComponentType.name(),new AtomicLong(0));
-        }
-        
-        for(RejectProblem rejectProblem:RejectProblem.values()) {
-        	rejectsSentByType.put(rejectProblem.name(),new AtomicLong(0));
-        	rejectsReceivedByType.put(rejectProblem.name(),new AtomicLong(0));
-        }
-        
-        for(PAbortCause abortType:PAbortCause.values()) {
-        	abortsReceivedByType.put(abortType.name(),new AtomicLong(0));
-        	abortsSentByType.put(abortType.name(),new AtomicLong(0));
-        }
-        
-        abortsReceivedByType.put("User",new AtomicLong(0));
-    	abortsSentByType.put("User",new AtomicLong(0));
-    }
+	private boolean isSwapTcapIdBytes = true; // for now configurable only via XML file
 
-    public TCAPStackImpl(String name, SccpProvider sccpProvider, int ssn,int threads) {
-        this(name,threads);
+	private int ssn = -1;
 
-        this.tcapProvider = new TCAPProviderImpl(sccpProvider, this, ssn,service);
-        this.ssn = ssn;
-    }
+	// SLS value
+	private SlsRangeType slsRange = SlsRangeType.All;
 
-    @Override
-    public String getName() {
-        return name;
-    }
+	private ConcurrentHashMap<String, AtomicLong> messagesSentByType = new ConcurrentHashMap<String, AtomicLong>();
+	private ConcurrentHashMap<String, AtomicLong> messagesReceivedByType = new ConcurrentHashMap<String, AtomicLong>();
+	private ConcurrentHashMap<String, AtomicLong> componentsSentByType = new ConcurrentHashMap<String, AtomicLong>();
+	private ConcurrentHashMap<String, AtomicLong> componentsReceivedByType = new ConcurrentHashMap<String, AtomicLong>();
+	private ConcurrentHashMap<String, AtomicLong> rejectsSentByType = new ConcurrentHashMap<String, AtomicLong>();
+	private ConcurrentHashMap<String, AtomicLong> rejectsReceivedByType = new ConcurrentHashMap<String, AtomicLong>();
+	private ConcurrentHashMap<String, AtomicLong> abortsSentByType = new ConcurrentHashMap<String, AtomicLong>();
+	private ConcurrentHashMap<String, AtomicLong> abortsReceivedByType = new ConcurrentHashMap<String, AtomicLong>();
+	private AtomicLong incomingDialogsProcessed = new AtomicLong(0L);
+	private AtomicLong outgoingDialogsProcessed = new AtomicLong(0L);
+	private AtomicLong dialogTimeoutProcessed = new AtomicLong(0L);
+	private AtomicLong invokeTimeoutProcessed = new AtomicLong(0L);
+	private AtomicLong bytesSent = new AtomicLong(0L);
+	private AtomicLong bytesReceived = new AtomicLong(0L);
 
-    @Override
-    public String getPersistDir() {
-        return persistDir;
-    }
+	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> messagesSentByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> messagesReceivedByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> componentsSentByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> componentsReceivedByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> rejectsSentByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> rejectsReceivedByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> abortsSentByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> abortsReceivedByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+	private ConcurrentHashMap<Integer, AtomicLong> incomingDialogsProcessedByNetwork = new ConcurrentHashMap<Integer, AtomicLong>();
+	private ConcurrentHashMap<Integer, AtomicLong> outgoingDialogsProcessedByNetwork = new ConcurrentHashMap<Integer, AtomicLong>();
+	private ConcurrentHashMap<Integer, AtomicLong> dialogTimeoutProcessedByNetwork = new ConcurrentHashMap<Integer, AtomicLong>();
+	private ConcurrentHashMap<Integer, AtomicLong> invokeTimeoutProcessedByNetwork = new ConcurrentHashMap<Integer, AtomicLong>();
+	private ConcurrentHashMap<Integer, AtomicLong> bytesSentByNetwork = new ConcurrentHashMap<Integer, AtomicLong>();
+	private ConcurrentHashMap<Integer, AtomicLong> bytesReceivedByNetwork = new ConcurrentHashMap<Integer, AtomicLong>();
 
-    @Override
-    public int getSubSystemNumber(){
-        return this.ssn;
-    }
+	public static List<String> allAbortCauses = new ArrayList<String>();
 
-    public void start() throws Exception {
-        logger.info("Starting ..." + tcapProvider);
+	static {
+		for (PAbortCause abortType : PAbortCause.values())
+			allAbortCauses.add(abortType.name());
 
-        if (this.dialogTimeout < 0) {
-            throw new IllegalArgumentException("DialogIdleTimeout value must be greater or equal to zero.");
-        }
+		allAbortCauses.add("User");
+	}
 
-        if (this.dialogTimeout < this.invokeTimeout) {
-            throw new IllegalArgumentException("DialogIdleTimeout value must be greater or equal to invoke timeout.");
-        }
+	public TCAPStackImpl(String name, PeriodicQueuedTasks<Timer> queuedTasks) {
+		super();
+		this.name = name;
+		this.queuedTasks = queuedTasks;
+		this.logger = LogManager.getLogger(TCAPStackImpl.class.getCanonicalName() + "-" + this.name);
 
-        if (this.invokeTimeout < 0) {
-            throw new IllegalArgumentException("InvokeTimeout value must be greater or equal to zero.");
-        }
+		for (String currName : TCUnifiedMessageImpl.getAllNames()) {
+			messagesSentByType.put(currName, new AtomicLong(0));
+			messagesReceivedByType.put(currName, new AtomicLong(0));
+		}
 
-        tcapProvider.start();
-        this.started = true;
-    }
+		for (ComponentType currComponentType : ComponentType.values()) {
+			componentsSentByType.put(currComponentType.name(), new AtomicLong(0));
+			componentsReceivedByType.put(currComponentType.name(), new AtomicLong(0));
+		}
 
-    private void checkDialogIdRangeValues(long rangeStart, long rangeEnd) {
-        if (rangeStart >= rangeEnd)
-            throw new IllegalArgumentException("Range start value cannot be equal/greater than Range end value");
-        if (rangeStart < 1)
-            throw new IllegalArgumentException("Range start value must be greater or equal 1");
-        if (rangeEnd > Integer.MAX_VALUE)
-            throw new IllegalArgumentException("Range end value must be less or equal " + Integer.MAX_VALUE);
-        if ((rangeEnd - rangeStart) < 10000)
-            throw new IllegalArgumentException("Range \"end - start\" must has at least 10000 possible dialogs");        
-    }
+		for (RejectProblem rejectProblem : RejectProblem.values()) {
+			rejectsSentByType.put(rejectProblem.name(), new AtomicLong(0));
+			rejectsReceivedByType.put(rejectProblem.name(), new AtomicLong(0));
+		}
 
-    public void stop() {
-        this.tcapProvider.stop();
-        service.shutdownNow();
-        this.started = false;
-    }
+		for (PAbortCause abortType : PAbortCause.values()) {
+			abortsReceivedByType.put(abortType.name(), new AtomicLong(0));
+			abortsSentByType.put(abortType.name(), new AtomicLong(0));
+		}
 
-    /**
-     * @return the started
-     */
-    public boolean isStarted() {
-        return this.started;
-    }
+		abortsReceivedByType.put("User", new AtomicLong(0));
+		abortsSentByType.put("User", new AtomicLong(0));
+	}
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.api.TCAPStack#getProvider()
-     */
-    public TCAPProvider getProvider() {
+	public TCAPStackImpl(String name, SccpProvider sccpProvider, int ssn, PeriodicQueuedTasks<Timer> queuedTasks) {
+		this(name, queuedTasks);
 
-        return tcapProvider;
-    }
+		this.tcapProvider = new TCAPProviderImpl(sccpProvider, this, ssn, queuedTasks);
+		this.ssn = ssn;
+	}
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.api.TCAPStack#setDialogIdleTimeout(long)
-     */
-    public void setDialogIdleTimeout(long v) throws Exception {
-        if (!this.started)
-            throw new Exception("DialogIdleTimeout parameter can be updated only when TCAP stack is running");
+	@Override
+	public String getName() {
+		return name;
+	}
 
-        if (v < 0) {
-            throw new IllegalArgumentException("DialogIdleTimeout value must be greater or equal to zero.");
-        }
-        if (v < this.invokeTimeout) {
-            throw new IllegalArgumentException("DialogIdleTimeout value must be greater or equal to invoke timeout.");
-        }
+	@Override
+	public String getPersistDir() {
+		return persistDir;
+	}
 
-        this.dialogTimeout = v;
-    }
+	@Override
+	public int getSubSystemNumber() {
+		return this.ssn;
+	}
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.api.TCAPStack#getDialogIdleTimeout()
-     */
-    public long getDialogIdleTimeout() {
-        return this.dialogTimeout;
-    }
+	@Override
+	public void start() throws Exception {
+		logger.info("Starting ..." + tcapProvider);
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.api.TCAPStack#setInvokeTimeout(long)
-     */
-    public void setInvokeTimeout(long v) throws Exception {
-        if (!this.started)
-            throw new Exception("InvokeTimeout parameter can be updated only when TCAP stack is running");
+		if (this.dialogTimeout < 0)
+			throw new IllegalArgumentException("DialogIdleTimeout value must be greater or equal to zero.");
 
-        if (v < 0) {
-            throw new IllegalArgumentException("InvokeTimeout value must be greater or equal to zero.");
-        }
-        if (v > this.dialogTimeout) {
-            throw new IllegalArgumentException("InvokeTimeout value must be smaller or equal to dialog timeout.");
-        }
+		if (this.dialogTimeout < this.invokeTimeout)
+			throw new IllegalArgumentException("DialogIdleTimeout value must be greater or equal to invoke timeout.");
 
-        this.invokeTimeout = v;
-    }
+		if (this.invokeTimeout < 0)
+			throw new IllegalArgumentException("InvokeTimeout value must be greater or equal to zero.");
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.restcomm.protocols.ss7.tcap.api.TCAPStack#getInvokeTimeout()
-     */
-    public long getInvokeTimeout() {
-        return this.invokeTimeout;
-    }
+		tcapProvider.start();
+		this.started = true;
+	}
 
-    public void setDialogIdRangeStart(long val) throws Exception {
-        if (!this.started)
-            throw new Exception("DialogIdRangeStart parameter can be updated only when TCAP stack is running");
+	private void checkDialogIdRangeValues(long rangeStart, long rangeEnd) {
+		if (rangeStart >= rangeEnd)
+			throw new IllegalArgumentException("Range start value cannot be equal/greater than Range end value");
+		if (rangeStart < 1)
+			throw new IllegalArgumentException("Range start value must be greater or equal 1");
+		if (rangeEnd > Integer.MAX_VALUE)
+			throw new IllegalArgumentException("Range end value must be less or equal " + Integer.MAX_VALUE);
+		if ((rangeEnd - rangeStart) < 10000)
+			throw new IllegalArgumentException("Range \"end - start\" must has at least 10000 possible dialogs");
+	}
 
-        this.checkDialogIdRangeValues(val, this.getDialogIdRangeEnd());
-        dialogIdRangeStart = val;
-        tcapProvider.resetDialogIdValueAfterRangeChange();
-    }
+	@Override
+	public void stop() {
+		this.tcapProvider.stop();
+		this.started = false;
+	}
 
-    public void setDialogIdRangeEnd(long val) throws Exception {
-        if (!this.started)
-            throw new Exception("DialogIdRangeEnd parameter can be updated only when TCAP stack is running");
+	/**
+	 * @return the started
+	 */
+	@Override
+	public boolean isStarted() {
+		return this.started;
+	}
 
-        this.checkDialogIdRangeValues(this.getDialogIdRangeStart(), val);
-        dialogIdRangeEnd = val;
-        tcapProvider.resetDialogIdValueAfterRangeChange();
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.restcomm.protocols.ss7.tcap.api.TCAPStack#getProvider()
+	 */
+	@Override
+	public TCAPProvider getProvider() {
 
-    public long getDialogIdRangeStart() {
-        return dialogIdRangeStart;
-    }
+		return tcapProvider;
+	}
 
-    public long getDialogIdRangeEnd() {
-        return dialogIdRangeEnd;
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.restcomm.protocols.ss7.tcap.api.TCAPStack#setDialogIdleTimeout(long)
+	 */
+	@Override
+	public void setDialogIdleTimeout(long v) throws Exception {
+		if (!this.started)
+			throw new Exception("DialogIdleTimeout parameter can be updated only when TCAP stack is running");
 
-    public void setExtraSsns(List<Integer> extraSsnsNew) throws Exception {
-        if (this.started)
-            throw new Exception("ExtraSsns parameter can be updated only when TCAP stack is NOT running");
+		if (v < 0)
+			throw new IllegalArgumentException("DialogIdleTimeout value must be greater or equal to zero.");
+		if (v < this.invokeTimeout)
+			throw new IllegalArgumentException("DialogIdleTimeout value must be greater or equal to invoke timeout.");
 
-        if (extraSsnsNew != null) {
-        	ConcurrentHashMap<Integer,Integer> extraSsnsTemp = new ConcurrentHashMap<Integer,Integer>();
-        	for(Integer ssn:extraSsnsNew)
-        		extraSsnsTemp.put(ssn, ssn);
-        	
-        	this.extraSsns = extraSsnsTemp;            
-        }
-    }
+		this.dialogTimeout = v;
+	}
 
-    public Collection<Integer> getExtraSsns() {
-        return extraSsns.values();
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.restcomm.protocols.ss7.tcap.api.TCAPStack#getDialogIdleTimeout()
+	 */
+	@Override
+	public long getDialogIdleTimeout() {
+		return this.dialogTimeout;
+	}
 
-    public boolean isExtraSsnPresent(int ssn) {
-        if (this.ssn == ssn)
-            return true;
-        if (extraSsns != null) {
-            if (extraSsns.containsKey(ssn))
-                return true;
-        }
-        return false;
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.restcomm.protocols.ss7.tcap.api.TCAPStack#setInvokeTimeout(long)
+	 */
+	@Override
+	public void setInvokeTimeout(long v) throws Exception {
+		if (!this.started)
+			throw new Exception("InvokeTimeout parameter can be updated only when TCAP stack is running");
 
-    @Override
-    public String getSubSystemNumberList() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.ssn);
-        if (extraSsns != null) {
-        	Iterator<Integer> iterator=extraSsns.values().iterator();
-            while(iterator.hasNext()) {
-                sb.append(", ");
-                sb.append(iterator.next());
-            }
-        }
+		if (v < 0)
+			throw new IllegalArgumentException("InvokeTimeout value must be greater or equal to zero.");
+		if (v > this.dialogTimeout)
+			throw new IllegalArgumentException("InvokeTimeout value must be smaller or equal to dialog timeout.");
 
-        return sb.toString();
-    }
+		this.invokeTimeout = v;
+	}
 
-    public void setSlsRange(String val) throws Exception {
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.restcomm.protocols.ss7.tcap.api.TCAPStack#getInvokeTimeout()
+	 */
+	@Override
+	public long getInvokeTimeout() {
+		return this.invokeTimeout;
+	}
 
-        if (val.equals(SlsRangeType.All.toString()))  {
-            this.slsRange = SlsRangeType.All;
-        } else if (val.equals(SlsRangeType.Odd.toString())) {
-            this.slsRange = SlsRangeType.Odd;
-        } else if (val.equals(SlsRangeType.Even.toString())) {
-            this.slsRange = SlsRangeType.Even;
-        } else {
-            throw new Exception("SlsRange value is invalid");
-        }
-    }
+	@Override
+	public void setDialogIdRangeStart(long val) throws Exception {
+		if (!this.started)
+			throw new Exception("DialogIdRangeStart parameter can be updated only when TCAP stack is running");
 
-    public String getSlsRange() {
-        return this.slsRange.toString();
-    }
+		this.checkDialogIdRangeValues(val, this.getDialogIdRangeEnd());
+		dialogIdRangeStart = val;
+		tcapProvider.resetDialogIdValueAfterRangeChange();
+	}
 
-    @Override
-    public boolean getSwapTcapIdBytes() {
-        return isSwapTcapIdBytes;
-    }
+	@Override
+	public void setDialogIdRangeEnd(long val) throws Exception {
+		if (!this.started)
+			throw new Exception("DialogIdRangeEnd parameter can be updated only when TCAP stack is running");
 
-    @Override
-    public void setSwapTcapIdBytes(boolean isSwapTcapIdBytes) {
-        this.isSwapTcapIdBytes = isSwapTcapIdBytes;
-    }
+		this.checkDialogIdRangeValues(this.getDialogIdRangeStart(), val);
+		dialogIdRangeEnd = val;
+		tcapProvider.resetDialogIdValueAfterRangeChange();
+	}
 
-    public SlsRangeType getSlsRangeType() {
-        return this.slsRange;
-    }
+	@Override
+	public long getDialogIdRangeStart() {
+		return dialogIdRangeStart;
+	}
+
+	@Override
+	public long getDialogIdRangeEnd() {
+		return dialogIdRangeEnd;
+	}
+
+	@Override
+	public void setExtraSsns(List<Integer> extraSsnsNew) throws Exception {
+		if (this.started)
+			throw new Exception("ExtraSsns parameter can be updated only when TCAP stack is NOT running");
+
+		if (extraSsnsNew != null) {
+			ConcurrentHashMap<Integer, Integer> extraSsnsTemp = new ConcurrentHashMap<Integer, Integer>();
+			for (Integer ssn : extraSsnsNew)
+				extraSsnsTemp.put(ssn, ssn);
+
+			this.extraSsns = extraSsnsTemp;
+		}
+	}
+
+	@Override
+	public Collection<Integer> getExtraSsns() {
+		return extraSsns.values();
+	}
+
+	@Override
+	public boolean isExtraSsnPresent(int ssn) {
+		if (this.ssn == ssn)
+			return true;
+		if (extraSsns != null)
+			if (extraSsns.containsKey(ssn))
+				return true;
+		return false;
+	}
+
+	@Override
+	public String getSubSystemNumberList() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.ssn);
+		if (extraSsns != null) {
+			Iterator<Integer> iterator = extraSsns.values().iterator();
+			while (iterator.hasNext()) {
+				sb.append(", ");
+				sb.append(iterator.next());
+			}
+		}
+
+		return sb.toString();
+	}
+
+	@Override
+	public void setSlsRange(String val) throws Exception {
+
+		if (val.equals(SlsRangeType.All.toString()))
+			this.slsRange = SlsRangeType.All;
+		else if (val.equals(SlsRangeType.Odd.toString()))
+			this.slsRange = SlsRangeType.Odd;
+		else if (val.equals(SlsRangeType.Even.toString()))
+			this.slsRange = SlsRangeType.Even;
+		else
+			throw new Exception("SlsRange value is invalid");
+	}
+
+	@Override
+	public String getSlsRange() {
+		return this.slsRange.toString();
+	}
+
+	@Override
+	public boolean getSwapTcapIdBytes() {
+		return isSwapTcapIdBytes;
+	}
+
+	@Override
+	public void setSwapTcapIdBytes(boolean isSwapTcapIdBytes) {
+		this.isSwapTcapIdBytes = isSwapTcapIdBytes;
+	}
+
+	public SlsRangeType getSlsRangeType() {
+		return this.slsRange;
+	}
 
 	@Override
 	public Map<String, Long> getComponentsSentByType() {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Iterator<Entry<String, AtomicLong>> iterator=componentsSentByType.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator = componentsSentByType.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry = iterator.next();
 			result.put(currEntry.getKey(), currEntry.getValue().get());
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	public Map<String, Long> getComponentsReceivedByType() {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Iterator<Entry<String, AtomicLong>> iterator=componentsReceivedByType.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator = componentsReceivedByType.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry = iterator.next();
 			result.put(currEntry.getKey(), currEntry.getValue().get());
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	public Map<String, Long> getMessagesSentByType() {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Iterator<Entry<String, AtomicLong>> iterator=messagesSentByType.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator = messagesSentByType.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry = iterator.next();
 			result.put(currEntry.getKey(), currEntry.getValue().get());
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	public Map<String, Long> getMessagesReceivedByType() {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Iterator<Entry<String, AtomicLong>> iterator=messagesReceivedByType.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator = messagesReceivedByType.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry = iterator.next();
 			result.put(currEntry.getKey(), currEntry.getValue().get());
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	public Map<String, Long> getRejectsSentByType() {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Iterator<Entry<String, AtomicLong>> iterator=rejectsSentByType.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator = rejectsSentByType.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry = iterator.next();
 			result.put(currEntry.getKey(), currEntry.getValue().get());
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	public Map<String, Long> getRejectsReceivedByType() {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Iterator<Entry<String, AtomicLong>> iterator=rejectsReceivedByType.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator = rejectsReceivedByType.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry = iterator.next();
 			result.put(currEntry.getKey(), currEntry.getValue().get());
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	public Map<String, Long> getAbortsSentByType() {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Iterator<Entry<String, AtomicLong>> iterator=abortsSentByType.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator = abortsSentByType.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry = iterator.next();
 			result.put(currEntry.getKey(), currEntry.getValue().get());
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	public Map<String, Long> getAbortsReceivedByType() {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Iterator<Entry<String, AtomicLong>> iterator=abortsReceivedByType.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Iterator<Entry<String, AtomicLong>> iterator = abortsReceivedByType.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Entry<String, AtomicLong> currEntry = iterator.next();
 			result.put(currEntry.getKey(), currEntry.getValue().get());
 		}
-		
+
 		return result;
 	}
 
@@ -510,395 +516,404 @@ public class TCAPStackImpl implements TCAPStack {
 
 	@Override
 	public Map<String, Long> getComponentsSentByTypeAndNetwork(Integer networkID) {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Map<String,AtomicLong> componentsSentByType = componentsSentByTypeAndNetwork.get(networkID);
-		if(componentsSentByType!=null) {
-			Iterator<Entry<String, AtomicLong>> iterator=componentsSentByType.entrySet().iterator();
-			while(iterator.hasNext()) {
-				Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Map<String, AtomicLong> componentsSentByType = componentsSentByTypeAndNetwork.get(networkID);
+		if (componentsSentByType != null) {
+			Iterator<Entry<String, AtomicLong>> iterator = componentsSentByType.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Entry<String, AtomicLong> currEntry = iterator.next();
 				result.put(currEntry.getKey(), currEntry.getValue().get());
 			}
 		}
-		
-		return result;		
+
+		return result;
 	}
 
 	@Override
 	public Map<String, Long> getComponentsReceivedByTypeAndNetwork(Integer networkID) {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Map<String,AtomicLong> componentsReceivedByType = componentsReceivedByTypeAndNetwork.get(networkID);
-		if(componentsReceivedByType!=null) {
-			Iterator<Entry<String, AtomicLong>> iterator=componentsReceivedByType.entrySet().iterator();
-			while(iterator.hasNext()) {
-				Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Map<String, AtomicLong> componentsReceivedByType = componentsReceivedByTypeAndNetwork.get(networkID);
+		if (componentsReceivedByType != null) {
+			Iterator<Entry<String, AtomicLong>> iterator = componentsReceivedByType.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Entry<String, AtomicLong> currEntry = iterator.next();
 				result.put(currEntry.getKey(), currEntry.getValue().get());
 			}
 		}
-		
-		return result;		
+
+		return result;
 	}
 
 	@Override
 	public Map<String, Long> getMessagesSentByTypeAndNetwork(Integer networkID) {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Map<String,AtomicLong> messagesSentByType = messagesSentByTypeAndNetwork.get(networkID);
-		if(messagesSentByType!=null) {
-			Iterator<Entry<String, AtomicLong>> iterator=messagesSentByType.entrySet().iterator();
-			while(iterator.hasNext()) {
-				Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Map<String, AtomicLong> messagesSentByType = messagesSentByTypeAndNetwork.get(networkID);
+		if (messagesSentByType != null) {
+			Iterator<Entry<String, AtomicLong>> iterator = messagesSentByType.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Entry<String, AtomicLong> currEntry = iterator.next();
 				result.put(currEntry.getKey(), currEntry.getValue().get());
 			}
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	public Map<String, Long> getMessagesReceivedByTypeAndNetwork(Integer networkID) {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Map<String,AtomicLong> messagesReceivedByType = messagesReceivedByTypeAndNetwork.get(networkID);
-		if(messagesReceivedByType!=null) {
-			Iterator<Entry<String, AtomicLong>> iterator=messagesReceivedByType.entrySet().iterator();
-			while(iterator.hasNext()) {
-				Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Map<String, AtomicLong> messagesReceivedByType = messagesReceivedByTypeAndNetwork.get(networkID);
+		if (messagesReceivedByType != null) {
+			Iterator<Entry<String, AtomicLong>> iterator = messagesReceivedByType.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Entry<String, AtomicLong> currEntry = iterator.next();
 				result.put(currEntry.getKey(), currEntry.getValue().get());
 			}
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	public Map<String, Long> getRejectsSentByTypeAndNetwork(Integer networkID) {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Map<String,AtomicLong> rejectsSentByType = rejectsSentByTypeAndNetwork.get(networkID);
-		if(rejectsSentByType!=null) {
-			Iterator<Entry<String, AtomicLong>> iterator=rejectsSentByType.entrySet().iterator();
-			while(iterator.hasNext()) {
-				Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Map<String, AtomicLong> rejectsSentByType = rejectsSentByTypeAndNetwork.get(networkID);
+		if (rejectsSentByType != null) {
+			Iterator<Entry<String, AtomicLong>> iterator = rejectsSentByType.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Entry<String, AtomicLong> currEntry = iterator.next();
 				result.put(currEntry.getKey(), currEntry.getValue().get());
 			}
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	public Map<String, Long> getRejectsReceivedByTypeAndNetwork(Integer networkID) {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Map<String,AtomicLong> rejectsReceivedByType = rejectsReceivedByTypeAndNetwork.get(networkID);
-		if(rejectsReceivedByType!=null) {
-			Iterator<Entry<String, AtomicLong>> iterator=rejectsReceivedByType.entrySet().iterator();
-			while(iterator.hasNext()) {
-				Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Map<String, AtomicLong> rejectsReceivedByType = rejectsReceivedByTypeAndNetwork.get(networkID);
+		if (rejectsReceivedByType != null) {
+			Iterator<Entry<String, AtomicLong>> iterator = rejectsReceivedByType.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Entry<String, AtomicLong> currEntry = iterator.next();
 				result.put(currEntry.getKey(), currEntry.getValue().get());
 			}
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	public Map<String, Long> getAbortsSentByTypeAndNetwork(Integer networkID) {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Map<String,AtomicLong> abortsSentByType = abortsSentByTypeAndNetwork.get(networkID);
-		if(abortsSentByType!=null) {
-			Iterator<Entry<String, AtomicLong>> iterator=abortsSentByType.entrySet().iterator();
-			while(iterator.hasNext()) {
-				Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Map<String, AtomicLong> abortsSentByType = abortsSentByTypeAndNetwork.get(networkID);
+		if (abortsSentByType != null) {
+			Iterator<Entry<String, AtomicLong>> iterator = abortsSentByType.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Entry<String, AtomicLong> currEntry = iterator.next();
 				result.put(currEntry.getKey(), currEntry.getValue().get());
 			}
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	public Map<String, Long> getAbortsReceivedByTypeAndNetwork(Integer networkID) {
-		Map<String,Long> result=new HashMap<String, Long>();
-		Map<String,AtomicLong> abortsReceivedByType = abortsReceivedByTypeAndNetwork.get(networkID);
-		if(abortsReceivedByType!=null) {
-			Iterator<Entry<String, AtomicLong>> iterator=abortsReceivedByType.entrySet().iterator();
-			while(iterator.hasNext()) {
-				Entry<String, AtomicLong> currEntry=iterator.next();
+		Map<String, Long> result = new HashMap<String, Long>();
+		Map<String, AtomicLong> abortsReceivedByType = abortsReceivedByTypeAndNetwork.get(networkID);
+		if (abortsReceivedByType != null) {
+			Iterator<Entry<String, AtomicLong>> iterator = abortsReceivedByType.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Entry<String, AtomicLong> currEntry = iterator.next();
 				result.put(currEntry.getKey(), currEntry.getValue().get());
 			}
 		}
-		
+
 		return result;
 	}
 
 	@Override
 	public Long getIncomingDialogsProcessedByNetwork(Integer networkID) {
 		AtomicLong result = incomingDialogsProcessedByNetwork.get(networkID);
-		if(result==null)
+		if (result == null)
 			return 0L;
-		
+
 		return result.get();
 	}
 
 	@Override
 	public Long getOutgoingDialogsProcessedByNetwork(Integer networkID) {
 		AtomicLong result = outgoingDialogsProcessedByNetwork.get(networkID);
-		if(result==null)
+		if (result == null)
 			return 0L;
-		
+
 		return result.get();
 	}
 
 	@Override
 	public Long getBytesSentByNetwork(Integer networkID) {
 		AtomicLong result = bytesSentByNetwork.get(networkID);
-		if(result==null)
+		if (result == null)
 			return 0L;
-		
+
 		return result.get();
 	}
 
 	@Override
 	public Long getBytesReceivedByNetwork(Integer networkID) {
 		AtomicLong result = bytesReceivedByNetwork.get(networkID);
-		if(result==null)
+		if (result == null)
 			return 0L;
-		
+
 		return result.get();
 	}
 
 	@Override
 	public Long getDialogTimeoutProcessedByNetwork(Integer networkID) {
 		AtomicLong result = dialogTimeoutProcessedByNetwork.get(networkID);
-		if(result==null)
+		if (result == null)
 			return 0L;
-		
+
 		return result.get();
 	}
 
 	@Override
 	public Long getInvokeTimeoutProcessedByNetwork(Integer networkID) {
 		AtomicLong result = invokeTimeoutProcessedByNetwork.get(networkID);
-		if(result==null)
+		if (result == null)
 			return 0L;
-		
+
 		return result.get();
 	}
-	
+
 	protected void newIncomingDialogProcessed(int networkID) {
 		incomingDialogsProcessed.incrementAndGet();
-		
+
 		AtomicLong incomingDialogsProcessed = incomingDialogsProcessedByNetwork.get(networkID);
-		if(incomingDialogsProcessed==null) {
-			incomingDialogsProcessed=new AtomicLong();
-			AtomicLong oldValue=incomingDialogsProcessedByNetwork.putIfAbsent(networkID, incomingDialogsProcessed);
-			if(oldValue!=null)
-				incomingDialogsProcessed=oldValue;
+		if (incomingDialogsProcessed == null) {
+			incomingDialogsProcessed = new AtomicLong();
+			AtomicLong oldValue = incomingDialogsProcessedByNetwork.putIfAbsent(networkID, incomingDialogsProcessed);
+			if (oldValue != null)
+				incomingDialogsProcessed = oldValue;
 		}
-		
+
 		incomingDialogsProcessed.incrementAndGet();
 	}
-	
+
 	protected void newOutgoingDialogProcessed(int networkID) {
 		outgoingDialogsProcessed.incrementAndGet();
-		
+
 		AtomicLong outgoingDialogsProcessed = outgoingDialogsProcessedByNetwork.get(networkID);
-		if(outgoingDialogsProcessed==null) {
-			outgoingDialogsProcessed=new AtomicLong();
-			AtomicLong oldValue=outgoingDialogsProcessedByNetwork.putIfAbsent(networkID, outgoingDialogsProcessed);
-			if(oldValue!=null)
-				invokeTimeoutProcessed=oldValue;
+		if (outgoingDialogsProcessed == null) {
+			outgoingDialogsProcessed = new AtomicLong();
+			AtomicLong oldValue = outgoingDialogsProcessedByNetwork.putIfAbsent(networkID, outgoingDialogsProcessed);
+			if (oldValue != null)
+				invokeTimeoutProcessed = oldValue;
 		}
-		
+
 		outgoingDialogsProcessed.incrementAndGet();
 	}
-	
-	protected void newComponentSent(String componentName,int networkID) {
+
+	protected void newComponentSent(String componentName, int networkID) {
 		componentsSentByType.get(componentName).incrementAndGet();
-		
-		ConcurrentHashMap<String,AtomicLong> componentsSentByType =componentsSentByTypeAndNetwork.get(networkID);
-		if(componentsSentByType==null) {
-			componentsSentByType=new ConcurrentHashMap<String,AtomicLong>();
-			for(ComponentType currComponentType:ComponentType.values())
-				componentsSentByType.put(currComponentType.name(),new AtomicLong(0));
-	        
-			ConcurrentHashMap<String,AtomicLong> oldValue=componentsSentByTypeAndNetwork.putIfAbsent(networkID, componentsSentByType);
-			if(oldValue!=null)
-				componentsSentByType=oldValue;
+
+		ConcurrentHashMap<String, AtomicLong> componentsSentByType = componentsSentByTypeAndNetwork.get(networkID);
+		if (componentsSentByType == null) {
+			componentsSentByType = new ConcurrentHashMap<String, AtomicLong>();
+			for (ComponentType currComponentType : ComponentType.values())
+				componentsSentByType.put(currComponentType.name(), new AtomicLong(0));
+
+			ConcurrentHashMap<String, AtomicLong> oldValue = componentsSentByTypeAndNetwork.putIfAbsent(networkID,
+					componentsSentByType);
+			if (oldValue != null)
+				componentsSentByType = oldValue;
 		}
-		
-		componentsSentByType.get(componentName).incrementAndGet();	
+
+		componentsSentByType.get(componentName).incrementAndGet();
 	}
-	
-	protected void newComponentReceived(String componentName,int networkID) {
+
+	protected void newComponentReceived(String componentName, int networkID) {
 		componentsReceivedByType.get(componentName).incrementAndGet();
-		
-		ConcurrentHashMap<String,AtomicLong> componentsReceivedByType =componentsReceivedByTypeAndNetwork.get(networkID);
-		if(componentsReceivedByType==null) {
-			componentsReceivedByType=new ConcurrentHashMap<String,AtomicLong>();
-			for(ComponentType currComponentType:ComponentType.values())
-				componentsReceivedByType.put(currComponentType.name(),new AtomicLong(0));
-	        
-			ConcurrentHashMap<String,AtomicLong> oldValue=componentsReceivedByTypeAndNetwork.putIfAbsent(networkID, componentsReceivedByType);
-			if(oldValue!=null)
-				componentsReceivedByType=oldValue;
+
+		ConcurrentHashMap<String, AtomicLong> componentsReceivedByType = componentsReceivedByTypeAndNetwork
+				.get(networkID);
+		if (componentsReceivedByType == null) {
+			componentsReceivedByType = new ConcurrentHashMap<String, AtomicLong>();
+			for (ComponentType currComponentType : ComponentType.values())
+				componentsReceivedByType.put(currComponentType.name(), new AtomicLong(0));
+
+			ConcurrentHashMap<String, AtomicLong> oldValue = componentsReceivedByTypeAndNetwork.putIfAbsent(networkID,
+					componentsReceivedByType);
+			if (oldValue != null)
+				componentsReceivedByType = oldValue;
 		}
-		
-		componentsReceivedByType.get(componentName).incrementAndGet();	
+
+		componentsReceivedByType.get(componentName).incrementAndGet();
 	}
-	
-	protected void newRejectSent(String rejectReason,int networkID) {
+
+	protected void newRejectSent(String rejectReason, int networkID) {
 		rejectsSentByType.get(rejectReason).incrementAndGet();
-		
-		ConcurrentHashMap<String,AtomicLong> rejectsSentByType =rejectsSentByTypeAndNetwork.get(networkID);
-		if(rejectsSentByType==null) {
-			rejectsSentByType=new ConcurrentHashMap<String,AtomicLong>();
-			for(RejectProblem rejectProblem:RejectProblem.values())
-	        	rejectsSentByType.put(rejectProblem.name(),new AtomicLong(0));
-			
-			ConcurrentHashMap<String,AtomicLong> oldValue=rejectsSentByTypeAndNetwork.putIfAbsent(networkID, rejectsSentByType);
-			if(oldValue!=null)
-				rejectsSentByType=oldValue;
+
+		ConcurrentHashMap<String, AtomicLong> rejectsSentByType = rejectsSentByTypeAndNetwork.get(networkID);
+		if (rejectsSentByType == null) {
+			rejectsSentByType = new ConcurrentHashMap<String, AtomicLong>();
+			for (RejectProblem rejectProblem : RejectProblem.values())
+				rejectsSentByType.put(rejectProblem.name(), new AtomicLong(0));
+
+			ConcurrentHashMap<String, AtomicLong> oldValue = rejectsSentByTypeAndNetwork.putIfAbsent(networkID,
+					rejectsSentByType);
+			if (oldValue != null)
+				rejectsSentByType = oldValue;
 		}
-		
-		rejectsSentByType.get(rejectReason).incrementAndGet();	
+
+		rejectsSentByType.get(rejectReason).incrementAndGet();
 	}
-	
-	protected void newRejectReceived(String rejectReason,int networkID) {
+
+	protected void newRejectReceived(String rejectReason, int networkID) {
 		rejectsReceivedByType.get(rejectReason).incrementAndGet();
-		
-		ConcurrentHashMap<String,AtomicLong> rejectsReceivedByType =rejectsReceivedByTypeAndNetwork.get(networkID);
-		if(rejectsReceivedByType==null) {
-			rejectsReceivedByType=new ConcurrentHashMap<String,AtomicLong>();
-			for(RejectProblem rejectProblem:RejectProblem.values())
-	        	rejectsReceivedByType.put(rejectProblem.name(),new AtomicLong(0));
-	        
-			ConcurrentHashMap<String,AtomicLong> oldValue=rejectsReceivedByTypeAndNetwork.putIfAbsent(networkID, rejectsReceivedByType);
-			if(oldValue!=null)
-				rejectsReceivedByType=oldValue;
+
+		ConcurrentHashMap<String, AtomicLong> rejectsReceivedByType = rejectsReceivedByTypeAndNetwork.get(networkID);
+		if (rejectsReceivedByType == null) {
+			rejectsReceivedByType = new ConcurrentHashMap<String, AtomicLong>();
+			for (RejectProblem rejectProblem : RejectProblem.values())
+				rejectsReceivedByType.put(rejectProblem.name(), new AtomicLong(0));
+
+			ConcurrentHashMap<String, AtomicLong> oldValue = rejectsReceivedByTypeAndNetwork.putIfAbsent(networkID,
+					rejectsReceivedByType);
+			if (oldValue != null)
+				rejectsReceivedByType = oldValue;
 		}
-		
-		rejectsReceivedByType.get(rejectReason).incrementAndGet();	
+
+		rejectsReceivedByType.get(rejectReason).incrementAndGet();
 	}
-	
-	protected void newAbortSent(String abortCause,int networkID) {
+
+	protected void newAbortSent(String abortCause, int networkID) {
 		abortsSentByType.get(abortCause).incrementAndGet();
-		
-		ConcurrentHashMap<String,AtomicLong> abortsSentByType =abortsSentByTypeAndNetwork.get(networkID);
-		if(abortsSentByType==null) {
-			abortsSentByType=new ConcurrentHashMap<String,AtomicLong>();
-			for(PAbortCause abortType:PAbortCause.values())
-	        	abortsSentByType.put(abortType.name(),new AtomicLong(0));
-	        
-	        abortsSentByType.put("User",new AtomicLong(0));
-	    	
-			ConcurrentHashMap<String,AtomicLong> oldValue=abortsSentByTypeAndNetwork.putIfAbsent(networkID, abortsSentByType);
-			if(oldValue!=null)
-				abortsSentByType=oldValue;
+
+		ConcurrentHashMap<String, AtomicLong> abortsSentByType = abortsSentByTypeAndNetwork.get(networkID);
+		if (abortsSentByType == null) {
+			abortsSentByType = new ConcurrentHashMap<String, AtomicLong>();
+			for (PAbortCause abortType : PAbortCause.values())
+				abortsSentByType.put(abortType.name(), new AtomicLong(0));
+
+			abortsSentByType.put("User", new AtomicLong(0));
+
+			ConcurrentHashMap<String, AtomicLong> oldValue = abortsSentByTypeAndNetwork.putIfAbsent(networkID,
+					abortsSentByType);
+			if (oldValue != null)
+				abortsSentByType = oldValue;
 		}
-		
+
 		abortsSentByType.get(abortCause).incrementAndGet();
 	}
-	
-	protected void newAbortReceived(String abortCause,Integer networkID) {
+
+	protected void newAbortReceived(String abortCause, Integer networkID) {
 		abortsReceivedByType.get(abortCause).incrementAndGet();
-		
-		if(networkID!=null) {
-			ConcurrentHashMap<String,AtomicLong> abortsReceivedByType =abortsReceivedByTypeAndNetwork.get(networkID);
-			if(abortsReceivedByType==null) {
-				abortsReceivedByType=new ConcurrentHashMap<String,AtomicLong>();
-				for(PAbortCause abortType:PAbortCause.values())
-		        	abortsReceivedByType.put(abortType.name(),new AtomicLong(0));
-		        
-		        abortsReceivedByType.put("User",new AtomicLong(0));
-		    	
-				ConcurrentHashMap<String,AtomicLong> oldValue=abortsReceivedByTypeAndNetwork.putIfAbsent(networkID, abortsReceivedByType);
-				if(oldValue!=null)
-					abortsReceivedByType=oldValue;
+
+		if (networkID != null) {
+			ConcurrentHashMap<String, AtomicLong> abortsReceivedByType = abortsReceivedByTypeAndNetwork.get(networkID);
+			if (abortsReceivedByType == null) {
+				abortsReceivedByType = new ConcurrentHashMap<String, AtomicLong>();
+				for (PAbortCause abortType : PAbortCause.values())
+					abortsReceivedByType.put(abortType.name(), new AtomicLong(0));
+
+				abortsReceivedByType.put("User", new AtomicLong(0));
+
+				ConcurrentHashMap<String, AtomicLong> oldValue = abortsReceivedByTypeAndNetwork.putIfAbsent(networkID,
+						abortsReceivedByType);
+				if (oldValue != null)
+					abortsReceivedByType = oldValue;
 			}
-			
+
 			abortsReceivedByType.get(abortCause).incrementAndGet();
 		}
 	}
-	
-	protected void newMessageSent(String messageType,int bytes,int networkID) {
+
+	protected void newMessageSent(String messageType, int bytes, int networkID) {
 		messagesSentByType.get(messageType).incrementAndGet();
 		bytesSent.addAndGet(bytes);
-		
-		ConcurrentHashMap<String,AtomicLong> messagesSentByType =messagesSentByTypeAndNetwork.get(networkID);
-		if(messagesSentByType==null) {
-			messagesSentByType=new ConcurrentHashMap<String,AtomicLong>();
-			for(String currName:TCUnifiedMessageImpl.getAllNames())
-	        	messagesSentByType.put(currName,new AtomicLong(0));
-	        
-			ConcurrentHashMap<String,AtomicLong> oldValue=messagesSentByTypeAndNetwork.putIfAbsent(networkID, messagesSentByType);
-			if(oldValue!=null)
-				messagesSentByType=oldValue;
+
+		ConcurrentHashMap<String, AtomicLong> messagesSentByType = messagesSentByTypeAndNetwork.get(networkID);
+		if (messagesSentByType == null) {
+			messagesSentByType = new ConcurrentHashMap<String, AtomicLong>();
+			for (String currName : TCUnifiedMessageImpl.getAllNames())
+				messagesSentByType.put(currName, new AtomicLong(0));
+
+			ConcurrentHashMap<String, AtomicLong> oldValue = messagesSentByTypeAndNetwork.putIfAbsent(networkID,
+					messagesSentByType);
+			if (oldValue != null)
+				messagesSentByType = oldValue;
 		}
-		
-		messagesSentByType.get(messageType).incrementAndGet();		
-		
+
+		messagesSentByType.get(messageType).incrementAndGet();
+
 		AtomicLong bytesSent = bytesSentByNetwork.get(networkID);
-		if(bytesSent==null) {
-			bytesSent=new AtomicLong();
-			AtomicLong oldValue=bytesSentByNetwork.putIfAbsent(networkID, bytesSent);
-			if(oldValue!=null)
-				bytesSent=oldValue;
+		if (bytesSent == null) {
+			bytesSent = new AtomicLong();
+			AtomicLong oldValue = bytesSentByNetwork.putIfAbsent(networkID, bytesSent);
+			if (oldValue != null)
+				bytesSent = oldValue;
 		}
-		
-		bytesSent.addAndGet(bytes);		
+
+		bytesSent.addAndGet(bytes);
 	}
-	
-	protected void newMessageReceived(String messageType,int bytes,int networkID) {
+
+	protected void newMessageReceived(String messageType, int bytes, int networkID) {
 		messagesReceivedByType.get(messageType).incrementAndGet();
 		bytesReceived.addAndGet(bytes);
-		
-		ConcurrentHashMap<String,AtomicLong> messagesReceivedByType =messagesReceivedByTypeAndNetwork.get(networkID);
-		if(messagesReceivedByType==null) {
-			messagesReceivedByType=new ConcurrentHashMap<String,AtomicLong>();
-			for(String currName:TCUnifiedMessageImpl.getAllNames())
-				messagesReceivedByType.put(currName,new AtomicLong(0));
-	        
-			ConcurrentHashMap<String,AtomicLong> oldValue=messagesReceivedByTypeAndNetwork.putIfAbsent(networkID, messagesReceivedByType);
-			if(oldValue!=null)
-				messagesReceivedByType=oldValue;
+
+		ConcurrentHashMap<String, AtomicLong> messagesReceivedByType = messagesReceivedByTypeAndNetwork.get(networkID);
+		if (messagesReceivedByType == null) {
+			messagesReceivedByType = new ConcurrentHashMap<String, AtomicLong>();
+			for (String currName : TCUnifiedMessageImpl.getAllNames())
+				messagesReceivedByType.put(currName, new AtomicLong(0));
+
+			ConcurrentHashMap<String, AtomicLong> oldValue = messagesReceivedByTypeAndNetwork.putIfAbsent(networkID,
+					messagesReceivedByType);
+			if (oldValue != null)
+				messagesReceivedByType = oldValue;
 		}
-		
-		messagesReceivedByType.get(messageType).incrementAndGet();		
-		
+
+		messagesReceivedByType.get(messageType).incrementAndGet();
+
 		AtomicLong bytesReceived = bytesReceivedByNetwork.get(networkID);
-		if(bytesReceived==null) {
-			bytesReceived=new AtomicLong();
-			AtomicLong oldValue=bytesReceivedByNetwork.putIfAbsent(networkID, bytesReceived);
-			if(oldValue!=null)
-				bytesReceived=oldValue;
+		if (bytesReceived == null) {
+			bytesReceived = new AtomicLong();
+			AtomicLong oldValue = bytesReceivedByNetwork.putIfAbsent(networkID, bytesReceived);
+			if (oldValue != null)
+				bytesReceived = oldValue;
 		}
-		
-		bytesReceived.addAndGet(bytes);		
+
+		bytesReceived.addAndGet(bytes);
 	}
-	
+
 	protected void dialogTimedOut(int networkID) {
 		dialogTimeoutProcessed.incrementAndGet();
-		
+
 		AtomicLong dialogTimeoutProcessed = dialogTimeoutProcessedByNetwork.get(networkID);
-		if(dialogTimeoutProcessed==null) {
-			dialogTimeoutProcessed=new AtomicLong();
-			AtomicLong oldValue=dialogTimeoutProcessedByNetwork.putIfAbsent(networkID, dialogTimeoutProcessed);
-			if(oldValue!=null)
-				dialogTimeoutProcessed=oldValue;
+		if (dialogTimeoutProcessed == null) {
+			dialogTimeoutProcessed = new AtomicLong();
+			AtomicLong oldValue = dialogTimeoutProcessedByNetwork.putIfAbsent(networkID, dialogTimeoutProcessed);
+			if (oldValue != null)
+				dialogTimeoutProcessed = oldValue;
 		}
-		
+
 		dialogTimeoutProcessed.incrementAndGet();
 	}
-	
+
 	protected void invokeTimedOut(int networkID) {
 		invokeTimeoutProcessed.incrementAndGet();
-		
+
 		AtomicLong invokeTimeoutProcessed = invokeTimeoutProcessedByNetwork.get(networkID);
-		if(invokeTimeoutProcessed==null) {
-			invokeTimeoutProcessed=new AtomicLong();
-			AtomicLong oldValue=invokeTimeoutProcessedByNetwork.putIfAbsent(networkID, invokeTimeoutProcessed);
-			if(oldValue!=null)
-				invokeTimeoutProcessed=oldValue;
+		if (invokeTimeoutProcessed == null) {
+			invokeTimeoutProcessed = new AtomicLong();
+			AtomicLong oldValue = invokeTimeoutProcessedByNetwork.putIfAbsent(networkID, invokeTimeoutProcessed);
+			if (oldValue != null)
+				invokeTimeoutProcessed = oldValue;
 		}
-		
+
 		invokeTimeoutProcessed.incrementAndGet();
 	}
 }

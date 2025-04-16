@@ -21,6 +21,9 @@ package org.restcomm.protocols.ss7.tcapAnsi;
 
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
 
+import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
+import com.mobius.software.common.dal.timers.Timer;
+
 /**
  *
  * @author sergey vetyutnev
@@ -29,9 +32,10 @@ import org.restcomm.protocols.ss7.sccp.SccpProvider;
  */
 public class TCAPStackImplWrapper extends TCAPStackImpl {
 
-    public TCAPStackImplWrapper(SccpProvider sccpProvider, int ssn, String stackName,int threads) {
-        super(stackName,threads);
+	public TCAPStackImplWrapper(SccpProvider sccpProvider, int ssn, String stackName,
+			PeriodicQueuedTasks<Timer> queuedTasks) {
+		super(stackName, queuedTasks);
 
-        this.tcapProvider = new TCAPProviderImplWrapper(sccpProvider, this, ssn, service);
-    }
+		this.tcapProvider = new TCAPProviderImplWrapper(sccpProvider, this, ssn, queuedTasks);
+	}
 }

@@ -52,6 +52,7 @@ import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
 
+import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 import com.sun.nio.sctp.SctpChannel;
 
@@ -76,6 +77,8 @@ public class GatewayTest {
 
     private static final String CLIENT_HOST = "127.0.0.1";
     private static final int CLIENT_PORT = 2366;
+
+	private WorkerPool workerPool;
 
     private Management sctpManagement = null;
     private M3UAManagementImpl m3uaMgmt = null;
@@ -102,6 +105,9 @@ public class GatewayTest {
 
     @Before
     public void setUp() throws Exception {
+		workerPool = new WorkerPool();
+		workerPool.start(4);
+
         mtp3UserPartListener = new Mtp3UserPartListenerImpl();
 
         client = new Client();
@@ -114,7 +120,7 @@ public class GatewayTest {
         this.sctpManagement.removeAllResourses();
 
         UUIDGenerator uuidGenerator=new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} );
-        this.m3uaMgmt = new M3UAManagementImpl("GatewayTest", null, uuidGenerator);
+		this.m3uaMgmt = new M3UAManagementImpl("GatewayTest", null, uuidGenerator, workerPool.getQueue(), workerPool.getPeriodicQueue());
         this.m3uaMgmt.setTransportManagement(this.sctpManagement);
         this.m3uaMgmt.addMtp3UserPartListener(mtp3UserPartListener);
         this.m3uaMgmt.start();
@@ -127,6 +133,7 @@ public class GatewayTest {
 
         this.sctpManagement.stop();
         this.m3uaMgmt.stop();
+		workerPool.stop();
     }
 
     @Test

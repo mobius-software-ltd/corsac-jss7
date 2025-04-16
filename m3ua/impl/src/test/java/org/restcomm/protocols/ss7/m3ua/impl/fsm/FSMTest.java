@@ -26,16 +26,13 @@ package org.restcomm.protocols.ss7.m3ua.impl.fsm;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.restcomm.protocols.ss7.m3ua.impl.scheduler.M3UAScheduler;
+
+import com.mobius.software.common.dal.timers.WorkerPool;
 
 /**
  *
@@ -44,10 +41,9 @@ import org.restcomm.protocols.ss7.m3ua.impl.scheduler.M3UAScheduler;
  *
  */
 public class FSMTest {
+	private WorkerPool workerPool = new WorkerPool();
 
-    private M3UAScheduler m3uaScheduler = new M3UAScheduler();
-    private ScheduledExecutorService scheduledExecutorService = null;
-    private volatile boolean timedOut = false;
+	private volatile boolean timedOut = false;
     private volatile boolean stateEntered = false;
     private volatile boolean stateExited = false;
     private volatile boolean transitionHandlerCalled = false;
@@ -69,17 +65,17 @@ public class FSMTest {
         stateExited = false;
         transitionHandlerCalled = false;
 
-        scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        scheduledExecutorService.scheduleAtFixedRate(m3uaScheduler, 500, 500, TimeUnit.MILLISECONDS);
-    }
+		workerPool.start(64);
+	}
 
     @After
     public void tearDown() throws Exception {    	
+		workerPool.stop();
     }
 
     @Test
     public void testOnExit() throws Exception {
-        FSM fsm = new FSM("test");
+		FSM fsm = new FSM("test", workerPool.getPeriodicQueue());
 
         fsm.createState("STATE1").setOnExit(new AsState1Exit(fsm));
         fsm.createState("STATE2");
@@ -89,7 +85,7 @@ public class FSMTest {
 
         fsm.createTransition("GoToSTATE2", "STATE1", "STATE2");
 
-        m3uaScheduler.execute(fsm);
+		workerPool.getPeriodicQueue().store(fsm.getRealTimestamp(), fsm);
 
         fsm.signal("GoToSTATE2");
 
@@ -99,7 +95,7 @@ public class FSMTest {
 
     @Test
     public void testTransitionHandler() throws Exception {
-        FSM fsm = new FSM("test");
+		FSM fsm = new FSM("test", workerPool.getPeriodicQueue());
 
         fsm.createState("STATE1");
         fsm.createState("STATE2");
@@ -109,7 +105,7 @@ public class FSMTest {
 
         fsm.createTransition("GoToSTATE2", "STATE1", "STATE2").setHandler(new State1ToState2Transition());
 
-        m3uaScheduler.execute(fsm);
+		workerPool.getPeriodicQueue().store(fsm.getRealTimestamp(), fsm);
 
         fsm.signal("GoToSTATE2");
 
@@ -124,7 +120,7 @@ public class FSMTest {
      */
     @Test
     public void testNoTransitionHandler() throws Exception {
-    	FSM fsm = new FSM("test");
+		FSM fsm = new FSM("test", workerPool.getPeriodicQueue());
 
         fsm.createState("STATE1");
         fsm.createState("STATE2");
@@ -135,7 +131,7 @@ public class FSMTest {
         // Transition shouldn't happen
         fsm.createTransition("GoToSTATE2", "STATE1", "STATE2").setHandler(new State1ToState2NoTransition());
 
-        m3uaScheduler.execute(fsm);
+		workerPool.getPeriodicQueue().store(fsm.getRealTimestamp(), fsm);
 
         fsm.signal("GoToSTATE2");
 
@@ -145,7 +141,7 @@ public class FSMTest {
 
     @Test
     public void testOnEnter() throws Exception {
-        FSM fsm = new FSM("test");
+		FSM fsm = new FSM("test", workerPool.getPeriodicQueue());
 
         fsm.createState("STATE1");
         fsm.createState("STATE2").setOnEnter(new AsState2Enter(fsm));
@@ -155,7 +151,7 @@ public class FSMTest {
 
         fsm.createTransition("GoToSTATE2", "STATE1", "STATE2");
 
-        m3uaScheduler.execute(fsm);
+		workerPool.getPeriodicQueue().store(fsm.getRealTimestamp(), fsm);
 
         fsm.signal("GoToSTATE2");
 
@@ -165,7 +161,7 @@ public class FSMTest {
 
     @Test
     public void testTimeout() throws Exception {
-        FSM fsm = new FSM("test");
+		FSM fsm = new FSM("test", workerPool.getPeriodicQueue());
 
         fsm.createState("STATE1");
         fsm.createState("STATE2").setOnTimeOut(new AsState2Timeout(fsm), 2000);
@@ -175,7 +171,7 @@ public class FSMTest {
 
         fsm.createTransition("GoToSTATE2", "STATE1", "STATE2");
 
-        m3uaScheduler.execute(fsm);
+		workerPool.getPeriodicQueue().store(fsm.getRealTimestamp(), fsm);
 
         fsm.signal("GoToSTATE2");
 
@@ -193,7 +189,7 @@ public class FSMTest {
 
     @Test
     public void testTimeoutNoTransition() throws Exception {
-        FSM fsm = new FSM("test");
+		FSM fsm = new FSM("test", workerPool.getPeriodicQueue());
 
         fsm.createState("STATE1");
         fsm.createState("STATE2").setOnTimeOut(new AsState2Timeout(fsm), 2000);
@@ -205,7 +201,7 @@ public class FSMTest {
         fsm.createTransition("GoToSTATE2", "STATE1", "STATE2");
         fsm.createTransition("GoToSTATE3", "STATE2", "STATE3").setHandler(new NoTransition());
 
-        m3uaScheduler.execute(fsm);
+		workerPool.getPeriodicQueue().store(fsm.getRealTimestamp(), fsm);
 
         fsm.signal("GoToSTATE2");
         assertEquals("STATE2", fsm.getState().getName());
@@ -225,7 +221,7 @@ public class FSMTest {
 
     @Test
     public void testTimeoutTransition() throws Exception {
-        FSM fsm = new FSM("test");
+		FSM fsm = new FSM("test", workerPool.getPeriodicQueue());
 
         fsm.createState("STATE1");
         fsm.createState("STATE2");
@@ -237,7 +233,7 @@ public class FSMTest {
         fsm.createTransition("GoToSTATE2", "STATE1", "STATE2");
         fsm.createTimeoutTransition("STATE2", "STATE2", 1000l).setHandler(new State2TimeoutTransition());
 
-        m3uaScheduler.execute(fsm);
+		workerPool.getPeriodicQueue().store(fsm.getRealTimestamp(), fsm);
 
         fsm.signal("GoToSTATE2");
 
@@ -259,7 +255,8 @@ public class FSMTest {
             //this.fsm = fsm;
         }
 
-        public void onEvent(FSMState state) {
+        @Override
+		public void onEvent(FSMState state) {
             stateExited = true;
         }
     }
@@ -270,7 +267,8 @@ public class FSMTest {
             //this.fsm = fsm;
         }
 
-        public void onEvent(FSMState state) {
+        @Override
+		public void onEvent(FSMState state) {
             timedOut = true;
         }
     }
@@ -281,7 +279,8 @@ public class FSMTest {
             //this.fsm = fsm;
         }
 
-        public void onEvent(FSMState state) {
+        @Override
+		public void onEvent(FSMState state) {
             stateEntered = true;
         }
     }

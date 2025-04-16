@@ -258,2263 +258,2514 @@ import io.netty.buffer.ByteBuf;
 public class MAPProviderImpl implements MAPProvider, TCListener {
 	private static final long serialVersionUID = 1L;
 
-
 	private final MAPStackConfigurationManagement mapCfg;
-    protected final transient Logger loger;
-    private transient ConcurrentHashMap<UUID,MAPDialogListener> dialogListeners = new ConcurrentHashMap<UUID,MAPDialogListener>();
+	protected final transient Logger loger;
+	private transient ConcurrentHashMap<UUID, MAPDialogListener> dialogListeners = new ConcurrentHashMap<UUID, MAPDialogListener>();
 
-    private transient TCAPProvider tcapProvider = null;
+	private transient TCAPProvider tcapProvider = null;
 
-    private final transient MAPParameterFactory MAPParameterFactory = new MAPParameterFactoryImpl();
-    private final transient MAPSmsTpduParameterFactory mapSmsTpduParameterFactory = new MAPSmsTpduParameterFactoryImpl();
-    private final transient MAPErrorMessageFactory mapErrorMessageFactory = new MAPErrorMessageFactoryImpl();
+	private final transient MAPParameterFactory MAPParameterFactory = new MAPParameterFactoryImpl();
+	private final transient MAPSmsTpduParameterFactory mapSmsTpduParameterFactory = new MAPSmsTpduParameterFactoryImpl();
+	private final transient MAPErrorMessageFactory mapErrorMessageFactory = new MAPErrorMessageFactoryImpl();
 
-    protected transient Set<MAPServiceBaseImpl> mapServices = new HashSet<MAPServiceBaseImpl>();
-    private final transient MAPServiceMobilityImpl mapServiceMobility = new MAPServiceMobilityImpl(this);
-    private final transient MAPServiceCallHandlingImpl mapServiceCallHandling = new MAPServiceCallHandlingImpl(this);
-    private final transient MAPServiceOamImpl mapServiceOam = new MAPServiceOamImpl(this);
-    private final transient MAPServicePdpContextActivationImpl mapServicePdpContextActivation = new MAPServicePdpContextActivationImpl(
-            this);
-    private final transient MAPServiceSupplementaryImpl mapServiceSupplementary = new MAPServiceSupplementaryImpl(this);
-    private final transient MAPServiceSmsImpl mapServiceSms = new MAPServiceSmsImpl(this);
-    private final transient MAPServiceLsmImpl mapServiceLsm = new MAPServiceLsmImpl(this);
+	protected transient Set<MAPServiceBaseImpl> mapServices = new HashSet<MAPServiceBaseImpl>();
+	private final transient MAPServiceMobilityImpl mapServiceMobility = new MAPServiceMobilityImpl(this);
+	private final transient MAPServiceCallHandlingImpl mapServiceCallHandling = new MAPServiceCallHandlingImpl(this);
+	private final transient MAPServiceOamImpl mapServiceOam = new MAPServiceOamImpl(this);
+	private final transient MAPServicePdpContextActivationImpl mapServicePdpContextActivation = new MAPServicePdpContextActivationImpl(
+			this);
+	private final transient MAPServiceSupplementaryImpl mapServiceSupplementary = new MAPServiceSupplementaryImpl(this);
+	private final transient MAPServiceSmsImpl mapServiceSms = new MAPServiceSmsImpl(this);
+	private final transient MAPServiceLsmImpl mapServiceLsm = new MAPServiceLsmImpl(this);
 
-    private MAPStackImpl mapStack;
-    /**
-     * public common methods
-     */
+	private MAPStackImpl mapStack;
 
-    public MAPProviderImpl(String name, MAPStackImpl mapStack, TCAPProvider tcapProvider,MAPStackConfigurationManagement configuration) {
-        this.loger = LogManager.getLogger(MAPStackImpl.class.getCanonicalName() + "-" + name);
+	/**
+	 * public common methods
+	 */
 
-        this.tcapProvider = tcapProvider;
-        this.mapStack=mapStack;
-        this.mapCfg=configuration;
-        this.mapServices.add(this.mapServiceMobility);
-        this.mapServices.add(this.mapServiceCallHandling);
-        this.mapServices.add(this.mapServiceOam);
-        this.mapServices.add(this.mapServicePdpContextActivation);
-        this.mapServices.add(this.mapServiceSupplementary);
-        this.mapServices.add(this.mapServiceSms);
-        this.mapServices.add(this.mapServiceLsm);
-        
-        try {
-        	//registering user information options
-        	tcapProvider.getParser().registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, MAPOpenInfoImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, MAPAcceptInfoImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, MAPCloseInfoImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, MAPRefuseInfoImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, MAPUserAbortInfoImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ASNUserInformationObjectImpl.class, MAPProviderAbortInfoImpl.class);
-        	
-        	//register error code mappings
-        	ErrorCodeImpl errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.unexpectedDataValue);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.dataMissing);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.unidentifiedSubscriber);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.illegalSubscriber);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.illegalEquipment);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.teleserviceNotProvisioned);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.messageWaitingListFull);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.unauthorizedRequestingNetwork);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.resourceLimitation);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.unknownOrUnreachableLCSClient);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.incompatibleTerminal);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.noRoamingNumberAvailable);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.noSubscriberReply);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.forwardingFailed);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.orNotAllowed);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.forwardingViolation);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.numberChanged);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.unknownMSC);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.unknownEquipment);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.bearerServiceNotProvisioned);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.mmEventNotSupported);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.illegalSSOperation);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.ssNotAvailable);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.ssSubscriptionViolation);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.unknownAlphabet);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.ussdBusy);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.negativePWCheck);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.numberOfPWAttemptsViolation);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.shortTermDenial);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.longTermDenial);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageExtensionContainerImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.smDeliveryFailure);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSMDeliveryFailure1Impl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.absentSubscriberSM);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageAbsentSubscriberSMImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.systemFailure);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSytemFailure1Impl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.callBarred);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageCallBarred1Impl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.facilityNotSupported);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageFacilityNotSupImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.unknownSubscriber);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageUnknownSubscriberImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.subscriberBusyForMTSMS);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSubscriberBusyForMtSmsImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.absentSubscriber);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageAbsentSubscriber1Impl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.unauthorizedLCSClient);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageUnauthorizedLCSClientImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.positionMethodFailure);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessagePositionMethodFailureImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.busySubscriber);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageBusySubscriberImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.cugReject);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageCUGRejectImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.roamingNotAllowed);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageRoamingNotAllowedImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.ssErrorStatus);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSsErrorStatusImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.ssIncompatibility);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessageSsIncompatibilityImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(MAPErrorCode.pwRegistrationFailure);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, MAPErrorMessagePwRegistrationFailureImpl.class);
-        	tcapProvider.getParser().registerDefaultLocalMapping(ReturnErrorImpl.class, MAPErrorMessageParameterlessImpl.class);
-        	
-        	//registering error options
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageExtensionContainerImpl.class, MAPErrorMessageExtensionContainerImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriberSMImpl.class, MAPErrorMessageAbsentSubscriberSMImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSMDeliveryFailure1Impl.class, MAPErrorMessageSMDeliveryFailureImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSMDeliveryFailure1Impl.class, MAPErrorMessageSMDeliveryFailure1Impl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSytemFailure1Impl.class, MAPErrorMessageSytemFailure1Impl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSytemFailure1Impl.class, MAPErrorMessageSystemFailureImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageCallBarred1Impl.class, MAPErrorMessageCallBarred1Impl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageCallBarred1Impl.class, MAPErrorMessageCallBarredImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageFacilityNotSupImpl.class, MAPErrorMessageFacilityNotSupImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageUnknownSubscriberImpl.class, MAPErrorMessageUnknownSubscriberImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSubscriberBusyForMtSmsImpl.class, MAPErrorMessageSubscriberBusyForMtSmsImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriber1Impl.class, MAPErrorMessageAbsentSubscriber1Impl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriber1Impl.class, MAPErrorMessageAbsentSubscriberImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageUnauthorizedLCSClientImpl.class, MAPErrorMessageUnauthorizedLCSClientImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessagePositionMethodFailureImpl.class, MAPErrorMessagePositionMethodFailureImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageBusySubscriberImpl.class, MAPErrorMessageBusySubscriberImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageCUGRejectImpl.class, MAPErrorMessageCUGRejectImpl.class);        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageRoamingNotAllowedImpl.class, MAPErrorMessageRoamingNotAllowedImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSsErrorStatusImpl.class, MAPErrorMessageSsErrorStatusImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSsIncompatibilityImpl.class, MAPErrorMessageSsIncompatibilityImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessagePwRegistrationFailureImpl.class, MAPErrorMessagePwRegistrationFailureImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageParameterlessImpl.class, MAPErrorMessageParameterlessImpl.class);
-        	
-        	//register requests mappings
-        	OperationCodeImpl opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.istCommand);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, IstCommandRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.provideRoamingNumber);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ProvideRoamingNumberRequestImpl.class);
-        	
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfo);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendRoutingInformationRequestImplV1.class);
-        	
-        	OperationCodeWithACN operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.locationInfoRetrievalContext, MAPApplicationContextVersion.version3).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendRoutingInformationRequestImplV3.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.locationInfoRetrievalContext, MAPApplicationContextVersion.version2).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendRoutingInformationRequestImplV2.class);
-        	
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.provideSubscriberLocation);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ProvideSubscriberLocationRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfoForLCS);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendRoutingInfoForLCSRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.subscriberLocationReport);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SubscriberLocationReportRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.authenticationFailureReport);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, AuthenticationFailureReportRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.sendAuthenticationInfo);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendAuthenticationInfoRequestImplV1.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.reset);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ResetRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.restoreData);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RestoreDataRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.checkIMEI);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CheckImeiRequestImplV1.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.cancelLocation);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CancelLocationRequestImplV1.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.purgeMS);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, PurgeMSRequestImplV1.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.sendIdentification);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendIdentificationRequestImplV1.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.updateGprsLocation);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, UpdateGprsLocationRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.updateLocation);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, UpdateLocationRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.anyTimeInterrogation);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, AnyTimeInterrogationRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.anyTimeSubscriptionInterrogation);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, AnyTimeSubscriptionInterrogationRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.provideSubscriberInfo);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ProvideSubscriberInfoRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.deleteSubscriberData);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, DeleteSubscriberDataRequestImpl.class);
-        	
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.insertSubscriberData);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InsertSubscriberDataRequestImplV1.class);
-        	
-        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext, MAPApplicationContextVersion.version3).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InsertSubscriberDataRequestImplV3.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.networkLocUpContext, MAPApplicationContextVersion.version3).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InsertSubscriberDataRequestImplV3.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.gprsLocationUpdateContext, MAPApplicationContextVersion.version3).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, InsertSubscriberDataRequestImplV3.class);
-        	
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.activateTraceMode);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ActivateTraceModeRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.sendIMSI);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendImsiRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfoForGprs);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendRoutingInfoForGprsRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.alertServiceCentre);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, AlertServiceCentreRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.alertServiceCentreWithoutResult);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, AlertServiceCentreRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.mo_forwardSM);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, MoForwardShortMessageRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.informServiceCentre);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InformServiceCentreRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.mt_forwardSM);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, MtForwardShortMessageRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.noteSubscriberPresent);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, NoteSubscriberPresentRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.readyForSM);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ReadyForSMRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.reportSM_DeliveryStatus);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ReportSMDeliveryStatusRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfoForSM);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendRoutingInfoForSMRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.activateSS);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ActivateSSRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.deactivateSS);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, DeactivateSSRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.eraseSS);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, EraseSSRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.getPassword);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, GetPasswordRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.interrogateSS);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InterrogateSSRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.processUnstructuredSS_Request);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ProcessUnstructuredSSRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.registerPassword);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RegisterPasswordRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.registerSS);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RegisterSSRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.unstructuredSS_Notify);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, UnstructuredSSNotifyRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.unstructuredSS_Request);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, UnstructuredSSRequestImpl.class);
-        	
-        	//registering request options
-        	tcapProvider.getParser().registerAlternativeClassMapping(IstCommandRequestImpl.class, IstCommandRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ProvideRoamingNumberRequestImpl.class, ProvideRoamingNumberRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInformationRequestImplV1.class, SendRoutingInformationRequestImplV1.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInformationRequestImplV2.class, SendRoutingInformationRequestImplV2.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInformationRequestImplV3.class, SendRoutingInformationRequestImplV3.class);
+	public MAPProviderImpl(String name, MAPStackImpl mapStack, TCAPProvider tcapProvider,
+			MAPStackConfigurationManagement configuration) {
+		this.loger = LogManager.getLogger(MAPStackImpl.class.getCanonicalName() + "-" + name);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(ProvideSubscriberLocationRequestImpl.class, ProvideSubscriberLocationRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInfoForLCSRequestImpl.class, SendRoutingInfoForLCSRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SubscriberLocationReportRequestImpl.class, SubscriberLocationReportRequestImpl.class);
+		this.tcapProvider = tcapProvider;
+		this.mapStack = mapStack;
+		this.mapCfg = configuration;
+		this.mapServices.add(this.mapServiceMobility);
+		this.mapServices.add(this.mapServiceCallHandling);
+		this.mapServices.add(this.mapServiceOam);
+		this.mapServices.add(this.mapServicePdpContextActivation);
+		this.mapServices.add(this.mapServiceSupplementary);
+		this.mapServices.add(this.mapServiceSms);
+		this.mapServices.add(this.mapServiceLsm);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(AuthenticationFailureReportRequestImpl.class, AuthenticationFailureReportRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendAuthenticationInfoRequestImplV1.class, SendAuthenticationInfoRequestImplV1.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendAuthenticationInfoRequestImplV1.class, SendAuthenticationInfoRequestImplV3.class);
+		try {
+			// registering user information options
+			tcapProvider.getParser().registerAlternativeClassMapping(ASNUserInformationObjectImpl.class,
+					MAPOpenInfoImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ASNUserInformationObjectImpl.class,
+					MAPAcceptInfoImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ASNUserInformationObjectImpl.class,
+					MAPCloseInfoImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ASNUserInformationObjectImpl.class,
+					MAPRefuseInfoImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ASNUserInformationObjectImpl.class,
+					MAPUserAbortInfoImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ASNUserInformationObjectImpl.class,
+					MAPProviderAbortInfoImpl.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(ResetRequestImpl.class, ResetRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(RestoreDataRequestImpl.class, RestoreDataRequestImpl.class);
+			// register error code mappings
+			ErrorCodeImpl errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.unexpectedDataValue);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.dataMissing);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.unidentifiedSubscriber);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.illegalSubscriber);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.illegalEquipment);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.teleserviceNotProvisioned);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.messageWaitingListFull);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.unauthorizedRequestingNetwork);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.resourceLimitation);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.unknownOrUnreachableLCSClient);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.incompatibleTerminal);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.noRoamingNumberAvailable);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.noSubscriberReply);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.forwardingFailed);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.orNotAllowed);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.forwardingViolation);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.numberChanged);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.unknownMSC);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.unknownEquipment);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.bearerServiceNotProvisioned);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.mmEventNotSupported);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.illegalSSOperation);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.ssNotAvailable);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.ssSubscriptionViolation);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.unknownAlphabet);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.ussdBusy);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.negativePWCheck);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.numberOfPWAttemptsViolation);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.shortTermDenial);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.longTermDenial);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageExtensionContainerImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.smDeliveryFailure);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageSMDeliveryFailure1Impl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.absentSubscriberSM);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageAbsentSubscriberSMImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.systemFailure);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageSytemFailure1Impl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.callBarred);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageCallBarred1Impl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.facilityNotSupported);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageFacilityNotSupImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.unknownSubscriber);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageUnknownSubscriberImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.subscriberBusyForMTSMS);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageSubscriberBusyForMtSmsImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.absentSubscriber);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageAbsentSubscriber1Impl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.unauthorizedLCSClient);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageUnauthorizedLCSClientImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.positionMethodFailure);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessagePositionMethodFailureImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.busySubscriber);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageBusySubscriberImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.cugReject);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageCUGRejectImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.roamingNotAllowed);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageRoamingNotAllowedImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.ssErrorStatus);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageSsErrorStatusImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.ssIncompatibility);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessageSsIncompatibilityImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(MAPErrorCode.pwRegistrationFailure);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					MAPErrorMessagePwRegistrationFailureImpl.class);
+			tcapProvider.getParser().registerDefaultLocalMapping(ReturnErrorImpl.class,
+					MAPErrorMessageParameterlessImpl.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(CheckImeiRequestImplV1.class, CheckImeiRequestImplV1.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(CheckImeiRequestImplV1.class, CheckImeiRequestImplV3.class);
+			// registering error options
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageExtensionContainerImpl.class,
+					MAPErrorMessageExtensionContainerImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriberSMImpl.class,
+					MAPErrorMessageAbsentSubscriberSMImpl.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(CancelLocationRequestImplV1.class, CancelLocationRequestImplV1.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(CancelLocationRequestImplV1.class, CancelLocationRequestImplV3.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(PurgeMSRequestImplV1.class, PurgeMSRequestImplV1.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(PurgeMSRequestImplV1.class, PurgeMSRequestImplV3.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendIdentificationRequestImplV1.class, SendIdentificationRequestImplV1.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendIdentificationRequestImplV1.class, SendIdentificationRequestImplV3.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(UpdateGprsLocationRequestImpl.class, UpdateGprsLocationRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(UpdateLocationRequestImpl.class, UpdateLocationRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSMDeliveryFailure1Impl.class,
+					MAPErrorMessageSMDeliveryFailureImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSMDeliveryFailure1Impl.class,
+					MAPErrorMessageSMDeliveryFailure1Impl.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(AnyTimeInterrogationRequestImpl.class, AnyTimeInterrogationRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(AnyTimeSubscriptionInterrogationRequestImpl.class, AnyTimeSubscriptionInterrogationRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ProvideSubscriberInfoRequestImpl.class, ProvideSubscriberInfoRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSytemFailure1Impl.class,
+					MAPErrorMessageSytemFailure1Impl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSytemFailure1Impl.class,
+					MAPErrorMessageSystemFailureImpl.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(DeleteSubscriberDataRequestImpl.class, DeleteSubscriberDataRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(InsertSubscriberDataRequestImplV1.class, InsertSubscriberDataRequestImplV1.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(InsertSubscriberDataRequestImplV3.class, InsertSubscriberDataRequestImplV3.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageCallBarred1Impl.class,
+					MAPErrorMessageCallBarred1Impl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageCallBarred1Impl.class,
+					MAPErrorMessageCallBarredImpl.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(ActivateTraceModeRequestImpl.class, ActivateTraceModeRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendImsiRequestImpl.class, SendImsiRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageFacilityNotSupImpl.class,
+					MAPErrorMessageFacilityNotSupImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageUnknownSubscriberImpl.class,
+					MAPErrorMessageUnknownSubscriberImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSubscriberBusyForMtSmsImpl.class,
+					MAPErrorMessageSubscriberBusyForMtSmsImpl.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInfoForGprsRequestImpl.class, SendRoutingInfoForGprsRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(AlertServiceCentreRequestImpl.class, AlertServiceCentreRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MoForwardShortMessageRequestImpl.class, MoForwardShortMessageRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(InformServiceCentreRequestImpl.class, InformServiceCentreRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MtForwardShortMessageRequestImpl.class, MtForwardShortMessageRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(NoteSubscriberPresentRequestImpl.class, NoteSubscriberPresentRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ReadyForSMRequestImpl.class, ReadyForSMRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ReportSMDeliveryStatusRequestImpl.class, ReportSMDeliveryStatusRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInfoForSMRequestImpl.class, SendRoutingInfoForSMRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(ActivateSSRequestImpl.class, ActivateSSRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(DeactivateSSRequestImpl.class, DeactivateSSRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(EraseSSRequestImpl.class, EraseSSRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(GetPasswordRequestImpl.class, GetPasswordRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(InterrogateSSRequestImpl.class, InterrogateSSRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ProcessUnstructuredSSRequestImpl.class, ProcessUnstructuredSSRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(RegisterPasswordRequestImpl.class, RegisterPasswordRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(RegisterSSRequestImpl.class, RegisterSSRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(UnstructuredSSNotifyRequestImpl.class, UnstructuredSSNotifyRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(UnstructuredSSRequestImpl.class, UnstructuredSSRequestImpl.class);
-        	
-        	//register responses mappings
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.istCommand);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, IstCommandResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.provideRoamingNumber);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, ProvideRoamingNumberResponseImplV1.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfo);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, SendRoutingInformationResponseImplV1.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.provideSubscriberLocation);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, ProvideSubscriberLocationResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfoForLCS);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, SendRoutingInfoForLCSResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.subscriberLocationReport);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, SubscriberLocationReportResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.authenticationFailureReport);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, AuthenticationFailureReportResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.sendAuthenticationInfo);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, SendAuthenticationInfoResponseImplV1.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.restoreData);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, RestoreDataResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.checkIMEI);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, CheckImeiResponseImplV1.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.cancelLocation);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, CancelLocationResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.purgeMS);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, PurgeMSResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.sendIdentification);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, SendIdentificationResponseImplV1.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.updateGprsLocation);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, UpdateGprsLocationResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.updateLocation);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, UpdateLocationResponseImplV1.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.anyTimeInterrogation);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, AnyTimeInterrogationResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.anyTimeSubscriptionInterrogation);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, AnyTimeSubscriptionInterrogationResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.provideSubscriberInfo);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, ProvideSubscriberInfoResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.deleteSubscriberData);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, DeleteSubscriberDataResponseImpl.class);
-        	
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.insertSubscriberData);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, InsertSubscriberDataResponseImplV1.class);
-        	
-        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext, MAPApplicationContextVersion.version3).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN, InsertSubscriberDataResponseImplV3.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.networkLocUpContext, MAPApplicationContextVersion.version3).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN, InsertSubscriberDataResponseImplV3.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, MAPApplicationContext.getInstance(MAPApplicationContextName.gprsLocationUpdateContext, MAPApplicationContextVersion.version3).getOID());			
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN, InsertSubscriberDataResponseImplV3.class);
-        	
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.activateTraceMode);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, ActivateTraceModeResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.sendIMSI);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, SendImsiResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfoForGprs);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, SendRoutingInfoForGprsResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.alertServiceCentre);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, AlertServiceCentreResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.mo_forwardSM);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, MoForwardShortMessageResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.mt_forwardSM);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, MtForwardShortMessageResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.readyForSM);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, ReadyForSMResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.reportSM_DeliveryStatus);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, ReportSMDeliveryStatusResponseImplV1.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfoForSM);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, SendRoutingInfoForSMResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.activateSS);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, ActivateSSResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.deactivateSS);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, DeactivateSSResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.eraseSS);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, EraseSSResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.getPassword);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, GetPasswordResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.interrogateSS);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, InterrogateSSResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.processUnstructuredSS_Request);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, ProcessUnstructuredSSResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.registerPassword);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, RegisterPasswordResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.registerSS);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, RegisterSSResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.unstructuredSS_Notify);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, UnstructuredSSNotifyResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(MAPOperationCode.unstructuredSS_Request);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, UnstructuredSSResponseImpl.class);
-        	
-        	//registering response options
-        	tcapProvider.getParser().registerAlternativeClassMapping(IstCommandResponseImpl.class, IstCommandResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ProvideRoamingNumberResponseImplV1.class, ProvideRoamingNumberResponseImplV1.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ProvideRoamingNumberResponseImplV1.class, ProvideRoamingNumberResponseImplV3.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInformationResponseImplV1.class, SendRoutingInformationResponseImplV1.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInformationResponseImplV1.class, SendRoutingInformationResponseImplV3.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriber1Impl.class,
+					MAPErrorMessageAbsentSubscriber1Impl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageAbsentSubscriber1Impl.class,
+					MAPErrorMessageAbsentSubscriberImpl.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(ProvideSubscriberLocationResponseImpl.class, ProvideSubscriberLocationResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInfoForLCSResponseImpl.class, SendRoutingInfoForLCSResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SubscriberLocationReportResponseImpl.class, SubscriberLocationReportResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageUnauthorizedLCSClientImpl.class,
+					MAPErrorMessageUnauthorizedLCSClientImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessagePositionMethodFailureImpl.class,
+					MAPErrorMessagePositionMethodFailureImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageBusySubscriberImpl.class,
+					MAPErrorMessageBusySubscriberImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageCUGRejectImpl.class,
+					MAPErrorMessageCUGRejectImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageRoamingNotAllowedImpl.class,
+					MAPErrorMessageRoamingNotAllowedImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSsErrorStatusImpl.class,
+					MAPErrorMessageSsErrorStatusImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageSsIncompatibilityImpl.class,
+					MAPErrorMessageSsIncompatibilityImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessagePwRegistrationFailureImpl.class,
+					MAPErrorMessagePwRegistrationFailureImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MAPErrorMessageParameterlessImpl.class,
+					MAPErrorMessageParameterlessImpl.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(AuthenticationFailureReportResponseImpl.class, AuthenticationFailureReportResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendAuthenticationInfoResponseImplV1.class, SendAuthenticationInfoResponseImplV1.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendAuthenticationInfoResponseImplV1.class, SendAuthenticationInfoResponseImplV3.class);
+			// register requests mappings
+			OperationCodeImpl opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.istCommand);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, IstCommandRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.provideRoamingNumber);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					ProvideRoamingNumberRequestImpl.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(RestoreDataResponseImpl.class, RestoreDataResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfo);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					SendRoutingInformationRequestImplV1.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(CheckImeiResponseImplV1.class, CheckImeiResponseImplV1.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(CheckImeiResponseImplV1.class, CheckImeiResponseImplV3.class);
+			OperationCodeWithACN operationWithACN = new OperationCodeWithACN(opCode,
+					MAPApplicationContext.getInstance(MAPApplicationContextName.locationInfoRetrievalContext,
+							MAPApplicationContextVersion.version3).getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					SendRoutingInformationRequestImplV3.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					MAPApplicationContext.getInstance(MAPApplicationContextName.locationInfoRetrievalContext,
+							MAPApplicationContextVersion.version2).getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					SendRoutingInformationRequestImplV2.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(CancelLocationResponseImpl.class, CancelLocationResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(PurgeMSResponseImpl.class, PurgeMSResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendIdentificationResponseImplV1.class, SendIdentificationResponseImplV1.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendIdentificationResponseImplV1.class, SendIdentificationResponseImplV3.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(UpdateGprsLocationResponseImpl.class, UpdateGprsLocationResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(UpdateLocationResponseImplV1.class, UpdateLocationResponseImplV1.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(UpdateLocationResponseImplV1.class, UpdateLocationResponseImplV2.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.provideSubscriberLocation);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					ProvideSubscriberLocationRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfoForLCS);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					SendRoutingInfoForLCSRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.subscriberLocationReport);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					SubscriberLocationReportRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.authenticationFailureReport);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					AuthenticationFailureReportRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.sendAuthenticationInfo);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					SendAuthenticationInfoRequestImplV1.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.reset);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ResetRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.restoreData);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RestoreDataRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.checkIMEI);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CheckImeiRequestImplV1.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.cancelLocation);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CancelLocationRequestImplV1.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.purgeMS);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, PurgeMSRequestImplV1.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.sendIdentification);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					SendIdentificationRequestImplV1.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.updateGprsLocation);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					UpdateGprsLocationRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.updateLocation);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, UpdateLocationRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.anyTimeInterrogation);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					AnyTimeInterrogationRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.anyTimeSubscriptionInterrogation);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					AnyTimeSubscriptionInterrogationRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.provideSubscriberInfo);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					ProvideSubscriberInfoRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.deleteSubscriberData);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					DeleteSubscriberDataRequestImpl.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(AnyTimeInterrogationResponseImpl.class, AnyTimeInterrogationResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(AnyTimeSubscriptionInterrogationResponseImpl.class, AnyTimeSubscriptionInterrogationResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ProvideSubscriberInfoResponseImpl.class, ProvideSubscriberInfoResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.insertSubscriberData);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					InsertSubscriberDataRequestImplV1.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(DeleteSubscriberDataResponseImpl.class, DeleteSubscriberDataResponseImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(InsertSubscriberDataResponseImplV1.class, InsertSubscriberDataResponseImplV1.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(InsertSubscriberDataResponseImplV3.class, InsertSubscriberDataResponseImplV3.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext,
+							MAPApplicationContextVersion.version3).getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					InsertSubscriberDataRequestImplV3.class);
+			operationWithACN = new OperationCodeWithACN(opCode, MAPApplicationContext
+					.getInstance(MAPApplicationContextName.networkLocUpContext, MAPApplicationContextVersion.version3)
+					.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					InsertSubscriberDataRequestImplV3.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					MAPApplicationContext.getInstance(MAPApplicationContextName.gprsLocationUpdateContext,
+							MAPApplicationContextVersion.version3).getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					InsertSubscriberDataRequestImplV3.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(ActivateTraceModeResponseImpl.class, ActivateTraceModeResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendImsiResponseImpl.class, SendImsiResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.activateTraceMode);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ActivateTraceModeRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.sendIMSI);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendImsiRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfoForGprs);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					SendRoutingInfoForGprsRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.alertServiceCentre);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					AlertServiceCentreRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.alertServiceCentreWithoutResult);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					AlertServiceCentreRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.mo_forwardSM);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					MoForwardShortMessageRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.informServiceCentre);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					InformServiceCentreRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.mt_forwardSM);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					MtForwardShortMessageRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.noteSubscriberPresent);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					NoteSubscriberPresentRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.readyForSM);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ReadyForSMRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.reportSM_DeliveryStatus);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					ReportSMDeliveryStatusRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfoForSM);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					SendRoutingInfoForSMRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.activateSS);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ActivateSSRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.deactivateSS);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, DeactivateSSRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.eraseSS);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, EraseSSRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.getPassword);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, GetPasswordRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.interrogateSS);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InterrogateSSRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.processUnstructuredSS_Request);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					ProcessUnstructuredSSRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.registerPassword);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RegisterPasswordRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.registerSS);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RegisterSSRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.unstructuredSS_Notify);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					UnstructuredSSNotifyRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.unstructuredSS_Request);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, UnstructuredSSRequestImpl.class);
 
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInfoForGprsResponseImpl.class, SendRoutingInfoForGprsResponseImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(AlertServiceCentreResponseImpl.class, AlertServiceCentreResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MoForwardShortMessageResponseImpl.class, MoForwardShortMessageResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(MtForwardShortMessageResponseImpl.class, MtForwardShortMessageResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ReadyForSMResponseImpl.class, ReadyForSMResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ReportSMDeliveryStatusResponseImplV1.class, ReportSMDeliveryStatusResponseImplV1.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ReportSMDeliveryStatusResponseImplV1.class, ReportSMDeliveryStatusResponseImplV3.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInfoForSMResponseImpl.class, SendRoutingInfoForSMResponseImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(ActivateSSResponseImpl.class, ActivateSSResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(DeactivateSSResponseImpl.class, DeactivateSSResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(EraseSSResponseImpl.class, EraseSSResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(GetPasswordResponseImpl.class, GetPasswordResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(InterrogateSSResponseImpl.class, InterrogateSSResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ProcessUnstructuredSSResponseImpl.class, ProcessUnstructuredSSResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(RegisterPasswordResponseImpl.class, RegisterPasswordResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(RegisterSSResponseImpl.class, RegisterSSResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(UnstructuredSSNotifyResponseImpl.class, UnstructuredSSNotifyResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(UnstructuredSSResponseImpl.class, UnstructuredSSResponseImpl.class);        	
-        } catch(Exception ex) {
-        	//already registered
-        }
-    }
+			// registering request options
+			tcapProvider.getParser().registerAlternativeClassMapping(IstCommandRequestImpl.class,
+					IstCommandRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ProvideRoamingNumberRequestImpl.class,
+					ProvideRoamingNumberRequestImpl.class);
 
-    public MAPStackImpl getMAPStack() {
-    	return this.mapStack;
-    }
-    
-    public TCAPProvider getTCAPProvider() {
-        return this.tcapProvider;
-    }
+			tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInformationRequestImplV1.class,
+					SendRoutingInformationRequestImplV1.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInformationRequestImplV2.class,
+					SendRoutingInformationRequestImplV2.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInformationRequestImplV3.class,
+					SendRoutingInformationRequestImplV3.class);
 
-    public MAPStackConfigurationManagement getMapCfg() {
+			tcapProvider.getParser().registerAlternativeClassMapping(ProvideSubscriberLocationRequestImpl.class,
+					ProvideSubscriberLocationRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInfoForLCSRequestImpl.class,
+					SendRoutingInfoForLCSRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SubscriberLocationReportRequestImpl.class,
+					SubscriberLocationReportRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(AuthenticationFailureReportRequestImpl.class,
+					AuthenticationFailureReportRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendAuthenticationInfoRequestImplV1.class,
+					SendAuthenticationInfoRequestImplV1.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendAuthenticationInfoRequestImplV1.class,
+					SendAuthenticationInfoRequestImplV3.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(ResetRequestImpl.class, ResetRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(RestoreDataRequestImpl.class,
+					RestoreDataRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(CheckImeiRequestImplV1.class,
+					CheckImeiRequestImplV1.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(CheckImeiRequestImplV1.class,
+					CheckImeiRequestImplV3.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(CancelLocationRequestImplV1.class,
+					CancelLocationRequestImplV1.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(CancelLocationRequestImplV1.class,
+					CancelLocationRequestImplV3.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(PurgeMSRequestImplV1.class,
+					PurgeMSRequestImplV1.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(PurgeMSRequestImplV1.class,
+					PurgeMSRequestImplV3.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendIdentificationRequestImplV1.class,
+					SendIdentificationRequestImplV1.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendIdentificationRequestImplV1.class,
+					SendIdentificationRequestImplV3.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(UpdateGprsLocationRequestImpl.class,
+					UpdateGprsLocationRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(UpdateLocationRequestImpl.class,
+					UpdateLocationRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(AnyTimeInterrogationRequestImpl.class,
+					AnyTimeInterrogationRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(AnyTimeSubscriptionInterrogationRequestImpl.class,
+					AnyTimeSubscriptionInterrogationRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ProvideSubscriberInfoRequestImpl.class,
+					ProvideSubscriberInfoRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(DeleteSubscriberDataRequestImpl.class,
+					DeleteSubscriberDataRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(InsertSubscriberDataRequestImplV1.class,
+					InsertSubscriberDataRequestImplV1.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(InsertSubscriberDataRequestImplV3.class,
+					InsertSubscriberDataRequestImplV3.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(ActivateTraceModeRequestImpl.class,
+					ActivateTraceModeRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendImsiRequestImpl.class,
+					SendImsiRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInfoForGprsRequestImpl.class,
+					SendRoutingInfoForGprsRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(AlertServiceCentreRequestImpl.class,
+					AlertServiceCentreRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MoForwardShortMessageRequestImpl.class,
+					MoForwardShortMessageRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(InformServiceCentreRequestImpl.class,
+					InformServiceCentreRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MtForwardShortMessageRequestImpl.class,
+					MtForwardShortMessageRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(NoteSubscriberPresentRequestImpl.class,
+					NoteSubscriberPresentRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ReadyForSMRequestImpl.class,
+					ReadyForSMRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ReportSMDeliveryStatusRequestImpl.class,
+					ReportSMDeliveryStatusRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInfoForSMRequestImpl.class,
+					SendRoutingInfoForSMRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(ActivateSSRequestImpl.class,
+					ActivateSSRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(DeactivateSSRequestImpl.class,
+					DeactivateSSRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(EraseSSRequestImpl.class,
+					EraseSSRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(GetPasswordRequestImpl.class,
+					GetPasswordRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(InterrogateSSRequestImpl.class,
+					InterrogateSSRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ProcessUnstructuredSSRequestImpl.class,
+					ProcessUnstructuredSSRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(RegisterPasswordRequestImpl.class,
+					RegisterPasswordRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(RegisterSSRequestImpl.class,
+					RegisterSSRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(UnstructuredSSNotifyRequestImpl.class,
+					UnstructuredSSNotifyRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(UnstructuredSSRequestImpl.class,
+					UnstructuredSSRequestImpl.class);
+
+			// register responses mappings
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.istCommand);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					IstCommandResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.provideRoamingNumber);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					ProvideRoamingNumberResponseImplV1.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfo);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					SendRoutingInformationResponseImplV1.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.provideSubscriberLocation);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					ProvideSubscriberLocationResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfoForLCS);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					SendRoutingInfoForLCSResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.subscriberLocationReport);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					SubscriberLocationReportResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.authenticationFailureReport);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					AuthenticationFailureReportResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.sendAuthenticationInfo);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					SendAuthenticationInfoResponseImplV1.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.restoreData);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					RestoreDataResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.checkIMEI);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					CheckImeiResponseImplV1.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.cancelLocation);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					CancelLocationResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.purgeMS);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					PurgeMSResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.sendIdentification);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					SendIdentificationResponseImplV1.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.updateGprsLocation);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					UpdateGprsLocationResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.updateLocation);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					UpdateLocationResponseImplV1.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.anyTimeInterrogation);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					AnyTimeInterrogationResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.anyTimeSubscriptionInterrogation);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					AnyTimeSubscriptionInterrogationResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.provideSubscriberInfo);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					ProvideSubscriberInfoResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.deleteSubscriberData);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					DeleteSubscriberDataResponseImpl.class);
+
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.insertSubscriberData);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					InsertSubscriberDataResponseImplV1.class);
+
+			operationWithACN = new OperationCodeWithACN(opCode,
+					MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext,
+							MAPApplicationContextVersion.version3).getOID());
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN,
+					InsertSubscriberDataResponseImplV3.class);
+			operationWithACN = new OperationCodeWithACN(opCode, MAPApplicationContext
+					.getInstance(MAPApplicationContextName.networkLocUpContext, MAPApplicationContextVersion.version3)
+					.getOID());
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN,
+					InsertSubscriberDataResponseImplV3.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					MAPApplicationContext.getInstance(MAPApplicationContextName.gprsLocationUpdateContext,
+							MAPApplicationContextVersion.version3).getOID());
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, operationWithACN,
+					InsertSubscriberDataResponseImplV3.class);
+
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.activateTraceMode);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					ActivateTraceModeResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.sendIMSI);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					SendImsiResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfoForGprs);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					SendRoutingInfoForGprsResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.alertServiceCentre);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					AlertServiceCentreResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.mo_forwardSM);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					MoForwardShortMessageResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.mt_forwardSM);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					MtForwardShortMessageResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.readyForSM);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					ReadyForSMResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.reportSM_DeliveryStatus);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					ReportSMDeliveryStatusResponseImplV1.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.sendRoutingInfoForSM);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					SendRoutingInfoForSMResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.activateSS);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					ActivateSSResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.deactivateSS);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					DeactivateSSResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.eraseSS);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					EraseSSResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.getPassword);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					GetPasswordResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.interrogateSS);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					InterrogateSSResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.processUnstructuredSS_Request);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					ProcessUnstructuredSSResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.registerPassword);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					RegisterPasswordResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.registerSS);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					RegisterSSResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.unstructuredSS_Notify);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					UnstructuredSSNotifyResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(MAPOperationCode.unstructuredSS_Request);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					UnstructuredSSResponseImpl.class);
+
+			// registering response options
+			tcapProvider.getParser().registerAlternativeClassMapping(IstCommandResponseImpl.class,
+					IstCommandResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ProvideRoamingNumberResponseImplV1.class,
+					ProvideRoamingNumberResponseImplV1.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ProvideRoamingNumberResponseImplV1.class,
+					ProvideRoamingNumberResponseImplV3.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInformationResponseImplV1.class,
+					SendRoutingInformationResponseImplV1.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInformationResponseImplV1.class,
+					SendRoutingInformationResponseImplV3.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(ProvideSubscriberLocationResponseImpl.class,
+					ProvideSubscriberLocationResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInfoForLCSResponseImpl.class,
+					SendRoutingInfoForLCSResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SubscriberLocationReportResponseImpl.class,
+					SubscriberLocationReportResponseImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(AuthenticationFailureReportResponseImpl.class,
+					AuthenticationFailureReportResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendAuthenticationInfoResponseImplV1.class,
+					SendAuthenticationInfoResponseImplV1.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendAuthenticationInfoResponseImplV1.class,
+					SendAuthenticationInfoResponseImplV3.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(RestoreDataResponseImpl.class,
+					RestoreDataResponseImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(CheckImeiResponseImplV1.class,
+					CheckImeiResponseImplV1.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(CheckImeiResponseImplV1.class,
+					CheckImeiResponseImplV3.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(CancelLocationResponseImpl.class,
+					CancelLocationResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(PurgeMSResponseImpl.class,
+					PurgeMSResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendIdentificationResponseImplV1.class,
+					SendIdentificationResponseImplV1.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendIdentificationResponseImplV1.class,
+					SendIdentificationResponseImplV3.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(UpdateGprsLocationResponseImpl.class,
+					UpdateGprsLocationResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(UpdateLocationResponseImplV1.class,
+					UpdateLocationResponseImplV1.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(UpdateLocationResponseImplV1.class,
+					UpdateLocationResponseImplV2.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(AnyTimeInterrogationResponseImpl.class,
+					AnyTimeInterrogationResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(AnyTimeSubscriptionInterrogationResponseImpl.class,
+					AnyTimeSubscriptionInterrogationResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ProvideSubscriberInfoResponseImpl.class,
+					ProvideSubscriberInfoResponseImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(DeleteSubscriberDataResponseImpl.class,
+					DeleteSubscriberDataResponseImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(InsertSubscriberDataResponseImplV1.class,
+					InsertSubscriberDataResponseImplV1.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(InsertSubscriberDataResponseImplV3.class,
+					InsertSubscriberDataResponseImplV3.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(ActivateTraceModeResponseImpl.class,
+					ActivateTraceModeResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendImsiResponseImpl.class,
+					SendImsiResponseImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInfoForGprsResponseImpl.class,
+					SendRoutingInfoForGprsResponseImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(AlertServiceCentreResponseImpl.class,
+					AlertServiceCentreResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MoForwardShortMessageResponseImpl.class,
+					MoForwardShortMessageResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(MtForwardShortMessageResponseImpl.class,
+					MtForwardShortMessageResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ReadyForSMResponseImpl.class,
+					ReadyForSMResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ReportSMDeliveryStatusResponseImplV1.class,
+					ReportSMDeliveryStatusResponseImplV1.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ReportSMDeliveryStatusResponseImplV1.class,
+					ReportSMDeliveryStatusResponseImplV3.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendRoutingInfoForSMResponseImpl.class,
+					SendRoutingInfoForSMResponseImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(ActivateSSResponseImpl.class,
+					ActivateSSResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(DeactivateSSResponseImpl.class,
+					DeactivateSSResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(EraseSSResponseImpl.class,
+					EraseSSResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(GetPasswordResponseImpl.class,
+					GetPasswordResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(InterrogateSSResponseImpl.class,
+					InterrogateSSResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ProcessUnstructuredSSResponseImpl.class,
+					ProcessUnstructuredSSResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(RegisterPasswordResponseImpl.class,
+					RegisterPasswordResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(RegisterSSResponseImpl.class,
+					RegisterSSResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(UnstructuredSSNotifyResponseImpl.class,
+					UnstructuredSSNotifyResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(UnstructuredSSResponseImpl.class,
+					UnstructuredSSResponseImpl.class);
+		} catch (Exception ex) {
+			// already registered
+		}
+	}
+
+	public MAPStackImpl getMAPStack() {
+		return this.mapStack;
+	}
+
+	public TCAPProvider getTCAPProvider() {
+		return this.tcapProvider;
+	}
+
+	public MAPStackConfigurationManagement getMapCfg() {
 		return mapCfg;
 	}
 
+	@Override
 	public MAPServiceMobility getMAPServiceMobility() {
-        return this.mapServiceMobility;
-    }
+		return this.mapServiceMobility;
+	}
 
-    public MAPServiceCallHandling getMAPServiceCallHandling() {
-        return this.mapServiceCallHandling;
-    }
+	@Override
+	public MAPServiceCallHandling getMAPServiceCallHandling() {
+		return this.mapServiceCallHandling;
+	}
 
-    public MAPServiceOam getMAPServiceOam() {
-        return this.mapServiceOam;
-    }
+	@Override
+	public MAPServiceOam getMAPServiceOam() {
+		return this.mapServiceOam;
+	}
 
-    public MAPServicePdpContextActivation getMAPServicePdpContextActivation() {
-        return this.mapServicePdpContextActivation;
-    }
+	@Override
+	public MAPServicePdpContextActivation getMAPServicePdpContextActivation() {
+		return this.mapServicePdpContextActivation;
+	}
 
-    public MAPServiceSupplementary getMAPServiceSupplementary() {
-        return this.mapServiceSupplementary;
-    }
+	@Override
+	public MAPServiceSupplementary getMAPServiceSupplementary() {
+		return this.mapServiceSupplementary;
+	}
 
-    public MAPServiceSms getMAPServiceSms() {
-        return this.mapServiceSms;
-    }
+	@Override
+	public MAPServiceSms getMAPServiceSms() {
+		return this.mapServiceSms;
+	}
 
-    public MAPServiceLsm getMAPServiceLsm() {
-        return this.mapServiceLsm;
-    }
+	@Override
+	public MAPServiceLsm getMAPServiceLsm() {
+		return this.mapServiceLsm;
+	}
 
-    public void addMAPDialogListener(UUID key,MAPDialogListener mapDialogListener) {
-        this.dialogListeners.put(key,mapDialogListener);
-    }
+	@Override
+	public void addMAPDialogListener(UUID key, MAPDialogListener mapDialogListener) {
+		this.dialogListeners.put(key, mapDialogListener);
+	}
 
-    public MAPParameterFactory getMAPParameterFactory() {
-        return MAPParameterFactory;
-    }
+	@Override
+	public MAPParameterFactory getMAPParameterFactory() {
+		return MAPParameterFactory;
+	}
 
-    public MAPSmsTpduParameterFactory getMAPSmsTpduParameterFactory() {
-        return mapSmsTpduParameterFactory;
-    }
+	@Override
+	public MAPSmsTpduParameterFactory getMAPSmsTpduParameterFactory() {
+		return mapSmsTpduParameterFactory;
+	}
 
-    public MAPErrorMessageFactory getMAPErrorMessageFactory() {
-        return this.mapErrorMessageFactory;
-    }
+	@Override
+	public MAPErrorMessageFactory getMAPErrorMessageFactory() {
+		return this.mapErrorMessageFactory;
+	}
 
-    public void removeMAPDialogListener(UUID key) {
-        this.dialogListeners.remove(key);
-    }
+	@Override
+	public void removeMAPDialogListener(UUID key) {
+		this.dialogListeners.remove(key);
+	}
 
-    public MAPDialog getMAPDialog(Long dialogId) {
-    	Dialog dialog = this.tcapProvider.getDialogById(dialogId);
-    	if(dialog==null)
-    		return null;
-            
-    	return getMAPDialog(dialog);
-    }
+	@Override
+	public MAPDialog getMAPDialog(Long dialogId) {
+		Dialog dialog = this.tcapProvider.getDialogById(dialogId);
+		if (dialog == null)
+			return null;
 
-    public MAPDialog getMAPDialog(Dialog dialog) {
-    	if(dialog.getUserObject()==null || !(dialog.getUserObject() instanceof MAPUserObject))
-    		return null;
-    	
-    	MAPUserObject uo = (MAPUserObject)dialog.getUserObject();
-    	
-    	MAPServiceBaseImpl perfSer = null;
-    	if(uo.getApplicationContext()==null)
-    		return null;
-    	
-        for (MAPServiceBaseImpl ser : this.mapServices) {
+		return getMAPDialog(dialog);
+	}
 
-            ServingCheckData chkRes = ser.isServingService(uo.getApplicationContext());
-            switch (chkRes.getResult()) {
-                case AC_Serving:
-                    perfSer = ser;
-                    break;
-                case AC_VersionIncorrect:
-                    return null;
-				default:
+	public MAPDialog getMAPDialog(Dialog dialog) {
+		if (dialog.getUserObject() == null || !(dialog.getUserObject() instanceof MAPUserObject))
+			return null;
+
+		MAPUserObject uo = (MAPUserObject) dialog.getUserObject();
+
+		MAPServiceBaseImpl perfSer = null;
+		if (uo.getApplicationContext() == null)
+			return null;
+
+		for (MAPServiceBaseImpl ser : this.mapServices) {
+
+			ServingCheckData chkRes = ser.isServingService(uo.getApplicationContext());
+			switch (chkRes.getResult()) {
+			case AC_Serving:
+				perfSer = ser;
+				break;
+			case AC_VersionIncorrect:
+				return null;
+			default:
+				break;
+			}
+
+			if (perfSer != null)
+				break;
+		}
+
+		MAPDialogImpl mapDialog = perfSer.createNewDialogIncoming(uo.getApplicationContext(), dialog, false);
+		mapDialog.setState(uo.getState());
+		mapDialog.setReturnMessageOnError(uo.isReturnMessageOnError());
+		return mapDialog;
+	}
+
+	public void start() {
+		this.tcapProvider.addTCListener(this);
+	}
+
+	public void stop() {
+		this.tcapProvider.removeTCListener(this);
+	}
+
+	@Override
+	public void onTCBegin(TCBeginIndication tcBeginIndication) {
+
+		ApplicationContextName acn = tcBeginIndication.getApplicationContextName();
+		List<BaseComponent> comps = tcBeginIndication.getComponents();
+
+		// ETS 300 974 Section 12.1.3
+		// On receipt of a TC-BEGIN indication primitive, the MAP PM shall:
+		//
+		// - if no application-context-name is included in the primitive and if
+		// the "Components present" indicator indicates "no components", issue a
+		// TC-U-ABORT request primitive (note 2). The local MAP-User is not
+		// informed;
+		if (acn == null && comps == null) {
+			loger.error(String.format(
+					"Received TCBeginIndication=%s, both ApplicationContextName and Component[] are null. Send TC-U-ABORT to peer and not notifying the User",
+					tcBeginIndication));
+
+			try {
+				this.fireTCAbortV1(tcBeginIndication.getDialog(), false);
+			} catch (MAPException e) {
+				loger.error("Error while firing TC-U-ABORT. ", e);
+			}
+			return;
+		}
+
+		MAPApplicationContext mapAppCtx = null;
+		MAPServiceBase perfSer = null;
+		if (acn == null) {
+			// ApplicationContext is absent but components are absent - MAP
+			// Version 1
+
+			// - if no application-context-name is included in the primitive and
+			// if presence of components is indicated, wait for the first
+			// TC-INVOKE primitive, and derive a version 1
+			// application-context-name from the operation code according to
+			// table 12.1/1 (note 1);
+
+			// a) if no application-context-name can be derived (i.e. the
+			// operation code does not exist in MAP V1 specifications), the MAP
+			// PM shall issue a TC-U-ABORT request primitive (note 2). The local
+			// MAP-User is not informed.
+
+			// Extracting Invoke and operationCode
+			Invoke invoke = null;
+			int operationCode = -1;
+			for (BaseComponent c : comps)
+				if (c instanceof Invoke) {
+					invoke = (Invoke) c;
 					break;
-            }
-
-            if (perfSer != null)
-                break;
-        }
-            
-        MAPDialogImpl mapDialog = perfSer.createNewDialogIncoming(uo.getApplicationContext(), dialog, false);
-        mapDialog.setState(uo.getState());
-        mapDialog.setReturnMessageOnError(uo.isReturnMessageOnError());
-        return mapDialog;
-    }
-
-    public void start() {
-        this.tcapProvider.addTCListener(this);
-    }
-
-    public void stop() {
-        this.tcapProvider.removeTCListener(this);
-    }
-
-    public void onTCBegin(TCBeginIndication tcBeginIndication) {
-
-        ApplicationContextName acn = tcBeginIndication.getApplicationContextName();
-        List<BaseComponent> comps = tcBeginIndication.getComponents();
-
-        // ETS 300 974 Section 12.1.3
-        // On receipt of a TC-BEGIN indication primitive, the MAP PM shall:
-        //
-        // - if no application-context-name is included in the primitive and if
-        // the "Components present" indicator indicates "no components", issue a
-        // TC-U-ABORT request primitive (note 2). The local MAP-User is not
-        // informed;
-        if (acn == null && comps == null) {
-            loger.error(String
-                    .format("Received TCBeginIndication=%s, both ApplicationContextName and Component[] are null. Send TC-U-ABORT to peer and not notifying the User",
-                            tcBeginIndication));
-
-            try {
-                this.fireTCAbortV1(tcBeginIndication.getDialog(), false);
-            } catch (MAPException e) {
-                loger.error("Error while firing TC-U-ABORT. ", e);
-            }
-            return;
-        }
-
-        MAPApplicationContext mapAppCtx = null;
-        MAPServiceBase perfSer = null;
-        if (acn == null) {
-            // ApplicationContext is absent but components are absent - MAP
-            // Version 1
-
-            // - if no application-context-name is included in the primitive and
-            // if presence of components is indicated, wait for the first
-            // TC-INVOKE primitive, and derive a version 1
-            // application-context-name from the operation code according to
-            // table 12.1/1 (note 1);
-
-            // a) if no application-context-name can be derived (i.e. the
-            // operation code does not exist in MAP V1 specifications), the MAP
-            // PM shall issue a TC-U-ABORT request primitive (note 2). The local
-            // MAP-User is not informed.
-
-            // Extracting Invoke and operationCode
-            Invoke invoke = null;
-            int operationCode = -1;
-            for (BaseComponent c : comps) {
-                if (c instanceof Invoke) {
-                    invoke = (Invoke)c;
-                    break;
-                }
-            }
-            if (invoke != null) {
-                OperationCode oc = invoke.getOperationCode();
-                if (oc != null && oc.getOperationType() == OperationCodeType.Local) {
-                    operationCode = (int)  oc.getLocalOperationCode();
-                }
-            }
-            if (operationCode != -1) {
-                // Selecting the MAP service that can perform the operation, getting
-                // ApplicationContext
-                for (MAPServiceBase ser : this.mapServices) {
-                    MAPApplicationContext ac = ((MAPServiceBaseImpl) ser).getMAPv1ApplicationContext(operationCode);
-                    if (ac != null) {
-                        perfSer = ser;
-                        mapAppCtx = ac;
-                        break;
-                    }
-                }
-            }
-
-            if (mapAppCtx == null) {
-                // Invoke not found or has bad operationCode or operationCode is not supported
-                try {
-                    this.fireTCAbortV1(tcBeginIndication.getDialog(), false);
-                    return;
-                } catch (MAPException e) {
-                    loger.error("Error while firing TC-U-ABORT. ", e);
-                }
-            }
-        } else {
-            // ApplicationContext is present - MAP Version 2 or higher
-            if (MAPApplicationContext.getProtocolVersion(acn.getOid()) < 2) {
-                // if a version 1 application-context-name is included, the MAP
-                // PM shall issue a TC-U-ABORT
-                // request primitive with abort-reason "User-specific" and
-                // user-information "MAP-ProviderAbortInfo"
-                // indicating "abnormalDialogue". The local MAP-user shall not
-                // be informed.
-                loger.error("Bad version of ApplicationContext if ApplicationContext exists. Must be 2 or greater");
-                try {
-                    this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.abnormalDialogue, null,
-                            false);
-                } catch (MAPException e) {
-                    loger.error("Error while firing TC-U-ABORT. ", e);
-                }
-                return;
-            }
-
-            mapAppCtx = MAPApplicationContext.getInstance(acn.getOid());
-
-            // Check if ApplicationContext is recognizable for the implemented
-            // services
-            // If no - TC-U-ABORT - ACN-Not-Supported
-
-            if (mapAppCtx == null) {
-                StringBuffer s = new StringBuffer();
-                s.append("Unrecognizable ApplicationContextName is received: ");
-                for (Long l : acn.getOid()) {
-                    s.append(l).append(", ");
-                }
-
-                loger.error(s.toString());
-                try {
-                    this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false);
-                } catch (MAPException e) {
-                    loger.error("Error while firing TC-U-ABORT. ", e);
-                }
-
-                return;
-            }
-        }
-
-        AddressString destReference = null;
-        AddressString origReference = null;
-        MAPExtensionContainer extensionContainer = null;
-        boolean eriStyle = false;
-        AddressString eriMsisdn = null;
-        AddressString eriVlrNo = null;
-
-        UserInformation userInfo = tcBeginIndication.getUserInformation();
-        if (userInfo == null) {
-            // if no User-information is present it is checked whether
-            // presence of User Information in the
-            // TC-BEGIN indication primitive is required for the received
-            // application-context-name. If User
-            // Information is required but not present, a TC-U-ABORT request
-            // primitive with abort-reason
-            // "User-specific" and user-information "MAP-ProviderAbortInfo"
-            // indicating "abnormalDialogue"
-            // shall be issued. The local MAP-user shall not be informed.
-
-            // We demand User-information mandatory now for ACNs
-            // that demand destination/origination reference presence
-            // They are: callCompletionContext(8), networkFunctionalSsContext(18)
-            // and networkUnstructuredSsContext(19)
-            // TODO: I am not absolutely sure that it is correct
-            if (mapAppCtx.getApplicationContextName() == MAPApplicationContextName.callCompletionContext
-                    || mapAppCtx.getApplicationContextName() == MAPApplicationContextName.networkFunctionalSsContext
-                    || mapAppCtx.getApplicationContextName() == MAPApplicationContextName.networkUnstructuredSsContext) {
-                loger.error("When parsing TC-BEGIN: userInfo is mandatory for ACN==" + mapAppCtx.getApplicationContextName()
-                        + " but not found");
-                try {
-                    this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.abnormalDialogue, null,
-                            false);
-                } catch (MAPException e) {
-                    loger.error("Error while firing TC-U-ABORT. ", e);
-                }
-                return;
-            }
-
-        } else {
-            // if an application-context-name different from version 1 is
-            // included in the primitive and if User-
-            // information is present, the User-information must constitute
-            // a syntactically correct MAP-OPEN
-            // dialogue PDU. Otherwise a TC-U-ABORT request primitive with
-            // abort-reason "User-specific" and
-            // user-information "MAP-ProviderAbortInfo" indicating
-            // "abnormalDialogue" shall be issued and the
-            // local MAP-user shall not be informed.
-
-            if (!userInfo.isIDObjectIdentifier()) {
-                loger.error("When parsing TC-BEGIN: userInfo.isOid() check failed");
-                try {
-                    this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null, false);
-                } catch (MAPException e) {
-                    loger.error("Error while firing TC-U-ABORT. ", e);
-                }
-                return;
-            }
-
-            List<Long> oid = userInfo.getObjectIdentifier();
-
-            MAPDialogueAS mapDialAs = MAPDialogueAS.getInstance(oid);
-
-            if (mapDialAs == null) {
-                loger.error("When parsing TC-BEGIN: Expected MAPDialogueAS.MAP_DialogueAS but is null");
-                try {
-                    this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null, false);
-                } catch (MAPException e) {
-                    loger.error("Error while firing TC-U-ABORT. ", e);
-                }
-                return;
-            }
-
-            if (!userInfo.isValueObject()) {
-                loger.error("When parsing TC-BEGIN: userInfo.isAsn() check failed");
-                try {
-                    this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null, false);
-                } catch (MAPException e) {
-                    loger.error("Error while firing TC-U-ABORT. ", e);
-                }
-                return;
-            }
-
-            Object userInfoObject=userInfo.getChild();
-            if(!(userInfoObject instanceof MAPOpenInfoImpl)) {
-            	loger.error("When parsing TC-BEGIN: MAP-OPEN dialog PDU must be received");
-                try {
-                    this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null, false);
-                } catch (MAPException e) {
-                    loger.error("Error while firing TC-U-ABORT. ", e);
-                }
-                return;
-            }
-            
-            MAPOpenInfoImpl mapOpenInfoImpl = (MAPOpenInfoImpl)userInfoObject;
-            destReference = mapOpenInfoImpl.getDestReference();
-            origReference = mapOpenInfoImpl.getOrigReference();
-            extensionContainer = mapOpenInfoImpl.getExtensionContainer();
-            eriStyle = mapOpenInfoImpl.getEriStyle();
-            eriMsisdn = mapOpenInfoImpl.getEriMsisdn();
-            eriVlrNo = mapOpenInfoImpl.getEriVlrNo();
-        }
-
-        // Selecting the MAP service that can perform the ApplicationContext
-        if (perfSer == null) {
-            for (MAPServiceBase ser : this.mapServices) {
-
-                ServingCheckData chkRes = ser.isServingService(mapAppCtx);
-                switch (chkRes.getResult()) {
-                    case AC_Serving:
-                        perfSer = ser;
-                        break;
-
-                    case AC_VersionIncorrect:
-                        try {
-                            this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null,
-                                    chkRes.getAlternativeApplicationContext(), false);
-                        } catch (MAPException e1) {
-                            loger.error("Error while firing TC-U-ABORT. ", e1);
-                        }
-                        break;
-					default:
+				}
+			if (invoke != null) {
+				OperationCode oc = invoke.getOperationCode();
+				if (oc != null && oc.getOperationType() == OperationCodeType.Local)
+					operationCode = oc.getLocalOperationCode();
+			}
+			if (operationCode != -1)
+				// Selecting the MAP service that can perform the operation, getting
+				// ApplicationContext
+				for (MAPServiceBase ser : this.mapServices) {
+					MAPApplicationContext ac = ((MAPServiceBaseImpl) ser).getMAPv1ApplicationContext(operationCode);
+					if (ac != null) {
+						perfSer = ser;
+						mapAppCtx = ac;
 						break;
-                }
+					}
+				}
 
-                if (perfSer != null)
-                    break;
-            }
-        }
+			if (mapAppCtx == null)
+				// Invoke not found or has bad operationCode or operationCode is not supported
+				try {
+					this.fireTCAbortV1(tcBeginIndication.getDialog(), false);
+					return;
+				} catch (MAPException e) {
+					loger.error("Error while firing TC-U-ABORT. ", e);
+				}
+		} else {
+			// ApplicationContext is present - MAP Version 2 or higher
+			if (MAPApplicationContext.getProtocolVersion(acn.getOid()) < 2) {
+				// if a version 1 application-context-name is included, the MAP
+				// PM shall issue a TC-U-ABORT
+				// request primitive with abort-reason "User-specific" and
+				// user-information "MAP-ProviderAbortInfo"
+				// indicating "abnormalDialogue". The local MAP-user shall not
+				// be informed.
+				loger.error("Bad version of ApplicationContext if ApplicationContext exists. Must be 2 or greater");
+				try {
+					this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.abnormalDialogue,
+							null, false);
+				} catch (MAPException e) {
+					loger.error("Error while firing TC-U-ABORT. ", e);
+				}
+				return;
+			}
 
-        // No MAPService can accept the received ApplicationContextName
-        if (perfSer == null) {
-            StringBuffer s = new StringBuffer();
-            s.append("Unsupported ApplicationContextName is received: ");
-            if (acn != null) {
-                for (Long l : acn.getOid()) {
-                    s.append(l).append(", ");
-                }
-            } else {
-                s.append("MAP V1");
-            }
+			mapAppCtx = MAPApplicationContext.getInstance(acn.getOid());
 
-            loger.error(s.toString());
-            try {
-                this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false);
-            } catch (MAPException e1) {
-                loger.error("Error while firing TC-U-ABORT. ", e1);
-            }
+			// Check if ApplicationContext is recognizable for the implemented
+			// services
+			// If no - TC-U-ABORT - ACN-Not-Supported
 
-            return;
-        }
+			if (mapAppCtx == null) {
+				StringBuffer s = new StringBuffer();
+				s.append("Unrecognizable ApplicationContextName is received: ");
+				for (Long l : acn.getOid())
+					s.append(l).append(", ");
 
-        // MAPService is not activated
-        if (!perfSer.isActivated()) {
-            StringBuffer s = new StringBuffer();
-            s.append("ApplicationContextName of non activated MAPService is received. Will send back TCAP Abort : ");
-            if (acn != null) {
-                for (Long l : acn.getOid()) {
-                    s.append(l).append(", ");
-                }
-            } else {
-                s.append("MAP V1");
-            }
+				loger.error(s.toString());
+				try {
+					this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false);
+				} catch (MAPException e) {
+					loger.error("Error while firing TC-U-ABORT. ", e);
+				}
 
-            loger.warn(s.toString());
+				return;
+			}
+		}
 
-            try {
-                this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false);
-            } catch (MAPException e1) {
-                loger.error("Error while firing TC-U-ABORT. ", e1);
-            }
+		AddressString destReference = null;
+		AddressString origReference = null;
+		MAPExtensionContainer extensionContainer = null;
+		boolean eriStyle = false;
+		AddressString eriMsisdn = null;
+		AddressString eriVlrNo = null;
 
-            return;
-        }
+		UserInformation userInfo = tcBeginIndication.getUserInformation();
+		if (userInfo == null) {
+			// if no User-information is present it is checked whether
+			// presence of User Information in the
+			// TC-BEGIN indication primitive is required for the received
+			// application-context-name. If User
+			// Information is required but not present, a TC-U-ABORT request
+			// primitive with abort-reason
+			// "User-specific" and user-information "MAP-ProviderAbortInfo"
+			// indicating "abnormalDialogue"
+			// shall be issued. The local MAP-user shall not be informed.
 
-        MAPDialogImpl mapDialogImpl = ((MAPServiceBaseImpl) perfSer).createNewDialogIncoming(mapAppCtx,
-                tcBeginIndication.getDialog(), true);
-        mapDialogImpl.tcapMessageType = MessageType.Begin;
-        mapDialogImpl.receivedOrigReference = origReference;
-        mapDialogImpl.receivedDestReference = destReference;
-        mapDialogImpl.receivedExtensionContainer = extensionContainer;
+			// We demand User-information mandatory now for ACNs
+			// that demand destination/origination reference presence
+			// They are: callCompletionContext(8), networkFunctionalSsContext(18)
+			// and networkUnstructuredSsContext(19)
+			// TODO: I am not absolutely sure that it is correct
+			if (mapAppCtx.getApplicationContextName() == MAPApplicationContextName.callCompletionContext
+					|| mapAppCtx.getApplicationContextName() == MAPApplicationContextName.networkFunctionalSsContext
+					|| mapAppCtx
+							.getApplicationContextName() == MAPApplicationContextName.networkUnstructuredSsContext) {
+				loger.error("When parsing TC-BEGIN: userInfo is mandatory for ACN=="
+						+ mapAppCtx.getApplicationContextName() + " but not found");
+				try {
+					this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.abnormalDialogue,
+							null, false);
+				} catch (MAPException e) {
+					loger.error("Error while firing TC-U-ABORT. ", e);
+				}
+				return;
+			}
 
-        mapDialogImpl.setState(MAPDialogState.INITIAL_RECEIVED);
+		} else {
+			// if an application-context-name different from version 1 is
+			// included in the primitive and if User-
+			// information is present, the User-information must constitute
+			// a syntactically correct MAP-OPEN
+			// dialogue PDU. Otherwise a TC-U-ABORT request primitive with
+			// abort-reason "User-specific" and
+			// user-information "MAP-ProviderAbortInfo" indicating
+			// "abnormalDialogue" shall be issued and the
+			// local MAP-user shall not be informed.
 
-        mapDialogImpl.delayedAreaState = MAPDialogImpl.DelayedAreaState.No;
+			if (!userInfo.isIDObjectIdentifier()) {
+				loger.error("When parsing TC-BEGIN: userInfo.isOid() check failed");
+				try {
+					this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null,
+							false);
+				} catch (MAPException e) {
+					loger.error("Error while firing TC-U-ABORT. ", e);
+				}
+				return;
+			}
 
-        if (eriStyle) {
-            this.deliverDialogRequestEri(mapDialogImpl, destReference, origReference, eriMsisdn, eriVlrNo);
-        } else {
-            this.deliverDialogRequest(mapDialogImpl, destReference, origReference, extensionContainer);
-        }
-        if (mapDialogImpl.getState() == MAPDialogState.EXPUNGED) {
-            // The Dialog was aborter or refused
-            return;
-        }
+			List<Long> oid = userInfo.getObjectIdentifier();
 
-        // Now let us decode the Components
-        if (comps != null) {
-            processComponents(mapDialogImpl, comps, tcBeginIndication.getOriginalBuffer());
-        }
+			MAPDialogueAS mapDialAs = MAPDialogueAS.getInstance(oid);
 
-        this.deliverDialogDelimiter(mapDialogImpl);
+			if (mapDialAs == null) {
+				loger.error("When parsing TC-BEGIN: Expected MAPDialogueAS.MAP_DialogueAS but is null");
+				try {
+					this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null,
+							false);
+				} catch (MAPException e) {
+					loger.error("Error while firing TC-U-ABORT. ", e);
+				}
+				return;
+			}
 
-        finishComponentProcessingState(mapDialogImpl);
-    }
+			if (!userInfo.isValueObject()) {
+				loger.error("When parsing TC-BEGIN: userInfo.isAsn() check failed");
+				try {
+					this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null,
+							false);
+				} catch (MAPException e) {
+					loger.error("Error while firing TC-U-ABORT. ", e);
+				}
+				return;
+			}
 
-    private void finishComponentProcessingState(MAPDialogImpl mapDialogImpl) {
+			Object userInfoObject = userInfo.getChild();
+			if (!(userInfoObject instanceof MAPOpenInfoImpl)) {
+				loger.error("When parsing TC-BEGIN: MAP-OPEN dialog PDU must be received");
+				try {
+					this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null,
+							false);
+				} catch (MAPException e) {
+					loger.error("Error while firing TC-U-ABORT. ", e);
+				}
+				return;
+			}
 
-        if (mapDialogImpl.getState() == MAPDialogState.EXPUNGED)
-            return;
+			MAPOpenInfoImpl mapOpenInfoImpl = (MAPOpenInfoImpl) userInfoObject;
+			destReference = mapOpenInfoImpl.getDestReference();
+			origReference = mapOpenInfoImpl.getOrigReference();
+			extensionContainer = mapOpenInfoImpl.getExtensionContainer();
+			eriStyle = mapOpenInfoImpl.getEriStyle();
+			eriMsisdn = mapOpenInfoImpl.getEriMsisdn();
+			eriVlrNo = mapOpenInfoImpl.getEriVlrNo();
+		}
 
-        try {
-            switch (mapDialogImpl.delayedAreaState) {
-                case Continue:
-                    mapDialogImpl.send();
-                    break;
-                case End:
-                    mapDialogImpl.close(false);
-                    break;
-                case PrearrangedEnd:
-                    mapDialogImpl.close(true);
-                    break;
+		// Selecting the MAP service that can perform the ApplicationContext
+		if (perfSer == null)
+			for (MAPServiceBase ser : this.mapServices) {
+
+				ServingCheckData chkRes = ser.isServingService(mapAppCtx);
+				switch (chkRes.getResult()) {
+				case AC_Serving:
+					perfSer = ser;
+					break;
+
+				case AC_VersionIncorrect:
+					try {
+						this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null,
+								chkRes.getAlternativeApplicationContext(), false);
+					} catch (MAPException e1) {
+						loger.error("Error while firing TC-U-ABORT. ", e1);
+					}
+					break;
 				default:
 					break;
-            }
-        } catch (MAPException e) {
-            loger.error("Error while finishComponentProcessingState, delayedAreaState=" + mapDialogImpl.delayedAreaState, e);
-        }
-
-        mapDialogImpl.delayedAreaState = null;
-    }
-
-    public void onTCContinue(TCContinueIndication tcContinueIndication) {
-
-        Dialog tcapDialog = tcContinueIndication.getDialog();
-
-        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog);
-       
-        if (mapDialogImpl == null) {
-            loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
-            try {
-                this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null, false);
-            } catch (MAPException e) {
-                loger.error("Error while firing TC-U-ABORT. ", e);
-            }
-            return;
-        }
-
-        mapDialogImpl.tcapMessageType = MessageType.Continue;
-
-        // Checking the received ApplicationContextName :
-        // On receipt of the first TC-CONTINUE indication primitive for
-        // a dialogue, the MAP PM shall check the value of the
-        // application-context-name parameter. If this value matches the
-        // one used in the MAP-OPEN request primitive, the MAP PM shall
-        // issue a MAP-OPEN confirm primitive with the result parameter
-        // indicating "accepted", then process the following TC
-        // component handling indication primitives as described in
-        // clause 12.6, and then waits for a request primitive from its
-        // user or an indication primitive from TC, otherwise it shall
-        // issue a TC-U-ABORT request primitive with a MAP-providerAbort
-        // PDU indicating "abnormal dialogue" and a MAP-P-ABORT
-        // indication primitive with the "provider-reason" parameter
-        // indicating "abnormal dialogue".
-        if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT) {
-            ApplicationContextName acn = tcContinueIndication.getApplicationContextName();
-
-            if (acn == null) {
-
-                // if MAP V1 - no ACN included
-                if (mapDialogImpl.getApplicationContext().getApplicationContextVersion() != MAPApplicationContextVersion.version1) {
-
-                    loger.error(String.format(
-                            "Received first TC-CONTINUE for MAPDialog=%s. But no application-context-name included",
-                            mapDialogImpl));
-                    try {
-                        this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null,
-                                mapDialogImpl.getReturnMessageOnError());
-
-                    } catch (MAPException e) {
-                        loger.error("Error while firing TC-U-ABORT. ", e);
-                    }
-
-                    this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
-                            MAPAbortSource.MAPProblem, null);
-                    mapDialogImpl.setState(MAPDialogState.EXPUNGED);
-
-                    return;
-                }
-            } else {
-
-                MAPApplicationContext mapAcn = MAPApplicationContext.getInstance(acn.getOid());
-                if (mapAcn == null || !mapAcn.equals(mapDialogImpl.getApplicationContext())) {
-
-                    loger.error(String.format("Received first TC-CONTINUE. MAPDialog=%s. But MAPApplicationContext=%s",
-                            mapDialogImpl, mapAcn));
-                    try {
-                        this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null,
-                                mapDialogImpl.getReturnMessageOnError());
-                    } catch (MAPException e) {
-                        loger.error("Error while firing TC-U-ABORT. ", e);
-                    }
-
-                    this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
-                            MAPAbortSource.MAPProblem, null);
-                    mapDialogImpl.setState(MAPDialogState.EXPUNGED);
-
-                    return;
-                }
-            }
-
-            MAPExtensionContainer extensionContainer = null;
-
-            // Parse MapAcceptInfo if it exists - we ignore all errors here
-            UserInformation userInfo = tcContinueIndication.getUserInformation();
-            if (userInfo != null) {
-                MAPAcceptInfoImpl mapAcceptInfoImpl = new MAPAcceptInfoImpl();
-
-                if (userInfo.isIDObjectIdentifier()) {
-                    List<Long> oid = userInfo.getObjectIdentifier();
-                    MAPDialogueAS mapDialAs = MAPDialogueAS.getInstance(oid);
-
-                    if (mapDialAs != null && userInfo.isValueObject()) {
-                    	Object child=userInfo.getChild();
-                    	if(child instanceof MAPAcceptInfoImpl) {
-                    		mapAcceptInfoImpl=(MAPAcceptInfoImpl)child;
-                            extensionContainer = mapAcceptInfoImpl.getExtensionContainer();
-                    	}
-                    }
-                }
-            }
-
-            mapDialogImpl.delayedAreaState = MAPDialogImpl.DelayedAreaState.No;
-
-            // Fire MAPAcceptInfo
-            mapDialogImpl.setState(MAPDialogState.ACTIVE);
-            this.deliverDialogAccept(mapDialogImpl, extensionContainer);
-
-            if (mapDialogImpl.getState() == MAPDialogState.EXPUNGED) {
-                // The Dialog was aborter
-                finishComponentProcessingState(mapDialogImpl);
-                return;
-            }
-        } else {
-            mapDialogImpl.delayedAreaState = MAPDialogImpl.DelayedAreaState.No;
-        }
-
-        // Now let us decode the Components
-        if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT
-                || mapDialogImpl.getState() == MAPDialogState.ACTIVE) {
-            List<BaseComponent> comps = tcContinueIndication.getComponents();
-            if (comps != null) {
-                processComponents(mapDialogImpl, comps, tcContinueIndication.getOriginalBuffer());
-            }
-        } else {
-            // This should never happen
-            loger.error(String.format("Received TC-CONTINUE. MAPDialog=%s. But state is neither InitialSent or Active",
-                    mapDialogImpl));
-        }
-
-        this.deliverDialogDelimiter(mapDialogImpl);
-
-        finishComponentProcessingState(mapDialogImpl);
-    }
-
-    public void onTCEnd(TCEndIndication tcEndIndication) {
-
-        Dialog tcapDialog = tcEndIndication.getDialog();
-
-        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog);
-        
-        if (mapDialogImpl == null) {
-            loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
-            return;
-        }
-
-        mapDialogImpl.tcapMessageType = MessageType.End;
-
-        if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT) {
-            // On receipt of a TC-END indication primitive in the
-            // dialogue
-            // initiated state, the MAP PM shall check the value of the
-            // application-context-name parameter. If this value does
-            // not
-            // match
-            // the one used in the MAPOPEN request primitive, the MAP PM
-            // shall
-            // discard any following component handling primitive and
-            // shall
-            // issue a MAP-P-ABORT indication primitive with the
-            // "provider-reason" parameter indicating
-            // "abnormal dialogue".
-            ApplicationContextName acn = tcEndIndication.getApplicationContextName();
-
-            if (acn == null) {
-
-                // if MAP V1 - no ACN included
-                if (mapDialogImpl.getApplicationContext().getApplicationContextVersion() != MAPApplicationContextVersion.version1) {
-
-                    // for MAP version >= 2 - accepts only if only ERROR
-                    // & REJECT components are present
-                    boolean notOnlyErrorReject = false;
-                    for (BaseComponent c : tcEndIndication.getComponents()) {
-                        if (!(c instanceof ReturnError) && !(c instanceof Reject)) {
-                            notOnlyErrorReject = true;
-                            break;
-                        }
-                    }
-                    if (notOnlyErrorReject) {
-                        loger.error(String.format(
-                                "Received first TC-END for MAPDialog=%s. But no application-context-name included",
-                                mapDialogImpl));
-
-                        this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
-                                MAPAbortSource.MAPProblem, null);
-                        mapDialogImpl.setState(MAPDialogState.EXPUNGED);
-
-                        return;
-                    }
-                }
-            } else {
-
-                MAPApplicationContext mapAcn = MAPApplicationContext.getInstance(acn.getOid());
-
-                if (mapAcn == null || !mapAcn.equals(mapDialogImpl.getApplicationContext())) {
-                    loger.error(String.format("Received first TC-END. MAPDialog=%s. But MAPApplicationContext=%s",
-                            mapDialogImpl, mapAcn));
-
-                    this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
-                            MAPAbortSource.MAPProblem, null);
-                    mapDialogImpl.setState(MAPDialogState.EXPUNGED);
-
-                    return;
-                }
-            }
-
-            // Otherwise it shall issue a MAP-OPEN confirm primitive with the result
-            // parameter set to "accepted" and process the following TC component
-            // handling indication primitives as described in clause 12.6;
-
-            // Fire MAPAcceptInfo
-            mapDialogImpl.setState(MAPDialogState.ACTIVE);
-
-            MAPExtensionContainer extensionContainer = null;
-            // Parse MapAcceptInfo or MapCloseInfo if it exists - we
-            // ignore all errors here
-            UserInformation userInfo = tcEndIndication.getUserInformation();
-            if (userInfo != null) {
-
-                if (userInfo.isIDObjectIdentifier()) {
-                    List<Long> oid = userInfo.getObjectIdentifier();
-                    MAPDialogueAS mapDialAs = MAPDialogueAS.getInstance(oid);
-
-                    if (mapDialAs != null && userInfo.isValueObject()) {
-                    	Object child=userInfo.getChild();
-                    	if(child instanceof MAPAcceptInfoImpl) {
-                    		MAPAcceptInfoImpl mapAcceptInfoImpl = (MAPAcceptInfoImpl)child;                           
-                            extensionContainer = mapAcceptInfoImpl.getExtensionContainer();
-                    	} else if(child instanceof MAPCloseInfoImpl) {
-                    		MAPCloseInfoImpl mapCloseInfoImpl = (MAPCloseInfoImpl)child;
-                            extensionContainer = mapCloseInfoImpl.getExtensionContainer();
-                    	}
-                    }
-                }
-            }
-
-            this.deliverDialogAccept(mapDialogImpl, extensionContainer);
-            if (mapDialogImpl.getState() == MAPDialogState.EXPUNGED) {
-                // The Dialog was aborter
-                return;
-            }
-        }
-
-        // Now let us decode the Components
-        List<BaseComponent> comps = tcEndIndication.getComponents();
-        if (comps != null) {
-            processComponents(mapDialogImpl, comps, tcEndIndication.getOriginalBuffer());
-        }
-
-        this.deliverDialogClose(mapDialogImpl);
-
-        mapDialogImpl.setState(MAPDialogState.EXPUNGED);
-    }
-
-    public void onTCUni(TCUniIndication arg0) {
-        // MAP do not use TCUni - we just ignore them
-    }
-
-    @Override
-    public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
-
-        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(dialog);
-
-        if (mapDialogImpl != null) {
-        	if (mapDialogImpl.getState() != MAPDialogState.EXPUNGED) {
-
-                // Getting the MAP Service that serves the MAP Dialog
-                MAPServiceBaseImpl perfSer = (MAPServiceBaseImpl) mapDialogImpl.getService();
-
-                // We do not send invokeTimeout for Class 4 invokes
-                if (invokeClass == InvokeClass.Class4)
-                    return;
-
-                perfSer.deliverInvokeTimeout(mapDialogImpl, invokeId);
-            }
-        }
-    }
-
-    @Override
-    public void onDialogTimeout(Dialog dialog) {
-
-        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(dialog);
-
-        if (mapDialogImpl != null) {
-        	if (mapDialogImpl.getState() != MAPDialogState.EXPUNGED) {
-                this.deliverDialogTimeout(mapDialogImpl);
-            }
-        }
-    }
-
-    @Override
-    public void onDialogReleased(Dialog dialog) {
-
-        MAPDialog mapDialog = this.getMAPDialog(dialog);
-
-        if (mapDialog != null) {
-        	this.deliverDialogRelease(mapDialog);
-        	dialog.setUserObject(null);
-        }
-    }
-
-    public void onTCPAbort(TCPAbortIndication tcPAbortIndication) {
-        Dialog tcapDialog = tcPAbortIndication.getDialog();
-
-        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog);
-        
-        if (mapDialogImpl == null) {
-            loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
-            return;
-        }
-
-        mapDialogImpl.tcapMessageType = MessageType.Abort;
-
-        PAbortCauseType pAbortCause = tcPAbortIndication.getPAbortCause();
-        MAPAbortProviderReason abortProviderReason = MAPAbortProviderReason.ProviderMalfunction;
-        MAPAbortSource abortSource = MAPAbortSource.TCProblem;
-
-        // Table 16.1/1: Mapping of P-Abort cause in TC-P-ABORT indication
-        // on to provider-reason in MAP-P-ABORT indication
-        // TC P-Abort cause MAP provider-reason
-        // unrecognized message type provider malfunction
-        // unrecognized transaction Id supporting dialogue released
-        // badlyFormattedTransactionPortion provider malfunction
-        // incorrectTransactionPortion provider malfunction (note)
-        // resourceLimitation resource limitation
-        // abnormalDialogue provider malfunction
-        // noCommonDialoguePortion version incompatibility
-        // NOTE: Or version incompatibility in the dialogue initiated phase.
-
-        switch (pAbortCause) {
-            case UnrecognizedMessageType:
-            case BadlyFormattedTxPortion:
-            case AbnormalDialogue:
-            case NoReasonGiven:
-                abortProviderReason = MAPAbortProviderReason.ProviderMalfunction;
-                break;
-            case UnrecognizedTxID:
-                abortProviderReason = MAPAbortProviderReason.SupportingDialogueTransactionReleased;
-                break;
-            case IncorrectTxPortion:
-                if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT) {
-                    abortProviderReason = MAPAbortProviderReason.VersionIncompatibility;
-                } else
-                    abortProviderReason = MAPAbortProviderReason.ProviderMalfunction;
-                break;
-            case ResourceLimitation:
-                abortProviderReason = MAPAbortProviderReason.ResourceLimitation;
-                break;
-            case NoCommonDialoguePortion:
-                abortProviderReason = MAPAbortProviderReason.VersionIncompatibilityTcap;
-                break;
-        }
-
-        if (abortProviderReason == MAPAbortProviderReason.VersionIncompatibility)
-            // On receipt of a TC-P-ABORT indication primitive in the
-            // "Dialogue Initiated" state with a P-abort parameter
-            // indicating "Incorrect Transaction Portion", the MAP PM shall
-            // issue a MAP-OPEN confirm primitive with
-            // the result parameter indicating "Dialogue Refused" and the
-            // refuse reason parameter indicating "Potential Version Incompatibility"."
-            this.deliverDialogReject(mapDialogImpl, MAPRefuseReason.PotentialVersionIncompatibility, null, null);
-        else if (abortProviderReason == MAPAbortProviderReason.VersionIncompatibilityTcap)
-            this.deliverDialogReject(mapDialogImpl, MAPRefuseReason.PotentialVersionIncompatibilityTcap, null, null);
-        else
-            this.deliverDialogProviderAbort(mapDialogImpl, abortProviderReason, abortSource, null);
-
-        mapDialogImpl.setState(MAPDialogState.EXPUNGED);
-    }
-
-    private enum ParsePduResult {
-        NoUserInfo, BadUserInfo, MapRefuse, MapUserAbort, MapProviderAbort;
-    }
-
-    public void onTCUserAbort(TCUserAbortIndication tcUserAbortIndication) {
-        Dialog tcapDialog = tcUserAbortIndication.getDialog();
-
-        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog);
-        if (mapDialogImpl == null) {
-            loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
-            return;
-        }
-
-        mapDialogImpl.tcapMessageType = MessageType.Abort;
-
-        // Trying to parse an userInfo APDU if it exists
-        UserInformation userInfo = tcUserAbortIndication.getUserInformation();
-        ParsePduResult parsePduResult = ParsePduResult.NoUserInfo;
-        MAPRefuseReason mapRefuseReason = MAPRefuseReason.NoReasonGiven;
-        MAPUserAbortChoice mapUserAbortChoice = null;
-        MAPProviderAbortReason mapProviderAbortReason = null;
-        MAPAbortProviderReason abortProviderReason = MAPAbortProviderReason.AbnormalMAPDialogueFromPeer;
-        MAPExtensionContainer extensionContainer = null;
-
-        if (userInfo != null) {
-            // Checking userInfo.Oid==MAP_DialogueAS
-            if (!userInfo.isIDObjectIdentifier()) {
-                loger.error("When parsing TCUserAbortIndication indication: userInfo.isOid() check failed");
-                parsePduResult = ParsePduResult.BadUserInfo;
-            } else {
-
-                List<Long> oid = userInfo.getObjectIdentifier();
-                MAPDialogueAS mapDialAs = MAPDialogueAS.getInstance(oid);
-                if (mapDialAs == null) {
-                    loger.error("When parsing TCUserAbortIndication indication: userInfo.getOidValue() must be userInfoMAPDialogueAS.MAP_DialogueAS");
-                    parsePduResult = ParsePduResult.BadUserInfo;
-                } else if (!userInfo.isValueObject()) {
-
-                    loger.error("When parsing TCUserAbortIndication indication: userInfo.isAsn() check failed");
-                    parsePduResult = ParsePduResult.BadUserInfo;
-                } else {
-                	Object child=userInfo.getChild();
-                	if(child instanceof MAPRefuseInfoImpl) {
-                		// On receipt of a TC-U-ABORT indication primitive in the
-                        // "Dialogue Initiated" state with an abort-reason
-                        // parameter indicating "User Specific" and a MAP-Refuse PDU
-                        // included as user information, the MAP PM
-                        // shall issue a MAP-OPEN confirm primitive with the result
-                        // set to refused and the refuse reason set as
-                        // received in the MAP Refuse PDU.
-                        MAPRefuseInfoImpl mapRefuseInfoImpl = (MAPRefuseInfoImpl)child;
-                        
-                        switch (mapRefuseInfoImpl.getReason()) {
-                            case invalidOriginatingReference:
-                                mapRefuseReason = MAPRefuseReason.InvalidOriginatingReference;
-                                break;
-                            case invalidDestinationReference:
-                                mapRefuseReason = MAPRefuseReason.InvalidDestinationReference;
-                                break;
-							default:
-								break;
-                        }
-
-                        extensionContainer = mapRefuseInfoImpl.getExtensionContainer();
-                        parsePduResult = ParsePduResult.MapRefuse;
-                	} else if(child instanceof MAPUserAbortInfoImpl) {
-                		MAPUserAbortInfoImpl mapUserAbortInfoImpl = (MAPUserAbortInfoImpl)child;
-                        
-                        mapUserAbortChoice = mapUserAbortInfoImpl.getUserAbortChoise();
-                        extensionContainer = mapUserAbortInfoImpl.getExtensionContainer();
-                        parsePduResult = ParsePduResult.MapUserAbort;
-                	} else if(child instanceof MAPProviderAbortInfoImpl) {
-                		MAPProviderAbortInfoImpl mapProviderAbortInfoImpl = (MAPProviderAbortInfoImpl)child;
-                        
-                        mapProviderAbortReason = mapProviderAbortInfoImpl.getMAPProviderAbortReason();
-                        switch (mapProviderAbortReason) {
-                            case abnormalDialogue:
-                                abortProviderReason = MAPAbortProviderReason.AbnormalMAPDialogueFromPeer;
-                                break;
-                            case invalidPDU:
-                                abortProviderReason = MAPAbortProviderReason.InvalidPDU;
-                                break;
-							default:
-								break;
-                        }
-
-                        extensionContainer = mapProviderAbortInfoImpl.getExtensionContainer();
-                        parsePduResult = ParsePduResult.MapProviderAbort;
-                	} else {
-                		loger.error("When parsing TCUserAbortIndication indication: userInfogetEncodeType().Tag must be either MAP_REFUSE_INFO_TAG or MAP_USER_ABORT_INFO_TAG or MAP_PROVIDER_ABORT_INFO_TAG");
-                        parsePduResult = ParsePduResult.BadUserInfo;                        
-                	}                		                    
-                }
-            }
-        }
-
-        // special cases: AareApdu + ApplicationContextNotSupported or NoCommonDialogPortion
-        if (tcUserAbortIndication.IsAareApdu()) {
-            ResultSourceDiagnostic resultSourceDiagnostic = tcUserAbortIndication.getResultSourceDiagnostic();
-            if (resultSourceDiagnostic != null) {
-                // ACN_Not_Supported
-            	DialogServiceUserType dsut=null;
-            	try {
-            		dsut=resultSourceDiagnostic.getDialogServiceUserType();
-            	} catch(ParseException ex) {
-            		
-            	}
-            	
-            	DialogServiceProviderType dspt=null;
-            	try {
-            		dspt=resultSourceDiagnostic.getDialogServiceProviderType();
-            	} catch(ParseException ex) {
-            		
-            	}
-            	
-                if (dsut!=null && dsut == DialogServiceUserType.AcnNotSupported) {
-                    if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT) {
-                        this.deliverDialogReject(mapDialogImpl, MAPRefuseReason.ApplicationContextNotSupported,
-                                tcUserAbortIndication.getApplicationContextName(), extensionContainer);
-
-                        mapDialogImpl.setState(MAPDialogState.EXPUNGED);
-                        return;
-                    } else
-                        parsePduResult = ParsePduResult.BadUserInfo;
-
-                } else if (dspt!=null && dspt == DialogServiceProviderType.NoCommonDialogPortion) {
-                    if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT) {
-                        // NoCommonDialogPortion
-                        this.deliverDialogReject(mapDialogImpl, MAPRefuseReason.PotentialVersionIncompatibilityTcap, null, null);
-
-                        mapDialogImpl.setState(MAPDialogState.EXPUNGED);
-                        return;
-                    } else
-                        parsePduResult = ParsePduResult.BadUserInfo;
-
-                }
-            }
-        }
-
-        switch (parsePduResult) {
-            case NoUserInfo:
-                // Neither ABRT nor AARE APDU presents
-
-                // On receipt of a TC-U-ABORT indication primitive in the
-                // "Dialogue Initiated" state with an abort-reason
-                // parameter indicating "User Specific" and without user
-                // information, the MAP PM shall issue a MAP-OPEN
-                // confirm primitive with the result parameter indicating
-                // "Dialogue Refused" and the refuse-reason
-                // parameter indicating "Potential Version Incompatibility".
-
-                if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT)
-                    this.deliverDialogReject(mapDialogImpl, MAPRefuseReason.NoReasonGiven, null, null);
-                else
-                    this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
-                            MAPAbortSource.MAPProblem, null);
-                break;
-
-            case BadUserInfo:
-                this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
-                        MAPAbortSource.MAPProblem, null);
-                break;
-
-            case MapRefuse:
-                if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT) {
-                    // On receipt of a TC-U-ABORT indication primitive in the
-                    // "Dialogue Initiated" state with an abort-reason
-                    // parameter indicating "User Specific" and a MAP-Refuse PDU
-                    // included as user information, the MAP PM
-                    // shall issue a MAP-OPEN confirm primitive with the result
-                    // set to refused and the refuse reason set as
-                    // received in the MAP Refuse PDU.
-                    this.deliverDialogReject(mapDialogImpl, mapRefuseReason, null, extensionContainer);
-                } else {
-                    // MAPRefuseInfo in a wrong Dialog state
-                    this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
-                            MAPAbortSource.MAPProblem, null);
-                }
-                break;
-
-            case MapUserAbort:
-                this.deliverDialogUserAbort(mapDialogImpl, mapUserAbortChoice, extensionContainer);
-                break;
-
-            case MapProviderAbort:
-                this.deliverDialogProviderAbort(mapDialogImpl, abortProviderReason, MAPAbortSource.MAPProblem,
-                        extensionContainer);
-                break;
-        }
-
-        mapDialogImpl.setState(MAPDialogState.EXPUNGED);
-    }
-
-    /**
-     * private service methods
-     */
-    private void processComponents(MAPDialogImpl mapDialogImpl, List<BaseComponent> components, ByteBuf buffer) {
-
-        // Now let us decode the Components
-        for (BaseComponent c : components) {
-
-            doProcessComponent(mapDialogImpl, c, buffer);
-        }
-    }
-
-    private void doProcessComponent(MAPDialogImpl mapDialogImpl, BaseComponent c, ByteBuf buffer) {
-
-        // Getting the MAP Service that serves the MAP Dialog
-        MAPServiceBaseImpl perfSer = (MAPServiceBaseImpl) mapDialogImpl.getService();        
-        try {
-            ComponentType compType = ComponentType.Invoke;
-            if(c instanceof Invoke)
-            	compType=ComponentType.Invoke;
-            else if(c instanceof ReturnError)
-            	compType=ComponentType.ReturnError;
-            else if(c instanceof Reject)
-            	compType=ComponentType.Reject;
-            else if(c instanceof ReturnResult)
-            	compType=ComponentType.ReturnResult;
-            else if(c instanceof ReturnResultLast)
-            	compType=ComponentType.ReturnResultLast;
-            
-            Integer invokeId = c.getInvokeId();
-
-            Object parameter;
-            OperationCode oc;
-            Integer linkedId = 0;
-            
-            switch (compType) {
-                case Invoke: {
-                    Invoke comp = (Invoke)c;
-                    oc = comp.getOperationCode();
-                    parameter = comp.getParameter();
-                    linkedId = comp.getLinkedId();
-
-                    if (linkedId != null) {
-                        // linkedId exists Checking if the linkedId exists
-                        long[] lstInv = null;
-                        if(comp.getLinkedOperationCode().getOperationType()==OperationCodeType.Local)
-                        	lstInv=perfSer.getLinkedOperationList(comp.getLinkedOperationCode().getLocalOperationCode());
-                        
-                        if (lstInv == null) {
-                            ProblemImpl problem = new ProblemImpl();
-                            problem.setInvokeProblemType(InvokeProblemType.LinkedResponseUnexpected);
-                            mapDialogImpl.sendRejectComponent(invokeId, problem);
-                            perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
-
-                            return;
-                        }
-
-                        boolean found = false;
-                        if (lstInv != null) {
-                        	if(comp.getOperationCode().getOperationType()==OperationCodeType.Local) {
-	                            for (long l : lstInv) {
-	                                if (l == (comp.getOperationCode()).getLocalOperationCode()) {
-	                                    found = true;
-	                                    break;
-	                                }
-	                            }
-                        	}
-                        }
-                        if (!found) {
-                            ProblemImpl problem = new ProblemImpl();
-                            problem.setInvokeProblemType(InvokeProblemType.UnexpectedLinkedOperation);
-                            mapDialogImpl.sendRejectComponent(invokeId, problem);
-                            perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
-
-                            return;
-                        }
-                    }
-                }
-                    break;
-
-                case ReturnResult: {
-                    ReturnResult comp = (ReturnResult)c;
-                    oc = comp.getOperationCode();
-                    parameter = comp.getParameter();
-                }
-                    break;
-
-                case ReturnResultLast: {
-                    ReturnResultLast comp = (ReturnResultLast)c;
-                    oc = comp.getOperationCode();
-                    parameter = comp.getParameter();
-               }
-                    break;
-
-                case ReturnError: {
-                    ReturnError comp = (ReturnError)c;
-
-                    int errorCode = 0;
-                    if (comp.getErrorCode() != null && comp.getErrorCode().getErrorType() == ErrorCodeType.Local)
-                        errorCode = (comp.getErrorCode()).getLocalErrorCode();
-                    if (errorCode < MAPErrorCode.minimalCodeValue || errorCode > MAPErrorCode.maximumCodeValue) {
-                        // Not Local error code and not MAP error code received
-                        ProblemImpl problem = new ProblemImpl();
-                        problem.setReturnErrorProblemType(ReturnErrorProblemType.UnrecognizedError);
-                        mapDialogImpl.sendRejectComponent(invokeId, problem);
-                        perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
-
-                        return;
-                    }
-
-                    MAPErrorMessage msgErr = this.mapErrorMessageFactory.createMessageFromErrorCode(errorCode,Long.valueOf(mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion()));
-                    Object p = comp.getParameter();
-                    if (p != null && p instanceof MAPErrorMessage) {
-                        msgErr=(MAPErrorMessage)p;
-                    }
-                    else if(p != null) {
-                    	ProblemImpl problem = new ProblemImpl();
-                         problem.setReturnErrorProblemType(ReturnErrorProblemType.MistypedParameter);
-                         mapDialogImpl.sendRejectComponent(invokeId, problem);
-                         perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
-                         return;
-                    }
-                    
-                    if(msgErr.getErrorCode()==null)
-                    	msgErr.updateErrorCode(errorCode);
-                    
-                    mapStack.newErrorReceived(MAPErrorCode.translate(errorCode), mapDialogImpl.getNetworkId());               
-                    perfSer.deliverErrorComponent(mapDialogImpl, comp.getInvokeId(), msgErr);                    
-                    return;
-                }
-
-                case Reject: {
-                    Reject rej = (Reject)c;
-                    perfSer.deliverRejectComponent(mapDialogImpl, rej.getInvokeId(), rej.getProblem(), rej.isLocalOriginated());
-
-                    return;
-                }
-
-                default:
-                    return;
-            }
-
-            try {
-
-            	//null for Forward Check SS Indication
-            	if(parameter!=null && !(parameter instanceof MAPMessage)) {
-            		throw new MAPParsingComponentException("MAPServiceHandling: unknown incoming operation code: " + oc.getLocalOperationCode(),
-                            MAPParsingComponentExceptionReason.MistypedParameter);
-            	}
-            	
-            	MAPMessage realMessage=(MAPMessage)parameter;
-            	if(realMessage!=null) {
-            		mapStack.newMessageReceived(realMessage.getMessageType().name(), mapDialogImpl.getNetworkId());               
-                    realMessage.setOriginalBuffer(buffer);
-	            	realMessage.setInvokeId(invokeId);
-	            	realMessage.setMAPDialog(mapDialogImpl);
-	            	realMessage.setReturnResultNotLast(compType == ComponentType.ReturnResult);
-            	}
-            	
-            	perfSer.processComponent(compType, oc, realMessage, mapDialogImpl, invokeId, linkedId);
-
-            } catch (MAPParsingComponentException e) {
-
-                loger.error(
-                        "MAPParsingComponentException when parsing components: " + e.getReason().toString() + " - "
-                                + e.getMessage(), e);
-
-                switch (e.getReason()) {
-                    case UnrecognizedOperation:
-                        // Component does not supported - send TC-U-REJECT
-                        if (compType == ComponentType.Invoke) {
-                            ProblemImpl problem = new ProblemImpl();
-                            problem.setInvokeProblemType(InvokeProblemType.UnrecognizedOperation);
-                            mapDialogImpl.sendRejectComponent(invokeId, problem);
-                            perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
-                        } else {
-                        	ProblemImpl problem = new ProblemImpl();
-                            problem.setReturnResultProblemType(ReturnResultProblemType.MistypedParameter);
-                            mapDialogImpl.sendRejectComponent(invokeId, problem);
-                            perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
-                        }
-                        break;
-
-                    case MistypedParameter:
-                        // Failed when parsing the component - send TC-U-REJECT
-                        if (compType == ComponentType.Invoke) {
-                        	ProblemImpl problem = new ProblemImpl();
-                            problem.setInvokeProblemType(InvokeProblemType.MistypedParameter);
-                            mapDialogImpl.sendRejectComponent(invokeId, problem);
-                            perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
-                        } else {
-                        	ProblemImpl problem = new ProblemImpl();
-                            problem.setReturnResultProblemType(ReturnResultProblemType.MistypedParameter);
-                            mapDialogImpl.sendRejectComponent(invokeId, problem);
-                            perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
-                        }
-                        break;
-                }
-            }
-        } catch (MAPException e) {
-            loger.error("Error processing a Component: " + e.getMessage() + "\nComponent" + c, e);
-        }
-    }
-
-    public void onTCNotice(TCNoticeIndication ind) {
-
-        Dialog tcapDialog = ind.getDialog();
-        if (tcapDialog == null) {
-            // no existent Dialog for TC-NOTICE
-            return;
-        }
-
-        MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog);
-
-        if (mapDialogImpl == null) {
-            loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
-            return;
-        }
-
-        if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT) {
-            // If a TC-NOTICE indication primitive is received before the
-            // dialogue has been confirmed (i.e. no backward message is
-            // received by the dialogue initiator node), the MAP PM shall
-            // issue a MAP-OP EN Cnf primitive with the result parameter
-            // indicating Refused and a refuse reason Remote node not
-            // reachable�.
-            this.deliverDialogReject(mapDialogImpl, MAPRefuseReason.RemoteNodeNotReachable, null, null);
-            mapDialogImpl.setState(MAPDialogState.EXPUNGED);
-        } else if (mapDialogImpl.getState() == MAPDialogState.ACTIVE) {
-            // If a TC-NOTICE indication primitive is received after the
-            // dialogue has been confirmed, the MAP PM shall issue a
-            // MAP-NOTICE indication to the user, with a problem diagnostic
-            // indicating "message cannot be delivered to the peer".
-            this.deliverDialogNotice(mapDialogImpl, MAPNoticeProblemDiagnostic.MessageCannotBeDeliveredToThePeer);
-        }
-    }
-
-    private void deliverDialogDelimiter(MAPDialog mapDialog) {
-    	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogDelimiter(mapDialog);
-        }
-    }
-
-    private void deliverDialogRequest(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
-            MAPExtensionContainer extensionContainer) {
-    	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogRequest(mapDialog, destReference, origReference, extensionContainer);
-        }
-    }
-
-    private void deliverDialogRequestEri(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
-            AddressString eriMsisdn, AddressString eriVlrNo) {
-    	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogRequestEricsson(mapDialog, destReference, origReference, eriMsisdn, eriVlrNo);
-        }
-    }
-
-    private void deliverDialogAccept(MAPDialog mapDialog, MAPExtensionContainer extensionContainer) {
-    	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogAccept(mapDialog, extensionContainer);
-        }
-    }
-
-    private void deliverDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
-            ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
-    	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogReject(mapDialog, refuseReason, alternativeApplicationContext, extensionContainer);
-        }
-    }
-
-    private void deliverDialogClose(MAPDialog mapDialog) {
-    	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogClose(mapDialog);
-        }
-    }
-
-    private void deliverDialogProviderAbort(MAPDialog mapDialog, MAPAbortProviderReason abortProviderReason,
-            MAPAbortSource abortSource, MAPExtensionContainer extensionContainer) {
-    	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogProviderAbort(mapDialog, abortProviderReason, abortSource, extensionContainer);
-        }
-    }
-
-    private void deliverDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoice userReason,
-            MAPExtensionContainer extensionContainer) {
-    	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogUserAbort(mapDialog, userReason, extensionContainer);
-        }
-    }
-
-    protected void deliverDialogNotice(MAPDialog mapDialog, MAPNoticeProblemDiagnostic noticeProblemDiagnostic) {
-    	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogNotice(mapDialog, noticeProblemDiagnostic);
-        }
-    }
-
-    protected void deliverDialogRelease(MAPDialog mapDialog) {
-    	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogRelease(mapDialog);
-        }
-    }
-
-    protected void deliverDialogTimeout(MAPDialog mapDialog) {
-    	Iterator<MAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogTimeout(mapDialog);
-        }
-    }
-
-    protected void fireTCBegin(Dialog tcapDialog, ApplicationContextName acn, AddressString destReference,
-            AddressString origReference, MAPExtensionContainer mapExtensionContainer, boolean isEriStyle, AddressString eriMsisdn,
-            AddressString vlrNoEri, boolean returnMessageOnError) throws MAPException {
-
-        TCBeginRequest tcBeginReq = encodeTCBegin(tcapDialog, acn, destReference, origReference, mapExtensionContainer,
-                isEriStyle, eriMsisdn, vlrNoEri);
-        if (returnMessageOnError)
-            tcBeginReq.setReturnMessageOnError(true);
-
-        try {
-            tcapDialog.send(tcBeginReq);
-        } catch (TCAPSendException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-    }
-
-    protected TCBeginRequest encodeTCBegin(Dialog tcapDialog, ApplicationContextName acn, AddressString destReference,
-            AddressString origReference, MAPExtensionContainer mapExtensionContainer, boolean eriStyle, AddressString eriMsisdn,
-            AddressString eriVlrNo) throws MAPException {
-
-        TCBeginRequest tcBeginReq = this.getTCAPProvider().getDialogPrimitiveFactory().createBegin(tcapDialog);
-
-        // we do not set ApplicationContextName if MAP Version 1
-        if (MAPApplicationContext.getProtocolVersion(acn.getOid()) > 1)
-            tcBeginReq.setApplicationContextName(acn);
-
-        if ((destReference != null || origReference != null || mapExtensionContainer != null || eriStyle)
-                && MAPApplicationContext.getProtocolVersion(acn.getOid()) > 1) {
-            MAPOpenInfoImpl mapOpn = new MAPOpenInfoImpl();
-            mapOpn.setDestReference(destReference);
-            mapOpn.setOrigReference(origReference);
-            mapOpn.setExtensionContainer(mapExtensionContainer);
-            mapOpn.setEriMsisdn(eriMsisdn);
-            mapOpn.setEriVlrNo(eriVlrNo);
-
-            UserInformation userInformation = TcapFactory.createUserInformation();
-            userInformation.setIdentifier(MAPDialogueAS.MAP_DialogueAS.getOID());
-            userInformation.setChildAsObject(mapOpn);
-            tcBeginReq.setUserInformation(userInformation);
-        }
-        return tcBeginReq;
-    }
-
-    protected void fireTCContinue(Dialog tcapDialog, Boolean sendMapAcceptInfo, ApplicationContextName acn,
-            MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError) throws MAPException {
-
-        TCContinueRequest tcContinueReq = encodeTCContinue(tcapDialog, sendMapAcceptInfo, acn, mapExtensionContainer);
-        if (returnMessageOnError)
-            tcContinueReq.setReturnMessageOnError(true);
-
-        try {
-            tcapDialog.send(tcContinueReq);
-        } catch (TCAPSendException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-    }
-
-    protected TCContinueRequest encodeTCContinue(Dialog tcapDialog, Boolean sendMapAcceptInfo, ApplicationContextName acn,
-    		MAPExtensionContainer mapExtensionContainer) throws MAPException {
-        TCContinueRequest tcContinueReq = this.getTCAPProvider().getDialogPrimitiveFactory().createContinue(tcapDialog);
-
-        // we do not set ApplicationContextName if MAP Version 1
-        if (acn != null && MAPApplicationContext.getProtocolVersion(acn.getOid()) > 1)
-            tcContinueReq.setApplicationContextName(acn);
-
-        if (sendMapAcceptInfo && mapExtensionContainer != null && MAPApplicationContext.getProtocolVersion(acn.getOid()) > 1) {
-
-            MAPAcceptInfoImpl mapAccept = new MAPAcceptInfoImpl();
-            mapAccept.setExtensionContainer(mapExtensionContainer);
-
-            UserInformation userInformation = TcapFactory.createUserInformation();
-            userInformation.setIdentifier(MAPDialogueAS.MAP_DialogueAS.getOID());
-            userInformation.setChildAsObject(mapAccept);
-            tcContinueReq.setUserInformation(userInformation);
-        }
-        return tcContinueReq;
-    }
-
-    protected void fireTCEnd(Dialog tcapDialog, Boolean sendMapCloseInfo, boolean prearrangedEnd, ApplicationContextName acn,
-            MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError) throws MAPException {
-
-    	TCEndRequest endRequest = encodeTCEnd(tcapDialog, sendMapCloseInfo, prearrangedEnd, acn, mapExtensionContainer);
-        if (returnMessageOnError)
-            endRequest.setReturnMessageOnError(true);
-
-        try {
-            tcapDialog.send(endRequest);
-        } catch (TCAPSendException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-    }
-
-    protected TCEndRequest encodeTCEnd(Dialog tcapDialog, Boolean sendMapCloseInfo, boolean prearrangedEnd,
-            ApplicationContextName acn, MAPExtensionContainer mapExtensionContainer) throws MAPException {
-        TCEndRequest endRequest = this.getTCAPProvider().getDialogPrimitiveFactory().createEnd(tcapDialog);
-
-        if (!prearrangedEnd) {
-            endRequest.setTermination(TerminationType.Basic);
-        } else {
-            endRequest.setTermination(TerminationType.PreArranged);
-        }
-
-        // we do not set ApplicationContextName if MAP Version 1
-        if (acn != null && MAPApplicationContext.getProtocolVersion(acn.getOid()) > 1)
-            endRequest.setApplicationContextName(acn);
-
-        if (sendMapCloseInfo && mapExtensionContainer != null && MAPApplicationContext.getProtocolVersion(acn.getOid()) > 1) {
-            MAPAcceptInfoImpl mapAccept = new MAPAcceptInfoImpl();
-            mapAccept.setExtensionContainer(mapExtensionContainer);
-
-            UserInformation userInformation = TcapFactory.createUserInformation();
-            userInformation.setIdentifier(MAPDialogueAS.MAP_DialogueAS.getOID());
-            
-            userInformation.setChildAsObject(mapAccept);
-            endRequest.setUserInformation(userInformation);
-        }
-        return endRequest;
-    }
-
-    /**
-     * Issue TC-U-ABORT with the "abort reason" = "application-content-name-not-supported"
-     *
-     * @param tcapDialog
-     * @param mapExtensionContainer
-     * @param alternativeApplicationContext
-     * @throws MAPException
-     */
-    private void fireTCAbortACNNotSupported(Dialog tcapDialog, MAPExtensionContainer mapExtensionContainer,
-            ApplicationContextName alternativeApplicationContext, boolean returnMessageOnError) throws MAPException {
-
-        if (tcapDialog.getApplicationContextName() == null) // MAP V1
-            this.fireTCAbortV1(tcapDialog, returnMessageOnError);
-
-        TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
-
-        MAPRefuseInfoImpl mapRefuseInfoImpl = new MAPRefuseInfoImpl();
-        mapRefuseInfoImpl.setReason(Reason.noReasonGiven);
-
-        UserInformation userInformation = TcapFactory.createUserInformation();
-        userInformation.setIdentifier(MAPDialogueAS.MAP_DialogueAS.getOID());       
-        userInformation.setChildAsObject(mapRefuseInfoImpl);
-        
-        if (returnMessageOnError)
-            tcUserAbort.setReturnMessageOnError(true);
-
-        if (alternativeApplicationContext != null)
-            tcUserAbort.setApplicationContextName(alternativeApplicationContext);
-        else
-            tcUserAbort.setApplicationContextName(tcapDialog.getApplicationContextName());
-        tcUserAbort.setDialogServiceUserType(DialogServiceUserType.AcnNotSupported);
-        tcUserAbort.setUserInformation(userInformation);
-
-        try {
-            tcapDialog.send(tcUserAbort);
-        } catch (TCAPSendException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Issue TC-U-ABORT with the "abort reason" = "dialogue-refused"
-     *
-     * @param tcapDialog
-     * @param reason
-     * @param mapExtensionContainer
-     * @throws MAPException
-     */
-    protected void fireTCAbortRefused(Dialog tcapDialog, Reason reason, MAPExtensionContainer mapExtensionContainer,
-            boolean returnMessageOnError) throws MAPException {
-
-        if (tcapDialog.getApplicationContextName() == null) // MAP V1
-            this.fireTCAbortV1(tcapDialog, returnMessageOnError);
-
-        TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
-
-        MAPRefuseInfoImpl mapRefuseInfoImpl = new MAPRefuseInfoImpl();
-        mapRefuseInfoImpl.setReason(reason);
-        mapRefuseInfoImpl.setExtensionContainer(mapExtensionContainer);
-
-        // ApplicationContextName aacn = new ApplicationContextNameImpl();
-        // aacn.setOid(new long[] { 3, 4, 5 } );
-        // mapRefuseInfoImpl.setAlternativeAcn(aacn);
-
-        UserInformation userInformation = TcapFactory.createUserInformation();
-        userInformation.setIdentifier(MAPDialogueAS.MAP_DialogueAS.getOID());
-        userInformation.setChildAsObject(mapRefuseInfoImpl);
-        
-        tcUserAbort.setApplicationContextName(tcapDialog.getApplicationContextName());
-        tcUserAbort.setDialogServiceUserType(DialogServiceUserType.NoReasonGive);
-        tcUserAbort.setUserInformation(userInformation);
-        if (returnMessageOnError)
-            tcUserAbort.setReturnMessageOnError(true);
-
-        try {
-            tcapDialog.send(tcUserAbort);
-        } catch (TCAPSendException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Issue TC-U-ABORT with the ABRT apdu with MAPUserAbortInfo userInformation
-     *
-     * @param tcapDialog
-     * @param mapUserAbortChoice
-     * @param mapExtensionContainer
-     * @throws MAPException
-     */
-    protected void fireTCAbortUser(Dialog tcapDialog, MAPUserAbortInfoImpl mapUserAbortInfoImpl, boolean returnMessageOnError) throws MAPException {
-
-        if (tcapDialog.getApplicationContextName() == null) // MAP V1
-            this.fireTCAbortV1(tcapDialog, returnMessageOnError);
-
-        TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
-
-        UserInformation userInformation = TcapFactory.createUserInformation();
-        userInformation.setIdentifier(MAPDialogueAS.MAP_DialogueAS.getOID());
-        userInformation.setChildAsObject(mapUserAbortInfoImpl);
-        
-        if (returnMessageOnError)
-            tcUserAbort.setReturnMessageOnError(true);
-
-        tcUserAbort.setUserInformation(userInformation);
-
-        try {
-            tcapDialog.send(tcUserAbort);
-        } catch (TCAPSendException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-
-    }
-
-    /**
-     * Issue TC-U-ABORT with the ABRT apdu with MAPProviderAbortInfo userInformation
-     *
-     * @param tcapDialog
-     * @param mapProviderAbortReason
-     * @param mapExtensionContainer
-     * @throws MAPException
-     */
-    protected void fireTCAbortProvider(Dialog tcapDialog, MAPProviderAbortReason mapProviderAbortReason,
-    		MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError) throws MAPException {
-
-        if (tcapDialog.getApplicationContextName() == null) // MAP V1
-            this.fireTCAbortV1(tcapDialog, returnMessageOnError);
-
-        TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
-
-        MAPProviderAbortInfoImpl mapProviderAbortInfo = new MAPProviderAbortInfoImpl();
-        mapProviderAbortInfo.setMAPProviderAbortReason(mapProviderAbortReason);
-        mapProviderAbortInfo.setExtensionContainer(mapExtensionContainer);
-
-        UserInformation userInformation = TcapFactory.createUserInformation();
-        userInformation.setIdentifier(MAPDialogueAS.MAP_DialogueAS.getOID());
-        userInformation.setChildAsObject(mapProviderAbortInfo);
-        if (returnMessageOnError)
-            tcUserAbort.setReturnMessageOnError(true);
-
-        tcUserAbort.setUserInformation(userInformation);
-
-        try {
-            tcapDialog.send(tcUserAbort);
-        } catch (TCAPSendException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Issue TC-U-ABORT without any apdu - for MAP V1
-     *
-     * @param tcapDialog
-     * @param returnMessageOnError
-     * @throws MAPException
-     */
-    protected void fireTCAbortV1(Dialog tcapDialog, boolean returnMessageOnError) throws MAPException {
-
-        TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
-        if (returnMessageOnError)
-            tcUserAbort.setReturnMessageOnError(true);
-
-        try {
-            tcapDialog.send(tcUserAbort);
-        } catch (TCAPSendException e) {
-            throw new MAPException(e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public int getCurrentDialogsCount() {
-        return this.tcapProvider.getCurrentDialogsCount();
-    }
+				}
+
+				if (perfSer != null)
+					break;
+			}
+
+		// No MAPService can accept the received ApplicationContextName
+		if (perfSer == null) {
+			StringBuffer s = new StringBuffer();
+			s.append("Unsupported ApplicationContextName is received: ");
+			if (acn != null)
+				for (Long l : acn.getOid())
+					s.append(l).append(", ");
+			else
+				s.append("MAP V1");
+
+			loger.error(s.toString());
+			try {
+				this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false);
+			} catch (MAPException e1) {
+				loger.error("Error while firing TC-U-ABORT. ", e1);
+			}
+
+			return;
+		}
+
+		// MAPService is not activated
+		if (!perfSer.isActivated()) {
+			StringBuffer s = new StringBuffer();
+			s.append("ApplicationContextName of non activated MAPService is received. Will send back TCAP Abort : ");
+			if (acn != null)
+				for (Long l : acn.getOid())
+					s.append(l).append(", ");
+			else
+				s.append("MAP V1");
+
+			loger.warn(s.toString());
+
+			try {
+				this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false);
+			} catch (MAPException e1) {
+				loger.error("Error while firing TC-U-ABORT. ", e1);
+			}
+
+			return;
+		}
+
+		MAPDialogImpl mapDialogImpl = ((MAPServiceBaseImpl) perfSer).createNewDialogIncoming(mapAppCtx,
+				tcBeginIndication.getDialog(), true);
+		mapDialogImpl.tcapMessageType = MessageType.Begin;
+		mapDialogImpl.receivedOrigReference = origReference;
+		mapDialogImpl.receivedDestReference = destReference;
+		mapDialogImpl.receivedExtensionContainer = extensionContainer;
+
+		mapDialogImpl.setState(MAPDialogState.INITIAL_RECEIVED);
+
+		mapDialogImpl.delayedAreaState = MAPDialogImpl.DelayedAreaState.No;
+
+		if (eriStyle)
+			this.deliverDialogRequestEri(mapDialogImpl, destReference, origReference, eriMsisdn, eriVlrNo);
+		else
+			this.deliverDialogRequest(mapDialogImpl, destReference, origReference, extensionContainer);
+		if (mapDialogImpl.getState() == MAPDialogState.EXPUNGED)
+			// The Dialog was aborter or refused
+			return;
+
+		// Now let us decode the Components
+		if (comps != null)
+			processComponents(mapDialogImpl, comps, tcBeginIndication.getOriginalBuffer());
+
+		this.deliverDialogDelimiter(mapDialogImpl);
+
+		finishComponentProcessingState(mapDialogImpl);
+	}
+
+	private void finishComponentProcessingState(MAPDialogImpl mapDialogImpl) {
+
+		if (mapDialogImpl.getState() == MAPDialogState.EXPUNGED)
+			return;
+
+		try {
+			switch (mapDialogImpl.delayedAreaState) {
+			case Continue:
+				mapDialogImpl.send();
+				break;
+			case End:
+				mapDialogImpl.close(false);
+				break;
+			case PrearrangedEnd:
+				mapDialogImpl.close(true);
+				break;
+			default:
+				break;
+			}
+		} catch (MAPException e) {
+			loger.error(
+					"Error while finishComponentProcessingState, delayedAreaState=" + mapDialogImpl.delayedAreaState,
+					e);
+		}
+
+		mapDialogImpl.delayedAreaState = null;
+	}
+
+	@Override
+	public void onTCContinue(TCContinueIndication tcContinueIndication) {
+
+		Dialog tcapDialog = tcContinueIndication.getDialog();
+
+		MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog);
+
+		if (mapDialogImpl == null) {
+			loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
+			try {
+				this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null, false);
+			} catch (MAPException e) {
+				loger.error("Error while firing TC-U-ABORT. ", e);
+			}
+			return;
+		}
+
+		mapDialogImpl.tcapMessageType = MessageType.Continue;
+
+		// Checking the received ApplicationContextName :
+		// On receipt of the first TC-CONTINUE indication primitive for
+		// a dialogue, the MAP PM shall check the value of the
+		// application-context-name parameter. If this value matches the
+		// one used in the MAP-OPEN request primitive, the MAP PM shall
+		// issue a MAP-OPEN confirm primitive with the result parameter
+		// indicating "accepted", then process the following TC
+		// component handling indication primitives as described in
+		// clause 12.6, and then waits for a request primitive from its
+		// user or an indication primitive from TC, otherwise it shall
+		// issue a TC-U-ABORT request primitive with a MAP-providerAbort
+		// PDU indicating "abnormal dialogue" and a MAP-P-ABORT
+		// indication primitive with the "provider-reason" parameter
+		// indicating "abnormal dialogue".
+		if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT) {
+			ApplicationContextName acn = tcContinueIndication.getApplicationContextName();
+
+			if (acn == null) {
+
+				// if MAP V1 - no ACN included
+				if (mapDialogImpl.getApplicationContext()
+						.getApplicationContextVersion() != MAPApplicationContextVersion.version1) {
+
+					loger.error(String.format(
+							"Received first TC-CONTINUE for MAPDialog=%s. But no application-context-name included",
+							mapDialogImpl));
+					try {
+						this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null,
+								mapDialogImpl.getReturnMessageOnError());
+
+					} catch (MAPException e) {
+						loger.error("Error while firing TC-U-ABORT. ", e);
+					}
+
+					this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
+							MAPAbortSource.MAPProblem, null);
+					mapDialogImpl.setState(MAPDialogState.EXPUNGED);
+
+					return;
+				}
+			} else {
+
+				MAPApplicationContext mapAcn = MAPApplicationContext.getInstance(acn.getOid());
+				if (mapAcn == null || !mapAcn.equals(mapDialogImpl.getApplicationContext())) {
+
+					loger.error(String.format("Received first TC-CONTINUE. MAPDialog=%s. But MAPApplicationContext=%s",
+							mapDialogImpl, mapAcn));
+					try {
+						this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null,
+								mapDialogImpl.getReturnMessageOnError());
+					} catch (MAPException e) {
+						loger.error("Error while firing TC-U-ABORT. ", e);
+					}
+
+					this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
+							MAPAbortSource.MAPProblem, null);
+					mapDialogImpl.setState(MAPDialogState.EXPUNGED);
+
+					return;
+				}
+			}
+
+			MAPExtensionContainer extensionContainer = null;
+
+			// Parse MapAcceptInfo if it exists - we ignore all errors here
+			UserInformation userInfo = tcContinueIndication.getUserInformation();
+			if (userInfo != null) {
+				MAPAcceptInfoImpl mapAcceptInfoImpl = new MAPAcceptInfoImpl();
+
+				if (userInfo.isIDObjectIdentifier()) {
+					List<Long> oid = userInfo.getObjectIdentifier();
+					MAPDialogueAS mapDialAs = MAPDialogueAS.getInstance(oid);
+
+					if (mapDialAs != null && userInfo.isValueObject()) {
+						Object child = userInfo.getChild();
+						if (child instanceof MAPAcceptInfoImpl) {
+							mapAcceptInfoImpl = (MAPAcceptInfoImpl) child;
+							extensionContainer = mapAcceptInfoImpl.getExtensionContainer();
+						}
+					}
+				}
+			}
+
+			mapDialogImpl.delayedAreaState = MAPDialogImpl.DelayedAreaState.No;
+
+			// Fire MAPAcceptInfo
+			mapDialogImpl.setState(MAPDialogState.ACTIVE);
+			this.deliverDialogAccept(mapDialogImpl, extensionContainer);
+
+			if (mapDialogImpl.getState() == MAPDialogState.EXPUNGED) {
+				// The Dialog was aborter
+				finishComponentProcessingState(mapDialogImpl);
+				return;
+			}
+		} else
+			mapDialogImpl.delayedAreaState = MAPDialogImpl.DelayedAreaState.No;
+
+		// Now let us decode the Components
+		if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT
+				|| mapDialogImpl.getState() == MAPDialogState.ACTIVE) {
+			List<BaseComponent> comps = tcContinueIndication.getComponents();
+			if (comps != null)
+				processComponents(mapDialogImpl, comps, tcContinueIndication.getOriginalBuffer());
+		} else
+			// This should never happen
+			loger.error(String.format("Received TC-CONTINUE. MAPDialog=%s. But state is neither InitialSent or Active",
+					mapDialogImpl));
+
+		this.deliverDialogDelimiter(mapDialogImpl);
+
+		finishComponentProcessingState(mapDialogImpl);
+	}
+
+	@Override
+	public void onTCEnd(TCEndIndication tcEndIndication) {
+
+		Dialog tcapDialog = tcEndIndication.getDialog();
+
+		MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog);
+
+		if (mapDialogImpl == null) {
+			loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
+			return;
+		}
+
+		mapDialogImpl.tcapMessageType = MessageType.End;
+
+		if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT) {
+			// On receipt of a TC-END indication primitive in the
+			// dialogue
+			// initiated state, the MAP PM shall check the value of the
+			// application-context-name parameter. If this value does
+			// not
+			// match
+			// the one used in the MAPOPEN request primitive, the MAP PM
+			// shall
+			// discard any following component handling primitive and
+			// shall
+			// issue a MAP-P-ABORT indication primitive with the
+			// "provider-reason" parameter indicating
+			// "abnormal dialogue".
+			ApplicationContextName acn = tcEndIndication.getApplicationContextName();
+
+			if (acn == null) {
+
+				// if MAP V1 - no ACN included
+				if (mapDialogImpl.getApplicationContext()
+						.getApplicationContextVersion() != MAPApplicationContextVersion.version1) {
+
+					// for MAP version >= 2 - accepts only if only ERROR
+					// & REJECT components are present
+					boolean notOnlyErrorReject = false;
+					for (BaseComponent c : tcEndIndication.getComponents())
+						if (!(c instanceof ReturnError) && !(c instanceof Reject)) {
+							notOnlyErrorReject = true;
+							break;
+						}
+					if (notOnlyErrorReject) {
+						loger.error(String.format(
+								"Received first TC-END for MAPDialog=%s. But no application-context-name included",
+								mapDialogImpl));
+
+						this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
+								MAPAbortSource.MAPProblem, null);
+						mapDialogImpl.setState(MAPDialogState.EXPUNGED);
+
+						return;
+					}
+				}
+			} else {
+
+				MAPApplicationContext mapAcn = MAPApplicationContext.getInstance(acn.getOid());
+
+				if (mapAcn == null || !mapAcn.equals(mapDialogImpl.getApplicationContext())) {
+					loger.error(String.format("Received first TC-END. MAPDialog=%s. But MAPApplicationContext=%s",
+							mapDialogImpl, mapAcn));
+
+					this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
+							MAPAbortSource.MAPProblem, null);
+					mapDialogImpl.setState(MAPDialogState.EXPUNGED);
+
+					return;
+				}
+			}
+
+			// Otherwise it shall issue a MAP-OPEN confirm primitive with the result
+			// parameter set to "accepted" and process the following TC component
+			// handling indication primitives as described in clause 12.6;
+
+			// Fire MAPAcceptInfo
+			mapDialogImpl.setState(MAPDialogState.ACTIVE);
+
+			MAPExtensionContainer extensionContainer = null;
+			// Parse MapAcceptInfo or MapCloseInfo if it exists - we
+			// ignore all errors here
+			UserInformation userInfo = tcEndIndication.getUserInformation();
+			if (userInfo != null)
+				if (userInfo.isIDObjectIdentifier()) {
+					List<Long> oid = userInfo.getObjectIdentifier();
+					MAPDialogueAS mapDialAs = MAPDialogueAS.getInstance(oid);
+
+					if (mapDialAs != null && userInfo.isValueObject()) {
+						Object child = userInfo.getChild();
+						if (child instanceof MAPAcceptInfoImpl) {
+							MAPAcceptInfoImpl mapAcceptInfoImpl = (MAPAcceptInfoImpl) child;
+							extensionContainer = mapAcceptInfoImpl.getExtensionContainer();
+						} else if (child instanceof MAPCloseInfoImpl) {
+							MAPCloseInfoImpl mapCloseInfoImpl = (MAPCloseInfoImpl) child;
+							extensionContainer = mapCloseInfoImpl.getExtensionContainer();
+						}
+					}
+				}
+
+			this.deliverDialogAccept(mapDialogImpl, extensionContainer);
+			if (mapDialogImpl.getState() == MAPDialogState.EXPUNGED)
+				// The Dialog was aborter
+				return;
+		}
+
+		// Now let us decode the Components
+		List<BaseComponent> comps = tcEndIndication.getComponents();
+		if (comps != null)
+			processComponents(mapDialogImpl, comps, tcEndIndication.getOriginalBuffer());
+
+		this.deliverDialogClose(mapDialogImpl);
+
+		mapDialogImpl.setState(MAPDialogState.EXPUNGED);
+	}
+
+	@Override
+	public void onTCUni(TCUniIndication arg0) {
+		// MAP do not use TCUni - we just ignore them
+	}
+
+	@Override
+	public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
+
+		MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(dialog);
+
+		if (mapDialogImpl != null)
+			if (mapDialogImpl.getState() != MAPDialogState.EXPUNGED) {
+
+				// Getting the MAP Service that serves the MAP Dialog
+				MAPServiceBaseImpl perfSer = (MAPServiceBaseImpl) mapDialogImpl.getService();
+
+				// We do not send invokeTimeout for Class 4 invokes
+				if (invokeClass == InvokeClass.Class4)
+					return;
+
+				perfSer.deliverInvokeTimeout(mapDialogImpl, invokeId);
+			}
+	}
+
+	@Override
+	public void onDialogTimeout(Dialog dialog) {
+
+		MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(dialog);
+
+		if (mapDialogImpl != null)
+			if (mapDialogImpl.getState() != MAPDialogState.EXPUNGED)
+				this.deliverDialogTimeout(mapDialogImpl);
+	}
+
+	@Override
+	public void onDialogReleased(Dialog dialog) {
+
+		MAPDialog mapDialog = this.getMAPDialog(dialog);
+
+		if (mapDialog != null) {
+			this.deliverDialogRelease(mapDialog);
+			dialog.setUserObject(null);
+		}
+	}
+
+	@Override
+	public void onTCPAbort(TCPAbortIndication tcPAbortIndication) {
+		Dialog tcapDialog = tcPAbortIndication.getDialog();
+
+		MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog);
+
+		if (mapDialogImpl == null) {
+			loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
+			return;
+		}
+
+		mapDialogImpl.tcapMessageType = MessageType.Abort;
+
+		PAbortCauseType pAbortCause = tcPAbortIndication.getPAbortCause();
+		MAPAbortProviderReason abortProviderReason = MAPAbortProviderReason.ProviderMalfunction;
+		MAPAbortSource abortSource = MAPAbortSource.TCProblem;
+
+		// Table 16.1/1: Mapping of P-Abort cause in TC-P-ABORT indication
+		// on to provider-reason in MAP-P-ABORT indication
+		// TC P-Abort cause MAP provider-reason
+		// unrecognized message type provider malfunction
+		// unrecognized transaction Id supporting dialogue released
+		// badlyFormattedTransactionPortion provider malfunction
+		// incorrectTransactionPortion provider malfunction (note)
+		// resourceLimitation resource limitation
+		// abnormalDialogue provider malfunction
+		// noCommonDialoguePortion version incompatibility
+		// NOTE: Or version incompatibility in the dialogue initiated phase.
+
+		switch (pAbortCause) {
+		case UnrecognizedMessageType:
+		case BadlyFormattedTxPortion:
+		case AbnormalDialogue:
+		case NoReasonGiven:
+			abortProviderReason = MAPAbortProviderReason.ProviderMalfunction;
+			break;
+		case UnrecognizedTxID:
+			abortProviderReason = MAPAbortProviderReason.SupportingDialogueTransactionReleased;
+			break;
+		case IncorrectTxPortion:
+			if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT)
+				abortProviderReason = MAPAbortProviderReason.VersionIncompatibility;
+			else
+				abortProviderReason = MAPAbortProviderReason.ProviderMalfunction;
+			break;
+		case ResourceLimitation:
+			abortProviderReason = MAPAbortProviderReason.ResourceLimitation;
+			break;
+		case NoCommonDialoguePortion:
+			abortProviderReason = MAPAbortProviderReason.VersionIncompatibilityTcap;
+			break;
+		}
+
+		if (abortProviderReason == MAPAbortProviderReason.VersionIncompatibility)
+			// On receipt of a TC-P-ABORT indication primitive in the
+			// "Dialogue Initiated" state with a P-abort parameter
+			// indicating "Incorrect Transaction Portion", the MAP PM shall
+			// issue a MAP-OPEN confirm primitive with
+			// the result parameter indicating "Dialogue Refused" and the
+			// refuse reason parameter indicating "Potential Version Incompatibility"."
+			this.deliverDialogReject(mapDialogImpl, MAPRefuseReason.PotentialVersionIncompatibility, null, null);
+		else if (abortProviderReason == MAPAbortProviderReason.VersionIncompatibilityTcap)
+			this.deliverDialogReject(mapDialogImpl, MAPRefuseReason.PotentialVersionIncompatibilityTcap, null, null);
+		else
+			this.deliverDialogProviderAbort(mapDialogImpl, abortProviderReason, abortSource, null);
+
+		mapDialogImpl.setState(MAPDialogState.EXPUNGED);
+	}
+
+	private enum ParsePduResult {
+		NoUserInfo, BadUserInfo, MapRefuse, MapUserAbort, MapProviderAbort;
+	}
+
+	@Override
+	public void onTCUserAbort(TCUserAbortIndication tcUserAbortIndication) {
+		Dialog tcapDialog = tcUserAbortIndication.getDialog();
+
+		MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog);
+		if (mapDialogImpl == null) {
+			loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
+			return;
+		}
+
+		mapDialogImpl.tcapMessageType = MessageType.Abort;
+
+		// Trying to parse an userInfo APDU if it exists
+		UserInformation userInfo = tcUserAbortIndication.getUserInformation();
+		ParsePduResult parsePduResult = ParsePduResult.NoUserInfo;
+		MAPRefuseReason mapRefuseReason = MAPRefuseReason.NoReasonGiven;
+		MAPUserAbortChoice mapUserAbortChoice = null;
+		MAPProviderAbortReason mapProviderAbortReason = null;
+		MAPAbortProviderReason abortProviderReason = MAPAbortProviderReason.AbnormalMAPDialogueFromPeer;
+		MAPExtensionContainer extensionContainer = null;
+
+		if (userInfo != null)
+			// Checking userInfo.Oid==MAP_DialogueAS
+			if (!userInfo.isIDObjectIdentifier()) {
+				loger.error("When parsing TCUserAbortIndication indication: userInfo.isOid() check failed");
+				parsePduResult = ParsePduResult.BadUserInfo;
+			} else {
+
+				List<Long> oid = userInfo.getObjectIdentifier();
+				MAPDialogueAS mapDialAs = MAPDialogueAS.getInstance(oid);
+				if (mapDialAs == null) {
+					loger.error(
+							"When parsing TCUserAbortIndication indication: userInfo.getOidValue() must be userInfoMAPDialogueAS.MAP_DialogueAS");
+					parsePduResult = ParsePduResult.BadUserInfo;
+				} else if (!userInfo.isValueObject()) {
+
+					loger.error("When parsing TCUserAbortIndication indication: userInfo.isAsn() check failed");
+					parsePduResult = ParsePduResult.BadUserInfo;
+				} else {
+					Object child = userInfo.getChild();
+					if (child instanceof MAPRefuseInfoImpl) {
+						// On receipt of a TC-U-ABORT indication primitive in the
+						// "Dialogue Initiated" state with an abort-reason
+						// parameter indicating "User Specific" and a MAP-Refuse PDU
+						// included as user information, the MAP PM
+						// shall issue a MAP-OPEN confirm primitive with the result
+						// set to refused and the refuse reason set as
+						// received in the MAP Refuse PDU.
+						MAPRefuseInfoImpl mapRefuseInfoImpl = (MAPRefuseInfoImpl) child;
+
+						switch (mapRefuseInfoImpl.getReason()) {
+						case invalidOriginatingReference:
+							mapRefuseReason = MAPRefuseReason.InvalidOriginatingReference;
+							break;
+						case invalidDestinationReference:
+							mapRefuseReason = MAPRefuseReason.InvalidDestinationReference;
+							break;
+						default:
+							break;
+						}
+
+						extensionContainer = mapRefuseInfoImpl.getExtensionContainer();
+						parsePduResult = ParsePduResult.MapRefuse;
+					} else if (child instanceof MAPUserAbortInfoImpl) {
+						MAPUserAbortInfoImpl mapUserAbortInfoImpl = (MAPUserAbortInfoImpl) child;
+
+						mapUserAbortChoice = mapUserAbortInfoImpl.getUserAbortChoise();
+						extensionContainer = mapUserAbortInfoImpl.getExtensionContainer();
+						parsePduResult = ParsePduResult.MapUserAbort;
+					} else if (child instanceof MAPProviderAbortInfoImpl) {
+						MAPProviderAbortInfoImpl mapProviderAbortInfoImpl = (MAPProviderAbortInfoImpl) child;
+
+						mapProviderAbortReason = mapProviderAbortInfoImpl.getMAPProviderAbortReason();
+						switch (mapProviderAbortReason) {
+						case abnormalDialogue:
+							abortProviderReason = MAPAbortProviderReason.AbnormalMAPDialogueFromPeer;
+							break;
+						case invalidPDU:
+							abortProviderReason = MAPAbortProviderReason.InvalidPDU;
+							break;
+						default:
+							break;
+						}
+
+						extensionContainer = mapProviderAbortInfoImpl.getExtensionContainer();
+						parsePduResult = ParsePduResult.MapProviderAbort;
+					} else {
+						loger.error(
+								"When parsing TCUserAbortIndication indication: userInfogetEncodeType().Tag must be either MAP_REFUSE_INFO_TAG or MAP_USER_ABORT_INFO_TAG or MAP_PROVIDER_ABORT_INFO_TAG");
+						parsePduResult = ParsePduResult.BadUserInfo;
+					}
+				}
+			}
+
+		// special cases: AareApdu + ApplicationContextNotSupported or
+		// NoCommonDialogPortion
+		if (tcUserAbortIndication.IsAareApdu()) {
+			ResultSourceDiagnostic resultSourceDiagnostic = tcUserAbortIndication.getResultSourceDiagnostic();
+			if (resultSourceDiagnostic != null) {
+				// ACN_Not_Supported
+				DialogServiceUserType dsut = null;
+				try {
+					dsut = resultSourceDiagnostic.getDialogServiceUserType();
+				} catch (ParseException ex) {
+
+				}
+
+				DialogServiceProviderType dspt = null;
+				try {
+					dspt = resultSourceDiagnostic.getDialogServiceProviderType();
+				} catch (ParseException ex) {
+
+				}
+
+				if (dsut != null && dsut == DialogServiceUserType.AcnNotSupported) {
+					if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT) {
+						this.deliverDialogReject(mapDialogImpl, MAPRefuseReason.ApplicationContextNotSupported,
+								tcUserAbortIndication.getApplicationContextName(), extensionContainer);
+
+						mapDialogImpl.setState(MAPDialogState.EXPUNGED);
+						return;
+					} else
+						parsePduResult = ParsePduResult.BadUserInfo;
+
+				} else if (dspt != null && dspt == DialogServiceProviderType.NoCommonDialogPortion)
+					if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT) {
+						// NoCommonDialogPortion
+						this.deliverDialogReject(mapDialogImpl, MAPRefuseReason.PotentialVersionIncompatibilityTcap,
+								null, null);
+
+						mapDialogImpl.setState(MAPDialogState.EXPUNGED);
+						return;
+					} else
+						parsePduResult = ParsePduResult.BadUserInfo;
+			}
+		}
+
+		switch (parsePduResult) {
+		case NoUserInfo:
+			// Neither ABRT nor AARE APDU presents
+
+			// On receipt of a TC-U-ABORT indication primitive in the
+			// "Dialogue Initiated" state with an abort-reason
+			// parameter indicating "User Specific" and without user
+			// information, the MAP PM shall issue a MAP-OPEN
+			// confirm primitive with the result parameter indicating
+			// "Dialogue Refused" and the refuse-reason
+			// parameter indicating "Potential Version Incompatibility".
+
+			if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT)
+				this.deliverDialogReject(mapDialogImpl, MAPRefuseReason.NoReasonGiven, null, null);
+			else
+				this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
+						MAPAbortSource.MAPProblem, null);
+			break;
+
+		case BadUserInfo:
+			this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
+					MAPAbortSource.MAPProblem, null);
+			break;
+
+		case MapRefuse:
+			if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT)
+				// On receipt of a TC-U-ABORT indication primitive in the
+				// "Dialogue Initiated" state with an abort-reason
+				// parameter indicating "User Specific" and a MAP-Refuse PDU
+				// included as user information, the MAP PM
+				// shall issue a MAP-OPEN confirm primitive with the result
+				// set to refused and the refuse reason set as
+				// received in the MAP Refuse PDU.
+				this.deliverDialogReject(mapDialogImpl, mapRefuseReason, null, extensionContainer);
+			else
+				// MAPRefuseInfo in a wrong Dialog state
+				this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
+						MAPAbortSource.MAPProblem, null);
+			break;
+
+		case MapUserAbort:
+			this.deliverDialogUserAbort(mapDialogImpl, mapUserAbortChoice, extensionContainer);
+			break;
+
+		case MapProviderAbort:
+			this.deliverDialogProviderAbort(mapDialogImpl, abortProviderReason, MAPAbortSource.MAPProblem,
+					extensionContainer);
+			break;
+		}
+
+		mapDialogImpl.setState(MAPDialogState.EXPUNGED);
+	}
+
+	/**
+	 * private service methods
+	 */
+	private void processComponents(MAPDialogImpl mapDialogImpl, List<BaseComponent> components, ByteBuf buffer) {
+
+		// Now let us decode the Components
+		for (BaseComponent c : components)
+			doProcessComponent(mapDialogImpl, c, buffer);
+	}
+
+	private void doProcessComponent(MAPDialogImpl mapDialogImpl, BaseComponent c, ByteBuf buffer) {
+
+		// Getting the MAP Service that serves the MAP Dialog
+		MAPServiceBaseImpl perfSer = (MAPServiceBaseImpl) mapDialogImpl.getService();
+		try {
+			ComponentType compType = ComponentType.Invoke;
+			if (c instanceof Invoke)
+				compType = ComponentType.Invoke;
+			else if (c instanceof ReturnError)
+				compType = ComponentType.ReturnError;
+			else if (c instanceof Reject)
+				compType = ComponentType.Reject;
+			else if (c instanceof ReturnResult)
+				compType = ComponentType.ReturnResult;
+			else if (c instanceof ReturnResultLast)
+				compType = ComponentType.ReturnResultLast;
+
+			Integer invokeId = c.getInvokeId();
+
+			Object parameter;
+			OperationCode oc;
+			Integer linkedId = 0;
+
+			switch (compType) {
+			case Invoke: {
+				Invoke comp = (Invoke) c;
+				oc = comp.getOperationCode();
+				parameter = comp.getParameter();
+				linkedId = comp.getLinkedId();
+
+				if (linkedId != null) {
+					// linkedId exists Checking if the linkedId exists
+					long[] lstInv = null;
+					if (comp.getLinkedOperationCode().getOperationType() == OperationCodeType.Local)
+						lstInv = perfSer.getLinkedOperationList(comp.getLinkedOperationCode().getLocalOperationCode());
+
+					if (lstInv == null) {
+						ProblemImpl problem = new ProblemImpl();
+						problem.setInvokeProblemType(InvokeProblemType.LinkedResponseUnexpected);
+						mapDialogImpl.sendRejectComponent(invokeId, problem);
+						perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
+
+						return;
+					}
+
+					boolean found = false;
+					if (lstInv != null)
+						if (comp.getOperationCode().getOperationType() == OperationCodeType.Local)
+							for (long l : lstInv)
+								if (l == (comp.getOperationCode()).getLocalOperationCode()) {
+									found = true;
+									break;
+								}
+					if (!found) {
+						ProblemImpl problem = new ProblemImpl();
+						problem.setInvokeProblemType(InvokeProblemType.UnexpectedLinkedOperation);
+						mapDialogImpl.sendRejectComponent(invokeId, problem);
+						perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
+
+						return;
+					}
+				}
+			}
+				break;
+
+			case ReturnResult: {
+				ReturnResult comp = (ReturnResult) c;
+				oc = comp.getOperationCode();
+				parameter = comp.getParameter();
+			}
+				break;
+
+			case ReturnResultLast: {
+				ReturnResultLast comp = (ReturnResultLast) c;
+				oc = comp.getOperationCode();
+				parameter = comp.getParameter();
+			}
+				break;
+
+			case ReturnError: {
+				ReturnError comp = (ReturnError) c;
+
+				int errorCode = 0;
+				if (comp.getErrorCode() != null && comp.getErrorCode().getErrorType() == ErrorCodeType.Local)
+					errorCode = (comp.getErrorCode()).getLocalErrorCode();
+				if (errorCode < MAPErrorCode.minimalCodeValue || errorCode > MAPErrorCode.maximumCodeValue) {
+					// Not Local error code and not MAP error code received
+					ProblemImpl problem = new ProblemImpl();
+					problem.setReturnErrorProblemType(ReturnErrorProblemType.UnrecognizedError);
+					mapDialogImpl.sendRejectComponent(invokeId, problem);
+					perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
+
+					return;
+				}
+
+				MAPErrorMessage msgErr = this.mapErrorMessageFactory.createMessageFromErrorCode(errorCode, Long
+						.valueOf(mapDialogImpl.getApplicationContext().getApplicationContextVersion().getVersion()));
+				Object p = comp.getParameter();
+				if (p != null && p instanceof MAPErrorMessage)
+					msgErr = (MAPErrorMessage) p;
+				else if (p != null) {
+					ProblemImpl problem = new ProblemImpl();
+					problem.setReturnErrorProblemType(ReturnErrorProblemType.MistypedParameter);
+					mapDialogImpl.sendRejectComponent(invokeId, problem);
+					perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
+					return;
+				}
+
+				if (msgErr.getErrorCode() == null)
+					msgErr.updateErrorCode(errorCode);
+
+				mapStack.newErrorReceived(MAPErrorCode.translate(errorCode), mapDialogImpl.getNetworkId());
+				perfSer.deliverErrorComponent(mapDialogImpl, comp.getInvokeId(), msgErr);
+				return;
+			}
+
+			case Reject: {
+				Reject rej = (Reject) c;
+				perfSer.deliverRejectComponent(mapDialogImpl, rej.getInvokeId(), rej.getProblem(),
+						rej.isLocalOriginated());
+
+				return;
+			}
+
+			default:
+				return;
+			}
+
+			try {
+
+				// null for Forward Check SS Indication
+				if (parameter != null && !(parameter instanceof MAPMessage))
+					throw new MAPParsingComponentException(
+							"MAPServiceHandling: unknown incoming operation code: " + oc.getLocalOperationCode(),
+							MAPParsingComponentExceptionReason.MistypedParameter);
+
+				MAPMessage realMessage = (MAPMessage) parameter;
+				if (realMessage != null) {
+					mapStack.newMessageReceived(realMessage.getMessageType().name(), mapDialogImpl.getNetworkId());
+					realMessage.setOriginalBuffer(buffer);
+					realMessage.setInvokeId(invokeId);
+					realMessage.setMAPDialog(mapDialogImpl);
+					realMessage.setReturnResultNotLast(compType == ComponentType.ReturnResult);
+				}
+
+				perfSer.processComponent(compType, oc, realMessage, mapDialogImpl, invokeId, linkedId);
+
+			} catch (MAPParsingComponentException e) {
+
+				loger.error("MAPParsingComponentException when parsing components: " + e.getReason().toString() + " - "
+						+ e.getMessage(), e);
+
+				switch (e.getReason()) {
+				case UnrecognizedOperation:
+					// Component does not supported - send TC-U-REJECT
+					if (compType == ComponentType.Invoke) {
+						ProblemImpl problem = new ProblemImpl();
+						problem.setInvokeProblemType(InvokeProblemType.UnrecognizedOperation);
+						mapDialogImpl.sendRejectComponent(invokeId, problem);
+						perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
+					} else {
+						ProblemImpl problem = new ProblemImpl();
+						problem.setReturnResultProblemType(ReturnResultProblemType.MistypedParameter);
+						mapDialogImpl.sendRejectComponent(invokeId, problem);
+						perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
+					}
+					break;
+
+				case MistypedParameter:
+					// Failed when parsing the component - send TC-U-REJECT
+					if (compType == ComponentType.Invoke) {
+						ProblemImpl problem = new ProblemImpl();
+						problem.setInvokeProblemType(InvokeProblemType.MistypedParameter);
+						mapDialogImpl.sendRejectComponent(invokeId, problem);
+						perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
+					} else {
+						ProblemImpl problem = new ProblemImpl();
+						problem.setReturnResultProblemType(ReturnResultProblemType.MistypedParameter);
+						mapDialogImpl.sendRejectComponent(invokeId, problem);
+						perfSer.deliverRejectComponent(mapDialogImpl, invokeId, problem, true);
+					}
+					break;
+				}
+			}
+		} catch (MAPException e) {
+			loger.error("Error processing a Component: " + e.getMessage() + "\nComponent" + c, e);
+		}
+	}
+
+	@Override
+	public void onTCNotice(TCNoticeIndication ind) {
+
+		Dialog tcapDialog = ind.getDialog();
+		if (tcapDialog == null)
+			// no existent Dialog for TC-NOTICE
+			return;
+
+		MAPDialogImpl mapDialogImpl = (MAPDialogImpl) this.getMAPDialog(tcapDialog);
+
+		if (mapDialogImpl == null) {
+			loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
+			return;
+		}
+
+		if (mapDialogImpl.getState() == MAPDialogState.INITIAL_SENT) {
+			// If a TC-NOTICE indication primitive is received before the
+			// dialogue has been confirmed (i.e. no backward message is
+			// received by the dialogue initiator node), the MAP PM shall
+			// issue a MAP-OP EN Cnf primitive with the result parameter
+			// indicating Refused and a refuse reason Remote node not
+			// reachable�.
+			this.deliverDialogReject(mapDialogImpl, MAPRefuseReason.RemoteNodeNotReachable, null, null);
+			mapDialogImpl.setState(MAPDialogState.EXPUNGED);
+		} else if (mapDialogImpl.getState() == MAPDialogState.ACTIVE)
+			// If a TC-NOTICE indication primitive is received after the
+			// dialogue has been confirmed, the MAP PM shall issue a
+			// MAP-NOTICE indication to the user, with a problem diagnostic
+			// indicating "message cannot be delivered to the peer".
+			this.deliverDialogNotice(mapDialogImpl, MAPNoticeProblemDiagnostic.MessageCannotBeDeliveredToThePeer);
+	}
+
+	private void deliverDialogDelimiter(MAPDialog mapDialog) {
+		Iterator<MAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogDelimiter(mapDialog);
+	}
+
+	private void deliverDialogRequest(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
+			MAPExtensionContainer extensionContainer) {
+		Iterator<MAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogRequest(mapDialog, destReference, origReference, extensionContainer);
+	}
+
+	private void deliverDialogRequestEri(MAPDialog mapDialog, AddressString destReference, AddressString origReference,
+			AddressString eriMsisdn, AddressString eriVlrNo) {
+		Iterator<MAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogRequestEricsson(mapDialog, destReference, origReference, eriMsisdn, eriVlrNo);
+	}
+
+	private void deliverDialogAccept(MAPDialog mapDialog, MAPExtensionContainer extensionContainer) {
+		Iterator<MAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogAccept(mapDialog, extensionContainer);
+	}
+
+	private void deliverDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
+			ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
+		Iterator<MAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogReject(mapDialog, refuseReason, alternativeApplicationContext, extensionContainer);
+	}
+
+	private void deliverDialogClose(MAPDialog mapDialog) {
+		Iterator<MAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogClose(mapDialog);
+	}
+
+	private void deliverDialogProviderAbort(MAPDialog mapDialog, MAPAbortProviderReason abortProviderReason,
+			MAPAbortSource abortSource, MAPExtensionContainer extensionContainer) {
+		Iterator<MAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogProviderAbort(mapDialog, abortProviderReason, abortSource, extensionContainer);
+	}
+
+	private void deliverDialogUserAbort(MAPDialog mapDialog, MAPUserAbortChoice userReason,
+			MAPExtensionContainer extensionContainer) {
+		Iterator<MAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogUserAbort(mapDialog, userReason, extensionContainer);
+	}
+
+	protected void deliverDialogNotice(MAPDialog mapDialog, MAPNoticeProblemDiagnostic noticeProblemDiagnostic) {
+		Iterator<MAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogNotice(mapDialog, noticeProblemDiagnostic);
+	}
+
+	protected void deliverDialogRelease(MAPDialog mapDialog) {
+		Iterator<MAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogRelease(mapDialog);
+	}
+
+	protected void deliverDialogTimeout(MAPDialog mapDialog) {
+		Iterator<MAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogTimeout(mapDialog);
+	}
+
+	protected void fireTCBegin(Dialog tcapDialog, ApplicationContextName acn, AddressString destReference,
+			AddressString origReference, MAPExtensionContainer mapExtensionContainer, boolean isEriStyle,
+			AddressString eriMsisdn, AddressString vlrNoEri, boolean returnMessageOnError) throws MAPException {
+
+		TCBeginRequest tcBeginReq = encodeTCBegin(tcapDialog, acn, destReference, origReference, mapExtensionContainer,
+				isEriStyle, eriMsisdn, vlrNoEri);
+		if (returnMessageOnError)
+			tcBeginReq.setReturnMessageOnError(true);
+
+		try {
+			tcapDialog.send(tcBeginReq);
+		} catch (TCAPSendException e) {
+			throw new MAPException(e.getMessage(), e);
+		}
+
+	}
+
+	protected TCBeginRequest encodeTCBegin(Dialog tcapDialog, ApplicationContextName acn, AddressString destReference,
+			AddressString origReference, MAPExtensionContainer mapExtensionContainer, boolean eriStyle,
+			AddressString eriMsisdn, AddressString eriVlrNo) throws MAPException {
+
+		TCBeginRequest tcBeginReq = this.getTCAPProvider().getDialogPrimitiveFactory().createBegin(tcapDialog);
+
+		// we do not set ApplicationContextName if MAP Version 1
+		if (MAPApplicationContext.getProtocolVersion(acn.getOid()) > 1)
+			tcBeginReq.setApplicationContextName(acn);
+
+		if ((destReference != null || origReference != null || mapExtensionContainer != null || eriStyle)
+				&& MAPApplicationContext.getProtocolVersion(acn.getOid()) > 1) {
+			MAPOpenInfoImpl mapOpn = new MAPOpenInfoImpl();
+			mapOpn.setDestReference(destReference);
+			mapOpn.setOrigReference(origReference);
+			mapOpn.setExtensionContainer(mapExtensionContainer);
+			mapOpn.setEriMsisdn(eriMsisdn);
+			mapOpn.setEriVlrNo(eriVlrNo);
+
+			UserInformation userInformation = TcapFactory.createUserInformation();
+			userInformation.setIdentifier(MAPDialogueAS.MAP_DialogueAS.getOID());
+			userInformation.setChildAsObject(mapOpn);
+			tcBeginReq.setUserInformation(userInformation);
+		}
+		return tcBeginReq;
+	}
+
+	protected void fireTCContinue(Dialog tcapDialog, Boolean sendMapAcceptInfo, ApplicationContextName acn,
+			MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError) throws MAPException {
+
+		TCContinueRequest tcContinueReq = encodeTCContinue(tcapDialog, sendMapAcceptInfo, acn, mapExtensionContainer);
+		if (returnMessageOnError)
+			tcContinueReq.setReturnMessageOnError(true);
+
+		try {
+			tcapDialog.send(tcContinueReq);
+		} catch (TCAPSendException e) {
+			throw new MAPException(e.getMessage(), e);
+		}
+	}
+
+	protected TCContinueRequest encodeTCContinue(Dialog tcapDialog, Boolean sendMapAcceptInfo,
+			ApplicationContextName acn, MAPExtensionContainer mapExtensionContainer) throws MAPException {
+		TCContinueRequest tcContinueReq = this.getTCAPProvider().getDialogPrimitiveFactory().createContinue(tcapDialog);
+
+		// we do not set ApplicationContextName if MAP Version 1
+		if (acn != null && MAPApplicationContext.getProtocolVersion(acn.getOid()) > 1)
+			tcContinueReq.setApplicationContextName(acn);
+
+		if (sendMapAcceptInfo && mapExtensionContainer != null
+				&& MAPApplicationContext.getProtocolVersion(acn.getOid()) > 1) {
+
+			MAPAcceptInfoImpl mapAccept = new MAPAcceptInfoImpl();
+			mapAccept.setExtensionContainer(mapExtensionContainer);
+
+			UserInformation userInformation = TcapFactory.createUserInformation();
+			userInformation.setIdentifier(MAPDialogueAS.MAP_DialogueAS.getOID());
+			userInformation.setChildAsObject(mapAccept);
+			tcContinueReq.setUserInformation(userInformation);
+		}
+		return tcContinueReq;
+	}
+
+	protected void fireTCEnd(Dialog tcapDialog, Boolean sendMapCloseInfo, boolean prearrangedEnd,
+			ApplicationContextName acn, MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError)
+			throws MAPException {
+
+		TCEndRequest endRequest = encodeTCEnd(tcapDialog, sendMapCloseInfo, prearrangedEnd, acn, mapExtensionContainer);
+		if (returnMessageOnError)
+			endRequest.setReturnMessageOnError(true);
+
+		try {
+			tcapDialog.send(endRequest);
+		} catch (TCAPSendException e) {
+			throw new MAPException(e.getMessage(), e);
+		}
+	}
+
+	protected TCEndRequest encodeTCEnd(Dialog tcapDialog, Boolean sendMapCloseInfo, boolean prearrangedEnd,
+			ApplicationContextName acn, MAPExtensionContainer mapExtensionContainer) throws MAPException {
+		TCEndRequest endRequest = this.getTCAPProvider().getDialogPrimitiveFactory().createEnd(tcapDialog);
+
+		if (!prearrangedEnd)
+			endRequest.setTermination(TerminationType.Basic);
+		else
+			endRequest.setTermination(TerminationType.PreArranged);
+
+		// we do not set ApplicationContextName if MAP Version 1
+		if (acn != null && MAPApplicationContext.getProtocolVersion(acn.getOid()) > 1)
+			endRequest.setApplicationContextName(acn);
+
+		if (sendMapCloseInfo && mapExtensionContainer != null
+				&& MAPApplicationContext.getProtocolVersion(acn.getOid()) > 1) {
+			MAPAcceptInfoImpl mapAccept = new MAPAcceptInfoImpl();
+			mapAccept.setExtensionContainer(mapExtensionContainer);
+
+			UserInformation userInformation = TcapFactory.createUserInformation();
+			userInformation.setIdentifier(MAPDialogueAS.MAP_DialogueAS.getOID());
+
+			userInformation.setChildAsObject(mapAccept);
+			endRequest.setUserInformation(userInformation);
+		}
+		return endRequest;
+	}
+
+	/**
+	 * Issue TC-U-ABORT with the "abort reason" =
+	 * "application-content-name-not-supported"
+	 *
+	 * @param tcapDialog
+	 * @param mapExtensionContainer
+	 * @param alternativeApplicationContext
+	 * @throws MAPException
+	 */
+	private void fireTCAbortACNNotSupported(Dialog tcapDialog, MAPExtensionContainer mapExtensionContainer,
+			ApplicationContextName alternativeApplicationContext, boolean returnMessageOnError) throws MAPException {
+
+		if (tcapDialog.getApplicationContextName() == null) // MAP V1
+			this.fireTCAbortV1(tcapDialog, returnMessageOnError);
+
+		TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
+
+		MAPRefuseInfoImpl mapRefuseInfoImpl = new MAPRefuseInfoImpl();
+		mapRefuseInfoImpl.setReason(Reason.noReasonGiven);
+
+		UserInformation userInformation = TcapFactory.createUserInformation();
+		userInformation.setIdentifier(MAPDialogueAS.MAP_DialogueAS.getOID());
+		userInformation.setChildAsObject(mapRefuseInfoImpl);
+
+		if (returnMessageOnError)
+			tcUserAbort.setReturnMessageOnError(true);
+
+		if (alternativeApplicationContext != null)
+			tcUserAbort.setApplicationContextName(alternativeApplicationContext);
+		else
+			tcUserAbort.setApplicationContextName(tcapDialog.getApplicationContextName());
+		tcUserAbort.setDialogServiceUserType(DialogServiceUserType.AcnNotSupported);
+		tcUserAbort.setUserInformation(userInformation);
+
+		try {
+			tcapDialog.send(tcUserAbort);
+		} catch (TCAPSendException e) {
+			throw new MAPException(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Issue TC-U-ABORT with the "abort reason" = "dialogue-refused"
+	 *
+	 * @param tcapDialog
+	 * @param reason
+	 * @param mapExtensionContainer
+	 * @throws MAPException
+	 */
+	protected void fireTCAbortRefused(Dialog tcapDialog, Reason reason, MAPExtensionContainer mapExtensionContainer,
+			boolean returnMessageOnError) throws MAPException {
+
+		if (tcapDialog.getApplicationContextName() == null) // MAP V1
+			this.fireTCAbortV1(tcapDialog, returnMessageOnError);
+
+		TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
+
+		MAPRefuseInfoImpl mapRefuseInfoImpl = new MAPRefuseInfoImpl();
+		mapRefuseInfoImpl.setReason(reason);
+		mapRefuseInfoImpl.setExtensionContainer(mapExtensionContainer);
+
+		// ApplicationContextName aacn = new ApplicationContextNameImpl();
+		// aacn.setOid(new long[] { 3, 4, 5 } );
+		// mapRefuseInfoImpl.setAlternativeAcn(aacn);
+
+		UserInformation userInformation = TcapFactory.createUserInformation();
+		userInformation.setIdentifier(MAPDialogueAS.MAP_DialogueAS.getOID());
+		userInformation.setChildAsObject(mapRefuseInfoImpl);
+
+		tcUserAbort.setApplicationContextName(tcapDialog.getApplicationContextName());
+		tcUserAbort.setDialogServiceUserType(DialogServiceUserType.NoReasonGive);
+		tcUserAbort.setUserInformation(userInformation);
+		if (returnMessageOnError)
+			tcUserAbort.setReturnMessageOnError(true);
+
+		try {
+			tcapDialog.send(tcUserAbort);
+		} catch (TCAPSendException e) {
+			throw new MAPException(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Issue TC-U-ABORT with the ABRT apdu with MAPUserAbortInfo userInformation
+	 *
+	 * @param tcapDialog
+	 * @param mapUserAbortChoice
+	 * @param mapExtensionContainer
+	 * @throws MAPException
+	 */
+	protected void fireTCAbortUser(Dialog tcapDialog, MAPUserAbortInfoImpl mapUserAbortInfoImpl,
+			boolean returnMessageOnError) throws MAPException {
+
+		if (tcapDialog.getApplicationContextName() == null) // MAP V1
+			this.fireTCAbortV1(tcapDialog, returnMessageOnError);
+
+		TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
+
+		UserInformation userInformation = TcapFactory.createUserInformation();
+		userInformation.setIdentifier(MAPDialogueAS.MAP_DialogueAS.getOID());
+		userInformation.setChildAsObject(mapUserAbortInfoImpl);
+
+		if (returnMessageOnError)
+			tcUserAbort.setReturnMessageOnError(true);
+
+		tcUserAbort.setUserInformation(userInformation);
+
+		try {
+			tcapDialog.send(tcUserAbort);
+		} catch (TCAPSendException e) {
+			throw new MAPException(e.getMessage(), e);
+		}
+
+	}
+
+	/**
+	 * Issue TC-U-ABORT with the ABRT apdu with MAPProviderAbortInfo userInformation
+	 *
+	 * @param tcapDialog
+	 * @param mapProviderAbortReason
+	 * @param mapExtensionContainer
+	 * @throws MAPException
+	 */
+	protected void fireTCAbortProvider(Dialog tcapDialog, MAPProviderAbortReason mapProviderAbortReason,
+			MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError) throws MAPException {
+
+		if (tcapDialog.getApplicationContextName() == null) // MAP V1
+			this.fireTCAbortV1(tcapDialog, returnMessageOnError);
+
+		TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
+
+		MAPProviderAbortInfoImpl mapProviderAbortInfo = new MAPProviderAbortInfoImpl();
+		mapProviderAbortInfo.setMAPProviderAbortReason(mapProviderAbortReason);
+		mapProviderAbortInfo.setExtensionContainer(mapExtensionContainer);
+
+		UserInformation userInformation = TcapFactory.createUserInformation();
+		userInformation.setIdentifier(MAPDialogueAS.MAP_DialogueAS.getOID());
+		userInformation.setChildAsObject(mapProviderAbortInfo);
+		if (returnMessageOnError)
+			tcUserAbort.setReturnMessageOnError(true);
+
+		tcUserAbort.setUserInformation(userInformation);
+
+		try {
+			tcapDialog.send(tcUserAbort);
+		} catch (TCAPSendException e) {
+			throw new MAPException(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Issue TC-U-ABORT without any apdu - for MAP V1
+	 *
+	 * @param tcapDialog
+	 * @param returnMessageOnError
+	 * @throws MAPException
+	 */
+	protected void fireTCAbortV1(Dialog tcapDialog, boolean returnMessageOnError) throws MAPException {
+
+		TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
+		if (returnMessageOnError)
+			tcUserAbort.setReturnMessageOnError(true);
+
+		try {
+			tcapDialog.send(tcUserAbort);
+		} catch (TCAPSendException e) {
+			throw new MAPException(e.getMessage(), e);
+		}
+	}
+
+	@Override
+	public int getCurrentDialogsCount() {
+		return this.tcapProvider.getCurrentDialogsCount();
+	}
 }

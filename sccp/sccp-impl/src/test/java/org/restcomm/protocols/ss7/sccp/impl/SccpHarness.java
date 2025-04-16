@@ -34,6 +34,8 @@ import org.restcomm.protocols.ss7.sccp.SccpProvider;
 import org.restcomm.protocols.ss7.sccp.SccpResource;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 
+import com.mobius.software.common.dal.timers.WorkerPool;
+
 /**
  * @author amit bhayani
  * @author yulianoifa
@@ -41,166 +43,169 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
  */
 public abstract class SccpHarness {
 
-    protected boolean onlyOneStack;
+	protected boolean onlyOneStack;
 
-    protected String sccpStack1Name = null;
-    protected String sccpStack2Name = null;
+	protected String sccpStack1Name = null;
+	protected String sccpStack2Name = null;
 
-    protected SccpStackImpl sccpStack1;
-    protected SccpProvider sccpProvider1;
+	protected SccpStackImpl sccpStack1;
+	protected SccpProvider sccpProvider1;
 
-    protected SccpStackImpl sccpStack2;
-    protected SccpProvider sccpProvider2;
+	protected SccpStackImpl sccpStack2;
+	protected SccpProvider sccpProvider2;
 
-    protected Mtp3UserPartImpl mtp3UserPart1 = new Mtp3UserPartImpl(this);
-    protected Mtp3UserPartImpl mtp3UserPart2 = new Mtp3UserPartImpl(this);
+	protected Mtp3UserPartImpl mtp3UserPart1;
+	protected Mtp3UserPartImpl mtp3UserPart2;
 
-    protected Router router1 = null;
-    protected Router router2 = null;
+	protected Router router1 = null;
+	protected Router router2 = null;
 
-    protected SccpResource resource1 = null;
-    protected SccpResource resource2 = null;
+	protected SccpResource resource1 = null;
+	protected SccpResource resource2 = null;
 
-    protected ParameterFactory parameterFactory;
+	protected ParameterFactory parameterFactory;
+	protected WorkerPool workerPool;
 
-    /**
+	/**
 	 *
 	 */
-    public SccpHarness() {
-        mtp3UserPart1.setOtherPart(mtp3UserPart2);
-        mtp3UserPart2.setOtherPart(mtp3UserPart1);
-    }
+	public SccpHarness() {
+		workerPool = new WorkerPool(1L);
+		workerPool.start(64);
 
-    protected void createStack1() {
-        sccpStack1 = createStack(sccpStack1Name);
-    }
+		mtp3UserPart1 = new Mtp3UserPartImpl(this, workerPool.getQueue(), workerPool.getPeriodicQueue());
+		mtp3UserPart2 = new Mtp3UserPartImpl(this, workerPool.getQueue(), workerPool.getPeriodicQueue());
 
-    protected void createStack2() {
-        sccpStack2 = createStack(sccpStack2Name);
-    }
+		mtp3UserPart1.setOtherPart(mtp3UserPart2);
+		mtp3UserPart2.setOtherPart(mtp3UserPart1);
+	}
 
-    protected SccpStackImpl createStack(final String name) {
-        SccpStackImpl stack = new SccpStackImpl(name);
-        return stack;
-    }
+	protected void createStack1() {
+		sccpStack1 = createStack(sccpStack1Name);
+	}
 
-    protected void setUpStack1() throws Exception {
-        createStack1();
+	protected void createStack2() {
+		sccpStack2 = createStack(sccpStack2Name);
+	}
 
-        sccpStack1.setMtp3UserPart(1, mtp3UserPart1);
-        sccpStack1.start();
-        sccpStack1.removeAllResourses();
-        sccpStack1.getRouter().addMtp3ServiceAccessPoint(1, 1, getStack1PC(), 2, 0, null);
-        sccpStack1.getRouter().addMtp3Destination(1, 1, getStack2PC(), getStack2PC(), 0, 255, 255);
+	protected SccpStackImpl createStack(final String name) {
+		SccpStackImpl stack = new SccpStackImpl(name, workerPool.getPeriodicQueue());
+		return stack;
+	}
 
-        sccpProvider1 = sccpStack1.getSccpProvider();
+	protected void setUpStack1() throws Exception {
+		createStack1();
 
-        router1 = sccpStack1.getRouter();
+		sccpStack1.setMtp3UserPart(1, mtp3UserPart1);
+		sccpStack1.start();
+		sccpStack1.removeAllResourses();
+		sccpStack1.getRouter().addMtp3ServiceAccessPoint(1, 1, getStack1PC(), 2, 0, null);
+		sccpStack1.getRouter().addMtp3Destination(1, 1, getStack2PC(), getStack2PC(), 0, 255, 255);
 
-        resource1 = sccpStack1.getSccpResource();
+		sccpProvider1 = sccpStack1.getSccpProvider();
 
-        resource1.addRemoteSpc(1, getStack2PC(), 0, 0);
-        resource1.addRemoteSsn(1, getStack2PC(), getSSN2(), 0, false);
-        this.parameterFactory = this.sccpProvider1.getParameterFactory();
+		router1 = sccpStack1.getRouter();
 
-    }
+		resource1 = sccpStack1.getSccpResource();
 
-    protected void setUpStack2() throws Exception {
-        createStack2();
+		resource1.addRemoteSpc(1, getStack2PC(), 0, 0);
+		resource1.addRemoteSsn(1, getStack2PC(), getSSN2(), 0, false);
+		this.parameterFactory = this.sccpProvider1.getParameterFactory();
 
-        sccpStack2.setMtp3UserPart(1, mtp3UserPart2);
-        sccpStack2.start();
-        sccpStack2.removeAllResourses();
-        sccpStack2.getRouter().addMtp3ServiceAccessPoint(1, 1, getStack2PC(), 2, 0, null);
-        sccpStack2.getRouter().addMtp3Destination(1, 1, getStack1PC(), getStack1PC(), 0, 255, 255);
+	}
 
-        sccpProvider2 = sccpStack2.getSccpProvider();
+	protected void setUpStack2() throws Exception {
+		createStack2();
 
-        router2 = sccpStack2.getRouter();
+		sccpStack2.setMtp3UserPart(1, mtp3UserPart2);
+		sccpStack2.start();
+		sccpStack2.removeAllResourses();
+		sccpStack2.getRouter().addMtp3ServiceAccessPoint(1, 1, getStack2PC(), 2, 0, null);
+		sccpStack2.getRouter().addMtp3Destination(1, 1, getStack1PC(), getStack1PC(), 0, 255, 255);
 
-        resource2 = sccpStack2.getSccpResource();
+		sccpProvider2 = sccpStack2.getSccpProvider();
 
-        resource2.addRemoteSpc(02, getStack1PC(), 0, 0);
-        resource2.addRemoteSsn(1, getStack1PC(), getSSN(), 0, false);
+		router2 = sccpStack2.getRouter();
 
-    }
+		resource2 = sccpStack2.getSccpResource();
 
-    private void tearDownStack1() {
-        sccpStack1.removeAllResourses();
-        sccpStack1.stop();
-    }
+		resource2.addRemoteSpc(02, getStack1PC(), 0, 0);
+		resource2.addRemoteSsn(1, getStack1PC(), getSSN(), 0, false);
 
-    private void tearDownStack2() {
-        sccpStack2.removeAllResourses();
-        sccpStack2.stop();
-    }
+	}
 
-    protected int getStack1PC() {
-        if (sccpStack1.getSccpProtocolVersion() == SccpProtocolVersion.ANSI)
-            return 8000001;
-        else
-            return 1;
-    }
+	private void tearDownStack1() {
+		sccpStack1.removeAllResourses();
+		sccpStack1.stop();
+	}
 
-    protected int getStack2PC() {
-        if (onlyOneStack) {
-            return getStack1PC();
-        }
+	private void tearDownStack2() {
+		sccpStack2.removeAllResourses();
+		sccpStack2.stop();
+	}
 
-        if (sccpStack1.getSccpProtocolVersion() == SccpProtocolVersion.ANSI)
-            return 8000002;
-        else
-        return 2;
-    }
+	protected int getStack1PC() {
+		if (sccpStack1.getSccpProtocolVersion() == SccpProtocolVersion.ANSI)
+			return 8000001;
+		else
+			return 1;
+	}
 
-    protected int getSSN() {
-        return 8;
-    }
+	protected int getStack2PC() {
+		if (onlyOneStack)
+			return getStack1PC();
 
-    protected int ssn2 = 8;
+		if (sccpStack1.getSccpProtocolVersion() == SccpProtocolVersion.ANSI)
+			return 8000002;
+		else
+			return 2;
+	}
 
-    protected int getSSN2() {
-        return ssn2;
-    }
+	protected int getSSN() {
+		return 8;
+	}
 
-    public void setUp() throws Exception {
-        this.setUpStack1();
-        if (!onlyOneStack) {
-            this.setUpStack2();
-        }
-    }
+	protected int ssn2 = 8;
 
-    public void tearDown() {
-        this.tearDownStack1();
-        if (!onlyOneStack) {
-            this.tearDownStack2();
-        }
-    }
+	protected int getSSN2() {
+		return ssn2;
+	}
 
-    protected int tsnNum = (new Random()).nextInt(100000);
+	public void setUp() throws Exception {
+		this.setUpStack1();
+		if (!onlyOneStack)
+			this.setUpStack2();
+	}
 
-    public void assertBothConnectionsExist() {
-        if (sccpStack1 != sccpStack2) {
-            assertEquals(sccpStack1.getConnectionsNumber(), 1);
-            assertEquals(sccpStack2.getConnectionsNumber(), 1);
-        } else {
-            assertEquals(sccpStack1.getConnectionsNumber(), 2);
-        }
-    }
+	public void tearDown() {
+		this.workerPool.stop();
 
-    public boolean isBothConnectionsExist() {
-        if (sccpStack1 != sccpStack2) {
-            return sccpStack1.getConnectionsNumber() == 1 && sccpStack2.getConnectionsNumber() == 1;
-        } else {
-            return sccpStack1.getConnectionsNumber() == 2;
-        }
-    }
+		this.tearDownStack1();
+		if (!onlyOneStack)
+			this.tearDownStack2();
+	}
 
-    public SccpConnection getConn2() {
-        if (sccpStack1 != sccpStack2) {
-            return sccpProvider2.getConnections().values().iterator().next();
-        } else {
-            return sccpProvider2.getConnections().get(sccpStack2.referenceNumberCounter.get());
-        }
-    }
+	protected int tsnNum = (new Random()).nextInt(100000);
+
+	public void assertBothConnectionsExist() {
+		if (sccpStack1 != sccpStack2) {
+			assertEquals(sccpStack1.getConnectionsNumber(), 1);
+			assertEquals(sccpStack2.getConnectionsNumber(), 1);
+		} else
+			assertEquals(sccpStack1.getConnectionsNumber(), 2);
+	}
+
+	public boolean isBothConnectionsExist() {
+		if (sccpStack1 != sccpStack2)
+			return sccpStack1.getConnectionsNumber() == 1 && sccpStack2.getConnectionsNumber() == 1;
+		else
+			return sccpStack1.getConnectionsNumber() == 2;
+	}
+
+	public SccpConnection getConn2() {
+		if (sccpStack1 != sccpStack2)
+			return sccpProvider2.getConnections().values().iterator().next();
+		else
+			return sccpProvider2.getConnections().get(sccpStack2.referenceNumberCounter.get());
+	}
 }

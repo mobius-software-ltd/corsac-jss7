@@ -19,16 +19,16 @@
 
 package org.restcomm.protocols.ss7.tcapAnsi.api;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.Serializable;
-import java.util.concurrent.Future;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.DraftParsedMessage;
 
+import com.mobius.software.common.dal.timers.Timer;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  *
@@ -99,7 +99,7 @@ public interface TCAPProvider extends Serializable {
      */
     DraftParsedMessage parseMessageDraft(ByteBuf data);
 
-    Future<?> createOperationTimer(Runnable operationTimerTask, long invokeTimeout);
+	void storeOperationTimer(Timer operationTimer);
     
     /**
      * @return ASN Parser

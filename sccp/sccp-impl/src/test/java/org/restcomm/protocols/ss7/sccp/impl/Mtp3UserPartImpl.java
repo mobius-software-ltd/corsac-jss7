@@ -37,6 +37,11 @@ import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
 
+import com.mobius.software.common.dal.timers.CountableQueue;
+import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
+import com.mobius.software.common.dal.timers.Task;
+import com.mobius.software.common.dal.timers.Timer;
+
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -47,90 +52,91 @@ import io.netty.buffer.ByteBuf;
  */
 public class Mtp3UserPartImpl extends Mtp3UserPartBaseImpl {
 
-    // protected ConcurrentLinkedQueue<byte[]> readFrom;
-    // protected ConcurrentLinkedQueue<byte[]> writeTo;
+	// protected ConcurrentLinkedQueue<byte[]> readFrom;
+	// protected ConcurrentLinkedQueue<byte[]> writeTo;
 
-    private List<Mtp3UserPartImpl> otherParts = new ArrayList<Mtp3UserPartImpl>();
-    private ArrayList<Mtp3TransferPrimitive> messages = new ArrayList<Mtp3TransferPrimitive>();
-    private List<Integer> dpcs = new ArrayList<Integer>();
+	private List<Mtp3UserPartImpl> otherParts = new ArrayList<Mtp3UserPartImpl>();
+	private ArrayList<Mtp3TransferPrimitive> messages = new ArrayList<Mtp3TransferPrimitive>();
+	private List<Integer> dpcs = new ArrayList<Integer>();
 
-    SccpHarness sccpHarness;
+	SccpHarness sccpHarness;
 
-    public Mtp3UserPartImpl(SccpHarness sccpHarness) {
-        super(null);
-        this.sccpHarness = sccpHarness;
-        try {
-            this.start();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+	public Mtp3UserPartImpl(SccpHarness sccpHarness, CountableQueue<Task> mainQueue,
+			PeriodicQueuedTasks<Timer> queuedTasks) {
+		super(null, mainQueue, queuedTasks);
+		this.sccpHarness = sccpHarness;
+		try {
+			this.start();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
-    public void setOtherPart(Mtp3UserPartImpl otherPart) {
-        this.otherParts.add(otherPart);
-    }
+	public void setOtherPart(Mtp3UserPartImpl otherPart) {
+		this.otherParts.add(otherPart);
+	}
 
-    public void sendMessage(Mtp3TransferPrimitive msg) throws IOException {
-    	//we need to work with copy otherwise the buffer would be released
-    	Mtp3TransferPrimitive copy = new Mtp3TransferPrimitive(msg.getSi(), msg.getNi(), msg.getMp(), msg.getOpc(), msg.getDpc(), msg.getSls(), msg.getData().copy(),msg.getPointCodeFormat(),new AtomicBoolean(false));
-        if (!this.otherParts.isEmpty()) {
-            if (otherParts.size() == 1) {
-                this.otherParts.iterator().next().sendTransferMessageToLocalUser(copy, copy.getSls());
-            } else {
-                for (Mtp3UserPartImpl part: otherParts) {
-                    if (part.dpcs.contains(msg.getDpc())) {
-                        part.sendTransferMessageToLocalUser(copy, copy.getSls());
-                    }
-                }
-            }
-        } else
-            this.messages.add(copy);
-    }
+	@Override
+	public void sendMessage(Mtp3TransferPrimitive msg) throws IOException {
+		// we need to work with copy otherwise the buffer would be released
+		Mtp3TransferPrimitive copy = new Mtp3TransferPrimitive(msg.getSi(), msg.getNi(), msg.getMp(), msg.getOpc(),
+				msg.getDpc(), msg.getSls(), msg.getData().copy(), msg.getPointCodeFormat(), new AtomicBoolean(false));
+		if (!this.otherParts.isEmpty()) {
+			if (otherParts.size() == 1)
+				this.otherParts.iterator().next().sendTransferMessageToLocalUser(copy, copy.getSls());
+			else
+				for (Mtp3UserPartImpl part : otherParts)
+					if (part.dpcs.contains(msg.getDpc()))
+						part.sendTransferMessageToLocalUser(copy, copy.getSls());
+		} else
+			this.messages.add(copy);
+	}
 
-    public void sendTransferMessageToLocalUser(int opc, int dpc, ByteBuf data) {
-        int si = Mtp3UserPartBaseImpl._SI_SERVICE_SCCP;
-        int ni = 2;
-        int mp = 0;
-        int sls = 0;
-        Mtp3TransferPrimitiveFactory factory = this.getMtp3TransferPrimitiveFactory();
-        Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(si, ni, mp, opc, dpc, sls, data,new AtomicBoolean(false));
-        int seqControl = 0;
-        this.sendTransferMessageToLocalUser(msg, seqControl);
-    }
+	public void sendTransferMessageToLocalUser(int opc, int dpc, ByteBuf data) {
+		int si = Mtp3UserPartBaseImpl._SI_SERVICE_SCCP;
+		int ni = 2;
+		int mp = 0;
+		int sls = 0;
+		Mtp3TransferPrimitiveFactory factory = this.getMtp3TransferPrimitiveFactory();
+		Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(si, ni, mp, opc, dpc, sls, data,
+				new AtomicBoolean(false));
+		int seqControl = 0;
+		this.sendTransferMessageToLocalUser(msg, seqControl);
+	}
 
-    public void sendPauseMessageToLocalUser(int affectedDpc) {
-        Mtp3PausePrimitive msg = new Mtp3PausePrimitive(affectedDpc);
-        this.sendPauseMessageToLocalUser(msg);
-    }
+	public void sendPauseMessageToLocalUser(int affectedDpc) {
+		Mtp3PausePrimitive msg = new Mtp3PausePrimitive(affectedDpc);
+		this.sendPauseMessageToLocalUser(msg);
+	}
 
-    public void sendResumeMessageToLocalUser(int affectedDpc) {
-        Mtp3ResumePrimitive msg = new Mtp3ResumePrimitive(affectedDpc);
-        this.sendResumeMessageToLocalUser(msg);
-    }
+	public void sendResumeMessageToLocalUser(int affectedDpc) {
+		Mtp3ResumePrimitive msg = new Mtp3ResumePrimitive(affectedDpc);
+		this.sendResumeMessageToLocalUser(msg);
+	}
 
-    public void sendStatusMessageToLocalUser(int affectedDpc, Mtp3StatusCause cause, int congestionLevel, int userPartIdentity) {
-        Mtp3StatusPrimitive msg = new Mtp3StatusPrimitive(affectedDpc, cause, congestionLevel, userPartIdentity);
-        this.sendStatusMessageToLocalUser(msg);
-    }
+	public void sendStatusMessageToLocalUser(int affectedDpc, Mtp3StatusCause cause, int congestionLevel,
+			int userPartIdentity) {
+		Mtp3StatusPrimitive msg = new Mtp3StatusPrimitive(affectedDpc, cause, congestionLevel, userPartIdentity);
+		this.sendStatusMessageToLocalUser(msg);
+	}
 
-    public void sendEndCongestionMessageToLocalUser(int affectedDpc) {
-        Mtp3EndCongestionPrimitive msg = new Mtp3EndCongestionPrimitive(affectedDpc);
-        this.sendEndCongestionMessageToLocalUser(msg);
-    }
+	public void sendEndCongestionMessageToLocalUser(int affectedDpc) {
+		Mtp3EndCongestionPrimitive msg = new Mtp3EndCongestionPrimitive(affectedDpc);
+		this.sendEndCongestionMessageToLocalUser(msg);
+	}
 
-    public List<Mtp3TransferPrimitive> getMessages() {
-        return messages;
-    }
+	public List<Mtp3TransferPrimitive> getMessages() {
+		return messages;
+	}
 
-    @Override
-    public int getMaxUserDataLength(int dpc) {
-        return 1000;
-    }
+	@Override
+	public int getMaxUserDataLength(int dpc) {
+		return 1000;
+	}
 
-    public void addDpc(int dpc) {
-        if (!dpcs.contains(dpc)) {
-            dpcs.add(dpc);
-        }
-    }
+	public void addDpc(int dpc) {
+		if (!dpcs.contains(dpc))
+			dpcs.add(dpc);
+	}
 }

@@ -44,6 +44,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 
+import com.mobius.software.common.dal.timers.WorkerPool;
+
 /**
 *
 * @author sergey vetyutnev
@@ -54,6 +56,7 @@ public class CreateDialogTest {
 
     private SccpHarnessPreview sccpProv = new SccpHarnessPreview();
     private TCAPStackImplWrapper tcapStack1;
+    private WorkerPool workerPool;
 
     /*
      * (non-Javadoc)
@@ -64,7 +67,9 @@ public class CreateDialogTest {
     public void setUp() throws Exception {
         System.out.println("setUp");
 
-        this.tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "CreateDialogTest", 4);
+	workerPool = new WorkerPool();
+	workerPool.start(4);
+	this.tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "CreateDialogTest", workerPool.getPeriodicQueue());
 
         this.tcapStack1.start();
     }
@@ -77,6 +82,7 @@ public class CreateDialogTest {
     @After
     public void tearDown() {
         this.tcapStack1.stop();
+	this.workerPool.stop();
     }
 
     @Test

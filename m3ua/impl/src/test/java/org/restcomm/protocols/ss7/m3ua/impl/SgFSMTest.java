@@ -88,6 +88,7 @@ import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
 
+import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 
 import io.netty.buffer.ByteBufAllocator;
@@ -106,6 +107,7 @@ public class SgFSMTest {
     private MessageFactoryImpl messageFactory = new MessageFactoryImpl();
     private M3UAManagementImpl serverM3UAMgmt = null;
     private Semaphore semaphore = null;
+	private WorkerPool workerPool;
     private Mtp3UserPartListenerimpl mtp3UserPartListener = null;
 
     private NettyTransportManagement transportManagement = null;
@@ -128,10 +130,13 @@ public class SgFSMTest {
     @Before
     public void setUp() throws Exception {
         semaphore = new Semaphore(0);
+		workerPool = new WorkerPool();
+		workerPool.start(4);
+
         this.m3uaManagementEventListenerImpl = new M3UAManagementEventListenerImpl();
         this.transportManagement = new NettyTransportManagement();
         UUIDGenerator uuidGenerator=new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} );
-        this.serverM3UAMgmt = new M3UAManagementImpl("SgFSMTest", null, uuidGenerator);
+		this.serverM3UAMgmt = new M3UAManagementImpl("SgFSMTest", null, uuidGenerator, workerPool.getQueue(), workerPool.getPeriodicQueue());
         listenerUUID=uuidGenerator.GenerateTimeBasedGuid(System.currentTimeMillis());
         this.serverM3UAMgmt.addM3UAManagementEventListener(listenerUUID, this.m3uaManagementEventListenerImpl);
         this.serverM3UAMgmt.setTransportManagement(this.transportManagement);
@@ -145,6 +150,7 @@ public class SgFSMTest {
     public void tearDown() throws Exception {
         serverM3UAMgmt.removeAllResourses();
         serverM3UAMgmt.stop();
+		workerPool.stop();
     }
 
     private AspState getAspState(FSM fsm) {
@@ -967,13 +973,11 @@ public class SgFSMTest {
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
-        for (int count = 0; count < 128; count++) {
-            assertTrue(validateMessage(testAssociation1, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
-        }
+        for (int count = 0; count < 128; count++)
+			assertTrue(validateMessage(testAssociation1, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
 
-        for (int count = 0; count < 128; count++) {
-            assertTrue(validateMessage(testAssociation2, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
-        }
+        for (int count = 0; count < 128; count++)
+			assertTrue(validateMessage(testAssociation2, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
 
         // No more messages to be transmitted
         assertFalse(validateMessage(testAssociation1, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
@@ -1003,9 +1007,8 @@ public class SgFSMTest {
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
-        for (int count = 0; count < 256; count++) {
-            assertTrue(validateMessage(testAssociation2, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
-        }
+        for (int count = 0; count < 256; count++)
+			assertTrue(validateMessage(testAssociation2, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
 
         // No more messages to be transmitted
         assertFalse(validateMessage(testAssociation1, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
@@ -1117,9 +1120,8 @@ public class SgFSMTest {
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
-        for (int count = 0; count < 256; count++) {
-            assertTrue(validateMessage(testAssociation1, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
-        }
+        for (int count = 0; count < 256; count++)
+			assertTrue(validateMessage(testAssociation1, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
 
         //No messages goes to AS2
         assertFalse(validateMessage(testAssociation2, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
@@ -1152,9 +1154,8 @@ public class SgFSMTest {
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
-        for (int count = 0; count < 256; count++) {
-            assertTrue(validateMessage(testAssociation2, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
-        }
+        for (int count = 0; count < 256; count++)
+			assertTrue(validateMessage(testAssociation2, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
 
         // No more messages to be transmitted
         assertFalse(validateMessage(testAssociation1, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
@@ -1323,13 +1324,11 @@ public class SgFSMTest {
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
-        for (int count = 0; count < 128; count++) {
-            assertTrue(validateMessage(testAssociation1, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
-        }
+        for (int count = 0; count < 128; count++)
+			assertTrue(validateMessage(testAssociation1, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
 
-        for (int count = 0; count < 128; count++) {
-            assertTrue(validateMessage(testAssociation2, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
-        }
+        for (int count = 0; count < 128; count++)
+			assertTrue(validateMessage(testAssociation2, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
 
         // INACTIVATE ASP1.But AS remains ACTIVE in any case
         message = messageFactory.createMessage(MessageClass.ASP_TRAFFIC_MAINTENANCE, MessageType.ASP_INACTIVE);
@@ -1360,9 +1359,8 @@ public class SgFSMTest {
             serverM3UAMgmt.sendMessage(mtp3TransferPrimitive);
         }
 
-        for (int count = 0; count < 256; count++) {
-            assertTrue(validateMessage(testAssociation2, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
-        }
+        for (int count = 0; count < 256; count++)
+			assertTrue(validateMessage(testAssociation2, MessageClass.TRANSFER_MESSAGES, MessageType.PAYLOAD, -1, -1));
 
         // Bring down ASP1
         message = messageFactory.createMessage(MessageClass.ASP_STATE_MAINTENANCE, MessageType.ASP_DOWN);
@@ -1642,40 +1640,35 @@ public class SgFSMTest {
      */
     private boolean validateMessage(TestAssociation testAssociation, int msgClass, int msgType, int type, int info) {
         M3UAMessage message = testAssociation.txPoll();
-        if (message == null) {
-            return false;
-        }
+        if (message == null)
+			return false;
 
-        if (message.getMessageClass() != msgClass || message.getMessageType() != msgType) {
-            return false;
-        }
+        if (message.getMessageClass() != msgClass || message.getMessageType() != msgType)
+			return false;
 
         if (message.getMessageClass() == MessageClass.MANAGEMENT) {
             if (message.getMessageType() == MessageType.NOTIFY) {
                 Status s = ((Notify) message).getStatus();
-                if (s.getType() != type || s.getInfo() != info) {
-                    return false;
-                } else {
-                    return true;
-                }
+                if (s.getType() != type || s.getInfo() != info)
+					return false;
+				else
+					return true;
             } else if (message.getMessageType() == MessageType.ERROR) {
                 ErrorCode errCode = ((org.restcomm.protocols.ss7.m3ua.message.mgmt.Error) message).getErrorCode();
-                if (errCode.getCode() != type) {
-                    return false;
-                }
+                if (errCode.getCode() != type)
+					return false;
 
                 RoutingContext rc = ((org.restcomm.protocols.ss7.m3ua.message.mgmt.Error) message).getRoutingContext();
-                if (rc == null || rc.getRoutingContexts()[0] != info) {
-                    return false;
-                }
+                if (rc == null || rc.getRoutingContexts()[0] != info)
+					return false;
 
                 return true;
 
             }
             return false;
-        } else {
-            return true;
         }
+		else
+			return true;
 
     }
 
@@ -2330,9 +2323,8 @@ public class SgFSMTest {
 
             TestEvent testEventActual = this.testEvents.poll();
 
-            if (testEventActual == null) {
-                return false;
-            }
+            if (testEventActual == null)
+				return false;
 
             return testEventExpected.equals(testEventActual);
 
@@ -2343,9 +2335,8 @@ public class SgFSMTest {
         	for(int i=0;i<testEventExpected[0].length;i++) {
         		TestEvent currEvent = this.testEvents.poll();
     	
-        		if (currEvent == null) {
-    	                return false;
-        		}
+        		if (currEvent == null)
+					return false;
         		
         	    testEventActual[i]=currEvent;    	       
         	}
@@ -2354,12 +2345,11 @@ public class SgFSMTest {
         		Boolean overallValid=true;        		
         		for(int i=0;i<testEventExpected[l].length;i++) {
         			Boolean hasValid=false;
-        			for(int j=0;j<testEventActual.length;j++) {
-		            	if(testEventActual[j].equals(testEventExpected[l][i])) {
+        			for(int j=0;j<testEventActual.length;j++)
+						if(testEventActual[j].equals(testEventExpected[l][i])) {
 		            		hasValid=true;
 		            		break;
 		            	}
-		            }
     	            
     	            if(!hasValid) {
     	            	overallValid=false;

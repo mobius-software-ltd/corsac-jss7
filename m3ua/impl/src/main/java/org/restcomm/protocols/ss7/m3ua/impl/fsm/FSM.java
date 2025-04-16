@@ -29,147 +29,147 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.m3ua.impl.scheduler.M3UATask;
 
+import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
+import com.mobius.software.common.dal.timers.Timer;
+
 /**
  * @author amit bhayani
  * @author yulianoifa
  */
 public class FSM extends M3UATask {
 
-    protected static final  Logger logger = LogManager.getLogger(FSM.class);
+	protected static final Logger logger = LogManager.getLogger(FSM.class);
 
-    public static final String ATTRIBUTE_MESSAGE = "message";
+	public static final String ATTRIBUTE_MESSAGE = "message";
 
-    private String name;
+	private String name;
 
-    // first and last states in fsm
-    protected FSMState start;
-    protected FSMState end;
+	// first and last states in fsm
+	protected FSMState start;
+	protected FSMState end;
 
-    // intermediate states
-    private ConcurrentHashMap<String, FSMState> states = new ConcurrentHashMap<String, FSMState>();
+	// intermediate states
+	private ConcurrentHashMap<String, FSMState> states = new ConcurrentHashMap<String, FSMState>();
 
-    protected FSMState currentState;
+	protected FSMState currentState;
 
-    private ConcurrentHashMap<String,Object> attributes = new ConcurrentHashMap<String,Object>();
+	private ConcurrentHashMap<String, Object> attributes = new ConcurrentHashMap<String, Object>();
 
-    private FSMState oldState;
+	private FSMState oldState;
 
-    public FSM(String name) {
-        this.name = name;
-    }
+	public FSM(String name, PeriodicQueuedTasks<Timer> queuedTasks) {
+		super(queuedTasks);
 
-    public FSMState getState() {
-        return currentState;
-    }
+		this.name = name;
+	}
 
-    public void setStart(String name) {
-        // the start state already has value which differs from current state?
-        if (this.start != null && currentState != null) {
-            throw new IllegalStateException("Start state can't be changed now");
-        }
-        this.start = states.get(name);
-        this.currentState = start;
-    }
+	public void setQueuedTasks(PeriodicQueuedTasks<Timer> queuedTasks) {
+		super.queuedTasks = queuedTasks;
+	}
 
-    public void setEnd(String name) {
-        this.end = states.get(name);
-    }
+	public FSMState getState() {
+		return currentState;
+	}
 
-    public FSMState createState(String name) {
-        FSMState s = new FSMState(this, name);
-        states.put(name, s);
-        return s;
-    }
+	public void setStart(String name) {
+		// the start state already has value which differs from current state?
+		if (this.start != null && currentState != null)
+			throw new IllegalStateException("Start state can't be changed now");
+		this.start = states.get(name);
+		this.currentState = start;
+	}
 
-    public void setAttribute(String name, Object value) {
-        attributes.put(name, value);
-    }
+	public void setEnd(String name) {
+		this.end = states.get(name);
+	}
 
-    public Object getAttribute(String name) {
-        return attributes.get(name);
-    }
+	public FSMState createState(String name) {
+		FSMState s = new FSMState(this, name);
+		states.put(name, s);
+		return s;
+	}
 
-    public void removeAttribute(String name) {
-        attributes.remove(name);
-    }
+	public void setAttribute(String name, Object value) {
+		attributes.put(name, value);
+	}
 
-    public Transition createTransition(String name, String from, String to) {
-        if (name.equals("timeout")) {
-            throw new IllegalArgumentException("timeout is illegal name for transition");
-        }
+	public Object getAttribute(String name) {
+		return attributes.get(name);
+	}
 
-        if (!states.containsKey(from)) {
-            throw new IllegalStateException("Unknown state: " + from);
-        }
+	public void removeAttribute(String name) {
+		attributes.remove(name);
+	}
 
-        if (!states.containsKey(to)) {
-            throw new IllegalStateException("Unknown state: " + to);
-        }
+	public Transition createTransition(String name, String from, String to) {
+		if (name.equals("timeout"))
+			throw new IllegalArgumentException("timeout is illegal name for transition");
 
-        Transition t = new Transition(name, states.get(to));
-        states.get(from).add(t);
+		if (!states.containsKey(from))
+			throw new IllegalStateException("Unknown state: " + from);
 
-        return t;
-    }
+		if (!states.containsKey(to))
+			throw new IllegalStateException("Unknown state: " + to);
 
-    public Transition createTimeoutTransition(String from, String to, long timeout) {
-        if (!states.containsKey(from)) {
-            throw new IllegalStateException("Unknown state: " + from);
-        }
+		Transition t = new Transition(name, states.get(to));
+		states.get(from).add(t);
 
-        if (!states.containsKey(to)) {
-            throw new IllegalStateException("Unknown state: " + to);
-        }
+		return t;
+	}
 
-        Transition t = new Transition("timeout", states.get(to));
-        states.get(from).timeout = timeout;
-        states.get(from).add(t);
+	public Transition createTimeoutTransition(String from, String to, long timeout) {
+		if (!states.containsKey(from))
+			throw new IllegalStateException("Unknown state: " + from);
 
-        return t;
-    }
+		if (!states.containsKey(to))
+			throw new IllegalStateException("Unknown state: " + to);
 
-    /**
-     * Processes transition.
-     *
-     * @param name the name of transition.
-     */
-    public void signal(String name) throws UnknownTransitionException {
+		Transition t = new Transition("timeout", states.get(to));
+		states.get(from).timeout = timeout;
+		states.get(from).add(t);
 
-        // check that start state defined
-        if (start == null) {
-            throw new IllegalStateException("The start sate is not defined");
-        }
+		return t;
+	}
 
-        // check that end state defined
-        if (end == null) {
-            throw new IllegalStateException("The end sate is not defined");
-        }
+	/**
+	 * Processes transition.
+	 *
+	 * @param name the name of transition.
+	 */
+	public void signal(String name) throws UnknownTransitionException {
 
-        // ignore any signals if fsm reaches end state
-        // if (state == end) {
-        // return;
-        // }
+		// check that start state defined
+		if (start == null)
+			throw new IllegalStateException("The start sate is not defined");
 
-        oldState = currentState;
-        // switch to next state
-        currentState = currentState.signal(name);
-        if (logger.isDebugEnabled()) {
-            logger.debug(String.format("%s Transition to=%s", toString(), name));
-        }
-    }
+		// check that end state defined
+		if (end == null)
+			throw new IllegalStateException("The end sate is not defined");
 
-    public void tick(long now) {
-        // if (state != null && state != start && state != end) {
-        if (currentState != null) {
-            currentState.tick(now);
-        }
-    }
+		// ignore any signals if fsm reaches end state
+		// if (state == end) {
+		// return;
+		// }
 
-    @Override
-    public String toString() {
-        return String.format("FSM.name=%s old state=%s, current state=%s", this.name,
-                (this.oldState != null) ? this.oldState.getName() : "",
-                (this.currentState != null) ? this.currentState.getName() : "");
-    }
+		oldState = currentState;
+		// switch to next state
+		currentState = currentState.signal(name);
+		if (logger.isDebugEnabled())
+			logger.debug(String.format("%s Transition to=%s", toString(), name));
+	}
+
+	@Override
+	public void tick(long now) {
+		// if (state != null && state != start && state != end) {
+		if (currentState != null)
+			currentState.tick(now);
+	}
+
+	@Override
+	public String toString() {
+		return String.format("FSM.name=%s old state=%s, current state=%s", this.name,
+				(this.oldState != null) ? this.oldState.getName() : "",
+				(this.currentState != null) ? this.currentState.getName() : "");
+	}
 
 }

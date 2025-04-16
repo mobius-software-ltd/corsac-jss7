@@ -94,8 +94,6 @@ public interface M3UAManagement {
 
     void setUseLsbForLinksetSelection(boolean useLsbForLinksetSelection) throws Exception;
 
-    int getDeliveryMessageThreadCount();
-
     String getRoutingLabelFormatStr();
 
     /**

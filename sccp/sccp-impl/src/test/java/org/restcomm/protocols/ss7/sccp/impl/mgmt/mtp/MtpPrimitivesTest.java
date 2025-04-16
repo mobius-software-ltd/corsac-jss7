@@ -68,11 +68,13 @@ public class MtpPrimitivesTest extends SccpHarness {
     public void tearDownClass() throws Exception {
     }
 
+    @Override
     protected void createStack1() {
         sccpStack1 = createStack(sccpStack1Name);
         sccpProvider1 = sccpStack1.getSccpProvider();
     }
 
+    @Override
     protected void createStack2() {
         sccpStack2 = createStack(sccpStack2Name);
         sccpProvider2 = sccpStack2.getSccpProvider();
@@ -280,8 +282,8 @@ public class MtpPrimitivesTest extends SccpHarness {
         Thread.sleep(15000); // 15000
         stack = (SccpStackImplProxy) sccpStack1;
 
-        assertTrue(stack.getManagementProxy().getMtp3Messages().size() == 2);
-        assertTrue(stack.getManagementProxy().getMgmtMessages().size() == 1);
+	assertEquals(2, stack.getManagementProxy().getMtp3Messages().size());
+	assertEquals(1, stack.getManagementProxy().getMgmtMessages().size());
         rmtpPause = stack.getManagementProxy().getMtp3Messages().get(0);
         emtpPause = new Mtp3PrimitiveMessage(0, Mtp3PrimitiveMessageType.MTP3_STATUS, getStack2PC(), Mtp3StatusType.RemoteUserUnavailable,
                 Mtp3CongestionType.NULL, Mtp3UnavailabiltyCauseType.CAUSE_UNEQUIPED);

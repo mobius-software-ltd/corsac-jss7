@@ -35,7 +35,7 @@ public class Mtp3PausePrimitive extends Mtp3Primitive {
      * @param affectedDpc
      */
     public Mtp3PausePrimitive(int affectedDpc) {
-        super(PAUSE, affectedDpc);
+		super(PAUSE, affectedDpc);
     }
 
     @Override

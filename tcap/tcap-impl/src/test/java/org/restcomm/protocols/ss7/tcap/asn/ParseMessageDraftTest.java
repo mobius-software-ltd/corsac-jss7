@@ -37,6 +37,7 @@ import org.restcomm.protocols.ss7.tcap.asn.tx.TCContinueMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.TCEndMessageImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.TCUniMessageImpl;
 
+import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.Unpooled;
@@ -135,9 +136,12 @@ public class ParseMessageDraftTest {
 
     @Test
     public void testTCBegin() throws IOException, EncodeException, ParseException {
+	WorkerPool workerPool = new WorkerPool();
+	workerPool.start(4);
 
-        SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
-        TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, 4);
+	SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool.getPeriodicQueue());
+	TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8,
+		workerPool.getPeriodicQueue());
         TCAPProvider provider = stack.getProvider();
         
         ASNParser parser=provider.getParser();
@@ -150,13 +154,18 @@ public class ParseMessageDraftTest {
         assertEquals(Utils.decodeTransactionId(msg.getMessage().getOriginatingTransactionId(),stack.getSwapTcapIdBytes()), 145031169);
         assertNull(msg.getMessage().getDestinationTransactionId());
         assertNull(msg.getParsingErrorReason());
+
+	workerPool.stop();
     }
 
     @Test
     public void testTCContinue() throws IOException, EncodeException, ParseException {
+	WorkerPool workerPool = new WorkerPool();
+	workerPool.start(4);
 
-        SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
-        TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, 4);
+	SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool.getPeriodicQueue());
+	TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8,
+		workerPool.getPeriodicQueue());
         TCAPProvider provider = stack.getProvider();
         
         ASNParser parser=provider.getParser();
@@ -169,13 +178,18 @@ public class ParseMessageDraftTest {
         assertEquals(Utils.decodeTransactionId(msg.getMessage().getOriginatingTransactionId(),stack.getSwapTcapIdBytes()), 145031169);
         assertEquals(Utils.decodeTransactionId(msg.getMessage().getDestinationTransactionId(),stack.getSwapTcapIdBytes()), 144965633);
         assertNull(msg.getParsingErrorReason());
+
+	workerPool.stop();
     }
 
     @Test
     public void testTCEnd() throws IOException, EncodeException, ParseException {
+	WorkerPool workerPool = new WorkerPool();
+	workerPool.start(4);
 
-        SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
-        TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, 4);
+	SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool.getPeriodicQueue());
+	TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8,
+		workerPool.getPeriodicQueue());
         TCAPProvider provider = stack.getProvider();
         
         ASNParser parser=provider.getParser();
@@ -188,13 +202,18 @@ public class ParseMessageDraftTest {
         assertNull(msg.getMessage().getOriginatingTransactionId());
         assertEquals(Utils.decodeTransactionId(msg.getMessage().getDestinationTransactionId(),stack.getSwapTcapIdBytes()), 144965633);
         assertNull(msg.getParsingErrorReason());
+
+	workerPool.stop();
     }
 
     @Test
     public void testTCAbort() throws IOException, EncodeException, ParseException {
+	WorkerPool workerPool = new WorkerPool();
+	workerPool.start(4);
 
-        SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
-        TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, 4);
+	SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool.getPeriodicQueue());
+	TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8,
+		workerPool.getPeriodicQueue());
         TCAPProvider provider = stack.getProvider();
         
         ASNParser parser=provider.getParser();
@@ -207,13 +226,18 @@ public class ParseMessageDraftTest {
         assertNull(msg.getMessage().getOriginatingTransactionId());
         assertEquals(Utils.decodeTransactionId(msg.getMessage().getDestinationTransactionId(),stack.getSwapTcapIdBytes()), 2074424339);
         assertNull(msg.getParsingErrorReason());
+
+	workerPool.stop();
     }
 
     @Test
     public void testTCUnidirectional() throws IOException, EncodeException, ParseException {
+	WorkerPool workerPool = new WorkerPool();
+	workerPool.start(4);
 
-        SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest");
-        TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, 4);
+	SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool.getPeriodicQueue());
+	TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8,
+		workerPool.getPeriodicQueue());
         TCAPProvider provider = stack.getProvider();
         
         ASNParser parser=provider.getParser();
@@ -226,6 +250,8 @@ public class ParseMessageDraftTest {
         assertNull(msg.getMessage().getOriginatingTransactionId());
         assertNull(msg.getMessage().getDestinationTransactionId());
         assertNull(msg.getParsingErrorReason());
+
+	workerPool.stop();
     }
 
 }

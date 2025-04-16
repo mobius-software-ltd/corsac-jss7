@@ -53,222 +53,232 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.InvokeImpl;
  *
  */
 public class TCAPFunctionalTest extends SccpHarness {
-    public static final long WAIT_TIME = 500;
-    public static final long[] _ACN_ = new long[] { 0, 4, 0, 0, 1, 0, 19, 2 };
-    private TCAPStackImpl tcapStack1;
-    private TCAPStackImpl tcapStack2;
-    private SccpAddress peer1Address;
-    private SccpAddress peer2Address;
-    private Client client;
-    private Server server;
-    private TCAPListenerWrapper tcapListenerWrapper;
+	public static final long WAIT_TIME = 500;
+	public static final long[] _ACN_ = new long[] { 0, 4, 0, 0, 1, 0, 19, 2 };
+	private TCAPStackImpl tcapStack1;
+	private TCAPStackImpl tcapStack2;
+	private SccpAddress peer1Address;
+	private SccpAddress peer2Address;
+	private Client client;
+	private Server server;
+	private TCAPListenerWrapper tcapListenerWrapper;
 
-    public TCAPFunctionalTest() {
+	public TCAPFunctionalTest() {
 
-    }
+	}
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Before
-    public void setUp() throws Exception {
-    	this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
-        this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
-        
-        System.out.println("setUp");
-        super.setUp();
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see junit.framework.TestCase#setUp()
+	 */
+	@Override
+	@Before
+	public void setUp() throws Exception {
+		this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
+		this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
 
-        peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
-        peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
+		System.out.println("setUp");
+		super.setUp();
 
-        this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest_1", this.sccpProvider1, 8, 4);
-        this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest_2", this.sccpProvider2, 8, 4);
+		peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1,
+				8);
+		peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2,
+				8);
 
-        this.tcapListenerWrapper = new TCAPListenerWrapper();
-        this.tcapStack1.getProvider().addTCListener(tcapListenerWrapper);
+		this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest_1", this.sccpProvider1, 8,
+				workerPool.getPeriodicQueue());
+		this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest_2", this.sccpProvider2, 8,
+				workerPool.getPeriodicQueue());
 
-        this.tcapStack1.start();
-        this.tcapStack2.start();
+		this.tcapListenerWrapper = new TCAPListenerWrapper();
+		this.tcapStack1.getProvider().addTCListener(tcapListenerWrapper);
 
-        this.tcapStack1.setInvokeTimeout(0);
-        this.tcapStack2.setInvokeTimeout(0);
-        // create test classes
-        this.client = new Client(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address);
-        this.server = new Server(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address);
+		this.tcapStack1.start();
+		this.tcapStack2.start();
 
-    }
+		this.tcapStack1.setInvokeTimeout(0);
+		this.tcapStack2.setInvokeTimeout(0);
+		// create test classes
+		this.client = new Client(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address);
+		this.server = new Server(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address);
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see junit.framework.TestCase#tearDown()
-     */
-    @After
-    public void tearDown() {
-        this.tcapStack1.stop();
-        this.tcapStack2.stop();
-        super.tearDown();
+	}
 
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see junit.framework.TestCase#tearDown()
+	 */
+	@Override
+	@After
+	public void tearDown() {
+		this.tcapStack1.stop();
+		this.tcapStack2.stop();
+		super.tearDown();
 
-    @Test
-    public void simpleTCWithDialogTest() throws Exception {
+	}
 
-        long stamp = System.currentTimeMillis();
-        List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-        TestEvent te = TestEvent.createSentEvent(EventType.Begin, null, 0, stamp);
-        clientExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.Continue, null, 1, stamp + WAIT_TIME);
-        clientExpectedEvents.add(te);
-        te = TestEvent.createSentEvent(EventType.End, null, 2, stamp + WAIT_TIME * 2);
-        clientExpectedEvents.add(te);
-        // te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3,stamp+WAIT_TIME*2+_WAIT_REMOVE);
-        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME * 2);
-        clientExpectedEvents.add(te);
+	@Test
+	public void simpleTCWithDialogTest() throws Exception {
 
-        List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-        te = TestEvent.createReceivedEvent(EventType.Begin, null, 0, stamp);
-        serverExpectedEvents.add(te);
-        te = TestEvent.createSentEvent(EventType.Continue, null, 1, stamp + WAIT_TIME);
-        serverExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.End, null, 2, stamp + WAIT_TIME * 2);
-        serverExpectedEvents.add(te);
-        // te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3,stamp+WAIT_TIME*2+_WAIT_REMOVE);
-        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME * 2);
-        serverExpectedEvents.add(te);
+		long stamp = System.currentTimeMillis();
+		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
+		TestEvent te = TestEvent.createSentEvent(EventType.Begin, null, 0, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, 1, stamp + WAIT_TIME);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.End, null, 2, stamp + WAIT_TIME * 2);
+		clientExpectedEvents.add(te);
+		// te = TestEvent.createReceivedEvent(EventType.DialogRelease, null,
+		// 3,stamp+WAIT_TIME*2+_WAIT_REMOVE);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME * 2);
+		clientExpectedEvents.add(te);
 
-        // ..............................
+		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
+		te = TestEvent.createReceivedEvent(EventType.Begin, null, 0, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Continue, null, 1, stamp + WAIT_TIME);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.End, null, 2, stamp + WAIT_TIME * 2);
+		serverExpectedEvents.add(te);
+		// te = TestEvent.createReceivedEvent(EventType.DialogRelease, null,
+		// 3,stamp+WAIT_TIME*2+_WAIT_REMOVE);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME * 2);
+		serverExpectedEvents.add(te);
+
+		// ..............................
 //        this.saveTrafficInFile();
-        // ..............................
+		// ..............................
 
-        client.startClientDialog();
-        assertNotNull(client.dialog.getLocalAddress());
-        assertNull(client.dialog.getRemoteDialogId());
+		client.startClientDialog();
+		assertNotNull(client.dialog.getLocalAddress());
+		assertNull(client.dialog.getRemoteDialogId());
 
-        client.sendBegin();
-        EventTestHarness.waitFor(WAIT_TIME);
+		client.sendBegin();
+		EventTestHarness.waitFor(WAIT_TIME);
 
-        server.sendContinue(false);
-        assertNotNull(server.dialog.getLocalAddress());
-        assertNotNull(server.dialog.getRemoteDialogId());
+		server.sendContinue(false);
+		assertNotNull(server.dialog.getLocalAddress());
+		assertNotNull(server.dialog.getRemoteDialogId());
 
-        EventTestHarness.waitFor(WAIT_TIME);
-        client.dialog.sendComponent(client.createNewInvoke());
-        client.sendEnd(false);
-        assertNotNull(client.dialog.getLocalAddress());
-        assertNotNull(client.dialog.getRemoteDialogId());
+		EventTestHarness.waitFor(WAIT_TIME);
+		client.dialog.sendComponent(client.createNewInvoke());
+		client.sendEnd(false);
+		assertNotNull(client.dialog.getLocalAddress());
+		assertNotNull(client.dialog.getRemoteDialogId());
 
-        EventTestHarness.waitFor(WAIT_TIME);
-        // waitForEnd();
+		EventTestHarness.waitFor(WAIT_TIME);
+		// waitForEnd();
 
-        client.compareEvents(clientExpectedEvents);
-        server.compareEvents(serverExpectedEvents);
+		client.compareEvents(clientExpectedEvents);
+		server.compareEvents(serverExpectedEvents);
 
-    }
+	}
 
-    @Test
-    public void uniMsgTest() throws Exception {
+	@Test
+	public void uniMsgTest() throws Exception {
 
-        long stamp = System.currentTimeMillis();
-        List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-        TestEvent te = TestEvent.createSentEvent(EventType.Uni, null, 0, stamp);
-        clientExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 1, stamp);
-        clientExpectedEvents.add(te);
+		long stamp = System.currentTimeMillis();
+		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
+		TestEvent te = TestEvent.createSentEvent(EventType.Uni, null, 0, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 1, stamp);
+		clientExpectedEvents.add(te);
 
-        List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-        te = TestEvent.createReceivedEvent(EventType.Uni, null, 0, stamp);
-        serverExpectedEvents.add(te);
-        te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 1, stamp);
-        serverExpectedEvents.add(te);
+		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
+		te = TestEvent.createReceivedEvent(EventType.Uni, null, 0, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 1, stamp);
+		serverExpectedEvents.add(te);
 
-        client.startUniDialog();
-        client.sendUni();
-        EventTestHarness.waitFor(WAIT_TIME);
+		client.startUniDialog();
+		client.sendUni();
+		EventTestHarness.waitFor(WAIT_TIME);
 
-        client.compareEvents(clientExpectedEvents);
-        server.compareEvents(serverExpectedEvents);
+		client.compareEvents(clientExpectedEvents);
+		server.compareEvents(serverExpectedEvents);
 
-    }
+	}
 
-    private class TCAPListenerWrapper implements TCListener {
+	private class TCAPListenerWrapper implements TCListener {
 
-        @Override
-        public void onTCUni(TCUniIndication ind) {
-            // TODO Auto-generated method stub
+		@Override
+		public void onTCUni(TCUniIndication ind) {
+			// TODO Auto-generated method stub
 
-        }
+		}
 
-        @Override
-        public void onTCQuery(TCQueryIndication ind) {
-            // TODO Auto-generated method stub
+		@Override
+		public void onTCQuery(TCQueryIndication ind) {
+			// TODO Auto-generated method stub
 
-        }
+		}
 
-        @Override
-        public void onTCConversation(TCConversationIndication ind) {
-            assertEquals(ind.getComponents().getComponents().size(), 2);
-            Return rrl = (Return)ind.getComponents().getComponents().get(0);
-            Invoke inv = (InvokeImpl) ind.getComponents().getComponents().get(1);
+		@Override
+		public void onTCConversation(TCConversationIndication ind) {
+			assertEquals(ind.getComponents().getComponents().size(), 2);
+			Return rrl = (Return) ind.getComponents().getComponents().get(0);
+			Invoke inv = (InvokeImpl) ind.getComponents().getComponents().get(1);
 
-            // operationCode is not sent via ReturnResultLast because it does not contain a Parameter
-            // so operationCode is taken from a sent Invoke
-            assertEquals((long) rrl.getCorrelationId(), 0);
-            assertEquals(rrl.getOperationCode().getPrivateOperationCode(), new Integer(12));
+			// operationCode is not sent via ReturnResultLast because it does not contain a
+			// Parameter
+			// so operationCode is taken from a sent Invoke
+			assertEquals((long) rrl.getCorrelationId(), 0);
+			assertEquals(rrl.getOperationCode().getPrivateOperationCode(), new Integer(12));
 
-            // second Invoke has its own operationCode and it has linkedId to the second sent Invoke
-            assertEquals((long) inv.getInvokeId(), 0);
-            assertEquals(inv.getOperationCode().getPrivateOperationCode(), new Integer(14));
-            assertEquals((long) inv.getCorrelationId(), 1);
+			// second Invoke has its own operationCode and it has linkedId to the second
+			// sent Invoke
+			assertEquals((long) inv.getInvokeId(), 0);
+			assertEquals(inv.getOperationCode().getPrivateOperationCode(), new Integer(14));
+			assertEquals((long) inv.getCorrelationId(), 1);
 
-            // we should see operationCode of the second sent Invoke
-            Invoke linkedInv = inv.getCorrelationInvoke();
-            assertEquals(linkedInv.getOperationCode().getPrivateOperationCode(), new Integer(13));
-        }
+			// we should see operationCode of the second sent Invoke
+			Invoke linkedInv = inv.getCorrelationInvoke();
+			assertEquals(linkedInv.getOperationCode().getPrivateOperationCode(), new Integer(13));
+		}
 
-        @Override
-        public void onTCResponse(TCResponseIndication ind) {
-            // TODO Auto-generated method stub
+		@Override
+		public void onTCResponse(TCResponseIndication ind) {
+			// TODO Auto-generated method stub
 
-        }
+		}
 
-        @Override
-        public void onTCUserAbort(TCUserAbortIndication ind) {
-            // TODO Auto-generated method stub
+		@Override
+		public void onTCUserAbort(TCUserAbortIndication ind) {
+			// TODO Auto-generated method stub
 
-        }
+		}
 
-        @Override
-        public void onTCPAbort(TCPAbortIndication ind) {
-            // TODO Auto-generated method stub
+		@Override
+		public void onTCPAbort(TCPAbortIndication ind) {
+			// TODO Auto-generated method stub
 
-        }
+		}
 
-        @Override
-        public void onTCNotice(TCNoticeIndication ind) {
-            // TODO Auto-generated method stub
+		@Override
+		public void onTCNotice(TCNoticeIndication ind) {
+			// TODO Auto-generated method stub
 
-        }
+		}
 
-        @Override
-        public void onDialogReleased(Dialog d) {
-            // TODO Auto-generated method stub
+		@Override
+		public void onDialogReleased(Dialog d) {
+			// TODO Auto-generated method stub
 
-        }
+		}
 
-        @Override
-        public void onInvokeTimeout(Invoke tcInvokeRequest) {
-            // TODO Auto-generated method stub
+		@Override
+		public void onInvokeTimeout(Invoke tcInvokeRequest) {
+			// TODO Auto-generated method stub
 
-        }
+		}
 
-        @Override
-        public void onDialogTimeout(Dialog d) {
-            // TODO Auto-generated method stub
+		@Override
+		public void onDialogTimeout(Dialog d) {
+			// TODO Auto-generated method stub
 
-        }
+		}
 
-    }
+	}
 }

@@ -72,6 +72,7 @@ public class DialogIdleEndTest extends SccpHarness {
      *
      * @see junit.framework.TestCase#setUp()
      */
+    @Override
     @Before
     public void setUp() throws Exception {
     	this.sccpStack1Name = "DialogIdleEndTestSccpStack1";
@@ -83,8 +84,8 @@ public class DialogIdleEndTest extends SccpHarness {
         peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
         peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
 
-        this.tcapStack1 = new TCAPStackImpl("DialogIdleEndTest1", this.sccpProvider1, 8, 4);
-        this.tcapStack2 = new TCAPStackImpl("DialogIdleEndTest2", this.sccpProvider2, 8, 4);
+	this.tcapStack1 = new TCAPStackImpl("DialogIdleEndTest1", this.sccpProvider1, 8, workerPool.getPeriodicQueue());
+	this.tcapStack2 = new TCAPStackImpl("DialogIdleEndTest2", this.sccpProvider2, 8, workerPool.getPeriodicQueue());
 
         this.tcapStack1.start();
         this.tcapStack2.start();
@@ -101,6 +102,7 @@ public class DialogIdleEndTest extends SccpHarness {
      *
      * @see junit.framework.TestCase#tearDown()
      */
+    @Override
     @After
     public void tearDown() {
         System.out.println("tearDown");
@@ -506,7 +508,7 @@ public class DialogIdleEndTest extends SccpHarness {
         client.startClientDialog();
         EventTestHarness.waitFor(_WAIT);
         client.sendBegin();
-        EventTestHarness.waitFor(_WAIT);
+	EventTestHarness.waitFor(_WAIT);
         server.sendContinue();
         EventTestHarness.waitFor(_WAIT * 7);
         client.compareEvents(clientExpectedEvents);

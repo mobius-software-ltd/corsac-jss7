@@ -48,7 +48,7 @@ import io.netty.buffer.Unpooled;
 public class SccpConnErrMessageTest {
 
     private Logger logger;
-    private SccpStackImpl stack = new SccpStackImpl("SccpConnErrMessageTestStack");
+    private SccpStackImpl stack = new SccpStackImpl("SccpConnErrMessageTestStack", null);
     private MessageFactoryImpl messageFactory;
 
     @Before

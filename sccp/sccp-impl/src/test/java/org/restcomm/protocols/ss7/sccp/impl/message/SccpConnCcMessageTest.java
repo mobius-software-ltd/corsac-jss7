@@ -41,6 +41,8 @@ import org.restcomm.protocols.ss7.sccp.impl.parameter.ImportanceImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.LocalReferenceImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ProtocolClassImpl;
 
+import com.mobius.software.common.dal.timers.WorkerPool;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 /**
@@ -51,17 +53,23 @@ import io.netty.buffer.Unpooled;
 public class SccpConnCcMessageTest {
 
     private Logger logger;
-    private SccpStackImpl stack = new SccpStackImpl("SccpConnCcMessageTestStack");
+    private WorkerPool workerPool;
+    private SccpStackImpl stack;
     private MessageFactoryImpl messageFactory;
 
     @Before
     public void setUp() {
+	workerPool = new WorkerPool();
+	workerPool.start(4);
+	this.stack = new SccpStackImpl("SccpConnCcMessageTestStack", workerPool.getPeriodicQueue());
+		
         this.messageFactory = new MessageFactoryImpl(stack);
         this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName());
     }
 
     @After
     public void tearDown() {
+	this.workerPool.stop();
     }
 
     public ByteBuf getDataCcNoOptParams() {

@@ -52,7 +52,7 @@ import io.netty.buffer.Unpooled;
 public class MessageMultiSapTest extends SccpHarness {
 
     private SccpAddress a1, a2;
-    protected Mtp3UserPartImpl mtp3UserPart11 = new Mtp3UserPartImpl(null);
+    protected Mtp3UserPartImpl mtp3UserPart11;
 
     public MessageMultiSapTest() {
     }
@@ -86,8 +86,11 @@ public class MessageMultiSapTest extends SccpHarness {
         return stack;
     }
 
+    @Override
     @Before
     public void setUp() throws Exception {
+	mtp3UserPart11 = new Mtp3UserPartImpl(null, workerPool.getQueue(), workerPool.getPeriodicQueue());
+
         super.setUp();
 
         sccpStack1.getRouter().addMtp3ServiceAccessPoint(2, 2, 11, 2, 0, null);
@@ -97,6 +100,7 @@ public class MessageMultiSapTest extends SccpHarness {
         resource1.addRemoteSsn(2, 12, getSSN(), 0, false);
     }
 
+    @Override
     @After
     public void tearDown() {
         super.tearDown();

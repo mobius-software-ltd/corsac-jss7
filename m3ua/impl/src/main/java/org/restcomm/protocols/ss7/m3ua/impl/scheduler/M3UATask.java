@@ -22,41 +22,49 @@
 
 package org.restcomm.protocols.ss7.m3ua.impl.scheduler;
 
-/**
- *
- * @author Amit Bhayani
- *
- */
-public abstract class M3UATask {
+import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
+import com.mobius.software.common.dal.timers.Timer;
 
-    protected volatile boolean canceled = false;
-    protected int index;
-    protected M3UAScheduler scheduler;
+public abstract class M3UATask implements Timer {
+	private volatile long startTime = System.currentTimeMillis();
+	protected PeriodicQueuedTasks<Timer> queuedTasks;
 
-    public void run(long now) {
-        if (!canceled) {
-            // exception in caught in scheduler.
-            tick(now);
-        }
-    }
+	public M3UATask(PeriodicQueuedTasks<Timer> queuedTasks) {
+		this.queuedTasks = queuedTasks;
+	}
 
-    public boolean isCanceled() {
-        return this.canceled;
-    }
+	@Override
+	public final void execute() {
+		if (this.startTime != Long.MAX_VALUE) {
+			long now = System.currentTimeMillis();
+			this.tick(now);
 
-    public abstract void tick(long now);
+			// check if its canceled after run;
+			if (this.startTime != Long.MAX_VALUE && this.queuedTasks != null) {
+				this.startTime = System.currentTimeMillis();
+				this.queuedTasks.store(this.getRealTimestamp(), this);
+			}
+		}
+	}
 
-    public void cancel() {
-        this.canceled = true;
-        // dont do this, let it be lazely reclaimed if ever, this causes race!
-        // remove task from list
-        // if (scheduler != null && (index >=0) && (index <
-        // scheduler.tasks.length)) {
-        // scheduler.tasks[index] = null;
-        // }
-    }
+	public abstract void tick(long now);
 
-    public void start(){
-        this.canceled = false;
-    }
+	public void start() {
+		this.startTime = System.currentTimeMillis();
+	}
+
+	@Override
+	public void stop() {
+		this.startTime = Long.MAX_VALUE;
+	}
+
+	@Override
+	public long getStartTime() {
+		return this.startTime;
+	}
+
+	@Override
+	public Long getRealTimestamp() {
+		return this.startTime + 500L;
+	}
 }
