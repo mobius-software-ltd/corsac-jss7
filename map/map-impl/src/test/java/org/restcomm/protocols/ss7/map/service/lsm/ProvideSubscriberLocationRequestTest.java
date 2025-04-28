@@ -118,6 +118,10 @@ public class ProvideSubscriberLocationRequestTest {
                 11, -96, 9, 48, 7, -128, 1, 0, -127, 2, 82, -16, -113, 5, 4, 42, 43, 44, 45, -112, 0, -79, 7, 2, 2, 0, -56, 2,
                 1, 100, -78, 9, -95, 7, 48, 5, -128, 3, 51, 52, 53 };
     }
+    
+    public byte[] getEncodedData2() {
+        return new byte[] { 0x30,0x1c,0x04,0x0d,(byte)0xa0,0x1b,(byte)0xde,(byte)0xf1,0x1a,0x78,0x28,0x00,0x54,0x20,0x01,0x14,0x43,(byte)0x86,0x09,(byte)0x80,0x07,0x36,(byte)0xf4,0x70,0x00,0x21,(byte)0x97,0x7d,(byte)0x87,0x00 };
+    }
 
     public byte[] getDataLmsi() {
         return new byte[] { 31, 32, 33, 34 };
@@ -271,6 +275,17 @@ public class ProvideSubscriberLocationRequestTest {
         assertEquals(reqInd.getReportingPLMNList().getPlmnList().get(0).getPlmnId().getMnc(), 533);
     }
 
+    @Test
+    public void testDecodeProvideSubscriberLocationResponseIndication() throws Exception {
+    	ASNParser parser=new ASNParser();
+    	parser.replaceClass(ProvideSubscriberLocationResponseImpl.class);
+    	
+        byte[] data = getEncodedData2();
+        ASNDecodeResult result=parser.decode(Unpooled.wrappedBuffer(data));
+        assertFalse(result.getHadErrors());
+        assertTrue(result.getResult() instanceof ProvideSubscriberLocationResponseImpl);        
+    }
+    
     @Test
     public void testEncode() throws Exception {
     	ASNParser parser=new ASNParser();
