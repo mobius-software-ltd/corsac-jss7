@@ -1,5 +1,7 @@
 package org.restcomm.protocols.ss7.sccp;
 
+import java.io.IOException;
+
 import org.restcomm.protocols.ss7.sccp.message.SccpConnCrMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.Credit;
 import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
@@ -8,9 +10,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
-import io.netty.buffer.ByteBuf;
+import com.mobius.software.common.dal.timers.TaskCallback;
 
-import java.io.IOException;
+import io.netty.buffer.ByteBuf;
 
 public interface SccpConnection {
     /**
@@ -54,7 +56,7 @@ public interface SccpConnection {
      * @param data
      * @return
      */
-    void send(ByteBuf data) throws Exception;
+    void send(ByteBuf data, TaskCallback<Exception> callback) throws Exception;
 
     /**
      * Get connection state
@@ -83,7 +85,7 @@ public interface SccpConnection {
      * @param message
      * @return
      */
-    void establish(SccpConnCrMessage message) throws IOException;
+    void establish(SccpConnCrMessage message, TaskCallback<Exception> callback) throws IOException;
 
     /**
      * Reset connection
@@ -91,7 +93,7 @@ public interface SccpConnection {
      * @param reason
      * @return
      */
-    void reset(ResetCause reason) throws Exception;
+    void reset(ResetCause reason, TaskCallback<Exception> callback) throws Exception;
 
     /**
      * Refuse to accept new connection
@@ -100,7 +102,7 @@ public interface SccpConnection {
      * @param data This parameter is optional
      * @return
      */
-    void refuse(RefusalCause reason, ByteBuf data) throws Exception;
+    void refuse(RefusalCause reason, ByteBuf data, TaskCallback<Exception> callback) throws Exception;
 
     /**
      * Disconnect established connection
@@ -109,7 +111,7 @@ public interface SccpConnection {
      * @param data This parameter is optional
      * @return
      */
-    void disconnect(ReleaseCause reason, ByteBuf data) throws Exception;
+    void disconnect(ReleaseCause reason, ByteBuf data, TaskCallback<Exception> callback) throws Exception;
 
     /**
      * Accept new connection
@@ -118,7 +120,7 @@ public interface SccpConnection {
      * @param credit This parameter is optional
      * @return
      */
-    void confirm(SccpAddress respondingAddress, Credit credit, ByteBuf data) throws Exception;
+    void confirm(SccpAddress respondingAddress, Credit credit, ByteBuf data, TaskCallback<Exception> callback) throws Exception;
 
     /**
      * Accept new connection

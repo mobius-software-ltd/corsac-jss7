@@ -59,7 +59,7 @@ public class SccpConnAkMessageTest {
     public void setUp() {
 	workerPool = new WorkerPool();
 	workerPool.start(4);
-	stack = new SccpStackImpl("SccpConnAkMessageTestStack", workerPool.getPeriodicQueue());
+	stack = new SccpStackImpl("SccpConnAkMessageTestStack", workerPool);
 
         this.messageFactory = new MessageFactoryImpl(stack);
         this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName());

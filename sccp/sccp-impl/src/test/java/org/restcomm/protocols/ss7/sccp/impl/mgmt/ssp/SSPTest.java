@@ -41,6 +41,8 @@ import org.restcomm.protocols.ss7.sccp.impl.mgmt.SccpMgmtMessage;
 import org.restcomm.protocols.ss7.sccp.impl.mgmt.SccpMgmtMessageType;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 /**
  * Test condition when SSN is not available in one stack aka prohibited
  *
@@ -66,12 +68,14 @@ public class SSPTest extends SccpHarness {
     public void tearDownClass() throws Exception {
     }
 
-    protected void createStack1() {
+    @Override
+	protected void createStack1() {
         sccpStack1 = createStack(sccpStack1Name);
         sccpProvider1 = sccpStack1.getSccpProvider();
     }
 
-    protected void createStack2() {
+    @Override
+	protected void createStack2() {
         sccpStack2 = createStack(sccpStack2Name);
         sccpProvider2 = sccpStack2.getSccpProvider();
     }
@@ -82,28 +86,23 @@ public class SSPTest extends SccpHarness {
         return stack;
     }
 
-    @Before
+    @Override
+	@Before
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    @After
+    @Override
+	@After
     public void tearDown() {
         super.tearDown();
     }
-
-    @Test
-    public void testDummy() throws Exception {
-        int i = 1;
-        assertTrue(i == 1);
-    }
-
+    
     /**
      * Test of configure method, of class SccpStackImpl.
      */
     @Test
-    public void testRemoteRoutingBasedOnSsn() throws Exception {
-
+    public void testRemoteRoutingBasedOnSsn() throws Exception {    	
         a1 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack1PC(), 8);
         a2 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack2PC(), 8);
 
@@ -117,11 +116,16 @@ public class SSPTest extends SccpHarness {
         // u2.register();
         // this will cause: u1 stack will receive SSP, u2 stack will get SST and message.
 
-        u1.send();
-        u2.send();
+        super.sentMessages.set(0);
+        
+        TaskCallback<Exception> callback = super.getTaskCallback(2);
+        u1.send(callback);        
+        u2.send(callback);
 
-        Thread.sleep(100);
-
+        super.sendSemaphore.acquire();
+        
+        Thread.sleep(PROCESSING_TIMEOUT);
+        
         assertTrue(u1.getMessages().size() == 1);
         assertTrue(u1.check());
         assertTrue(u2.getMessages().size() == 0);
@@ -129,7 +133,7 @@ public class SSPTest extends SccpHarness {
         // now lets check functional.mgmt part
 
         SccpStackImplProxy stack = (SccpStackImplProxy) sccpStack1;
-
+        
         assertTrue(stack.getManagementProxy().getMtp3Messages().size() == 0);
         assertTrue(stack.getManagementProxy().getMgmtMessages().size() == 1);
         SccpMgmtMessage rmsg1_ssp = stack.getManagementProxy().getMgmtMessages().get(0);
@@ -198,16 +202,17 @@ public class SSPTest extends SccpHarness {
 
         // try to send;
 
-        u1.send();
+        super.sentMessages.set(0);
+        u1.send(super.getTaskCallback(1));
+        super.sendSemaphore.acquire();
 
-        Thread.sleep(100);
-
+        Thread.sleep(PROCESSING_TIMEOUT);
+        
         assertTrue(u1.getMessages().size() == 1);
         assertTrue(u1.check());
         assertTrue(u2.getMessages().size() == 1);
 
         // TODO: should we check flags in MgmtProxies.
-
     }
 
     /**
@@ -216,7 +221,6 @@ public class SSPTest extends SccpHarness {
      */
     @Test
     public void testRemoteRoutingBasedOnSsn1() throws Exception {
-
         a1 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack1PC(), 8);
         a2 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack2PC(), 8);
 
@@ -230,10 +234,13 @@ public class SSPTest extends SccpHarness {
         // u2.register();
         // this will cause: u1 stack will receive SSP, u2 stack will get SST and message.
 
-        u1.send();
-        u2.send();
-
-        Thread.sleep(100);
+        super.sentMessages.set(0);
+        TaskCallback<Exception> callback = super.getTaskCallback(2);
+        u1.send(callback);
+        u2.send(callback);
+        super.sendSemaphore.acquire();
+        
+        Thread.sleep(PROCESSING_TIMEOUT);
 
         assertTrue(u1.getMessages().size() == 1);
         assertTrue(u1.check());
@@ -266,8 +273,11 @@ public class SSPTest extends SccpHarness {
         assertTrue(rmsg2_sst.getTstamp() >= rmsg1_ssp.getTstamp());
 
         // super.data1.add(createPausePrimitive(getStack2PC()));
-        this.mtp3UserPart1.sendPauseMessageToLocalUser(getStack2PC());
-
+        
+        this.sentMessages.set(0);
+        this.mtp3UserPart1.sendPauseMessageToLocalUser(getStack2PC(), super.getTaskCallback(1));
+        this.sendSemaphore.acquire();
+        
         // register;
         u2.register();
         Thread.sleep(5000);
@@ -334,7 +344,6 @@ public class SSPTest extends SccpHarness {
      */
     @Test
     public void RecdMsgForProhibitedSsnTest() throws Exception {
-
         a1 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack1PC(), 8);
         a2 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack2PC(), 8);
 
@@ -349,19 +358,28 @@ public class SSPTest extends SccpHarness {
         Thread.sleep(100);
 
         RemoteSubSystemImpl rss = (RemoteSubSystemImpl) sccpStack1.getSccpResource().getRemoteSsn(1);
-        u1.send();
-        Thread.sleep(200);
+        super.sentMessages.set(0);
+        u1.send(super.getTaskCallback(1));
+        super.sendSemaphore.acquire();
+        
+        Thread.sleep(PROCESSING_TIMEOUT);
+        
         assertEquals(((SccpStackImplProxy) sccpStack1).getManagementProxy().getMgmtMessages().size(), 1);
         rss.setRemoteSsnProhibited(false);
-        u1.send();
-        Thread.sleep(200);
+        super.sentMessages.set(0);
+        u1.send(super.getTaskCallback(1));
+        super.sendSemaphore.acquire();
         // we do not send SSP during a second after sending
         assertEquals(((SccpStackImplProxy) sccpStack1).getManagementProxy().getMgmtMessages().size(), 1);
 
         Thread.sleep(2000);
         rss.setRemoteSsnProhibited(false);
-        u1.send();
-        Thread.sleep(100);
+        super.sentMessages.set(0);
+        u1.send(super.getTaskCallback(1));
+        super.sendSemaphore.acquire();
+        
+        Thread.sleep(PROCESSING_TIMEOUT);
+
         assertEquals(((SccpStackImplProxy) sccpStack1).getManagementProxy().getMgmtMessages().size(), 2);
     }
 
@@ -370,7 +388,6 @@ public class SSPTest extends SccpHarness {
      */
     @Test
     public void ConsernedSpcTest() throws Exception {
-
         a1 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack1PC(), 8);
         a2 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack2PC(), 8);
 
@@ -386,14 +403,14 @@ public class SSPTest extends SccpHarness {
         assertEquals(((SccpStackImplProxy) sccpStack2).getManagementProxy().getMgmtMessages().size(), 0);
 
         u1.register();
-        Thread.sleep(100);
+        Thread.sleep(PROCESSING_TIMEOUT);
 
         assertEquals(((SccpStackImplProxy) sccpStack2).getManagementProxy().getMgmtMessages().size(), 1);
         assertEquals(((SccpStackImplProxy) sccpStack2).getManagementProxy().getMgmtMessages().get(0).getType(),
                 SccpMgmtMessageType.SSA);
 
         u1.deregister();
-        Thread.sleep(100);
+        Thread.sleep(PROCESSING_TIMEOUT);
 
         assertEquals(((SccpStackImplProxy) sccpStack2).getManagementProxy().getMgmtMessages().size(), 2);
         assertEquals(((SccpStackImplProxy) sccpStack2).getManagementProxy().getMgmtMessages().get(1).getType(),
@@ -402,15 +419,18 @@ public class SSPTest extends SccpHarness {
         // Now test when the MTP3Pause's and then Resume's, SSA should be sent
 
         u1.register();
-        Thread.sleep(100);
+        Thread.sleep(PROCESSING_TIMEOUT);
 
         assertEquals(((SccpStackImplProxy) sccpStack2).getManagementProxy().getMgmtMessages().size(), 3);
         assertEquals(((SccpStackImplProxy) sccpStack2).getManagementProxy().getMgmtMessages().get(2).getType(),
                 SccpMgmtMessageType.SSA);
 
         // Pause Stack2PC
-        this.mtp3UserPart1.sendPauseMessageToLocalUser(getStack2PC());
-        Thread.sleep(100);
+        this.sentMessages.set(0);
+        this.mtp3UserPart1.sendPauseMessageToLocalUser(getStack2PC(), this.getTaskCallback(1));
+        this.sendSemaphore.acquire();
+
+        Thread.sleep(PROCESSING_TIMEOUT);
 
         assertTrue(((SccpStackImplProxy) sccpStack1).getManagementProxy().getMtp3Messages().size() == 1);
         Mtp3PrimitiveMessage rmtpPause = ((SccpStackImplProxy) sccpStack1).getManagementProxy().getMtp3Messages().get(0);
@@ -418,9 +438,12 @@ public class SSPTest extends SccpHarness {
         assertEquals(rmtpPause, emtpPause);
 
         // Resume Stack2PC
-        this.mtp3UserPart1.sendResumeMessageToLocalUser(getStack2PC());
-        Thread.sleep(100);
+        this.sentMessages.set(0);
+        this.mtp3UserPart1.sendResumeMessageToLocalUser(getStack2PC(), this.getTaskCallback(1));
+        this.sendSemaphore.acquire();
 
+        Thread.sleep(PROCESSING_TIMEOUT);
+        
         assertTrue(((SccpStackImplProxy) sccpStack1).getManagementProxy().getMtp3Messages().size() == 2);
         rmtpPause = ((SccpStackImplProxy) sccpStack1).getManagementProxy().getMtp3Messages().get(1);
         emtpPause = new Mtp3PrimitiveMessage(1, Mtp3PrimitiveMessageType.MTP3_RESUME, getStack2PC());

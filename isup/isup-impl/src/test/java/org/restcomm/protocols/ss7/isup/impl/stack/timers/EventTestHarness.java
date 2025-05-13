@@ -26,11 +26,9 @@ package org.restcomm.protocols.ss7.isup.impl.stack.timers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.restcomm.protocols.ss7.isup.ISUPEvent;
 import org.restcomm.protocols.ss7.isup.ISUPListener;
@@ -46,10 +44,7 @@ import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
 
-import com.mobius.software.common.dal.timers.CountableQueue;
-import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
-import com.mobius.software.common.dal.timers.Task;
-import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
 
 import io.netty.buffer.ByteBuf;
@@ -61,284 +56,296 @@ import io.netty.buffer.Unpooled;
  *
  */
 public abstract class EventTestHarness /* extends TestCase */ implements ISUPListener {
-    private WorkerPool workerPool;
-    protected ISUPStack stack;
-    protected ISUPProvider provider;
+	private WorkerPool workerPool;
+	protected ISUPStack stack;
+	protected ISUPProvider provider;
 
-    protected TimerTestMtp3UserPart userPart;
+	protected TimerTestMtp3UserPart userPart;
 
-    // events received by by this listener
-    protected List<EventReceived> localEventsReceived;
-    // events sent to remote ISUP peer.
-    protected List<EventReceived> remoteEventsReceived;
+	// events received by by this listener
+	protected List<EventReceived> localEventsReceived;
+	// events sent to remote ISUP peer.
+	protected List<EventReceived> remoteEventsReceived;
 
-    protected static final int dpc = 1;
-    protected static final int localSpc = 2;
-    protected static final int ni = 2;
+	protected static final int dpc = 1;
+	protected static final int localSpc = 2;
+	protected static final int ni = 2;
 
-    protected UUID listenerUUID;
+	protected UUID listenerUUID;
 
-    public void setUp() throws Exception {
-	listenerUUID = UUID.randomUUID();
-	workerPool = new WorkerPool();
-	workerPool.start(4);
+	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {
+		}
 
-	userPart = new TimerTestMtp3UserPart(workerPool.getQueue(), workerPool.getPeriodicQueue());
-	userPart.start();
+		@Override
+		public void onError(Exception exception) {
+		}
+	};
 
-	this.stack = new ISUPStackImpl(localSpc, ni, workerPool.getPeriodicQueue());
-	this.provider = this.stack.getIsupProvider();
-	this.provider.addListener(listenerUUID, this);
-	this.stack.setMtp3UserPart(this.userPart);
-	CircuitManagerImpl cm = new CircuitManagerImpl();
-	cm.addCircuit(1, dpc);
-	this.stack.setCircuitManager(cm);
-	this.stack.start();
-	localEventsReceived = new ArrayList<EventTestHarness.EventReceived>();
-	remoteEventsReceived = new ArrayList<EventTestHarness.EventReceived>();
-    }
+	public void setUp() throws Exception {
+		listenerUUID = UUID.randomUUID();
+		workerPool = new WorkerPool();
+		workerPool.start(4);
 
-    public void tearDown() throws Exception {
-	// this is done in tests
-	// this.stack.stop();
+		userPart = new TimerTestMtp3UserPart(workerPool);
+		userPart.start();
 
-	this.workerPool.stop();
-    }
-
-    protected void compareEvents(List<EventReceived> expectedLocalEvents,
-	    List<EventReceived> expectedRemoteEventsReceived) {
-
-	if (expectedLocalEvents.size() != this.localEventsReceived.size())
-	    fail("Size of local events: " + this.localEventsReceived.size() + ", does not equal expected events: "
-		    + expectedLocalEvents.size() + "\n" + doStringCompare(localEventsReceived, expectedLocalEvents));
-
-	if (expectedRemoteEventsReceived.size() != this.remoteEventsReceived.size())
-	    fail("Size of remote events: " + this.remoteEventsReceived.size() + ", does not equal expected events: "
-		    + expectedRemoteEventsReceived.size() + "\n"
-		    + doStringCompare(remoteEventsReceived, expectedRemoteEventsReceived));
-
-	for (int index = 0; index < expectedLocalEvents.size(); index++)
-	    assertEquals(localEventsReceived.get(index), expectedLocalEvents.get(index));
-
-	for (int index = 0; index < expectedLocalEvents.size(); index++)
-	    assertEquals(remoteEventsReceived.get(index), expectedRemoteEventsReceived.get(index));
-    }
-
-    protected String doStringCompare(List<EventReceived> lst1, List<EventReceived> lst2) {
-	StringBuilder sb = new StringBuilder();
-	int size1 = lst1.size();
-	int size2 = lst2.size();
-	int count = size1;
-	if (count < size2)
-	    count = size2;
-
-	for (int index = 0; count > index; index++) {
-	    String s1 = size1 > index ? lst1.get(index).toString() : "NOP";
-	    String s2 = size2 > index ? lst2.get(index).toString() : "NOP";
-	    sb.append(s1).append(" - ").append(s2).append("\n");
+		this.stack = new ISUPStackImpl(localSpc, ni, workerPool.getPeriodicQueue());
+		this.provider = this.stack.getIsupProvider();
+		this.provider.addListener(listenerUUID, this);
+		this.stack.setMtp3UserPart(this.userPart);
+		CircuitManagerImpl cm = new CircuitManagerImpl();
+		cm.addCircuit(1, dpc);
+		this.stack.setCircuitManager(cm);
+		this.stack.start();
+		localEventsReceived = new ArrayList<EventTestHarness.EventReceived>();
+		remoteEventsReceived = new ArrayList<EventTestHarness.EventReceived>();
 	}
-	return sb.toString();
-    }
 
-    @Override
-    public void onEvent(ISUPEvent event) {
-	this.localEventsReceived.add(new MessageEventReceived(System.currentTimeMillis(), event));
+	public void tearDown() throws Exception {
+		// this is done in tests
+		// this.stack.stop();
 
-    }
-
-    @Override
-    public void onTimeout(ISUPTimeoutEvent event) {
-	this.localEventsReceived.add(new TimeoutEventReceived(System.currentTimeMillis(), event));
-
-    }
-
-    // method implemented by test, to answer stack.
-    protected void doAnswer() {
-	ISUPMessage answer = getAnswer();
-	int opc = 1;
-	int dpc = 2;
-	int si = Mtp3UserPartBaseImpl._SI_SERVICE_ISUP;
-	int ni = 2;
-	int sls = 3;
-	// int ssi = ni << 2;
-
-	try {
-	    ByteBuf message = Unpooled.buffer(255);
-	    ((AbstractISUPMessage) answer).encode(message);
-	    // bout.write(message);
-	    // byte[] msg = bout.toByteArray();
-
-	    // this.userPart.toRead.add(msg);
-	    Mtp3TransferPrimitiveFactory factory = stack.getMtp3UserPart().getMtp3TransferPrimitiveFactory();
-	    Mtp3TransferPrimitive mtpMsg = factory.createMtp3TransferPrimitive(si, ni, 0, opc, dpc, sls, message,
-		    new AtomicBoolean(false));
-	    this.userPart.sendTransferMessageToLocalUser(mtpMsg, mtpMsg.getSls());
-
-	} catch (Exception e) {
-
-	    e.printStackTrace();
-	    fail("Failed on receive message: " + e);
+		this.workerPool.stop();
 	}
-    }
 
-    protected void doWait(long t) throws InterruptedException {
-	Thread.sleep(t);
-    }
+	protected void compareEvents(List<EventReceived> expectedLocalEvents,
+			List<EventReceived> expectedRemoteEventsReceived) {
 
-    /**
-     * return orignial request
-     *
-     * @return
-     */
-    protected abstract ISUPMessage getRequest();
+		if (expectedLocalEvents.size() != this.localEventsReceived.size())
+			fail("Size of local events: " + this.localEventsReceived.size() + ", does not equal expected events: "
+					+ expectedLocalEvents.size() + "\n" + doStringCompare(localEventsReceived, expectedLocalEvents));
 
-    /**
-     * return answer to be sent.
-     *
-     * @return
-     */
-    protected abstract ISUPMessage getAnswer();
+		if (expectedRemoteEventsReceived.size() != this.remoteEventsReceived.size())
+			fail("Size of remote events: " + this.remoteEventsReceived.size() + ", does not equal expected events: "
+					+ expectedRemoteEventsReceived.size() + "\n"
+					+ doStringCompare(remoteEventsReceived, expectedRemoteEventsReceived));
 
-    protected class EventReceived {
-	private long tstamp;
+		for (int index = 0; index < expectedLocalEvents.size(); index++)
+			assertEquals(localEventsReceived.get(index), expectedLocalEvents.get(index));
+
+		for (int index = 0; index < expectedLocalEvents.size(); index++)
+			assertEquals(remoteEventsReceived.get(index), expectedRemoteEventsReceived.get(index));
+	}
+
+	protected String doStringCompare(List<EventReceived> lst1, List<EventReceived> lst2) {
+		StringBuilder sb = new StringBuilder();
+		int size1 = lst1.size();
+		int size2 = lst2.size();
+		int count = size1;
+		if (count < size2)
+			count = size2;
+
+		for (int index = 0; count > index; index++) {
+			String s1 = size1 > index ? lst1.get(index).toString() : "NOP";
+			String s2 = size2 > index ? lst2.get(index).toString() : "NOP";
+			sb.append(s1).append(" - ").append(s2).append("\n");
+		}
+		return sb.toString();
+	}
+
+	@Override
+	public void onEvent(ISUPEvent event) {
+		this.localEventsReceived.add(new MessageEventReceived(System.currentTimeMillis(), event));
+
+	}
+
+	@Override
+	public void onTimeout(ISUPTimeoutEvent event) {
+		this.localEventsReceived.add(new TimeoutEventReceived(System.currentTimeMillis(), event));
+
+	}
+
+	// method implemented by test, to answer stack.
+	protected void doAnswer() {
+		ISUPMessage answer = getAnswer();
+		int opc = 1;
+		int dpc = 2;
+		int si = Mtp3UserPartBaseImpl._SI_SERVICE_ISUP;
+		int ni = 2;
+		int sls = 3;
+		// int ssi = ni << 2;
+
+		try {
+			ByteBuf message = Unpooled.buffer(255);
+			((AbstractISUPMessage) answer).encode(message);
+			// bout.write(message);
+			// byte[] msg = bout.toByteArray();
+
+			// this.userPart.toRead.add(msg);
+			Mtp3TransferPrimitiveFactory factory = stack.getMtp3UserPart().getMtp3TransferPrimitiveFactory();
+			Mtp3TransferPrimitive mtpMsg = factory.createMtp3TransferPrimitive(si, ni, 0, opc, dpc, sls, message);
+			this.userPart.sendTransferMessageToLocalUser(mtpMsg, mtpMsg.getSls());
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			fail("Failed on receive message: " + e);
+		}
+	}
+
+	protected void doWait(long t) throws InterruptedException {
+		Thread.sleep(t);
+	}
 
 	/**
-	 * @param tstamp
+	 * return orignial request
+	 *
+	 * @return
 	 */
-	public EventReceived(long tstamp) {
-	    super();
-	    this.tstamp = tstamp;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-	    if (this == obj)
-		return true;
-	    if (obj == null)
-		return false;
-	    if (getClass() != obj.getClass())
-		return false;
-	    EventReceived other = (EventReceived) obj;
-
-	    if (tstamp != other.tstamp)
-		// we have some tolerance
-		if (other.tstamp - 100 < tstamp || other.tstamp + 100 > tstamp)
-		    return true;
-		else
-		    return false;
-	    return true;
-	}
-    }
-
-    protected class MessageEventReceived extends EventReceived {
-	private ISUPEvent event;
+	protected abstract ISUPMessage getRequest();
 
 	/**
-	 * @param tstamp
+	 * return answer to be sent.
+	 *
+	 * @return
 	 */
-	public MessageEventReceived(long tstamp, ISUPEvent event) {
-	    super(tstamp);
-	    this.event = event;
+	protected abstract ISUPMessage getAnswer();
+
+	protected class EventReceived {
+		private long tstamp;
+
+		/**
+		 * @param tstamp
+		 */
+		public EventReceived(long tstamp) {
+			this.tstamp = tstamp;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			EventReceived other = (EventReceived) obj;
+			
+			int threshold = 200;
+			if (tstamp != other.tstamp)
+				// we have some tolerance
+				if ((other.tstamp - threshold) <= tstamp || (other.tstamp + threshold) >= tstamp)
+					return true;
+				else
+					return false;
+			return true;
+		}
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-	    if (this == obj)
-		return true;
-	    if (!super.equals(obj))
-		return false;
-	    if (getClass() != obj.getClass())
-		return false;
-	    MessageEventReceived other = (MessageEventReceived) obj;
-	    if (event == null) {
-		if (other.event != null)
-		    return false;
-		// FIXME: use event equal?
-	    } else if (event.getMessage().getMessageType().getCode() != other.event.getMessage().getMessageType()
-		    .getCode())
-		return false;
-	    return true;
+	protected class MessageEventReceived extends EventReceived {
+		private ISUPEvent event;
+
+		/**
+		 * @param tstamp
+		 */
+		public MessageEventReceived(long tstamp, ISUPEvent event) {
+			super(tstamp);
+			this.event = event;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (!super.equals(obj))
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			MessageEventReceived other = (MessageEventReceived) obj;
+			if (event == null) {
+				if (other.event != null)
+					return false;
+				// FIXME: use event equal?
+			} else if (event.getMessage().getMessageType().getCode() != other.event.getMessage().getMessageType()
+					.getCode())
+				return false;
+			return true;
+		}
+
+		@Override
+		public String toString() {
+			return "MessageEventReceived [event=" + event + ", tstamp= " + super.tstamp + "]";
+		}
 	}
 
-	@Override
-	public String toString() {
-	    return "MessageEventReceived [event=" + event + ", tstamp= " + super.tstamp + "]";
-	}
-    }
+	protected class TimeoutEventReceived extends EventReceived {
+		private ISUPTimeoutEvent event;
 
-    protected class TimeoutEventReceived extends EventReceived {
-	private ISUPTimeoutEvent event;
+		public TimeoutEventReceived(long tstamp, ISUPTimeoutEvent event) {
+			super(tstamp);
 
-	public TimeoutEventReceived(long tstamp, ISUPTimeoutEvent event) {
-	    super(tstamp);
-	    this.event = event;
+			this.event = event;
+		}
 
-	}
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			
+			if (!super.equals(obj))
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			TimeoutEventReceived other = (TimeoutEventReceived) obj;
+			
+			if (event == null) {
+				if (other.event != null)
+					return false;
+				// FIXME: use event equal?
+			} else if (event.getMessage().getMessageType().getCode() != other.event.getMessage().getMessageType()
+					.getCode())
+				return false;
+			else if (event.getTimerId() != other.event.getTimerId())
+				return false;
 
-	@Override
-	public boolean equals(Object obj) {
-	    if (this == obj)
-		return true;
-	    if (!super.equals(obj))
-		return false;
-	    if (getClass() != obj.getClass())
-		return false;
-	    TimeoutEventReceived other = (TimeoutEventReceived) obj;
-	    if (event == null) {
-		if (other.event != null)
-		    return false;
-		// FIXME: use event equal?
-	    } else if (event.getMessage().getMessageType().getCode() != other.event.getMessage().getMessageType()
-		    .getCode())
-		return false;
-	    else if (event.getTimerId() != other.event.getTimerId())
-		return false;
+			return true;
+		}
 
-	    return true;
-	}
+		@Override
+		public String toString() {
+			return "TimeoutEventReceived [event=" + event + ", tstamp= " + super.tstamp + "]";
+		}
 
-	@Override
-	public String toString() {
-	    return "TimeoutEventReceived [event=" + event + ", tstamp= " + super.tstamp + "]";
 	}
 
-    }
+	private class TimerTestMtp3UserPart extends Mtp3UserPartBaseImpl {
 
-    private class TimerTestMtp3UserPart extends Mtp3UserPartBaseImpl {
+		public TimerTestMtp3UserPart(WorkerPool workerPool) {
+			super(null, workerPool);
+		}
 
-	public TimerTestMtp3UserPart(CountableQueue<Task> mainQueue, PeriodicQueuedTasks<Timer> queuedTasks) {
-	    super(null, mainQueue, queuedTasks);
+		public void sendTransferMessageToLocalUser(Mtp3TransferPrimitive msg, int seqControl) {
+			super.sendTransferMessageToLocalUser(msg, seqControl, dummyCallback);
+		}
+
+		@Override
+		public void sendMessage(Mtp3TransferPrimitive mtpMsg, TaskCallback<Exception> callback) {
+
+			// here we have to parse ISUPMsg and store in receivedRemote
+			long tstamp = System.currentTimeMillis();
+			ByteBuf payload = mtpMsg.getData();
+			if (payload.readableBytes() < 3)
+				throw new IllegalArgumentException("byte[] must have atleast three octets");
+
+			payload.markReaderIndex();
+			payload.skipBytes(2);
+			int commandCode = payload.readByte();
+			payload.resetReaderIndex();
+
+			AbstractISUPMessage msg = (AbstractISUPMessage) provider.getMessageFactory().createCommand(commandCode);
+			try {
+				msg.decode(payload, provider.getMessageFactory(), provider.getParameterFactory());
+				MessageEventReceived event = new MessageEventReceived(tstamp, new ISUPEvent(provider, msg, dpc));
+				remoteEventsReceived.add(event);
+				callback.onSuccess();
+			} catch (ParameterException e) {
+				e.printStackTrace();
+				callback.onError(new RuntimeException());
+				fail("Failed on message write: " + e);
+			}
+		}
 	}
-
-	@Override
-	public void sendTransferMessageToLocalUser(Mtp3TransferPrimitive msg, int seqControl) {
-	    super.sendTransferMessageToLocalUser(msg, seqControl);
-	}
-
-	@Override
-	public void sendMessage(Mtp3TransferPrimitive mtpMsg) throws IOException {
-
-	    // here we have to parse ISUPMsg and store in receivedRemote
-	    long tstamp = System.currentTimeMillis();
-	    ByteBuf payload = mtpMsg.getData();
-	    if (payload.readableBytes() < 3)
-		throw new IllegalArgumentException("byte[] must have atleast three octets");
-
-	    payload.markReaderIndex();
-	    payload.skipBytes(2);
-	    int commandCode = payload.readByte();
-	    payload.resetReaderIndex();
-
-	    AbstractISUPMessage msg = (AbstractISUPMessage) provider.getMessageFactory().createCommand(commandCode);
-	    try {
-		msg.decode(payload, provider.getMessageFactory(), provider.getParameterFactory());
-		MessageEventReceived event = new MessageEventReceived(tstamp, new ISUPEvent(provider, msg, dpc));
-		remoteEventsReceived.add(event);
-	    } catch (ParameterException e) {
-		e.printStackTrace();
-		fail("Failed on message write: " + e);
-	    }
-	}
-    }
 
 }

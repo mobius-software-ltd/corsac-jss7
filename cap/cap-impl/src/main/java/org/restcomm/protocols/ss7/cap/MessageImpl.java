@@ -39,19 +39,23 @@ public abstract class MessageImpl implements CAPMessage {
     private CAPDialog capDialog;
     private ByteBuf originalBuffer;
     
-    public int getInvokeId() {
+    @Override
+	public int getInvokeId() {
         return this.invokeId;
     }
 
-    public CAPDialog getCAPDialog() {
+    @Override
+	public CAPDialog getCAPDialog() {
         return this.capDialog;
     }
 
-    public void setInvokeId(int invokeId) {
+    @Override
+	public void setInvokeId(int invokeId) {
         this.invokeId = invokeId;
     }
 
-    public void setCAPDialog(CAPDialog capDialog) {
+    @Override
+	public void setCAPDialog(CAPDialog capDialog) {
         this.capDialog = capDialog;
     }
 
@@ -60,21 +64,25 @@ public abstract class MessageImpl implements CAPMessage {
         sb.append(this.invokeId);
     }
 
-    public void setOriginalBuffer(ByteBuf buffer) {
+    @Override
+	public void setOriginalBuffer(ByteBuf buffer) {
     	this.originalBuffer=buffer;
     }
     
-    public ByteBuf getOriginalBuffer() {
+    @Override
+	public ByteBuf getOriginalBuffer() {
     	return this.originalBuffer;
     }
     
-    public void retain() {
+    @Override
+	public void retain() {
     	if(originalBuffer!=null)
     		ReferenceCountUtil.retain(originalBuffer);
     }
     
-    public void release() {
-    	if(originalBuffer!=null && originalBuffer.refCnt()>0)
-    		ReferenceCountUtil.release(originalBuffer, originalBuffer.refCnt());
+    @Override
+	public void release() {
+    	if(originalBuffer!=null)
+    		ReferenceCountUtil.release(originalBuffer);
     }
 }

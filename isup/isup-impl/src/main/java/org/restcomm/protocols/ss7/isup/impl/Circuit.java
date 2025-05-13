@@ -24,7 +24,6 @@
 package org.restcomm.protocols.ss7.isup.impl;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.restcomm.protocols.ss7.isup.ISUPEvent;
 import org.restcomm.protocols.ss7.isup.ISUPTimeoutEvent;
@@ -57,6 +56,7 @@ import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
 
 import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
+import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.Timer;
 
 import io.netty.buffer.ByteBuf;
@@ -75,6 +75,16 @@ class Circuit {
 	private final ISUPProviderImpl provider;
 
 	private PeriodicQueuedTasks<Timer> queuedTasks;
+
+	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {
+		}
+
+		@Override
+		public void onError(Exception exception) {
+		}
+	};
 
 	/**
 	 * @param cic
@@ -260,7 +270,7 @@ class Circuit {
 				break;
 			}
 			// send
-			provider.send(message, msg);
+			provider.send(message, msg, dummyCallback);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -282,8 +292,7 @@ class Circuit {
 		int sls = message.getSls() & 0x0F; // promote
 
 		Mtp3TransferPrimitiveFactory factory = this.provider.stack.getMtp3UserPart().getMtp3TransferPrimitiveFactory();
-		Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(si, ni, 0, opc, dpc, sls, buffer,
-				new AtomicBoolean(false));
+		Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(si, ni, 0, opc, dpc, sls, buffer);
 		return msg;
 	}
 
@@ -757,8 +766,12 @@ class Circuit {
 
 		public abstract void run();
 
+		public abstract Long getTimeout();
+
 		@Override
-		public abstract Long getRealTimestamp();
+		public final Long getRealTimestamp() {
+			return this.startTime + this.getTimeout();
+		}
 
 		@Override
 		public final long getStartTime() {
@@ -782,7 +795,7 @@ class Circuit {
 				if (provider.isAutomaticTimerMessages())
 					try {
 						// TODO: CI required ?
-						provider.send(t1t5REL, t1t5encodedREL);
+						provider.send(t1t5REL, t1t5encodedREL, dummyCallback);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -795,487 +808,360 @@ class Circuit {
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT1Timeout();
+		public Long getTimeout() {
+			return provider.getT1Timeout();
 		}
 	}
 
 	private class TimerT5 extends CircuitTimer {
 		@Override
 		public void run() {
-			try {
-				// remove t5, its current timer.
-				cancelT1();
+			// remove t5, its current timer.
+			cancelT1();
 
-				// restart T5
-				startT5();
+			// restart T5
+			startT5();
 
-				// send
-				if (provider.isAutomaticTimerMessages())
-					try {
-						final ResetCircuitMessage rcm = provider.getMessageFactory().createRSC(cic);
-						// avoid provider method, since we dont want other timer to be
-						// setup.
-						provider.sendMessage(rcm, dpc);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				// notify user
-				final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t1t5REL, ISUPTimeoutEvent.T5, dpc);
-				provider.deliver(timeoutEvent);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// send
+			if (provider.isAutomaticTimerMessages())
+				try {
+					final ResetCircuitMessage rcm = provider.getMessageFactory().createRSC(cic);
+					// avoid provider method, since we dont want other timer to be
+					// setup.
+					provider.sendMessage(rcm, dpc);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			// notify user
+			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t1t5REL, ISUPTimeoutEvent.T5, dpc);
+			provider.deliver(timeoutEvent);
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT5Timeout();
+		public Long getTimeout() {
+			return provider.getT5Timeout();
 		}
 	}
 
 	private class TimerT7 extends CircuitTimer {
 		@Override
 		public void run() {
-
-			try {
-				// send REL
-				if (provider.isAutomaticTimerMessages())
-					try {
-						final ReleaseMessage rel = provider.getMessageFactory().createREL(cic);
-						final CauseIndicators ci = provider.getParameterFactory().createCauseIndicators();
-						ci.setCauseValue(CauseIndicators._CV_NORMAL_UNSPECIFIED);
-						rel.setCauseIndicators(ci);
-						provider.sendMessage(rel, dpc);
-					} catch (ParameterException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				// notify user
-				final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t7AddressMessage,
-						ISUPTimeoutEvent.T7, dpc);
-				t7AddressMessage = null;
-				provider.deliver(timeoutEvent);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// send REL
+			if (provider.isAutomaticTimerMessages())
+				try {
+					final ReleaseMessage rel = provider.getMessageFactory().createREL(cic);
+					final CauseIndicators ci = provider.getParameterFactory().createCauseIndicators();
+					ci.setCauseValue(CauseIndicators._CV_NORMAL_UNSPECIFIED);
+					rel.setCauseIndicators(ci);
+					provider.sendMessage(rel, dpc);
+				} catch (ParameterException | IOException e) {
+					e.printStackTrace();
+				}
+			// notify user
+			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t7AddressMessage, ISUPTimeoutEvent.T7,
+					dpc);
+			t7AddressMessage = null;
+			provider.deliver(timeoutEvent);
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT7Timeout();
+		public Long getTimeout() {
+			return provider.getT7Timeout();
 		}
 	}
 
 	private class TimerT12 extends CircuitTimer {
 		@Override
 		public void run() {
-			try {
-				// start T12
-				startT12();
-				// send
-				if (provider.isAutomaticTimerMessages())
-					try {
-						provider.send(t12t13BLO, t12t13encodedBLO);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				// notify user
-				final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t12t13BLO, ISUPTimeoutEvent.T12,
-						dpc);
-				provider.deliver(timeoutEvent);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// start T12
+			startT12();
+			// send
+			if (provider.isAutomaticTimerMessages())
+				provider.send(t12t13BLO, t12t13encodedBLO, dummyCallback);
+			// notify user
+			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t12t13BLO, ISUPTimeoutEvent.T12, dpc);
+			provider.deliver(timeoutEvent);
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT12Timeout();
+		public Long getTimeout() {
+			return provider.getT12Timeout();
 		}
 	}
 
 	private class TimerT13 extends CircuitTimer {
 		@Override
 		public void run() {
-			try {
-				// cancel T12
-				cancelT12();
-				// restart T13
-				startT13();
-				// send
-				if (provider.isAutomaticTimerMessages())
-					try {
-						provider.send(t12t13BLO, t12t13encodedBLO);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				// notify user
-				final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t12t13BLO, ISUPTimeoutEvent.T13,
-						dpc);
-				provider.deliver(timeoutEvent);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// cancel T12
+			cancelT12();
+			// restart T13
+			startT13();
+			// send
+			if (provider.isAutomaticTimerMessages())
+				provider.send(t12t13BLO, t12t13encodedBLO, dummyCallback);
+			// notify user
+			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t12t13BLO, ISUPTimeoutEvent.T13, dpc);
+			provider.deliver(timeoutEvent);
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT13Timeout();
+		public Long getTimeout() {
+			return provider.getT13Timeout();
 		}
 	}
 
 	private class TimerT14 extends CircuitTimer {
 		@Override
 		public void run() {
-			try {
-				// start T14
-				startT14();
-				// send
-				if (provider.isAutomaticTimerMessages())
-					try {
-						provider.send(t14t15UBL, t14t15encodedUBL);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				// notify user
-				final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t14t15UBL, ISUPTimeoutEvent.T14,
-						dpc);
-				provider.deliver(timeoutEvent);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// start T14
+			startT14();
+			// send
+			if (provider.isAutomaticTimerMessages())
+				provider.send(t14t15UBL, t14t15encodedUBL, dummyCallback);
+			// notify user
+			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t14t15UBL, ISUPTimeoutEvent.T14, dpc);
+			provider.deliver(timeoutEvent);
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT14Timeout();
+		public Long getTimeout() {
+			return provider.getT14Timeout();
 		}
 	}
 
 	private class TimerT15 extends CircuitTimer {
 		@Override
 		public void run() {
-			try {
-				// cancel T14
-				cancelT14();
-				// start
-				startT15();
-				// send
-				if (provider.isAutomaticTimerMessages())
-					try {
-						provider.send(t14t15UBL, t14t15encodedUBL);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				// notify user
-				final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t14t15UBL, ISUPTimeoutEvent.T15,
-						dpc);
-				provider.deliver(timeoutEvent);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// cancel T14
+			cancelT14();
+			// start
+			startT15();
+			// send
+			if (provider.isAutomaticTimerMessages())
+				provider.send(t14t15UBL, t14t15encodedUBL, dummyCallback);
+			// notify user
+			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t14t15UBL, ISUPTimeoutEvent.T15, dpc);
+			provider.deliver(timeoutEvent);
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT15Timeout();
+		public Long getTimeout() {
+			return provider.getT15Timeout();
 		}
 	}
 
 	private class TimerT16 extends CircuitTimer {
 		@Override
 		public void run() {
-			try {
-				// start T14
-				startT16();
-				// send
-				if (provider.isAutomaticTimerMessages())
-					try {
-						provider.send(t16t17RSC, t16t17encodedRSC);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				// notify user
-				final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t16t17RSC, ISUPTimeoutEvent.T16,
-						dpc);
-				provider.deliver(timeoutEvent);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// start T14
+			startT16();
+			// send
+			if (provider.isAutomaticTimerMessages())
+				provider.send(t16t17RSC, t16t17encodedRSC, dummyCallback);
+			// notify user
+			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t16t17RSC, ISUPTimeoutEvent.T16, dpc);
+			provider.deliver(timeoutEvent);
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT16Timeout();
+		public Long getTimeout() {
+			return provider.getT16Timeout();
 		}
 	}
 
 	private class TimerT17 extends CircuitTimer {
 		@Override
 		public void run() {
-			try {
-				// cancel T16
-				cancelT16();
-				// restart T17
-				startT17();
-				// send
-				if (provider.isAutomaticTimerMessages())
-					try {
-						provider.send(t16t17RSC, t16t17encodedRSC);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				// notify user
-				final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t16t17RSC, ISUPTimeoutEvent.T17,
-						dpc);
-				provider.deliver(timeoutEvent);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// cancel T16
+			cancelT16();
+			// restart T17
+			startT17();
+			// send
+			if (provider.isAutomaticTimerMessages())
+				provider.send(t16t17RSC, t16t17encodedRSC, dummyCallback);
+			// notify user
+			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t16t17RSC, ISUPTimeoutEvent.T17, dpc);
+			provider.deliver(timeoutEvent);
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT17Timeout();
+		public Long getTimeout() {
+			return provider.getT17Timeout();
 		}
 	}
 
 	private class TimerT18 extends CircuitTimer {
 		@Override
 		public void run() {
-			try {
-				// start T18
+			// start T18
+			startT18();
+			// send
 
-				startT18();
-				// send
+			if (provider.isAutomaticTimerMessages())
+				provider.send(t18t19CGB, t18t19encodedCGB, dummyCallback);
 
-				if (provider.isAutomaticTimerMessages())
-					try {
-						provider.send(t18t19CGB, t18t19encodedCGB);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-				// notify user
-				final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t18t19CGB, ISUPTimeoutEvent.T18,
-						dpc);
-				provider.deliver(timeoutEvent);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// notify user
+			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t18t19CGB, ISUPTimeoutEvent.T18, dpc);
+			provider.deliver(timeoutEvent);
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT18Timeout();
+		public Long getTimeout() {
+			return provider.getT18Timeout();
 		}
 	}
 
 	private class TimerT19 extends CircuitTimer {
 		@Override
 		public void run() {
-			try {
-				// cancel T18
-				cancelT18();
-				// restart T19
-				startT19();
-				// send
-				if (provider.isAutomaticTimerMessages())
-					try {
-						provider.send(t18t19CGB, t18t19encodedCGB);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				// notify user
-				final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t18t19CGB, ISUPTimeoutEvent.T19,
-						dpc);
-				provider.deliver(timeoutEvent);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// cancel T18
+			cancelT18();
+			// restart T19
+			startT19();
+			// send
+			if (provider.isAutomaticTimerMessages())
+				provider.send(t18t19CGB, t18t19encodedCGB, dummyCallback);
+
+			// notify user
+			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t18t19CGB, ISUPTimeoutEvent.T19, dpc);
+			provider.deliver(timeoutEvent);
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT19Timeout();
+		public Long getTimeout() {
+			return provider.getT19Timeout();
 		}
 	}
 
 	private class TimerT20 extends CircuitTimer {
 		@Override
 		public void run() {
-			try {
-				// start T20
-				startT20();
-				// send
-				if (provider.isAutomaticTimerMessages())
-					try {
-						provider.send(t20t21CGU, t20t21encodedCGU);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				// notify user
-				final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t20t21CGU, ISUPTimeoutEvent.T20,
-						dpc);
-				provider.deliver(timeoutEvent);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// start T20
+			startT20();
+			// send
+			if (provider.isAutomaticTimerMessages())
+				provider.send(t20t21CGU, t20t21encodedCGU, dummyCallback);
+
+			// notify user
+			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t20t21CGU, ISUPTimeoutEvent.T20, dpc);
+			provider.deliver(timeoutEvent);
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT20Timeout();
+		public Long getTimeout() {
+			return provider.getT20Timeout();
 		}
 	}
 
 	private class TimerT21 extends CircuitTimer {
 		@Override
 		public void run() {
-			try {
-				// cancel T20
-				cancelT20();
-				// restart T21
-				startT21();
-				// send
-				if (provider.isAutomaticTimerMessages())
-					try {
-						provider.send(t20t21CGU, t20t21encodedCGU);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				// notify user
-				final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t20t21CGU, ISUPTimeoutEvent.T21,
-						dpc);
-				provider.deliver(timeoutEvent);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// cancel T20
+			cancelT20();
+			// restart T21
+			startT21();
+			// send
+			if (provider.isAutomaticTimerMessages())
+				provider.send(t20t21CGU, t20t21encodedCGU, dummyCallback);
+
+			// notify user
+			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t20t21CGU, ISUPTimeoutEvent.T21, dpc);
+			provider.deliver(timeoutEvent);
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT20Timeout();
+		public Long getTimeout() {
+			return provider.getT21Timeout();
 		}
 	}
 
 	private class TimerT22 extends CircuitTimer {
 		@Override
 		public void run() {
-			try {
-				// start T22
-				startT22();
-				// send
-				if (provider.isAutomaticTimerMessages())
-					try {
-						provider.send(t22t23GRS, t22t23encodedGRS);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				// notify user
-				final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t22t23GRS, ISUPTimeoutEvent.T22,
-						dpc);
-				provider.deliver(timeoutEvent);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// start T22
+			startT22();
+			// send
+			if (provider.isAutomaticTimerMessages())
+				provider.send(t22t23GRS, t22t23encodedGRS, dummyCallback);
+
+			// notify user
+			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t22t23GRS, ISUPTimeoutEvent.T22, dpc);
+			provider.deliver(timeoutEvent);
+
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT22Timeout();
+		public Long getTimeout() {
+			return provider.getT22Timeout();
 		}
 	}
 
 	private class TimerT23 extends CircuitTimer {
 		@Override
 		public void run() {
-			try {
-				// cancel T22
-				cancelT22();
-				// restart T23
-				startT23();
-				// send
-				if (provider.isAutomaticTimerMessages())
-					try {
-						provider.send(t22t23GRS, t22t23encodedGRS);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				// notify user
-				final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t22t23GRS, ISUPTimeoutEvent.T23,
-						dpc);
-				provider.deliver(timeoutEvent);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// cancel T22
+			cancelT22();
+			// restart T23
+			startT23();
+			// send
+			if (provider.isAutomaticTimerMessages())
+				try {
+					provider.send(t22t23GRS, t22t23encodedGRS, dummyCallback);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			// notify user
+			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, t22t23GRS, ISUPTimeoutEvent.T23, dpc);
+			provider.deliver(timeoutEvent);
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT23Timeout();
+		public Long getTimeout() {
+			return provider.getT23Timeout();
 		}
 	}
 
 	private class TimerT28 extends CircuitTimer {
 		@Override
 		public void run() {
-			try {
-				// notify user
-				final CircuitGroupQueryMessage msg = t28CQM;
-				t28CQM = null;
-				ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, msg, ISUPTimeoutEvent.T28, dpc);
-				provider.deliver(timeoutEvent);
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// notify user
+			final CircuitGroupQueryMessage msg = t28CQM;
+			t28CQM = null;
+			ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, msg, ISUPTimeoutEvent.T28, dpc);
+			provider.deliver(timeoutEvent);
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT28Timeout();
+		public Long getTimeout() {
+			return provider.getT28Timeout();
 		}
 	}
 
 	private class TimerT33 extends CircuitTimer {
 		@Override
 		public void run() {
-			try {
-				// send REL
-				if (provider.isAutomaticTimerMessages())
-					try {
-						final ReleaseMessage rel = provider.getMessageFactory().createREL(cic);
-						final CauseIndicators ci = provider.getParameterFactory().createCauseIndicators();
-						ci.setCauseValue(CauseIndicators._CV_NORMAL_UNSPECIFIED);
-						rel.setCauseIndicators(ci);
-						provider.sendMessage(rel, dpc);
-					} catch (ParameterException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				final InformationRequestMessage msg = t33INR;
-				t33INR = null;
-				// notify user
-				final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, msg, ISUPTimeoutEvent.T33, dpc);
-				provider.deliver(timeoutEvent);
-				// FIXME: do this after call, to prevent send of another msg
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// send REL
+			if (provider.isAutomaticTimerMessages())
+				try {
+					final ReleaseMessage rel = provider.getMessageFactory().createREL(cic);
+					final CauseIndicators ci = provider.getParameterFactory().createCauseIndicators();
+					ci.setCauseValue(CauseIndicators._CV_NORMAL_UNSPECIFIED);
+					rel.setCauseIndicators(ci);
+					provider.sendMessage(rel, dpc);
+				} catch (ParameterException | IOException e) {
+					e.printStackTrace();
+				}
+			final InformationRequestMessage msg = t33INR;
+			t33INR = null;
+			// notify user
+			final ISUPTimeoutEvent timeoutEvent = new ISUPTimeoutEvent(provider, msg, ISUPTimeoutEvent.T33, dpc);
+			provider.deliver(timeoutEvent);
+			// FIXME: do this after call, to prevent send of another msg
 		}
 
 		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + provider.getT33Timeout();
+		public Long getTimeout() {
+			return provider.getT33Timeout();
 		}
 	}
 

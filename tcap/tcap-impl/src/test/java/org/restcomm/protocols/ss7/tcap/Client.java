@@ -38,6 +38,7 @@ import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
@@ -80,7 +81,7 @@ public class Client extends EventTestHarness {
         super.sendBegin();
     }
 
-    public void sendBeginUnreachableAddress(boolean returnMessageOnError) throws TCAPException, TCAPSendException {
+    public void sendBeginUnreachableAddress(boolean returnMessageOnError, TaskCallback<Exception> callback) throws TCAPException, TCAPSendException {
         System.err.println(this + " T[" + System.currentTimeMillis() + "]send BEGIN");
         ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
         // UI is optional!
@@ -92,7 +93,7 @@ public class Client extends EventTestHarness {
         tcbr.setReturnMessageOnError(returnMessageOnError);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.Begin, tcbr, sequence++));        
-        this.dialog.send(tcbr);
+        this.dialog.send(tcbr, callback);
     }
 
     public void releaseDialog() {

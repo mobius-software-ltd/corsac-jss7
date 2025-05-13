@@ -102,7 +102,7 @@ public class SccpManagementProxy extends SccpManagement {
 //    }
 
 	@Override
-	public void onManagementMessage(SccpDataMessage message) {
+	public void onManagementMessage(SccpDataMessage message) {		
 		ByteBuf data = message.getData();
 		int messgType = data.readByte();
 		int affectedSsn = data.readByte();

@@ -37,8 +37,7 @@ import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
 
-import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
-import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.common.dal.timers.WorkerPool;
 
 /**
  *
@@ -73,9 +72,9 @@ public class MAPStackImpl implements MAPStack {
 	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> dialogsSentByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
 	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> dialogsReceivedByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
 
-	public MAPStackImpl(String name, SccpProvider sccpPprovider, int ssn, PeriodicQueuedTasks<Timer> queuedTasks) {
+	public MAPStackImpl(String name, SccpProvider sccpPprovider, int ssn, WorkerPool workerPool) {
 		this.name = name;
-		this.tcapStack = new TCAPStackImpl(name, sccpPprovider, ssn, queuedTasks);
+		this.tcapStack = new TCAPStackImpl(name, sccpPprovider, ssn, workerPool);
 		TCAPProvider tcapProvider = tcapStack.getProvider();
 		this.mapCfg = new MAPStackConfigurationManagement();
 		mapProvider = new MAPProviderImpl(name, this, tcapProvider, this.mapCfg);

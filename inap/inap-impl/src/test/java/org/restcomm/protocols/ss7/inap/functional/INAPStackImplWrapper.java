@@ -22,8 +22,7 @@ package org.restcomm.protocols.ss7.inap.functional;
 import org.restcomm.protocols.ss7.inap.INAPStackImpl;
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
 
-import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
-import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.common.dal.timers.WorkerPool;
 
 /**
  *
@@ -32,8 +31,8 @@ import com.mobius.software.common.dal.timers.Timer;
  */
 public class INAPStackImplWrapper extends INAPStackImpl {
 
-	public INAPStackImplWrapper(SccpProvider sccpPprovider, int ssn, PeriodicQueuedTasks<Timer> queuedTasks) {
-		super("Test", sccpPprovider, ssn, queuedTasks);
+	public INAPStackImplWrapper(SccpProvider sccpPprovider, int ssn, WorkerPool workerPool) {
+		super("Test", sccpPprovider, ssn, workerPool);
 		this.inapProvider = new INAPProviderImplWrapper(this.tcapStack.getProvider(), this);
 	}
 }

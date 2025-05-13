@@ -77,6 +77,7 @@ import org.restcomm.protocols.ss7.sccp.impl.parameter.LocalReferenceImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SegmentationImpl;
 import org.restcomm.protocols.ss7.sccp.impl.router.RouterImpl;
+import org.restcomm.protocols.ss7.sccp.message.ParseException;
 import org.restcomm.protocols.ss7.sccp.message.SccpConnMessage;
 import org.restcomm.protocols.ss7.sccp.message.SccpMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle;
@@ -85,8 +86,10 @@ import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
-import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
-import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.common.dal.timers.RunnableTask;
+import com.mobius.software.common.dal.timers.RunnableTimer;
+import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.common.dal.timers.WorkerPool;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -196,7 +199,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 	protected ConcurrentHashMap<Integer, Mtp3UserPart> mtp3UserParts = new ConcurrentHashMap<Integer, Mtp3UserPart>();
 	protected ConcurrentHashMap<MessageReassemblyProcess, SccpSegmentableMessageImpl> reassemplyCache = new ConcurrentHashMap<MessageReassemblyProcess, SccpSegmentableMessageImpl>();
 
-	protected PeriodicQueuedTasks<Timer> queuedTasks;
+	protected WorkerPool workerPool;
 
 	public static final int slsFilter = 0x0f;
 	protected int[] slsTable = null;
@@ -205,59 +208,73 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 	// protected int ni = 2;
 
 	protected final String name;
-    protected boolean rspProhibitedByDefault;
-    protected boolean useCopy = false;
-    
-    private volatile AtomicInteger segmentationLocalRef = new AtomicInteger(0);
-    private volatile AtomicInteger slsCounter = new AtomicInteger(0);
-    private volatile AtomicBoolean selectorCounter = new AtomicBoolean(false);
-    protected volatile AtomicInteger referenceNumberCounter = new AtomicInteger(0);
+	protected boolean rspProhibitedByDefault;
+	protected boolean useCopy = false;
 
-    private ConcurrentHashMap<Integer, Date> lastCongNotice = new ConcurrentHashMap<Integer, Date>();
-    private ConcurrentHashMap<Integer, Date> lastUserPartUnavailNotice = new ConcurrentHashMap<Integer, Date>();
-    
-    private ConcurrentHashMap<String, AtomicLong> messagesSentByType=new ConcurrentHashMap<String, AtomicLong>();
-    private ConcurrentHashMap<String, AtomicLong> messagesReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
-    private ConcurrentHashMap<String, AtomicLong> bytesSentByType=new ConcurrentHashMap<String, AtomicLong>();
-    private ConcurrentHashMap<String, AtomicLong> bytesReceivedByType=new ConcurrentHashMap<String, AtomicLong>();
-    private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> messagesSentByTypeAndNetwork=new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
-    private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> messagesReceivedByTypeAndNetwork=new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
-    private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> bytesSentByTypeAndNetwork=new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
-    private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> bytesReceivedByTypeAndNetwork=new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
-        
-    public static List<String> allMessageTypes=Arrays.asList(new String[] {SccpMessageImpl.MESSAGE_NAME_OTHER,
-    		SccpMessageImpl.MESSAGE_NAME_CR, SccpMessageImpl.MESSAGE_NAME_CC, SccpMessageImpl.MESSAGE_NAME_CREF,
-    		SccpMessageImpl.MESSAGE_NAME_RLSD, SccpMessageImpl.MESSAGE_NAME_RLC, SccpMessageImpl.MESSAGE_NAME_DT1,
-    		SccpMessageImpl.MESSAGE_NAME_DT2, SccpMessageImpl.MESSAGE_NAME_AK, SccpMessageImpl.MESSAGE_NAME_RSR,
-    		SccpMessageImpl.MESSAGE_NAME_RSC, SccpMessageImpl.MESSAGE_NAME_ERR, SccpMessageImpl.MESSAGE_NAME_IT,
-    		SccpMessageImpl.MESSAGE_NAME_UDT, SccpMessageImpl.MESSAGE_NAME_UDTS, SccpMessageImpl.MESSAGE_NAME_XUDT,
-    		SccpMessageImpl.MESSAGE_NAME_XUDTS, SccpMessageImpl.MESSAGE_NAME_LUDT,SccpMessageImpl.MESSAGE_NAME_LUDTS });
-    
-    public SccpStackImpl(String name,Boolean useBuffersCopy, PeriodicQueuedTasks<Timer> queuedTasks) {
-    	this(name, queuedTasks);
-    	if(useBuffersCopy!=null)
-    		this.useCopy = useBuffersCopy;
-    }
-    /*
-     * For non-connection oriented protocol class usage
-     */
-    public SccpStackImpl(String name, PeriodicQueuedTasks<Timer> queuedTasks) {    
-        this.name = name;
-        this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName() + "-" + this.name);
+	private volatile AtomicInteger segmentationLocalRef = new AtomicInteger(0);
+	private volatile AtomicInteger slsCounter = new AtomicInteger(0);
+	private volatile AtomicBoolean selectorCounter = new AtomicBoolean(false);
+	protected volatile AtomicInteger referenceNumberCounter = new AtomicInteger(0);
 
-        this.messageFactory = new MessageFactoryImpl(this);
-        this.sccpProvider = new SccpProviderImpl(this);
-        this.queuedTasks = queuedTasks;
+	private boolean affinityEnabled = false;
 
-        this.state = State.CONFIGURED;
-        
-        for(String currType:allMessageTypes) {
-        	messagesSentByType.put(currType, new AtomicLong(0L));
-        	messagesReceivedByType.put(currType, new AtomicLong(0L));
-        	bytesSentByType.put(currType, new AtomicLong(0L));
-        	bytesReceivedByType.put(currType, new AtomicLong(0L));
-        }
-    }
+	private ConcurrentHashMap<Integer, Date> lastCongNotice = new ConcurrentHashMap<Integer, Date>();
+	private ConcurrentHashMap<Integer, Date> lastUserPartUnavailNotice = new ConcurrentHashMap<Integer, Date>();
+
+	private ConcurrentHashMap<String, AtomicLong> messagesSentByType = new ConcurrentHashMap<String, AtomicLong>();
+	private ConcurrentHashMap<String, AtomicLong> messagesReceivedByType = new ConcurrentHashMap<String, AtomicLong>();
+	private ConcurrentHashMap<String, AtomicLong> bytesSentByType = new ConcurrentHashMap<String, AtomicLong>();
+	private ConcurrentHashMap<String, AtomicLong> bytesReceivedByType = new ConcurrentHashMap<String, AtomicLong>();
+	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> messagesSentByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> messagesReceivedByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> bytesSentByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+	private ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>> bytesReceivedByTypeAndNetwork = new ConcurrentHashMap<Integer, ConcurrentHashMap<String, AtomicLong>>();
+
+	public static List<String> allMessageTypes = Arrays.asList(new String[] { SccpMessageImpl.MESSAGE_NAME_OTHER,
+			SccpMessageImpl.MESSAGE_NAME_CR, SccpMessageImpl.MESSAGE_NAME_CC, SccpMessageImpl.MESSAGE_NAME_CREF,
+			SccpMessageImpl.MESSAGE_NAME_RLSD, SccpMessageImpl.MESSAGE_NAME_RLC, SccpMessageImpl.MESSAGE_NAME_DT1,
+			SccpMessageImpl.MESSAGE_NAME_DT2, SccpMessageImpl.MESSAGE_NAME_AK, SccpMessageImpl.MESSAGE_NAME_RSR,
+			SccpMessageImpl.MESSAGE_NAME_RSC, SccpMessageImpl.MESSAGE_NAME_ERR, SccpMessageImpl.MESSAGE_NAME_IT,
+			SccpMessageImpl.MESSAGE_NAME_UDT, SccpMessageImpl.MESSAGE_NAME_UDTS, SccpMessageImpl.MESSAGE_NAME_XUDT,
+			SccpMessageImpl.MESSAGE_NAME_XUDTS, SccpMessageImpl.MESSAGE_NAME_LUDT,
+			SccpMessageImpl.MESSAGE_NAME_LUDTS });
+
+	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {
+		}
+
+		@Override
+		public void onError(Exception exception) {
+		}
+	};
+
+	public SccpStackImpl(String name, Boolean useBuffersCopy, WorkerPool workerPool) {
+		this(name, workerPool);
+		if (useBuffersCopy != null)
+			this.useCopy = useBuffersCopy;
+	}
+
+	/*
+	 * For non-connection oriented protocol class usage
+	 */
+	public SccpStackImpl(String name, WorkerPool workerPool) {
+		this.name = name;
+		this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName() + "-" + this.name);
+
+		this.messageFactory = new MessageFactoryImpl(this);
+		this.sccpProvider = new SccpProviderImpl(this);
+		this.workerPool = workerPool;
+
+		this.state = State.CONFIGURED;
+
+		for (String currType : allMessageTypes) {
+			messagesSentByType.put(currType, new AtomicLong(0L));
+			messagesReceivedByType.put(currType, new AtomicLong(0L));
+			bytesSentByType.put(currType, new AtomicLong(0L));
+			bytesReceivedByType.put(currType, new AtomicLong(0L));
+		}
+	}
 
 	@Override
 	public String getName() {
@@ -833,27 +850,26 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 		return referenceNumberCounter.get();
 	}
 
-	protected void send(SccpDataNoticeTemplateMessageImpl message) throws Exception {
+	protected void send(SccpDataNoticeTemplateMessageImpl message, TaskCallback<Exception> callback) {
 
 		if (this.state != State.RUNNING) {
-			logger.error("Trying to send SCCP message from SCCP user but SCCP stack is not RUNNING");
+			String errorMessage = "Trying to send SCCP message from SCCP user but SCCP stack is not RUNNING";
+
+			logger.error(errorMessage);
+			callback.onError(new IOException(errorMessage));
 			return;
 		}
 
 		if (message.getCalledPartyAddress() == null || message.getCallingPartyAddress() == null
 				|| message.getData() == null || message.getData().readableBytes() == 0) {
-			logger.error("Message to send must has filled CalledPartyAddress, CallingPartyAddress and data fields");
-			throw new IOException(
-					"Message to send must has filled CalledPartyAddress, CallingPartyAddress and data fields");
+			String errorMessage = "Message to send must has filled CalledPartyAddress, CallingPartyAddress and data fields";
+
+			logger.error(errorMessage);
+			callback.onError(new IOException(errorMessage));
+			return;
 		}
 
-		try {
-			this.sccpRoutingControl.routeMssgFromSccpUser(message);
-		} catch (Exception e) {
-			// log here Exceptions from MTP3 level
-			logger.error("IOException when sending the message to MTP3 level: " + e.getMessage(), e);
-			throw e;
-		}
+		this.sccpRoutingControl.routeMssgFromSccpUser(message, callback);
 	}
 
 	protected int getMaxUserDataLength(SccpAddress calledPartyAddress, SccpAddress callingPartyAddress,
@@ -1052,244 +1068,295 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 		int dpc = mtp3Msg.getDpc();
 		int opc = mtp3Msg.getOpc();
 
+		// decoding of a message
+		ByteBuf data = mtp3Msg.getData();
+		int bytes = data.readableBytes();
+		int mt = data.readUnsignedByte();
 		try {
-			// decoding of a message
-			ByteBuf data = mtp3Msg.getData();
-			int bytes = data.readableBytes();
-			int mt = data.readUnsignedByte();
 			msg = ((MessageFactoryImpl) sccpProvider.getMessageFactory()).createMessage(mt, mtp3Msg.getOpc(),
 					mtp3Msg.getDpc(), mtp3Msg.getSls(), data, this.sccpProtocolVersion, 0);
+		} catch (ParseException e) {
+			logger.error("ParseException while handling SCCP message: " + e.getMessage(), e);
+			return;
+		}
 
-			messagesReceivedByType.get(SccpMessageImpl.getName(msg.getType())).incrementAndGet();
-			bytesReceivedByType.get(SccpMessageImpl.getName(msg.getType())).addAndGet(bytes);
+		messagesReceivedByType.get(SccpMessageImpl.getName(msg.getType())).incrementAndGet();
+		bytesReceivedByType.get(SccpMessageImpl.getName(msg.getType())).addAndGet(bytes);
 
-			// checking if incoming dpc is local
-			if (!this.router.spcIsLocal(dpc)) {
+		// checking if incoming dpc is local
+		if (!this.router.spcIsLocal(dpc)) {
 
-				// incoming dpc is not local - trying to find the target SAP and
-				// send a message to MTP3 (MTP transit function)
-				int sls = mtp3Msg.getSls();
+			// incoming dpc is not local - trying to find the target SAP and
+			// send a message to MTP3 (MTP transit function)
+			int sls = mtp3Msg.getSls();
 
-				RemoteSignalingPointCode remoteSpc = this.getSccpResource().getRemoteSpcByPC(dpc);
-				if (remoteSpc == null) {
-					if (logger.isWarnEnabled())
-						logger.warn(String
-								.format("Incoming Mtp3 Message for nonlocal dpc=%d. But RemoteSpc is not found", dpc));
-					return;
-				}
-				if (remoteSpc.isRemoteSpcProhibited()) {
-					if (logger.isWarnEnabled())
-						logger.warn(String
-								.format("Incoming Mtp3 Message for nonlocal dpc=%d. But RemoteSpc is Prohibited", dpc));
-					// TODO: ***** SSP should we send SSP message to a peer ?
-					return;
-				}
-				if (remoteSpc.getCurrentRestrictionLevel() > 1) {
-					if (logger.isWarnEnabled())
-						logger.warn(String
-								.format("Incoming Mtp3 Message for nonlocal dpc=%d. But RemoteSpc is Congested", dpc));
-					// TODO: ***** SSC should we send SSC message to a peer ?
-					return;
-				}
-				Mtp3ServiceAccessPoint sap2 = this.router.findMtp3ServiceAccessPoint(dpc, sls);
-				if (sap2 == null) {
-					if (logger.isWarnEnabled())
-						logger.warn(String.format(
-								"Incoming Mtp3 Message for nonlocal dpc=%d / sls=%d. But SAP is not found", dpc, sls));
-					return;
-				}
-				Mtp3UserPart mup = this.getMtp3UserPart(sap2.getMtp3Id());
-				if (mup == null) {
-					if (logger.isWarnEnabled())
-						logger.warn(String.format(
-								"Incoming Mtp3 Message for nonlocal dpc=%d / sls=%d. no matching Mtp3UserPart found",
-								dpc, sls));
-					return;
-				}
-
-				mup.sendMessage(mtp3Msg);
+			RemoteSignalingPointCode remoteSpc = this.getSccpResource().getRemoteSpcByPC(dpc);
+			if (remoteSpc == null) {
+				if (logger.isWarnEnabled())
+					logger.warn(String.format("Incoming Mtp3 Message for nonlocal dpc=%d. But RemoteSpc is not found",
+							dpc));
 				return;
 			}
-
-			// process only SCCP messages
-			if (mtp3Msg.getSi() != Mtp3UserPartBaseImpl._SI_SERVICE_SCCP) {
-				logger.warn(String.format(
-						"Received Mtp3TransferPrimitive from lower layer with Service Indicator=%d which is not SCCP. Dropping this message",
-						mtp3Msg.getSi()));
+			if (remoteSpc.isRemoteSpcProhibited()) {
+				if (logger.isWarnEnabled())
+					logger.warn(String.format("Incoming Mtp3 Message for nonlocal dpc=%d. But RemoteSpc is Prohibited",
+							dpc));
+				// TODO: ***** SSP should we send SSP message to a peer ?
 				return;
 			}
-
-			// finding sap and networkId for a message
-			dpc = mtp3Msg.getDpc();
-			opc = mtp3Msg.getOpc();
-			String localGtDigits = null;
-			if (msg instanceof SccpAddressedMessageImpl) {
-				SccpAddressedMessageImpl msgAddr = (SccpAddressedMessageImpl) msg;
-				SccpAddress addr = msgAddr.getCalledPartyAddress();
-				if (addr != null) {
-					GlobalTitle gt = addr.getGlobalTitle();
-					if (gt != null)
-						localGtDigits = gt.getDigits();
-				}
+			if (remoteSpc.getCurrentRestrictionLevel() > 1) {
+				if (logger.isWarnEnabled())
+					logger.warn(String.format("Incoming Mtp3 Message for nonlocal dpc=%d. But RemoteSpc is Congested",
+							dpc));
+				// TODO: ***** SSC should we send SSC message to a peer ?
+				return;
 			}
-			Mtp3ServiceAccessPoint sap = this.router.findMtp3ServiceAccessPointForIncMes(dpc, opc, localGtDigits);
-			int networkId = 0;
-			if (sap == null) {
+			Mtp3ServiceAccessPoint sap2 = this.router.findMtp3ServiceAccessPoint(dpc, sls);
+			if (sap2 == null) {
 				if (logger.isWarnEnabled())
 					logger.warn(String.format(
-							"Incoming Mtp3 Message for local address for localPC=%d, remotePC=%d, sls=%d. But SAP is not found for localPC",
-							dpc, opc, mtp3Msg.getSls()));
-			} else
-				networkId = sap.getNetworkId();
-			msg.setNetworkId(networkId);
-			Integer networkID = msg.getNetworkId();
-			ConcurrentHashMap<String, AtomicLong> messagesReceivedByTypeAndNetwork = this.messagesReceivedByTypeAndNetwork
-					.get(networkID);
-			if (messagesReceivedByTypeAndNetwork == null) {
-				messagesReceivedByTypeAndNetwork = new ConcurrentHashMap<String, AtomicLong>();
-				for (String currType : allMessageTypes)
-					messagesReceivedByTypeAndNetwork.put(currType, new AtomicLong(0L));
-
-				ConcurrentHashMap<String, AtomicLong> oldValue = this.messagesReceivedByTypeAndNetwork
-						.putIfAbsent(networkID, messagesReceivedByTypeAndNetwork);
-				if (oldValue != null)
-					messagesReceivedByTypeAndNetwork = oldValue;
+							"Incoming Mtp3 Message for nonlocal dpc=%d / sls=%d. But SAP is not found", dpc, sls));
+				return;
+			}
+			Mtp3UserPart mup = this.getMtp3UserPart(sap2.getMtp3Id());
+			if (mup == null) {
+				if (logger.isWarnEnabled())
+					logger.warn(String.format(
+							"Incoming Mtp3 Message for nonlocal dpc=%d / sls=%d. no matching Mtp3UserPart found", dpc,
+							sls));
+				return;
 			}
 
-			ConcurrentHashMap<String, AtomicLong> bytesReceivedByTypeAndNetwork = this.bytesReceivedByTypeAndNetwork
-					.get(networkID);
-			if (bytesReceivedByTypeAndNetwork == null) {
-				bytesReceivedByTypeAndNetwork = new ConcurrentHashMap<String, AtomicLong>();
-				for (String currType : allMessageTypes)
-					bytesReceivedByTypeAndNetwork.put(currType, new AtomicLong(0L));
+			mtp3Msg.retain();
 
-				ConcurrentHashMap<String, AtomicLong> oldValue = this.bytesReceivedByTypeAndNetwork
-						.putIfAbsent(networkID, bytesReceivedByTypeAndNetwork);
-				if (oldValue != null)
-					bytesReceivedByTypeAndNetwork = oldValue;
-			}
+			String taskID = String.valueOf(opc) + String.valueOf(dpc);
+			RunnableTask task = new RunnableTask(new Runnable() {
+				@Override
+				public void run() {
+					mup.sendMessage(mtp3Msg, dummyCallback);
+					mtp3Msg.release();
+				}
+			}, taskID);
 
-			messagesReceivedByTypeAndNetwork.get(SccpMessageImpl.getName(msg.getType())).incrementAndGet();
-			bytesReceivedByTypeAndNetwork.get(SccpMessageImpl.getName(msg.getType())).addAndGet(bytes);
-
-			if (logger.isDebugEnabled())
-				logger.debug(String.format("Rx : SCCP message from MTP %s", msg));
-
-			// when segmented messages - make a reassembly operation
-			if (msg instanceof SccpSegmentableMessageImpl) {
-				SccpSegmentableMessageImpl sgmMsg = (SccpSegmentableMessageImpl) msg;
-				SegmentationImpl segm = (SegmentationImpl) sgmMsg.getSegmentation();
-				if (segm != null)
-					// segmentation info is present - segmentation is possible
-					if (segm.isFirstSegIndication() && segm.getRemainingSegments() == 0)
-						// the single segment - no reassembly is needed
-						// not need to change the ref count here
-						sgmMsg.setReceivedSingleSegment();
-					else // multiple segments - reassembly is needed
-					if (segm.isFirstSegIndication()) {
-						// first segment
-						// incrementing the count for current segment
-						ReferenceCountUtil.retain(sgmMsg.getData());
-						sgmMsg.setReceivedFirstSegment();
-						MessageReassemblyProcess msp = new MessageReassemblyProcess(segm.getSegmentationLocalRef(),
-								sgmMsg.getCallingPartyAddress());
-						this.reassemplyCache.put(msp, sgmMsg);
-						sgmMsg.setMessageReassemblyProcess(msp);
-
-						this.queuedTasks.store(msp.getRealTimestamp(), msp);
-						return;
-					} else {
-
-						// nonfirst segment
-						MessageReassemblyProcess msp = new MessageReassemblyProcess(segm.getSegmentationLocalRef(),
-								sgmMsg.getCallingPartyAddress());
-						SccpSegmentableMessageImpl sgmMsgFst = null;
-						sgmMsgFst = this.reassemplyCache.get(msp);
-
-						if (sgmMsgFst == null) {
-							// previous segments cache is not found -
-							// discard a segment
-							if (logger.isWarnEnabled())
-								logger.warn(String.format(
-										"Reassembly function failure: received a non first segment without the first segement having recieved. SccpMessageSegment=%s",
-										msg));
-							return;
-						}
-						if (sgmMsgFst.getRemainingSegments() - 1 != segm.getRemainingSegments()) {
-							// segments bad order
-							this.reassemplyCache.remove(msp);
-							// need to release buffers stored till now
-							MessageReassemblyProcess mspMain = sgmMsgFst.getMessageReassemblyProcess();
-							if (mspMain != null)
-								mspMain.stop();
-
-							if (logger.isWarnEnabled())
-								logger.warn(String.format(
-										"Reassembly function failure: when receiving a next segment message order is missing. SccpMessageSegment=%s",
-										msg));
-							this.sccpRoutingControl.sendSccpError(sgmMsgFst, ReturnCauseValue.CANNOT_REASEMBLE, null);
-							return;
-						}
-
-						// incrementing the count for current segment
-						ReferenceCountUtil.retain(sgmMsg.getData());
-						if (sgmMsgFst.getRemainingSegments() == 1) {
-							// last segment
-							MessageReassemblyProcess mspMain = sgmMsgFst.getMessageReassemblyProcess();
-							if (mspMain != null)
-								mspMain.stop();
-							this.reassemplyCache.remove(msp);
-
-							if (sgmMsgFst.getRemainingSegments() != 1)
-								return;
-
-							sgmMsgFst.setReceivedNextSegment(sgmMsg);
-							msg = sgmMsgFst;
-						} else {
-							// not last segment
-							sgmMsgFst.setReceivedNextSegment(sgmMsg);
-							return;
-						}
-					}
-			}
-
-			if (msg instanceof SccpAddressedMessageImpl) {
-				// CR or connectionless messages
-				SccpAddressedMessageImpl msgAddr = (SccpAddressedMessageImpl) msg;
-
-				// adding OPC into CallingPartyAddress if it is absent there and
-				// "RouteOnSsn"
-				SccpAddress addr = msgAddr.getCallingPartyAddress();
-				if (addr != null && addr.getAddressIndicator()
-						.getRoutingIndicator() == RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN)
-					if (!addr.getAddressIndicator().isPCPresent())
-						msgAddr.setCallingPartyAddress(
-								new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null,
-										msgAddr.getIncomingOpc(), addr.getSubsystemNumber()));
-
-				sccpRoutingControl.routeMssgFromMtp(msgAddr);
-
-			} else if (msg instanceof SccpConnMessage)
-				// non-addressed message processing (these are connected-oriented messages in
-				// the connected phase)
-				sccpRoutingControl.routeMssgFromMtpConn((SccpConnMessage) msg);
+			if (this.affinityEnabled)
+				workerPool.addTaskLast(task);
 			else
-				logger.warn(String.format(
-						"Rx SCCP message which is not instance of SccpAddressedMessage or SccpSegmentableMessage"
-								+ " and doesn't implement SccpConnMessage. Will be dropped. Message=",
-						msg));
-		} catch (Exception e) {
-			logger.error("IOException while handling SCCP message: " + e.getMessage(), e);
+				workerPool.getQueue().offerLast(task);
+			return;
 		}
+
+		// process only SCCP messages
+		if (mtp3Msg.getSi() != Mtp3UserPartBaseImpl._SI_SERVICE_SCCP) {
+			logger.warn(String.format(
+					"Received Mtp3TransferPrimitive from lower layer with Service Indicator=%d which is not SCCP. Dropping this message",
+					mtp3Msg.getSi()));
+			return;
+		}
+
+		// finding sap and networkId for a message
+		String localGtDigits = null;
+		String remoteGtDigits = null;
+		if (msg instanceof SccpAddressedMessageImpl) {
+			SccpAddressedMessageImpl msgAddr = (SccpAddressedMessageImpl) msg;
+			SccpAddress calledAddr = msgAddr.getCalledPartyAddress();
+			SccpAddress callingAddr = msgAddr.getCallingPartyAddress();
+
+			if (calledAddr != null) {
+				GlobalTitle gt = calledAddr.getGlobalTitle();
+				if (gt != null)
+					localGtDigits = gt.getDigits();
+			}
+
+			if (callingAddr != null) {
+				GlobalTitle gt = callingAddr.getGlobalTitle();
+				if (gt != null)
+					remoteGtDigits = gt.getDigits();
+			}
+		}
+		Mtp3ServiceAccessPoint sap = this.router.findMtp3ServiceAccessPointForIncMes(dpc, opc, localGtDigits);
+		int networkId = 0;
+		if (sap == null) {
+			if (logger.isWarnEnabled())
+				logger.warn(String.format(
+						"Incoming Mtp3 Message for local address for localPC=%d, remotePC=%d, sls=%d. But SAP is not found for localPC",
+						dpc, opc, mtp3Msg.getSls()));
+		} else
+			networkId = sap.getNetworkId();
+		msg.setNetworkId(networkId);
+		Integer networkID = msg.getNetworkId();
+		ConcurrentHashMap<String, AtomicLong> messagesReceivedByTypeAndNetwork = this.messagesReceivedByTypeAndNetwork
+				.get(networkID);
+		if (messagesReceivedByTypeAndNetwork == null) {
+			messagesReceivedByTypeAndNetwork = new ConcurrentHashMap<String, AtomicLong>();
+			for (String currType : allMessageTypes)
+				messagesReceivedByTypeAndNetwork.put(currType, new AtomicLong(0L));
+
+			ConcurrentHashMap<String, AtomicLong> oldValue = this.messagesReceivedByTypeAndNetwork
+					.putIfAbsent(networkID, messagesReceivedByTypeAndNetwork);
+			if (oldValue != null)
+				messagesReceivedByTypeAndNetwork = oldValue;
+		}
+
+		ConcurrentHashMap<String, AtomicLong> bytesReceivedByTypeAndNetwork = this.bytesReceivedByTypeAndNetwork
+				.get(networkID);
+		if (bytesReceivedByTypeAndNetwork == null) {
+			bytesReceivedByTypeAndNetwork = new ConcurrentHashMap<String, AtomicLong>();
+			for (String currType : allMessageTypes)
+				bytesReceivedByTypeAndNetwork.put(currType, new AtomicLong(0L));
+
+			ConcurrentHashMap<String, AtomicLong> oldValue = this.bytesReceivedByTypeAndNetwork.putIfAbsent(networkID,
+					bytesReceivedByTypeAndNetwork);
+			if (oldValue != null)
+				bytesReceivedByTypeAndNetwork = oldValue;
+		}
+
+		messagesReceivedByTypeAndNetwork.get(SccpMessageImpl.getName(msg.getType())).incrementAndGet();
+		bytesReceivedByTypeAndNetwork.get(SccpMessageImpl.getName(msg.getType())).addAndGet(bytes);
+
+		if (logger.isDebugEnabled())
+			logger.debug(String.format("Rx : SCCP message from MTP %s", msg));
+
+		String taskID = null;
+		if (localGtDigits != null && remoteGtDigits != null)
+			taskID = localGtDigits + remoteGtDigits;
+		else
+			taskID = String.valueOf(opc) + String.valueOf(dpc);
+
+		// when segmented messages - make a reassembly operation
+		if (msg instanceof SccpSegmentableMessageImpl) {
+			SccpSegmentableMessageImpl sgmMsg = (SccpSegmentableMessageImpl) msg;
+			SegmentationImpl segm = (SegmentationImpl) sgmMsg.getSegmentation();
+
+			if (segm != null)
+				// segmentation info is present - segmentation is possible
+				if (segm.isFirstSegIndication() && segm.getRemainingSegments() == 0)
+					// the single segment - no reassembly is needed
+					// not need to change the ref count here
+					sgmMsg.setReceivedSingleSegment();
+				else if (segm.isFirstSegIndication()) {
+					// first segment
+					// incrementing the count for current segment
+
+					ReferenceCountUtil.retain(sgmMsg.getData());
+
+					sgmMsg.setReceivedFirstSegment();
+					MessageReassemblyProcess msp = new MessageReassemblyProcess(segm.getSegmentationLocalRef(),
+							sgmMsg.getCallingPartyAddress(), taskID);
+					this.reassemplyCache.put(msp, sgmMsg);
+					sgmMsg.setMessageReassemblyProcess(msp);
+
+					this.workerPool.addTimer(msp);
+					return;
+				} else {
+
+					// nonfirst segment
+					MessageReassemblyProcess msp = new MessageReassemblyProcess(segm.getSegmentationLocalRef(),
+							sgmMsg.getCallingPartyAddress(), taskID);
+					SccpSegmentableMessageImpl sgmMsgFst = null;
+					sgmMsgFst = this.reassemplyCache.get(msp);
+
+					if (sgmMsgFst == null) {
+						// previous segments cache is not found -
+						// discard a segment
+						if (logger.isWarnEnabled())
+							logger.warn(String.format(
+									"Reassembly function failure: received a non first segment without the first segement having recieved. SccpMessageSegment=%s",
+									msg));
+						return;
+					}
+					if (sgmMsgFst.getRemainingSegments() - 1 != segm.getRemainingSegments()) {
+						// segments bad order
+						this.reassemplyCache.remove(msp);
+						// need to release buffers stored till now
+						MessageReassemblyProcess mspMain = sgmMsgFst.getMessageReassemblyProcess();
+						if (mspMain != null)
+							mspMain.stop();
+
+						if (logger.isWarnEnabled())
+							logger.warn(String.format(
+									"Reassembly function failure: when receiving a next segment message order is missing. SccpMessageSegment=%s",
+									msg));
+						this.sccpRoutingControl.sendSccpError(sgmMsgFst, ReturnCauseValue.CANNOT_REASEMBLE, null,
+								dummyCallback);
+						return;
+					}
+
+					// incrementing the count for current segment
+					ReferenceCountUtil.retain(sgmMsg.getData());
+
+					if (sgmMsgFst.getRemainingSegments() == 1) {
+						// last segment
+						MessageReassemblyProcess mspMain = sgmMsgFst.getMessageReassemblyProcess();
+						if (mspMain != null)
+							mspMain.stop();
+						this.reassemplyCache.remove(msp);
+
+						if (sgmMsgFst.getRemainingSegments() != 1)
+							return;
+
+						sgmMsgFst.setReceivedNextSegment(sgmMsg);
+						msg = sgmMsgFst;
+					} else {
+						// not last segment
+						sgmMsgFst.setReceivedNextSegment(sgmMsg);
+						return;
+					}
+				}
+		}
+
+		msg.retain();
+
+		final SccpMessageImpl sccpMessage = msg;
+		RunnableTask incomingTask = new RunnableTask(new Runnable() {
+			@Override
+			public void run() {
+				if (sccpMessage instanceof SccpAddressedMessageImpl) {
+					// CR or connectionless messages
+					final SccpAddressedMessageImpl msgAddr = (SccpAddressedMessageImpl) sccpMessage;
+
+					// adding OPC into CallingPartyAddress if it is absent there and "RouteOnSsn"
+					SccpAddress addr = msgAddr.getCallingPartyAddress();
+					if (addr != null && addr.getAddressIndicator()
+							.getRoutingIndicator() == RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN)
+						if (!addr.getAddressIndicator().isPCPresent())
+							msgAddr.setCallingPartyAddress(
+									new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null,
+											msgAddr.getIncomingOpc(), addr.getSubsystemNumber()));
+
+					try {
+						sccpRoutingControl.routeMssgFromMtp(msgAddr);
+					} catch (Exception e) {
+						logger.error("IOException while handling SCCP message: " + e.getMessage(), e);
+					}
+				} else if (sccpMessage instanceof SccpConnMessage)
+					try {
+						sccpRoutingControl.routeMssgFromMtpConn((SccpConnMessage) sccpMessage);
+					} catch (Exception e) {
+						logger.error("IOException while handling SCCP message: " + e.getMessage(), e);
+					}
+				else
+					logger.warn(String.format(
+							"Rx SCCP message which is not instance of SccpAddressedMessage or SccpSegmentableMessage"
+									+ " and doesn't implement SccpConnMessage. Will be dropped. Message=",
+							sccpMessage));
+
+				sccpMessage.release();
+			}
+		}, taskID);
+
+		if (this.affinityEnabled)
+			workerPool.addTaskLast(incomingTask);
+		else
+			workerPool.getQueue().offerLast(incomingTask);
 	}
 
-	public class MessageReassemblyProcess implements Timer {
+	public class MessageReassemblyProcess extends RunnableTimer {
 		private int segmentationLocalRef;
 		private SccpAddress callingPartyAddress;
 
-		private long startTime = System.currentTimeMillis();
+		public MessageReassemblyProcess(int segmentationLocalRef, SccpAddress callingPartyAddress, String processID) {
+			super(null, System.currentTimeMillis() + reassemblyTimerDelay, processID);
 
-		public MessageReassemblyProcess(int segmentationLocalRef, SccpAddress callingPartyAddress) {
 			this.segmentationLocalRef = segmentationLocalRef;
 			this.callingPartyAddress = callingPartyAddress;
 		}
@@ -1303,7 +1370,7 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 			MessageReassemblyProcess x = (MessageReassemblyProcess) obj;
 			if (this.segmentationLocalRef != x.segmentationLocalRef)
 				return false;
-			
+
 			if (this.callingPartyAddress == null || x.callingPartyAddress == null)
 				return false;
 
@@ -1328,15 +1395,10 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 			msg.cancelSegmentation();
 
 			try {
-				sccpRoutingControl.sendSccpError(msg, ReturnCauseValue.CANNOT_REASEMBLE, null);
+				sccpRoutingControl.sendSccpError(msg, ReturnCauseValue.CANNOT_REASEMBLE, null, dummyCallback);
 			} catch (Exception e) {
 				logger.warn("IOException when sending an error message", e);
 			}
-		}
-
-		@Override
-		public long getStartTime() {
-			return this.startTime;
 		}
 
 		@Override
@@ -1344,14 +1406,10 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 			return this.startTime + reassemblyTimerDelay;
 		}
 
-		@Override
-		public void stop() {
-			this.startTime = Long.MAX_VALUE;
-		}
 	}
 
-	public void sendMessageToMTP(SccpMessage message, Mtp3UserPart mup, Mtp3TransferPrimitive mtp3Message)
-			throws IOException {
+	public void sendMessageToMTP(SccpMessage message, Mtp3UserPart mup, Mtp3TransferPrimitive mtp3Message,
+			TaskCallback<Exception> callback) {
 		messagesSentByType.get(SccpMessageImpl.getName(message.getType())).incrementAndGet();
 		bytesSentByType.get(SccpMessageImpl.getName(message.getType()))
 				.addAndGet(mtp3Message.getData().readableBytes());
@@ -1385,7 +1443,47 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 		messagesSentByTypeAndNetwork.get(SccpMessageImpl.getName(message.getType())).incrementAndGet();
 		bytesSentByTypeAndNetwork.get(SccpMessageImpl.getName(message.getType()))
 				.addAndGet(mtp3Message.getData().readableBytes());
-		mup.sendMessage(mtp3Message);
+
+		String localGtDigits = null;
+		String remoteGtDigits = null;
+		if (message instanceof SccpAddressedMessageImpl) {
+			SccpAddressedMessageImpl msgAddr = (SccpAddressedMessageImpl) message;
+			SccpAddress calledAddr = msgAddr.getCalledPartyAddress();
+			SccpAddress callingAddr = msgAddr.getCallingPartyAddress();
+
+			if (calledAddr != null) {
+				GlobalTitle gt = calledAddr.getGlobalTitle();
+				if (gt != null)
+					localGtDigits = gt.getDigits();
+			}
+
+			if (callingAddr != null) {
+				GlobalTitle gt = callingAddr.getGlobalTitle();
+				if (gt != null)
+					remoteGtDigits = gt.getDigits();
+			}
+		}
+
+		String taskID = null;
+		if (localGtDigits != null && remoteGtDigits != null)
+			taskID = localGtDigits + remoteGtDigits;
+		else
+			taskID = String.valueOf(mtp3Message.getOpc()) + String.valueOf(mtp3Message.getDpc());
+
+		mtp3Message.retain();
+
+		RunnableTask incomingTask = new RunnableTask(new Runnable() {
+			@Override
+			public void run() {
+				mup.sendMessage(mtp3Message, callback);
+				mtp3Message.release();
+			}
+		}, taskID);
+
+		if (this.affinityEnabled)
+			workerPool.addTaskLast(incomingTask);
+		else
+			workerPool.getQueue().offerLast(incomingTask);
 	}
 
 	@Override
@@ -1586,5 +1684,10 @@ public class SccpStackImpl implements SccpStack, Mtp3UserPartListener {
 				+ bytesReceivedByType.get(SccpMessageImpl.MESSAGE_NAME_UDT).get()
 				+ bytesReceivedByType.get(SccpMessageImpl.MESSAGE_NAME_LUDT).get()
 				+ bytesReceivedByType.get(SccpMessageImpl.MESSAGE_NAME_XUDT).get();
+	}
+
+	@Override
+	public void setAffinity(boolean isEnabled) {
+		this.affinityEnabled = isEnabled;
 	}
 }

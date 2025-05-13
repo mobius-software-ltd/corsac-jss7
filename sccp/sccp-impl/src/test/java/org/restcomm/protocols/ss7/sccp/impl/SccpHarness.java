@@ -26,7 +26,11 @@ package org.restcomm.protocols.ss7.sccp.impl;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Random;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.Router;
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
@@ -34,7 +38,10 @@ import org.restcomm.protocols.ss7.sccp.SccpProvider;
 import org.restcomm.protocols.ss7.sccp.SccpResource;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  * @author amit bhayani
@@ -42,7 +49,9 @@ import com.mobius.software.common.dal.timers.WorkerPool;
  *
  */
 public abstract class SccpHarness {
-
+	protected static final Logger logger = LogManager.getLogger(SccpHarness.class);
+	protected static final int PROCESSING_TIMEOUT = 500;
+	
 	protected boolean onlyOneStack;
 
 	protected String sccpStack1Name = null;
@@ -66,20 +75,40 @@ public abstract class SccpHarness {
 	protected ParameterFactory parameterFactory;
 	protected WorkerPool workerPool;
 
+	protected Semaphore sendSemaphore = new Semaphore(0);
+	protected AtomicInteger sentMessages = new AtomicInteger(0);
+	
 	/**
 	 *
 	 */
 	public SccpHarness() {
 		workerPool = new WorkerPool(1L);
-		workerPool.start(64);
 
-		mtp3UserPart1 = new Mtp3UserPartImpl(this, workerPool.getQueue(), workerPool.getPeriodicQueue());
-		mtp3UserPart2 = new Mtp3UserPartImpl(this, workerPool.getQueue(), workerPool.getPeriodicQueue());
+		mtp3UserPart1 = new Mtp3UserPartImpl(this, workerPool);
+		mtp3UserPart2 = new Mtp3UserPartImpl(this, workerPool);
 
 		mtp3UserPart1.setOtherPart(mtp3UserPart2);
 		mtp3UserPart2.setOtherPart(mtp3UserPart1);
 	}
+	
+	protected TaskCallback<Exception> getTaskCallback(int messages) {	
+		return new TaskCallback<Exception>() {
+			@Override
+			public void onSuccess() {						
+				SccpHarness.this.sentMessages.incrementAndGet();
+				if (SccpHarness.this.sentMessages.get() == messages)
+					SccpHarness.this.sendSemaphore.release();
+			}
 
+			@Override
+			public void onError(Exception exception) {		
+				SccpHarness.this.sentMessages.incrementAndGet();
+				if (SccpHarness.this.sentMessages.get() == messages)
+					SccpHarness.this.sendSemaphore.release();
+			}
+		};
+	}
+	
 	protected void createStack1() {
         sccpStack1 = createStack(sccpStack1Name);
     }
@@ -89,7 +118,7 @@ public abstract class SccpHarness {
 	}
 
 	protected SccpStackImpl createStack(final String name) {
-        SccpStackImpl stack = new SccpStackImpl(name, true, this.workerPool.getPeriodicQueue());
+        SccpStackImpl stack = new SccpStackImpl(name, true, this.workerPool);
         return stack;
     }
 
@@ -172,6 +201,11 @@ public abstract class SccpHarness {
 	}
 
 	public void setUp() throws Exception {
+		sendSemaphore = new Semaphore(0);
+		sentMessages = new AtomicInteger(0);
+		
+		workerPool.start(64);
+
 		this.setUpStack1();
 		if (!onlyOneStack)
 			this.setUpStack2();
@@ -208,4 +242,12 @@ public abstract class SccpHarness {
 		else
 			return sccpProvider2.getConnections().get(sccpStack2.referenceNumberCounter.get());
 	}
+	
+    public void sendTransferMessageToLocalUser(Mtp3UserPartImpl mtp3UserPart, int opc, int dpc, ByteBuf data) throws InterruptedException {
+    	this.sentMessages.set(0);
+    	mtp3UserPart.sendTransferMessageToLocalUser(opc, dpc, data, this.getTaskCallback(1));
+        this.sendSemaphore.acquire();
+        
+        Thread.sleep(PROCESSING_TIMEOUT);
+    }
 }

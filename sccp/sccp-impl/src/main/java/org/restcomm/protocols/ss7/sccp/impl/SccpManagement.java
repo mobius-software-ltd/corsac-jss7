@@ -45,7 +45,7 @@ import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.message.SccpMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
-import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.common.dal.timers.RunnableTimer;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -238,8 +238,6 @@ public class SccpManagement {
 		try {
 			msg.setOutgoingDpc(msg.getCalledPartyAddress().getSignalingPointCode());
 			this.sccpRoutingControl.sendManagementMessage(msg);
-
-			// this.sccpRoutingControl.sendMessageToMtp(msg);
 		} catch (Exception e) {
 			logger.error(String.format("Exception while trying to send SSP message=%s", msg), e);
 		}
@@ -644,7 +642,7 @@ public class SccpManagement {
 		return ssts.get(affectedSsn);
 	}
 
-	private class SubSystemTest implements Timer {
+	private class SubSystemTest extends RunnableTimer {
 		// FIXME: remove "Thread", so we eat less resources.
 		private volatile boolean started = false;
 
@@ -665,6 +663,8 @@ public class SccpManagement {
 		private int nextTimerDelay = sccpStackImpl.sstTimerDuration_Min;
 
 		public SubSystemTest(int ssn, int affectedPc, ConcurrentHashMap<Integer, SubSystemTest> testsList) {
+			super(null, System.currentTimeMillis() + sccpStackImpl.sstTimerDuration_Min, String.valueOf(affectedPc));
+			
 			this.ssn = ssn;
 			this.affectedPc = affectedPc;
 			this.testsList = testsList;
@@ -689,7 +689,7 @@ public class SccpManagement {
 			this.startTime = System.currentTimeMillis();
 			this.currentTimerDelay = nextTimerDelay;
 
-			sccpStackImpl.queuedTasks.store(this.getRealTimestamp(), this);
+			sccpStackImpl.workerPool.addTimer(this);
 
 			// increase the "T(stat info)" timer delay up to 10 minutes
 			// for the next step
@@ -742,12 +742,7 @@ public class SccpManagement {
 			this.stopTest();
 			this.startTest();
 
-			sendManagementMessage(affectedPc, SST, ssn, 0, null);
-		}
-
-		@Override
-		public long getStartTime() {
-			return startTime;
+			SccpManagement.this.sendManagementMessage(affectedPc, SST, ssn, 0, null);
 		}
 
 		@Override

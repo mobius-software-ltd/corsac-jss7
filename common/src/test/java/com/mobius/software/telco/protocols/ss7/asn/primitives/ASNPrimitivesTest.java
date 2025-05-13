@@ -357,7 +357,7 @@ public class ASNPrimitivesTest
 		ByteBuf encodedLongOctetString = Unpooled.buffer(1+plainLongBytes.readableBytes()+longLengthBytes.readableBytes());		
 		encodedLongOctetString.writeByte(0x04);
 		encodedLongOctetString.writeBytes(longLengthBytes);
-		encodedLongOctetString.writeBytes(Unpooled.wrappedBuffer(plainLongBytes));
+		encodedLongOctetString.writeBytes(plainLongBytes.slice());
 		
 		ASNOctetString value=new ASNOctetString(Unpooled.wrappedBuffer(plainBytes),null,null,null,false);		
 		ASNOctetString longValue=new ASNOctetString(Unpooled.wrappedBuffer(plainLongBytes),null,null,null,false);		
@@ -409,12 +409,11 @@ public class ASNPrimitivesTest
 			Object decodedValue=parser.decode(bufferToDecode).getResult();
 			assertTrue(decodedValue instanceof ASNBitString);
 			
-			for(int i=0;i<32;i++) {
+			for(int i=0;i<32;i++)
 				if(i!=2 && i!=6 && i!=7 && i!=8 && i!=12 && i!=21)
 					assertFalse(((ASNBitString)decodedValue).isBitSet(i));
 				else
 					assertTrue(((ASNBitString)decodedValue).isBitSet(i));
-			}
 		}
 		catch(Exception ex)
 		{
@@ -446,12 +445,11 @@ public class ASNPrimitivesTest
 			Object decodedValue=parser.decode(bufferToDecode).getResult();
 			assertTrue(decodedValue instanceof ASNBitString);
 			
-			for(int i=0;i<32;i++) {
+			for(int i=0;i<32;i++)
 				if(i!=2 && i!=6 && i!=7 && i!=8 && i!=12 && i!=21)
 					assertFalse(((ASNBitString)decodedValue).isBitSet(i));
 				else
 					assertTrue(((ASNBitString)decodedValue).isBitSet(i));
-			}
 		}
 		catch(Exception ex)
 		{
@@ -509,8 +507,8 @@ public class ASNPrimitivesTest
 	}
 	
 	public static Boolean byteBufEquals(ByteBuf value1,ByteBuf value2) {
-    	ByteBuf value1Wrapper=Unpooled.wrappedBuffer(value1);
-    	ByteBuf value2Wrapper=Unpooled.wrappedBuffer(value2);
+    	ByteBuf value1Wrapper=value1.slice();
+    	ByteBuf value2Wrapper=value2.slice();
     	byte[] value1Arr=new byte[value1Wrapper.readableBytes()];
     	byte[] value2Arr=new byte[value2Wrapper.readableBytes()];
     	value1Wrapper.readBytes(value1Arr);

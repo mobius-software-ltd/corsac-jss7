@@ -103,8 +103,8 @@ public class ProtocolVersionTest extends SccpHarness {
 
         sccpListener = new TestSccpListener();
         this.sccpProvider2.registerSccpListener(8, sccpListener);
-	this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider1, 8, workerPool.getPeriodicQueue());
-	this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider2, 7, workerPool.getPeriodicQueue());
+	this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider1, 8, workerPool);
+	this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider2, 7, workerPool);
 
         this.tcapStack1.start();
         this.tcapStack2.start();

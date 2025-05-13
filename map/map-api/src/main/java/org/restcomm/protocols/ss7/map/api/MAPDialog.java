@@ -33,6 +33,8 @@ import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 /**
  *
  * @author amit bhayani
@@ -199,7 +201,7 @@ public interface MAPDialog extends Serializable {
      * This is equivalent of MAP User issuing the MAP_DELIMITER Service Request. send() is called to explicitly request the
      * transfer of the MAP protocol data units to the peer entities.
      */
-    void send() throws MAPException;
+    void send(TaskCallback<Exception> callback) throws MAPException;
 
     /**
      * This is equivalent of MAP User issuing the MAP_CLOSE Service Request. This service is used for releasing a previously
@@ -225,7 +227,7 @@ public interface MAPDialog extends Serializable {
      * If you are receiving several primitives you can invoke sendDelayed() in several processing components events - the result
      * will be sent after onDialogDelimiter() in a single TC-CONTINUE message
      */
-    void sendDelayed() throws MAPException;
+    void sendDelayed(TaskCallback<Exception> callback) throws MAPException;
 
     /**
      * This method makes the same as close() method. But when invoking it from events of parsing incoming components real

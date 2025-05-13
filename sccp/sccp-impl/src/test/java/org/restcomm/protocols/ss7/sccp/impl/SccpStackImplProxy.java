@@ -48,7 +48,7 @@ public class SccpStackImplProxy extends SccpStackImpl {
 	 *
 	 */
 	public SccpStackImplProxy(String name) {
-		super(name, workerPool.getPeriodicQueue());
+		super(name, workerPool);
 	}
 
 	public SccpManagementProxy getManagementProxy() {

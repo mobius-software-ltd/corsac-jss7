@@ -34,7 +34,14 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>provided</scope>
-		</dependency>		
+		</dependency>
+		
+		<!-- timers -->
+		<dependency>
+			<groupId>com.mobius-software</groupId>
+			<artifactId>mobius-timers</artifactId>
+			<version>${timers.version}</version>
+		</dependency>
 	</dependencies>
 
 </project>

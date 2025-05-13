@@ -22,8 +22,7 @@ package org.restcomm.protocols.ss7.tcapAnsi;
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 
-import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
-import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.common.dal.timers.WorkerPool;
 
 /**
  *
@@ -34,9 +33,8 @@ import com.mobius.software.common.dal.timers.Timer;
 public class TCAPProviderImplWrapper extends TCAPProviderImpl {
 	private static final long serialVersionUID = 1L;
 
-	protected TCAPProviderImplWrapper(SccpProvider sccpProvider, TCAPStackImpl stack, int ssn,
-			PeriodicQueuedTasks<Timer> queuedTasks) {
-		super(sccpProvider, stack, ssn, queuedTasks);
+	protected TCAPProviderImplWrapper(SccpProvider sccpProvider, TCAPStackImpl stack, int ssn, WorkerPool workerPool) {
+		super(sccpProvider, stack, ssn, workerPool);
 	}
 
 	@Override

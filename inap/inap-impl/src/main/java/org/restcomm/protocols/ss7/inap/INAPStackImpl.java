@@ -37,8 +37,7 @@ import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
 
-import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
-import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.common.dal.timers.WorkerPool;
 
 /**
  *
@@ -80,9 +79,9 @@ public class INAPStackImpl implements INAPStack {
 		allMessageTypes.add("unknown");
 	}
 
-	public INAPStackImpl(String name, SccpProvider sccpPprovider, int ssn, PeriodicQueuedTasks<Timer> queuedTasks) {
+	public INAPStackImpl(String name, SccpProvider sccpPprovider, int ssn, WorkerPool workerPool) {
 		this.name = name;
-		this.tcapStack = new TCAPStackImpl(name, sccpPprovider, ssn, queuedTasks);
+		this.tcapStack = new TCAPStackImpl(name, sccpPprovider, ssn, workerPool);
 		TCAPProvider tcapProvider = tcapStack.getProvider();
 		inapProvider = new INAPProviderImpl(name, this, tcapProvider);
 

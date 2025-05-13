@@ -23,7 +23,6 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,6 +46,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 /**
  *
  * @author Oleg Kulikov
@@ -60,111 +61,106 @@ public class SccpProviderImpl implements SccpProvider, Serializable {
 
 	private static final Logger logger = LogManager.getLogger(SccpProviderImpl.class);
 
-    private transient SccpStackImpl stack;
-    protected ConcurrentHashMap<Integer, SccpListener> ssnToListener = new ConcurrentHashMap<Integer, SccpListener>();
-    protected ConcurrentHashMap<UUID,SccpManagementEventListener> managementEventListeners = new ConcurrentHashMap<UUID,SccpManagementEventListener>();
+	private transient SccpStackImpl stack;
+	protected ConcurrentHashMap<Integer, SccpListener> ssnToListener = new ConcurrentHashMap<Integer, SccpListener>();
+	protected ConcurrentHashMap<UUID, SccpManagementEventListener> managementEventListeners = new ConcurrentHashMap<UUID, SccpManagementEventListener>();
 
-    private MessageFactoryImpl messageFactory;
-    private ParameterFactoryImpl parameterFactory;
+	private MessageFactoryImpl messageFactory;
+	private ParameterFactoryImpl parameterFactory;
 
-    SccpProviderImpl(SccpStackImpl stack) {
-        this.stack = stack;
-        this.messageFactory = stack.messageFactory;
-        this.parameterFactory = new ParameterFactoryImpl();
-    }
+	SccpProviderImpl(SccpStackImpl stack) {
+		this.stack = stack;
+		this.messageFactory = stack.messageFactory;
+		this.parameterFactory = new ParameterFactoryImpl();
+	}
 
-    public MessageFactory getMessageFactory() {
-        return messageFactory;
-    }
+	@Override
+	public MessageFactory getMessageFactory() {
+		return messageFactory;
+	}
 
-    public ParameterFactory getParameterFactory() {
-        return parameterFactory;
-    }
+	@Override
+	public ParameterFactory getParameterFactory() {
+		return parameterFactory;
+	}
 
-    public void registerSccpListener(int ssn, SccpListener listener) {
-    	SccpListener existingListener = ssnToListener.get(ssn);
-        if (existingListener != null) {
-            if (logger.isWarnEnabled()) {
-                logger.warn(String.format("Registering SccpListener=%s for already existing SccpListnere=%s for SSN=%d",
-                        listener, existingListener, ssn));
-            }
-        }
-        
-        ssnToListener.put(ssn, listener);
-        this.stack.broadcastChangedSsnState(ssn, true);
-    }
+	@Override
+	public void registerSccpListener(int ssn, SccpListener listener) {
+		SccpListener existingListener = ssnToListener.get(ssn);
+		if (existingListener != null)
+			if (logger.isWarnEnabled())
+				logger.warn(String.format("Registering SccpListener=%s for already existing SccpListnere=%s for SSN=%d",
+						listener, existingListener, ssn));
 
-    public void deregisterSccpListener(int ssn) {
-    	SccpListener existingListener = ssnToListener.remove(ssn);
-        if (existingListener == null) {
-            if (logger.isWarnEnabled()) {
-                logger.warn(String.format("No existing SccpListnere=%s for SSN=%d", existingListener, ssn));
-            }
-        }
-        this.stack.broadcastChangedSsnState(ssn, false);
-    }
+		ssnToListener.put(ssn, listener);
+		this.stack.broadcastChangedSsnState(ssn, true);
+	}
 
-    public void registerManagementEventListener(UUID key,SccpManagementEventListener listener) {
-    	if (this.managementEventListeners.containsKey(key))
-    		return;
-    	
-    	this.managementEventListeners.put(key, listener);
-    }
+	@Override
+	public void deregisterSccpListener(int ssn) {
+		SccpListener existingListener = ssnToListener.remove(ssn);
+		if (existingListener == null)
+			if (logger.isWarnEnabled())
+				logger.warn(String.format("No existing SccpListnere=%s for SSN=%d", existingListener, ssn));
+		this.stack.broadcastChangedSsnState(ssn, false);
+	}
 
-    public void deregisterManagementEventListener(UUID key) {
-    	this.managementEventListeners.remove(key);
-    }
+	@Override
+	public void registerManagementEventListener(UUID key, SccpManagementEventListener listener) {
+		if (this.managementEventListeners.containsKey(key))
+			return;
 
-    public SccpListener getSccpListener(int ssn) {
-        return ssnToListener.get(ssn);
-    }
+		this.managementEventListeners.put(key, listener);
+	}
 
-    public ConcurrentHashMap<Integer, SccpListener> getAllSccpListeners() {
-        return ssnToListener;
-    }
+	@Override
+	public void deregisterManagementEventListener(UUID key) {
+		this.managementEventListeners.remove(key);
+	}
 
-    public SccpConnection newConnection(int localSsn, ProtocolClass protocol) throws MaxConnectionCountReached {
-        return stack.newConnection(localSsn, protocol);
-    }
+	public SccpListener getSccpListener(int ssn) {
+		return ssnToListener.get(ssn);
+	}
 
-    @Override
-    public ConcurrentHashMap<Integer, SccpConnection> getConnections() {
-        return stack.connections;
-    }
+	public ConcurrentHashMap<Integer, SccpListener> getAllSccpListeners() {
+		return ssnToListener;
+	}
 
-    @Override
-    public void send(SccpDataMessage message) throws IOException {
-        try{
-            SccpDataMessageImpl msg = ((SccpDataMessageImpl) message);
-            stack.send(msg);
-        }catch(Exception e){
-            logger.error(e);
-            throw new IOException(e);
-        }
-    }
+	@Override
+	public SccpConnection newConnection(int localSsn, ProtocolClass protocol) throws MaxConnectionCountReached {
+		return stack.newConnection(localSsn, protocol);
+	}
 
-    @Override
-    public void send(SccpNoticeMessage message) throws IOException {
-        try{
-            SccpNoticeMessageImpl msg = ((SccpNoticeMessageImpl) message);
-            stack.send(msg);
-        }catch(Exception e){
-            throw new IOException(e);
-        }
-    }
+	@Override
+	public ConcurrentHashMap<Integer, SccpConnection> getConnections() {
+		return stack.connections;
+	}
 
-    public int getMaxUserDataLength(SccpAddress calledPartyAddress, SccpAddress callingPartyAddress, int msgNetworkId) {
-        return this.stack.getMaxUserDataLength(calledPartyAddress, callingPartyAddress, msgNetworkId);
-    }
+	@Override
+	public void send(SccpDataMessage message, TaskCallback<Exception> callback) {
+		SccpDataMessageImpl msg = ((SccpDataMessageImpl) message);
+		stack.send(msg, callback);
+	}
 
-    @Override
-    public void coordRequest(int ssn) {
-        // TODO Auto-generated method stub
+	@Override
+	public void send(SccpNoticeMessage message, TaskCallback<Exception> callback) {
+		SccpNoticeMessageImpl msg = ((SccpNoticeMessageImpl) message);
+		stack.send(msg, callback);
+	}
 
-    }
+	@Override
+	public int getMaxUserDataLength(SccpAddress calledPartyAddress, SccpAddress callingPartyAddress, int msgNetworkId) {
+		return this.stack.getMaxUserDataLength(calledPartyAddress, callingPartyAddress, msgNetworkId);
+	}
 
-    @Override
-    public SccpStack getSccpStack() {
-        return this.stack;
-    }
+	@Override
+	public void coordRequest(int ssn) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public SccpStack getSccpStack() {
+		return this.stack;
+	}
 }

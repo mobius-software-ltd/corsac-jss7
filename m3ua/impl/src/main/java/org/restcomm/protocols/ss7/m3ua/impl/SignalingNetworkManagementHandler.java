@@ -53,7 +53,7 @@ import org.restcomm.protocols.ss7.mtp.Mtp3StatusPrimitive;
 public class SignalingNetworkManagementHandler extends MessageHandler {
 
 	private static final Logger logger = LogManager.getLogger(SignalingNetworkManagementHandler.class);
-
+	
 	public SignalingNetworkManagementHandler(AspFactoryImpl aspFactoryImpl) {
 		super(aspFactoryImpl);
 	}
@@ -92,7 +92,7 @@ public class SignalingNetworkManagementHandler extends MessageHandler {
 
 					for (int i = 0; i < affectedPcs.length; i++) {
 						Mtp3PausePrimitive mtpPausePrimi = new Mtp3PausePrimitive(affectedPcs[i]);
-						((AsImpl) aspImpl.getAs()).getM3UAManagement().sendPauseMessageToLocalUser(mtpPausePrimi);
+						((AsImpl) aspImpl.getAs()).getM3UAManagement().sendPauseMessageToLocalUser(mtpPausePrimi, super.dummyCallback);
 					}
 				} else
 					logger.error(String.format("Rx : DUNA for null RoutingContext. But ASP State=%s. Message=%s",
@@ -131,7 +131,7 @@ public class SignalingNetworkManagementHandler extends MessageHandler {
 
 						for (int i = 0; i < affectedPcs.length; i++) {
 							Mtp3PausePrimitive mtpPausePrimi = new Mtp3PausePrimitive(affectedPcs[i]);
-							((AsImpl) aspImpl.getAs()).getM3UAManagement().sendPauseMessageToLocalUser(mtpPausePrimi);
+							((AsImpl) aspImpl.getAs()).getM3UAManagement().sendPauseMessageToLocalUser(mtpPausePrimi, super.dummyCallback);
 						}
 					} else
 						logger.error(String.format("Rx : DUNA for RoutingContext=%d. But ASP State=%s. Message=%s",
@@ -184,7 +184,7 @@ public class SignalingNetworkManagementHandler extends MessageHandler {
 
 					for (int i = 0; i < affectedPcs.length; i++) {
 						Mtp3ResumePrimitive mtpResumePrimi = new Mtp3ResumePrimitive(affectedPcs[i]);
-						((AsImpl) aspImpl.getAs()).getM3UAManagement().sendResumeMessageToLocalUser(mtpResumePrimi);
+						((AsImpl) aspImpl.getAs()).getM3UAManagement().sendResumeMessageToLocalUser(mtpResumePrimi, super.dummyCallback);
 					}
 				} else
 					logger.error(String.format("Rx : DAVA for null RoutingContext. But ASP State=%s. Message=%s",
@@ -223,7 +223,7 @@ public class SignalingNetworkManagementHandler extends MessageHandler {
 
 						for (int i = 0; i < affectedPcs.length; i++) {
 							Mtp3ResumePrimitive mtpResumePrimi = new Mtp3ResumePrimitive(affectedPcs[i]);
-							((AsImpl) aspImpl.getAs()).getM3UAManagement().sendResumeMessageToLocalUser(mtpResumePrimi);
+							((AsImpl) aspImpl.getAs()).getM3UAManagement().sendResumeMessageToLocalUser(mtpResumePrimi, super.dummyCallback);
 						}
 					} else
 						logger.error(String.format("Rx : DAVA for RoutingContext=%d. But ASP State=%s. Message=%s",
@@ -301,7 +301,7 @@ public class SignalingNetworkManagementHandler extends MessageHandler {
 
 						Mtp3StatusPrimitive mtpPausePrimi = new Mtp3StatusPrimitive(affectedPcs[i],
 								Mtp3StatusCause.SignallingNetworkCongested, cong, 0);
-						((AsImpl) aspImpl.getAs()).getM3UAManagement().sendStatusMessageToLocalUser(mtpPausePrimi);
+						((AsImpl) aspImpl.getAs()).getM3UAManagement().sendStatusMessageToLocalUser(mtpPausePrimi, super.dummyCallback);
 					}
 				} else
 					logger.error(String.format("Rx : SCON for null RoutingContext. But ASP State=%s. Message=%s",
@@ -348,7 +348,7 @@ public class SignalingNetworkManagementHandler extends MessageHandler {
 
 							Mtp3StatusPrimitive mtpPausePrimi = new Mtp3StatusPrimitive(affectedPcs[i],
 									Mtp3StatusCause.SignallingNetworkCongested, cong, 0);
-							((AsImpl) aspImpl.getAs()).getM3UAManagement().sendStatusMessageToLocalUser(mtpPausePrimi);
+							((AsImpl) aspImpl.getAs()).getM3UAManagement().sendStatusMessageToLocalUser(mtpPausePrimi, super.dummyCallback);
 						}
 					} else
 						logger.error(String.format("Rx : DAVA for RoutingContext=%d. But ASP State=%s. Message=%s",
@@ -405,7 +405,7 @@ public class SignalingNetworkManagementHandler extends MessageHandler {
 						cause = userCause.getCause();
 						Mtp3StatusPrimitive mtpPausePrimi = new Mtp3StatusPrimitive(affectedPcs[i],
 								Mtp3StatusCause.getMtp3StatusCause(cause), 0, 0);
-						((AsImpl) aspImpl.getAs()).getM3UAManagement().sendStatusMessageToLocalUser(mtpPausePrimi);
+						((AsImpl) aspImpl.getAs()).getM3UAManagement().sendStatusMessageToLocalUser(mtpPausePrimi, super.dummyCallback);
 					}
 				} else
 					logger.error(String.format("Rx : DUPU for null RoutingContext. But ASP State=%s. Message=%s",
@@ -448,7 +448,7 @@ public class SignalingNetworkManagementHandler extends MessageHandler {
 							cause = userCause.getCause();
 							Mtp3StatusPrimitive mtpPausePrimi = new Mtp3StatusPrimitive(affectedPcs[i],
 									Mtp3StatusCause.getMtp3StatusCause(cause), 0, 0);
-							((AsImpl) aspImpl.getAs()).getM3UAManagement().sendStatusMessageToLocalUser(mtpPausePrimi);
+							((AsImpl) aspImpl.getAs()).getM3UAManagement().sendStatusMessageToLocalUser(mtpPausePrimi, super.dummyCallback);
 						}
 					} else
 						logger.error(String.format("Rx : DUPU for RoutingContext=%d. But ASP State=%s. Message=%s",

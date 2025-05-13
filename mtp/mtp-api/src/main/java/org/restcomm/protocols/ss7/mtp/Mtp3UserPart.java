@@ -23,7 +23,7 @@
 
 package org.restcomm.protocols.ss7.mtp;
 
-import java.io.IOException;
+import com.mobius.software.common.dal.timers.TaskCallback;
 
 /**
  * @author amit bhayani
@@ -33,73 +33,76 @@ import java.io.IOException;
  */
 public interface Mtp3UserPart {
 
-    void start() throws Exception;
+	void start() throws Exception;
 
-    void stop() throws Exception;
+	void stop() throws Exception;
 
-    /**
-     * Add {@link Mtp3UserPartListener}
-     *
-     * @param listener
-     */
-    void addMtp3UserPartListener(Mtp3UserPartListener listener);
+	/**
+	 * Add {@link Mtp3UserPartListener}
+	 *
+	 * @param listener
+	 */
+	void addMtp3UserPartListener(Mtp3UserPartListener listener);
 
-    /**
-     * Remove {@link Mtp3UserPartListener}
-     *
-     * @param listener
-     */
-    void removeMtp3UserPartListener(Mtp3UserPartListener listener);
+	/**
+	 * Remove {@link Mtp3UserPartListener}
+	 *
+	 * @param listener
+	 */
+	void removeMtp3UserPartListener(Mtp3UserPartListener listener);
 
-    /**
-     * Get the Mtp3TransferPrimitiveFactory
-     *
-     * @return
-     */
-    Mtp3TransferPrimitiveFactory getMtp3TransferPrimitiveFactory();
+	/**
+	 * Get the Mtp3TransferPrimitiveFactory
+	 *
+	 * @return
+	 */
+	Mtp3TransferPrimitiveFactory getMtp3TransferPrimitiveFactory();
 
-    /**
-     * Return the maximum data field length of the MTP-TRANSFER message to the DPC
-     *
-     * @param dpc
-     * @return
-     */
-    int getMaxUserDataLength(int dpc);
+	/**
+	 * Return the maximum data field length of the MTP-TRANSFER message to the DPC
+	 *
+	 * @param dpc
+	 * @return
+	 */
+	int getMaxUserDataLength(int dpc);
 
-    /**
-     * If message delivering failed: MTP-PAUSE or MTR-STATUS indication will be sent
-     *
-     * @param msg
-     *
-     */
-    void sendMessage(Mtp3TransferPrimitive msg) throws IOException;
+	/**
+	 * If message delivering failed: MTP-PAUSE or MTR-STATUS indication will be sent
+	 *
+	 * @param msg
+	 *
+	 */
+	void sendMessage(Mtp3TransferPrimitive msg, TaskCallback<Exception> callback);
 
+	/**
+	 * return PointCodeFormat
+	 *
+	 * @return
+	 */
+	RoutingLabelFormat getRoutingLabelFormat();
 
-    /**
-     * return PointCodeFormat
-     *
-     * @return
-     */
-    RoutingLabelFormat getRoutingLabelFormat();
+	/**
+	 * Set PointCodeFormat
+	 *
+	 * @param length
+	 */
+	void setRoutingLabelFormat(RoutingLabelFormat routingLabelFormat) throws Exception;
 
-    /**
-     * Set PointCodeFormat
-     *
-     * @param length
-     */
-    void setRoutingLabelFormat(RoutingLabelFormat routingLabelFormat) throws Exception;
+	/**
+	 * Returns true if lowest bit of SLS is used for loadbalancing between Linkset
+	 * else returns false
+	 *
+	 * @return
+	 */
+	boolean isUseLsbForLinksetSelection();
 
-    /**
-     * Returns true if lowest bit of SLS is used for loadbalancing between Linkset else returns false
-     *
-     * @return
-     */
-    boolean isUseLsbForLinksetSelection();
+	/**
+	 * If set to true, lowest bit of SLS is used for loadbalancing between Linkset
+	 * else highest bit of SLS is used.
+	 *
+	 * @param useLsbForLinksetSelection
+	 */
+	void setUseLsbForLinksetSelection(boolean useLsbForLinksetSelection) throws Exception;
 
-    /**
-     * If set to true, lowest bit of SLS is used for loadbalancing between Linkset else highest bit of SLS is used.
-     *
-     * @param useLsbForLinksetSelection
-     */
-    void setUseLsbForLinksetSelection(boolean useLsbForLinksetSelection) throws Exception;
+	void setAffinity(boolean isEnabled, boolean isBySlsEnabled);
 }

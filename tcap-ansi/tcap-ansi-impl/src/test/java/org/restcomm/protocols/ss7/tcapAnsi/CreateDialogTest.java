@@ -22,7 +22,6 @@ package org.restcomm.protocols.ss7.tcapAnsi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -44,6 +43,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
 
 /**
@@ -70,7 +70,7 @@ public class CreateDialogTest {
 		workerPool = new WorkerPool();
 		workerPool.start(4);
 
-		this.tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "CreateDialogTest", workerPool.getPeriodicQueue());
+		this.tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "CreateDialogTest", workerPool);
 
 		this.tcapStack1.start();
 	}
@@ -140,9 +140,10 @@ public class CreateDialogTest {
 		}
 
 		@Override
-		public void send(SccpDataMessage msg) throws IOException {
+		public void send(SccpDataMessage msg, TaskCallback<Exception> callback) {
 			// we check here that no messages go from TCAP previewMode
 
+			callback.onSuccess();
 			fail("No message must go from TCAP previewMode");
 		}
 
@@ -178,9 +179,9 @@ public class CreateDialogTest {
 		}
 
 		@Override
-		public void send(SccpNoticeMessage message) throws IOException {
+		public void send(SccpNoticeMessage message, TaskCallback<Exception> callback) {
 			// TODO Auto-generated method stub
-
+			callback.onSuccess();
 		}
 
 		@Override

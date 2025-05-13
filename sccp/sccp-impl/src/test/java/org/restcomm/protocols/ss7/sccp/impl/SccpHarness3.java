@@ -64,7 +64,7 @@ public abstract class SccpHarness3 extends SccpHarness {
 	public SccpHarness3() {
 		super();
 
-		mtp3UserPart3 = new Mtp3UserPartImpl(this, workerPool.getQueue(), workerPool.getPeriodicQueue());
+		mtp3UserPart3 = new Mtp3UserPartImpl(this, workerPool);
 
 //        mtp3UserPart1.setOtherPart(mtp3UserPart2);
 		mtp3UserPart1.setOtherPart(mtp3UserPart3);

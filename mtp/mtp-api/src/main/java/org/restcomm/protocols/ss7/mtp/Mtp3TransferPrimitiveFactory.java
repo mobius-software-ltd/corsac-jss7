@@ -41,9 +41,9 @@ public class Mtp3TransferPrimitiveFactory {
         this.pointCodeFormat = pointCodeFormat;
     }
 
-    public Mtp3TransferPrimitive createMtp3TransferPrimitive(int si, int ni, int mp, int opc, int dpc, int sls, ByteBuf data,AtomicBoolean referenceLocker) {
+    public Mtp3TransferPrimitive createMtp3TransferPrimitive(int si, int ni, int mp, int opc, int dpc, int sls, ByteBuf data) {
         Mtp3TransferPrimitive mtp3TransferPrimitive = new Mtp3TransferPrimitive(si, ni, mp, opc, dpc, sls, data,
-                this.pointCodeFormat,referenceLocker);
+                this.pointCodeFormat);
         return mtp3TransferPrimitive;
     }
 
@@ -112,7 +112,7 @@ public class Mtp3TransferPrimitiveFactory {
                 // TODO : We don't support rest justyet
                 break;
         }
-        mtp3TransferPrimitive = new Mtp3TransferPrimitive(si, ni, mp, opc, dpc, sls, data, this.pointCodeFormat, referenceLocker);
+        mtp3TransferPrimitive = new Mtp3TransferPrimitive(si, ni, mp, opc, dpc, sls, data, this.pointCodeFormat);
         return mtp3TransferPrimitive;
     }
 }

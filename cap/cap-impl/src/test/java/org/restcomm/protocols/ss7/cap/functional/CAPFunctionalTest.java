@@ -198,6 +198,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
@@ -222,6 +223,16 @@ public class CAPFunctionalTest extends SccpHarness {
 	private CAPStackImpl stack2;
 	private SccpAddress peer1Address;
 	private SccpAddress peer2Address;
+
+	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {
+		}
+
+		@Override
+		public void onError(Exception exception) {
+		}
+	};
 
 	@Override
 	protected int getSSN() {
@@ -257,8 +268,8 @@ public class CAPFunctionalTest extends SccpHarness {
 		peer1Address = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 146);
 		peer2Address = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 146);
 
-		this.stack1 = new CAPStackImplWrapper(this.sccpProvider1, 146, workerPool.getPeriodicQueue());
-		this.stack2 = new CAPStackImplWrapper(this.sccpProvider2, 146, workerPool.getPeriodicQueue());
+		this.stack1 = new CAPStackImplWrapper(this.sccpProvider1, 146, workerPool);
+		this.stack2 = new CAPStackImplWrapper(this.sccpProvider2, 146, workerPool);
 
 		this.stack1.start();
 		this.stack2.start();
@@ -328,7 +339,7 @@ public class CAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(capDialog);
 
 				try {
-					capDialog.close(false);
+					capDialog.close(false, dummyCallback);
 				} catch (CAPException e) {
 					this.error("Error while trying to close() Dialog", e);
 				}
@@ -527,7 +538,7 @@ public class CAPFunctionalTest extends SccpHarness {
 								miscCallInfo, null);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.EventReportBCSMRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						TimeInformation timeInformation = this.capParameterFactory.createTimeInformation(2000);
 						TimeDurationChargingResult timeDurationChargingResult = this.capParameterFactory
@@ -536,7 +547,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addApplyChargingReportRequest(timeDurationChargingResult);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.ApplyChargingReportRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 
@@ -546,7 +557,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addActivityTestResponse(activityTestInvokeId);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.ActivityTestResponse, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 
@@ -642,7 +653,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addRequestReportBCSMEventRequest(rrc.getBCSMEventList(), rrc.getExtensions());
 						this.observerdEvents.add(
 								TestEvent.createSentEvent(EventType.RequestReportBCSMEventRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						try {
 							Thread.sleep(100);
@@ -655,7 +666,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						FCIBCCCAMELSequence1 FCIBCCCAMELsequence1 = this.capParameterFactory
 								.createFCIBCCCAMELsequence1(ffd, LegType.leg1, AppendFreeFormatData.append);
 						dlg.addFurnishChargingInformationRequest(FCIBCCCAMELsequence1);
-						dlg.send();
+						dlg.send(dummyCallback);
 						this.observerdEvents.add(TestEvent.createSentEvent(EventType.FurnishChargingInformationRequest,
 								null, sequence++));
 
@@ -685,7 +696,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addConnectRequest(destinationRoutingAddress, null, null, null, null, null, null, null, null,
 								null, null, null, null, false, false, false, null, false, false);
 						this.observerdEvents.add(TestEvent.createSentEvent(EventType.ConnectRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						try {
 							Thread.sleep(100);
@@ -696,7 +707,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addContinueRequest();
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.ContinueRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						try {
 							Thread.sleep(100);
@@ -713,14 +724,14 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addSendChargingInformationRequest(sciBillingChargingCharacteristics, LegType.leg2, null);
 						this.observerdEvents.add(
 								TestEvent.createSentEvent(EventType.SendChargingInformationRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 
 						break;
 
 					case 2: // after oDisconnect
-						dlg.close(false);
+						dlg.close(false, dummyCallback);
 
 						dialogStep = 0;
 
@@ -740,7 +751,7 @@ public class CAPFunctionalTest extends SccpHarness {
 				CAPDialogCircuitSwitchedCall dlg = (CAPDialogCircuitSwitchedCall) capDialog;
 				try {
 					dlg.addActivityTestRequest(500);
-					dlg.send();
+					dlg.send(dummyCallback);
 				} catch (CAPException e) {
 					this.error("Error while trying to send ActivityTestRequest", e);
 				}
@@ -900,6 +911,7 @@ public class CAPFunctionalTest extends SccpHarness {
 		client.sendEventReportBCSMRequest_1();
 
 		waitForEnd();
+		Thread.sleep(500);
 		// Thread.currentThread().sleep(1000000);
 
 		client.compareEvents(clientExpectedEvents);
@@ -1009,7 +1021,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addSpecializedResourceReportRequest_CapV23(playAnnounsmentInvokeId);
 						this.observerdEvents.add(TestEvent.createSentEvent(EventType.SpecializedResourceReportRequest,
 								null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 
@@ -1058,7 +1070,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addRequestReportBCSMEventRequest(rrc.getBCSMEventList(), rrc.getExtensions());
 						this.observerdEvents.add(
 								TestEvent.createSentEvent(EventType.RequestReportBCSMEventRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						try {
 							Thread.sleep(100);
@@ -1076,7 +1088,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addConnectToResourceRequest(resourceAddress_IPRoutingAddress, false, null, null, null);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.ConnectToResourceRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						try {
 							Thread.sleep(100);
@@ -1091,7 +1103,7 @@ public class CAPFunctionalTest extends SccpHarness {
 								invokeTimeoutSuppressed);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.PlayAnnouncementRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 
@@ -1101,7 +1113,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addDisconnectForwardConnectionRequest();
 						this.observerdEvents.add(TestEvent.createSentEvent(EventType.DisconnectForwardConnectionRequest,
 								null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						try {
 							Thread.sleep(100);
@@ -1118,7 +1130,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addReleaseCallRequest(cause);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.ReleaseCallRequest, null, sequence++));
-						dlg.close(false);
+						dlg.close(false, dummyCallback);
 
 						dialogStep = 0;
 
@@ -1307,7 +1319,7 @@ public class CAPFunctionalTest extends SccpHarness {
 								true);
 						this.observerdEvents.add(TestEvent.createSentEvent(EventType.SpecializedResourceReportRequest,
 								null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						try {
 							Thread.sleep(100);
@@ -1327,7 +1339,7 @@ public class CAPFunctionalTest extends SccpHarness {
 								promptAndCollectUserInformationInvokeId, digitsResponse);
 						this.observerdEvents.add(TestEvent
 								.createSentEvent(EventType.PromptAndCollectUserInformationResponse, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 
@@ -1416,7 +1428,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addResetTimerRequest(TimerID.tssf, 1001, null, null);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.ResetTimerRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						try {
 							Thread.sleep(100);
@@ -1430,7 +1442,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addPromptAndCollectUserInformationRequest(collectedInfo, true, null, null, null, null);
 						this.observerdEvents.add(TestEvent
 								.createSentEvent(EventType.PromptAndCollectUserInformationRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 
@@ -1439,7 +1451,7 @@ public class CAPFunctionalTest extends SccpHarness {
 					case 2: // after SpecializedResourceReportRequest
 						dlg.addCancelRequest_AllRequests();
 						this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						try {
 							Thread.sleep(100);
@@ -1449,7 +1461,7 @@ public class CAPFunctionalTest extends SccpHarness {
 
 						dlg.addCancelRequest_InvokeId(10);
 						this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelRequest, null, sequence++));
-						dlg.close(false);
+						dlg.close(false, dummyCallback);
 
 						dialogStep = 0;
 
@@ -1658,7 +1670,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addCallInformationReportRequest(requestedInformationList, null, null);
 						this.observerdEvents.add(
 								TestEvent.createSentEvent(EventType.CallInformationReportRequest, null, sequence++));
-						dlg.close(false);
+						dlg.close(false, dummyCallback);
 
 						dialogStep = 0;
 
@@ -1755,11 +1767,11 @@ public class CAPFunctionalTest extends SccpHarness {
 					int invId = dlg.addCancelRequest_AllRequests();
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelRequest, null, sequence++));
 					dlg.cancelInvocation(invId);
-					dlg.send();
+					dlg.send(dummyCallback);
 
 					resetTimerRequestInvokeId = dlg.addResetTimerRequest(TimerID.tssf, 2222, null, null);
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ResetTimerRequest, null, sequence++));
-					dlg.send();
+					dlg.send(dummyCallback);
 				} catch (CAPException e) {
 					this.error("Error while checking CancelRequest or ResetTimerRequest", e);
 				}
@@ -1797,7 +1809,7 @@ public class CAPFunctionalTest extends SccpHarness {
 					case 1: // after RejectComponent
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.DialogUserAbort, null, sequence++));
-						dlg.abort(CAPUserAbortReason.missing_reference);
+						dlg.abort(CAPUserAbortReason.missing_reference, dummyCallback);
 
 						dialogStep = 0;
 
@@ -1854,7 +1866,7 @@ public class CAPFunctionalTest extends SccpHarness {
 				try {
 					switch (dialogStep) {
 					case 1: // after ActivityTestRequest
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 
@@ -1871,7 +1883,7 @@ public class CAPFunctionalTest extends SccpHarness {
 							this.error("Error while sending reject", e);
 						}
 
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 
@@ -2012,7 +2024,7 @@ public class CAPFunctionalTest extends SccpHarness {
 				try {
 					switch (dialogStep) {
 					case 1: // after InitialDpRequest
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 
@@ -2366,7 +2378,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						CAPGprsReferenceNumber capGprsReferenceNumber = this.capParameterFactory
 								.createCAPGprsReferenceNumber(10005, 10006);
 						dlg.setGprsReferenceNumber(capGprsReferenceNumber);
-						dlg.close(false);
+						dlg.close(false, dummyCallback);
 					} catch (CAPException e) {
 						this.error("Error while trying to send/close() Dialog", e);
 					}
@@ -2489,9 +2501,9 @@ public class CAPFunctionalTest extends SccpHarness {
 				try {
 					d.addCancelRequest_AllRequests();
 					if (dialogStep == 0)
-						d.closeDelayed(false);
+						d.closeDelayed(false, dummyCallback);
 					else
-						d.sendDelayed();
+						d.sendDelayed(dummyCallback);
 					dialogStep++;
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelRequest, null, sequence++));
 				} catch (CAPException e) {
@@ -2531,7 +2543,7 @@ public class CAPFunctionalTest extends SccpHarness {
 
 					try {
 						d.addContinueRequest();
-						d.sendDelayed();
+						d.sendDelayed(dummyCallback);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.ContinueRequest, null, sequence++));
 					} catch (CAPException e) {
@@ -2664,9 +2676,9 @@ public class CAPFunctionalTest extends SccpHarness {
 				try {
 					d.addContinueRequest();
 					if (dialogStep == 0)
-						d.sendDelayed();
+						d.sendDelayed(dummyCallback);
 					else
-						d.closeDelayed(true);
+						d.closeDelayed(true, dummyCallback);
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ContinueRequest, null, sequence++));
 				} catch (CAPException e) {
 					this.error("Error while adding ContinueRequest/sending", e);
@@ -2723,7 +2735,7 @@ public class CAPFunctionalTest extends SccpHarness {
 
 //        this.saveTrafficInFile();
 		client.sendInitialDp3();
-		client.clientCscDialog.close(true);
+		client.clientCscDialog.close(true, dummyCallback);
 
 		waitForEnd();
 		client.compareEvents(clientExpectedEvents);
@@ -2781,7 +2793,7 @@ public class CAPFunctionalTest extends SccpHarness {
 				CAPDialogCircuitSwitchedCall dlg = (CAPDialogCircuitSwitchedCall) capDialog;
 
 				try {
-					dlg.close(false);
+					dlg.close(false, dummyCallback);
 				} catch (CAPException e) {
 					this.error("Error while trying to send/close() Dialog", e);
 				}
@@ -2856,7 +2868,7 @@ public class CAPFunctionalTest extends SccpHarness {
 					this.observerdEvents.add(
 							TestEvent.createSentEvent(EventType.SpecializedResourceReportRequest, null, sequence++));
 
-					dlg.send();
+					dlg.send(dummyCallback);
 				} catch (CAPException e) {
 					this.error("Error while trying to send/close() Dialog", e);
 				}
@@ -3010,7 +3022,7 @@ public class CAPFunctionalTest extends SccpHarness {
 				CAPDialogCircuitSwitchedCall dlg = (CAPDialogCircuitSwitchedCall) capDialog;
 
 				try {
-					dlg.close(false);
+					dlg.close(false, dummyCallback);
 				} catch (CAPException e) {
 					this.error("Error while trying to send/close() Dialog", e);
 				}
@@ -3177,7 +3189,7 @@ public class CAPFunctionalTest extends SccpHarness {
 					dlg.sendErrorComponent(invokeId8, mem);
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ErrorComponent, null, sequence++));
 
-					dlg.send();
+					dlg.send(dummyCallback);
 				} catch (CAPException e) {
 					this.error("Error while trying to send/close() Dialog", e);
 				}
@@ -3363,7 +3375,7 @@ public class CAPFunctionalTest extends SccpHarness {
 		SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address,
 				peer1Address, Unpooled.wrappedBuffer(getMessageBadTag()), 0, 0, false, null, null);
 
-		this.sccpProvider1.send(message);
+		this.sccpProvider1.send(message, dummyCallback);
 
 		waitForEnd();
 
@@ -3555,7 +3567,7 @@ public class CAPFunctionalTest extends SccpHarness {
 
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.EventReportGPRSRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 						dialogStep = 0;
 						break;
 					case 2: // after ConnectRequest
@@ -3565,7 +3577,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addApplyChargingReportGPRSRequest(chargingResult, null, active, null, null);
 						this.observerdEvents.add(
 								TestEvent.createSentEvent(EventType.ApplyChargingReportGPRSRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 						dialogStep = 0;
 
 						break;
@@ -3633,7 +3645,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addRequestReportGPRSEventRequest(rrc.getGPRSEvent(), rrc.getPDPID());
 						this.observerdEvents.add(
 								TestEvent.createSentEvent(EventType.RequestReportGPRSEventRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						try {
 							Thread.sleep(100);
@@ -3653,7 +3665,7 @@ public class CAPFunctionalTest extends SccpHarness {
 								fcIBCCCAMELsequence1);
 
 						dlg.addFurnishChargingInformationGPRSRequest(fciGPRSBillingChargingCharacteristics);
-						dlg.send();
+						dlg.send(dummyCallback);
 						this.observerdEvents.add(TestEvent
 								.createSentEvent(EventType.FurnishChargingInformationGPRSRequest, null, sequence++));
 
@@ -3665,7 +3677,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addEventReportGPRSResponse(eventReportGPRSResponse);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.EventReportGPRSResponse, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						try {
 							Thread.sleep(100);
@@ -3676,7 +3688,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addResetTimerGPRSRequest(TimerID.tssf, 12);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.ResetTimerGPRSRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						try {
 							Thread.sleep(100);
@@ -3699,14 +3711,14 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addConnectGPRSRequest(accessPointName, pdpIDConnectRequest);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.ConnectGPRSRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 						dialogStep = 0;
 						break;
 					case 3:
 						dlg.addApplyChargingReportGPRSResponse(applyChargingReportGPRSResponse);
 						this.observerdEvents.add(
 								TestEvent.createSentEvent(EventType.ApplyChargingReportGPRSResponse, null, sequence++));
-						dlg.close(false);
+						dlg.close(false, dummyCallback);
 						dialogStep = 0;
 						break;
 					}
@@ -3896,7 +3908,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.ContinueGPRSRequest, null, sequence++));
 
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 						break;
@@ -3909,7 +3921,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addCancelGPRSRequest(pdpIDCancelGPRS);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.CancelGPRSRequest, null, sequence++));
-						dlg.close(false);
+						dlg.close(false, dummyCallback);
 						dialogStep = 0;
 
 						break;
@@ -3969,7 +3981,7 @@ public class CAPFunctionalTest extends SccpHarness {
 					switch (dialogStep) {
 					case 1: // after ActivityTestGPRS
 						dlg.addActivityTestGPRSResponse(activityTestGPRSRequest);
-						dlg.send();
+						dlg.send(dummyCallback);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.ActivityTestGPRSResponse, null, sequence++));
 
@@ -4030,7 +4042,7 @@ public class CAPFunctionalTest extends SccpHarness {
 
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.EventReportGPRSRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 						dialogStep = 0;
 						break;
 					}
@@ -4234,7 +4246,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendChargingInformationGPRSRequest,
 								null, sequence++));
 
-						dlg.close(false);
+						dlg.close(false, dummyCallback);
 						dialogStep = 0;
 
 						break;
@@ -4347,7 +4359,7 @@ public class CAPFunctionalTest extends SccpHarness {
 				try {
 					switch (dialogStep) {
 					case 1:
-						dlg.close(false);
+						dlg.close(false, dummyCallback);
 						dialogStep = 0;
 						break;
 					}
@@ -4489,7 +4501,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.EventReportSMSRequest, null, sequence++));
 
-						dlg.send();
+						dlg.send(dummyCallback);
 						break;
 					}
 				} catch (CAPException e) {
@@ -4555,7 +4567,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						this.observerdEvents.add(
 								TestEvent.createSentEvent(EventType.RequestReportSMSEventRequest, null, sequence++));
 
-						dlg.send();
+						dlg.send(dummyCallback);
 						break;
 
 					case 2:
@@ -4567,7 +4579,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						this.observerdEvents.add(TestEvent
 								.createSentEvent(EventType.FurnishChargingInformationSMSRequest, null, sequence++));
 
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						try {
 							Thread.sleep(100);
@@ -4586,7 +4598,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.ConnectSMSRequest, null, sequence++));
 
-						dlg.close(false);
+						dlg.close(false, dummyCallback);
 						break;
 					}
 				} catch (CAPException e) {
@@ -4736,7 +4748,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.ContinueSMSRequest, null, sequence++));
 
-						dlg.close(false);
+						dlg.close(false, dummyCallback);
 						break;
 					}
 				} catch (CAPException e) {
@@ -4856,7 +4868,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.ReleaseSMSRequest, null, sequence++));
 
-						dlg.close(false);
+						dlg.close(false, dummyCallback);
 						break;
 					}
 				} catch (CAPException e) {
@@ -4976,14 +4988,14 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addSplitLegRequest(logIDToSplit, 1, null);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.SplitLegRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 						break;
 
 					case 2: // after SplitLegResponse
 						LegID logIDToMove = this.capParameterFactory.createLegID(LegType.leg1, null);
 						dlg.addMoveLegRequest(logIDToMove, null);
 						this.observerdEvents.add(TestEvent.createSentEvent(EventType.MoveLegRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 						break;
 
 					case 3: // after MoveLegResponse
@@ -4994,14 +5006,14 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addDisconnectLegRequest(logToBeReleased, causeCap, null);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.DisconnectLegRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 						break;
 
 					case 4: // after MoveLegResponse
 						dlg.addDisconnectForwardConnectionWithArgumentRequest(15, null);
 						this.observerdEvents.add(TestEvent.createSentEvent(
 								EventType.DisconnectForwardConnectionWithArgumentRequest, null, sequence++));
-						dlg.close(false);
+						dlg.close(false, dummyCallback);
 						break;
 					}
 				} catch (CAPException e) {
@@ -5098,7 +5110,7 @@ public class CAPFunctionalTest extends SccpHarness {
 								null, false);
 						this.observerdEvents.add(
 								TestEvent.createSentEvent(EventType.InitiateCallAttemptResponse, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 						break;
@@ -5107,7 +5119,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addSplitLegResponse(invokeIdSplitLeg);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.SplitLegResponse, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 						break;
@@ -5116,7 +5128,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addMoveLegResponse(invokeIdMoveLeg);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.MoveLegResponse, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 						break;
@@ -5125,7 +5137,7 @@ public class CAPFunctionalTest extends SccpHarness {
 						dlg.addDisconnectLegResponse(invokeIdDisconnectLeg);
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.DisconnectLegResponse, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 						break;
@@ -5277,7 +5289,7 @@ public class CAPFunctionalTest extends SccpHarness {
 				try {
 					switch (dialogStep) {
 					case 1: // after ContinueWithArgumentRequest
-						dlg.close(false);
+						dlg.close(false, dummyCallback);
 
 						dialogStep = 0;
 
@@ -5316,7 +5328,7 @@ public class CAPFunctionalTest extends SccpHarness {
 								null, false, false, null);
 						this.observerdEvents.add(
 								TestEvent.createSentEvent(EventType.ContinueWithArgumentRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 						dialogStep = 0;
 
@@ -5416,7 +5428,7 @@ public class CAPFunctionalTest extends SccpHarness {
 				try {
 					switch (dialogStep) {
 					case 1: // after onCallGapRequest
-						dlg.close(false);
+						dlg.close(false, dummyCallback);
 
 						dialogStep = 0;
 
@@ -5461,7 +5473,7 @@ public class CAPFunctionalTest extends SccpHarness {
 
 						dlg.addCallGapRequest(gapCriteria, gapIndicators, null, null, null);
 						this.observerdEvents.add(TestEvent.createSentEvent(EventType.CallGapRequest, null, sequence++));
-						dlg.send();
+						dlg.send(dummyCallback);
 
 //                            GenericNumber genericNumber = capProvider.getISUPParameterFactory().createGenericNumber();
 //                            genericNumber.setAddress("501090500");
@@ -5484,7 +5496,7 @@ public class CAPFunctionalTest extends SccpHarness {
 //
 //                            dlg.addCallGapRequest(gapCriteria, gapIndicators, ControlType.sCPOverloaded, gapTreatment, null);
 //                            this.observerdEvents.add(TestEvent.createSentEvent(EventType.CallGapRequest, null, sequence++));
-//                            dlg.send();
+//                            dlg.send(dummyCallback);
 
 						dialogStep = 0;
 

@@ -65,18 +65,20 @@ public class SmsSignalInfoImpl extends ASNOctetString implements SmsSignalInfo {
         return value;
     }
 
-    public Charset getGsm8Charset() {
+    @Override
+	public Charset getGsm8Charset() {
         return gsm8Charset;
     }
 
-    public void setGsm8Charset(Charset gsm8Charset) {
+    @Override
+	public void setGsm8Charset(Charset gsm8Charset) {
         this.gsm8Charset = gsm8Charset;
     }
 
-    public SmsTpduImpl decodeTpdu(boolean mobileOriginatedMessage) throws MAPException {
+    @Override
+	public SmsTpduImpl decodeTpdu(boolean mobileOriginatedMessage) throws MAPException {
     	ByteBuf buffer=getValue();
-    	buffer.retain();
-        return SmsTpduImpl.createInstance(buffer, mobileOriginatedMessage, this.getGsm8Charset());
+    	return SmsTpduImpl.createInstance(buffer, mobileOriginatedMessage, this.getGsm8Charset());
     }
 
     @Override
@@ -88,8 +90,7 @@ public class SmsSignalInfoImpl extends ASNOctetString implements SmsSignalInfo {
         boolean moExists = false;
         try {
         	ByteBuf buffer=getValue();
-        	buffer.retain();
-            SmsTpduImpl tpdu = SmsTpduImpl.createInstance(buffer, true, getGsm8Charset());
+        	SmsTpduImpl tpdu = SmsTpduImpl.createInstance(buffer, true, getGsm8Charset());
             sb.append("MO case: ");
             sb.append(tpdu.toString());
             moExists = true;
@@ -100,8 +101,7 @@ public class SmsSignalInfoImpl extends ASNOctetString implements SmsSignalInfo {
                 sb.append("\n");
             
             ByteBuf buffer=getValue();
-        	buffer.retain();
-            SmsTpduImpl tpdu = SmsTpduImpl.createInstance(buffer, false, getGsm8Charset());
+        	SmsTpduImpl tpdu = SmsTpduImpl.createInstance(buffer, false, getGsm8Charset());
             sb.append("MT case: ");
             sb.append(tpdu.toString());
         } catch (Exception e) {

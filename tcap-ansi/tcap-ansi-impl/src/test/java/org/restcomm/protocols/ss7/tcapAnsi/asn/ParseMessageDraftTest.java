@@ -70,9 +70,8 @@ public class ParseMessageDraftTest {
 		WorkerPool workerPool = new WorkerPool();
 		workerPool.start(4);
 
-		SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool.getPeriodicQueue());
-		TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8,
-				workerPool.getPeriodicQueue());
+		SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool);
+		TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, workerPool);
 		TCAPProvider provider = stack.getProvider();
 		DraftParsedMessage msg = provider.parseMessageDraft(Unpooled.wrappedBuffer(dataTcQuery));
 
@@ -89,9 +88,8 @@ public class ParseMessageDraftTest {
 		WorkerPool workerPool = new WorkerPool();
 		workerPool.start(4);
 
-		SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool.getPeriodicQueue());
-		TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8,
-				workerPool.getPeriodicQueue());
+		SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool);
+		TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, workerPool);
 		TCAPProvider provider = stack.getProvider();
 		DraftParsedMessage msg = provider.parseMessageDraft(Unpooled.wrappedBuffer(dataTcConversation));
 
@@ -108,9 +106,8 @@ public class ParseMessageDraftTest {
 		WorkerPool workerPool = new WorkerPool();
 		workerPool.start(4);
 
-		SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool.getPeriodicQueue());
-		TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8,
-				workerPool.getPeriodicQueue());
+		SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool);
+		TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, workerPool);
 		TCAPProvider provider = stack.getProvider();
 		DraftParsedMessage msg = provider.parseMessageDraft(Unpooled.wrappedBuffer(dataTcResponse));
 
@@ -127,9 +124,8 @@ public class ParseMessageDraftTest {
 		WorkerPool workerPool = new WorkerPool();
 		workerPool.start(4);
 
-		SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool.getPeriodicQueue());
-		TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8,
-				workerPool.getPeriodicQueue());
+		SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool);
+		TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, workerPool);
 		TCAPProvider provider = stack.getProvider();
 		DraftParsedMessage msg = provider.parseMessageDraft(Unpooled.wrappedBuffer(dataTcAbort));
 
@@ -146,9 +142,8 @@ public class ParseMessageDraftTest {
 		WorkerPool workerPool = new WorkerPool();
 		workerPool.start(4);
 
-		SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool.getPeriodicQueue());
-		TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8,
-				workerPool.getPeriodicQueue());
+		SccpStackImpl sccpStack = new SccpStackImpl("ParseMessageDraftTest", workerPool);
+		TCAPStackImpl stack = new TCAPStackImpl("TCAPAbnormalTest", sccpStack.getSccpProvider(), 8, workerPool);
 		TCAPProvider provider = stack.getProvider();
 		DraftParsedMessage msg = provider.parseMessageDraft(Unpooled.wrappedBuffer(dataTcUnidirectional));
 

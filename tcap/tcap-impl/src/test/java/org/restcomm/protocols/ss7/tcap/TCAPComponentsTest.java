@@ -66,837 +66,837 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
  */
 public class TCAPComponentsTest extends SccpHarness {
 
-    public static final long MINI_WAIT_TIME = 100;
-    public static final long WAIT_TIME = 500;
-    private static final int _DIALOG_TIMEOUT = 5000000;
-
-    private TCAPStackImpl tcapStack1;
-    private TCAPStackImpl tcapStack2;
-    private SccpAddress peer1Address;
-    private SccpAddress peer2Address;
-    private ClientComponent client;
-    private ServerComponent server;
-
-    public TCAPComponentsTest() {
-
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    @Before
-    public void setUp() throws Exception {
-	this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
-	this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
-
-	System.out.println("setUp");
-	super.setUp();
-
-	peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1,
-		8);
-	peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2,
-		8);
-	
-	this.tcapStack1 = new TCAPStackImpl("TCAPComponentsTest", this.sccpProvider1, 8, workerPool.getPeriodicQueue());
-	this.tcapStack2 = new TCAPStackImpl("TCAPComponentsTest", this.sccpProvider2, 8, workerPool.getPeriodicQueue());
-
-	this.tcapStack1.start();
-	this.tcapStack2.start();
-
-	this.tcapStack1.setInvokeTimeout(0);
-	this.tcapStack2.setInvokeTimeout(0);
-	this.tcapStack1.setDialogIdleTimeout(_DIALOG_TIMEOUT);
-	this.tcapStack2.setDialogIdleTimeout(_DIALOG_TIMEOUT);
-	// create test classes
-
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see junit.framework.TestCase#tearDown()
-     */
-    @Override
-    @After
-    public void tearDown() {
-	this.tcapStack1.stop();
-	this.tcapStack2.stop();
-	super.tearDown();
-
-    }
-
-    /**
-     * Sending BadlyStructuredComponent Component
-     *
-     * TC-BEGIN + Invoke with BadlyStructuredComponent + Invoke TC-END + Reject
-     * (mistypedComponent)
-     */
-    @Test
-    public void BadlyStructuredComponentTest() throws Exception {
-	this.tcapStack1.getProvider().getParser().registerAlternativeClassMapping(ASNInvokeParameterImpl.class,
-		InvokeTestASN.class);
-	this.tcapStack2.getProvider().getParser().registerAlternativeClassMapping(ASNInvokeParameterImpl.class,
-		InvokeTestASN.class);
-
-	this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
-
-	    @Override
-	    public void onTCEnd(TCEndIndication ind) {
-		super.onTCEnd(ind);
-
-		assertEquals(ind.getComponents().size(), 1);
-		BaseComponent c = ind.getComponents().get(0);
-		assertTrue(c instanceof Reject);
-		Reject r = (Reject) c;
-		assertEquals(r.getInvokeId(), new Integer(1));
-		try {
-		    assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.MistypedComponent);
-		} catch (ParseException ex) {
-		    assertEquals(1, 2);
-		}
-
-		assertFalse(r.isLocalOriginated());
-	    }
-	};
-
-	this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
-
-	    @Override
-	    public void onTCBegin(TCBeginIndication ind) {
-		super.onTCBegin(ind);
-
-		assertEquals(ind.getComponents().size(), 2);
-		BaseComponent c = ind.getComponents().get(0);
-
-		assertTrue(c instanceof Reject);
-		Reject r = (Reject) c;
-		try {
-		    assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.MistypedComponent);
-		} catch (ParseException ex) {
-		    assertEquals(1, 2);
-		}
-
-		assertTrue(r.isLocalOriginated());
-
-		try {
-		    this.sendEnd(TerminationType.Basic);
-		} catch (Exception e) {
-		    fail("Exception when sendComponent / send message 1");
-		    e.printStackTrace();
-		}
-	    }
-	};
-
-	long stamp = System.currentTimeMillis();
-	int cnt = 0;
-	List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-	TestEvent te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Begin, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.End, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-
-	cnt = 0;
-	List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-	te = TestEvent.createReceivedEvent(EventType.Begin, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.End, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-
-	client.startClientDialog();
-
-	BaseComponent badComp = new BadInvokeImpl();
-	badComp.setInvokeId(1);
-	((DialogImpl) client.dialog).sendComponent(badComp);
-
-	client.addNewInvoke(2, 10000L);
-	client.sendBegin();
-
-	EventTestHarness.waitFor(WAIT_TIME);
-
-	client.compareEvents(clientExpectedEvents);
-	server.compareEvents(serverExpectedEvents);
-    }
-
-    /**
-     * Sending unrecognizedComponent
-     *
-     * TC-BEGIN + bad component (with component type != Invoke,ReturnResult,...) +
-     * Invoke TC-END + Reject (unrecognizedComponent)
-     */
-    @Test
-    public void UnrecognizedComponentTest() throws Exception {
-
-	this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
-
-	    @Override
-	    public void onTCEnd(TCEndIndication ind) {
-		super.onTCEnd(ind);
-
-		assertEquals(ind.getComponents().size(), 1);
-		BaseComponent c = ind.getComponents().get(0);
-		assertTrue(c instanceof Reject);
-		Reject r = (Reject) c;
-		assertNull(r.getInvokeId());
-		try {
-		    assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.UnrecognizedComponent);
-		} catch (ParseException ex) {
-		    assertEquals(1, 2);
-		}
-		assertFalse(r.isLocalOriginated());
-	    }
-	};
-
-	this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
-
-	    @Override
-	    public void onTCBegin(TCBeginIndication ind) {
-		super.onTCBegin(ind);
-
-		assertEquals(ind.getComponents().size(), 2);
-		BaseComponent c = ind.getComponents().get(0);
-		assertTrue(c instanceof Reject);
-		Reject r = (Reject) c;
-		assertNull(r.getInvokeId());
-		try {
-		    assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.UnrecognizedComponent);
-		} catch (ParseException ex) {
-		    assertEquals(1, 2);
-		}
-
-		assertTrue(r.isLocalOriginated());
-
-		try {
-		    this.sendEnd(TerminationType.Basic);
-		} catch (Exception e) {
-		    fail("Exception when sendComponent / send message 1");
-		    e.printStackTrace();
-		}
-	    }
-	};
-
-	long stamp = System.currentTimeMillis();
-	int cnt = 0;
-	List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-	TestEvent te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Begin, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.End, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-
-	cnt = 0;
-	List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-	te = TestEvent.createReceivedEvent(EventType.Begin, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.End, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-
-	client.startClientDialog();
-
-	BaseComponent badComp = new BadComponentImpl();
-	((DialogImpl) client.dialog).sendComponent(badComp);
-
-	client.addNewInvoke(1, 10000L);
-	client.sendBegin();
-
-	EventTestHarness.waitFor(WAIT_TIME);
-
-	client.compareEvents(clientExpectedEvents);
-	server.compareEvents(serverExpectedEvents);
-
-    }
-
-    /**
-     * Sending MistypedComponent Component
-     *
-     * TC-BEGIN + Invoke with an extra bad component + Invoke TC-END + Reject
-     * (mistypedComponent)
-     */
-    @Test
-    public void MistypedComponentTest() throws Exception {
-
-	this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
-
-	    @Override
-	    public void onTCEnd(TCEndIndication ind) {
-		super.onTCEnd(ind);
-
-		assertEquals(ind.getComponents().size(), 1);
-		BaseComponent c = ind.getComponents().get(0);
-		assertTrue(c instanceof Reject);
-		Reject r = (Reject) c;
-		assertEquals((long) r.getInvokeId(), 1);
-		try {
-		    assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.MistypedComponent);
-		} catch (ParseException ex) {
-		    assertEquals(1, 2);
-		}
-
-		assertFalse(r.isLocalOriginated());
-	    }
-	};
-
-	this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
-
-	    @Override
-	    public void onTCBegin(TCBeginIndication ind) {
-		super.onTCBegin(ind);
-
-		assertEquals(ind.getComponents().size(), 2);
-		BaseComponent c = ind.getComponents().get(0);
-		assertTrue(c instanceof Reject);
-		Reject r = (Reject) c;
-		assertEquals((long) r.getInvokeId(), 1);
-		try {
-		    assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.MistypedComponent);
-		} catch (ParseException e) {
-		    assertEquals(1, 2);
-		}
-
-		assertTrue(r.isLocalOriginated());
-
-		try {
-		    this.sendEnd(TerminationType.Basic);
-		} catch (Exception e) {
-		    fail("Exception when sendComponent / send message 1");
-		    e.printStackTrace();
-		}
-	    }
-	};
-
-	long stamp = System.currentTimeMillis();
-	int cnt = 0;
-	List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-	TestEvent te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Begin, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.End, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-
-	cnt = 0;
-	List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-	te = TestEvent.createReceivedEvent(EventType.Begin, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.End, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-
-	client.startClientDialog();
-
-	BaseComponent badComp = new MistypedInvokeImpl(100);
-	badComp.setInvokeId(1);
-	((DialogImpl) client.dialog).sendComponent(badComp);
-
-	client.addNewInvoke(2, 10000L);
-	client.sendBegin();
-
-	EventTestHarness.waitFor(WAIT_TIME);
-
-	client.compareEvents(clientExpectedEvents);
-	server.compareEvents(serverExpectedEvents);
-
-    }
-
-    /**
-     * Testing diplicateInvokeId case All Invokes are with a little
-     * invokeTimeout(removed before an answer from a Server) !!!
-     *
-     * TC-BEGIN + Invoke (invokeId==1) TC-CONTINUE + ReturnResult (invokeId==1)
-     * TC-CONTINUE + Reject(unrecognizedInvokeId) + Invoke (invokeId==1) TC-CONTINUE
-     * + Reject (duplicateInvokeId) TC-CONTINUE + Invoke (invokeId==2) TC-CONTINUE +
-     * ReturnResultLast (invokeId==1) + ReturnError (invokeId==2) TC-CONTINUE +
-     * Invoke (invokeId==1, for this message we will invoke processWithoutAnswer())
-     * + Invoke (invokeId==2) TC-CONTINUE TC-CONTINUE + Invoke (invokeId==1) +
-     * Invoke (invokeId==2) * TC-END + Reject (duplicateInvokeId for invokeId==2)
-     */
-    @Test
-    public void DuplicateInvokeIdTest() throws Exception {
-
-	this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
-
-	    @Override
-	    public void onTCContinue(TCContinueIndication ind) {
-		super.onTCContinue(ind);
-
-		step++;
-
-		try {
-		    switch (step) {
-		    case 1:
-			assertEquals(ind.getComponents().size(), 1);
-			BaseComponent c = ind.getComponents().get(0);
-
-			assertTrue(c instanceof Reject);
-			Reject r = (Reject) c;
-			assertEquals((long) r.getInvokeId(), 1);
-			assertEquals(r.getProblem().getReturnResultProblemType(),
-				ReturnResultProblemType.UnrecognizedInvokeID);
-			assertTrue(r.isLocalOriginated());
-
-			this.addNewInvoke(1, MINI_WAIT_TIME / 2);
-			this.sendContinue();
-			break;
-		    case 2:
-			assertEquals(ind.getComponents().size(), 1);
-			c = ind.getComponents().get(0);
-			assertTrue(c instanceof Reject);
-			r = (Reject) c;
-			assertEquals((long) r.getInvokeId(), 1);
-			assertEquals(r.getProblem().getInvokeProblemType(), InvokeProblemType.DuplicateInvokeID);
-			assertFalse(r.isLocalOriginated());
-
-			this.addNewInvoke(2, MINI_WAIT_TIME / 2);
-			this.sendContinue();
-			break;
-
-		    case 3:
-			assertEquals(ind.getComponents().size(), 2);
-			c = ind.getComponents().get(0);
-			assertTrue(c instanceof Reject);
-			r = (Reject) c;
-			assertEquals((long) r.getInvokeId(), 1);
-			assertEquals(r.getProblem().getReturnResultProblemType(),
-				ReturnResultProblemType.UnrecognizedInvokeID);
-			assertTrue(r.isLocalOriginated());
-
-			c = ind.getComponents().get(1);
-			assertTrue(c instanceof Reject);
-			r = (Reject) c;
-			assertEquals((long) r.getInvokeId(), 2);
-			assertEquals(r.getProblem().getReturnErrorProblemType(),
-				ReturnErrorProblemType.UnrecognizedInvokeID);
-			assertTrue(r.isLocalOriginated());
-
-			this.addNewInvoke(1, MINI_WAIT_TIME / 2);
-			this.addNewInvoke(2, MINI_WAIT_TIME);
-			this.sendContinue();
-			break;
-
-		    case 4:
-			this.addNewInvoke(1, 10000L);
-			this.addNewInvoke(2, 10000L);
-			this.sendContinue();
-			break;
-		    }
-		} catch (Exception e) {
-		    e.printStackTrace();
-		    fail("Exception when sendComponent / send message 2");
-		}
-	    }
-
-	    @Override
-	    public void onTCEnd(TCEndIndication ind) {
-		super.onTCEnd(ind);
-
-		try {
-		    assertEquals(ind.getComponents().size(), 1);
-		    BaseComponent c = ind.getComponents().get(0);
-		    assertTrue(c instanceof Reject);
-		    Reject r = (Reject) c;
-		    assertEquals((long) r.getInvokeId(), 2);
-		    assertEquals(r.getProblem().getInvokeProblemType(), InvokeProblemType.DuplicateInvokeID);
-		    assertFalse(r.isLocalOriginated());
-		} catch (Exception e) {
-		    fail("Exception when sendComponent / send message 3");
-		    e.printStackTrace();
-		}
-	    }
-	};
-
-	this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
-
-	    @Override
-	    public void onTCBegin(TCBeginIndication ind) {
-		super.onTCBegin(ind);
-
-		// waiting for Invoke timeout at a client side
-		EventTestHarness.waitFor(MINI_WAIT_TIME);
-
-		try {
-		    this.addNewReturnResult(1);
-		    
-		    this.sendContinue();
-		} catch (Exception e) {
-		    fail("Exception when sendComponent / send message 1");
-		    e.printStackTrace();
-		}
-	    }
-
-	    @Override
-	    public void onTCContinue(TCContinueIndication ind) {
-		super.onTCContinue(ind);
-
-		// waiting for Invoke timeout at a client side
-		EventTestHarness.waitFor(MINI_WAIT_TIME + 20);
-
-		step++;
-
-		try {
-		    switch (step) {
-		    case 1:
-			assertEquals(ind.getComponents().size(), 2);
-
-			BaseComponent c = ind.getComponents().get(0);
-			assertTrue(c instanceof Reject);
-			Reject r = (Reject) c;
-			assertEquals((long) r.getInvokeId(), 1);
-			assertEquals(r.getProblem().getReturnResultProblemType(),
-				ReturnResultProblemType.UnrecognizedInvokeID);
-			assertFalse(r.isLocalOriginated());
-
-			c = ind.getComponents().get(1);
-			assertTrue(c instanceof Reject);
-			r = (Reject) c;
-			assertEquals((long) r.getInvokeId(), 1);
-			assertEquals(r.getProblem().getInvokeProblemType(), InvokeProblemType.DuplicateInvokeID);
-			assertTrue(r.isLocalOriginated());
-
-			this.sendContinue();
-			break;
-
-		    case 2:
-			this.addNewReturnResultLast(1);
-			this.addNewReturnError(2);
-			this.sendContinue();
-			break;
-
-		    case 3:
-			this.dialog.processInvokeWithoutAnswer(1);
-
-			this.sendContinue();
-			break;
-
-		    case 4:
-			assertEquals(ind.getComponents().size(), 2);
-
-			c = ind.getComponents().get(1);
-			assertTrue(c instanceof Reject);
-			r = (Reject) c;
-			assertEquals((long) r.getInvokeId(), 2);
-			assertEquals(r.getProblem().getInvokeProblemType(), InvokeProblemType.DuplicateInvokeID);
-			assertTrue(r.isLocalOriginated());
-
-			this.sendEnd(TerminationType.Basic);
-			break;
-		    }
-		} catch (Exception e) {
-		    fail("Exception when sendComponent / send message 2");
-		    e.printStackTrace();
-		}
-	    }
-
-	};
-
-	long stamp = System.currentTimeMillis();
-	int cnt = 0;
-	List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
-	TestEvent te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Begin, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp + MINI_WAIT_TIME);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 2);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 2);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 2);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 2);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp + MINI_WAIT_TIME * 2);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 4);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 4);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 4);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 4);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.End, null, cnt++, stamp + MINI_WAIT_TIME * 5);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 5);
-	clientExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp + MINI_WAIT_TIME * 5);
-	clientExpectedEvents.add(te);
-
-	cnt = 0;
-	List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-	te = TestEvent.createReceivedEvent(EventType.Begin, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.ReturnResult, null, cnt++, stamp + MINI_WAIT_TIME);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 2);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 2);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 2);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.ReturnResultLast, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.ReturnError, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 4);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 4);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 4);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 4);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createSentEvent(EventType.End, null, cnt++, stamp + MINI_WAIT_TIME * 5);
-	serverExpectedEvents.add(te);
-	te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp + MINI_WAIT_TIME * 5);
-	serverExpectedEvents.add(te);
-
-	client.startClientDialog();
-	client.addNewInvoke(1, MINI_WAIT_TIME / 2);
-	client.sendBegin();
-
-	EventTestHarness.waitFor(WAIT_TIME * 2);
-
-	client.compareEvents(clientExpectedEvents);
-	server.compareEvents(serverExpectedEvents);
-    }
-
-    public class ClientComponent extends EventTestHarness {
-
-	protected int step = 0;
-
-	public ClientComponent(final TCAPStack stack, final ParameterFactory parameterFactory,
-		final SccpAddress thisAddress, final SccpAddress remoteAddress) {
-	    super(stack, parameterFactory, thisAddress, remoteAddress);
+	public static final long MINI_WAIT_TIME = 100;
+	public static final long WAIT_TIME = 500;
+	private static final int _DIALOG_TIMEOUT = 5000000;
+
+	private TCAPStackImpl tcapStack1;
+	private TCAPStackImpl tcapStack2;
+	private SccpAddress peer1Address;
+	private SccpAddress peer2Address;
+	private ClientComponent client;
+	private ServerComponent server;
+
+	public TCAPComponentsTest() {
 
 	}
 
-	public DialogImpl getCurDialog() {
-	    return (DialogImpl) this.dialog;
-	}
-
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see junit.framework.TestCase#setUp()
+	 */
 	@Override
-	public void onTCContinue(TCContinueIndication ind) {
-	    super.onTCContinue(ind);
+	@Before
+	public void setUp() throws Exception {
+		this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
+		this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
 
-	    procComponents(ind.getComponents());
+		System.out.println("setUp");
+		super.setUp();
+
+		peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1,
+				8);
+		peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2,
+				8);
+
+		this.tcapStack1 = new TCAPStackImpl("TCAPComponentsTest", this.sccpProvider1, 8, workerPool);
+		this.tcapStack2 = new TCAPStackImpl("TCAPComponentsTest", this.sccpProvider2, 8, workerPool);
+
+		this.tcapStack1.start();
+		this.tcapStack2.start();
+
+		this.tcapStack1.setInvokeTimeout(0);
+		this.tcapStack2.setInvokeTimeout(0);
+		this.tcapStack1.setDialogIdleTimeout(_DIALOG_TIMEOUT);
+		this.tcapStack2.setDialogIdleTimeout(_DIALOG_TIMEOUT);
+		// create test classes
+
 	}
 
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see junit.framework.TestCase#tearDown()
+	 */
 	@Override
-	public void onTCEnd(TCEndIndication ind) {
-	    super.onTCEnd(ind);
+	@After
+	public void tearDown() {
+		this.tcapStack1.stop();
+		this.tcapStack2.stop();
+		super.tearDown();
 
-	    procComponents(ind.getComponents());
 	}
-
-	private void procComponents(List<BaseComponent> compp) {
-	    if (compp != null)
-		for (BaseComponent c : compp) {
-		    EventType et = null;
-		    if (c instanceof Invoke)
-			et = EventType.Invoke;
-		    if (c instanceof ReturnResult)
-			et = EventType.ReturnResult;
-		    if (c instanceof ReturnResultLast)
-			et = EventType.ReturnResultLast;
-		    if (c instanceof ReturnError)
-			et = EventType.ReturnError;
-		    if (c instanceof Reject)
-			et = EventType.Reject;
-
-		    TestEvent te = TestEvent.createReceivedEvent(et, c, sequence++);
-		    this.observerdEvents.add(te);
-		}
-	}
-
-	public void addNewInvoke(Integer invokeId, Long timout) throws Exception {
-	    OperationCode oc = TcapFactory.createLocalOperationCode(10);
-
-	    // Parameter p1 = TcapFactory.createParameter();
-	    // p1.setTagClass(Tag.CLASS_UNIVERSAL);
-	    // p1.setTag(Tag.STRING_OCTET);
-	    // p1.setData(new byte[]{0x0F});
-	    //
-	    // Parameter p2 = TcapFactory.createParameter();
-	    // p2.setTagClass(Tag.CLASS_UNIVERSAL);
-	    // p2.setTag(Tag.STRING_OCTET);
-	    // p2.setData(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6,
-	    // 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19,
-	    // 0x0e, 0x37, (byte) 0xcb, (byte) 0xe5,
-	    // 0x72, (byte) 0xb9, 0x11 });
-	    //
-	    // Parameter pm = TcapFactory.createParameter();
-	    // pm.setTagClass(Tag.CLASS_UNIVERSAL);
-	    // pm.setTag(Tag.SEQUENCE);
-	    // pm.setParameters(new Parameter[]{p1, p2});
-	    // invoke.setParameter(pm);
-
-	    TestEvent te = TestEvent.createSentEvent(EventType.Invoke, null, sequence++);
-	    this.observerdEvents.add(te);
-
-	    this.dialog.sendData(invokeId, null, null, timout, oc, null, true, false);
-	}
-    }
-
-    public class ServerComponent extends EventTestHarness {
-
-	protected int step = 0;
 
 	/**
-	 * @param stack
-	 * @param thisAddress
-	 * @param remoteAddress
+	 * Sending BadlyStructuredComponent Component
+	 *
+	 * TC-BEGIN + Invoke with BadlyStructuredComponent + Invoke TC-END + Reject
+	 * (mistypedComponent)
 	 */
-	public ServerComponent(final TCAPStack stack, final ParameterFactory parameterFactory,
-		final SccpAddress thisAddress, final SccpAddress remoteAddress) {
-	    super(stack, parameterFactory, thisAddress, remoteAddress);
-	    // TODO Auto-generated constructor stub
+	@Test
+	public void BadlyStructuredComponentTest() throws Exception {
+		this.tcapStack1.getProvider().getParser().registerAlternativeClassMapping(ASNInvokeParameterImpl.class,
+				InvokeTestASN.class);
+		this.tcapStack2.getProvider().getParser().registerAlternativeClassMapping(ASNInvokeParameterImpl.class,
+				InvokeTestASN.class);
+
+		this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
+
+			@Override
+			public void onTCEnd(TCEndIndication ind) {
+				super.onTCEnd(ind);
+
+				assertEquals(ind.getComponents().size(), 1);
+				BaseComponent c = ind.getComponents().get(0);
+				assertTrue(c instanceof Reject);
+				Reject r = (Reject) c;
+				assertEquals(r.getInvokeId(), new Integer(1));
+				try {
+					assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.MistypedComponent);
+				} catch (ParseException ex) {
+					assertEquals(1, 2);
+				}
+
+				assertFalse(r.isLocalOriginated());
+			}
+		};
+
+		this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
+
+			@Override
+			public void onTCBegin(TCBeginIndication ind) {
+				super.onTCBegin(ind);
+
+				assertEquals(ind.getComponents().size(), 2);
+				BaseComponent c = ind.getComponents().get(0);
+
+				assertTrue(c instanceof Reject);
+				Reject r = (Reject) c;
+				try {
+					assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.MistypedComponent);
+				} catch (ParseException ex) {
+					assertEquals(1, 2);
+				}
+
+				assertTrue(r.isLocalOriginated());
+
+				try {
+					this.sendEnd(TerminationType.Basic);
+				} catch (Exception e) {
+					fail("Exception when sendComponent / send message 1");
+					e.printStackTrace();
+				}
+			}
+		};
+
+		long stamp = System.currentTimeMillis();
+		int cnt = 0;
+		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
+		TestEvent te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Begin, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.End, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+
+		cnt = 0;
+		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
+		te = TestEvent.createReceivedEvent(EventType.Begin, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.End, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+
+		client.startClientDialog();
+
+		BaseComponent badComp = new BadInvokeImpl();
+		badComp.setInvokeId(1);
+		((DialogImpl) client.dialog).sendComponent(badComp);
+
+		client.addNewInvoke(2, 10000L);
+		client.sendBegin();
+
+		EventTestHarness.waitFor(WAIT_TIME);
+
+		client.compareEvents(clientExpectedEvents);
+		server.compareEvents(serverExpectedEvents);
 	}
 
-	public void addNewReturnResult(Integer invokeId) throws Exception {
+	/**
+	 * Sending unrecognizedComponent
+	 *
+	 * TC-BEGIN + bad component (with component type != Invoke,ReturnResult,...) +
+	 * Invoke TC-END + Reject (unrecognizedComponent)
+	 */
+	@Test
+	public void UnrecognizedComponentTest() throws Exception {
 
-	    OperationCode oc = TcapFactory.createLocalOperationCode(10);
+		this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
 
-	    TestEvent te = TestEvent.createSentEvent(EventType.ReturnResult, null, sequence++);
-	    this.observerdEvents.add(te);
+			@Override
+			public void onTCEnd(TCEndIndication ind) {
+				super.onTCEnd(ind);
 
-	    this.dialog.sendData(invokeId, null, null, null, oc, null, false, false);
+				assertEquals(ind.getComponents().size(), 1);
+				BaseComponent c = ind.getComponents().get(0);
+				assertTrue(c instanceof Reject);
+				Reject r = (Reject) c;
+				assertNull(r.getInvokeId());
+				try {
+					assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.UnrecognizedComponent);
+				} catch (ParseException ex) {
+					assertEquals(1, 2);
+				}
+				assertFalse(r.isLocalOriginated());
+			}
+		};
+
+		this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
+
+			@Override
+			public void onTCBegin(TCBeginIndication ind) {
+				super.onTCBegin(ind);
+
+				assertEquals(ind.getComponents().size(), 2);
+				BaseComponent c = ind.getComponents().get(0);
+				assertTrue(c instanceof Reject);
+				Reject r = (Reject) c;
+				assertNull(r.getInvokeId());
+				try {
+					assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.UnrecognizedComponent);
+				} catch (ParseException ex) {
+					assertEquals(1, 2);
+				}
+
+				assertTrue(r.isLocalOriginated());
+
+				try {
+					this.sendEnd(TerminationType.Basic);
+				} catch (Exception e) {
+					fail("Exception when sendComponent / send message 1");
+					e.printStackTrace();
+				}
+			}
+		};
+
+		long stamp = System.currentTimeMillis();
+		int cnt = 0;
+		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
+		TestEvent te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Begin, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.End, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+
+		cnt = 0;
+		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
+		te = TestEvent.createReceivedEvent(EventType.Begin, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.End, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+
+		client.startClientDialog();
+
+		BaseComponent badComp = new BadComponentImpl();
+		((DialogImpl) client.dialog).sendComponent(badComp);
+
+		client.addNewInvoke(1, 10000L);
+		client.sendBegin();
+
+		EventTestHarness.waitFor(WAIT_TIME);
+
+		client.compareEvents(clientExpectedEvents);
+		server.compareEvents(serverExpectedEvents);
+
 	}
 
-	public void addNewReturnResultLast(Integer invokeId) throws Exception {
+	/**
+	 * Sending MistypedComponent Component
+	 *
+	 * TC-BEGIN + Invoke with an extra bad component + Invoke TC-END + Reject
+	 * (mistypedComponent)
+	 */
+	@Test
+	public void MistypedComponentTest() throws Exception {
 
-	    OperationCode oc = TcapFactory.createLocalOperationCode(10);
+		this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
 
-	    TestEvent te = TestEvent.createSentEvent(EventType.ReturnResultLast, null, sequence++);
-	    this.observerdEvents.add(te);
+			@Override
+			public void onTCEnd(TCEndIndication ind) {
+				super.onTCEnd(ind);
 
-	    this.dialog.sendData(invokeId, null, null, null, oc, null, false, true);
+				assertEquals(ind.getComponents().size(), 1);
+				BaseComponent c = ind.getComponents().get(0);
+				assertTrue(c instanceof Reject);
+				Reject r = (Reject) c;
+				assertEquals((long) r.getInvokeId(), 1);
+				try {
+					assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.MistypedComponent);
+				} catch (ParseException ex) {
+					assertEquals(1, 2);
+				}
+
+				assertFalse(r.isLocalOriginated());
+			}
+		};
+
+		this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
+
+			@Override
+			public void onTCBegin(TCBeginIndication ind) {
+				super.onTCBegin(ind);
+
+				assertEquals(ind.getComponents().size(), 2);
+				BaseComponent c = ind.getComponents().get(0);
+				assertTrue(c instanceof Reject);
+				Reject r = (Reject) c;
+				assertEquals((long) r.getInvokeId(), 1);
+				try {
+					assertEquals(r.getProblem().getGeneralProblemType(), GeneralProblemType.MistypedComponent);
+				} catch (ParseException e) {
+					assertEquals(1, 2);
+				}
+
+				assertTrue(r.isLocalOriginated());
+
+				try {
+					this.sendEnd(TerminationType.Basic);
+				} catch (Exception e) {
+					fail("Exception when sendComponent / send message 1");
+					e.printStackTrace();
+				}
+			}
+		};
+
+		long stamp = System.currentTimeMillis();
+		int cnt = 0;
+		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
+		TestEvent te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Begin, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.End, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+
+		cnt = 0;
+		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
+		te = TestEvent.createReceivedEvent(EventType.Begin, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.End, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+
+		client.startClientDialog();
+
+		BaseComponent badComp = new MistypedInvokeImpl(100);
+		badComp.setInvokeId(1);
+		((DialogImpl) client.dialog).sendComponent(badComp);
+
+		client.addNewInvoke(2, 10000L);
+		client.sendBegin();
+
+		EventTestHarness.waitFor(WAIT_TIME);
+
+		client.compareEvents(clientExpectedEvents);
+		server.compareEvents(serverExpectedEvents);
+
 	}
 
-	public void addNewReturnError(Integer invokeId) throws Exception {
+	/**
+	 * Testing diplicateInvokeId case All Invokes are with a little
+	 * invokeTimeout(removed before an answer from a Server) !!!
+	 *
+	 * TC-BEGIN + Invoke (invokeId==1) TC-CONTINUE + ReturnResult (invokeId==1)
+	 * TC-CONTINUE + Reject(unrecognizedInvokeId) + Invoke (invokeId==1) TC-CONTINUE
+	 * + Reject (duplicateInvokeId) TC-CONTINUE + Invoke (invokeId==2) TC-CONTINUE +
+	 * ReturnResultLast (invokeId==1) + ReturnError (invokeId==2) TC-CONTINUE +
+	 * Invoke (invokeId==1, for this message we will invoke processWithoutAnswer())
+	 * + Invoke (invokeId==2) TC-CONTINUE TC-CONTINUE + Invoke (invokeId==1) +
+	 * Invoke (invokeId==2) * TC-END + Reject (duplicateInvokeId for invokeId==2)
+	 */
+	@Test
+	public void DuplicateInvokeIdTest() throws Exception {
 
-	    ErrorCode ec = TcapFactory.createLocalErrorCode(10);
+		this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
 
-	    TestEvent te = TestEvent.createSentEvent(EventType.ReturnError, null, sequence++);
-	    this.observerdEvents.add(te);
+			@Override
+			public void onTCContinue(TCContinueIndication ind) {
+				super.onTCContinue(ind);
 
-	    this.dialog.sendError(invokeId, ec, null);
+				step++;
+
+				try {
+					switch (step) {
+					case 1:
+						assertEquals(ind.getComponents().size(), 1);
+						BaseComponent c = ind.getComponents().get(0);
+
+						assertTrue(c instanceof Reject);
+						Reject r = (Reject) c;
+						assertEquals((long) r.getInvokeId(), 1);
+						assertEquals(r.getProblem().getReturnResultProblemType(),
+								ReturnResultProblemType.UnrecognizedInvokeID);
+						assertTrue(r.isLocalOriginated());
+
+						this.addNewInvoke(1, MINI_WAIT_TIME / 2);
+						this.sendContinue();
+						break;
+					case 2:
+						assertEquals(ind.getComponents().size(), 1);
+						c = ind.getComponents().get(0);
+						assertTrue(c instanceof Reject);
+						r = (Reject) c;
+						assertEquals((long) r.getInvokeId(), 1);
+						assertEquals(r.getProblem().getInvokeProblemType(), InvokeProblemType.DuplicateInvokeID);
+						assertFalse(r.isLocalOriginated());
+
+						this.addNewInvoke(2, MINI_WAIT_TIME / 2);
+						this.sendContinue();
+						break;
+
+					case 3:
+						assertEquals(ind.getComponents().size(), 2);
+						c = ind.getComponents().get(0);
+						assertTrue(c instanceof Reject);
+						r = (Reject) c;
+						assertEquals((long) r.getInvokeId(), 1);
+						assertEquals(r.getProblem().getReturnResultProblemType(),
+								ReturnResultProblemType.UnrecognizedInvokeID);
+						assertTrue(r.isLocalOriginated());
+
+						c = ind.getComponents().get(1);
+						assertTrue(c instanceof Reject);
+						r = (Reject) c;
+						assertEquals((long) r.getInvokeId(), 2);
+						assertEquals(r.getProblem().getReturnErrorProblemType(),
+								ReturnErrorProblemType.UnrecognizedInvokeID);
+						assertTrue(r.isLocalOriginated());
+
+						this.addNewInvoke(1, MINI_WAIT_TIME / 2);
+						this.addNewInvoke(2, MINI_WAIT_TIME);
+						this.sendContinue();
+						break;
+
+					case 4:
+						this.addNewInvoke(1, 10000L);
+						this.addNewInvoke(2, 10000L);
+						this.sendContinue();
+						break;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					fail("Exception when sendComponent / send message 2");
+				}
+			}
+
+			@Override
+			public void onTCEnd(TCEndIndication ind) {
+				super.onTCEnd(ind);
+
+				try {
+					assertEquals(ind.getComponents().size(), 1);
+					BaseComponent c = ind.getComponents().get(0);
+					assertTrue(c instanceof Reject);
+					Reject r = (Reject) c;
+					assertEquals((long) r.getInvokeId(), 2);
+					assertEquals(r.getProblem().getInvokeProblemType(), InvokeProblemType.DuplicateInvokeID);
+					assertFalse(r.isLocalOriginated());
+				} catch (Exception e) {
+					fail("Exception when sendComponent / send message 3");
+					e.printStackTrace();
+				}
+			}
+		};
+
+		this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
+
+			@Override
+			public void onTCBegin(TCBeginIndication ind) {
+				super.onTCBegin(ind);
+
+				// waiting for Invoke timeout at a client side
+				EventTestHarness.waitFor(MINI_WAIT_TIME);
+
+				try {
+					this.addNewReturnResult(1);
+
+					this.sendContinue();
+				} catch (Exception e) {
+					fail("Exception when sendComponent / send message 1");
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void onTCContinue(TCContinueIndication ind) {
+				super.onTCContinue(ind);
+
+				// waiting for Invoke timeout at a client side
+				EventTestHarness.waitFor(MINI_WAIT_TIME + 20);
+
+				step++;
+
+				try {
+					switch (step) {
+					case 1:
+						assertEquals(ind.getComponents().size(), 2);
+
+						BaseComponent c = ind.getComponents().get(0);
+						assertTrue(c instanceof Reject);
+						Reject r = (Reject) c;
+						assertEquals((long) r.getInvokeId(), 1);
+						assertEquals(r.getProblem().getReturnResultProblemType(),
+								ReturnResultProblemType.UnrecognizedInvokeID);
+						assertFalse(r.isLocalOriginated());
+
+						c = ind.getComponents().get(1);
+						assertTrue(c instanceof Reject);
+						r = (Reject) c;
+						assertEquals((long) r.getInvokeId(), 1);
+						assertEquals(r.getProblem().getInvokeProblemType(), InvokeProblemType.DuplicateInvokeID);
+						assertTrue(r.isLocalOriginated());
+
+						this.sendContinue();
+						break;
+
+					case 2:
+						this.addNewReturnResultLast(1);
+						this.addNewReturnError(2);
+						this.sendContinue();
+						break;
+
+					case 3:
+						this.dialog.processInvokeWithoutAnswer(1);
+
+						this.sendContinue();
+						break;
+
+					case 4:
+						assertEquals(ind.getComponents().size(), 2);
+
+						c = ind.getComponents().get(1);
+						assertTrue(c instanceof Reject);
+						r = (Reject) c;
+						assertEquals((long) r.getInvokeId(), 2);
+						assertEquals(r.getProblem().getInvokeProblemType(), InvokeProblemType.DuplicateInvokeID);
+						assertTrue(r.isLocalOriginated());
+
+						this.sendEnd(TerminationType.Basic);
+						break;
+					}
+				} catch (Exception e) {
+					fail("Exception when sendComponent / send message 2");
+					e.printStackTrace();
+				}
+			}
+
+		};
+
+		long stamp = System.currentTimeMillis();
+		int cnt = 0;
+		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
+		TestEvent te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Begin, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp + MINI_WAIT_TIME);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 2);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 2);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 2);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 2);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp + MINI_WAIT_TIME * 2);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.End, null, cnt++, stamp + MINI_WAIT_TIME * 5);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 5);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp + MINI_WAIT_TIME * 5);
+		clientExpectedEvents.add(te);
+
+		cnt = 0;
+		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
+		te = TestEvent.createReceivedEvent(EventType.Begin, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.ReturnResult, null, cnt++, stamp + MINI_WAIT_TIME);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 2);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 2);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 2);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.ReturnResultLast, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.ReturnError, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.End, null, cnt++, stamp + MINI_WAIT_TIME * 5);
+		serverExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp + MINI_WAIT_TIME * 5);
+		serverExpectedEvents.add(te);
+
+		client.startClientDialog();
+		client.addNewInvoke(1, MINI_WAIT_TIME / 2);
+		client.sendBegin();
+		
+		EventTestHarness.waitFor(WAIT_TIME * 2);
+
+		client.compareEvents(clientExpectedEvents);
+		server.compareEvents(serverExpectedEvents);
 	}
 
-	@Override
-	public void onTCBegin(TCBeginIndication ind) {
-	    super.onTCBegin(ind);
+	public class ClientComponent extends EventTestHarness {
 
-	    procComponents(ind.getComponents());
-	}
+		protected int step = 0;
 
-	@Override
-	public void onTCContinue(TCContinueIndication ind) {
-	    super.onTCContinue(ind);
+		public ClientComponent(final TCAPStack stack, final ParameterFactory parameterFactory,
+				final SccpAddress thisAddress, final SccpAddress remoteAddress) {
+			super(stack, parameterFactory, thisAddress, remoteAddress);
 
-	    procComponents(ind.getComponents());
-	}
+		}
 
-	private void procComponents(List<BaseComponent> compp) {
-	    if (compp != null)
-		for (BaseComponent c : compp) {
-		    EventType et = null;
-		    if (c instanceof Invoke)
-			et = EventType.Invoke;
-		    if (c instanceof ReturnResult)
-			et = EventType.ReturnResult;
-		    if (c instanceof ReturnResultLast)
-			et = EventType.ReturnResultLast;
-		    if (c instanceof ReturnError)
-			et = EventType.ReturnError;
-		    if (c instanceof Reject)
-			et = EventType.Reject;
+		public DialogImpl getCurDialog() {
+			return (DialogImpl) this.dialog;
+		}
 
-		    TestEvent te = TestEvent.createReceivedEvent(et, c, sequence++);
-		    this.observerdEvents.add(te);
+		@Override
+		public void onTCContinue(TCContinueIndication ind) {
+			super.onTCContinue(ind);
+
+			procComponents(ind.getComponents());
+		}
+
+		@Override
+		public void onTCEnd(TCEndIndication ind) {
+			super.onTCEnd(ind);
+
+			procComponents(ind.getComponents());
+		}
+
+		private void procComponents(List<BaseComponent> compp) {
+			if (compp != null)
+				for (BaseComponent c : compp) {
+					EventType et = null;
+					if (c instanceof Invoke)
+						et = EventType.Invoke;
+					if (c instanceof ReturnResult)
+						et = EventType.ReturnResult;
+					if (c instanceof ReturnResultLast)
+						et = EventType.ReturnResultLast;
+					if (c instanceof ReturnError)
+						et = EventType.ReturnError;
+					if (c instanceof Reject)
+						et = EventType.Reject;
+
+					TestEvent te = TestEvent.createReceivedEvent(et, c, sequence++);
+					this.observerdEvents.add(te);
+				}
+		}
+
+		public void addNewInvoke(Integer invokeId, Long timout) throws Exception {
+			OperationCode oc = TcapFactory.createLocalOperationCode(10);
+
+			// Parameter p1 = TcapFactory.createParameter();
+			// p1.setTagClass(Tag.CLASS_UNIVERSAL);
+			// p1.setTag(Tag.STRING_OCTET);
+			// p1.setData(new byte[]{0x0F});
+			//
+			// Parameter p2 = TcapFactory.createParameter();
+			// p2.setTagClass(Tag.CLASS_UNIVERSAL);
+			// p2.setTag(Tag.STRING_OCTET);
+			// p2.setData(new byte[] { (byte) 0xaa, (byte) 0x98, (byte) 0xac, (byte) 0xa6,
+			// 0x5a, (byte) 0xcd, 0x62, 0x36, 0x19,
+			// 0x0e, 0x37, (byte) 0xcb, (byte) 0xe5,
+			// 0x72, (byte) 0xb9, 0x11 });
+			//
+			// Parameter pm = TcapFactory.createParameter();
+			// pm.setTagClass(Tag.CLASS_UNIVERSAL);
+			// pm.setTag(Tag.SEQUENCE);
+			// pm.setParameters(new Parameter[]{p1, p2});
+			// invoke.setParameter(pm);
+
+			TestEvent te = TestEvent.createSentEvent(EventType.Invoke, null, sequence++);
+			this.observerdEvents.add(te);
+
+			this.dialog.sendData(invokeId, null, null, timout, oc, null, true, false);
 		}
 	}
-    }
+
+	public class ServerComponent extends EventTestHarness {
+
+		protected int step = 0;
+
+		/**
+		 * @param stack
+		 * @param thisAddress
+		 * @param remoteAddress
+		 */
+		public ServerComponent(final TCAPStack stack, final ParameterFactory parameterFactory,
+				final SccpAddress thisAddress, final SccpAddress remoteAddress) {
+			super(stack, parameterFactory, thisAddress, remoteAddress);
+			// TODO Auto-generated constructor stub
+		}
+
+		public void addNewReturnResult(Integer invokeId) throws Exception {
+
+			OperationCode oc = TcapFactory.createLocalOperationCode(10);
+
+			TestEvent te = TestEvent.createSentEvent(EventType.ReturnResult, null, sequence++);
+			this.observerdEvents.add(te);
+
+			this.dialog.sendData(invokeId, null, null, null, oc, null, false, false);
+		}
+
+		public void addNewReturnResultLast(Integer invokeId) throws Exception {
+
+			OperationCode oc = TcapFactory.createLocalOperationCode(10);
+
+			TestEvent te = TestEvent.createSentEvent(EventType.ReturnResultLast, null, sequence++);
+			this.observerdEvents.add(te);
+
+			this.dialog.sendData(invokeId, null, null, null, oc, null, false, true);
+		}
+
+		public void addNewReturnError(Integer invokeId) throws Exception {
+
+			ErrorCode ec = TcapFactory.createLocalErrorCode(10);
+
+			TestEvent te = TestEvent.createSentEvent(EventType.ReturnError, null, sequence++);
+			this.observerdEvents.add(te);
+
+			this.dialog.sendError(invokeId, ec, null);
+		}
+
+		@Override
+		public void onTCBegin(TCBeginIndication ind) {
+			super.onTCBegin(ind);
+
+			procComponents(ind.getComponents());
+		}
+
+		@Override
+		public void onTCContinue(TCContinueIndication ind) {
+			super.onTCContinue(ind);
+
+			procComponents(ind.getComponents());
+		}
+
+		private void procComponents(List<BaseComponent> compp) {
+			if (compp != null)
+				for (BaseComponent c : compp) {
+					EventType et = null;
+					if (c instanceof Invoke)
+						et = EventType.Invoke;
+					if (c instanceof ReturnResult)
+						et = EventType.ReturnResult;
+					if (c instanceof ReturnResultLast)
+						et = EventType.ReturnResultLast;
+					if (c instanceof ReturnError)
+						et = EventType.ReturnError;
+					if (c instanceof Reject)
+						et = EventType.Reject;
+
+					TestEvent te = TestEvent.createReceivedEvent(et, c, sequence++);
+					this.observerdEvents.add(te);
+				}
+		}
+	}
 }

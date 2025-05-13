@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.LogManager;
@@ -83,7 +82,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.util.ReferenceCountUtil;
 
 /**
  *
@@ -202,7 +200,7 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
 		this.m3UAManagementImpl = m3uaManagement;
 		this.transferMessageHandler.setM3UAManagement(m3uaManagement);
 
-		this.heartBeatTimer.setQueuedTasks(m3uaManagement.queuedTasks);
+		this.heartBeatTimer.setQueuedTasks(m3uaManagement.workerPool.getPeriodicQueue());
 	}
 
 	public M3UAManagementImpl getM3UAManagement() {
@@ -255,7 +253,8 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
 
 				// Start the timer to kill the underlying transport Association
 				aspFactoryStopTimer = new AspFactoryStopTimer(this);
-				this.m3UAManagementImpl.queuedTasks.store(aspFactoryStopTimer.getRealTimestamp(), aspFactoryStopTimer);
+				this.m3UAManagementImpl.workerPool.getPeriodicQueue().store(aspFactoryStopTimer.getRealTimestamp(),
+						aspFactoryStopTimer);
 			} else {
 				Iterator<Asp> iterator = aspList.values().iterator();
 				while (iterator.hasNext()) {
@@ -351,11 +350,11 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
 		return this.name;
 	}
 
-	protected void read(M3UAMessage message, AtomicBoolean referenceLocker) {
-		read(message, null, referenceLocker);
+	protected void read(M3UAMessage message) {
+		read(message, null);
 	}
 
-	protected void read(M3UAMessage message, Integer bytes, AtomicBoolean referenceLocker) {
+	protected void read(M3UAMessage message, Integer bytes) {
 		messagesReceivedByType.get(MessageType.getName(message.getMessageClass(), message.getMessageType()))
 				.incrementAndGet();
 
@@ -386,7 +385,7 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
 			switch (message.getMessageType()) {
 			case MessageType.PAYLOAD:
 				PayloadData payload = (PayloadData) message;
-				this.transferMessageHandler.handlePayload(payload, referenceLocker);
+				this.transferMessageHandler.handlePayload(payload);
 				break;
 			default:
 				logger.error(String.format("Rx : Transfer message with invalid MessageType=%d message=%s",
@@ -658,7 +657,8 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
 		if (this.isHeartBeatEnabled()) {
 			this.heartBeatTimer.start();
 			this.heartBeatTimer.reset();
-			this.m3UAManagementImpl.queuedTasks.store(this.heartBeatTimer.getRealTimestamp(), this.heartBeatTimer);
+			this.m3UAManagementImpl.workerPool.getPeriodicQueue().store(this.heartBeatTimer.getRealTimestamp(),
+					this.heartBeatTimer);
 		}
 
 		if (this.functionality == Functionality.AS
@@ -767,17 +767,14 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
 		int bytes = byteBuf.readableBytes();
 		M3UAMessage m3UAMessage;
 		if (ipChannelType == IpChannelType.SCTP) {
-			AtomicBoolean referenceLocker = new AtomicBoolean(false);
+			// TODO where is streamNumber stored?
+			m3UAMessage = this.messageFactory.createMessage(byteBuf);
+			if (this.isHeartBeatEnabled())
+				this.heartBeatTimer.reset();
 			try {
-				// TODO where is streamNumber stored?
-				m3UAMessage = this.messageFactory.createMessage(byteBuf);
-				if (this.isHeartBeatEnabled())
-					this.heartBeatTimer.reset();
-				this.read(m3UAMessage, bytes, referenceLocker);
+				this.read(m3UAMessage, bytes);
 			} finally {
-				if (referenceLocker.compareAndSet(false, true))
-					if (byteBuf.refCnt() > 0)
-						ReferenceCountUtil.release(byteBuf, byteBuf.refCnt());
+				byteBuf.release();
 			}
 		} else {
 			if (tcpIncBuffer == null)
@@ -793,8 +790,7 @@ public class AspFactoryImpl implements AssociationListener, AspFactory {
 				int messageBytes = bytes - tcpIncBuffer.readableBytes();
 				if (this.isHeartBeatEnabled())
 					this.heartBeatTimer.reset();
-				AtomicBoolean referenceLocker = new AtomicBoolean(false);
-				this.read(m3UAMessage, messageBytes, referenceLocker);
+				this.read(m3UAMessage, messageBytes);
 				bytes = tcpIncBuffer.readableBytes();
 			}
 			tcpIncBuffer.discardReadBytes();

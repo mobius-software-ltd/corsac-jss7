@@ -31,7 +31,6 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.LegID;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.LegType;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.inap.api.INAPDialog;
-import org.restcomm.protocols.ss7.inap.api.INAPException;
 import org.restcomm.protocols.ss7.inap.api.INAPParameterFactory;
 import org.restcomm.protocols.ss7.inap.api.INAPProvider;
 import org.restcomm.protocols.ss7.inap.api.INAPStack;
@@ -41,94 +40,106 @@ import org.restcomm.protocols.ss7.inap.service.circuitSwitchedCall.RequestReport
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 /**
  *
  * @author yulian.oifa
-*/
+ */
 public class Server extends EventTestHarness {
 
-    private static Logger logger = LogManager.getLogger(Server.class);
+	private static Logger logger = LogManager.getLogger(Server.class);
 
-    protected INAPStack inapStack;
-    protected INAPProvider inapProvider;
+	protected INAPStack inapStack;
+	protected INAPProvider inapProvider;
 
-    protected INAPParameterFactory inapParameterFactory;
-    protected INAPErrorMessageFactory inapErrorMessageFactory;
-    protected ISUPParameterFactory isupParameterFactory;
+	protected INAPParameterFactory inapParameterFactory;
+	protected INAPErrorMessageFactory inapErrorMessageFactory;
+	protected ISUPParameterFactory isupParameterFactory;
 
-    protected INAPDialog serverCscDialog;
+	protected INAPDialog serverCscDialog;
 
-    // private boolean _S_recievedDialogRequest;
-    // private boolean _S_recievedInitialDp;
-    //
-    // private int dialogStep;
-    // private long savedInvokeId;
-    // private String unexpected = "";
-    //
-    // private FunctionalTestScenario step;
+	// private boolean _S_recievedDialogRequest;
+	// private boolean _S_recievedInitialDp;
+	//
+	// private int dialogStep;
+	// private long savedInvokeId;
+	// private String unexpected = "";
+	//
+	// private FunctionalTestScenario step;
 
-    Server(INAPStack inapStack, INAPFunctionalTest runningTestCase, SccpAddress thisAddress, SccpAddress remoteAddress) {
-        super(logger);
-        this.inapStack = inapStack;
-        this.inapProvider = this.inapStack.getProvider();
+	Server(INAPStack inapStack, INAPFunctionalTest runningTestCase, SccpAddress thisAddress,
+			SccpAddress remoteAddress) {
+		super(logger);
+		this.inapStack = inapStack;
+		this.inapProvider = this.inapStack.getProvider();
 
-        this.inapParameterFactory = this.inapProvider.getINAPParameterFactory();
-        this.isupParameterFactory = this.inapProvider.getISUPParameterFactory();
+		this.inapParameterFactory = this.inapProvider.getINAPParameterFactory();
+		this.isupParameterFactory = this.inapProvider.getISUPParameterFactory();
 
-        this.inapErrorMessageFactory = this.inapProvider.getINAPErrorMessageFactory();
-        
-        this.inapProvider.addINAPDialogListener(UUID.randomUUID(),this);
-        this.inapProvider.getINAPServiceCircuitSwitchedCall().addINAPServiceListener(this);
-        
-        this.inapProvider.getINAPServiceCircuitSwitchedCall().acivate();
-    }        
+		this.inapErrorMessageFactory = this.inapProvider.getINAPErrorMessageFactory();
 
-    public RequestReportBCSMEventRequest getRequestReportBCSMEventRequest() {
+		this.inapProvider.addINAPDialogListener(UUID.randomUUID(), this);
+		this.inapProvider.getINAPServiceCircuitSwitchedCall().addINAPServiceListener(this);
 
-        List<BCSMEvent> bcsmEventList = new ArrayList<BCSMEvent>();
-        BCSMEvent ev = this.inapParameterFactory.createBCSMEvent(EventTypeBCSM.routeSelectFailure,
-                MonitorMode.notifyAndContinue, null, null, false);
-        bcsmEventList.add(ev);
-        ev = this.inapParameterFactory.createBCSMEvent(EventTypeBCSM.oCalledPartyBusy, MonitorMode.interrupted, null, null,
-                false);
-        bcsmEventList.add(ev);
-        ev = this.inapParameterFactory.createBCSMEvent(EventTypeBCSM.oNoAnswer, MonitorMode.interrupted, null, null, false);
-        bcsmEventList.add(ev);
-        ev = this.inapParameterFactory.createBCSMEvent(EventTypeBCSM.oAnswer, MonitorMode.notifyAndContinue, null, null, false);
-        bcsmEventList.add(ev);
-        LegID legId = this.inapParameterFactory.createLegID(null,LegType.leg1);
-        ev = this.inapParameterFactory.createBCSMEvent(EventTypeBCSM.oDisconnect, MonitorMode.notifyAndContinue, legId, null,
-                false);
-        bcsmEventList.add(ev);
-        legId = this.inapParameterFactory.createLegID(null, LegType.leg2);
-        ev = this.inapParameterFactory.createBCSMEvent(EventTypeBCSM.oDisconnect, MonitorMode.interrupted, legId, null, false);
-        bcsmEventList.add(ev);
-        ev = this.inapParameterFactory.createBCSMEvent(EventTypeBCSM.oAbandon, MonitorMode.notifyAndContinue, null, null, false);
-        bcsmEventList.add(ev);
+		this.inapProvider.getINAPServiceCircuitSwitchedCall().acivate();
+	}
 
-        RequestReportBCSMEventRequestImpl res = new RequestReportBCSMEventRequestImpl(bcsmEventList, null, null);
+	public RequestReportBCSMEventRequest getRequestReportBCSMEventRequest() {
 
-        return res;
-    }
+		List<BCSMEvent> bcsmEventList = new ArrayList<BCSMEvent>();
+		BCSMEvent ev = this.inapParameterFactory.createBCSMEvent(EventTypeBCSM.routeSelectFailure,
+				MonitorMode.notifyAndContinue, null, null, false);
+		bcsmEventList.add(ev);
+		ev = this.inapParameterFactory.createBCSMEvent(EventTypeBCSM.oCalledPartyBusy, MonitorMode.interrupted, null,
+				null, false);
+		bcsmEventList.add(ev);
+		ev = this.inapParameterFactory.createBCSMEvent(EventTypeBCSM.oNoAnswer, MonitorMode.interrupted, null, null,
+				false);
+		bcsmEventList.add(ev);
+		ev = this.inapParameterFactory.createBCSMEvent(EventTypeBCSM.oAnswer, MonitorMode.notifyAndContinue, null, null,
+				false);
+		bcsmEventList.add(ev);
+		LegID legId = this.inapParameterFactory.createLegID(null, LegType.leg1);
+		ev = this.inapParameterFactory.createBCSMEvent(EventTypeBCSM.oDisconnect, MonitorMode.notifyAndContinue, legId,
+				null, false);
+		bcsmEventList.add(ev);
+		legId = this.inapParameterFactory.createLegID(null, LegType.leg2);
+		ev = this.inapParameterFactory.createBCSMEvent(EventTypeBCSM.oDisconnect, MonitorMode.interrupted, legId, null,
+				false);
+		bcsmEventList.add(ev);
+		ev = this.inapParameterFactory.createBCSMEvent(EventTypeBCSM.oAbandon, MonitorMode.notifyAndContinue, null,
+				null, false);
+		bcsmEventList.add(ev);
 
-    public void onDialogRequest(INAPDialog inapDialog) {
-        super.onDialogRequest(inapDialog);
-        serverCscDialog = inapDialog;
-    }
+		RequestReportBCSMEventRequestImpl res = new RequestReportBCSMEventRequestImpl(bcsmEventList, null, null);
 
-    public void sendAccept() {
-        try {
-            serverCscDialog.send();
-        } catch (INAPException e) {
-            this.error("Error while trying to send/close() Dialog", e);
-        }
-    }
+		return res;
+	}
 
-    public void debug(String message) {
-        logger.debug(message);
-    }
+	@Override
+	public void onDialogRequest(INAPDialog inapDialog) {
+		super.onDialogRequest(inapDialog);
+		serverCscDialog = inapDialog;
+	}
 
-    public void error(String message, Exception e) {
-        logger.error(message, e);
-    }
+	public void sendAccept() {
+		serverCscDialog.send(new TaskCallback<Exception>() {
+			@Override
+			public void onSuccess() {
+			}
+
+			@Override
+			public void onError(Exception exception) {
+			}
+		});
+	}
+
+	public void debug(String message) {
+		logger.debug(message);
+	}
+
+	public void error(String message, Exception e) {
+		logger.error(message, e);
+	}
 }

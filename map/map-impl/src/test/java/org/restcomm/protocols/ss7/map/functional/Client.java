@@ -177,6 +177,7 @@ import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.Unpooled;
@@ -211,6 +212,16 @@ public class Client extends EventTestHarness {
     protected MAPDialogOam clientDialogOam;
     protected MAPDialogPdpContextActivation clientDialogPdpContextActivation;
 
+    private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {			
+		}
+		
+		@Override
+		public void onError(Exception exception) {
+		}
+	};
+    
     public Client(MAPStack mapStack, MAPFunctionalTest runningTestCase, SccpAddress thisAddress, SccpAddress remoteAddress) {
         super(logger);
         this.mapStack = mapStack;
@@ -261,7 +272,7 @@ public class Client extends EventTestHarness {
 
         logger.debug("Sending USSDString" + MAPFunctionalTest.USSD_STRING);
 
-        clientDialog.send();
+        clientDialog.send(dummyCallback);
     }
 
     public void actionA() throws MAPException {
@@ -289,7 +300,7 @@ public class Client extends EventTestHarness {
         logger.debug("Sending USSDString" + MAPFunctionalTest.USSD_STRING);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ProcessUnstructuredSSRequestIndication, null, sequence++));
-        clientDialog.send();
+        clientDialog.send(dummyCallback);
     }
 
     public void actionEricssonDialog() throws MAPException {
@@ -321,7 +332,7 @@ public class Client extends EventTestHarness {
 
         logger.debug("Sending USSDString" + MAPFunctionalTest.USSD_STRING);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ProcessUnstructuredSSRequestIndication, null, sequence++));
-        clientDialog.send();
+        clientDialog.send(dummyCallback);
     }
 
     public void sendReportSMDeliveryStatusV1() throws Exception {
@@ -343,7 +354,7 @@ public class Client extends EventTestHarness {
         clientDialogSms.addReportSMDeliveryStatusRequest(msisdn1, serviceCentreAddress, null, null, null, false, false, null,
                 null);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReportSMDeliveryStatusIndication, null, sequence++));
-        clientDialogSms.send();
+        clientDialogSms.send(dummyCallback);
 
     }
 
@@ -371,7 +382,7 @@ public class Client extends EventTestHarness {
         clientDialogSms.addAlertServiceCentreRequest(msisdn, serviceCentreAddress);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.AlertServiceCentreIndication, null, sequence++));
-        clientDialogSms.send();
+        clientDialogSms.send(dummyCallback);
 
         clientDialogSms.release();
 
@@ -395,7 +406,7 @@ public class Client extends EventTestHarness {
                 this.remoteAddress, destReference, 0);
 
         // this.observerdEvents.add(TestEvent.createSentEvent(EventType.AlertServiceCentreIndication, null, sequence++));
-        clientDialogSms.send();
+        clientDialogSms.send(dummyCallback);
 
     }
 
@@ -425,7 +436,7 @@ public class Client extends EventTestHarness {
         AlertServiceCentreRequestImpl req = new AlertServiceCentreRequestImpl(msisdn, serviceCentreAddress);
         
         clientDialogSms.sendDataComponent(null, null, null, null, 999, req, true, false);
-        clientDialogSms.send();
+        clientDialogSms.send(dummyCallback);
     }
 
     public void sendForwardShortMessageRequestV1() throws Exception {
@@ -456,7 +467,7 @@ public class Client extends EventTestHarness {
         clientDialogSms.addForwardShortMessageRequest(sm_RP_DA, sm_RP_OA, sm_RP_UI, false);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ForwardShortMessageIndication, null, sequence++));
-        clientDialogSms.send();
+        clientDialogSms.send(dummyCallback);
 
     }
 
@@ -485,7 +496,7 @@ public class Client extends EventTestHarness {
         clientDialogSms.addAlertServiceCentreRequest(msisdn, serviceCentreAddress);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.AlertServiceCentreIndication, null, sequence++));
-        clientDialogSms.send();
+        clientDialogSms.send(dummyCallback);
     }
 
     public void sendForwardShortMessageRequestV2() throws Exception {
@@ -521,7 +532,7 @@ public class Client extends EventTestHarness {
         clientDialogSms.addForwardShortMessageRequest(sm_RP_DA, sm_RP_OA, sm_RP_UI, true);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ForwardShortMessageIndication, null, sequence++));
-        clientDialogSms.send();
+        clientDialogSms.send(dummyCallback);
 
     }
 
@@ -564,7 +575,7 @@ public class Client extends EventTestHarness {
                 MAPExtensionContainerTest.GetTestExtensionContainer(), imsi2);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.MoForwardShortMessageIndication, null, sequence++));
-        clientDialogSms.send();
+        clientDialogSms.send(dummyCallback);
 
     }
 
@@ -598,7 +609,7 @@ public class Client extends EventTestHarness {
                 MAPExtensionContainerTest.GetTestExtensionContainer());
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.MtForwardShortMessageIndication, null, sequence++));
-        clientDialogSms.send();
+        clientDialogSms.send(dummyCallback);
 
     }
 
@@ -635,7 +646,7 @@ public class Client extends EventTestHarness {
                 deliveryOutcomeIndicator, additionalSMDeliveryOutcome, additionalAbsentSubscriberDiagnosticSM);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReportSMDeliveryStatusIndication, null, sequence++));
-        clientDialogSms.send();
+        clientDialogSms.send(dummyCallback);
     }
 
     public void sendReportSMDeliveryStatus2() throws Exception {
@@ -659,7 +670,7 @@ public class Client extends EventTestHarness {
                 null, false, false, null, null);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReportSMDeliveryStatusIndication, null, sequence++));
-        clientDialogSms.send();
+        clientDialogSms.send(dummyCallback);
     }
 
     public void sendSendRoutingInfoForSM() throws Exception {
@@ -689,7 +700,7 @@ public class Client extends EventTestHarness {
                 SMDeliveryNotIntended.onlyIMSIRequested, true, null, false, false, null, null);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendRoutingInfoForSMIndication, null, sequence++));
-        clientDialogSms.send();
+        clientDialogSms.send(dummyCallback);
 
     }
 
@@ -710,7 +721,7 @@ public class Client extends EventTestHarness {
                 5, false);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendAuthenticationInfo_V3, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -730,7 +741,7 @@ public class Client extends EventTestHarness {
         clientDialogMobility.addSendAuthenticationInfoRequest(imsi);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendAuthenticationInfo_V2, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -758,7 +769,7 @@ public class Client extends EventTestHarness {
                 addInfo, null, false, true);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.UpdateLocation, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -794,7 +805,7 @@ public class Client extends EventTestHarness {
                 mtrfSupportedAndAuthorized, mtrfSupportedAndNotAuthorized, newMSCNumber, newVLRNumber, newLmsi);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelLocation, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -816,7 +827,7 @@ public class Client extends EventTestHarness {
         clientDialogMobility.addCancelLocationRequest(imsi, null);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelLocation, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -837,7 +848,7 @@ public class Client extends EventTestHarness {
         clientDialogMobility.addSendIdentificationRequest(tmsi);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendIdentification, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -858,7 +869,7 @@ public class Client extends EventTestHarness {
         clientDialogMobility.addSendIdentificationRequest(tmsi, null, false, null, null, null, null, false, null, null);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendIdentification, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -902,7 +913,7 @@ public class Client extends EventTestHarness {
                 ueReachableIndicator, epsSubscriptionDataNotNeeded, uesrvccCapability);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.UpdateGprsLocation, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -924,7 +935,7 @@ public class Client extends EventTestHarness {
         clientDialogMobility.addPurgeMSRequest(imsi, null, sgsnNumber, null);
         
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.PurgeMS, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -946,7 +957,7 @@ public class Client extends EventTestHarness {
         clientDialogMobility.addPurgeMSRequest(imsi, vlrNumber);
         
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.PurgeMS, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -965,7 +976,7 @@ public class Client extends EventTestHarness {
         // NetworkResource networkResource, ISDNAddressString hlrNumber, ArrayList<IMSI> hlrList
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.Reset, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
         clientDialogMobility.release();
     }
@@ -985,7 +996,7 @@ public class Client extends EventTestHarness {
         // NetworkResource networkResource, ISDNAddressString hlrNumber, ArrayList<IMSI> hlrList
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.Reset, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
         clientDialogMobility.release();
     }
@@ -1003,7 +1014,7 @@ public class Client extends EventTestHarness {
         clientDialogMobility.addForwardCheckSSIndicationRequest();
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ForwardCheckSSIndication, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
         clientDialogMobility.release();
     }
@@ -1023,7 +1034,7 @@ public class Client extends EventTestHarness {
         clientDialogMobility.addRestoreDataRequest(imsi, null, null, null, false);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.RestoreData, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -1088,7 +1099,7 @@ public class Client extends EventTestHarness {
                 null, orNotSupportedInGMSC, prePagingSupported, longFTNSupported, suppressVtCsi, null, mtRoamingRetrySupported,
                 null, null, mtrfIndicator, null);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ProvideRoamingNumber, null, sequence++));
-        clientDialogCallHandling.send();
+        clientDialogCallHandling.send(dummyCallback);
 
     }
 
@@ -1110,7 +1121,7 @@ public class Client extends EventTestHarness {
         clientDialogCallHandling.addProvideRoamingNumberRequest(imsi, mscNumber, null, null, null, null, false, null, null,
                 false, null, null, false, null, null, false, false, false, false, null, false, null, null, false, null);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ProvideRoamingNumber, null, sequence++));
-        clientDialogCallHandling.send();
+        clientDialogCallHandling.send(dummyCallback);
 
     }
 
@@ -1130,7 +1141,7 @@ public class Client extends EventTestHarness {
 
         clientDialogCallHandling.addIstCommandRequest(imsi, extensionContainer);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.IstCommand, null, sequence++));
-        clientDialogCallHandling.send();
+        clientDialogCallHandling.send(dummyCallback);
 
     }
 
@@ -1157,7 +1168,7 @@ public class Client extends EventTestHarness {
         clientDialogMobility.addAnyTimeInterrogationRequest(subscriberIdentity, requestedInfo, gsmSCFAddress, null);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.AnyTimeInterrogation, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
     }
 
     public void sendAnyTimeSubscriptionInterrogation() throws Exception {
@@ -1182,7 +1193,7 @@ public class Client extends EventTestHarness {
                 gsmSCFAddress, null, false);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.AnyTimeSubscriptionInterrogation, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
     }
 
     public void sendProvideSubscriberInfo() throws Exception {
@@ -1204,7 +1215,7 @@ public class Client extends EventTestHarness {
         // IMSI imsi, LMSI lmsi, RequestedInfo requestedInfo, MAPExtensionContainer extensionContainer, EMLPPPriority callPriority
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ProvideSubscriberInfo, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
     }
 
     public void sendProvideSubscriberLocation() throws Exception {
@@ -1228,7 +1239,7 @@ public class Client extends EventTestHarness {
                 null, null, null, null, null, null, null, null, null, false, null, null);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ProvideSubscriberLocation, null, sequence++));
-        clientDialogLsm.send();
+        clientDialogLsm.send(dummyCallback);
     }
 
     public void sendSubscriberLocationReport() throws Exception {
@@ -1255,7 +1266,7 @@ public class Client extends EventTestHarness {
                 null, null, null, null, false, null, null, null);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.SubscriberLocationReport, null, sequence++));
-        clientDialogLsm.send();
+        clientDialogLsm.send(dummyCallback);
     }
 
     public void sendSendRoutingInforForLCS() throws Exception {
@@ -1278,7 +1289,7 @@ public class Client extends EventTestHarness {
         clientDialogLsm.addSendRoutingInfoForLCSRequest(mlcNumber, targetMS, null);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendRoutingInfoForLCS, null, sequence++));
-        clientDialogLsm.send();
+        clientDialogLsm.send(dummyCallback);
     }
 
     public void sendCheckImei() throws Exception {
@@ -1300,7 +1311,7 @@ public class Client extends EventTestHarness {
         clientDialogMobility.addCheckImeiRequest(imei, requestedEquipmentInfo, extensionContainer);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.CheckImei, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
     }
 
     public void sendCheckImei_V2() throws Exception {
@@ -1320,7 +1331,7 @@ public class Client extends EventTestHarness {
         clientDialogMobility.addCheckImeiRequest(imei);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.CheckImei, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
     }
 
     public void sendCheckImei_Huawei_V2() throws Exception {
@@ -1341,7 +1352,7 @@ public class Client extends EventTestHarness {
         clientDialogMobility.addCheckImeiRequest_Huawei(imei, imsi);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.CheckImei, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
     }
 
     public void sendCheckImei_ForDelayedTest() throws Exception {
@@ -1371,7 +1382,7 @@ public class Client extends EventTestHarness {
 
         assertNull(clientDialogMobility.getTCAPMessageType());
 
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
     }
 
     public void sendCheckImei_ForDelayedTest2() throws Exception {
@@ -1396,7 +1407,7 @@ public class Client extends EventTestHarness {
 
         assertNull(clientDialogMobility.getTCAPMessageType());
 
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
     }
 
     public void send_sendRoutingInfoForSMRequest_reportSMDeliveryStatusRequest() throws Exception {
@@ -1424,7 +1435,7 @@ public class Client extends EventTestHarness {
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReportSMDeliveryStatusIndication, null, sequence++));
 
-        clientDialogSms.send();
+        clientDialogSms.send(dummyCallback);
         // * TC-BEGIN + sendRoutingInfoForSMRequest + reportSMDeliveryStatusRequest
     }
 
@@ -1496,7 +1507,7 @@ public class Client extends EventTestHarness {
                 icsIndicator, epsSubscriptionData, csgSubscriptionDataList, ueReachabilityRequestIndicator, sgsnNumber,
                 mmeName, subscribedPeriodicRAUTAUtimer, vplmnLIPAAllowed, mdtUserConsent, subscribedPeriodicLAUtimer);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.InsertSubscriberData, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -1535,7 +1546,7 @@ public class Client extends EventTestHarness {
                 teleserviceList, provisionedSS, odbData, roamingRestrictionDueToUnsupportedFeature, regionalSubscriptionData,
                 vbsSubscriptionData, vgcsSubscriptionData, vlrCamelSubscriptionInfo);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.InsertSubscriberData, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -1569,7 +1580,7 @@ public class Client extends EventTestHarness {
         clientDialogMobility.addDeleteSubscriberDataRequest(imsi, basicServiceList, ssList, false, null, false, false, false, null, null, false, null, false,
                 false, null, false, false, null, false, false);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.DeleteSubscriberData, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -1589,7 +1600,7 @@ public class Client extends EventTestHarness {
         clientDialogMobility.addDeleteSubscriberDataRequest(imsi, null, null, true, egionalSubscriptionIdentifier, false, false, false, null, null, false,
                 null, false, false, null, false, false, null, false, false);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.DeleteSubscriberData, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -1646,7 +1657,7 @@ public class Client extends EventTestHarness {
                 callPriority);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendRoutingInformation, null, sequence++));
-        clientDialogCallHandling.send();
+        clientDialogCallHandling.send(dummyCallback);
 
     }
 
@@ -1664,7 +1675,7 @@ public class Client extends EventTestHarness {
 
         clientDialogCallHandling.addSendRoutingInformationRequest(msisdn, null, null, null);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendRoutingInformation, null, sequence++));
-        clientDialogCallHandling.send();
+        clientDialogCallHandling.send(dummyCallback);
 
     }
 
@@ -1681,7 +1692,7 @@ public class Client extends EventTestHarness {
 
         clientDialogOam.addSendImsiRequest(msisdn);
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendImsi, null, sequence++));
-        clientDialogOam.send();
+        clientDialogOam.send(dummyCallback);
 
     }
 
@@ -1713,7 +1724,7 @@ public class Client extends EventTestHarness {
         logger.debug("Sending USSDString" + MAPFunctionalTest.USSD_STRING);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ProcessUnstructuredSSRequestIndication, null, sequence++));
-        clientDialog.send();
+        clientDialog.send(dummyCallback);
     }
 
     public void sendRegisterSS() throws Exception {
@@ -1734,7 +1745,7 @@ public class Client extends EventTestHarness {
         clientDialog.addRegisterSSRequest(ssCode, basicService, null, null, null, null, null, null);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.RegisterSS, null, sequence++));
-        clientDialog.send();
+        clientDialog.send(dummyCallback);
     }
 
     public void sendEraseSS() throws Exception {
@@ -1754,7 +1765,7 @@ public class Client extends EventTestHarness {
         clientDialog.addEraseSSRequest(ssForBSCode);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.EraseSS, null, sequence++));
-        clientDialog.send();
+        clientDialog.send(dummyCallback);
     }
 
     public void sendActivateSS() throws Exception {
@@ -1774,7 +1785,7 @@ public class Client extends EventTestHarness {
         clientDialog.addActivateSSRequest(ssForBSCode);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ActivateSS, null, sequence++));
-        clientDialog.send();
+        clientDialog.send(dummyCallback);
     }
 
     public void sendDeactivateSS() throws Exception {
@@ -1794,7 +1805,7 @@ public class Client extends EventTestHarness {
         clientDialog.addDeactivateSSRequest(ssForBSCode);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.DeactivateSS, null, sequence++));
-        clientDialog.send();
+        clientDialog.send(dummyCallback);
     }
 
     public void sendInterrogateSS() throws Exception {
@@ -1814,7 +1825,7 @@ public class Client extends EventTestHarness {
         clientDialog.addInterrogateSSRequest(ssForBSCode);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.InterrogateSS, null, sequence++));
-        clientDialog.send();
+        clientDialog.send(dummyCallback);
     }
 
     public void sendReadyForSM() throws Exception {
@@ -1828,7 +1839,7 @@ public class Client extends EventTestHarness {
         clientDialogSms.addReadyForSMRequest(imsi, AlertReason.memoryAvailable, false, null, false);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReadyForSM, null, sequence++));
-        clientDialogSms.send();
+        clientDialogSms.send(dummyCallback);
     }
 
     public void sendNoteSubscriberPresent() throws Exception {
@@ -1845,7 +1856,7 @@ public class Client extends EventTestHarness {
         clientDialogSms.addNoteSubscriberPresentRequest(imsi);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.NoteSubscriberPresent, null, sequence++));
-        clientDialogSms.send();
+        clientDialogSms.send(dummyCallback);
 
         clientDialogSms.release();
 
@@ -1869,7 +1880,7 @@ public class Client extends EventTestHarness {
         //        IMSI imsi, GSNAddress ggsnAddress, ISDNAddressString ggsnNumber, MAPExtensionContainer extensionContainer
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendRoutingInfoForGprs, null, sequence++));
-        clientDialogPdpContextActivation.send();
+        clientDialogPdpContextActivation.send(dummyCallback);
 
     }
 
@@ -1893,7 +1904,7 @@ public class Client extends EventTestHarness {
 //        TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ActivateTraceMode, null, sequence++));
-        clientDialogOam.send();
+        clientDialogOam.send(dummyCallback);
 
     }
 
@@ -1917,7 +1928,7 @@ public class Client extends EventTestHarness {
 //        TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ActivateTraceMode, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -1935,7 +1946,7 @@ public class Client extends EventTestHarness {
         clientDialogMobility.addAuthenticationFailureReportRequest(imsi, FailureCause.wrongNetworkSignature, null, null, null, null, null, null);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.AuthenticationFailureReport, null, sequence++));
-        clientDialogMobility.send();
+        clientDialogMobility.send(dummyCallback);
 
     }
 
@@ -1958,7 +1969,7 @@ public class Client extends EventTestHarness {
         clientDialog.addRegisterPasswordRequest(ssCode);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.RegisterPassword, null, sequence++));
-        clientDialog.send();
+        clientDialog.send(dummyCallback);
 
     }
 
@@ -1995,7 +2006,7 @@ public class Client extends EventTestHarness {
         logger.debug("Sending USSDString" + MAPFunctionalTest.USSD_STRING);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ProcessUnstructuredSSRequestIndication, null, sequence++));
-        clientDialog.send();
+        clientDialog.send(dummyCallback);
     }
 
     public void actionAAA() throws MAPException {
@@ -2029,7 +2040,7 @@ public class Client extends EventTestHarness {
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ProcessUnstructuredSSRequestIndication, null, sequence++));
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ProcessUnstructuredSSRequestIndication, null, sequence++));
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ProcessUnstructuredSSRequestIndication, null, sequence++));
-        clientDialog.send();
+        clientDialog.send(dummyCallback);
     }
 
     public void actionB() throws MAPException {
@@ -2055,7 +2066,7 @@ public class Client extends EventTestHarness {
         clientDialog.addProcessUnstructuredSSRequest(new CBSDataCodingSchemeImpl(0x0f), ussdString, null, msisdn);
 
         this.observerdEvents.add(TestEvent.createSentEvent(EventType.ProcessUnstructuredSSRequestIndication, null, sequence++));
-        clientDialog.send();
+        clientDialog.send(dummyCallback);
     }
 
     public MAPDialog getMapDialog() {

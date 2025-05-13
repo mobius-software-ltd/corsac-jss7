@@ -86,7 +86,7 @@ public class MessageSegmentationTest {
     public void setUp() throws Exception {
 	workerPool = new WorkerPool();
 	workerPool.start(4);
-	stack = new SccpStackImpl("MessageSegmentationTestStack", workerPool.getPeriodicQueue());
+	stack = new SccpStackImpl("MessageSegmentationTestStack", workerPool);
 
         this.stack.start();
         this.messageFactory = new MessageFactoryImpl(stack);

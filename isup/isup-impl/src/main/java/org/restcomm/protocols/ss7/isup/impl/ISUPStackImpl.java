@@ -23,7 +23,6 @@
 
 package org.restcomm.protocols.ss7.isup.impl;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -52,6 +51,7 @@ import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
 
 import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
+import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.Timer;
 
 import io.netty.buffer.ByteBuf;
@@ -179,8 +179,7 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
 	/**
 	 * @param message
 	 */
-	void send(ISUPMessage message, Mtp3TransferPrimitive mtp3Message) throws IOException {
-
+	void send(ISUPMessage message, Mtp3TransferPrimitive mtp3Message, TaskCallback<Exception> callback) {
 		if (this.state != State.RUNNING)
 			return;
 
@@ -189,14 +188,8 @@ public class ISUPStackImpl implements ISUPStack, Mtp3UserPartListener {
 		messagesSentByType.get(message.getMessageType().getMessageName().name()).incrementAndGet();
 		bytesSentByType.get(message.getMessageType().getMessageName().name())
 				.addAndGet(mtp3Message.getData().readableBytes());
-		try {
-			this.mtp3UserPart.sendMessage(mtp3Message);
-		} catch (IOException e) {
-			// log here Exceptions from MTP3 level
-			logger.error("IOException when sending the message to MTP3 level: " + e.getMessage(), e);
-			e.printStackTrace();
-			throw e;
-		}
+
+		this.mtp3UserPart.sendMessage(mtp3Message, callback);
 	}
 
 	private enum State {

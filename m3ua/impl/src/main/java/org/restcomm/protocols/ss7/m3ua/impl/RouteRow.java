@@ -35,6 +35,8 @@ import org.restcomm.protocols.ss7.mtp.Mtp3PausePrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3Primitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3ResumePrimitive;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 /**
  *
  * @author amit bhayani
@@ -52,6 +54,18 @@ public class RouteRow implements AsStateListener {
 
 	private Semaphore pauseSemaphore = new Semaphore(1);
 
+    protected TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		
+		@Override
+		public void onSuccess() {			
+		}
+		
+		@Override
+		public void onError(Exception exception) {
+			logger.error("An error occured in dummy callback of route row," + exception);
+		}
+	};
+	
 	RouteRow(int dpc, M3UAManagementImpl m3uaManagement) {
 		this.dpc = dpc;
 		this.m3uaManagement = m3uaManagement;
@@ -92,7 +106,7 @@ public class RouteRow implements AsStateListener {
 		if (this.mtp3Status != Mtp3Primitive.RESUME) {
 			this.mtp3Status = Mtp3Primitive.RESUME;
 			Mtp3ResumePrimitive mtp3ResumePrimitive = new Mtp3ResumePrimitive(this.dpc);
-			this.m3uaManagement.sendResumeMessageToLocalUser(mtp3ResumePrimitive);
+			this.m3uaManagement.sendResumeMessageToLocalUser(mtp3ResumePrimitive, dummyCallback);
 		}
 	}
 
@@ -120,7 +134,7 @@ public class RouteRow implements AsStateListener {
 				this.mtp3Status = Mtp3Primitive.PAUSE;
 
 				Mtp3PausePrimitive mtp3PausePrimitive = new Mtp3PausePrimitive(this.dpc);
-				this.m3uaManagement.sendPauseMessageToLocalUser(mtp3PausePrimitive);
+				this.m3uaManagement.sendPauseMessageToLocalUser(mtp3PausePrimitive, dummyCallback);
 			}
 		} finally {
 			pauseSemaphore.release();

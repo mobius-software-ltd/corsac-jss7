@@ -95,10 +95,10 @@ import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 import io.netty.buffer.ByteBuf;
@@ -129,6 +129,16 @@ public class Client extends EventTestHarness {
 	protected CAPDialogCircuitSwitchedCall clientCscDialog;
 	protected CAPDialogGprs clientGprsDialog;
 	protected CAPDialogSms clientSmsDialog;
+
+	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {
+		}
+
+		@Override
+		public void onError(Exception exception) {
+		}
+	};
 
 	// private FunctionalTestScenario step;
 
@@ -178,7 +188,7 @@ public class Client extends EventTestHarness {
 				initialDp.getCallForwardingSSPending(), initialDp.getInitialDPArgExtension());
 
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDpRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendAssistRequestInstructionsRequest() throws CAPException {
@@ -200,7 +210,7 @@ public class Client extends EventTestHarness {
 		clientCscDialog.addAssistRequestInstructionsRequest(correlationID, ipSSPCapabilities, null);
 		this.observerdEvents
 				.add(TestEvent.createSentEvent(EventType.AssistRequestInstructionsRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendEstablishTemporaryConnectionRequest_CallInformationRequest() throws CAPException {
@@ -230,7 +240,7 @@ public class Client extends EventTestHarness {
 		clientCscDialog.addCollectInformationRequest();
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.CollectInformationRequest, null, sequence++));
 
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendActivityTestRequest(int invokeTimeout) throws CAPException {
@@ -240,7 +250,7 @@ public class Client extends EventTestHarness {
 
 		clientCscDialog.addActivityTestRequest(invokeTimeout);
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.ActivityTestRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendEventReportBCSMRequest_1() throws CAPException {
@@ -260,7 +270,7 @@ public class Client extends EventTestHarness {
 				miscCallInfo, null);
 
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.EventReportBCSMRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendBadDataNoAcn() throws CAPException {
@@ -268,15 +278,10 @@ public class Client extends EventTestHarness {
 		clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall()
 				.createNewDialog(CAPApplicationContext.CapV3_gsmSCF_gprsSSF, this.thisAddress, this.remoteAddress, 0);
 
-		try {
-			Dialog tcapDialog = ((CAPDialogImpl) clientCscDialog).getTcapDialog();
-			TCBeginRequest tcBeginReq = ((CAPProviderImpl) this.capProvider).getTCAPProvider()
-					.getDialogPrimitiveFactory().createBegin(tcapDialog);
-			tcapDialog.send(tcBeginReq);
-		} catch (TCAPSendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Dialog tcapDialog = ((CAPDialogImpl) clientCscDialog).getTcapDialog();
+		TCBeginRequest tcBeginReq = ((CAPProviderImpl) this.capProvider).getTCAPProvider().getDialogPrimitiveFactory()
+				.createBegin(tcapDialog);
+		tcapDialog.send(tcBeginReq, dummyCallback);
 	}
 
 	public void sendReferensedNumber() throws CAPException {
@@ -287,7 +292,7 @@ public class Client extends EventTestHarness {
 				1006);
 		clientGprsDialog.setGprsReferenceNumber(capGprsReferenceNumber);
 
-		clientGprsDialog.send();
+		clientGprsDialog.send(dummyCallback);
 	}
 
 	public void testMessageUserDataLength() throws CAPException {
@@ -315,7 +320,7 @@ public class Client extends EventTestHarness {
 
 		// this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDpRequest,
 		// null, sequence++));
-		// clientCscDialog.send();
+		// clientCscDialog.send(dummyCallback);
 	}
 
 	// public void sendReferensedNumber2() throws CAPException {
@@ -520,7 +525,7 @@ public class Client extends EventTestHarness {
 
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDpRequest, null, sequence++));
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDpRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendInitialDp3() throws CAPException {
@@ -557,7 +562,7 @@ public class Client extends EventTestHarness {
 
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDpRequest, null, sequence++));
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDpRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendInitialDp_playAnnouncement() throws CAPException {
@@ -586,7 +591,7 @@ public class Client extends EventTestHarness {
 
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDpRequest, null, sequence++));
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.PlayAnnouncementRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendInvokesForUnexpectedResultError() throws CAPException {
@@ -649,7 +654,7 @@ public class Client extends EventTestHarness {
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReleaseCallRequest, null, sequence++));
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReleaseCallRequest, null, sequence++));
 
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendDummyMessage() throws CAPException {
@@ -659,7 +664,7 @@ public class Client extends EventTestHarness {
 		clientCscDialog = this.capProvider.getCAPServiceCircuitSwitchedCall().createNewDialog(appCnt, this.thisAddress,
 				dummyAddress, 0);
 
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void actionB() throws CAPException {
@@ -669,7 +674,7 @@ public class Client extends EventTestHarness {
 				dummyAddress, 0);
 		clientCscDialog.setReturnMessageOnError(true);
 
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	// public void sendEmpty() throws CAPException, TCAPSendException {
@@ -685,7 +690,7 @@ public class Client extends EventTestHarness {
 	// req.setOriginatingAddress(this.thisAddress);
 	// ((CAPDialogImpl)clientCscDialog).getTcapDialog().send(req);
 	//
-	// // clientCscDialog.send();
+	// // clientCscDialog.send(dummyCallback);
 	// }
 
 	public void sendInitialDpGprs(CAPApplicationContext appCnt) throws CAPException {
@@ -702,7 +707,7 @@ public class Client extends EventTestHarness {
 				initialDp.getGSNAddress(), initialDp.getSecondaryPDPContext(), initialDp.getImei());
 
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDpGprsRequest, null, sequence++));
-		clientGprsDialog.send();
+		clientGprsDialog.send(dummyCallback);
 	}
 
 	public InitialDpGprsRequest getTestInitialDpGprsRequest() {
@@ -771,7 +776,7 @@ public class Client extends EventTestHarness {
 		boolean active = true;
 		clientGprsDialog.addApplyChargingReportGPRSRequest(chargingResult, null, active, null, null);
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.ApplyChargingReportGPRSRequest, null, sequence++));
-		clientGprsDialog.send();
+		clientGprsDialog.send(dummyCallback);
 	}
 
 	public void sendActivityTestGPRSRequest(CAPApplicationContext appCnt) throws CAPException {
@@ -780,7 +785,7 @@ public class Client extends EventTestHarness {
 				this.remoteAddress, 0);
 		clientGprsDialog.addActivityTestGPRSRequest();
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.ActivityTestGPRSRequest, null, sequence++));
-		clientGprsDialog.send();
+		clientGprsDialog.send(dummyCallback);
 	}
 
 	public void sendEventReportGPRSRequest(CAPApplicationContext appCnt) throws CAPException {
@@ -835,7 +840,7 @@ public class Client extends EventTestHarness {
 		clientGprsDialog.addEventReportGPRSRequest(gprsEventType, miscGPRSInfo, gprsEventSpecificInformation, pdpID);
 
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.EventReportGPRSRequest, null, sequence++));
-		clientGprsDialog.send();
+		clientGprsDialog.send(dummyCallback);
 	}
 
 	public void sendReleaseGPRSRequest(CAPApplicationContext appCnt) throws CAPException {
@@ -846,7 +851,7 @@ public class Client extends EventTestHarness {
 		PDPIDImpl pdpID = new PDPIDImpl(2);
 		clientGprsDialog.addReleaseGPRSRequest(gprsCause, pdpID);
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReleaseGPRSRequest, null, sequence++));
-		clientGprsDialog.send();
+		clientGprsDialog.send(dummyCallback);
 	}
 
 	public void sendInitialDpSmsRequest(CAPApplicationContext appCnt) throws CAPException {
@@ -864,7 +869,7 @@ public class Client extends EventTestHarness {
 				null, null, null, null, null, null);
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDPSMSRequest, null, sequence++));
 
-		clientSmsDialog.send();
+		clientSmsDialog.send(dummyCallback);
 	}
 
 	public void sendInitiateCallAttemptRequest() throws CAPException {
@@ -884,7 +889,7 @@ public class Client extends EventTestHarness {
 				false);
 
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitiateCallAttemptRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 //    public void sendReleaseSmsRequest(CAPApplicationContext appCnt) throws CAPException {
@@ -894,7 +899,7 @@ public class Client extends EventTestHarness {
 //        RPCause rpCause = new RPCauseImpl(3);
 //        clientSmsDialog.addReleaseSMSRequest(rpCause);
 //        this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReleaseSMSRequest, null, sequence++));
-//        clientSmsDialog.send();
+//        clientSmsDialog.send(dummyCallback);
 //    }
 
 	public void debug(String message) {

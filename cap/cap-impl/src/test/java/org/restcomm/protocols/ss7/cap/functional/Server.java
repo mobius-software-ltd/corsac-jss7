@@ -48,6 +48,8 @@ import org.restcomm.protocols.ss7.commonapp.api.primitives.MonitorMode;
 import org.restcomm.protocols.ss7.isup.ISUPParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 /**
  *
  * @author sergey vetyutnev
@@ -133,14 +135,23 @@ public class Server extends EventTestHarness {
         return res;
     }
 
-    public void onDialogRequest(CAPDialog capDialog, CAPGprsReferenceNumber capGprsReferenceNumber) {
+    @Override
+	public void onDialogRequest(CAPDialog capDialog, CAPGprsReferenceNumber capGprsReferenceNumber) {
         super.onDialogRequest(capDialog, capGprsReferenceNumber);
         serverCscDialog = capDialog;
     }
 
     public void sendAccept() {
         try {
-            serverCscDialog.send();
+            serverCscDialog.send(new TaskCallback<Exception>() {
+				@Override
+				public void onSuccess() {					
+				}
+				
+				@Override
+				public void onError(Exception exception) {					
+				}
+			});
         } catch (CAPException e) {
             this.error("Error while trying to send/close() Dialog", e);
         }

@@ -95,7 +95,7 @@ public class M3UAManagementTest {
 		this.workerPool.start(4);
 
         UUIDGenerator uuidGenerator=new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} );
-		this.m3uaMgmt = new M3UAManagementImpl("M3UAManagementTest", null, uuidGenerator, workerPool.getQueue(), workerPool.getPeriodicQueue());
+		this.m3uaMgmt = new M3UAManagementImpl("M3UAManagementTest", null, uuidGenerator, workerPool);
         this.m3uaMgmt.setTransportManagement(this.transportManagement);
         this.m3uaMgmt.start();
         this.m3uaMgmt.removeAllResourses();
@@ -156,7 +156,7 @@ public class M3UAManagementTest {
     @Test
     public void testPersistFileName() throws Exception {
     	UUIDGenerator uuidGenerator=new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} );
-		M3UAManagementImpl m3ua = new M3UAManagementImpl("test", null, uuidGenerator, workerPool.getQueue(), workerPool.getPeriodicQueue());
+		M3UAManagementImpl m3ua = new M3UAManagementImpl("test", null, uuidGenerator, workerPool);
         m3ua.setMaxAsForRoute(10);
 
     }

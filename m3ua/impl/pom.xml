@@ -64,11 +64,6 @@
 			<artifactId>netty-all</artifactId>
 			<version>${netty.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.mobius-software</groupId>
-			<artifactId>mobius-timers</artifactId>
-			<version>${timers.version}</version>
-		</dependency>
 	</dependencies>
 
 	<build>

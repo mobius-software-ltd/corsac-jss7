@@ -22,8 +22,6 @@
 
 package org.restcomm.protocols.ss7.mtp;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.util.ReferenceCountUtil;
@@ -35,249 +33,248 @@ import io.netty.util.ReferenceCountUtil;
  */
 public class Mtp3TransferPrimitive {
 
-    protected final int si; // service indicator
-    protected final int ni; // network indicator
-    protected final int mp; // message priority
-    protected final int opc;
-    protected final int dpc;
-    protected final int sls;
-    protected final ByteBuf data;
-    private Integer readerIndex;
-    private Integer readableBytes;
-    
-    private final RoutingLabelFormat pointCodeFormat;
-    
-    public Mtp3TransferPrimitive(int si, int ni, int mp, int opc, int dpc, int sls, ByteBuf data,
-            RoutingLabelFormat pointCodeFormat,AtomicBoolean referenceLocker) {
-        this.si = si;
-        this.ni = ni;
-        this.mp = mp;
-        this.opc = opc;
-        this.dpc = dpc;
-        this.sls = sls;
-        
-        this.data = data;
-        this.readableBytes = this.data.readableBytes();
-        this.readerIndex = this.data.readerIndex();
-        
-        this.pointCodeFormat = pointCodeFormat;
-        //now we control the release
-        referenceLocker.set(true);
-    }
+	protected final int si; // service indicator
+	protected final int ni; // network indicator
+	protected final int mp; // message priority
+	protected final int opc;
+	protected final int dpc;
+	protected final int sls;
+	protected final ByteBuf data;
+	private Integer readerIndex;
+	private Integer readableBytes;
 
-    public int getSi() {
-        return this.si;
-    }
+	private final RoutingLabelFormat pointCodeFormat;
 
-    public int getNi() {
-        return this.ni;
-    }
+	public Mtp3TransferPrimitive(int si, int ni, int mp, int opc, int dpc, int sls, ByteBuf data,
+			RoutingLabelFormat pointCodeFormat) {
+		this.si = si;
+		this.ni = ni;
+		this.mp = mp;
+		this.opc = opc;
+		this.dpc = dpc;
+		this.sls = sls;
 
-    public int getMp() {
-        return this.mp;
-    }
+		this.data = data;
+		this.readableBytes = this.data.readableBytes();
+		this.readerIndex = this.data.readerIndex();
 
-    public int getOpc() {
-        return this.opc;
-    }
+		this.pointCodeFormat = pointCodeFormat;
+	}
 
-    public int getDpc() {
-        return this.dpc;
-    }
+	public int getSi() {
+		return this.si;
+	}
 
-    public int getSls() {
-        return this.sls;
-    }
-    
-    public RoutingLabelFormat getPointCodeFormat() {
-    	return this.pointCodeFormat;
-    }
+	public int getNi() {
+		return this.ni;
+	}
 
-    public ByteBuf getData() {
-        return Unpooled.wrappedBuffer(this.data);
-    }
-    
-    public void retain() {
-    	ReferenceCountUtil.retain(this.data);
-    }    
-    
-    public Integer getRefCount() {
-    	return this.data.refCnt();
-    }
-    
-    public void releaseFully() {
-    	if(this.data.refCnt()>0)
-			ReferenceCountUtil.release(this.data,this.data.refCnt());
-    }
+	public int getMp() {
+		return this.mp;
+	}
 
-    public ByteBuf encodeMtp3() {
-    	
-        ByteBuf res = null;
-        int ssi = 0;
+	public int getOpc() {
+		return this.opc;
+	}
 
-        switch (this.pointCodeFormat) {
-            case ITU:
+	public int getDpc() {
+		return this.dpc;
+	}
 
-                ByteBuf headerBuffer=Unpooled.buffer(5);
-                
-                // sio
-                ssi = (this.ni & 0x03) << 2 | (this.mp & 0x03);
-                headerBuffer.writeByte((byte) (((ssi & 0x0F) << 4) | (this.si & 0x0F)));
+	public int getSls() {
+		return this.sls;
+	}
 
-                // routing label
-                headerBuffer.writeByte((byte) this.dpc);
-                headerBuffer.writeByte((byte) (((this.dpc >> 8) & 0x3F) | ((this.opc & 0x03) << 6)));
-                headerBuffer.writeByte((byte) (this.opc >> 2));
-                headerBuffer.writeByte((byte) (((this.opc >> 10) & 0x0F) | ((this.sls & 0x0F) << 4)));
+	public RoutingLabelFormat getPointCodeFormat() {
+		return this.pointCodeFormat;
+	}
 
-                // msu data
-                res=Unpooled.wrappedBuffer(headerBuffer,this.data);                
+	public void retain() {
+		ReferenceCountUtil.retain(this.data);
+	}
 
-                break;
+	public Integer getRefCount() {
+		return this.data.refCnt();
+	}
 
-            case ANSI_Sls8Bit:
-            	headerBuffer=Unpooled.buffer(8);
-                                
-                // sio
-                ssi = (this.ni & 0x03) << 2 | (this.mp & 0x03);
-                headerBuffer.writeByte((byte) (((ssi & 0x0F) << 4) | (this.si & 0x0F)));
+	public void release() {
+		this.data.release();
+		// if (this.data.refCnt() > 0)
+		// ReferenceCountUtil.release(this.data, this.data.refCnt());
+	}
 
-                headerBuffer.writeByte((byte) this.dpc);
-                headerBuffer.writeByte((byte) (this.dpc >> 8));
-                headerBuffer.writeByte((byte) (this.dpc >> 16));
+	public ByteBuf getData() {
+		return this.data.slice();
+	}
 
-                headerBuffer.writeByte((byte) this.opc);
-                headerBuffer.writeByte((byte) (this.opc >> 8));
-                headerBuffer.writeByte((byte) (this.opc >> 16));
+	public ByteBuf encodeMtp3() {
 
-                headerBuffer.writeByte((byte) this.sls);
+		ByteBuf res = null;
+		int ssi = 0;
 
-                // msu data
-                res=Unpooled.wrappedBuffer(headerBuffer,this.data);                
+		switch (this.pointCodeFormat) {
+		case ITU:
 
-                break;
+			ByteBuf headerBuffer = Unpooled.buffer(5);
 
-            case ANSI_Sls5Bit:
-            	headerBuffer=Unpooled.buffer(8);
-                
-                // sio
-                ssi = (this.ni & 0x03) << 2 | (this.mp & 0x03);
-                headerBuffer.writeByte((byte) (((ssi & 0x0F) << 4) | (this.si & 0x0F)));
+			// sio
+			ssi = (this.ni & 0x03) << 2 | (this.mp & 0x03);
+			headerBuffer.writeByte((byte) (((ssi & 0x0F) << 4) | (this.si & 0x0F)));
 
-                headerBuffer.writeByte((byte) this.dpc);
-                headerBuffer.writeByte((byte) (this.dpc >> 8));
-                headerBuffer.writeByte((byte) (this.dpc >> 16));
+			// routing label
+			headerBuffer.writeByte((byte) this.dpc);
+			headerBuffer.writeByte((byte) (((this.dpc >> 8) & 0x3F) | ((this.opc & 0x03) << 6)));
+			headerBuffer.writeByte((byte) (this.opc >> 2));
+			headerBuffer.writeByte((byte) (((this.opc >> 10) & 0x0F) | ((this.sls & 0x0F) << 4)));
 
-                headerBuffer.writeByte((byte) this.opc);
-                headerBuffer.writeByte((byte) (this.opc >> 8));
-                headerBuffer.writeByte((byte) (this.opc >> 16));
+			// msu data
+			res = Unpooled.wrappedBuffer(headerBuffer, this.data);
 
-                headerBuffer.writeByte((byte) (this.sls & 0x1F));
+			break;
 
-                // msu data
-                res=Unpooled.wrappedBuffer(headerBuffer,this.data);                
+		case ANSI_Sls8Bit:
+			headerBuffer = Unpooled.buffer(8);
 
-                break;
+			// sio
+			ssi = (this.ni & 0x03) << 2 | (this.mp & 0x03);
+			headerBuffer.writeByte((byte) (((ssi & 0x0F) << 4) | (this.si & 0x0F)));
 
-            default:
-                // We don't support rest
-                break;
-        }
+			headerBuffer.writeByte((byte) this.dpc);
+			headerBuffer.writeByte((byte) (this.dpc >> 8));
+			headerBuffer.writeByte((byte) (this.dpc >> 16));
 
-        return res;
-    }
+			headerBuffer.writeByte((byte) this.opc);
+			headerBuffer.writeByte((byte) (this.opc >> 8));
+			headerBuffer.writeByte((byte) (this.opc >> 16));
 
-    public String printBuffer() {
-    	String out = "";
-		for (int index = readerIndex, i=0; i< readableBytes; i++,index++) {
+			headerBuffer.writeByte((byte) this.sls);
+
+			// msu data
+			res = Unpooled.wrappedBuffer(headerBuffer, this.data);
+
+			break;
+
+		case ANSI_Sls5Bit:
+			headerBuffer = Unpooled.buffer(8);
+
+			// sio
+			ssi = (this.ni & 0x03) << 2 | (this.mp & 0x03);
+			headerBuffer.writeByte((byte) (((ssi & 0x0F) << 4) | (this.si & 0x0F)));
+
+			headerBuffer.writeByte((byte) this.dpc);
+			headerBuffer.writeByte((byte) (this.dpc >> 8));
+			headerBuffer.writeByte((byte) (this.dpc >> 16));
+
+			headerBuffer.writeByte((byte) this.opc);
+			headerBuffer.writeByte((byte) (this.opc >> 8));
+			headerBuffer.writeByte((byte) (this.opc >> 16));
+
+			headerBuffer.writeByte((byte) (this.sls & 0x1F));
+
+			// msu data
+			res = Unpooled.wrappedBuffer(headerBuffer, this.data);
+
+			break;
+
+		default:
+			// We don't support rest
+			break;
+		}
+
+		return res;
+	}
+
+	public String printBuffer() {
+		String out = "";
+		for (int index = readerIndex, i = 0; i < readableBytes; i++, index++) {
 			int value = data.getByte(index) & 0x0ff;
-			if(value<0x10)
-				out +="0";
-			
+			if (value < 0x10)
+				out += "0";
+
 			out += Integer.toHexString(value);
 		}
-		
+
 		return out;
-    }
-    
-    @Override
-    public String toString() {
+	}
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("MTP-TRANSFER: OPC=");
-        sb.append(this.opc);
-        sb.append(", DPC=");
-        sb.append(this.dpc);
-        sb.append(", SLS=");
-        sb.append(this.sls);
+	@Override
+	public String toString() {
 
-        if (this.data != null) {
-            sb.append(", MsgLen=");
-            sb.append(this.data.readableBytes());
-        }
+		StringBuilder sb = new StringBuilder();
+		sb.append("MTP-TRANSFER: OPC=");
+		sb.append(this.opc);
+		sb.append(", DPC=");
+		sb.append(this.dpc);
+		sb.append(", SLS=");
+		sb.append(this.sls);
 
-        sb.append(", NI=");
-        switch (this.ni) {
-            case 0:
-                sb.append("National");
-                break;
-            case 1:
-                sb.append("NationalSpare");
-                break;
-            case 2:
-                sb.append("International");
-                break;
-            case 3:
-                sb.append("InternationalSpare");
-                break;
-            default:
-                sb.append(this.ni);
-                break;
-        }
+		if (this.data != null) {
+			sb.append(", MsgLen=");
+			sb.append(this.data.readableBytes());
+		}
 
-        sb.append(", SI=");
-        switch (this.si) {
-            case 0:
-                sb.append("SNMM");
-                break;
-            case 1:
-                sb.append("SNTMM");
-                break;
-            case 2:
-                sb.append("SNTMM Special");
-                break;
-            case 3:
-                sb.append("SCCP");
-                break;
-            case 4:
-                sb.append("TUP");
-                break;
-            case 5:
-                sb.append("ISDN");
-                break;
-            case 6:
-                sb.append("DUP-1");
-                break;
-            case 7:
-                sb.append("DUP-1");
-                break;
-            case 8:
-                sb.append("MTP Testing");
-                break;
-            case 9:
-                sb.append("Broadband ISDN");
-                break;
-            case 10:
-                sb.append("Satellite ISDN");
-                break;
-            default:
-                sb.append(this.si);
-                break;
-        }
+		sb.append(", NI=");
+		switch (this.ni) {
+		case 0:
+			sb.append("National");
+			break;
+		case 1:
+			sb.append("NationalSpare");
+			break;
+		case 2:
+			sb.append("International");
+			break;
+		case 3:
+			sb.append("InternationalSpare");
+			break;
+		default:
+			sb.append(this.ni);
+			break;
+		}
 
-        sb.append(", MP=");
-        sb.append(this.mp);
+		sb.append(", SI=");
+		switch (this.si) {
+		case 0:
+			sb.append("SNMM");
+			break;
+		case 1:
+			sb.append("SNTMM");
+			break;
+		case 2:
+			sb.append("SNTMM Special");
+			break;
+		case 3:
+			sb.append("SCCP");
+			break;
+		case 4:
+			sb.append("TUP");
+			break;
+		case 5:
+			sb.append("ISDN");
+			break;
+		case 6:
+			sb.append("DUP-1");
+			break;
+		case 7:
+			sb.append("DUP-1");
+			break;
+		case 8:
+			sb.append("MTP Testing");
+			break;
+		case 9:
+			sb.append("Broadband ISDN");
+			break;
+		case 10:
+			sb.append("Satellite ISDN");
+			break;
+		default:
+			sb.append(this.si);
+			break;
+		}
 
-        return sb.toString();
-    }
+		sb.append(", MP=");
+		sb.append(this.mp);
+
+		return sb.toString();
+	}
 }

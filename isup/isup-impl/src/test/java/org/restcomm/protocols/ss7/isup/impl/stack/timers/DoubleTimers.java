@@ -50,7 +50,8 @@ public abstract class DoubleTimers extends EventTestHarness {
     protected ISUPMessage request; // message exchanged within
     protected ISUPMessage answer;
 
-    @Before
+    @Override
+	@Before
     public void setUp() throws Exception {
 
         super.setUp();
@@ -67,7 +68,8 @@ public abstract class DoubleTimers extends EventTestHarness {
         this.answer = getAnswer();
     }
 
-    @After
+    @Override
+	@After
     public void tearDown() throws Exception {
         super.provider.removeListener(listenerUUID);
         super.tearDown();

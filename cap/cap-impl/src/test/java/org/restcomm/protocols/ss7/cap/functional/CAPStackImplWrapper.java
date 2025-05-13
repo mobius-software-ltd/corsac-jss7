@@ -22,8 +22,7 @@ package org.restcomm.protocols.ss7.cap.functional;
 import org.restcomm.protocols.ss7.cap.CAPStackImpl;
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
 
-import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
-import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.common.dal.timers.WorkerPool;
 
 /**
  *
@@ -34,8 +33,8 @@ import com.mobius.software.common.dal.timers.Timer;
  */
 public class CAPStackImplWrapper extends CAPStackImpl {
 
-	public CAPStackImplWrapper(SccpProvider sccpPprovider, int ssn, PeriodicQueuedTasks<Timer> queuedTasks) {
-		super("Test", sccpPprovider, ssn, queuedTasks);
+	public CAPStackImplWrapper(SccpProvider sccpPprovider, int ssn, WorkerPool workerPool) {
+		super("Test", sccpPprovider, ssn, workerPool);
 		this.capProvider = new CAPProviderImplWrapper(this.tcapStack.getProvider(), this);
 	}
 }

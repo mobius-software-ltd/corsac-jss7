@@ -25,13 +25,14 @@ package org.restcomm.protocols.ss7.mtp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author sergey vetyutnev
@@ -131,7 +132,7 @@ public class Mtp3TransferMessageTest {
     @Test
     public void testItuEncode() throws Exception {
         Mtp3TransferPrimitiveFactory factory = new Mtp3TransferPrimitiveFactory(RoutingLabelFormat.ITU);
-        Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(3, 2, 0, 2000, 1000, 10, this.getData(),new AtomicBoolean(false));
+        Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(3, 2, 0, 2000, 1000, 10, this.getData());
 
         ByteBuf expectedBuf=this.getMsg();
         byte[] expected=new byte[expectedBuf.readableBytes()];
@@ -147,7 +148,7 @@ public class Mtp3TransferMessageTest {
     @Test
     public void testAnsiSls8BitEncode() throws Exception {
         Mtp3TransferPrimitiveFactory factory = new Mtp3TransferPrimitiveFactory(RoutingLabelFormat.ANSI_Sls8Bit);
-        Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(3, 2, 0, 2000, 1000, 33, this.getData(),new AtomicBoolean(false));
+        Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(3, 2, 0, 2000, 1000, 33, this.getData());
 
         ByteBuf expectedBuf=this.getAnsiMsg(true);
         byte[] expected=new byte[expectedBuf.readableBytes()];
@@ -162,7 +163,7 @@ public class Mtp3TransferMessageTest {
     @Test
     public void testAnsiSls5BitEncode() throws Exception {
         Mtp3TransferPrimitiveFactory factory = new Mtp3TransferPrimitiveFactory(RoutingLabelFormat.ANSI_Sls5Bit);
-        Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(3, 2, 0, 2000, 1000, 10, this.getData(),new AtomicBoolean(false));
+        Mtp3TransferPrimitive msg = factory.createMtp3TransferPrimitive(3, 2, 0, 2000, 1000, 10, this.getData());
 
         ByteBuf expectedBuf=this.getAnsiMsg(false);
         byte[] expected=new byte[expectedBuf.readableBytes()];

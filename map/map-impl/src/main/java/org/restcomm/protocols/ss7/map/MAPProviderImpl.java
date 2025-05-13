@@ -201,7 +201,6 @@ import org.restcomm.protocols.ss7.map.service.supplementary.UnstructuredSSRespon
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.api.OperationCodeWithACN;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
-import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.TCListener;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
@@ -246,6 +245,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultInnerImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -279,6 +280,16 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 	private final transient MAPServiceLsmImpl mapServiceLsm = new MAPServiceLsmImpl(this);
 
 	private MAPStackImpl mapStack;
+
+	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {
+		}
+
+		@Override
+		public void onError(Exception exception) {
+		}
+	};
 
 	/**
 	 * public common methods
@@ -1283,11 +1294,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 					"Received TCBeginIndication=%s, both ApplicationContextName and Component[] are null. Send TC-U-ABORT to peer and not notifying the User",
 					tcBeginIndication));
 
-			try {
-				this.fireTCAbortV1(tcBeginIndication.getDialog(), false);
-			} catch (MAPException e) {
-				loger.error("Error while firing TC-U-ABORT. ", e);
-			}
+			this.fireTCAbortV1(tcBeginIndication.getDialog(), false, dummyCallback);
 			return;
 		}
 
@@ -1333,14 +1340,12 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 					}
 				}
 
-			if (mapAppCtx == null)
+			if (mapAppCtx == null) {
 				// Invoke not found or has bad operationCode or operationCode is not supported
-				try {
-					this.fireTCAbortV1(tcBeginIndication.getDialog(), false);
-					return;
-				} catch (MAPException e) {
-					loger.error("Error while firing TC-U-ABORT. ", e);
-				}
+
+				this.fireTCAbortV1(tcBeginIndication.getDialog(), false, dummyCallback);
+				return;
+			}
 		} else {
 			// ApplicationContext is present - MAP Version 2 or higher
 			if (MAPApplicationContext.getProtocolVersion(acn.getOid()) < 2) {
@@ -1351,12 +1356,9 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 				// indicating "abnormalDialogue". The local MAP-user shall not
 				// be informed.
 				loger.error("Bad version of ApplicationContext if ApplicationContext exists. Must be 2 or greater");
-				try {
-					this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.abnormalDialogue,
-							null, false);
-				} catch (MAPException e) {
-					loger.error("Error while firing TC-U-ABORT. ", e);
-				}
+				this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.abnormalDialogue, null,
+						false, dummyCallback);
+
 				return;
 			}
 
@@ -1373,11 +1375,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 					s.append(l).append(", ");
 
 				loger.error(s.toString());
-				try {
-					this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false);
-				} catch (MAPException e) {
-					loger.error("Error while firing TC-U-ABORT. ", e);
-				}
+				this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false, dummyCallback);
 
 				return;
 			}
@@ -1413,12 +1411,9 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 							.getApplicationContextName() == MAPApplicationContextName.networkUnstructuredSsContext) {
 				loger.error("When parsing TC-BEGIN: userInfo is mandatory for ACN=="
 						+ mapAppCtx.getApplicationContextName() + " but not found");
-				try {
-					this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.abnormalDialogue,
-							null, false);
-				} catch (MAPException e) {
-					loger.error("Error while firing TC-U-ABORT. ", e);
-				}
+
+				this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.abnormalDialogue, null,
+						false, dummyCallback);
 				return;
 			}
 
@@ -1435,12 +1430,8 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
 			if (!userInfo.isIDObjectIdentifier()) {
 				loger.error("When parsing TC-BEGIN: userInfo.isOid() check failed");
-				try {
-					this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null,
-							false);
-				} catch (MAPException e) {
-					loger.error("Error while firing TC-U-ABORT. ", e);
-				}
+				this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null, false,
+						dummyCallback);
 				return;
 			}
 
@@ -1450,35 +1441,23 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
 			if (mapDialAs == null) {
 				loger.error("When parsing TC-BEGIN: Expected MAPDialogueAS.MAP_DialogueAS but is null");
-				try {
-					this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null,
-							false);
-				} catch (MAPException e) {
-					loger.error("Error while firing TC-U-ABORT. ", e);
-				}
+				this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null, false,
+						dummyCallback);
 				return;
 			}
 
 			if (!userInfo.isValueObject()) {
 				loger.error("When parsing TC-BEGIN: userInfo.isAsn() check failed");
-				try {
-					this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null,
-							false);
-				} catch (MAPException e) {
-					loger.error("Error while firing TC-U-ABORT. ", e);
-				}
+				this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null, false,
+						dummyCallback);
 				return;
 			}
 
 			Object userInfoObject = userInfo.getChild();
 			if (!(userInfoObject instanceof MAPOpenInfoImpl)) {
 				loger.error("When parsing TC-BEGIN: MAP-OPEN dialog PDU must be received");
-				try {
-					this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null,
-							false);
-				} catch (MAPException e) {
-					loger.error("Error while firing TC-U-ABORT. ", e);
-				}
+				this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null, false,
+						dummyCallback);
 				return;
 			}
 
@@ -1502,12 +1481,8 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 					break;
 
 				case AC_VersionIncorrect:
-					try {
-						this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null,
-								chkRes.getAlternativeApplicationContext(), false);
-					} catch (MAPException e1) {
-						loger.error("Error while firing TC-U-ABORT. ", e1);
-					}
+					this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null,
+							chkRes.getAlternativeApplicationContext(), false, dummyCallback);
 					break;
 				default:
 					break;
@@ -1528,12 +1503,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 				s.append("MAP V1");
 
 			loger.error(s.toString());
-			try {
-				this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false);
-			} catch (MAPException e1) {
-				loger.error("Error while firing TC-U-ABORT. ", e1);
-			}
-
+			this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false, dummyCallback);
 			return;
 		}
 
@@ -1549,11 +1519,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
 			loger.warn(s.toString());
 
-			try {
-				this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false);
-			} catch (MAPException e1) {
-				loger.error("Error while firing TC-U-ABORT. ", e1);
-			}
+			this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false, dummyCallback);
 
 			return;
 		}
@@ -1594,7 +1560,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 		try {
 			switch (mapDialogImpl.delayedAreaState) {
 			case Continue:
-				mapDialogImpl.send();
+				mapDialogImpl.send(dummyCallback);
 				break;
 			case End:
 				mapDialogImpl.close(false);
@@ -1623,11 +1589,8 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
 		if (mapDialogImpl == null) {
 			loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
-			try {
-				this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null, false);
-			} catch (MAPException e) {
-				loger.error("Error while firing TC-U-ABORT. ", e);
-			}
+
+			this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null, false, dummyCallback);
 			return;
 		}
 
@@ -1659,13 +1622,9 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 					loger.error(String.format(
 							"Received first TC-CONTINUE for MAPDialog=%s. But no application-context-name included",
 							mapDialogImpl));
-					try {
-						this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null,
-								mapDialogImpl.getReturnMessageOnError());
 
-					} catch (MAPException e) {
-						loger.error("Error while firing TC-U-ABORT. ", e);
-					}
+					this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null,
+							mapDialogImpl.getReturnMessageOnError(), dummyCallback);
 
 					this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
 							MAPAbortSource.MAPProblem, null);
@@ -1680,12 +1639,9 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
 					loger.error(String.format("Received first TC-CONTINUE. MAPDialog=%s. But MAPApplicationContext=%s",
 							mapDialogImpl, mapAcn));
-					try {
-						this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null,
-								mapDialogImpl.getReturnMessageOnError());
-					} catch (MAPException e) {
-						loger.error("Error while firing TC-U-ABORT. ", e);
-					}
+
+					this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null,
+							mapDialogImpl.getReturnMessageOnError(), dummyCallback);
 
 					this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
 							MAPAbortSource.MAPProblem, null);
@@ -2474,19 +2430,15 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
 	protected void fireTCBegin(Dialog tcapDialog, ApplicationContextName acn, AddressString destReference,
 			AddressString origReference, MAPExtensionContainer mapExtensionContainer, boolean isEriStyle,
-			AddressString eriMsisdn, AddressString vlrNoEri, boolean returnMessageOnError) throws MAPException {
+			AddressString eriMsisdn, AddressString vlrNoEri, boolean returnMessageOnError,
+			TaskCallback<Exception> callback) throws MAPException {
 
 		TCBeginRequest tcBeginReq = encodeTCBegin(tcapDialog, acn, destReference, origReference, mapExtensionContainer,
 				isEriStyle, eriMsisdn, vlrNoEri);
 		if (returnMessageOnError)
 			tcBeginReq.setReturnMessageOnError(true);
 
-		try {
-			tcapDialog.send(tcBeginReq);
-		} catch (TCAPSendException e) {
-			throw new MAPException(e.getMessage(), e);
-		}
-
+		tcapDialog.send(tcBeginReq, callback);
 	}
 
 	protected TCBeginRequest encodeTCBegin(Dialog tcapDialog, ApplicationContextName acn, AddressString destReference,
@@ -2517,17 +2469,14 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 	}
 
 	protected void fireTCContinue(Dialog tcapDialog, Boolean sendMapAcceptInfo, ApplicationContextName acn,
-			MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError) throws MAPException {
+			MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError, TaskCallback<Exception> callback)
+			throws MAPException {
 
 		TCContinueRequest tcContinueReq = encodeTCContinue(tcapDialog, sendMapAcceptInfo, acn, mapExtensionContainer);
 		if (returnMessageOnError)
 			tcContinueReq.setReturnMessageOnError(true);
 
-		try {
-			tcapDialog.send(tcContinueReq);
-		} catch (TCAPSendException e) {
-			throw new MAPException(e.getMessage(), e);
-		}
+		tcapDialog.send(tcContinueReq, callback);
 	}
 
 	protected TCContinueRequest encodeTCContinue(Dialog tcapDialog, Boolean sendMapAcceptInfo,
@@ -2553,18 +2502,14 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 	}
 
 	protected void fireTCEnd(Dialog tcapDialog, Boolean sendMapCloseInfo, boolean prearrangedEnd,
-			ApplicationContextName acn, MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError)
-			throws MAPException {
+			ApplicationContextName acn, MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError,
+			TaskCallback<Exception> callback) throws MAPException {
 
 		TCEndRequest endRequest = encodeTCEnd(tcapDialog, sendMapCloseInfo, prearrangedEnd, acn, mapExtensionContainer);
 		if (returnMessageOnError)
 			endRequest.setReturnMessageOnError(true);
 
-		try {
-			tcapDialog.send(endRequest);
-		} catch (TCAPSendException e) {
-			throw new MAPException(e.getMessage(), e);
-		}
+		tcapDialog.send(endRequest, callback);
 	}
 
 	protected TCEndRequest encodeTCEnd(Dialog tcapDialog, Boolean sendMapCloseInfo, boolean prearrangedEnd,
@@ -2604,10 +2549,11 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 	 * @throws MAPException
 	 */
 	private void fireTCAbortACNNotSupported(Dialog tcapDialog, MAPExtensionContainer mapExtensionContainer,
-			ApplicationContextName alternativeApplicationContext, boolean returnMessageOnError) throws MAPException {
+			ApplicationContextName alternativeApplicationContext, boolean returnMessageOnError,
+			TaskCallback<Exception> callback) {
 
 		if (tcapDialog.getApplicationContextName() == null) // MAP V1
-			this.fireTCAbortV1(tcapDialog, returnMessageOnError);
+			this.fireTCAbortV1(tcapDialog, returnMessageOnError, dummyCallback);
 
 		TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
 
@@ -2628,11 +2574,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 		tcUserAbort.setDialogServiceUserType(DialogServiceUserType.AcnNotSupported);
 		tcUserAbort.setUserInformation(userInformation);
 
-		try {
-			tcapDialog.send(tcUserAbort);
-		} catch (TCAPSendException e) {
-			throw new MAPException(e.getMessage(), e);
-		}
+		tcapDialog.send(tcUserAbort, callback);
 	}
 
 	/**
@@ -2644,10 +2586,10 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 	 * @throws MAPException
 	 */
 	protected void fireTCAbortRefused(Dialog tcapDialog, Reason reason, MAPExtensionContainer mapExtensionContainer,
-			boolean returnMessageOnError) throws MAPException {
+			boolean returnMessageOnError, TaskCallback<Exception> callback) {
 
 		if (tcapDialog.getApplicationContextName() == null) // MAP V1
-			this.fireTCAbortV1(tcapDialog, returnMessageOnError);
+			this.fireTCAbortV1(tcapDialog, returnMessageOnError, dummyCallback);
 
 		TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
 
@@ -2669,11 +2611,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 		if (returnMessageOnError)
 			tcUserAbort.setReturnMessageOnError(true);
 
-		try {
-			tcapDialog.send(tcUserAbort);
-		} catch (TCAPSendException e) {
-			throw new MAPException(e.getMessage(), e);
-		}
+		tcapDialog.send(tcUserAbort, callback);
 	}
 
 	/**
@@ -2685,10 +2623,10 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 	 * @throws MAPException
 	 */
 	protected void fireTCAbortUser(Dialog tcapDialog, MAPUserAbortInfoImpl mapUserAbortInfoImpl,
-			boolean returnMessageOnError) throws MAPException {
+			boolean returnMessageOnError, TaskCallback<Exception> callback) {
 
 		if (tcapDialog.getApplicationContextName() == null) // MAP V1
-			this.fireTCAbortV1(tcapDialog, returnMessageOnError);
+			this.fireTCAbortV1(tcapDialog, returnMessageOnError, dummyCallback);
 
 		TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
 
@@ -2701,12 +2639,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
 		tcUserAbort.setUserInformation(userInformation);
 
-		try {
-			tcapDialog.send(tcUserAbort);
-		} catch (TCAPSendException e) {
-			throw new MAPException(e.getMessage(), e);
-		}
-
+		tcapDialog.send(tcUserAbort, callback);
 	}
 
 	/**
@@ -2718,10 +2651,11 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 	 * @throws MAPException
 	 */
 	protected void fireTCAbortProvider(Dialog tcapDialog, MAPProviderAbortReason mapProviderAbortReason,
-			MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError) throws MAPException {
+			MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError,
+			TaskCallback<Exception> callback) {
 
 		if (tcapDialog.getApplicationContextName() == null) // MAP V1
-			this.fireTCAbortV1(tcapDialog, returnMessageOnError);
+			this.fireTCAbortV1(tcapDialog, returnMessageOnError, dummyCallback);
 
 		TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
 
@@ -2737,11 +2671,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
 		tcUserAbort.setUserInformation(userInformation);
 
-		try {
-			tcapDialog.send(tcUserAbort);
-		} catch (TCAPSendException e) {
-			throw new MAPException(e.getMessage(), e);
-		}
+		tcapDialog.send(tcUserAbort, callback);
 	}
 
 	/**
@@ -2751,17 +2681,13 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 	 * @param returnMessageOnError
 	 * @throws MAPException
 	 */
-	protected void fireTCAbortV1(Dialog tcapDialog, boolean returnMessageOnError) throws MAPException {
+	protected void fireTCAbortV1(Dialog tcapDialog, boolean returnMessageOnError, TaskCallback<Exception> callback) {
 
 		TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
 		if (returnMessageOnError)
 			tcUserAbort.setReturnMessageOnError(true);
 
-		try {
-			tcapDialog.send(tcUserAbort);
-		} catch (TCAPSendException e) {
-			throw new MAPException(e.getMessage(), e);
-		}
+		tcapDialog.send(tcUserAbort, callback);
 	}
 
 	@Override

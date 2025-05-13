@@ -43,8 +43,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
-import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
-import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.common.dal.timers.WorkerPool;
 
 /**
  * @author amit bhayani
@@ -62,7 +61,7 @@ public class TCAPStackImpl implements TCAPStack {
 
 	// TCAP state data, it is used ONLY on client side
 	protected TCAPProviderImpl tcapProvider;
-	protected PeriodicQueuedTasks<Timer> queuedTasks;
+	protected WorkerPool workerPool;
 
 	private SccpProvider sccpProvider;
 
@@ -140,11 +139,10 @@ public class TCAPStackImpl implements TCAPStack {
 			allProblemTypes.add(returnResultProblem.name());
 	}
 
-	public TCAPStackImpl(String name, PeriodicQueuedTasks<Timer> queuedTasks) {
+	public TCAPStackImpl(String name, WorkerPool workerPool) {
 		super();
 
 		this.name = name;
-		this.queuedTasks = queuedTasks;
 		this.logger = LogManager.getLogger(TCAPStackImpl.class.getCanonicalName() + "-" + this.name);
 
 		for (String currName : TCUnifiedMessageImpl.getAllNames()) {
@@ -186,11 +184,11 @@ public class TCAPStackImpl implements TCAPStack {
 		abortsSentByType.put("User", new AtomicLong(0));
 	}
 
-	public TCAPStackImpl(String name, SccpProvider sccpProvider, int ssn, PeriodicQueuedTasks<Timer> queuedTasks) {
-		this(name, queuedTasks);
+	public TCAPStackImpl(String name, SccpProvider sccpProvider, int ssn, WorkerPool workerPool) {
+		this(name, workerPool);
 
 		this.sccpProvider = sccpProvider;
-		this.tcapProvider = new TCAPProviderImpl(sccpProvider, this, ssn, this.queuedTasks);
+		this.tcapProvider = new TCAPProviderImpl(sccpProvider, this, ssn, workerPool);
 
 		this.ssn = ssn;
 	}
@@ -983,5 +981,10 @@ public class TCAPStackImpl implements TCAPStack {
 		}
 
 		invokeTimeoutProcessed.incrementAndGet();
+	}
+
+	@Override
+	public void setAffinity(boolean isEnabled) {
+		this.tcapProvider.setAffinity(isEnabled);
 	}
 }

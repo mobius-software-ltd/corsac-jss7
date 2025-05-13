@@ -86,10 +86,8 @@ public class TCAPFunctionalTest extends SccpHarness {
 		peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2,
 				8);
 
-		this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest_1", this.sccpProvider1, 8,
-				workerPool.getPeriodicQueue());
-		this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest_2", this.sccpProvider2, 8,
-				workerPool.getPeriodicQueue());
+		this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest_1", this.sccpProvider1, 8, workerPool);
+		this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest_2", this.sccpProvider2, 8, workerPool);
 
 		this.tcapListenerWrapper = new TCAPListenerWrapper();
 		this.tcapStack1.getProvider().addTCListener(tcapListenerWrapper);

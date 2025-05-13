@@ -76,7 +76,7 @@ public class ASNOctetString {
 		if(value==null)
 			return Unpooled.EMPTY_BUFFER;
 		
-		return Unpooled.wrappedBuffer(value);
+		return value.slice();
 	}
 	
 	@ASNLength
@@ -92,8 +92,8 @@ public class ASNOctetString {
 	
 	@ASNDecode
 	public Boolean decode(ASNParser parser,Object parent,ByteBuf buffer,ConcurrentHashMap<Integer,Object> mappedData,Boolean skipErrors, Integer level) {
-		if(buffer.readableBytes()>0)
-			value=Unpooled.wrappedBuffer(buffer);
+		if(buffer.readableBytes()>0)			
+			value=buffer.slice();
 		else
 			value=Unpooled.EMPTY_BUFFER;
 		
@@ -112,12 +112,11 @@ public class ASNOctetString {
 				throw new ASNParsingComponentException(name + " length should be at least " + minLength,ASNParsingComponentExceptionReason.MistypedParameter);
 			else
 				throw new ASNParsingComponentException(name + " length should be at least " + minLength,ASNParsingComponentExceptionReason.MistypedRootParameter);
-		} else if(maxLength!=null && value!=null && value.readableBytes()>maxLength){
+		} else if(maxLength!=null && value!=null && value.readableBytes()>maxLength)
 			if(isRoot==null || !isRoot)
 				throw new ASNParsingComponentException(name + " length should be at most " + maxLength,ASNParsingComponentExceptionReason.MistypedParameter);
 			else
-				throw new ASNParsingComponentException(name + " length should be at most " + maxLength,ASNParsingComponentExceptionReason.MistypedRootParameter);
-		} 
+				throw new ASNParsingComponentException(name + " length should be at most " + maxLength,ASNParsingComponentExceptionReason.MistypedRootParameter); 
 			
 	}
 	
@@ -133,8 +132,8 @@ public class ASNOctetString {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         ByteBuf buffer=getValue();
-        if (buffer != null) {
-            while(buffer.readableBytes()>0) {
+        if (buffer != null)
+			while(buffer.readableBytes()>0) {
             	byte b=buffer.readByte();
                 if (first)
                     first = false;
@@ -146,7 +145,6 @@ public class ASNOctetString {
                 else
                 	sb.append("-").append(256 - b & 0xFF);
             }
-        }
 
         return sb.toString();
     }
@@ -154,8 +152,8 @@ public class ASNOctetString {
 	public static String printDataArr(ByteBuf buffer) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
-        if (buffer != null) {
-            while(buffer.readableBytes()>0) {
+        if (buffer != null)
+			while(buffer.readableBytes()>0) {
             	byte b=buffer.readByte();
                 if (first)
                     first = false;
@@ -167,7 +165,6 @@ public class ASNOctetString {
                 else
                 	sb.append("-").append(256 - b & 0xFF);
             }
-        }
 
         return sb.toString();
     }

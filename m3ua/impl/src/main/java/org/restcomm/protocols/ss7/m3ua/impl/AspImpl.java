@@ -128,7 +128,7 @@ public class AspImpl implements Asp {
 	}
 
 	private void initLocalFSM() {
-		this.localFSM = new FSM(this.name + "_LOCAL", this.aspFactoryImpl.m3UAManagementImpl.queuedTasks);
+		this.localFSM = new FSM(this.name + "_LOCAL", this.aspFactoryImpl.m3UAManagementImpl.workerPool.getPeriodicQueue());
 		// Define states
 		this.localFSM.createState(AspState.DOWN_SENT.toString()).setOnEnter(new AspStateEnterDown(this));
 		this.localFSM.createState(AspState.DOWN.toString()).setOnEnter(new AspStateEnterDown(this));
@@ -245,7 +245,7 @@ public class AspImpl implements Asp {
 	}
 
 	private void initPeerFSM() {
-		this.peerFSM = new FSM(this.name + "_PEER", this.aspFactoryImpl.m3UAManagementImpl.queuedTasks);
+		this.peerFSM = new FSM(this.name + "_PEER", this.aspFactoryImpl.m3UAManagementImpl.workerPool.getPeriodicQueue());
 		// Define states
 		this.peerFSM.createState(AspState.DOWN.toString()).setOnEnter(new AspStateEnterDown(this));
 		this.peerFSM.createState(AspState.ACTIVE.toString()).setOnEnter(new AspStateEnterActive(this));

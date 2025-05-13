@@ -39,8 +39,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
 import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TCUnifiedMessageImpl;
 
-import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
-import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.common.dal.timers.WorkerPool;
 
 /**
  * @author amit bhayani
@@ -59,7 +58,7 @@ public class TCAPStackImpl implements TCAPStack {
 
 	// TCAP state data, it is used ONLY on client side
 	protected TCAPProviderImpl tcapProvider;
-	protected PeriodicQueuedTasks<Timer> queuedTasks;
+	protected WorkerPool workerPool;
 
 	private final String name;
 
@@ -121,10 +120,10 @@ public class TCAPStackImpl implements TCAPStack {
 		allAbortCauses.add("User");
 	}
 
-	public TCAPStackImpl(String name, PeriodicQueuedTasks<Timer> queuedTasks) {
+	public TCAPStackImpl(String name, WorkerPool workerPool) {
 		super();
 		this.name = name;
-		this.queuedTasks = queuedTasks;
+		this.workerPool = workerPool;
 		this.logger = LogManager.getLogger(TCAPStackImpl.class.getCanonicalName() + "-" + this.name);
 
 		for (String currName : TCUnifiedMessageImpl.getAllNames()) {
@@ -151,10 +150,10 @@ public class TCAPStackImpl implements TCAPStack {
 		abortsSentByType.put("User", new AtomicLong(0));
 	}
 
-	public TCAPStackImpl(String name, SccpProvider sccpProvider, int ssn, PeriodicQueuedTasks<Timer> queuedTasks) {
-		this(name, queuedTasks);
+	public TCAPStackImpl(String name, SccpProvider sccpProvider, int ssn, WorkerPool workerPool) {
+		this(name, workerPool);
 
-		this.tcapProvider = new TCAPProviderImpl(sccpProvider, this, ssn, queuedTasks);
+		this.tcapProvider = new TCAPProviderImpl(sccpProvider, this, ssn, workerPool);
 		this.ssn = ssn;
 	}
 

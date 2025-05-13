@@ -47,7 +47,7 @@ public class AspFactoryStopTimer extends M3UATask {
 	 * @param queuedTasks
 	 */
 	public AspFactoryStopTimer(AspFactoryImpl aspFactoryImpl) {
-		super(aspFactoryImpl.m3UAManagementImpl.queuedTasks);
+		super(aspFactoryImpl.m3UAManagementImpl.workerPool.getPeriodicQueue());
 		this.aspFactoryImpl = aspFactoryImpl;
 		this.initiatedTime = System.currentTimeMillis();
 	}

@@ -25,13 +25,12 @@ package org.restcomm.protocols.ss7.map.functional;
 import org.restcomm.protocols.ss7.map.MAPStackImpl;
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
 
-import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
-import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.common.dal.timers.WorkerPool;
 
 public class MAPStackImplWrapper extends MAPStackImpl {
 
-	public MAPStackImplWrapper(SccpProvider sccpPprovider, int ssn, PeriodicQueuedTasks<Timer> queuedTasks) {
-		super("Test", sccpPprovider, ssn, queuedTasks);
+	public MAPStackImplWrapper(SccpProvider sccpPprovider, int ssn, WorkerPool workerPool) {
+		super("Test", sccpPprovider, ssn, workerPool);
 		this.mapProvider = new MAPProviderImplWrapper(this.tcapStack.getProvider(), this);
 	}
 

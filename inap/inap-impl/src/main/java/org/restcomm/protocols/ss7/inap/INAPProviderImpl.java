@@ -138,7 +138,6 @@ import org.restcomm.protocols.ss7.isup.impl.message.parameter.ISUPParameterFacto
 import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.api.OperationCodeWithACN;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
-import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.TCListener;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
@@ -182,6 +181,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultInnerImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
@@ -194,1323 +194,1452 @@ import io.netty.buffer.ByteBuf;
 public class INAPProviderImpl implements INAPProvider, TCListener {
 	private static final long serialVersionUID = 1L;
 
-
 	protected final transient Logger loger;
 
+	private transient ConcurrentHashMap<UUID, INAPDialogListener> dialogListeners = new ConcurrentHashMap<UUID, INAPDialogListener>();
 
-    private transient ConcurrentHashMap<UUID,INAPDialogListener> dialogListeners = new ConcurrentHashMap<UUID,INAPDialogListener>();
+	private transient TCAPProvider tcapProvider = null;
 
-    private transient TCAPProvider tcapProvider = null;
+	private final transient INAPParameterFactory inapParameterFactory = new INAPParameterFactoryImpl();
+	private final transient ISUPParameterFactory isupParameterFactory = new ISUPParameterFactoryImpl();
+	private final transient INAPErrorMessageFactory inapErrorMessageFactory = new INAPErrorMessageFactoryImpl();
 
-    private final transient INAPParameterFactory inapParameterFactory = new INAPParameterFactoryImpl();
-    private final transient ISUPParameterFactory isupParameterFactory = new ISUPParameterFactoryImpl();
-    private final transient INAPErrorMessageFactory inapErrorMessageFactory = new INAPErrorMessageFactoryImpl();
+	protected transient Set<INAPServiceBaseImpl> inapServices = new HashSet<INAPServiceBaseImpl>();
+	private final transient INAPServiceCircuitSwitchedCallImpl inapServiceCircuitSwitchedCall = new INAPServiceCircuitSwitchedCallImpl(
+			this);
 
-    protected transient Set<INAPServiceBaseImpl> inapServices = new HashSet<INAPServiceBaseImpl>();
-    private final transient INAPServiceCircuitSwitchedCallImpl inapServiceCircuitSwitchedCall = new INAPServiceCircuitSwitchedCallImpl(
-            this);
-    
-    private INAPStackImpl inapStack;
-    
-    public INAPProviderImpl(String name, INAPStackImpl inapStack, TCAPProvider tcapProvider) {
-        this.tcapProvider = tcapProvider;
-        this.inapStack = inapStack;
-        this.loger = LogManager.getLogger(INAPStackImpl.class.getCanonicalName() + "-" + name);
+	private INAPStackImpl inapStack;
 
-        this.inapServices.add(this.inapServiceCircuitSwitchedCall);
-        
-        try {
-            //lets set default for user information as octet string
-        	tcapProvider.getParser().getParser(ASNUserInformationObjectImpl.class, ASNOctetString.class);                
+	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
 
-            ErrorCodeImpl errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(INAPErrorCode.cancelFailed);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageCancelFailedImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(INAPErrorCode.requestedInfoError);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageRequestedInfoErrorImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(INAPErrorCode.systemFailure);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageSystemFailureImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(INAPErrorCode.taskRefused);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageTaskRefusedImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(INAPErrorCode.improperCallerResponse);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageImproperCallerResponseCS1PlusImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(INAPErrorCode.congestion);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageOctetStringImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(INAPErrorCode.errorInParameterValue);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageOctetStringImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(INAPErrorCode.illegalCombinationOfParameters);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageOctetStringImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(INAPErrorCode.infoNotAvailable);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageOctetStringImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(INAPErrorCode.notAuthorized);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageOctetStringImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(INAPErrorCode.parameterMissing);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageOctetStringImpl.class);
-        	errorCode=new ErrorCodeImpl();
-        	errorCode.setLocalErrorCode(INAPErrorCode.otherError);
-        	tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode, INAPErrorMessageOctetStringImpl.class);
-      
-        	//registering error options
-        	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageCancelFailedImpl.class, INAPErrorMessageCancelFailedImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageSystemFailureImpl.class, INAPErrorMessageSystemFailureImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageRequestedInfoErrorImpl.class, INAPErrorMessageRequestedInfoErrorImpl.class);        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageRequestedInfoErrorImpl.class, INAPErrorMessageOctetStringImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageTaskRefusedImpl.class, INAPErrorMessageTaskRefusedImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageTaskRefusedImpl.class, INAPErrorMessageOctetStringImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageImproperCallerResponseCS1PlusImpl.class, INAPErrorMessageImproperCallerResponseCS1PlusImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageImproperCallerResponseCS1PlusImpl.class, INAPErrorMessageOctetStringImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageOctetStringImpl.class, INAPErrorMessageOctetStringImpl.class);
-        	
-        	//register requests mappings
-        	OperationCodeImpl opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.initialDP);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InitialDPRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.originationAttemptAuthorized);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, OriginationAttemptAuthorizedRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.collectedInformation);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CollectedInformationRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.analysedInformation);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, AnalysedInformationRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.routeSelectFailure);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RouteSelectFailureRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.oCalledPartyBusy);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, OCalledPartyBusyRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.oNoAnswer);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ONoAnswerRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.oAnswer);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, OAnswerRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.oDisconnect);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ODisconnectRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.termAttemptAuthorized);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, TermAttemptAuthorizedRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.tBusy);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, TBusyRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.tNoAnswer);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, TNoAnswerRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.tAnswer);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, TAnswerRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.tDisconnect);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, TDisconnectRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.oMidCall);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, OMidCallRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.tMidCall);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, TMidCallRequestImpl.class);        	
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.assistRequestInstructions);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, AssistRequestInstructionsRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.establishTemporaryConnection);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, EstablishTemporaryConnectionRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.disconnectForwardConnection);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, DisconnectForwardConnectionCS1PlusRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.connectToResource);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ConnectToResourceRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.connect);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ConnectRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.holdCallInNetwork);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, HoldCallInNetworkRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.releaseCall);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ReleaseCallRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.requestReportBCSMEvent);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RequestReportBCSMEventRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.eventReportBCSM);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, EventReportBCSMRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.requestNotificationChargingEvent);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RequestNotificationChargingEventRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.eventNotificationCharging);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, EventNotificationChargingRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.collectInformation);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CollectInformationRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.analyseInformation);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, AnalyseInformationRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.selectRoute);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SelectRouteRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.selectFacility);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SelectFacilityRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.continueCode);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ContinueCS1PlusRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.initiateCallAttempt);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InitiateCallAttemptRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.resetTimer);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ResetTimerRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.furnishChargingInformation);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, FurnishChargingInformationRequestImpl.class);
-        	
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.applyCharging);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ApplyChargingRequestImpl.class);
-        	
-        	OperationCodeWithACN operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingRequestCS1Impl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingRequestCS1Impl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingRequestCS1Impl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingRequestCS1Impl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingRequestCS1Impl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingRequestCS1Impl.class);
+		@Override
+		public void onSuccess() {
+		}
 
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.applyChargingReport);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ApplyChargingReportRequestImpl.class);
-        	
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingReportRequestCS1Impl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingReportRequestCS1Impl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingReportRequestCS1Impl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingReportRequestCS1Impl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingReportRequestCS1Impl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, ApplyChargingReportRequestCS1Impl.class);
+		@Override
+		public void onError(Exception exception) {
+		}
+	};
 
-        	
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.requestCurrentStatusReport);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RequestCurrentStatusReportRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.requestEveryStatusChangeReport);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RequestEveryStatusChangeReportRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.requestFirstStatusMatchReport);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, RequestFirstStatusMatchReportRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.statusReport);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, StatusReportRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.callGap);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CallGapRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.activateServiceFiltering);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ActivateServiceFilteringRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.serviceFilteringResponse);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ServiceFilteringResponseRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.callInformationReport);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CallInformationReportRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.callInformationRequest);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CallInformationRequestImpl.class);
-        	
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.sendChargingInformation);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SendChargingInformationRequestImpl.class);
-        	
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendChargingInformationCS1RequestImpl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendChargingInformationCS1RequestImpl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendChargingInformationCS1RequestImpl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendChargingInformationCS1RequestImpl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendChargingInformationCS1RequestImpl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, SendChargingInformationCS1RequestImpl.class);
+	public INAPProviderImpl(String name, INAPStackImpl inapStack, TCAPProvider tcapProvider) {
+		this.tcapProvider = tcapProvider;
+		this.inapStack = inapStack;
+		this.loger = LogManager.getLogger(INAPStackImpl.class.getCanonicalName() + "-" + name);
 
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.playAnnouncement);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, PlayAnnouncementRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.promptAndCollectUserInformation);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, PromptAndCollectUserInformationRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.specializedResourceReport);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SpecializedResourceReportCS1PlusRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.cancelCode);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CancelRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.cancelStatusReportRequest);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CancelStatusReportRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.activityTest);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ActivityTestRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.callLimit);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CallLimitRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.continueWithArgument);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ContinueWithArgumentRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.dialogueUserInformation);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, DialogueUserInformationRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.handOver);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, HandOverRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.holdCallPartyConnection);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, HoldCallPartyConnectionRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.reconnect);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ReconnectRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.releaseCallPartyConnection);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ReleaseCallPartyConnectionRequestImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.signallingInformation);
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SignallingInformationRequestImpl.class);
+		this.inapServices.add(this.inapServiceCircuitSwitchedCall);
 
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.retrieve);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_data_management_AC.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, RetrieveRequestImpl.class);
-        	operationWithACN=new OperationCodeWithACN(opCode, INAPApplicationContext.Ericcson_cs1plus_data_management_AC_REV_B.getOID());			
-        	tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN, RetrieveRequestImpl.class);
+		try {
+			// lets set default for user information as octet string
+			tcapProvider.getParser().getParser(ASNUserInformationObjectImpl.class, ASNOctetString.class);
 
-        	//registering request options
-        	tcapProvider.getParser().registerAlternativeClassMapping(InitialDPRequestImpl.class, InitialDPRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(OriginationAttemptAuthorizedRequestImpl.class, OriginationAttemptAuthorizedRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(CollectedInformationRequestImpl.class, CollectedInformationRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(AnalysedInformationRequestImpl.class, AnalysedInformationRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(RouteSelectFailureRequestImpl.class, RouteSelectFailureRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(OCalledPartyBusyRequestImpl.class, OCalledPartyBusyRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ONoAnswerRequestImpl.class, ONoAnswerRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(OAnswerRequestImpl.class, OAnswerRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ODisconnectRequestImpl.class, ODisconnectRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(TermAttemptAuthorizedRequestImpl.class, TermAttemptAuthorizedRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(TBusyRequestImpl.class, TBusyRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(TNoAnswerRequestImpl.class, TNoAnswerRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(TAnswerRequestImpl.class, TAnswerRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(TDisconnectRequestImpl.class, TDisconnectRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(OMidCallRequestImpl.class, OMidCallRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(TMidCallRequestImpl.class, TMidCallRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(AssistRequestInstructionsRequestImpl.class, AssistRequestInstructionsRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(RetrieveRequestImpl.class, RetrieveRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(EstablishTemporaryConnectionRequestImpl.class, EstablishTemporaryConnectionRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(DisconnectForwardConnectionCS1PlusRequestImpl.class, DisconnectForwardConnectionCS1PlusRequestImpl.class);
-        	//does nothing since its empty class
-        	tcapProvider.getParser().registerAlternativeClassMapping(DisconnectForwardConnectionCS1PlusRequestImpl.class, DisconnectForwardConnectionRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(ConnectToResourceRequestImpl.class, ConnectToResourceRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(ConnectRequestImpl.class, ConnectRequestImpl.class);
-        	
-        	//one is choise another is sequence , so we should be fine here
-        	tcapProvider.getParser().registerAlternativeClassMapping(HoldCallInNetworkRequestImpl.class, HoldCallInNetworkRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(HoldCallInNetworkRequestImpl.class, UpdateRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(ReleaseCallRequestImpl.class, ReleaseCallRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(RequestReportBCSMEventRequestImpl.class, RequestReportBCSMEventRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(EventReportBCSMRequestImpl.class, EventReportBCSMRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(RequestNotificationChargingEventRequestImpl.class, RequestNotificationChargingEventRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(EventNotificationChargingRequestImpl.class, EventNotificationChargingRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(CollectInformationRequestImpl.class, CollectInformationRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(AnalyseInformationRequestImpl.class, AnalyseInformationRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SelectRouteRequestImpl.class, SelectRouteRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(SelectFacilityRequestImpl.class, SelectFacilityRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(ContinueCS1PlusRequestImpl.class, ContinueCS1PlusRequestImpl.class);
-        	//does nothing
-        	tcapProvider.getParser().registerAlternativeClassMapping(ContinueCS1PlusRequestImpl.class, ContinueRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(InitiateCallAttemptRequestImpl.class, InitiateCallAttemptRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ResetTimerRequestImpl.class, ResetTimerRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(FurnishChargingInformationRequestImpl.class, FurnishChargingInformationRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingRequestImpl.class, ApplyChargingRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingRequestCS1Impl.class, ApplyChargingRequestCS1Impl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingReportRequestImpl.class, ApplyChargingReportRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingReportRequestCS1Impl.class, ApplyChargingReportRequestCS1Impl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(RequestCurrentStatusReportRequestImpl.class, RequestCurrentStatusReportRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(RequestEveryStatusChangeReportRequestImpl.class, RequestEveryStatusChangeReportRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(RequestFirstStatusMatchReportRequestImpl.class, RequestFirstStatusMatchReportRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(StatusReportRequestImpl.class, StatusReportRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(CallGapRequestImpl.class, CallGapRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ActivateServiceFilteringRequestImpl.class, ActivateServiceFilteringRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ServiceFilteringResponseRequestImpl.class, ServiceFilteringResponseRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(CallInformationReportRequestImpl.class, CallInformationReportRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(CallInformationRequestImpl.class, CallInformationRequestImpl.class);        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendChargingInformationCS1RequestImpl.class, SendChargingInformationCS1RequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SendChargingInformationRequestImpl.class, SendChargingInformationRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(PlayAnnouncementRequestImpl.class, PlayAnnouncementRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(PromptAndCollectUserInformationRequestImpl.class, PromptAndCollectUserInformationRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(SpecializedResourceReportCS1PlusRequestImpl.class, SpecializedResourceReportCS1PlusRequestImpl.class);
-        	//does nothing
-        	tcapProvider.getParser().registerAlternativeClassMapping(SpecializedResourceReportCS1PlusRequestImpl.class, SpecializedResourceReportRequestImpl.class);
-        	
-        	tcapProvider.getParser().registerAlternativeClassMapping(CancelRequestImpl.class, CancelRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(CancelStatusReportRequestImpl.class, CancelStatusReportRequestImpl.class);
-        	
-        	//does nothing
-        	tcapProvider.getParser().registerAlternativeClassMapping(ActivityTestRequestImpl.class, ActivityTestRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(CallLimitRequestImpl.class, CallLimitRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ContinueWithArgumentRequestImpl.class, ContinueWithArgumentRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(DialogueUserInformationRequestImpl.class, DialogueUserInformationRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(HandOverRequestImpl.class, HandOverRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(HoldCallPartyConnectionRequestImpl.class, HoldCallPartyConnectionRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ReconnectRequestImpl.class, ReconnectRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(ReleaseCallPartyConnectionRequestImpl.class, ReleaseCallPartyConnectionRequestImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(SignallingInformationRequestImpl.class, SignallingInformationRequestImpl.class);
-        	
-        	//register responses mappings
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.activityTest);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, ActivityTestResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.promptAndCollectUserInformation);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, PromptAndCollectUserInformationResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.requestCurrentStatusReport);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, RequestCurrentStatusReportResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.update);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, UpdateResponseImpl.class);
-        	opCode=new OperationCodeImpl();
-        	opCode.setLocalOperationCode(INAPOperationCode.retrieve);
-        	tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode, RetrieveResponseImpl.class);
-        	        	
-        	//does nothing , also not sure we should have response
-        	tcapProvider.getParser().registerAlternativeClassMapping(ActivityTestResponseImpl.class, ActivityTestResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(PromptAndCollectUserInformationResponseImpl.class, PromptAndCollectUserInformationResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(RequestCurrentStatusReportResponseImpl.class, RequestCurrentStatusReportResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(UpdateResponseImpl.class, UpdateResponseImpl.class);
-        	tcapProvider.getParser().registerAlternativeClassMapping(RetrieveResponseImpl.class, RetrieveResponseImpl.class);
-        	
-        } catch(Exception ex) {
-        	//already registered11
-        }        	
-    }
+			ErrorCodeImpl errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(INAPErrorCode.cancelFailed);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					INAPErrorMessageCancelFailedImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(INAPErrorCode.requestedInfoError);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					INAPErrorMessageRequestedInfoErrorImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(INAPErrorCode.systemFailure);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					INAPErrorMessageSystemFailureImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(INAPErrorCode.taskRefused);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					INAPErrorMessageTaskRefusedImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(INAPErrorCode.improperCallerResponse);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					INAPErrorMessageImproperCallerResponseCS1PlusImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(INAPErrorCode.congestion);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					INAPErrorMessageOctetStringImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(INAPErrorCode.errorInParameterValue);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					INAPErrorMessageOctetStringImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(INAPErrorCode.illegalCombinationOfParameters);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					INAPErrorMessageOctetStringImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(INAPErrorCode.infoNotAvailable);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					INAPErrorMessageOctetStringImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(INAPErrorCode.notAuthorized);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					INAPErrorMessageOctetStringImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(INAPErrorCode.parameterMissing);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					INAPErrorMessageOctetStringImpl.class);
+			errorCode = new ErrorCodeImpl();
+			errorCode.setLocalErrorCode(INAPErrorCode.otherError);
+			tcapProvider.getParser().registerLocalMapping(ReturnErrorImpl.class, errorCode,
+					INAPErrorMessageOctetStringImpl.class);
 
-    public INAPStackImpl getStack() {
-    	return inapStack;
-    }
-    
-    public TCAPProvider getTCAPProvider() {
-        return this.tcapProvider;
-    }
+			// registering error options
+			tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageCancelFailedImpl.class,
+					INAPErrorMessageCancelFailedImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageSystemFailureImpl.class,
+					INAPErrorMessageSystemFailureImpl.class);
 
-    @Override
-    public INAPServiceCircuitSwitchedCall getINAPServiceCircuitSwitchedCall() {
-        return this.inapServiceCircuitSwitchedCall;
-    }
+			tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageRequestedInfoErrorImpl.class,
+					INAPErrorMessageRequestedInfoErrorImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageRequestedInfoErrorImpl.class,
+					INAPErrorMessageOctetStringImpl.class);
 
-    @Override
-    public void addINAPDialogListener(UUID key,INAPDialogListener INAPDialogListener) {
-        this.dialogListeners.put(key,INAPDialogListener);
-    }
+			tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageTaskRefusedImpl.class,
+					INAPErrorMessageTaskRefusedImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageTaskRefusedImpl.class,
+					INAPErrorMessageOctetStringImpl.class);
 
-    @Override
-    public INAPParameterFactory getINAPParameterFactory() {
-        return inapParameterFactory;
-    }
+			tcapProvider.getParser().registerAlternativeClassMapping(
+					INAPErrorMessageImproperCallerResponseCS1PlusImpl.class,
+					INAPErrorMessageImproperCallerResponseCS1PlusImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(
+					INAPErrorMessageImproperCallerResponseCS1PlusImpl.class, INAPErrorMessageOctetStringImpl.class);
 
-    @Override
-    public ISUPParameterFactory getISUPParameterFactory() {
-        return isupParameterFactory;
-    }
+			tcapProvider.getParser().registerAlternativeClassMapping(INAPErrorMessageOctetStringImpl.class,
+					INAPErrorMessageOctetStringImpl.class);
 
-    @Override
-    public INAPErrorMessageFactory getINAPErrorMessageFactory() {
-        return this.inapErrorMessageFactory;
-    }
+			// register requests mappings
+			OperationCodeImpl opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.initialDP);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, InitialDPRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.originationAttemptAuthorized);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					OriginationAttemptAuthorizedRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.collectedInformation);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					CollectedInformationRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.analysedInformation);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					AnalysedInformationRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.routeSelectFailure);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					RouteSelectFailureRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.oCalledPartyBusy);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, OCalledPartyBusyRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.oNoAnswer);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ONoAnswerRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.oAnswer);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, OAnswerRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.oDisconnect);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ODisconnectRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.termAttemptAuthorized);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					TermAttemptAuthorizedRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.tBusy);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, TBusyRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.tNoAnswer);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, TNoAnswerRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.tAnswer);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, TAnswerRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.tDisconnect);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, TDisconnectRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.oMidCall);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, OMidCallRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.tMidCall);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, TMidCallRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.assistRequestInstructions);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					AssistRequestInstructionsRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.establishTemporaryConnection);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					EstablishTemporaryConnectionRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.disconnectForwardConnection);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					DisconnectForwardConnectionCS1PlusRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.connectToResource);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ConnectToResourceRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.connect);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ConnectRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.holdCallInNetwork);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, HoldCallInNetworkRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.releaseCall);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ReleaseCallRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.requestReportBCSMEvent);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					RequestReportBCSMEventRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.eventReportBCSM);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, EventReportBCSMRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.requestNotificationChargingEvent);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					RequestNotificationChargingEventRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.eventNotificationCharging);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					EventNotificationChargingRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.collectInformation);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					CollectInformationRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.analyseInformation);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					AnalyseInformationRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.selectRoute);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SelectRouteRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.selectFacility);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, SelectFacilityRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.continueCode);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ContinueCS1PlusRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.initiateCallAttempt);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					InitiateCallAttemptRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.resetTimer);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ResetTimerRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.furnishChargingInformation);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					FurnishChargingInformationRequestImpl.class);
 
-    @Override
-    public void removeINAPDialogListener(UUID key) {
-        this.dialogListeners.remove(key);
-    }
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.applyCharging);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ApplyChargingRequestImpl.class);
 
-    @Override
-    public INAPDialog getINAPDialog(Long dialogId) {
-    	Dialog dialog = this.tcapProvider.getDialogById(dialogId);
-    	if(dialog==null)
-    		return null;
-    	
-    	return getINAPDialog(dialog);
-    }
+			OperationCodeWithACN operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					ApplyChargingRequestCS1Impl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					ApplyChargingRequestCS1Impl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					ApplyChargingRequestCS1Impl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					ApplyChargingRequestCS1Impl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					ApplyChargingRequestCS1Impl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					ApplyChargingRequestCS1Impl.class);
 
-    public INAPDialog getINAPDialog(Dialog dialog) {
-    	if(dialog.getUserObject()==null || !(dialog.getUserObject() instanceof INAPUserObject))
-    		return null;
-    	
-    	INAPUserObject uo = (INAPUserObject)dialog.getUserObject();
-    	if(uo.getApplicationContext()==null)
-    		return null;
-    	
-    	INAPServiceBaseImpl perfSer = null;
-        for (INAPServiceBaseImpl ser : this.inapServices) {
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.applyChargingReport);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					ApplyChargingReportRequestImpl.class);
 
-            ServingCheckData chkRes = ser.isServingService(uo.getApplicationContext());
-            switch (chkRes.getResult()) {
-                case AC_Serving:
-                    perfSer = ser;
-                    break;
-                case AC_VersionIncorrect:
-                    return null;
-				default:
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					ApplyChargingReportRequestCS1Impl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					ApplyChargingReportRequestCS1Impl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					ApplyChargingReportRequestCS1Impl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					ApplyChargingReportRequestCS1Impl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					ApplyChargingReportRequestCS1Impl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					ApplyChargingReportRequestCS1Impl.class);
+
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.requestCurrentStatusReport);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					RequestCurrentStatusReportRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.requestEveryStatusChangeReport);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					RequestEveryStatusChangeReportRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.requestFirstStatusMatchReport);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					RequestFirstStatusMatchReportRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.statusReport);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, StatusReportRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.callGap);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CallGapRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.activateServiceFiltering);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					ActivateServiceFilteringRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.serviceFilteringResponse);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					ServiceFilteringResponseRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.callInformationReport);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					CallInformationReportRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.callInformationRequest);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CallInformationRequestImpl.class);
+
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.sendChargingInformation);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					SendChargingInformationRequestImpl.class);
+
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					SendChargingInformationCS1RequestImpl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					SendChargingInformationCS1RequestImpl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					SendChargingInformationCS1RequestImpl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					SendChargingInformationCS1RequestImpl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					SendChargingInformationCS1RequestImpl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_SCP_to_SSP_AC_REV_B.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					SendChargingInformationCS1RequestImpl.class);
+
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.playAnnouncement);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, PlayAnnouncementRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.promptAndCollectUserInformation);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					PromptAndCollectUserInformationRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.specializedResourceReport);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					SpecializedResourceReportCS1PlusRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.cancelCode);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CancelRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.cancelStatusReportRequest);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					CancelStatusReportRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.activityTest);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ActivityTestRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.callLimit);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, CallLimitRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.continueWithArgument);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					ContinueWithArgumentRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.dialogueUserInformation);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					DialogueUserInformationRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.handOver);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, HandOverRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.holdCallPartyConnection);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					HoldCallPartyConnectionRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.reconnect);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode, ReconnectRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.releaseCallPartyConnection);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					ReleaseCallPartyConnectionRequestImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.signallingInformation);
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, opCode,
+					SignallingInformationRequestImpl.class);
+
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.retrieve);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_data_management_AC.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					RetrieveRequestImpl.class);
+			operationWithACN = new OperationCodeWithACN(opCode,
+					INAPApplicationContext.Ericcson_cs1plus_data_management_AC_REV_B.getOID());
+			tcapProvider.getParser().registerLocalMapping(InvokeImpl.class, operationWithACN,
+					RetrieveRequestImpl.class);
+
+			// registering request options
+			tcapProvider.getParser().registerAlternativeClassMapping(InitialDPRequestImpl.class,
+					InitialDPRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(OriginationAttemptAuthorizedRequestImpl.class,
+					OriginationAttemptAuthorizedRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(CollectedInformationRequestImpl.class,
+					CollectedInformationRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(AnalysedInformationRequestImpl.class,
+					AnalysedInformationRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(RouteSelectFailureRequestImpl.class,
+					RouteSelectFailureRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(OCalledPartyBusyRequestImpl.class,
+					OCalledPartyBusyRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ONoAnswerRequestImpl.class,
+					ONoAnswerRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(OAnswerRequestImpl.class,
+					OAnswerRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ODisconnectRequestImpl.class,
+					ODisconnectRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(TermAttemptAuthorizedRequestImpl.class,
+					TermAttemptAuthorizedRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(TBusyRequestImpl.class, TBusyRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(TNoAnswerRequestImpl.class,
+					TNoAnswerRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(TAnswerRequestImpl.class,
+					TAnswerRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(TDisconnectRequestImpl.class,
+					TDisconnectRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(OMidCallRequestImpl.class,
+					OMidCallRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(TMidCallRequestImpl.class,
+					TMidCallRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(AssistRequestInstructionsRequestImpl.class,
+					AssistRequestInstructionsRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(RetrieveRequestImpl.class,
+					RetrieveRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(EstablishTemporaryConnectionRequestImpl.class,
+					EstablishTemporaryConnectionRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(
+					DisconnectForwardConnectionCS1PlusRequestImpl.class,
+					DisconnectForwardConnectionCS1PlusRequestImpl.class);
+			// does nothing since its empty class
+			tcapProvider.getParser().registerAlternativeClassMapping(
+					DisconnectForwardConnectionCS1PlusRequestImpl.class, DisconnectForwardConnectionRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(ConnectToResourceRequestImpl.class,
+					ConnectToResourceRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(ConnectRequestImpl.class,
+					ConnectRequestImpl.class);
+
+			// one is choise another is sequence , so we should be fine here
+			tcapProvider.getParser().registerAlternativeClassMapping(HoldCallInNetworkRequestImpl.class,
+					HoldCallInNetworkRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(HoldCallInNetworkRequestImpl.class,
+					UpdateRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(ReleaseCallRequestImpl.class,
+					ReleaseCallRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(RequestReportBCSMEventRequestImpl.class,
+					RequestReportBCSMEventRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(EventReportBCSMRequestImpl.class,
+					EventReportBCSMRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(RequestNotificationChargingEventRequestImpl.class,
+					RequestNotificationChargingEventRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(EventNotificationChargingRequestImpl.class,
+					EventNotificationChargingRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(CollectInformationRequestImpl.class,
+					CollectInformationRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(AnalyseInformationRequestImpl.class,
+					AnalyseInformationRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SelectRouteRequestImpl.class,
+					SelectRouteRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(SelectFacilityRequestImpl.class,
+					SelectFacilityRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(ContinueCS1PlusRequestImpl.class,
+					ContinueCS1PlusRequestImpl.class);
+			// does nothing
+			tcapProvider.getParser().registerAlternativeClassMapping(ContinueCS1PlusRequestImpl.class,
+					ContinueRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(InitiateCallAttemptRequestImpl.class,
+					InitiateCallAttemptRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ResetTimerRequestImpl.class,
+					ResetTimerRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(FurnishChargingInformationRequestImpl.class,
+					FurnishChargingInformationRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingRequestImpl.class,
+					ApplyChargingRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingRequestCS1Impl.class,
+					ApplyChargingRequestCS1Impl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingReportRequestImpl.class,
+					ApplyChargingReportRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ApplyChargingReportRequestCS1Impl.class,
+					ApplyChargingReportRequestCS1Impl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(RequestCurrentStatusReportRequestImpl.class,
+					RequestCurrentStatusReportRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(RequestEveryStatusChangeReportRequestImpl.class,
+					RequestEveryStatusChangeReportRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(RequestFirstStatusMatchReportRequestImpl.class,
+					RequestFirstStatusMatchReportRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(StatusReportRequestImpl.class,
+					StatusReportRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(CallGapRequestImpl.class,
+					CallGapRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ActivateServiceFilteringRequestImpl.class,
+					ActivateServiceFilteringRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ServiceFilteringResponseRequestImpl.class,
+					ServiceFilteringResponseRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(CallInformationReportRequestImpl.class,
+					CallInformationReportRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(CallInformationRequestImpl.class,
+					CallInformationRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendChargingInformationCS1RequestImpl.class,
+					SendChargingInformationCS1RequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SendChargingInformationRequestImpl.class,
+					SendChargingInformationRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(PlayAnnouncementRequestImpl.class,
+					PlayAnnouncementRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(PromptAndCollectUserInformationRequestImpl.class,
+					PromptAndCollectUserInformationRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(SpecializedResourceReportCS1PlusRequestImpl.class,
+					SpecializedResourceReportCS1PlusRequestImpl.class);
+			// does nothing
+			tcapProvider.getParser().registerAlternativeClassMapping(SpecializedResourceReportCS1PlusRequestImpl.class,
+					SpecializedResourceReportRequestImpl.class);
+
+			tcapProvider.getParser().registerAlternativeClassMapping(CancelRequestImpl.class, CancelRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(CancelStatusReportRequestImpl.class,
+					CancelStatusReportRequestImpl.class);
+
+			// does nothing
+			tcapProvider.getParser().registerAlternativeClassMapping(ActivityTestRequestImpl.class,
+					ActivityTestRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(CallLimitRequestImpl.class,
+					CallLimitRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ContinueWithArgumentRequestImpl.class,
+					ContinueWithArgumentRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(DialogueUserInformationRequestImpl.class,
+					DialogueUserInformationRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(HandOverRequestImpl.class,
+					HandOverRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(HoldCallPartyConnectionRequestImpl.class,
+					HoldCallPartyConnectionRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ReconnectRequestImpl.class,
+					ReconnectRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(ReleaseCallPartyConnectionRequestImpl.class,
+					ReleaseCallPartyConnectionRequestImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(SignallingInformationRequestImpl.class,
+					SignallingInformationRequestImpl.class);
+
+			// register responses mappings
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.activityTest);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					ActivityTestResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.promptAndCollectUserInformation);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					PromptAndCollectUserInformationResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.requestCurrentStatusReport);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					RequestCurrentStatusReportResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.update);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					UpdateResponseImpl.class);
+			opCode = new OperationCodeImpl();
+			opCode.setLocalOperationCode(INAPOperationCode.retrieve);
+			tcapProvider.getParser().registerLocalMapping(ReturnResultInnerImpl.class, opCode,
+					RetrieveResponseImpl.class);
+
+			// does nothing , also not sure we should have response
+			tcapProvider.getParser().registerAlternativeClassMapping(ActivityTestResponseImpl.class,
+					ActivityTestResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(PromptAndCollectUserInformationResponseImpl.class,
+					PromptAndCollectUserInformationResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(RequestCurrentStatusReportResponseImpl.class,
+					RequestCurrentStatusReportResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(UpdateResponseImpl.class,
+					UpdateResponseImpl.class);
+			tcapProvider.getParser().registerAlternativeClassMapping(RetrieveResponseImpl.class,
+					RetrieveResponseImpl.class);
+
+		} catch (Exception ex) {
+			// already registered11
+		}
+	}
+
+	public INAPStackImpl getStack() {
+		return inapStack;
+	}
+
+	public TCAPProvider getTCAPProvider() {
+		return this.tcapProvider;
+	}
+
+	@Override
+	public INAPServiceCircuitSwitchedCall getINAPServiceCircuitSwitchedCall() {
+		return this.inapServiceCircuitSwitchedCall;
+	}
+
+	@Override
+	public void addINAPDialogListener(UUID key, INAPDialogListener INAPDialogListener) {
+		this.dialogListeners.put(key, INAPDialogListener);
+	}
+
+	@Override
+	public INAPParameterFactory getINAPParameterFactory() {
+		return inapParameterFactory;
+	}
+
+	@Override
+	public ISUPParameterFactory getISUPParameterFactory() {
+		return isupParameterFactory;
+	}
+
+	@Override
+	public INAPErrorMessageFactory getINAPErrorMessageFactory() {
+		return this.inapErrorMessageFactory;
+	}
+
+	@Override
+	public void removeINAPDialogListener(UUID key) {
+		this.dialogListeners.remove(key);
+	}
+
+	@Override
+	public INAPDialog getINAPDialog(Long dialogId) {
+		Dialog dialog = this.tcapProvider.getDialogById(dialogId);
+		if (dialog == null)
+			return null;
+
+		return getINAPDialog(dialog);
+	}
+
+	public INAPDialog getINAPDialog(Dialog dialog) {
+		if (dialog.getUserObject() == null || !(dialog.getUserObject() instanceof INAPUserObject))
+			return null;
+
+		INAPUserObject uo = (INAPUserObject) dialog.getUserObject();
+		if (uo.getApplicationContext() == null)
+			return null;
+
+		INAPServiceBaseImpl perfSer = null;
+		for (INAPServiceBaseImpl ser : this.inapServices) {
+
+			ServingCheckData chkRes = ser.isServingService(uo.getApplicationContext());
+			switch (chkRes.getResult()) {
+			case AC_Serving:
+				perfSer = ser;
+				break;
+			case AC_VersionIncorrect:
+				return null;
+			default:
+				break;
+			}
+
+			if (perfSer != null)
+				break;
+		}
+
+		INAPDialogImpl inapDialog = perfSer.createNewDialogIncoming(uo.getApplicationContext(), dialog, false);
+		inapDialog.setState(uo.getState());
+		inapDialog.setReturnMessageOnError(uo.isReturnMessageOnError());
+		return inapDialog;
+	}
+
+	public void start() {
+		this.tcapProvider.addTCListener(this);
+	}
+
+	public void stop() {
+		this.tcapProvider.removeTCListener(this);
+
+	}
+
+	private void SendUnsupportedAcn(ApplicationContextName acn, Dialog dialog, String cs) {
+		StringBuffer s = new StringBuffer();
+		s.append(cs + " ApplicationContextName is received: ");
+		for (long l : acn.getOid())
+			s.append(l).append(", ");
+		loger.warn(s.toString());
+
+		this.fireTCAbort(dialog, INAPGeneralAbortReason.ACNNotSupported, null, false, dummyCallback);
+	}
+
+	@Override
+	public void onTCBegin(TCBeginIndication tcBeginIndication) {
+
+		ApplicationContextName acn = tcBeginIndication.getApplicationContextName();
+		List<BaseComponent> comps = tcBeginIndication.getComponents();
+
+		// ACN must be present in CAMEL
+		if (acn == null) {
+			loger.warn("onTCBegin: Received TCBeginIndication without application context name");
+
+			this.fireTCAbort(tcBeginIndication.getDialog(), INAPGeneralAbortReason.UserSpecific,
+					INAPUserAbortReason.abnormal_processing, false, dummyCallback);
+			return;
+		}
+
+		INAPApplicationContext inapAppCtx = INAPApplicationContext.getInstance(acn.getOid());
+		// Check if ApplicationContext is recognizable for CAP
+		// If no - TC-U-ABORT - ACN-Not-Supported
+		if (inapAppCtx == null) {
+			SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unrecognizable");
+			return;
+		}
+
+		// Selecting the INAP service that can perform the ApplicationContext
+		INAPServiceBase perfSer = null;
+		for (INAPServiceBase ser : this.inapServices) {
+
+			ServingCheckData chkRes = ser.isServingService(inapAppCtx);
+			switch (chkRes.getResult()) {
+			case AC_Serving:
+				perfSer = ser;
+				break;
+			case AC_VersionIncorrect:
+				SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unsupported");
+				return;
+			default:
+				break;
+			}
+
+			if (perfSer != null)
+				break;
+		}
+
+		// No INAPService can accept the received ApplicationContextName
+		if (perfSer == null) {
+			SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unsupported");
+			return;
+		}
+
+		// INAPService is not activated
+		if (!perfSer.isActivated()) {
+			SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Inactive INAPService");
+			return;
+		}
+
+		INAPDialogImpl inapDialogImpl = ((INAPServiceBaseImpl) perfSer).createNewDialogIncoming(inapAppCtx,
+				tcBeginIndication.getDialog(), true);
+
+		inapDialogImpl.tcapMessageType = MessageType.Begin;
+
+		inapDialogImpl.setState(INAPDialogState.INITIAL_RECEIVED);
+
+		inapDialogImpl.delayedAreaState = INAPDialogImpl.DelayedAreaState.No;
+
+		this.deliverDialogRequest(inapDialogImpl);
+		if (inapDialogImpl.getState() == INAPDialogState.EXPUNGED)
+			// The Dialog was aborter or refused
+			return;
+
+		// Now let us decode the Components
+		if (comps != null)
+			processComponents(inapDialogImpl, comps, tcBeginIndication.getOriginalBuffer());
+
+		this.deliverDialogDelimiter(inapDialogImpl);
+
+		finishComponentProcessingState(inapDialogImpl, dummyCallback);
+	}
+
+	private void finishComponentProcessingState(INAPDialogImpl inapDialogImpl, TaskCallback<Exception> callback) {
+
+		if (inapDialogImpl.getState() == INAPDialogState.EXPUNGED)
+			return;
+
+		switch (inapDialogImpl.delayedAreaState) {
+		case Continue:
+			inapDialogImpl.send(callback);
+			break;
+		case End:
+			inapDialogImpl.close(false, callback);
+			break;
+		case PrearrangedEnd:
+			inapDialogImpl.close(true, callback);
+			break;
+		default:
+			break;
+		}
+
+		inapDialogImpl.delayedAreaState = null;
+	}
+
+	@Override
+	public void onTCContinue(TCContinueIndication tcContinueIndication) {
+
+		Dialog tcapDialog = tcContinueIndication.getDialog();
+
+		INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog);
+
+		if (inapDialogImpl == null) {
+			loger.warn("INAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
+			this.fireTCAbort(tcContinueIndication.getDialog(), INAPGeneralAbortReason.UserSpecific,
+					INAPUserAbortReason.abnormal_processing, false, dummyCallback);
+			return;
+		}
+		inapDialogImpl.tcapMessageType = MessageType.Continue;
+		if (inapDialogImpl.getState() == INAPDialogState.INITIAL_SENT) {
+			ApplicationContextName acn = tcContinueIndication.getApplicationContextName();
+
+			if (acn == null) {
+				loger.warn("INAP Dialog is in InitialSent state but no application context name is received");
+
+				this.fireTCAbort(tcContinueIndication.getDialog(), INAPGeneralAbortReason.UserSpecific,
+						INAPUserAbortReason.abnormal_processing, inapDialogImpl.getReturnMessageOnError(),
+						dummyCallback);
+
+				this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.AbnormalDialogAction);
+				inapDialogImpl.setState(INAPDialogState.EXPUNGED);
+
+				return;
+			}
+
+			INAPApplicationContext inapAcn = INAPApplicationContext.getInstance(acn.getOid());
+			if (inapAcn == null || !inapAcn.equals(inapDialogImpl.getApplicationContext())) {
+				loger.warn(String.format(
+						"Received first TC-CONTINUE. But the received ACN is not the equal to the original ACN"));
+
+				this.fireTCAbort(tcContinueIndication.getDialog(), INAPGeneralAbortReason.UserSpecific,
+						INAPUserAbortReason.abnormal_processing, inapDialogImpl.getReturnMessageOnError(),
+						dummyCallback);
+
+				this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.AbnormalDialogAction);
+				inapDialogImpl.setState(INAPDialogState.EXPUNGED);
+
+				return;
+			}
+
+			inapDialogImpl.delayedAreaState = INAPDialogImpl.DelayedAreaState.No;
+
+			inapDialogImpl.setState(INAPDialogState.ACTIVE);
+			this.deliverDialogAccept(inapDialogImpl);
+
+			if (inapDialogImpl.getState() == INAPDialogState.EXPUNGED) {
+				// The Dialog was aborter
+				finishComponentProcessingState(inapDialogImpl, dummyCallback);
+				return;
+			}
+		} else
+			inapDialogImpl.delayedAreaState = INAPDialogImpl.DelayedAreaState.No;
+
+		// Now let us decode the Components
+		if (inapDialogImpl.getState() == INAPDialogState.ACTIVE) {
+			List<BaseComponent> comps = tcContinueIndication.getComponents();
+			if (comps != null)
+				processComponents(inapDialogImpl, comps, tcContinueIndication.getOriginalBuffer());
+		} else
+			// This should never happen
+			loger.error(String.format("Received TC-CONTINUE. INAPDialog=%s. But state is not Active", inapDialogImpl));
+
+		this.deliverDialogDelimiter(inapDialogImpl);
+
+		finishComponentProcessingState(inapDialogImpl, dummyCallback);
+	}
+
+	@Override
+	public void onTCEnd(TCEndIndication tcEndIndication) {
+
+		Dialog tcapDialog = tcEndIndication.getDialog();
+
+		INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog);
+
+		if (inapDialogImpl == null) {
+			loger.warn("IMAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
+			return;
+		}
+		inapDialogImpl.tcapMessageType = MessageType.End;
+		if (inapDialogImpl.getState() == INAPDialogState.INITIAL_SENT) {
+			ApplicationContextName acn = tcEndIndication.getApplicationContextName();
+
+			if (acn == null) {
+				loger.warn("INAP Dialog is in InitialSent state but no application context name is received");
+
+				this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.AbnormalDialogAction);
+				inapDialogImpl.setState(INAPDialogState.EXPUNGED);
+
+				return;
+			}
+
+			INAPApplicationContext inapAcn = INAPApplicationContext.getInstance(acn.getOid());
+
+			if (inapAcn == null || !inapAcn.equals(inapDialogImpl.getApplicationContext())) {
+				loger.error(String.format("Received first TC-END. INAPDialog=%s. But INAPApplicationContext=%s",
+						inapDialogImpl, inapAcn));
+
+				// inapDialogImpl.setNormalDialogShutDown();
+
+				this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.AbnormalDialogAction);
+				inapDialogImpl.setState(INAPDialogState.EXPUNGED);
+
+				return;
+			}
+
+			inapDialogImpl.setState(INAPDialogState.ACTIVE);
+
+			this.deliverDialogAccept(inapDialogImpl);
+			if (inapDialogImpl.getState() == INAPDialogState.EXPUNGED)
+				// The Dialog was aborter
+				return;
+		}
+
+		// Now let us decode the Components
+		List<BaseComponent> comps = tcEndIndication.getComponents();
+		if (comps != null)
+			processComponents(inapDialogImpl, comps, tcEndIndication.getOriginalBuffer());
+
+		// inapDialogImpl.setNormalDialogShutDown();
+		this.deliverDialogClose(inapDialogImpl);
+
+		inapDialogImpl.setState(INAPDialogState.EXPUNGED);
+	}
+
+	@Override
+	public void onTCUni(TCUniIndication arg0) {
+	}
+
+	@Override
+	public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
+
+		INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(dialog);
+
+		if (inapDialogImpl != null)
+			if (inapDialogImpl.getState() != INAPDialogState.EXPUNGED) {
+				// if (inapDialogImpl.getState() != INAPDialogState.Expunged &&
+				// !inapDialogImpl.getNormalDialogShutDown()) {
+
+				// Getting the INAP Service that serves the CAP Dialog
+				INAPServiceBaseImpl perfSer = (INAPServiceBaseImpl) inapDialogImpl.getService();
+
+				// Check if the InvokeTimeout in this situation is normal (may be for a class
+				// 2,3,4 components)
+				// TODO: ................................
+
+				perfSer.deliverInvokeTimeout(inapDialogImpl, invokeId);
+			}
+	}
+
+	@Override
+	public void onDialogTimeout(Dialog dialog) {
+
+		INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(dialog);
+
+		if (inapDialogImpl != null)
+			if (inapDialogImpl.getState() != INAPDialogState.EXPUNGED)
+				this.deliverDialogTimeout(inapDialogImpl);
+	}
+
+	@Override
+	public void onDialogReleased(Dialog dialog) {
+
+		INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(dialog);
+
+		if (inapDialogImpl != null) {
+			this.deliverDialogRelease(inapDialogImpl);
+			dialog.setUserObject(null);
+		}
+	}
+
+	@Override
+	public void onTCPAbort(TCPAbortIndication tcPAbortIndication) {
+		Dialog tcapDialog = tcPAbortIndication.getDialog();
+
+		INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog);
+
+		if (inapDialogImpl == null) {
+			loger.warn("INAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
+			return;
+		}
+		inapDialogImpl.tcapMessageType = MessageType.Abort;
+
+		PAbortCauseType pAbortCause = tcPAbortIndication.getPAbortCause();
+
+		this.deliverDialogProviderAbort(inapDialogImpl, pAbortCause);
+
+		inapDialogImpl.setState(INAPDialogState.EXPUNGED);
+	}
+
+	@Override
+	public void onTCUserAbort(TCUserAbortIndication tcUserAbortIndication) {
+		Dialog tcapDialog = tcUserAbortIndication.getDialog();
+
+		INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog);
+
+		if (inapDialogImpl == null) {
+			loger.error("INAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
+			return;
+		}
+		inapDialogImpl.tcapMessageType = MessageType.Abort;
+
+		INAPGeneralAbortReason generalReason = null;
+		// INAPGeneralAbortReason generalReason =
+		// INAPGeneralAbortReason.BadReceivedData;
+		INAPUserAbortReason userReason = null;
+
+		if (tcUserAbortIndication.IsAareApdu()) {
+			if (inapDialogImpl.getState() == INAPDialogState.INITIAL_SENT) {
+				generalReason = INAPGeneralAbortReason.DialogRefused;
+				ResultSourceDiagnostic resultSourceDiagnostic = tcUserAbortIndication.getResultSourceDiagnostic();
+				if (resultSourceDiagnostic != null)
+					try {
+						if (resultSourceDiagnostic.getDialogServiceUserType() == DialogServiceUserType.AcnNotSupported)
+							generalReason = INAPGeneralAbortReason.ACNNotSupported;
+						else if (resultSourceDiagnostic
+								.getDialogServiceProviderType() == DialogServiceProviderType.NoCommonDialogPortion)
+							generalReason = INAPGeneralAbortReason.NoCommonDialogPortionReceived;
+					} catch (ParseException ex) {
+
+					}
+			}
+		} else {
+			UserInformation userInfo = tcUserAbortIndication.getUserInformation();
+
+			if (userInfo != null)
+				// Checking userInfo.Oid==INAPUserAbortPrimitiveImpl.INAP_AbortReason_OId
+				if (!userInfo.isIDObjectIdentifier())
+					loger.warn("When parsing TCUserAbortIndication indication: userInfo.isOid() is null");
+				else if (!userInfo.getObjectIdentifier().equals(INAPUserAbortPrimitiveImpl.INAP_AbortReason_OId))
+					loger.warn(
+							"When parsing TCUserAbortIndication indication: userInfo.getOidValue() must be INAPUserAbortPrimitiveImpl.INAP_AbortReason_OId");
+				else if (!userInfo.isValueObject())
+					loger.warn("When parsing TCUserAbortIndication indication: userInfo.isAsn() check failed");
+				else {
+					Object userInfoObject = userInfo.getChild();
+					if (!(userInfoObject instanceof INAPUserAbortPrimitiveImpl))
+						loger.warn(
+								"When parsing TCUserAbortIndication indication: userInfo has bad tag or tagClass or is not primitive");
+					else {
+						INAPUserAbortPrimitiveImpl inapUserAbortPrimitive = (INAPUserAbortPrimitiveImpl) userInfoObject;
+						generalReason = INAPGeneralAbortReason.UserSpecific;
+						userReason = inapUserAbortPrimitive.getINAPUserAbortReason();
+					}
+				}
+		}
+
+		this.deliverDialogUserAbort(inapDialogImpl, generalReason, userReason);
+
+		inapDialogImpl.setState(INAPDialogState.EXPUNGED);
+	}
+
+	@Override
+	public void onTCNotice(TCNoticeIndication ind) {
+		Dialog tcapDialog = ind.getDialog();
+
+		INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog);
+
+		if (inapDialogImpl == null) {
+			loger.error("INAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
+			return;
+		}
+
+		this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.MessageCannotBeDeliveredToThePeer);
+
+		if (inapDialogImpl.getState() == INAPDialogState.INITIAL_SENT)
+			// inapDialogImpl.setNormalDialogShutDown();
+			inapDialogImpl.setState(INAPDialogState.EXPUNGED);
+	}
+
+	private void processComponents(INAPDialogImpl inapDialogImpl, List<BaseComponent> components, ByteBuf buffer) {
+
+		// Now let us decode the Components
+		for (BaseComponent c : components)
+			doProcessComponent(inapDialogImpl, c, buffer);
+	}
+
+	private void doProcessComponent(INAPDialogImpl inapDialogImpl, BaseComponent c, ByteBuf buffer) {
+
+		// Getting the INAP Service that serves the INAP Dialog
+		INAPServiceBaseImpl perfSer = (INAPServiceBaseImpl) inapDialogImpl.getService();
+
+		try {
+			ComponentType compType = ComponentType.Invoke;
+			if (c instanceof Invoke)
+				compType = ComponentType.Invoke;
+			else if (c instanceof Reject)
+				compType = ComponentType.Reject;
+			else if (c instanceof ReturnError)
+				compType = ComponentType.ReturnError;
+			else if (c instanceof ReturnResult)
+				compType = ComponentType.ReturnResult;
+			else if (c instanceof ReturnResultLast)
+				compType = ComponentType.ReturnResultLast;
+
+			Integer invokeId = c.getInvokeId();
+
+			Object parameter;
+			OperationCode oc;
+			Integer linkedId = 0;
+			switch (compType) {
+			case Invoke: {
+				Invoke comp = (Invoke) c;
+				oc = comp.getOperationCode();
+				parameter = comp.getParameter();
+				linkedId = comp.getLinkedId();
+
+				// Checking if the invokeId is not duplicated
+				if (linkedId != null) {
+					// linkedId exists Checking if the linkedId exists
+					long[] lstInv = perfSer
+							.getLinkedOperationList(comp.getLinkedOperationCode().getLocalOperationCode());
+					if (lstInv == null) {
+						ProblemImpl problem = new ProblemImpl();
+						problem.setInvokeProblemType(InvokeProblemType.LinkedResponseUnexpected);
+						inapDialogImpl.sendRejectComponent(invokeId, problem);
+						perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
+
+						return;
+					}
+
+					boolean found = false;
+					if (lstInv != null)
+						for (long l : lstInv)
+							if (l == comp.getOperationCode().getLocalOperationCode()) {
+								found = true;
+								break;
+							}
+					if (!found) {
+						ProblemImpl problem = new ProblemImpl();
+						problem.setInvokeProblemType(InvokeProblemType.UnexpectedLinkedOperation);
+						inapDialogImpl.sendRejectComponent(invokeId, problem);
+						perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
+
+						return;
+					}
+				}
+			}
+				break;
+
+			case ReturnResult: {
+				// ReturnResult is not supported by CAMEL
+				ProblemImpl problem = new ProblemImpl();
+				problem.setReturnResultProblemType(ReturnResultProblemType.ReturnResultUnexpected);
+				inapDialogImpl.sendRejectComponent(null, problem);
+				perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
+
+				return;
+			}
+
+			case ReturnResultLast: {
+				ReturnResultLast comp = (ReturnResultLast) c;
+				oc = comp.getOperationCode();
+				parameter = comp.getParameter();
+			}
+				break;
+
+			case ReturnError: {
+				ReturnError comp = (ReturnError) c;
+
+				int errorCode = 0;
+				if (comp.getErrorCode() != null && comp.getErrorCode().getErrorType() == ErrorCodeType.Local)
+					errorCode = comp.getErrorCode().getLocalErrorCode();
+				if (errorCode < INAPErrorCode.minimalCodeValue || errorCode > INAPErrorCode.maximumCodeValue) {
+					// Not Local error code and not INAP error code received
+					ProblemImpl problem = new ProblemImpl();
+					problem.setReturnErrorProblemType(ReturnErrorProblemType.UnrecognizedError);
+					inapDialogImpl.sendRejectComponent(invokeId, problem);
+					perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
+
+					return;
+				}
+
+				INAPErrorMessage msgErr = new INAPErrorMessageParameterlessImpl();
+				Object p = comp.getParameter();
+				if (p != null && p instanceof INAPErrorMessage)
+					msgErr = (INAPErrorMessage) p;
+				else if (p != null) {
+					ProblemImpl problem = new ProblemImpl();
+					problem.setReturnErrorProblemType(ReturnErrorProblemType.MistypedParameter);
+					inapDialogImpl.sendRejectComponent(invokeId, problem);
+					perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
+					return;
+				}
+
+				if (msgErr.getErrorCode() == null)
+					msgErr.updateErrorCode(errorCode);
+
+				inapStack.newErrorReceived(INAPErrorCode.translate(msgErr, errorCode), inapDialogImpl.getNetworkId());
+				perfSer.deliverErrorComponent(inapDialogImpl, comp.getInvokeId(), msgErr);
+				return;
+			}
+
+			case Reject: {
+				Reject comp = (Reject) c;
+				perfSer.deliverRejectComponent(inapDialogImpl, comp.getInvokeId(), comp.getProblem(),
+						comp.isLocalOriginated());
+
+				return;
+			}
+
+			default:
+				return;
+			}
+
+			try {
+				if (parameter != null && !(parameter instanceof INAPMessage))
+					throw new INAPParsingComponentException(
+							"MAPServiceHandling: unknown incoming operation code: " + oc.getLocalOperationCode(),
+							INAPParsingComponentExceptionReason.MistypedParameter);
+
+				INAPMessage realMessage = (INAPMessage) parameter;
+				if (realMessage != null) {
+					inapStack.newMessageReceived(realMessage.getMessageType().name(), inapDialogImpl.getNetworkId());
+					realMessage.setOriginalBuffer(buffer);
+					realMessage.setInvokeId(invokeId);
+					realMessage.setINAPDialog(inapDialogImpl);
+				}
+
+				perfSer.processComponent(compType, oc, realMessage, inapDialogImpl, invokeId, linkedId);
+
+			} catch (INAPParsingComponentException e) {
+
+				loger.error("INAPParsingComponentException when parsing components: " + e.getReason().toString() + " - "
+						+ e.getMessage(), e);
+
+				switch (e.getReason()) {
+				case UnrecognizedOperation:
+					// Component does not supported - send TC-U-REJECT
+					if (compType == ComponentType.Invoke) {
+						ProblemImpl problem = new ProblemImpl();
+						problem.setInvokeProblemType(InvokeProblemType.UnrecognizedOperation);
+						inapDialogImpl.sendRejectComponent(invokeId, problem);
+						perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
+					} else {
+						ProblemImpl problem = new ProblemImpl();
+						problem.setReturnResultProblemType(ReturnResultProblemType.MistypedParameter);
+						inapDialogImpl.sendRejectComponent(invokeId, problem);
+						perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
+					}
 					break;
-            }
 
-            if (perfSer != null)
-                break;
-        }
-            
-        INAPDialogImpl inapDialog = perfSer.createNewDialogIncoming(uo.getApplicationContext(), dialog, false);
-        inapDialog.setState(uo.getState());
-        inapDialog.setReturnMessageOnError(uo.isReturnMessageOnError());
-        return inapDialog;
-    }
-
-    public void start() {
-        this.tcapProvider.addTCListener(this);
-    }
-
-    public void stop() {
-        this.tcapProvider.removeTCListener(this);
-
-    }
-
-    private void SendUnsupportedAcn(ApplicationContextName acn, Dialog dialog, String cs) {
-        StringBuffer s = new StringBuffer();
-        s.append(cs + " ApplicationContextName is received: ");
-        for (long l : acn.getOid()) {
-            s.append(l).append(", ");
-        }
-        loger.warn(s.toString());
-
-        try {
-            this.fireTCAbort(dialog, INAPGeneralAbortReason.ACNNotSupported, null, false);
-        } catch (INAPException e1) {
-            loger.error("Error while firing TC-U-ABORT. ", e1);
-        }
-    }
-
-    public void onTCBegin(TCBeginIndication tcBeginIndication) {
-
-        ApplicationContextName acn = tcBeginIndication.getApplicationContextName();
-        List<BaseComponent> comps = tcBeginIndication.getComponents();
-
-        // ACN must be present in CAMEL
-        if (acn == null) {
-            loger.warn("onTCBegin: Received TCBeginIndication without application context name");
-
-            try {
-                this.fireTCAbort(tcBeginIndication.getDialog(), INAPGeneralAbortReason.UserSpecific,
-                        INAPUserAbortReason.abnormal_processing, false);
-            } catch (INAPException e) {
-                loger.error("Error while firing TC-U-ABORT. ", e);
-            }
-            return;
-        }
-
-        INAPApplicationContext inapAppCtx = INAPApplicationContext.getInstance(acn.getOid());
-        // Check if ApplicationContext is recognizable for CAP
-        // If no - TC-U-ABORT - ACN-Not-Supported
-        if (inapAppCtx == null) {
-            SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unrecognizable");
-            return;
-        }
-
-        // Selecting the INAP service that can perform the ApplicationContext
-        INAPServiceBase perfSer = null;
-        for (INAPServiceBase ser : this.inapServices) {
-
-            ServingCheckData chkRes = ser.isServingService(inapAppCtx);
-            switch (chkRes.getResult()) {
-                case AC_Serving:
-                    perfSer = ser;
-                    break;
-                case AC_VersionIncorrect:
-                    SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unsupported");
-                    return;
-				default:
+				case MistypedParameter:
+					// Failed when parsing the component - send TC-U-REJECT
+					if (compType == ComponentType.Invoke) {
+						ProblemImpl problem = new ProblemImpl();
+						problem.setInvokeProblemType(InvokeProblemType.MistypedParameter);
+						inapDialogImpl.sendRejectComponent(invokeId, problem);
+						perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
+					} else {
+						ProblemImpl problem = new ProblemImpl();
+						problem.setReturnResultProblemType(ReturnResultProblemType.MistypedParameter);
+						inapDialogImpl.sendRejectComponent(invokeId, problem);
+						perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
+					}
 					break;
-            }
-
-            if (perfSer != null)
-                break;
-        }
-
-        // No INAPService can accept the received ApplicationContextName
-        if (perfSer == null) {
-            SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unsupported");
-            return;
-        }
-
-        // INAPService is not activated
-        if (!perfSer.isActivated()) {
-            SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Inactive INAPService");
-            return;
-        }
-
-        INAPDialogImpl inapDialogImpl = ((INAPServiceBaseImpl) perfSer).createNewDialogIncoming(inapAppCtx,
-                tcBeginIndication.getDialog(), true);
-        
-        inapDialogImpl.tcapMessageType = MessageType.Begin;
-        
-        inapDialogImpl.setState(INAPDialogState.INITIAL_RECEIVED);
-
-        inapDialogImpl.delayedAreaState = INAPDialogImpl.DelayedAreaState.No;
-
-        this.deliverDialogRequest(inapDialogImpl);
-        if (inapDialogImpl.getState() == INAPDialogState.EXPUNGED) {
-            // The Dialog was aborter or refused
-            return;
-        }
-
-        // Now let us decode the Components
-        if (comps != null) {
-            processComponents(inapDialogImpl, comps, tcBeginIndication.getOriginalBuffer());
-        }
-
-        this.deliverDialogDelimiter(inapDialogImpl);
-
-        finishComponentProcessingState(inapDialogImpl);
-    }
-
-    private void finishComponentProcessingState(INAPDialogImpl inapDialogImpl) {
-
-        if (inapDialogImpl.getState() == INAPDialogState.EXPUNGED)
-            return;
-
-        try {
-            switch (inapDialogImpl.delayedAreaState) {
-                case Continue:
-                    inapDialogImpl.send();
-                    break;
-                case End:
-                    inapDialogImpl.close(false);
-                    break;
-                case PrearrangedEnd:
-                    inapDialogImpl.close(true);
-                    break;
-				default:
-					break;
-            }
-        } catch (INAPException e) {
-            loger.error("Error while finishComponentProcessingState, delayedAreaState=" + inapDialogImpl.delayedAreaState, e);
-        }
-
-        inapDialogImpl.delayedAreaState = null;
-    }
-
-    public void onTCContinue(TCContinueIndication tcContinueIndication) {
-
-        Dialog tcapDialog = tcContinueIndication.getDialog();
-
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog);
-        
-        if (inapDialogImpl == null) {
-            loger.warn("INAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
-            try {
-                this.fireTCAbort(tcContinueIndication.getDialog(), INAPGeneralAbortReason.UserSpecific,
-                        INAPUserAbortReason.abnormal_processing, false);
-            } catch (INAPException e) {
-                loger.error("Error while firing TC-U-ABORT. ", e);
-            }
-            return;
-        }
-        inapDialogImpl.tcapMessageType = MessageType.Continue;
-        if (inapDialogImpl.getState() == INAPDialogState.INITIAL_SENT) {
-            ApplicationContextName acn = tcContinueIndication.getApplicationContextName();
-
-            if (acn == null) {
-                loger.warn("INAP Dialog is in InitialSent state but no application context name is received");
-                try {
-                    this.fireTCAbort(tcContinueIndication.getDialog(), INAPGeneralAbortReason.UserSpecific,
-                            INAPUserAbortReason.abnormal_processing, inapDialogImpl.getReturnMessageOnError());
-                } catch (INAPException e) {
-                    loger.error("Error while firing TC-U-ABORT. ", e);
-                }
-
-                this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.AbnormalDialogAction);
-                inapDialogImpl.setState(INAPDialogState.EXPUNGED);
-
-                return;
-            }
-
-            INAPApplicationContext inapAcn = INAPApplicationContext.getInstance(acn.getOid());
-            if (inapAcn == null || !inapAcn.equals(inapDialogImpl.getApplicationContext())) {
-                loger.warn(String
-                        .format("Received first TC-CONTINUE. But the received ACN is not the equal to the original ACN"));
-
-                try {
-                    this.fireTCAbort(tcContinueIndication.getDialog(), INAPGeneralAbortReason.UserSpecific,
-                            INAPUserAbortReason.abnormal_processing, inapDialogImpl.getReturnMessageOnError());
-                } catch (INAPException e) {
-                    loger.error("Error while firing TC-U-ABORT. ", e);
-                }
-
-                this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.AbnormalDialogAction);
-                inapDialogImpl.setState(INAPDialogState.EXPUNGED);
-
-                return;
-            }
-
-            inapDialogImpl.delayedAreaState = INAPDialogImpl.DelayedAreaState.No;
-
-            inapDialogImpl.setState(INAPDialogState.ACTIVE);
-            this.deliverDialogAccept(inapDialogImpl);
-
-            if (inapDialogImpl.getState() == INAPDialogState.EXPUNGED) {
-                // The Dialog was aborter
-                finishComponentProcessingState(inapDialogImpl);
-                return;
-            }
-        } else {
-            inapDialogImpl.delayedAreaState = INAPDialogImpl.DelayedAreaState.No;
-        }
-
-        // Now let us decode the Components
-        if (inapDialogImpl.getState() == INAPDialogState.ACTIVE) {
-            List<BaseComponent> comps = tcContinueIndication.getComponents();
-            if (comps != null) {
-                processComponents(inapDialogImpl, comps, tcContinueIndication.getOriginalBuffer());
-            }
-        } else {
-            // This should never happen
-            loger.error(String.format("Received TC-CONTINUE. INAPDialog=%s. But state is not Active", inapDialogImpl));
-        }
-
-        this.deliverDialogDelimiter(inapDialogImpl);
-
-        finishComponentProcessingState(inapDialogImpl);
-    }
-
-    public void onTCEnd(TCEndIndication tcEndIndication) {
-
-        Dialog tcapDialog = tcEndIndication.getDialog();
-
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog);
-        
-        if (inapDialogImpl == null) {
-            loger.warn("IMAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
-            return;
-        }
-        inapDialogImpl.tcapMessageType = MessageType.End;
-        if (inapDialogImpl.getState() == INAPDialogState.INITIAL_SENT) {
-            ApplicationContextName acn = tcEndIndication.getApplicationContextName();
-
-            if (acn == null) {
-                loger.warn("INAP Dialog is in InitialSent state but no application context name is received");
-
-                this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.AbnormalDialogAction);
-                inapDialogImpl.setState(INAPDialogState.EXPUNGED);
-
-                return;
-            }
-
-            INAPApplicationContext inapAcn = INAPApplicationContext.getInstance(acn.getOid());
-
-            if (inapAcn == null || !inapAcn.equals(inapDialogImpl.getApplicationContext())) {
-                loger.error(String.format("Received first TC-END. INAPDialog=%s. But INAPApplicationContext=%s",
-                        inapDialogImpl, inapAcn));
-
-                // inapDialogImpl.setNormalDialogShutDown();
-
-                this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.AbnormalDialogAction);
-                inapDialogImpl.setState(INAPDialogState.EXPUNGED);
-
-                return;
-            }
-
-            inapDialogImpl.setState(INAPDialogState.ACTIVE);
-
-            this.deliverDialogAccept(inapDialogImpl);
-            if (inapDialogImpl.getState() == INAPDialogState.EXPUNGED) {
-                // The Dialog was aborter
-                return;
-            }
-        }
-
-        // Now let us decode the Components
-        List<BaseComponent> comps = tcEndIndication.getComponents();
-        if (comps != null) {
-            processComponents(inapDialogImpl, comps, tcEndIndication.getOriginalBuffer());
-        }
-
-        // inapDialogImpl.setNormalDialogShutDown();
-        this.deliverDialogClose(inapDialogImpl);
-
-        inapDialogImpl.setState(INAPDialogState.EXPUNGED);
-    }
-
-    public void onTCUni(TCUniIndication arg0) {
-    }
-
-    @Override
-    public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
-
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(dialog);
-
-        if (inapDialogImpl != null) {
-        	if (inapDialogImpl.getState() != INAPDialogState.EXPUNGED) {
-                // if (inapDialogImpl.getState() != INAPDialogState.Expunged && !inapDialogImpl.getNormalDialogShutDown()) {
-
-                // Getting the INAP Service that serves the CAP Dialog
-                INAPServiceBaseImpl perfSer = (INAPServiceBaseImpl) inapDialogImpl.getService();
-
-                // Check if the InvokeTimeout in this situation is normal (may be for a class 2,3,4 components)
-                // TODO: ................................
-
-                perfSer.deliverInvokeTimeout(inapDialogImpl, invokeId);
-            }
-        }
-    }
-
-    @Override
-    public void onDialogTimeout(Dialog dialog) {
-
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(dialog);
-
-        if (inapDialogImpl != null) {
-        	if (inapDialogImpl.getState() != INAPDialogState.EXPUNGED) {
-                // if (inapDialogImpl.getState() != INAPDialogState.Expunged && !inapDialogImpl.getNormalDialogShutDown()) {
-
-                this.deliverDialogTimeout(inapDialogImpl);
-            }
-        }
-    }
-
-    @Override
-    public void onDialogReleased(Dialog dialog) {
-
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(dialog);
-
-        if (inapDialogImpl != null) {
-        	this.deliverDialogRelease(inapDialogImpl);
-        	dialog.setUserObject(null);
-        }
-    }
-
-    public void onTCPAbort(TCPAbortIndication tcPAbortIndication) {
-        Dialog tcapDialog = tcPAbortIndication.getDialog();
-
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog);
-        
-        if (inapDialogImpl == null) {
-            loger.warn("INAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
-            return;
-        }
-        inapDialogImpl.tcapMessageType = MessageType.Abort;
-
-        PAbortCauseType pAbortCause = tcPAbortIndication.getPAbortCause();
-
-        this.deliverDialogProviderAbort(inapDialogImpl, pAbortCause);
-
-        inapDialogImpl.setState(INAPDialogState.EXPUNGED);
-    }
-
-    public void onTCUserAbort(TCUserAbortIndication tcUserAbortIndication) {
-        Dialog tcapDialog = tcUserAbortIndication.getDialog();
-
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog);
-        
-        if (inapDialogImpl == null) {
-            loger.error("INAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
-            return;
-        }
-        inapDialogImpl.tcapMessageType = MessageType.Abort;
-
-        INAPGeneralAbortReason generalReason = null;
-        // INAPGeneralAbortReason generalReason = INAPGeneralAbortReason.BadReceivedData;
-        INAPUserAbortReason userReason = null;
-
-        if (tcUserAbortIndication.IsAareApdu()) {
-            if (inapDialogImpl.getState() == INAPDialogState.INITIAL_SENT) {
-                generalReason = INAPGeneralAbortReason.DialogRefused;
-                ResultSourceDiagnostic resultSourceDiagnostic = tcUserAbortIndication.getResultSourceDiagnostic();
-                if (resultSourceDiagnostic != null) {
-                	try {
-	                    if (resultSourceDiagnostic.getDialogServiceUserType() == DialogServiceUserType.AcnNotSupported) {
-	                        generalReason = INAPGeneralAbortReason.ACNNotSupported;
-	                    } else if (resultSourceDiagnostic.getDialogServiceProviderType() == DialogServiceProviderType.NoCommonDialogPortion) {
-	                        generalReason = INAPGeneralAbortReason.NoCommonDialogPortionReceived;
-	                    }
-                	}
-                	catch(ParseException ex) {
-                		
-                	}
-                }
-            }
-        } else {
-            UserInformation userInfo = tcUserAbortIndication.getUserInformation();
-
-            if (userInfo != null) {
-                // Checking userInfo.Oid==INAPUserAbortPrimitiveImpl.INAP_AbortReason_OId
-                if (!userInfo.isIDObjectIdentifier()) {
-                    loger.warn("When parsing TCUserAbortIndication indication: userInfo.isOid() is null");
-                } else {
-                    if (!userInfo.getObjectIdentifier().equals(INAPUserAbortPrimitiveImpl.INAP_AbortReason_OId)) {
-                        loger.warn("When parsing TCUserAbortIndication indication: userInfo.getOidValue() must be INAPUserAbortPrimitiveImpl.INAP_AbortReason_OId");
-                    } else if (!userInfo.isValueObject()) {
-                        loger.warn("When parsing TCUserAbortIndication indication: userInfo.isAsn() check failed");
-                    } else {
-                    	Object userInfoObject=userInfo.getChild();
-                    	if(!(userInfoObject instanceof INAPUserAbortPrimitiveImpl))
-                    		loger.warn("When parsing TCUserAbortIndication indication: userInfo has bad tag or tagClass or is not primitive");
-                    	else {
-                    		INAPUserAbortPrimitiveImpl inapUserAbortPrimitive = (INAPUserAbortPrimitiveImpl)userInfoObject;
-                            generalReason = INAPGeneralAbortReason.UserSpecific;
-                            userReason = inapUserAbortPrimitive.getINAPUserAbortReason();
-                        }
-                    }
-                }
-            }
-        }
-
-        this.deliverDialogUserAbort(inapDialogImpl, generalReason, userReason);
-
-        inapDialogImpl.setState(INAPDialogState.EXPUNGED);
-    }
-
-    @Override
-    public void onTCNotice(TCNoticeIndication ind) {
-        Dialog tcapDialog = ind.getDialog();
-
-        INAPDialogImpl inapDialogImpl = (INAPDialogImpl) this.getINAPDialog(tcapDialog);
-
-        if (inapDialogImpl == null) {
-            loger.error("INAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
-            return;
-        }
-
-        this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.MessageCannotBeDeliveredToThePeer);
-
-        if (inapDialogImpl.getState() == INAPDialogState.INITIAL_SENT) {
-            // inapDialogImpl.setNormalDialogShutDown();
-            inapDialogImpl.setState(INAPDialogState.EXPUNGED);
-        }
-    }
-
-    private void processComponents(INAPDialogImpl inapDialogImpl, List<BaseComponent> components, ByteBuf buffer) {
-
-    	// Now let us decode the Components
-        for (BaseComponent c : components) {
-
-            doProcessComponent(inapDialogImpl, c, buffer);
-        }
-    }
-
-    private void doProcessComponent(INAPDialogImpl inapDialogImpl, BaseComponent c, ByteBuf buffer) {
-
-        // Getting the INAP Service that serves the INAP Dialog
-        INAPServiceBaseImpl perfSer = (INAPServiceBaseImpl) inapDialogImpl.getService();
-
-        try {
-            ComponentType compType = ComponentType.Invoke;
-            if(c instanceof Invoke)
-            	compType=ComponentType.Invoke;
-            else if(c instanceof Reject)
-            	compType=ComponentType.Reject;
-            else if(c instanceof ReturnError)
-            	compType=ComponentType.ReturnError;
-            else if(c instanceof ReturnResult)
-            	compType=ComponentType.ReturnResult;
-            else if(c instanceof ReturnResultLast)
-            	compType=ComponentType.ReturnResultLast;
-            
-            Integer invokeId = c.getInvokeId();
-
-            Object parameter;
-            OperationCode oc;
-            Integer linkedId = 0;
-            switch (compType) {
-                case Invoke: {
-                    Invoke comp = (Invoke)c;
-                    oc = comp.getOperationCode();
-                    parameter = comp.getParameter();
-                    linkedId = comp.getLinkedId();
-
-                    // Checking if the invokeId is not duplicated
-                    if (linkedId != null) {
-                        // linkedId exists Checking if the linkedId exists
-                        long[] lstInv = perfSer.getLinkedOperationList(comp.getLinkedOperationCode().getLocalOperationCode());
-                        if (lstInv == null) {
-                        	ProblemImpl problem = new ProblemImpl();
-                            problem.setInvokeProblemType(InvokeProblemType.LinkedResponseUnexpected);
-                            inapDialogImpl.sendRejectComponent(invokeId, problem);
-                            perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
-
-                            return;
-                        }
-
-                        boolean found = false;
-                        if (lstInv != null) {
-                            for (long l : lstInv) {
-                                if (l == comp.getOperationCode().getLocalOperationCode()) {
-                                    found = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (!found) {
-                        	ProblemImpl problem = new ProblemImpl();
-                            problem.setInvokeProblemType(InvokeProblemType.UnexpectedLinkedOperation);
-                            inapDialogImpl.sendRejectComponent(invokeId, problem);
-                            perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
-
-                            return;
-                        }
-                    }
-                }
-                    break;
-
-                case ReturnResult: {
-                    // ReturnResult is not supported by CAMEL
-                	ProblemImpl problem = new ProblemImpl();
-                    problem.setReturnResultProblemType(ReturnResultProblemType.ReturnResultUnexpected);
-                    inapDialogImpl.sendRejectComponent(null, problem);
-                    perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
-
-                    return;
-                }
-
-                case ReturnResultLast: {
-                    ReturnResultLast comp = (ReturnResultLast)c;
-                    oc = comp.getOperationCode();
-                    parameter = comp.getParameter();
-                }
-                    break;
-
-                case ReturnError: {
-                    ReturnError comp = (ReturnError)c;
-
-                    int errorCode = 0;
-                    if (comp.getErrorCode() != null && comp.getErrorCode().getErrorType() == ErrorCodeType.Local)
-                        errorCode = comp.getErrorCode().getLocalErrorCode();
-                    if (errorCode < INAPErrorCode.minimalCodeValue || errorCode > INAPErrorCode.maximumCodeValue) {
-                        // Not Local error code and not INAP error code received
-                    	ProblemImpl problem = new ProblemImpl();
-                        problem.setReturnErrorProblemType(ReturnErrorProblemType.UnrecognizedError);
-                        inapDialogImpl.sendRejectComponent(invokeId, problem);
-                        perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
-
-                        return;
-                    }
-
-                    INAPErrorMessage msgErr = new INAPErrorMessageParameterlessImpl();
-                    Object p = comp.getParameter();
-                    if (p != null && p instanceof INAPErrorMessage) {
-                        msgErr=(INAPErrorMessage)p;
-                    }
-                    else if(p != null) {
-                    	ProblemImpl problem = new ProblemImpl();
-                         problem.setReturnErrorProblemType(ReturnErrorProblemType.MistypedParameter);
-                         inapDialogImpl.sendRejectComponent(invokeId, problem);
-                         perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
-                         return;
-                    }
-                                        
-                    if(msgErr.getErrorCode()==null)
-                    	msgErr.updateErrorCode(errorCode);
-                    
-                    inapStack.newErrorReceived(INAPErrorCode.translate(msgErr, errorCode), inapDialogImpl.getNetworkId());
-                    perfSer.deliverErrorComponent(inapDialogImpl, comp.getInvokeId(), msgErr);
-                    return;
-                }
-
-                case Reject: {
-                    Reject comp = (Reject)c;
-                    perfSer.deliverRejectComponent(inapDialogImpl, comp.getInvokeId(), comp.getProblem(),
-                            comp.isLocalOriginated());
-
-                    return;
-                }
-
-                default:
-                    return;
-            }
-
-            try {
-            	if(parameter!=null && !(parameter instanceof INAPMessage)) {
-            		throw new INAPParsingComponentException("MAPServiceHandling: unknown incoming operation code: " + oc.getLocalOperationCode(),
-                            INAPParsingComponentExceptionReason.MistypedParameter);
-            	}
-            	
-            	INAPMessage realMessage=(INAPMessage)parameter;
-            	if(realMessage!=null) {
-            		inapStack.newMessageReceived(realMessage.getMessageType().name(), inapDialogImpl.getNetworkId());
-                    realMessage.setOriginalBuffer(buffer);
-	            	realMessage.setInvokeId(invokeId);
-	            	realMessage.setINAPDialog(inapDialogImpl);
-            	}
-            	
-                perfSer.processComponent(compType, oc, realMessage, inapDialogImpl, invokeId, linkedId);
-
-            } catch (INAPParsingComponentException e) {
-
-                loger.error(
-                        "INAPParsingComponentException when parsing components: " + e.getReason().toString() + " - "
-                                + e.getMessage(), e);
-
-                switch (e.getReason()) {
-                    case UnrecognizedOperation:
-                        // Component does not supported - send TC-U-REJECT
-                        if (compType == ComponentType.Invoke) {
-                        	ProblemImpl problem = new ProblemImpl();
-                            problem.setInvokeProblemType(InvokeProblemType.UnrecognizedOperation);
-                            inapDialogImpl.sendRejectComponent(invokeId, problem);
-                            perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
-                        } else {
-                        	ProblemImpl problem = new ProblemImpl();
-                            problem.setReturnResultProblemType(ReturnResultProblemType.MistypedParameter);
-                            inapDialogImpl.sendRejectComponent(invokeId, problem);
-                            perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
-                        }
-                        break;
-
-                    case MistypedParameter:
-                        // Failed when parsing the component - send TC-U-REJECT
-                        if (compType == ComponentType.Invoke) {
-                        	ProblemImpl problem = new ProblemImpl();
-                            problem.setInvokeProblemType(InvokeProblemType.MistypedParameter);
-                            inapDialogImpl.sendRejectComponent(invokeId, problem);
-                            perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
-                        } else {
-                        	ProblemImpl problem = new ProblemImpl();
-                            problem.setReturnResultProblemType(ReturnResultProblemType.MistypedParameter);
-                            inapDialogImpl.sendRejectComponent(invokeId, problem);
-                            perfSer.deliverRejectComponent(inapDialogImpl, invokeId, problem, true);
-                        }
-                        break;
-                }
-
-            }
-        } catch (INAPException e) {
-            loger.error("Error processing a Component: " + e.getMessage() + "\nComponent" + c, e);
-        }
-    }
-
-    private void deliverDialogDelimiter(INAPDialog inapDialog) {
-    	Iterator<INAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogDelimiter(inapDialog);
-        }
-    }
-
-    private void deliverDialogRequest(INAPDialog inapDialog) {
-    	Iterator<INAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogRequest(inapDialog);
-        }
-    }
-
-    private void deliverDialogAccept(INAPDialog inapDialog) {
-    	Iterator<INAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogAccept(inapDialog);
-        }
-    }
-
-    private void deliverDialogUserAbort(INAPDialog inapDialog, INAPGeneralAbortReason generalReason, INAPUserAbortReason userReason) {
-    	Iterator<INAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogUserAbort(inapDialog, generalReason, userReason);
-        }
-    }
-
-    private void deliverDialogProviderAbort(INAPDialog inapDialog, PAbortCauseType abortCause) {
-    	Iterator<INAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogProviderAbort(inapDialog, abortCause);
-        }
-    }
-
-    private void deliverDialogClose(INAPDialog inapDialog) {
-    	Iterator<INAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogClose(inapDialog);
-        }
-    }
-
-    protected void deliverDialogRelease(INAPDialog inapDialog) {
-    	Iterator<INAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogRelease(inapDialog);
-        }
-    }
-
-    protected void deliverDialogTimeout(INAPDialog inapDialog) {
-    	Iterator<INAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogTimeout(inapDialog);
-        }
-    }
-
-    protected void deliverDialogNotice(INAPDialog inapDialog, INAPNoticeProblemDiagnostic noticeProblemDiagnostic) {
-    	Iterator<INAPDialogListener> iterator=this.dialogListeners.values().iterator();
-        while(iterator.hasNext()) {
-        	iterator.next().onDialogNotice(inapDialog, noticeProblemDiagnostic);
-        }
-    }
-
-    protected void fireTCBegin(Dialog tcapDialog, ApplicationContextName acn,boolean returnMessageOnError) throws INAPException {
-
-        TCBeginRequest tcBeginReq = encodeTCBegin(tcapDialog, acn);
-        if (returnMessageOnError)
-            tcBeginReq.setReturnMessageOnError(true);
-
-        try {
-            tcapDialog.send(tcBeginReq);
-        } catch (TCAPSendException e) {
-            throw new INAPException(e.getMessage(), e);
-        }
-
-    }
-
-    protected TCBeginRequest encodeTCBegin(Dialog tcapDialog, ApplicationContextName acn) throws INAPException {
-        TCBeginRequest tcBeginReq = this.getTCAPProvider().getDialogPrimitiveFactory().createBegin(tcapDialog);
-        tcBeginReq.setApplicationContextName(acn);
-        return tcBeginReq;
-    }
-
-    protected void fireTCContinue(Dialog tcapDialog, ApplicationContextName acn,boolean returnMessageOnError) throws INAPException {
-        TCContinueRequest tcContinueReq = encodeTCContinue(tcapDialog, acn);
-        if (returnMessageOnError)
-            tcContinueReq.setReturnMessageOnError(true);
-
-        try {
-            tcapDialog.send(tcContinueReq);
-        } catch (TCAPSendException e) {
-            throw new INAPException(e.getMessage(), e);
-        }
-    }
-
-    protected TCContinueRequest encodeTCContinue(Dialog tcapDialog, ApplicationContextName acn) throws INAPException {
-        TCContinueRequest tcContinueReq = this.getTCAPProvider().getDialogPrimitiveFactory().createContinue(tcapDialog);
-
-        if (acn != null)
-            tcContinueReq.setApplicationContextName(acn);
-
-        return tcContinueReq;
-    }
-
-    protected void fireTCEnd(Dialog tcapDialog, boolean prearrangedEnd, ApplicationContextName acn, boolean returnMessageOnError) throws INAPException {
-
-    	TCEndRequest endRequest = encodeTCEnd(tcapDialog, prearrangedEnd, acn);
-        if (returnMessageOnError)
-            endRequest.setReturnMessageOnError(true);
-
-        try {
-            tcapDialog.send(endRequest);
-        } catch (TCAPSendException e) {
-            throw new INAPException(e.getMessage(), e);
-        }
-    }
-
-    protected TCEndRequest encodeTCEnd(Dialog tcapDialog, boolean prearrangedEnd, ApplicationContextName acn) throws INAPException {
-        TCEndRequest endRequest = this.getTCAPProvider().getDialogPrimitiveFactory().createEnd(tcapDialog);
-
-        if (!prearrangedEnd) {
-            endRequest.setTermination(TerminationType.Basic);
-        } else {
-            endRequest.setTermination(TerminationType.PreArranged);
-        }
-
-        if (acn != null)
-            endRequest.setApplicationContextName(acn);
-
-        return endRequest;
-    }
-
-    protected void fireTCAbort(Dialog tcapDialog, INAPGeneralAbortReason generalAbortReason, INAPUserAbortReason userAbortReason,
-            boolean returnMessageOnError) throws INAPException {
-
-        TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
-
-        switch (generalAbortReason) {
-            case ACNNotSupported:
-                tcUserAbort.setDialogServiceUserType(DialogServiceUserType.AcnNotSupported);
-                tcUserAbort.setApplicationContextName(tcapDialog.getApplicationContextName());
-                break;
-
-            case UserSpecific:
-                if (userAbortReason == null)
-                    userAbortReason = INAPUserAbortReason.no_reason_given;
-                INAPUserAbortPrimitiveImpl abortReasonPrimitive = new INAPUserAbortPrimitiveImpl(userAbortReason);
-                UserInformation userInformation = TcapFactory.createUserInformation();
-                userInformation.setIdentifier(INAPUserAbortPrimitiveImpl.INAP_AbortReason_OId);
-                userInformation.setChildAsObject(abortReasonPrimitive);
-                tcUserAbort.setUserInformation(userInformation);
-                break;
-
-            // case DialogRefused:
-            // if (tcapDialog.getApplicationContextName() != null) {
-            // tcUserAbort.setDialogServiceUserType(DialogServiceUserType.NoReasonGive);
-            // tcUserAbort.setApplicationContextName(tcapDialog.getApplicationContextName());
-            // }
-            // break;
-
-            default:
-                break;
-        }
-        if (returnMessageOnError)
-            tcUserAbort.setReturnMessageOnError(true);
-
-        try {
-            tcapDialog.send(tcUserAbort);
-        } catch (TCAPSendException e) {
-            throw new INAPException(e.getMessage(), e);
-        }
-    }
-    
-    @Override
-    public int getCurrentDialogsCount() {
-        return this.tcapProvider.getCurrentDialogsCount();
-    }
+				}
+
+			}
+		} catch (INAPException e) {
+			loger.error("Error processing a Component: " + e.getMessage() + "\nComponent" + c, e);
+		}
+	}
+
+	private void deliverDialogDelimiter(INAPDialog inapDialog) {
+		Iterator<INAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogDelimiter(inapDialog);
+	}
+
+	private void deliverDialogRequest(INAPDialog inapDialog) {
+		Iterator<INAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogRequest(inapDialog);
+	}
+
+	private void deliverDialogAccept(INAPDialog inapDialog) {
+		Iterator<INAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogAccept(inapDialog);
+	}
+
+	private void deliverDialogUserAbort(INAPDialog inapDialog, INAPGeneralAbortReason generalReason,
+			INAPUserAbortReason userReason) {
+		Iterator<INAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogUserAbort(inapDialog, generalReason, userReason);
+	}
+
+	private void deliverDialogProviderAbort(INAPDialog inapDialog, PAbortCauseType abortCause) {
+		Iterator<INAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogProviderAbort(inapDialog, abortCause);
+	}
+
+	private void deliverDialogClose(INAPDialog inapDialog) {
+		Iterator<INAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogClose(inapDialog);
+	}
+
+	protected void deliverDialogRelease(INAPDialog inapDialog) {
+		Iterator<INAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogRelease(inapDialog);
+	}
+
+	protected void deliverDialogTimeout(INAPDialog inapDialog) {
+		Iterator<INAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogTimeout(inapDialog);
+	}
+
+	protected void deliverDialogNotice(INAPDialog inapDialog, INAPNoticeProblemDiagnostic noticeProblemDiagnostic) {
+		Iterator<INAPDialogListener> iterator = this.dialogListeners.values().iterator();
+		while (iterator.hasNext())
+			iterator.next().onDialogNotice(inapDialog, noticeProblemDiagnostic);
+	}
+
+	protected void fireTCBegin(Dialog tcapDialog, ApplicationContextName acn, boolean returnMessageOnError,
+			TaskCallback<Exception> callback) {
+		TCBeginRequest tcBeginReq = encodeTCBegin(tcapDialog, acn);
+		if (returnMessageOnError)
+			tcBeginReq.setReturnMessageOnError(true);
+
+		tcapDialog.send(tcBeginReq, callback);
+	}
+
+	protected TCBeginRequest encodeTCBegin(Dialog tcapDialog, ApplicationContextName acn) {
+		TCBeginRequest tcBeginReq = this.getTCAPProvider().getDialogPrimitiveFactory().createBegin(tcapDialog);
+		tcBeginReq.setApplicationContextName(acn);
+		return tcBeginReq;
+	}
+
+	protected void fireTCContinue(Dialog tcapDialog, ApplicationContextName acn, boolean returnMessageOnError,
+			TaskCallback<Exception> callback) {
+		TCContinueRequest tcContinueReq = encodeTCContinue(tcapDialog, acn);
+		if (returnMessageOnError)
+			tcContinueReq.setReturnMessageOnError(true);
+
+		tcapDialog.send(tcContinueReq, callback);
+	}
+
+	protected TCContinueRequest encodeTCContinue(Dialog tcapDialog, ApplicationContextName acn) {
+		TCContinueRequest tcContinueReq = this.getTCAPProvider().getDialogPrimitiveFactory().createContinue(tcapDialog);
+
+		if (acn != null)
+			tcContinueReq.setApplicationContextName(acn);
+
+		return tcContinueReq;
+	}
+
+	protected void fireTCEnd(Dialog tcapDialog, boolean prearrangedEnd, ApplicationContextName acn,
+			boolean returnMessageOnError, TaskCallback<Exception> callback) {
+
+		TCEndRequest endRequest;
+		try {
+			endRequest = encodeTCEnd(tcapDialog, prearrangedEnd, acn);
+		} catch (INAPException e) {
+			callback.onError(new INAPException("An INAP Exception occured while firing TC-End:", e));
+			return;
+		}
+
+		if (returnMessageOnError)
+			endRequest.setReturnMessageOnError(true);
+
+		tcapDialog.send(endRequest, callback);
+	}
+
+	protected TCEndRequest encodeTCEnd(Dialog tcapDialog, boolean prearrangedEnd, ApplicationContextName acn)
+			throws INAPException {
+		TCEndRequest endRequest = this.getTCAPProvider().getDialogPrimitiveFactory().createEnd(tcapDialog);
+
+		if (!prearrangedEnd)
+			endRequest.setTermination(TerminationType.Basic);
+		else
+			endRequest.setTermination(TerminationType.PreArranged);
+
+		if (acn != null)
+			endRequest.setApplicationContextName(acn);
+
+		return endRequest;
+	}
+
+	protected void fireTCAbort(Dialog tcapDialog, INAPGeneralAbortReason generalAbortReason,
+			INAPUserAbortReason userAbortReason, boolean returnMessageOnError, TaskCallback<Exception> callback) {
+
+		TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
+
+		switch (generalAbortReason) {
+		case ACNNotSupported:
+			tcUserAbort.setDialogServiceUserType(DialogServiceUserType.AcnNotSupported);
+			tcUserAbort.setApplicationContextName(tcapDialog.getApplicationContextName());
+			break;
+
+		case UserSpecific:
+			if (userAbortReason == null)
+				userAbortReason = INAPUserAbortReason.no_reason_given;
+			INAPUserAbortPrimitiveImpl abortReasonPrimitive = new INAPUserAbortPrimitiveImpl(userAbortReason);
+			UserInformation userInformation = TcapFactory.createUserInformation();
+			userInformation.setIdentifier(INAPUserAbortPrimitiveImpl.INAP_AbortReason_OId);
+			userInformation.setChildAsObject(abortReasonPrimitive);
+			tcUserAbort.setUserInformation(userInformation);
+			break;
+
+		// case DialogRefused:
+		// if (tcapDialog.getApplicationContextName() != null) {
+		// tcUserAbort.setDialogServiceUserType(DialogServiceUserType.NoReasonGive);
+		// tcUserAbort.setApplicationContextName(tcapDialog.getApplicationContextName());
+		// }
+		// break;
+
+		default:
+			break;
+		}
+		if (returnMessageOnError)
+			tcUserAbort.setReturnMessageOnError(true);
+
+		tcapDialog.send(tcUserAbort, callback);
+	}
+
+	@Override
+	public int getCurrentDialogsCount() {
+		return this.tcapProvider.getCurrentDialogsCount();
+	}
 
 }

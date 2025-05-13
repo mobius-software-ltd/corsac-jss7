@@ -99,12 +99,14 @@ public class RouteOnGtTest extends SccpHarness {
         return stack;
     }
 
-    @Before
+    @Override
+	@Before
     public void setUp() throws Exception {
         super.setUp();
     }
 
-    @After
+    @Override
+	@After
     public void tearDown() {
         super.tearDown();
     }
@@ -125,8 +127,10 @@ public class RouteOnGtTest extends SccpHarness {
 
         SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(a3, a1, getDataSrc(), 0, 8,
                 true, null, null);
-        sccpProvider1.send(message);
-        Thread.sleep(100);
+        
+        super.sentMessages.set(0);
+        sccpProvider1.send(message, super.getTaskCallback(1));
+        super.sendSemaphore.acquire();
         assertEquals(u1.getMessages().size(), 1);
         assertEquals(u2.getMessages().size(), 0);
 
@@ -148,9 +152,10 @@ public class RouteOnGtTest extends SccpHarness {
         u2.register();
 
         Mtp3UserPartImpl mup = (Mtp3UserPartImpl) sccpStack1.getMtp3UserPart(1);
-        mup.sendTransferMessageToLocalUser(getStack2PC(), getStack1PC(), getDataUdt1());
+        super.sentMessages.set(0);
+        mup.sendTransferMessageToLocalUser(getStack2PC(), getStack1PC(), getDataUdt1(), super.getTaskCallback(1));
+        super.sendSemaphore.acquire();
 
-        Thread.sleep(100);
         assertEquals(u1.getMessages().size(), 0);
         assertEquals(u2.getMessages().size(), 0);
 

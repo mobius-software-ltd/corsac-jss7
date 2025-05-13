@@ -113,7 +113,7 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
  */
 public class EventTestHarness implements INAPDialogListener, INAPServiceCircuitSwitchedCallListener {
 
-    private Logger logger = null;
+    private Logger logger;
 
     protected List<TestEvent> observerdEvents = new ArrayList<TestEvent>();
     protected int sequence = 0;
@@ -129,14 +129,12 @@ public class EventTestHarness implements INAPDialogListener, INAPServiceCircuitS
 
     public void compareEvents(List<TestEvent> expectedEvents) {
 
-        if (expectedEvents.size() != this.observerdEvents.size()) {
-            fail("Size of received events: " + this.observerdEvents.size() + ", does not equal expected events: "
+        if (expectedEvents.size() != this.observerdEvents.size())
+			fail("Size of received events: " + this.observerdEvents.size() + ", does not equal expected events: "
                     + expectedEvents.size() + "\n" + doStringCompare(expectedEvents, observerdEvents));
-        }
 
-        for (int index = 0; index < expectedEvents.size(); index++) {
-            assertEquals(expectedEvents.get(index), observerdEvents.get(index));
-        }
+        for (int index = 0; index < expectedEvents.size(); index++)
+			assertEquals(expectedEvents.get(index), observerdEvents.get(index));
     }
 
     protected String doStringCompare(List<TestEvent> expectedEvents, List<TestEvent> observerdEvents) {
@@ -144,9 +142,8 @@ public class EventTestHarness implements INAPDialogListener, INAPServiceCircuitS
         int size1 = expectedEvents.size();
         int size2 = observerdEvents.size();
         int count = size1;
-        if (count < size2) {
-            count = size2;
-        }
+        if (count < size2)
+			count = size2;
 
         for (int index = 0; count > index; index++) {
             String s1 = size1 > index ? expectedEvents.get(index).toString() : "NOP";

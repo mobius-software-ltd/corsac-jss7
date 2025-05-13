@@ -54,7 +54,7 @@ public class HeartBeatTimer extends M3UATask {
 	 *
 	 */
 	public HeartBeatTimer(AspFactoryImpl aspFactoryImpl) {
-		super(aspFactoryImpl.m3UAManagementImpl != null ? aspFactoryImpl.m3UAManagementImpl.queuedTasks : null);
+		super(aspFactoryImpl.m3UAManagementImpl != null ? aspFactoryImpl.m3UAManagementImpl.workerPool.getPeriodicQueue() : null);
 
 		this.aspFactoryImpl = aspFactoryImpl;
 	}

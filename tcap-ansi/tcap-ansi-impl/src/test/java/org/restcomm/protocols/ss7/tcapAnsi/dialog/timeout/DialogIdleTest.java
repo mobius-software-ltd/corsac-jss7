@@ -76,8 +76,8 @@ public class DialogIdleTest extends SccpHarness {
 		peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2,
 				8);
 
-		this.tcapStack1 = new TCAPStackImpl("DialogIdleTest_1", this.sccpProvider1, 8, workerPool.getPeriodicQueue());
-		this.tcapStack2 = new TCAPStackImpl("DialogIdleTest_2", this.sccpProvider2, 8, workerPool.getPeriodicQueue());
+		this.tcapStack1 = new TCAPStackImpl("DialogIdleTest_1", this.sccpProvider1, 8, workerPool);
+		this.tcapStack2 = new TCAPStackImpl("DialogIdleTest_2", this.sccpProvider2, 8, workerPool);
 
 		this.tcapStack1.start();
 		this.tcapStack2.start();

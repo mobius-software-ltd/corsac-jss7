@@ -23,8 +23,6 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.junit.Test;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitiveFactory;
@@ -79,12 +77,12 @@ public class XudtReassemblingTest {
 		WorkerPool workerPool = new WorkerPool();
 		workerPool.start(4);
 
-		SccpStackImpl sccpStack = new SccpStackImpl("TestUudt", workerPool.getPeriodicQueue());
+		SccpStackImpl sccpStack = new SccpStackImpl("TestUudt", workerPool);
 		sccpStack.start();
 
 		SccpListenerProxy listenerProxy = new SccpListenerProxy();
 		sccpStack.getSccpProvider().registerSccpListener(8, listenerProxy);
-		sccpStack.setMtp3UserPart(1, new Mtp3UserPartImpl(null, workerPool.getQueue(), workerPool.getPeriodicQueue()));
+		sccpStack.setMtp3UserPart(1, new Mtp3UserPartImpl(null, workerPool));
 
 		sccpStack.removeAllResourses();
 		RouterImpl router = (RouterImpl) sccpStack.getRouter();
@@ -93,12 +91,11 @@ public class XudtReassemblingTest {
 		Mtp3TransferPrimitiveFactory mtp3TransferPrimitiveFactory = new Mtp3TransferPrimitiveFactory(
 				RoutingLabelFormat.ITU);
 		Mtp3TransferPrimitive mtp3Msg = mtp3TransferPrimitiveFactory.createMtp3TransferPrimitive(3, 2, 0, 1001, 1002, 5,
-				data1, new AtomicBoolean(false));
+				data1);
 		sccpStack.onMtp3TransferMessage(mtp3Msg);
 
 		mtp3TransferPrimitiveFactory = new Mtp3TransferPrimitiveFactory(RoutingLabelFormat.ITU);
-		mtp3Msg = mtp3TransferPrimitiveFactory.createMtp3TransferPrimitive(3, 2, 0, 1001, 1002, 5, data2,
-				new AtomicBoolean(false));
+		mtp3Msg = mtp3TransferPrimitiveFactory.createMtp3TransferPrimitive(3, 2, 0, 1001, 1002, 5, data2);
 		sccpStack.onMtp3TransferMessage(mtp3Msg);
 
 		workerPool.stop();

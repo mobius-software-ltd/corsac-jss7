@@ -32,186 +32,194 @@ import org.restcomm.protocols.ss7.sccp.SccpStack;
 public interface TCAPStack {
 
 	// default value of idle timeout and after TC_END remove of task.
-    public static final long _DIALOG_TIMEOUT = 60000;
-    public static final long _INVOKE_TIMEOUT = 30000;
+	public static final long _DIALOG_TIMEOUT = 60000;
+	public static final long _INVOKE_TIMEOUT = 30000;
 
-    public static final long _EMPTY_INVOKE_TIMEOUT = -1;
-    
-    /**
-     * Returns the name of this stack
-     * @return
-     */
-    String getName();
+	public static final long _EMPTY_INVOKE_TIMEOUT = -1;
 
-    /**
-     * Returns stack provider.
-     * @return
-     */
-    TCAPProvider getProvider();
+	/**
+	 * Returns the name of this stack
+	 * 
+	 * @return
+	 */
+	String getName();
 
-    /**
-     * Stops this stack and transport layer(SCCP)
-     */
-    void stop();
+	/**
+	 * Returns stack provider.
+	 * 
+	 * @return
+	 */
+	TCAPProvider getProvider();
 
-    /**
-     * Start stack and transport layer(SCCP)
-     *
-     * @throws IllegalStateException - if stack is already running or not configured
-     * @throws StartFailedException
-     */
-    void start() throws Exception;
+	/**
+	 * Stops this stack and transport layer(SCCP)
+	 */
+	void stop();
 
-    boolean isStarted();
+	/**
+	 * Start stack and transport layer(SCCP)
+	 *
+	 * @throws IllegalStateException - if stack is already running or not configured
+	 * @throws StartFailedException
+	 */
+	void start() throws Exception;
 
-    /**
-     * Sets millisecond value for dialog timeout. It specifies how long dialog can be idle - not receive/send any messages.
-     *
-     * @param l
-     */
-    void setDialogIdleTimeout(long l) throws Exception;
+	boolean isStarted();
 
-    long getDialogIdleTimeout();
+	/**
+	 * Sets millisecond value for dialog timeout. It specifies how long dialog can
+	 * be idle - not receive/send any messages.
+	 *
+	 * @param l
+	 */
+	void setDialogIdleTimeout(long l) throws Exception;
 
-    /**
-     * Sets the Invoke timeout for this invoke. Peer should respond back within invoke timeout, else stack will callback
-     * {@link TCListener#onInvokeTimeout(org.restcomm.protocols.ss7.tcap.asn.comp.Invoke)} for application to take corrective
-     * action. InvokeTimeout should always be less than DialogIdleTimeout.
-     *
-     * @param v
-     */
-    void setInvokeTimeout(long v) throws Exception;
+	long getDialogIdleTimeout();
 
-    long getInvokeTimeout();
+	/**
+	 * Sets the Invoke timeout for this invoke. Peer should respond back within
+	 * invoke timeout, else stack will callback
+	 * {@link TCListener#onInvokeTimeout(org.restcomm.protocols.ss7.tcap.asn.comp.Invoke)}
+	 * for application to take corrective action. InvokeTimeout should always be
+	 * less than DialogIdleTimeout.
+	 *
+	 * @param v
+	 */
+	void setInvokeTimeout(long v) throws Exception;
 
-    /**
-     * Sets the start of the range of the generated dialog ids.
-     */
-    void setDialogIdRangeStart(long val) throws Exception;
+	long getInvokeTimeout();
 
-    /**
-     * Sets the end of the range of the generated dialog ids.
-     */
-    void setDialogIdRangeEnd(long val) throws Exception;
+	/**
+	 * Sets the start of the range of the generated dialog ids.
+	 */
+	void setDialogIdRangeStart(long val) throws Exception;
 
-    /**
-     *
-     * @return starting dialog id within the range
-     */
-    long getDialogIdRangeStart();
+	/**
+	 * Sets the end of the range of the generated dialog ids.
+	 */
+	void setDialogIdRangeEnd(long val) throws Exception;
 
-    /**
-     *
-     * @return ending dialog id within the range
-     */
-    long getDialogIdRangeEnd();    
+	/**
+	 *
+	 * @return starting dialog id within the range
+	 */
+	long getDialogIdRangeStart();
 
-    void setExtraSsns(List<Integer> extraSsnsNew) throws Exception;
+	/**
+	 *
+	 * @return ending dialog id within the range
+	 */
+	long getDialogIdRangeEnd();
 
-    Collection<Integer> getExtraSsns();
+	void setExtraSsns(List<Integer> extraSsnsNew) throws Exception;
 
-    boolean isExtraSsnPresent(int ssn);
+	Collection<Integer> getExtraSsns();
 
-    String getSubSystemNumberList();
+	boolean isExtraSsnPresent(int ssn);
 
-    void setDoNotSendProtocolVersion(boolean val) throws Exception;
+	String getSubSystemNumberList();
 
-    boolean getDoNotSendProtocolVersion();
+	void setDoNotSendProtocolVersion(boolean val) throws Exception;
 
-    /**
-     * Returns the Sub System Number (SSN) that this TCAP Stack is registered for
-     *
-     * @return
-     */
-    int getSubSystemNumber();
+	boolean getDoNotSendProtocolVersion();
 
-    /** Set value for slsRange for this TCAP Stack.
-     *
-     * @param val
-     */
-    void setSlsRange(String val) throws Exception;
+	/**
+	 * Returns the Sub System Number (SSN) that this TCAP Stack is registered for
+	 *
+	 * @return
+	 */
+	int getSubSystemNumber();
 
-    /**
-     * Returns the SlsRange that this TCAP Stack is registered for
-     *
-     * @return
-     */
-    String getSlsRange();
+	/**
+	 * Set value for slsRange for this TCAP Stack.
+	 *
+	 * @param val
+	 */
+	void setSlsRange(String val) throws Exception;
 
-    /**
-     * Returns the SCCP stack
-     *
-     * @return
-     */
-    SccpStack getSccpStack();
+	/**
+	 * Returns the SlsRange that this TCAP Stack is registered for
+	 *
+	 * @return
+	 */
+	String getSlsRange();
 
-    /**
-     * Returns the SCCP stack
-     *
-     * @return
-     */
-    boolean getSwapTcapIdBytes();
+	/**
+	 * Returns the SCCP stack
+	 *
+	 * @return
+	 */
+	SccpStack getSccpStack();
 
-    /**
-     * Set is there need to swap bytes for Txid
-     *
-     * @return
-     */
-    void setSwapTcapIdBytes(boolean isSwapTcapIdBytes);
-    
-    Map<String,Long> getComponentsSentByType();
-    
-    Map<String,Long> getComponentsReceivedByType();
-    
-    Map<String,Long> getMessagesSentByType();
-    
-    Map<String,Long> getMessagesReceivedByType();
-    
-    Map<String,Long> getRejectsSentByType();
-    
-    Map<String,Long> getRejectsReceivedByType();
-    
-    Map<String,Long> getAbortsSentByType();
-    
-    Map<String,Long> getAbortsReceivedByType();
-    
-    Long getIncomingDialogsProcessed();
-    
-    Long getOutgoingDialogsProcessed();
-    
-    Long getBytesSent();
-    
-    Long getBytesReceived();
-    
-    Long getDialogTimeoutProcessed();
+	/**
+	 * Returns the SCCP stack
+	 *
+	 * @return
+	 */
+	boolean getSwapTcapIdBytes();
+
+	/**
+	 * Set is there need to swap bytes for Txid
+	 *
+	 * @return
+	 */
+	void setSwapTcapIdBytes(boolean isSwapTcapIdBytes);
+
+	Map<String, Long> getComponentsSentByType();
+
+	Map<String, Long> getComponentsReceivedByType();
+
+	Map<String, Long> getMessagesSentByType();
+
+	Map<String, Long> getMessagesReceivedByType();
+
+	Map<String, Long> getRejectsSentByType();
+
+	Map<String, Long> getRejectsReceivedByType();
+
+	Map<String, Long> getAbortsSentByType();
+
+	Map<String, Long> getAbortsReceivedByType();
+
+	Long getIncomingDialogsProcessed();
+
+	Long getOutgoingDialogsProcessed();
+
+	Long getBytesSent();
+
+	Long getBytesReceived();
+
+	Long getDialogTimeoutProcessed();
 
 	Long getInvokeTimeoutProcessed();
-	
-	Map<String,Long> getComponentsSentByTypeAndNetwork(Integer networkID);
-    
-    Map<String,Long> getComponentsReceivedByTypeAndNetwork(Integer networkID);
-    
-    Map<String,Long> getMessagesSentByTypeAndNetwork(Integer networkID);
-    
-    Map<String,Long> getMessagesReceivedByTypeAndNetwork(Integer networkID);
-    
-    Map<String,Long> getRejectsSentByTypeAndNetwork(Integer networkID);
-    
-    Map<String,Long> getRejectsReceivedByTypeAndNetwork(Integer networkID);
-    
-    Map<String,Long> getAbortsSentByTypeAndNetwork(Integer networkID);
-    
-    Map<String,Long> getAbortsReceivedByTypeAndNetwork(Integer networkID);
-    
-    Long getIncomingDialogsProcessedByNetwork(Integer networkID);
-    
-    Long getOutgoingDialogsProcessedByNetwork(Integer networkID);
-    
-    Long getBytesSentByNetwork(Integer networkID);
-    
-    Long getBytesReceivedByNetwork(Integer networkID);
-    
-    Long getDialogTimeoutProcessedByNetwork(Integer networkID);
+
+	Map<String, Long> getComponentsSentByTypeAndNetwork(Integer networkID);
+
+	Map<String, Long> getComponentsReceivedByTypeAndNetwork(Integer networkID);
+
+	Map<String, Long> getMessagesSentByTypeAndNetwork(Integer networkID);
+
+	Map<String, Long> getMessagesReceivedByTypeAndNetwork(Integer networkID);
+
+	Map<String, Long> getRejectsSentByTypeAndNetwork(Integer networkID);
+
+	Map<String, Long> getRejectsReceivedByTypeAndNetwork(Integer networkID);
+
+	Map<String, Long> getAbortsSentByTypeAndNetwork(Integer networkID);
+
+	Map<String, Long> getAbortsReceivedByTypeAndNetwork(Integer networkID);
+
+	Long getIncomingDialogsProcessedByNetwork(Integer networkID);
+
+	Long getOutgoingDialogsProcessedByNetwork(Integer networkID);
+
+	Long getBytesSentByNetwork(Integer networkID);
+
+	Long getBytesReceivedByNetwork(Integer networkID);
+
+	Long getDialogTimeoutProcessedByNetwork(Integer networkID);
 
 	Long getInvokeTimeoutProcessedByNetwork(Integer networkID);
+
+	void setAffinity(boolean isEnabled);
 }

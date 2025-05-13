@@ -31,6 +31,8 @@ import org.restcomm.protocols.ss7.tcap.api.MessageType;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 /**
  *
  * @author amit bhayani
@@ -145,7 +147,7 @@ public interface CAPDialog extends Serializable {
     /**
      * Sends TB-BEGIN, TC-CONTINUE depends on dialogue state including primitives
      */
-     void send() throws CAPException;
+     void send(TaskCallback<Exception> callback) throws CAPException;
 
     /**
      * This service is used for releasing a previously established CAP dialogue. Sends TC-CLOSE
@@ -154,7 +156,7 @@ public interface CAPDialog extends Serializable {
      *        sent to peer. If prearrangedEnd is true, all the Service Primitive added to CAPDialog and not sent yet, will not
      *        be sent to peer.
      */
-     void close(boolean prearrangedEnd) throws CAPException;
+     void close(boolean prearrangedEnd, TaskCallback<Exception> callback) throws CAPException;
 
     /**
      * This method makes the same as send() method. But when invoking it from events of parsing incoming components real sending
@@ -163,7 +165,7 @@ public interface CAPDialog extends Serializable {
      * If you are receiving several primitives you can invoke sendDelayed() in several processing components events - the result
      * will be sent after onDialogDelimiter() in a single TC-CONTINUE message
      */
-     void sendDelayed() throws CAPException;
+     void sendDelayed(TaskCallback<Exception> callback) throws CAPException;
 
     /**
      * This method makes the same as close() method. But when invoking it from events of parsing incoming components real
@@ -177,14 +179,14 @@ public interface CAPDialog extends Serializable {
      * sendDelayed() or closeDelayed() were invoked, TC-CONTINUE/TC-END were not sent and abort() or release() are invoked - no
      * TC-CONTINUE/TC-END messages will be sent
      */
-     void closeDelayed(boolean prearrangedEnd) throws CAPException;
+     void closeDelayed(boolean prearrangedEnd, TaskCallback<Exception> callback) throws CAPException;
 
     /**
      * Sends TC_U_ABORT Service Request with an abort reason.
      *
      * @param abortReason optional - may be null
      */
-     void abort(CAPUserAbortReason abortReason) throws CAPException;
+     void abort(CAPUserAbortReason abortReason, TaskCallback<Exception> callback) throws CAPException;
 
     /**
      * If a CAP user will not answer to an incoming Invoke with Response, Error or Reject components it should invoke this

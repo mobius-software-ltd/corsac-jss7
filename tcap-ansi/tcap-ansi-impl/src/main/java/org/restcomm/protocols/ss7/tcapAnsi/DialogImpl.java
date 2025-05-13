@@ -67,9 +67,11 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortReque
 import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcapAnsi.asn.Utils;
 
-import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
-import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.common.dal.timers.RunnableTimer;
+import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
 
 import io.netty.buffer.ByteBuf;
 
@@ -127,7 +129,7 @@ public class DialogImpl implements Dialog {
 	protected Invoke[] operationsSent = new Invoke[invokeIDTable.length];
 	protected Invoke[] operationsSentA = new Invoke[invokeIDTable.length];
 	private ConcurrentHashMap<Long, Long> incomingInvokeList = new ConcurrentHashMap<Long, Long>();
-	private PeriodicQueuedTasks<Timer> queuedTasks;
+	private WorkerPool workerPool;
 
 	// scheduled components list
 	private List<Component> scheduledComponentList = new ArrayList<Component>();
@@ -143,6 +145,16 @@ public class DialogImpl implements Dialog {
 	private boolean isSwapTcapIdBytes;
 
 	private ASNParser dialogParser;
+
+	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {
+		}
+
+		@Override
+		public void onError(Exception exception) {
+		}
+	};
 
 	private static int getIndexFromInvokeId(Long l) {
 		int tmp = l.intValue();
@@ -167,7 +179,7 @@ public class DialogImpl implements Dialog {
 	 * @param previewMode
 	 */
 	protected DialogImpl(SccpAddress localAddress, SccpAddress remoteAddress, Long origTransactionId,
-			boolean structured, PeriodicQueuedTasks<Timer> queuedTasks, TCAPProviderImpl provider, int seqControl,
+			boolean structured, WorkerPool workerPool, TCAPProviderImpl provider, int seqControl,
 			ASNParser dialogParser) {
 		super();
 
@@ -177,7 +189,7 @@ public class DialogImpl implements Dialog {
 			this.localTransactionIdObject = origTransactionId;
 			this.localTransactionId = origTransactionId;
 		}
-		this.queuedTasks = queuedTasks;
+		this.workerPool = workerPool;
 		this.provider = provider;
 		this.structured = structured;
 
@@ -402,13 +414,17 @@ public class DialogImpl implements Dialog {
 	 * .protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest)
 	 */
 	@Override
-	public void send(TCQueryRequest event) throws TCAPSendException {
+	public void send(TCQueryRequest event, TaskCallback<Exception> callback) {
 
-		if (this.state.get() != TRPseudoState.Idle)
-			throw new TCAPSendException("Can not send Begin in this state: " + this.state);
+		if (this.state.get() != TRPseudoState.Idle) {
+			callback.onError(new TCAPSendException("Can not send Begin in this state: " + this.state));
+			return;
+		}
 
-		if (!this.isStructured())
-			throw new TCAPSendException("Unstructured dialogs do not use Begin");
+		if (!this.isStructured()) {
+			callback.onError(new TCAPSendException("Unstructured dialogs do not use Begin"));
+			return;
+		}
 
 		this.idleTimerActionTaken.set(true);
 		restartIdleTimer();
@@ -446,18 +462,19 @@ public class DialogImpl implements Dialog {
 			tcbm.setComponent(cPortion);
 		}
 
+		ByteBuf buffer;
 		try {
-			ByteBuf buffer = dialogParser.encode(tcbm);
-			provider.getStack().newMessageSent(tcbm.getName(), buffer.readableBytes(), this.getNetworkId());
-			this.setState(TRPseudoState.InitialSent);
-			this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
-					this.seqControl, this.getNetworkId(), this.localSsn);
-			this.scheduledComponentList.clear();
-		} catch (Throwable e) {
-			if (logger.isErrorEnabled())
-				logger.error("Failed to send message: ", e);
-			throw new TCAPSendException("Failed to send TC-Query message: " + e.getMessage(), e);
+			buffer = dialogParser.encode(tcbm);
+		} catch (ASNException e) {
+			callback.onError(new TCAPSendException("Failed to send TC-Query message: " + e));
+			return;
 		}
+		provider.getStack().newMessageSent(tcbm.getName(), buffer.readableBytes(), this.getNetworkId());
+		this.setState(TRPseudoState.InitialSent);
+
+		this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+				this.seqControl, this.getNetworkId(), this.localSsn, callback);
+		this.scheduledComponentList.clear();
 	}
 
 	/*
@@ -467,10 +484,11 @@ public class DialogImpl implements Dialog {
 	 * .protocols.ss7.tcap.api.tc.dialog.events.TCContinueRequest)
 	 */
 	@Override
-	public void send(TCConversationRequest event) throws TCAPSendException {
-
-		if (!this.isStructured())
-			throw new TCAPSendException("Unstructured dialogs do not use Continue");
+	public void send(TCConversationRequest event, TaskCallback<Exception> callback) {
+		if (!this.isStructured()) {
+			callback.onError(new TCAPSendException("Unstructured dialogs do not use Continue"));
+			return;
+		}
 
 		if (this.state.get() == TRPseudoState.InitialReceived) {
 			this.idleTimerActionTaken.set(true);
@@ -506,19 +524,19 @@ public class DialogImpl implements Dialog {
 
 			}
 
+			ByteBuf buffer;
 			try {
-				ByteBuf buffer = dialogParser.encode(tcbm);
-				provider.getStack().newMessageSent(tcbm.getName(), buffer.readableBytes(), this.getNetworkId());
-				this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
-						this.seqControl, this.getNetworkId(), this.localSsn);
-				this.setState(TRPseudoState.Active);
-				this.scheduledComponentList.clear();
-			} catch (Exception e) {
-				// FIXME: remove freshly added invokes to free invoke ID??
-				if (logger.isErrorEnabled())
-					logger.error("Failed to send message: ", e);
-				throw new TCAPSendException("Failed to send TC-Continue message: " + e.getMessage(), e);
+				buffer = dialogParser.encode(tcbm);
+			} catch (ASNException e) {
+				callback.onError(new TCAPSendException("Failed to send TC-Continue message: " + e.getMessage(), e));
+				return;
 			}
+
+			provider.getStack().newMessageSent(tcbm.getName(), buffer.readableBytes(), this.getNetworkId());
+			this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+					this.seqControl, this.getNetworkId(), this.localSsn, callback);
+			this.setState(TRPseudoState.Active);
+			this.scheduledComponentList.clear();
 
 		} else if (state.get() == TRPseudoState.Active) {
 			this.idleTimerActionTaken.set(true);
@@ -539,20 +557,20 @@ public class DialogImpl implements Dialog {
 
 			}
 
+			ByteBuf buffer;
 			try {
-				ByteBuf buffer = dialogParser.encode(tcbm);
-				provider.getStack().newMessageSent(tcbm.getName(), buffer.readableBytes(), this.getNetworkId());
-				this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
-						this.seqControl, this.getNetworkId(), this.localSsn);
-				this.scheduledComponentList.clear();
-			} catch (Exception e) {
-				// FIXME: remove freshly added invokes to free invoke ID??
-				if (logger.isErrorEnabled())
-					logger.error("Failed to send message: ", e);
-				throw new TCAPSendException("Failed to send TC-Continue message: " + e.getMessage(), e);
+				buffer = dialogParser.encode(tcbm);
+			} catch (ASNException e) {
+				callback.onError(new TCAPSendException("Failed to send TC-Continue message: " + e.getMessage(), e));
+				return;
 			}
+
+			provider.getStack().newMessageSent(tcbm.getName(), buffer.readableBytes(), this.getNetworkId());
+			this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+					this.seqControl, this.getNetworkId(), this.localSsn, callback);
+			this.scheduledComponentList.clear();
 		} else
-			throw new TCAPSendException("Wrong state: " + this.state);
+			callback.onError(new TCAPSendException("Wrong state: " + this.state));
 	}
 
 	/*
@@ -562,10 +580,12 @@ public class DialogImpl implements Dialog {
 	 * .protocols.ss7.tcap.api.tc.dialog.events.TCEndRequest)
 	 */
 	@Override
-	public void send(TCResponseRequest event) throws TCAPSendException {
+	public void send(TCResponseRequest event, TaskCallback<Exception> callback) {
 
-		if (!this.isStructured())
-			throw new TCAPSendException("Unstructured dialogs do not use Response");
+		if (!this.isStructured()) {
+			callback.onError(new TCAPSendException("Unstructured dialogs do not use Response"));
+			return;
+		}
 
 		TCResponseMessage tcbm = null;
 
@@ -615,27 +635,26 @@ public class DialogImpl implements Dialog {
 				tcbm.setComponent(cPortion);
 			}
 
-		} else
-			throw new TCAPSendException(String.format("State is not %s or %s: it is %s", TRPseudoState.Active,
-					TRPseudoState.InitialReceived, this.state));
-
-		try {
-			ByteBuf buffer = dialogParser.encode(tcbm);
-			provider.getStack().newMessageSent(tcbm.getName(), buffer.readableBytes(), this.getNetworkId());
-			this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
-					this.seqControl, this.getNetworkId(), this.localSsn);
-
-			this.scheduledComponentList.clear();
-		} catch (Exception e) {
-			// FIXME: remove freshly added invokes to free invoke ID??
-			if (logger.isErrorEnabled())
-				logger.error("Failed to send message: ", e);
-			throw new TCAPSendException("Failed to send TC-Response message: " + e.getMessage(), e);
-		} finally {
-			// FIXME: is this proper place - should we not release in case
-			// of error ?
-			release();
+		} else {
+			callback.onError(new TCAPSendException(String.format("State is not %s or %s: it is %s",
+					TRPseudoState.Active, TRPseudoState.InitialReceived, this.state)));
+			return;
 		}
+
+		ByteBuf buffer;
+		try {
+			buffer = dialogParser.encode(tcbm);
+		} catch (ASNException e) {
+			release();
+			callback.onError(new TCAPSendException("Failed to send TC-Response message: " + e.getMessage(), e));
+			return;
+		}
+		provider.getStack().newMessageSent(tcbm.getName(), buffer.readableBytes(), this.getNetworkId());
+		this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+				this.seqControl, this.getNetworkId(), this.localSsn, callback);
+
+		this.scheduledComponentList.clear();
+		release();
 	}
 
 	/*
@@ -644,9 +663,11 @@ public class DialogImpl implements Dialog {
 	 * @see org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog#sendUni()
 	 */
 	@Override
-	public void send(TCUniRequest event) throws TCAPSendException {
-		if (this.isStructured())
-			throw new TCAPSendException("Structured dialogs do not use Uni");
+	public void send(TCUniRequest event, TaskCallback<Exception> callback) {
+		if (this.isStructured()) {
+			callback.onError(new TCAPSendException("Structured dialogs do not use Uni"));
+			return;
+		}
 
 		TCUniMessage msg = TcapFactory.createTCUniMessage();
 
@@ -672,26 +693,28 @@ public class DialogImpl implements Dialog {
 
 		}
 
+		ByteBuf buffer;
 		try {
-			ByteBuf buffer = dialogParser.encode(msg);
-			provider.getStack().newMessageSent(msg.getName(), buffer.readableBytes(), this.getNetworkId());
-			this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
-					this.seqControl, this.getNetworkId(), this.localSsn);
-			this.scheduledComponentList.clear();
-		} catch (Exception e) {
-			if (logger.isErrorEnabled())
-				logger.error("Failed to send message: ", e);
-			throw new TCAPSendException("Failed to send TC-Uni message: " + e.getMessage(), e);
-		} finally {
+			buffer = dialogParser.encode(msg);
+		} catch (ASNException e) {
 			release();
+			callback.onError(new TCAPSendException("Failed to send TC-Uni message: " + e.getMessage(), e));
+			return;
 		}
+		provider.getStack().newMessageSent(msg.getName(), buffer.readableBytes(), this.getNetworkId());
+		this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+				this.seqControl, this.getNetworkId(), this.localSsn, callback);
+		this.scheduledComponentList.clear();
+		release();
 	}
 
 	@Override
-	public void send(TCUserAbortRequest event) throws TCAPSendException {
+	public void send(TCUserAbortRequest event, TaskCallback<Exception> callback) {
 		// is abort allowed in "Active" state ?
-		if (!isStructured())
-			throw new TCAPSendException("Unstructured dialog can not be aborted!");
+		if (!isStructured()) {
+			callback.onError(new TCAPSendException("Unstructured dialog can not be aborted!"));
+			return;
+		}
 
 		if (this.state.get() == TRPseudoState.InitialReceived || this.state.get() == TRPseudoState.Active) {
 
@@ -718,27 +741,24 @@ public class DialogImpl implements Dialog {
 				if (event.getOriginatingAddress() != null && !event.getOriginatingAddress().equals(this.localAddress))
 					this.localAddress = event.getOriginatingAddress();
 
+			ByteBuf buffer;
 			try {
-				ByteBuf buffer = dialogParser.encode(msg);
+				buffer = dialogParser.encode(msg);
 				if (msg.getPAbortCause() != null)
 					provider.getStack().newAbortSent(msg.getPAbortCause().name(), this.getNetworkId());
 				else
 					provider.getStack().newAbortSent("User", this.getNetworkId());
 
 				provider.getStack().newMessageSent(msg.getName(), buffer.readableBytes(), this.getNetworkId());
-				this.provider.send(buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
-						this.seqControl, this.getNetworkId(), this.localSsn);
+				this.provider.send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
+						this.seqControl, this.getNetworkId(), this.localSsn, callback);
 
 				this.scheduledComponentList.clear();
-			} catch (Exception e) {
-				// FIXME: remove freshly added invokes to free invoke ID??
-				if (logger.isErrorEnabled()) {
-					e.printStackTrace();
-					logger.error("Failed to send message: ", e);
-				}
-				throw new TCAPSendException("Failed to send TC-U-Abort message: " + e.getMessage(), e);
-			} finally {
 				release();
+			} catch (ASNException | ParseException e) {
+				release();
+				callback.onError(new TCAPSendException("Failed to send TC-U-Abort message: " + e.getMessage(), e));
+				return;
 			}
 		} else if (this.state.get() == TRPseudoState.InitialSent)
 			release();
@@ -1253,11 +1273,11 @@ public class DialogImpl implements Dialog {
 			if (this.getProtocolVersion() != null)
 				this.provider.sendProviderAbort(PAbortCause.InconsistentDialoguePortion,
 						Utils.encodeTransactionId(this.remoteTransactionIdObject, this.isSwapTcapIdBytes),
-						remoteAddress, localAddress, seqControl, this.getNetworkId());
+						remoteAddress, localAddress, seqControl, this.getNetworkId(), dummyCallback);
 			else
 				this.provider.sendRejectAsProviderAbort(PAbortCause.InconsistentDialoguePortion,
 						Utils.encodeTransactionId(this.remoteTransactionIdObject, this.isSwapTcapIdBytes),
-						remoteAddress, localAddress, seqControl, this.getNetworkId());
+						remoteAddress, localAddress, seqControl, this.getNetworkId(), dummyCallback);
 
 			// sending to the local side
 			tcAbortIndication = this.provider.getDialogPrimitiveFactory().createPAbortIndication(this);
@@ -1448,12 +1468,11 @@ public class DialogImpl implements Dialog {
 		if (!this.structured)
 			return;
 
-		IdleTimer newTimer = new IdleTimer();
+		IdleTimer newTimer = new IdleTimer(this.idleTaskTimeout, String.valueOf(localTransactionIdObject));
 		if (!this.idleTimer.compareAndSet(null, newTimer))
 			throw new IllegalStateException("Idle timer is not null");
 
-		newTimer.postpone(this.idleTaskTimeout);
-		this.queuedTasks.store(newTimer.getRealTimestamp(), newTimer);
+		this.workerPool.addTimer(newTimer);
 	}
 
 	private void stopIdleTimer() {
@@ -1470,9 +1489,12 @@ public class DialogImpl implements Dialog {
 		startIdleTimer();
 	}
 
-	private class IdleTimer implements Timer {
-		private long startTime = System.currentTimeMillis();
+	private class IdleTimer extends RunnableTimer {
 		private DialogImpl d = DialogImpl.this;
+
+		public IdleTimer(Long timeDiff, String id) {
+			super(null, System.currentTimeMillis() + timeDiff, id);
+		}
 
 		@Override
 		public void execute() {
@@ -1493,20 +1515,6 @@ public class DialogImpl implements Dialog {
 				release();
 
 			d.idleTimerInvoked.set(false);
-		}
-
-		public void postpone(long timeDiff) {
-			this.startTime = System.currentTimeMillis() + timeDiff;
-		}
-
-		@Override
-		public long getStartTime() {
-			return this.startTime;
-		}
-
-		@Override
-		public Long getRealTimestamp() {
-			return this.startTime;
 		}
 
 		@Override

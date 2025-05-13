@@ -68,10 +68,9 @@ import org.restcomm.protocols.ss7.mtp.Mtp3TransferPrimitive;
 import org.restcomm.protocols.ss7.mtp.Mtp3UserPartBaseImpl;
 import org.restcomm.protocols.ss7.mtp.RoutingLabelFormat;
 
-import com.mobius.software.common.dal.timers.CountableQueue;
-import com.mobius.software.common.dal.timers.PeriodicQueuedTasks;
-import com.mobius.software.common.dal.timers.Task;
-import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.common.dal.timers.RunnableTask;
+import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 
 /**
@@ -112,9 +111,8 @@ public class M3UAManagementImpl extends Mtp3UserPartBaseImpl implements M3UAMana
 
 	private UUIDGenerator uuidGenerator;
 
-	public M3UAManagementImpl(String name, String productName, UUIDGenerator uuidGenerator,
-			CountableQueue<Task> mainQueue, PeriodicQueuedTasks<Timer> queuedTasks) {
-		super(productName, mainQueue, queuedTasks);
+	public M3UAManagementImpl(String name, String productName, UUIDGenerator uuidGenerator, WorkerPool workerPool) {
+		super(productName, workerPool);
 
 		this.name = name;
 		this.uuidGenerator = uuidGenerator;
@@ -341,11 +339,11 @@ public class M3UAManagementImpl extends Mtp3UserPartBaseImpl implements M3UAMana
 		((AsImpl) as).setM3UAManagement(this);
 		FSM localFSM = ((AsImpl) as).getLocalFSM();
 		if (localFSM != null)
-			this.mainQueue.offerLast(localFSM);
+			this.workerPool.getQueue().offerLast(localFSM);
 
 		FSM peerFSM = ((AsImpl) as).getPeerFSM();
 		if (peerFSM != null)
-			this.mainQueue.offerLast(peerFSM);
+			this.workerPool.getQueue().offerLast(peerFSM);
 
 		appServers.put(asName, as);
 
@@ -580,11 +578,11 @@ public class M3UAManagementImpl extends Mtp3UserPartBaseImpl implements M3UAMana
 		AspImpl aspImpl = aspFactroy.createAsp();
 		FSM aspLocalFSM = aspImpl.getLocalFSM();
 		if (aspLocalFSM != null)
-			this.mainQueue.offerLast(aspLocalFSM);
+			this.workerPool.getQueue().offerLast(aspLocalFSM);
 
 		FSM aspPeerFSM = aspImpl.getPeerFSM();
 		if (aspPeerFSM != null)
-			this.mainQueue.offerLast(aspPeerFSM);
+			this.workerPool.getQueue().offerLast(aspPeerFSM);
 		asImpl.addAppServerProcess(aspImpl);
 
 		Iterator<M3UAManagementEventListener> iterator = this.managementEventListeners.values().iterator();
@@ -801,28 +799,29 @@ public class M3UAManagementImpl extends Mtp3UserPartBaseImpl implements M3UAMana
 	}
 
 	@Override
-	public void sendTransferMessageToLocalUser(Mtp3TransferPrimitive msg, int seqControl) {
-		super.sendTransferMessageToLocalUser(msg, seqControl);
+	public void sendTransferMessageToLocalUser(Mtp3TransferPrimitive msg, int seqControl,
+			TaskCallback<Exception> callback) {
+		super.sendTransferMessageToLocalUser(msg, seqControl, callback);
 	}
 
 	@Override
-	public void sendPauseMessageToLocalUser(Mtp3PausePrimitive msg) {
-		super.sendPauseMessageToLocalUser(msg);
+	public void sendPauseMessageToLocalUser(Mtp3PausePrimitive msg, TaskCallback<Exception> callback) {
+		super.sendPauseMessageToLocalUser(msg, callback);
 	}
 
 	@Override
-	public void sendResumeMessageToLocalUser(Mtp3ResumePrimitive msg) {
-		super.sendResumeMessageToLocalUser(msg);
+	public void sendResumeMessageToLocalUser(Mtp3ResumePrimitive msg, TaskCallback<Exception> callback) {
+		super.sendResumeMessageToLocalUser(msg, callback);
 	}
 
 	@Override
-	public void sendStatusMessageToLocalUser(Mtp3StatusPrimitive msg) {
-		super.sendStatusMessageToLocalUser(msg);
+	public void sendStatusMessageToLocalUser(Mtp3StatusPrimitive msg, TaskCallback<Exception> callback) {
+		super.sendStatusMessageToLocalUser(msg, callback);
 	}
 
 	@Override
-	public void sendEndCongestionMessageToLocalUser(Mtp3EndCongestionPrimitive msg) {
-		super.sendEndCongestionMessageToLocalUser(msg);
+	public void sendEndCongestionMessageToLocalUser(Mtp3EndCongestionPrimitive msg, TaskCallback<Exception> callback) {
+		super.sendEndCongestionMessageToLocalUser(msg, callback);
 	}
 
 	private AspFactoryImpl getAspFactory(String aspName) {
@@ -830,7 +829,7 @@ public class M3UAManagementImpl extends Mtp3UserPartBaseImpl implements M3UAMana
 	}
 
 	@Override
-	public void sendMessage(Mtp3TransferPrimitive mtp3TransferPrimitive) throws IOException {
+	public void sendMessage(Mtp3TransferPrimitive mtp3TransferPrimitive, TaskCallback<Exception> callback) {
 		ProtocolData data = this.parameterFactory.createProtocolData(mtp3TransferPrimitive.getOpc(),
 				mtp3TransferPrimitive.getDpc(), mtp3TransferPrimitive.getSi(), mtp3TransferPrimitive.getNi(),
 				mtp3TransferPrimitive.getMp(), mtp3TransferPrimitive.getSls(), mtp3TransferPrimitive.getData());
@@ -839,14 +838,44 @@ public class M3UAManagementImpl extends Mtp3UserPartBaseImpl implements M3UAMana
 				MessageType.PAYLOAD);
 		payload.setData(data);
 
-		AsImpl asImpl = this.routeManagement.getAsForRoute(data.getDpc(), data.getOpc(), data.getSI(), data.getSLS());
-		if (asImpl == null) {
-			logger.error(String.format("Tx : No AS found for routing message %s", payload));
-			throw new IOException(String.format("Tx : No AS found for routing message %s", payload));
-		}
-		payload.setNetworkAppearance(asImpl.getNetworkAppearance());
-		payload.setRoutingContext(asImpl.getRoutingContext());
-		asImpl.write(payload);
+		String taskID = String.valueOf(mtp3TransferPrimitive.getOpc()) + String.valueOf(mtp3TransferPrimitive.getDpc());
+		if (super.affinityBySlsEnabled)
+			taskID += String.valueOf(mtp3TransferPrimitive.getSls());
+
+		mtp3TransferPrimitive.retain();
+		RunnableTask outgoingTask = new RunnableTask(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					AsImpl asImpl = M3UAManagementImpl.this.routeManagement.getAsForRoute(data.getDpc(), data.getOpc(),
+							data.getSI(), data.getSLS());
+					if (asImpl == null) {
+						logger.error(String.format("Tx : No AS found for routing message %s", payload));
+						callback.onError(
+								new IOException(String.format("Tx : No AS found for routing message %s", payload)));
+						return;
+					}
+
+					payload.setNetworkAppearance(asImpl.getNetworkAppearance());
+					payload.setRoutingContext(asImpl.getRoutingContext());
+
+					try {
+						asImpl.write(payload);
+						callback.onSuccess();
+					} catch (IOException e) {
+						logger.error("An error occured while trying to send m3ua message via AS, " + e);
+						callback.onError(e);
+					}
+				} finally {
+					mtp3TransferPrimitive.release();
+				}
+			}
+		}, taskID);
+
+		if (super.affinityEnabled)
+			this.workerPool.addTaskLast(outgoingTask);
+		else
+			this.workerPool.getQueue().offerLast(outgoingTask);
 	}
 
 	@Override

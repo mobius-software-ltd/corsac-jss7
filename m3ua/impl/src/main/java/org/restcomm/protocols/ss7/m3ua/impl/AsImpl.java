@@ -363,10 +363,10 @@ public class AsImpl implements As {
 	protected void setM3UAManagement(M3UAManagementImpl m3uaManagement) {
 		this.m3UAManagementImpl = m3uaManagement;
 		if (this.localFSM != null)
-			this.localFSM.setQueuedTasks(m3uaManagement.queuedTasks);
+			this.localFSM.setQueuedTasks(m3uaManagement.workerPool.getPeriodicQueue());
 
 		if (this.peerFSM != null)
-			this.peerFSM.setQueuedTasks(m3uaManagement.queuedTasks);
+			this.peerFSM.setQueuedTasks(m3uaManagement.workerPool.getPeriodicQueue());
 
 		switch (this.m3UAManagementImpl.getMaxAsForRoute()) {
 		case 1:
