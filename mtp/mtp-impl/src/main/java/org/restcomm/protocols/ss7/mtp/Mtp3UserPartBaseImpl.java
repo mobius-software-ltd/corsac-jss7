@@ -78,9 +78,6 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 
 	public WorkerPool workerPool;
 
-	private AtomicLong localTaskIdentifier = new AtomicLong(1L);
-	private ConcurrentHashMap<Long, MsgDeliveryHandler> remainingTasks = new ConcurrentHashMap<>();
-
 	private Mtp3TransferPrimitiveFactory mtp3TransferPrimitiveFactory = null;
 
 	public Mtp3UserPartBaseImpl(String productName, WorkerPool workerPool) {
@@ -175,11 +172,6 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 		}
 
 		this.mtp3TransferPrimitiveFactory = new Mtp3TransferPrimitiveFactory(this.routingLabelFormat);
-
-		MonitorTimer monitorTimer = new MonitorTimer();
-		monitorTimer.postpone(60000L);
-
-		this.workerPool.getPeriodicQueue().store(monitorTimer.getRealTimestamp(), monitorTimer);
 		this.isStarted = true;
 	}
 
@@ -201,12 +193,11 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 	protected void sendTransferMessageToLocalUser(Mtp3TransferPrimitive msg, int seqControl,
 			TaskCallback<Exception> callback) {
 		if (this.isStarted) {
-			Long taskIdentifier = localTaskIdentifier.incrementAndGet();
 			String taskID = String.valueOf(msg.getOpc()) + String.valueOf(msg.getDpc());
 			if (this.affinityBySlsEnabled)
 				taskID += String.valueOf(msg.getSls());
 
-			MsgTransferDeliveryHandler hdl = new MsgTransferDeliveryHandler(taskIdentifier, msg, taskID, callback);
+			MsgTransferDeliveryHandler hdl = new MsgTransferDeliveryHandler(msg, taskID, callback);
 
 			seqControl = seqControl & slsFilter;
 
@@ -217,8 +208,6 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 				this.workerPool.addTaskLast(hdl);
 			else
 				this.workerPool.getQueue().offerLast(hdl);
-
-			this.remainingTasks.put(taskIdentifier, hdl);
 		} else {
 			String errorMessage = String.format(
 					"Received Mtp3TransferPrimitive=%s but Mtp3UserPart is not started. Message will be dropped", msg);
@@ -229,10 +218,8 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 
 	protected void sendPauseMessageToLocalUser(Mtp3PausePrimitive msg, TaskCallback<Exception> callback) {
 		if (this.isStarted) {
-			Long taskIdentifier = localTaskIdentifier.incrementAndGet();
-			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(taskIdentifier, msg, callback);
+			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(msg, callback);
 			this.workerPool.addTaskLast(hdl);
-			this.remainingTasks.put(taskIdentifier, hdl);
 		} else
 			logger.error(String
 					.format("Received Mtp3PausePrimitive=%s but MTP3 is not started. Message will be dropped", msg));
@@ -240,10 +227,8 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 
 	protected void sendResumeMessageToLocalUser(Mtp3ResumePrimitive msg, TaskCallback<Exception> callback) {
 		if (this.isStarted) {
-			Long taskIdentifier = localTaskIdentifier.incrementAndGet();
-			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(taskIdentifier, msg, callback);
+			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(msg, callback);
 			this.workerPool.addTaskLast(hdl);
-			this.remainingTasks.put(taskIdentifier, hdl);
 		} else
 			logger.error(String
 					.format("Received Mtp3ResumePrimitive=%s but MTP3 is not started. Message will be dropped", msg));
@@ -251,10 +236,8 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 
 	protected void sendStatusMessageToLocalUser(Mtp3StatusPrimitive msg, TaskCallback<Exception> callback) {
 		if (this.isStarted) {
-			Long taskIdentifier = localTaskIdentifier.incrementAndGet();
-			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(taskIdentifier, msg, callback);
+			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(msg, callback);
 			this.workerPool.addTaskLast(hdl);
-			this.remainingTasks.put(taskIdentifier, hdl);
 		} else
 			logger.error(String
 					.format("Received Mtp3StatusPrimitive=%s but MTP3 is not started. Message will be dropped", msg));
@@ -263,10 +246,8 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 	protected void sendEndCongestionMessageToLocalUser(Mtp3EndCongestionPrimitive msg,
 			TaskCallback<Exception> callback) {
 		if (this.isStarted) {
-			Long taskIdentifier = localTaskIdentifier.incrementAndGet();
-			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(taskIdentifier, msg, callback);
-			this.workerPool.addTaskLast(hdl);
-			this.remainingTasks.put(taskIdentifier, hdl);
+			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(msg, callback);
+			this.workerPool.addTaskLast(hdl);			
 		} else
 			logger.error(String.format(
 					"Received Mtp3EndCongestionPrimitive=%s but MTP3 is not started. Message will be dropped", msg));
@@ -279,19 +260,12 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 	}
 
 	private abstract class MsgDeliveryHandler extends RunnableTask {
-		protected Long taskIdentifier;
 		protected TaskCallback<Exception> callback;
 		protected AtomicBoolean canceled = new AtomicBoolean(false);
 
-		public MsgDeliveryHandler(Long taskIdentifier, String handlerID, TaskCallback<Exception> callback) {
+		public MsgDeliveryHandler(String handlerID, TaskCallback<Exception> callback) {
 			super(null, handlerID);
-
-			this.taskIdentifier = taskIdentifier;
 			this.callback = callback;
-		}
-
-		public void cancel() {
-			this.canceled.set(true);
 		}
 
 		public abstract void logTask();
@@ -303,9 +277,9 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 	private class MsgTransferDeliveryHandler extends MsgDeliveryHandler {
 		private Mtp3TransferPrimitive msg;
 
-		public MsgTransferDeliveryHandler(Long taskIdentifier, Mtp3TransferPrimitive msg, String handlerID,
+		public MsgTransferDeliveryHandler(Mtp3TransferPrimitive msg, String handlerID,
 				TaskCallback<Exception> callback) {
-			super(taskIdentifier, handlerID, callback);
+			super(handlerID, callback);
 			this.msg = msg;
 		}
 
@@ -340,8 +314,6 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 			} catch (IllegalReferenceCountException ex) {
 				// may be its already decreased
 			}
-
-			remainingTasks.remove(taskIdentifier);
 		}
 
 		@Override
@@ -354,8 +326,8 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 	private class MsgSystemDeliveryHandler extends MsgDeliveryHandler {
 		private Mtp3Primitive msg;
 
-		public MsgSystemDeliveryHandler(Long taskIdentifier, Mtp3Primitive msg, TaskCallback<Exception> callback) {
-			super(taskIdentifier, String.valueOf(msg.getAffectedDpc()), callback);
+		public MsgSystemDeliveryHandler(Mtp3Primitive msg, TaskCallback<Exception> callback) {
+			super(String.valueOf(msg.getAffectedDpc()), callback);
 			this.msg = msg;
 		}
 
@@ -385,71 +357,11 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 			else
 				logger.error(String.format(
 						"Received Mtp3Primitive=%s but Mtp3UserPart is not started. Message will be dropped", msg));
-
-			remainingTasks.remove(taskIdentifier);
 		}
 
 		@Override
 		public void logTask() {
 			logger.info("TASK[" + this.getClass().getCanonicalName() + "] " + msg.toString());
 		}
-	}
-
-	private class MonitorTimer implements Timer {
-		private Long startTime = System.currentTimeMillis();
-		private Long timeDiff = 0L;
-
-		@Override
-		public void execute() {
-			if (this.startTime == Long.MAX_VALUE)
-				return;
-
-			if (!isStarted)
-				return;
-
-			List<Long> tasksToStop = new ArrayList<Long>();
-			Iterator<Entry<Long, MsgDeliveryHandler>> iterator = remainingTasks.entrySet().iterator();
-			while (iterator.hasNext()) {
-				Entry<Long, MsgDeliveryHandler> currEntry = iterator.next();
-				MsgDeliveryHandler pendingTask = currEntry.getValue();
-
-				if (pendingTask.getStartTime() < System.currentTimeMillis() - 10 * 1000L) {
-					// 10 seconds is too high, however the number of stucked tasks should be minimal
-					pendingTask.logTask();
-					tasksToStop.add(currEntry.getKey());
-					pendingTask.cancel();
-				}
-			}
-
-			for (Long curr : tasksToStop)
-				remainingTasks.remove(curr);
-
-			logger.info("Remaing tasks in MTP pending tasks " + remainingTasks.size());
-			this.reset();
-		}
-
-		public void reset() {
-			this.startTime = System.currentTimeMillis();
-			workerPool.getPeriodicQueue().store(this.getRealTimestamp(), this);
-		}
-
-		public void postpone(Long timeDiff) {
-			this.timeDiff = timeDiff;
-		}
-
-		@Override
-		public long getStartTime() {
-			return this.startTime;
-		}
-
-		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + this.timeDiff;
-		}
-
-		@Override
-		public void stop() {
-			this.startTime = Long.MAX_VALUE;
-		}
-	}
+	}	
 }

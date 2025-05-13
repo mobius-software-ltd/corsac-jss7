@@ -108,7 +108,6 @@ public class AsStatePenTimeout implements FSMStateEventHandler {
 		// Now send MTP3 PAUSE
 		Iterator<AsStateListener> asStateListeners = this.asImpl.getAsStateListeners().iterator();
 
-		int i = 0;
 		while (asStateListeners.hasNext()) {
 			AsStateListener asAsStateListener = asStateListeners.next();
 			try {

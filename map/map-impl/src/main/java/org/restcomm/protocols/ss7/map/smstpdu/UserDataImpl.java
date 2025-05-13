@@ -344,7 +344,7 @@ public class UserDataImpl implements UserData {
         sb.append("TP-User-Data [");
         if (this.decodedMessage == null) {
             if (this.encodedData != null)
-                sb.append(ASNOctetString.printDataArr(Unpooled.wrappedBuffer(this.encodedData)));
+                sb.append(ASNOctetString.printDataArr(this.encodedData.slice()));
         } else {
             sb.append("Msg:[");
             sb.append(this.decodedMessage);
