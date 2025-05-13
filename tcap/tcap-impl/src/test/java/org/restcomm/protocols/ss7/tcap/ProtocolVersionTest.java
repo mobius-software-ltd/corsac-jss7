@@ -89,6 +89,7 @@ public class ProtocolVersionTest extends SccpHarness {
      *
      * @see junit.framework.TestCase#setUp()
      */
+    @Override
     @Before
     public void setUp() throws Exception {
     	this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
@@ -102,8 +103,8 @@ public class ProtocolVersionTest extends SccpHarness {
 
         sccpListener = new TestSccpListener();
         this.sccpProvider2.registerSccpListener(8, sccpListener);
-        this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider1, 8, 4);
-        this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider2, 7, 4);
+	this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider1, 8, workerPool);
+	this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider2, 7, workerPool);
 
         this.tcapStack1.start();
         this.tcapStack2.start();
@@ -121,6 +122,7 @@ public class ProtocolVersionTest extends SccpHarness {
      *
      * @see junit.framework.TestCase#tearDown()
      */
+    @Override
     @After
     public void tearDown() {
         this.tcapStack1.stop();
@@ -204,9 +206,8 @@ public class ProtocolVersionTest extends SccpHarness {
         	
             if(output!=null && output instanceof TCBeginMessage) {
             	TCBeginMessage tcb=(TCBeginMessage)output;
-            	if(tcb.getDialogPortion().getDialogAPDU() instanceof DialogRequestAPDU) {
-                            pv=((DialogRequestAPDU)tcb.getDialogPortion().getDialogAPDU()).getProtocolVersion();
-            	} 
+            	if(tcb.getDialogPortion().getDialogAPDU() instanceof DialogRequestAPDU)
+		    pv=((DialogRequestAPDU)tcb.getDialogPortion().getDialogAPDU()).getProtocolVersion(); 
                         
             	System.out.println("DIALOG REQUEST:" + tcb.getDialogPortion().toString());
             	System.out.println("PROTOCOL VERSION IS : " + pv);

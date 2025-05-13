@@ -23,6 +23,9 @@
 
 package org.restcomm.protocols.ss7.sccp.impl.message;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SegmentationImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.HopCounter;
@@ -34,7 +37,8 @@ import io.netty.buffer.Unpooled;
 
 /**
  *
- * This interface represents a SCCP message for connectionless data transfer (UDT, XUDT and LUDT)
+ * This interface represents a SCCP message for connectionless data transfer
+ * (UDT, XUDT and LUDT)
  *
  * @author sergey vetyutnev
  * @author yulian.oifa
@@ -42,83 +46,109 @@ import io.netty.buffer.Unpooled;
  */
 public abstract class SccpSegmentableMessageImpl extends SccpAddressedMessageImpl {
 
-    protected ByteBuf data;
-    protected SegmentationImpl segmentation;
+	protected ByteBuf data;
+	private List<ByteBuf> allBufs = new ArrayList<ByteBuf>();
+	protected SegmentationImpl segmentation;
 
-    protected boolean isFullyRecieved;
-    protected int remainingSegments;
-    protected int segments = 1;
-    
-    protected SccpStackImpl.MessageReassemblyProcess mrp;
+	protected boolean isFullyRecieved;
+	protected int remainingSegments;
 
-    protected SccpSegmentableMessageImpl(int maxDataLen, int type, int outgoingSls, int localSsn,
-            SccpAddress calledParty, SccpAddress callingParty, ByteBuf data, HopCounter hopCounter) {
-        super(maxDataLen,type, outgoingSls, localSsn, calledParty, callingParty, hopCounter);
+	protected SccpStackImpl.MessageReassemblyProcess mrp;
 
-        this.data = data;
-        this.isFullyRecieved = true;
-    }
+	protected SccpSegmentableMessageImpl(int maxDataLen, int type, int outgoingSls, int localSsn,
+			SccpAddress calledParty, SccpAddress callingParty, ByteBuf data, HopCounter hopCounter) {
+		super(maxDataLen, type, outgoingSls, localSsn, calledParty, callingParty, hopCounter);
 
-    protected SccpSegmentableMessageImpl(int maxDataLen, int type, int incomingOpc, int incomingDpc,
-            int incomingSls, int networkId) {
-        super(maxDataLen,type, incomingOpc, incomingDpc, incomingSls, networkId);
-    }
+		this.data = data;
+		this.allBufs.add(data);
+		this.isFullyRecieved = true;
+	}
 
-    public Segmentation getSegmentation() {
-        return segmentation;
-    }
+	protected SccpSegmentableMessageImpl(int maxDataLen, int type, int incomingOpc, int incomingDpc, int incomingSls,
+			int networkId) {
+		super(maxDataLen, type, incomingOpc, incomingDpc, incomingSls, networkId);
+	}
 
-    public boolean getIsFullyRecieved() {
-        return this.isFullyRecieved;
-    }
+	public Segmentation getSegmentation() {
+		return segmentation;
+	}
 
-    public int getRemainingSegments() {
-        return remainingSegments;
-    }
-    
-    public ByteBuf getData() {
-        return Unpooled.wrappedBuffer(this.data);
-    }
-    
-    //for regular operation copy of data should not be stored
-    //however for testing or for async handling where the message should be retained in memory 
-    //we do use it. for multiple segments we already have copy so no need to copy again
-    public void copyData() {
-    	if(segments==1)
-    		this.data = data.copy();
-    }
+	public boolean getIsFullyRecieved() {
+		return this.isFullyRecieved;
+	}
 
-    public void setReceivedSingleSegment() {
-        this.isFullyRecieved = true; 
-    }
+	public int getRemainingSegments() {
+		return remainingSegments;
+	}
 
-    public void setReceivedFirstSegment() {
-        if (this.segmentation == null)
-            // this can not occur
-            return;
-        
-        this.data = data.copy();
-        this.remainingSegments = this.segmentation.getRemainingSegments();        
-    }
+	public ByteBuf getData() {
+		return this.data.slice();
+	}
 
-    public void setReceivedNextSegment(SccpSegmentableMessageImpl nextSegement) {
-    	segments ++;
-    	this.data = Unpooled.copiedBuffer(data,nextSegement.data);
-        if (--this.remainingSegments == 0) {
-            this.isFullyRecieved = true;
-        }
-    }
-    
-    public void cancelSegmentation() {
-        this.remainingSegments = -1;
-        this.isFullyRecieved = false;
-    }
+	public void setData(ByteBuf data) {
+		this.data = data;
+	}
 
-    public SccpStackImpl.MessageReassemblyProcess getMessageReassemblyProcess() {
-        return mrp;
-    }
+	public void setReceivedSingleSegment() {
+		this.isFullyRecieved = true;
+		// release and retain would be done based on array even for single item
 
-    public void setMessageReassemblyProcess(SccpStackImpl.MessageReassemblyProcess mrp) {
-        this.mrp = mrp;
-    }
+		this.allBufs.clear();
+		this.allBufs.add(data);
+	}
+
+	public void setReceivedFirstSegment() {
+		if (this.segmentation == null)
+			// this can not occur
+			return;
+
+		this.allBufs.clear();
+		this.allBufs.add(data);
+		this.remainingSegments = this.segmentation.getRemainingSegments();
+	}
+
+	public void setReceivedNextSegment(SccpSegmentableMessageImpl nextSegement) {
+		this.allBufs.add(nextSegement.data);
+
+		ByteBuf[] bufarray = new ByteBuf[allBufs.size()];
+		bufarray = allBufs.toArray(bufarray);
+		this.data = Unpooled.wrappedBuffer(bufarray);
+		if (--this.remainingSegments == 0)
+			this.isFullyRecieved = true;
+	}
+
+	public void cancelSegmentation() {
+		this.remainingSegments = -1;
+		this.isFullyRecieved = false;
+	}
+
+	public SccpStackImpl.MessageReassemblyProcess getMessageReassemblyProcess() {
+		return mrp;
+	}
+
+	public void setMessageReassemblyProcess(SccpStackImpl.MessageReassemblyProcess mrp) {
+		this.mrp = mrp;
+	}
+
+	@Override
+	public void retain() {
+		if (allBufs != null && allBufs.size() > 0)
+			for (ByteBuf buffer : allBufs)
+				buffer.retain();
+		else
+			this.data.retain();
+	}
+
+	@Override
+	public void release() {
+		if (allBufs != null && allBufs.size() > 0)
+			for (ByteBuf buffer : allBufs)
+				buffer.release();
+		else
+			this.data.release();
+	}
+
+	public int getRefCount() {
+		return this.data.refCnt();
+	}
 }

@@ -21,7 +21,7 @@
 		<junit.version>4.12</junit.version>
 		<compiler.plugin.version>3.8.1</compiler.plugin.version>
 		<netty.version>4.1.63.Final</netty.version>	
-		<pcap.version>3.0.10</pcap.version>			
+		<pcap.version>3.0.10</pcap.version>
 	</properties>
 
 	<modules>
@@ -335,7 +335,8 @@
 			</activation>
 			<properties>
 				<sctp.version>2.2.14</sctp.version>
-				<xmlbind.version>3.0.1</xmlbind.version>         		
+				<xmlbind.version>3.0.1</xmlbind.version>
+				<timers.version>1.0.0-34-SNAPSHOT</timers.version>    
 			</properties>
 			<build>
 				<plugins>
@@ -357,7 +358,8 @@
 			<id>java11</id>
 			<properties>
 				<sctp.version>2.2.14-java11</sctp.version>
-				<xmlbind.version>4.0.0</xmlbind.version>				
+				<xmlbind.version>4.0.0</xmlbind.version>
+				<timers.version>1.0.0-34-SNAPSHOT-java11</timers.version> 				
 			</properties>
 			<build>
 				<plugins>

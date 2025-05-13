@@ -28,16 +28,16 @@ import org.restcomm.protocols.ss7.sccp.parameter.RefusalCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
 
 /**
-*
-* @author sergey vetyutnev
-* @author yulianoifa
-*
-*/
+ *
+ * @author sergey vetyutnev
+ * @author yulianoifa
+ *
+ */
 public interface SccpRoutingCtxInterface {
 
-    void sendSccpError(SccpAddressedMessageImpl msg, ReturnCauseValue returnCauseInt, RefusalCauseValue refusalCauseInt)
-            throws Exception;
+	void sendSccpError(SccpAddressedMessageImpl msg, ReturnCauseValue returnCauseInt, RefusalCauseValue refusalCauseInt)
+			throws Exception;
 
-    void routeAddressed(SccpAddressedMessageImpl msg) throws Exception;
+	void routeAddressed(SccpAddressedMessageImpl msg) throws Exception;
 
 }

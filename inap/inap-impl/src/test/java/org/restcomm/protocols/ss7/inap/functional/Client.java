@@ -67,10 +67,10 @@ import org.restcomm.protocols.ss7.isup.message.parameter.GenericNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SccpAddressImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
 /**
@@ -81,6 +81,8 @@ public class Client extends EventTestHarness {
 
 	private static Logger logger = LogManager.getLogger(Client.class);
 
+	private static final int INVOKE_TIMEOUT = 10000;
+	
 	// private CAPFunctionalTest runningTestCase;
 	private SccpAddress thisAddress;
 	private SccpAddress remoteAddress;
@@ -94,6 +96,16 @@ public class Client extends EventTestHarness {
 	// private boolean _S_receivedUnstructuredSSIndication, _S_sentEnd;
 
 	protected INAPDialogCircuitSwitchedCall clientCscDialog;
+
+	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {
+		}
+
+		@Override
+		public void onError(Exception exception) {
+		}
+	};
 
 	// private FunctionalTestScenario step;
 
@@ -139,7 +151,7 @@ public class Client extends EventTestHarness {
 				initialDp.getBackwardGVNSIndicator());
 
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDpRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendAssistRequestInstructionsRequest() throws INAPException {
@@ -161,7 +173,7 @@ public class Client extends EventTestHarness {
 		clientCscDialog.addAssistRequestInstructionsRequest(correlationID, null, ipSSPCapabilities, null);
 		this.observerdEvents
 				.add(TestEvent.createSentEvent(EventType.AssistRequestInstructionsRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendEstablishTemporaryConnectionRequest_CallInformationRequest() throws INAPException {
@@ -191,7 +203,7 @@ public class Client extends EventTestHarness {
 		clientCscDialog.addCollectInformationRequest(null, null, null, null, null, null, null);
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.CollectInformationRequest, null, sequence++));
 
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendActivityTestRequest(int invokeTimeout) throws INAPException {
@@ -202,7 +214,7 @@ public class Client extends EventTestHarness {
 
 		clientCscDialog.addActivityTestRequest(invokeTimeout);
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.ActivityTestRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendEventReportBCSMRequest_1() throws INAPException {
@@ -222,7 +234,7 @@ public class Client extends EventTestHarness {
 				new LegIDImpl(LegType.leg1, null), miscCallInfo, null);
 
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.EventReportBCSMRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendBadDataNoAcn() throws INAPException {
@@ -231,15 +243,10 @@ public class Client extends EventTestHarness {
 				INAPApplicationContext.Ericcson_cs1plus_assist_handoff_SSP_to_SCP_AC_REV_B, this.thisAddress,
 				this.remoteAddress, 0);
 
-		try {
-			Dialog tcapDialog = ((INAPDialogImpl) clientCscDialog).getTcapDialog();
-			TCBeginRequest tcBeginReq = ((INAPProviderImpl) this.inapProvider).getTCAPProvider()
-					.getDialogPrimitiveFactory().createBegin(tcapDialog);
-			tcapDialog.send(tcBeginReq);
-		} catch (TCAPSendException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Dialog tcapDialog = ((INAPDialogImpl) clientCscDialog).getTcapDialog();
+		TCBeginRequest tcBeginReq = ((INAPProviderImpl) this.inapProvider).getTCAPProvider().getDialogPrimitiveFactory()
+				.createBegin(tcapDialog);
+		tcapDialog.send(tcBeginReq, dummyCallback);
 	}
 
 	public void testMessageUserDataLength() throws INAPException {
@@ -274,7 +281,7 @@ public class Client extends EventTestHarness {
 	public static boolean checkTestInitialDp(InitialDPRequest ind) {
 
 		try {
-			if (ind.getServiceKey() != 321)
+			if (ind.getServiceKey() != INVOKE_TIMEOUT)
 				return false;
 
 			if (ind.getCalledPartyNumber() == null)
@@ -314,7 +321,7 @@ public class Client extends EventTestHarness {
 					.createCalledPartyNumber(calledPartyNumber);
 			calledPartyNumberCap = new CalledPartyNumberIsupImpl(calledPartyNumber);
 
-			InitialDPRequestImpl res = new InitialDPRequestImpl(321, calledPartyNumberCap, null, null, null, null, null,
+			InitialDPRequestImpl res = new InitialDPRequestImpl(INVOKE_TIMEOUT, calledPartyNumberCap, null, null, null, null, null,
 					null, null, null, null, null, null, null, null, null, null, null, null, null, false, null, null,
 					null, null, null, null, null, null);
 
@@ -414,7 +421,7 @@ public class Client extends EventTestHarness {
 
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDpRequest, null, sequence++));
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDpRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendInitialDp3() throws INAPException {
@@ -449,7 +456,7 @@ public class Client extends EventTestHarness {
 
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDpRequest, null, sequence++));
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDpRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendInitialDp_playAnnouncement() throws INAPException {
@@ -477,7 +484,7 @@ public class Client extends EventTestHarness {
 
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitialDpRequest, null, sequence++));
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.PlayAnnouncementRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendInvokesForUnexpectedResultError() throws INAPException {
@@ -538,7 +545,7 @@ public class Client extends EventTestHarness {
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReleaseCallRequest, null, sequence++));
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReleaseCallRequest, null, sequence++));
 
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendDummyMessage() throws INAPException {
@@ -548,7 +555,7 @@ public class Client extends EventTestHarness {
 		clientCscDialog = this.inapProvider.getINAPServiceCircuitSwitchedCall().createNewDialog(appCnt,
 				this.thisAddress, dummyAddress, 0);
 
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void actionB() throws INAPException {
@@ -558,7 +565,7 @@ public class Client extends EventTestHarness {
 				this.thisAddress, dummyAddress, 0);
 		clientCscDialog.setReturnMessageOnError(true);
 
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 	public void sendInitiateCallAttemptRequest() throws INAPException {
@@ -577,7 +584,7 @@ public class Client extends EventTestHarness {
 		clientCscDialog.addInitiateCallAttemptRequest(destinationRoutingAddress, null, null, null, null, null, null);
 
 		this.observerdEvents.add(TestEvent.createSentEvent(EventType.InitiateCallAttemptRequest, null, sequence++));
-		clientCscDialog.send();
+		clientCscDialog.send(dummyCallback);
 	}
 
 //    public void sendReleaseSmsRequest(INAPApplicationContext appCnt) throws INAPException {

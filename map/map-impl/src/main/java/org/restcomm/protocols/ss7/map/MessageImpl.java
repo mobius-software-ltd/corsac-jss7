@@ -40,45 +40,55 @@ public abstract class MessageImpl implements MAPMessage {
     private boolean returnResultNotLast = false;
     private ByteBuf originalBuffer;
     
-    public int getInvokeId() {
+    @Override
+	public int getInvokeId() {
         return this.invokeId;
     }
 
-    public MAPDialog getMAPDialog() {
+    @Override
+	public MAPDialog getMAPDialog() {
         return this.mapDialog;
     }
 
-    public void setInvokeId(int invokeId) {
+    @Override
+	public void setInvokeId(int invokeId) {
         this.invokeId = invokeId;
     }
 
-    public void setMAPDialog(MAPDialog mapDialog) {
+    @Override
+	public void setMAPDialog(MAPDialog mapDialog) {
         this.mapDialog = mapDialog;
     }
 
-    public boolean isReturnResultNotLast() {
+    @Override
+	public boolean isReturnResultNotLast() {
         return returnResultNotLast;
     }
 
-    public void setReturnResultNotLast(boolean returnResultNotLast) {
+    @Override
+	public void setReturnResultNotLast(boolean returnResultNotLast) {
         this.returnResultNotLast = returnResultNotLast;
     }
 
-    public void setOriginalBuffer(ByteBuf buffer) {
+    @Override
+	public void setOriginalBuffer(ByteBuf buffer) {
     	this.originalBuffer=buffer;
     }
     
-    public ByteBuf getOriginalBuffer() {
+    @Override
+	public ByteBuf getOriginalBuffer() {
     	return this.originalBuffer;
     }
     
-    public void retain() {
+    @Override
+	public void retain() {
     	if(originalBuffer!=null)
     		ReferenceCountUtil.retain(originalBuffer);
     }
     
-    public void release() {
-    	if(originalBuffer!=null && originalBuffer.refCnt()>0)
-    		ReferenceCountUtil.release(originalBuffer, originalBuffer.refCnt());
+    @Override
+	public void release() {
+    	if(originalBuffer!=null)
+    		ReferenceCountUtil.release(originalBuffer);
     }
 }

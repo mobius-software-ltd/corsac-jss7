@@ -37,19 +37,23 @@ public abstract class MessageImpl implements INAPMessage {
     private INAPDialog inapDialog;
     private ByteBuf originalBuffer;
 
-    public int getInvokeId() {
+    @Override
+	public int getInvokeId() {
         return this.invokeId;
     }
 
-    public INAPDialog getINAPDialog() {
+    @Override
+	public INAPDialog getINAPDialog() {
         return this.inapDialog;
     }
 
-    public void setInvokeId(int invokeId) {
+    @Override
+	public void setInvokeId(int invokeId) {
         this.invokeId = invokeId;
     }
 
-    public void setINAPDialog(INAPDialog inapDialog) {
+    @Override
+	public void setINAPDialog(INAPDialog inapDialog) {
         this.inapDialog = inapDialog;
     }
 
@@ -58,21 +62,25 @@ public abstract class MessageImpl implements INAPMessage {
         sb.append(this.invokeId);
     }
 
-    public void setOriginalBuffer(ByteBuf buffer) {
+    @Override
+	public void setOriginalBuffer(ByteBuf buffer) {
     	this.originalBuffer=buffer;
     }
     
-    public ByteBuf getOriginalBuffer() {
+    @Override
+	public ByteBuf getOriginalBuffer() {
     	return this.originalBuffer;
     }    
     
-    public void retain() {
+    @Override
+	public void retain() {
     	if(originalBuffer!=null)
     		ReferenceCountUtil.retain(originalBuffer);
     }
     
-    public void release() {
-    	if(originalBuffer!=null && originalBuffer.refCnt()>0)
-    		ReferenceCountUtil.release(originalBuffer, originalBuffer.refCnt());
+    @Override
+	public void release() {
+    	if(originalBuffer!=null)
+    		ReferenceCountUtil.release(originalBuffer);
     }
 }

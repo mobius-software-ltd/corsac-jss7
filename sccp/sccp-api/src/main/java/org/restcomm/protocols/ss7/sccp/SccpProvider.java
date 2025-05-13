@@ -35,6 +35,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 /**
  *
  * @author Oleg Kulikov
@@ -80,7 +82,7 @@ public interface SccpProvider extends Serializable {
      * @param message Message to be sent
      * @throws IOException
      */
-    void send(SccpDataMessage message) throws IOException;
+    void send(SccpDataMessage message, TaskCallback<Exception> callback);
 
     /**
      * Sends a unitdata service UDTS, XUDTS, LUDTS message (with error inside).
@@ -88,7 +90,7 @@ public interface SccpProvider extends Serializable {
      * @param message Message to be sent
      * @throws IOException
      */
-    void send(SccpNoticeMessage message) throws IOException;
+    void send(SccpNoticeMessage message, TaskCallback<Exception> callback);
 
     /**
      * Return the maximum length (in bytes) of the sccp message data

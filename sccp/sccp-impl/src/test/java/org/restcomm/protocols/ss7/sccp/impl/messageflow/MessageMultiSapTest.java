@@ -52,7 +52,7 @@ import io.netty.buffer.Unpooled;
 public class MessageMultiSapTest extends SccpHarness {
 
     private SccpAddress a1, a2;
-    protected Mtp3UserPartImpl mtp3UserPart11 = new Mtp3UserPartImpl(null);
+    protected Mtp3UserPartImpl mtp3UserPart11;
 
     public MessageMultiSapTest() {
     }
@@ -86,8 +86,11 @@ public class MessageMultiSapTest extends SccpHarness {
         return stack;
     }
 
+    @Override
     @Before
     public void setUp() throws Exception {
+	mtp3UserPart11 = new Mtp3UserPartImpl(null, workerPool);
+
         super.setUp();
 
         sccpStack1.getRouter().addMtp3ServiceAccessPoint(2, 2, 11, 2, 0, null);
@@ -97,6 +100,7 @@ public class MessageMultiSapTest extends SccpHarness {
         resource1.addRemoteSsn(2, 12, getSSN(), 0, false);
     }
 
+    @Override
     @After
     public void tearDown() {
         super.tearDown();
@@ -133,23 +137,29 @@ public class MessageMultiSapTest extends SccpHarness {
 
         sccpStack2.getRouter().addMtp3Destination(1, 2, 12, 12, 0, 255, 255);
 
-        Thread.sleep(100);
+        Thread.sleep(PROCESSING_TIMEOUT);
 
         // send a UDT message to the sap1 (opc=1, dpc=2)
         sccpStack1.getRouter().addLongMessageRule(1, 2, 2, LongMessageRuleType.LONG_MESSAGE_FORBBIDEN);
         sccpStack1.getRouter().addLongMessageRule(2, 12, 12, LongMessageRuleType.LONG_MESSAGE_FORBBIDEN);
         SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(a2, a1, getDataSrc(), 0, 8,
                 true, null, null);
-        sccpProvider1.send(message);
-        Thread.sleep(100);
+        super.sentMessages.set(0);
+        sccpProvider1.send(message, super.getTaskCallback(1));
+        super.sendSemaphore.acquire();
+        
+        Thread.sleep(PROCESSING_TIMEOUT);
+
+        
         assertEquals(u1.getMessages().size(), 0);
         assertEquals(u2.getMessages().size(), 1);
         assertEquals(mtp3UserPart11.getMessages().size(), 0);
 
         // send a UDT message to the sap2 (opc=11, dpc=12)
         message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(a3, a1, getDataSrc(), 0, 8, true, null, null);
-        sccpProvider1.send(message);
-        Thread.sleep(100);
+        super.sentMessages.set(0);
+        sccpProvider1.send(message, super.getTaskCallback(1));
+        super.sendSemaphore.acquire();
         assertEquals(u1.getMessages().size(), 0);
         assertEquals(u2.getMessages().size(), 1);
         assertEquals(mtp3UserPart11.getMessages().size(), 1);
@@ -159,8 +169,9 @@ public class MessageMultiSapTest extends SccpHarness {
         resource1.addRemoteSsn(3, 15, getSSN(), 0, false);
         SccpAddress a4 = sccpProvider1.getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 15, 8);
         message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(a4, a1, getDataSrc(), 0, 8, true, null, null);
-        sccpProvider1.send(message);
-        Thread.sleep(100);
+        super.sentMessages.set(0);
+        sccpProvider1.send(message, super.getTaskCallback(1));
+        super.sendSemaphore.acquire();
         assertEquals(u1.getMessages().size(), 1);
         assertEquals(u2.getMessages().size(), 1);
         assertEquals(mtp3UserPart11.getMessages().size(), 1);
@@ -168,22 +179,20 @@ public class MessageMultiSapTest extends SccpHarness {
         assertEquals(nMsg.getReturnCause().getValue(), ReturnCauseValue.SCCP_FAILURE);
 
         // receiving a message from the sap2 to the local sccp user -> delivering a message
-        this.mtp3UserPart11.sendTransferMessageToLocalUser(12, 11, getDataUdt1());
-        Thread.sleep(500);
+        super.sendTransferMessageToLocalUser(mtp3UserPart11, 12, 11, getDataUdt1());
         assertEquals(u1.getMessages().size(), 2);
         assertEquals(u2.getMessages().size(), 1);
         assertEquals(mtp3UserPart11.getMessages().size(), 1);
 
         // receiving a message from the sap2 to the sap2 () -> sccp transit
-        this.mtp3UserPart11.sendTransferMessageToLocalUser(12, 2, getDataUdt2());
-        Thread.sleep(100);
+        super.sendTransferMessageToLocalUser(mtp3UserPart11, 12, 2, getDataUdt2());
+                
         assertEquals(u1.getMessages().size(), 2);
         assertEquals(u2.getMessages().size(), 2);
         assertEquals(mtp3UserPart11.getMessages().size(), 1);
 
         // receiving a message from mtp3 without dpc in CallingPartyAddress (RouteOnSsn in CallingPartyAddress)
-        this.mtp3UserPart11.sendTransferMessageToLocalUser(2, 1, getDataUdt3());
-        Thread.sleep(100);
+        super.sendTransferMessageToLocalUser(mtp3UserPart11, 2, 1, getDataUdt3());
         assertEquals(u1.getMessages().size(), 3);
         assertEquals(u2.getMessages().size(), 2);
         assertEquals(mtp3UserPart11.getMessages().size(), 1);

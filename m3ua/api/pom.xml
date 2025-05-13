@@ -27,6 +27,12 @@
 			<groupId>com.mobius-software.protocols.sctp</groupId>
 			<artifactId>sctp-api</artifactId>
 		</dependency>
+		<!-- timers -->
+		<dependency>
+			<groupId>com.mobius-software</groupId>
+			<artifactId>mobius-timers</artifactId>
+			<version>${timers.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

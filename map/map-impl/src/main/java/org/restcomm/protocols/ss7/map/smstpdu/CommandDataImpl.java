@@ -37,79 +37,83 @@ import io.netty.buffer.Unpooled;
  */
 public class CommandDataImpl implements CommandData {
 	private ByteBuf encodedData;
-    private String decodedMessage;
+	private String decodedMessage;
 
-    private boolean isDecoded;
-    private boolean isEncoded;
+	private boolean isDecoded;
+	private boolean isEncoded;
 
-    public CommandDataImpl(ByteBuf data) {
-        this.encodedData = data;
-        this.isEncoded = true;
-    }
+	public CommandDataImpl(ByteBuf data) {
+		this.encodedData = data;
+		this.isEncoded = true;
+	}
 
-    public CommandDataImpl(String decodedMessage) {
-        this.decodedMessage = decodedMessage;
-        this.isDecoded = true;
-    }
+	public CommandDataImpl(String decodedMessage) {
+		this.decodedMessage = decodedMessage;
+		this.isDecoded = true;
+	}
 
-    public ByteBuf getEncodedData() {
-    	if(this.encodedData==null)
-    		return null;
-    	
-        return Unpooled.wrappedBuffer(this.encodedData);
-    }
+	@Override
+	public ByteBuf getEncodedData() {
+		if (this.encodedData == null)
+			return null;
 
-    public String getDecodedMessage() {
-        return decodedMessage;
-    }
+		return this.encodedData.slice();
+	}
 
-    public void encode() throws MAPException {
+	@Override
+	public String getDecodedMessage() {
+		return decodedMessage;
+	}
 
-        if (this.isEncoded)
-            return;
-        this.isEncoded = true;
+	@Override
+	public void encode() throws MAPException {
 
-        this.encodedData = null;
+		if (this.isEncoded)
+			return;
+		this.isEncoded = true;
 
-        if (this.decodedMessage == null)
-            this.decodedMessage = "";
+		this.encodedData = null;
 
-        // TODO: what is an encoding algorithm ?
-        Charset chs = Charset.forName("US-ASCII");
-        this.encodedData = Unpooled.wrappedBuffer(this.decodedMessage.getBytes(chs));
-    }
+		if (this.decodedMessage == null)
+			this.decodedMessage = "";
 
-    public void decode() throws MAPException {
+		// TODO: what is an encoding algorithm ?
+		Charset chs = Charset.forName("US-ASCII");
+		this.encodedData = Unpooled.wrappedBuffer(this.decodedMessage.getBytes(chs));
+	}
 
-        if (this.isDecoded)
-            return;
-        this.isDecoded = true;
+	@Override
+	public void decode() throws MAPException {
 
-        this.decodedMessage = null;
+		if (this.isDecoded)
+			return;
+		this.isDecoded = true;
 
-        if (this.encodedData == null)
-            throw new MAPException("Error decoding a text from Sms CommandData: encodedData field is null");
+		this.decodedMessage = null;
 
-        // TODO: what is an encoding algorithm ?
-        Charset chs = Charset.forName("US-ASCII");
-        this.decodedMessage = Unpooled.wrappedBuffer(this.encodedData).toString(chs);
-    }
+		if (this.encodedData == null)
+			throw new MAPException("Error decoding a text from Sms CommandData: encodedData field is null");
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
+		// TODO: what is an encoding algorithm ?
+		Charset chs = Charset.forName("US-ASCII");
+		this.decodedMessage = Unpooled.wrappedBuffer(this.encodedData).toString(chs);
+	}
 
-        sb.append("TP-Command-Data [");
-        if (this.decodedMessage == null) {
-            if (this.encodedData != null)
-                sb.append(ASNOctetString.printDataArr(Unpooled.wrappedBuffer(this.encodedData)));
-        } else {
-            sb.append("Msg:[");
-            sb.append(this.decodedMessage);
-            sb.append("]");
-        }
-        sb.append("]");
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
 
-        return sb.toString();
-    }
+		sb.append("TP-Command-Data [");
+		if (this.decodedMessage == null) {
+			if (this.encodedData != null)
+				sb.append(ASNOctetString.printDataArr(Unpooled.wrappedBuffer(this.encodedData)));
+		} else {
+			sb.append("Msg:[");
+			sb.append(this.decodedMessage);
+			sb.append("]");
+		}
+		sb.append("]");
+
+		return sb.toString();
+	}
 }

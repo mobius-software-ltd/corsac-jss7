@@ -23,8 +23,6 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import io.netty.buffer.ByteBuf;
-
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnItMessageImpl;
@@ -32,6 +30,11 @@ import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnSegmentableMessageIm
 import org.restcomm.protocols.ss7.sccp.message.SccpConnMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
+
+import com.mobius.software.common.dal.timers.TaskCallback;
+
+import io.netty.buffer.ByteBuf;
+
 /**
  * 
  * @author yulianoifa
@@ -43,26 +46,30 @@ public class SccpConnectionImpl extends SccpConnectionWithCouplingImpl implement
         super(stack.newSls(), localSsn, localReference, protocol, stack, sccpRoutingControl);
     }
 
-    public void receiveMessage(SccpConnMessage message) throws Exception {
+    @Override
+	public void receiveMessage(SccpConnMessage message) throws Exception {
     	super.receiveMessage(message);
     }
 
-    public void sendMessage(SccpConnMessage message) throws Exception {
-    	super.sendMessage(message);
+    @Override
+	public void sendMessage(SccpConnMessage message, TaskCallback<Exception> callback) {
+    	super.sendMessage(message, callback);
     }
 
-    protected void callListenerOnData(ByteBuf data) {
+    @Override
+	protected void callListenerOnData(ByteBuf data) {
         SccpListener listener = getListener();
-        if (listener != null) { // when listener is absent it's handled by SccpRoutingControl
-            listener.onData(this, data);
-        }
+        if (listener != null)
+			listener.onData(this, data);
     }
 
-    public void prepareMessageForSending(SccpConnSegmentableMessageImpl message) {
+    @Override
+	public void prepareMessageForSending(SccpConnSegmentableMessageImpl message) {
         // not needed for protocol class 2
     }
 
-    protected void prepareMessageForSending(SccpConnItMessageImpl message) {
+    @Override
+	protected void prepareMessageForSending(SccpConnItMessageImpl message) {
         // not needed for protocol class 2
     }
 

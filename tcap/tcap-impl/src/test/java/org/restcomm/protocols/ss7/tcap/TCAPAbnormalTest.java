@@ -37,6 +37,8 @@ import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -60,6 +62,16 @@ public class TCAPAbnormalTest extends SccpHarness {
     private Client client;
     private Server server;
 
+    private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {			
+		}
+		
+		@Override
+		public void onError(Exception exception) {			
+		}
+	};
+    
     public TCAPAbnormalTest() {
 
     }
@@ -69,6 +81,7 @@ public class TCAPAbnormalTest extends SccpHarness {
      *
      * @see junit.framework.TestCase#setUp()
      */
+    @Override
     @Before
     public void setUp() throws Exception {
     	 this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
@@ -80,8 +93,8 @@ public class TCAPAbnormalTest extends SccpHarness {
         peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
         peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
 
-        this.tcapStack1 = new TCAPStackImpl("TCAPAbnormalTest", this.sccpProvider1, 8, 4);
-        this.tcapStack2 = new TCAPStackImpl("TCAPAbnormalTest", this.sccpProvider2, 8, 4);
+	this.tcapStack1 = new TCAPStackImpl("TCAPAbnormalTest", this.sccpProvider1, 8, workerPool);
+	this.tcapStack2 = new TCAPStackImpl("TCAPAbnormalTest", this.sccpProvider2, 8, workerPool);
 
         this.tcapStack1.start();
         this.tcapStack2.start();
@@ -101,6 +114,7 @@ public class TCAPAbnormalTest extends SccpHarness {
      *
      * @see junit.framework.TestCase#tearDown()
      */
+    @Override
     @After
     public void tearDown() {
         this.tcapStack1.stop();
@@ -128,7 +142,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         client.startClientDialog();
         SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address, peer1Address,
                 getMessageWithUnsupportedProtocolVersion(), 0, 0, false, null, null);
-        this.sccpProvider1.send(message);
+        this.sccpProvider1.send(message, dummyCallback);
         EventTestHarness.waitFor(WAIT_TIME);
 
         client.compareEvents(clientExpectedEvents);
@@ -156,7 +170,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         client.startClientDialog();
         SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address, peer1Address,
                 getMessageBadSyntax(), 0, 0, false, null, null);
-        this.sccpProvider1.send(message);
+        this.sccpProvider1.send(message, dummyCallback);
         EventTestHarness.waitFor(WAIT_TIME);
 
         client.compareEvents(clientExpectedEvents);
@@ -205,7 +219,7 @@ public class TCAPAbnormalTest extends SccpHarness {
 
         SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer1Address, peer2Address,
                 getMessageBadTag(), 0, 0, false, null, null);
-        this.sccpProvider2.send(message);
+        this.sccpProvider2.send(message, dummyCallback);
         Thread.sleep(WAIT_TIME + _DIALOG_TIMEOUT);
 
         client.compareEvents(clientExpectedEvents);
@@ -370,7 +384,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
 
         client.startClientDialog();
-        client.sendBeginUnreachableAddress(false);
+        client.sendBeginUnreachableAddress(false, dummyCallback);
         Thread.sleep(WAIT_TIME);
         Thread.sleep(_DIALOG_TIMEOUT);
 
@@ -397,7 +411,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
 
         client.startClientDialog();
-        client.sendBeginUnreachableAddress(true);
+        client.sendBeginUnreachableAddress(true, dummyCallback);
         Thread.sleep(WAIT_TIME);
 
         client.compareEvents(clientExpectedEvents);
@@ -428,7 +442,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         DialogImpl tcapDialog = client.getCurDialog();
         tcapDialog.sendData(null, null, null, INVOKE_WAIT_TIME, null, null, true, false);
 
-        client.sendBeginUnreachableAddress(false);
+        client.sendBeginUnreachableAddress(false, dummyCallback);
         Thread.sleep(WAIT_TIME);
         Thread.sleep(_DIALOG_TIMEOUT);
 
@@ -459,7 +473,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         DialogImpl tcapDialog = client.getCurDialog();
         tcapDialog.sendData(null, null, null, _DIALOG_TIMEOUT * 2L, null, null, true, false);
 
-        client.sendBeginUnreachableAddress(false);
+        client.sendBeginUnreachableAddress(false, dummyCallback);
         Thread.sleep(WAIT_TIME);
         Thread.sleep(_DIALOG_TIMEOUT * 2);
 
@@ -501,7 +515,7 @@ public class TCAPAbnormalTest extends SccpHarness {
         client.startClientDialog();
         SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address, peer1Address,
                 Unpooled.wrappedBuffer(getUnrecognizedMessageTypeMessage()), 0, 0, false, null, null);
-        this.sccpProvider1.send(message);
+        this.sccpProvider1.send(message, dummyCallback);
         Client.waitFor(WAIT_TIME);
 
         client.compareEvents(clientExpectedEvents);

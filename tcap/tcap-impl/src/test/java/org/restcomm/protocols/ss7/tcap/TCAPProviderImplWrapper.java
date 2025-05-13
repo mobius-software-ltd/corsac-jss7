@@ -19,9 +19,9 @@
 
 package org.restcomm.protocols.ss7.tcap;
 
-import java.util.concurrent.ScheduledExecutorService;
-
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
+
+import com.mobius.software.common.dal.timers.WorkerPool;
 
 /**
  *
@@ -32,7 +32,8 @@ import org.restcomm.protocols.ss7.sccp.SccpProvider;
 public class TCAPProviderImplWrapper extends TCAPProviderImpl {
 	private static final long serialVersionUID = 1L;
 
-	protected TCAPProviderImplWrapper(SccpProvider sccpProvider, TCAPStackImpl stack, int ssn,ScheduledExecutorService service) {
-        super(sccpProvider, stack, ssn, service);
+	protected TCAPProviderImplWrapper(SccpProvider sccpProvider, TCAPStackImpl stack, int ssn, WorkerPool workerPool)
+	{
+		super(sccpProvider, stack, ssn, workerPool);
     }
 }

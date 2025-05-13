@@ -53,6 +53,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.ReturnCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ReturnCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
+import com.mobius.software.common.dal.timers.WorkerPool;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -65,7 +67,8 @@ import io.netty.buffer.Unpooled;
 public class MessageSegmentationTest {
 
     private Logger logger;
-    private SccpStackImpl stack = new SccpStackImpl("MessageSegmentationTestStack");
+    private WorkerPool workerPool;
+    private SccpStackImpl stack;
     private MessageFactoryImpl messageFactory;
     private static byte[] dataA;
 
@@ -81,6 +84,10 @@ public class MessageSegmentationTest {
 
     @Before
     public void setUp() throws Exception {
+	workerPool = new WorkerPool();
+	workerPool.start(4);
+	stack = new SccpStackImpl("MessageSegmentationTestStack", workerPool);
+
         this.stack.start();
         this.messageFactory = new MessageFactoryImpl(stack);
         this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName());
@@ -90,6 +97,7 @@ public class MessageSegmentationTest {
     @After
     public void tearDown() {
         this.stack.stop();
+	this.workerPool.stop();
     }
 
     public static ByteBuf getDataA() {

@@ -36,6 +36,8 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseReques
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniRequest;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortRequest;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 /**
  * Interface for class representing Dialog/Transaction.
  *
@@ -193,7 +195,7 @@ public interface Dialog extends Serializable {
      * @param event
      * @throws TCAPSendException - thrown if dialog is in bad state, ie. Being has already been sent or dialog has been removed.
      */
-    void send(TCQueryRequest event) throws TCAPSendException;
+    void send(TCQueryRequest event, TaskCallback<Exception> callback);
 
     /**
      * Sends intermediate primitive for Structured dialog.
@@ -201,7 +203,7 @@ public interface Dialog extends Serializable {
      * @param event
      * @throws TCAPSendException - thrown if dialog is in bad state, ie. Begin has not been sent or dialog has been removed.
      */
-    void send(TCConversationRequest event) throws TCAPSendException;
+    void send(TCConversationRequest event, TaskCallback<Exception> callback);
 
     /**
      * Sends dialog end request.
@@ -209,15 +211,14 @@ public interface Dialog extends Serializable {
      * @param event
      * @throws TCAPSendException - thrown if dialog is in bad state, ie. Begin has not been sent or dialog has been removed.
      */
-    void send(TCResponseRequest event) throws TCAPSendException;
-
+    void send(TCResponseRequest event, TaskCallback<Exception> callback);
     /**
      * Sends Abort primitive with indication to user as source of termination.
      *
      * @param event
      * @throws TCAPSendException
      */
-    void send(TCUserAbortRequest event) throws TCAPSendException;
+    void send(TCUserAbortRequest event, TaskCallback<Exception> callback);
 
     /**
      * Sends unstructured dialog primitive. After this method returns dialog is expunged from stack as its life cycle reaches
@@ -226,7 +227,7 @@ public interface Dialog extends Serializable {
      * @param event
      * @throws TCAPSendException
      */
-    void send(TCUniRequest event) throws TCAPSendException;
+    void send(TCUniRequest event, TaskCallback<Exception> callback);
 
     /**
      * Programmer hook to release.

@@ -23,8 +23,6 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
-import io.netty.buffer.ByteBuf;
-
 import org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnSegmentableMessageImpl;
 import org.restcomm.protocols.ss7.sccp.message.SccpConnMessage;
@@ -33,55 +31,62 @@ import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.RefusalCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
+
+import com.mobius.software.common.dal.timers.TaskCallback;
+
+import io.netty.buffer.ByteBuf;
+
 /**
  * 
  * @author yulianoifa
  *
  */
 abstract class SccpConnectionWithTransmitQueueImpl extends SccpConnectionBaseImpl {
-    
-    public SccpConnectionWithTransmitQueueImpl(int sls, int localSsn, LocalReference localReference, ProtocolClass protocol, SccpStackImpl stack, SccpRoutingControl sccpRoutingControl) {
-        super(sls, localSsn, localReference, protocol, stack, sccpRoutingControl);
-    }
 
-    public void sendMessage(SccpConnMessage message) throws Exception {
-        if (stack.state != SccpStackImpl.State.RUNNING) {
-            logger.error("Trying to send SCCP message from SCCP user but SCCP stack is not RUNNING");
-            return;
-        }
-        if (!(message instanceof SccpConnSegmentableMessageImpl)) {
-            super.sendMessage(message);
+	public SccpConnectionWithTransmitQueueImpl(int sls, int localSsn, LocalReference localReference,
+			ProtocolClass protocol, SccpStackImpl stack, SccpRoutingControl sccpRoutingControl) {
+		super(sls, localSsn, localReference, protocol, stack, sccpRoutingControl);
+	}
 
-        } else {
-            if (MessageUtil.getDln(message) == null) {
-                logger.error(String.format("Message doesn't have DLN set: ", message));
-                throw new IllegalStateException();
-            }
-            
-            if (logger.isDebugEnabled()) {
-                logger.debug("Polling another message from queue: " + message.toString());
-            }
+	@Override
+	public void sendMessage(SccpConnMessage message, TaskCallback<Exception> callback) {
+		if (stack.state != SccpStackImpl.State.RUNNING) {
+			String errorMessage = "Trying to send SCCP message from SCCP user but SCCP stack is not RUNNING";
 
-            try {
-                SccpConnectionWithTransmitQueueImpl.super.sendMessage(message);
+			logger.error(errorMessage);
+			callback.onError(new IllegalStateException(errorMessage));
+			return;
+		}
+		if (!(message instanceof SccpConnSegmentableMessageImpl))
+			super.sendMessage(message, callback);
+		else {
+			if (MessageUtil.getDln(message) == null) {
+				String errorMessage = String.format("Message doesn't have DLN set: ", message);
 
-            } catch (Exception e) {
-                // log here Exceptions from MTP3 level
-                logger.error("IOException when sending the message: " + e.getMessage(), e);
-                throw new RuntimeException(e);
-            }
-        }
-    }
+				logger.error(errorMessage);
+				callback.onError(new IllegalArgumentException(errorMessage));
+				return;
+			}
 
-    public void reset(ResetCause reason) throws Exception {
-        super.reset(reason);
-    }
+			if (logger.isDebugEnabled())
+				logger.debug("Polling another message from queue: " + message.toString());
 
-    public void disconnect(ReleaseCause reason, ByteBuf data) throws Exception {
-        super.disconnect(reason, data);
-    }
+			SccpConnectionWithTransmitQueueImpl.super.sendMessage(message, callback);
+		}
+	}
 
-    public void refuse(RefusalCause reason, ByteBuf data) throws Exception {
-        super.refuse(reason, data);
-    }
+	@Override
+	public void reset(ResetCause reason, TaskCallback<Exception> callback) throws Exception {
+		super.reset(reason, callback);
+	}
+
+	@Override
+	public void disconnect(ReleaseCause reason, ByteBuf data, TaskCallback<Exception> callback) {
+		super.disconnect(reason, data, callback);
+	}
+
+	@Override
+	public void refuse(RefusalCause reason, ByteBuf data, TaskCallback<Exception> callback) throws Exception {
+		super.refuse(reason, data, callback);
+	}
 }

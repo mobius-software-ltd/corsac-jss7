@@ -117,6 +117,8 @@ import org.restcomm.protocols.ss7.inap.api.service.circuitSwitchedCall.primitive
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+
+import com.mobius.software.common.dal.timers.TaskCallback;
 /**
  * 
  * @author yulianoifa
@@ -128,6 +130,16 @@ public class CallSsfExample implements INAPDialogListener, INAPServiceCircuitSwi
     private INAPDialogCircuitSwitchedCall currentCapDialog;
     private CallContent cc;
 
+    private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {			
+		}
+		
+		@Override
+		public void onError(Exception exception) {			
+		}
+	};
+	
     public CallSsfExample() throws NamingException {
         InitialContext ctx = new InitialContext();
         try {
@@ -166,7 +178,7 @@ public class CallSsfExample implements INAPDialogListener, INAPServiceCircuitSwi
         currentCapDialog.addInitialDPRequest(serviceKey, callingPartyNumber, null, null, null,
                 null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         // This will initiate the TC-BEGIN with INVOKE component
-        currentCapDialog.send();
+        currentCapDialog.send(dummyCallback);
 
         this.cc.step = Step.initialDPSent;
     }
@@ -178,7 +190,7 @@ public class CallSsfExample implements INAPDialogListener, INAPServiceCircuitSwi
                     .createEventSpecificInformationBCSM(oAnswerSpecificInfo,false);
             currentCapDialog.addEventReportBCSMRequest(EventTypeBCSM.oAnswer, null, eventSpecificInformationBCSM, new LegIDImpl(legID,null),
                     miscCallInfo, null);
-            currentCapDialog.send();
+            currentCapDialog.send(dummyCallback);
             this.cc.step = Step.answered;
         }
     }
@@ -190,7 +202,7 @@ public class CallSsfExample implements INAPDialogListener, INAPServiceCircuitSwi
                     .createEventSpecificInformationBCSM(oDisconnectSpecificInfo,false);
             currentCapDialog.addEventReportBCSMRequest(EventTypeBCSM.oDisconnect, null, eventSpecificInformationBCSM, new LegIDImpl(legID,null),
                     miscCallInfo, null);
-            currentCapDialog.send();
+            currentCapDialog.send(dummyCallback);
             this.cc.step = Step.disconnected;
         }
     }
@@ -205,9 +217,8 @@ public class CallSsfExample implements INAPDialogListener, INAPServiceCircuitSwi
 
     @Override
     public void onActivityTestRequest(ActivityTestRequest ind) {
-        if (currentCapDialog != null && this.cc != null && this.cc.step != Step.disconnected) {
-            this.cc.activityTestInvokeId = ind.getInvokeId();
-        }
+        if (currentCapDialog != null && this.cc != null && this.cc.step != Step.disconnected)
+			this.cc.activityTestInvokeId = ind.getInvokeId();
     }
 
     @Override
@@ -232,26 +243,23 @@ public class CallSsfExample implements INAPDialogListener, INAPServiceCircuitSwi
 
     @Override
     public void onDialogTimeout(INAPDialog inapDialog) {
-        if (currentCapDialog != null && this.cc != null && this.cc.step != Step.disconnected) {
-            // if the call is still up - keep the sialog alive
+        if (currentCapDialog != null && this.cc != null && this.cc.step != Step.disconnected)
+			// if the call is still up - keep the sialog alive
             currentCapDialog.keepAlive();
-        }
     }
 
     @Override
     public void onDialogDelimiter(INAPDialog inapDialog) {
-        if (currentCapDialog != null && this.cc != null && this.cc.step != Step.disconnected) {
-            if (this.cc.activityTestInvokeId != null) {
-                try {
+        if (currentCapDialog != null && this.cc != null && this.cc.step != Step.disconnected)
+			if (this.cc.activityTestInvokeId != null)
+				try {
                     currentCapDialog.addActivityTestResponse(this.cc.activityTestInvokeId);
                     this.cc.activityTestInvokeId = null;
-                    currentCapDialog.send();
+                    currentCapDialog.send(dummyCallback);
                 } catch (INAPException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-            }
-        }
     }
 
     @Override

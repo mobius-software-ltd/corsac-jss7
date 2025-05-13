@@ -1,4 +1,5 @@
 package org.restcomm.protocols.ss7.inap;
+
 /*
  * Mobius Software LTD
  * Copyright 2019, Mobius Software LTD and individual contributors
@@ -115,6 +116,9 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 /**
  * 
  * @author yulianoifa
@@ -122,633 +126,636 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
  */
 public class CallScfExample implements INAPDialogListener, INAPServiceCircuitSwitchedCallListener {
 
-    private INAPProvider inapProvider;
-    private INAPDialogCircuitSwitchedCall currentInapDialog;
-    private CallContent cc;
+	private INAPProvider inapProvider;
+	private INAPDialogCircuitSwitchedCall currentInapDialog;
+	private CallContent cc;
 
-    public CallScfExample() throws NamingException {
-        InitialContext ctx = new InitialContext();
-        try {
-            String providerJndiName = "java:/restcomm/ss7/cap";
-            this.inapProvider = ((INAPProvider) ctx.lookup(providerJndiName));
-        } finally {
-            ctx.close();
-        }
-        
-        inapProvider.addINAPDialogListener(UUID.randomUUID(),this);
-        inapProvider.getINAPServiceCircuitSwitchedCall().addINAPServiceListener(this);
-    }
+	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {
+		}
 
-    public INAPProvider getINAPProvider() {
-        return inapProvider;
-    }
+		@Override
+		public void onError(Exception exception) {
+		}
+	};
 
-    public void start() {
-        // Make the circuitSwitchedCall service activated
-        inapProvider.getINAPServiceCircuitSwitchedCall().acivate();
+	public CallScfExample() throws NamingException {
+		InitialContext ctx = new InitialContext();
+		try {
+			String providerJndiName = "java:/restcomm/ss7/cap";
+			this.inapProvider = ((INAPProvider) ctx.lookup(providerJndiName));
+		} finally {
+			ctx.close();
+		}
 
-        currentInapDialog = null;
-    }
+		inapProvider.addINAPDialogListener(UUID.randomUUID(), this);
+		inapProvider.getINAPServiceCircuitSwitchedCall().addINAPServiceListener(this);
+	}
 
-    public void stop() {
-        inapProvider.getINAPServiceCircuitSwitchedCall().deactivate();
-    }
+	public INAPProvider getINAPProvider() {
+		return inapProvider;
+	}
 
-    @Override
-    public void onInitialDPRequest(InitialDPRequest ind) {
-        this.cc = new CallContent();
-        this.cc.step = Step.initialDPRecieved;
+	public void start() {
+		// Make the circuitSwitchedCall service activated
+		inapProvider.getINAPServiceCircuitSwitchedCall().acivate();
 
-        ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
-    }
+		currentInapDialog = null;
+	}
 
-    @Override
-    public void onEventReportBCSMRequest(EventReportBCSMRequest ind) {
-        if (this.cc != null) {
-            this.cc.eventList.add(ind);
+	public void stop() {
+		inapProvider.getINAPServiceCircuitSwitchedCall().deactivate();
+	}
 
-            switch (ind.getEventTypeBCSM()) {
-                case oAnswer:
-                    this.cc.step = Step.answered;
-                    break;
-                case oDisconnect:
-                    this.cc.step = Step.disconnected;
-                    break;
+	@Override
+	public void onInitialDPRequest(InitialDPRequest ind) {
+		this.cc = new CallContent();
+		this.cc.step = Step.initialDPRecieved;
+
+		ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
+	}
+
+	@Override
+	public void onEventReportBCSMRequest(EventReportBCSMRequest ind) {
+		if (this.cc != null) {
+			this.cc.eventList.add(ind);
+
+			switch (ind.getEventTypeBCSM()) {
+			case oAnswer:
+				this.cc.step = Step.answered;
+				break;
+			case oDisconnect:
+				this.cc.step = Step.disconnected;
+				break;
+			default:
+				break;
+			}
+		}
+
+		ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
+	}
+
+	@Override
+	public void onDialogDelimiter(INAPDialog inapDialog) {
+		try {
+			if (this.cc != null)
+				switch (this.cc.step) {
+				case initialDPRecieved:
+					// informing SSF of BCSM events processing
+					List<BCSMEvent> bcsmEventList = new ArrayList<BCSMEvent>();
+					BCSMEvent ev = this.inapProvider.getINAPParameterFactory().createBCSMEvent(
+							EventTypeBCSM.routeSelectFailure, MonitorMode.notifyAndContinue, null, null, false);
+					bcsmEventList.add(ev);
+					ev = this.inapProvider.getINAPParameterFactory().createBCSMEvent(EventTypeBCSM.oCalledPartyBusy,
+							MonitorMode.interrupted, null, null, false);
+					bcsmEventList.add(ev);
+					ev = this.inapProvider.getINAPParameterFactory().createBCSMEvent(EventTypeBCSM.oNoAnswer,
+							MonitorMode.interrupted, null, null, false);
+					bcsmEventList.add(ev);
+					ev = this.inapProvider.getINAPParameterFactory().createBCSMEvent(EventTypeBCSM.oAnswer,
+							MonitorMode.notifyAndContinue, null, null, false);
+					bcsmEventList.add(ev);
+					LegID legId = this.inapProvider.getINAPParameterFactory().createLegID(null, LegType.leg1);
+					ev = this.inapProvider.getINAPParameterFactory().createBCSMEvent(EventTypeBCSM.oDisconnect,
+							MonitorMode.notifyAndContinue, legId, null, false);
+					bcsmEventList.add(ev);
+					legId = this.inapProvider.getINAPParameterFactory().createLegID(null, LegType.leg2);
+					ev = this.inapProvider.getINAPParameterFactory().createBCSMEvent(EventTypeBCSM.oDisconnect,
+							MonitorMode.interrupted, legId, null, false);
+					bcsmEventList.add(ev);
+					ev = this.inapProvider.getINAPParameterFactory().createBCSMEvent(EventTypeBCSM.oAbandon,
+							MonitorMode.notifyAndContinue, null, null, false);
+					bcsmEventList.add(ev);
+					currentInapDialog.addRequestReportBCSMEventRequest(bcsmEventList, null, null);
+
+					// calculating here a new called party number if it is needed
+					String newNumber = "22123124";
+					if (newNumber != null) {
+						// sending Connect to force routing the call to a new number
+						List<CalledPartyNumberIsup> calledPartyNumber = new ArrayList<CalledPartyNumberIsup>();
+						CalledPartyNumber cpn = this.inapProvider.getISUPParameterFactory().createCalledPartyNumber();
+						cpn.setAddress("5599999988");
+						cpn.setNatureOfAddresIndicator(NAINumber._NAI_INTERNATIONAL_NUMBER);
+						cpn.setNumberingPlanIndicator(CalledPartyNumber._NPI_ISDN);
+						cpn.setInternalNetworkNumberIndicator(CalledPartyNumber._INN_ROUTING_ALLOWED);
+						CalledPartyNumberIsup cpnc = this.inapProvider.getINAPParameterFactory()
+								.createCalledPartyNumber(cpn);
+						calledPartyNumber.add(cpnc);
+						DestinationRoutingAddress destinationRoutingAddress = this.inapProvider
+								.getINAPParameterFactory().createDestinationRoutingAddress(calledPartyNumber);
+						currentInapDialog.addConnectRequest(destinationRoutingAddress, null, null, null, null, null,
+								null, null, null, null, null, null, null, null, null, null, null);
+					}
+
+					currentInapDialog.send(dummyCallback);
+					break;
+
+				case disconnected:
+					// the call is terminated - close dialog
+					currentInapDialog.close(false, dummyCallback);
+					break;
 				default:
 					break;
-            }
-        }
-
-        ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
-    }
-
-    @Override
-    public void onDialogDelimiter(INAPDialog inapDialog) {
-        try {
-            if (this.cc != null) {
-                switch (this.cc.step) {
-                    case initialDPRecieved:
-                        // informing SSF of BCSM events processing
-                        List<BCSMEvent> bcsmEventList = new ArrayList<BCSMEvent>();
-                        BCSMEvent ev = this.inapProvider.getINAPParameterFactory().createBCSMEvent(
-                                EventTypeBCSM.routeSelectFailure, MonitorMode.notifyAndContinue, null, null, false);
-                        bcsmEventList.add(ev);
-                        ev = this.inapProvider.getINAPParameterFactory().createBCSMEvent(EventTypeBCSM.oCalledPartyBusy,
-                                MonitorMode.interrupted, null, null, false);
-                        bcsmEventList.add(ev);
-                        ev = this.inapProvider.getINAPParameterFactory().createBCSMEvent(EventTypeBCSM.oNoAnswer,
-                                MonitorMode.interrupted, null, null, false);
-                        bcsmEventList.add(ev);
-                        ev = this.inapProvider.getINAPParameterFactory().createBCSMEvent(EventTypeBCSM.oAnswer,
-                                MonitorMode.notifyAndContinue, null, null, false);
-                        bcsmEventList.add(ev);
-                        LegID legId = this.inapProvider.getINAPParameterFactory().createLegID(null, LegType.leg1);
-                        ev = this.inapProvider.getINAPParameterFactory().createBCSMEvent(EventTypeBCSM.oDisconnect,
-                                MonitorMode.notifyAndContinue, legId, null, false);
-                        bcsmEventList.add(ev);
-                        legId = this.inapProvider.getINAPParameterFactory().createLegID(null, LegType.leg2);
-                        ev = this.inapProvider.getINAPParameterFactory().createBCSMEvent(EventTypeBCSM.oDisconnect,
-                                MonitorMode.interrupted, legId, null, false);
-                        bcsmEventList.add(ev);
-                        ev = this.inapProvider.getINAPParameterFactory().createBCSMEvent(EventTypeBCSM.oAbandon,
-                                MonitorMode.notifyAndContinue, null, null, false);
-                        bcsmEventList.add(ev);
-                        currentInapDialog.addRequestReportBCSMEventRequest(bcsmEventList, null, null);
-
-                        // calculating here a new called party number if it is needed
-                        String newNumber = "22123124";
-                        if (newNumber != null) {
-                            // sending Connect to force routing the call to a new number
-                            List<CalledPartyNumberIsup> calledPartyNumber = new ArrayList<CalledPartyNumberIsup>();
-                            CalledPartyNumber cpn = this.inapProvider.getISUPParameterFactory().createCalledPartyNumber();
-                            cpn.setAddress("5599999988");
-                            cpn.setNatureOfAddresIndicator(NAINumber._NAI_INTERNATIONAL_NUMBER);
-                            cpn.setNumberingPlanIndicator(CalledPartyNumber._NPI_ISDN);
-                            cpn.setInternalNetworkNumberIndicator(CalledPartyNumber._INN_ROUTING_ALLOWED);
-                            CalledPartyNumberIsup cpnc = this.inapProvider.getINAPParameterFactory().createCalledPartyNumber(
-                                    cpn);
-                            calledPartyNumber.add(cpnc);
-                            DestinationRoutingAddress destinationRoutingAddress = this.inapProvider.getINAPParameterFactory()
-                                    .createDestinationRoutingAddress(calledPartyNumber);
-                            currentInapDialog.addConnectRequest(destinationRoutingAddress, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-                        }
-
-                        currentInapDialog.send();
-                        break;
-
-                    case disconnected:
-                        // the call is terminated - close dialog
-                        currentInapDialog.close(false);
-                        break;
-					default:
-						break;
-                }
-            }
-        } catch (INAPException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onDialogTimeout(INAPDialog inapDialog) {
-        if (currentInapDialog != null && this.cc != null && this.cc.step != Step.disconnected
-                && this.cc.activityTestInvokeId == null) {
-            // check the SSF if the call is still alive
-            currentInapDialog.keepAlive();
-            try {
-                this.cc.activityTestInvokeId = currentInapDialog.addActivityTestRequest();
-                currentInapDialog.send();
-            } catch (INAPException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void onActivityTestResponse(ActivityTestResponse ind) {
-        if (currentInapDialog != null && this.cc != null) {
-            this.cc.activityTestInvokeId = null;
-        }
-    }
-
-    @Override
-    public void onInvokeTimeout(INAPDialog inapDialog, Integer invokeId) {
-        if (currentInapDialog != null && this.cc != null) {
-            if (this.cc.activityTestInvokeId == invokeId) { // activityTest failure
-                try {
-                    currentInapDialog.close(true);
-                } catch (INAPException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
+				}
+		} catch (INAPException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
-    @Override
-    public void onErrorComponent(INAPDialog inapDialog, Integer invokeId, INAPErrorMessage inapErrorMessage) {
-        // TODO Auto-generated method stub
+	@Override
+	public void onDialogTimeout(INAPDialog inapDialog) {
+		if (currentInapDialog != null && this.cc != null && this.cc.step != Step.disconnected
+				&& this.cc.activityTestInvokeId == null) {
+			// check the SSF if the call is still alive
+			currentInapDialog.keepAlive();
+			try {
+				this.cc.activityTestInvokeId = currentInapDialog.addActivityTestRequest();
+				currentInapDialog.send(dummyCallback);
+			} catch (INAPException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 
-    }
+	@Override
+	public void onActivityTestResponse(ActivityTestResponse ind) {
+		if (currentInapDialog != null && this.cc != null)
+			this.cc.activityTestInvokeId = null;
+	}
 
-    @Override
-    public void onRejectComponent(INAPDialog inapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
-        // TODO Auto-generated method stub
+	@Override
+	public void onInvokeTimeout(INAPDialog inapDialog, Integer invokeId) {
+		if (currentInapDialog != null && this.cc != null)
+			if (this.cc.activityTestInvokeId == invokeId)
+				currentInapDialog.close(true, dummyCallback);
+	}
 
-    }
+	@Override
+	public void onErrorComponent(INAPDialog inapDialog, Integer invokeId, INAPErrorMessage inapErrorMessage) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onINAPMessage(INAPMessage inapMessage) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onRejectComponent(INAPDialog inapDialog, Integer invokeId, Problem problem, boolean isLocalOriginated) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onRequestReportBCSMEventRequest(RequestReportBCSMEventRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onINAPMessage(INAPMessage inapMessage) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onApplyChargingRequest(ApplyChargingRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onRequestReportBCSMEventRequest(RequestReportBCSMEventRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onContinueRequest(ContinueRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onApplyChargingRequest(ApplyChargingRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onApplyChargingReportRequest(ApplyChargingReportRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onContinueRequest(ContinueRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onReleaseCallRequest(ReleaseCallRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onApplyChargingReportRequest(ApplyChargingReportRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onConnectRequest(ConnectRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onReleaseCallRequest(ReleaseCallRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onCallInformationRequest(CallInformationRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onConnectRequest(ConnectRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onCallInformationReportRequest(CallInformationReportRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onCallInformationRequest(CallInformationRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onActivityTestRequest(ActivityTestRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onCallInformationReportRequest(CallInformationReportRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onAssistRequestInstructionsRequest(AssistRequestInstructionsRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onActivityTestRequest(ActivityTestRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onEstablishTemporaryConnectionRequest(EstablishTemporaryConnectionRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onAssistRequestInstructionsRequest(AssistRequestInstructionsRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onDisconnectForwardConnectionRequest(DisconnectForwardConnectionRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onEstablishTemporaryConnectionRequest(EstablishTemporaryConnectionRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onConnectToResourceRequest(ConnectToResourceRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onDisconnectForwardConnectionRequest(DisconnectForwardConnectionRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onResetTimerRequest(ResetTimerRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onConnectToResourceRequest(ConnectToResourceRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onFurnishChargingInformationRequest(FurnishChargingInformationRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onResetTimerRequest(ResetTimerRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onSendChargingInformationRequest(SendChargingInformationRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onFurnishChargingInformationRequest(FurnishChargingInformationRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onSpecializedResourceReportRequest(SpecializedResourceReportRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onSendChargingInformationRequest(SendChargingInformationRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onPlayAnnouncementRequest(PlayAnnouncementRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onSpecializedResourceReportRequest(SpecializedResourceReportRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onPromptAndCollectUserInformationRequest(PromptAndCollectUserInformationRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onPlayAnnouncementRequest(PlayAnnouncementRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onPromptAndCollectUserInformationResponse(PromptAndCollectUserInformationResponse ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onPromptAndCollectUserInformationRequest(PromptAndCollectUserInformationRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onCancelRequest(CancelRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onPromptAndCollectUserInformationResponse(PromptAndCollectUserInformationResponse ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onDialogRequest(INAPDialog inapDialog) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onCancelRequest(CancelRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onDialogAccept(INAPDialog inapDialog) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onDialogRequest(INAPDialog inapDialog) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onDialogUserAbort(INAPDialog inapDialog, INAPGeneralAbortReason generalReason, INAPUserAbortReason userReason) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onDialogAccept(INAPDialog inapDialog) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onDialogProviderAbort(INAPDialog inapDialog, PAbortCauseType abortCause) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onDialogUserAbort(INAPDialog inapDialog, INAPGeneralAbortReason generalReason,
+			INAPUserAbortReason userReason) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onDialogClose(INAPDialog inapDialog) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	@Override
+	public void onDialogProviderAbort(INAPDialog inapDialog, PAbortCauseType abortCause) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onDialogRelease(INAPDialog inapDialog) {
-        this.currentInapDialog = null;
-        this.cc = null;
-    }
+	}
 
-    @Override
-    public void onDialogNotice(INAPDialog inapDialog, INAPNoticeProblemDiagnostic noticeProblemDiagnostic) {
-        // TODO Auto-generated method stub
+	@Override
+	public void onDialogClose(INAPDialog inapDialog) {
+		// TODO Auto-generated method stub
 
-    }
+	}
 
-    private enum Step {
-        initialDPRecieved, answered, disconnected;
-    }
+	@Override
+	public void onDialogRelease(INAPDialog inapDialog) {
+		this.currentInapDialog = null;
+		this.cc = null;
+	}
 
-    private class CallContent {
-        public Step step;
-        public ArrayList<EventReportBCSMRequest> eventList = new ArrayList<EventReportBCSMRequest>();
-        public Integer activityTestInvokeId;
-    }
+	@Override
+	public void onDialogNotice(INAPDialog inapDialog, INAPNoticeProblemDiagnostic noticeProblemDiagnostic) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onContinueWithArgumentRequest(ContinueWithArgumentRequest ind) {
-        // TODO Auto-generated method stub
+	}
 
-    }
+	private enum Step {
+		initialDPRecieved, answered, disconnected;
+	}
 
-    @Override
-    public void onInitiateCallAttemptRequest(InitiateCallAttemptRequest initiateCallAttemptRequest) {
-        // TODO Auto-generated method stub
+	private class CallContent {
+		public Step step;
+		public ArrayList<EventReportBCSMRequest> eventList = new ArrayList<EventReportBCSMRequest>();
+		public Integer activityTestInvokeId;
+	}
 
-    }
+	@Override
+	public void onContinueWithArgumentRequest(ContinueWithArgumentRequest ind) {
+		// TODO Auto-generated method stub
 
-    @Override
-    public void onCollectInformationRequest(CollectInformationRequest ind) {
-        // TODO Auto-generated method stub
-    }
+	}
 
-    @Override
-    public void onCallGapRequest(CallGapRequest ind) {
-        // TODO Auto-generated method stub
+	@Override
+	public void onInitiateCallAttemptRequest(InitiateCallAttemptRequest initiateCallAttemptRequest) {
+		// TODO Auto-generated method stub
 
-    }
+	}
+
+	@Override
+	public void onCollectInformationRequest(CollectInformationRequest ind) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void onCallGapRequest(CallGapRequest ind) {
+		// TODO Auto-generated method stub
+
+	}
 
 	@Override
 	public void onActivateServiceFilteringRequest(ActivateServiceFilteringRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onEventNotificationChargingRequest(EventNotificationChargingRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onRequestNotificationChargingEventRequest(RequestNotificationChargingEventRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onServiceFilteringResponseRequest(ServiceFilteringResponseRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onAnalysedInformationRequest(AnalysedInformationRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onAnalyseInformationRequest(AnalyseInformationRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onCancelStatusReportRequest(CancelStatusReportRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onCollectedInformationRequest(CollectedInformationRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onHoldCallInNetworkRequest(HoldCallInNetworkRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onOMidCallRequest(OMidCallRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onTMidCallRequest(TMidCallRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onOAnswerRequest(OAnswerRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onOriginationAttemptAuthorizedRequest(OriginationAttemptAuthorizedRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onRouteSelectFailureRequest(RouteSelectFailureRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onOCalledPartyBusyRequest(OCalledPartyBusyRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onONoAnswerRequest(ONoAnswerRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onODisconnectRequest(ODisconnectRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onTermAttemptAuthorizedRequest(TermAttemptAuthorizedRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onTBusyRequest(TBusyRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onTNoAnswerRequest(TNoAnswerRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onTAnswerRequest(TAnswerRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onTDisconnectRequest(TDisconnectRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onSelectRouteRequest(SelectRouteRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onSelectFacilityRequest(SelectFacilityRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onRequestCurrentStatusReportRequest(RequestCurrentStatusReportRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onRequestCurrentStatusReportResponse(RequestCurrentStatusReportResponse ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onRequestEveryStatusChangeReportRequest(RequestEveryStatusChangeReportRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onRequestFirstStatusMatchReportRequest(RequestFirstStatusMatchReportRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onStatusReportRequest(StatusReportRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onUpdateRequest(UpdateRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onUpdateResponse(UpdateResponse ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onRetrieveRequest(RetrieveRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onRetrieveResponse(RetrieveResponse ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onSignallingInformationRequest(SignallingInformationRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onReleaseCallPartyConnectionRequest(ReleaseCallPartyConnectionRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onReconnectRequest(ReconnectRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onHoldCallPartyConnectionRequest(HoldCallPartyConnectionRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onHandOverRequest(HandOverRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onDialogueUserInformationRequest(DialogueUserInformationRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onCallLimitRequest(CallLimitRequest ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onReleaseCallPartyConnectionResponse(ReleaseCallPartyConnectionResponse ind) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

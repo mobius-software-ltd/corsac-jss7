@@ -19,16 +19,16 @@
 
 package org.restcomm.protocols.ss7.tcap.api;
 
-import io.netty.buffer.ByteBuf;
-
 import java.io.Serializable;
-import java.util.concurrent.Future;
 
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.DraftParsedMessage;
 
+import com.mobius.software.common.dal.timers.RunnableTimer;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
+
+import io.netty.buffer.ByteBuf;
 
 /**
  *
@@ -39,85 +39,93 @@ import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 public interface TCAPProvider extends Serializable {
 
 	/**
-     * Gets existing structured dialog.
-     *
-     * @param dialogId - local ID of the dialog
-     * @return
-     */
-    Dialog getDialogById(Long dialogId);
-	
-    /**
-     * Create new structured dialog.
-     *
-     * @param localAddress - desired local address
-     * @param remoteAddress - initial remote address, it can change after first TCContinue.
-     * @return
-     */
-    Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress,int networkId) throws TCAPException;
+	 * Gets existing structured dialog.
+	 *
+	 * @param dialogId - local ID of the dialog
+	 * @return
+	 */
+	Dialog getDialogById(Long dialogId);
 
-    /**
-     * Create new structured dialog with predefined local TransactionId.
-     * We do not normally invoke this method. Use it only when you need this and only this local TransactionId
-     * (for example if we need of recreating a Dialog for which a peer already has in memory)
-     * If a Dialog with local TransactionId is already present there will be TCAPException
-     *
-     * @param localAddress - desired local address
-     * @param remoteAddress - initial remote address, it can change after first TCContinue.
-     * @param localTrId - predefined local TransactionId
-     * @return
-     */
-    Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress, Long localTrId,int networkId) throws TCAPException;
+	/**
+	 * Create new structured dialog.
+	 *
+	 * @param localAddress  - desired local address
+	 * @param remoteAddress - initial remote address, it can change after first
+	 *                      TCContinue.
+	 * @return
+	 */
+	Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress, int networkId) throws TCAPException;
 
-    /**
-     * Create new unstructured dialog.
-     *
-     * @param localAddress
-     * @param remoteAddress
-     * @return
-     * @throws TCAPException
-     */
-    Dialog getNewUnstructuredDialog(SccpAddress localAddress, SccpAddress remoteAddress,int networkId) throws TCAPException;
+	/**
+	 * Create new structured dialog with predefined local TransactionId. We do not
+	 * normally invoke this method. Use it only when you need this and only this
+	 * local TransactionId (for example if we need of recreating a Dialog for which
+	 * a peer already has in memory) If a Dialog with local TransactionId is already
+	 * present there will be TCAPException
+	 *
+	 * @param localAddress  - desired local address
+	 * @param remoteAddress - initial remote address, it can change after first
+	 *                      TCContinue.
+	 * @param localTrId     - predefined local TransactionId
+	 * @return
+	 */
+	Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress, Long localTrId, int networkId)
+			throws TCAPException;
 
-    // /////////////
-    // Factories //
-    // /////////////
+	/**
+	 * Create new unstructured dialog.
+	 *
+	 * @param localAddress
+	 * @param remoteAddress
+	 * @return
+	 * @throws TCAPException
+	 */
+	Dialog getNewUnstructuredDialog(SccpAddress localAddress, SccpAddress remoteAddress, int networkId)
+			throws TCAPException;
 
-    DialogPrimitiveFactory getDialogPrimitiveFactory();
+	// /////////////
+	// Factories //
+	// /////////////
 
-    ComponentPrimitiveFactory getComponentPrimitiveFactory();
+	DialogPrimitiveFactory getDialogPrimitiveFactory();
 
-    // /////////////
-    // Listeners //
-    // /////////////
+	ComponentPrimitiveFactory getComponentPrimitiveFactory();
 
-    void addTCListener(TCListener lst);
+	// /////////////
+	// Listeners //
+	// /////////////
 
-    void removeTCListener(TCListener lst);
+	void addTCListener(TCListener lst);
 
-    /**
-     * @return current count of active TCAP dialogs
-     */
-    int getCurrentDialogsCount();
+	void removeTCListener(TCListener lst);
 
-    /**
-     * Parsing of encoded TCAP message for getting only message type, origination/destination dialogId
-     *
-     * @param data
-     * @return
-     */
-    DraftParsedMessage parseMessageDraft(ByteBuf data);
+	/**
+	 * @return current count of active TCAP dialogs
+	 */
+	int getCurrentDialogsCount();
 
-    Future<?> createOperationTimer(Runnable operationTimerTask, long invokeTimeout);
+	/**
+	 * Parsing of encoded TCAP message for getting only message type,
+	 * origination/destination dialogId
+	 *
+	 * @param data
+	 * @return
+	 */
+	DraftParsedMessage parseMessageDraft(ByteBuf data);
 
-    /**
-     * @return TCAP Stack
-     */
+	void storeOperationTimer(RunnableTimer operationTimer);
 
-    TCAPStack getStack();
-    
-    /**
-     * @return ASN Parser
-     */
+	/**
+	 * @return TCAP Stack
+	 */
 
-    ASNParser getParser();
+	TCAPStack getStack();
+
+	/**
+	 * @return ASN Parser
+	 */
+
+	ASNParser getParser();
+
+	void setAffinity(boolean isEnabled);
 }

@@ -47,6 +47,8 @@ import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 /**
  * Simple example demonstrates how to use TCAP Stack
  *
@@ -55,100 +57,117 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
  *
  */
 public class ClientTest implements TCListener {
-    // encoded Application Context Name
-    public static final List<Long> _ACN_ = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L });
-    private TCAPProvider tcapProvider;
-    private Dialog clientDialog;
+	// encoded Application Context Name
+	public static final List<Long> _ACN_ = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L });
+	private TCAPProvider tcapProvider;
+	private Dialog clientDialog;
 
-    ClientTest() throws NamingException {
+	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {
+		}
 
-        InitialContext ctx = new InitialContext();
-        try {
-            String providerJndiName = "java:/restcomm/ss7/tcap";
-            this.tcapProvider = ((TCAPProvider) ctx.lookup(providerJndiName));
-        } finally {
-            ctx.close();
-        }
+		@Override
+		public void onError(Exception exception) {
+		}
+	};
 
-        this.tcapProvider.addTCListener(this);
-    }
+	ClientTest() throws NamingException {
 
-    public void sendInvoke() throws TCAPException, TCAPSendException {
-        SccpAddress localAddress = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
-        SccpAddress remoteAddress = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
+		InitialContext ctx = new InitialContext();
+		try {
+			String providerJndiName = "java:/restcomm/ss7/tcap";
+			this.tcapProvider = ((TCAPProvider) ctx.lookup(providerJndiName));
+		} finally {
+			ctx.close();
+		}
 
-        clientDialog = this.tcapProvider.getNewDialog(localAddress, remoteAddress, 0);
-        
-        // create some INVOKE
-        OperationCode oc = TcapFactory.createLocalOperationCode(12);
-        // no parameter
-        this.clientDialog.sendData(null, null, null, null, oc, null, true, false);
-        ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
-        // UI is optional!
-        TCBeginRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createBegin(this.clientDialog);
-        tcbr.setApplicationContextName(acn);
-        this.clientDialog.send(tcbr);
-    }
+		this.tcapProvider.addTCListener(this);
+	}
 
-    public void onDialogReleased(Dialog dialog) {
-    }
+	public void sendInvoke() throws TCAPException, TCAPSendException {
+		SccpAddress localAddress = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
+		SccpAddress remoteAddress = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
 
-    public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
-    }
+		clientDialog = this.tcapProvider.getNewDialog(localAddress, remoteAddress, 0);
 
-    public void onDialogTimeout(Dialog dialog) {
-    	dialog.keepAlive();        
-    }
+		// create some INVOKE
+		OperationCode oc = TcapFactory.createLocalOperationCode(12);
+		// no parameter
+		this.clientDialog.sendData(null, null, null, null, oc, null, true, false);
+		ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
+		// UI is optional!
+		TCBeginRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createBegin(this.clientDialog);
+		tcbr.setApplicationContextName(acn);
+		this.clientDialog.send(tcbr, dummyCallback);
+	}
 
-    public void onTCBegin(TCBeginIndication ind) {
-    }
+	@Override
+	public void onDialogReleased(Dialog dialog) {
+	}
 
-    public void onTCContinue(TCContinueIndication ind) {
-        // send end
-        TCEndRequest end = this.tcapProvider.getDialogPrimitiveFactory().createEnd(ind.getDialog());
-        end.setTermination(TerminationType.Basic);
-        try {
-            ind.getDialog().send(end);
-        } catch (TCAPSendException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	@Override
+	public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
+	}
 
-    public void onTCEnd(TCEndIndication ind) {
-        // should not happen, in this scenario, we send data.
-    }
+	@Override
+	public void onDialogTimeout(Dialog dialog) {
+		dialog.keepAlive();
+	}
 
-    public void onTCUni(TCUniIndication ind) {
-        // not going to happen
-    }
+	@Override
+	public void onTCBegin(TCBeginIndication ind) {
+	}
 
-    public void onTCPAbort(TCPAbortIndication ind) {
-        // TODO Auto-generated method stub
-    }
+	@Override
+	public void onTCContinue(TCContinueIndication ind) {
+		// send end
+		TCEndRequest end = this.tcapProvider.getDialogPrimitiveFactory().createEnd(ind.getDialog());
+		end.setTermination(TerminationType.Basic);
 
-    public void onTCUserAbort(TCUserAbortIndication ind) {
-        // TODO Auto-generated method stub
-    }
+		ind.getDialog().send(end, dummyCallback);
+	}
 
-    public void onTCNotice(TCNoticeIndication ind) {
-        // TODO Auto-generated method stub
+	@Override
+	public void onTCEnd(TCEndIndication ind) {
+		// should not happen, in this scenario, we send data.
+	}
 
-    }
+	@Override
+	public void onTCUni(TCUniIndication ind) {
+		// not going to happen
+	}
 
-    public static void main(String[] args) {
+	@Override
+	public void onTCPAbort(TCPAbortIndication ind) {
+		// TODO Auto-generated method stub
+	}
 
-        try {
-            ClientTest c = new ClientTest();
-            c.sendInvoke();
-        } catch (NamingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (TCAPException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (TCAPSendException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+	@Override
+	public void onTCUserAbort(TCUserAbortIndication ind) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void onTCNotice(TCNoticeIndication ind) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public static void main(String[] args) {
+
+		try {
+			ClientTest c = new ClientTest();
+			c.sendInvoke();
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TCAPException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TCAPSendException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

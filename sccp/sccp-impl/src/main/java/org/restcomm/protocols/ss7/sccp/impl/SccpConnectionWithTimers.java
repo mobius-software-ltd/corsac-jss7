@@ -23,6 +23,13 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.CLOSED;
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.CONNECTION_INITIATED;
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.DISCONNECT_INITIATED;
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.RSR_SENT;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpConnectionState;
 import org.restcomm.protocols.ss7.sccp.SccpListener;
@@ -38,312 +45,321 @@ import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCauseValue;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.common.dal.timers.Timer;
+
 import io.netty.buffer.Unpooled;
 
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.CLOSED;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.CONNECTION_INITIATED;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.DISCONNECT_INITIATED;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.RSR_SENT;
 /**
  * 
  * @author yulianoifa
  *
  */
 abstract class SccpConnectionWithTimers extends SccpConnectionWithTransmitQueueImpl {
-    private ConnEstProcess connEstProcess;
-    private IasInactivitySendProcess iasInactivitySendProcess;
-    private IarInactivityReceiveProcess iarInactivityReceiveProcess;
-    private RelProcess relProcess;
-    private RepeatRelProcess repeatRelProcess;
-    private IntProcess intProcess;
-    private GuardProcess guardProcess;
-    private ResetProcess resetProcess;
+	private ConnEstProcess connEstProcess;
+	private IasInactivitySendProcess iasInactivitySendProcess;
+	private IarInactivityReceiveProcess iarInactivityReceiveProcess;
+	private RelProcess relProcess;
+	private RepeatRelProcess repeatRelProcess;
+	private IntProcess intProcess;
+	private GuardProcess guardProcess;
+	private ResetProcess resetProcess;
 
-    public SccpConnectionWithTimers(int sls, int localSsn, LocalReference localReference, ProtocolClass protocol, SccpStackImpl stack, SccpRoutingControl sccpRoutingControl) {
-        super(sls, localSsn, localReference, protocol, stack, sccpRoutingControl);
-        connEstProcess = new ConnEstProcess();
-        iasInactivitySendProcess = new IasInactivitySendProcess();
-        iarInactivityReceiveProcess = new IarInactivityReceiveProcess();
-        relProcess = new RelProcess();
-        repeatRelProcess = new RepeatRelProcess();
-        intProcess = new IntProcess();
-        guardProcess = new GuardProcess();
-        resetProcess = new ResetProcess();
-    }
+	public SccpConnectionWithTimers(int sls, int localSsn, LocalReference localReference, ProtocolClass protocol,
+			SccpStackImpl stack, SccpRoutingControl sccpRoutingControl) {
+		super(sls, localSsn, localReference, protocol, stack, sccpRoutingControl);
+		connEstProcess = new ConnEstProcess();
+		iasInactivitySendProcess = new IasInactivitySendProcess();
+		iarInactivityReceiveProcess = new IarInactivityReceiveProcess();
+		relProcess = new RelProcess();
+		repeatRelProcess = new RepeatRelProcess();
+		intProcess = new IntProcess();
+		guardProcess = new GuardProcess();
+		resetProcess = new ResetProcess();
+	}
 
-    protected void stopTimers() {
-        connEstProcess.stopTimer();
-        iasInactivitySendProcess.stopTimer();
-        iarInactivityReceiveProcess.stopTimer();
-        relProcess.stopTimer();
-        repeatRelProcess.stopTimer();
-        intProcess.stopTimer();
-        guardProcess.stopTimer();
-        resetProcess.stopTimer();
-    }
+	protected void stopTimers() {
+		connEstProcess.stop();
+		iasInactivitySendProcess.stop();
+		iarInactivityReceiveProcess.stop();
+		relProcess.stop();
+		repeatRelProcess.stop();
+		intProcess.stop();
+		guardProcess.stop();
+		resetProcess.stop();
+	}
 
-    protected void receiveMessage(SccpConnMessage message) throws Exception {
-        iarInactivityReceiveProcess.resetTimer();
+	@Override
+	protected void receiveMessage(SccpConnMessage message) throws Exception {
+		iarInactivityReceiveProcess.resetTimer();
 
-        if (message instanceof SccpConnCcMessageImpl) {
-            connEstProcess.stopTimer();
+		if (message instanceof SccpConnCcMessageImpl)
+			connEstProcess.stop();
+		else if (message instanceof SccpConnRscMessageImpl)
+			resetProcess.stop();
 
-        } else if (message instanceof SccpConnRscMessageImpl) {
-            resetProcess.stopTimer();
-        }
+		super.receiveMessage(message);
+	}
 
-        super.receiveMessage(message);
-    }
+	@Override
+	public void sendMessage(SccpConnMessage message, TaskCallback<Exception> callback) {
+		if (stack.state != SccpStackImpl.State.RUNNING) {
+			String errorMessage = "Trying to send SCCP message from SCCP user but SCCP stack is not RUNNING";
 
-    public void sendMessage(SccpConnMessage message) throws Exception {
-        if (stack.state != SccpStackImpl.State.RUNNING) {
-            logger.error("Trying to send SCCP message from SCCP user but SCCP stack is not RUNNING");
-            return;
-        }
-        iasInactivitySendProcess.resetTimer();
-        super.sendMessage(message);
-    }
+			logger.error(errorMessage);
+			callback.onError(new IllegalStateException(errorMessage));
+			return;
+		}
+		iasInactivitySendProcess.resetTimer();
+		super.sendMessage(message, callback);
+	}
 
-    public void setState(SccpConnectionState state) {
-    	super.setState(state);
+	@Override
+	public void setState(SccpConnectionState state) {
+		super.setState(state);
 
-        if (state == RSR_SENT) {
-            resetProcess.startTimer();
+		if (state == RSR_SENT)
+			resetProcess.start();
+		else if (state == DISCONNECT_INITIATED) {
+			relProcess.start();
+			iasInactivitySendProcess.stop();
+			iarInactivityReceiveProcess.stop();
 
-        } else if (state == DISCONNECT_INITIATED) {
-            relProcess.startTimer();
-            iasInactivitySendProcess.stopTimer();
-            iarInactivityReceiveProcess.stopTimer();
+		} else if (state == CONNECTION_INITIATED)
+			connEstProcess.start();
+	}
 
-        } else if (state == CONNECTION_INITIATED) {
-            connEstProcess.startTimer();
-        }
-    }
+	protected class ConnEstProcess extends BaseProcess {
+		{
+			delay = stack.getConnEstTimerDelay();
+		}
 
-    protected class ConnEstProcess extends BaseProcess implements Runnable {
-        {
-            delay = stack.getConnEstTimerDelay();
-        }
+		@Override
+		public void run() {
+			try {
+				if (getState() == CLOSED)
+					return;
 
-        @Override
-        public void run() {
-            try {
-                if (getState() == CLOSED) {
-                    return;
-                }
+				disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer(), dummyCallback);
 
-                disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer());
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		}
+	}
 
-            } catch (Exception e) {
-                logger.error(e);
-            }
-        }
-    }
+	protected class IasInactivitySendProcess extends BaseProcess {
+		{
+			delay = stack.getIasTimerDelay();
+		}
 
-    protected class IasInactivitySendProcess extends BaseProcess implements Runnable {
-        {
-            delay = stack.getIasTimerDelay();
-        }
+		@Override
+		public void run() {
+			try {
+				if (getState() == CLOSED || getState() == CONNECTION_INITIATED)
+					return;
 
-        @Override
-        public void run() {
-            try {
-                if (getState() == CLOSED || getState() == CONNECTION_INITIATED) {
-                    return;
-                }
+				SccpConnItMessageImpl it = new SccpConnItMessageImpl(getSls(), getLocalSsn());
+				it.setProtocolClass(getProtocolClass());
+				it.setSourceLocalReferenceNumber(getLocalReference());
+				it.setDestinationLocalReferenceNumber(getRemoteReference());
 
-                SccpConnItMessageImpl it = new SccpConnItMessageImpl(getSls(), getLocalSsn());
-                it.setProtocolClass(getProtocolClass());
-                it.setSourceLocalReferenceNumber(getLocalReference());
-                it.setDestinationLocalReferenceNumber(getRemoteReference());
+				// could be overwritten during preparing
+				it.setCredit(new CreditImpl(0));
+				it.setSequencingSegmenting(new SequencingSegmentingImpl(new SequenceNumberImpl(0, false),
+						new SequenceNumberImpl(0, false), lastMoreDataSent));
+				prepareMessageForSending(it);
+				sendMessage(it, dummyCallback);
 
-                // could be overwritten during preparing
-                it.setCredit(new CreditImpl(0));
-                it.setSequencingSegmenting(new SequencingSegmentingImpl(new SequenceNumberImpl(0, false),
-                        new SequenceNumberImpl(0, false), lastMoreDataSent));
-                prepareMessageForSending(it);
-                sendMessage(it);
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		}
+	}
 
-            } catch (Exception e) {
-                logger.error(e);
-            }
-        }
-    }
+	protected class IarInactivityReceiveProcess extends BaseProcess {
+		{
+			delay = stack.getIarTimerDelay();
+		}
 
-    protected class IarInactivityReceiveProcess extends BaseProcess implements Runnable {
-        {
-            delay = stack.getIarTimerDelay();
-        }
+		@Override
+		public void run() {
+			try {
+				if (getState() == CLOSED)
+					return;
 
-        @Override
-        public void run() {
-            try {
-                if (getState() == CLOSED) {
-                    return;
-                }
+				disconnect(new ReleaseCauseImpl(ReleaseCauseValue.EXPIRATION_OF_RECEIVE_INACTIVITY_TIMER),
+						Unpooled.buffer(), dummyCallback);
 
-                disconnect(new ReleaseCauseImpl(ReleaseCauseValue.EXPIRATION_OF_RECEIVE_INACTIVITY_TIMER), Unpooled.buffer());
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		}
+	}
 
-            } catch (Exception e) {
-                logger.error(e);
-            }
-        }
-    }
+	protected class RelProcess extends BaseProcess {
+		{
+			delay = stack.getRelTimerDelay();
+		}
 
-    protected class RelProcess extends BaseProcess implements Runnable {
-        {
-            delay = stack.getRelTimerDelay();
-        }
+		@Override
+		public void start() {
+			if (this.isStarted())
+				return; // ignore if already started
+			super.start();
+		}
 
-        @Override
-        public void startTimer() {
-        	if (this.isStarted()) {
-                return; // ignore if already started
-            }
-            super.startTimer();
-        }
+		@Override
+		public void run() {
+			try {
+				if (getState() == CLOSED)
+					return;
 
-        @Override
-        public void run() {
-            try {
-                if (getState() == CLOSED) {
-                    return;
-                }
+				disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer(), dummyCallback);
+				intProcess.start();
+				repeatRelProcess.start();
 
-                disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer());
-                intProcess.startTimer();
-                repeatRelProcess.startTimer();
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		}
+	}
 
-            } catch (Exception e) {
-                logger.error(e);
-            }
-        }
-    }
+	protected class RepeatRelProcess extends BaseProcess {
+		{
+			delay = stack.getRepeatRelTimerDelay();
+		}
 
-    protected class RepeatRelProcess extends BaseProcess implements Runnable {
-        {
-            delay = stack.getRepeatRelTimerDelay();
-        }
+		@Override
+		public void start() {
+			if (this.isStarted())
+				return; // ignore if already started
+			super.start();
+		}
 
-        @Override
-        public void startTimer() {
-        	if (this.isStarted()) {
-                return; // ignore if already started
-            }
-            super.startTimer();
-        }
+		@Override
+		public void run() {
+			try {
+				if (getState() == CLOSED)
+					return;
 
-        @Override
-        public void run() {
-            try {
-                if (getState() == CLOSED) {
-                    return;
-                }
+				disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer(), dummyCallback);
+				repeatRelProcess.start();
 
-                disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer());
-                repeatRelProcess.startTimer();
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		}
+	}
 
-            } catch (Exception e) {
-                logger.error(e);
-            }
-        }
-    }
+	protected class IntProcess extends BaseProcess {
+		{
+			delay = stack.getIntTimerDelay();
+		}
 
-    protected class IntProcess extends BaseProcess implements Runnable {
-        {
-            delay = stack.getIntTimerDelay();
-        }
+		@Override
+		public void start() {
+			if (this.isStarted())
+				return; // ignore if already started
+			super.start();
+		}
 
-        @Override
-        public void startTimer() {
-        	if (this.isStarted()) {
-                return; // ignore if already started
-            }
-            super.startTimer();
-        }
+		@Override
+		public void run() {
+			if (getState() == CLOSED)
+				return;
 
-        @Override
-        public void run() {
-        	if (getState() == CLOSED) {
-                return;
-            }
+			repeatRelProcess.stop();
 
-            repeatRelProcess.stopTimer();
+			SccpListener listener = getListener();
+			if (listener != null)
+				listener.onDisconnectIndication((SccpConnection) SccpConnectionWithTimers.this,
+						new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer());
+			stack.removeConnection(getLocalReference());
+		}
+	}
 
-            SccpListener listener = getListener();
-            if (listener != null) {
-                listener.onDisconnectIndication((SccpConnection) SccpConnectionWithTimers.this, new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer());
-            }
-            stack.removeConnection(getLocalReference());
-        }
-    }
+	protected class GuardProcess extends BaseProcess {
+		{
+			delay = stack.getGuardTimerDelay();
+		}
 
-    protected class GuardProcess extends BaseProcess implements Runnable {
-        {
-            delay = stack.getGuardTimerDelay();
-        }
+		@Override
+		public void run() {
+			if (getState() == CLOSED)
+				return;
+		}
+	}
 
-        @Override
-        public void run() {
-        	if (getState() == CLOSED) {
-                return;
-            }
-        }
-    }
+	protected class ResetProcess extends BaseProcess {
+		{
+			delay = stack.getResetTimerDelay();
+		}
 
-    protected class ResetProcess extends BaseProcess implements Runnable {
-        {
-            delay = stack.getResetTimerDelay();
-        }
+		@Override
+		public void run() {
+			try {
+				if (getState() == CLOSED)
+					return;
 
-        @Override
-        public void run() {
-            try {
-                if (getState() == CLOSED) {
-                    return;
-                }
+				disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer(), dummyCallback);
+				stack.removeConnection(getLocalReference());
 
-                disconnect(new ReleaseCauseImpl(ReleaseCauseValue.SCCP_FAILURE), Unpooled.buffer());
-                stack.removeConnection(getLocalReference());
+			} catch (Exception e) {
+				logger.error(e);
+			}
+		}
+	}
 
-            } catch (Exception e) {
-                logger.error(e);
-            }
-        }
-    }
+	private abstract class BaseProcess implements Timer {
+		protected long delay = stack.getConnEstTimerDelay();
 
-    private class BaseProcess implements Runnable {
-        protected long delay = stack.getConnEstTimerDelay();
-        private Future<?> future;
+		private long startTime = System.currentTimeMillis();
+		private AtomicBoolean isStarted = new AtomicBoolean(false);
 
-        public void startTimer() {
-        	if (this.future != null) { // need to lock because otherwise this check won't ensure safety
-                logger.error(new IllegalStateException(String.format("Already started %s timer", getClass())));
-            }
-            this.future = stack.connectionExecutors.schedule(this, delay, TimeUnit.MILLISECONDS);
-        }
+		public void start() {
+			this.startTime = System.currentTimeMillis();
 
-        public void stopTimer() {
-        	if (this.future != null) { // need to lock because otherwise this check won't ensure safety
-                this.future.cancel(false);
-                this.future = null;
-            }
-        }
+			if (this.isStarted.get())
+				logger.error(new IllegalStateException(String.format("Already started %s timer", getClass())));
 
-        public void resetTimer() {
-            stopTimer();
-            startTimer();
-        }
+			stack.workerPool.getPeriodicQueue().store(this.getRealTimestamp(), this);
+			this.isStarted.set(true);
+		}
 
-        public boolean isStarted() {
-            return future != null;
-        }
+		public void resetTimer() {
+			this.stop();
+			this.start();
+		}
 
-        @Override
-        public void run() {
-        }
-    }
+		public boolean isStarted() {
+			return this.isStarted.get();
+		}
+
+		@Override
+		public void execute() {
+			if (this.startTime == Long.MAX_VALUE)
+				return;
+
+			this.run();
+		}
+
+		public abstract void run();
+
+		@Override
+		public long getStartTime() {
+			return this.startTime;
+		}
+
+		@Override
+		public Long getRealTimestamp() {
+			return this.startTime + this.delay;
+		}
+
+		@Override
+		public void stop() {
+			this.startTime = Long.MAX_VALUE;
+			this.isStarted.set(false);
+		}
+	}
 }

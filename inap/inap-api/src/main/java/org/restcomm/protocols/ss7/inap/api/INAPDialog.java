@@ -30,6 +30,7 @@ import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 /**
  * @author yulian.oifa
@@ -124,7 +125,7 @@ public interface INAPDialog extends Serializable {
    /**
    * Sends TB-BEGIN, TC-CONTINUE depends on dialogue state including primitives
    */
-   void send() throws INAPException;
+   void send(TaskCallback<Exception> callback);
 
    /**
    * This service is used for releasing a previously established INAP dialogue. Sends TC-CLOSE
@@ -133,7 +134,7 @@ public interface INAPDialog extends Serializable {
    *        sent to peer. If prearrangedEnd is true, all the Service Primitive added to INAPDialog and not sent yet, will not
    *        be sent to peer.
    */
-   void close(boolean prearrangedEnd) throws INAPException;
+   void close(boolean prearrangedEnd, TaskCallback<Exception> callback);
 
    /**
    * This method makes the same as send() method. But when invoking it from events of parsing incoming components real sending
@@ -142,7 +143,7 @@ public interface INAPDialog extends Serializable {
    * If you are receiving several primitives you can invoke sendDelayed() in several processing components events - the result
    * will be sent after onDialogDelimiter() in a single TC-CONTINUE message
    */
-   void sendDelayed() throws INAPException;
+   void sendDelayed(TaskCallback<Exception> callback);
 
    /**
    * This method makes the same as close() method. But when invoking it from events of parsing incoming components real
@@ -156,14 +157,14 @@ public interface INAPDialog extends Serializable {
    * sendDelayed() or closeDelayed() were invoked, TC-CONTINUE/TC-END were not sent and abort() or release() are invoked - no
    * TC-CONTINUE/TC-END messages will be sent
    */
-   void closeDelayed(boolean prearrangedEnd) throws INAPException;
+   void closeDelayed(boolean prearrangedEnd, TaskCallback<Exception> callback);
 
    /**
    * Sends TC_U_ABORT Service Request with an abort reason.
    *
    * @param abortReason optional - may be null
    */
-   void abort(INAPUserAbortReason abortReason) throws INAPException;
+   void abort(INAPUserAbortReason abortReason, TaskCallback<Exception> callback);
 
    /**
    * If a INAP user will not answer to an incoming Invoke with Response, Error or Reject components it should invoke this

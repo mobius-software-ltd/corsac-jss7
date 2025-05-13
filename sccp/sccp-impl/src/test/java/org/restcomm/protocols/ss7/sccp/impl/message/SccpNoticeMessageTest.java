@@ -64,7 +64,7 @@ import io.netty.buffer.Unpooled;
 public class SccpNoticeMessageTest {
 
     private Logger logger;
-    private SccpStackImpl stack = new SccpStackImpl("SccpNoticeMessageTestStack");
+    private SccpStackImpl stack = new SccpStackImpl("SccpNoticeMessageTestStack", null);
     private MessageFactoryImpl messageFactory;
 
     @Before

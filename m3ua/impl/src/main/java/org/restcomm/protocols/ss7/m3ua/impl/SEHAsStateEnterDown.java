@@ -40,31 +40,33 @@ import org.restcomm.protocols.ss7.m3ua.impl.fsm.FSMStateEventHandler;
  */
 public abstract class SEHAsStateEnterDown implements FSMStateEventHandler {
 
-    private static final Logger logger = LogManager.getLogger(SEHAsStateEnterDown.class);
+	private static final Logger logger = LogManager.getLogger(SEHAsStateEnterDown.class);
 
-    private AsImpl asImpl;
+	private AsImpl asImpl;
 
-    public SEHAsStateEnterDown(AsImpl asImpl) {
-        this.asImpl = asImpl;
-    }
+	public SEHAsStateEnterDown(AsImpl asImpl) {
+		this.asImpl = asImpl;
+	}
 
-    @Override
-    public void onEvent(FSMState state) {
-        // Call listener and indicate of state change only if not already done
-        if (!this.asImpl.state.getName().equals(State.STATE_DOWN)) {
-            AsState oldState = AsState.getState(this.asImpl.state.getName());
-            this.asImpl.state = AsState.DOWN;
-            
-            Iterator<M3UAManagementEventListener> managementEventListenersTmp = this.asImpl.m3UAManagementImpl.managementEventListeners.values().iterator();
-            while(managementEventListenersTmp.hasNext()) {
-                M3UAManagementEventListener m3uaManagementEventListener = managementEventListenersTmp.next();
-                try {
-                    m3uaManagementEventListener.onAsDown(this.asImpl, oldState);
-                } catch (Throwable ee) {
-                    logger.error("Exception while invoking onAsDown", ee);
-                }
-            }
-        }
-    }
+	@Override
+	public void onEvent(FSMState state) {
+		// Call listener and indicate of state change only if not already done
+		if (!this.asImpl.state.getName().equals(State.STATE_DOWN)) {
+			AsState oldState = AsState.getState(this.asImpl.state.getName());
+			this.asImpl.state = AsState.DOWN;
+
+			Iterator<M3UAManagementEventListener> managementEventListenersTmp = this.asImpl.m3UAManagementImpl.managementEventListeners
+					.values().iterator();
+			while (managementEventListenersTmp.hasNext()) {
+				M3UAManagementEventListener m3uaManagementEventListener = managementEventListenersTmp.next();
+
+				try {
+					m3uaManagementEventListener.onAsDown(this.asImpl, oldState);
+				} catch (Throwable ee) {
+					logger.error("Exception while invoking onAsDown", ee);
+				}
+			}
+		}
+	}
 
 }

@@ -23,6 +23,9 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.restcomm.protocols.ss7.sccp.impl.message.MessageUtil;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnDt1MessageImpl;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnDt2MessageImpl;
@@ -31,10 +34,9 @@ import org.restcomm.protocols.ss7.sccp.message.SccpConnMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.LocalReference;
 import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 
-import io.netty.buffer.ByteBuf;
+import com.mobius.software.common.dal.timers.TaskCallback;
 
-import java.util.ArrayList;
-import java.util.List;
+import io.netty.buffer.ByteBuf;
 /**
  * 
  * @author yulianoifa
@@ -53,24 +55,23 @@ abstract class SccpConnectionWithSegmentingImpl extends SccpConnectionWithTimers
         return awaitSegments;
     }
 
-    protected void receiveMessage(SccpConnMessage message) throws Exception {
+    @Override
+	protected void receiveMessage(SccpConnMessage message) throws Exception {
         super.receiveMessage(message);
 
-        if (message instanceof SccpConnSegmentableMessageImpl) {
-            receiveDataMessage((SccpConnSegmentableMessageImpl) message);
-        }
+        if (message instanceof SccpConnSegmentableMessageImpl)
+			receiveDataMessage((SccpConnSegmentableMessageImpl) message);
     }
 
     protected void receiveDataMessage(SccpConnSegmentableMessageImpl msg) throws Exception {
-        if (!msg.isMoreData() && !awaitSegments) {
-            callListenerOnData(msg.getUserData());
-        } else if (msg.isMoreData()) {
+        if (!msg.isMoreData() && !awaitSegments)
+			callListenerOnData(msg.getUserData());
+		else if (msg.isMoreData()) {
             awaitSegments = true;
-            if (currentSegmentedMessage == null) {
-                currentSegmentedMessage = msg;
-            } else {
-                currentSegmentedMessage.setReceivedNextSegment(msg);
-            }
+            if (currentSegmentedMessage == null)
+				currentSegmentedMessage = msg;
+			else
+				currentSegmentedMessage.setReceivedNextSegment(msg);
         } else if (!msg.isMoreData() && awaitSegments) {
             currentSegmentedMessage.setReceivedNextSegment(msg);
             awaitSegments = false;
@@ -85,11 +86,11 @@ abstract class SccpConnectionWithSegmentingImpl extends SccpConnectionWithTimers
         }
     }
 
-    public void send(ByteBuf data) throws Exception {
+    public void send(ByteBuf data, TaskCallback<Exception> callback) throws Exception {
 
-        if (data.readableBytes() <= 255) {
-            sendDataMessageSegment(data, false);
-        } else {
+        if (data.readableBytes() <= 255)
+			sendDataMessageSegment(data, false);
+		else {
             int chunks = (int) Math.ceil(data.readableBytes() / 255.0);
             int pos = 0;
             List<ByteBuf> chunkData = new ArrayList<>();
@@ -105,10 +106,11 @@ abstract class SccpConnectionWithSegmentingImpl extends SccpConnectionWithTimers
 
                 pos += copyBytes;
             }
-            for (int i = 0; i < chunkData.size(); i++) {
-                sendDataMessageSegment(chunkData.get(i), i != chunkData.size() - 1);
-            }
+            for (int i = 0; i < chunkData.size(); i++)
+				sendDataMessageSegment(chunkData.get(i), i != chunkData.size() - 1);
         }
+        
+        callback.onSuccess();
     }
 
     private void sendDataMessageSegment(ByteBuf data, boolean moreData) throws Exception {
@@ -116,21 +118,18 @@ abstract class SccpConnectionWithSegmentingImpl extends SccpConnectionWithTimers
             logger.error("Message data is too lengthy");
             throw new IllegalArgumentException("Message data is too lengthy");
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug(String.format("Sending data message to DPC=%d, SSN=%d, DLR=%s", getRemoteDpc(),
+        if (logger.isDebugEnabled())
+			logger.debug(String.format("Sending data message to DPC=%d, SSN=%d, DLR=%s", getRemoteDpc(),
                     getRemoteSsn(), getRemoteReference()));
-        }
-        if (!isAvailable()) {
-            throw new SccpConnectionImpl.ConnectionNotAvailableException(String.format("Trying to send data when in non-compatible state %s", getState()));
-        }
+        if (!isAvailable())
+			throw new SccpConnectionImpl.ConnectionNotAvailableException(String.format("Trying to send data when in non-compatible state %s", getState()));
 
         SccpConnSegmentableMessageImpl dataMessage;
 
-        if (getProtocolClass().getProtocolClass() == 2) {
-            dataMessage = new SccpConnDt1MessageImpl(255, getSls(), getLocalSsn());
-        } else {
-            dataMessage = new SccpConnDt2MessageImpl(255, getSls(), getLocalSsn());
-        }
+        if (getProtocolClass().getProtocolClass() == 2)
+			dataMessage = new SccpConnDt1MessageImpl(255, getSls(), getLocalSsn());
+		else
+			dataMessage = new SccpConnDt2MessageImpl(255, getSls(), getLocalSsn());
 
         dataMessage.setDestinationLocalReferenceNumber(getRemoteReference());
         dataMessage.setSourceLocalReferenceNumber(getLocalReference());
@@ -142,6 +141,6 @@ abstract class SccpConnectionWithSegmentingImpl extends SccpConnectionWithTimers
             logger.error(String.format("Message doesn't have DLN set: ", dataMessage));
             throw new IllegalStateException();
         }
-        sendMessage(dataMessage);
+        sendMessage(dataMessage, dummyCallback);
     }
 }

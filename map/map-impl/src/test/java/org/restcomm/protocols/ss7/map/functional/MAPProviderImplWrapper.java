@@ -24,12 +24,13 @@ import org.restcomm.protocols.ss7.map.MAPProviderImpl;
 import org.restcomm.protocols.ss7.map.MAPServiceBaseImpl;
 import org.restcomm.protocols.ss7.map.MAPStackConfigurationManagement;
 import org.restcomm.protocols.ss7.map.MAPStackImpl;
-import org.restcomm.protocols.ss7.map.api.MAPException;
 import org.restcomm.protocols.ss7.map.api.dialog.MAPProviderAbortReason;
 import org.restcomm.protocols.ss7.map.api.service.supplementary.MAPServiceSupplementary;
 import org.restcomm.protocols.ss7.map.service.supplementary.MAPServiceSupplementaryImpl;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginIndication;
+
+import com.mobius.software.common.dal.timers.TaskCallback;
 
 /**
  *
@@ -43,43 +44,51 @@ public class MAPProviderImplWrapper extends MAPProviderImpl {
 
 	private int testMode = 0;
 
-    private final MAPServiceSupplementaryImpl mapServiceSupplementaryTest = new MAPServiceSupplementaryImplWrapper(this);
+	private final MAPServiceSupplementaryImpl mapServiceSupplementaryTest = new MAPServiceSupplementaryImplWrapper(
+			this);
 
-    public MAPProviderImplWrapper(TCAPProvider tcapProvider, MAPStackImpl stack) {
-        super("Test", stack, tcapProvider,new MAPStackConfigurationManagement());
+	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {
+		}
 
-        for (MAPServiceBaseImpl serv : this.mapServices) {
-            if (serv instanceof MAPServiceSupplementary) {
-                this.mapServices.remove(serv);
-                break;
-            }
-        }
+		@Override
+		public void onError(Exception exception) {
+		}
+	};
 
-        this.mapServices.add(this.mapServiceSupplementaryTest);
-    }
+	public MAPProviderImplWrapper(TCAPProvider tcapProvider, MAPStackImpl stack) {
+		super("Test", stack, tcapProvider, new MAPStackConfigurationManagement());
 
-    public MAPServiceSupplementary getMAPServiceSupplementary() {
-        return this.mapServiceSupplementaryTest;
-    }
+		for (MAPServiceBaseImpl serv : this.mapServices)
+			if (serv instanceof MAPServiceSupplementary) {
+				this.mapServices.remove(serv);
+				break;
+			}
 
-    public void setTestMode(int testMode) {
-        this.testMode = testMode;
-    }
+		this.mapServices.add(this.mapServiceSupplementaryTest);
+	}
 
-    public void onTCBegin(TCBeginIndication tcBeginIndication) {
-        tcBeginIndication.getApplicationContextName();
-        tcBeginIndication.getComponents();
+	@Override
+	public MAPServiceSupplementary getMAPServiceSupplementary() {
+		return this.mapServiceSupplementaryTest;
+	}
 
-        if (this.testMode == 1) {
-            try {
-                this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU,
-                        MAPExtensionContainerTest.GetTestExtensionContainer(), false);
-            } catch (MAPException e) {
-                loger.error("Error while firing TC-U-ABORT. ", e);
-            }
-            return;
-        }
+	public void setTestMode(int testMode) {
+		this.testMode = testMode;
+	}
 
-        super.onTCBegin(tcBeginIndication);
-    }
+	@Override
+	public void onTCBegin(TCBeginIndication tcBeginIndication) {
+		tcBeginIndication.getApplicationContextName();
+		tcBeginIndication.getComponents();
+
+		if (this.testMode == 1) {
+			this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU,
+					MAPExtensionContainerTest.GetTestExtensionContainer(), false, dummyCallback);
+			return;
+		}
+
+		super.onTCBegin(tcBeginIndication);
+	}
 }

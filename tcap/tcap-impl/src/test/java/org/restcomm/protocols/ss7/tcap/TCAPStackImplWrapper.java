@@ -21,6 +21,8 @@ package org.restcomm.protocols.ss7.tcap;
 
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
 
+import com.mobius.software.common.dal.timers.WorkerPool;
+
 /**
  *
  * @author sergey vetyutnev
@@ -29,10 +31,11 @@ import org.restcomm.protocols.ss7.sccp.SccpProvider;
  */
 public class TCAPStackImplWrapper extends TCAPStackImpl {
 
-    public TCAPStackImplWrapper(SccpProvider sccpProvider, int ssn, String stackName,int threads) {
-        super(stackName,threads);
+	public TCAPStackImplWrapper(SccpProvider sccpProvider, int ssn, String stackName, WorkerPool workerPool)
+	{
+		super(stackName, workerPool);
 
-        this.tcapProvider = new TCAPProviderImplWrapper(sccpProvider, this, ssn, service);
+		this.tcapProvider = new TCAPProviderImplWrapper(sccpProvider, this, ssn, workerPool);
     }
 
 }

@@ -33,6 +33,8 @@ import org.restcomm.protocols.ss7.sccp.impl.parameter.ResetCauseImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SequenceNumberImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCauseValue;
 import org.restcomm.protocols.ss7.sccp.parameter.SequenceNumber;
+
+import com.mobius.software.common.dal.timers.TaskCallback;
 /**
  * 
  * @author yulianoifa
@@ -59,12 +61,21 @@ public class SccpFlowControl {
 
     private boolean preemptiveAk = false; // send AK before input window exhaustion
 
+    private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {			
+		}
+		
+		@Override
+		public void onError(Exception exception) {			
+		}
+	};
+    
     public SccpFlowControl(String name, int maximumWindowSize) {
         this.logger = LogManager.getLogger(SccpFlowControl.class.getCanonicalName() + "-" + name);
 
-        if (maximumWindowSize > 127) {
-            throw new IllegalArgumentException();
-        }
+        if (maximumWindowSize > 127)
+			throw new IllegalArgumentException();
         this.maximumWindowSize = maximumWindowSize;
 
         reinitialize(); // init send sequence number
@@ -98,33 +109,29 @@ public class SccpFlowControl {
     }
 
     public void checkOutputMessageNumbering(SccpConnDt2MessageImpl msg) {
-        if (!outputWindow.contains(msg.getSequencingSegmenting().getSendSequenceNumber())) {
-            throw new MessageSequenceNumberException("P(S) outside sending window");
-        }
+        if (!outputWindow.contains(msg.getSequencingSegmenting().getSendSequenceNumber()))
+			throw new MessageSequenceNumberException("P(S) outside sending window");
     }
 
     public void checkOutputMessageNumbering(SccpConnItMessageImpl msg) {
-        if (!outputWindow.contains(msg.getSequencingSegmenting().getSendSequenceNumber())) {
-            throw new MessageSequenceNumberException("P(S) outside sending window");
-        }
+        if (!outputWindow.contains(msg.getSequencingSegmenting().getSendSequenceNumber()))
+			throw new MessageSequenceNumberException("P(S) outside sending window");
     }
 
     public boolean isAuthorizedToTransmitAnotherMessage() {
         SequenceNumber nextSequenceNumber = getNextSequenceNumber();
         boolean result = outputWindow.contains(nextSequenceNumber);
-        if (result && logger.isDebugEnabled()) {
-            logger.debug(String.format("output window %3s,(%3d) contains %3s: %b", outputWindow.lowerEdge.getValue(), outputWindow.w, nextSequenceNumber.getValue(), result));
-        }
+        if (result && logger.isDebugEnabled())
+			logger.debug(String.format("output window %3s,(%3d) contains %3s: %b", outputWindow.lowerEdge.getValue(), outputWindow.w, nextSequenceNumber.getValue(), result));
         return result;
     }
 
     public boolean isAkSendCriterion(SccpConnDt2MessageImpl msg) {
         //logger.warn("***** - " + inputWindow.getUpperEdge() + " - " + msg);
-        if (!preemptiveAk) {
-            return inputWindow.getW() == 0 || msg.getSequencingSegmenting().getSendSequenceNumber().equals(inputWindow.getUpperEdge());
-        } else {
-            return inputWindow.getW() == 0 || msg.getSequencingSegmenting().getSendSequenceNumber().equals(inputWindow.getEarlyAckEdge());
-        }
+        if (!preemptiveAk)
+			return inputWindow.getW() == 0 || msg.getSequencingSegmenting().getSendSequenceNumber().equals(inputWindow.getUpperEdge());
+		else
+			return inputWindow.getW() == 0 || msg.getSequencingSegmenting().getSendSequenceNumber().equals(inputWindow.getEarlyAckEdge());
     }
 
     public void checkInputMessageNumbering(SccpConnectionImpl conn, SequenceNumber receiveSequenceNumber) throws Exception {
@@ -134,31 +141,27 @@ public class SccpFlowControl {
     // if true then message can be accepted
     public boolean checkInputMessageNumbering(SccpConnectionImpl conn, SequenceNumber sendSequenceNumber,
                                               SequenceNumber receiveSequenceNumber) throws Exception {
-        if (sendSequenceNumber != null) {
-            if (expectingFirstMessageInputAfterInit && !sendSequenceNumber.equals(new SequenceNumberImpl(0))) {
+        if (sendSequenceNumber != null)
+			if (expectingFirstMessageInputAfterInit && !sendSequenceNumber.equals(new SequenceNumberImpl(0))) {
                 // local procedure error
-                conn.reset(new ResetCauseImpl(ResetCauseValue.MESSAGE_OUT_OF_ORDER_INCORRECT_PS));
+                conn.reset(new ResetCauseImpl(ResetCauseValue.MESSAGE_OUT_OF_ORDER_INCORRECT_PS), dummyCallback);
                 return false;
 
-            } else if (sendSequenceNumber.equals(sendSequenceNumberExpectedAtInput) && inputWindow.contains(sendSequenceNumber)) {
-                sendSequenceNumberExpectedAtInput = sendSequenceNumberExpectedAtInput.nextNumber();
-
-            } else {
-                if (!inputWindow.contains(sendSequenceNumber)) {
-                    conn.reset(new ResetCauseImpl(ResetCauseValue.REMOTE_PROCEDURE_ERROR_MESSAGE_OUT_OF_WINDOW));
-
-                } else if (!sendSequenceNumber.equals(sendSequenceNumberExpectedAtInput)) {
-                    // local procedure error
-                    conn.resetSection(new ResetCauseImpl(ResetCauseValue.MESSAGE_OUT_OF_ORDER_INCORRECT_PS));
-                }
+            } else if (sendSequenceNumber.equals(sendSequenceNumberExpectedAtInput) && inputWindow.contains(sendSequenceNumber))
+				sendSequenceNumberExpectedAtInput = sendSequenceNumberExpectedAtInput.nextNumber();
+			else {
+                if (!inputWindow.contains(sendSequenceNumber))
+					conn.reset(new ResetCauseImpl(ResetCauseValue.REMOTE_PROCEDURE_ERROR_MESSAGE_OUT_OF_WINDOW), dummyCallback);
+				else if (!sendSequenceNumber.equals(sendSequenceNumberExpectedAtInput))
+					// local procedure error
+                    conn.resetSection(new ResetCauseImpl(ResetCauseValue.MESSAGE_OUT_OF_ORDER_INCORRECT_PS), dummyCallback);
                 return false;
             }
-        }
 
-        if (rangeContains(lastReceiveSequenceNumberReceived, this.sendSequenceNumber.nextNumber(), receiveSequenceNumber)) {
-            outputWindow.setLowerEdge(receiveSequenceNumber);
-        } else {
-            conn.resetSection(new ResetCauseImpl(ResetCauseValue.MESSAGE_OUT_OF_ORDER_INCORRECT_PS));
+        if (rangeContains(lastReceiveSequenceNumberReceived, this.sendSequenceNumber.nextNumber(), receiveSequenceNumber))
+			outputWindow.setLowerEdge(receiveSequenceNumber);
+		else {
+            conn.resetSection(new ResetCauseImpl(ResetCauseValue.MESSAGE_OUT_OF_ORDER_INCORRECT_PS), dummyCallback);
             return false;
         }
 
@@ -235,21 +238,18 @@ public class SccpFlowControl {
         }
 
         public SequenceNumber getUpperEdge() {
-            if (w == 0) {
-                throw new MessageSequenceEmptyWindowException("Getting upper edge of window with w=0");
-            }
+            if (w == 0)
+				throw new MessageSequenceEmptyWindowException("Getting upper edge of window with w=0");
             return new SequenceNumberImpl(lowerEdge.getValue() + w - 1, true);
         }
 
         public SequenceNumber getEarlyAckEdge() {
-            if (w == 0) {
-                throw new MessageSequenceEmptyWindowException("Getting early ack edge of window with w=0");
-            }
+            if (w == 0)
+				throw new MessageSequenceEmptyWindowException("Getting early ack edge of window with w=0");
 
             int earlyW = (int) (this.w * ((this.w > EARLY_ACK_LARGE_WINDOW) ?  EARLY_ACK_LEVEL_LARGE_WINDOW : EARLY_ACK_LEVEL_SMALL_WINDOW));
-            if (earlyW == 0) {
-                earlyW = 1;
-            }
+            if (earlyW == 0)
+				earlyW = 1;
             return new SequenceNumberImpl(lowerEdge.getValue() + earlyW - 1, true);
         }
 
@@ -259,17 +259,15 @@ public class SccpFlowControl {
 
 
         public void setLowerEdge(SequenceNumber newLowerEdge) {
-            if (newLowerEdge.equals(this.lowerEdge)) {
-                return;
-            }
+            if (newLowerEdge.equals(this.lowerEdge))
+				return;
 
             this.lowerEdge = newLowerEdge;
         }
 
         public boolean contains(SequenceNumber sendSequenceNumber) {
-            if (w == 0) {
-                return false;
-            }
+            if (w == 0)
+				return false;
             SequenceNumber upperEdge = getUpperEdge();
             return SccpFlowControl.rangeContains(lowerEdge, upperEdge, sendSequenceNumber);
         }
@@ -292,15 +290,13 @@ public class SccpFlowControl {
     }
 
     public static boolean rangeContains(SequenceNumber lowerEdge, SequenceNumber upperEdge, SequenceNumber number) {
-        if (number.equals(lowerEdge) || number.equals(upperEdge)) {
-            return true;
-        }
+        if (number.equals(lowerEdge) || number.equals(upperEdge))
+			return true;
 
-        if (upperEdge.getValue() < lowerEdge.getValue()) {
-            return lowerEdge.getValue() < number.getValue() && number.getValue() <= SequenceNumber.MAX_VALUE
+        if (upperEdge.getValue() < lowerEdge.getValue())
+			return lowerEdge.getValue() < number.getValue() && number.getValue() <= SequenceNumber.MAX_VALUE
                     || 0 <= number.getValue() && number.getValue() < upperEdge.getValue();
-        } else {
-            return lowerEdge.getValue() < number.getValue() && number.getValue() < upperEdge.getValue();
-        }
+		else
+			return lowerEdge.getValue() < number.getValue() && number.getValue() < upperEdge.getValue();
     }
 }

@@ -50,6 +50,8 @@ import org.restcomm.protocols.ss7.sccp.parameter.ReleaseCause;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -72,6 +74,16 @@ public class User extends BaseSccpListener implements SccpListener {
     protected UserStats stats = new UserStats();
     private UserOptions options = new UserOptions();
 
+    private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {			
+		}
+		
+		@Override
+		public void onError(Exception exception) {			
+		}
+	};
+    
     public User(SccpProvider provider, SccpAddress address, SccpAddress dest, int ssn) {
         this.provider = provider;
         this.address = address;
@@ -89,9 +101,8 @@ public class User extends BaseSccpListener implements SccpListener {
 
     public boolean check() { // override if required.
         System.err.println("SIZE: "+messages.size());
-        if (messages.size() == 0) {
-            return false;
-        }
+        if (messages.size() == 0)
+			return false;
         SccpMessage msg = messages.get(0);
         if (msg.getType() != SccpMessage.MESSAGE_TYPE_UDT) {
             System.err.println("WRONG TYPE: "+msg.getType());
@@ -114,22 +125,20 @@ public class User extends BaseSccpListener implements SccpListener {
     protected boolean matchCalledPartyAddress() {
         SccpMessage msg = messages.get(0);
         SccpAddressedMessage udt = (SccpAddressedMessage) msg;
-        if (!address.equals(udt.getCalledPartyAddress())) {
-            return false;
-        }
+        if (!address.equals(udt.getCalledPartyAddress()))
+			return false;
         return true;
     }
 
     protected boolean matchCallingPartyAddress() {
         SccpMessage msg = messages.get(0);
         SccpAddressedMessage udt = (SccpAddressedMessage) msg;
-        if (!dest.equals(udt.getCallingPartyAddress())) {
-            return false;
-        }
+        if (!dest.equals(udt.getCallingPartyAddress()))
+			return false;
         return true;
     }
 
-    public void send() throws IOException {
+    public void send(TaskCallback<Exception> callback) throws IOException {
         MessageFactory messageFactory = provider.getMessageFactory();
 
         // ParameterFactory paramFactory = provider.getParameterFactory();
@@ -139,15 +148,16 @@ public class User extends BaseSccpListener implements SccpListener {
         // provider.send(udt,1);
 
         SccpDataMessage udt = messageFactory.createDataMessageClass0(dest, address, Unpooled.wrappedBuffer(new byte[10]), ssn, false, null, null);
-        provider.send(udt);
+        provider.send(udt, callback);
     }
 
     SccpAddress localAddress;
 
-    public void onMessage(SccpDataMessage message) {
+    @Override
+	public void onMessage(SccpDataMessage message) {
         this.messages.add(message);
         if(message instanceof SccpSegmentableMessageImpl)
-        	((SccpSegmentableMessageImpl)message).copyData();	
+        	((SccpSegmentableMessageImpl)message).getData();	
         
         System.out.println(String.format("SccpDataMessage=%s seqControl=%d", message, message.getSls()));
 
@@ -216,10 +226,10 @@ public class User extends BaseSccpListener implements SccpListener {
 
     @Override
     public void onConnectIndication(SccpConnection conn, SccpAddress calledAddress, SccpAddress callingAddress, ProtocolClass clazz, Credit credit, ByteBuf data, Importance importance) throws Exception {
-        if (!refuseConnections) {
-            conn.confirm(calledAddress, (options.confirmCredit != null) ? options.confirmCredit : credit, options.sendConfirmData);
-        } else {
-            conn.refuse(new RefusalCauseImpl(RefusalCauseValue.END_USER_ORIGINATED), Unpooled.wrappedBuffer(new byte[] { 0x31, 0x32, 0x33, 0x34 }));
+        if (!refuseConnections)
+			conn.confirm(calledAddress, (options.confirmCredit != null) ? options.confirmCredit : credit, options.sendConfirmData, dummyCallback);
+		else {
+            conn.refuse(new RefusalCauseImpl(RefusalCauseValue.END_USER_ORIGINATED), Unpooled.wrappedBuffer(new byte[] { 0x31, 0x32, 0x33, 0x34 }), dummyCallback);
             stats.refusedCount++;
         }
     }

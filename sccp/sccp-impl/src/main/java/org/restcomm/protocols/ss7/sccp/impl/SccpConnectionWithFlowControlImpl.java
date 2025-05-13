@@ -23,6 +23,12 @@
 
 package org.restcomm.protocols.ss7.sccp.impl;
 
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.CR_RECEIVED;
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.ESTABLISHED;
+import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.ESTABLISHED_SEND_WINDOW_EXHAUSTED;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpConnectionState;
 import org.restcomm.protocols.ss7.sccp.impl.message.SccpConnAkMessageImpl;
@@ -40,14 +46,9 @@ import org.restcomm.protocols.ss7.sccp.parameter.ProtocolClass;
 import org.restcomm.protocols.ss7.sccp.parameter.ResetCause;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 import io.netty.buffer.ByteBuf;
-
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.CR_RECEIVED;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.ESTABLISHED;
-import static org.restcomm.protocols.ss7.sccp.SccpConnectionState.ESTABLISHED_SEND_WINDOW_EXHAUSTED;
 /**
  * 
  * @author yulianoifa
@@ -67,19 +68,21 @@ public class SccpConnectionWithFlowControlImpl extends SccpConnectionImpl implem
         }
     }
 
-    public void establish(SccpConnCrMessage message) throws IOException {
+    @Override
+	public void establish(SccpConnCrMessage message, TaskCallback<Exception> callback) {
         this.flow = newSccpFlowControl(message.getCredit());
-        super.establish(message);
+        super.establish(message, callback);
     }
 
-    public void confirm(SccpAddress respondingAddress, Credit credit, ByteBuf data) throws Exception {
+    @Override
+	public void confirm(SccpAddress respondingAddress, Credit credit, ByteBuf data, TaskCallback<Exception> callback) throws Exception {
         if (getState() != CR_RECEIVED) {
             logger.error(String.format("Trying to confirm connection in non-compatible state %s", getState()));
             throw new IllegalStateException(String.format("Trying to confirm connection in non-compatible state %s", getState()));
         }
         this.flow = newSccpFlowControl(credit);
 
-        super.confirm(respondingAddress, credit, data);
+        super.confirm(respondingAddress, credit, data, callback);
     }
 
     protected SccpFlowControl newSccpFlowControl(Credit credit) {
@@ -90,57 +93,55 @@ public class SccpConnectionWithFlowControlImpl extends SccpConnectionImpl implem
     	if(!this.overloaded.compareAndSet(!overloaded, overloaded))
     	    return;
         
-        if (overloaded) {
-            sendAk(new CreditImpl(0));
-        } else {
-            sendAk();
-        }    
+        if (overloaded)
+			sendAk(new CreditImpl(0));
+		else
+			sendAk();    
     }
 
-    public void prepareMessageForSending(SccpConnSegmentableMessageImpl message) {
+    @Override
+	public void prepareMessageForSending(SccpConnSegmentableMessageImpl message) {
         if (message instanceof SccpConnDt2MessageImpl) {
             SccpConnDt2MessageImpl dt2 = (SccpConnDt2MessageImpl) message;
 
             flow.initializeMessageNumbering(dt2);
             flow.checkOutputMessageNumbering(dt2);
 
-            if (!flow.isAuthorizedToTransmitAnotherMessage()) {
-                setState(ESTABLISHED_SEND_WINDOW_EXHAUSTED);
-            }
+            if (!flow.isAuthorizedToTransmitAnotherMessage())
+				setState(ESTABLISHED_SEND_WINDOW_EXHAUSTED);
 
-        } else {
-            throw new IllegalArgumentException();
-        }
+        } else
+			throw new IllegalArgumentException();
     }
 
-    protected void prepareMessageForSending(SccpConnItMessageImpl it) {
+    @Override
+	protected void prepareMessageForSending(SccpConnItMessageImpl it) {
         it.setCredit(new CreditImpl(flow.getReceiveCredit()));
 
         flow.initializeMessageNumbering(it);
         flow.checkOutputMessageNumbering(it);
 
-        if (!flow.isAuthorizedToTransmitAnotherMessage()) {
-            setState(ESTABLISHED_SEND_WINDOW_EXHAUSTED);
-        }
+        if (!flow.isAuthorizedToTransmitAnotherMessage())
+			setState(ESTABLISHED_SEND_WINDOW_EXHAUSTED);
     }
 
-    public void receiveMessage(SccpConnMessage message) throws Exception {
+    @Override
+	public void receiveMessage(SccpConnMessage message) throws Exception {
     	super.receiveMessage(message);
 
         if (message instanceof SccpConnCcMessageImpl) {
             SccpConnCcMessageImpl cc = (SccpConnCcMessageImpl) message;
-            if (cc.getCredit() != null) {
-                this.flow = newSccpFlowControl(cc.getCredit());
-            }
+            if (cc.getCredit() != null)
+				this.flow = newSccpFlowControl(cc.getCredit());
 
-        } else if (message instanceof SccpConnAkMessageImpl) {
-            handleAkMessage((SccpConnAkMessageImpl) message);
-        } else if (message instanceof SccpConnRsrMessageImpl) {
-            flow.reinitialize();
-        }
+        } else if (message instanceof SccpConnAkMessageImpl)
+			handleAkMessage((SccpConnAkMessageImpl) message);
+		else if (message instanceof SccpConnRsrMessageImpl)
+			flow.reinitialize();
     }
 
-    protected void receiveDataMessage(SccpConnSegmentableMessageImpl msg) throws Exception {
+    @Override
+	protected void receiveDataMessage(SccpConnSegmentableMessageImpl msg) throws Exception {
         if (!isAvailable()) {
             logger.error(getState() + " Message discarded " + msg);
             return;
@@ -155,20 +156,17 @@ public class SccpConnectionWithFlowControlImpl extends SccpConnectionImpl implem
         boolean correctNumbering = flow.checkInputMessageNumbering(this, dt2.getSequencingSegmenting().getSendSequenceNumber(),
                 dt2.getSequencingSegmenting().getReceiveSequenceNumber());
 
-        if (flow.isAkSendCriterion(dt2)) {
-            sendAk();
-        }
-        if (correctNumbering) {
-            super.receiveDataMessage(msg);
-        } else {
-            logger.error(String.format("Message %s was discarded due to incorrect sequence numbers", msg.toString()));
-        }
+        if (flow.isAkSendCriterion(dt2))
+			sendAk();
+        if (correctNumbering)
+			super.receiveDataMessage(msg);
+		else
+			logger.error(String.format("Message %s was discarded due to incorrect sequence numbers", msg.toString()));
 
-        if (flow.isAuthorizedToTransmitAnotherMessage()) {
-            setState(ESTABLISHED);
-        } else {
-            setState(ESTABLISHED_SEND_WINDOW_EXHAUSTED);
-        }
+        if (flow.isAuthorizedToTransmitAnotherMessage())
+			setState(ESTABLISHED);
+		else
+			setState(ESTABLISHED_SEND_WINDOW_EXHAUSTED);
     }
 
     protected void sendAk() throws Exception {
@@ -184,7 +182,7 @@ public class SccpConnectionWithFlowControlImpl extends SccpConnectionImpl implem
         flow.setReceiveCredit(credit.getValue());
         flow.initializeMessageNumbering(msg);
 
-        sendMessage(msg);
+        sendMessage(msg, dummyCallback);
     }
 
     private void handleAkMessage(SccpConnAkMessageImpl msg) throws Exception {
@@ -193,31 +191,33 @@ public class SccpConnectionWithFlowControlImpl extends SccpConnectionImpl implem
         flow.checkInputMessageNumbering(this, msg.getReceiveSequenceNumber().getNumber());
         flow.setSendCredit(msg.getCredit().getValue());
 
-        if (flow.isAuthorizedToTransmitAnotherMessage()) {
-            setState(ESTABLISHED);
-        } else {
-            setState(ESTABLISHED_SEND_WINDOW_EXHAUSTED);
-        }
+        if (flow.isAuthorizedToTransmitAnotherMessage())
+			setState(ESTABLISHED);
+		else
+			setState(ESTABLISHED_SEND_WINDOW_EXHAUSTED);
     }
 
-    public void reset(ResetCause reason) throws Exception {
-        super.reset(reason);
+    @Override
+	public void reset(ResetCause reason, TaskCallback<Exception> callback) throws Exception {
+        super.reset(reason, callback);
         flow.reinitialize();
     }
 
-    protected boolean isCanSendData() {
+    @Override
+	protected boolean isCanSendData() {
     	SccpConnectionState oldState = getState();
-        if (oldState == ESTABLISHED_SEND_WINDOW_EXHAUSTED && flow.isAuthorizedToTransmitAnotherMessage()) {
-            setState(ESTABLISHED);
-        }
+        if (oldState == ESTABLISHED_SEND_WINDOW_EXHAUSTED && flow.isAuthorizedToTransmitAnotherMessage())
+			setState(ESTABLISHED);
         return getState() == ESTABLISHED;
     }
 
-    public Credit getSendCredit() {
+    @Override
+	public Credit getSendCredit() {
         return new CreditImpl(flow.getSendCredit());
     }
 
-    public Credit getReceiveCredit() {
+    @Override
+	public Credit getReceiveCredit() {
         return new CreditImpl(flow.getReceiveCredit());
     }
 

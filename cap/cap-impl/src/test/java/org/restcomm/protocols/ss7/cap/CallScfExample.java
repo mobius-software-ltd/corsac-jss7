@@ -84,6 +84,8 @@ import org.restcomm.protocols.ss7.isup.message.parameter.CalledPartyNumber;
 import org.restcomm.protocols.ss7.isup.message.parameter.NAINumber;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
+
+import com.mobius.software.common.dal.timers.TaskCallback;
 /**
 *
 * @author sergey vetyutnev
@@ -95,6 +97,16 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
     private CAPDialogCircuitSwitchedCall currentCapDialog;
     private CallContent cc;
 
+    private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {			
+		}
+		
+		@Override
+		public void onError(Exception exception) {			
+		}
+	};
+    
     public CallScfExample() throws NamingException {
         InitialContext ctx = new InitialContext();
         try {
@@ -154,8 +166,8 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
     @Override
     public void onDialogDelimiter(CAPDialog capDialog) {
         try {
-            if (this.cc != null) {
-                switch (this.cc.step) {
+            if (this.cc != null)
+				switch (this.cc.step) {
                     case initialDPRecieved:
                         // informing SSF of BCSM events processing
                         List<BCSMEvent> bcsmEventList = new ArrayList<BCSMEvent>();
@@ -203,17 +215,16 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
                                     null, null, null, null, null, null, false, false, false, null, false, false);
                         }
 
-                        currentCapDialog.send();
+                        currentCapDialog.send(dummyCallback);
                         break;
 
                     case disconnected:
                         // the call is terminated - close dialog
-                        currentCapDialog.close(false);
+                        currentCapDialog.close(false, dummyCallback);
                         break;
 					default:
 						break;
                 }
-            }
         } catch (CAPException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -228,7 +239,7 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
             currentCapDialog.keepAlive();
             try {
                 this.cc.activityTestInvokeId = currentCapDialog.addActivityTestRequest();
-                currentCapDialog.send();
+                currentCapDialog.send(dummyCallback);
             } catch (CAPException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -238,23 +249,20 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
 
     @Override
     public void onActivityTestResponse(ActivityTestResponse ind) {
-        if (currentCapDialog != null && this.cc != null) {
-            this.cc.activityTestInvokeId = null;
-        }
+        if (currentCapDialog != null && this.cc != null)
+			this.cc.activityTestInvokeId = null;
     }
 
     @Override
     public void onInvokeTimeout(CAPDialog capDialog, Integer invokeId) {
-        if (currentCapDialog != null && this.cc != null) {
-            if (this.cc.activityTestInvokeId == invokeId) { // activityTest failure
-                try {
-                    currentCapDialog.close(true);
+        if (currentCapDialog != null && this.cc != null)
+			if (this.cc.activityTestInvokeId == invokeId)
+				try {
+                    currentCapDialog.close(true, dummyCallback);
                 } catch (CAPException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-            }
-        }
     }
 
     @Override
@@ -506,7 +514,8 @@ public class CallScfExample implements CAPDialogListener, CAPServiceCircuitSwitc
         // TODO Auto-generated method stub
     }
 
-    public void onSplitLegRequest(SplitLegRequest ind) {
+    @Override
+	public void onSplitLegRequest(SplitLegRequest ind) {
         // TODO Auto-generated method stub
 
     }

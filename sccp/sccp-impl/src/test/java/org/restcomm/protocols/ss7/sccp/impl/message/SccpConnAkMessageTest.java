@@ -39,6 +39,8 @@ import org.restcomm.protocols.ss7.sccp.impl.parameter.LocalReferenceImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.ReceiveSequenceNumberImpl;
 import org.restcomm.protocols.ss7.sccp.impl.parameter.SequenceNumberImpl;
 
+import com.mobius.software.common.dal.timers.WorkerPool;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 /**
@@ -49,17 +51,23 @@ import io.netty.buffer.Unpooled;
 public class SccpConnAkMessageTest {
 
     private Logger logger;
-    private SccpStackImpl stack = new SccpStackImpl("SccpConnAkMessageTestStack");
+    private WorkerPool workerPool;
+    private SccpStackImpl stack;
     private MessageFactoryImpl messageFactory;
 
     @Before
     public void setUp() {
+	workerPool = new WorkerPool();
+	workerPool.start(4);
+	stack = new SccpStackImpl("SccpConnAkMessageTestStack", workerPool);
+
         this.messageFactory = new MessageFactoryImpl(stack);
         this.logger = LogManager.getLogger(SccpStackImpl.class.getCanonicalName());
     }
 
     @After
     public void tearDown() {
+	this.workerPool.stop();
     }
 
     public ByteBuf getDataAk() {

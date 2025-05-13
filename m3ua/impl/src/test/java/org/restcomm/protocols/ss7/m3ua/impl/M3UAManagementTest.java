@@ -54,6 +54,7 @@ import org.restcomm.protocols.ss7.m3ua.impl.parameter.ParameterFactoryImpl;
 import org.restcomm.protocols.ss7.m3ua.parameter.NetworkAppearance;
 import org.restcomm.protocols.ss7.m3ua.parameter.RoutingContext;
 
+import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 
 import io.netty.buffer.ByteBufAllocator;
@@ -70,6 +71,7 @@ public class M3UAManagementTest {
     private M3UAManagementImpl m3uaMgmt = null;
     private NettyTransportManagement transportManagement = null;
     private ParameterFactoryImpl factory = new ParameterFactoryImpl();
+	private WorkerPool workerPool;
 
     /**
 	 *
@@ -89,9 +91,11 @@ public class M3UAManagementTest {
     @Before
     public void setUp() throws Exception {
         this.transportManagement = new NettyTransportManagement();
+		this.workerPool = new WorkerPool();
+		this.workerPool.start(4);
 
         UUIDGenerator uuidGenerator=new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} );
-        this.m3uaMgmt = new M3UAManagementImpl("M3UAManagementTest", null, uuidGenerator);
+		this.m3uaMgmt = new M3UAManagementImpl("M3UAManagementTest", null, uuidGenerator, workerPool);
         this.m3uaMgmt.setTransportManagement(this.transportManagement);
         this.m3uaMgmt.start();
         this.m3uaMgmt.removeAllResourses();
@@ -100,6 +104,7 @@ public class M3UAManagementTest {
     @After
     public void tearDown() throws Exception {
         m3uaMgmt.stop();
+		workerPool.stop();
     }
 
     @Test
@@ -151,7 +156,7 @@ public class M3UAManagementTest {
     @Test
     public void testPersistFileName() throws Exception {
     	UUIDGenerator uuidGenerator=new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00} );
-        M3UAManagementImpl m3ua = new M3UAManagementImpl("test", null,uuidGenerator);
+		M3UAManagementImpl m3ua = new M3UAManagementImpl("test", null, uuidGenerator, workerPool);
         m3ua.setMaxAsForRoute(10);
 
     }
