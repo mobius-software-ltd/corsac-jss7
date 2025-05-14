@@ -96,7 +96,7 @@ public class CommandDataImpl implements CommandData {
 
 		// TODO: what is an encoding algorithm ?
 		Charset chs = Charset.forName("US-ASCII");
-		this.decodedMessage = Unpooled.wrappedBuffer(this.encodedData).toString(chs);
+		this.decodedMessage = this.encodedData.slice().toString(chs);
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class CommandDataImpl implements CommandData {
 		sb.append("TP-Command-Data [");
 		if (this.decodedMessage == null) {
 			if (this.encodedData != null)
-				sb.append(ASNOctetString.printDataArr(Unpooled.wrappedBuffer(this.encodedData)));
+				sb.append(ASNOctetString.printDataArr(this.encodedData.slice()));
 		} else {
 			sb.append("Msg:[");
 			sb.append(this.decodedMessage);

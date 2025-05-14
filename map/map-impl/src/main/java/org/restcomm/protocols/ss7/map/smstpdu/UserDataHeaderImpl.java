@@ -28,7 +28,6 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.UserDataHeaderElement;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 /**
  *
@@ -37,204 +36,215 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class UserDataHeaderImpl implements UserDataHeader {
-    private Map<Integer, ByteBuf> data = new HashMap<Integer, ByteBuf>();
+	private Map<Integer, ByteBuf> data = new HashMap<Integer, ByteBuf>();
 
-    public UserDataHeaderImpl() {
-    }
+	public UserDataHeaderImpl() {
+	}
 
-   public UserDataHeaderImpl(ByteBuf encodedData) {
-        if (encodedData == null || encodedData.readableBytes() < 1)
-            return;
-        //we just read it
-        int udhl = encodedData.readByte();
-        if (udhl > encodedData.readableBytes())
-            udhl = encodedData.readableBytes();
-        
-        while (udhl>0) {
-            int id = encodedData.readByte();
-            int len = encodedData.readByte();
-            udhl-=2;
-            udhl-=len;
-            if (len <= encodedData.readableBytes())
-                data.put(id, encodedData.readSlice(len));            
-        }
-    }
-   
-   public UserDataHeaderImpl(ByteBuf encodedData, int length) {
-       if (encodedData == null || encodedData.readableBytes() < 1)
-           return;
-       //we just read it
-       int udhl = length;
-       if (udhl > encodedData.readableBytes())
-           udhl = encodedData.readableBytes();
-       
-       while (udhl>0) {
-           int id = encodedData.readByte();
-           int len = encodedData.readByte();
-           udhl-=2;
-           udhl-=len;
-           if (len <= encodedData.readableBytes())
-               data.put(id, encodedData.readSlice(len));           
-       }
-   }
+	public UserDataHeaderImpl(ByteBuf encodedData) {
+		if (encodedData == null || encodedData.readableBytes() < 1)
+			return;
+		// we just read it
+		int udhl = encodedData.readByte();
+		if (udhl > encodedData.readableBytes())
+			udhl = encodedData.readableBytes();
 
-   	public int getLength() {
-   		if (data.size() == 0)
-           return 0;
-       
-   		//length of the udh
-   		int length=1;
-   		for (int id : data.keySet()) {
-           ByteBuf innerData = data.get(id);
-           //1 byte id and 1 length + the data itself if any
-           if(innerData==null)
-        	   length+=2;
-           else
-        	   length+=2+innerData.readableBytes();           
-       }
-   		
-   	   return length;
-   	}
-  
-   	public void getEncodedData(ByteBuf buf) {
+		while (udhl > 0) {
+			int id = encodedData.readByte();
+			int len = encodedData.readByte();
+			udhl -= 2;
+			udhl -= len;
+			if (len <= encodedData.readableBytes())
+				data.put(id, encodedData.readSlice(len));
+		}
+	}
 
-        if (data.size() == 0)
-            return;
-        
-        int index=buf.writerIndex();
-        buf.writeByte(0);
-        for (int id : data.keySet()) {
-            ByteBuf innerData = data.get(id);
+	public UserDataHeaderImpl(ByteBuf encodedData, int length) {
+		if (encodedData == null || encodedData.readableBytes() < 1)
+			return;
+		// we just read it
+		int udhl = length;
+		if (udhl > encodedData.readableBytes())
+			udhl = encodedData.readableBytes();
 
-            buf.writeByte(id);
-            if (innerData == null)
-            	buf.writeByte(0);
-            else {
-            	buf.writeByte(innerData.readableBytes());
-            	buf.writeBytes(innerData);
-            }
-        }
+		while (udhl > 0) {
+			int id = encodedData.readByte();
+			int len = encodedData.readByte();
+			udhl -= 2;
+			udhl -= len;
+			if (len <= encodedData.readableBytes())
+				data.put(id, encodedData.readSlice(len));
+		}
+	}
 
-        int newIndex=buf.writerIndex();
-        buf.setByte(index, newIndex-index-1);        
-    }
-   	
-   	public void getEncodedDataWithoutLength(ByteBuf buf) {
+	@Override
+	public int getLength() {
+		if (data.size() == 0)
+			return 0;
 
-        if (data.size() == 0)
-            return;
-        
-        for (int id : data.keySet()) {
-            ByteBuf innerData = data.get(id);
+		// length of the udh
+		int length = 1;
+		for (int id : data.keySet()) {
+			ByteBuf innerData = data.get(id);
+			// 1 byte id and 1 length + the data itself if any
+			if (innerData == null)
+				length += 2;
+			else
+				length += 2 + innerData.readableBytes();
+		}
 
-            buf.writeByte(id);
-            if (innerData == null)
-            	buf.writeByte(0);
-            else {
-            	buf.writeByte(innerData.readableBytes());
-            	buf.writeBytes(innerData);
-            }
-        }     
-    }
+		return length;
+	}
 
-    public Map<Integer, ByteBuf> getAllData() {
-        return data;
-    }
+	@Override
+	public void getEncodedData(ByteBuf buf) {
 
-    public void addInformationElement(int informationElementIdentifier, ByteBuf encodedData) {
-        this.data.put(informationElementIdentifier, encodedData);
-    }
+		if (data.size() == 0)
+			return;
 
-    public void addInformationElement(UserDataHeaderElement informationElement) {
-        this.data.put(informationElement.getEncodedInformationElementIdentifier(),
-                informationElement.getEncodedInformationElementData());
-    }
+		int index = buf.writerIndex();
+		buf.writeByte(0);
+		for (int id : data.keySet()) {
+			ByteBuf innerData = data.get(id);
 
-    public ByteBuf getInformationElementData(int informationElementIdentifier) {
-        return this.data.get(informationElementIdentifier);
-    }
+			buf.writeByte(id);
+			if (innerData == null)
+				buf.writeByte(0);
+			else {
+				buf.writeByte(innerData.readableBytes());
+				buf.writeBytes(innerData);
+			}
+		}
 
-    public NationalLanguageLockingShiftIdentifierImpl getNationalLanguageLockingShift() {
-    	ByteBuf buf = this.data.get(_InformationElementIdentifier_NationalLanguageLockingShift);
-        if (buf != null && buf.readableBytes() == 1)
-            return new NationalLanguageLockingShiftIdentifierImpl(buf);
-        else
-            return null;
-    }
+		int newIndex = buf.writerIndex();
+		buf.setByte(index, newIndex - index - 1);
+	}
 
-    public NationalLanguageSingleShiftIdentifierImpl getNationalLanguageSingleShift() {
-    	ByteBuf buf = this.data.get(_InformationElementIdentifier_NationalLanguageSingleShift);
-        if (buf != null && buf.readableBytes() == 1)
-            return new NationalLanguageSingleShiftIdentifierImpl(buf);
-        else
-            return null;
-    }
+	@Override
+	public void getEncodedDataWithoutLength(ByteBuf buf) {
 
-    public ConcatenatedShortMessagesIdentifierImpl getConcatenatedShortMessagesIdentifier() {
-    	ByteBuf buf = this.data.get(_InformationElementIdentifier_ConcatenatedShortMessages16bit);
-        if (buf != null && buf.readableBytes() == 4)
-            return new ConcatenatedShortMessagesIdentifierImpl(buf);
-        else {
-            buf = this.data.get(_InformationElementIdentifier_ConcatenatedShortMessages8bit);
-            if (buf != null && buf.readableBytes() == 3)
-                return new ConcatenatedShortMessagesIdentifierImpl(buf);
-            else
-                return null;
-        }
-    }
+		if (data.size() == 0)
+			return;
 
-    public ApplicationPortAddressing16BitAddressImpl getApplicationPortAddressing16BitAddress() {
-    	ByteBuf buf = this.data.get(_InformationElementIdentifier_ApplicationPortAddressingScheme16BitAddress);
-        if (buf != null && buf.readableBytes() == 4)
-            return new ApplicationPortAddressing16BitAddressImpl(buf);
-        else
-            return null;
-    }
+		for (int id : data.keySet()) {
+			ByteBuf innerData = data.get(id);
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("UserDataHeader [");
-        boolean isFirst = true;
-        for (int id : data.keySet()) {
-            ByteBuf buf = Unpooled.wrappedBuffer(data.get(id));
+			buf.writeByte(id);
+			if (innerData == null)
+				buf.writeByte(0);
+			else {
+				buf.writeByte(innerData.readableBytes());
+				buf.writeBytes(innerData);
+			}
+		}
+	}
 
-            if (isFirst)
-                isFirst = false;
-            else
-                sb.append("\n\t");
-            sb.append(id);
-            sb.append(" = ");
-            sb.append(ASNOctetString.printDataArr(buf));
-        }
+	@Override
+	public Map<Integer, ByteBuf> getAllData() {
+		return data;
+	}
 
-        NationalLanguageLockingShiftIdentifierImpl nllsi = this.getNationalLanguageLockingShift();
-        NationalLanguageSingleShiftIdentifierImpl nlssi = this.getNationalLanguageSingleShift();
-        ConcatenatedShortMessagesIdentifierImpl csmi = this.getConcatenatedShortMessagesIdentifier();
-        ApplicationPortAddressing16BitAddressImpl apa16 = this.getApplicationPortAddressing16BitAddress();
-        if (nllsi != null) {
-            sb.append(", NationalLanguageLockingShiftIdentifier = [");
-            sb.append(nllsi);
-            sb.append("]");
-        }
-        if (nlssi != null) {
-            sb.append(", NationalLanguageSingleShiftIdentifier = [");
-            sb.append(nlssi);
-            sb.append("]");
-        }
-        if (csmi != null) {
-            sb.append(", ConcatenatedShortMessagesIdentifier = [");
-            sb.append(csmi);
-            sb.append("]");
-        }
-        if (apa16 != null) {
-            sb.append(", ApplicationPortAddressing16BitAddress = [");
-            sb.append(apa16);
-            sb.append("]");
-        }
+	@Override
+	public void addInformationElement(int informationElementIdentifier, ByteBuf encodedData) {
+		this.data.put(informationElementIdentifier, encodedData);
+	}
 
-        sb.append("]");
+	@Override
+	public void addInformationElement(UserDataHeaderElement informationElement) {
+		this.data.put(informationElement.getEncodedInformationElementIdentifier(),
+				informationElement.getEncodedInformationElementData());
+	}
 
-        return sb.toString();
-    }
+	@Override
+	public ByteBuf getInformationElementData(int informationElementIdentifier) {
+		return this.data.get(informationElementIdentifier);
+	}
+
+	@Override
+	public NationalLanguageLockingShiftIdentifierImpl getNationalLanguageLockingShift() {
+		ByteBuf buf = this.data.get(_InformationElementIdentifier_NationalLanguageLockingShift);
+		if (buf != null && buf.readableBytes() == 1)
+			return new NationalLanguageLockingShiftIdentifierImpl(buf);
+		else
+			return null;
+	}
+
+	@Override
+	public NationalLanguageSingleShiftIdentifierImpl getNationalLanguageSingleShift() {
+		ByteBuf buf = this.data.get(_InformationElementIdentifier_NationalLanguageSingleShift);
+		if (buf != null && buf.readableBytes() == 1)
+			return new NationalLanguageSingleShiftIdentifierImpl(buf);
+		else
+			return null;
+	}
+
+	@Override
+	public ConcatenatedShortMessagesIdentifierImpl getConcatenatedShortMessagesIdentifier() {
+		ByteBuf buf = this.data.get(_InformationElementIdentifier_ConcatenatedShortMessages16bit);
+		if (buf != null && buf.readableBytes() == 4)
+			return new ConcatenatedShortMessagesIdentifierImpl(buf);
+		else {
+			buf = this.data.get(_InformationElementIdentifier_ConcatenatedShortMessages8bit);
+			if (buf != null && buf.readableBytes() == 3)
+				return new ConcatenatedShortMessagesIdentifierImpl(buf);
+			else
+				return null;
+		}
+	}
+
+	@Override
+	public ApplicationPortAddressing16BitAddressImpl getApplicationPortAddressing16BitAddress() {
+		ByteBuf buf = this.data.get(_InformationElementIdentifier_ApplicationPortAddressingScheme16BitAddress);
+		if (buf != null && buf.readableBytes() == 4)
+			return new ApplicationPortAddressing16BitAddressImpl(buf);
+		else
+			return null;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("UserDataHeader [");
+		boolean isFirst = true;
+		for (int id : data.keySet()) {
+			ByteBuf buf = data.get(id).slice();
+
+			if (isFirst)
+				isFirst = false;
+			else
+				sb.append("\n\t");
+			sb.append(id);
+			sb.append(" = ");
+			sb.append(ASNOctetString.printDataArr(buf));
+		}
+
+		NationalLanguageLockingShiftIdentifierImpl nllsi = this.getNationalLanguageLockingShift();
+		NationalLanguageSingleShiftIdentifierImpl nlssi = this.getNationalLanguageSingleShift();
+		ConcatenatedShortMessagesIdentifierImpl csmi = this.getConcatenatedShortMessagesIdentifier();
+		ApplicationPortAddressing16BitAddressImpl apa16 = this.getApplicationPortAddressing16BitAddress();
+		if (nllsi != null) {
+			sb.append(", NationalLanguageLockingShiftIdentifier = [");
+			sb.append(nllsi);
+			sb.append("]");
+		}
+		if (nlssi != null) {
+			sb.append(", NationalLanguageSingleShiftIdentifier = [");
+			sb.append(nlssi);
+			sb.append("]");
+		}
+		if (csmi != null) {
+			sb.append(", ConcatenatedShortMessagesIdentifier = [");
+			sb.append(csmi);
+			sb.append("]");
+		}
+		if (apa16 != null) {
+			sb.append(", ApplicationPortAddressing16BitAddress = [");
+			sb.append(apa16);
+			sb.append("]");
+		}
+
+		sb.append("]");
+
+		return sb.toString();
+	}
 }
