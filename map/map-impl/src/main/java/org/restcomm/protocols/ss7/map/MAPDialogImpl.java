@@ -390,7 +390,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
 	}
 
 	@Override
-	public void send(TaskCallback<Exception> callback) throws MAPException {
+	public void send(TaskCallback<Exception> callback) {
 		switch (this.tcapDialog.getState()) {
 		case Idle:
 			ApplicationContextName acn = this.mapProviderImpl.getTCAPProvider().getDialogPrimitiveFactory()
@@ -418,20 +418,32 @@ public abstract class MAPDialogImpl implements MAPDialog {
 
 			MAPDialogState oldState = this.getState();
 			this.setState(MAPDialogState.ACTIVE);
-			try {
-				this.mapProviderImpl.fireTCContinue(this.getTcapDialog(), true, acn1, this.extContainer,
-						this.getReturnMessageOnError(), callback);
-				this.extContainer = null;
-			} catch (Exception ex) {
-				this.setState(oldState);
-				throw ex;
-			}
+			TaskCallback<Exception> proxyCallback = new TaskCallback<Exception>() {
+				@Override
+				public void onSuccess() {
+					callback.onSuccess();
+				}
+
+				@Override
+				public void onError(Exception exception) {
+					MAPDialogImpl.this.setState(oldState);
+					callback.onError(exception);
+				}
+			};
+
+			this.mapProviderImpl.fireTCContinue(this.getTcapDialog(), true, acn1, this.extContainer,
+					this.getReturnMessageOnError(), proxyCallback);
+			this.extContainer = null;
 			break;
 
 		case InitialSent: // we have sent TC-BEGIN already, need to wait
-			throw new MAPException("Awaiting TC-BEGIN response, can not send another dialog initiating primitive!");
+			callback.onError(
+					new MAPException("Awaiting TC-BEGIN response, can not send another dialog initiating primitive!"));
+			return;
+
 		case Expunged: // dialog has been terminated on TC level, cant send
-			throw new MAPException("Dialog has been terminated, can not send primitives!");
+			callback.onError(new MAPException("Dialog has been terminated, can not send primitives!"));
+			return;
 		}
 	}
 
