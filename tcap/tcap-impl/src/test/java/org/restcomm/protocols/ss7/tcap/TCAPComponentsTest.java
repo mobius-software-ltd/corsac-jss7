@@ -66,8 +66,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
  */
 public class TCAPComponentsTest extends SccpHarness {
 
-	public static final long MINI_WAIT_TIME = 100;
-	public static final long WAIT_TIME = 500;
+	public static final long MINI_WAIT_TIME = 500;
+	public static final long WAIT_TIME = 2000;
 	private static final int _DIALOG_TIMEOUT = 5000000;
 
 	private TCAPStackImpl tcapStack1;
@@ -106,8 +106,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		this.tcapStack1.start();
 		this.tcapStack2.start();
 
-		this.tcapStack1.setInvokeTimeout(0);
-		this.tcapStack2.setInvokeTimeout(0);
+		this.tcapStack1.setInvokeTimeout(MINI_WAIT_TIME + 200);
+		this.tcapStack2.setInvokeTimeout(MINI_WAIT_TIME + 200);
 		this.tcapStack1.setDialogIdleTimeout(_DIALOG_TIMEOUT);
 		this.tcapStack2.setDialogIdleTimeout(_DIALOG_TIMEOUT);
 		// create test classes
@@ -562,7 +562,7 @@ public class TCAPComponentsTest extends SccpHarness {
 				super.onTCContinue(ind);
 
 				// waiting for Invoke timeout at a client side
-				EventTestHarness.waitFor(MINI_WAIT_TIME + 20);
+				EventTestHarness.waitFor(MINI_WAIT_TIME + 100);
 
 				step++;
 

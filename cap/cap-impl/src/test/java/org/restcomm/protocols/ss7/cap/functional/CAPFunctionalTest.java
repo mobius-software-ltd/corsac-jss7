@@ -258,7 +258,7 @@ public class CAPFunctionalTest extends SccpHarness {
 		this.sccpStack1Name = "CAPFunctionalTestSccpStack1";
 		this.sccpStack2Name = "CAPFunctionalTestSccpStack2";
 
-		this.workerPool = new WorkerPool(1L);
+		this.workerPool = new WorkerPool();
 		this.workerPool.start(64);
 		super.setUp();
 

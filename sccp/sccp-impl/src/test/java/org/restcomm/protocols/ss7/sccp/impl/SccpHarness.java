@@ -82,7 +82,7 @@ public abstract class SccpHarness {
 	 *
 	 */
 	public SccpHarness() {
-		workerPool = new WorkerPool(1L);
+		workerPool = new WorkerPool();
 
 		mtp3UserPart1 = new Mtp3UserPartImpl(this, workerPool);
 		mtp3UserPart2 = new Mtp3UserPartImpl(this, workerPool);

@@ -306,7 +306,8 @@ public abstract class InvokeImpl implements Invoke {
 			timer.postpone(this.invokeTimeout);
 
 			this.operationTimer.set(timer);
-			this.provider.storeOperationTimer(timer);
+			if(this.provider!=null)
+				this.provider.storeOperationTimer(timer);
 		}
 	}
 
