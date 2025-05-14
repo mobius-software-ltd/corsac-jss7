@@ -151,8 +151,13 @@ public class USSDStringImpl extends ASNOctetString implements USSDString {
 
 					if (buf1 == null)
 						return buf2;
-					else
-						return Unpooled.wrappedBuffer(buf1, buf2);
+					else {
+						ByteBuf combined = Unpooled.buffer(buf1.readableBytes() + buf2.readableBytes());
+						combined.writeBytes(buf1);
+						combined.writeBytes(buf2);
+
+						return combined;
+					}
 				} else
 					return Unpooled.wrappedBuffer(ussdString.getBytes(ucs2Charset));
 			default:

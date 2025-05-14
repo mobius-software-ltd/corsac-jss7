@@ -24,21 +24,14 @@
 package org.restcomm.protocols.ss7.mtp;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mobius.software.common.dal.timers.RunnableTask;
 import com.mobius.software.common.dal.timers.TaskCallback;
-import com.mobius.software.common.dal.timers.Timer;
 import com.mobius.software.common.dal.timers.WorkerPool;
 
 import io.netty.util.IllegalReferenceCountException;
@@ -247,7 +240,7 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 			TaskCallback<Exception> callback) {
 		if (this.isStarted) {
 			MsgSystemDeliveryHandler hdl = new MsgSystemDeliveryHandler(msg, callback);
-			this.workerPool.addTaskLast(hdl);			
+			this.workerPool.addTaskLast(hdl);
 		} else
 			logger.error(String.format(
 					"Received Mtp3EndCongestionPrimitive=%s but MTP3 is not started. Message will be dropped", msg));
@@ -363,5 +356,5 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
 		public void logTask() {
 			logger.info("TASK[" + this.getClass().getCanonicalName() + "] " + msg.toString());
 		}
-	}	
+	}
 }
