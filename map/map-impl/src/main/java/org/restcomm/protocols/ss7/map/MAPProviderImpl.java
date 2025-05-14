@@ -2431,10 +2431,16 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 	protected void fireTCBegin(Dialog tcapDialog, ApplicationContextName acn, AddressString destReference,
 			AddressString origReference, MAPExtensionContainer mapExtensionContainer, boolean isEriStyle,
 			AddressString eriMsisdn, AddressString vlrNoEri, boolean returnMessageOnError,
-			TaskCallback<Exception> callback) throws MAPException {
+			TaskCallback<Exception> callback) {
 
-		TCBeginRequest tcBeginReq = encodeTCBegin(tcapDialog, acn, destReference, origReference, mapExtensionContainer,
-				isEriStyle, eriMsisdn, vlrNoEri);
+		TCBeginRequest tcBeginReq;
+		try {
+			tcBeginReq = encodeTCBegin(tcapDialog, acn, destReference, origReference, mapExtensionContainer, isEriStyle,
+					eriMsisdn, vlrNoEri);
+		} catch (MAPException e) {
+			callback.onError(new MAPException("An error occured during encoding TC-Begin message: " + e));
+			return;
+		}
 		if (returnMessageOnError)
 			tcBeginReq.setReturnMessageOnError(true);
 
@@ -2469,10 +2475,16 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 	}
 
 	protected void fireTCContinue(Dialog tcapDialog, Boolean sendMapAcceptInfo, ApplicationContextName acn,
-			MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError, TaskCallback<Exception> callback)
-			throws MAPException {
+			MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError,
+			TaskCallback<Exception> callback) {
 
-		TCContinueRequest tcContinueReq = encodeTCContinue(tcapDialog, sendMapAcceptInfo, acn, mapExtensionContainer);
+		TCContinueRequest tcContinueReq;
+		try {
+			tcContinueReq = encodeTCContinue(tcapDialog, sendMapAcceptInfo, acn, mapExtensionContainer);
+		} catch (MAPException e) {
+			callback.onError(new MAPException("An error occured during encoding TC-Continue message: " + e));
+			return;
+		}
 		if (returnMessageOnError)
 			tcContinueReq.setReturnMessageOnError(true);
 
@@ -2503,9 +2515,16 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
 	protected void fireTCEnd(Dialog tcapDialog, Boolean sendMapCloseInfo, boolean prearrangedEnd,
 			ApplicationContextName acn, MAPExtensionContainer mapExtensionContainer, boolean returnMessageOnError,
-			TaskCallback<Exception> callback) throws MAPException {
+			TaskCallback<Exception> callback) {
 
-		TCEndRequest endRequest = encodeTCEnd(tcapDialog, sendMapCloseInfo, prearrangedEnd, acn, mapExtensionContainer);
+		TCEndRequest endRequest;
+		try {
+			endRequest = encodeTCEnd(tcapDialog, sendMapCloseInfo, prearrangedEnd, acn, mapExtensionContainer);
+		} catch (MAPException e) {
+			callback.onError(new MAPException("An error occured during encoding TC-End message: " + e));
+			return;
+		}
+
 		if (returnMessageOnError)
 			endRequest.setReturnMessageOnError(true);
 
