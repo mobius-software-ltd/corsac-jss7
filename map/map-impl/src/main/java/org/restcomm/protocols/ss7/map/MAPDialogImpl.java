@@ -93,16 +93,6 @@ public abstract class MAPDialogImpl implements MAPDialog {
 	protected DelayedAreaState delayedAreaState;
 	private final MAPStackConfigurationManagement mapCfg;
 
-	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
-		@Override
-		public void onSuccess() {
-		}
-
-		@Override
-		public void onError(Exception exception) {
-		}
-	};
-
 	protected MAPDialogImpl(MAPApplicationContext appCntx, Dialog tcapDialog, MAPProviderImpl mapProviderImpl,
 			MAPServiceBase mapService, AddressString origReference, AddressString destReference) {
 		this.appCntx = appCntx;
@@ -255,7 +245,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
 	}
 
 	@Override
-	public void abort(MAPUserAbortChoice userAbortChoise) throws MAPException {
+	public void abort(MAPUserAbortChoice userAbortChoise, TaskCallback<Exception> callback) throws MAPException {
 		MAPUserAbortInfoImpl mapUserAbortInfoImpl = new MAPUserAbortInfoImpl();
 		mapUserAbortInfoImpl.setUserAbortChoise(userAbortChoise);
 		mapUserAbortInfoImpl.setExtensionContainer(this.extContainer);
@@ -272,7 +262,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
 		this.setState(MAPDialogState.EXPUNGED);
 		try {
 			this.mapProviderImpl.fireTCAbortUser(this.getTcapDialog(), mapUserAbortInfoImpl,
-					this.getReturnMessageOnError(), dummyCallback);
+					this.getReturnMessageOnError(), callback);
 			this.extContainer = null;
 		} catch (Exception ex) {
 			this.state = oldState;
@@ -281,7 +271,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
 	}
 
 	@Override
-	public void refuse(Reason reason) throws MAPException {
+	public void refuse(Reason reason, TaskCallback<Exception> callback) throws MAPException {
 
 		// Dialog must be in the InitialReceived state
 		if (this.getState() != MAPDialogState.INITIAL_RECEIVED)
@@ -291,7 +281,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
 		this.setState(MAPDialogState.EXPUNGED);
 		try {
 			this.mapProviderImpl.fireTCAbortRefused(this.getTcapDialog(), reason, this.extContainer,
-					this.getReturnMessageOnError(), dummyCallback);
+					this.getReturnMessageOnError(), callback);
 			this.extContainer = null;
 		} catch (Exception ex) {
 			this.state = oldState;
@@ -300,7 +290,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
 	}
 
 	@Override
-	public void close(boolean prearrangedEnd) throws MAPException {
+	public void close(boolean prearrangedEnd, TaskCallback<Exception> callback) throws MAPException {
 
 		switch (this.tcapDialog.getState()) {
 		case InitialReceived:
@@ -317,7 +307,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
 			} else
 				try {
 					this.mapProviderImpl.fireTCEnd(this.getTcapDialog(), true, prearrangedEnd, acn, this.extContainer,
-							this.getReturnMessageOnError(), dummyCallback);
+							this.getReturnMessageOnError(), callback);
 					this.extContainer = null;
 				} catch (Exception ex) {
 					this.state = oldState;
@@ -336,7 +326,7 @@ public abstract class MAPDialogImpl implements MAPDialog {
 			} else
 				try {
 					this.mapProviderImpl.fireTCEnd(this.getTcapDialog(), false, prearrangedEnd, null, null,
-							this.getReturnMessageOnError(), dummyCallback);
+							this.getReturnMessageOnError(), callback);
 				} catch (Exception ex) {
 					this.state = oldState;
 					setUserObject(getUserObject());
@@ -364,10 +354,10 @@ public abstract class MAPDialogImpl implements MAPDialog {
 	}
 
 	@Override
-	public void closeDelayed(boolean prearrangedEnd) throws MAPException {
+	public void closeDelayed(boolean prearrangedEnd, TaskCallback<Exception> callback) throws MAPException {
 
 		if (this.delayedAreaState == null)
-			this.close(prearrangedEnd);
+			this.close(prearrangedEnd, callback);
 		else if (prearrangedEnd)
 			switch (this.delayedAreaState) {
 			case No:

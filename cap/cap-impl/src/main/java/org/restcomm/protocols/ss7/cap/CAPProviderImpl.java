@@ -203,16 +203,6 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
 	private CAPStackImpl stack;
 
-	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
-		@Override
-		public void onSuccess() {
-		}
-
-		@Override
-		public void onError(Exception exception) {
-		}
-	};
-
 	public CAPProviderImpl(String name, CAPStackImpl stack, TCAPProvider tcapProvider) {
 		this.tcapProvider = tcapProvider;
 
@@ -721,7 +711,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 		this.tcapProvider.removeTCListener(this);
 	}
 
-	private void SendUnsupportedAcn(ApplicationContextName acn, Dialog dialog, String cs) {
+	private void SendUnsupportedAcn(ApplicationContextName acn, Dialog dialog, String cs, TaskCallback<Exception> callback) {
 		StringBuffer s = new StringBuffer();
 		s.append(cs + " ApplicationContextName is received: ");
 		for (long l : acn.getOid())
@@ -729,7 +719,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 		loger.warn(s.toString());
 
 		try {
-			this.fireTCAbort(dialog, CAPGeneralAbortReason.ACNNotSupported, null, false, dummyCallback);
+			this.fireTCAbort(dialog, CAPGeneralAbortReason.ACNNotSupported, null, false, callback);
 		} catch (CAPException e1) {
 			loger.error("Error while firing TC-U-ABORT. ", e1);
 		}
@@ -767,7 +757,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 	}
 
 	@Override
-	public void onTCBegin(TCBeginIndication tcBeginIndication) {
+	public void onTCBegin(TCBeginIndication tcBeginIndication, TaskCallback<Exception> callback) {
 
 		ApplicationContextName acn = tcBeginIndication.getApplicationContextName();
 		List<BaseComponent> comps = tcBeginIndication.getComponents();
@@ -778,7 +768,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
 			try {
 				this.fireTCAbort(tcBeginIndication.getDialog(), CAPGeneralAbortReason.UserSpecific,
-						CAPUserAbortReason.abnormal_processing, false, dummyCallback);
+						CAPUserAbortReason.abnormal_processing, false, callback);
 			} catch (CAPException e) {
 				loger.error("Error while firing TC-U-ABORT. ", e);
 			}
@@ -789,7 +779,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 		// Check if ApplicationContext is recognizable for CAP
 		// If no - TC-U-ABORT - ACN-Not-Supported
 		if (capAppCtx == null) {
-			SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unrecognizable");
+			SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unrecognizable", callback);
 			return;
 		}
 
@@ -801,7 +791,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 			if (referenceNumber == null) {
 				try {
 					this.fireTCAbort(tcBeginIndication.getDialog(), CAPGeneralAbortReason.UserSpecific,
-							CAPUserAbortReason.abnormal_processing, false, dummyCallback);
+							CAPUserAbortReason.abnormal_processing, false, callback);
 				} catch (CAPException e) {
 					loger.error("Error while firing TC-U-ABORT. ", e);
 				}
@@ -820,7 +810,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 				perfSer = ser;
 				break;
 			case AC_VersionIncorrect:
-				SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unsupported");
+				SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unsupported", callback);
 				return;
 			default:
 				break;
@@ -832,13 +822,13 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
 		// No CAPService can accept the received ApplicationContextName
 		if (perfSer == null) {
-			SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unsupported");
+			SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unsupported", callback);
 			return;
 		}
 
 		// CAPService is not activated
 		if (!perfSer.isActivated()) {
-			SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Inactive CAPService");
+			SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Inactive CAPService", callback);
 			return;
 		}
 
@@ -862,7 +852,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
 		this.deliverDialogDelimiter(capDialogImpl);
 
-		finishComponentProcessingState(capDialogImpl, dummyCallback);
+		finishComponentProcessingState(capDialogImpl, callback);
 	}
 
 	private void finishComponentProcessingState(CAPDialogImpl capDialogImpl, TaskCallback<Exception> callback) {
@@ -894,7 +884,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 	}
 
 	@Override
-	public void onTCContinue(TCContinueIndication tcContinueIndication) {
+	public void onTCContinue(TCContinueIndication tcContinueIndication, TaskCallback<Exception> callback) {
 
 		Dialog tcapDialog = tcContinueIndication.getDialog();
 
@@ -904,7 +894,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 			loger.warn("CAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
 			try {
 				this.fireTCAbort(tcContinueIndication.getDialog(), CAPGeneralAbortReason.UserSpecific,
-						CAPUserAbortReason.abnormal_processing, false, dummyCallback);
+						CAPUserAbortReason.abnormal_processing, false, callback);
 			} catch (CAPException e) {
 				loger.error("Error while firing TC-U-ABORT. ", e);
 			}
@@ -919,7 +909,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 				try {
 					this.fireTCAbort(tcContinueIndication.getDialog(), CAPGeneralAbortReason.UserSpecific,
 							CAPUserAbortReason.abnormal_processing, capDialogImpl.getReturnMessageOnError(),
-							dummyCallback);
+							callback);
 				} catch (CAPException e) {
 					loger.error("Error while firing TC-U-ABORT. ", e);
 				}
@@ -938,7 +928,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 				try {
 					this.fireTCAbort(tcContinueIndication.getDialog(), CAPGeneralAbortReason.UserSpecific,
 							CAPUserAbortReason.abnormal_processing, capDialogImpl.getReturnMessageOnError(),
-							dummyCallback);
+							callback);
 				} catch (CAPException e) {
 					loger.error("Error while firing TC-U-ABORT. ", e);
 				}
@@ -964,7 +954,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
 			if (capDialogImpl.getState() == CAPDialogState.EXPUNGED) {
 				// The Dialog was aborter
-				finishComponentProcessingState(capDialogImpl, dummyCallback);
+				finishComponentProcessingState(capDialogImpl, callback);
 				return;
 			}
 		} else
@@ -981,11 +971,11 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
 		this.deliverDialogDelimiter(capDialogImpl);
 
-		finishComponentProcessingState(capDialogImpl, dummyCallback);
+		finishComponentProcessingState(capDialogImpl, callback);
 	}
 
 	@Override
-	public void onTCEnd(TCEndIndication tcEndIndication) {
+	public void onTCEnd(TCEndIndication tcEndIndication, TaskCallback<Exception> callback) {
 
 		Dialog tcapDialog = tcEndIndication.getDialog();
 

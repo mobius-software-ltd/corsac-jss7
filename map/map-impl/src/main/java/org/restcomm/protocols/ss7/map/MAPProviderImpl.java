@@ -281,16 +281,6 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
 	private MAPStackImpl mapStack;
 
-	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
-		@Override
-		public void onSuccess() {
-		}
-
-		@Override
-		public void onError(Exception exception) {
-		}
-	};
-
 	/**
 	 * public common methods
 	 */
@@ -1277,7 +1267,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 	}
 
 	@Override
-	public void onTCBegin(TCBeginIndication tcBeginIndication) {
+	public void onTCBegin(TCBeginIndication tcBeginIndication, TaskCallback<Exception> callback) {
 
 		ApplicationContextName acn = tcBeginIndication.getApplicationContextName();
 		List<BaseComponent> comps = tcBeginIndication.getComponents();
@@ -1294,7 +1284,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 					"Received TCBeginIndication=%s, both ApplicationContextName and Component[] are null. Send TC-U-ABORT to peer and not notifying the User",
 					tcBeginIndication));
 
-			this.fireTCAbortV1(tcBeginIndication.getDialog(), false, dummyCallback);
+			this.fireTCAbortV1(tcBeginIndication.getDialog(), false, callback);
 			return;
 		}
 
@@ -1343,7 +1333,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 			if (mapAppCtx == null) {
 				// Invoke not found or has bad operationCode or operationCode is not supported
 
-				this.fireTCAbortV1(tcBeginIndication.getDialog(), false, dummyCallback);
+				this.fireTCAbortV1(tcBeginIndication.getDialog(), false, callback);
 				return;
 			}
 		} else {
@@ -1357,7 +1347,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 				// be informed.
 				loger.error("Bad version of ApplicationContext if ApplicationContext exists. Must be 2 or greater");
 				this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.abnormalDialogue, null,
-						false, dummyCallback);
+						false, callback);
 
 				return;
 			}
@@ -1375,7 +1365,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 					s.append(l).append(", ");
 
 				loger.error(s.toString());
-				this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false, dummyCallback);
+				this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false, callback);
 
 				return;
 			}
@@ -1413,7 +1403,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 						+ mapAppCtx.getApplicationContextName() + " but not found");
 
 				this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.abnormalDialogue, null,
-						false, dummyCallback);
+						false, callback);
 				return;
 			}
 
@@ -1431,7 +1421,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 			if (!userInfo.isIDObjectIdentifier()) {
 				loger.error("When parsing TC-BEGIN: userInfo.isOid() check failed");
 				this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null, false,
-						dummyCallback);
+						callback);
 				return;
 			}
 
@@ -1442,14 +1432,14 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 			if (mapDialAs == null) {
 				loger.error("When parsing TC-BEGIN: Expected MAPDialogueAS.MAP_DialogueAS but is null");
 				this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null, false,
-						dummyCallback);
+						callback);
 				return;
 			}
 
 			if (!userInfo.isValueObject()) {
 				loger.error("When parsing TC-BEGIN: userInfo.isAsn() check failed");
 				this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null, false,
-						dummyCallback);
+						callback);
 				return;
 			}
 
@@ -1457,7 +1447,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 			if (!(userInfoObject instanceof MAPOpenInfoImpl)) {
 				loger.error("When parsing TC-BEGIN: MAP-OPEN dialog PDU must be received");
 				this.fireTCAbortProvider(tcBeginIndication.getDialog(), MAPProviderAbortReason.invalidPDU, null, false,
-						dummyCallback);
+						callback);
 				return;
 			}
 
@@ -1482,7 +1472,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
 				case AC_VersionIncorrect:
 					this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null,
-							chkRes.getAlternativeApplicationContext(), false, dummyCallback);
+							chkRes.getAlternativeApplicationContext(), false, callback);
 					break;
 				default:
 					break;
@@ -1503,7 +1493,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 				s.append("MAP V1");
 
 			loger.error(s.toString());
-			this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false, dummyCallback);
+			this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false, callback);
 			return;
 		}
 
@@ -1519,7 +1509,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
 			loger.warn(s.toString());
 
-			this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false, dummyCallback);
+			this.fireTCAbortACNNotSupported(tcBeginIndication.getDialog(), null, null, false, callback);
 
 			return;
 		}
@@ -1549,10 +1539,10 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
 		this.deliverDialogDelimiter(mapDialogImpl);
 
-		finishComponentProcessingState(mapDialogImpl);
+		finishComponentProcessingState(mapDialogImpl, callback);
 	}
 
-	private void finishComponentProcessingState(MAPDialogImpl mapDialogImpl) {
+	private void finishComponentProcessingState(MAPDialogImpl mapDialogImpl, TaskCallback<Exception> callback) {
 
 		if (mapDialogImpl.getState() == MAPDialogState.EXPUNGED)
 			return;
@@ -1560,13 +1550,13 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 		try {
 			switch (mapDialogImpl.delayedAreaState) {
 			case Continue:
-				mapDialogImpl.send(dummyCallback);
+				mapDialogImpl.send(callback);
 				break;
 			case End:
-				mapDialogImpl.close(false);
+				mapDialogImpl.close(false, callback);
 				break;
 			case PrearrangedEnd:
-				mapDialogImpl.close(true);
+				mapDialogImpl.close(true, callback);
 				break;
 			default:
 				break;
@@ -1581,7 +1571,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 	}
 
 	@Override
-	public void onTCContinue(TCContinueIndication tcContinueIndication) {
+	public void onTCContinue(TCContinueIndication tcContinueIndication, TaskCallback<Exception> callback) {
 
 		Dialog tcapDialog = tcContinueIndication.getDialog();
 
@@ -1590,7 +1580,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 		if (mapDialogImpl == null) {
 			loger.error("MAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
 
-			this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null, false, dummyCallback);
+			this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null, false, callback);
 			return;
 		}
 
@@ -1624,7 +1614,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 							mapDialogImpl));
 
 					this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null,
-							mapDialogImpl.getReturnMessageOnError(), dummyCallback);
+							mapDialogImpl.getReturnMessageOnError(), callback);
 
 					this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
 							MAPAbortSource.MAPProblem, null);
@@ -1641,7 +1631,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 							mapDialogImpl, mapAcn));
 
 					this.fireTCAbortProvider(tcapDialog, MAPProviderAbortReason.abnormalDialogue, null,
-							mapDialogImpl.getReturnMessageOnError(), dummyCallback);
+							mapDialogImpl.getReturnMessageOnError(), callback);
 
 					this.deliverDialogProviderAbort(mapDialogImpl, MAPAbortProviderReason.AbnormalMAPDialogueLocal,
 							MAPAbortSource.MAPProblem, null);
@@ -1680,7 +1670,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
 			if (mapDialogImpl.getState() == MAPDialogState.EXPUNGED) {
 				// The Dialog was aborter
-				finishComponentProcessingState(mapDialogImpl);
+				finishComponentProcessingState(mapDialogImpl, callback);
 				return;
 			}
 		} else
@@ -1699,11 +1689,11 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 
 		this.deliverDialogDelimiter(mapDialogImpl);
 
-		finishComponentProcessingState(mapDialogImpl);
+		finishComponentProcessingState(mapDialogImpl, callback);
 	}
 
 	@Override
-	public void onTCEnd(TCEndIndication tcEndIndication) {
+	public void onTCEnd(TCEndIndication tcEndIndication, TaskCallback<Exception> callback) {
 
 		Dialog tcapDialog = tcEndIndication.getDialog();
 
@@ -2572,7 +2562,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 			TaskCallback<Exception> callback) {
 
 		if (tcapDialog.getApplicationContextName() == null) // MAP V1
-			this.fireTCAbortV1(tcapDialog, returnMessageOnError, dummyCallback);
+			this.fireTCAbortV1(tcapDialog, returnMessageOnError, callback);
 
 		TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
 
@@ -2608,7 +2598,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 			boolean returnMessageOnError, TaskCallback<Exception> callback) {
 
 		if (tcapDialog.getApplicationContextName() == null) // MAP V1
-			this.fireTCAbortV1(tcapDialog, returnMessageOnError, dummyCallback);
+			this.fireTCAbortV1(tcapDialog, returnMessageOnError, callback);
 
 		TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
 
@@ -2645,7 +2635,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 			boolean returnMessageOnError, TaskCallback<Exception> callback) {
 
 		if (tcapDialog.getApplicationContextName() == null) // MAP V1
-			this.fireTCAbortV1(tcapDialog, returnMessageOnError, dummyCallback);
+			this.fireTCAbortV1(tcapDialog, returnMessageOnError, callback);
 
 		TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
 
@@ -2674,7 +2664,7 @@ public class MAPProviderImpl implements MAPProvider, TCListener {
 			TaskCallback<Exception> callback) {
 
 		if (tcapDialog.getApplicationContextName() == null) // MAP V1
-			this.fireTCAbortV1(tcapDialog, returnMessageOnError, dummyCallback);
+			this.fireTCAbortV1(tcapDialog, returnMessageOnError, callback);
 
 		TCUserAbortRequest tcUserAbort = this.getTCAPProvider().getDialogPrimitiveFactory().createUAbort(tcapDialog);
 

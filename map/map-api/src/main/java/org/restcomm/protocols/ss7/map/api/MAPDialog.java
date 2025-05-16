@@ -218,7 +218,7 @@ public interface MAPDialog extends Serializable {
      *
      * @param prearrangedEnd
      */
-    void close(boolean prearrangedEnd) throws MAPException;
+    void close(boolean prearrangedEnd, TaskCallback<Exception> callback) throws MAPException;
 
     /**
      * This method makes the same as send() method. But when invoking it from events of parsing incoming components real sending
@@ -241,19 +241,19 @@ public interface MAPDialog extends Serializable {
      * sendDelayed() or closeDelayed() were invoked, TC-CONTINUE/TC-END were not sent and abort() or release() are invoked - no
      * TC-CONTINUE/TC-END messages will be sent
      */
-    void closeDelayed(boolean prearrangedEnd) throws MAPException;
+    void closeDelayed(boolean prearrangedEnd, TaskCallback<Exception> callback) throws MAPException;
 
     /**
      * This is equivalent to MAP User issuing the MAP_U_ABORT Service Request.
      *
      * @param userReason
      */
-    void abort(MAPUserAbortChoice mapUserAbortChoice) throws MAPException;
+    void abort(MAPUserAbortChoice mapUserAbortChoice, TaskCallback<Exception> callback) throws MAPException;
 
     /**
      * Send T_U_ABORT with MAP-RefuseInfo
      */
-    void refuse(Reason reason) throws MAPException;
+    void refuse(Reason reason, TaskCallback<Exception> callback) throws MAPException;
 
     /**
      * If a MAP user will not answer to an incoming Invoke with Response, Error or Reject components it should invoke this

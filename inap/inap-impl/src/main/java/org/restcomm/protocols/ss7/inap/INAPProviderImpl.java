@@ -210,17 +210,6 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
 	private INAPStackImpl inapStack;
 
-	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
-
-		@Override
-		public void onSuccess() {
-		}
-
-		@Override
-		public void onError(Exception exception) {
-		}
-	};
-
 	public INAPProviderImpl(String name, INAPStackImpl inapStack, TCAPProvider tcapProvider) {
 		this.tcapProvider = tcapProvider;
 		this.inapStack = inapStack;
@@ -902,18 +891,18 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
 	}
 
-	private void SendUnsupportedAcn(ApplicationContextName acn, Dialog dialog, String cs) {
+	private void SendUnsupportedAcn(ApplicationContextName acn, Dialog dialog, String cs, TaskCallback<Exception> callback) {
 		StringBuffer s = new StringBuffer();
 		s.append(cs + " ApplicationContextName is received: ");
 		for (long l : acn.getOid())
 			s.append(l).append(", ");
 		loger.warn(s.toString());
 
-		this.fireTCAbort(dialog, INAPGeneralAbortReason.ACNNotSupported, null, false, dummyCallback);
+		this.fireTCAbort(dialog, INAPGeneralAbortReason.ACNNotSupported, null, false, callback);
 	}
 
 	@Override
-	public void onTCBegin(TCBeginIndication tcBeginIndication) {
+	public void onTCBegin(TCBeginIndication tcBeginIndication, TaskCallback<Exception> callback) {
 
 		ApplicationContextName acn = tcBeginIndication.getApplicationContextName();
 		List<BaseComponent> comps = tcBeginIndication.getComponents();
@@ -923,7 +912,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 			loger.warn("onTCBegin: Received TCBeginIndication without application context name");
 
 			this.fireTCAbort(tcBeginIndication.getDialog(), INAPGeneralAbortReason.UserSpecific,
-					INAPUserAbortReason.abnormal_processing, false, dummyCallback);
+					INAPUserAbortReason.abnormal_processing, false, callback);
 			return;
 		}
 
@@ -931,7 +920,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 		// Check if ApplicationContext is recognizable for CAP
 		// If no - TC-U-ABORT - ACN-Not-Supported
 		if (inapAppCtx == null) {
-			SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unrecognizable");
+			SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unrecognizable", callback);
 			return;
 		}
 
@@ -945,7 +934,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 				perfSer = ser;
 				break;
 			case AC_VersionIncorrect:
-				SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unsupported");
+				SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unsupported", callback);
 				return;
 			default:
 				break;
@@ -957,13 +946,13 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
 		// No INAPService can accept the received ApplicationContextName
 		if (perfSer == null) {
-			SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unsupported");
+			SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Unsupported", callback);
 			return;
 		}
 
 		// INAPService is not activated
 		if (!perfSer.isActivated()) {
-			SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Inactive INAPService");
+			SendUnsupportedAcn(acn, tcBeginIndication.getDialog(), "onTCBegin: Inactive INAPService", callback);
 			return;
 		}
 
@@ -987,7 +976,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
 		this.deliverDialogDelimiter(inapDialogImpl);
 
-		finishComponentProcessingState(inapDialogImpl, dummyCallback);
+		finishComponentProcessingState(inapDialogImpl, callback);
 	}
 
 	private void finishComponentProcessingState(INAPDialogImpl inapDialogImpl, TaskCallback<Exception> callback) {
@@ -1013,7 +1002,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 	}
 
 	@Override
-	public void onTCContinue(TCContinueIndication tcContinueIndication) {
+	public void onTCContinue(TCContinueIndication tcContinueIndication, TaskCallback<Exception> callback) {
 
 		Dialog tcapDialog = tcContinueIndication.getDialog();
 
@@ -1022,7 +1011,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 		if (inapDialogImpl == null) {
 			loger.warn("INAP Dialog not found for Dialog Id " + tcapDialog.getLocalDialogId());
 			this.fireTCAbort(tcContinueIndication.getDialog(), INAPGeneralAbortReason.UserSpecific,
-					INAPUserAbortReason.abnormal_processing, false, dummyCallback);
+					INAPUserAbortReason.abnormal_processing, false, callback);
 			return;
 		}
 		inapDialogImpl.tcapMessageType = MessageType.Continue;
@@ -1034,7 +1023,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
 				this.fireTCAbort(tcContinueIndication.getDialog(), INAPGeneralAbortReason.UserSpecific,
 						INAPUserAbortReason.abnormal_processing, inapDialogImpl.getReturnMessageOnError(),
-						dummyCallback);
+						callback);
 
 				this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.AbnormalDialogAction);
 				inapDialogImpl.setState(INAPDialogState.EXPUNGED);
@@ -1049,7 +1038,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
 				this.fireTCAbort(tcContinueIndication.getDialog(), INAPGeneralAbortReason.UserSpecific,
 						INAPUserAbortReason.abnormal_processing, inapDialogImpl.getReturnMessageOnError(),
-						dummyCallback);
+						callback);
 
 				this.deliverDialogNotice(inapDialogImpl, INAPNoticeProblemDiagnostic.AbnormalDialogAction);
 				inapDialogImpl.setState(INAPDialogState.EXPUNGED);
@@ -1064,7 +1053,7 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
 			if (inapDialogImpl.getState() == INAPDialogState.EXPUNGED) {
 				// The Dialog was aborter
-				finishComponentProcessingState(inapDialogImpl, dummyCallback);
+				finishComponentProcessingState(inapDialogImpl, callback);
 				return;
 			}
 		} else
@@ -1081,11 +1070,11 @@ public class INAPProviderImpl implements INAPProvider, TCListener {
 
 		this.deliverDialogDelimiter(inapDialogImpl);
 
-		finishComponentProcessingState(inapDialogImpl, dummyCallback);
+		finishComponentProcessingState(inapDialogImpl, callback);
 	}
 
 	@Override
-	public void onTCEnd(TCEndIndication tcEndIndication) {
+	public void onTCEnd(TCEndIndication tcEndIndication, TaskCallback<Exception> callback) {
 
 		Dialog tcapDialog = tcEndIndication.getDialog();
 

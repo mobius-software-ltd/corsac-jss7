@@ -29,6 +29,8 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCPAbortIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 /**
  * @author baranowb
  * @author amit bhayani
@@ -47,21 +49,21 @@ public interface TCListener {
     /**
      * Invoked for TC_BEGIN. See Q.771 3.1.2.2.2.1
      */
-    void onTCBegin(TCBeginIndication ind);
+    void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback);
 
     /**
      * Invoked for TC_CONTINUE dialog primitive. See Q.771 3.1.2.2.2.2/3.1.2.2.2.3
      *
      * @param ind
      */
-    void onTCContinue(TCContinueIndication ind);
+    void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback);
 
     /**
      * Invoked for TC_END dialog primitive. See Q.771 3.1.2.2.2.4
      *
      * @param ind
      */
-    void onTCEnd(TCEndIndication ind);
+    void onTCEnd(TCEndIndication ind, TaskCallback<Exception> callback);
 
     /**
      * Invoked for TC-U-Abort primitive(P-Abort-Cause is present.). See Q.771 3.1.2.2.2.4
