@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>ss7-parent</artifactId>
 		<groupId>com.mobius-software.protocols.ss7</groupId>
-		<version>10.0.48-SNAPSHOT</version>
+		<version>10.0.49-SNAPSHOT</version>
 	</parent>
 
 	<groupId>com.mobius-software.protocols.ss7.common</groupId>
