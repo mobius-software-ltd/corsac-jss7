@@ -57,6 +57,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 /**
  * Test for component processing
  *
@@ -144,8 +146,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
 
 			@Override
-			public void onTCEnd(TCEndIndication ind) {
-				super.onTCEnd(ind);
+			public void onTCEnd(TCEndIndication ind, TaskCallback<Exception> callback) {
+				super.onTCEnd(ind, callback);
 
 				assertEquals(ind.getComponents().size(), 1);
 				BaseComponent c = ind.getComponents().get(0);
@@ -165,8 +167,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
 
 			@Override
-			public void onTCBegin(TCBeginIndication ind) {
-				super.onTCBegin(ind);
+			public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
+				super.onTCBegin(ind, callback);
 
 				assertEquals(ind.getComponents().size(), 2);
 				BaseComponent c = ind.getComponents().get(0);
@@ -244,8 +246,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
 
 			@Override
-			public void onTCEnd(TCEndIndication ind) {
-				super.onTCEnd(ind);
+			public void onTCEnd(TCEndIndication ind, TaskCallback<Exception> callback) {
+				super.onTCEnd(ind, callback);
 
 				assertEquals(ind.getComponents().size(), 1);
 				BaseComponent c = ind.getComponents().get(0);
@@ -264,8 +266,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
 
 			@Override
-			public void onTCBegin(TCBeginIndication ind) {
-				super.onTCBegin(ind);
+			public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
+				super.onTCBegin(ind, callback);
 
 				assertEquals(ind.getComponents().size(), 2);
 				BaseComponent c = ind.getComponents().get(0);
@@ -343,8 +345,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
 
 			@Override
-			public void onTCEnd(TCEndIndication ind) {
-				super.onTCEnd(ind);
+			public void onTCEnd(TCEndIndication ind, TaskCallback<Exception> callback) {
+				super.onTCEnd(ind, callback);
 
 				assertEquals(ind.getComponents().size(), 1);
 				BaseComponent c = ind.getComponents().get(0);
@@ -364,8 +366,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
 
 			@Override
-			public void onTCBegin(TCBeginIndication ind) {
-				super.onTCBegin(ind);
+			public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
+				super.onTCBegin(ind, callback);
 
 				assertEquals(ind.getComponents().size(), 2);
 				BaseComponent c = ind.getComponents().get(0);
@@ -450,8 +452,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
 
 			@Override
-			public void onTCContinue(TCContinueIndication ind) {
-				super.onTCContinue(ind);
+			public void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback) {
+				super.onTCContinue(ind, callback);
 
 				step++;
 
@@ -520,8 +522,8 @@ public class TCAPComponentsTest extends SccpHarness {
 			}
 
 			@Override
-			public void onTCEnd(TCEndIndication ind) {
-				super.onTCEnd(ind);
+			public void onTCEnd(TCEndIndication ind, TaskCallback<Exception> callback) {
+				super.onTCEnd(ind, callback);
 
 				try {
 					assertEquals(ind.getComponents().size(), 1);
@@ -541,8 +543,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
 
 			@Override
-			public void onTCBegin(TCBeginIndication ind) {
-				super.onTCBegin(ind);
+			public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
+				super.onTCBegin(ind, callback);
 
 				// waiting for Invoke timeout at a client side
 				EventTestHarness.waitFor(MINI_WAIT_TIME);
@@ -558,8 +560,8 @@ public class TCAPComponentsTest extends SccpHarness {
 			}
 
 			@Override
-			public void onTCContinue(TCContinueIndication ind) {
-				super.onTCContinue(ind);
+			public void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback) {
+				super.onTCContinue(ind, callback);
 
 				// waiting for Invoke timeout at a client side
 				EventTestHarness.waitFor(MINI_WAIT_TIME + 100);
@@ -758,15 +760,15 @@ public class TCAPComponentsTest extends SccpHarness {
 		}
 
 		@Override
-		public void onTCContinue(TCContinueIndication ind) {
-			super.onTCContinue(ind);
+		public void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback) {
+			super.onTCContinue(ind, callback);
 
 			procComponents(ind.getComponents());
 		}
 
 		@Override
-		public void onTCEnd(TCEndIndication ind) {
-			super.onTCEnd(ind);
+		public void onTCEnd(TCEndIndication ind, TaskCallback<Exception> callback) {
+			super.onTCEnd(ind, callback);
 
 			procComponents(ind.getComponents());
 		}
@@ -866,15 +868,15 @@ public class TCAPComponentsTest extends SccpHarness {
 		}
 
 		@Override
-		public void onTCBegin(TCBeginIndication ind) {
-			super.onTCBegin(ind);
+		public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
+			super.onTCBegin(ind, callback);
 
 			procComponents(ind.getComponents());
 		}
 
 		@Override
-		public void onTCContinue(TCContinueIndication ind) {
-			super.onTCContinue(ind);
+		public void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback) {
+			super.onTCContinue(ind, callback);
 
 			procComponents(ind.getComponents());
 		}

@@ -116,11 +116,11 @@ public class ClientTest implements TCListener {
 	}
 
 	@Override
-	public void onTCBegin(TCBeginIndication ind) {
+	public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
 	}
 
 	@Override
-	public void onTCContinue(TCContinueIndication ind) {
+	public void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback) {
 		// send end
 		TCEndRequest end = this.tcapProvider.getDialogPrimitiveFactory().createEnd(ind.getDialog());
 		end.setTermination(TerminationType.Basic);
@@ -129,7 +129,7 @@ public class ClientTest implements TCListener {
 	}
 
 	@Override
-	public void onTCEnd(TCEndIndication ind) {
+	public void onTCEnd(TCEndIndication ind, TaskCallback<Exception> callback) {
 		// should not happen, in this scenario, we send data.
 	}
 

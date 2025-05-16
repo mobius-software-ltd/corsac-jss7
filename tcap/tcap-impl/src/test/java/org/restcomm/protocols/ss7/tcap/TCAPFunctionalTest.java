@@ -46,6 +46,8 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 /**
  * Test for call flow.
  *
@@ -204,13 +206,13 @@ public class TCAPFunctionalTest extends SccpHarness {
         }
 
         @Override
-        public void onTCBegin(TCBeginIndication ind) {
+        public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
             // TODO Auto-generated method stub
 
         }
 
         @Override
-        public void onTCContinue(TCContinueIndication ind) {
+        public void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback) {
             assertEquals(ind.getComponents().size(), 2);
             ReturnResultLast rrl = (ReturnResultLast)ind.getComponents().get(0);
             Invoke inv = (Invoke)ind.getComponents().get(1);
@@ -230,7 +232,7 @@ public class TCAPFunctionalTest extends SccpHarness {
         }
 
         @Override
-        public void onTCEnd(TCEndIndication ind) {
+        public void onTCEnd(TCEndIndication ind, TaskCallback<Exception> callback) {
             // TODO Auto-generated method stub
 
         }

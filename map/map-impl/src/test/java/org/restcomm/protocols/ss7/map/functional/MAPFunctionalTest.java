@@ -501,7 +501,7 @@ public class MAPFunctionalTest extends SccpHarness {
 					} else {
 						this.observerdEvents.add(TestEvent
 								.createSentEvent(EventType.ProcessUnstructuredSSResponseIndication, null, sequence++));
-						mapDialog.close(false);
+						mapDialog.close(false, dummyCallback);
 					}
 				} catch (MAPException e) {
 					this.error("Error while trying to send Response", e);
@@ -619,7 +619,7 @@ public class MAPFunctionalTest extends SccpHarness {
 					if (this.dialogStep == 1) {
 						this.observerdEvents.add(TestEvent.createSentEvent(EventType.UnstructuredSSResponseIndication,
 								null, sequence++));
-						mapDialog.close(true);
+						mapDialog.close(true, dummyCallback);
 					}
 				} catch (MAPException e) {
 					this.error("Error while trying to send Response", e);
@@ -694,7 +694,7 @@ public class MAPFunctionalTest extends SccpHarness {
 						mapDialog.setExtentionContainer(MAPExtensionContainerTest.GetTestExtensionContainer());
 						mapDialog.send(dummyCallback);
 
-						mapDialog.close(true);
+						mapDialog.close(true, dummyCallback);
 //                    } else {
 //                        this.observerdEvents.add(TestEvent.createSentEvent(EventType.ProcessUnstructuredSSResponseIndication,
 //                                null, sequence++));
@@ -805,7 +805,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					mapDialog.setExtentionContainer(MAPExtensionContainerTest.GetTestExtensionContainer());
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.DialogUserAbort, null, sequence++));
-					mapDialog.refuse(Reason.invalidDestinationReference);
+					mapDialog.refuse(Reason.invalidDestinationReference, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while trying to send Refuse", e);
 					fail("Error while trying to send Refuse");
@@ -949,7 +949,7 @@ public class MAPFunctionalTest extends SccpHarness {
 					MAPUserAbortChoiseImpl choice = new MAPUserAbortChoiseImpl();
 					choice.setProcedureCancellationReason(ProcedureCancellationReason.handoverCancellation);
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.DialogUserAbort, null, sequence++));
-					mapDialog.abort(choice);
+					mapDialog.abort(choice, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while trying to send UserAbort", e);
 					fail("Error while trying to send UserAbort");
@@ -1149,7 +1149,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.DialogClose, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while trying to send empty response for received ProcessUnstructuredSSRequest",
 							e);
@@ -1342,7 +1342,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ErrorComponent, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while trying to send Error Component", e);
 					fail("Error while trying to send Error Component");
@@ -1446,7 +1446,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ErrorComponent, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while trying to send Error Component", e);
 					fail("Error while trying to send Error Component");
@@ -1602,7 +1602,7 @@ public class MAPFunctionalTest extends SccpHarness {
 						((MAPDialogSupplementary) mapDialog).addProcessUnstructuredSSResponse(
 								this.processUnstructuredSSRequestInvokeId, ussdDataCodingScheme, ussdStrObj);
 
-						mapDialog.close(false);
+						mapDialog.close(false, dummyCallback);
 					}
 				} catch (MAPException e) {
 					this.error("Error while trying to send Response", e);
@@ -1729,7 +1729,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ErrorComponent, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while trying to send Error Component", e);
 					fail("Error while trying to send Duplicate InvokeId Component");
@@ -1834,7 +1834,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ErrorComponent, null, sequence++));
-					mapDialog.close(true);
+					mapDialog.close(true, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while trying to send Error Component", e);
 					fail("Error while trying to send Error Component");
@@ -1880,7 +1880,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 //        this.saveTrafficInFile();
 		client.actionA();
-		client.clientDialog.close(true);
+		client.clientDialog.close(true, dummyCallback);
 		waitForEnd();
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -1947,7 +1947,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.RejectComponent, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while trying to send Error Component", e);
 					fail("Error while trying to add Duplicate InvokeId Component");
@@ -2066,7 +2066,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			public void onDialogDelimiter(MAPDialog mapDialog) {
 				super.onDialogDelimiter(mapDialog);
 				try {
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while trying to send Error Component", e);
 					fail("Error while trying to add Duplicate InvokeId Component");
@@ -2185,7 +2185,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			public void onDialogDelimiter(MAPDialog mapDialog) {
 				super.onDialogDelimiter(mapDialog);
 				try {
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while trying to send Error Component", e);
 					fail("Error while trying to add Duplicate InvokeId Component");
@@ -2282,7 +2282,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			public void onDialogDelimiter(MAPDialog mapDialog) {
 				super.onDialogDelimiter(mapDialog);
 				try {
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the TC-CONTINUE", e);
 					fail("Error while sending the TC-CONTINUE");
@@ -2522,7 +2522,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 
 				try {
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (Exception e) {
 					this.error("Error while trying to send Error Component", e);
 					fail("Error while trying to add Duplicate InvokeId Component");
@@ -2935,7 +2935,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReportSMDeliveryStatusRespIndication,
 							null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while trying to send ReportSMDeliveryStatusResponse", e);
 					fail("Error while trying to send ReportSMDeliveryStatusResponse");
@@ -3166,7 +3166,7 @@ public class MAPFunctionalTest extends SccpHarness {
 					MAPUserAbortChoiseImpl choice = new MAPUserAbortChoiseImpl();
 					choice.setProcedureCancellationReason(ProcedureCancellationReason.handoverCancellation);
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.DialogUserAbort, null, sequence++));
-					mapDialog.abort(choice);
+					mapDialog.abort(choice, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while trying to send Abort", e);
 					fail("Error while trying to send Abort");
@@ -3329,7 +3329,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents.add(
 							TestEvent.createSentEvent(EventType.AlertServiceCentreRespIndication, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while trying to send AlertServiceCentreResponse", e);
 					fail("Error when sending AlertServiceCentreResponse");
@@ -3440,7 +3440,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents.add(
 							TestEvent.createSentEvent(EventType.ForwardShortMessageRespIndication, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty ForwardShortMessageResponse", e);
 					fail("Error when sending ForwardShortMessageResponse");
@@ -3602,7 +3602,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents.add(
 							TestEvent.createSentEvent(EventType.MoForwardShortMessageRespIndication, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty ForwardShortMessageResponse", e);
 					fail("Error while sending the empty ForwardShortMessageResponse");
@@ -3755,7 +3755,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents.add(
 							TestEvent.createSentEvent(EventType.MtForwardShortMessageRespIndication, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty ForwardShortMessageResponse", e);
 					fail("Error while sending the empty ForwardShortMessageResponse");
@@ -3896,7 +3896,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReportSMDeliveryStatusRespIndication,
 							null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty ForwardShortMessageResponse", e);
 					fail("Error while sending the empty ForwardShortMessageResponse");
@@ -4035,7 +4035,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReportSMDeliveryStatusRespIndication,
 							null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty ForwardShortMessageResponse", e);
 					fail("Error while sending the empty ForwardShortMessageResponse");
@@ -4225,7 +4225,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents.add(
 							TestEvent.createSentEvent(EventType.SendRoutingInfoForSMRespIndication, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty ForwardShortMessageResponse", e);
 					fail("Error while sending the empty ForwardShortMessageResponse");
@@ -4592,7 +4592,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				if (messageIsReceived) {
 					this.observerdEvents.add(
 							TestEvent.createSentEvent(EventType.MoForwardShortMessageRespIndication, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} else
 					mapDialog.send(dummyCallback);
 			} catch (MAPException e) {
@@ -4671,7 +4671,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.SendAuthenticationInfoResp_V3, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty SendAuthenticationInfoResp_V3", e);
 					fail("Error while sending the empty SendAuthenticationInfoResp_V3");
@@ -4800,7 +4800,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.SendAuthenticationInfoResp_V2, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty SendAuthenticationInfoResp_V2", e);
 					fail("Error while sending the empty SendAuthenticationInfoResp_V2");
@@ -4931,7 +4931,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.UpdateLocationResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty UpdateLocationResponse", e);
 					fail("Error while sending the empty UpdateLocationResponse");
@@ -5061,7 +5061,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.AnyTimeInterrogationResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty AnyTimeInterrogationResponse", e);
 					fail("Error while sending the empty AnyTimeInterrogationResponse");
@@ -5228,7 +5228,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents.add(
 							TestEvent.createSentEvent(EventType.AnyTimeSubscriptionInterrogationRes, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty AnyTimeSubscriptionInterrogationResponse", e);
 					fail("Error while sending the empty AnyTimeSubscriptionInterrogationResponse");
@@ -5363,7 +5363,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.ProvideSubscriberInfoResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty ProvideSubscriberInfoResponse", e);
 					fail("Error while sending the empty ProvideSubscriberInfoResponse");
@@ -5472,7 +5472,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.ProvideSubscriberLocationResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending close()", e);
 					fail("Error while sending close()");
@@ -5579,7 +5579,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.SubscriberLocationReportResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending close()", e);
 					fail("Error while sending close()");
@@ -5690,7 +5690,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.SendRoutingInfoForLCSResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending close()", e);
 					fail("Error while sending close()");
@@ -5799,7 +5799,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.CheckImeiResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending close()", e);
 					fail("Error while sending close()");
@@ -5897,7 +5897,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.CheckImeiResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending close()", e);
 					fail("Error while sending close()");
@@ -5998,7 +5998,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.CheckImeiResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending close()", e);
 					fail("Error while sending close()");
@@ -6084,7 +6084,7 @@ public class MAPFunctionalTest extends SccpHarness {
 					IMEI imei = this.mapParameterFactory.createIMEI("333333334444444");
 					d.addCheckImeiRequest(imei);
 					if (dialogStep == 0)
-						d.closeDelayed(false);
+						d.closeDelayed(false, dummyCallback);
 					else
 						d.sendDelayed(dummyCallback);
 					dialogStep++;
@@ -6274,7 +6274,7 @@ public class MAPFunctionalTest extends SccpHarness {
 					if (dialogStep == 0)
 						d.sendDelayed(dummyCallback);
 					else
-						d.closeDelayed(true);
+						d.closeDelayed(true, dummyCallback);
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.CheckImeiResp, null, sequence++));
 				} catch (MAPException e) {
 					this.error("Error while adding CheckImeiResponse/sending", e);
@@ -6329,7 +6329,7 @@ public class MAPFunctionalTest extends SccpHarness {
 		serverExpectedEvents.add(te);
 
 		client.sendCheckImei_ForDelayedTest2();
-		client.clientDialogMobility.close(true);
+		client.clientDialogMobility.close(true, dummyCallback);
 		waitForEnd();
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -6397,7 +6397,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelLocationResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty CancelLocationResponse", e);
 					fail("Error while sending the empty CancelLocationResponse");
@@ -6513,7 +6513,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.CancelLocationResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty CancelLocationResponse", e);
 					fail("Error while sending the empty CancelLocationResponse");
@@ -6675,7 +6675,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.ProvideRoamingNumberResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty CancelLocationResponse", e);
 					fail("Error while sending the empty CancelLocationResponse");
@@ -6829,7 +6829,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.ProvideRoamingNumberResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty CancelLocationResponse", e);
 					fail("Error while sending the empty CancelLocationResponse");
@@ -6934,7 +6934,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.IstCommandResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty CancelLocationResponse", e);
 					fail("Error while sending the empty CancelLocationResponse");
@@ -7124,7 +7124,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.InsertSubscriberDataResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty InsertSubscriberDataResponse", e);
 					fail("Error while sending the empty InsertSubscriberDataResponse");
@@ -7304,7 +7304,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.InsertSubscriberDataResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty InsertSubscriberDataResponse", e);
 					fail("Error while sending the empty InsertSubscriberDataResponse");
@@ -7423,7 +7423,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.DeleteSubscriberDataResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty DeleteSubscriberDataResponse", e);
 					fail("Error while sending the empty DeleteSubscriberDataResponse");
@@ -7533,7 +7533,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.DeleteSubscriberDataResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty DeleteSubscriberDataResponse", e);
 					fail("Error while sending the empty DeleteSubscriberDataResponse");
@@ -7708,7 +7708,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.SendRoutingInformationResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty SendRoutingInformationResponse", e);
 					fail("Error while sending the empty SendRoutingInformationResponse");
@@ -7932,7 +7932,7 @@ public class MAPFunctionalTest extends SccpHarness {
 								vmscAddress, null, null, null, null, null, null, null, null, null, null, null, null,
 								null, false, null);
 
-						d.close(false);
+						d.close(false, dummyCallback);
 						dialogStep++;
 					} else
 						fail("Wrong dialogStep - in testSendRoutingInformation_V3_NonLast - Client " + dialogStep);
@@ -8073,7 +8073,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.SendRoutingInformationResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty SendRoutingInformationResponse", e);
 					fail("Error while sending the empty SendRoutingInformationResponse");
@@ -8177,7 +8177,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.SendIdentificationResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the SendIdentificationResponse", e);
 					fail("Error while sending the empty SendIdentificationResponse");
@@ -8278,7 +8278,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.SendIdentificationResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the SendIdentificationResponse", e);
 					fail("Error while sending the empty SendIdentificationResponse");
@@ -8402,7 +8402,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.UpdateGprsLocationResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty UpdateGprsLocationResponse", e);
 					fail("Error while sending the empty UpdateGprsLocationResponse");
@@ -8506,7 +8506,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.PurgeMSResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty PurgeMSResponse", e);
 					fail("Error while sending the empty PurgeMSResponse");
@@ -8609,7 +8609,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.PurgeMSResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty PurgeMSResponse", e);
 					fail("Error while sending the empty PurgeMSResponse");
@@ -8841,7 +8841,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.RestoreDataResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty RestoreDataResponse", e);
 					fail("Error while sending the empty RestoreDataResponse");
@@ -8947,7 +8947,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.SendImsiResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty SendImsiResponse", e);
 					fail("Error while sending the empty SendImsiResponse");
@@ -9068,7 +9068,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.RegisterSSResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty RegisterSSResponse", e);
 					fail("Error while sending the empty RegisterSSResponse");
@@ -9179,7 +9179,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.EraseSSResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty EraseSSResponse", e);
 					fail("Error while sending the empty EraseSSResponse");
@@ -9299,7 +9299,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ActivateSSResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty ActivateSSResponse", e);
 					fail("Error while sending the empty ActivateSSResponse");
@@ -9410,7 +9410,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.DeactivateSSResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty DeactivateSSResponse", e);
 					fail("Error while sending the empty DeactivateSSResponse");
@@ -9528,7 +9528,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.InterrogateSSResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty InterrogateSSResponse", e);
 					fail("Error while sending the empty DeactivateSSResponse");
@@ -9636,7 +9636,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				super.onDialogDelimiter(mapDialog);
 				try {
 					this.observerdEvents.add(TestEvent.createSentEvent(EventType.ReadyForSMResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty ReadyForSMResponse", e);
 					fail("Error while sending the empty ReadyForSMResponse");
@@ -9817,7 +9817,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.SendRoutingInfoForGprsResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty SendRoutingInfoForGprsResponse", e);
 					fail("Error while sending the empty SendRoutingInfoForGprsResponse");
@@ -9930,7 +9930,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.ActivateTraceModeResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty addActivateTraceModeResponseResponse", e);
 					fail("Error while sending the empty addActivateTraceModeResponseResponse");
@@ -10043,7 +10043,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents
 							.add(TestEvent.createSentEvent(EventType.ActivateTraceModeResp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty addActivateTraceModeResponseResponse", e);
 					fail("Error while sending the empty addActivateTraceModeResponseResponse");
@@ -10194,7 +10194,7 @@ public class MAPFunctionalTest extends SccpHarness {
 					} else {
 						this.observerdEvents
 								.add(TestEvent.createSentEvent(EventType.RegisterPasswordResp, null, sequence++));
-						mapDialog.close(false);
+						mapDialog.close(false, dummyCallback);
 					}
 				} catch (MAPException e) {
 					this.error("Error while trying to send Response", e);
@@ -10343,7 +10343,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				try {
 					this.observerdEvents.add(
 							TestEvent.createSentEvent(EventType.AuthenticationFailureReport_Resp, null, sequence++));
-					mapDialog.close(false);
+					mapDialog.close(false, dummyCallback);
 				} catch (MAPException e) {
 					this.error("Error while sending the empty addAuthenticationFailureReportResponse", e);
 					fail("Error while sending the empty addAuthenticationFailureReportResponse");

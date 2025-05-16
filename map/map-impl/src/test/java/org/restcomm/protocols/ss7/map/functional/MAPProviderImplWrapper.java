@@ -79,7 +79,7 @@ public class MAPProviderImplWrapper extends MAPProviderImpl {
 	}
 
 	@Override
-	public void onTCBegin(TCBeginIndication tcBeginIndication) {
+	public void onTCBegin(TCBeginIndication tcBeginIndication, TaskCallback<Exception> callback) {
 		tcBeginIndication.getApplicationContextName();
 		tcBeginIndication.getComponents();
 
@@ -89,6 +89,6 @@ public class MAPProviderImplWrapper extends MAPProviderImpl {
 			return;
 		}
 
-		super.onTCBegin(tcBeginIndication);
+		super.onTCBegin(tcBeginIndication, callback);
 	}
 }

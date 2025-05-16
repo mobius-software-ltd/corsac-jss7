@@ -33,6 +33,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.BaseComponent;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
 
+import com.mobius.software.common.dal.timers.TaskCallback;
+
 /**
  * @author baranowb
  * @author yulianoifa
@@ -52,9 +54,9 @@ public class Server extends EventTestHarness {
     }
 
     @Override
-    public void onTCBegin(TCBeginIndication ind) {
+    public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
         // TODO Auto-generated method stub
-        super.onTCBegin(ind);
+        super.onTCBegin(ind, callback);
 	this.components = ind.getComponents();
     }
 

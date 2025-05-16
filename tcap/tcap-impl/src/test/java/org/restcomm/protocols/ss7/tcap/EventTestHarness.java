@@ -210,7 +210,7 @@ public abstract class EventTestHarness implements TCListener {
 	}
 
 	@Override
-	public void onTCBegin(TCBeginIndication ind) {
+	public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
 		System.err.println(this + " T[" + System.currentTimeMillis() + "]onBegin");
 		TestEvent te = TestEvent.createReceivedEvent(EventType.Begin, ind, sequence++);
 		this.observerdEvents.add(te);
@@ -224,7 +224,7 @@ public abstract class EventTestHarness implements TCListener {
 	}
 
 	@Override
-	public void onTCContinue(TCContinueIndication ind) {
+	public void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback) {
 		System.err.println(this + " T[" + System.currentTimeMillis() + "]onContinue");
 		TestEvent te = TestEvent.createReceivedEvent(EventType.Continue, ind, sequence++);
 		this.observerdEvents.add(te);
@@ -236,7 +236,7 @@ public abstract class EventTestHarness implements TCListener {
 	}
 
 	@Override
-	public void onTCEnd(TCEndIndication ind) {
+	public void onTCEnd(TCEndIndication ind, TaskCallback<Exception> callback) {
 		System.err.println(this + " T[" + System.currentTimeMillis() + "]onEnd");
 		TestEvent te = TestEvent.createReceivedEvent(EventType.End, ind, sequence++);
 		this.observerdEvents.add(te);
