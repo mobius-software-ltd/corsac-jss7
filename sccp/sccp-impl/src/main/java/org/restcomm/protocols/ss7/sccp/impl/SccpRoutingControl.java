@@ -884,6 +884,7 @@ public class SccpRoutingControl {
 									msg.getOriginLocalSsn(), msg), e);
 
 						callback.onError(e);
+						return;
 					}
 				} else if (gt != null) {
 					// if the GT is present but no SSN or a zero SSN is present

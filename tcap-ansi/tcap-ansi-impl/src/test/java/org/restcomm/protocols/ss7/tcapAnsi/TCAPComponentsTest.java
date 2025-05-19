@@ -112,8 +112,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		this.tcapStack1.start();
 		this.tcapStack2.start();
 
-		this.tcapStack1.setInvokeTimeout(MINI_WAIT_TIME+200);
-		this.tcapStack2.setInvokeTimeout(MINI_WAIT_TIME+200);
+		this.tcapStack1.setInvokeTimeout(MINI_WAIT_TIME);
+		this.tcapStack2.setInvokeTimeout(MINI_WAIT_TIME);
 		this.tcapStack1.setDialogIdleTimeout(_DIALOG_TIMEOUT);
 		this.tcapStack2.setDialogIdleTimeout(_DIALOG_TIMEOUT);
 		// create test classes
@@ -138,14 +138,15 @@ public class TCAPComponentsTest extends SccpHarness {
 	 * Testing diplicateInvokeId case All Invokes are with a little
 	 * invokeTimeout(removed before an answer from a Server) !!!
 	 *
-	 * TC-BEGIN + InvokeNotLast (invokeId==1, little invokeTimeout) TC-CONTINUE +
-	 * ReturnResult (correlationId==1 -> Reject because of invokeTimeout)
+	 * TC-BEGIN + InvokeNotLast (invokeId==1, little invokeTimeout)
+	 * TC-CONTINUE + ReturnResult (correlationId==1 -> Reject because of invokeTimeout)
 	 * TC-CONTINUE + Reject(unrecognizedInvokeId) + InvokeNotLast (invokeId==1)
-	 * TC-CONTINUE + Reject (duplicateInvokeId) TC-CONTINUE + InvokeNotLast
-	 * (invokeId==2) TC-CONTINUE + ReturnResultLast (correlationId==1) + ReturnError
-	 * (correlationId==2) TC-CONTINUE + InvokeNotLast (invokeId==1, for this message
-	 * we will invoke processWithoutAnswer()) + InvokeNotLast (invokeId==2)
-	 * TC-CONTINUE TC-CONTINUE + InvokeLast (invokeId==1) + InvokeLast (invokeId==2)
+	 * TC-CONTINUE + Reject (duplicateInvokeId)
+	 * TC-CONTINUE + InvokeNotLast (invokeId==2)
+	 * TC-CONTINUE + ReturnResultLast (correlationId==1) + ReturnError (correlationId==2)
+	 * TC-CONTINUE + InvokeNotLast (invokeId==1, for this message we will invoke processWithoutAnswer()) + InvokeNotLast (invokeId==2)
+	 * TC-CONTINUE
+	 * TC-CONTINUE + InvokeLast (invokeId==1) + InvokeLast (invokeId==2)
 	 * TC-END + Reject (duplicateInvokeId for invokeId==2)
 	 */
 	@Test
@@ -170,7 +171,7 @@ public class TCAPComponentsTest extends SccpHarness {
 						assertEquals(r.getProblem(), RejectProblem.returnResultUnrecognisedCorrelationId);
 						assertTrue(r.isLocalOriginated());
 
-						this.addNewInvoke(1L, 5L, false);
+						this.addNewInvoke(1L, MINI_WAIT_TIME, false);
 						this.sendContinue(false);
 						break;
 
@@ -183,7 +184,7 @@ public class TCAPComponentsTest extends SccpHarness {
 						assertEquals(r.getProblem(), RejectProblem.invokeDuplicateInvocation);
 						assertFalse(r.isLocalOriginated());
 
-						this.addNewInvoke(2L, 5L, false);
+						this.addNewInvoke(2L, MINI_WAIT_TIME, false);
 						this.sendContinue(false);
 						break;
 
@@ -203,8 +204,8 @@ public class TCAPComponentsTest extends SccpHarness {
 						assertEquals(r.getProblem(), RejectProblem.returnErrorUnrecognisedCorrelationId);
 						assertTrue(r.isLocalOriginated());
 
-						this.addNewInvoke(1L, 100L, false);
-						this.addNewInvoke(2L, 100L, false);
+						this.addNewInvoke(1L, MINI_WAIT_TIME, false);
+						this.addNewInvoke(2L, MINI_WAIT_TIME, false);
 						this.sendContinue(false);
 						break;
 
@@ -244,7 +245,7 @@ public class TCAPComponentsTest extends SccpHarness {
 			@Override
 			public void onTCQuery(TCQueryIndication ind) {
 				super.onTCQuery(ind);
-
+				
 				// waiting for Invoke timeout at a client side
 				EventTestHarness.waitFor(MINI_WAIT_TIME);
 
@@ -261,7 +262,6 @@ public class TCAPComponentsTest extends SccpHarness {
 			@Override
 			public void onTCConversation(TCConversationIndication ind) {
 				super.onTCConversation(ind);
-
 				// waiting for Invoke timeout at a client side
 				EventTestHarness.waitFor(MINI_WAIT_TIME + 100);
 
@@ -808,7 +808,7 @@ public class TCAPComponentsTest extends SccpHarness {
 				}
 		}
 
-		public void addNewInvoke(Long invokeId, Long timout, boolean last) throws Exception {
+		public void addNewInvoke(Long invokeId, Long timeout, boolean last) throws Exception {
 
 			Invoke invoke;
 			if (last)
@@ -824,7 +824,7 @@ public class TCAPComponentsTest extends SccpHarness {
 
 			ComponentTestASN p = new ComponentTestASN(Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4, 5 }));
 			invoke.setSetParameter(p);
-			invoke.setTimeout(timout);
+			invoke.setTimeout(timeout);
 
 			TestEvent te;
 			if (last)

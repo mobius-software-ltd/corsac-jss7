@@ -30,7 +30,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -2003,8 +2002,8 @@ public class RemSgFSMTest extends SgFSMHarness {
 	}
 
 	class Mtp3UserPartListenerimpl implements Mtp3UserPartListener {
-		private LinkedList<Mtp3Primitive> mtp3Primitives = new LinkedList<Mtp3Primitive>();
-		private LinkedList<Mtp3TransferPrimitive> mtp3TransferPrimitives = new LinkedList<Mtp3TransferPrimitive>();
+		private ConcurrentLinkedQueue<Mtp3Primitive> mtp3Primitives = new ConcurrentLinkedQueue<Mtp3Primitive>();
+		private ConcurrentLinkedQueue<Mtp3TransferPrimitive> mtp3TransferPrimitives = new ConcurrentLinkedQueue<Mtp3TransferPrimitive>();
 
 		Mtp3Primitive rxMtp3PrimitivePoll() {
 			return this.mtp3Primitives.poll();

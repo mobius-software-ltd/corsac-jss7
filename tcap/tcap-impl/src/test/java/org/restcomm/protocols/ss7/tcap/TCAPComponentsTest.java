@@ -505,7 +505,7 @@ public class TCAPComponentsTest extends SccpHarness {
 						assertTrue(r.isLocalOriginated());
 
 						this.addNewInvoke(1, MINI_WAIT_TIME / 2);
-						this.addNewInvoke(2, MINI_WAIT_TIME);
+						this.addNewInvoke(2, MINI_WAIT_TIME - 100);
 						this.sendContinue();
 						break;
 
@@ -738,7 +738,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		client.startClientDialog();
 		client.addNewInvoke(1, MINI_WAIT_TIME / 2);
 		client.sendBegin();
-		
+
 		EventTestHarness.waitFor(WAIT_TIME * 2);
 
 		client.compareEvents(clientExpectedEvents);

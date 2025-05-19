@@ -25,7 +25,7 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.DraftParsedMessage;
 
-import com.mobius.software.common.dal.timers.RunnableTimer;
+import com.mobius.software.common.dal.timers.Timer;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 
 import io.netty.buffer.ByteBuf;
@@ -38,72 +38,78 @@ import io.netty.buffer.ByteBuf;
  */
 public interface TCAPProvider extends Serializable {
 
-    /**
-     * Create new structured dialog.
-     *
-     * @param localAddress - desired local address
-     * @param remoteAddress - initial remote address, it can change after first TCContinue.
-     * @return
-     */
-    Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress, int networkId) throws TCAPException;
+	/**
+	 * Create new structured dialog.
+	 *
+	 * @param localAddress  - desired local address
+	 * @param remoteAddress - initial remote address, it can change after first
+	 *                      TCContinue.
+	 * @return
+	 */
+	Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress, int networkId) throws TCAPException;
 
-    /**
-     * Create new structured dialog with predefined local TransactionId.
-     * We do not normally invoke this method. Use it only when you need this and only this local TransactionId
-     * (for example if we need of recreating a Dialog for which a peer already has in memory)
-     * If a Dialog with local TransactionId is already present there will be TCAPException
-     *
-     * @param localAddress - desired local address
-     * @param remoteAddress - initial remote address, it can change after first TCContinue.
-     * @param localTrId - predefined local TransactionId
-     * @return
-     */
-    Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress, Long localTrId, int networkId) throws TCAPException;
+	/**
+	 * Create new structured dialog with predefined local TransactionId. We do not
+	 * normally invoke this method. Use it only when you need this and only this
+	 * local TransactionId (for example if we need of recreating a Dialog for which
+	 * a peer already has in memory) If a Dialog with local TransactionId is already
+	 * present there will be TCAPException
+	 *
+	 * @param localAddress  - desired local address
+	 * @param remoteAddress - initial remote address, it can change after first
+	 *                      TCContinue.
+	 * @param localTrId     - predefined local TransactionId
+	 * @return
+	 */
+	Dialog getNewDialog(SccpAddress localAddress, SccpAddress remoteAddress, Long localTrId, int networkId)
+			throws TCAPException;
 
-    /**
-     * Create new unstructured dialog.
-     *
-     * @param localAddress
-     * @param remoteAddress
-     * @return
-     * @throws TCAPException
-     */
-    Dialog getNewUnstructuredDialog(SccpAddress localAddress, SccpAddress remoteAddress, int networkId) throws TCAPException;
+	/**
+	 * Create new unstructured dialog.
+	 *
+	 * @param localAddress
+	 * @param remoteAddress
+	 * @return
+	 * @throws TCAPException
+	 */
+	Dialog getNewUnstructuredDialog(SccpAddress localAddress, SccpAddress remoteAddress, int networkId)
+			throws TCAPException;
 
-    // /////////////
-    // Factories //
-    // /////////////
+	// /////////////
+	// Factories //
+	// /////////////
 
-    DialogPrimitiveFactory getDialogPrimitiveFactory();
+	DialogPrimitiveFactory getDialogPrimitiveFactory();
 
-    ComponentPrimitiveFactory getComponentPrimitiveFactory();
+	ComponentPrimitiveFactory getComponentPrimitiveFactory();
 
-    // /////////////
-    // Listeners //
-    // /////////////
+	// /////////////
+	// Listeners //
+	// /////////////
 
-    void addTCListener(TCListener lst);
+	void addTCListener(TCListener lst);
 
-    void removeTCListener(TCListener lst);
+	void removeTCListener(TCListener lst);
 
-    /**
-     * @return current count of active TCAP dialogs
-     */
-    int getCurrentDialogsCount();
+	/**
+	 * @return current count of active TCAP dialogs
+	 */
+	int getCurrentDialogsCount();
 
-    /**
-     * Parsing of encoded TCAP-ANSI message for getting only message type, origination/destination dialogId
-     *
-     * @param data
-     * @return
-     */
-    DraftParsedMessage parseMessageDraft(ByteBuf data);
+	/**
+	 * Parsing of encoded TCAP-ANSI message for getting only message type,
+	 * origination/destination dialogId
+	 *
+	 * @param data
+	 * @return
+	 */
+	DraftParsedMessage parseMessageDraft(ByteBuf data);
 
-	void storeOperationTimer(RunnableTimer operationTimer);
-    
-    /**
-     * @return ASN Parser
-     */
+	void storeOperationTimer(Timer operationTimer);
 
-    ASNParser getParser();
+	/**
+	 * @return ASN Parser
+	 */
+
+	ASNParser getParser();
 }

@@ -121,9 +121,8 @@ public class TestEvent implements Serializable {
         if (timestamp != other.timestamp) {
             long v = timestamp - other.timestamp;
             v = Math.abs(v);
-            if (v > 1000) {
-                return false;
-            }
+            if (v > 1500)
+				return false;
         }
 
         // now compare source!

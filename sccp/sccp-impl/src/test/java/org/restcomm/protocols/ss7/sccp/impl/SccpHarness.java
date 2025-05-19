@@ -78,6 +78,17 @@ public abstract class SccpHarness {
 	protected Semaphore sendSemaphore = new Semaphore(0);
 	protected AtomicInteger sentMessages = new AtomicInteger(0);
 	
+	protected final TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
+		@Override
+		public void onSuccess() {
+		}
+
+		@Override
+		public void onError(Exception exception) {
+			logger.error("An exception handled via dummy callback: " + exception);
+		}
+	};
+	
 	/**
 	 *
 	 */

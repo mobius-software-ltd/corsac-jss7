@@ -198,7 +198,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
-import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
@@ -223,16 +222,6 @@ public class CAPFunctionalTest extends SccpHarness {
 	private CAPStackImpl stack2;
 	private SccpAddress peer1Address;
 	private SccpAddress peer2Address;
-
-	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
-		@Override
-		public void onSuccess() {
-		}
-
-		@Override
-		public void onError(Exception exception) {
-		}
-	};
 
 	@Override
 	protected int getSSN() {
@@ -911,7 +900,6 @@ public class CAPFunctionalTest extends SccpHarness {
 		client.sendEventReportBCSMRequest_1();
 
 		waitForEnd();
-		Thread.sleep(500);
 		// Thread.currentThread().sleep(1000000);
 
 		client.compareEvents(clientExpectedEvents);
@@ -2087,10 +2075,10 @@ public class CAPFunctionalTest extends SccpHarness {
 
 		// setting dialog timeout little interval to invoke onDialogTimeout on SCF side
 		server.capStack.getTCAPStack().setInvokeTimeout(_DIALOG_TIMEOUT - 100);
-		server.capStack.getTCAPStack().setDialogIdleTimeout(_DIALOG_TIMEOUT + 50);
+		server.capStack.getTCAPStack().setDialogIdleTimeout(_DIALOG_TIMEOUT + 100);
 		server.suppressInvokeTimeout();
 		client.capStack.getTCAPStack().setInvokeTimeout(_DIALOG_TIMEOUT - 100);
-		client.capStack.getTCAPStack().setDialogIdleTimeout(_DIALOG_TIMEOUT - 50);
+		client.capStack.getTCAPStack().setDialogIdleTimeout(_DIALOG_TIMEOUT - 100);
 		client.suppressInvokeTimeout();
 		client.sendInitialDp(CAPApplicationContext.CapV3_gsmSSF_scfGeneric);
 

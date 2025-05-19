@@ -31,7 +31,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.OperationState;
 import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
 
-import com.mobius.software.common.dal.timers.RunnableTimer;
+import com.mobius.software.common.dal.timers.Timer;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNChoise;
@@ -302,11 +302,11 @@ public abstract class InvokeImpl implements Invoke {
 
 		this.stopTimer();
 		if (this.invokeTimeout > 0) {
-			OperationTimer timer = new OperationTimer(this.invokeTimeout, String.valueOf(this.dialog.getLocalDialogId()), this);
+			OperationTimer timer = new OperationTimer(this.invokeTimeout, this);
 			timer.postpone(this.invokeTimeout);
 
 			this.operationTimer.set(timer);
-			if(this.provider!=null)
+			if (this.provider != null)
 				this.provider.storeOperationTimer(timer);
 		}
 	}
@@ -335,16 +335,14 @@ public abstract class InvokeImpl implements Invoke {
 			return false;
 	}
 
-	private class OperationTimer extends RunnableTimer {
+	private class OperationTimer implements Timer {
 		private final InvokeImpl invoke;
 		private long startTime;
 		private long timeDiff;
 
-		public OperationTimer(Long timeDiff, String id, InvokeImpl invoke) {
-			super(null, System.currentTimeMillis() + timeDiff, id);
-
+		public OperationTimer(Long timeDiff, InvokeImpl invoke) {
 			this.invoke = invoke;
-						
+
 			this.startTime = System.currentTimeMillis();
 			this.timeDiff = timeDiff;
 		}
@@ -359,6 +357,7 @@ public abstract class InvokeImpl implements Invoke {
 
 			setState(OperationState.Idle);
 			// TC-L-CANCEL
+
 			invoke.dialog.operationTimedOut(invoke);
 		}
 

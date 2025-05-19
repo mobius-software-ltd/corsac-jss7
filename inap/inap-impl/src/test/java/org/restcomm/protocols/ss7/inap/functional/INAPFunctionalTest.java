@@ -117,7 +117,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
-import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
@@ -139,17 +138,6 @@ public class INAPFunctionalTest extends SccpHarness {
 	private INAPStackImpl stack2;
 	private SccpAddress peer1Address;
 	private SccpAddress peer2Address;
-
-	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
-		@Override
-		public void onSuccess() {
-		}
-
-		@Override
-		public void onError(Exception exception) {
-			logger.error("An exception handled via dummy callback: " + exception);
-		}
-	};
 
 	@Override
 	protected int getSSN() {
@@ -3448,7 +3436,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			// if (new Date().getTime() - startTime.getTime() > _WAIT_TIMEOUT)
 			// break;
 
-			Thread.sleep(_WAIT_TIMEOUT + 100);
+			Thread.sleep(_WAIT_TIMEOUT);
 			// Thread.currentThread().sleep(1000000);
 			// }
 		} catch (InterruptedException e) {

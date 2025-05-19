@@ -90,8 +90,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.TCEndMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage;
 import org.restcomm.protocols.ss7.tcap.tc.dialog.events.DialogPrimitiveFactoryImpl;
 
-import com.mobius.software.common.dal.timers.RunnableTimer;
 import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.common.dal.timers.Timer;
 import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
 
@@ -1949,11 +1949,11 @@ public class DialogImpl implements Dialog {
 		if (!this.structured)
 			return;
 
-		IdleTimer newTimer = new IdleTimer(this.idleTaskTimeout, String.valueOf(localTransactionIdObject));
+		IdleTimer newTimer = new IdleTimer(this.idleTaskTimeout);
 		if (!this.idleTimer.compareAndSet(null, newTimer))
 			throw new IllegalStateException("Idle timer is not null");
 
-		this.workerPool.addTimer(newTimer);
+		this.workerPool.getPeriodicQueue().store(newTimer.getRealTimestamp(), newTimer);
 	}
 
 	protected void stopIdleTimer() {
@@ -1970,12 +1970,14 @@ public class DialogImpl implements Dialog {
 		startIdleTimer();
 	}
 
-	private class IdleTimer extends RunnableTimer {
+	private class IdleTimer implements Timer {
 		private DialogImpl d = DialogImpl.this;
-
-		public IdleTimer(Long timeDiff, String id) {
-			super(null, System.currentTimeMillis() + timeDiff, id);
-		}
+		private long startTime = System.currentTimeMillis();
+		private long timeDiff;
+		
+		public IdleTimer(Long timeDiff) {
+			this.timeDiff = timeDiff;
+		}	
 
 		@Override
 		public void execute() {
@@ -1998,6 +2000,21 @@ public class DialogImpl implements Dialog {
 				release();
 
 			d.idleTimerInvoked.set(false);
+		}
+
+		@Override
+		public long getStartTime() {
+			return this.startTime;
+		}
+
+		@Override
+		public Long getRealTimestamp() {
+			return this.startTime + this.timeDiff;
+		}
+
+		@Override
+		public void stop() {
+			this.startTime = Long.MAX_VALUE;
 		}
 	}
 
