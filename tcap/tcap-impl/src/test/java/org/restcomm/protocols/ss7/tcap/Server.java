@@ -42,57 +42,60 @@ import com.mobius.software.common.dal.timers.TaskCallback;
  */
 public class Server extends EventTestHarness {
 
-    protected List<BaseComponent> components;
+	protected List<BaseComponent> components;
 
-    /**
-     * @param stack
-     * @param thisAddress
-     * @param remoteAddress
-     */
-    public Server(final TCAPStack stack, final ParameterFactory parameterFactory, final SccpAddress thisAddress, final SccpAddress remoteAddress) {
-        super(stack, parameterFactory, thisAddress, remoteAddress);
-    }
+	/**
+	 * @param stack
+	 * @param thisAddress
+	 * @param remoteAddress
+	 */
+	public Server(final TCAPStack stack, final ParameterFactory parameterFactory, final SccpAddress thisAddress,
+			final SccpAddress remoteAddress) {
+		super(stack, parameterFactory, thisAddress, remoteAddress);
 
-    @Override
-    public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
-        // TODO Auto-generated method stub
-        super.onTCBegin(ind, callback);
-	this.components = ind.getComponents();
-    }
+		super.listenerName = "Server";
+	}
 
-    @Override
-    public void sendContinue() throws TCAPSendException, TCAPException {
+	@Override
+	public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
+		// TODO Auto-generated method stub
+		super.onTCBegin(ind, callback);
+		this.components = ind.getComponents();
+	}
 
-        List<BaseComponent> comps = components;
-        if (comps == null || comps.size() != 2)
-	    throw new TCAPSendException("Bad comps!");
-        BaseComponent c = comps.get(0);
-        if (!(c instanceof Invoke))
-	    throw new TCAPSendException("Bad type: " + c.getClass().getName());
-        // lets kill this Invoke - sending ReturnResultLast
-        Invoke invoke = (Invoke)c;
-        super.dialog.sendData(invoke.getInvokeId(), null, null, null, null, null, false, true);
+	@Override
+	public void sendContinue() throws TCAPSendException, TCAPException {
 
-        c = comps.get(1);
-        if (!(c instanceof Invoke))
-	    throw new TCAPSendException("Bad type: " + c.getClass().getName());
+		List<BaseComponent> comps = components;
+		if (comps == null || comps.size() != 2)
+			throw new TCAPSendException("Bad comps!");
+		BaseComponent c = comps.get(0);
+		if (!(c instanceof Invoke))
+			throw new TCAPSendException("Bad type: " + c.getClass().getName());
+		// lets kill this Invoke - sending ReturnResultLast
+		Invoke invoke = (Invoke) c;
+		super.dialog.sendData(invoke.getInvokeId(), null, null, null, null, null, false, true);
 
-        // lets kill this Invoke - sending Invoke with linkedId
-        invoke = (Invoke)c;
-        OperationCode oc = TcapFactory.createLocalOperationCode(14);
-        // no parameter        
-        this.dialog.sendData(null, invoke.getInvokeId(), InvokeClass.Class1, null, oc, null, true, false);
+		c = comps.get(1);
+		if (!(c instanceof Invoke))
+			throw new TCAPSendException("Bad type: " + c.getClass().getName());
 
-        super.sendContinue();
-    }
+		// lets kill this Invoke - sending Invoke with linkedId
+		invoke = (Invoke) c;
+		OperationCode oc = TcapFactory.createLocalOperationCode(14);
+		// no parameter
+		this.dialog.sendData(null, invoke.getInvokeId(), InvokeClass.Class1, null, oc, null, true, false);
 
-    public void sendContinue2() throws TCAPSendException, TCAPException {
-        super.sendContinue();
-    }
+		super.sendContinue();
+	}
 
-    public void releaseDialog() {
-        if (this.dialog != null)
-            this.dialog.release();
-        this.dialog = null;
-    }
+	public void sendContinue2() throws TCAPSendException, TCAPException {
+		super.sendContinue();
+	}
+
+	public void releaseDialog() {
+		if (this.dialog != null)
+			this.dialog.release();
+		this.dialog = null;
+	}
 }

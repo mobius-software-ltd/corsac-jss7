@@ -281,7 +281,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
-import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
@@ -313,16 +312,6 @@ public class MAPFunctionalTest extends SccpHarness {
 	private MAPStackImpl stack2;
 	private SccpAddress peer1Address;
 	private SccpAddress peer2Address;
-
-	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
-		@Override
-		public void onSuccess() {			
-		}
-		
-		@Override
-		public void onError(Exception exception) {
-		}
-	};
 	
 	/*
 	 * (non-Javadoc)

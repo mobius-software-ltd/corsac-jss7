@@ -158,7 +158,7 @@ public class DialogIdleTest extends SccpHarness {
 	public void testAfterBeginOnly2() throws Exception {
 		// server timeout first
 		this.tcapStack1.setDialogIdleTimeout(_DIALOG_TIMEOUT);
-		this.tcapStack2.setDialogIdleTimeout(_DIALOG_TIMEOUT - 100);
+		this.tcapStack2.setDialogIdleTimeout(_DIALOG_TIMEOUT - 200);
 		long stamp = System.currentTimeMillis();
 		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
 		TestEvent te = TestEvent.createSentEvent(EventType.Begin, null, 0, stamp + _WAIT);

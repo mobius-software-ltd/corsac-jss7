@@ -98,8 +98,8 @@ import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.DialogPrimitiveFacto
 import org.restcomm.protocols.ss7.tcapAnsi.tc.dialog.events.DraftParsedMessageImpl;
 
 import com.mobius.software.common.dal.timers.RunnableTask;
-import com.mobius.software.common.dal.timers.RunnableTimer;
 import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.common.dal.timers.Timer;
 import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeHandler;
 import com.mobius.software.telco.protocols.ss7.asn.ASNDecodeResult;
@@ -541,8 +541,8 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	// Some methods invoked by operation FSM //
 	// //////////////////////////////////////////
 	@Override
-	public void storeOperationTimer(RunnableTimer operationTimer) {
-		this.workerPool.addTimer(operationTimer);
+	public void storeOperationTimer(Timer operationTimer) {
+		this.workerPool.getPeriodicQueue().store(operationTimer.getRealTimestamp(), operationTimer);
 	}
 
 	public void operationTimedOut(Invoke tcInvokeRequest, int networkId) {

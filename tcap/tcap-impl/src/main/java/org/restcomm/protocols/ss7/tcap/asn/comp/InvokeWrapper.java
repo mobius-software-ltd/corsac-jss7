@@ -57,18 +57,12 @@ public class InvokeWrapper {
 	}
 
 	private class OperationTimer extends RunnableTimer {
-		private long startTime;
-		private long timeDiff;
-
-		public OperationTimer(Long timeDiff, String id) {
-			super(null, System.currentTimeMillis() + timeDiff, id);
-			
-			this.startTime = System.currentTimeMillis();
-			this.timeDiff = timeDiff;
+		public OperationTimer(Long startTime, String id) {
+			super(null, startTime, id);
 		}
-		
+
 		@Override
-		public void execute() {			
+		public void execute() {
 			if (this.startTime == Long.MAX_VALUE)
 				return;
 
@@ -76,24 +70,9 @@ public class InvokeWrapper {
 			operationTimer.set(null);
 
 			setState(OperationState.Idle);
-			// TC-L-CANCEL			
+			// TC-L-CANCEL
 			if (dialog != null)
 				dialog.operationTimedOut(invokeClass, invokeId);
-		}
-
-		@Override
-		public long getStartTime() {
-			return this.startTime;
-		}
-
-		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + this.timeDiff;
-		}
-
-		@Override
-		public void stop() {
-			this.startTime = Long.MAX_VALUE;
 		}
 	}
 
@@ -144,7 +123,8 @@ public class InvokeWrapper {
 		this.stopTimer();
 
 		if (this.invokeTimeout > 0) {
-			OperationTimer timer = new OperationTimer(this.invokeTimeout, String.valueOf(this.dialog.getLocalDialogId()));
+			String timerId = this.dialog.getLocalDialogId().toString();
+			OperationTimer timer = new OperationTimer(System.currentTimeMillis() + this.invokeTimeout, timerId);
 
 			this.provider.storeOperationTimer(timer);
 			this.operationTimer.set(timer);

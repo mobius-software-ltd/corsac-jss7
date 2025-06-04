@@ -163,7 +163,8 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 
 		@Override
 		public void onError(Exception exception) {
-			logger.warn("An error occurred, while processing task asynchronously , " + exception.getMessage(), exception);
+			logger.warn("An error occurred, while processing task asynchronously , " + exception.getMessage(),
+					exception);
 		}
 	};
 
@@ -616,20 +617,25 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 		msg.setDestinationTransactionId(remoteTransactionId);
 		msg.setPAbortCause(pAbortCause);
 
+		ByteBuf buffer;
 		try {
-			ByteBuf buffer = messageParser.encode(msg);
-			if (pAbortCause != null)
-				stack.newAbortSent(pAbortCause.name(), networkId);
-			else
-				stack.newAbortSent("User", networkId);
-
-			stack.newMessageSent(msg.getName(), buffer.readableBytes(), networkId);
-			this.send(null, buffer, false, remoteAddress, localAddress, seqControl, networkId,
-					localAddress.getSubsystemNumber(), remotePc, callback);
-		} catch (Exception e) {
+			buffer = messageParser.encode(msg);
+		} catch (ASNException e) {
 			if (logger.isErrorEnabled())
 				logger.error("Failed to send message: ", e);
+
+			callback.onError(e);
+			return;
 		}
+
+		if (pAbortCause != null)
+			stack.newAbortSent(pAbortCause.name(), networkId);
+		else
+			stack.newAbortSent("User", networkId);
+
+		stack.newMessageSent(msg.getName(), buffer.readableBytes(), networkId);
+		this.send(null, buffer, false, remoteAddress, localAddress, seqControl, networkId,
+				localAddress.getSubsystemNumber(), remotePc, callback);
 	}
 
 	protected void sendProviderAbort(DialogServiceProviderType pt, ByteBuf remoteTransactionId,
@@ -655,16 +661,21 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 		msg.setDestinationTransactionId(remoteTransactionId);
 		msg.setDialogPortion(dp);
 
+		ByteBuf buffer;
 		try {
-			ByteBuf buffer = messageParser.encode(msg);
-			stack.newAbortSent("User", networkId);
-			stack.newMessageSent(msg.getName(), buffer.readableBytes(), networkId);
-			this.send(null, buffer, false, remoteAddress, localAddress, seqControl, networkId,
-					localAddress.getSubsystemNumber(), remotePc, callback);
+			buffer = messageParser.encode(msg);
 		} catch (Exception e) {
 			if (logger.isErrorEnabled())
 				logger.error("Failed to send message: ", e);
+
+			callback.onError(e);
+			return;
 		}
+
+		stack.newAbortSent("User", networkId);
+		stack.newMessageSent(msg.getName(), buffer.readableBytes(), networkId);
+		this.send(null, buffer, false, remoteAddress, localAddress, seqControl, networkId,
+				localAddress.getSubsystemNumber(), remotePc, callback);
 	}
 
 	@Override

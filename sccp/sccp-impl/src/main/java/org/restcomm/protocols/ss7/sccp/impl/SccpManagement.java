@@ -45,7 +45,7 @@ import org.restcomm.protocols.ss7.sccp.message.SccpDataMessage;
 import org.restcomm.protocols.ss7.sccp.message.SccpMessage;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 
-import com.mobius.software.common.dal.timers.RunnableTimer;
+import com.mobius.software.common.dal.timers.Timer;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -642,7 +642,7 @@ public class SccpManagement {
 		return ssts.get(affectedSsn);
 	}
 
-	private class SubSystemTest extends RunnableTimer {
+	private class SubSystemTest implements Timer {
 		// FIXME: remove "Thread", so we eat less resources.
 		private volatile boolean started = false;
 
@@ -663,8 +663,6 @@ public class SccpManagement {
 		private int nextTimerDelay = sccpStackImpl.sstTimerDuration_Min;
 
 		public SubSystemTest(int ssn, int affectedPc, ConcurrentHashMap<Integer, SubSystemTest> testsList) {
-			super(null, System.currentTimeMillis() + sccpStackImpl.sstTimerDuration_Min, String.valueOf(affectedPc));
-			
 			this.ssn = ssn;
 			this.affectedPc = affectedPc;
 			this.testsList = testsList;
@@ -689,7 +687,7 @@ public class SccpManagement {
 			this.startTime = System.currentTimeMillis();
 			this.currentTimerDelay = nextTimerDelay;
 
-			sccpStackImpl.workerPool.addTimer(this);
+			sccpStackImpl.workerPool.getPeriodicQueue().store(this.getRealTimestamp(), this);
 
 			// increase the "T(stat info)" timer delay up to 10 minutes
 			// for the next step
@@ -754,6 +752,11 @@ public class SccpManagement {
 		public void stop() {
 			this.startTime = Long.MAX_VALUE;
 			this.started = false;
+		}
+
+		@Override
+		public long getStartTime() {
+			return System.currentTimeMillis();
 		}
 	}
 
