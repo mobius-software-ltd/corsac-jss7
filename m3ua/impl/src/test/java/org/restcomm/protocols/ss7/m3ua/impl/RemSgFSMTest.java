@@ -1587,13 +1587,13 @@ public class RemSgFSMTest extends SgFSMHarness {
 
 		@Override
 		public IpChannelType getIpChannelType() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public AssociationType getAssociationType() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
@@ -1604,7 +1604,7 @@ public class RemSgFSMTest extends SgFSMHarness {
 		 */
 		@Override
 		public String[] getExtraHostAddresses() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
@@ -1620,19 +1620,16 @@ public class RemSgFSMTest extends SgFSMHarness {
 
 		@Override
 		public void acceptAnonymousAssociation(AssociationListener arg0) throws Exception {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void rejectAnonymousAssociation() {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void stopAnonymousAssociation() throws Exception {
-			// TODO Auto-generated method stub
 
 		}
 
@@ -1642,61 +1639,57 @@ public class RemSgFSMTest extends SgFSMHarness {
 
 		@Override
 		public boolean isUp() {
-			// TODO Auto-generated method stub
+
 			return false;
 		}
 
 		@Override
 		public ByteBufAllocator getByteBufAllocator() throws Exception {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public Integer getCommunicationsUp() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public Integer getCommunicationsDown() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public Integer getCommunicationsLost() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public Integer getCommunicationsRestart() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public Long getPacketsSent() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public Long getPacketsReceived() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public Long getBytesSent() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public Long getBytesReceived() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 	}
@@ -1715,14 +1708,14 @@ public class RemSgFSMTest extends SgFSMHarness {
 
 		@Override
 		public Server addServer(String serverName, String hostAddress, int port) throws Exception {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public Association addServerAssociation(String peerAddress, int peerPort, String serverName, String assocName)
 				throws Exception {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
@@ -1768,25 +1761,21 @@ public class RemSgFSMTest extends SgFSMHarness {
 
 		@Override
 		public void start() throws Exception {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void startAssociation(String arg0) throws Exception {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void startServer(String arg0) throws Exception {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void stop() throws Exception {
-			// TODO Auto-generated method stub
 
 		}
 
@@ -1798,28 +1787,27 @@ public class RemSgFSMTest extends SgFSMHarness {
 
 		@Override
 		public void stopServer(String arg0) throws Exception {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public Association addAssociation(String arg0, int arg1, String arg2, int arg3, String arg4, IpChannelType arg5,
 				String[] extraHostAddresses) throws Exception {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public Server addServer(String arg0, String arg1, int arg2, IpChannelType arg3, String[] extraHostAddresses)
 				throws Exception {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public Association addServerAssociation(String arg0, int arg1, String arg2, String arg3, IpChannelType arg4)
 				throws Exception {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
@@ -1830,32 +1818,29 @@ public class RemSgFSMTest extends SgFSMHarness {
 
 		@Override
 		public void addManagementEventListener(UUID key, ManagementEventListener arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public Server addServer(String arg0, String arg1, int arg2, IpChannelType arg3, boolean arg4, int arg5,
 				String[] arg6) throws Exception {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public ServerListener getServerListener() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public void removeManagementEventListener(UUID key) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void setServerListener(ServerListener arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
@@ -1866,115 +1851,106 @@ public class RemSgFSMTest extends SgFSMHarness {
 		 */
 		@Override
 		public boolean isStarted() {
-			// TODO Auto-generated method stub
+
 			return false;
 		}
 
 		@Override
 		public Boolean getOptionSctpDisableFragments() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public Integer getOptionSctpFragmentInterleave() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public Boolean getOptionSctpNodelay() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public Integer getOptionSoLinger() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public Integer getOptionSoRcvbuf() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public Integer getOptionSoSndbuf() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public void setOptionSctpDisableFragments(Boolean arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void setOptionSctpFragmentInterleave(Integer arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void setOptionSctpNodelay(Boolean arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void setOptionSoLinger(Integer arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void setOptionSoRcvbuf(Integer arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void setOptionSoSndbuf(Integer arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public Integer getOptionSctpInitMaxstreams_MaxInStreams() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public Integer getOptionSctpInitMaxstreams_MaxOutStreams() {
-			// TODO Auto-generated method stub
+
 			return null;
 		}
 
 		@Override
 		public void setOptionSctpInitMaxstreams_MaxInStreams(Integer arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void setOptionSctpInitMaxstreams_MaxOutStreams(Integer arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public int getBufferSize() {
-			// TODO Auto-generated method stub
+
 			return 0;
 		}
 
 		@Override
 		public void setBufferSize(int arg0) throws Exception {
-			// TODO Auto-generated method stub
 
 		}
 
@@ -1982,21 +1958,18 @@ public class RemSgFSMTest extends SgFSMHarness {
 		public void modifyServer(String serverName, String hostAddress, Integer port, IpChannelType ipChannelType,
 				Boolean acceptAnonymousConnections, Integer maxConcurrentConnectionsCount, String[] extraHostAddresses)
 				throws Exception {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void modifyServerAssociation(String assocName, String peerAddress, Integer peerPort, String serverName,
 				IpChannelType ipChannelType) throws Exception {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void modifyAssociation(String hostAddress, Integer hostPort, String peerAddress, Integer peerPort,
 				String assocName, IpChannelType ipChannelType, String[] extraHostAddresses) throws Exception {
-			// TODO Auto-generated method stub
 
 		}
 	}
@@ -2208,14 +2181,10 @@ public class RemSgFSMTest extends SgFSMHarness {
 
 		@Override
 		public void onServiceStarted() {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onServiceStopped() {
-			// TODO Auto-generated method stub
-
 		}
 	}
 }

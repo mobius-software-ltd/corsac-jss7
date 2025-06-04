@@ -67,10 +67,9 @@ import com.mobius.software.common.dal.timers.TaskCallback;
  *
  */
 public class TCAPComponentsTest extends SccpHarness {
-
-	public static final long MINI_WAIT_TIME = 500;
-	public static final long WAIT_TIME = 2000;
-	private static final int _DIALOG_TIMEOUT = 5000000;
+	private static final long MINI_WAIT_TIME = 1000;
+	private static final long WAIT_TIME = 4 * MINI_WAIT_TIME;
+	private static final int DIALOG_TIMEOUT = Integer.MAX_VALUE;
 
 	private TCAPStackImpl tcapStack1;
 	private TCAPStackImpl tcapStack2;
@@ -79,28 +78,16 @@ public class TCAPComponentsTest extends SccpHarness {
 	private ClientComponent client;
 	private ServerComponent server;
 
-	public TCAPComponentsTest() {
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#setUp()
-	 */
 	@Override
 	@Before
 	public void setUp() throws Exception {
 		this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
 		this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
 
-		System.out.println("setUp");
 		super.setUp();
 
-		peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1,
-				8);
-		peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2,
-				8);
+		peer1Address = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
+		peer2Address = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
 
 		this.tcapStack1 = new TCAPStackImpl("TCAPComponentsTest", this.sccpProvider1, 8, workerPool);
 		this.tcapStack2 = new TCAPStackImpl("TCAPComponentsTest", this.sccpProvider2, 8, workerPool);
@@ -108,33 +95,30 @@ public class TCAPComponentsTest extends SccpHarness {
 		this.tcapStack1.start();
 		this.tcapStack2.start();
 
-		this.tcapStack1.setInvokeTimeout(MINI_WAIT_TIME + 200);
-		this.tcapStack2.setInvokeTimeout(MINI_WAIT_TIME + 200);
-		this.tcapStack1.setDialogIdleTimeout(_DIALOG_TIMEOUT);
-		this.tcapStack2.setDialogIdleTimeout(_DIALOG_TIMEOUT);
-		// create test classes
-
+		// default invoke timeouts
+		this.tcapStack1.setInvokeTimeout(MINI_WAIT_TIME);
+		this.tcapStack2.setInvokeTimeout(MINI_WAIT_TIME);
+		// default dialog timeouts
+		this.tcapStack1.setDialogIdleTimeout(DIALOG_TIMEOUT);
+		this.tcapStack2.setDialogIdleTimeout(DIALOG_TIMEOUT);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#tearDown()
-	 */
 	@Override
 	@After
 	public void tearDown() {
 		this.tcapStack1.stop();
 		this.tcapStack2.stop();
-		super.tearDown();
 
+		super.tearDown();
 	}
 
 	/**
 	 * Sending BadlyStructuredComponent Component
 	 *
+	 * <pre>
 	 * TC-BEGIN + Invoke with BadlyStructuredComponent + Invoke TC-END + Reject
 	 * (mistypedComponent)
+	 * </pre>
 	 */
 	@Test
 	public void BadlyStructuredComponentTest() throws Exception {
@@ -144,7 +128,6 @@ public class TCAPComponentsTest extends SccpHarness {
 				InvokeTestASN.class);
 
 		this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
-
 			@Override
 			public void onTCEnd(TCEndIndication ind, TaskCallback<Exception> callback) {
 				super.onTCEnd(ind, callback);
@@ -165,7 +148,6 @@ public class TCAPComponentsTest extends SccpHarness {
 		};
 
 		this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
-
 			@Override
 			public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
 				super.onTCBegin(ind, callback);
@@ -237,12 +219,13 @@ public class TCAPComponentsTest extends SccpHarness {
 	/**
 	 * Sending unrecognizedComponent
 	 *
+	 * <pre>
 	 * TC-BEGIN + bad component (with component type != Invoke,ReturnResult,...) +
 	 * Invoke TC-END + Reject (unrecognizedComponent)
+	 * </pre>
 	 */
 	@Test
 	public void UnrecognizedComponentTest() throws Exception {
-
 		this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
 
 			@Override
@@ -264,7 +247,6 @@ public class TCAPComponentsTest extends SccpHarness {
 		};
 
 		this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
-
 			@Override
 			public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
 				super.onTCBegin(ind, callback);
@@ -330,14 +312,15 @@ public class TCAPComponentsTest extends SccpHarness {
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
-
 	}
 
 	/**
 	 * Sending MistypedComponent Component
 	 *
+	 * <pre>
 	 * TC-BEGIN + Invoke with an extra bad component + Invoke TC-END + Reject
 	 * (mistypedComponent)
+	 * </pre>
 	 */
 	@Test
 	public void MistypedComponentTest() throws Exception {
@@ -431,23 +414,29 @@ public class TCAPComponentsTest extends SccpHarness {
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
-
 	}
 
 	/**
-	 * Testing diplicateInvokeId case All Invokes are with a little
-	 * invokeTimeout(removed before an answer from a Server) !!!
-	 *
-	 * TC-BEGIN + Invoke (invokeId==1) TC-CONTINUE + ReturnResult (invokeId==1)
-	 * TC-CONTINUE + Reject(unrecognizedInvokeId) + Invoke (invokeId==1) TC-CONTINUE
-	 * + Reject (duplicateInvokeId) TC-CONTINUE + Invoke (invokeId==2) TC-CONTINUE +
-	 * ReturnResultLast (invokeId==1) + ReturnError (invokeId==2) TC-CONTINUE +
-	 * Invoke (invokeId==1, for this message we will invoke processWithoutAnswer())
-	 * + Invoke (invokeId==2) TC-CONTINUE TC-CONTINUE + Invoke (invokeId==1) +
-	 * Invoke (invokeId==2) * TC-END + Reject (duplicateInvokeId for invokeId==2)
+	 * Testing diplicateInvokeId case.
+	 * <p>
+	 * All Invokes are with a little invokeTimeout(removed before an answer from a
+	 * Server).
+	 * 
+	 * <pre>
+	 * TC-BEGIN + Invoke (invokeId=1)
+	 * TC-CONTINUE + ReturnResult (invokeId=1)
+	 * TC-CONTINUE + Reject(unrecognizedInvokeId) + Invoke (invokeId=1)
+	 * TC-CONTINUE + Reject (duplicateInvokeId)
+	 * TC-CONTINUE + Invoke (invokeId=2)
+	 * TC-CONTINUE + ReturnResultLast (invokeId=1) + ReturnError (invokeId=2)
+	 * TC-CONTINUE + Invoke (invokeId=1, for this message we will invoke processWithoutAnswer()) + Invoke (invokeId==2)
+	 * TC-CONTINUE TC-CONTINUE + Invoke (invokeId=1) + Invoke (invokeId=2) * TC-END + Reject (duplicateInvokeId for invokeId=2)
+	 * </pre>
 	 */
 	@Test
 	public void DuplicateInvokeIdTest() throws Exception {
+		final long beginInvokeTimeout = MINI_WAIT_TIME / 2;
+		final long continueInvokeTimeout = MINI_WAIT_TIME / 2;
 
 		this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
 
@@ -470,7 +459,7 @@ public class TCAPComponentsTest extends SccpHarness {
 								ReturnResultProblemType.UnrecognizedInvokeID);
 						assertTrue(r.isLocalOriginated());
 
-						this.addNewInvoke(1, MINI_WAIT_TIME / 2);
+						this.addNewInvoke(1, continueInvokeTimeout);
 						this.sendContinue();
 						break;
 					case 2:
@@ -482,7 +471,7 @@ public class TCAPComponentsTest extends SccpHarness {
 						assertEquals(r.getProblem().getInvokeProblemType(), InvokeProblemType.DuplicateInvokeID);
 						assertFalse(r.isLocalOriginated());
 
-						this.addNewInvoke(2, MINI_WAIT_TIME / 2);
+						this.addNewInvoke(2, continueInvokeTimeout);
 						this.sendContinue();
 						break;
 
@@ -504,8 +493,8 @@ public class TCAPComponentsTest extends SccpHarness {
 								ReturnErrorProblemType.UnrecognizedInvokeID);
 						assertTrue(r.isLocalOriginated());
 
-						this.addNewInvoke(1, MINI_WAIT_TIME / 2);
-						this.addNewInvoke(2, MINI_WAIT_TIME - 100);
+						this.addNewInvoke(1, continueInvokeTimeout);
+						this.addNewInvoke(2, continueInvokeTimeout);
 						this.sendContinue();
 						break;
 
@@ -541,13 +530,12 @@ public class TCAPComponentsTest extends SccpHarness {
 		};
 
 		this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
-
 			@Override
 			public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
 				super.onTCBegin(ind, callback);
 
 				// waiting for Invoke timeout at a client side
-				EventTestHarness.waitFor(MINI_WAIT_TIME);
+				EventTestHarness.waitFor(beginInvokeTimeout * 2);
 
 				try {
 					this.addNewReturnResult(1);
@@ -564,7 +552,7 @@ public class TCAPComponentsTest extends SccpHarness {
 				super.onTCContinue(ind, callback);
 
 				// waiting for Invoke timeout at a client side
-				EventTestHarness.waitFor(MINI_WAIT_TIME + 100);
+				EventTestHarness.waitFor(continueInvokeTimeout * 2);
 
 				step++;
 
@@ -736,7 +724,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		serverExpectedEvents.add(te);
 
 		client.startClientDialog();
-		client.addNewInvoke(1, MINI_WAIT_TIME / 2);
+		client.addNewInvoke(1, beginInvokeTimeout);
 		client.sendBegin();
 
 		EventTestHarness.waitFor(WAIT_TIME * 2);
@@ -753,6 +741,7 @@ public class TCAPComponentsTest extends SccpHarness {
 				final SccpAddress thisAddress, final SccpAddress remoteAddress) {
 			super(stack, parameterFactory, thisAddress, remoteAddress);
 
+			super.listenerName = "Client";
 		}
 
 		public DialogImpl getCurDialog() {
@@ -793,7 +782,7 @@ public class TCAPComponentsTest extends SccpHarness {
 				}
 		}
 
-		public void addNewInvoke(Integer invokeId, Long timout) throws Exception {
+		public void addNewInvoke(Integer invokeId, Long timeout) throws Exception {
 			OperationCode oc = TcapFactory.createLocalOperationCode(10);
 
 			// Parameter p1 = TcapFactory.createParameter();
@@ -818,12 +807,11 @@ public class TCAPComponentsTest extends SccpHarness {
 			TestEvent te = TestEvent.createSentEvent(EventType.Invoke, null, sequence++);
 			this.observerdEvents.add(te);
 
-			this.dialog.sendData(invokeId, null, null, timout, oc, null, true, false);
+			this.dialog.sendData(invokeId, null, null, timeout, oc, null, true, false);
 		}
 	}
 
 	public class ServerComponent extends EventTestHarness {
-
 		protected int step = 0;
 
 		/**
@@ -834,7 +822,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		public ServerComponent(final TCAPStack stack, final ParameterFactory parameterFactory,
 				final SccpAddress thisAddress, final SccpAddress remoteAddress) {
 			super(stack, parameterFactory, thisAddress, remoteAddress);
-			// TODO Auto-generated constructor stub
+
+			super.listenerName = "Server";
 		}
 
 		public void addNewReturnResult(Integer invokeId) throws Exception {

@@ -62,15 +62,6 @@ public class DialogIdleEndTest extends SccpHarness {
 	private Client client;
 	private Server server;
 
-	public DialogIdleEndTest() {
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#setUp()
-	 */
 	@Override
 	@Before
 	public void setUp() throws Exception {

@@ -51,7 +51,7 @@ import io.netty.buffer.ByteBuf;
 public abstract class SccpHarness {
 	protected static final Logger logger = LogManager.getLogger(SccpHarness.class);
 	protected static final int PROCESSING_TIMEOUT = 500;
-	
+
 	protected boolean onlyOneStack;
 
 	protected String sccpStack1Name = null;
@@ -77,7 +77,7 @@ public abstract class SccpHarness {
 
 	protected Semaphore sendSemaphore = new Semaphore(0);
 	protected AtomicInteger sentMessages = new AtomicInteger(0);
-	
+
 	protected final TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
 		@Override
 		public void onSuccess() {
@@ -88,7 +88,7 @@ public abstract class SccpHarness {
 			logger.error("An exception handled via dummy callback: " + exception);
 		}
 	};
-	
+
 	/**
 	 *
 	 */
@@ -101,37 +101,37 @@ public abstract class SccpHarness {
 		mtp3UserPart1.setOtherPart(mtp3UserPart2);
 		mtp3UserPart2.setOtherPart(mtp3UserPart1);
 	}
-	
-	protected TaskCallback<Exception> getTaskCallback(int messages) {	
+
+	protected TaskCallback<Exception> getTaskCallback(int messages) {
 		return new TaskCallback<Exception>() {
 			@Override
-			public void onSuccess() {						
+			public void onSuccess() {
 				SccpHarness.this.sentMessages.incrementAndGet();
 				if (SccpHarness.this.sentMessages.get() == messages)
 					SccpHarness.this.sendSemaphore.release();
 			}
 
 			@Override
-			public void onError(Exception exception) {		
+			public void onError(Exception exception) {
 				SccpHarness.this.sentMessages.incrementAndGet();
 				if (SccpHarness.this.sentMessages.get() == messages)
 					SccpHarness.this.sendSemaphore.release();
 			}
 		};
 	}
-	
+
 	protected void createStack1() {
-        sccpStack1 = createStack(sccpStack1Name);
-    }
+		sccpStack1 = createStack(sccpStack1Name);
+	}
 
 	protected void createStack2() {
 		sccpStack2 = createStack(sccpStack2Name);
 	}
 
 	protected SccpStackImpl createStack(final String name) {
-        SccpStackImpl stack = new SccpStackImpl(name, true, this.workerPool);
-        return stack;
-    }
+		SccpStackImpl stack = new SccpStackImpl(name, true, this.workerPool);
+		return stack;
+	}
 
 	protected void setUpStack1() throws Exception {
 		createStack1();
@@ -214,7 +214,7 @@ public abstract class SccpHarness {
 	public void setUp() throws Exception {
 		sendSemaphore = new Semaphore(0);
 		sentMessages = new AtomicInteger(0);
-		
+
 		workerPool.start(64);
 
 		this.setUpStack1();
@@ -253,12 +253,13 @@ public abstract class SccpHarness {
 		else
 			return sccpProvider2.getConnections().get(sccpStack2.referenceNumberCounter.get());
 	}
-	
-    public void sendTransferMessageToLocalUser(Mtp3UserPartImpl mtp3UserPart, int opc, int dpc, ByteBuf data) throws InterruptedException {
-    	this.sentMessages.set(0);
-    	mtp3UserPart.sendTransferMessageToLocalUser(opc, dpc, data, this.getTaskCallback(1));
-        this.sendSemaphore.acquire();
-        
-        Thread.sleep(PROCESSING_TIMEOUT);
-    }
+
+	public void sendTransferMessageToLocalUser(Mtp3UserPartImpl mtp3UserPart, int opc, int dpc, ByteBuf data)
+			throws InterruptedException {
+		this.sentMessages.set(0);
+		mtp3UserPart.sendTransferMessageToLocalUser(opc, dpc, data, this.getTaskCallback(1));
+		this.sendSemaphore.acquire();
+
+		Thread.sleep(PROCESSING_TIMEOUT);
+	}
 }

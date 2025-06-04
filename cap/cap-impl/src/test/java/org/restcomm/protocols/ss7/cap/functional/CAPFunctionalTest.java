@@ -382,22 +382,22 @@ public class CAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * <code>
-	Circuit switch call simple messageflow 1 ACN=CAP-v2-gsmSSF-to-gsmSCF
-	
-	TC-BEGIN + InitialDPRequest
-	  TC-CONTINUE + RequestReportBCSMEventRequest
-	  TC-CONTINUE + FurnishChargingInformationRequest
-	  TC-CONTINUE + ApplyChargingRequest + ConnectRequest
-	  TC-CONTINUE + ContinueRequest
-	TC-CONTINUE + SendChargingInformationRequest
-	TC-CONTINUE + EventReportBCSMRequest (OAnswer)
-	TC-CONTINUE + ApplyChargingReportRequest <call... waiting till DialogTimeout>
-	TC-CONTINUE + ActivityTestRequest
-	  TC-CONTINUE + ActivityTestResponse
-	TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
-	  TC-END (empty)
-	</code>
+	 * Circuit switch call simple messageflow 1 ACN=CAP-v2-gsmSSF-to-gsmSCF
+	 * 
+	 * <pre>
+	 * TC-BEGIN + InitialDPRequest
+	 * TC-CONTINUE + RequestReportBCSMEventRequest
+	 * TC-CONTINUE + FurnishChargingInformationRequest
+	 * TC-CONTINUE + ApplyChargingRequest + ConnectRequest
+	 * TC-CONTINUE + ContinueRequest
+	 * TC-CONTINUE + SendChargingInformationRequest
+	 * TC-CONTINUE + EventReportBCSMRequest (OAnswer)
+	 * TC-CONTINUE + ApplyChargingReportRequest <call... waiting till DialogTimeout>
+	 * TC-CONTINUE + ActivityTestRequest
+	 * TC-CONTINUE + ActivityTestResponse
+	 * TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
+	 * TC-END (empty)
+	 * </pre>
 	 */
 	@Test
 	public void testCircuitCall1() throws Exception {

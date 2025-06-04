@@ -83,6 +83,7 @@ import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
 
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 
@@ -1166,8 +1167,8 @@ public class SgFSMTest extends SgFSMHarness {
 
 		this.sentMessages.set(0);
 		for (int sls = 0; sls < 256; sls++) {
-			Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls,
-					Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 }));
+			ByteBuf data = Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 });
+			Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, data);
 
 			serverM3UAMgmt.sendMessage(mtp3TransferPrimitive, this.getSendMessageCallback(256));
 		}

@@ -90,8 +90,8 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.TCEndMessage;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCUniMessage;
 import org.restcomm.protocols.ss7.tcap.tc.dialog.events.DialogPrimitiveFactoryImpl;
 
+import com.mobius.software.common.dal.timers.RunnableTimer;
 import com.mobius.software.common.dal.timers.TaskCallback;
-import com.mobius.software.common.dal.timers.Timer;
 import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
 
@@ -1949,11 +1949,14 @@ public class DialogImpl implements Dialog {
 		if (!this.structured)
 			return;
 
-		IdleTimer newTimer = new IdleTimer(this.idleTaskTimeout);
+		IdleTimer newTimer = new IdleTimer(System.currentTimeMillis() + this.idleTaskTimeout);
 		if (!this.idleTimer.compareAndSet(null, newTimer))
 			throw new IllegalStateException("Idle timer is not null");
 
-		this.workerPool.getPeriodicQueue().store(newTimer.getRealTimestamp(), newTimer);
+		if (provider.affinityEnabled)
+			this.workerPool.addTimer(newTimer);
+		else
+			this.workerPool.getPeriodicQueue().store(newTimer.getRealTimestamp(), newTimer);
 	}
 
 	protected void stopIdleTimer() {
@@ -1970,14 +1973,12 @@ public class DialogImpl implements Dialog {
 		startIdleTimer();
 	}
 
-	private class IdleTimer implements Timer {
+	private class IdleTimer extends RunnableTimer {
 		private DialogImpl d = DialogImpl.this;
-		private long startTime = System.currentTimeMillis();
-		private long timeDiff;
-		
-		public IdleTimer(Long timeDiff) {
-			this.timeDiff = timeDiff;
-		}	
+
+		public IdleTimer(Long startTime) {
+			super(null, startTime, localTransactionIdObject.toString());
+		}
 
 		@Override
 		public void execute() {
@@ -2000,21 +2001,6 @@ public class DialogImpl implements Dialog {
 				release();
 
 			d.idleTimerInvoked.set(false);
-		}
-
-		@Override
-		public long getStartTime() {
-			return this.startTime;
-		}
-
-		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + this.timeDiff;
-		}
-
-		@Override
-		public void stop() {
-			this.startTime = Long.MAX_VALUE;
 		}
 	}
 

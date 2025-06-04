@@ -69,6 +69,8 @@ public abstract class EventTestHarness implements TCListener {
 	public static final List<Long> _ACN_ = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L });
 	protected List<TestEvent> observerdEvents = new ArrayList<TestEvent>();
 
+	protected String listenerName = this.toString();
+
 	protected Dialog dialog;
 	protected TCAPStack stack;
 	protected SccpAddress thisAddress;
@@ -100,7 +102,6 @@ public abstract class EventTestHarness implements TCListener {
 	 */
 	public EventTestHarness(final TCAPStack stack, final ParameterFactory parameterFactory,
 			final SccpAddress thisAddress, final SccpAddress remoteAddress) {
-		super();
 		this.stack = stack;
 		this.thisAddress = thisAddress;
 		this.remoteAddress = remoteAddress;
@@ -128,7 +129,7 @@ public abstract class EventTestHarness implements TCListener {
 	}
 
 	public void sendBegin() throws TCAPException, TCAPSendException {
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]send BEGIN");
+		System.err.println(listenerName + " T[" + System.currentTimeMillis() + "]send BEGIN");
 		ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
 		// UI is optional!
 		TCBeginRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createBegin(this.dialog);
@@ -138,7 +139,7 @@ public abstract class EventTestHarness implements TCListener {
 	}
 
 	public void sendContinue() throws TCAPSendException, TCAPException {
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]send CONTINUE");
+		System.err.println(listenerName + " T[" + System.currentTimeMillis() + "]send CONTINUE");
 		// send continue
 		TCContinueRequest con = this.tcapProvider.getDialogPrimitiveFactory().createContinue(dialog);
 		if (acn != null) {
@@ -155,7 +156,7 @@ public abstract class EventTestHarness implements TCListener {
 	}
 
 	public void sendEnd(TerminationType terminationType) throws TCAPSendException {
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]send END");
+		System.err.println(listenerName + " T[" + System.currentTimeMillis() + "]send END");
 		// send end
 		TCEndRequest end = this.tcapProvider.getDialogPrimitiveFactory().createEnd(dialog);
 		end.setTermination(terminationType);
@@ -175,7 +176,7 @@ public abstract class EventTestHarness implements TCListener {
 	public void sendAbort(ApplicationContextName acn, UserInformation ui, DialogServiceUserType type)
 			throws TCAPSendException {
 
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]send ABORT");
+		System.err.println(listenerName + " T[" + System.currentTimeMillis() + "]send ABORT");
 		TCUserAbortRequest abort = this.tcapProvider.getDialogPrimitiveFactory().createUAbort(dialog);
 		if (acn != null)
 			abort.setApplicationContextName(acn);
@@ -193,7 +194,7 @@ public abstract class EventTestHarness implements TCListener {
 		// no parameter
 		this.dialog.sendData(null, null, InvokeClass.Class4, null, oc, null, true, false);
 
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]send UNI");
+		System.err.println(listenerName + " T[" + System.currentTimeMillis() + "]send UNI");
 		ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
 		TCUniRequest tcur = this.tcapProvider.getDialogPrimitiveFactory().createUni(this.dialog);
 		tcur.setApplicationContextName(acn);
@@ -203,7 +204,7 @@ public abstract class EventTestHarness implements TCListener {
 
 	@Override
 	public void onTCUni(TCUniIndication ind) {
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]onUni");
+		System.err.println(listenerName + " T[" + System.currentTimeMillis() + "]onUni");
 		TestEvent te = TestEvent.createReceivedEvent(EventType.Uni, ind, sequence++);
 		this.observerdEvents.add(te);
 		this.dialog = ind.getDialog();
@@ -211,7 +212,7 @@ public abstract class EventTestHarness implements TCListener {
 
 	@Override
 	public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]onBegin");
+		System.err.println(listenerName + " T[" + System.currentTimeMillis() + "]onBegin");
 		TestEvent te = TestEvent.createReceivedEvent(EventType.Begin, ind, sequence++);
 		this.observerdEvents.add(te);
 		this.dialog = ind.getDialog();
@@ -225,7 +226,7 @@ public abstract class EventTestHarness implements TCListener {
 
 	@Override
 	public void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback) {
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]onContinue");
+		System.err.println(listenerName + " T[" + System.currentTimeMillis() + "]onContinue");
 		TestEvent te = TestEvent.createReceivedEvent(EventType.Continue, ind, sequence++);
 		this.observerdEvents.add(te);
 		if (ind.getApplicationContextName() != null)
@@ -237,7 +238,7 @@ public abstract class EventTestHarness implements TCListener {
 
 	@Override
 	public void onTCEnd(TCEndIndication ind, TaskCallback<Exception> callback) {
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]onEnd");
+		System.err.println(listenerName + " T[" + System.currentTimeMillis() + "]onEnd");
 		TestEvent te = TestEvent.createReceivedEvent(EventType.End, ind, sequence++);
 		this.observerdEvents.add(te);
 
@@ -245,14 +246,14 @@ public abstract class EventTestHarness implements TCListener {
 
 	@Override
 	public void onTCUserAbort(TCUserAbortIndication ind) {
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]onUAbort");
+		System.err.println(listenerName + " T[" + System.currentTimeMillis() + "]onUAbort");
 		TestEvent te = TestEvent.createReceivedEvent(EventType.UAbort, ind, sequence++);
 		this.observerdEvents.add(te);
 	}
 
 	@Override
 	public void onTCPAbort(TCPAbortIndication ind) {
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]onPAbort");
+		System.err.println(listenerName + " T[" + System.currentTimeMillis() + "]onPAbort");
 		TestEvent te = TestEvent.createReceivedEvent(EventType.PAbort, ind, sequence++);
 		this.observerdEvents.add(te);
 
@@ -261,14 +262,14 @@ public abstract class EventTestHarness implements TCListener {
 
 	@Override
 	public void onDialogReleased(Dialog dialog) {
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]onDialogReleased");
+		System.err.println(listenerName + " T[" + System.currentTimeMillis() + "]onDialogReleased");
 		TestEvent te = TestEvent.createReceivedEvent(EventType.DialogRelease, dialog, sequence++);
 		this.observerdEvents.add(te);
 	}
 
 	@Override
 	public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]onInvokeTimeout");
+		System.err.println(listenerName + " T[" + System.currentTimeMillis() + "]onInvokeTimeout");
 		TestEvent te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, sequence++);
 		this.observerdEvents.add(te);
 
@@ -276,7 +277,7 @@ public abstract class EventTestHarness implements TCListener {
 
 	@Override
 	public void onDialogTimeout(Dialog dialog) {
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]onDialogTimeout");
+		System.err.println(listenerName + " T[" + System.currentTimeMillis() + "]onDialogTimeout");
 		TestEvent te = TestEvent.createReceivedEvent(EventType.DialogTimeout, dialog, sequence++);
 		this.observerdEvents.add(te);
 
@@ -284,7 +285,7 @@ public abstract class EventTestHarness implements TCListener {
 
 	@Override
 	public void onTCNotice(TCNoticeIndication ind) {
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]onNotice");
+		System.err.println(listenerName + " T[" + System.currentTimeMillis() + "]onNotice");
 		TestEvent te = TestEvent.createReceivedEvent(EventType.Notice, ind, sequence++);
 		this.observerdEvents.add(te);
 	}
@@ -298,7 +299,6 @@ public abstract class EventTestHarness implements TCListener {
 	}
 
 	public static void doCompareEvents(List<TestEvent> observerdEvents, List<TestEvent> expectedEvents) {
-
 		if (expectedEvents.size() != observerdEvents.size())
 			fail("Size of received events: " + observerdEvents.size() + ", does not equal expected events: "
 					+ expectedEvents.size() + "\n" + doStringCompare(expectedEvents, observerdEvents));

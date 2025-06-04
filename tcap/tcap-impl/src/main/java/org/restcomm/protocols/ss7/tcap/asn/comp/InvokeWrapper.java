@@ -26,7 +26,7 @@ import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
 import org.restcomm.protocols.ss7.tcap.api.tc.component.OperationState;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
 
-import com.mobius.software.common.dal.timers.Timer;
+import com.mobius.software.common.dal.timers.RunnableTimer;
 
 public class InvokeWrapper {
 	private OperationState state = OperationState.Idle;
@@ -56,13 +56,9 @@ public class InvokeWrapper {
 			this.invokeClass = invokeClass;
 	}
 
-	private class OperationTimer implements Timer {
-		private long startTime;
-		private long timeDiff;
-
-		public OperationTimer(Long timeDiff) {
-			this.startTime = System.currentTimeMillis();
-			this.timeDiff = timeDiff;
+	private class OperationTimer extends RunnableTimer {
+		public OperationTimer(Long startTime, String id) {
+			super(null, startTime, id);
 		}
 
 		@Override
@@ -77,21 +73,6 @@ public class InvokeWrapper {
 			// TC-L-CANCEL
 			if (dialog != null)
 				dialog.operationTimedOut(invokeClass, invokeId);
-		}
-
-		@Override
-		public long getStartTime() {
-			return this.startTime;
-		}
-
-		@Override
-		public Long getRealTimestamp() {
-			return this.startTime + this.timeDiff;
-		}
-
-		@Override
-		public void stop() {
-			this.startTime = Long.MAX_VALUE;
 		}
 	}
 
@@ -142,7 +123,8 @@ public class InvokeWrapper {
 		this.stopTimer();
 
 		if (this.invokeTimeout > 0) {
-			OperationTimer timer = new OperationTimer(this.invokeTimeout);
+			String timerId = this.dialog.getLocalDialogId().toString();
+			OperationTimer timer = new OperationTimer(System.currentTimeMillis() + this.invokeTimeout, timerId);
 
 			this.provider.storeOperationTimer(timer);
 			this.operationTimer.set(timer);

@@ -71,10 +71,9 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class TCAPComponentsTest extends SccpHarness {
-
-	public static final long MINI_WAIT_TIME = 500;
-	public static final long WAIT_TIME = 2000;
-	private static final int _DIALOG_TIMEOUT = 5000000;
+	public static final long MINI_WAIT_TIME = 1000;
+	public static final long WAIT_TIME = 4 * MINI_WAIT_TIME;
+	private static final int _DIALOG_TIMEOUT = Integer.MAX_VALUE;
 
 	private TCAPStackImpl tcapStack1;
 	private TCAPStackImpl tcapStack2;
@@ -83,22 +82,12 @@ public class TCAPComponentsTest extends SccpHarness {
 	private ClientComponent client;
 	private ServerComponent server;
 
-	public TCAPComponentsTest() {
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#setUp()
-	 */
 	@Override
 	@Before
 	public void setUp() throws Exception {
 		this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
 		this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
 
-		System.out.println("setUp");
 		super.setUp();
 
 		peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1,
@@ -112,32 +101,27 @@ public class TCAPComponentsTest extends SccpHarness {
 		this.tcapStack1.start();
 		this.tcapStack2.start();
 
+		// default invoke timeouts
 		this.tcapStack1.setInvokeTimeout(MINI_WAIT_TIME);
 		this.tcapStack2.setInvokeTimeout(MINI_WAIT_TIME);
+		// default dialog timeouts
 		this.tcapStack1.setDialogIdleTimeout(_DIALOG_TIMEOUT);
 		this.tcapStack2.setDialogIdleTimeout(_DIALOG_TIMEOUT);
-		// create test classes
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#tearDown()
-	 */
 	@Override
 	@After
 	public void tearDown() {
 		this.tcapStack1.stop();
 		this.tcapStack2.stop();
 		super.tearDown();
-
 	}
 
 	/**
 	 * Testing diplicateInvokeId case All Invokes are with a little
 	 * invokeTimeout(removed before an answer from a Server) !!!
 	 *
+	 * <pre>
 	 * TC-BEGIN + InvokeNotLast (invokeId==1, little invokeTimeout)
 	 * TC-CONTINUE + ReturnResult (correlationId==1 -> Reject because of invokeTimeout)
 	 * TC-CONTINUE + Reject(unrecognizedInvokeId) + InvokeNotLast (invokeId==1)
@@ -148,9 +132,12 @@ public class TCAPComponentsTest extends SccpHarness {
 	 * TC-CONTINUE
 	 * TC-CONTINUE + InvokeLast (invokeId==1) + InvokeLast (invokeId==2)
 	 * TC-END + Reject (duplicateInvokeId for invokeId==2)
+	 * </pre>
 	 */
 	@Test
 	public void DuplicateInvokeIdTest() throws Exception {
+		final long queryInvokeTimeout = MINI_WAIT_TIME / 2;
+		final long conversationInvokeTimeout = MINI_WAIT_TIME / 2;
 
 		this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
 
@@ -171,7 +158,7 @@ public class TCAPComponentsTest extends SccpHarness {
 						assertEquals(r.getProblem(), RejectProblem.returnResultUnrecognisedCorrelationId);
 						assertTrue(r.isLocalOriginated());
 
-						this.addNewInvoke(1L, MINI_WAIT_TIME, false);
+						this.addNewInvoke(1L, conversationInvokeTimeout, false);
 						this.sendContinue(false);
 						break;
 
@@ -184,7 +171,7 @@ public class TCAPComponentsTest extends SccpHarness {
 						assertEquals(r.getProblem(), RejectProblem.invokeDuplicateInvocation);
 						assertFalse(r.isLocalOriginated());
 
-						this.addNewInvoke(2L, MINI_WAIT_TIME, false);
+						this.addNewInvoke(2L, conversationInvokeTimeout, false);
 						this.sendContinue(false);
 						break;
 
@@ -204,8 +191,8 @@ public class TCAPComponentsTest extends SccpHarness {
 						assertEquals(r.getProblem(), RejectProblem.returnErrorUnrecognisedCorrelationId);
 						assertTrue(r.isLocalOriginated());
 
-						this.addNewInvoke(1L, MINI_WAIT_TIME, false);
-						this.addNewInvoke(2L, MINI_WAIT_TIME, false);
+						this.addNewInvoke(1L, conversationInvokeTimeout, false);
+						this.addNewInvoke(2L, conversationInvokeTimeout, false);
 						this.sendContinue(false);
 						break;
 
@@ -245,9 +232,9 @@ public class TCAPComponentsTest extends SccpHarness {
 			@Override
 			public void onTCQuery(TCQueryIndication ind) {
 				super.onTCQuery(ind);
-				
+
 				// waiting for Invoke timeout at a client side
-				EventTestHarness.waitFor(MINI_WAIT_TIME);
+				EventTestHarness.waitFor(queryInvokeTimeout * 2);
 
 				try {
 
@@ -263,7 +250,7 @@ public class TCAPComponentsTest extends SccpHarness {
 			public void onTCConversation(TCConversationIndication ind) {
 				super.onTCConversation(ind);
 				// waiting for Invoke timeout at a client side
-				EventTestHarness.waitFor(MINI_WAIT_TIME + 100);
+				EventTestHarness.waitFor(conversationInvokeTimeout * 2);
 
 				step++;
 
@@ -439,11 +426,11 @@ public class TCAPComponentsTest extends SccpHarness {
 		serverExpectedEvents.add(te);
 
 		// !!!! ....................
-//        this.saveTrafficInFile();
+		// this.saveTrafficInFile();
 		// !!!! ....................
 
 		client.startClientDialog();
-		client.addNewInvoke(1L, 100L, false);
+		client.addNewInvoke(1L, queryInvokeTimeout, false);
 		client.sendBegin();
 
 		EventTestHarness.waitFor(WAIT_TIME * 2);
