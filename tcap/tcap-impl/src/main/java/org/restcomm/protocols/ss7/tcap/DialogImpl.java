@@ -1949,11 +1949,14 @@ public class DialogImpl implements Dialog {
 		if (!this.structured)
 			return;
 
-		IdleTimer newTimer = new IdleTimer(this.idleTaskTimeout, String.valueOf(localTransactionIdObject));
+		IdleTimer newTimer = new IdleTimer(System.currentTimeMillis() + this.idleTaskTimeout);
 		if (!this.idleTimer.compareAndSet(null, newTimer))
 			throw new IllegalStateException("Idle timer is not null");
 
-		this.workerPool.addTimer(newTimer);
+		if (provider.affinityEnabled)
+			this.workerPool.addTimer(newTimer);
+		else
+			this.workerPool.getPeriodicQueue().store(newTimer.getRealTimestamp(), newTimer);
 	}
 
 	protected void stopIdleTimer() {
@@ -1973,8 +1976,8 @@ public class DialogImpl implements Dialog {
 	private class IdleTimer extends RunnableTimer {
 		private DialogImpl d = DialogImpl.this;
 
-		public IdleTimer(Long timeDiff, String id) {
-			super(null, System.currentTimeMillis() + timeDiff, id);
+		public IdleTimer(Long startTime) {
+			super(null, startTime, localTransactionIdObject.toString());
 		}
 
 		@Override

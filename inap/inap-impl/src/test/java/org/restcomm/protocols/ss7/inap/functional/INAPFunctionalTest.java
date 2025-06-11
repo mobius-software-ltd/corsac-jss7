@@ -117,7 +117,6 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
 
-import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.common.dal.timers.WorkerPool;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingException;
 
@@ -130,7 +129,6 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class INAPFunctionalTest extends SccpHarness {
-
 	private static final int _WAIT_TIMEOUT = 500;
 	private static final int _TCAP_DIALOG_RELEASE_TIMEOUT = 0;
 
@@ -139,17 +137,6 @@ public class INAPFunctionalTest extends SccpHarness {
 	private INAPStackImpl stack2;
 	private SccpAddress peer1Address;
 	private SccpAddress peer2Address;
-
-	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
-		@Override
-		public void onSuccess() {
-		}
-
-		@Override
-		public void onError(Exception exception) {
-			logger.error("An exception handled via dummy callback: " + exception);
-		}
-	};
 
 	@Override
 	protected int getSSN() {
@@ -307,22 +294,23 @@ public class INAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * <code>
-	Circuit switch call simple messageflow 1 ACN=Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
-	
-	TC-BEGIN + InitialDPRequest
-	  TC-CONTINUE + RequestReportBCSMEventRequest
-	  TC-CONTINUE + FurnishChargingInformationRequest
-	  TC-CONTINUE + ApplyChargingRequest + ConnectRequest
-	  TC-CONTINUE + ContinueRequest
-	TC-CONTINUE + SendChargingInformationRequest
-	TC-CONTINUE + EventReportBCSMRequest (OAnswer)
-	TC-CONTINUE + ApplyChargingReportRequest <call... waiting till DialogTimeout>
-	TC-CONTINUE + ActivityTestRequest
-	  TC-CONTINUE + ActivityTestRequest
-	TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
-	  TC-END (empty)
-	</code>
+	 * Circuit switch call simple messageflow 1
+	 * ACN=Ericcson_cs1plus_SSP_TO_SCP_AC_REV_B
+	 * 
+	 * <pre>
+	 * TC-BEGIN + InitialDPRequest
+	 * TC-CONTINUE + RequestReportBCSMEventRequest
+	 * TC-CONTINUE + FurnishChargingInformationRequest
+	 * TC-CONTINUE + ApplyChargingRequest + ConnectRequest
+	 * TC-CONTINUE + ContinueRequest
+	 * TC-CONTINUE + SendChargingInformationRequest
+	 * TC-CONTINUE + EventReportBCSMRequest (OAnswer)
+	 * TC-CONTINUE + ApplyChargingReportRequest <call... waiting till DialogTimeout>
+	 * TC-CONTINUE + ActivityTestRequest
+	 * TC-CONTINUE + ActivityTestRequest
+	 * TC-CONTINUE + EventReportBCSMRequest (ODisconnect)
+	 * TC-END (empty)
+	 * </pre>
 	 */
 	@Test
 	public void testCircuitCall1() throws Exception {
@@ -2481,16 +2469,20 @@ public class INAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * Testing for some special error cases: - linkedId to an operation that does
-	 * not support linked operations - linkedId to a missed operation
+	 * Testing for some special error cases:<br>
+	 * - linkedId to an operation that does not support linked operations<br>
+	 * - linkedId to a missed operation
 	 *
-	 * TC-BEGIN + initialDPRequest + playAnnouncement TC-CONTINUE +
-	 * SpecializedResourceReportRequest to initialDPRequest (->
+	 * <pre>
+	 * TC-BEGIN + initialDPRequest + playAnnouncement
+	 * TC-CONTINUE + SpecializedResourceReportRequest to initialDPRequest (->
 	 * LinkedResponseUnexpected) + SpecializedResourceReportRequest to a missed
 	 * operation (linkedId==bad==50 -> UnrechognizedLinkedID) + ContinueRequest to a
 	 * playAnnouncement operation (-> UnexpectedLinkedOperation) +
 	 * SpecializedResourceReportRequest to a playAnnouncement operation (-> normal
-	 * case) TC-END
+	 * case)
+	 * TC-END
+	 * </pre>
 	 */
 	@Test
 	public void testBadInvokeLinkedId() throws Exception {
@@ -3448,7 +3440,7 @@ public class INAPFunctionalTest extends SccpHarness {
 			// if (new Date().getTime() - startTime.getTime() > _WAIT_TIMEOUT)
 			// break;
 
-			Thread.sleep(_WAIT_TIMEOUT + 100);
+			Thread.sleep(_WAIT_TIMEOUT);
 			// Thread.currentThread().sleep(1000000);
 			// }
 		} catch (InterruptedException e) {

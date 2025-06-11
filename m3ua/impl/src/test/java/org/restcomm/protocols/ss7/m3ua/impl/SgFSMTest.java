@@ -29,7 +29,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -84,6 +83,7 @@ import org.restcomm.protocols.ss7.mtp.Mtp3UserPartListener;
 
 import com.mobius.software.telco.protocols.ss7.common.UUIDGenerator;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 
@@ -1167,8 +1167,8 @@ public class SgFSMTest extends SgFSMHarness {
 
 		this.sentMessages.set(0);
 		for (int sls = 0; sls < 256; sls++) {
-			Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls,
-					Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 }));
+			ByteBuf data = Unpooled.wrappedBuffer(new byte[] { 1, 2, 3, 4 });
+			Mtp3TransferPrimitive mtp3TransferPrimitive = factory.createMtp3TransferPrimitive(3, 1, 0, 1, 2, sls, data);
 
 			serverM3UAMgmt.sendMessage(mtp3TransferPrimitive, this.getSendMessageCallback(256));
 		}
@@ -2130,8 +2130,8 @@ public class SgFSMTest extends SgFSMHarness {
 	}
 
 	class Mtp3UserPartListenerimpl implements Mtp3UserPartListener {
-		private LinkedList<Mtp3Primitive> mtp3Primitives = new LinkedList<Mtp3Primitive>();
-		private LinkedList<Mtp3TransferPrimitive> mtp3TransferPrimitives = new LinkedList<Mtp3TransferPrimitive>();
+		private ConcurrentLinkedQueue<Mtp3Primitive> mtp3Primitives = new ConcurrentLinkedQueue<Mtp3Primitive>();
+		private ConcurrentLinkedQueue<Mtp3TransferPrimitive> mtp3TransferPrimitives = new ConcurrentLinkedQueue<Mtp3TransferPrimitive>();
 
 		Mtp3Primitive rxMtp3PrimitivePoll() {
 			return this.mtp3Primitives.poll();

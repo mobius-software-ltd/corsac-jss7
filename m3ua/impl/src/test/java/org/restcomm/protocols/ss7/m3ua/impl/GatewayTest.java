@@ -31,9 +31,7 @@ import java.util.concurrent.Semaphore;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.restcomm.protocols.api.IpChannelType;
 import org.restcomm.protocols.api.Management;
@@ -65,8 +63,8 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
+@SuppressWarnings("restriction")
 public class GatewayTest {
-
 	private static final Logger logger = LogManager.getLogger(GatewayTest.class);
 
 	private static final String SERVER_NAME = "testserver";
@@ -96,28 +94,20 @@ public class GatewayTest {
 
 	private Mtp3UserPartListenerImpl mtp3UserPartListener = null;
 
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-	}
-
-	@AfterClass
-	public static void tearDownClass() throws Exception {
-	}
-
 	@Before
 	public void setUp() throws Exception {
-		workerPool = new WorkerPool();
-		workerPool.start(4);
+		this.workerPool = new WorkerPool();
+		this.workerPool.start(4);
 
-		mtp3UserPartListener = new Mtp3UserPartListenerImpl();
+		this.mtp3UserPartListener = new Mtp3UserPartListenerImpl();
 
-		client = new Client();
-		server = new Server();
+		this.client = new Client();
+		this.server = new Server();
 
 		this.sctpManagement = new SctpManagementImpl("GatewayTest", 4, 4, 4);
 		this.sctpManagement.start();
-		this.sctpManagement.setConnectDelay(1000 * 5);// setting connection
-														// delay to 5 secs
+		// setting connection delay to 5 secs
+		this.sctpManagement.setConnectDelay(1000 * 5);
 		this.sctpManagement.removeAllResourses();
 
 		UUIDGenerator uuidGenerator = new UUIDGenerator(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
@@ -126,29 +116,26 @@ public class GatewayTest {
 		this.m3uaMgmt.addMtp3UserPartListener(mtp3UserPartListener);
 		this.m3uaMgmt.start();
 		this.m3uaMgmt.removeAllResourses();
-
 	}
 
 	@After
 	public void tearDown() throws Exception {
-
 		this.sctpManagement.stop();
 		this.m3uaMgmt.stop();
-		workerPool.stop();
+		this.workerPool.stop();
 	}
 
 	@Test
 	public void testSingleAspInAs() throws Exception {
 		// 5.1.1. Single ASP in an Application Server ("1+0" sparing),
-
-		System.out.println("Starting server");
+		logger.debug("Starting server");
 		server.start();
 		Thread.sleep(100);
 
-		System.out.println("Starting Client");
+		logger.debug("Starting client");
 		client.start();
 
-		Thread.sleep(10000); // 12000
+		Thread.sleep(10000); // 10000
 
 		// Both AS and ASP should be ACTIVE now
 		AspState.getState(remAsp.getPeerFSM().getState().getName());
@@ -187,7 +174,6 @@ public class GatewayTest {
 
 		// we should receive two MTP3 data
 		assertEquals(mtp3UserPartListener.getReceivedData().size(), 2);
-
 	}
 
 	/**
@@ -204,12 +190,7 @@ public class GatewayTest {
 	}
 
 	private class Client {
-
-		public Client() {
-		}
-
 		public void start() throws Exception {
-
 			IpChannelType ipChannelType = IpChannelType.TCP;
 			if (checkSctpEnabled())
 				ipChannelType = IpChannelType.SCTP;
@@ -249,7 +230,6 @@ public class GatewayTest {
 		}
 
 		public void stopClient() throws Exception {
-
 			// 2.Remove route
 			m3uaMgmt.removeRoute(1408, -1, -1, "client-testas");
 
@@ -290,13 +270,7 @@ public class GatewayTest {
 	}
 
 	private class Server {
-
-		public Server() {
-
-		}
-
 		private void start() throws Exception {
-
 			IpChannelType ipChannelType = IpChannelType.TCP;
 			if (checkSctpEnabled())
 				ipChannelType = IpChannelType.SCTP;
@@ -332,7 +306,6 @@ public class GatewayTest {
 
 			// 7. Start ASP
 			m3uaMgmt.startAsp("server-testasp");
-
 		}
 
 		public void stop() throws Exception {
@@ -370,6 +343,7 @@ public class GatewayTest {
 				@Override
 				public void onError(Exception exception) {
 					logger.error(exception);
+					sendSemaphore.release();
 				}
 			});
 
@@ -378,7 +352,6 @@ public class GatewayTest {
 	}
 
 	private class Mtp3UserPartListenerImpl implements Mtp3UserPartListener {
-
 		private ConcurrentLinkedQueue<Mtp3TransferPrimitive> receivedData = new ConcurrentLinkedQueue<Mtp3TransferPrimitive>();
 
 		public ConcurrentLinkedQueue<Mtp3TransferPrimitive> getReceivedData() {
@@ -387,20 +360,14 @@ public class GatewayTest {
 
 		@Override
 		public void onMtp3PauseMessage(Mtp3PausePrimitive arg0) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onMtp3ResumeMessage(Mtp3ResumePrimitive arg0) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onMtp3StatusMessage(Mtp3StatusPrimitive arg0) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
@@ -410,9 +377,6 @@ public class GatewayTest {
 
 		@Override
 		public void onMtp3EndCongestionMessage(Mtp3EndCongestionPrimitive msg) {
-			// TODO Auto-generated method stub
-
 		}
-
 	}
 }
