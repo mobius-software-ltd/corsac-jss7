@@ -353,9 +353,14 @@ public class ASNParser
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private DecodeResult decode(Object parent, ByteBuf buffer, Boolean skipErrors, Field wildcardField, ConcurrentHashMap<ASNHeader, FieldData> fieldsMap, ConcurrentHashMap<ASNHeader, Class<?>> classMapping, ConcurrentHashMap<String, ParserClassData> cachedElements, Integer index, ConcurrentHashMap<Integer, Object> mappedData, Class<?> defaultClass, Integer level) throws ASNException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, InstantiationException
 	{
-		int oldIndex = buffer.readerIndex();
+		int oldIndex = buffer.readerIndex();	
+		int oldWriterIndex = buffer.writerIndex();
 		buffer.markReaderIndex();
+		buffer.markWriterIndex();
 		ASNHeaderWithLength header = readHeader(buffer);
+		if(header.getIndefiniteLength()!=null && header.getIndefiniteLength())
+			buffer.writerIndex(buffer.readerIndex() + header.getLength());
+		
 		if (level.equals(MAX_DEPTH))
 		{
 			buffer.readerIndex(0);
@@ -384,7 +389,7 @@ public class ASNParser
 				throw new ASNDecodeException("We have a real problem here , the level of ASN parser got to " + MAX_DEPTH, header.getAsnTag(), header.getAsnClass(), header.getIsConstructed(), parent);
 		}
 
-		if (buffer.readableBytes() < header.getLength() - 2)
+		if (buffer.readableBytes() < header.getLength())
 			if (skipErrors)
 			{
 				if (buffer.readableBytes() >= header.getLength())
@@ -407,11 +412,9 @@ public class ASNParser
 			if (effectiveClass == null)
 				if (wildcardField != null)
 				{
-					header.setLength(header.getLength() + buffer.readerIndex() - oldIndex);
-					if(header.getIndefiniteLength())
-						header.setLength(header.getLength()-2);
-					
+					header.setLength(header.getLength() + (buffer.readerIndex() - oldIndex) + (buffer.writerIndex() - oldWriterIndex));
 					buffer.resetReaderIndex();
+					buffer.resetWriterIndex();
 					if (wildcardField.getType().isAssignableFrom(List.class) && !wildcardField.getType().equals(Object.class))
 					{
 						Type[] innerTypes = ((ParameterizedType) wildcardField.getGenericType()).getActualTypeArguments();
@@ -529,7 +532,8 @@ public class ASNParser
 				innerIndex = index;
 
 			int originalIndex = buffer.readerIndex();
-			while ((buffer.readerIndex() - originalIndex) < remainingBytes)
+			int originalWriterIndex = buffer.writerIndex();
+			while ((buffer.readerIndex() - originalIndex) < (remainingBytes - originalWriterIndex + buffer.writerIndex()))
 			{
 				int readableBytes = buffer.readableBytes();
 				DecodeResult innerValue = decode(currObject, buffer, skipErrors, cachedData.getWildcardField(), cachedData.getFieldsMap(), cachedData.getInnerMap(), cachedElements, innerIndex, mappedData, null, level + 1);
@@ -605,12 +609,12 @@ public class ASNParser
 			}
 		}
 
-		if (header.getIndefiniteLength())
+		/*if (header.getIndefiniteLength())
 		{
 			// lets read end of content
 			buffer.readByte();
 			buffer.readByte();
-		}
+		}*/
 
 		if (handler != null)
 		{
@@ -669,26 +673,23 @@ public class ASNParser
 				indefiniteLength = true;
 				buffer.markReaderIndex();
 				Boolean previousWasZero = false;
-				Boolean gotEOF = false;
-				int tempLength = 0;
-				while (!gotEOF && buffer.readableBytes() > 0)
+				int tempLength = 0;	
+				//lets read till the end indefinite length....
+				while (buffer.readableBytes() > 0)
 				{
 					tempLength++;
 					if (buffer.readByte() != 0x00)
 						previousWasZero = false;
 					else if (previousWasZero)
-					{
 						length = tempLength - 2;
-						gotEOF = true;
-					}
 					else
 						previousWasZero = true;
 				}
 
-				if (!gotEOF)
+				if (length==0)
 				{
 					// throw new ASNException("Invalid length encoding found");
-					length = 0;
+					// length = 0;
 					indefiniteLength = false;
 				}
 
