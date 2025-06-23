@@ -412,9 +412,9 @@ public class ASNParser
 			if (effectiveClass == null)
 				if (wildcardField != null)
 				{
-					header.setLength(header.getLength() + (buffer.readerIndex() - oldIndex) + (buffer.writerIndex() - oldWriterIndex));
-					buffer.resetReaderIndex();
-					buffer.resetWriterIndex();
+					header.setLength(header.getLength() + (buffer.readerIndex() - oldIndex) + (oldWriterIndex - buffer.writerIndex()));					
+					buffer.readerIndex(oldIndex);
+					buffer.writerIndex(oldWriterIndex);
 					if (wildcardField.getType().isAssignableFrom(List.class) && !wildcardField.getType().equals(Object.class))
 					{
 						Type[] innerTypes = ((ParameterizedType) wildcardField.getGenericType()).getActualTypeArguments();
