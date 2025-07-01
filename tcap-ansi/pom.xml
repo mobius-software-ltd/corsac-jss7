@@ -22,13 +22,4 @@
 		<module>tcap-ansi-impl</module>
 	</modules>
 
-	<profiles>
-		<profile>
-			<id>release</id>
-			<modules>
-				<module>release</module>
-			</modules>
-		</profile>
-	</profiles>
-
 </project>
