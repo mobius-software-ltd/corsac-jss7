@@ -21,13 +21,5 @@
 		<module>cap-api</module>
 		<module>cap-impl</module>
 	</modules>
-
-	<profiles>
-		<profile>
-			<id>release</id>
-			<modules>
-				<module>release</module>
-			</modules>
-		</profile>
-	</profiles>
+	
 </project>

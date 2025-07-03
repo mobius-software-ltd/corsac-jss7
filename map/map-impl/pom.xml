@@ -100,6 +100,33 @@
             <type>jar</type>
             <scope>test</scope>
         </dependency>	
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mobius-software.protocols.ss7.sccp</groupId>
+			<artifactId>sccp-impl</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mobius-software.protocols.ss7.sccp</groupId>
+			<artifactId>sccp-impl</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mobius-software.protocols.ss7.commonapp</groupId>
+			<artifactId>commonapp-impl</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mobius-software.protocols.ss7.mtp</groupId>
+			<artifactId>mtp-api</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -116,41 +143,6 @@
 	</build>
 
 	<profiles>
-		<profile>
-			<id>test</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.mobius-software.protocols.ss7.sccp</groupId>
-					<artifactId>sccp-impl</artifactId>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.mobius-software.protocols.ss7.sccp</groupId>
-					<artifactId>sccp-impl</artifactId>
-					<type>test-jar</type>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.mobius-software.protocols.ss7.commonapp</groupId>
-					<artifactId>commonapp-impl</artifactId>
-					<type>test-jar</type>
-					<scope>test</scope>
-				</dependency>
-				<dependency>
-					<groupId>com.mobius-software.protocols.ss7.mtp</groupId>
-					<artifactId>mtp-api</artifactId>
-					<scope>test</scope>
-				</dependency>
-			</dependencies>
-		</profile>
 		<profile>
 			<activation>
 				<property>
