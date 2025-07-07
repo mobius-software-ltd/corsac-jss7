@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.mobius-software.protocols.ss7.sccp</groupId>
     <artifactId>sccp-parent</artifactId>
-    <version>10.0.51-SNAPSHOT</version>
+    <version>10.0.50-java11</version>
   </parent>
   
   <artifactId>sccp-testsuite</artifactId>
