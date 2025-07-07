@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>com.mobius-software.protocols.ss7.commonapp</groupId>
+    <artifactId>commonapp-parent</artifactId>
+    <version>10.0.50-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>commonapp-testsuite</artifactId>
+  
+  <name>Corsac jSS7 :: Common APP :: Testsuite :: ${project.artifactId}</name>
+  
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>compile</scope> 
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>commonapp-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>commonapp-impl</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+</project>

@@ -74,8 +74,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.mobius-software.protocols.ss7.sccp</groupId>
-			<artifactId>sccp-impl</artifactId>
-			<type>test-jar</type>
+			<artifactId>sccp-testsuite</artifactId>
+			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
