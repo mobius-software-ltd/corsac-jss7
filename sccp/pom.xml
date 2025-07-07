@@ -20,5 +20,6 @@
 	<modules>
 		<module>sccp-api</module>
 		<module>sccp-impl</module>
+		<module>sccp-testsuite</module>
 	</modules>
 </project>
