@@ -114,9 +114,8 @@
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
+				<artifactId>sccp-testsuite</artifactId>
 				<groupId>com.mobius-software.protocols.ss7.sccp</groupId>
-				<artifactId>sccp-impl</artifactId>
-				<type>test-jar</type>
 				<version>${project.version}</version>
 				<scope>test</scope>
 			</dependency>
@@ -146,9 +145,8 @@
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
+				<artifactId>commonapp-testsuite</artifactId>
 				<groupId>com.mobius-software.protocols.ss7.commonapp</groupId>
-				<artifactId>commonapp-impl</artifactId>
-				<type>test-jar</type>
 				<version>${project.version}</version>
 				<scope>test</scope>
 			</dependency>
