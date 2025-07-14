@@ -1,4 +1,4 @@
-package org.restcomm.protocols.ss7.map.functional;
+package org.restcomm.protocols.ss7.map.functional.listeners;
 
 /**
  *

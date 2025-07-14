@@ -36,6 +36,7 @@ import org.restcomm.protocols.ss7.sccp.SccpConnection;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
 import org.restcomm.protocols.ss7.sccp.SccpResource;
+import org.restcomm.protocols.ss7.sccp.impl.SccpStackImpl;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
@@ -89,19 +90,6 @@ public abstract class SccpHarness {
 		}
 	};
 
-	/**
-	 *
-	 */
-	public SccpHarness() {
-		workerPool = new WorkerPool();
-
-		mtp3UserPart1 = new Mtp3UserPartImpl(this, workerPool);
-		mtp3UserPart2 = new Mtp3UserPartImpl(this, workerPool);
-
-		mtp3UserPart1.setOtherPart(mtp3UserPart2);
-		mtp3UserPart2.setOtherPart(mtp3UserPart1);
-	}
-
 	protected TaskCallback<Exception> getTaskCallback(int messages) {
 		return new TaskCallback<Exception>() {
 			@Override
@@ -131,6 +119,26 @@ public abstract class SccpHarness {
 	protected SccpStackImpl createStack(final String name) {
 		SccpStackImpl stack = new SccpStackImpl(name, true, this.workerPool);
 		return stack;
+	}
+
+	public void setUp() throws Exception {
+		if (workerPool == null) {
+			workerPool = new WorkerPool();
+			workerPool.start(16);
+		}
+
+		mtp3UserPart1 = new Mtp3UserPartImpl(this, workerPool);
+		mtp3UserPart2 = new Mtp3UserPartImpl(this, workerPool);
+
+		mtp3UserPart1.setOtherPart(mtp3UserPart2);
+		mtp3UserPart2.setOtherPart(mtp3UserPart1);
+
+		sendSemaphore = new Semaphore(0);
+		sentMessages = new AtomicInteger(0);
+
+		this.setUpStack1();
+		if (!onlyOneStack)
+			this.setUpStack2();
 	}
 
 	protected void setUpStack1() throws Exception {
@@ -211,19 +219,22 @@ public abstract class SccpHarness {
 		return ssn2;
 	}
 
-	public void setUp() throws Exception {
-		sendSemaphore = new Semaphore(0);
-		sentMessages = new AtomicInteger(0);
-
-		workerPool.start(64);
-
-		this.setUpStack1();
-		if (!onlyOneStack)
-			this.setUpStack2();
-	}
-
 	public void tearDown() {
+		this.sendSemaphore = null;
+		this.sentMessages = null;
+
 		this.workerPool.stop();
+		this.workerPool = null;
+
+		try {
+			mtp3UserPart1.stop();
+			mtp3UserPart1 = null;
+
+			mtp3UserPart2.stop();
+			mtp3UserPart2 = null;
+		} catch (Exception ex) {
+			logger.error(ex);
+		}
 
 		this.tearDownStack1();
 		if (!onlyOneStack)

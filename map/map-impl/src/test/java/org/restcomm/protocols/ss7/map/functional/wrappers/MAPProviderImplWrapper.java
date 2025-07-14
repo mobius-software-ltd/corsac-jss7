@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package org.restcomm.protocols.ss7.map.functional;
+package org.restcomm.protocols.ss7.map.functional.wrappers;
 
 import org.restcomm.protocols.ss7.commonapp.primitives.MAPExtensionContainerTest;
 import org.restcomm.protocols.ss7.map.MAPProviderImpl;
