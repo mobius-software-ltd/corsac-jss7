@@ -27,10 +27,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
 
@@ -41,81 +37,59 @@ import org.restcomm.protocols.ss7.sccp.SccpProtocolVersion;
  *
  */
 public class AddressIndicatorTest {
+	@Test
+	public void testDecode() throws Exception {
+		byte b = 0x42;
+		AddressIndicator ai = new AddressIndicator(b, SccpProtocolVersion.ITU);
+		assertFalse(ai.isPCPresent());
+		assertTrue(ai.isSSNPresent());
+		assertEquals(ai.getGlobalTitleIndicator(), GlobalTitleIndicator.NO_GLOBAL_TITLE_INCLUDED);
+		assertEquals(ai.getRoutingIndicator(), RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN);
+		assertFalse(ai.isReservedForNationalUseBit());
 
-    /**
-	 *
-	 */
-    public AddressIndicatorTest() {
-        // TODO Auto-generated constructor stub
-    }
+		b = (byte) 0xC2;
+		ai = new AddressIndicator(b, SccpProtocolVersion.ITU);
+		assertFalse(ai.isPCPresent());
+		assertTrue(ai.isSSNPresent());
+		assertEquals(ai.getGlobalTitleIndicator(), GlobalTitleIndicator.NO_GLOBAL_TITLE_INCLUDED);
+		assertEquals(ai.getRoutingIndicator(), RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN);
+		assertTrue(ai.isReservedForNationalUseBit());
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
+		b = (byte) 197;
+		ai = new AddressIndicator(b, SccpProtocolVersion.ANSI);
+		assertFalse(ai.isPCPresent());
+		assertTrue(ai.isSSNPresent());
+		assertEquals(ai.getGlobalTitleIndicator(),
+				GlobalTitleIndicator.GLOBAL_TITLE_INCLUDES_TRANSLATION_TYPE_NUMBERING_PLAN_AND_ENCODING_SCHEME);
+		assertEquals(ai.getRoutingIndicator(), RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN);
+		assertTrue(ai.isReservedForNationalUseBit());
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+		b = (byte) 138;
+		ai = new AddressIndicator(b, SccpProtocolVersion.ANSI);
+		assertTrue(ai.isPCPresent());
+		assertFalse(ai.isSSNPresent());
+		assertEquals(ai.getGlobalTitleIndicator(), GlobalTitleIndicator.GLOBAL_TITLE_INCLUDES_TRANSLATION_TYPE_ONLY);
+		assertEquals(ai.getRoutingIndicator(), RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE);
+		assertTrue(ai.isReservedForNationalUseBit());
+	}
 
-    @Before
-    public void setUp() {
-    }
+	@Test
+	public void testEncode() throws Exception {
+		AddressIndicator ai = new AddressIndicator(false, true, RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN,
+				GlobalTitleIndicator.NO_GLOBAL_TITLE_INCLUDED);
+		assertEquals(ai.getValue(SccpProtocolVersion.ITU), 66);
 
-    @After
-    public void tearDown() {
-    }
+		ai = new AddressIndicator(false, true, RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN,
+				GlobalTitleIndicator.GLOBAL_TITLE_INCLUDES_TRANSLATION_TYPE_NUMBERING_PLAN_AND_ENCODING_SCHEME);
+		byte i1 = ai.getValue(SccpProtocolVersion.ANSI);
+		byte i2 = (byte) (197);
+		assertEquals(i1, i2);
 
-    @Test
-    public void testDecode() throws Exception {
-        byte b = 0x42;
-        AddressIndicator ai = new AddressIndicator(b, SccpProtocolVersion.ITU);
-        assertFalse(ai.isPCPresent());
-        assertTrue(ai.isSSNPresent());
-        assertEquals(ai.getGlobalTitleIndicator(), GlobalTitleIndicator.NO_GLOBAL_TITLE_INCLUDED);
-        assertEquals(ai.getRoutingIndicator(), RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN);
-        assertFalse(ai.isReservedForNationalUseBit());
+		ai = new AddressIndicator(true, false, RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE,
+				GlobalTitleIndicator.GLOBAL_TITLE_INCLUDES_TRANSLATION_TYPE_ONLY);
+		i1 = ai.getValue(SccpProtocolVersion.ANSI);
 
-        b = (byte) 0xC2;
-        ai = new AddressIndicator(b, SccpProtocolVersion.ITU);
-        assertFalse(ai.isPCPresent());
-        assertTrue(ai.isSSNPresent());
-        assertEquals(ai.getGlobalTitleIndicator(), GlobalTitleIndicator.NO_GLOBAL_TITLE_INCLUDED);
-        assertEquals(ai.getRoutingIndicator(), RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN);
-        assertTrue(ai.isReservedForNationalUseBit());
-
-        b = (byte) 197;
-        ai = new AddressIndicator(b, SccpProtocolVersion.ANSI);
-        assertFalse(ai.isPCPresent());
-        assertTrue(ai.isSSNPresent());
-        assertEquals(ai.getGlobalTitleIndicator(), GlobalTitleIndicator.GLOBAL_TITLE_INCLUDES_TRANSLATION_TYPE_NUMBERING_PLAN_AND_ENCODING_SCHEME);
-        assertEquals(ai.getRoutingIndicator(), RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN);
-        assertTrue(ai.isReservedForNationalUseBit());
-
-        b = (byte) 138;
-        ai = new AddressIndicator(b, SccpProtocolVersion.ANSI);
-        assertTrue(ai.isPCPresent());
-        assertFalse(ai.isSSNPresent());
-        assertEquals(ai.getGlobalTitleIndicator(), GlobalTitleIndicator.GLOBAL_TITLE_INCLUDES_TRANSLATION_TYPE_ONLY);
-        assertEquals(ai.getRoutingIndicator(), RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE);
-        assertTrue(ai.isReservedForNationalUseBit());
-    }
-
-    @Test
-    public void testEncode() throws Exception {
-        AddressIndicator ai = new AddressIndicator(false, true, RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN,
-                GlobalTitleIndicator.NO_GLOBAL_TITLE_INCLUDED);
-        assertEquals((int) ai.getValue(SccpProtocolVersion.ITU), 66);
-
-        ai = new AddressIndicator(false, true, RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN,
-                GlobalTitleIndicator.GLOBAL_TITLE_INCLUDES_TRANSLATION_TYPE_NUMBERING_PLAN_AND_ENCODING_SCHEME);
-        byte i1 = ai.getValue(SccpProtocolVersion.ANSI);
-        byte i2 = (byte)(197);
-        assertEquals(i1, i2);
-
-        ai = new AddressIndicator(true, false, RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE, GlobalTitleIndicator.GLOBAL_TITLE_INCLUDES_TRANSLATION_TYPE_ONLY);
-        i1 = ai.getValue(SccpProtocolVersion.ANSI);
-
-        i2 = (byte) (138);
-        assertEquals(i1, i2);
-    }
+		i2 = (byte) (138);
+		assertEquals(i1, i2);
+	}
 }

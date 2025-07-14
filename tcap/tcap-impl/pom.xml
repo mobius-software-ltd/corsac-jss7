@@ -59,7 +59,6 @@
 		<dependency>
 			<groupId>com.mobius-software.protocols.ss7.sccp</groupId>
 			<artifactId>sccp-testsuite</artifactId>
-			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

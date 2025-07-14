@@ -1554,10 +1554,12 @@ public class CAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * <code> ScfSsf test (V4) ACN = capscf-ssfGenericAC V4
+	 * ScfSsf test (V4) ACN = capscf-ssfGenericAC V4
 	 * 
-	 * TC-BEGIN + establishTemporaryConnection + callInformationRequest +
-	 * collectInformationRequest TC-END + callInformationReport <code>
+	 * <pre>
+	 * TC-BEGIN + establishTemporaryConnection + callInformationRequest + collectInformationRequest 
+	 * TC-END + callInformationReport
+	 * </pre>
 	 */
 	@Test
 	public void testScfSsf() throws Exception {
@@ -1732,11 +1734,13 @@ public class CAPFunctionalTest extends SccpHarness {
 	/**
 	 * Abnormal test ACN = CAP-v2-assist-gsmSSF-to-gsmSCF
 	 *
-	 * TC-BEGIN + ActivityTestRequest TC-CONTINUE <no ActivityTestResponse>
-	 * resetInvokeTimer() before InvokeTimeout InvokeTimeout TC-CONTINUE +
-	 * CancelRequest + cancelInvocation() -> CancelRequest will not go to Server
-	 * TC-CONTINUE + ResetTimerRequest reject ResetTimerRequest DialogUserAbort:
-	 * AbortReason=missing_reference
+	 * <pre>
+	 * TC-BEGIN + ActivityTestRequest
+	 * TC-CONTINUE <no ActivityTestResponse> resetInvokeTimer() before InvokeTimeout InvokeTimeout 
+	 * TC-CONTINUE + CancelRequest + cancelInvocation() -> CancelRequest will not go to Server
+	 * TC-CONTINUE + ResetTimerRequest reject ResetTimerRequest 
+	 * DialogUserAbort: AbortReason=missing_reference
+	 * </pre>
 	 */
 	@Test
 	public void testAbnormal() throws Exception {
@@ -1970,8 +1974,10 @@ public class CAPFunctionalTest extends SccpHarness {
 	/**
 	 * DialogTimeout test ACN=CAP-v3-gsmSSF-to-gsmSCF
 	 *
-	 * TC-BEGIN + InitialDPRequest TC-CONTINUE empty (no answer - DialogTimeout at
-	 * both sides)
+	 * <pre>
+	 * TC-BEGIN + InitialDPRequest
+	 * TC-CONTINUE empty (no answer - DialogTimeout at both sides)
+	 * </pre>
 	 */
 	@Test
 	public void testDialogTimeout() throws Exception {
@@ -2096,8 +2102,10 @@ public class CAPFunctionalTest extends SccpHarness {
 	/**
 	 * ACNNotSuported test ACN=CAP-v3-gsmSSF-to-gsmSCF
 	 *
+	 * <pre>
 	 * TC-BEGIN + InitialDPRequest (Server service is down -> ACN not supported)
 	 * TC-ABORT + ACNNotSuported
+	 * </pre>
 	 */
 	@Test
 	public void testACNNotSuported() throws Exception {
@@ -2165,8 +2173,10 @@ public class CAPFunctionalTest extends SccpHarness {
 	/**
 	 * Bad data sending at TC-BEGIN test - no ACN
 	 *
-	 *
-	 * TC-BEGIN + no ACN TC-ABORT + BadReceivedData
+	 * <pre>
+	 * TC-BEGIN + no ACN
+	 * TC-ABORT + BadReceivedData
+	 * </pre>
 	 */
 	@Test
 	public void testBadDataSendingNoAcn() throws Exception {
@@ -2229,8 +2239,10 @@ public class CAPFunctionalTest extends SccpHarness {
 	/**
 	 * TC-CONTINUE from Server after dialogRelease at Client
 	 *
-	 *
-	 * TC-BEGIN + InitialDP relaseDialog TC-CONTINUE ProviderAbort
+	 * <pre>
+	 * TC-BEGIN + InitialDP relaseDialog 
+	 * TC-CONTINUE ProviderAbort
+	 * </pre>
 	 */
 	@Test
 	public void testProviderAbort() throws Exception {
@@ -2314,8 +2326,10 @@ public class CAPFunctionalTest extends SccpHarness {
 	/**
 	 * referensedNumber
 	 *
-	 *
-	 * TC-BEGIN + referensedNumber TC-END + referensedNumber
+	 * <pre>
+	 * TC-BEGIN + referensedNumber
+	 * TC-END + referensedNumber
+	 * </pre>
 	 */
 	@Test
 	public void testReferensedNumber() throws Exception {
@@ -2410,8 +2424,10 @@ public class CAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 *
-	 * TC-BEGIN + broken referensedNumber TC-ABORT
+	 * <pre>
+	 * TC-BEGIN + broken referensedNumber
+	 * TC-ABORT
+	 * </pre>
 	 */
 	@Test
 	public void testMessageUserDataLength() throws Exception {
@@ -2454,11 +2470,19 @@ public class CAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * Some not real test for testing: - sendDelayed() / closeDelayed() -
-	 * getTCAPMessageType() - saving origReferense, destReference, extContainer in
-	 * MAPDialog TC-BEGIN + referensedNumber + initialDPRequest + initialDPRequest
+	 * Some not real test for testing:
+	 * <p>
+	 * - sendDelayed() / closeDelayed()
+	 * <p>
+	 * - getTCAPMessageType()
+	 * <p>
+	 * - saving origReferense, destReference, extContainer in MAPDialog
+	 * 
+	 * <pre>
+	 * TC-BEGIN + referensedNumber + initialDPRequest + initialDPRequest
 	 * TC-CONTINUE + sendDelayed(ContinueRequest) + sendDelayed(ContinueRequest)
 	 * TC-END + closeDelayed(CancelRequest) + sendDelayed(CancelRequest)
+	 * </pre>
 	 */
 	@Test
 	public void testDelayedSendClose() throws Exception {

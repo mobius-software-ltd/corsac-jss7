@@ -243,6 +243,13 @@ import org.restcomm.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.restcomm.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.restcomm.protocols.ss7.map.datacoding.CBSDataCodingSchemeImpl;
 import org.restcomm.protocols.ss7.map.dialog.MAPUserAbortChoiseImpl;
+import org.restcomm.protocols.ss7.map.functional.listeners.Client;
+import org.restcomm.protocols.ss7.map.functional.listeners.EventType;
+import org.restcomm.protocols.ss7.map.functional.listeners.Server;
+import org.restcomm.protocols.ss7.map.functional.listeners.TestEvent;
+import org.restcomm.protocols.ss7.map.functional.wrappers.MAPProviderImplWrapper;
+import org.restcomm.protocols.ss7.map.functional.wrappers.MAPServiceSupplementaryImplWrapper;
+import org.restcomm.protocols.ss7.map.functional.wrappers.MAPStackImplWrapper;
 import org.restcomm.protocols.ss7.map.service.callhandling.RoutingInfoImpl;
 import org.restcomm.protocols.ss7.map.service.callhandling.SendRoutingInformationRequestImplV2;
 import org.restcomm.protocols.ss7.map.service.callhandling.SendRoutingInformationRequestImplV3;
@@ -298,32 +305,24 @@ import io.netty.buffer.Unpooled;
 public class MAPFunctionalTest extends SccpHarness {
 
 	private static Logger logger = LogManager.getLogger(MAPFunctionalTest.class);
-	protected static final String USSD_STRING = "*133#";
-	protected static final String USSD_MENU = "Select 1)Wallpaper 2)Ringtone 3)Games";
-	protected static final String USSD_RESPONSE = "1";
-	protected static final String USSD_FINAL_RESPONSE = "Thank you";
+	public static final String USSD_STRING = "*133#";
+	public static final String USSD_MENU = "Select 1)Wallpaper 2)Ringtone 3)Games";
+	public static final String USSD_RESPONSE = "1";
+	public static final String USSD_FINAL_RESPONSE = "Thank you";
 
-	private static final int _TCAP_DIALOG_RELEASE_TIMEOUT = 0;
-	private static final int _LITTLE_DELAY = 100;
-	private static final int _WAIT_TIMEOUT = _TCAP_DIALOG_RELEASE_TIMEOUT + 500;
+	public static final int _TCAP_DIALOG_RELEASE_TIMEOUT = 0;
+	public static final int _LITTLE_DELAY = 100;
+	public static final int _WAIT_TIMEOUT = _TCAP_DIALOG_RELEASE_TIMEOUT + 500;
 
 	private WorkerPool workerPool;
 	private MAPStackImpl stack1;
 	private MAPStackImpl stack2;
 	private SccpAddress peer1Address;
 	private SccpAddress peer2Address;
-	
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#setUp()
-	 */
+
 	@Override
 	@Before
 	public void setUp() throws Exception {
-		// this.setupLog4j();
-		System.out.println("setUpTest");
-
 		this.sccpStack1Name = "MAPFunctionalTestSccpStack1";
 		this.sccpStack2Name = "MAPFunctionalTestSccpStack2";
 
@@ -336,10 +335,9 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		// create some fake addresses.
 
-		peer1Address = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack1PC(),
-				getSSN());
-		peer2Address = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack2PC(),
-				getSSN());
+		int ssn = getSSN();
+		peer1Address = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack1PC(), ssn);
+		peer2Address = new SccpAddressImpl(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, getStack2PC(), ssn);
 
 		this.stack1 = new MAPStackImplWrapper(this.sccpProvider1, getSSN(), workerPool);
 		this.stack2 = new MAPStackImplWrapper(this.sccpProvider2, getSSN(), workerPool);
@@ -348,16 +346,9 @@ public class MAPFunctionalTest extends SccpHarness {
 		this.stack2.start();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#tearDown()
-	 */
-
 	@Override
 	@After
 	public void tearDown() {
-		System.out.println("tearDownTest");
 		this.stack1.stop();
 		this.stack2.stop();
 
@@ -372,14 +363,17 @@ public class MAPFunctionalTest extends SccpHarness {
 	/**
 	 * Complex TC Dialog
 	 *
-	 * TC-BEGIN + ExtensionContainer + addProcessUnstructuredSSRequest TC-CONTINUE +
-	 * ExtensionContainer + addUnstructuredSSRequest TC-CONTINUE +
-	 * addUnstructuredSSResponse TC-END + addProcessUnstructuredSSResponse
+	 * <pre>
+	 * TC-BEGIN + ExtensionContainer + addProcessUnstructuredSSRequest
+	 * TC-CONTINUE + ExtensionContainer + addUnstructuredSSRequest
+	 * TC-CONTINUE + addUnstructuredSSResponse 
+	 * TC-END + addProcessUnstructuredSSResponse
+	 * </pre>
 	 */
 	@Test
 	public void testComplexTCWithDialog() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			private int dialogStep;
 
 			@Override
@@ -429,7 +423,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			private int dialogStep;
 			private int processUnstructuredSSRequestInvokeId = 0;
 
@@ -561,20 +555,22 @@ public class MAPFunctionalTest extends SccpHarness {
 		waitForEnd();
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
-
 	}
 
 	/**
 	 * Ending Dialog in the middle of conversation by "close(true)" - without
 	 * sending components
 	 *
-	 * TC-BEGIN + ExtensionContainer + addProcessUnstructuredSSRequest TC-CONTINUE +
-	 * ExtensionContainer + addUnstructuredSSRequest prearranged TC-END
+	 * <pre>
+	 * TC-BEGIN + ExtensionContainer + addProcessUnstructuredSSRequest
+	 * TC-CONTINUE + ExtensionContainer + addUnstructuredSSRequest prearranged
+	 * TC-END
+	 * </pre>
 	 */
 	@Test
 	public void testDialogEndAtTheMiddleConversation() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			private int dialogStep;
 
 			@Override
@@ -624,7 +620,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			private int dialogStep;
 			private int processUnstructuredSSRequestInvokeId = 0;
 
@@ -753,13 +749,15 @@ public class MAPFunctionalTest extends SccpHarness {
 	/**
 	 * Server reject a Dialog with InvalidDestinationReference reason
 	 *
+	 * <pre>
 	 * TC-BEGIN + addProcessUnstructuredSSRequest refuse() -> TC-ABORT +
 	 * MapRefuseInfo + ExtensionContainer
+	 * </pre>
 	 */
 	@Test
 	public void testDialogRefuse() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
 					ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
@@ -771,7 +769,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onProcessUnstructuredSSRequest(ProcessUnstructuredSSRequest procUnstrReqInd) {
 				super.onProcessUnstructuredSSRequest(procUnstrReqInd);
@@ -847,15 +845,17 @@ public class MAPFunctionalTest extends SccpHarness {
 	 * Server reject a Dialog because of ApplicationContextName does not supported
 	 * (Bad ACN is simulated)
 	 *
-	 * TC-BEGIN + addProcessUnstructuredSSRequest TC-ABORT(Reason=ACN_Not_Supprted)
-	 * + alternativeApplicationContextName
+	 * <pre>
+	 * TC-BEGIN + addProcessUnstructuredSSRequest
+	 * TC-ABORT(Reason=ACN_Not_Supprted) + alternativeApplicationContextName
+	 * </pre>
 	 */
 	@Test
 	public void testInvalidApplicationContext() throws Exception {
 
 		((MAPServiceSupplementaryImplWrapper) this.stack2.getProvider().getMAPServiceSupplementary()).setTestMode(1);
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
 					ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
@@ -869,7 +869,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address);
+		Server server = new Server(this.stack2, peer2Address, peer1Address);
 
 		long stamp = System.currentTimeMillis();
 		int count = 0;
@@ -904,13 +904,16 @@ public class MAPFunctionalTest extends SccpHarness {
 	/**
 	 * User-Abort as a response to TC-CONTINUE by a Client
 	 *
-	 * TC-BEGIN + addProcessUnstructuredSSRequest TC-CONTINUE +
-	 * addUnstructuredSSRequest TC-ABORT(MAP-UserAbortInfo) + ExtensionContainer
+	 * <pre>
+	 * TC-BEGIN + addProcessUnstructuredSSRequest
+	 * TC-CONTINUE + addUnstructuredSSRequest
+	 * TC-ABORT(MAP-UserAbortInfo) + ExtensionContainer
+	 * </pre>
 	 */
 	@Test
 	public void testDialogUserAbort() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onUnstructuredSSRequest(UnstructuredSSRequest unstrReqInd) {
@@ -946,7 +949,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onProcessUnstructuredSSRequest(ProcessUnstructuredSSRequest procUnstrReqInd) {
 				super.onProcessUnstructuredSSRequest(procUnstrReqInd);
@@ -1036,12 +1039,15 @@ public class MAPFunctionalTest extends SccpHarness {
 	/**
 	 * Simulating a ProviderAbort from a Server (InvalidPDU)
 	 *
-	 * TC-BEGIN + addProcessUnstructuredSSRequest TC-ABORT(MAP-ProviderAbortInfo)
+	 * <pre>
+	 * TC-BEGIN + addProcessUnstructuredSSRequest
+	 * TC-ABORT(MAP-ProviderAbortInfo)
+	 * </pre>
 	 */
 	@Test
 	public void testReceivedDialogAbortInfo() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onDialogProviderAbort(MAPDialog mapDialog, MAPAbortProviderReason abortProviderReason,
 					MAPAbortSource abortSource, MAPExtensionContainer extensionContainer) {
@@ -1056,7 +1062,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address);
+		Server server = new Server(this.stack2, peer2Address, peer1Address);
 
 		((MAPProviderImplWrapper) this.stack2.getProvider()).setTestMode(1);
 
@@ -1089,17 +1095,19 @@ public class MAPFunctionalTest extends SccpHarness {
 	/**
 	 * Ericsson-style OpenInfo Dialog
 	 *
+	 * <pre>
 	 * TC-BEGIN + Ericsson-style MAP-OpenInfo + addProcessUnstructuredSSRequest
 	 * TC-END
+	 * </pre>
 	 */
 	@Test
 	public void testEricssonDialog() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onDialogRequestEricsson(MAPDialog mapDialog, AddressString destReference,
@@ -1195,12 +1203,15 @@ public class MAPFunctionalTest extends SccpHarness {
 	/**
 	 * Rejecting a dialog because of service is inactive
 	 *
-	 * TC-BEGIN + alertServiceCentre V2 TC-ABORT + DialogReject+ACNNotSupported
+	 * <pre>
+	 * TC-BEGIN + alertServiceCentre V2
+	 * TC-ABORT + DialogReject+ACNNotSupported
+	 * </pre>
 	 */
 	@Test
 	public void testRejectServiceIsNotActive() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
@@ -1211,7 +1222,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 		};
 
@@ -1245,15 +1256,18 @@ public class MAPFunctionalTest extends SccpHarness {
 	/**
 	 * Rejecting a dialog because of service is inactive - MAP V1
 	 *
-	 * TC-BEGIN + alertServiceCentre V1 TC-ABORT + DialogReject+ACNNotSupported
+	 * <pre>
+	 * TC-BEGIN + alertServiceCentre V1
+	 * TC-ABORT + DialogReject+ACNNotSupported
+	 * </pre>
 	 */
 	@Test
 	public void testRejectServiceIsNotActiveV1() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 		};
 
 		long stamp = System.currentTimeMillis();
@@ -1288,13 +1302,15 @@ public class MAPFunctionalTest extends SccpHarness {
 	 * Sending ReturnError (MAPErrorMessageSystemFailure) component from the Server
 	 * as a response to ProcessUnstructuredSSRequest
 	 *
-	 * TC-BEGIN + addProcessUnstructuredSSRequest TC-END +
-	 * ReturnError(systemFailure)
+	 * <pre>
+	 * TC-BEGIN + addProcessUnstructuredSSRequest
+	 * TC-END + ReturnError(systemFailure)
+	 * </pre>
 	 */
 	@Test
 	public void testComponentErrorMessageSystemFailure() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onErrorComponent(MAPDialog mapDialog, Integer invokeId, MAPErrorMessage mapErrorMessage) {
@@ -1308,7 +1324,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onProcessUnstructuredSSRequest(ProcessUnstructuredSSRequest procUnstrReqInd) {
 				super.onProcessUnstructuredSSRequest(procUnstrReqInd);
@@ -1391,13 +1407,15 @@ public class MAPFunctionalTest extends SccpHarness {
 	 * Sending ReturnError (SM-DeliveryFailure + SM-DeliveryFailureCause) component
 	 * from the Server as a response to ProcessUnstructuredSSRequest
 	 *
-	 * TC-BEGIN + addProcessUnstructuredSSRequest TC-END +
-	 * ReturnError(SM-DeliveryFailure + SM-DeliveryFailureCause)
+	 * <pre>
+	 * TC-BEGIN + addProcessUnstructuredSSRequest
+	 * TC-END + ReturnError(SM-DeliveryFailure + SM-DeliveryFailureCause)
+	 * </pre>
 	 */
 	@Test
 	public void testComponentErrorMessageSMDeliveryFailure() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onErrorComponent(MAPDialog mapDialog, Integer invokeId, MAPErrorMessage mapErrorMessage) {
@@ -1411,7 +1429,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onProcessUnstructuredSSRequest(ProcessUnstructuredSSRequest procUnstrReqInd) {
 				super.onProcessUnstructuredSSRequest(procUnstrReqInd);
@@ -1500,7 +1518,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testComponentD() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			int responseReceived = 0;
 
 			@Override
@@ -1537,7 +1555,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			private int processUnstructuredSSRequestInvokeId = 0;
 			private int dialogStep;
@@ -1669,7 +1687,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	public void testComponentDuplicateInvokeID() throws Exception {
 		// Action_Component_E
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem,
@@ -1692,7 +1710,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onProcessUnstructuredSSRequest(ProcessUnstructuredSSRequest procUnstrReqInd) {
 				super.onProcessUnstructuredSSRequest(procUnstrReqInd);
@@ -1729,6 +1747,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		long stamp = System.currentTimeMillis();
 		int count = 0;
+
 		// Client side events
 		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
 		TestEvent te = TestEvent.createSentEvent(EventType.ProcessUnstructuredSSRequestIndication, null, count++,
@@ -1784,7 +1803,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testComponentErrorCloseTrue() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onErrorComponent(MAPDialog mapDialog, Integer invokeId, MAPErrorMessage mapErrorMessage) {
@@ -1798,7 +1817,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onProcessUnstructuredSSRequest(ProcessUnstructuredSSRequest procUnstrReqInd) {
 				super.onProcessUnstructuredSSRequest(procUnstrReqInd);
@@ -1887,7 +1906,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	public void testComponentGeneralProblemTypeComponent() throws Exception {
 		// Action_Component_G
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem,
@@ -1910,7 +1929,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onProcessUnstructuredSSRequest(ProcessUnstructuredSSRequest procUnstrReqInd) {
 				super.onProcessUnstructuredSSRequest(procUnstrReqInd);
@@ -2001,7 +2020,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testInvokeUnrecognizedOperation() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem,
@@ -2020,7 +2039,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onProcessUnstructuredSSRequest(ProcessUnstructuredSSRequest procUnstrReqInd) {
 				super.onProcessUnstructuredSSRequest(procUnstrReqInd);
@@ -2120,7 +2139,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testInvokeMistypedParameter() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onRejectComponent(MAPDialog mapDialog, Integer invokeId, Problem problem,
@@ -2139,7 +2158,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onProcessUnstructuredSSRequest(ProcessUnstructuredSSRequest procUnstrReqInd) {
 				super.onProcessUnstructuredSSRequest(procUnstrReqInd);
@@ -2240,7 +2259,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testUnrecognizedInvokeID() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			private int stepRej = 0;
 
@@ -2279,7 +2298,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			private int step = 0;
 			private int stepRej = 0;
@@ -2472,7 +2491,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testResultErrorMistypedParameter() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			private int rejectStep;
 
@@ -2520,7 +2539,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			private int step;
 			private int invokeId1;
@@ -2705,11 +2724,11 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testSupportingDialogueTransactionReleased() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			private int invokeId;
 
@@ -2820,7 +2839,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testTcNotice() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
 					ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
@@ -2831,7 +2850,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 		};
 
 		long stamp = System.currentTimeMillis();
@@ -2872,9 +2891,9 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testV1ReportSMDeliveryStatus() throws Exception {
 		// Action_V1_A
-		Client client = new Client(stack1, this, peer1Address, peer2Address);
+		Client client = new Client(stack1, peer1Address, peer2Address);
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onReportSMDeliveryStatusRequest(ReportSMDeliveryStatusRequest reportSMDeliveryStatusInd) {
@@ -2985,9 +3004,9 @@ public class MAPFunctionalTest extends SccpHarness {
 	public void testV1AlertServiceCentreRequest() throws Exception {
 		// Action_V1_B
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address);
+		Client client = new Client(stack1, peer1Address, peer2Address);
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onAlertServiceCentreRequest(AlertServiceCentreRequest alertServiceCentreInd) {
@@ -3058,7 +3077,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	public void testV1AlertServiceCentreRequestReject() throws Exception {
 		// Action_V1_C
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
 					ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
@@ -3069,7 +3088,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address);
+		Server server = new Server(this.stack2, peer2Address, peer1Address);
 
 		long stamp = System.currentTimeMillis();
 		int count = 0;
@@ -3101,7 +3120,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	public void testV1AlertServiceCentreRequestReject2() throws Exception {
 		// Action_V1_D
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onDialogReject(MAPDialog mapDialog, MAPRefuseReason refuseReason,
 					ApplicationContextName alternativeApplicationContext, MAPExtensionContainer extensionContainer) {
@@ -3112,7 +3131,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address);
+		Server server = new Server(this.stack2, peer2Address, peer1Address);
 
 		long stamp = System.currentTimeMillis();
 		int count = 0;
@@ -3147,7 +3166,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	public void testV1ForwardShortMessageRequest() throws Exception {
 		// Action_V1_E
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onDialogDelimiter(MAPDialog mapDialog) {
 				super.onDialogDelimiter(mapDialog);
@@ -3164,7 +3183,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onForwardShortMessageRequest(ForwardShortMessageRequest forwSmInd) {
 				super.onForwardShortMessageRequest(forwSmInd);
@@ -3283,9 +3302,9 @@ public class MAPFunctionalTest extends SccpHarness {
 	public void testV2AlertServiceCentreRequest() throws Exception {
 		// Action_Sms_AlertServiceCentre
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address);
+		Client client = new Client(stack1, peer1Address, peer2Address);
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onAlertServiceCentreRequest(AlertServiceCentreRequest alertServiceCentreInd) {
@@ -3382,9 +3401,9 @@ public class MAPFunctionalTest extends SccpHarness {
 	public void testV2ForwardShortMessageRequest() throws Exception {
 		// Action_Sms_ForwardSM
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address);
+		Client client = new Client(stack1, peer1Address, peer2Address);
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onForwardShortMessageRequest(ForwardShortMessageRequest forwSmInd) {
 				super.onForwardShortMessageRequest(forwSmInd);
@@ -3496,7 +3515,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	public void testMoForwardShortMessageRequest() throws Exception {
 		// Action_Sms_MoForwardSM
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onMoForwardShortMessageResponse(MoForwardShortMessageResponse moForwSmRespInd) {
 				super.onMoForwardShortMessageResponse(moForwSmRespInd);
@@ -3520,7 +3539,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onMoForwardShortMessageRequest(MoForwardShortMessageRequest moForwSmInd) {
 				super.onMoForwardShortMessageRequest(moForwSmInd);
@@ -3658,7 +3677,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	public void testMtForwardShortMessageRequest() throws Exception {
 		// Action_Sms_MtForwardSM
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onMtForwardShortMessageResponse(MtForwardShortMessageResponse mtForwSmRespInd) {
 				super.onMtForwardShortMessageResponse(mtForwSmRespInd);
@@ -3682,7 +3701,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onMtForwardShortMessageRequest(MtForwardShortMessageRequest mtForwSmInd) {
 				super.onMtForwardShortMessageRequest(mtForwSmInd);
@@ -3812,7 +3831,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	public void testReportSMDeliveryStatusRequestV3() throws Exception {
 		// Action_Sms_ReportSMDeliveryStatus
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onReportSMDeliveryStatusResponse(ReportSMDeliveryStatusResponse reportSMDeliveryStatusRespInd) {
 				super.onReportSMDeliveryStatusResponse(reportSMDeliveryStatusRespInd);
@@ -3829,7 +3848,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onReportSMDeliveryStatusRequest(ReportSMDeliveryStatusRequest reportSMDeliveryStatusInd) {
 				super.onReportSMDeliveryStatusRequest(reportSMDeliveryStatusInd);
@@ -3953,7 +3972,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	public void testReportSMDeliveryStatusRequestV2() throws Exception {
 		// Action_Sms_ReportSMDeliveryStatus
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onReportSMDeliveryStatusResponse(ReportSMDeliveryStatusResponse reportSMDeliveryStatusRespInd) {
 				super.onReportSMDeliveryStatusResponse(reportSMDeliveryStatusRespInd);
@@ -3970,7 +3989,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onReportSMDeliveryStatusRequest(ReportSMDeliveryStatusRequest reportSMDeliveryStatusInd) {
 				super.onReportSMDeliveryStatusRequest(reportSMDeliveryStatusInd);
@@ -4092,7 +4111,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	public void testSendRoutingInfoForSM() throws Exception {
 		// Action_Sms_SendRoutingInfoForSM
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onSendRoutingInfoForSMResponse(SendRoutingInfoForSMResponse sendRoutingInfoForSMRespInd) {
 				super.onSendRoutingInfoForSMResponse(sendRoutingInfoForSMRespInd);
@@ -4140,7 +4159,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onSendRoutingInfoForSMRequest(SendRoutingInfoForSMRequest sendRoutingInfoForSMInd) {
 				super.onSendRoutingInfoForSMRequest(sendRoutingInfoForSMInd);
@@ -4292,9 +4311,9 @@ public class MAPFunctionalTest extends SccpHarness {
 	public void testAction_TestMsgLength_A() throws Exception {
 		// Action_Sms_MoForwardSM
 
-		Client_TestMsgLength client = new Client_TestMsgLength(stack1, this, peer1Address, peer2Address, 20); // 170
+		Client_TestMsgLength client = new Client_TestMsgLength(stack1, peer1Address, peer2Address, 20); // 170
 
-		Server_TestMsgLength server = new Server_TestMsgLength(this.stack2, this, peer2Address, peer1Address);
+		Server_TestMsgLength server = new Server_TestMsgLength(this.stack2, peer2Address, peer1Address);
 
 		long stamp = System.currentTimeMillis();
 		int count = 0;
@@ -4361,9 +4380,9 @@ public class MAPFunctionalTest extends SccpHarness {
 	public void testAction_TestMsgLength_B() throws Exception {
 		// Action_Sms_MoForwardSM
 
-		Client_TestMsgLength client = new Client_TestMsgLength(stack1, this, peer1Address, peer2Address, 170);
+		Client_TestMsgLength client = new Client_TestMsgLength(stack1, peer1Address, peer2Address, 170);
 
-		Server_TestMsgLength server = new Server_TestMsgLength(this.stack2, this, peer2Address, peer1Address);
+		Server_TestMsgLength server = new Server_TestMsgLength(this.stack2, peer2Address, peer1Address);
 
 		long stamp = System.currentTimeMillis();
 		int count = 0;
@@ -4431,9 +4450,9 @@ public class MAPFunctionalTest extends SccpHarness {
 		protected boolean messageIsSent = false;
 		protected int dataLength;
 
-		public Client_TestMsgLength(MAPStack mapStack, MAPFunctionalTest runningTestCase, SccpAddress thisAddress,
-				SccpAddress remoteAddress, int dataLength) {
-			super(mapStack, runningTestCase, thisAddress, remoteAddress);
+		public Client_TestMsgLength(MAPStack mapStack, SccpAddress thisAddress, SccpAddress remoteAddress,
+				int dataLength) {
+			super(mapStack, thisAddress, remoteAddress);
 
 			this.dataLength = dataLength;
 		}
@@ -4524,9 +4543,8 @@ public class MAPFunctionalTest extends SccpHarness {
 	};
 
 	private class Server_TestMsgLength extends Server {
-		Server_TestMsgLength(MAPStack mapStack, MAPFunctionalTest runningTestCase, SccpAddress thisAddress,
-				SccpAddress remoteAddress) {
-			super(mapStack, runningTestCase, thisAddress, remoteAddress);
+		Server_TestMsgLength(MAPStack mapStack, SccpAddress thisAddress, SccpAddress remoteAddress) {
+			super(mapStack, thisAddress, remoteAddress);
 			// TODO Auto-generated constructor stub
 		}
 
@@ -4598,7 +4616,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testSendAuthenticationInfo_V3() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onSendAuthenticationInfoResponse(SendAuthenticationInfoResponse ind) {
 				super.onSendAuthenticationInfoResponse(ind);
@@ -4617,7 +4635,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onSendAuthenticationInfoRequest(SendAuthenticationInfoRequest ind) {
 				super.onSendAuthenticationInfoRequest(ind);
@@ -4727,7 +4745,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testSendAuthenticationInfo_V2() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onSendAuthenticationInfoResponse(SendAuthenticationInfoResponse ind) {
 				super.onSendAuthenticationInfoResponse(ind);
@@ -4746,7 +4764,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onSendAuthenticationInfoRequest(SendAuthenticationInfoRequest ind) {
 				super.onSendAuthenticationInfoRequest(ind);
@@ -4855,7 +4873,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testUpdateLocation() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onUpdateLocationResponse(UpdateLocationResponse ind) {
 				super.onUpdateLocationResponse(ind);
@@ -4872,7 +4890,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onUpdateLocationRequest(UpdateLocationRequest ind) {
 				super.onUpdateLocationRequest(ind);
@@ -4989,7 +5007,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testAnyTimeInterrogation() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onAnyTimeInterrogationResponse(AnyTimeInterrogationResponse ind) {
 				super.onAnyTimeInterrogationResponse(ind);
@@ -5011,7 +5029,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onAnyTimeInterrogationRequest(AnyTimeInterrogationRequest ind) {
 				super.onAnyTimeInterrogationRequest(ind);
@@ -5118,7 +5136,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	 */
 	@Test
 	public void testAyTimeSubscriptionInterrogation() throws Exception {
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onAnyTimeSubscriptionInterrogationResponse(AnyTimeSubscriptionInterrogationResponse ind) {
 				super.onAnyTimeSubscriptionInterrogationResponse(ind);
@@ -5155,7 +5173,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onAnyTimeSubscriptionInterrogationRequest(AnyTimeSubscriptionInterrogationRequest ind) {
 				super.onAnyTimeSubscriptionInterrogationRequest(ind);
@@ -5285,7 +5303,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testProvideSubscriberInfo() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onProvideSubscriberInfoResponse(ProvideSubscriberInfoResponse ind) {
 				super.onProvideSubscriberInfoResponse(ind);
@@ -5312,7 +5330,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onProvideSubscriberInfoRequest(ProvideSubscriberInfoRequest ind) {
 				super.onProvideSubscriberInfoRequest(ind);
@@ -5419,7 +5437,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testProvideSubscriberLocation() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onProvideSubscriberLocationResponse(ProvideSubscriberLocationResponse ind) {
 				super.onProvideSubscriberLocationResponse(ind);
@@ -5433,7 +5451,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onProvideSubscriberLocationRequest(ProvideSubscriberLocationRequest ind) {
 				super.onProvideSubscriberLocationRequest(ind);
@@ -5530,7 +5548,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testSubscriberLocationReport() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onSubscriberLocationReportResponse(SubscriberLocationReportResponse ind) {
 				super.onSubscriberLocationReportResponse(ind);
@@ -5540,7 +5558,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onSubscriberLocationReportRequest(SubscriberLocationReportRequest ind) {
 				super.onSubscriberLocationReportRequest(ind);
@@ -5635,7 +5653,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testSendRoutingInforForLCS() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onSendRoutingInfoForLCSResponse(SendRoutingInfoForLCSResponse ind) {
 				super.onSendRoutingInfoForLCSResponse(ind);
@@ -5646,7 +5664,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onSendRoutingInfoForLCSRequest(SendRoutingInfoForLCSRequest ind) {
 				super.onSendRoutingInfoForLCSRequest(ind);
@@ -5744,7 +5762,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	 */
 	@Test
 	public void testCheckImei() throws Exception {
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onCheckImeiResponse(CheckImeiResponse ind) {
 				super.onCheckImeiResponse(ind);
@@ -5756,7 +5774,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			};
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onCheckImeiRequest(CheckImeiRequest ind) {
 				super.onCheckImeiRequest(ind);
@@ -5851,7 +5869,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	 */
 	@Test
 	public void testCheckImei_V2() throws Exception {
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onCheckImeiResponse(CheckImeiResponse ind) {
 				super.onCheckImeiResponse(ind);
@@ -5862,7 +5880,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			};
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onCheckImeiRequest(CheckImeiRequest ind) {
 				super.onCheckImeiRequest(ind);
@@ -5950,7 +5968,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	 */
 	@Test
 	public void testCheckImei_Huawei_V2() throws Exception {
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onCheckImeiResponse(CheckImeiResponse ind) {
 				super.onCheckImeiResponse(ind);
@@ -5961,7 +5979,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			};
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onCheckImeiRequest(CheckImeiRequest ind) {
 				super.onCheckImeiRequest(ind);
@@ -6054,7 +6072,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	 */
 	@Test
 	public void testDelayedSendClose() throws Exception {
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			int dialogStep = 0;
 
@@ -6085,7 +6103,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			};
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			int dialogStep = 0;
 
 			@Override
@@ -6224,10 +6242,10 @@ public class MAPFunctionalTest extends SccpHarness {
 	 */
 	@Test
 	public void testDelayedClosePrearranged() throws Exception {
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			int dialogStep = 0;
 
 			@Override
@@ -6330,7 +6348,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testCancelLocation() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onCancelLocationResponse(CancelLocationResponse ind) {
 				super.onCancelLocationResponse(ind);
@@ -6339,7 +6357,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onCancelLocationRequest(CancelLocationRequest ind) {
 				super.onCancelLocationRequest(ind);
@@ -6452,7 +6470,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testCancelLocation_V2() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onCancelLocationResponse(CancelLocationResponse ind) {
 				super.onCancelLocationResponse(ind);
@@ -6460,7 +6478,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onCancelLocationRequest(CancelLocationRequest ind) {
 				super.onCancelLocationRequest(ind);
@@ -6563,12 +6581,15 @@ public class MAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * TC-BEGIN + provideRoamingNumber V3 TC-END + provideRoamingNumberResponse
+	 * <pre>
+	 * TC-BEGIN + provideRoamingNumber V3
+	 * TC-END + provideRoamingNumberResponse
+	 * </pre>
 	 */
 	@Test
 	public void testProvideRoamingNumber() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onProvideRoamingNumberResponse(ProvideRoamingNumberResponse ind) {
 
@@ -6588,7 +6609,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onProvideRoamingNumberRequest(ProvideRoamingNumberRequest ind) {
 				super.onProvideRoamingNumberRequest(ind);
@@ -6726,13 +6747,15 @@ public class MAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * TC-BEGIN + provideRoamingNumberRequest V2 TC-END +
-	 * provideRoamingNumberResponse
+	 * <pre>
+	 * TC-BEGIN + provideRoamingNumberRequest V2
+	 * TC-END + provideRoamingNumberResponse
+	 * </pre>
 	 */
 	@Test
 	public void testProvideRoamingNumber_V2() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onProvideRoamingNumberResponse(ProvideRoamingNumberResponse ind) {
 
@@ -6754,7 +6777,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onProvideRoamingNumberRequest(ProvideRoamingNumberRequest ind) {
 				super.onProvideRoamingNumberRequest(ind);
@@ -6880,12 +6903,15 @@ public class MAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * TC-BEGIN + istCommandRequest TC-END + istCommandResponse
+	 * <pre>
+	 * TC-BEGIN + istCommandRequest
+	 * TC-END + istCommandResponse
+	 * </pre>
 	 */
 	@Test
 	public void testIstCommand() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onIstCommandResponse(IstCommandResponse ind) {
 
@@ -6896,7 +6922,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onIstCommandRequest(IstCommandRequest ind) {
 				super.onIstCommandRequest(ind);
@@ -6980,20 +7006,18 @@ public class MAPFunctionalTest extends SccpHarness {
 		waitForEnd();
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
-//        System.out.println(client.observerdEvents);
-		// System.out.println(server.observerdEvents);
 	}
 
 	/**
-	 * <code>
-	TC-BEGIN + InsertSubscriberDataRequest MAV V3
-	TC-END + InsertSubscriberDataRequestResponse
-	</code>
+	 * <pre>
+	 * TC-BEGIN + InsertSubscriberDataRequest MAV V3
+	 * TC-END + InsertSubscriberDataRequestResponse
+	 * </pre>
 	 */
 	@Test
 	public void testInsertSubscriberData_V3() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onInsertSubscriberDataResponse(InsertSubscriberDataResponse request) {
@@ -7017,7 +7041,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onInsertSubscriberDataRequest(InsertSubscriberDataRequest request) {
 				super.onInsertSubscriberDataRequest(request);
@@ -7175,15 +7199,15 @@ public class MAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * <code>
-	TC-BEGIN + InsertSubscriberDataRequest MAV V2
-	TC-END + InsertSubscriberDataRequestResponse
-	</code>
+	 * <pre>
+	 * TC-BEGIN + InsertSubscriberDataRequest MAV V2
+	 * TC-END + InsertSubscriberDataRequestResponse
+	 * </pre>
 	 */
 	@Test
 	public void testInsertSubscriberData_V2() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onInsertSubscriberDataResponse(InsertSubscriberDataResponse request) {
@@ -7209,7 +7233,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onInsertSubscriberDataRequest(InsertSubscriberDataRequest request) {
 				super.onInsertSubscriberDataRequest(request);
@@ -7355,15 +7379,15 @@ public class MAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * <code>
-	TC-BEGIN + DeleteSubscriberDataRequest MAV V3
-	TC-END + DeleteSubscriberDataRequestResponse
-	</code>
+	 * <pre>
+	 * TC-BEGIN + DeleteSubscriberDataRequest MAV V3
+	 * TC-END + DeleteSubscriberDataRequestResponse
+	 * </pre>
 	 */
 	@Test
 	public void testDeleteSubscriberData_V3() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onDeleteSubscriberDataResponse(DeleteSubscriberDataResponse request) {
@@ -7375,7 +7399,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onDeleteSubscriberDataRequest(DeleteSubscriberDataRequest request) {
 				super.onDeleteSubscriberDataRequest(request);
@@ -7474,15 +7498,15 @@ public class MAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * <code>
-	TC-BEGIN + DeleteSubscriberDataRequest MAV V2
-	TC-END + DeleteSubscriberDataRequestResponse
-	</code>
+	 * <pre>
+	 * TC-BEGIN + DeleteSubscriberDataRequest MAV V2
+	 * TC-END + DeleteSubscriberDataRequestResponse
+	 * </pre>
 	 */
 	@Test
 	public void testDeleteSubscriberData_V2() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onDeleteSubscriberDataResponse(DeleteSubscriberDataResponse request) {
@@ -7494,7 +7518,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onDeleteSubscriberDataRequest(DeleteSubscriberDataRequest request) {
 				super.onDeleteSubscriberDataRequest(request);
@@ -7584,15 +7608,15 @@ public class MAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * <code>
-	TC-BEGIN + SendRoutingInformation MAV V3
-	TC-END + SendRoutingInformationResponse
-	</code>
+	 * <pre>
+	 * TC-BEGIN + SendRoutingInformation MAV V3
+	 * TC-END + SendRoutingInformationResponse
+	 * </pre>
 	 */
 	@Test
 	public void testSendRoutingInformation_V3() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onSendRoutingInformationResponse(SendRoutingInformationResponse response) {
@@ -7615,7 +7639,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onSendRoutingInformationRequest(SendRoutingInformationRequest request) {
 				super.onSendRoutingInformationRequest(request);
@@ -7759,18 +7783,18 @@ public class MAPFunctionalTest extends SccpHarness {
 	}
 
 	/**
-	 * <code>
-	MAV V3
-	TC-BEGIN + SendRoutingInformation
-	  TC-CONTINUE + SendRoutingInformationResponse-NonLast
-	TC-CONTINUE
-	  TC-END + SendRoutingInformationResponse-Last
-	</code>
+	 * MAV V3
+	 * 
+	 * <pre>
+	 * TC-BEGIN + SendRoutingInformation
+	 * TC-CONTINUE + SendRoutingInformationResponse-NonLast
+	 * TC-CONTINUE
+	 * TC-END + SendRoutingInformationResponse-Last
+	 * </pre>
 	 */
 	@Test
 	public void testSendRoutingInformation_V3_NonLast() throws Exception {
-
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			private int dialogStep;
 
 			@Override
@@ -7826,7 +7850,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			private int dialogStep;
 			private int invokeId;
 
@@ -7936,84 +7960,75 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		long stamp = System.currentTimeMillis();
 		int count = 0;
+
 		// Client side events
+		long stampWithTimeout = stamp + _TCAP_DIALOG_RELEASE_TIMEOUT;
+
 		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
 		TestEvent te = TestEvent.createSentEvent(EventType.SendRoutingInformation, null, count++, stamp);
 		clientExpectedEvents.add(te);
 
-		te = TestEvent.createReceivedEvent(EventType.DialogAccept, null, count++,
-				(stamp + _TCAP_DIALOG_RELEASE_TIMEOUT));
+		te = TestEvent.createReceivedEvent(EventType.DialogAccept, null, count++, stampWithTimeout);
 		clientExpectedEvents.add(te);
 
-		te = TestEvent.createReceivedEvent(EventType.SendRoutingInformationResp, null, count++,
-				(stamp + _TCAP_DIALOG_RELEASE_TIMEOUT));
+		te = TestEvent.createReceivedEvent(EventType.SendRoutingInformationResp, null, count++, stampWithTimeout);
 		clientExpectedEvents.add(te);
 
-		te = TestEvent.createReceivedEvent(EventType.DialogDelimiter, null, count++,
-				(stamp + _TCAP_DIALOG_RELEASE_TIMEOUT));
+		te = TestEvent.createReceivedEvent(EventType.DialogDelimiter, null, count++, stampWithTimeout);
 		clientExpectedEvents.add(te);
 
-		te = TestEvent.createReceivedEvent(EventType.SendRoutingInformationResp, null, count++,
-				(stamp + _TCAP_DIALOG_RELEASE_TIMEOUT));
+		te = TestEvent.createReceivedEvent(EventType.SendRoutingInformationResp, null, count++, stampWithTimeout);
 		clientExpectedEvents.add(te);
 
-		te = TestEvent.createReceivedEvent(EventType.DialogClose, null, count++,
-				(stamp + _TCAP_DIALOG_RELEASE_TIMEOUT));
+		te = TestEvent.createReceivedEvent(EventType.DialogClose, null, count++, stampWithTimeout);
 		clientExpectedEvents.add(te);
 
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, count++,
-				(stamp + _TCAP_DIALOG_RELEASE_TIMEOUT));
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, count++, stampWithTimeout);
 		clientExpectedEvents.add(te);
 
 		count = 0;
 		// Server side events
 		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
-		te = TestEvent.createReceivedEvent(EventType.DialogRequest, null, count++,
-				(stamp + _TCAP_DIALOG_RELEASE_TIMEOUT));
+		te = TestEvent.createReceivedEvent(EventType.DialogRequest, null, count++, stampWithTimeout);
 		serverExpectedEvents.add(te);
 
-		te = TestEvent.createReceivedEvent(EventType.SendRoutingInformation, null, count++,
-				(stamp + _TCAP_DIALOG_RELEASE_TIMEOUT));
+		te = TestEvent.createReceivedEvent(EventType.SendRoutingInformation, null, count++, stampWithTimeout);
 		serverExpectedEvents.add(te);
 
-		te = TestEvent.createReceivedEvent(EventType.DialogDelimiter, null, count++,
-				(stamp + _TCAP_DIALOG_RELEASE_TIMEOUT));
+		te = TestEvent.createReceivedEvent(EventType.DialogDelimiter, null, count++, stampWithTimeout);
 		serverExpectedEvents.add(te);
 
 		te = TestEvent.createSentEvent(EventType.SendRoutingInformationResp, null, count++, stamp);
 		serverExpectedEvents.add(te);
 
-		te = TestEvent.createReceivedEvent(EventType.DialogDelimiter, null, count++,
-				(stamp + _TCAP_DIALOG_RELEASE_TIMEOUT));
+		te = TestEvent.createReceivedEvent(EventType.DialogDelimiter, null, count++, stampWithTimeout);
 		serverExpectedEvents.add(te);
 
 		te = TestEvent.createSentEvent(EventType.SendRoutingInformationResp, null, count++, stamp);
 		serverExpectedEvents.add(te);
 
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, count++,
-				(stamp + _TCAP_DIALOG_RELEASE_TIMEOUT));
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, count++, stampWithTimeout);
 		serverExpectedEvents.add(te);
 
-//        this.saveTrafficInFile();
+		// this.saveTrafficInFile();
 
 		client.sendSendRoutingInformation_V3();
 		waitForEnd();
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
-
 	}
 
 	/**
-	 * <code>
-	TC-BEGIN + SendRoutingInformation MAV V2
-	TC-END + SendRoutingInformationResponse
-	</code>
+	 * <pre>
+	 * TC-BEGIN + SendRoutingInformation MAV V2
+	 * TC-END + SendRoutingInformationResponse
+	 * </pre>
 	 */
 	@Test
 	public void testSendRoutingInformation_V2() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onSendRoutingInformationResponse(SendRoutingInformationResponse response) {
@@ -8028,7 +8043,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onSendRoutingInformationRequest(SendRoutingInformationRequest request) {
 				super.onSendRoutingInformationRequest(request);
@@ -8130,7 +8145,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testSendIdentification_V2() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onSendIdentificationResponse(SendIdentificationResponse ind) {
 				super.onSendIdentificationResponse(ind);
@@ -8139,7 +8154,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onSendIdentificationRequest(SendIdentificationRequest ind) {
 				super.onSendIdentificationRequest(ind);
@@ -8233,7 +8248,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testSendIdentification_V3() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onSendIdentificationResponse(SendIdentificationResponse ind) {
 				super.onSendIdentificationResponse(ind);
@@ -8242,7 +8257,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onSendIdentificationRequest(SendIdentificationRequest ind) {
 				super.onSendIdentificationRequest(ind);
@@ -8334,7 +8349,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testUpdateGprsLocation_V3() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 			@Override
 			public void onUpdateGprsLocationResponse(UpdateGprsLocationResponse ind) {
 				super.onUpdateGprsLocationResponse(ind);
@@ -8346,7 +8361,7 @@ public class MAPFunctionalTest extends SccpHarness {
 			}
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 			@Override
 			public void onUpdateGprsLocationRequest(UpdateGprsLocationRequest ind) {
 				super.onUpdateGprsLocationRequest(ind);
@@ -8458,7 +8473,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testPurgeMSRequest_V3() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onPurgeMSResponse(PurgeMSResponse ind) {
@@ -8470,7 +8485,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onPurgeMSRequest(PurgeMSRequest request) {
@@ -8561,7 +8576,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testPurgeMSRequest_V2() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onPurgeMSResponse(PurgeMSResponse ind) {
@@ -8573,7 +8588,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onPurgeMSRequest(PurgeMSRequest request) {
@@ -8666,10 +8681,10 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testResetRequest_V1() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onResetRequest(ResetRequest request) {
@@ -8730,10 +8745,10 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testForwardCheckSSIndicationRequest_V3() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onForwardCheckSSIndicationRequest(ForwardCheckSSIndicationRequest request) {
@@ -8793,7 +8808,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testRestoreDataRequest() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onRestoreDataResponse(RestoreDataResponse ind) {
@@ -8804,7 +8819,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onRestoreDataRequest(RestoreDataRequest request) {
@@ -8900,7 +8915,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testSendImsiRequest() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onSendImsiResponse(SendImsiResponse ind) {
@@ -8911,7 +8926,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onSendImsiRequest(SendImsiRequest request) {
@@ -9005,7 +9020,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testRegisterSSRequest() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onRegisterSSResponse(RegisterSSResponse ind) {
@@ -9021,7 +9036,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onRegisterSSRequest(RegisterSSRequest request) {
@@ -9126,7 +9141,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testEraseSSRequest() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onEraseSSResponse(EraseSSResponse ind) {
@@ -9137,7 +9152,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onEraseSSRequest(EraseSSRequest request) {
@@ -9237,7 +9252,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testActivateSSRequest() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onActivateSSResponse(ActivateSSResponse ind) {
@@ -9253,7 +9268,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onActivateSSRequest(ActivateSSRequest request) {
@@ -9357,7 +9372,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testDeactivateSSRequest() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onDeactivateSSResponse(DeactivateSSResponse ind) {
@@ -9368,7 +9383,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onDeactivateSSRequest(DeactivateSSRequest request) {
@@ -9469,7 +9484,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testInterrogateSSRequest() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onInterrogateSSResponse(InterrogateSSResponse ind) {
@@ -9483,7 +9498,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onInterrogateSSRequest(InterrogateSSRequest request) {
@@ -9589,7 +9604,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testReadyForSMRequest() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onReadyForSMResponse(ReadyForSMResponse ind) {
@@ -9600,7 +9615,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onReadyForSMRequest(ReadyForSMRequest request) {
@@ -9693,10 +9708,10 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testNoteSubscriberPresentRequest() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onNoteSubscriberPresentRequest(NoteSubscriberPresentRequest request) {
@@ -9758,7 +9773,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testSendRoutingInfoForGprsRequest() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onSendRoutingInfoForGprsResponse(SendRoutingInfoForGprsResponse ind) {
@@ -9772,7 +9787,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onSendRoutingInfoForGprsRequest(SendRoutingInfoForGprsRequest request) {
@@ -9876,7 +9891,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testActivateTraceModeRequest_Oam() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onActivateTraceModeResponse_Oam(ActivateTraceModeResponse_Oam ind) {
@@ -9888,7 +9903,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onActivateTraceModeRequest_Oam(ActivateTraceModeRequest_Oam request) {
@@ -9989,7 +10004,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testActivateTraceModeRequest_Mobility() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onActivateTraceModeResponse_Mobility(ActivateTraceModeResponse_Mobility ind) {
@@ -10001,7 +10016,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onActivateTraceModeRequest_Mobility(ActivateTraceModeRequest_Mobility request) {
@@ -10104,7 +10119,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testRegisterPassword_GetPassword() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			private int dialogStep = 0;
 			private int getPasswordInvokeId;
@@ -10146,7 +10161,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			private int dialogStep = 0;
 			private int registerPasswordInvokeId;
@@ -10294,7 +10309,7 @@ public class MAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testAuthenticationFailureReport() throws Exception {
 
-		Client client = new Client(stack1, this, peer1Address, peer2Address) {
+		Client client = new Client(stack1, peer1Address, peer2Address) {
 
 			@Override
 			public void onAuthenticationFailureReportResponse(AuthenticationFailureReportResponse request) {
@@ -10305,7 +10320,7 @@ public class MAPFunctionalTest extends SccpHarness {
 
 		};
 
-		Server server = new Server(this.stack2, this, peer2Address, peer1Address) {
+		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
 			@Override
 			public void onAuthenticationFailureReportRequest(AuthenticationFailureReportRequest ind) {

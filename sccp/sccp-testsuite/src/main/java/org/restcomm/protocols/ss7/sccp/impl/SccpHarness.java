@@ -48,7 +48,7 @@ import io.netty.buffer.ByteBuf;
  * @author yulianoifa
  *
  */
-public abstract class SccpHarness {
+public class SccpHarness {
 	protected static final Logger logger = LogManager.getLogger(SccpHarness.class);
 	protected static final int PROCESSING_TIMEOUT = 500;
 
@@ -89,17 +89,40 @@ public abstract class SccpHarness {
 		}
 	};
 
-	/**
-	 *
-	 */
-	public SccpHarness() {
+	public void setUp() throws Exception {
 		workerPool = new WorkerPool();
+		workerPool.start(16);
 
 		mtp3UserPart1 = new Mtp3UserPartImpl(this, workerPool);
 		mtp3UserPart2 = new Mtp3UserPartImpl(this, workerPool);
 
 		mtp3UserPart1.setOtherPart(mtp3UserPart2);
 		mtp3UserPart2.setOtherPart(mtp3UserPart1);
+
+		sendSemaphore = new Semaphore(0);
+		sentMessages = new AtomicInteger(0);
+
+		this.setUpStack1();
+		if (!onlyOneStack)
+			this.setUpStack2();
+	}
+
+	public void tearDown() {
+		this.workerPool.stop();
+
+		try {
+			mtp3UserPart1.stop();
+			mtp3UserPart1 = null;
+
+			mtp3UserPart2.stop();
+			mtp3UserPart2 = null;
+		} catch (Exception ex) {
+			logger.error(ex);
+		}
+
+		this.tearDownStack1();
+		if (!onlyOneStack)
+			this.tearDownStack2();
 	}
 
 	protected TaskCallback<Exception> getTaskCallback(int messages) {
@@ -209,25 +232,6 @@ public abstract class SccpHarness {
 
 	protected int getSSN2() {
 		return ssn2;
-	}
-
-	public void setUp() throws Exception {
-		sendSemaphore = new Semaphore(0);
-		sentMessages = new AtomicInteger(0);
-
-		workerPool.start(64);
-
-		this.setUpStack1();
-		if (!onlyOneStack)
-			this.setUpStack2();
-	}
-
-	public void tearDown() {
-		this.workerPool.stop();
-
-		this.tearDownStack1();
-		if (!onlyOneStack)
-			this.tearDownStack2();
 	}
 
 	protected int tsnNum = (new Random()).nextInt(100000);
