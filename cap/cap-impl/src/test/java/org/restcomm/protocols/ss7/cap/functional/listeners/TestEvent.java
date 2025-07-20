@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package org.restcomm.protocols.ss7.map.functional.listeners;
+package org.restcomm.protocols.ss7.cap.functional.listeners;
 
 import java.io.Serializable;
 
@@ -27,8 +27,6 @@ import java.io.Serializable;
  *
  */
 public class TestEvent implements Serializable {
-	// 600ms, this can happen if we run tests concurrently and its not a big deal :)
-	public static final long MAX_TIMESTAMP_DIFFERENCE = 600;
 	private static final long serialVersionUID = 1L;
 
 	private EventType eventType;
@@ -129,7 +127,7 @@ public class TestEvent implements Serializable {
 		if (timestamp != other.timestamp) {
 			long v = timestamp - other.timestamp;
 			v = Math.abs(v);
-			if (v > MAX_TIMESTAMP_DIFFERENCE)
+			if (v > 1000)
 				return false;
 		}
 
@@ -143,5 +141,4 @@ public class TestEvent implements Serializable {
 		return "TestEvent [eventType=" + eventType + ", sent=" + sent + ", timestamp=" + timestamp + ", eventSource="
 				+ event + ", sequence=" + sequence + "]";
 	}
-
 }

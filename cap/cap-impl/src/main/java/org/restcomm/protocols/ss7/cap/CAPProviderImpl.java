@@ -711,7 +711,8 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 		this.tcapProvider.removeTCListener(this);
 	}
 
-	private void SendUnsupportedAcn(ApplicationContextName acn, Dialog dialog, String cs, TaskCallback<Exception> callback) {
+	private void SendUnsupportedAcn(ApplicationContextName acn, Dialog dialog, String cs,
+			TaskCallback<Exception> callback) {
 		StringBuffer s = new StringBuffer();
 		s.append(cs + " ApplicationContextName is received: ");
 		for (long l : acn.getOid())
@@ -908,8 +909,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 				loger.warn("CAP Dialog is in InitialSent state but no application context name is received");
 				try {
 					this.fireTCAbort(tcContinueIndication.getDialog(), CAPGeneralAbortReason.UserSpecific,
-							CAPUserAbortReason.abnormal_processing, capDialogImpl.getReturnMessageOnError(),
-							callback);
+							CAPUserAbortReason.abnormal_processing, capDialogImpl.getReturnMessageOnError(), callback);
 				} catch (CAPException e) {
 					loger.error("Error while firing TC-U-ABORT. ", e);
 				}
@@ -927,8 +927,7 @@ public class CAPProviderImpl implements CAPProvider, TCListener {
 
 				try {
 					this.fireTCAbort(tcContinueIndication.getDialog(), CAPGeneralAbortReason.UserSpecific,
-							CAPUserAbortReason.abnormal_processing, capDialogImpl.getReturnMessageOnError(),
-							callback);
+							CAPUserAbortReason.abnormal_processing, capDialogImpl.getReturnMessageOnError(), callback);
 				} catch (CAPException e) {
 					loger.error("Error while firing TC-U-ABORT. ", e);
 				}

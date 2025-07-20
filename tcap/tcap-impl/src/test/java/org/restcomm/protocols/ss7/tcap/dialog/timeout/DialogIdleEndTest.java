@@ -68,7 +68,6 @@ public class DialogIdleEndTest extends SccpHarness {
 		this.sccpStack1Name = "DialogIdleEndTestSccpStack1";
 		this.sccpStack2Name = "DialogIdleEndTestSccpStack2";
 
-		System.out.println("setUp");
 		super.setUp();
 
 		peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1,
@@ -89,19 +88,12 @@ public class DialogIdleEndTest extends SccpHarness {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#tearDown()
-	 */
 	@Override
 	@After
 	public void tearDown() {
-		System.out.println("tearDown");
 		this.tcapStack1.stop();
 		this.tcapStack2.stop();
 		super.tearDown();
-
 	}
 
 	@Test

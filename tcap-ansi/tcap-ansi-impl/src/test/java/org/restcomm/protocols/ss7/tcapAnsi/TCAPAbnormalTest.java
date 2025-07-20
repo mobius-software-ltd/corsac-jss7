@@ -68,14 +68,14 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
 		@Override
-		public void onSuccess() {			
+		public void onSuccess() {
 		}
-		
+
 		@Override
-		public void onError(Exception exception) {			
+		public void onError(Exception exception) {
 		}
 	};
-	
+
 	public TCAPAbnormalTest() {
 
 	}
@@ -91,7 +91,6 @@ public class TCAPAbnormalTest extends SccpHarness {
 		this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
 		this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
 
-		System.out.println("setUp");
 		super.setUp();
 
 		peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1,

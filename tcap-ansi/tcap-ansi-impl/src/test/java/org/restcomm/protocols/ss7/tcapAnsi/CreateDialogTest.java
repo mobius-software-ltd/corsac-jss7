@@ -58,15 +58,8 @@ public class CreateDialogTest {
 	private TCAPStackImplWrapper tcapStack1;
 	private WorkerPool workerPool;
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#setUp()
-	 */
 	@Before
 	public void setUp() throws Exception {
-		System.out.println("setUp");
-
 		workerPool = new WorkerPool();
 		workerPool.start(4);
 

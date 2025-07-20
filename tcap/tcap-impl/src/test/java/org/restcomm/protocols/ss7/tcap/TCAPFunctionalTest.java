@@ -72,7 +72,6 @@ public class TCAPFunctionalTest extends SccpHarness {
 		this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
 		this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
 
-		System.out.println("setUp");
 		super.setUp();
 
 		peer1Address = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
