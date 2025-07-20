@@ -17,10 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package org.restcomm.protocols.ss7.tcap;
+package org.restcomm.protocols.ss7.tcap.listeners;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
@@ -41,6 +43,7 @@ import com.mobius.software.common.dal.timers.TaskCallback;
  *
  */
 public class Server extends EventTestHarness {
+	private static Logger logger = LogManager.getLogger(Server.class);
 
 	protected List<BaseComponent> components;
 
@@ -51,14 +54,13 @@ public class Server extends EventTestHarness {
 	 */
 	public Server(final TCAPStack stack, final ParameterFactory parameterFactory, final SccpAddress thisAddress,
 			final SccpAddress remoteAddress) {
-		super(stack, parameterFactory, thisAddress, remoteAddress);
+		super(stack, parameterFactory, thisAddress, remoteAddress, logger);
 
 		super.listenerName = "Server";
 	}
 
 	@Override
 	public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
-		// TODO Auto-generated method stub
 		super.onTCBegin(ind, callback);
 		this.components = ind.getComponents();
 	}

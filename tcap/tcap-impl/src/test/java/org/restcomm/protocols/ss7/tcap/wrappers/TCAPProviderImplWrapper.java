@@ -17,9 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package org.restcomm.protocols.ss7.tcap;
+package org.restcomm.protocols.ss7.tcap.wrappers;
 
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
+import org.restcomm.protocols.ss7.tcap.TCAPProviderImpl;
+import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
 
 import com.mobius.software.common.dal.timers.WorkerPool;
 
@@ -29,13 +31,11 @@ import com.mobius.software.common.dal.timers.WorkerPool;
  * @author yulianoifa
  *
  */
-public class TCAPStackImplWrapper extends TCAPStackImpl {
+public class TCAPProviderImplWrapper extends TCAPProviderImpl {
+	private static final long serialVersionUID = 1L;
 
-	public TCAPStackImplWrapper(SccpProvider sccpProvider, int ssn, String stackName, WorkerPool workerPool)
+	protected TCAPProviderImplWrapper(SccpProvider sccpProvider, TCAPStackImpl stack, int ssn, WorkerPool workerPool)
 	{
-		super(stackName, workerPool);
-
-		this.tcapProvider = new TCAPProviderImplWrapper(sccpProvider, this, ssn, workerPool);
+		super(sccpProvider, stack, ssn, workerPool);
     }
-
 }

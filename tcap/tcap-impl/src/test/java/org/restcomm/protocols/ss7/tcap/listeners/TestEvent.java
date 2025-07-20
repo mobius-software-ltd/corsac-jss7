@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package org.restcomm.protocols.ss7.tcap;
+package org.restcomm.protocols.ss7.tcap.listeners;
 
 import java.io.Serializable;
 

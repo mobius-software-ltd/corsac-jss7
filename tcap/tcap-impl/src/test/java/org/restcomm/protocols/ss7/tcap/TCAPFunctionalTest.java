@@ -45,6 +45,10 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndicatio
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
+import org.restcomm.protocols.ss7.tcap.listeners.Client;
+import org.restcomm.protocols.ss7.tcap.listeners.EventType;
+import org.restcomm.protocols.ss7.tcap.listeners.Server;
+import org.restcomm.protocols.ss7.tcap.listeners.TestEvent;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
 
@@ -66,9 +70,8 @@ public class TCAPFunctionalTest extends SccpHarness {
 	private Server server;
 	private TCAPListenerWrapper tcapListenerWrapper;
 
-	@Override
 	@Before
-	public void setUp() throws Exception {
+	public void beforeEach() throws Exception {
 		this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
 		this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
 
@@ -96,13 +99,12 @@ public class TCAPFunctionalTest extends SccpHarness {
 		this.server = new Server(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address);
 	}
 
-	@Override
 	@After
-	public void tearDown() {
+	public void afterEach() {
 		this.tcapStack1.stop();
 		this.tcapStack2.stop();
-		super.tearDown();
 
+		super.tearDown();
 	}
 
 	@Test
@@ -140,23 +142,26 @@ public class TCAPFunctionalTest extends SccpHarness {
 		assertNull(client.dialog.getRemoteDialogId());
 
 		client.sendBegin();
-		EventTestHarness.waitFor(WAIT_TIME);
+
+		client.awaitSent(EventType.Begin);
+		server.awaitReceived(EventType.Begin);
 
 		server.sendContinue();
 		assertNotNull(server.dialog.getLocalAddress());
 		assertNotNull(server.dialog.getRemoteDialogId());
 
-		EventTestHarness.waitFor(WAIT_TIME);
+		client.awaitReceived(EventType.Continue);
+		server.awaitSent(EventType.Continue);
+
 		client.sendEnd(TerminationType.Basic);
 		assertNotNull(client.dialog.getLocalAddress());
 		assertNotNull(client.dialog.getRemoteDialogId());
 
-		EventTestHarness.waitFor(WAIT_TIME);
-		// waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
-
 	}
 
 	@Test
@@ -177,7 +182,9 @@ public class TCAPFunctionalTest extends SccpHarness {
 
 		client.startUniDialog();
 		client.sendUni();
-		EventTestHarness.waitFor(WAIT_TIME);
+
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);

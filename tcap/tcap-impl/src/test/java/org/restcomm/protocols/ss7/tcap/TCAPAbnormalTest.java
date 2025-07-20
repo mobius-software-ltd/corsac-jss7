@@ -36,6 +36,10 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.TRPseudoState;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
+import org.restcomm.protocols.ss7.tcap.listeners.Client;
+import org.restcomm.protocols.ss7.tcap.listeners.EventType;
+import org.restcomm.protocols.ss7.tcap.listeners.Server;
+import org.restcomm.protocols.ss7.tcap.listeners.TestEvent;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
 
@@ -72,9 +76,8 @@ public class TCAPAbnormalTest extends SccpHarness {
 		}
 	};
 
-	@Override
 	@Before
-	public void setUp() throws Exception {
+	public void beforeEach() throws Exception {
 		this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
 		this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
 
@@ -99,14 +102,8 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#tearDown()
-	 */
-	@Override
 	@After
-	public void tearDown() {
+	public void afterEach() {
 		this.tcapStack1.stop();
 		this.tcapStack2.stop();
 		super.tearDown();
@@ -114,9 +111,13 @@ public class TCAPAbnormalTest extends SccpHarness {
 	}
 
 	/**
-	 * A case of receiving TC-Begin + AARQ apdu + unsupported protocol version
-	 * (supported only V2) TC-BEGIN + AARQ apdu (unsupported protocol version)
+	 * A case of receiving
+	 * 
+	 * <pre>
+	 * TC-Begin + AARQ apdu + unsupported protocol version (supported only V2)
+	 * TC-BEGIN + AARQ apdu (unsupported protocol version)
 	 * TC-ABORT + PAbortCauseType.NoCommonDialogPortion
+	 * </pre>
 	 */
 	@Test
 	public void badDialogProtocolVersionTest() throws Exception {
@@ -134,7 +135,8 @@ public class TCAPAbnormalTest extends SccpHarness {
 		SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address,
 				peer1Address, getMessageWithUnsupportedProtocolVersion(), 0, 0, false, null, null);
 		this.sccpProvider1.send(message, dummyCallback);
-		EventTestHarness.waitFor(WAIT_TIME);
+
+		client.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -143,8 +145,13 @@ public class TCAPAbnormalTest extends SccpHarness {
 	}
 
 	/**
-	 * Case of receiving TC-Begin that has a bad structure TC-BEGIN (bad formatted)
+	 * Case of receiving
+	 * 
+	 * <pre>
+	 * TC-Begin that has a bad structure
+	 * TC-BEGIN (bad formatted)
 	 * TC-ABORT + PAbortCauseType.IncorrectTxPortion
+	 * </pre>
 	 */
 	@Test
 	public void badSyntaxMessageTest() throws Exception {
@@ -162,7 +169,8 @@ public class TCAPAbnormalTest extends SccpHarness {
 		SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address,
 				peer1Address, getMessageBadSyntax(), 0, 0, false, null, null);
 		this.sccpProvider1.send(message, dummyCallback);
-		EventTestHarness.waitFor(WAIT_TIME);
+
+		client.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -170,12 +178,16 @@ public class TCAPAbnormalTest extends SccpHarness {
 		assertEquals(client.pAbortCauseType, PAbortCauseType.IncorrectTxPortion);
 	}
 
-	@Test
 	/**
-	 * Case of receiving a reply for TC-Begin the message with a bad TAG TC-BEGIN
-	 * (bad message Tag - not Begin, Continue, ...) TC-ABORT +
-	 * PAbortCauseType.UnrecognizedMessageType
+	 * Case of receiving a reply for
+	 * 
+	 * <pre>
+	 * TC-Begin the message with a bad TAG 
+	 * TC-BEGIN (bad message Tag - not Begin, Continue, ...)
+	 * TC-ABORT + PAbortCauseType.UnrecognizedMessageType
+	 * </pre>
 	 */
+	@Test
 	public void badMessageTagTest() throws Exception {
 
 		long stamp = System.currentTimeMillis();
@@ -203,10 +215,14 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 		client.startClientDialog();
 		client.sendBegin();
-		Thread.sleep(WAIT_TIME);
+
+		client.awaitSent(EventType.Begin);
+		server.awaitReceived(EventType.Begin);
 
 		server.sendContinue();
-		Thread.sleep(WAIT_TIME);
+
+		client.awaitReceived(EventType.Continue);
+		server.awaitSent(EventType.Continue);
 
 		SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer1Address,
 				peer2Address, getMessageBadTag(), 0, 0, false, null, null);
@@ -219,12 +235,18 @@ public class TCAPAbnormalTest extends SccpHarness {
 		assertEquals(server.pAbortCauseType, PAbortCauseType.UnrecognizedMessageType);
 	}
 
-	@Test
 	/**
 	 * Case of receiving a message TC-Continue when a local Dialog has been released
-	 * TC-BEGIN TC-CONTINUE we are destroying a Dialog at a client side TC-CONTINUE
+	 * 
+	 * <pre>
+	 * TC-BEGIN
+	 * TC-CONTINUE
+	 * we are destroying a Dialog at a client side
+	 * TC-CONTINUE
 	 * TC-ABORT + PAbortCauseType.UnrecognizedTxID
+	 * </pre>
 	 */
+	@Test
 	public void noDialogTest() throws Exception {
 
 		long stamp = System.currentTimeMillis();
@@ -250,14 +272,22 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 		client.startClientDialog();
 		client.sendBegin();
-		Thread.sleep(WAIT_TIME);
+
+		client.awaitSent(EventType.Begin);
+		server.awaitReceived(EventType.Begin);
 
 		server.sendContinue();
-		Thread.sleep(WAIT_TIME);
+
+		client.awaitReceived(EventType.Continue);
+		server.awaitSent(EventType.Continue);
 
 		client.releaseDialog();
 		server.sendContinue();
-		Thread.sleep(WAIT_TIME);
+
+		server.awaitSent(EventType.Continue);
+
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -267,10 +297,14 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 	/**
 	 * Case of receiving a message TC-Continue without AARE apdu at the InitialSent
-	 * state of a Dialog. This will cause an error TC-BEGIN TC-CONTINUE we are
-	 * setting a State of a Client Dialog to TRPseudoState.InitialSent like it has
-	 * just been sent a TC-BEGIN message TC-CONTINUE TC-ABORT +
-	 * PAbortCauseType.AbnormalDialogue
+	 * state of a Dialog. This will cause an error
+	 * 
+	 * <pre>
+	 * TC-BEGIN
+	 * TC-CONTINUE we are setting a State of a Client Dialog to TRPseudoState.InitialSent like it has just been sent a TC-BEGIN message 
+	 * TC-CONTINUE 
+	 * TC-ABORT + PAbortCauseType.AbnormalDialogue
+	 * </pre>
 	 */
 	@Test
 	public void abnormalDialogTest() throws Exception {
@@ -300,14 +334,22 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 		client.startClientDialog();
 		client.sendBegin();
-		Thread.sleep(WAIT_TIME);
+
+		client.awaitSent(EventType.Begin);
+		server.awaitReceived(EventType.Begin);
 
 		server.sendContinue();
-		Thread.sleep(WAIT_TIME);
+
+		client.awaitReceived(EventType.Continue);
+		server.awaitSent(EventType.Continue);
 
 		client.getCurDialog().setState(TRPseudoState.InitialSent);
 		server.sendContinue();
-		Thread.sleep(WAIT_TIME);
+
+		server.awaitSent(EventType.Continue);
+
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -319,7 +361,10 @@ public class TCAPAbnormalTest extends SccpHarness {
 	/**
 	 * TC-U-Abort as a response to TC-Begin
 	 *
-	 * TC-BEGIN TC-ABORT + UserAbort by TCAP user
+	 * <pre>
+	 * TC-BEGIN 
+	 * TC-ABORT + UserAbort by TCAP user
+	 * </pre>
 	 */
 	@Test
 	public void userAbortTest() throws Exception {
@@ -344,13 +389,17 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 		client.startClientDialog();
 		client.sendBegin();
-		Thread.sleep(WAIT_TIME);
+
+		client.awaitSent(EventType.Begin);
+		server.awaitReceived(EventType.Begin);
 
 		UserInformation userInformation = TcapFactory.createUserInformation();
 		userInformation.setIdentifier(Arrays.asList(new Long[] { 1L, 2L, 3L }));
 		userInformation.setChild(Unpooled.wrappedBuffer(new byte[] { 11, 22, 33 }));
 		server.sendAbort(null, userInformation, null);
-		Thread.sleep(WAIT_TIME);
+
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -384,7 +433,12 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 	/**
 	 * Sending a message with unreachable CalledPartyAddress + returnMessageOnError
-	 * -> TC-Notice TC-BEGIN + returnMessageOnError TC-NOTICE
+	 * -> TC-Notice
+	 * 
+	 * <pre>
+	 * TC-BEGIN + returnMessageOnError 
+	 * TC-NOTICE
+	 * </pre>
 	 */
 	@Test
 	public void badAddressMessage2Test() throws Exception {
@@ -402,7 +456,8 @@ public class TCAPAbnormalTest extends SccpHarness {
 
 		client.startClientDialog();
 		client.sendBeginUnreachableAddress(true, dummyCallback);
-		Thread.sleep(WAIT_TIME);
+
+		client.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -508,7 +563,8 @@ public class TCAPAbnormalTest extends SccpHarness {
 		SccpDataMessage message = this.sccpProvider1.getMessageFactory().createDataMessageClass1(peer2Address,
 				peer1Address, Unpooled.wrappedBuffer(getUnrecognizedMessageTypeMessage()), 0, 0, false, null, null);
 		this.sccpProvider1.send(message, dummyCallback);
-		Client.waitFor(WAIT_TIME);
+
+		client.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);

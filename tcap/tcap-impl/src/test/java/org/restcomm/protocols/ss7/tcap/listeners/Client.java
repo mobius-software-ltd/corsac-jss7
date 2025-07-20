@@ -17,17 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package org.restcomm.protocols.ss7.tcap;
+package org.restcomm.protocols.ss7.tcap.listeners;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.indicator.NatureOfAddress;
 import org.restcomm.protocols.ss7.indicator.NumberingPlan;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
+import org.restcomm.protocols.ss7.tcap.DialogImpl;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
@@ -52,15 +55,11 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class Client extends EventTestHarness {
+	private static Logger logger = LogManager.getLogger(Client.class);
 
-	/**
-	 * @param stack
-	 * @param thisAddress
-	 * @param remoteAddress
-	 */
 	public Client(final TCAPStack stack, final ParameterFactory parameterFactory, final SccpAddress thisAddress,
 			final SccpAddress remoteAddress) {
-		super(stack, parameterFactory, thisAddress, remoteAddress);
+		super(stack, parameterFactory, thisAddress, remoteAddress, logger);
 
 		super.listenerName = "Client";
 	}
@@ -86,7 +85,6 @@ public class Client extends EventTestHarness {
 
 	public void sendBeginUnreachableAddress(boolean returnMessageOnError, TaskCallback<Exception> callback)
 			throws TCAPException, TCAPSendException {
-		System.err.println(this + " T[" + System.currentTimeMillis() + "]send BEGIN");
 		ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
 		// UI is optional!
 		TCBeginRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createBegin(this.dialog);
@@ -98,7 +96,7 @@ public class Client extends EventTestHarness {
 				super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE, gt, 0, 8));
 		tcbr.setReturnMessageOnError(returnMessageOnError);
 
-		this.observerdEvents.add(TestEvent.createSentEvent(EventType.Begin, tcbr, sequence++));
+		super.handleSent(EventType.Begin, tcbr);
 		this.dialog.send(tcbr, callback);
 	}
 
