@@ -623,17 +623,18 @@ public class TCAPComponentsTest extends SccpHarness {
 		clientExpectedEvents.add(te);
 		te = TestEvent.createSentEvent(EventType.Begin, null, cnt++, stamp);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp);
+		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp + beginInvokeTimeout);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + beginInvokeTimeout);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + beginInvokeTimeout);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME);
+		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + beginInvokeTimeout);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + beginInvokeTimeout);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp + MINI_WAIT_TIME);
+		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++,
+				stamp + MINI_WAIT_TIME + continueInvokeTimeout);
 		clientExpectedEvents.add(te);
 		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 2);
 		clientExpectedEvents.add(te);
@@ -643,7 +644,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		clientExpectedEvents.add(te);
 		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 2);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp + MINI_WAIT_TIME * 2);
+		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++,
+				stamp + MINI_WAIT_TIME * 2 + continueInvokeTimeout);
 		clientExpectedEvents.add(te);
 		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 3);
 		clientExpectedEvents.add(te);
@@ -657,9 +659,11 @@ public class TCAPComponentsTest extends SccpHarness {
 		clientExpectedEvents.add(te);
 		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 3);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++,
+				stamp + MINI_WAIT_TIME * 3 + continueInvokeTimeout);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++,
+				stamp + MINI_WAIT_TIME * 3 + continueInvokeTimeout);
 		clientExpectedEvents.add(te);
 		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 4);
 		clientExpectedEvents.add(te);

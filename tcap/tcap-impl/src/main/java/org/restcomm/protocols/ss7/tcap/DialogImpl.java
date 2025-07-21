@@ -1992,7 +1992,7 @@ public class DialogImpl implements Dialog {
 
 		@Override
 		public void execute() {
-			if (this.startTime == Long.MAX_VALUE)
+			if (d == null)
 				return;
 
 			idleTimer.set(null);
@@ -2011,6 +2011,12 @@ public class DialogImpl implements Dialog {
 				release();
 
 			d.idleTimerInvoked.set(false);
+		}
+
+		@Override
+		public void stop() {
+			super.stop();
+			d = null;
 		}
 	}
 

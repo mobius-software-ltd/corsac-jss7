@@ -92,7 +92,9 @@ public class TCAPFunctionalTest extends SccpHarness {
 		this.tcapStack1.setDoNotSendProtocolVersion(false);
 		this.tcapStack2.setDoNotSendProtocolVersion(false);
 		this.tcapStack1.setInvokeTimeout(0);
+		this.tcapStack1.setDialogIdleTimeout(5000);
 		this.tcapStack2.setInvokeTimeout(0);
+		this.tcapStack2.setDialogIdleTimeout(5000);
 
 		// create test classes
 		this.client = new Client(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address);
@@ -103,6 +105,12 @@ public class TCAPFunctionalTest extends SccpHarness {
 	public void afterEach() {
 		this.tcapStack1.stop();
 		this.tcapStack2.stop();
+
+		client.dialog = null;
+		server.dialog = null;
+
+		client.observerdEvents = null;
+		server.observerdEvents = null;
 
 		super.tearDown();
 	}
