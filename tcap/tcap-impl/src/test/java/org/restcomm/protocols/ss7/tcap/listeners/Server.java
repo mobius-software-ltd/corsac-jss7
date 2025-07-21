@@ -61,8 +61,9 @@ public class Server extends EventTestHarness {
 
 	@Override
 	public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
-		super.onTCBegin(ind, callback);
 		this.components = ind.getComponents();
+
+		super.onTCBegin(ind, callback);
 	}
 
 	@Override

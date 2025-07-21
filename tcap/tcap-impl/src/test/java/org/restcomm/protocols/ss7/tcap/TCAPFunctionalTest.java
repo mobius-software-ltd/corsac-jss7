@@ -109,7 +109,6 @@ public class TCAPFunctionalTest extends SccpHarness {
 
 	@Test
 	public void simpleTCWithDialogTest() throws Exception {
-
 		long stamp = System.currentTimeMillis();
 		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
 		TestEvent te = TestEvent.createSentEvent(EventType.Begin, null, 0, stamp);
@@ -118,8 +117,6 @@ public class TCAPFunctionalTest extends SccpHarness {
 		clientExpectedEvents.add(te);
 		te = TestEvent.createSentEvent(EventType.End, null, 2, stamp + WAIT_TIME * 2);
 		clientExpectedEvents.add(te);
-		// te = TestEvent.createReceivedEvent(EventType.DialogRelease, null,
-		// 3,stamp+WAIT_TIME*2+_WAIT_REMOVE);
 		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME * 2);
 		clientExpectedEvents.add(te);
 
@@ -130,8 +127,6 @@ public class TCAPFunctionalTest extends SccpHarness {
 		serverExpectedEvents.add(te);
 		te = TestEvent.createReceivedEvent(EventType.End, null, 2, stamp + WAIT_TIME * 2);
 		serverExpectedEvents.add(te);
-		// te = TestEvent.createReceivedEvent(EventType.DialogRelease, null,
-		// 3,stamp+WAIT_TIME*2+_WAIT_REMOVE);
 		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME * 2);
 		serverExpectedEvents.add(te);
 

@@ -92,7 +92,7 @@ public class SccpHarness {
 	public void setUp() throws Exception {
 		if (workerPool == null) {
 			workerPool = new WorkerPool();
-			workerPool.start(16);
+			workerPool.start(4);
 		}
 
 		mtp3UserPart1 = new Mtp3UserPartImpl(this, workerPool);
