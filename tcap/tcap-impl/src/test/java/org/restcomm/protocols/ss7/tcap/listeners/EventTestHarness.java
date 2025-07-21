@@ -94,7 +94,7 @@ public abstract class EventTestHarness implements TCListener {
 
 	public PAbortCauseType pAbortCauseType;
 
-	protected Queue<TestEvent> observerdEvents = new ConcurrentLinkedQueue<TestEvent>();
+	public Queue<TestEvent> observerdEvents = new ConcurrentLinkedQueue<TestEvent>();
 	protected AtomicInteger sequence = new AtomicInteger(0);
 
 	protected Map<EventType, Semaphore> sentSemaphores = new ConcurrentHashMap<>();
