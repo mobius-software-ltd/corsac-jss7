@@ -43,8 +43,8 @@ import org.restcomm.protocols.ss7.m3ua.parameter.Status;
  *
  */
 public class AspTransitionStateTest {
-	private ParameterFactoryImpl parmFactory = new ParameterFactoryImpl();
-	private MessageFactoryImpl messageFactory = new MessageFactoryImpl();
+	private static final ParameterFactoryImpl paramFactory = new ParameterFactoryImpl();
+	private static final MessageFactoryImpl messageFactory = new MessageFactoryImpl();
 
 	@Test
 	public void testTrfrMessages() throws IOException {
@@ -139,44 +139,44 @@ public class AspTransitionStateTest {
 
 		// As State Change
 		NotifyImpl msg = (NotifyImpl) messageFactory.createMessage(messageClass, MessageType.NOTIFY);
-		Status status = this.parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_Reserved);
+		Status status = paramFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_Reserved);
 		msg.setStatus(status);
 		String transition = TransitionState.getTransition(msg);
 		assertEquals(TransitionState.AS_STATE_CHANGE_RESERVE, transition);
 
 		msg = (NotifyImpl) messageFactory.createMessage(messageClass, MessageType.NOTIFY);
-		status = this.parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_INACTIVE);
+		status = paramFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_INACTIVE);
 		msg.setStatus(status);
 		transition = TransitionState.getTransition(msg);
 		assertEquals(TransitionState.AS_STATE_CHANGE_INACTIVE, transition);
 
 		msg = (NotifyImpl) messageFactory.createMessage(messageClass, MessageType.NOTIFY);
-		status = this.parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_ACTIVE);
+		status = paramFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_ACTIVE);
 		msg.setStatus(status);
 		transition = TransitionState.getTransition(msg);
 		assertEquals(TransitionState.AS_STATE_CHANGE_ACTIVE, transition);
 
 		msg = (NotifyImpl) messageFactory.createMessage(messageClass, MessageType.NOTIFY);
-		status = this.parmFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_PENDING);
+		status = paramFactory.createStatus(Status.STATUS_AS_State_Change, Status.INFO_AS_PENDING);
 		msg.setStatus(status);
 		transition = TransitionState.getTransition(msg);
 		assertEquals(TransitionState.AS_STATE_CHANGE_PENDING, transition);
 
 		// Other
 		msg = (NotifyImpl) messageFactory.createMessage(messageClass, MessageType.NOTIFY);
-		status = this.parmFactory.createStatus(Status.STATUS_Other, Status.INFO_Insufficient_ASP_Resources_Active);
+		status = paramFactory.createStatus(Status.STATUS_Other, Status.INFO_Insufficient_ASP_Resources_Active);
 		msg.setStatus(status);
 		transition = TransitionState.getTransition(msg);
 		assertEquals(TransitionState.OTHER_INSUFFICIENT_ASP, transition);
 
 		msg = (NotifyImpl) messageFactory.createMessage(messageClass, MessageType.NOTIFY);
-		status = this.parmFactory.createStatus(Status.STATUS_Other, Status.INFO_Alternate_ASP_Active);
+		status = paramFactory.createStatus(Status.STATUS_Other, Status.INFO_Alternate_ASP_Active);
 		msg.setStatus(status);
 		transition = TransitionState.getTransition(msg);
 		assertEquals(TransitionState.OTHER_ALTERNATE_ASP_ACTIVE, transition);
 
 		msg = (NotifyImpl) messageFactory.createMessage(messageClass, MessageType.NOTIFY);
-		status = this.parmFactory.createStatus(Status.STATUS_Other, Status.INFO_Alternate_ASP_Failure);
+		status = paramFactory.createStatus(Status.STATUS_Other, Status.INFO_Alternate_ASP_Failure);
 		msg.setStatus(status);
 		transition = TransitionState.getTransition(msg);
 		assertEquals(TransitionState.OTHER_ALTERNATE_ASP_FAILURE, transition);

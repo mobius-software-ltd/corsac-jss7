@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.commonapp.api.primitives.AddressString;
@@ -132,61 +133,61 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.Problem;
 public class EventTestHarness implements MAPDialogListener, MAPServiceSupplementaryListener, MAPServiceSmsListener,
 		MAPServiceMobilityListener, MAPServiceLsmListener, MAPServiceCallHandlingListener, MAPServiceOamListener,
 		MAPServicePdpContextActivationListener {
+	private static final long EVENT_TIMEOUT = 10000;
 
 	private Logger logger = null;
 
 	protected Queue<TestEvent> observerdEvents = new ConcurrentLinkedQueue<TestEvent>();
-	protected volatile int sequence = 0;
+	protected AtomicInteger sequence = new AtomicInteger(0);
 
-	protected Map<EventType, Semaphore> semaphores = new ConcurrentHashMap<>();
+	protected Map<EventType, Semaphore> sentSemaphores = new ConcurrentHashMap<>();
+	protected Map<EventType, Semaphore> receivedSemaphores = new ConcurrentHashMap<>();
 
 	EventTestHarness(Logger logger) {
 		this.logger = logger;
 	}
 
-	public void setAwaitedEvents(EventType... types) {
-		for (EventType type : types)
-			semaphores.putIfAbsent(type, new Semaphore(0));
-	}
-
-	public void await(EventType eventType) {
-		await(eventType, 10000);
-	}
-
-	public void await(EventType eventType, long timeout) {
+	private void handleAwait(EventType eventType, Map<EventType, Semaphore> semaphores) {
 		Semaphore semaphore = semaphores.getOrDefault(eventType, new Semaphore(0));
 		semaphores.putIfAbsent(eventType, semaphore);
 
 		try {
-			boolean isAcquired = semaphore.tryAcquire(timeout, TimeUnit.MILLISECONDS);
-			assertTrue("Event for type " + eventType + " is not acquired in " + timeout + " milliseconds", isAcquired);
+			boolean isAcquired = semaphore.tryAcquire(EVENT_TIMEOUT, TimeUnit.MILLISECONDS);
+			assertTrue("Event for type " + eventType + " is not acquired in " + EVENT_TIMEOUT + " milliseconds",
+					isAcquired);
 		} catch (InterruptedException e) {
 			logger.error("Interrupted exception occured while waiting for event for type " + eventType + ": " + e);
 			return;
 		}
+
 	}
 
-	public void awaitAll() {
-		for (EventType eventType : semaphores.keySet())
-			await(eventType);
+	public void awaitReceived(EventType eventType) {
+		handleAwait(eventType, this.receivedSemaphores);
 	}
 
-	private void handleEvent(TestEvent testEvent) {
+	public void awaitSent(EventType eventType) {
+		handleAwait(eventType, this.sentSemaphores);
+	}
+
+	private void handleEvent(TestEvent testEvent, Map<EventType, Semaphore> semaphores) {
 		this.observerdEvents.add(testEvent);
 
-		Semaphore semaphore = semaphores.get(testEvent.getEventType());
-		if (semaphore != null)
-			semaphore.release();
+		EventType eventType = testEvent.getEventType();
+		if (semaphores.containsKey(eventType))
+			semaphores.get(eventType).release();
+		else
+			semaphores.put(eventType, new Semaphore(1));
 	}
 
 	protected void handleReceived(EventType eventType, Object eventSource) {
-		TestEvent receivedEvent = TestEvent.createReceivedEvent(eventType, eventSource, sequence++);
-		this.handleEvent(receivedEvent);
+		TestEvent receivedEvent = TestEvent.createReceivedEvent(eventType, eventSource, sequence.getAndIncrement());
+		this.handleEvent(receivedEvent, this.receivedSemaphores);
 	}
 
 	protected void handleSent(EventType eventType, Object eventSource) {
-		TestEvent sentEvent = TestEvent.createSentEvent(eventType, eventSource, sequence++);
-		this.handleEvent(sentEvent);
+		TestEvent sentEvent = TestEvent.createSentEvent(eventType, eventSource, sequence.getAndIncrement());
+		this.handleEvent(sentEvent, this.sentSemaphores);
 	}
 
 	@Override
@@ -818,8 +819,29 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
 					+ expectedEvents.size() + "\n" + comparedEvents);
 		}
 
-		for (int index = 0; index < expectedEvents.size(); index++)
-			assertEquals(expectedEvents.get(index), actualEvents.get(index));
+		for (int index = 0; index < expectedEvents.size(); index++) {
+			TestEvent expected = expectedEvents.get(index);
+			TestEvent actual = actualEvents.get(index);
+
+			assertEvents(expected, actual);
+		}
+	}
+
+	protected void assertEvents(TestEvent expected, TestEvent actual) {
+		try {
+			assertEquals(expected, actual);
+		} catch (AssertionError ex) {
+			if (expected.getEventType() != actual.getEventType())
+				fail("Event types between expected " + expected + " and actual " + actual + " are not equal");
+
+			long diff = Math.abs(expected.getTimestamp() - actual.getTimestamp());
+			if (diff > TestEvent.MAX_TIMESTAMP_DIFFERENCE) {
+				String pattern = "Timestamp difference between expected %s and actual %s is more than allowed (%d): %d";
+				fail(String.format(pattern, expected, actual, TestEvent.MAX_TIMESTAMP_DIFFERENCE, diff));
+			}
+
+			throw ex;
+		}
 	}
 
 	protected String doStringCompare(List<TestEvent> expectedEvents, List<TestEvent> observerdEvents) {

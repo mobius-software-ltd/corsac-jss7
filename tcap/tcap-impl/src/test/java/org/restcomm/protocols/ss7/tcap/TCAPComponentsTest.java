@@ -28,6 +28,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +57,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
+import org.restcomm.protocols.ss7.tcap.listeners.EventTestHarness;
+import org.restcomm.protocols.ss7.tcap.listeners.EventType;
+import org.restcomm.protocols.ss7.tcap.listeners.TestEvent;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
 
@@ -68,7 +72,6 @@ import com.mobius.software.common.dal.timers.TaskCallback;
  */
 public class TCAPComponentsTest extends SccpHarness {
 	private static final long MINI_WAIT_TIME = 1000;
-	private static final long WAIT_TIME = 4 * MINI_WAIT_TIME;
 	private static final int DIALOG_TIMEOUT = Integer.MAX_VALUE;
 
 	private TCAPStackImpl tcapStack1;
@@ -78,9 +81,8 @@ public class TCAPComponentsTest extends SccpHarness {
 	private ClientComponent client;
 	private ServerComponent server;
 
-	@Override
 	@Before
-	public void setUp() throws Exception {
+	public void beforeEach() throws Exception {
 		this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
 		this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
 
@@ -103,9 +105,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		this.tcapStack2.setDialogIdleTimeout(DIALOG_TIMEOUT);
 	}
 
-	@Override
 	@After
-	public void tearDown() {
+	public void afterEach() {
 		this.tcapStack1.stop();
 		this.tcapStack2.stop();
 
@@ -116,8 +117,8 @@ public class TCAPComponentsTest extends SccpHarness {
 	 * Sending BadlyStructuredComponent Component
 	 *
 	 * <pre>
-	 * TC-BEGIN + Invoke with BadlyStructuredComponent + Invoke TC-END + Reject
-	 * (mistypedComponent)
+	 * TC-BEGIN + Invoke with BadlyStructuredComponent + Invoke 
+	 * TC-END + Reject (mistypedComponent)
 	 * </pre>
 	 */
 	@Test
@@ -210,7 +211,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		client.addNewInvoke(2, 10000L);
 		client.sendBegin();
 
-		EventTestHarness.waitFor(WAIT_TIME);
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -220,8 +222,8 @@ public class TCAPComponentsTest extends SccpHarness {
 	 * Sending unrecognizedComponent
 	 *
 	 * <pre>
-	 * TC-BEGIN + bad component (with component type != Invoke,ReturnResult,...) +
-	 * Invoke TC-END + Reject (unrecognizedComponent)
+	 * TC-BEGIN + bad component (with component type != Invoke,ReturnResult,...) + Invoke
+	 * TC-END + Reject (unrecognizedComponent)
 	 * </pre>
 	 */
 	@Test
@@ -308,7 +310,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		client.addNewInvoke(1, 10000L);
 		client.sendBegin();
 
-		EventTestHarness.waitFor(WAIT_TIME);
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -410,7 +413,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		client.addNewInvoke(2, 10000L);
 		client.sendBegin();
 
-		EventTestHarness.waitFor(WAIT_TIME);
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -727,7 +731,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		client.addNewInvoke(1, beginInvokeTimeout);
 		client.sendBegin();
 
-		EventTestHarness.waitFor(WAIT_TIME * 2);
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
@@ -739,7 +744,7 @@ public class TCAPComponentsTest extends SccpHarness {
 
 		public ClientComponent(final TCAPStack stack, final ParameterFactory parameterFactory,
 				final SccpAddress thisAddress, final SccpAddress remoteAddress) {
-			super(stack, parameterFactory, thisAddress, remoteAddress);
+			super(stack, parameterFactory, thisAddress, remoteAddress, LogManager.getLogger(ClientComponent.class));
 
 			super.listenerName = "Client";
 		}
@@ -777,8 +782,7 @@ public class TCAPComponentsTest extends SccpHarness {
 					if (c instanceof Reject)
 						et = EventType.Reject;
 
-					TestEvent te = TestEvent.createReceivedEvent(et, c, sequence++);
-					this.observerdEvents.add(te);
+					super.handleReceived(et, c);
 				}
 		}
 
@@ -804,9 +808,7 @@ public class TCAPComponentsTest extends SccpHarness {
 			// pm.setParameters(new Parameter[]{p1, p2});
 			// invoke.setParameter(pm);
 
-			TestEvent te = TestEvent.createSentEvent(EventType.Invoke, null, sequence++);
-			this.observerdEvents.add(te);
-
+			this.handleSent(EventType.Invoke, null);
 			this.dialog.sendData(invokeId, null, null, timeout, oc, null, true, false);
 		}
 	}
@@ -821,7 +823,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		 */
 		public ServerComponent(final TCAPStack stack, final ParameterFactory parameterFactory,
 				final SccpAddress thisAddress, final SccpAddress remoteAddress) {
-			super(stack, parameterFactory, thisAddress, remoteAddress);
+			super(stack, parameterFactory, thisAddress, remoteAddress, LogManager.getLogger(ServerComponent.class));
 
 			super.listenerName = "Server";
 		}
@@ -830,8 +832,7 @@ public class TCAPComponentsTest extends SccpHarness {
 
 			OperationCode oc = TcapFactory.createLocalOperationCode(10);
 
-			TestEvent te = TestEvent.createSentEvent(EventType.ReturnResult, null, sequence++);
-			this.observerdEvents.add(te);
+			this.handleSent(EventType.ReturnResult, null);
 
 			this.dialog.sendData(invokeId, null, null, null, oc, null, false, false);
 		}
@@ -840,8 +841,7 @@ public class TCAPComponentsTest extends SccpHarness {
 
 			OperationCode oc = TcapFactory.createLocalOperationCode(10);
 
-			TestEvent te = TestEvent.createSentEvent(EventType.ReturnResultLast, null, sequence++);
-			this.observerdEvents.add(te);
+			this.handleSent(EventType.ReturnResultLast, null);
 
 			this.dialog.sendData(invokeId, null, null, null, oc, null, false, true);
 		}
@@ -850,8 +850,7 @@ public class TCAPComponentsTest extends SccpHarness {
 
 			ErrorCode ec = TcapFactory.createLocalErrorCode(10);
 
-			TestEvent te = TestEvent.createSentEvent(EventType.ReturnError, null, sequence++);
-			this.observerdEvents.add(te);
+			this.handleSent(EventType.ReturnError, null);
 
 			this.dialog.sendError(invokeId, ec, null);
 		}
@@ -885,8 +884,7 @@ public class TCAPComponentsTest extends SccpHarness {
 					if (c instanceof Reject)
 						et = EventType.Reject;
 
-					TestEvent te = TestEvent.createReceivedEvent(et, c, sequence++);
-					this.observerdEvents.add(te);
+					super.handleReceived(et, c);
 				}
 		}
 	}

@@ -28,13 +28,13 @@ import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.EventTestHarness;
-import org.restcomm.protocols.ss7.tcap.EventType;
 import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
-import org.restcomm.protocols.ss7.tcap.TestEvent;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
+import org.restcomm.protocols.ss7.tcap.listeners.EventTestHarness;
+import org.restcomm.protocols.ss7.tcap.listeners.EventType;
+import org.restcomm.protocols.ss7.tcap.listeners.TestEvent;
 
 /**
  * Test for call flow.
@@ -54,22 +54,11 @@ public class DialogIdleTest extends SccpHarness {
 	private Client client;
 	private Server server;
 
-	public DialogIdleTest() {
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	@Override
 	@Before
-	public void setUp() throws Exception {
+	public void beforeEach() throws Exception {
 		this.sccpStack1Name = "DialogIdleTestSccpStack1";
 		this.sccpStack2Name = "DialogIdleTestSccpStack2";
 
-		System.out.println("setUp");
 		super.setUp();
 
 		peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1,
@@ -93,15 +82,8 @@ public class DialogIdleTest extends SccpHarness {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#tearDown()
-	 */
-	@Override
 	@After
-	public void tearDown() {
-		System.out.println("tearDown");
+	public void afterEach() {
 		this.tcapStack1.stop();
 		this.tcapStack2.stop();
 		super.tearDown();
@@ -117,10 +99,8 @@ public class DialogIdleTest extends SccpHarness {
 		expectedEvents.add(te);
 
 		client.startClientDialog();
-		EventTestHarness.waitFor(_WAIT * 3);
-		// waitForEnd();
+		client.awaitReceived(EventType.DialogRelease);
 		client.compareEvents(expectedEvents);
-
 	}
 
 	@Test
@@ -148,10 +128,12 @@ public class DialogIdleTest extends SccpHarness {
 		client.startClientDialog();
 		EventTestHarness.waitFor(_WAIT);
 		client.sendBegin();
-		EventTestHarness.waitFor(_WAIT * 3);
+
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
+
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
-
 	}
 
 	@Test
@@ -181,7 +163,10 @@ public class DialogIdleTest extends SccpHarness {
 		client.startClientDialog();
 		EventTestHarness.waitFor(_WAIT);
 		client.sendBegin();
-		EventTestHarness.waitFor(_WAIT * 3);
+
+		client.awaitReceived(EventType.DialogRelease);
+		server.awaitReceived(EventType.DialogRelease);
+
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
 	}
@@ -212,17 +197,16 @@ public class DialogIdleTest extends SccpHarness {
 		serverExpectedEvents.add(te);
 
 		client.startClientDialog();
-		try {
-			EventTestHarness.waitFor(_WAIT);
-			client.sendBegin();
-			EventTestHarness.waitFor(_WAIT);
-			server.sendContinue();
-			EventTestHarness.waitFor(_WAIT * 3);
-		} finally {
-			client.compareEvents(clientExpectedEvents);
-			server.compareEvents(serverExpectedEvents);
-		}
+		EventTestHarness.waitFor(_WAIT);
+		client.sendBegin();
 
+		EventTestHarness.waitFor(_WAIT);
+		server.sendContinue();
+
+		EventTestHarness.waitFor(_WAIT * 3);
+
+		client.compareEvents(clientExpectedEvents);
+		server.compareEvents(serverExpectedEvents);
 	}
 
 	@Test
@@ -291,19 +275,18 @@ public class DialogIdleTest extends SccpHarness {
 		serverExpectedEvents.add(te);
 		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + _WAIT * 3);
 		serverExpectedEvents.add(te);
-		client.startClientDialog();
-		try {
-			EventTestHarness.waitFor(_WAIT);
-			client.sendBegin();
-			EventTestHarness.waitFor(_WAIT);
-			server.sendContinue();
-			EventTestHarness.waitFor(_WAIT);
-			client.sendEnd(TerminationType.Basic);
-			EventTestHarness.waitFor(_WAIT * 3);
-		} finally {
-			client.compareEvents(clientExpectedEvents);
-			server.compareEvents(serverExpectedEvents);
-		}
 
+		client.startClientDialog();
+		EventTestHarness.waitFor(_WAIT);
+
+		client.sendBegin();
+		EventTestHarness.waitFor(_WAIT);
+		server.sendContinue();
+		EventTestHarness.waitFor(_WAIT);
+		client.sendEnd(TerminationType.Basic);
+		EventTestHarness.waitFor(_WAIT * 3);
+
+		client.compareEvents(clientExpectedEvents);
+		server.compareEvents(serverExpectedEvents);
 	}
 }

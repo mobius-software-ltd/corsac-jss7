@@ -36,163 +36,147 @@ import io.netty.buffer.ByteBuf;
  */
 public class GSMCharsetDecoder {
 
-    private byte[] mask = new byte[] { 0x7F, 0x3F, 0x1F, 0x0F, 0x07, 0x03, 0x01 };
+	private byte[] mask = new byte[] { 0x7F, 0x3F, 0x1F, 0x0F, 0x07, 0x03, 0x01 };
 
-    private int bitpos = 0;
-    private int decodedBytes = 0;
-    private byte leftOver;
-    private GSMCharset cs;
-    private boolean escape;
-    private GSMCharsetDecodingData encodingData;
+	private int bitpos = 0;
+	private int decodedBytes = 0;
+	private byte leftOver;
+	private GSMCharset cs;
+	private boolean escape;
+	private GSMCharsetDecodingData encodingData;
 
-    /**
-     * Constructs a Decoder.
-     */
-    protected GSMCharsetDecoder(GSMCharset cs) {
-        this.cs = cs;
-    }
+	/**
+	 * Constructs a Decoder.
+	 */
+	protected GSMCharsetDecoder(GSMCharset cs) {
+		this.cs = cs;
+	}
 
-    public void setGSMCharsetDecodingData(GSMCharsetDecodingData encodingData) {
-        this.encodingData = encodingData;
-    }
+	public void setGSMCharsetDecodingData(GSMCharsetDecodingData encodingData) {
+		this.encodingData = encodingData;
+	}
 
-    public GSMCharsetDecodingData getGSMCharsetDecodingData() {
-        return this.encodingData;
-    }
+	public GSMCharsetDecodingData getGSMCharsetDecodingData() {
+		return this.encodingData;
+	}
 
-    protected CoderResult decodeLoop(ByteBuf in, StringBuilder out) {
+	protected CoderResult decodeLoop(ByteBuf in, StringBuilder out) {
 
-        while (in.readableBytes()>0) {
+		while (in.readableBytes() > 0) {
 
-            // Read the first byte
-            byte data = in.readByte();
+			// Read the first byte
+			byte data = in.readByte();
 
-            if (this.encodingData != null && this.encodingData.encodingStyle == Gsm7EncodingStyle.bit8_smpp_style) {
-                putChar(data, out);
-            } else {
-                // take back-up of byte
-                byte tempData = data;
+			if (this.encodingData != null && this.encodingData.encodingStyle == Gsm7EncodingStyle.bit8_smpp_style)
+				putChar(data, out);
+			else {
+				// take back-up of byte
+				byte tempData = data;
 
-                // System.out.println("data = "+ Integer.toBinaryString(data));
+				// the rest of bits that we don't need now but for next iteration
+				byte tempCurrHol = (byte) ((data & 0xFF) >>> (7 - bitpos));
 
-                // the rest of bits that we don't need now but for next iteration
-                byte tempCurrHol = (byte) ((data & 0xFF) >>> (7 - bitpos));
+				// The bits that will be consumed for formation of current char
+				data = (byte) (data & mask[bitpos]);
 
-                // System.out.println("Current = "+
-                // Integer.toBinaryString(current));
+				if (bitpos != 0) {
+					// we don't have enough bits to form char, we need to use the
+					// bits
+					// from previous iteration
 
-                // The bits that will be consumed for formation of current char
-                data = (byte) (data & mask[bitpos]);
+					// Move the curent bits read to left and append the previous
+					// bits
+					data = (byte) (data << bitpos);
+					data = (byte) (data | leftOver);
 
-                if (bitpos != 0) {
-                    // we don't have enough bits to form char, we need to use the
-                    // bits
-                    // from previous iteration
+					// We have 7 bits now to form char
+					putChar(data, out);
 
-                    // Move the curent bits read to left and append the previous
-                    // bits
-                    data = (byte) (data << bitpos);
-                    data = (byte) (data | leftOver);
+					// This means we not only used previous 6 bits and 1 bit from
+					// current byte to form char, but now we also have 7 bits left
+					// over from current byte and hence we can get another char
+					if (bitpos == 6) {
+						data = (byte) (((tempData & 0xFE)) >>> 1);
 
-                    // We have 7 bits now to form char
-                    putChar(data, out);
+						if (this.encodingData != null
+								&& this.encodingData.encodingStyle == Gsm7EncodingStyle.bit7_ussd_style && data == '\r'
+								&& in.readableBytes() == 0) {
+							// case when found '\r' at the byte border if USSD style: skip final '\r' char
+						} else
+							putChar(data, out);
+					}
+				} else
+					// For this iteration we have all 7 bits to form the char
+					// from byte that we read
+					putChar(data, out);
 
-                    // This means we not only used previous 6 bits and 1 bit from
-                    // current byte to form char, but now we also have 7 bits left
-                    // over from current byte and hence we can get another char
-                    if (bitpos == 6) {
-                        data = (byte) (((tempData & 0xFE)) >>> 1);
+				// assign the left over bits
+				leftOver = tempCurrHol;
 
-                        if (this.encodingData != null && this.encodingData.encodingStyle == Gsm7EncodingStyle.bit7_ussd_style
-                                && data == '\r' && in.readableBytes()==0) {
-                            // case when found '\r' at the byte border if USSD style: skip final '\r' char
-                        } else
-                            putChar(data, out);
-                    }
-                } else {
-                    // For this iteration we have all 7 bits to form the char
-                    // from byte that we read
-                    putChar(data, out);
-                }
+				bitpos++;
+				if (bitpos == 7)
+					bitpos = 0;
+			}
+		}
 
-                // assign the left over bits
-                leftOver = tempCurrHol;
+		return CoderResult.UNDERFLOW;
+	}
 
-                bitpos++;
-                if (bitpos == 7) {
-                    bitpos = 0;
-                }
-            }
-        }
+	private void putChar(byte data, StringBuilder out) {
 
-        return CoderResult.UNDERFLOW;
-    }
+		this.decodedBytes++;
+		if (this.encodingData != null)
+			if (this.encodingData.septetCount >= 0 && this.decodedBytes > this.encodingData.septetCount)
+				return;
 
-    private void putChar(byte data, StringBuilder out) {
+		int code = 0;
+		if (data >= 0 && data < 128)
+			if (escape) {
+				escape = false;
+				if (this.cs.extensionTable != null)
+					code = this.cs.extensionTable[data];
+			} else if (data == GSMCharset.ESCAPE) {
+				escape = true;
+				return;
+			} else
+				code = this.cs.mainTable[data];
 
-        this.decodedBytes++;
-        if (this.encodingData != null) {
-            if (this.encodingData.septetCount >= 0 && this.decodedBytes > this.encodingData.septetCount)
-                return;
-        }
+		if (code == 0)
+			out.append(' ');
+		else
+			out.append((char) code);
+	}
 
-        int code = 0;
-        if (data >= 0 && data < 128) {
-            if (escape) {
-                escape = false;
-                if (this.cs.extensionTable != null)
-                    code = this.cs.extensionTable[data];
-            } else {
-                if (data == GSMCharset.ESCAPE) {
-                    escape = true;
-                    return;
-                } else {
-                    code = this.cs.mainTable[data];
-                }
-            }
-        }
+	public final String decode(ByteBuf in) throws CharacterCodingException {
+		StringBuilder sb = new StringBuilder();
+		if (encodingData.leadingBitsSkipCount != 0) {
+			int currByte = in.readByte() & 0x0FF;
+			if (encodingData.leadingBitsSkipCount == 1) {
+				currByte = (byte) (((currByte & 0xFE)) >>> 1);
 
-        if (code == 0)
-            out.append(' ');
-        else
-            out.append((char) code);
-    }
-    
-    public final String decode(ByteBuf in) throws CharacterCodingException {
-    	StringBuilder sb = new StringBuilder();
-    	if(encodingData.leadingBitsSkipCount!=0)
-    	{
-    		int currByte = in.readByte() & 0x0FF;
-    		if(encodingData.leadingBitsSkipCount==1)
-    		{
-    			currByte = (byte) (((currByte & 0xFE)) >>> 1);
+				if (this.encodingData != null && this.encodingData.encodingStyle == Gsm7EncodingStyle.bit7_ussd_style
+						&& currByte == '\r' && in.readableBytes() == 0) {
+					// case when found '\r' at the byte border if USSD style: skip final '\r' char
+				} else
+					putChar((byte) currByte, sb);
+			} else {
+				bitpos = 7 - encodingData.leadingBitsSkipCount;
+				leftOver = (byte) (currByte >>> (7 - bitpos));
 
-                 if (this.encodingData != null && this.encodingData.encodingStyle == Gsm7EncodingStyle.bit7_ussd_style
-                         && currByte == '\r' && in.readableBytes()==0) {
-                     // case when found '\r' at the byte border if USSD style: skip final '\r' char
-                 } else
-                     putChar((byte)currByte, sb);
-    		}
-    		else
-    		{
-	    		bitpos = 7 - encodingData.leadingBitsSkipCount;
-	    		leftOver = (byte) (currByte >>> (7 - bitpos));  
-	    		
-	    		bitpos++;
-	            if (bitpos == 7) {
-	            	bitpos = 0;
-	            }
-    		}
-    	}
-    	
-    	try {
-            decodeLoop(in, sb);
-        } catch (BufferUnderflowException x) {
-            throw new CoderMalfunctionError(x);
-        } catch (BufferOverflowException x) {
-            throw new CoderMalfunctionError(x);
-        }
+				bitpos++;
+				if (bitpos == 7)
+					bitpos = 0;
+			}
+		}
 
-        return sb.toString();
-    }
+		try {
+			decodeLoop(in, sb);
+		} catch (BufferUnderflowException x) {
+			throw new CoderMalfunctionError(x);
+		} catch (BufferOverflowException x) {
+			throw new CoderMalfunctionError(x);
+		}
+
+		return sb.toString();
+	}
 }

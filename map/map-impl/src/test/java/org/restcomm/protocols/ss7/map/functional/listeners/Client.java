@@ -669,8 +669,9 @@ public class Client extends EventTestHarness {
 		AddressString serviceCentreAddress = this.mapParameterFactory
 				.createAddressString(AddressNature.network_specific_number, NumberingPlan.national, "999000");
 		SMDeliveryOutcome sMDeliveryOutcome = SMDeliveryOutcome.absentSubscriber;
-		clientDialogSms.addReportSMDeliveryStatusRequest(sequence, msisdn1, serviceCentreAddress, sMDeliveryOutcome,
-				null, null, false, false, null, null);
+
+		clientDialogSms.addReportSMDeliveryStatusRequest(sequence.get(), msisdn1, serviceCentreAddress,
+				sMDeliveryOutcome, null, null, false, false, null, null);
 
 		super.handleSent(EventType.ReportSMDeliveryStatusIndication, null);
 		clientDialogSms.send(dummyCallback);

@@ -55,6 +55,8 @@ import org.restcomm.protocols.ss7.tcap.asn.tx.DialogAbortAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogRequestAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogResponseAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.TCBeginMessageImpl;
+import org.restcomm.protocols.ss7.tcap.listeners.Client;
+import org.restcomm.protocols.ss7.tcap.listeners.EventTestHarness;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
@@ -70,222 +72,206 @@ import io.netty.buffer.Unpooled;
  *
  */
 public class ProtocolVersionTest extends SccpHarness {
-    public static final long WAIT_TIME = 500;
-    public static final long[] _ACN_ = new long[] { 0, 4, 0, 0, 1, 0, 19, 2 };
-    private TCAPStackImpl tcapStack1;
-    private TCAPStackImpl tcapStack2;
-    private SccpAddress peer1Address;
-    private SccpAddress peer2Address;
-    private Client client;
-    private TestSccpListener sccpListener;
-    private ProtocolVersion pv;
+	public static final long WAIT_TIME = 500;
+	public static final long[] _ACN_ = new long[] { 0, 4, 0, 0, 1, 0, 19, 2 };
+	private TCAPStackImpl tcapStack1;
+	private TCAPStackImpl tcapStack2;
+	private SccpAddress peer1Address;
+	private SccpAddress peer2Address;
+	private Client client;
+	private TestSccpListener sccpListener;
+	private ProtocolVersion pv;
 
-    public ProtocolVersionTest() {
+	@Before
+	public void beforeEach() throws Exception {
+		this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
+		this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
 
-    }
+		super.setUp();
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    @Before
-    public void setUp() throws Exception {
-    	this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
-        this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
-        
-        System.out.println("setUp");
-        super.setUp();
+		peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1,
+				8);
+		peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2,
+				8);
 
-        peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
-        peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
+		sccpListener = new TestSccpListener();
+		this.sccpProvider2.registerSccpListener(8, sccpListener);
+		this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider1, 8, workerPool);
+		this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider2, 7, workerPool);
 
-        sccpListener = new TestSccpListener();
-        this.sccpProvider2.registerSccpListener(8, sccpListener);
-	this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider1, 8, workerPool);
-	this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider2, 7, workerPool);
+		this.tcapStack1.start();
+		this.tcapStack2.start();
 
-        this.tcapStack1.start();
-        this.tcapStack2.start();
+		this.tcapStack1.setInvokeTimeout(0);
+		this.tcapStack2.setInvokeTimeout(0);
+		// create test classes
+		this.client = new Client(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address);
+		// this.server = new Server(this.tcapStack2, super.parameterFactory,
+		// peer2Address, peer1Address);
 
-        this.tcapStack1.setInvokeTimeout(0);
-        this.tcapStack2.setInvokeTimeout(0);
-        // create test classes
-        this.client = new Client(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address);
-        //this.server = new Server(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address);
+	}
 
-    }
+	@After
+	public void afterEach() {
+		this.tcapStack1.stop();
+		this.tcapStack2.stop();
+		super.tearDown();
+	}
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see junit.framework.TestCase#tearDown()
-     */
-    @Override
-    @After
-    public void tearDown() {
-        this.tcapStack1.stop();
-        this.tcapStack2.stop();
-        super.tearDown();
+	@Test
+	public void doNotSendProtocolVersionDialogTest() throws Exception {
 
-    }
+		client.startClientDialog();
+		client.dialog.setDoNotSendProtocolVersion(true);
+		EventTestHarness.waitFor(WAIT_TIME);
 
-    @Test
-    public void doNotSendProtocolVersionDialogTest() throws Exception {
+		client.sendBegin();
+		EventTestHarness.waitFor(WAIT_TIME);
+		assertNull(pv);
+	}
 
-        client.startClientDialog();
-        client.dialog.setDoNotSendProtocolVersion(true);
-        EventTestHarness.waitFor(WAIT_TIME);
-        
-        client.sendBegin();
-        EventTestHarness.waitFor(WAIT_TIME);
-        assertNull(pv);
-    }
-    
-    @Test
-    public void sendProtocolVersionDialogTest() throws Exception {
+	@Test
+	public void sendProtocolVersionDialogTest() throws Exception {
 
-        client.startClientDialog();
-        client.dialog.setDoNotSendProtocolVersion(false);
-        EventTestHarness.waitFor(WAIT_TIME);
-        
-        client.sendBegin();
-        EventTestHarness.waitFor(WAIT_TIME);
-        assertNotNull(pv);        
-    }
-    
-    @Test
-    public void doNotSendProtocolVersionStackTest() throws Exception {
-        this.tcapStack1.setDoNotSendProtocolVersion(true);
-        client.startClientDialog();
-        EventTestHarness.waitFor(WAIT_TIME);
-        client.sendBegin();
-        EventTestHarness.waitFor(WAIT_TIME);        
-        assertNull(pv);
-    }
+		client.startClientDialog();
+		client.dialog.setDoNotSendProtocolVersion(false);
+		EventTestHarness.waitFor(WAIT_TIME);
 
-    @Test
-    public void sendProtocolVersionStackTest() throws Exception {
-        this.tcapStack1.setDoNotSendProtocolVersion(false);
-        client.startClientDialog();
-        EventTestHarness.waitFor(WAIT_TIME);
-        client.sendBegin();
-        EventTestHarness.waitFor(WAIT_TIME);
-        assertNotNull(pv);
-    }
+		client.sendBegin();
+		EventTestHarness.waitFor(WAIT_TIME);
+		assertNotNull(pv);
+	}
 
-    private class TestSccpListener implements SccpListener {
+	@Test
+	public void doNotSendProtocolVersionStackTest() throws Exception {
+		this.tcapStack1.setDoNotSendProtocolVersion(true);
+		client.startClientDialog();
+		EventTestHarness.waitFor(WAIT_TIME);
+		client.sendBegin();
+		EventTestHarness.waitFor(WAIT_TIME);
+		assertNull(pv);
+	}
 
-        private static final long serialVersionUID = 1L;
-        private ASNParser parser=new ASNParser(true);
-        
-        private TestSccpListener() {
-        	parser.loadClass(TCBeginMessageImpl.class);
-            
-        	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogRequestAPDUImpl.class);
-        	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogResponseAPDUImpl.class);
-        	parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogAbortAPDUImpl.class);
-        	
-        	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeImpl.class);
-        	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultImpl.class);
-        	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultLastImpl.class);
-        	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, RejectImpl.class);
-        	parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnErrorImpl.class); 
-        }
-        
-        @Override
-        public void onMessage(SccpDataMessage message) {
-        	ByteBuf buffer=Unpooled.wrappedBuffer(message.getData());
-        	Object output=null;
-        	try {
-        		output=parser.decode(buffer).getResult();
-        	}
-        	catch(ASNException ex) {        		
-        	}
-        	
-            if(output!=null && output instanceof TCBeginMessage) {
-            	TCBeginMessage tcb=(TCBeginMessage)output;
-            	if(tcb.getDialogPortion().getDialogAPDU() instanceof DialogRequestAPDU)
-		    pv=((DialogRequestAPDU)tcb.getDialogPortion().getDialogAPDU()).getProtocolVersion(); 
-                        
-            	System.out.println("DIALOG REQUEST:" + tcb.getDialogPortion().toString());
-            	System.out.println("PROTOCOL VERSION IS : " + pv);
-            }            
-        }
+	@Test
+	public void sendProtocolVersionStackTest() throws Exception {
+		this.tcapStack1.setDoNotSendProtocolVersion(false);
+		client.startClientDialog();
+		EventTestHarness.waitFor(WAIT_TIME);
+		client.sendBegin();
+		EventTestHarness.waitFor(WAIT_TIME);
+		assertNotNull(pv);
+	}
 
-        @Override
-        public void onNotice(SccpNoticeMessage message) {
-        }
+	private class TestSccpListener implements SccpListener {
 
-        @Override
-        public void onCoordResponse(int ssn, int multiplicityIndicator) {
-        }
+		private static final long serialVersionUID = 1L;
+		private ASNParser parser = new ASNParser(true);
 
-        @Override
-        public void onState(int dpc, int ssn, boolean inService,
-                int multiplicityIndicator) {
-        }
+		private TestSccpListener() {
+			parser.loadClass(TCBeginMessageImpl.class);
 
-        @Override
-        public void onPcState(int dpc, SignallingPointStatus status, Integer restrictedImportanceLevel, RemoteSccpStatus remoteSccpStatus) {
-        }
+			parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogRequestAPDUImpl.class);
+			parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogResponseAPDUImpl.class);
+			parser.registerAlternativeClassMapping(ASNDialogPortionObjectImpl.class, DialogAbortAPDUImpl.class);
 
-        @Override
-        public void onConnectIndication(SccpConnection conn, SccpAddress calledAddress, SccpAddress callingAddress,
-                ProtocolClass clazz, Credit credit, ByteBuf data, Importance importance) throws Exception {
-            // TODO Auto-generated method stub
-            
-        }
+			parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, InvokeImpl.class);
+			parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultImpl.class);
+			parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnResultLastImpl.class);
+			parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, RejectImpl.class);
+			parser.registerAlternativeClassMapping(ASNComponentPortionObjectImpl.class, ReturnErrorImpl.class);
+		}
 
-        @Override
-        public void onConnectConfirm(SccpConnection conn, ByteBuf data) {
-            // TODO Auto-generated method stub
-            
-        }
+		@Override
+		public void onMessage(SccpDataMessage message) {
+			ByteBuf buffer = Unpooled.wrappedBuffer(message.getData());
+			Object output = null;
+			try {
+				output = parser.decode(buffer).getResult();
+			} catch (ASNException ex) {
+			}
 
-        @Override
-        public void onDisconnectIndication(SccpConnection conn, ReleaseCause reason, ByteBuf data) {
-            // TODO Auto-generated method stub
-            
-        }
+			if (output != null && output instanceof TCBeginMessage) {
+				TCBeginMessage tcb = (TCBeginMessage) output;
+				if (tcb.getDialogPortion().getDialogAPDU() instanceof DialogRequestAPDU)
+					pv = ((DialogRequestAPDU) tcb.getDialogPortion().getDialogAPDU()).getProtocolVersion();
 
-        @Override
-        public void onDisconnectIndication(SccpConnection conn, RefusalCause reason, ByteBuf data) {
-            // TODO Auto-generated method stub
-            
-        }
+				System.out.println("DIALOG REQUEST:" + tcb.getDialogPortion().toString());
+				System.out.println("PROTOCOL VERSION IS : " + pv);
+			}
+		}
 
-        @Override
-        public void onDisconnectIndication(SccpConnection conn, ErrorCause errorCause) {
-            // TODO Auto-generated method stub
-            
-        }
+		@Override
+		public void onNotice(SccpNoticeMessage message) {
+		}
 
-        @Override
-        public void onResetIndication(SccpConnection conn, ResetCause reason) {
-            // TODO Auto-generated method stub
-            
-        }
+		@Override
+		public void onCoordResponse(int ssn, int multiplicityIndicator) {
+		}
 
-        @Override
-        public void onResetConfirm(SccpConnection conn) {
-            // TODO Auto-generated method stub
-            
-        }
+		@Override
+		public void onState(int dpc, int ssn, boolean inService, int multiplicityIndicator) {
+		}
 
-        @Override
-        public void onData(SccpConnection conn, ByteBuf data) {
-            // TODO Auto-generated method stub
-            
-        }
+		@Override
+		public void onPcState(int dpc, SignallingPointStatus status, Integer restrictedImportanceLevel,
+				RemoteSccpStatus remoteSccpStatus) {
+		}
 
-        @Override
-        public void onDisconnectConfirm(SccpConnection conn) {
-            // TODO Auto-generated method stub
-            
-        }
+		@Override
+		public void onConnectIndication(SccpConnection conn, SccpAddress calledAddress, SccpAddress callingAddress,
+				ProtocolClass clazz, Credit credit, ByteBuf data, Importance importance) throws Exception {
+			// TODO Auto-generated method stub
 
-    }
-    
+		}
+
+		@Override
+		public void onConnectConfirm(SccpConnection conn, ByteBuf data) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onDisconnectIndication(SccpConnection conn, ReleaseCause reason, ByteBuf data) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onDisconnectIndication(SccpConnection conn, RefusalCause reason, ByteBuf data) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onDisconnectIndication(SccpConnection conn, ErrorCause errorCause) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onResetIndication(SccpConnection conn, ResetCause reason) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onResetConfirm(SccpConnection conn) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onData(SccpConnection conn, ByteBuf data) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void onDisconnectConfirm(SccpConnection conn) {
+			// TODO Auto-generated method stub
+
+		}
+
+	}
+
 }

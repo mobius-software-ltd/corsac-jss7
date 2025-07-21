@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -153,7 +154,7 @@ public class DialogImpl implements Dialog {
 	private WorkerPool workerPool;
 
 	// scheduled components list
-	private List<BaseComponent> scheduledComponentList = new ArrayList<BaseComponent>();
+	private List<BaseComponent> scheduledComponentList = new CopyOnWriteArrayList<BaseComponent>();
 
 	private TCAPProviderImpl provider;
 
@@ -340,6 +341,7 @@ public class DialogImpl implements Dialog {
 				// lucky
 				// TCInvokeRequestImpl invoke = (TCInvokeRequestImpl) cr;
 				// there is no notification on cancel?
+
 				this.scheduledComponentList.remove(index);
 				int invokeIndex = DialogImpl.getIndexFromInvokeId(cr.getInvokeId());
 				InvokeWrapper pendingWrapper = this.scheduledOperations[invokeIndex];
@@ -513,11 +515,12 @@ public class DialogImpl implements Dialog {
 			return;
 		}
 
+		this.scheduledComponentList.clear();
+
 		this.setState(TRPseudoState.InitialSent);
 		getProvider().getStack().newMessageSent(tcbm.getName(), buffer.readableBytes(), this.networkId);
 		getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
 				this.seqControl, this.networkId, this.localSsn, this.remotePc, callback);
-		this.scheduledComponentList.clear();
 	}
 
 	/*
@@ -586,6 +589,7 @@ public class DialogImpl implements Dialog {
 			getProvider().getStack().newMessageSent(tcbm.getName(), buffer.readableBytes(), this.networkId);
 			TRPseudoState oldState = this.getState();
 			this.setState(TRPseudoState.Active);
+			this.scheduledComponentList.clear();
 
 			getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
 					this.seqControl, this.networkId, this.localSsn, this.remotePc, new TaskCallback<Exception>() {
@@ -600,9 +604,6 @@ public class DialogImpl implements Dialog {
 							callback.onError(exception);
 						}
 					});
-
-			this.scheduledComponentList.clear();
-
 		} else if (state.get() == TRPseudoState.Active) {
 			this.idleTimerActionTaken.set(true);
 			restartIdleTimer();
@@ -613,6 +614,7 @@ public class DialogImpl implements Dialog {
 					Utils.encodeTransactionId(this.localTransactionIdObject, isSwapTcapIdBytes));
 			tcbm.setDestinationTransactionId(
 					Utils.encodeTransactionId(this.remoteTransactionIdObject, isSwapTcapIdBytes));
+
 			if (this.scheduledComponentList.size() > 0) {
 				List<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
 				this.prepareComponents(componentsToSend);
@@ -630,10 +632,11 @@ public class DialogImpl implements Dialog {
 				return;
 			}
 
+			this.scheduledComponentList.clear();
+
 			getProvider().getStack().newMessageSent(tcbm.getName(), buffer.readableBytes(), this.networkId);
 			getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
 					this.seqControl, this.networkId, this.localSsn, this.remotePc, callback);
-			this.scheduledComponentList.clear();
 		} else
 			callback.onError(new TCAPSendException("Wrong state: " + this.state.get()));
 	}
@@ -671,6 +674,7 @@ public class DialogImpl implements Dialog {
 			if (this.scheduledComponentList.size() > 0) {
 				List<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
 				componentsToSend.addAll(this.scheduledComponentList);
+
 				this.scheduledComponentList.clear();
 				this.prepareComponents(componentsToSend);
 				tcbm.setComponents(componentsToSend);
@@ -747,11 +751,12 @@ public class DialogImpl implements Dialog {
 			return;
 		}
 
+		this.scheduledComponentList.clear();
+
 		getProvider().getStack().newMessageSent(tcbm.getName(), buffer.readableBytes(), this.networkId);
 		getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
 				this.seqControl, this.networkId, this.localSsn, this.remotePc, callback);
 		release();
-		this.scheduledComponentList.clear();
 	}
 
 	/*
@@ -784,6 +789,7 @@ public class DialogImpl implements Dialog {
 		if (this.scheduledComponentList.size() > 0) {
 			List<BaseComponent> componentsToSend = new ArrayList<BaseComponent>(this.scheduledComponentList.size());
 			componentsToSend.addAll(this.scheduledComponentList);
+
 			this.scheduledComponentList.clear();
 			this.prepareComponents(componentsToSend);
 			msg.setComponents(componentsToSend);
@@ -798,11 +804,12 @@ public class DialogImpl implements Dialog {
 			return;
 		}
 
+		this.scheduledComponentList.clear();
+
 		getProvider().getStack().newMessageSent(msg.getName(), buffer.readableBytes(), this.networkId);
 		getProvider().send(this, buffer, event.getReturnMessageOnError(), this.remoteAddress, this.localAddress,
 				this.seqControl, this.networkId, this.localSsn, this.remotePc, callback);
 		release();
-		this.scheduledComponentList.clear();
 	}
 
 	@Override
@@ -881,6 +888,8 @@ public class DialogImpl implements Dialog {
 				if (event.getOriginatingAddress() != null && !event.getOriginatingAddress().equals(this.localAddress))
 					this.localAddress = event.getOriginatingAddress();
 
+			this.scheduledComponentList.clear();
+
 			// no components
 			try {
 				ByteBuf buffer = getProvider().getParser().encode(msg);
@@ -899,8 +908,6 @@ public class DialogImpl implements Dialog {
 			} finally {
 				release();
 			}
-
-			this.scheduledComponentList.clear();
 		} else if (this.state.get() == TRPseudoState.InitialSent)
 			release();
 	}
@@ -1177,6 +1184,7 @@ public class DialogImpl implements Dialog {
 
 			if (param != null)
 				returnResultLast.setParameter(param);
+
 			this.scheduledComponentList.add(returnResultLast);
 
 			if (returnResultLast.getInvokeId() != null)
@@ -1192,6 +1200,7 @@ public class DialogImpl implements Dialog {
 
 			if (param != null)
 				returnResult.setParameter(param);
+
 			this.scheduledComponentList.add(returnResult);
 		}
 
@@ -1418,7 +1427,6 @@ public class DialogImpl implements Dialog {
 
 	protected void processContinue(TCContinueMessage msg, SccpAddress localAddress, SccpAddress remoteAddress,
 			ByteBuf data) {
-
 		TCContinueIndication tcContinueIndication = null;
 		if (state.get() == TRPseudoState.InitialSent) {
 			restartIdleTimer();
@@ -1725,6 +1733,7 @@ public class DialogImpl implements Dialog {
 		List<BaseComponent> resultingIndications = new ArrayList<BaseComponent>();
 		for (BaseComponent ci : components) {
 			Integer invokeId;
+
 			if (ci instanceof Invoke)
 				invokeId = ((Invoke) ci).getLinkedId();
 			else
@@ -1732,6 +1741,7 @@ public class DialogImpl implements Dialog {
 
 			InvokeWrapper wrapper = null;
 			int index = 0;
+
 			if (invokeId != null) {
 				index = getIndexFromInvokeId(invokeId);
 				wrapper = getInvokeByIndex(index);

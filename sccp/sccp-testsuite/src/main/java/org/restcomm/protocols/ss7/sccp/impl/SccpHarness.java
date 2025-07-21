@@ -90,8 +90,10 @@ public class SccpHarness {
 	};
 
 	public void setUp() throws Exception {
-		workerPool = new WorkerPool();
-		workerPool.start(16);
+		if (workerPool == null) {
+			workerPool = new WorkerPool();
+			workerPool.start(4);
+		}
 
 		mtp3UserPart1 = new Mtp3UserPartImpl(this, workerPool);
 		mtp3UserPart2 = new Mtp3UserPartImpl(this, workerPool);
@@ -108,16 +110,23 @@ public class SccpHarness {
 	}
 
 	public void tearDown() {
-		this.workerPool.stop();
+		if (workerPool != null) {
+			this.workerPool.stop();
+			this.workerPool = null;
+		}
 
 		try {
-			mtp3UserPart1.stop();
-			mtp3UserPart1 = null;
+			if (mtp3UserPart1 != null) {
+				mtp3UserPart1.stop();
+				mtp3UserPart1 = null;
+			}
 
-			mtp3UserPart2.stop();
-			mtp3UserPart2 = null;
+			if (mtp3UserPart2 != null) {
+				mtp3UserPart2.stop();
+				mtp3UserPart2 = null;
+			}
 		} catch (Exception ex) {
-			logger.error(ex);
+			logger.error(ex.getMessage());
 		}
 
 		this.tearDownStack1();
@@ -198,13 +207,19 @@ public class SccpHarness {
 	}
 
 	private void tearDownStack1() {
-		sccpStack1.removeAllResourses();
-		sccpStack1.stop();
+		if (sccpStack1 != null) {
+			sccpStack1.removeAllResourses();
+			sccpStack1.stop();
+			sccpStack1 = null;
+		}
 	}
 
 	private void tearDownStack2() {
-		sccpStack2.removeAllResourses();
-		sccpStack2.stop();
+		if (sccpStack2 != null) {
+			sccpStack2.removeAllResourses();
+			sccpStack2.stop();
+			sccpStack2 = null;
+		}
 	}
 
 	protected int getStack1PC() {

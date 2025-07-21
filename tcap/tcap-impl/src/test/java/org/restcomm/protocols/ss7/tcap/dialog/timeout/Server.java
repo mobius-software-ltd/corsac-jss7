@@ -22,24 +22,23 @@
 
 package org.restcomm.protocols.ss7.tcap.dialog.timeout;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.EventTestHarness;
 import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
+import org.restcomm.protocols.ss7.tcap.listeners.EventTestHarness;
 
 /**
  * @author baranowb
  *
  */
 public class Server extends EventTestHarness {
-	/**
-	 * @param stack
-	 * @param thisAddress
-	 * @param remoteAddress
-	 */
+	private static Logger logger = LogManager.getLogger(Server.class);
+
 	public Server(final TCAPStack stack, final ParameterFactory parameterFactory, final SccpAddress thisAddress,
 			final SccpAddress remoteAddress) {
-		super(stack, parameterFactory, thisAddress, remoteAddress);
+		super(stack, parameterFactory, thisAddress, remoteAddress, logger);
 
 		super.listenerName = "Server";
 	}

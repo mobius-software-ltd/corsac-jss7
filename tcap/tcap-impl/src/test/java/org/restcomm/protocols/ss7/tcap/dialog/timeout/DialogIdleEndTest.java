@@ -30,10 +30,7 @@ import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.EventTestHarness;
-import org.restcomm.protocols.ss7.tcap.EventType;
 import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
-import org.restcomm.protocols.ss7.tcap.TestEvent;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
@@ -41,6 +38,9 @@ import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
 import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcap.listeners.EventTestHarness;
+import org.restcomm.protocols.ss7.tcap.listeners.EventType;
+import org.restcomm.protocols.ss7.tcap.listeners.TestEvent;
 
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNBitString;
 
@@ -68,7 +68,6 @@ public class DialogIdleEndTest extends SccpHarness {
 		this.sccpStack1Name = "DialogIdleEndTestSccpStack1";
 		this.sccpStack2Name = "DialogIdleEndTestSccpStack2";
 
-		System.out.println("setUp");
 		super.setUp();
 
 		peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1,
@@ -89,19 +88,12 @@ public class DialogIdleEndTest extends SccpHarness {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#tearDown()
-	 */
 	@Override
 	@After
 	public void tearDown() {
-		System.out.println("tearDown");
 		this.tcapStack1.stop();
 		this.tcapStack2.stop();
 		super.tearDown();
-
 	}
 
 	@Test

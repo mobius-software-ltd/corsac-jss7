@@ -757,7 +757,6 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 
 	@Override
 	public void onMessage(SccpDataMessage message) {
-
 		try {
 			ByteBuf data = message.getData();
 			int bytes = data.readableBytes();
@@ -777,6 +776,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 
 			if (output.getResult() instanceof TCUnifiedMessage) {
 				TCUnifiedMessage realMessage = (TCUnifiedMessage) output.getResult();
+
 				stack.newMessageReceived(realMessage.getName(), bytes, message.getNetworkId());
 				DialogImpl di = ((TCUnifiedMessageImpl) realMessage).getDialog();
 
