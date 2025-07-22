@@ -29,7 +29,7 @@
 		<module>validator</module>
 		<module>mtp</module>
 		<module>m3ua</module>
-		<module>isup</module>
+		<!--module>isup</module-->
 		<module>sccp</module>
 		<module>tcap</module>
 		<module>tcap-ansi</module>
