@@ -16,19 +16,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package org.restcomm.protocols.ss7.tcap;
+
+package org.restcomm.protocols.ss7.tcap.asn.messages;
 
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
+import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
+
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNInteger;
 
 /**
 *
 * @author yulian oifa
 *
 */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=20,constructed=true,lengthIndefinite=false)
-public class BadComponentImpl extends InvokeImpl 
-{	
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,lengthIndefinite=false)
+public class MistypedInvokeImpl extends InvokeImpl 
+{
+	@ASNProperty(asnClass = ASNClass.CONTEXT_SPECIFIC,tag=30,constructed = false,index = -1)
+	private ASNInteger dummy;
+	
+	public MistypedInvokeImpl(Integer dummy) {
+		this.dummy=new ASNInteger(dummy, null, null, null, false);
+	}
 }

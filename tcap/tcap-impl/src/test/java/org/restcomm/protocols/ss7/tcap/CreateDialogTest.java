@@ -54,30 +54,31 @@ import com.mobius.software.common.dal.timers.WorkerPool;
  *
  */
 public class CreateDialogTest {
-
 	private SccpHarnessPreview sccpProv = new SccpHarnessPreview();
 	private TCAPStackImplWrapper tcapStack1;
 	private WorkerPool workerPool;
 
 	@Before
 	public void setUp() throws Exception {
-
 		workerPool = new WorkerPool();
 		workerPool.start(4);
-		this.tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "CreateDialogTest", workerPool);
 
-		this.tcapStack1.start();
+		tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "CreateDialogTest", workerPool);
+
+		tcapStack1.start();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#tearDown()
-	 */
 	@After
 	public void tearDown() {
-		this.tcapStack1.stop();
-		this.workerPool.stop();
+		if (tcapStack1 != null) {
+			tcapStack1.stop();
+			tcapStack1 = null;
+		}
+
+		if (workerPool != null) {
+			workerPool.stop();
+			workerPool = null;
+		}
 	}
 
 	@Test
@@ -107,25 +108,20 @@ public class CreateDialogTest {
 
 		@Override
 		public void deregisterSccpListener(int arg0) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public int getMaxUserDataLength(SccpAddress arg0, SccpAddress arg1, int networkId) {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 
 		@Override
 		public MessageFactory getMessageFactory() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public ParameterFactory getParameterFactory() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -136,50 +132,39 @@ public class CreateDialogTest {
 		@Override
 		public void send(SccpDataMessage msg, TaskCallback<Exception> callback) {
 			// we check here that no messages go from TCAP previewMode
-
 			fail("No message must go from TCAP previewMode");
 		}
 
 		@Override
 		public void registerManagementEventListener(UUID key, SccpManagementEventListener listener) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void deregisterManagementEventListener(UUID key) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void coordRequest(int ssn) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public SccpConnection newConnection(int localSsn, ProtocolClass protocolClass)
 				throws MaxConnectionCountReached {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public ConcurrentHashMap<Integer, SccpConnection> getConnections() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public void send(SccpNoticeMessage message, TaskCallback<Exception> callback) {
-			// TODO Auto-generated method stub
 			callback.onSuccess();
 		}
 
 		@Override
 		public SccpStack getSccpStack() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 	}

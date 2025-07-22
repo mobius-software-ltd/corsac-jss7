@@ -118,6 +118,7 @@ public class TCAPFunctionalTest extends SccpHarness {
 	@Test
 	public void simpleTCWithDialogTest() throws Exception {
 		long stamp = System.currentTimeMillis();
+
 		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
 		TestEvent te = TestEvent.createSentEvent(EventType.Begin, null, 0, stamp);
 		clientExpectedEvents.add(te);
@@ -169,8 +170,8 @@ public class TCAPFunctionalTest extends SccpHarness {
 
 	@Test
 	public void uniMsgTest() throws Exception {
-
 		long stamp = System.currentTimeMillis();
+
 		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
 		TestEvent te = TestEvent.createSentEvent(EventType.Uni, null, 0, stamp);
 		clientExpectedEvents.add(te);

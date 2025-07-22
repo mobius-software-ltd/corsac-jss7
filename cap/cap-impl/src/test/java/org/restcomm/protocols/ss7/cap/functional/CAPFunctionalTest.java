@@ -1939,7 +1939,6 @@ public class CAPFunctionalTest extends SccpHarness {
 
 		client.sendActivityTestRequest(_ACTIVITY_TEST_INVOKE_TIMEOUT);
 
-		Thread.sleep(_ACTIVITY_TEST_INVOKE_TIMEOUT);
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
 
@@ -1958,18 +1957,7 @@ public class CAPFunctionalTest extends SccpHarness {
 	@Test
 	public void testDialogTimeout() throws Exception {
 
-		Client client = new Client(stack1, peer1Address, peer2Address) {
-
-			@Override
-			public void onDialogTimeout(CAPDialog capDialog) {
-				super.onDialogTimeout(capDialog);
-			}
-
-			@Override
-			public void onDialogDelimiter(CAPDialog capDialog) {
-				super.onDialogDelimiter(capDialog);
-			}
-		};
+		Client client = new Client(stack1, peer1Address, peer2Address);
 
 		Server server = new Server(this.stack2, peer2Address, peer1Address) {
 
@@ -2012,7 +2000,6 @@ public class CAPFunctionalTest extends SccpHarness {
 		};
 
 		long _DIALOG_TIMEOUT = 2000;
-		long _SLEEP_BEFORE_ODISCONNECT = 3000;
 		long stamp = System.currentTimeMillis();
 		int count = 0;
 		// Client side events
@@ -2065,15 +2052,11 @@ public class CAPFunctionalTest extends SccpHarness {
 		client.sendInitialDp(CAPApplicationContext.CapV3_gsmSSF_scfGeneric);
 
 		// waiting here for DialogTimeOut -> ActivityTest
-		Thread.sleep(_SLEEP_BEFORE_ODISCONNECT);
-
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
-		// Thread.currentThread().sleep(1000000);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
-
 	}
 
 	/**
@@ -2205,12 +2188,10 @@ public class CAPFunctionalTest extends SccpHarness {
 		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
 
 		client.sendBadDataNoAcn();
-
 		client.awaitReceived(EventType.DialogRelease);
 
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
-
 	}
 
 	/**

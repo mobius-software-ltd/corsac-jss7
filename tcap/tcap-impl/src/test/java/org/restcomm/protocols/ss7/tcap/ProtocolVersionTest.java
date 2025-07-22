@@ -74,6 +74,7 @@ import io.netty.buffer.Unpooled;
 public class ProtocolVersionTest extends SccpHarness {
 	public static final long WAIT_TIME = 500;
 	public static final long[] _ACN_ = new long[] { 0, 4, 0, 0, 1, 0, 19, 2 };
+
 	private TCAPStackImpl tcapStack1;
 	private TCAPStackImpl tcapStack2;
 	private SccpAddress peer1Address;
@@ -89,38 +90,41 @@ public class ProtocolVersionTest extends SccpHarness {
 
 		super.setUp();
 
-		peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1,
-				8);
-		peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2,
-				8);
+		peer1Address = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
+		peer2Address = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
 
 		sccpListener = new TestSccpListener();
-		this.sccpProvider2.registerSccpListener(8, sccpListener);
-		this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider1, 8, workerPool);
-		this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider2, 7, workerPool);
+		super.sccpProvider2.registerSccpListener(8, sccpListener);
 
-		this.tcapStack1.start();
-		this.tcapStack2.start();
+		tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider1, 8, workerPool);
+		tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider2, 7, workerPool);
 
-		this.tcapStack1.setInvokeTimeout(0);
-		this.tcapStack2.setInvokeTimeout(0);
-		// create test classes
-		this.client = new Client(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address);
-		// this.server = new Server(this.tcapStack2, super.parameterFactory,
-		// peer2Address, peer1Address);
+		tcapStack1.start();
+		tcapStack2.start();
 
+		tcapStack1.setInvokeTimeout(0);
+		tcapStack2.setInvokeTimeout(0);
+
+		client = new Client(tcapStack1, super.parameterFactory, peer1Address, peer2Address);
 	}
 
 	@After
 	public void afterEach() {
-		this.tcapStack1.stop();
-		this.tcapStack2.stop();
+		if (tcapStack1 != null) {
+			tcapStack1.stop();
+			tcapStack1 = null;
+		}
+
+		if (tcapStack2 != null) {
+			tcapStack2.stop();
+			tcapStack2 = null;
+		}
+
 		super.tearDown();
 	}
 
 	@Test
 	public void doNotSendProtocolVersionDialogTest() throws Exception {
-
 		client.startClientDialog();
 		client.dialog.setDoNotSendProtocolVersion(true);
 		EventTestHarness.waitFor(WAIT_TIME);

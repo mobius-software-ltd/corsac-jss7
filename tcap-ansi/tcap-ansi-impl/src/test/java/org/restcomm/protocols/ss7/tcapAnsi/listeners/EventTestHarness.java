@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package org.restcomm.protocols.ss7.tcap.listeners;
+package org.restcomm.protocols.ss7.tcapAnsi.listeners;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -37,34 +37,44 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.api.TCAPException;
-import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
-import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
-import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
-import org.restcomm.protocols.ss7.tcap.api.TCListener;
-import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.Dialog;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginIndication;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueIndication;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCContinueRequest;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndIndication;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCEndRequest;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCNoticeIndication;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCPAbortIndication;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniIndication;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUniRequest;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortIndication;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCUserAbortRequest;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
-import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
-import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
+import org.restcomm.protocols.ss7.tcapAnsi.api.ComponentPrimitiveFactory;
+import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
+import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPProvider;
+import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
+import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPStack;
+import org.restcomm.protocols.ss7.tcapAnsi.api.TCListener;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ParseException;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.UserInformation;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentPortion;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.ComponentType;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.PAbortCause;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Reject;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.RejectProblem;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.Dialog;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationIndication;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCConversationRequest;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCNoticeIndication;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCPAbortIndication;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryIndication;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryRequest;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseIndication;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCResponseRequest;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniIndication;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUniRequest;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortIndication;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCUserAbortRequest;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.UserInformationImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.comp.OperationCodeImpl;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
+import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
+
+import io.netty.buffer.Unpooled;
 
 /**
  * Super class for event based tests. Has capabilities for testing if events are
@@ -78,8 +88,13 @@ public abstract class EventTestHarness implements TCListener {
 	private static final long EVENT_TIMEOUT = 10000;
 	public static final List<Long> _ACN_ = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L });
 
+	public Queue<TestEvent> observerdEvents = new ConcurrentLinkedQueue<TestEvent>();
+	protected AtomicInteger sequence = new AtomicInteger(0);
+
+	protected Map<EventType, Semaphore> sentSemaphores = new ConcurrentHashMap<>();
+	protected Map<EventType, Semaphore> receivedSemaphores = new ConcurrentHashMap<>();
+
 	private Logger logger = null;
-	protected String listenerName = this.toString();
 
 	public Dialog dialog;
 	public TCAPStack stack;
@@ -89,16 +104,11 @@ public abstract class EventTestHarness implements TCListener {
 	protected TCAPProvider tcapProvider;
 	protected ParameterFactory parameterFactory;
 
-	protected ApplicationContextName acn;
+	protected ApplicationContext acn;
 	protected UserInformation ui;
 
-	public PAbortCauseType pAbortCauseType;
-
-	public Queue<TestEvent> observerdEvents = new ConcurrentLinkedQueue<TestEvent>();
-	protected AtomicInteger sequence = new AtomicInteger(0);
-
-	protected Map<EventType, Semaphore> sentSemaphores = new ConcurrentHashMap<>();
-	protected Map<EventType, Semaphore> receivedSemaphores = new ConcurrentHashMap<>();
+	public PAbortCause pAbortCauseType;
+	public RejectProblem rejectProblem;
 
 	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
 		@Override
@@ -124,7 +134,6 @@ public abstract class EventTestHarness implements TCListener {
 	public void startClientDialog() throws TCAPException {
 		if (dialog != null)
 			throw new IllegalStateException("Dialog exists...");
-
 		dialog = this.tcapProvider.getNewDialog(thisAddress, remoteAddress, 0);
 	}
 
@@ -141,19 +150,20 @@ public abstract class EventTestHarness implements TCListener {
 	}
 
 	public void sendBegin() throws TCAPException, TCAPSendException {
-		ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
+		ApplicationContext acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
 		// UI is optional!
-		TCBeginRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createBegin(this.dialog);
-		tcbr.setApplicationContextName(acn);
+		TCQueryRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createQuery(this.dialog, true);
+		tcbr.setApplicationContext(acn);
+		this.dialog.send(tcbr, dummyCallback);
 
 		this.handleSent(EventType.Begin, tcbr);
-		this.dialog.send(tcbr, dummyCallback);
 	}
 
-	public void sendContinue() throws TCAPSendException, TCAPException {
-		TCContinueRequest con = this.tcapProvider.getDialogPrimitiveFactory().createContinue(dialog);
+	public void sendContinue(boolean addingInv) throws TCAPSendException, TCAPException {
+		// send end
+		TCConversationRequest con = this.tcapProvider.getDialogPrimitiveFactory().createConversation(dialog, true);
 		if (acn != null) {
-			con.setApplicationContextName(acn);
+			con.setApplicationContext(acn);
 			acn = null;
 		}
 		if (ui != null) {
@@ -161,15 +171,30 @@ public abstract class EventTestHarness implements TCListener {
 			ui = null;
 		}
 
-		this.handleSent(EventType.Continue, con);
+		if (addingInv && acn == null && ui == null) {
+			// no dialog patch - we are adding Invoke primitive
+			Invoke inv = TcapFactory.createComponentInvokeNotLast();
+			inv.setInvokeId(this.dialog.getNewInvokeId());
+			OperationCode oc = TcapFactory.createNationalOperationCode(10);
+			inv.setOperationCode(oc);
+			ASNOctetString innerString = new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 3, 4, 5 }), null, null,
+					null, false);
+			inv.setSeqParameter(innerString);
+
+			dialog.sendComponent(inv);
+		}
+
 		dialog.send(con, dummyCallback);
+		this.handleSent(EventType.Continue, con);
+
 	}
 
-	public void sendEnd(TerminationType terminationType) throws TCAPSendException {
-		TCEndRequest end = this.tcapProvider.getDialogPrimitiveFactory().createEnd(dialog);
-		end.setTermination(terminationType);
+	public void sendEnd(boolean addingInv) throws TCAPSendException, TCAPException {
+		// send end
+		TCResponseRequest end = this.tcapProvider.getDialogPrimitiveFactory().createResponse(dialog);
+		// end.setTermination(terminationType);
 		if (acn != null) {
-			end.setApplicationContextName(acn);
+			end.setApplicationContext(acn);
 			acn = null;
 		}
 		if (ui != null) {
@@ -177,33 +202,50 @@ public abstract class EventTestHarness implements TCListener {
 			ui = null;
 		}
 
+		if (addingInv && acn == null && ui == null) {
+			// no dialog patch - we are adding Invoke primitive
+			Invoke inv = TcapFactory.createComponentInvokeNotLast();
+			inv.setInvokeId(this.dialog.getNewInvokeId());
+			OperationCode oc = new OperationCodeImpl();
+			inv.setOperationCode(oc);
+			ASNOctetString innerString = new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 3, 4, 5 }), null, null,
+					null, false);
+			inv.setSeqParameter(innerString);
+
+			dialog.sendComponent(inv);
+		}
+
 		this.handleSent(EventType.End, end);
 		dialog.send(end, dummyCallback);
+
 	}
 
-	public void sendAbort(ApplicationContextName acn, UserInformation ui, DialogServiceUserType type)
-			throws TCAPSendException {
+	public void sendAbort(ApplicationContext acn, UserInformationImpl ui) throws TCAPSendException {
 		TCUserAbortRequest abort = this.tcapProvider.getDialogPrimitiveFactory().createUAbort(dialog);
 		if (acn != null)
-			abort.setApplicationContextName(acn);
+			abort.setApplicationContext(acn);
 		if (ui != null)
-			abort.setUserInformation(ui);
-		abort.setDialogServiceUserType(type);
-
+			abort.setUserAbortInformation(ui);
+		// abort.setDialogServiceUserType(type);
 		this.handleSent(EventType.UAbort, abort);
 		this.dialog.send(abort, dummyCallback);
+
 	}
 
 	public void sendUni() throws TCAPException, TCAPSendException {
+		ComponentPrimitiveFactory cpFactory = this.tcapProvider.getComponentPrimitiveFactory();
+
 		// create some INVOKE
-		OperationCode oc = TcapFactory.createLocalOperationCode(12);
+		Invoke invoke = cpFactory.createTCInvokeRequestNotLast(InvokeClass.Class4);
+		invoke.setInvokeId(this.dialog.getNewInvokeId());
+		OperationCode oc = TcapFactory.createNationalOperationCode(12);
+		invoke.setOperationCode(oc);
 		// no parameter
-		this.dialog.sendData(null, null, InvokeClass.Class4, null, oc, null, true, false);
+		this.dialog.sendComponent(invoke);
 
-		ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
+		ApplicationContext acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
 		TCUniRequest tcur = this.tcapProvider.getDialogPrimitiveFactory().createUni(this.dialog);
-		tcur.setApplicationContextName(acn);
-
+		tcur.setApplicationContext(acn);
 		this.handleSent(EventType.Uni, tcur);
 		this.dialog.send(tcur, dummyCallback);
 	}
@@ -252,37 +294,49 @@ public abstract class EventTestHarness implements TCListener {
 
 	@Override
 	public void onTCUni(TCUniIndication ind) {
-		this.dialog = ind.getDialog();
 		this.handleReceived(EventType.Uni, ind);
+		this.dialog = ind.getDialog();
 	}
 
 	@Override
-	public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
+	public void onTCQuery(TCQueryIndication ind) {
+		this.handleReceived(EventType.Begin, ind);
 		this.dialog = ind.getDialog();
 
-		if (ind.getApplicationContextName() != null)
-			this.acn = ind.getApplicationContextName();
+		if (ind.getApplicationContext() != null)
+			this.acn = ind.getApplicationContext();
 
 		if (ind.getUserInformation() != null)
 			this.ui = ind.getUserInformation();
-
-		this.handleReceived(EventType.Begin, ind);
 	}
 
 	@Override
-	public void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback) {
+	public void onTCConversation(TCConversationIndication ind) {
 		this.handleReceived(EventType.Continue, ind);
-
-		if (ind.getApplicationContextName() != null)
-			this.acn = ind.getApplicationContextName();
+		if (ind.getApplicationContext() != null) {
+			// this.acn = ind.getApplicationContextName();
+		}
 
 		if (ind.getUserInformation() != null)
 			this.ui = ind.getUserInformation();
 	}
 
 	@Override
-	public void onTCEnd(TCEndIndication ind, TaskCallback<Exception> callback) {
+	public void onTCResponse(TCResponseIndication ind) {
 		this.handleReceived(EventType.End, ind);
+
+		ComponentPortion compp = ind.getComponents();
+		if (compp != null && compp.getComponents() != null && compp.getComponents().size() > 0)
+			if (compp.getComponents().get(0).getType() == ComponentType.Reject) {
+				Reject rej = (Reject) compp.getComponents().get(0);
+				this.rejectProblem = null;
+				try {
+					this.rejectProblem = rej.getProblem();
+				} catch (ParseException ex) {
+
+				}
+			}
+
 	}
 
 	@Override
@@ -298,18 +352,18 @@ public abstract class EventTestHarness implements TCListener {
 	}
 
 	@Override
-	public void onDialogReleased(Dialog dialog) {
-		this.handleReceived(EventType.DialogRelease, dialog);
+	public void onDialogReleased(Dialog d) {
+		this.handleReceived(EventType.DialogRelease, d);
 	}
 
 	@Override
-	public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
-		this.handleReceived(EventType.InvokeTimeout, null);
+	public void onInvokeTimeout(Invoke tcInvokeRequest) {
+		this.handleReceived(EventType.InvokeTimeout, tcInvokeRequest);
 	}
 
 	@Override
-	public void onDialogTimeout(Dialog dialog) {
-		this.handleReceived(EventType.DialogTimeout, dialog);
+	public void onDialogTimeout(Dialog d) {
+		this.handleReceived(EventType.DialogTimeout, d);
 	}
 
 	@Override

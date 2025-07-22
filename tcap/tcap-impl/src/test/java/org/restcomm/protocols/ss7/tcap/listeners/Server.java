@@ -97,8 +97,9 @@ public class Server extends EventTestHarness {
 	}
 
 	public void releaseDialog() {
-		if (this.dialog != null)
+		if (this.dialog != null) {
 			this.dialog.release();
-		this.dialog = null;
+			this.dialog = null;
+		}
 	}
 }

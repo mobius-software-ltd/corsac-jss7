@@ -16,25 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package org.restcomm.protocols.ss7.tcap;
+package org.restcomm.protocols.ss7.tcap.asn.messages;
 
-import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultImpl;
+import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNProperty;
 import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
-import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
-
-import io.netty.buffer.Unpooled;
 
 /**
 *
 * @author yulian oifa
 *
 */
-@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=1,constructed=true,lengthIndefinite=false)
-public class BadInvokeImpl extends ReturnResultImpl 
-{
-	@ASNProperty(asnClass=ASNClass.UNIVERSAL,tag=16,constructed=true,index=-1)
-	private ASNOctetString testString=new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 0x04, 0x08 }),null,null,null,false);
+@ASNTag(asnClass=ASNClass.CONTEXT_SPECIFIC,tag=20,constructed=true,lengthIndefinite=false)
+public class BadComponentImpl extends InvokeImpl 
+{	
 }

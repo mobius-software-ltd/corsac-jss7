@@ -57,6 +57,9 @@ import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorProblemType;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResult;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLast;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultProblemType;
+import org.restcomm.protocols.ss7.tcap.asn.messages.BadComponentImpl;
+import org.restcomm.protocols.ss7.tcap.asn.messages.BadInvokeImpl;
+import org.restcomm.protocols.ss7.tcap.asn.messages.MistypedInvokeImpl;
 import org.restcomm.protocols.ss7.tcap.listeners.EventTestHarness;
 import org.restcomm.protocols.ss7.tcap.listeners.EventType;
 import org.restcomm.protocols.ss7.tcap.listeners.TestEvent;
@@ -83,32 +86,33 @@ public class TCAPComponentsTest extends SccpHarness {
 
 	@Before
 	public void beforeEach() throws Exception {
-		this.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
-		this.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
+		super.sccpStack1Name = "TCAPFunctionalTestSccpStack1";
+		super.sccpStack2Name = "TCAPFunctionalTestSccpStack2";
 
 		super.setUp();
 
 		peer1Address = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
 		peer2Address = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
 
-		this.tcapStack1 = new TCAPStackImpl("TCAPComponentsTest", this.sccpProvider1, 8, workerPool);
-		this.tcapStack2 = new TCAPStackImpl("TCAPComponentsTest", this.sccpProvider2, 8, workerPool);
+		tcapStack1 = new TCAPStackImpl("TCAPComponentsTest", this.sccpProvider1, 8, workerPool);
+		tcapStack2 = new TCAPStackImpl("TCAPComponentsTest", this.sccpProvider2, 8, workerPool);
 
-		this.tcapStack1.start();
-		this.tcapStack2.start();
+		tcapStack1.start();
+		tcapStack2.start();
 
 		// default invoke timeouts
-		this.tcapStack1.setInvokeTimeout(MINI_WAIT_TIME);
-		this.tcapStack2.setInvokeTimeout(MINI_WAIT_TIME);
+		tcapStack1.setInvokeTimeout(MINI_WAIT_TIME);
+		tcapStack2.setInvokeTimeout(MINI_WAIT_TIME);
+
 		// default dialog timeouts
-		this.tcapStack1.setDialogIdleTimeout(DIALOG_TIMEOUT);
-		this.tcapStack2.setDialogIdleTimeout(DIALOG_TIMEOUT);
+		tcapStack1.setDialogIdleTimeout(DIALOG_TIMEOUT);
+		tcapStack2.setDialogIdleTimeout(DIALOG_TIMEOUT);
 	}
 
 	@After
 	public void afterEach() {
-		this.tcapStack1.stop();
-		this.tcapStack2.stop();
+		tcapStack1.stop();
+		tcapStack2.stop();
 
 		super.tearDown();
 	}
@@ -321,14 +325,13 @@ public class TCAPComponentsTest extends SccpHarness {
 	 * Sending MistypedComponent Component
 	 *
 	 * <pre>
-	 * TC-BEGIN + Invoke with an extra bad component + Invoke TC-END + Reject
-	 * (mistypedComponent)
+	 * TC-BEGIN + Invoke with an extra bad component + Invoke 
+	 * TC-END + Reject (mistypedComponent)
 	 * </pre>
 	 */
 	@Test
 	public void MistypedComponentTest() throws Exception {
-
-		this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
+		this.client = new ClientComponent(tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
 
 			@Override
 			public void onTCEnd(TCEndIndication ind, TaskCallback<Exception> callback) {
@@ -349,7 +352,7 @@ public class TCAPComponentsTest extends SccpHarness {
 			}
 		};
 
-		this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
+		this.server = new ServerComponent(tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
 
 			@Override
 			public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
@@ -434,7 +437,9 @@ public class TCAPComponentsTest extends SccpHarness {
 	 * TC-CONTINUE + Invoke (invokeId=2)
 	 * TC-CONTINUE + ReturnResultLast (invokeId=1) + ReturnError (invokeId=2)
 	 * TC-CONTINUE + Invoke (invokeId=1, for this message we will invoke processWithoutAnswer()) + Invoke (invokeId==2)
-	 * TC-CONTINUE TC-CONTINUE + Invoke (invokeId=1) + Invoke (invokeId=2) * TC-END + Reject (duplicateInvokeId for invokeId=2)
+	 * TC-CONTINUE 
+	 * TC-CONTINUE + Invoke (invokeId=1) + Invoke (invokeId=2)
+	 * TC-END + Reject (duplicateInvokeId for invokeId=2)
 	 * </pre>
 	 */
 	@Test
@@ -442,7 +447,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		final long beginInvokeTimeout = MINI_WAIT_TIME / 2;
 		final long continueInvokeTimeout = MINI_WAIT_TIME / 2;
 
-		this.client = new ClientComponent(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
+		this.client = new ClientComponent(tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
 
 			@Override
 			public void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback) {
@@ -533,7 +538,7 @@ public class TCAPComponentsTest extends SccpHarness {
 			}
 		};
 
-		this.server = new ServerComponent(this.tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
+		this.server = new ServerComponent(tcapStack2, super.parameterFactory, peer2Address, peer1Address) {
 			@Override
 			public void onTCBegin(TCBeginIndication ind, TaskCallback<Exception> callback) {
 				super.onTCBegin(ind, callback);
@@ -743,7 +748,6 @@ public class TCAPComponentsTest extends SccpHarness {
 	}
 
 	public class ClientComponent extends EventTestHarness {
-
 		protected int step = 0;
 
 		public ClientComponent(final TCAPStack stack, final ParameterFactory parameterFactory,
@@ -820,11 +824,6 @@ public class TCAPComponentsTest extends SccpHarness {
 	public class ServerComponent extends EventTestHarness {
 		protected int step = 0;
 
-		/**
-		 * @param stack
-		 * @param thisAddress
-		 * @param remoteAddress
-		 */
 		public ServerComponent(final TCAPStack stack, final ParameterFactory parameterFactory,
 				final SccpAddress thisAddress, final SccpAddress remoteAddress) {
 			super(stack, parameterFactory, thisAddress, remoteAddress, LogManager.getLogger(ServerComponent.class));

@@ -31,9 +31,7 @@ import java.util.Arrays;
  *
  */
 public class TCAPTestUtils {
-
-    public static void compareArrays(byte[] expected, byte[] encoded) {
-        assertTrue(Arrays.equals(expected, encoded));
-    }
-
+	public static void compareArrays(byte[] expected, byte[] encoded) {
+		assertTrue(Arrays.equals(expected, encoded));
+	}
 }

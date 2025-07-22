@@ -147,18 +147,17 @@ public class ClientTest implements TCListener {
 
 	@Override
 	public void onTCPAbort(TCPAbortIndication ind) {
-		// TODO Auto-generated method stub
+		// not going to happen
 	}
 
 	@Override
 	public void onTCUserAbort(TCUserAbortIndication ind) {
-		// TODO Auto-generated method stub
+		// not going to happen
 	}
 
 	@Override
 	public void onTCNotice(TCNoticeIndication ind) {
-		// TODO Auto-generated method stub
-
+		// not going to happen
 	}
 
 	public static void main(String[] args) {
@@ -166,14 +165,7 @@ public class ClientTest implements TCListener {
 		try {
 			ClientTest c = new ClientTest();
 			c.sendInvoke();
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TCAPException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TCAPSendException e) {
-			// TODO Auto-generated catch block
+		} catch (NamingException | TCAPException | TCAPSendException e) {
 			e.printStackTrace();
 		}
 	}
