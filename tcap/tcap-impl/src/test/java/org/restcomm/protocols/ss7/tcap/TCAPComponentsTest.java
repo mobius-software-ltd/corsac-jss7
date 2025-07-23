@@ -74,8 +74,8 @@ import com.mobius.software.common.dal.timers.TaskCallback;
  *
  */
 public class TCAPComponentsTest extends SccpHarness {
-	private static final long MINI_WAIT_TIME = 1000;
-	private static final int DIALOG_TIMEOUT = Integer.MAX_VALUE;
+	private static final long INVOKE_TIMEOUT = 1000;
+	private static final long DIALOG_TIMEOUT = Integer.MAX_VALUE;
 
 	private TCAPStackImpl tcapStack1;
 	private TCAPStackImpl tcapStack2;
@@ -101,8 +101,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		tcapStack2.start();
 
 		// default invoke timeouts
-		tcapStack1.setInvokeTimeout(MINI_WAIT_TIME);
-		tcapStack2.setInvokeTimeout(MINI_WAIT_TIME);
+		tcapStack1.setInvokeTimeout(INVOKE_TIMEOUT);
+		tcapStack2.setInvokeTimeout(INVOKE_TIMEOUT);
 
 		// default dialog timeouts
 		tcapStack1.setDialogIdleTimeout(DIALOG_TIMEOUT);
@@ -444,8 +444,8 @@ public class TCAPComponentsTest extends SccpHarness {
 	 */
 	@Test
 	public void DuplicateInvokeIdTest() throws Exception {
-		final long beginInvokeTimeout = MINI_WAIT_TIME / 2;
-		final long continueInvokeTimeout = MINI_WAIT_TIME / 2;
+		final long beginInvokeTimeout = INVOKE_TIMEOUT / 2;
+		final long continueInvokeTimeout = INVOKE_TIMEOUT / 2;
 
 		this.client = new ClientComponent(tcapStack1, super.parameterFactory, peer1Address, peer2Address) {
 
@@ -639,50 +639,50 @@ public class TCAPComponentsTest extends SccpHarness {
 		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + beginInvokeTimeout);
 		clientExpectedEvents.add(te);
 		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++,
-				stamp + MINI_WAIT_TIME + continueInvokeTimeout);
+				stamp + INVOKE_TIMEOUT + continueInvokeTimeout);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 2);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + INVOKE_TIMEOUT * 2);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 2);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + INVOKE_TIMEOUT * 2);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 2);
+		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + INVOKE_TIMEOUT * 2);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 2);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++,
-				stamp + MINI_WAIT_TIME * 2 + continueInvokeTimeout);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 3);
-		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + INVOKE_TIMEOUT * 2);
 		clientExpectedEvents.add(te);
 		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++,
-				stamp + MINI_WAIT_TIME * 3 + continueInvokeTimeout);
+				stamp + INVOKE_TIMEOUT * 2 + continueInvokeTimeout);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + INVOKE_TIMEOUT * 3);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + INVOKE_TIMEOUT * 3);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + INVOKE_TIMEOUT * 3);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + INVOKE_TIMEOUT * 3);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + INVOKE_TIMEOUT * 3);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + INVOKE_TIMEOUT * 3);
 		clientExpectedEvents.add(te);
 		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++,
-				stamp + MINI_WAIT_TIME * 3 + continueInvokeTimeout);
+				stamp + INVOKE_TIMEOUT * 3 + continueInvokeTimeout);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		te = TestEvent.createReceivedEvent(EventType.InvokeTimeout, null, cnt++,
+				stamp + INVOKE_TIMEOUT * 3 + continueInvokeTimeout);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + INVOKE_TIMEOUT * 4);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + INVOKE_TIMEOUT * 4);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		te = TestEvent.createSentEvent(EventType.Invoke, null, cnt++, stamp + INVOKE_TIMEOUT * 4);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.End, null, cnt++, stamp + MINI_WAIT_TIME * 5);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + INVOKE_TIMEOUT * 4);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 5);
+		te = TestEvent.createReceivedEvent(EventType.End, null, cnt++, stamp + INVOKE_TIMEOUT * 5);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp + MINI_WAIT_TIME * 5);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + INVOKE_TIMEOUT * 5);
+		clientExpectedEvents.add(te);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp + INVOKE_TIMEOUT * 5);
 		clientExpectedEvents.add(te);
 
 		cnt = 0;
@@ -691,49 +691,49 @@ public class TCAPComponentsTest extends SccpHarness {
 		serverExpectedEvents.add(te);
 		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.ReturnResult, null, cnt++, stamp + MINI_WAIT_TIME);
+		te = TestEvent.createSentEvent(EventType.ReturnResult, null, cnt++, stamp + INVOKE_TIMEOUT);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + INVOKE_TIMEOUT);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + INVOKE_TIMEOUT);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + INVOKE_TIMEOUT);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + INVOKE_TIMEOUT);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 2);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + INVOKE_TIMEOUT * 2);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 2);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + INVOKE_TIMEOUT * 2);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 2);
+		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + INVOKE_TIMEOUT * 2);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.ReturnResultLast, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		te = TestEvent.createSentEvent(EventType.ReturnResultLast, null, cnt++, stamp + INVOKE_TIMEOUT * 3);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.ReturnError, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		te = TestEvent.createSentEvent(EventType.ReturnError, null, cnt++, stamp + INVOKE_TIMEOUT * 3);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + INVOKE_TIMEOUT * 3);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + INVOKE_TIMEOUT * 3);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + INVOKE_TIMEOUT * 3);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + INVOKE_TIMEOUT * 3);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + INVOKE_TIMEOUT * 3);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 3);
+		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + INVOKE_TIMEOUT * 3);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		te = TestEvent.createSentEvent(EventType.Continue, null, cnt++, stamp + INVOKE_TIMEOUT * 4);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, cnt++, stamp + INVOKE_TIMEOUT * 4);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		te = TestEvent.createReceivedEvent(EventType.Invoke, null, cnt++, stamp + INVOKE_TIMEOUT * 4);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + MINI_WAIT_TIME * 4);
+		te = TestEvent.createReceivedEvent(EventType.Reject, null, cnt++, stamp + INVOKE_TIMEOUT * 4);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.End, null, cnt++, stamp + MINI_WAIT_TIME * 5);
+		te = TestEvent.createSentEvent(EventType.End, null, cnt++, stamp + INVOKE_TIMEOUT * 5);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp + MINI_WAIT_TIME * 5);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, cnt++, stamp + INVOKE_TIMEOUT * 5);
 		serverExpectedEvents.add(te);
 
 		client.startClientDialog();

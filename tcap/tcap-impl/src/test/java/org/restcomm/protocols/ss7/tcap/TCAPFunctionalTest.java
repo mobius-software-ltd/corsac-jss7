@@ -122,24 +122,22 @@ public class TCAPFunctionalTest extends SccpHarness {
 		List<TestEvent> clientExpectedEvents = new ArrayList<TestEvent>();
 		TestEvent te = TestEvent.createSentEvent(EventType.Begin, null, 0, stamp);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.Continue, null, 1, stamp + WAIT_TIME);
+		te = TestEvent.createReceivedEvent(EventType.Continue, null, 1, stamp);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.End, null, 2, stamp + WAIT_TIME * 2);
+		te = TestEvent.createSentEvent(EventType.End, null, 2, stamp);
 		clientExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME * 2);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp);
 		clientExpectedEvents.add(te);
 
 		List<TestEvent> serverExpectedEvents = new ArrayList<TestEvent>();
 		te = TestEvent.createReceivedEvent(EventType.Begin, null, 0, stamp);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createSentEvent(EventType.Continue, null, 1, stamp + WAIT_TIME);
+		te = TestEvent.createSentEvent(EventType.Continue, null, 1, stamp);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.End, null, 2, stamp + WAIT_TIME * 2);
+		te = TestEvent.createReceivedEvent(EventType.End, null, 2, stamp);
 		serverExpectedEvents.add(te);
-		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp + WAIT_TIME * 2);
+		te = TestEvent.createReceivedEvent(EventType.DialogRelease, null, 3, stamp);
 		serverExpectedEvents.add(te);
-
-		// this.saveTrafficInFile();
 
 		client.startClientDialog();
 		assertNotNull(client.dialog.getLocalAddress());

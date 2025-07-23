@@ -127,7 +127,6 @@ public class ProtocolVersionTest extends SccpHarness {
 	public void doNotSendProtocolVersionDialogTest() throws Exception {
 		client.startClientDialog();
 		client.dialog.setDoNotSendProtocolVersion(true);
-		EventTestHarness.waitFor(WAIT_TIME);
 
 		client.sendBegin();
 		EventTestHarness.waitFor(WAIT_TIME);
@@ -136,10 +135,8 @@ public class ProtocolVersionTest extends SccpHarness {
 
 	@Test
 	public void sendProtocolVersionDialogTest() throws Exception {
-
 		client.startClientDialog();
 		client.dialog.setDoNotSendProtocolVersion(false);
-		EventTestHarness.waitFor(WAIT_TIME);
 
 		client.sendBegin();
 		EventTestHarness.waitFor(WAIT_TIME);
@@ -150,7 +147,7 @@ public class ProtocolVersionTest extends SccpHarness {
 	public void doNotSendProtocolVersionStackTest() throws Exception {
 		this.tcapStack1.setDoNotSendProtocolVersion(true);
 		client.startClientDialog();
-		EventTestHarness.waitFor(WAIT_TIME);
+
 		client.sendBegin();
 		EventTestHarness.waitFor(WAIT_TIME);
 		assertNull(pv);
@@ -160,7 +157,7 @@ public class ProtocolVersionTest extends SccpHarness {
 	public void sendProtocolVersionStackTest() throws Exception {
 		this.tcapStack1.setDoNotSendProtocolVersion(false);
 		client.startClientDialog();
-		EventTestHarness.waitFor(WAIT_TIME);
+
 		client.sendBegin();
 		EventTestHarness.waitFor(WAIT_TIME);
 		assertNotNull(pv);
@@ -224,58 +221,39 @@ public class ProtocolVersionTest extends SccpHarness {
 		@Override
 		public void onConnectIndication(SccpConnection conn, SccpAddress calledAddress, SccpAddress callingAddress,
 				ProtocolClass clazz, Credit credit, ByteBuf data, Importance importance) throws Exception {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void onConnectConfirm(SccpConnection conn, ByteBuf data) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onDisconnectIndication(SccpConnection conn, ReleaseCause reason, ByteBuf data) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onDisconnectIndication(SccpConnection conn, RefusalCause reason, ByteBuf data) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onDisconnectIndication(SccpConnection conn, ErrorCause errorCause) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onResetIndication(SccpConnection conn, ResetCause reason) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onResetConfirm(SccpConnection conn) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onData(SccpConnection conn, ByteBuf data) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onDisconnectConfirm(SccpConnection conn) {
-			// TODO Auto-generated method stub
-
 		}
-
 	}
-
 }

@@ -64,7 +64,6 @@ public class CreateDialogTest {
 		workerPool.start(4);
 
 		tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "CreateDialogTest", workerPool);
-
 		tcapStack1.start();
 	}
 

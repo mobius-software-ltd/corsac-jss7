@@ -47,11 +47,6 @@ public class Server extends EventTestHarness {
 
 	protected List<BaseComponent> components;
 
-	/**
-	 * @param stack
-	 * @param thisAddress
-	 * @param remoteAddress
-	 */
 	public Server(final TCAPStack stack, final ParameterFactory parameterFactory, final SccpAddress thisAddress,
 			final SccpAddress remoteAddress) {
 		super(stack, parameterFactory, thisAddress, remoteAddress, logger);

@@ -141,15 +141,27 @@ public class EventTestHarness implements INAPDialogListener, INAPServiceCircuitS
 
 	public void compareEvents(List<TestEvent> expectedEvents) {
 		List<TestEvent> actualEvents = new ArrayList<TestEvent>(observerdEvents);
-		if (expectedEvents.size() != actualEvents.size()) {
-			String comparedEvents = doStringCompare(expectedEvents, actualEvents);
+		int expectedSize = expectedEvents.size();
+		int actualSize = actualEvents.size();
 
-			fail("Size of received events: " + actualEvents.size() + ", does not equal expected events: "
-					+ expectedEvents.size() + "\n" + comparedEvents);
+		try {
+			assertEquals("Size of received events: " + actualSize + ", does not equal expected events: " + expectedSize,
+					expectedSize, actualSize);
+
+			for (int index = 0; index < expectedSize; index++) {
+				TestEvent expected = expectedEvents.get(index);
+				TestEvent actual = actualEvents.get(index);
+
+				assertEquals(expected, actual);
+			}
+		} catch (AssertionError err) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(err.getMessage()).append("\n");
+			sb.append("Received events:").append("\n");
+			sb.append(doStringCompare(expectedEvents, actualEvents));
+
+			fail(sb.toString());
 		}
-
-		for (int index = 0; index < expectedEvents.size(); index++)
-			assertEquals(expectedEvents.get(index), actualEvents.get(index));
 	}
 
 	protected String doStringCompare(List<TestEvent> expectedEvents, List<TestEvent> observerdEvents) {
