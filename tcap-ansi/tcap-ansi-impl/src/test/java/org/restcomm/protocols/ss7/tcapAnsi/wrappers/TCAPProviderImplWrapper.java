@@ -17,9 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package org.restcomm.protocols.ss7.tcapAnsi;
+package org.restcomm.protocols.ss7.tcapAnsi.wrappers;
 
 import org.restcomm.protocols.ss7.sccp.SccpProvider;
+import org.restcomm.protocols.ss7.tcapAnsi.TCAPProviderImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.TCAPStackImpl;
 import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
 
 import com.mobius.software.common.dal.timers.WorkerPool;

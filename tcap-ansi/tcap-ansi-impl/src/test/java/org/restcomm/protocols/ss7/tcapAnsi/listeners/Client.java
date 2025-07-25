@@ -17,10 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package org.restcomm.protocols.ss7.tcap.listeners;
+package org.restcomm.protocols.ss7.tcapAnsi.listeners;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,21 +29,20 @@ import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.parameter.GlobalTitle;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
-import org.restcomm.protocols.ss7.tcap.DialogImpl;
-import org.restcomm.protocols.ss7.tcap.api.TCAPException;
-import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
-import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
-import org.restcomm.protocols.ss7.tcap.api.tc.component.InvokeClass;
-import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TCBeginRequest;
-import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
-import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
-import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
-import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.listeners.events.EventType;
+import org.restcomm.protocols.ss7.tcapAnsi.ClientTestASN;
+import org.restcomm.protocols.ss7.tcapAnsi.DialogImpl;
+import org.restcomm.protocols.ss7.tcapAnsi.api.ComponentPrimitiveFactory;
+import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPException;
+import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPSendException;
+import org.restcomm.protocols.ss7.tcapAnsi.api.TCAPStack;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.ApplicationContext;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.Invoke;
+import org.restcomm.protocols.ss7.tcapAnsi.api.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.component.InvokeClass;
+import org.restcomm.protocols.ss7.tcapAnsi.api.tc.dialog.events.TCQueryRequest;
+import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
-import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
-import com.mobius.software.telco.protocols.ss7.asn.annotations.ASNTag;
 import com.mobius.software.telco.protocols.ss7.asn.primitives.ASNOctetString;
 
 import io.netty.buffer.Unpooled;
@@ -55,36 +53,42 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-public class Client extends TCAPTestHarness {
+public class Client extends EventTestHarness {
 	private static Logger logger = LogManager.getLogger(Client.class);
 
-	public Client(TCAPStack stack, ParameterFactory paramFactory, SccpAddress thisAddress, SccpAddress remoteAddress) {
-		super(stack, paramFactory, thisAddress, remoteAddress, logger);
-
-		super.listenerName = "Client";
+	public Client(final TCAPStack stack, final ParameterFactory parameterFactory, final SccpAddress thisAddress,
+			final SccpAddress remoteAddress) {
+		super(stack, parameterFactory, thisAddress, remoteAddress, logger);
 	}
 
 	@Override
 	public void sendBegin() throws TCAPException, TCAPSendException {
+		ComponentPrimitiveFactory cpFactory = this.tcapProvider.getComponentPrimitiveFactory();
+
 		// create some INVOKE
-		OperationCode oc = TcapFactory.createLocalOperationCode(12);
+		Invoke invoke = cpFactory.createTCInvokeRequestNotLast(InvokeClass.Class1);
+		invoke.setInvokeId(this.dialog.getNewInvokeId());
+		OperationCode oc = TcapFactory.createPrivateOperationCode(12);
+		invoke.setOperationCode(oc);
 		// no parameter
-		this.dialog.sendData(null, null, InvokeClass.Class1, null, oc, null, true, false);
+		this.dialog.sendComponent(invoke);
 
 		// create a second INVOKE for which we will test linkedId
-		oc = TcapFactory.createLocalOperationCode(13);
+		Invoke invokeLast = cpFactory.createTCInvokeRequestLast(InvokeClass.Class1);
+		invokeLast.setInvokeId(this.dialog.getNewInvokeId());
+		oc = TcapFactory.createPrivateOperationCode(13);
+		invokeLast.setOperationCode(oc);
 		// no parameter
-		this.dialog.sendData(null, null, InvokeClass.Class1, null, oc, null, true, false);
-
+		this.dialog.sendComponent(invokeLast);
 		super.sendBegin();
 	}
 
 	public void sendBeginUnreachableAddress(boolean returnMessageOnError, TaskCallback<Exception> callback)
 			throws TCAPException, TCAPSendException {
-		ApplicationContextName acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContextName(_ACN_);
+		ApplicationContext acn = this.tcapProvider.getDialogPrimitiveFactory().createApplicationContext(_ACN_);
 		// UI is optional!
-		TCBeginRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createBegin(this.dialog);
-		tcbr.setApplicationContextName(acn);
+		TCQueryRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createQuery(this.dialog, true);
+		tcbr.setApplicationContext(acn);
 
 		GlobalTitle gt = super.parameterFactory.createGlobalTitle("93702994006", 0, NumberingPlan.ISDN_TELEPHONY, null,
 				NatureOfAddress.INTERNATIONAL);
@@ -103,11 +107,16 @@ public class Client extends TCAPTestHarness {
 		}
 	}
 
-	public Invoke createNewInvoke() {
-		Invoke invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequest();
-		invoke.setInvokeId(12);
+	public DialogImpl getCurDialog() {
+		return (DialogImpl) this.dialog;
+	}
 
-		invoke.setOperationCode(59);
+	public Invoke createNewInvoke() {
+		Invoke invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast();
+		invoke.setInvokeId(12l);
+
+		OperationCode oc = TcapFactory.createPrivateOperationCode(59);
+		invoke.setOperationCode(oc);
 
 		ASNOctetString p1 = new ASNOctetString(Unpooled.wrappedBuffer(new byte[] { 0x0F }), null, null, null, false);
 		ASNOctetString p2 = new ASNOctetString(
@@ -115,24 +124,22 @@ public class Client extends TCAPTestHarness {
 						(byte) 0xcd, 0x62, 0x36, 0x19, 0x0e, 0x37, (byte) 0xcb, (byte) 0xe5, 0x72, (byte) 0xb9, 0x11 }),
 				null, null, null, false);
 
-		CompoundParameter c1 = new CompoundParameter();
-		c1.setO1(Arrays.asList(new ASNOctetString[] { p1, p2 }));
-		invoke.setParameter(c1);
+		ClientTestASN pm = new ClientTestASN();
+		pm.setO1(Arrays.asList(new ASNOctetString[] { p1, p2 }));
+		invoke.setSeqParameter(pm);
 
 		return invoke;
 	}
 
-	@ASNTag(asnClass = ASNClass.UNIVERSAL, tag = 0x10, constructed = true, lengthIndefinite = false)
-	private class CompoundParameter {
-		List<ASNOctetString> o1;
-
-		public void setO1(List<ASNOctetString> o1) {
-			this.o1 = o1;
+	public void sendInvokeSet(Long[] lstInvokeId) throws Exception {
+		for (Long invokeId : lstInvokeId) {
+			Invoke invoke = this.tcapProvider.getComponentPrimitiveFactory().createTCInvokeRequestNotLast();
+			invoke.setInvokeId(invokeId);
+			OperationCode opCode = TcapFactory.createPrivateOperationCode(0);
+			invoke.setOperationCode(opCode);
+			this.dialog.sendComponent(invoke);
 		}
 
-		@SuppressWarnings("unused")
-		public List<ASNOctetString> getO1() {
-			return this.o1;
-		}
+		this.sendBegin();
 	}
 }

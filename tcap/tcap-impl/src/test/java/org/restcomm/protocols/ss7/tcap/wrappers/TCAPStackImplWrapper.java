@@ -31,12 +31,9 @@ import com.mobius.software.common.dal.timers.WorkerPool;
  *
  */
 public class TCAPStackImplWrapper extends TCAPStackImpl {
-
-	public TCAPStackImplWrapper(SccpProvider sccpProvider, int ssn, String stackName, WorkerPool workerPool)
-	{
+	public TCAPStackImplWrapper(SccpProvider sccpProvider, int ssn, String stackName, WorkerPool workerPool) {
 		super(stackName, workerPool);
 
 		this.tcapProvider = new TCAPProviderImplWrapper(sccpProvider, this, ssn, workerPool);
-    }
-
+	}
 }

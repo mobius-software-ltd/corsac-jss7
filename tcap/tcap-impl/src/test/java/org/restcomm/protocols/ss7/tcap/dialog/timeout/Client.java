@@ -27,9 +27,9 @@ import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
-import org.restcomm.protocols.ss7.tcap.listeners.EventTestHarness;
+import org.restcomm.protocols.ss7.tcap.listeners.TCAPTestHarness;
 
-public class Client extends EventTestHarness {
+public class Client extends TCAPTestHarness {
 	private static Logger logger = LogManager.getLogger(Client.class);
 
 	public Client(final TCAPStack stack, final ParameterFactory parameterFactory, final SccpAddress thisAddress,

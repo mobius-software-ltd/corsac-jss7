@@ -22,6 +22,10 @@ package org.restcomm.protocols.ss7.tcap;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,19 +48,19 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.asn.ASNComponentPortionObjectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.ASNDialogPortionObjectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDU;
-import org.restcomm.protocols.ss7.tcap.asn.ProtocolVersion;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
+import org.restcomm.protocols.ss7.tcap.asn.comp.TCUnifiedMessage;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogAbortAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogRequestAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogResponseAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.TCBeginMessageImpl;
 import org.restcomm.protocols.ss7.tcap.listeners.Client;
-import org.restcomm.protocols.ss7.tcap.listeners.EventTestHarness;
+import org.restcomm.protocols.ss7.tcap.listeners.events.EventType;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
@@ -65,22 +69,23 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 /**
- * Test for call flow.
+ * Test protocol version.
  *
  * @author Nosach Konstantin
  * @author yulianoifa
  *
  */
 public class ProtocolVersionTest extends SccpHarness {
-	public static final long WAIT_TIME = 500;
-	public static final long[] _ACN_ = new long[] { 0, 4, 0, 0, 1, 0, 19, 2 };
+	private static final long INVOKE_TIMEOUT = 0;
+	private static final long SCCP_MESSAGE_RETRIEVAL_TIMEOUT = 5000;
+
 	private TCAPStackImpl tcapStack1;
 	private TCAPStackImpl tcapStack2;
 	private SccpAddress peer1Address;
 	private SccpAddress peer2Address;
 	private Client client;
+
 	private TestSccpListener sccpListener;
-	private ProtocolVersion pv;
 
 	@Before
 	public void beforeEach() throws Exception {
@@ -89,80 +94,112 @@ public class ProtocolVersionTest extends SccpHarness {
 
 		super.setUp();
 
-		peer1Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1,
-				8);
-		peer2Address = super.parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2,
-				8);
+		peer1Address = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 1, 8);
+		peer2Address = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN, null, 2, 8);
 
 		sccpListener = new TestSccpListener();
-		this.sccpProvider2.registerSccpListener(8, sccpListener);
-		this.tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider1, 8, workerPool);
-		this.tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider2, 7, workerPool);
+		super.sccpProvider2.registerSccpListener(8, sccpListener);
 
-		this.tcapStack1.start();
-		this.tcapStack2.start();
+		tcapStack1 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider1, 8, workerPool);
+		tcapStack2 = new TCAPStackImpl("TCAPFunctionalTest", this.sccpProvider2, 7, workerPool);
 
-		this.tcapStack1.setInvokeTimeout(0);
-		this.tcapStack2.setInvokeTimeout(0);
-		// create test classes
-		this.client = new Client(this.tcapStack1, super.parameterFactory, peer1Address, peer2Address);
-		// this.server = new Server(this.tcapStack2, super.parameterFactory,
-		// peer2Address, peer1Address);
+		tcapStack1.start();
+		tcapStack2.start();
 
+		tcapStack1.setInvokeTimeout(INVOKE_TIMEOUT);
+		tcapStack2.setInvokeTimeout(INVOKE_TIMEOUT);
+
+		client = new Client(tcapStack1, super.parameterFactory, peer1Address, peer2Address);
 	}
 
 	@After
 	public void afterEach() {
-		this.tcapStack1.stop();
-		this.tcapStack2.stop();
+		if (tcapStack1 != null) {
+			tcapStack1.stop();
+			tcapStack1 = null;
+		}
+
+		if (tcapStack2 != null) {
+			tcapStack2.stop();
+			tcapStack2 = null;
+		}
+
 		super.tearDown();
 	}
 
 	@Test
 	public void doNotSendProtocolVersionDialogTest() throws Exception {
-
 		client.startClientDialog();
 		client.dialog.setDoNotSendProtocolVersion(true);
-		EventTestHarness.waitFor(WAIT_TIME);
 
 		client.sendBegin();
-		EventTestHarness.waitFor(WAIT_TIME);
-		assertNull(pv);
+		client.awaitSent(EventType.Begin);
+		{
+			TCBeginMessage tcb = (TCBeginMessage) sccpListener.messages.poll(SCCP_MESSAGE_RETRIEVAL_TIMEOUT,
+					TimeUnit.MILLISECONDS);
+			assertNotNull(tcb);
+			DialogRequestAPDU apdu = (DialogRequestAPDU) tcb.getDialogPortion().getDialogAPDU();
+
+			assertNull(apdu.getProtocolVersion());
+		}
 	}
 
 	@Test
 	public void sendProtocolVersionDialogTest() throws Exception {
-
 		client.startClientDialog();
 		client.dialog.setDoNotSendProtocolVersion(false);
-		EventTestHarness.waitFor(WAIT_TIME);
 
 		client.sendBegin();
-		EventTestHarness.waitFor(WAIT_TIME);
-		assertNotNull(pv);
+
+		client.awaitSent(EventType.Begin);
+		{
+			TCBeginMessage tcb = (TCBeginMessage) sccpListener.messages.poll(SCCP_MESSAGE_RETRIEVAL_TIMEOUT,
+					TimeUnit.MILLISECONDS);
+			assertNotNull(tcb);
+			DialogRequestAPDU apdu = (DialogRequestAPDU) tcb.getDialogPortion().getDialogAPDU();
+
+			assertNotNull(apdu.getProtocolVersion());
+		}
 	}
 
 	@Test
 	public void doNotSendProtocolVersionStackTest() throws Exception {
-		this.tcapStack1.setDoNotSendProtocolVersion(true);
+		tcapStack1.setDoNotSendProtocolVersion(true);
+
 		client.startClientDialog();
-		EventTestHarness.waitFor(WAIT_TIME);
+
 		client.sendBegin();
-		EventTestHarness.waitFor(WAIT_TIME);
-		assertNull(pv);
+		client.awaitSent(EventType.Begin);
+		{
+			TCBeginMessage tcb = (TCBeginMessage) sccpListener.messages.poll(SCCP_MESSAGE_RETRIEVAL_TIMEOUT,
+					TimeUnit.MILLISECONDS);
+			assertNotNull(tcb);
+			DialogRequestAPDU apdu = (DialogRequestAPDU) tcb.getDialogPortion().getDialogAPDU();
+
+			assertNull(apdu.getProtocolVersion());
+		}
 	}
 
 	@Test
 	public void sendProtocolVersionStackTest() throws Exception {
-		this.tcapStack1.setDoNotSendProtocolVersion(false);
+		tcapStack1.setDoNotSendProtocolVersion(false);
+
 		client.startClientDialog();
-		EventTestHarness.waitFor(WAIT_TIME);
+
 		client.sendBegin();
-		EventTestHarness.waitFor(WAIT_TIME);
-		assertNotNull(pv);
+		client.awaitSent(EventType.Begin);
+		{
+			TCBeginMessage tcb = (TCBeginMessage) sccpListener.messages.poll(SCCP_MESSAGE_RETRIEVAL_TIMEOUT,
+					TimeUnit.MILLISECONDS);
+			assertNotNull(tcb);
+			DialogRequestAPDU apdu = (DialogRequestAPDU) tcb.getDialogPortion().getDialogAPDU();
+
+			assertNotNull(apdu.getProtocolVersion());
+		}
 	}
 
 	private class TestSccpListener implements SccpListener {
+		public BlockingQueue<TCUnifiedMessage> messages = new LinkedBlockingQueue<>();
 
 		private static final long serialVersionUID = 1L;
 		private ASNParser parser = new ASNParser(true);
@@ -190,14 +227,8 @@ public class ProtocolVersionTest extends SccpHarness {
 			} catch (ASNException ex) {
 			}
 
-			if (output != null && output instanceof TCBeginMessage) {
-				TCBeginMessage tcb = (TCBeginMessage) output;
-				if (tcb.getDialogPortion().getDialogAPDU() instanceof DialogRequestAPDU)
-					pv = ((DialogRequestAPDU) tcb.getDialogPortion().getDialogAPDU()).getProtocolVersion();
-
-				System.out.println("DIALOG REQUEST:" + tcb.getDialogPortion().toString());
-				System.out.println("PROTOCOL VERSION IS : " + pv);
-			}
+			if (output != null && output instanceof TCUnifiedMessage)
+				messages.add((TCUnifiedMessage) output);
 		}
 
 		@Override
@@ -220,58 +251,39 @@ public class ProtocolVersionTest extends SccpHarness {
 		@Override
 		public void onConnectIndication(SccpConnection conn, SccpAddress calledAddress, SccpAddress callingAddress,
 				ProtocolClass clazz, Credit credit, ByteBuf data, Importance importance) throws Exception {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void onConnectConfirm(SccpConnection conn, ByteBuf data) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onDisconnectIndication(SccpConnection conn, ReleaseCause reason, ByteBuf data) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onDisconnectIndication(SccpConnection conn, RefusalCause reason, ByteBuf data) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onDisconnectIndication(SccpConnection conn, ErrorCause errorCause) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onResetIndication(SccpConnection conn, ResetCause reason) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onResetConfirm(SccpConnection conn) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onData(SccpConnection conn, ByteBuf data) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onDisconnectConfirm(SccpConnection conn) {
-			// TODO Auto-generated method stub
-
 		}
-
 	}
-
 }

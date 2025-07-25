@@ -812,39 +812,30 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
 
 	public void compareEvents(List<TestEvent> expectedEvents) {
 		List<TestEvent> actualEvents = new ArrayList<TestEvent>(observerdEvents);
-		if (expectedEvents.size() != actualEvents.size()) {
-			String comparedEvents = doStringCompare(expectedEvents, actualEvents);
+		int expectedSize = expectedEvents.size();
+		int actualSize = actualEvents.size();
 
-			fail("Size of received events: " + actualEvents.size() + ", does not equal expected events: "
-					+ expectedEvents.size() + "\n" + comparedEvents);
-		}
-
-		for (int index = 0; index < expectedEvents.size(); index++) {
-			TestEvent expected = expectedEvents.get(index);
-			TestEvent actual = actualEvents.get(index);
-
-			assertEvents(expected, actual);
-		}
-	}
-
-	protected void assertEvents(TestEvent expected, TestEvent actual) {
 		try {
-			assertEquals(expected, actual);
-		} catch (AssertionError ex) {
-			if (expected.getEventType() != actual.getEventType())
-				fail("Event types between expected " + expected + " and actual " + actual + " are not equal");
+			assertEquals("Size of received events: " + actualSize + ", does not equal expected events: " + expectedSize,
+					expectedSize, actualSize);
 
-			long diff = Math.abs(expected.getTimestamp() - actual.getTimestamp());
-			if (diff > TestEvent.MAX_TIMESTAMP_DIFFERENCE) {
-				String pattern = "Timestamp difference between expected %s and actual %s is more than allowed (%d): %d";
-				fail(String.format(pattern, expected, actual, TestEvent.MAX_TIMESTAMP_DIFFERENCE, diff));
+			for (int index = 0; index < expectedSize; index++) {
+				TestEvent expected = expectedEvents.get(index);
+				TestEvent actual = actualEvents.get(index);
+
+				assertEquals(expected, actual);
 			}
+		} catch (AssertionError err) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(err.getMessage()).append("\n");
+			sb.append("Received events:").append("\n");
+			sb.append(doStringCompare(expectedEvents, actualEvents));
 
-			throw ex;
+			fail(sb.toString());
 		}
 	}
 
-	protected String doStringCompare(List<TestEvent> expectedEvents, List<TestEvent> observerdEvents) {
+	private String doStringCompare(List<TestEvent> expectedEvents, List<TestEvent> observerdEvents) {
 		StringBuilder sb = new StringBuilder();
 		int size1 = expectedEvents.size();
 		int size2 = observerdEvents.size();
@@ -857,6 +848,7 @@ public class EventTestHarness implements MAPDialogListener, MAPServiceSupplement
 			String s2 = size2 > index ? observerdEvents.get(index).toString() : "NOP";
 			sb.append(s1).append(" - ").append(s2).append("\n\n");
 		}
+
 		return sb.toString();
 	}
 }

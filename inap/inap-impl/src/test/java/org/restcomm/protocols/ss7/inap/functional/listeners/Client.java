@@ -78,9 +78,7 @@ import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNParsingExceptio
  * @author yulianoifa
  */
 public class Client extends EventTestHarness {
-
-	private static Logger logger = LogManager.getLogger(Client.class);
-
+	private static final Logger logger = LogManager.getLogger(Client.class);
 	private static final int INVOKE_TIMEOUT = 10000;
 
 	private SccpAddress thisAddress;
@@ -91,8 +89,6 @@ public class Client extends EventTestHarness {
 
 	protected INAPParameterFactory inapParameterFactory;
 	protected ISUPParameterFactory isupParameterFactory;
-
-	// private boolean _S_receivedUnstructuredSSIndication, _S_sentEnd;
 
 	public INAPDialogCircuitSwitchedCall clientCscDialog;
 
@@ -105,11 +101,6 @@ public class Client extends EventTestHarness {
 		public void onError(Exception exception) {
 		}
 	};
-
-	// private FunctionalTestScenario step;
-
-	// private int dialogStep;
-	// private String unexpected = "";
 
 	public Client(INAPStack inapStack, SccpAddress thisAddress, SccpAddress remoteAddress) {
 		super(logger);
@@ -298,8 +289,7 @@ public class Client extends EventTestHarness {
 			return true;
 
 		} catch (ASNParsingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("An error occured while checking initial dp in test, " + e.getMessage(), e);
 			return false;
 		}
 	}
@@ -322,8 +312,7 @@ public class Client extends EventTestHarness {
 
 			return res;
 		} catch (ASNParsingException | INAPException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("An error occured while getting initial dp in test, " + e.getMessage(), e);
 			return null;
 		}
 

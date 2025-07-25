@@ -367,25 +367,23 @@ public class INAPFunctionalTest extends SccpHarness {
 
 			@Override
 			public void onContinueRequest(ContinueRequest ind) {
-				super.onContinueRequest(ind);
 				ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
+				super.onContinueRequest(ind);
 			}
 
 			@Override
 			public void onSendChargingInformationRequest(SendChargingInformationRequest ind) {
 				super.onSendChargingInformationRequest(ind);
 
-				assertNotNull(ind.getSCIBillingChargingCharacteristics());
-				assertNotNull(((SCIBillingChargingCharacteristicsCS1) ind.getSCIBillingChargingCharacteristics())
-						.getChargingInformation());
-				assertTrue(((SCIBillingChargingCharacteristicsCS1) ind.getSCIBillingChargingCharacteristics())
-						.getChargingInformation().getOrderStartOfCharging());
-				assertFalse(((SCIBillingChargingCharacteristicsCS1) ind.getSCIBillingChargingCharacteristics())
-						.getChargingInformation().getCreateDefaultBillingRecord());
-				assertNull(((SCIBillingChargingCharacteristicsCS1) ind.getSCIBillingChargingCharacteristics())
-						.getChargingInformation().getChargeMessage());
-				assertEquals(((SCIBillingChargingCharacteristicsCS1) ind.getSCIBillingChargingCharacteristics())
-						.getChargingInformation().getPulseBurst(), new Integer(1));
+				SCIBillingChargingCharacteristicsCS1 characteristics = (SCIBillingChargingCharacteristicsCS1) ind
+						.getSCIBillingChargingCharacteristics();
+
+				assertNotNull(characteristics);
+				assertNotNull(characteristics.getChargingInformation());
+				assertTrue(characteristics.getChargingInformation().getOrderStartOfCharging());
+				assertFalse(characteristics.getChargingInformation().getCreateDefaultBillingRecord());
+				assertNull(characteristics.getChargingInformation().getChargeMessage());
+				assertEquals(characteristics.getChargingInformation().getPulseBurst(), new Integer(1));
 				assertEquals(ind.getPartyToCharge(), LegType.leg2);
 				assertNull(ind.getExtensions());
 
@@ -495,8 +493,8 @@ public class INAPFunctionalTest extends SccpHarness {
 
 			@Override
 			public void onApplyChargingReportRequest(ApplyChargingReportRequest ind) {
-				super.onApplyChargingReportRequest(ind);
 				ind.getINAPDialog().processInvokeWithoutAnswer(ind.getInvokeId());
+				super.onApplyChargingReportRequest(ind);
 			}
 
 			@Override

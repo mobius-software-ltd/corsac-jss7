@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.protocols.ss7.tcap;
+package org.restcomm.protocols.ss7.tcap.utils;
 
 import static org.junit.Assert.assertTrue;
 
@@ -31,9 +31,7 @@ import java.util.Arrays;
  *
  */
 public class TCAPTestUtils {
-
-    public static void compareArrays(byte[] expected, byte[] encoded) {
-        assertTrue(Arrays.equals(expected, encoded));
-    }
-
+	public static void compareArrays(byte[] expected, byte[] encoded) {
+		assertTrue(Arrays.equals(expected, encoded));
+	}
 }

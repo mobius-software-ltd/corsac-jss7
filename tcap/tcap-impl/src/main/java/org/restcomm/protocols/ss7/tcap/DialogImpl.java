@@ -870,6 +870,7 @@ public class DialogImpl implements Dialog {
 					// TC-U-ABORT request primitive is coded in the
 					// user-information
 					// field of the ABRT APDU.
+
 					DialogAbortAPDU dapdu = TcapFactory.createDialogAPDUAbort();
 
 					dapdu.setAbortSource(AbortSourceType.User);
@@ -1992,13 +1993,14 @@ public class DialogImpl implements Dialog {
 
 		@Override
 		public void execute() {
-			if (d == null)
+			if (d == null || super.startTime == Long.MAX_VALUE)
 				return;
 
 			idleTimer.set(null);
 
 			d.idleTimerActionTaken.set(false);
 			d.idleTimerInvoked.set(true);
+
 			getProvider().timeout(d);
 
 			if (d.idleTimerActionTaken.get()) {

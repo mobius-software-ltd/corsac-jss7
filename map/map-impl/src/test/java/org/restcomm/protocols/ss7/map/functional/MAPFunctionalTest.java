@@ -1261,12 +1261,8 @@ public class MAPFunctionalTest extends SccpHarness {
 	 */
 	@Test
 	public void testRejectServiceIsNotActiveV1() throws Exception {
-
-		Client client = new Client(stack1, peer1Address, peer2Address) {
-		};
-
-		Server server = new Server(this.stack2, peer2Address, peer1Address) {
-		};
+		Client client = new Client(stack1, peer1Address, peer2Address);
+		Server server = new Server(stack2, peer2Address, peer1Address);
 
 		long stamp = System.currentTimeMillis();
 		int count = 0;
@@ -1400,7 +1396,6 @@ public class MAPFunctionalTest extends SccpHarness {
 		server.awaitReceived(EventType.DialogRelease);
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
-
 	}
 
 	/**
@@ -3896,9 +3891,7 @@ public class MAPFunctionalTest extends SccpHarness {
 				assertEquals(storedMSISDN.getNumberingPlan(), NumberingPlan.national);
 				assertEquals(storedMSISDN.getAddress(), "111000111");
 				assertTrue(MAPExtensionContainerTest.CheckTestExtensionContainer(extensionContainer));
-
 			}
-
 		};
 
 		Server server = new Server(this.stack2, peer2Address, peer1Address) {
@@ -4014,7 +4007,6 @@ public class MAPFunctionalTest extends SccpHarness {
 		server.awaitReceived(EventType.DialogRelease);
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
-
 	}
 
 	/**
@@ -10539,13 +10531,4 @@ public class MAPFunctionalTest extends SccpHarness {
 		client.compareEvents(clientExpectedEvents);
 		server.compareEvents(serverExpectedEvents);
 	}
-
-	private void waitForEnd() {
-		try {
-			Thread.sleep(_WAIT_TIMEOUT);
-		} catch (InterruptedException e) {
-			fail("Interrupted on wait!");
-		}
-	}
-
 }
