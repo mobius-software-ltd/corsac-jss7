@@ -22,6 +22,10 @@ package org.restcomm.protocols.ss7.tcap;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,19 +48,19 @@ import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.asn.ASNComponentPortionObjectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.ASNDialogPortionObjectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.DialogRequestAPDU;
-import org.restcomm.protocols.ss7.tcap.asn.ProtocolVersion;
 import org.restcomm.protocols.ss7.tcap.asn.comp.InvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.RejectImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnErrorImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.ReturnResultLastImpl;
 import org.restcomm.protocols.ss7.tcap.asn.comp.TCBeginMessage;
+import org.restcomm.protocols.ss7.tcap.asn.comp.TCUnifiedMessage;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogAbortAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogRequestAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.DialogResponseAPDUImpl;
 import org.restcomm.protocols.ss7.tcap.asn.tx.TCBeginMessageImpl;
 import org.restcomm.protocols.ss7.tcap.listeners.Client;
-import org.restcomm.protocols.ss7.tcap.listeners.EventTestHarness;
+import org.restcomm.protocols.ss7.tcap.listeners.events.EventType;
 
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
 import com.mobius.software.telco.protocols.ss7.asn.exceptions.ASNException;
@@ -65,23 +69,23 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 /**
- * Test for call flow.
+ * Test protocol version.
  *
  * @author Nosach Konstantin
  * @author yulianoifa
  *
  */
 public class ProtocolVersionTest extends SccpHarness {
-	public static final long WAIT_TIME = 500;
-	public static final long[] _ACN_ = new long[] { 0, 4, 0, 0, 1, 0, 19, 2 };
+	private static final long INVOKE_TIMEOUT = 0;
+	private static final long SCCP_MESSAGE_RETRIEVAL_TIMEOUT = 5000;
 
 	private TCAPStackImpl tcapStack1;
 	private TCAPStackImpl tcapStack2;
 	private SccpAddress peer1Address;
 	private SccpAddress peer2Address;
 	private Client client;
+
 	private TestSccpListener sccpListener;
-	private ProtocolVersion pv;
 
 	@Before
 	public void beforeEach() throws Exception {
@@ -102,8 +106,8 @@ public class ProtocolVersionTest extends SccpHarness {
 		tcapStack1.start();
 		tcapStack2.start();
 
-		tcapStack1.setInvokeTimeout(0);
-		tcapStack2.setInvokeTimeout(0);
+		tcapStack1.setInvokeTimeout(INVOKE_TIMEOUT);
+		tcapStack2.setInvokeTimeout(INVOKE_TIMEOUT);
 
 		client = new Client(tcapStack1, super.parameterFactory, peer1Address, peer2Address);
 	}
@@ -129,8 +133,15 @@ public class ProtocolVersionTest extends SccpHarness {
 		client.dialog.setDoNotSendProtocolVersion(true);
 
 		client.sendBegin();
-		EventTestHarness.waitFor(WAIT_TIME);
-		assertNull(pv);
+		client.awaitSent(EventType.Begin);
+		{
+			TCBeginMessage tcb = (TCBeginMessage) sccpListener.messages.poll(SCCP_MESSAGE_RETRIEVAL_TIMEOUT,
+					TimeUnit.MILLISECONDS);
+			assertNotNull(tcb);
+			DialogRequestAPDU apdu = (DialogRequestAPDU) tcb.getDialogPortion().getDialogAPDU();
+
+			assertNull(apdu.getProtocolVersion());
+		}
 	}
 
 	@Test
@@ -139,31 +150,56 @@ public class ProtocolVersionTest extends SccpHarness {
 		client.dialog.setDoNotSendProtocolVersion(false);
 
 		client.sendBegin();
-		EventTestHarness.waitFor(WAIT_TIME);
-		assertNotNull(pv);
+
+		client.awaitSent(EventType.Begin);
+		{
+			TCBeginMessage tcb = (TCBeginMessage) sccpListener.messages.poll(SCCP_MESSAGE_RETRIEVAL_TIMEOUT,
+					TimeUnit.MILLISECONDS);
+			assertNotNull(tcb);
+			DialogRequestAPDU apdu = (DialogRequestAPDU) tcb.getDialogPortion().getDialogAPDU();
+
+			assertNotNull(apdu.getProtocolVersion());
+		}
 	}
 
 	@Test
 	public void doNotSendProtocolVersionStackTest() throws Exception {
-		this.tcapStack1.setDoNotSendProtocolVersion(true);
+		tcapStack1.setDoNotSendProtocolVersion(true);
+
 		client.startClientDialog();
 
 		client.sendBegin();
-		EventTestHarness.waitFor(WAIT_TIME);
-		assertNull(pv);
+		client.awaitSent(EventType.Begin);
+		{
+			TCBeginMessage tcb = (TCBeginMessage) sccpListener.messages.poll(SCCP_MESSAGE_RETRIEVAL_TIMEOUT,
+					TimeUnit.MILLISECONDS);
+			assertNotNull(tcb);
+			DialogRequestAPDU apdu = (DialogRequestAPDU) tcb.getDialogPortion().getDialogAPDU();
+
+			assertNull(apdu.getProtocolVersion());
+		}
 	}
 
 	@Test
 	public void sendProtocolVersionStackTest() throws Exception {
-		this.tcapStack1.setDoNotSendProtocolVersion(false);
+		tcapStack1.setDoNotSendProtocolVersion(false);
+
 		client.startClientDialog();
 
 		client.sendBegin();
-		EventTestHarness.waitFor(WAIT_TIME);
-		assertNotNull(pv);
+		client.awaitSent(EventType.Begin);
+		{
+			TCBeginMessage tcb = (TCBeginMessage) sccpListener.messages.poll(SCCP_MESSAGE_RETRIEVAL_TIMEOUT,
+					TimeUnit.MILLISECONDS);
+			assertNotNull(tcb);
+			DialogRequestAPDU apdu = (DialogRequestAPDU) tcb.getDialogPortion().getDialogAPDU();
+
+			assertNotNull(apdu.getProtocolVersion());
+		}
 	}
 
 	private class TestSccpListener implements SccpListener {
+		public BlockingQueue<TCUnifiedMessage> messages = new LinkedBlockingQueue<>();
 
 		private static final long serialVersionUID = 1L;
 		private ASNParser parser = new ASNParser(true);
@@ -191,14 +227,8 @@ public class ProtocolVersionTest extends SccpHarness {
 			} catch (ASNException ex) {
 			}
 
-			if (output != null && output instanceof TCBeginMessage) {
-				TCBeginMessage tcb = (TCBeginMessage) output;
-				if (tcb.getDialogPortion().getDialogAPDU() instanceof DialogRequestAPDU)
-					pv = ((DialogRequestAPDU) tcb.getDialogPortion().getDialogAPDU()).getProtocolVersion();
-
-				System.out.println("DIALOG REQUEST:" + tcb.getDialogPortion().toString());
-				System.out.println("PROTOCOL VERSION IS : " + pv);
-			}
+			if (output != null && output instanceof TCUnifiedMessage)
+				messages.add((TCUnifiedMessage) output);
 		}
 
 		@Override

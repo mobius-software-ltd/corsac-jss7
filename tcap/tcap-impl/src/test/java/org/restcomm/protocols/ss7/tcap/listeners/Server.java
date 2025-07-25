@@ -42,14 +42,13 @@ import com.mobius.software.common.dal.timers.TaskCallback;
  * @author yulianoifa
  *
  */
-public class Server extends EventTestHarness {
+public class Server extends TCAPTestHarness {
 	private static Logger logger = LogManager.getLogger(Server.class);
 
 	protected List<BaseComponent> components;
 
-	public Server(final TCAPStack stack, final ParameterFactory parameterFactory, final SccpAddress thisAddress,
-			final SccpAddress remoteAddress) {
-		super(stack, parameterFactory, thisAddress, remoteAddress, logger);
+	public Server(TCAPStack stack, ParameterFactory paramFactory, SccpAddress thisAddress, SccpAddress remoteAddress) {
+		super(stack, paramFactory, thisAddress, remoteAddress, logger);
 
 		super.listenerName = "Server";
 	}
@@ -84,10 +83,6 @@ public class Server extends EventTestHarness {
 		// no parameter
 		this.dialog.sendData(null, invoke.getInvokeId(), InvokeClass.Class1, null, oc, null, true, false);
 
-		super.sendContinue();
-	}
-
-	public void sendContinue2() throws TCAPSendException, TCAPException {
 		super.sendContinue();
 	}
 

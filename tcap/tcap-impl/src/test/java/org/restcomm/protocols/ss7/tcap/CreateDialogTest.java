@@ -82,7 +82,6 @@ public class CreateDialogTest {
 
 	@Test
 	public void createDialogTest() throws Exception {
-
 		SccpAddress localAddress = new SccpAddressImpl();
 		SccpAddress remoteAddress = new SccpAddressImpl();
 

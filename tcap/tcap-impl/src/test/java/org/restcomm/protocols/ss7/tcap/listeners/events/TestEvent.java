@@ -17,9 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 
-package org.restcomm.protocols.ss7.tcap.listeners;
+package org.restcomm.protocols.ss7.tcap.listeners.events;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author baranowb
@@ -56,7 +57,6 @@ public class TestEvent implements Serializable {
 	}
 
 	public TestEvent(EventType eventType, boolean sent, long timestamp, Object event, int sequence) {
-		super();
 		this.eventType = eventType;
 		this.sent = sent;
 		this.timestamp = timestamp;
@@ -86,53 +86,28 @@ public class TestEvent implements Serializable {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		// result = prime * result + ((eventSource == null) ? 0 :
-		// eventSource.hashCode());
-		result = prime * result + ((eventType == null) ? 0 : eventType.hashCode());
-		result = prime * result + (sent ? 1231 : 1237);
-		result = prime * result + sequence;
-		// dont use this ?
-		// result = prime * result + (int) (timestamp ^ (timestamp >>> 32));
-		return result;
+		return Objects.hash(eventType, sequence, sent);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
+
 		if (obj == null)
 			return false;
+
 		if (getClass() != obj.getClass())
 			return false;
+
 		TestEvent other = (TestEvent) obj;
-		// if (eventSource == null) {
-		// if (other.eventSource != null)
-		// return false;
-		// } else if (!eventSource.equals(other.eventSource))
-		// return false;
-		if (eventType != other.eventType)
-			return false;
-		if (sent != other.sent)
-			return false;
 
-		if (timestamp != other.timestamp) {
-			long v = timestamp - other.timestamp;
-			v = Math.abs(v);
-			// 1s, this can happen if we run tests concurrently and its not a big deal :)
-			if (v > 1000)
-				return false;
-		}
-
-		// now compare source!
-
-		return true;
+		return eventType == other.eventType && sent == other.sent && sequence == other.sequence;
 	}
 
 	@Override
 	public String toString() {
 		return "TestEvent [eventType=" + eventType + ", sent=" + sent + ", timestamp=" + timestamp + ", sequence="
-				+ sequence + "]";
+				+ sequence + ", source=" + event + "]";
 	}
 }

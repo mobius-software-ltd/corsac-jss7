@@ -19,24 +19,14 @@
 
 package org.restcomm.protocols.ss7.tcap.listeners;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
+import org.restcomm.protocols.ss7.tcap.DialogImpl;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPProvider;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
@@ -62,7 +52,8 @@ import org.restcomm.protocols.ss7.tcap.asn.DialogServiceUserType;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.UserInformation;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
-import org.restcomm.protocols.ss7.tcap.asn.comp.PAbortCauseType;
+import org.restcomm.protocols.ss7.tcap.listeners.events.EventHarness;
+import org.restcomm.protocols.ss7.tcap.listeners.events.EventType;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
 
@@ -74,11 +65,10 @@ import com.mobius.software.common.dal.timers.TaskCallback;
  * @author yulianoifa
  *
  */
-public abstract class EventTestHarness implements TCListener {
-	private static final long EVENT_TIMEOUT = 10000;
+public abstract class TCAPTestHarness extends EventHarness implements TCListener {
 	public static final List<Long> _ACN_ = Arrays.asList(new Long[] { 0L, 4L, 0L, 0L, 1L, 0L, 19L, 2L });
 
-	private Logger logger = null;
+	protected Logger logger = LogManager.getLogger(TCAPTestHarness.class);
 	protected String listenerName = this.toString();
 
 	public Dialog dialog;
@@ -86,19 +76,11 @@ public abstract class EventTestHarness implements TCListener {
 	protected SccpAddress thisAddress;
 	protected SccpAddress remoteAddress;
 
-	protected TCAPProvider tcapProvider;
+	public TCAPProvider tcapProvider;
 	protected ParameterFactory parameterFactory;
 
 	protected ApplicationContextName acn;
 	protected UserInformation ui;
-
-	public PAbortCauseType pAbortCauseType;
-
-	public Queue<TestEvent> observerdEvents = new ConcurrentLinkedQueue<TestEvent>();
-	protected AtomicInteger sequence = new AtomicInteger(0);
-
-	protected Map<EventType, Semaphore> sentSemaphores = new ConcurrentHashMap<>();
-	protected Map<EventType, Semaphore> receivedSemaphores = new ConcurrentHashMap<>();
 
 	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
 		@Override
@@ -106,18 +88,22 @@ public abstract class EventTestHarness implements TCListener {
 		}
 
 		@Override
-		public void onError(Exception exception) {
+		public void onError(Exception ex) {
+			logger.error("Stub callback received error, " + ex.getMessage(), ex);
 		}
 	};
 
-	public EventTestHarness(final TCAPStack stack, final ParameterFactory parameterFactory,
-			final SccpAddress thisAddress, final SccpAddress remoteAddress, Logger logger) {
+	public TCAPTestHarness(TCAPStack stack, ParameterFactory paramFactory, SccpAddress thisAddress,
+			SccpAddress remoteAddress, Logger logger) {
 		this.stack = stack;
+
 		this.thisAddress = thisAddress;
 		this.remoteAddress = remoteAddress;
+
 		this.tcapProvider = this.stack.getProvider();
 		this.tcapProvider.addTCListener(this);
-		this.parameterFactory = parameterFactory;
+
+		this.parameterFactory = paramFactory;
 		this.logger = logger;
 	}
 
@@ -146,7 +132,7 @@ public abstract class EventTestHarness implements TCListener {
 		TCBeginRequest tcbr = this.tcapProvider.getDialogPrimitiveFactory().createBegin(this.dialog);
 		tcbr.setApplicationContextName(acn);
 
-		this.handleSent(EventType.Begin, tcbr);
+		super.handleSent(EventType.Begin, tcbr);
 		this.dialog.send(tcbr, dummyCallback);
 	}
 
@@ -161,7 +147,7 @@ public abstract class EventTestHarness implements TCListener {
 			ui = null;
 		}
 
-		this.handleSent(EventType.Continue, con);
+		super.handleSent(EventType.Continue, con);
 		dialog.send(con, dummyCallback);
 	}
 
@@ -177,7 +163,7 @@ public abstract class EventTestHarness implements TCListener {
 			ui = null;
 		}
 
-		this.handleSent(EventType.End, end);
+		super.handleSent(EventType.End, end);
 		dialog.send(end, dummyCallback);
 	}
 
@@ -190,7 +176,7 @@ public abstract class EventTestHarness implements TCListener {
 			abort.setUserInformation(ui);
 		abort.setDialogServiceUserType(type);
 
-		this.handleSent(EventType.UAbort, abort);
+		super.handleSent(EventType.UAbort, abort);
 		this.dialog.send(abort, dummyCallback);
 	}
 
@@ -204,56 +190,34 @@ public abstract class EventTestHarness implements TCListener {
 		TCUniRequest tcur = this.tcapProvider.getDialogPrimitiveFactory().createUni(this.dialog);
 		tcur.setApplicationContextName(acn);
 
-		this.handleSent(EventType.Uni, tcur);
+		super.handleSent(EventType.Uni, tcur);
 		this.dialog.send(tcur, dummyCallback);
 	}
 
-	private void handleAwait(EventType eventType, Map<EventType, Semaphore> semaphores) {
-		Semaphore semaphore = semaphores.getOrDefault(eventType, new Semaphore(0));
-		semaphores.putIfAbsent(eventType, semaphore);
-
-		try {
-			boolean isAcquired = semaphore.tryAcquire(EVENT_TIMEOUT, TimeUnit.MILLISECONDS);
-			assertTrue("Event for type " + eventType + " is not acquired in " + EVENT_TIMEOUT + " milliseconds",
-					isAcquired);
-		} catch (InterruptedException e) {
-			logger.error("Interrupted exception occured while waiting for event for type " + eventType + ": " + e);
-			return;
-		}
+	public DialogImpl getCurrentDialog() {
+		return (DialogImpl) this.dialog;
 	}
 
-	public void awaitReceived(EventType eventType) {
-		handleAwait(eventType, this.receivedSemaphores);
-	}
-
-	public void awaitSent(EventType eventType) {
-		handleAwait(eventType, this.sentSemaphores);
-	}
-
-	private void handleEvent(TestEvent testEvent, Map<EventType, Semaphore> semaphores) {
-		this.observerdEvents.add(testEvent);
-
-		EventType eventType = testEvent.getEventType();
-		if (semaphores.containsKey(eventType))
-			semaphores.get(eventType).release();
-		else
-			semaphores.put(eventType, new Semaphore(1));
-	}
-
+	@Override
 	protected void handleReceived(EventType eventType, Object eventSource) {
-		TestEvent receivedEvent = TestEvent.createReceivedEvent(eventType, eventSource, sequence.getAndIncrement());
-		this.handleEvent(receivedEvent, this.receivedSemaphores);
+		super.handleReceived(eventType, eventSource);
+
+		if (logger.isDebugEnabled())
+			logger.debug("Received " + eventType);
 	}
 
+	@Override
 	protected void handleSent(EventType eventType, Object eventSource) {
-		TestEvent sentEvent = TestEvent.createSentEvent(eventType, eventSource, sequence.getAndIncrement());
-		this.handleEvent(sentEvent, this.sentSemaphores);
+		super.handleSent(eventType, eventSource);
+
+		if (logger.isDebugEnabled())
+			logger.debug("Sent " + eventType);
 	}
 
 	@Override
 	public void onTCUni(TCUniIndication ind) {
 		this.dialog = ind.getDialog();
-		this.handleReceived(EventType.Uni, ind);
+		super.handleReceived(EventType.Uni, ind);
 	}
 
 	@Override
@@ -266,12 +230,12 @@ public abstract class EventTestHarness implements TCListener {
 		if (ind.getUserInformation() != null)
 			this.ui = ind.getUserInformation();
 
-		this.handleReceived(EventType.Begin, ind);
+		super.handleReceived(EventType.Begin, ind);
 	}
 
 	@Override
 	public void onTCContinue(TCContinueIndication ind, TaskCallback<Exception> callback) {
-		this.handleReceived(EventType.Continue, ind);
+		super.handleReceived(EventType.Continue, ind);
 
 		if (ind.getApplicationContextName() != null)
 			this.acn = ind.getApplicationContextName();
@@ -282,87 +246,36 @@ public abstract class EventTestHarness implements TCListener {
 
 	@Override
 	public void onTCEnd(TCEndIndication ind, TaskCallback<Exception> callback) {
-		this.handleReceived(EventType.End, ind);
+		super.handleReceived(EventType.End, ind);
 	}
 
 	@Override
 	public void onTCUserAbort(TCUserAbortIndication ind) {
-		this.handleReceived(EventType.UAbort, ind);
+		super.handleReceived(EventType.UAbort, ind);
 	}
 
 	@Override
 	public void onTCPAbort(TCPAbortIndication ind) {
-		this.handleReceived(EventType.PAbort, ind);
-
-		pAbortCauseType = ind.getPAbortCause();
+		super.handleReceived(EventType.PAbort, ind);
 	}
 
 	@Override
 	public void onDialogReleased(Dialog dialog) {
-		this.handleReceived(EventType.DialogRelease, dialog);
+		super.handleReceived(EventType.DialogRelease, dialog);
 	}
 
 	@Override
 	public void onInvokeTimeout(Dialog dialog, int invokeId, InvokeClass invokeClass) {
-		this.handleReceived(EventType.InvokeTimeout, null);
+		super.handleReceived(EventType.InvokeTimeout, null);
 	}
 
 	@Override
 	public void onDialogTimeout(Dialog dialog) {
-		this.handleReceived(EventType.DialogTimeout, dialog);
+		super.handleReceived(EventType.DialogTimeout, dialog);
 	}
 
 	@Override
 	public void onTCNotice(TCNoticeIndication ind) {
-		this.handleReceived(EventType.Notice, ind);
-	}
-
-	public void compareEvents(List<TestEvent> expectedEvents) {
-		List<TestEvent> actualEvents = new ArrayList<TestEvent>(observerdEvents);
-		int expectedSize = expectedEvents.size();
-		int actualSize = actualEvents.size();
-
-		try {
-			assertEquals("Size of received events: " + actualSize + ", does not equal expected events: " + expectedSize,
-					expectedSize, actualSize);
-
-			for (int index = 0; index < expectedSize; index++) {
-				TestEvent expected = expectedEvents.get(index);
-				TestEvent actual = actualEvents.get(index);
-
-				assertEquals(expected, actual);
-			}
-		} catch (AssertionError err) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(err.getMessage()).append("\n");
-			sb.append("Received events:").append("\n");
-			sb.append(doStringCompare(expectedEvents, actualEvents));
-
-			fail(sb.toString());
-		}
-	}
-
-	protected static String doStringCompare(List<TestEvent> lst1, List<TestEvent> lst2) {
-		StringBuilder sb = new StringBuilder();
-		int size1 = lst1.size();
-		int size2 = lst2.size();
-		int count = size1;
-		if (count < size2)
-			count = size2;
-
-		for (int index = 0; count > index; index++) {
-			String s1 = size1 > index ? lst1.get(index).toString() : "NOP";
-			String s2 = size2 > index ? lst2.get(index).toString() : "NOP";
-			sb.append(s1).append(" - ").append(s2).append("\n");
-		}
-		return sb.toString();
-	}
-
-	public static void waitFor(long v) {
-		try {
-			Thread.sleep(v);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		super.handleReceived(EventType.Notice, ind);
 	}
 }

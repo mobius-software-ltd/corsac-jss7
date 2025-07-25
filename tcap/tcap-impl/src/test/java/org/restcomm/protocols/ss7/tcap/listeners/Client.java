@@ -40,6 +40,7 @@ import org.restcomm.protocols.ss7.tcap.asn.ApplicationContextName;
 import org.restcomm.protocols.ss7.tcap.asn.TcapFactory;
 import org.restcomm.protocols.ss7.tcap.asn.comp.Invoke;
 import org.restcomm.protocols.ss7.tcap.asn.comp.OperationCode;
+import org.restcomm.protocols.ss7.tcap.listeners.events.EventType;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.telco.protocols.ss7.asn.ASNClass;
@@ -54,12 +55,11 @@ import io.netty.buffer.Unpooled;
  * @author yulianoifa
  *
  */
-public class Client extends EventTestHarness {
+public class Client extends TCAPTestHarness {
 	private static Logger logger = LogManager.getLogger(Client.class);
 
-	public Client(final TCAPStack stack, final ParameterFactory parameterFactory, final SccpAddress thisAddress,
-			final SccpAddress remoteAddress) {
-		super(stack, parameterFactory, thisAddress, remoteAddress, logger);
+	public Client(TCAPStack stack, ParameterFactory paramFactory, SccpAddress thisAddress, SccpAddress remoteAddress) {
+		super(stack, paramFactory, thisAddress, remoteAddress, logger);
 
 		super.listenerName = "Client";
 	}
@@ -101,10 +101,6 @@ public class Client extends EventTestHarness {
 			this.dialog.release();
 			this.dialog = null;
 		}
-	}
-
-	public DialogImpl getCurDialog() {
-		return (DialogImpl) this.dialog;
 	}
 
 	public Invoke createNewInvoke() {
