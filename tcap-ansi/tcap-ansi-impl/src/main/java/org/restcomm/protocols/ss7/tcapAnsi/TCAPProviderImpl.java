@@ -147,6 +147,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	private AtomicLong curDialogId = new AtomicLong(0);
 
 	private ASNParser messageParser = new ASNParser(TCUnknownMessageImpl.class, true, false);
+	protected boolean affinityEnabled = false;
 
 	private TaskCallback<Exception> dummyCallback = new TaskCallback<Exception>() {
 		@Override
@@ -408,13 +409,18 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 			taskID = String.valueOf(dialog.getLocalDialogId());
 
 		data.retain();
-		workerPool.addTaskLast(new RunnableTask(new Runnable() {
+		RunnableTask outgoingTask = new RunnableTask(new Runnable() {
 			@Override
 			public void run() {
 				sccpProvider.send(msg, callback);
 				data.release();
 			}
-		}, taskID));
+		}, taskID);
+
+		if (this.affinityEnabled)
+			workerPool.addTaskLast(outgoingTask);
+		else
+			workerPool.getQueue().offerLast(outgoingTask);
 	}
 
 	public int getMaxUserDataLength(SccpAddress calledPartyAddress, SccpAddress callingPartyAddress, int networkId) {
@@ -668,7 +674,7 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 			SccpAddress remoteAddress) {
 		final DialogImpl dialog = (DialogImpl) di;
 
-		this.workerPool.addTaskLast(new RunnableTask(new Runnable() {
+		RunnableTask incomingTask = new RunnableTask(new Runnable() {
 			@Override
 			public void run() {
 				if (message instanceof TCConversationMessage) {
@@ -686,7 +692,12 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 				else if (message instanceof TCUniMessage)
 					dialog.processUni((TCUniMessage) message, localAddress, remoteAddress);
 			}
-		}, dialog.getLocalDialogId().toString()));
+		}, dialog.getLocalDialogId().toString());
+
+		if (this.affinityEnabled)
+			this.workerPool.addTaskLast(incomingTask);
+		else
+			this.workerPool.getQueue().offerLast(incomingTask);
 	}
 
 	@Override
@@ -1004,5 +1015,10 @@ public class TCAPProviderImpl implements TCAPProvider, SccpListener, ASNDecodeHa
 	@Override
 	public ASNParser getParser() {
 		return messageParser;
+	}
+
+	@Override
+	public void setAffinity(boolean isEnabled) {
+		this.affinityEnabled = isEnabled;
 	}
 }

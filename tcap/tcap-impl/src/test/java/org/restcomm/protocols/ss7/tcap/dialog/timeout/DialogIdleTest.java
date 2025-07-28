@@ -24,14 +24,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEventFactory;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEventUtils;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.TCAPStackImpl;
 import org.restcomm.protocols.ss7.tcap.api.TCAPException;
 import org.restcomm.protocols.ss7.tcap.api.TCAPSendException;
 import org.restcomm.protocols.ss7.tcap.api.tc.dialog.events.TerminationType;
+import org.restcomm.protocols.ss7.tcap.listeners.Client;
+import org.restcomm.protocols.ss7.tcap.listeners.Server;
 import org.restcomm.protocols.ss7.tcap.listeners.events.EventType;
-import org.restcomm.protocols.ss7.tcap.listeners.events.TestEventFactory;
-import org.restcomm.protocols.ss7.tcap.utils.EventTestUtils;
 
 /**
  * Test for call flow.
@@ -98,21 +100,21 @@ public class DialogIdleTest extends SccpHarness {
 	@Test
 	public void testCreateOnly() throws TCAPException {
 		client.startClientDialog();
-		EventTestUtils.updateStamp();
+		TestEventUtils.updateStamp();
 
 		client.awaitReceived(EventType.DialogTimeout);
-		EventTestUtils.assertPassed(CLIENT_DIALOG_TIMEOUT);
+		TestEventUtils.assertPassed(CLIENT_DIALOG_TIMEOUT);
 
 		client.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addReceived(EventType.DialogTimeout);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	@Test
@@ -123,30 +125,30 @@ public class DialogIdleTest extends SccpHarness {
 
 		client.awaitSent(EventType.Begin);
 		server.awaitReceived(EventType.Begin);
-		EventTestUtils.updateStamp();
+		TestEventUtils.updateStamp();
 
 		client.awaitReceived(EventType.DialogTimeout);
-		EventTestUtils.assertPassed(CLIENT_DIALOG_TIMEOUT);
+		TestEventUtils.assertPassed(CLIENT_DIALOG_TIMEOUT);
 
 		server.awaitReceived(EventType.DialogTimeout);
-		EventTestUtils.assertPassed(SERVER_DIALOG_TIMEOUT);
+		TestEventUtils.assertPassed(SERVER_DIALOG_TIMEOUT);
 
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.DialogTimeout);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 		serverExpected.addReceived(EventType.Begin);
 		serverExpected.addReceived(EventType.DialogTimeout);
 		serverExpected.addReceived(EventType.PAbort);
 		serverExpected.addReceived(EventType.DialogRelease);
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	@Test
@@ -160,10 +162,10 @@ public class DialogIdleTest extends SccpHarness {
 
 		client.awaitSent(EventType.Begin);
 		server.awaitReceived(EventType.Begin);
-		EventTestUtils.updateStamp();
+		TestEventUtils.updateStamp();
 
 		server.awaitReceived(EventType.DialogTimeout);
-		EventTestUtils.assertPassed(serverTimeout);
+		TestEventUtils.assertPassed(serverTimeout);
 
 		client.awaitReceived(EventType.PAbort);
 		server.awaitReceived(EventType.PAbort);
@@ -171,19 +173,19 @@ public class DialogIdleTest extends SccpHarness {
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.PAbort);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 		serverExpected.addReceived(EventType.Begin);
 		serverExpected.addReceived(EventType.DialogTimeout);
 		serverExpected.addReceived(EventType.PAbort);
 		serverExpected.addReceived(EventType.DialogRelease);
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	@Test
@@ -196,10 +198,10 @@ public class DialogIdleTest extends SccpHarness {
 		server.sendContinue();
 		server.awaitSent(EventType.Continue);
 		client.awaitReceived(EventType.Continue);
-		EventTestUtils.updateStamp();
+		TestEventUtils.updateStamp();
 
 		client.awaitReceived(EventType.DialogTimeout);
-		EventTestUtils.assertPassed(CLIENT_DIALOG_TIMEOUT);
+		TestEventUtils.assertPassed(CLIENT_DIALOG_TIMEOUT);
 
 		client.awaitReceived(EventType.PAbort);
 		server.awaitReceived(EventType.PAbort);
@@ -207,21 +209,21 @@ public class DialogIdleTest extends SccpHarness {
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.Continue);
 		clientExpected.addReceived(EventType.DialogTimeout);
 		clientExpected.addReceived(EventType.PAbort);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 		serverExpected.addReceived(EventType.Begin);
 		serverExpected.addSent(EventType.Continue);
 		serverExpected.addReceived(EventType.PAbort);
 		serverExpected.addReceived(EventType.DialogRelease);
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	@Test
@@ -238,10 +240,10 @@ public class DialogIdleTest extends SccpHarness {
 		client.sendContinue();
 		client.awaitSent(EventType.Continue);
 		server.awaitReceived(EventType.Continue);
-		EventTestUtils.updateStamp();
+		TestEventUtils.updateStamp();
 
 		client.awaitReceived(EventType.DialogTimeout);
-		EventTestUtils.assertPassed(CLIENT_DIALOG_TIMEOUT);
+		TestEventUtils.assertPassed(CLIENT_DIALOG_TIMEOUT);
 
 		client.awaitReceived(EventType.PAbort);
 		server.awaitReceived(EventType.PAbort);
@@ -249,7 +251,7 @@ public class DialogIdleTest extends SccpHarness {
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.Continue);
 		clientExpected.addSent(EventType.Continue);
@@ -257,15 +259,15 @@ public class DialogIdleTest extends SccpHarness {
 		clientExpected.addReceived(EventType.PAbort);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 		serverExpected.addReceived(EventType.Begin);
 		serverExpected.addSent(EventType.Continue);
 		serverExpected.addReceived(EventType.Continue);
 		serverExpected.addReceived(EventType.PAbort);
 		serverExpected.addReceived(EventType.DialogRelease);
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	@Test
@@ -286,19 +288,19 @@ public class DialogIdleTest extends SccpHarness {
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.Continue);
 		clientExpected.addSent(EventType.End);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 		serverExpected.addReceived(EventType.Begin);
 		serverExpected.addSent(EventType.Continue);
 		serverExpected.addReceived(EventType.End);
 		serverExpected.addReceived(EventType.DialogRelease);
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 }

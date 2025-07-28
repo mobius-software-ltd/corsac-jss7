@@ -32,6 +32,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.restcomm.protocols.ss7.indicator.RoutingIndicator;
 import org.restcomm.protocols.ss7.sccp.impl.SccpHarness;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEvent;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEventFactory;
+import org.restcomm.protocols.ss7.sccp.impl.events.TestEventUtils;
 import org.restcomm.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.restcomm.protocols.ss7.sccp.parameter.SccpAddress;
 import org.restcomm.protocols.ss7.tcap.api.TCAPStack;
@@ -58,9 +61,6 @@ import org.restcomm.protocols.ss7.tcap.asn.messages.BadInvokeImpl;
 import org.restcomm.protocols.ss7.tcap.asn.messages.MistypedInvokeImpl;
 import org.restcomm.protocols.ss7.tcap.listeners.TCAPTestHarness;
 import org.restcomm.protocols.ss7.tcap.listeners.events.EventType;
-import org.restcomm.protocols.ss7.tcap.listeners.events.TestEvent;
-import org.restcomm.protocols.ss7.tcap.listeners.events.TestEventFactory;
-import org.restcomm.protocols.ss7.tcap.utils.EventTestUtils;
 
 import com.mobius.software.common.dal.timers.TaskCallback;
 import com.mobius.software.telco.protocols.ss7.asn.ASNParser;
@@ -155,7 +155,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		client.awaitSent(EventType.Invoke, EventType.Begin);
 		server.awaitReceived(EventType.Begin, EventType.Reject, EventType.Invoke);
 		{
-			TestEvent event = server.getNextEvent(EventType.Begin);
+			TestEvent<EventType> event = server.getNextEvent(EventType.Begin);
 			TCBeginIndication ind = (TCBeginIndication) event.getEvent();
 
 			assertEquals(2, ind.getComponents().size());
@@ -174,7 +174,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		server.awaitSent(EventType.End);
 		client.awaitReceived(EventType.End, EventType.Reject);
 		{
-			TestEvent event = client.getNextEvent(EventType.End);
+			TestEvent<EventType> event = client.getNextEvent(EventType.End);
 			TCEndIndication ind = (TCEndIndication) event.getEvent();
 
 			assertEquals(1, ind.getComponents().size());
@@ -190,22 +190,22 @@ public class TCAPComponentsTest extends SccpHarness {
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Invoke);
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.End);
 		clientExpected.addReceived(EventType.Reject);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 		serverExpected.addReceived(EventType.Begin);
 		serverExpected.addReceived(EventType.Reject);
 		serverExpected.addReceived(EventType.Invoke);
 		serverExpected.addSent(EventType.End);
 		serverExpected.addReceived(EventType.DialogRelease);
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	/**
@@ -230,7 +230,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		client.awaitSent(EventType.Invoke, EventType.Begin);
 		server.awaitReceived(EventType.Begin, EventType.Reject, EventType.Invoke);
 		{
-			TestEvent event = server.getNextEvent(EventType.Begin);
+			TestEvent<EventType> event = server.getNextEvent(EventType.Begin);
 			TCBeginIndication ind = (TCBeginIndication) event.getEvent();
 
 			assertEquals(2, ind.getComponents().size());
@@ -248,7 +248,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		server.awaitSent(EventType.End);
 		client.awaitReceived(EventType.End, EventType.Reject);
 		{
-			TestEvent event = client.getNextEvent(EventType.End);
+			TestEvent<EventType> event = client.getNextEvent(EventType.End);
 			TCEndIndication ind = (TCEndIndication) event.getEvent();
 
 			assertEquals(1, ind.getComponents().size());
@@ -264,22 +264,22 @@ public class TCAPComponentsTest extends SccpHarness {
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Invoke);
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.End);
 		clientExpected.addReceived(EventType.Reject);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 		serverExpected.addReceived(EventType.Begin);
 		serverExpected.addReceived(EventType.Reject);
 		serverExpected.addReceived(EventType.Invoke);
 		serverExpected.addSent(EventType.End);
 		serverExpected.addReceived(EventType.DialogRelease);
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	/**
@@ -305,7 +305,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		client.awaitSent(EventType.Invoke, EventType.Begin);
 		server.awaitReceived(EventType.Begin, EventType.Reject, EventType.Invoke);
 		{
-			TestEvent event = server.getNextEvent(EventType.Begin);
+			TestEvent<EventType> event = server.getNextEvent(EventType.Begin);
 			TCBeginIndication ind = (TCBeginIndication) event.getEvent();
 
 			assertEquals(2, ind.getComponents().size());
@@ -323,7 +323,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		server.awaitSent(EventType.End);
 		client.awaitReceived(EventType.End, EventType.Reject);
 		{
-			TestEvent event = client.getNextEvent(EventType.End);
+			TestEvent<EventType> event = client.getNextEvent(EventType.End);
 			TCEndIndication ind = (TCEndIndication) event.getEvent();
 
 			assertEquals(1, ind.getComponents().size());
@@ -339,22 +339,22 @@ public class TCAPComponentsTest extends SccpHarness {
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Invoke);
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.End);
 		clientExpected.addReceived(EventType.Reject);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 		serverExpected.addReceived(EventType.Begin);
 		serverExpected.addReceived(EventType.Reject);
 		serverExpected.addReceived(EventType.Invoke);
 		serverExpected.addSent(EventType.End);
 		serverExpected.addReceived(EventType.DialogRelease);
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	/**
@@ -383,13 +383,13 @@ public class TCAPComponentsTest extends SccpHarness {
 		client.addNewInvoke(1, INVOKE_TIMEOUT);
 		client.sendBegin();
 
-		EventTestUtils.updateStamp();
+		TestEventUtils.updateStamp();
 
 		client.awaitSent(EventType.Invoke, EventType.Begin);
 		server.awaitReceived(EventType.Begin, EventType.Invoke);
 
 		client.awaitReceived(EventType.InvokeTimeout); // server does not responds
-		EventTestUtils.assertPassed(INVOKE_TIMEOUT);
+		TestEventUtils.assertPassed(INVOKE_TIMEOUT);
 
 		// 2. TC-CONTINUE + ReturnResult (invokeId=1)
 		server.addNewReturnResult(1);
@@ -398,7 +398,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		server.awaitSent(EventType.ReturnResult, EventType.Continue);
 		client.awaitReceived(EventType.Continue, EventType.Reject);
 		{
-			TestEvent event = client.getNextEvent(EventType.Continue);
+			TestEvent<EventType> event = client.getNextEvent(EventType.Continue);
 			TCContinueIndication ind = (TCContinueIndication) event.getEvent();
 
 			assertEquals(ind.getComponents().size(), 1);
@@ -414,12 +414,12 @@ public class TCAPComponentsTest extends SccpHarness {
 		// 3. TC-CONTINUE + Reject(unrecognizedInvokeId) + Invoke (invokeId=1)
 		client.addNewInvoke(1, INVOKE_TIMEOUT);
 		client.sendContinue();
-		EventTestUtils.updateStamp();
+		TestEventUtils.updateStamp();
 
 		client.awaitSent(EventType.Invoke, EventType.Continue);
 		server.awaitReceived(EventType.Continue, EventType.Reject, EventType.Reject);
 		{
-			TestEvent event = server.getNextEvent(EventType.Continue);
+			TestEvent<EventType> event = server.getNextEvent(EventType.Continue);
 			TCContinueIndication ind = (TCContinueIndication) event.getEvent();
 
 			assertEquals(ind.getComponents().size(), 2);
@@ -440,7 +440,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		}
 
 		client.awaitReceived(EventType.InvokeTimeout); // server does not responds
-		EventTestUtils.assertPassed(INVOKE_TIMEOUT);
+		TestEventUtils.assertPassed(INVOKE_TIMEOUT);
 
 		// 4. TC-CONTINUE + Reject (duplicateInvokeId)
 		server.sendContinue();
@@ -454,10 +454,10 @@ public class TCAPComponentsTest extends SccpHarness {
 
 		client.awaitSent(EventType.Invoke, EventType.Continue);
 		server.awaitReceived(EventType.Continue, EventType.Invoke);
-		EventTestUtils.updateStamp();
+		TestEventUtils.updateStamp();
 
 		client.awaitReceived(EventType.InvokeTimeout); // server does not responds
-		EventTestUtils.assertPassed(INVOKE_TIMEOUT);
+		TestEventUtils.assertPassed(INVOKE_TIMEOUT);
 
 		// 6. TC-CONTINUE + ReturnResultLast (invokeId=1) + ReturnError (invokeId=2)
 
@@ -472,14 +472,14 @@ public class TCAPComponentsTest extends SccpHarness {
 		client.addNewInvoke(1, INVOKE_TIMEOUT);
 		client.addNewInvoke(2, INVOKE_TIMEOUT);
 		client.sendContinue();
-		EventTestUtils.updateStamp();
+		TestEventUtils.updateStamp();
 
 		client.awaitSent(EventType.Invoke, EventType.Invoke, EventType.Continue);
 		server.awaitReceived(EventType.Continue);
 		server.awaitReceived(EventType.Reject, EventType.Reject, EventType.Invoke, EventType.Invoke);
 
 		client.awaitReceived(EventType.InvokeTimeout, EventType.InvokeTimeout);
-		EventTestUtils.assertPassed(INVOKE_TIMEOUT);
+		TestEventUtils.assertPassed(INVOKE_TIMEOUT);
 
 		// 8. TC-CONTINUE
 		server.dialog.processInvokeWithoutAnswer(1);
@@ -496,7 +496,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		client.awaitSent(EventType.Invoke, EventType.Invoke, EventType.Continue);
 		server.awaitReceived(EventType.Continue, EventType.Invoke, EventType.Reject);
 		{
-			TestEvent event = server.getNextEventWithSkip(EventType.Continue, 2);
+			TestEvent<EventType> event = server.getNextEventWithSkip(EventType.Continue, 2);
 			TCContinueIndication ind = (TCContinueIndication) event.getEvent();
 			assertEquals(ind.getComponents().size(), 2);
 
@@ -514,7 +514,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		server.awaitSent(EventType.End);
 		client.awaitReceived(EventType.End, EventType.Reject);
 		{
-			TestEvent event = client.getNextEvent(EventType.End);
+			TestEvent<EventType> event = client.getNextEvent(EventType.End);
 			TCEndIndication ind = (TCEndIndication) event.getEvent();
 
 			assertEquals(ind.getComponents().size(), 1);
@@ -529,7 +529,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		client.awaitReceived(EventType.DialogRelease);
 		server.awaitReceived(EventType.DialogRelease);
 
-		TestEventFactory clientExpected = TestEventFactory.create();
+		TestEventFactory<EventType> clientExpected = TestEventFactory.create();
 		clientExpected.addSent(EventType.Invoke);
 		clientExpected.addSent(EventType.Begin);
 		clientExpected.addReceived(EventType.InvokeTimeout);
@@ -559,7 +559,7 @@ public class TCAPComponentsTest extends SccpHarness {
 		clientExpected.addReceived(EventType.Reject);
 		clientExpected.addReceived(EventType.DialogRelease);
 
-		TestEventFactory serverExpected = TestEventFactory.create();
+		TestEventFactory<EventType> serverExpected = TestEventFactory.create();
 		serverExpected.addReceived(EventType.Begin);
 		serverExpected.addReceived(EventType.Invoke);
 		serverExpected.addSent(EventType.ReturnResult);
@@ -585,8 +585,8 @@ public class TCAPComponentsTest extends SccpHarness {
 		serverExpected.addSent(EventType.End);
 		serverExpected.addReceived(EventType.DialogRelease);
 
-		EventTestUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
-		EventTestUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
+		TestEventUtils.assertEvents(clientExpected.getEvents(), client.getEvents());
+		TestEventUtils.assertEvents(serverExpected.getEvents(), server.getEvents());
 	}
 
 	public class ClientComponent extends TCAPTestHarness {

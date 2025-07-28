@@ -110,6 +110,7 @@ public interface TCAPProvider extends Serializable {
 	/**
 	 * @return ASN Parser
 	 */
-
 	ASNParser getParser();
+
+	void setAffinity(boolean isEnabled);
 }

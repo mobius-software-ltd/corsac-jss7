@@ -1472,7 +1472,10 @@ public class DialogImpl implements Dialog {
 		if (!this.idleTimer.compareAndSet(null, newTimer))
 			throw new IllegalStateException("Idle timer is not null");
 
-		this.workerPool.addTimer(newTimer);
+		if (provider.affinityEnabled)
+			this.workerPool.addTimer(newTimer);
+		else
+			this.workerPool.getPeriodicQueue().store(newTimer.getRealTimestamp(), newTimer);
 	}
 
 	private void stopIdleTimer() {

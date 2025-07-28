@@ -1,4 +1,4 @@
-package org.restcomm.protocols.ss7.tcapAnsi;
+package org.restcomm.protocols.ss7.tcapAnsi.asn.messages;
 
 /*
  * Mobius Software LTD

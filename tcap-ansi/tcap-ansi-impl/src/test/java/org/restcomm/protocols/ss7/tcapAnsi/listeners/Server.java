@@ -42,7 +42,7 @@ import org.restcomm.protocols.ss7.tcapAnsi.asn.TcapFactory;
  * @author yulianoifa
  *
  */
-public class Server extends EventTestHarness {
+public class Server extends TCAPAnsiTestHarness {
 	private static Logger logger = LogManager.getLogger(Server.class);
 
 	protected List<Component> components;

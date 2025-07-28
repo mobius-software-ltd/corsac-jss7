@@ -1993,7 +1993,7 @@ public class DialogImpl implements Dialog {
 
 		@Override
 		public void execute() {
-			if (d == null || super.startTime == Long.MAX_VALUE)
+			if (super.startTime == Long.MAX_VALUE || d == null)
 				return;
 
 			idleTimer.set(null);

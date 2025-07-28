@@ -54,7 +54,6 @@ import com.mobius.software.common.dal.timers.WorkerPool;
  *
  */
 public class CreateDialogTest {
-
 	private SccpHarnessPreview sccpProv = new SccpHarnessPreview();
 	private TCAPStackImplWrapper tcapStack1;
 	private WorkerPool workerPool;
@@ -64,41 +63,41 @@ public class CreateDialogTest {
 		workerPool = new WorkerPool();
 		workerPool.start(4);
 
-		this.tcapStack1 = new TCAPStackImplWrapper(this.sccpProv, 8, "CreateDialogTest", workerPool);
-
-		this.tcapStack1.start();
+		tcapStack1 = new TCAPStackImplWrapper(sccpProv, 8, "CreateDialogTest", workerPool);
+		tcapStack1.start();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see junit.framework.TestCase#tearDown()
-	 */
 	@After
 	public void tearDown() {
-		this.tcapStack1.stop();
-		workerPool.stop();
+		if (tcapStack1 != null) {
+			tcapStack1.stop();
+			tcapStack1 = null;
+		}
+
+		if (workerPool != null) {
+			workerPool.stop();
+			workerPool = null;
+		}
 	}
 
 	@Test
 	public void createDialogTest() throws Exception {
-
 		SccpAddress localAddress = new SccpAddressImpl();
 		SccpAddress remoteAddress = new SccpAddressImpl();
 
-		Dialog dlg1 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 0);
+		Dialog dlg1 = tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 0);
 		assertEquals((long) dlg1.getLocalDialogId(), 1L);
 
 		try {
-			this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 1L, 0);
+			tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 1L, 0);
 			fail("Must be failure because dialogID==1 is taken");
 		} catch (Exception e) {
 		}
 
-		Dialog dlg3 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 2L, 0);
+		Dialog dlg3 = tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 2L, 0);
 		assertEquals((long) dlg3.getLocalDialogId(), 2L);
 
-		Dialog dlg4 = this.tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 0);
+		Dialog dlg4 = tcapStack1.getProvider().getNewDialog(localAddress, remoteAddress, 0);
 		assertEquals((long) dlg4.getLocalDialogId(), 3L);
 	}
 
@@ -107,25 +106,20 @@ public class CreateDialogTest {
 
 		@Override
 		public void deregisterSccpListener(int arg0) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public int getMaxUserDataLength(SccpAddress arg0, SccpAddress arg1, int networkId) {
-			// TODO Auto-generated method stub
 			return 0;
 		}
 
 		@Override
 		public MessageFactory getMessageFactory() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public ParameterFactory getParameterFactory() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -143,46 +137,35 @@ public class CreateDialogTest {
 
 		@Override
 		public void registerManagementEventListener(UUID key, SccpManagementEventListener listener) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void deregisterManagementEventListener(UUID key) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void coordRequest(int ssn) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public SccpConnection newConnection(int localSsn, ProtocolClass protocolClass)
 				throws MaxConnectionCountReached {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public ConcurrentHashMap<Integer, SccpConnection> getConnections() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public void send(SccpNoticeMessage message, TaskCallback<Exception> callback) {
-			// TODO Auto-generated method stub
 			callback.onSuccess();
 		}
 
 		@Override
 		public SccpStack getSccpStack() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 	}
-
 }
