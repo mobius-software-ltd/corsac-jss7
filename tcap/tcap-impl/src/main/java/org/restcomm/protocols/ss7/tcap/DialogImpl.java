@@ -1943,7 +1943,7 @@ public class DialogImpl implements Dialog {
 		}
 	}
 
-	protected void setState(TRPseudoState newState) {
+	protected synchronized void setState(TRPseudoState newState) {
 		if (this.state.get() == TRPseudoState.Expunged)
 			return;
 
@@ -2007,11 +2007,9 @@ public class DialogImpl implements Dialog {
 				if (idleTimer.get() == null)
 					startIdleTimer();
 			} else if (remoteTransactionIdObject != null && !getState().equals(TRPseudoState.Expunged))
-				// send abort
 				sendAbnormalDialog();
 			else
 				release();
-
 			d.idleTimerInvoked.set(false);
 		}
 
